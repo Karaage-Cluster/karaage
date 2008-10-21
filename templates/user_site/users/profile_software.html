@@ -1,0 +1,30 @@
+{% extends "users/profile_base.html" %}
+
+{% block profile_content %}
+<div class="module">
+	<h2>Restricted Software</h2><br />
+	<h3><a href="{% url ac_user_software_add %}" class="addlink">Add software</a></h3>
+	<br />
+	{% if software_list %}
+	<table>
+	<thead>
+		<tr class="{% cycle row1,row2 %}">
+			<th>Software</th>
+			<th>Date Accepted</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for s in software_list %}
+		<tr>
+			<td>{{ s.license.package }}</td>
+			<td>{{ s.date }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+	</table>
+	{% else %}
+	<p>No restricted software <a href="{% url ac_user_software_add %}" class="addlink">Add software</a></p>
+	{% endif %}		
+</div>
+
+{% endblock %}

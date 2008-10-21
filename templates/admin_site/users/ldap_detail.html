@@ -1,0 +1,49 @@
+{% extends "main.html" %}
+
+{% block title %}LDAP{% endblock %}
+
+{% block bread_crumbs_1 %}
+ &rsaquo; <a href="../../">Users</a>
+ &rsaquo; <a href="../">{{ person }}</a>
+ &rsaquo; LDAP Detail
+{% endblock %}   
+ 
+{% block content %}
+<div id="content-main">
+
+	<div class="module">
+   	<h2>LDAP</h2>
+   	{% if ldap %}
+		<table>
+		<thead>
+			<tr>
+				<th>Key</th>
+				<th>Value</th>			
+			</tr>		
+		</thead>   
+		<tbody>		
+			<tr><td>cn</td><td>{{ ldap.cn }}</td></tr>			
+			<tr><td>givenName</td><td>{{ ldap.givenName }}</td></tr>
+			<tr><td>sn</td><td>{{ ldap.sn }}</td></tr>
+			<tr><td>o</td><td>{{ ldap.o }}</td></tr>
+			<tr><td>mail</td><td>{{ ldap.mail|urlize }}</td></tr>
+			<tr><td>telephoneNumber</td><td>{{ ldap.telephoneNumber }}</td></tr>
+			<tr><td>objectClass</td><td>{{ ldap.objectClass }}</td></tr>
+			<tr><td>uid</td><td>{{ ldap.uid }}</td></tr>
+			<tr><td>uidNumber</td><td>{{ ldap.uidNumber }}</td></tr>
+			<tr><td>gidNumber</td><td>{{ ldap.gidNumber }}</td></tr>
+			<tr><td>homeDirectory</td><td>{{ ldap.homeDirectory }}</td></tr>
+			<tr><td>loginShell</td><td>{{ ldap.loginShell }}</td></tr>
+			<tr><td>gecos</td><td>{{ ldap.gecos }}</td></tr>			
+			<tr><td>shadowLastChange</td><td>{{ ldap.shadowLastChange }}</td></tr>
+			<tr><td>shadowWarning</td><td>{{ ldap.shadowWarning }}</td></tr>
+			<tr><td>shadowMax</td><td>{{ ldap.shadowMax }}</td></tr>
+		</tbody>
+		</table>
+		{% else %}
+		<p>Not in LDAP</p>
+		{% endif %}
+	</div>
+
+</div>
+{% endblock %}

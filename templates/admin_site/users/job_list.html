@@ -1,0 +1,28 @@
+{% extends "main.html" %}
+
+
+{% block title %}Users{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block bread_crumbs_1 %}
+ &rsaquo; <a href="../">Users</a>
+ &rsaquo; {{ person }}
+{% endblock %}   
+ 
+{% block content %}
+
+<div id="content-main">
+<p>
+{% date_filter start end %}
+</p>
+	<div class="module">
+	<h2>Jobs</h2>
+
+		<h5>Latest Usage</h5>
+			{% gen_table job_list %}
+	</div>
+
+
+</div>
+{% endblock %}

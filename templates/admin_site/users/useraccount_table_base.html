@@ -1,0 +1,22 @@
+<table cellspacing="0">
+	<thead>
+		<tr>
+			<th>Username</th>
+			<th>Machine Category</th>
+			<th>Default Project</th>
+			<th>Date Created</th>
+			<th>Date Deleted</th>
+		</tr>
+	</thead>   	
+   <tbody>
+   	{% for ua in useraccount_list %}
+	   	<tr class="{% cycle row1,row2 %}">
+	   		<td><a href="{{ ua.get_absolute_url }}">{{ ua.username }}</a></td>
+	   		<td>{{ ua.machine_category }}</td>
+	   		<td><a href="{{ ua.default_project.get_absolute_url}}">{{ ua.default_project }}</a></td>
+	   		<td>{{ ua.date_created }}</td>
+	   		<td>{{ ua.date_deleted }}</td>
+	   	</tr>
+	   {% endfor %}
+   </tbody>  	
+</table>

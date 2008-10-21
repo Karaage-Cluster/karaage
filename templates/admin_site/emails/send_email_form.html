@@ -1,0 +1,48 @@
+{% extends "forms.html" %}
+
+{% block title %}Emails{% endblock %}
+
+{% block content_title %}Send Email{% endblock %}
+
+{% block bread_crumbs_1 %}
+ &rsaquo; Send Email
+{% endblock %}   
+
+{% block content %}
+{% if emails %}
+<p>Email will be sent to {{ emails|length }} p{{ emails|pluralize:"erson,eople" }}.</p>
+<p>From email: {{ preview.2 }}</p>
+{% if preview %}
+<div class="module">
+<h2>Preview of 1st email</h2>
+<p>To: {{ preview.3.0 }}</p>
+<hr />
+<p>Subject: {{ preview.0 }}</p>
+<hr />
+{{ preview.1|linebreaks }}
+{% endif %}
+</div>
+{% endif %}
+
+{% for e in emails %}
+<p>{{ e }}</p>
+{% endfor %}
+<form method="post" action=".">
+{% load forms %}
+<fieldset class="module aligned ()">
+{% form_as_div form %}
+</fieldset>
+<p>All Project Leaders Context:
+	<ul><li>{% templatetag openvariable %} project {% templatetag closevariable %} </li><li>{% templatetag openvariable %} receiver {% templatetag closevariable %}</li></ul>
+</p>
+<p>All VPAC Users Context:
+	<ul><li>{% templatetag openvariable %} receiver {% templatetag closevariable %}</li></ul>
+</p>
+<div class="submit-row">
+		<input type="submit" name="preview" value="Preview" />
+		{% if preview %}	
+		<input type="submit" value="Send" class="default" />
+		{% endif %}
+	</div>
+</form>
+{% endblock %}

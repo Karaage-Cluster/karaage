@@ -1,0 +1,169 @@
+from django.contrib.auth.models import User
+from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
+from django.contrib.contenttypes.models import ContentType
+
+from django_common.middleware.threadlocals import get_current_user
+
+from karaage.util.helpers import create_password_hash 
+from karaage.people.models import Person
+from karaage.machines.models import UserAccount
+
+
+class PersonalDataStore(object):
+    
+    def create_new_user(self, data, hashed_password=None):
+        """Creates a new user (not active)
+
+        Keyword arguments:
+        data -- a dictonary of user data
+        hashed_password -- 
+    
+        """
+        random_passwd = User.objects.make_random_password()
+        u = User.objects.create_user(data['username'], data['email'], random_passwd)
+        
+        if hashed_password:
+            u.password = hashed_password
+        else:
+            u.password = create_password_hash(data['password1'])
+            
+        u.is_active = False
+        u.save()
+    
+        #Create Person
+        person = Person.objects.create(
+            user=u, first_name=data['first_name'],
+            last_name=data['last_name'],
+            position=data['position'],department=data['department'],
+            institute=data['institute'],
+            title=data['title'], address=data['address'],
+            country=data['country'],
+            website=data['website'], fax=data['fax'],
+            comment=data['comment'], telephone=data['telephone'],
+            mobile=data['mobile'],
+            )
+        
+        try:
+            LogEntry.objects.create(
+                action_time=datetime.datetime.now(), user=get_current_user(),
+                content_type=ContentType.objects.get_for_model(person.__class__),
+                object_id=person.id, object_repr=person.__str__(), action_flag=ADDITION,
+                change_message='Created')
+        except:
+            pass
+        
+        return person
+
+
+
+        raise NotImplementedError
+
+    def activate_user(self, person):
+        """ Activates a user """
+        approver = get_current_user().get_profile()
+    
+        person.date_approved = datetime.datetime.today()
+        person.approved_by = approver
+        person.deleted_by = None
+        person.date_deleted = None
+        person.user.is_active = True
+        person.user.save()
+        person.save()
+        
+        LogEntry.objects.create(
+            action_time=datetime.datetime.now(), user=get_current_user(),
+            content_type=ContentType.objects.get_for_model(person.__class__),
+            object_id=person.id, object_repr=person.__str__(), action_flag=ADDITION,
+            change_message='Activated')
+        
+
+    def delete_user(self, person):
+        """ Sets Person not active and deletes all UserAccounts"""
+        person.user.is_active = False
+        person.user.save()
+    
+        deletor = get_current_user()
+    
+        person.date_deleted = datetime.datetime.today()
+        person.deleted_by = deletor.get_profile()
+        person.save()
+
+        from karaage.datastores import delete_account
+
+        for ua in user.useraccount_set.filter(date_deleted__isnull=True):
+            delete_account(ua)
+            
+        LogEntry.objects.create(
+            action_time=datetime.datetime.now(), user=get_current_user(),
+            content_type=ContentType.objects.get_for_model(user.__class__),
+            object_id=user.id, object_repr=user.__str__(), action_flag=DELETION,
+            change_message='Deleted person')    
+
+
+
+
+class AccountDataStore(object):
+
+    def __init__(self, machine_category):
+        self.machine_category = machine_category
+    
+    def create_account(self, person, default_project):
+        """Creates a UserAccount (if needed) and activates user.
+
+        Keyword arguments:
+        person_id -- Person id
+        project_id -- Project id
+        
+        """
+    
+        ua = UserAccount.objects.create(
+            user=person, username=person.username,
+            machine_category=self.machine_category,
+            default_project=default_project,
+            date_created=datetime.datetime.today())
+    
+        if project is not None:
+            project.users.add(person)
+    
+        LogEntry.objects.create(
+            action_time=datetime.datetime.now(), user=get_current_user(),
+            content_type=ContentType.objects.get_for_model(ua.user.__class__),
+            object_id=ua.user.id, object_repr=ua.user.__str__(), action_flag=ADDITION,
+            change_message='Created account on %s' % self.machine_category)
+            
+        return ua
+
+
+
+    def delete_account(self, ua):
+        
+        if not ua.date_deleted:
+            ua.date_deleted = datetime.datetime.now()
+            ua.save()
+
+        for p in ua.project_list():
+            p.users.remove(ua.user)
+        
+        
+        LogEntry.objects.create(
+            action_time=datetime.datetime.now(), user=get_current_user(),
+            content_type=ContentType.objects.get_for_model(ua.user.__class__),
+            object_id=ua.user.id, object_repr=ua.user.__str__(), action_flag=DELETION,
+            change_message='Deleted account on %s' % ua.machine_category)
+        
+
+    def lock_account(self, ua):
+        
+        ua.user.user.is_active = False
+        ua.save()
+
+        
+
+    def unlock_account(self, ua):
+        ua.user.user.is_active = True
+        ua.save()
+    
+        
+    def is_account_locked(self, ua):
+        s = 0
+        

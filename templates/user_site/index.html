@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content_title %}Creating new accounts{% endblock %}
+
+{% block content %}
+
+ <p>
+<img src="https://www.vpac.org/files/keyboard_ray.jpg" align="right" height="213" hspace="10" width="284" />Most people involved with any one of the VPAC Member Universities is probably  eligible for a VPAC account. 
+To use the VPAC systems you will need a personal account and every personal account must be associated with a VPAC project. While creating a new project is not too hard, its often a better idea to join an existing project if someone you work with already has one. 
+Just follow these steps:
+</p>
+<ul>
+	<li>
+	All users of VPAC Compute or storage facilities must agree to the VPAC <a href="/researchers/accounts/policy/">Acceptable Use Policy</a>
+	</li>
+	<br />
+	<li>If you <b>already have an account</b> <a href="{% url user_login %}">Login</a> and request accounts/projects under the tasks pane</li>	
+	<br />
+	<li>If you <b>don't have a VPAC account</b>:
+	<ul>
+		<li>To join an existing project, fill in the <a href="{% url user_registration %}">Account Form</a></li>
+		<br />
+		<li>If you cannot become part of an existing VPAC Project, fill in the <a href="{% url project_registration %}">Project Form</a></li>
+	
+	</ul>
+	</li>
+	
+</ul>
+
+{% endblock %}

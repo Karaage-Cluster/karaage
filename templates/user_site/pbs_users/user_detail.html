@@ -1,0 +1,35 @@
+{% extends "main.html" %}
+
+{% block title %}Servers{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block bread_crumbs_1 %}
+ &rsaquo; <a href="../../">Servers</a>
+ &rsaquo; {{ username }}
+{% endblock %}   
+ 
+{% block content %}
+
+<div id="content-main">
+	<div class="module">
+   	<h2>Users</h2>
+   	<h3>{{ username }}</h3>
+   	<table>
+   		<tr><td>Total jobs:</td><td>{{ job_list|length }}</td></tr>
+		</table>
+
+	</div>
+	
+{% regroup job_list|dictsortreversed:"state" by state as state_list %}
+
+{% load pbs_tables %}
+{% for state in state_list %}
+<div class="module">
+<h2>{{ state.grouper }}</h2>
+	{% job_table state.list state.grouper %}
+
+</div>
+{% endfor %}
+</div>
+{% endblock %}

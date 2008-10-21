@@ -1,0 +1,16 @@
+{% extends "changelist.html" %}
+
+{% block title %}Users{% endblock %}
+
+{% block content_title %}&nbsp;{% endblock %}
+
+{% block breadcrumbs %}{{ block.super }} &rsaquo; Users {% endblock %}   
+
+{% block objecttools %}
+{% if perms.main.add_person %}
+<ul class="object-tools"><li><a href="add/" class="addlink">Add user</a></li></ul>
+{% endif %}
+{% endblock %}
+
+
+ 

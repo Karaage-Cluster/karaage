@@ -1,0 +1,27 @@
+{% extends "main.html" %}
+
+{% block title %}Usage{% endblock %}
+
+{% block content_title %}{% endblock %}
+    
+{% block bread_crumbs_1 %}
+ &rsaquo; <a href="../../?{{ querystring }}">Usage</a>
+ &rsaquo; {{ institute }}
+{% endblock %}    
+
+{% block content %}
+{% load humanize %}
+<div id="content-main">
+<h2>Usage</h2>
+<p>
+<a href="../../">All</a> &rsaquo; <a href="../">{{ year }}</a>
+<br />
+{% for d in date_list %}
+<a href="{{ d|date:"j" }}/">{{ d|date:"j" }}</a>
+{% endfor %}
+</p>
+
+{% gen_table job_list %}
+
+</div>
+{% endblock %}

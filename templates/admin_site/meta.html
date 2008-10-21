@@ -1,0 +1,22 @@
+{% extends "main.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block breadcrumbs %}Home{% endblock %}
+    
+{% block content %}
+<div id="content-main">
+
+	<div class="module">
+   	<h2>Accounts</h2>
+	<table>
+    {% for i in meta %}
+    <tr><td>{{ i.0 }}</td><td>{{ i.1 }}</td></tr>
+    {% endfor %}
+    </table>
+	</div>
+
+</div>
+{% endblock %}

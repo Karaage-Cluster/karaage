@@ -1,0 +1,24 @@
+<table cellspacing="0">
+	<thead>
+		<tr>
+			<th>Project</th>
+			<th>Name</th>
+			<th>Institute</th>
+			<th>Leader</th>
+			<th>Active</th>
+			<th>Last Usage</th>
+		</tr>
+	</thead>   	
+   <tbody>
+   	{% for p in object_list %}
+	   	<tr class="{% cycle row1,row2 %}">
+	   		<td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
+	   		<td>{{ p.name|truncatewords:"10" }}</td>
+	   		<td><a href="{{ p.institute.get_absolute_url }}">{{ p.institute }}</a></td>
+	   		<td><a href="{{ p.leader.get_absolute_url }}">{{ p.leader }}</a></td>
+	   		<td>{% yes_no_img p.is_active %}</td>
+				<td>{{ p.last_usage }}</td>
+	   	</tr>
+	   {% endfor %}
+   </tbody>  	
+</table>

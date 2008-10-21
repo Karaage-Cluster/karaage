@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+
+
+{% block login_bar %}
+<p class="float-right">
+  {% if user.is_authenticated %}
+  Logged in as {{ user }}&nbsp;&nbsp;
+  <a href="{% url user_profile %}">My Account</a>&nbsp;&nbsp;|&nbsp;&nbsp;  
+  <a href="{% url user_logout %}">Logout</a>	
+  {% else %}
+  <a href="{% url user_login %}">Login</a>
+  {% endif %}
+</p>
+{% endblock %}
+
+{% block sidebar %}
+<div id="sidebar-left" class="sidebar">
+  <div id="block-block-1" class="clear-block block block-block">
+    
+    <h2>In this Section</h2>
+    
+    <div class="content">
+      <ul class="menu">
+	<li class="leaf"><a href="{% url user_profile %}" class="{% active request "profile/$" %}" title="Login to view and edit details of your account, projects and usage">My Account</a></li>
+	<li class="leaf"><a href="/users/apply">Apply for an Account</a></li>
+	<li class="leaf"><a href="/users/clusters">Using the Clusters</a></li>
+	<li class="leaf"><a href="/tutorials">Tutorials</a></li>
+	<li class="leaf"><a href="/help">Getting Help</a></li>
+	<li class="leaf"><a href="/users/software">Software</a></li>
+	<li class="leaf"><a href="/supercomputers/usage/">Usage Reports</a></li>
+	<li class="leaf"><a href="/whyvpac">Why Choose VPAC?</a></li>
+	<li class="leaf"><a href="/users/grid">Grid Computing</a></li>
+	<li class="leaf"><a href="/users/policy">Acceptable Use Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="block-block-12" class="clear-block block block-block">
+    
+    <h2>Supercomputers</h2>
+    
+    <div class="content"><p style="margin:0px 15px 10px 10px"><img style="float:left;margin-right:5px" src="/themes/vpac/img/info_bubble.png" alt="Information Bubble" />For more about our HPC facilities, please see <a style="font-weight:bold" href="/supercomputers">Supercomputers</a>.</p>
+      
+    </div>
+  </div>
+</div>
+{% endblock %}

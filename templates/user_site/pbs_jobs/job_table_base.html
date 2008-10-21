@@ -1,0 +1,49 @@
+{% load filters %}
+<table cellspacing="0">
+	<thead>
+		<tr>
+			<th>Job ID</th>
+			{% if user.is_authenticated %}
+			<th>Name</th>
+			<th>Username</th>
+			{% endif %}
+			<th>Submission host</th>
+			<th>Queue</th>
+			<th>Est wall time</th>
+			{% if running %}
+				<th>CPU's</th>
+				<th>Act wall time</th>
+				<th>Remaining</th>
+				<th>Progress</th>
+				<th>%</th>
+			{% else %}
+				<th>CPU's requested</th>
+				<th>Waiting</th>
+			{% endif %}			
+		</tr>
+	</thead>	
+   <tbody>
+   	{% for j in job_list %} 	
+	   	<tr class="{% cycle row1,row2 %}">
+	   		<td><a href="{% url pbs_job_detail j.full_id %}">{{ j.id }}</a></td>
+	   		{% if user.is_authenticated %}
+	   		<td>{{ j.name }}</td>
+	   		<td><a href="{% url pbs_user_detail j.username %}">{{ j.username }}</a></td>
+	   		{% endif %}
+	   		<td>{{ j.submission_host }}</td>
+	   		<td><a href="{% url pbs_queue_detail j.server.name,j.queue %}">{{ j.queue }}</a></td>
+	   		<td class="right">{{ j.est_walltime }}</td>
+	   		{% if running %}
+	   			<td>{{ j.cpus_used }}</td>
+	   			<td class="right">{{ j.act_walltime }}</td>  		
+	   			<td class="right">{{ j.remaining|timeformat }}</td>
+	   			<td class="barwidth"><img src="{{ MEDIA_URL }}img/bar.gif" height="10" width="{% widthratio j.running_time j.walltime 100 %}" /></td>
+	   			<td>{{ j.percent_remaining|floatformat }}%</td>
+	   		{% else %}
+	   			<td>{{ j.count }}</td>
+	   			<td class="right">{{ j.waiting|timeformat }}</td>
+	   		{% endif %}
+	   	</tr>
+	   {% endfor %}
+   </tbody> 
+</table> 		

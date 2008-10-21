@@ -1,0 +1,25 @@
+{% extends "main.html" %}
+
+{% block title %}Usage{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block bread_crumbs_1 %}
+ &rsaquo; <a href="{% url ac_usage_list %}">Usage</a>
+ &rsaquo; Top Users
+{% endblock %}
+
+{% block content %}
+{% load filters %}
+{% load humanize %}
+<div id="content-main">
+<p>{% date_filter start end %}</p>
+<div class="module">
+
+{% for g in graph_list %}
+	<img id="graph" src="{{ MEDIA_URL }}graphs/i_trends/{{ g }}" /><br/>
+{% endfor %}
+
+	</div>
+</div>
+{% endblock %}

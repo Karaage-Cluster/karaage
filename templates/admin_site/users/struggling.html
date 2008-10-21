@@ -1,0 +1,23 @@
+{% extends "changelist.html" %}
+
+{% load paginator %}
+
+{% block title %}Users{% endblock %}
+
+{% block breadcrumbs %}
+{{ block.super }} 
+ &rsaquo; <a href="../">Users</a> 
+ &rsaquo; Struggling
+{% endblock %}   
+
+
+{% block content %}
+<div class="module filtered" id="changelist">
+		<div id="changelist-filter">
+   				<h2>Filter</h2> 					
+					{{ filter_bar|safe }}	
+   	</div>
+   	{% gen_table page.object_list users/struggling_table.html %}
+   	{% pagination page request %}
+</div>
+{% endblock %}

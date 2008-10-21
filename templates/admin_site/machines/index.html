@@ -1,0 +1,35 @@
+{% extends "main.html" %}
+
+{% block title %}Machines{% endblock %}
+
+{% block content_title %}{% endblock %}
+{% block breadcrumbs %}{{ block.super }} &rsaquo; Machines{% endblock %}
+
+{% block content %}
+<div id="content-main">
+{% if perms.main.add_machine %}
+<ul class="object-tools"><li><a href="add/" class="addlink">Add machine</a></li></ul>
+{% endif %}
+	<div class="module">
+   	<h2>Machines</h2>
+   	<ul>
+   	{% for c in category_list %}
+    		<li><h3>{{ c.name }}</h3>
+    		<ul>
+    			{% for m in c.machine_set.all %}
+    				<li><a href="{{ m.get_absolute_url }}">{{ m.name }}</a>&nbsp;
+					{% if m.end_date %}
+					<span class="red">*Decommissioned</span>
+					{% else %}
+					 - <a href="{% url ac_mc_usage c.id %}">Usage</a>
+					{% endif %}
+    				</li>
+    			{% endfor %}
+    		</ul>
+			</li>
+    		{% endfor %}
+    	</ul>
+	</div>
+</div>
+{% endblock %}
+ 

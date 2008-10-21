@@ -1,0 +1,23 @@
+{% extends "forms.html" %}
+
+{% block title %}Machines{% endblock %}
+
+{% block content_title %}{% if obj %}Edit{% else %}Create{% endif %} Machine{% endblock %}
+
+{% block bread_crumbs_1 %}
+ &rsaquo; <a href="{% url ac_machine_list %}">Machines</a>
+ &rsaquo; {% if obj %}Edit{% else %}Create{% endif %} Machine
+{% endblock %}   
+
+{% block content %}
+<form method="post" action=".">
+{% load forms %}
+<fieldset class="module aligned ()">
+{% form_as_div form %}
+</fieldset>
+
+<div class="submit-row">
+		<input type="submit" value="Save" class="default" />
+	</div>
+</form>
+{% endblock %}

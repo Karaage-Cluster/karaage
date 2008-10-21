@@ -1,0 +1,22 @@
+{% extends "main.html" %}
+
+{% block title %}Comments{% endblock %}
+
+{% block content %}
+{% load comments %}
+{% get_comment_count for content_type object_id as comment_count %}
+
+<div id="content-main">
+	<div class="module">
+   	<h2>Comments</h2>
+    	{% for comment in comment_list %}
+			<div class="comment_{% cycle odd,even %}" id="c{{ comment.id }}">
+				<span class="comnum"><a id="c{{ comment.id }}" href="#c{{ comment.id }}">#{{ forloop.counter }}</a></span>
+				<p><b>{{ comment.person_name|escape }}</b> commented, on {{ comment.submit_date|date:"F j, Y" }} at {{ comment.submit_date|date:"P" }}:</p>
+				{{ comment.comment|escape|urlizetrunc:40|linebreaks }}
+			</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}
+ 

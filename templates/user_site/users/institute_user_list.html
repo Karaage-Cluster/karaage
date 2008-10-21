@@ -1,0 +1,12 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+<h1>{{ institute }}</h1>
+
+<div class="module">
+	<h2>Users</h2>
+{% gen_table user_list %}
+	</div>
+
+{% endblock %}

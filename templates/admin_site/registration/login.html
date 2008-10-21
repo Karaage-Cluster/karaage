@@ -1,0 +1,23 @@
+{% extends "base_site.html" %}
+
+{% block content %}
+
+{% if form.has_errors %}
+<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+<form method="post" action=".">
+<table>
+<tr><td><label for="id_username">Username:</label></td><td>{{ form.username }}</td></tr>
+<tr><td><label for="id_password">Password:</label></td><td>{{ form.password }}</td></tr>
+</table>
+
+<input type="submit" value="login" />
+{% if next %}
+<input type="hidden" name="next" value="{{ next }}" />
+{% else %}
+<input type="hidden" name="next" value="{% url ac_admin_index %}" />
+{% endif %}
+</form>
+
+{% endblock %}

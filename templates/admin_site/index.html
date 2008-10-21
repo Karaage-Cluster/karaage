@@ -1,0 +1,105 @@
+{% extends "threecol.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content_title %}Welcome {{ user.get_full_name }}{% endblock %}
+
+{% block breadcrumbs %}Home{% endblock %}
+    
+{% block content %}
+<div id="content-main">
+{% if user.is_authenticated %}
+	<div id="content-related-extra">
+		<div class="module">
+        <h2>Recent Actions</h2>
+        <h3>My Actions <a href="logs/">View All</a></h3>
+			 <ul class="plainlist">
+            	{% for action in recent_actions %}
+            	{% spaceless %}
+            	<li class=
+            	{% if action.is_addition %}"addlink"{% endif %}
+            	{% if action.is_change %}"changelink"{% endif %}
+					{% if action.is_deletion %}"deletelink"{% endif %}
+             	>
+             	{#{% if action.get_edited_object %}#}
+             	{#<a href="{{ action.get_edited_object.get_absolute_url }}">{{ action.object_repr }}</a>#}
+             	{#{% else %}#}
+		{{ action.object_repr }}
+		{#{% endif %}#}
+		<br /><span class="mini quiet">{{ action.content_type }}</span></li>
+             	{% endspaceless %}
+            	{% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+    	
+	{% if projectrequest_list %}
+	<div class="module">
+   	<h2>New project requests not yet approved by delegate</h2>
+   	
+   	<table cellspacing="0">
+		<thead>
+		<tr>
+			<th>Name</th>
+			<th>Project</th>
+			<th>Delegate</th>
+			<th>Date requested</th>
+			<th>Time since</th>
+		</tr>
+		</thead>   	
+   	<tbody>
+   	{% for projectrequest in projectrequest_list %}
+	   	<tr class="{% cycle row1,row2 %}">
+	   		<td><a href="{{ projectrequest.user_request.person.get_absolute_url }}">{{ projectrequest.user_request.person.get_full_name }}</a></td>
+	   		<td><a href="{{ projectrequest.project.get_absolute_url }}">{{ projectrequest.project }}</a></td>
+	   		<td><a href="{{ projectrequest.project.institute.active_delegate.get_absolute_url }}">{{ projectrequest.project.institute.active_delegate }}</a></td>
+	   		<td>{{ projectrequest.date|date }}</td>
+	   		<td>{{ projectrequest.date|timesince }}</td>
+	   	</tr>
+	   {% endfor %}
+   	</tbody>  	
+		</table>
+	</div>
+	{% endif %}
+	{% if userrequest_list %}
+	<div class="module">
+   	<h2>Requests to join a project not yet approved by leader</h2>
+   	
+   	<table cellspacing="0">
+		<thead>
+		<tr>
+			<th>Name</th>
+			<th>Project</th>
+			<th>Leader</th>
+			<th>Date requested</th>
+			<th>Time since</th>
+		</tr>
+		</thead>   	
+   	<tbody>
+   	{% for userrequest in userrequest_list %}
+	   	<tr class="{% cycle row1,row2 %}">
+	   		<td><a href="{{ userrequest.person.get_absolute_url }}">{{ userrequest.person.get_full_name }}</a></td>
+	   		<td><a href="{{ userrequest.project.get_absolute_url }}">{{ userrequest.project }}</a></td>
+	   		<td><a href="{{ userrequest.project.leader.get_absolute_url }}">{{ userrequest.project.leader }}</a></td>
+	   		<td>{{ userrequest.date|date }}</td>
+	   		<td>{{ userrequest.date|timesince }}</td>
+	   	</tr>
+	   {% endfor %}
+   	</tbody>  	
+		</table>
+	</div>
+	{% endif %}
+	<div class="module">
+   	<h2>Newest Users</h2>
+    	{% gen_table newest_users %}
+	</div>
+	<div class="module">
+   	<h2>Newest Projects</h2>
+    	{% gen_table newest_projects %}
+    	
+	</div>
+	
+</div>
+{% endblock %}
+ 

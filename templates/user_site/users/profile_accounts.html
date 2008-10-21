@@ -1,0 +1,110 @@
+{% extends "users/profile_base.html" %}
+{% load filters %}
+
+
+{% block profile_content %}
+
+{% for ua in person.useraccount_set.all %}
+	<div class="module">
+	<h2>{{ ua.machine_category }} Account</h2>
+		<table cellspacing="0">
+	<thead>
+		<tr>
+			<th>Active</th>
+			<th>Username</th>
+			<th>Date Created</th>
+			{% if date_deleted %}<th>Date Deleted</th>{% endif %}
+			{% ifequal ua.machine_category.id 1 %}<th>Shell</th>{% endifequal %}
+		</tr>
+	</thead>   	
+   <tbody>
+	   	<tr class="{% cycle row1,row2 %}">
+	   		<td>
+					{% if ua.date_deleted %}
+					<img src="{{ MEDIA_URL }}img/admin/icon-no.gif" alt="Not Active" />
+	   			{% else %}
+	   			<img src="{{ MEDIA_URL }}img/admin/icon-yes.gif" alt="Active"/>
+					{% endif %}	   	   		
+	   		</td>
+	   		<td>{{ ua.username }}</td>
+	   		<td>{{ ua.date_created|date }}</td>
+	   		{% if date_deleted %}<td>{{ ua.date_deleted|date }}</td>{% endif %}
+	   		{% ifequal ua.machine_category.id 1 %}
+	   		<td><form action="." method="post">
+	   			<div>
+					{{ shell_form.shell }}
+					<input type="submit" value="Change" name="shell-form" />
+					</div>
+						
+						</form> </td>
+						{% endifequal %}
+	   	</tr>
+   </tbody>  	
+</table>
+{% if ua.project_list %}
+<h2>Projects</h2>
+		<table cellspacing="0">
+		<thead>
+		<tr>
+			<th>Project ID</th>
+			<th>Name</th>
+			<th>Institute</th>
+			<th>Leader</th>
+			<th>Default</th>
+		</tr>
+		</thead>   	
+   	<tbody>
+   	{% for p in ua.project_list %}
+	   	<tr class="{% cycle row1,row2 %}">
+	   		<td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
+	   		<td>{{ p.name|truncatewords:"8" }}</td>
+	   		<td>{{ p.institute }}</td>
+	   		<td><a href="{{ p.leader.get_absolute_url }}">{{ p.leader }}</a></td>
+	   		<td>{% ifequal p ua.default_project %}
+	   		<img src="{{ MEDIA_URL }}img/admin/icon-yes.gif" alt="1" />{% else %}
+	   		<a href="{% url user_make_default ua.id,p.pid %}">Make default</a>{% endifequal %}</td>
+	   	</tr>
+	   {% endfor %}
+   	</tbody>  	
+		</table>	
+		{% endif %}
+		{% if ua.get_latest_usage %}
+		<h2>Latest Usage</h2>
+		<table cellspacing="0">
+			<thead>
+			<tr>
+			<th>Project</th>
+			<th>Machine</th>
+			<th>date</th>
+			<th>queue</th>
+			<th>cpu usage</th>
+			<th>mem</th>
+			<th>vmem</th>
+			<th>Time in Queue</th>
+			<th>Estimated wall time</th>
+			<th>Actual wall time</th>
+			
+		</tr>
+	</thead>
+	<tbody>
+   	{% for u in ua.get_latest_usage %}
+	   	<tr class="{% cycle row1,row2 %}">   	
+	   		<td><a href="{{ u.project.get_absolute_url }}">{{ u.project.pid }}</a></td>
+	   		<td><a href="{{ u.machine.get_absolute_url }}">{{ u.machine }}</a></td>
+	   		<td>{{ u.date }}</td>
+	   		<td>{{ u.queue }}</td>
+	   		<td class="right">{{ u.cpu_usage|timeformat }}</td>
+	   		<td class="right">{{ u.mem|fileformat }}</td>
+	   		<td class="right">{{ u.vmem|fileformat }}</td>
+	   		<td class="right">{{ u.wait_time|timeformat }}</td>
+	   		<td class="right">{{ u.est_wall_time|timeformat }}</td>
+				<td class="right">{{ u.act_wall_time|timeformat }}</td>
+	   	</tr>
+	   {% endfor %}
+   </tbody>  	
+</table>
+		{% endif %}
+	</div>
+	{% endfor %}
+
+{% endblock %}

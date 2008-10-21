@@ -1,0 +1,48 @@
+<div id="content-related">
+	<div class="module">
+	<h2>search</h2>
+	<form id="changelist-search" action="{% url ac_site_search %}" method="post">
+	<div><!-- DIV needed for valid HTML -->
+				&nbsp;<input type="text" size="21" name="sitesearch" value="{{ siteterms }}" id="sitesearch" />
+				<input type="submit" value="Go" />
+			</div>
+		</form>
+	</div>
+	<div class="module">
+		
+		<h2>links</h2>
+   		<ul>
+		  <li><h3><a class="{% active request "$" %}" href="{% url ac_admin_index %}">Home</a></h3></li>
+   		  <li><h3><a class="{% active request "users/" %}" href="{% url ac_user_list %}">Users</a></h3></li>
+        	  <li><h3><a class="{% active request "projects/" %}" href="{% url ac_project_list %}">Projects</a></h3></li>
+        	  <li><h3><a class="{% active request "institutes/" %}" href="{% url ac_institute_list %}">Institutes</a></h3></li>
+        	  <li><h3><a class="{% active request "usage/" %}" href="{% url ac_usage_list %}">Usage</a></h3></li>
+		  <li><h3><a class="{% active request "pbs/" %}" href="{% url pbs_server_list %}">PBS Servers</a></h3></li>        	
+        	  <li><h3><a class="{% active request "machines/" %}" href="{% url ac_machine_list %}">Machines</a></h3></li>
+        
+        	  {% if perms.main.add_useraccount %}
+        	  {% if request_count %}
+        	  <li><h3><a href="{% url ac_account_request_list %}">Account Requests</a> ({{ request_count }})</h3></li>
+        	  {% endif %}
+        	  {% endif %}
+		  
+		  <li><h3><a class="{% active request "software/" %}" href="{% url ac_software_list %}">Software</a></h3></li>	
+		  
+		  {% if perms.main.add_person %}
+		  <li><h3><a class="{% active request "lgroups/" %}" href="{% url plac_grp_list %}">LDAP Groups</a></h3></li>
+		  {% endif %}		  	
+		  
+		  {% if perms.emails.send_email %}
+		  <li><h3><a href="{% url ac_emails_index %}">Send Email</a></h3></li>
+		  {% endif %}
+		  
+		  <li><h3><a class="{% active request "stats/" %}" href="{% url ac_stats_list %}">Statistics</a></h3></li>
+		  
+        	  <li><h3><a href="{% url ac_trouble_shooting_list %}">Troubleshooting</a></h3></li>	  	
+		  
+        	  {% if user.is_staff %}
+        	  <li><h3><a href="/admin">Admin</a></h3></li>
+        	  {% endif %}
+		</ul>
+	</div>
+</div>

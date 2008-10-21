@@ -1,0 +1,13 @@
+{% extends "base_site.html" %}
+
+{% block content %}
+    <h1>Are you sure?</h1>    
+    <p>Are you sure you want to delete the institute "{{ institute }}" All of the following related items will be deleted:? </p>
+    
+    <form action="" method="post">
+    <div>
+    <input type="hidden" name="post" value="yes" />
+    <input type="submit" value="Yes, I'm sure" />
+    </div>
+    </form>
+{% endblock %}

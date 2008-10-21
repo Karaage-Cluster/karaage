@@ -1,0 +1,23 @@
+{% extends "forms.html" %}
+
+{% block title %}Institutes{% endblock %}
+
+{% block content_title %}{% if institute %}Edit{% else %}Create{% endif %} Institute{% endblock %}
+
+{% block bread_crumbs_1 %}
+ &rsaquo; <a href="{% url ac_institute_list %}">Institutes</a>
+ &rsaquo; {% if institute %}Edit{% else %}Create{% endif %} Institute
+{% endblock %}   
+
+{% block content %}
+<form method="post" action=".">
+{% load forms %}
+<fieldset class="module aligned ()">
+{% form_as_div form %}
+</fieldset>
+
+<div class="submit-row">
+		<input type="submit" value="Save" class="default" />
+	</div>
+</form>
+{% endblock %}
