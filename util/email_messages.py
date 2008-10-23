@@ -22,7 +22,8 @@ from accounts.util import log_object as log
 
 # Not good should be id=settings.SITE_ID
 #TODO
-site = Site.objects.get(name='user')
+#site = Site.objects.get(name='user')
+site = Site.objects.get_current()
 
 
 def send_account_request_email(user_request):

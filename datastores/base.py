@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
 from django.contrib.contenttypes.models import ContentType
 
+import datetime
 from django_common.middleware.threadlocals import get_current_user
 
 from karaage.util.helpers import create_password_hash 
@@ -55,9 +56,6 @@ class PersonalDataStore(object):
         return person
 
 
-
-        raise NotImplementedError
-
     def activate_user(self, person):
         """ Activates a user """
         approver = get_current_user().get_profile()
@@ -101,6 +99,9 @@ class PersonalDataStore(object):
 
 
 
+    def update_user(self, person):
+        pass
+        
 
 class AccountDataStore(object):
 
@@ -122,8 +123,8 @@ class AccountDataStore(object):
             default_project=default_project,
             date_created=datetime.datetime.today())
     
-        if project is not None:
-            project.users.add(person)
+        if default_project is not None:
+            default_project.users.add(person)
     
         LogEntry.objects.create(
             action_time=datetime.datetime.now(), user=get_current_user(),
@@ -151,6 +152,10 @@ class AccountDataStore(object):
             object_id=ua.user.id, object_repr=ua.user.__str__(), action_flag=DELETION,
             change_message='Deleted account on %s' % ua.machine_category)
         
+
+    def update_account(self, ua):
+        pass
+
 
     def lock_account(self, ua):
         

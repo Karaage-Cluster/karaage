@@ -1,0 +1,53 @@
+{% extends "changelist.html" %}
+
+{% block title %}Logs{% endblock %}
+
+
+{% load paginator %}
+
+{% block content %}
+<div class="module" id="changelist">
+  	
+    	<table cellspacing="0">
+		<thead>
+		<tr>
+			<th>Time</th>
+			<th>User</th>
+			{% if not short %}
+			<th>Object Type</th>
+			<th>Object</th>
+			{% endif %}
+			<th>Type</th>
+			<th>Message</th>
+		</tr>
+		</thead>   	
+   	<tbody>
+   	{% for l in log_list %}
+	   	<tr class="{% cycle row1,row2 %}">
+	   		<td>{{ l.action_time }}</td>
+	   		<td><a href="{{ l.user.get_profile.get_absolute_url }}">{{ l.user.get_full_name }}</a></td>
+	   		{% if not short %}
+	   		<td>{{ l.content_type }}</td>
+	   		<td>
+	   		{#{% if l.get_edited_object %}#}
+             	{#<a href="{{ l.get_edited_object.get_absolute_url }}">{{ l.object_repr }}</a>#}
+             	{#{% else %}#}
+             	{{ l.object_repr }}
+             	{#{% endif %}#}
+             	</td>
+             	{% endif %}
+	   		<td> <a class=
+            	{% if l.is_addition %}"addlink"{% endif %}
+            	{% if l.is_change %}"changelink"{% endif %}
+					{% if l.is_deletion %}"deletelink"{% endif %}
+             	></a></td>
+            
+				<td>{{ l.change_message }}</td>
+	   		
+	   {% endfor %}
+   </tbody>  	
+	</table>
+{% pagination page_obj request %}
+
+</div>
+{% endblock %}

@@ -10,6 +10,7 @@ class MachineCategory(models.Model):
 
     class Meta:
         verbose_name_plural ='machine categories'
+        db_table = 'machine_category'
 
     def __unicode__(self):
         return self.name
@@ -27,14 +28,15 @@ class Machine(models.Model):
     objects = models.Manager()
     active = ActiveMachineManager()
 
+    class Meta:
+        db_table = 'machine'
+
     def __unicode__(self):
         return self.name
     
+    @models.permalink
     def get_absolute_url(self):
-        if settings.SITE_ID == 1:
-            return reverse('ac_machine_detail', args=[self.id])
-        else:
-            return 'http://www.vpac.org/services/supercomputers/%s' % self.name.split('-')[0]
+        return ('kg_machine_detail', [self.id])
 
 
 from karaage.projects.models import Project
@@ -50,6 +52,7 @@ class UserAccount(models.Model):
 
     class Meta:
         ordering = ['user',]
+        db_table = 'user_account'
 
     def __unicode__(self):
         return '%s %s' % (self.user.get_full_name(), self.machine_category.name)

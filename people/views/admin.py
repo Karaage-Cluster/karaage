@@ -31,17 +31,14 @@ def index(request):
 def add_edit_user(request, username=None):
     site = Site.objects.get_current()
     
-    if site.name == 'admin':
-        if not request.user.has_perm('people.add_person'):
-            return HttpResponseForbidden('<h1>Access Denied</h1>')
+    if request.user.has_perm('people.add_person'):
         if username is None:
             person = False
         else:
             person = get_object_or_404(Person, user__username=username)
-    elif site.name == 'user':
+    else:   
         person = request.user.get_profile()
-    else:
-        return HttpResponseRedirect('/')
+
     
     if request.method == 'POST':
         form = UserForm(request.POST)
@@ -55,12 +52,9 @@ def add_edit_user(request, username=None):
                 person = form.save()
                 request.user.message_set.create(message="User '%s' was created succesfully" % person)
 
-            if site.name == 'admin':
-                return HttpResponseRedirect(person.get_absolute_url())
-            elif site.name == 'user':
-                return HttpResponseRedirect(reverse('user_profile'))
-            else:
-                return HttpResponseRedirect('/')
+        
+            return HttpResponseRedirect(person.get_absolute_url())
+
     else:
         form = UserForm()
         if person:
@@ -73,7 +67,7 @@ def add_edit_user(request, username=None):
             form.initial = initial
 
             
-    return render_to_response('users/user_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('people/person_form.html', locals(), context_instance=RequestContext(request))
 
 
 def user_list(request, queryset=Person.objects.all()):
@@ -119,7 +113,7 @@ def user_list(request, queryset=Person.objects.all()):
     locked_count = locked_count - deleted_count
     active_count = user_list.count() - deleted_count 
 
-    return render_to_response('users/user_list.html', locals(), context_instance=RequestContext(request)) 
+    return render_to_response('people/person_list.html', locals(), context_instance=RequestContext(request)) 
 
 @login_required
 def account_request_list(request):
@@ -267,7 +261,7 @@ def add_edit_useraccount(request, username=None, useraccount_id=None):
             form.initial['default_project'] = form.initial['default_project_id']
             form.initial['machine_category'] = form.initial['machine_category_id']
 
-    return render_to_response('users/useraccount_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('machines/useraccount_form.html', locals(), context_instance=RequestContext(request))
 
 add_edit_useraccount = permission_required('main.add_useraccount')(add_edit_useraccount)
 

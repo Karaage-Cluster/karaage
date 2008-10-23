@@ -10,8 +10,10 @@ from karaage.people.models import Institute, Person
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory, UserAccount
 from karaage.constants import TITLES, STATES, COUNTRIES, DATE_FORMATS
-from accounts.util.helpers import create_new_user, create_account, check_password
-from accounts.validators import username_re
+from karaage.datastores import create_new_user, create_account
+from karaage.util.helpers import check_password
+from karaage.validators import username_re
+
 
 class UserForm(forms.Form):
     username = forms.CharField(label=u"Requested username", max_length=30, help_text=u"30 characters or fewer. Alphanumeric characters only (letters, digits and underscores).")
@@ -84,16 +86,15 @@ class UserForm(forms.Form):
             if data['project'] is not None:
                 project = data['project']
                 project.users.add(user)
-                project_id = project.pid
             else:
-                project_id = None
-
-            if data['needs_account']:
-                machine_category = data['machine_category']
-                create_account(user.id, project_id, machine_category.id)
+                project = None
 
             # Since adding with this method is only done with admin
             user.activate()
+
+            if data['needs_account']:
+                machine_category = data['machine_category']
+                create_account(user, project, machine_category)
 
         else:
             LogEntry.objects.create(
@@ -121,6 +122,7 @@ class UserForm(forms.Form):
             user.comment = data['comment']
         user.user.save()
         user.save()
+
         return user
 
 

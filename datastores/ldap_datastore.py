@@ -6,10 +6,10 @@ import base
 class PersonalDataStore(base.PersonalDataStore):
     
     def create_new_user(self, data, hashed_password=None):
-        super(LDAPPersonalDataStore, self).create_new_user(data, hashed_password=None)
+        return super(PersonalDataStore, self).create_new_user(data, hashed_password=None)
 
     def activate_user(self, person):
-        super(LDAPPersonalDataStore, self).activate_user(person)
+        super(PersonalDataStore, self).activate_user(person)
 
         attrs = {}
         attrs['uid'] = str(person.username)
@@ -25,16 +25,31 @@ class PersonalDataStore(base.PersonalDataStore):
         
 
     def delete_user(self, person):
-        super(LDAPPersonalDataStore, self).delete_user(person)
+        super(PersonalDataStore, self).delete_user(person)
 
         conn = LDAPConnection()
         conn.delete_user(person.user.username)
         
 
+    def update_user(self, person):
+        super(PersonalDataStore, self).update_user(person)
+
+        conn = LDAPConnection()
+    
+        conn.update_user(
+            person.username,
+            cn='%s %s' % (str(person.first_name), str(person.last_name)),
+            givenName=str(person.first_name),
+            sn=str(person.last_name),
+            telephoneNumber=str(person.telephone),
+            mail=str(person.email),
+            o=str(person.institute.name),
+            )
+
 class AccountDataStore(base.AccountDataStore):
 
     def create_account(self, person, default_project):
-        super(LDAPAccountDataStore, self).create_account(person, default_project)
+        super(AccountDataStore, self).create_account(person, default_project)
             
         conn = LDAPConnection()
         
@@ -51,7 +66,7 @@ class AccountDataStore(base.AccountDataStore):
 
 
     def delete_account(self, ua):
-        super(LDAPAccountDataStore, self).delete_account(ua)
+        super(AccountDataStore, self).delete_account(ua)
 
         conn = LDAPConnection()
 
@@ -66,3 +81,18 @@ class AccountDataStore(base.AccountDataStore):
             loginShell='',
             objectClass=['top','person','organizationalPerson','inetOrgPerson', 'shadowAccount',]
             )
+
+
+    def update_account(self, ua):
+
+        super(AccountDataStore, self).update_account(ua)
+
+        conn = LDAPConnection()
+
+        conn.update_user(
+            ua.user.username,
+            gecos='%s %s (%s)' % ((ua.user.first_name), str(ua.user.last_name), str(ua.user.institute.name)),
+            gidNumber=str(ua.user.institute.gid),
+            )
+
+

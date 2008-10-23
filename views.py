@@ -77,17 +77,18 @@ def search(request):
 def log_detail(request, object_id, model):
 
     obj = get_object_or_404(model, pk=object_id)
+    content_type = ContentType.objects.get_for_model(model)
 
     log_list = LogEntry.objects.filter(
-        content_type=ContentType.objects.get_for_model(obj.__class__),
+        content_type=content_type,
         object_id=object_id
     )
     page_no = 1
     p = QuerySetPaginator(log_list, 50)
     page_obj = p.page(page_no)
-
+    
     short = True
-    return render_to_response('log_list.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(['%s/log_list.html' % content_type.app_label, 'log_list.html'], locals(), context_instance=RequestContext(request))
 
 
 def comments_detail(request, object_id, model):

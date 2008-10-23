@@ -24,7 +24,7 @@ def delete_user(request, username):
         request.user.message_set.create(message="User '%s' was deleted succesfully" % user)
         return HttpResponseRedirect(user.get_absolute_url())
         
-    return render_to_response('users/user_confirm_delete.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('people/person_confirm_delete.html', locals(), context_instance=RequestContext(request))
 
 delete_user = permission_required('main.delete_person')(delete_user)
 
@@ -65,7 +65,7 @@ def user_detail(request, username):
     except:
         pass
     
-    return render_to_response('users/user_detail.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('people/person_detail.html', locals(), context_instance=RequestContext(request))
 
 
 def change_shell(request, username=None):
@@ -108,11 +108,11 @@ def ldap_detail(request, username):
     from placard.connection import LDAPConnection
     conn = LDAPConnection()
     try:
-        ldap = conn.get_user(username)
+        ldap = conn.get_user('uid=%s' % username)
     except:
         raise Http404
 
-    return render_to_response('users/ldap_detail.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('people/ldap_detail.html', locals(), context_instance=RequestContext(request))
 
 
 @login_required
@@ -131,7 +131,7 @@ def password_change(request, username):
     else:
         form = AdminPasswordChangeForm()
         
-    return render_to_response('users/password_change_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('admin_password_change_form.html', locals(), context_instance=RequestContext(request))
 
 
 @login_required

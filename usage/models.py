@@ -8,6 +8,9 @@ class Queue(models.Model):
     name = models.CharField(max_length=50, primary_key=True)
     description = models.CharField(max_length=200, blank=True, null=True)
         
+    class Meta:
+        db_table = 'queue'
+    
     def __unicode__(self):
         return self.name
     
@@ -31,6 +34,7 @@ class CPUJob(models.Model):
     
     class Meta:
         ordering = ['-date']
+        db_table = 'cpu_job'
 
     def __unicode__(self):
         return '%s - %s - %s - %s' % (self.username, self.project, self.machine, self.date)

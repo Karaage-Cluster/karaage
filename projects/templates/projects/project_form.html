@@ -1,0 +1,43 @@
+{% extends "forms.html" %}
+
+{% block title %}Projects{% endblock %}
+
+{% block content_title %}{% if project %}Edit{% else %}Create{% endif %} Project{% endblock %}
+
+{% block bread_crumbs_1 %}
+ &rsaquo; <a href="{% url kg_project_list %}">Projects</a>
+ &rsaquo; {% if project %}Edit{% else %}Create{% endif %} Project
+{% endblock %}
+ 
+{% block extrahead %}
+<script type="text/javascript" src="/accounts/admin/jsi18n/"></script> 
+<script type="text/javascript" src="{{ admin_url }}js/core.js"></script>
+<script type="text/javascript" src="{{ admin_url }}js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="{{ admin_url }}js/calendar.js"></script>
+<script type="text/javascript" src="{{ admin_url }}js/admin/DateTimeShortcuts.js"></script> 
+{% endblock %}
+
+{% block content %}
+<form method="post" action=".">
+{% load forms %}
+
+<fieldset class="module aligned ()">
+{% if not project %}
+{% formfield form.pid %}
+{% endif %}
+{% formfield form.name %}
+{% formfield form.institute %}
+{% formfield form.description %}
+{% formfield form.leader %}
+{% formfield form.additional_req %}
+{% formfield form.is_expertise %}
+{% formfield form.start_date %}
+{% formfield form.end_date %}
+{% formfield form.machine_category %}
+{% formfield form.cap %}
+</fieldset>
+<div class="submit-row">
+		<input type="submit" value="Save" class="default" />
+	</div>
+</form>
+{% endblock %}

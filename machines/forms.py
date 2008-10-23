@@ -3,7 +3,13 @@ from django.conf import settings
 
 from karaage.projects.models import Project
 
-from models import MachineCategory
+from models import MachineCategory, Machine
+
+
+class MachineForm(forms.ModelForm):
+    class Meta:
+        model = Machine
+
 
 
 class UserAccountForm(forms.Form): 

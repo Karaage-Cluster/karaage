@@ -23,6 +23,7 @@ class Institute(models.Model):
 
     class Meta:
         ordering = ['name']
+        db_table = 'institute'
 
     def __unicode__(self):
         return self.name
@@ -43,7 +44,7 @@ class Institute(models.Model):
     def get_usage(self, start, end, machine_category=None):
         if machine_category is None:
             machine_category = MachineCategory.objects.get_default()
-        from accounts.util.usage import get_institute_usage
+        from karaage.util.usage import get_institute_usage
         return get_institute_usage(self, start, end, machine_category)
 
     def gen_usage_graph(self, start, end, machine_category):
@@ -82,26 +83,22 @@ class Person(models.Model):
     class Meta:
         verbose_name_plural ='people'
         ordering = ['user__first_name', 'user__last_name',]
+        db_table = 'person'
     
     def __unicode__(self):
         return self.user.get_full_name()
     
     def get_absolute_url(self):
-        site = Site.objects.get_current()
-        if site.id == 3:
-            from accounts.user import settings as user_settings
-            site = Site.objects.get(pk=user_settings.SITE_ID)
-            return "%s/%susers/%s/" % (site.domain, user_settings.BASE_URL, self.user.username)
-        else:
-            return reverse('kg_user_detail', kwargs={'username': self.user.username })
+        return reverse('kg_user_detail', kwargs={'username': self.user.username })
 
-    def save(self, update_ldap=True):
+    def save(self, update_ldap=True, force_insert=False, force_update=False):
         if self.id:
-            from accounts.ldap_utils.ldap_users import update_ldap_user, in_ldap
-            if in_ldap(self.username) and update_ldap:
-                update_ldap_user(self)
+            from karaage.datastores import update_user, update_account
+            update_user(self)
+            for ua in self.useraccount_set.filter(date_deleted__isnull=True):
+                update_account(ua)
             
-        super(self.__class__, self).save()
+        super(self.__class__, self).save(force_insert, force_update)
       
     def _set_username(self, value):
         self.user.username = value
@@ -177,7 +174,7 @@ class Person(models.Model):
         return False
 
     def activate(self):
-        from accounts.util.helpers import activate_user
+        from karaage.datastores import activate_user
         activate_user(self)
 
     def deactivate(self):

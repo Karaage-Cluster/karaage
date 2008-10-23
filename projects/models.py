@@ -1,6 +1,7 @@
 from django.db import models
 
 import datetime
+from decimal import Decimal
 
 from karaage.people.models import Person, Institute
 from karaage.machines.models import MachineCategory
@@ -34,27 +35,18 @@ class Project(models.Model):
 
     class Meta:
         ordering = ['institute', 'pid']
-        
+        db_table = 'project'
+
     def __unicode__(self):
         return '%s - %s' % (self.pid, self.name)
     
+    @models.permalink
     def get_absolute_url(self):
-        site = Site.objects.get_current()
-        if site.id == 3:
-            from accounts.user import settings as user_settings
-            site = Site.objects.get(pk=user_settings.SITE_ID)
-            return "%s/%sprojects/%s/" % (site.domain, user_settings.BASE_URL, self.pid)
-        else:
-            return reverse('ac_project_detail', args=[self.pid])
+        return ('kg_project_detail', [self.pid])
         
+    @models.permalink
     def get_usage_url(self):
-        site = Site.objects.get_current()
-        if site.id == 2:
-            from accounts.user import usage_settings
-            site = Site.objects.get(pk=usage_settings.SITE_ID)
-            return '%s/%susage/%i/institute/%i/%s/' % (site.domain, usage_settings.BASE_URL, self.machine_category.id, self.institute.id, self.pid)
-        else:
-            return reverse('ac_project_usage', args=[self.institute.id, self.pid])
+        return ('kg_project_usage', [self.institute.id, self.pid])
         
     def deactivate(self):
         #from accounts.util.email_messages import send_removed_from_project_email
@@ -91,3 +83,20 @@ class Project(models.Model):
         if iq.cap is not None:
             return iq.cap
         return iq.quota * 1000
+
+
+    def get_mpots(self, start=datetime.date.today()-datetime.timedelta(days=90), end=datetime.date.today()):
+
+        TWOPLACES = Decimal(10) ** -2
+        from karaage.util.helpers import get_available_time
+        usage, jobs = self.get_usage(start, end)
+        if usage is None:
+            usage = Decimal('0')
+        total_time, ave_cpus = get_available_time()
+        
+        return ((usage / total_time) * 100 * 1000).quantize(TWOPLACES)
+
+    def is_over_quota(self):
+        if self.get_mpots() > self.get_cap():
+            return True
+        return False

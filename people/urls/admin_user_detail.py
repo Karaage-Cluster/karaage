@@ -4,7 +4,7 @@ urlpatterns = patterns('karaage.people.views.admin_user_detail',
 
     url(r'^$', 'user_detail', name='kg_user_detail'),
     url(r'^activate/$', 'activate', name='admin_activate_user'),
-    url(r'^ldap/$', 'ldap_detail'),
+  #  url(r'^ldap/$', 'ldap_detail'),
     url(r'^jobs/$', 'user_job_list'), 
     url(r'^delete/$', 'delete_user', name='admin_delete_user'),
     url(r'^password_change/$', 'password_change'),
@@ -21,4 +21,9 @@ urlpatterns += patterns('karaage.people.views.admin',
     
     url(r'^add_useraccount/$', 'add_edit_useraccount'),
     url(r'^edit/$', 'add_edit_user'),
+)
+
+urlpatterns += patterns('',
+    url(r'^ldap/$', 'placard.lusers.views.user_detail_verbose'),
+
 )

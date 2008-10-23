@@ -1,7 +1,7 @@
 from django.db import models
 
 from karaage.machines.models import MachineCategory
-
+from karaage.people.models import Institute
 
 class InstituteQuota(models.Model):
     institute = models.ForeignKey(Institute)

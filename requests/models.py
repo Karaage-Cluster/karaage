@@ -16,7 +16,8 @@ class UserRequest(models.Model):
 
     class Meta:
         ordering = ['date']
-    
+        db_table = 'user_request'
+
     def __unicode__(self):
         return self.person.get_full_name()
     
@@ -32,6 +33,7 @@ class ProjectRequest(models.Model):
 
     class Meta:
         ordering = ['date']
+        db_table = 'project_request'
 
     def __unicode__(self):
         return '%s %s' % (self.project.name, self.user_request.person.get_full_name())

@@ -1,0 +1,30 @@
+{% extends "changelist.html" %}
+
+{% block title %}Institutes{% endblock %}
+
+{% block breadcrumbs %}{{ block.super }} &rsaquo; Institutes{% endblock %}
+
+{% block content_title %}&nbsp;{% endblock %}
+
+{% block objecttools %}
+{% if perms.main.add_institute %}
+<ul class="object-tools"><li><a href="add/" class="addlink">Add institute</a></li></ul>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="module filtered" id="changelist">
+
+
+		<div id="changelist-filter">
+   				<h2>Filter</h2> 					
+						{{ filter_bar|safe }}
+   	</div>
+  	
+   	{% gen_table institute_list %}
+		<p class="paginator">
+			{{ institute_list|length }} institutes
+		</p>	
+</div>
+{% endblock %}
+ 
