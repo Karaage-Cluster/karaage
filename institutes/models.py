@@ -14,3 +14,14 @@ class InstituteQuota(models.Model):
 
     def __unicode__(self):
         return '%s - %s' % (self.institute, self.machine_category)
+
+    def get_absolute_url(self):
+        return self.institute.get_absolute_url()
+
+    def get_cap(self):
+        if self.cap:
+            return self.cap
+        if self.quota:
+            return self.quota * 1000
+        return None
+    
