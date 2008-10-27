@@ -19,6 +19,7 @@
 {% endif %}
 <fieldset class="module aligned ()">
 <h2>User Account details</h2>
+{{ form.non_field_errors }}
 {% formfield form.username %}
 {% formfield form.machine_category %}
 {% formfield form.default_project %}
