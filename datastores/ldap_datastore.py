@@ -9,7 +9,7 @@ class PersonalDataStore(base.PersonalDataStore):
         return super(PersonalDataStore, self).create_new_user(data, hashed_password=None)
 
     def activate_user(self, person):
-        super(PersonalDataStore, self).activate_user(person)
+        person = super(PersonalDataStore, self).activate_user(person)
 
         attrs = {}
         attrs['uid'] = str(person.username)
@@ -22,7 +22,9 @@ class PersonalDataStore(base.PersonalDataStore):
         
         conn = LDAPConnection()
         conn.add_user(**attrs)
-        
+        person.save()
+
+        return person
 
     def delete_user(self, person):
         super(PersonalDataStore, self).delete_user(person)
@@ -49,7 +51,7 @@ class PersonalDataStore(base.PersonalDataStore):
 class AccountDataStore(base.AccountDataStore):
 
     def create_account(self, person, default_project):
-        super(AccountDataStore, self).create_account(person, default_project)
+        ua = super(AccountDataStore, self).create_account(person, default_project)
             
         conn = LDAPConnection()
         
@@ -63,6 +65,8 @@ class AccountDataStore(base.AccountDataStore):
             loginShell='/bin/bash',
             objectClass=['top','person','organizationalPerson','inetOrgPerson', 'shadowAccount','posixAccount']
             )
+
+        return ua
 
 
     def delete_account(self, ua):

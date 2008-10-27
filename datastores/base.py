@@ -11,7 +11,8 @@ from karaage.machines.models import UserAccount
 
 
 class PersonalDataStore(object):
-    
+
+
     def create_new_user(self, data, hashed_password=None):
         """Creates a new user (not active)
 
@@ -66,13 +67,14 @@ class PersonalDataStore(object):
         person.date_deleted = None
         person.user.is_active = True
         person.user.save()
-        person.save()
         
         LogEntry.objects.create(
             action_time=datetime.datetime.now(), user=get_current_user(),
             content_type=ContentType.objects.get_for_model(person.__class__),
             object_id=person.id, object_repr=person.__str__(), action_flag=ADDITION,
             change_message='Activated')
+
+        return person
         
 
     def delete_user(self, person):
