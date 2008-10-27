@@ -18,6 +18,12 @@ class UserAccountForm(forms.Form):
     default_project = forms.ModelChoiceField(queryset=Project.active.all())
 
 
+    def clean(self):
+        data = self.cleaned_data
+        if data['default_project'].machine_category != data['machine_category']:
+            raise forms.ValidationError(u'Default project not in machine category')
+        return data
+
 class ShellForm(forms.Form):
 
     shell = forms.ChoiceField(choices=settings.SHELLS)
