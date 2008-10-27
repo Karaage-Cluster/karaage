@@ -277,7 +277,7 @@ def delete_useraccount(request, useraccount_id):
         return HttpResponseRedirect(user_account.get_absolute_url())
     else:
         
-        return render_to_response('users/useraccount_confirm_delete.html', locals(), context_instance=RequestContext(request))
+        return render_to_response('machines/useraccount_confirm_delete.html', locals(), context_instance=RequestContext(request))
 
 delete_useraccount = permission_required('main.delete_useraccount')(delete_useraccount)
 
