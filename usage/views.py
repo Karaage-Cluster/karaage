@@ -117,19 +117,20 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
 
         user_list = []
         user_total, user_total_jobs = 0, 0
-        for u in UserCache.objects.order_by('-cpu_hours').filter(start=start, end=end).filter(project__institute=institute).filter(project__machine_category=machine_category)[:5]:
-            user_total += u.cpu_hours
-            user_total_jobs += u.no_jobs
-            user_list.append(
-                {'user': u.user, 
-                 'project': u.project, 
-                 'usage': u.cpu_hours, 
-                 'jobs': u.no_jobs, 
-                 'percent': ((u.cpu_hours/i_usage)*100),
-                 'quota_percent': (u.cpu_hours/(available_usage*quota.quota)*10000),
-                 }) 
-        
-        user_percent = (user_total / i_usage) * 100
+        if i_usage:
+            for u in UserCache.objects.order_by('-cpu_hours').filter(start=start, end=end).filter(project__institute=institute).filter(project__machine_category=machine_category)[:5]:
+                user_total += u.cpu_hours
+                user_total_jobs += u.no_jobs
+                user_list.append(
+                    {'user': u.user, 
+                     'project': u.project, 
+                     'usage': u.cpu_hours, 
+                     'jobs': u.no_jobs, 
+                     'percent': ((u.cpu_hours/i_usage)*100),
+                     'quota_percent': (u.cpu_hours/(available_usage*quota.quota)*10000),
+                     }) 
+                
+            user_percent = (user_total / i_usage) * 100
 
         graph = get_institute_trend_graph_url(institute, start, end, machine_category)
 
