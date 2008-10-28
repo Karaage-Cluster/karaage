@@ -147,6 +147,18 @@ class AdminPasswordChangeForm(forms.Form):
 
 
 
+class PasswordChangeForm(AdminPasswordChangeForm):
+    old = forms.CharField(widget=forms.PasswordInput(), label='Old password')
+
+    def clean_old(self):
+        person = get_current_user().get_profile()
+        if not person.check_password(self.cleaned_data['old']):
+            raise forms.ValidationError(u'Your old password was incorrect')
+        return self.cleaned_data['old']
+
+        
+
+
 class ShellForm(forms.Form):
 
     shell = forms.ChoiceField(choices=settings.SHELLS)
@@ -159,3 +171,21 @@ class ShellForm(forms.Form):
 
         from accounts.ldap_utils.ldap_users import change_shell
         change_shell(user, self.cleaned_data['shell'])
+
+
+
+class DelegateForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(self.__class__, self).__init__(*args, **kwargs)
+        self.fields['active_delegate'] = forms.ModelChoiceField(label="Change to", queryset=Person.active.all())
+
+
+    def save(self, institute):
+
+        data = self.cleaned_data
+
+        previous = institute.active_delegate
+
+        institute.active_delegate = data['active_delegate']
+
+        institute.save()

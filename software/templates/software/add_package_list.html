@@ -1,0 +1,20 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+{% if software_list %}
+<h1>Restricted Software</h1>
+<ul>
+{% for s in software_list %}
+ <h2>{% if not s.accepted %}<a href="{{ s.package.id }}/">{{ s.package }}</a>
+ {% else %}
+ {{ s.package }} <span class="small green">- accepted {{ s.accepted_date|date }}</span>
+ {% endif %}</h2>
+ <p>{{ s.package.description|truncatewords:"10" }}</p>
+ <hr />
+{% endfor %}
+{% else %}
+<p>No restricted software currently available.</p>
+{% endif %}
+
+{% endblock %}

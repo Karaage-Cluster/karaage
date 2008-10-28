@@ -1,0 +1,44 @@
+{% extends "main.html" %}
+
+{% block title %}My Account{% endblock %}
+
+{% load forms %}
+
+{% block login_bar %}
+	 <p class="float-right">
+    	{% if user.is_authenticated %}
+    	Logged in as {{ user }}&nbsp;&nbsp;
+    	My Account&nbsp;&nbsp;|&nbsp;&nbsp;  
+    	<a href="{% url logout %}">Logout</a>	
+    	{% else %}
+   	<a href="{% url login %}">Login</a>
+    	{% endif %}
+    </p>
+{% endblock %}
+
+{% block content %}
+{% if project_requests %}
+<ul class="messagelist">
+	<li>You have new project requests</li>
+</ul>
+{% endif %}
+{% if account_requests %}
+<ul class="messagelist">
+	<li>You have new requests to join one of your projects</li>
+</ul>
+{% endif %}
+
+
+<h1>Welcome {{ person }}
+{% ifequal person person.institute.active_delegate %}, you are the active delegate for {{ person.institute }}{% endifequal %}</h1>
+<p>
+<a href="{% url kg_user_profile %}">Personal Details</a>&nbsp;|&nbsp;
+<a href="{% url kg_user_profile_accounts %}">Cluster Account</a>&nbsp;|&nbsp;
+{#<a href="{% url kg_user_profile_projects %}">Projects</a>&nbsp;|&nbsp;#}
+<a href="{% url kg_user_profile_software %}">Restricted Software</a>
+</p>
+
+{% block profile_content %}{% endblock %}
+
+
+{% endblock %}

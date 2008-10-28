@@ -7,10 +7,13 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.comments.models import Comment
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
-from accounts.util import get_date_range
-from accounts.main.models import UserRequest, Project, Person, ProjectRequest, Institute
-from accounts.user.users.forms import DelegateForm
-from accounts.admin.users.forms import ShellForm
+
+from karaage.util import get_date_range
+from karaage.people.models import Person, Institute
+from karaage.projects.models import Project
+from karaage.requests.models import UserRequest, ProjectRequest
+from karaage.people.forms import ShellForm, PasswordChangeForm, DelegateForm
+
 
 @login_required
 def profile(request):
@@ -48,7 +51,10 @@ def profile(request):
         delegates = Person.objects.filter(id__in=d_ids)
         from django import forms
         form.fields['active_delegate'] = forms.ModelChoiceField(queryset=delegates)
-        form.initial['active_delegate'] = person.institute.active_delegate.id
+        try:
+            form.initial['active_delegate'] = person.institute.active_delegate.id
+        except:
+            pass
         delegate = True
 
         if request.method == 'POST' and 'delegate-form' in request.POST:
@@ -57,12 +63,12 @@ def profile(request):
 
             if form.is_valid():
                 form.save(person.institute)
-                return HttpResponseRedirect(reverse('user_profile'))
+                return HttpResponseRedirect(reverse('kg_user_profile'))
 
     
     usage_list = person.usercache_set.filter(start=start, end=end)
 
-    return render_to_response('users/profile.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('people/profile.html', locals(), context_instance=RequestContext(request))
     
 
 
@@ -79,7 +85,7 @@ def profile_accounts(request):
             shell_form.save()
             request.user.message_set.create(message='Shell changed successfully')
 
-            return HttpResponseRedirect(reverse('user_profile'))
+            return HttpResponseRedirect(reverse('kg_user_profile'))
 
     else:
         shell_form = ShellForm()
@@ -88,7 +94,7 @@ def profile_accounts(request):
         except:
             pass
   
-    return render_to_response('users/profile_accounts.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('people/profile_accounts.html', locals(), context_instance=RequestContext(request))
     
 
 @login_required
@@ -98,7 +104,7 @@ def profile_software(request):
     
     software_list = person.softwarelicenseagreement_set.all()
   
-    return render_to_response('users/profile_software.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('people/profile_software.html', locals(), context_instance=RequestContext(request))
     
 
 
@@ -134,7 +140,7 @@ def user_detail(request, username):
         return HttpResponseForbidden('<h1>Access Denied</h1><p>You do not have permission to view details about this user.</p>')
 
     
-    return render_to_response('users/user_detail.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('people/user_person_detail.html', locals(), context_instance=RequestContext(request))
 
 
 @login_required
@@ -152,7 +158,7 @@ def change_active_delegate(request, institute_id):
         if form.is_valid():
 
             form.save()
-            return HttpResponseRedirect(reverse('user_profile'))
+            return HttpResponseRedirect(reverse('kg_user_profile'))
 
 
     return HttpResponseForbidden('<h1>Access Denied</h1>')
@@ -191,4 +197,52 @@ def institute_users_list(request, institute_id):
     user_list = institute.person_set.all()
 
     return render_to_response('users/institute_user_list.html', locals(), context_instance=RequestContext(request))
+
+
+def password_change(request):
+
+    person = request.user.get_profile()
+    
+    if request.POST:
+        form = PasswordChangeForm(request.POST)
+        
+        if form.is_valid():
+            form.save(person)
+            return HttpResponseRedirect(reverse('kg_user_password_done'))
+    else:
+        form = PasswordChangeForm()
+        
+    return render_to_response('people/user_password_form.html', {'form': form}, context_instance=RequestContext(request))
+
+
+def password_change_done(request):
+    
+    return render_to_response('people/password_change_done.html', context_instance=RequestContext(request))
+
+
+def login(request):
+
+    redirect_to = settings.LOGIN_REDIRECT_URL
+    if request.REQUEST.has_key('next'):
+        redirect_to = request.REQUEST['next']
+
+    if request.POST:
+
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            from django.contrib.auth import login, authenticate
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return HttpResponseRedirect(redirect_to)
+      
+    else:
+        form = LoginForm()
+
+    return render_to_response('registration/login.html', {
+        'form': form,
+        'next': redirect_to,
+        }, context_instance=RequestContext(request))
 
