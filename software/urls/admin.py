@@ -22,7 +22,7 @@ urlpatterns = patterns('accounts.main.generic_views',
 )
 
 
-urlpatterns += patterns('karaage.software.views',
+urlpatterns += patterns('karaage.software.views.admin',
 
                        
     url(r'^$', 'software_list', name='kg_software_list'),

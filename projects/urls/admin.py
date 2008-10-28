@@ -2,7 +2,7 @@ from django.conf.urls.defaults import *
 
 from karaage.projects.models import Project
 
-urlpatterns = patterns('karaage.projects.views',
+urlpatterns = patterns('karaage.projects.views.admin',
 
     url(r'^$', 'project_list', name='kg_project_list'),
 

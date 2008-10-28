@@ -11,13 +11,12 @@ from django_common.util.filterspecs import Filter, FilterBar
 
 from karaage.people.models import Person, Institute
 from karaage.requests.models import ProjectRequest
-
-from models import Project
-from forms import ProjectForm
-
-from accounts.admin.usage.forms import UsageSearchForm
+from karaage.projects.models import Project
+from karaage.projects.forms import ProjectForm
 from karaage.util.email_messages import send_removed_from_project_email
-from accounts.util import log_object as log
+from karaage.util import log_object as log
+from karaage.usage.forms import UsageSearchForm
+
 
 @login_required
 def add_edit_project(request, project_id=None):
