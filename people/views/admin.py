@@ -244,8 +244,7 @@ def add_edit_useraccount(request, username=None, useraccount_id=None):
                         username__exact=data['username'], machine_category=machine_category, date_deleted__isnull=True)
                 except:
 
-                    user_account = create_account(user, project, machine_category)
-                    
+                    user_account = create_account(user, project, machine_category)               
                     request.user.message_set.create(message="User account for '%s' created succesfully" % user_account.user)
                     
                     return HttpResponseRedirect(user.get_absolute_url())                
@@ -328,12 +327,8 @@ def make_default(request, useraccount_id, project_id):
     user_account = get_object_or_404(UserAccount, pk=useraccount_id)
     project = get_object_or_404(Project, pk=project_id)
     
-    if site.name == 'admin':
-        if not request.user.has_perm('main.change_useraccount'):
-            return HttpResponseForbidden('<h1>Access Denied</h1>')
-    if site.name == 'user':
-        if not request.user == user_account.user.user:
-            return HttpResponseForbidden('<h1>Access Denied</h1>')
+    if not request.user.has_perm('machines.change_useraccount') or request.user != user_account.user.user:
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     user_account = get_object_or_404(UserAccount, pk=useraccount_id)
     project = get_object_or_404(Project, pk=project_id)
@@ -342,15 +337,17 @@ def make_default(request, useraccount_id, project_id):
     user_account.save()
     
     request.user.message_set.create(message="Default project changed succesfully")
-
     log(request.user, user_account.user, 2, 'Changed default project to %s' % project.pid)
 
-    if site.name == 'admin':       
-        return HttpResponseRedirect(user_account.get_absolute_url())
-    if site.name == 'user':
-        return HttpResponseRedirect(reverse('user_profile'))
-    else:
-        return HttpResponseRedirect('/')
+    
+    
+    return HttpResponseRedirect(user_account.get_absolute_url())
+    #if site.name == 'admin':       
+    #    return HttpResponseRedirect(user_account.get_absolute_url())
+    #if site.name == 'user':
+    #    return HttpResponseRedirect(reverse('user_profile'))
+    #else:
+    #    return HttpResponseRedirect('/')
 
 
 @login_required

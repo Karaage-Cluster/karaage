@@ -173,7 +173,7 @@
 	   		<a href="{% url admin_make_default ua.id,p.pid %}">Make default</a>
 	   		{% endif %}{% endifequal %}</td>
 {% if perms.main.change_project %}{% ifnotequal p ua.default_project %}
-	   		<td><a href="{% url admin_remove_user p.pid,person.username %}" class="deletelink">Remove</a>
+	   		<td><a href="{% url kg_remove_project_member p.pid,person.username %}" class="deletelink">Remove</a>
 	   		{% endifnotequal %}{% endif %}
 	   	</tr>
 	   {% endfor %}

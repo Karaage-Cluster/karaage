@@ -109,7 +109,7 @@ def approve_project(request, project_request_id):
             # Check to see if he has account for machine_category
             # If not create one
             if not person.has_account(machine_category):
-                create_account(person.id, project.pid, machine_category.id)
+                create_account(person, project, machine_category)
                 
         user_request.delete()  
 

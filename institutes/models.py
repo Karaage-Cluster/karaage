@@ -8,6 +8,7 @@ class InstituteQuota(models.Model):
     machine_category = models.ForeignKey(MachineCategory)
     quota = models.DecimalField(max_digits=5, decimal_places=2)
     cap = models.IntegerField(null=True, blank=True)
+    disk_quota = models.IntegerField(null=True, blank=True)
 
     class Meta:
         db_table = 'institute_quota'

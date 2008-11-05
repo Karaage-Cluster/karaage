@@ -49,6 +49,7 @@ class UserAccount(models.Model):
     default_project = models.ForeignKey(Project, null=True, blank=True)
     date_created = models.DateField()
     date_deleted = models.DateField(null=True, blank=True)
+    disk_quota = models.IntegerField(null=True, blank=True)
 
     class Meta:
         ordering = ['user',]
@@ -72,3 +73,15 @@ class UserAccount(models.Model):
     def deactivate(self):
         from accounts.util.helpers import delete_account
         delete_account(self)
+
+
+    def get_disk_quota(self):
+        if self.disk_quota:
+            return self.disk_quota
+        try:
+            iq = self.user.institute.institutequota_set.get(machine_category=self.machine_category)
+        except:
+            return None
+        
+        return iq.disk_quota
+    

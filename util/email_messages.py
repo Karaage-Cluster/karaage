@@ -68,7 +68,7 @@ def send_project_approved_email(project_request):
 
     c = Context({
         'receiver':  project_request.project.leader,
-        'site': '%s%s' % (site.domain, reverse('user_profile')),
+        'site': '%s%s' % (site.domain, reverse('kg_user_profile')),
         'project': project_request.project,
         })
     t = Template(email.body)
@@ -137,7 +137,7 @@ def send_project_join_approved_email(user_request):
     c = Context({
         'project': user_request.project,
         'receiver':  user_request.person,
-        'site': '%s%s' % (site.domain, reverse('user_profile')),
+        'site': '%s%s' % (site.domain, reverse('kg_user_profile')),
         })
     t = Template(email.body)
     
@@ -154,7 +154,7 @@ def send_removed_from_project_email(person, project):
     c = Context({
         'project': project,
         'receiver':  person,
-        'site': '%s%s' % (site.domain, reverse('user_profile')),
+        'site': '%s%s' % (site.domain, reverse('kg_user_profile')),
         })
     t = Template(email.body)
     
@@ -238,7 +238,7 @@ def send_leader_quarter_summary_emails():
                 'usage_site': p.get_usage_url(),
                 'start': start,
                 'end': end,
-                'site': '%s%s' % (site.domain, reverse('user_profile')),
+                'site': '%s%s' % (site.domain, reverse('kg_user_profile')),
                 })
     
         #to_email = p.leader.email

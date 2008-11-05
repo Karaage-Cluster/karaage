@@ -21,7 +21,7 @@ account_datastores = settings.ACCOUNT_DATASTORES
 def create_account(person, default_project, machine_category):
     ads_module = __import__(account_datastores[machine_category.id], {}, {}, [''])
     ads = module.AccountDataStore(machine_category)
-    ads.create_account(person, default_project)
+    return ads.create_account(person, default_project)
 
 
 def delete_account(ua):
