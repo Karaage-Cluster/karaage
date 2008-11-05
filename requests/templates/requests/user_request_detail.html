@@ -1,0 +1,66 @@
+{% extends "main.html" %}
+
+{% block title %}Account Requests{% endblock %}
+
+{% block bread_crumbs_1 %}
+ &rsaquo; <a href="../">Account Requests</a>
+ &rsaquo; {{ ar.id }}
+{% endblock %}   
+ 
+{% block content %}
+<div id="content-main">
+
+   	<h1>{{ person }}'s Request</h1>
+
+<p>{{ person }} has requested to join the project <b>{{ project }}</b></p>
+
+<p>Please 
+<a href="approve/" class="yeslink">&nbsp;Accept</a> or
+<a href="reject/" class="nolink">&nbsp;Decline</a> this request</p>
+
+<p>A computer account on the VPAC clusters will be made for {{ person.first_name }} if he does not already have one.</p>
+<h1>{{ person }} Details</h1>
+   	<table>
+   		
+   		<tr><td>Email:</td><td>{{ person.email|urlize }}</td></tr>
+   		<tr><td>Position:</td><td>{{ person.position|default:"" }}</td></tr>
+   		<tr><td>Institute:</td><td><a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a></td></tr>		
+   		<tr><td>Phone:</td><td>{{ person.telephone|default:"" }}</td></tr>
+   		<tr><td>Mobile:</td><td>{{ person.mobile|default:"" }}</td></tr>
+   		<tr><td>Department:</td><td>{{ person.department|default:"" }}</td></tr>
+   		<tr><td>Address:</td><td>{{ person.address|default:"" }}</td></tr>
+   		<tr><td>Fax:</td><td>{{ person.fax }}</td></tr>
+   		<tr><td>City:</td><td>{{ person.city|default:"" }}</td></tr>
+   		<tr><td>State:</td><td>{{ person.get_state_display|default:"" }}</td></tr>
+   		<tr><td>Postcode:</td><td>{{ person.postcode|default:"" }}</td></tr>
+   		<tr><td>Country:</td><td>{{ person.get_country_display|default:"" }}</td></tr>
+   		<tr><td>Comment:</td><td>{{ person.comment|default:"" }}</td></tr>
+			<tr><td>Accounts username:</td><td>{{ person.username }}</td></tr>
+		</table>
+
+<div class="module">
+<h2>Project</h2>
+<table cellspacing="0">
+		<thead>
+		<tr>
+			<th>Project</th>
+			<th>Name</th>
+			<th>Institute</th>
+			<th>Leader</th>
+		</tr>
+		</thead>   	
+   	<tbody>
+	   	<tr class="row1">
+	   		<td><a href="{{ project.get_absolute_url }}">{{ project.pid }}</a></td>
+	   		<td>{{ project.name|truncatewords:"10" }}</td>
+	   		<td><a href="{{ project.institute.get_absolute_url }}">{{ project.institute }}</a></td>
+	   		<td><a href="{{ project.leader.get_absolute_url }}">{{ project.leader }}</a></td>
+	   	</tr>
+   	</tbody>  	
+		</table>	
+	</div>
+	<div>	
+	</div>
+</div>
+{% endblock %}
+ 

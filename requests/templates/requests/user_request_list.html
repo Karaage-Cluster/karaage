@@ -1,0 +1,47 @@
+{% extends "main.html" %}
+
+{% block title %}Account Requests{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block bread_crumbs_1 %}
+ &rsaquo; Account Requests
+{% endblock %}  
+
+{% block requests_menu %}
+<li><h3>Account Requests</a></li>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+
+
+	{% if request_list %}
+	<div class="module">
+   	<h2>Account Requests</h2>
+   	
+   	<table cellspacing="0">
+		<thead>
+		<tr>
+			<th>Name</th>
+			<th>Project</th>
+		</tr>
+		</thead>   	
+   	<tbody>
+   	{% for request in request_list %}
+	   	<tr class="{% cycle row1,row2 %}">
+	   		<td><a href="{{ request.id }}/">{{ request.person.get_full_name }}</a></td>
+	   		<td><a href="{{ request.id }}/">{{ request.project }}</a></td>
+				<td><a href="{{ request.id }}/approve/" class="yeslink">Approve</a></td>
+				<td><a href="{{ request.id }}/reject/" class="nolink">Reject</a></td>
+	   	</tr>
+	   {% endfor %}
+   	</tbody>  	
+		</table>
+
+	</div>
+	{% else %}
+	<p>There are currently no account requests</p>
+	{% endif %}
+</div>
+{% endblock %}

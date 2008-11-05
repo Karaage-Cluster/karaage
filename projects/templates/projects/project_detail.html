@@ -101,7 +101,7 @@
 	   		</td>
 	   		<td>{{ user.last_usage }}</td>
 	   		{% if perms.main.change_project %}
-	   		<td><a href="{% url admin_remove_user project.pid,user.username %}" class="deletelink">Remove</a>
+	   		<td><a href="{% url kg_remove_project_member project.pid,user.username %}" class="deletelink">Remove</a>
 	   		{% endif %}
 	   	</tr>
 	   {% endfor %}
