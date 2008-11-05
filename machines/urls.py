@@ -21,4 +21,4 @@ urlpatterns += patterns('karaage.machines.views',
     url(r'^(?P<machine_id>\d+)/user_accounts/$', 'machine_accounts'),
     url(r'^(?P<machine_id>\d+)/projects/$', 'machine_projects'),
 )
-                        
+                  

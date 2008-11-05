@@ -1,4 +1,5 @@
 from django.db import models
+from placard.connection import LDAPConnection
 
 from karaage.people.models import Person
 
@@ -71,9 +72,12 @@ class UserAccount(models.Model):
             return None
 
     def deactivate(self):
-        from accounts.util.helpers import delete_account
+        from karaage.datastores import delete_account
         delete_account(self)
 
+    def change_shell(self, shell):
+        conn =  LDAPConnection()
+        conn.update_user(self.username, loginShell=str(shell))
 
     def get_disk_quota(self):
         if self.disk_quota:

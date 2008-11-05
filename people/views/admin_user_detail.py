@@ -11,7 +11,8 @@ from karaage.people.models import Person
 from karaage.projects.models import Project
 
 from karaage.util.email_messages import send_bounced_warning
-from karaage.people.forms import ShellForm, AdminPasswordChangeForm
+from karaage.people.forms import AdminPasswordChangeForm
+from karaage.machines.forms import ShellForm
 from accounts.util import get_date_range, log_object as log
 
 @login_required
@@ -66,25 +67,6 @@ def user_detail(request, username):
         pass
     
     return render_to_response('people/person_detail.html', locals(), context_instance=RequestContext(request))
-
-
-def change_shell(request, username=None):
-    if username is None:
-        person = request.user.get_profile()
-    else:
-        if not request.user.has_perm('main.change_person'):
-            return HttpResponseForbidden('<h1>Access Denied</h1>')
-        person = get_object_or_404(Person, user__username=username)
-    
-    if request.method == 'POST':
-        shell_form = ShellForm(request.POST)
-        if shell_form.is_valid():
-            shell_form.save(user=person)
-            request.user.message_set.create(message='Shell changed successfully')
-            return HttpResponseRedirect(person.get_absolute_url())
-    else:
-        
-        return HttpResponseRedirect('/') 
 
 
 @login_required

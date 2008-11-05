@@ -1,5 +1,5 @@
 from django.conf import settings
-from accounts.main.models import MachineCategory
+from karaage.machines.models import MachineCategory
 
 module = __import__(settings.GRAPH_LIB, {}, {}, [''])
 

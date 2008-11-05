@@ -5,6 +5,7 @@ Graph generation using matplotlib
 from django.conf import settings
 from django.db import connection
 from django.template.defaultfilters import dictsortreversed
+
 import matplotlib
 matplotlib.use('Agg')  # force the antigrain backend
 from matplotlib.backends.backend_agg import FigureCanvasAgg
@@ -13,8 +14,12 @@ import matplotlib.dates as dates
 from pylab import arange
 from decimal import Decimal
 import datetime
-from accounts.main.models import Institute, Project, CPUJob, MachineCategory, UserAccount
-from accounts.util.helpers import get_available_time
+
+from karaage.people.models import Institute
+from karaage.projects.models import Project
+from karaage.machines.models import MachineCategory, UserAccount
+from karaage.usage.models import CPUJob
+from karaage.util.helpers import get_available_time
 
 import gdchart2
 import base

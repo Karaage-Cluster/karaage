@@ -209,7 +209,7 @@ class Person(models.Model):
     def loginShell(self):
         conn = LDAPConnection()
         try:
-            ldap_user = conn.get_user(self.username)
+            ldap_user = conn.get_user('uid=%s' % self.username)
         except:
             return ''
         try:

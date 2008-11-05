@@ -11,14 +11,14 @@ from django.contrib.sites.models import Site
 import datetime
 from django_common.util.filterspecs import Filter, FilterBar, DateFilter
 
-from karaage.machines.models import UserAccount, MachineCategory
 from karaage.projects.models import Project
 from karaage.people.models import Person, Institute
 from karaage.people.forms import UserForm
-from karaage.machines.forms import UserAccountForm
+from karaage.machines.models import UserAccount, MachineCategory
+from karaage.machines.forms import UserAccountForm, ShellForm
 from karaage.util.email_messages import *
+from karaage.util import log_object as log
 from karaage.datastores import create_account
-from accounts.util import log_object as log
 
 @login_required
 def index(request):
@@ -320,3 +320,21 @@ def struggling(request):
     page = p.page(page_no)
 
     return render_to_response('users/struggling.html', locals(), context_instance=RequestContext(request))
+
+
+
+def change_shell(request, useraccount_id):
+
+    if not request.user.has_perm('main.change_person'):
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
+    ua = get_object_or_404(UserAccount, pk=useraccount_id)
+    
+    if request.method == 'POST':
+        shell_form = ShellForm(request.POST)
+        if shell_form.is_valid():
+            shell_form.save(user_account=ua)
+            request.user.message_set.create(message='Shell changed successfully')
+            return HttpResponseRedirect(ua.get_absolute_url())
+    else:
+        
+        return HttpResponseRedirect('/') 

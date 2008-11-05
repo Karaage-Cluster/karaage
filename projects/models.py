@@ -49,24 +49,21 @@ class Project(models.Model):
         return ('kg_project_usage', [self.institute.id, self.pid])
         
     def deactivate(self):
-        #from accounts.util.email_messages import send_removed_from_project_email
         self.is_active = False
         deletor = get_current_user()    
         self.deleted_by = deletor.get_profile()
         self.date_deleted = datetime.datetime.today()
-        #for u in self.users.all():
-        #    send_removed_from_project_email(u, self)
         self.users.clear()
         self.save()
 
     def get_usage(self, start=datetime.date.today()-datetime.timedelta(days=90), end=datetime.date.today()):
-        from accounts.util.usage import get_project_usage
+        from karaage.util.usage import get_project_usage
         return get_project_usage(self, start, end)
 
     def gen_usage_graph(self, start, end, machine_category=None):
         if machine_category is None:
             machine_category = self.machine_category
-        from accounts.graphs import gen_project_graph
+        from karaage.graphs import gen_project_graph
         gen_project_graph(self, start, end, machine_category)
 
     def get_latest_usage(self):

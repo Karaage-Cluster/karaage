@@ -1,7 +1,10 @@
 from django.conf import settings
 from django.db import connection
+
 import datetime
-from accounts.main.models import MachineCategory
+
+from karaage.machines.models import MachineCategory
+
 
 def smooth_data(rows, start, end):
 

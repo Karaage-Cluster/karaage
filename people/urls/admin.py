@@ -19,9 +19,9 @@ urlpatterns = patterns('karaage.people.views.admin',
     url(r'^no_account/$', 'no_account_list', name='ac_no_account_list'),
     url(r'^locked/$', 'locked_list', name='ac_locked_users_list'),
     url(r'^add/$', 'add_edit_user', name='admin_add_user'),
-
-    url(r'^accounts/edit/(?P<useraccount_id>\d+)/$', 'add_edit_useraccount'),
-    url(r'^accounts/delete/(?P<useraccount_id>\d+)/$', 'delete_useraccount', name='admin_delete_account'),
+    url(r'^accounts/(?P<useraccount_id>\d+)/change_shell/$', 'change_shell', name='kg_change_shell'),
+    url(r'^accounts/(?P<useraccount_id>\d+)/edit/$', 'add_edit_useraccount'),
+    url(r'^accounts/(?P<useraccount_id>\d+)/delete/$', 'delete_useraccount', name='admin_delete_account'),
                        
     url(r'^accounts/(?P<useraccount_id>\d+)/makedefault/(?P<project_id>[-.\w]+)/$', 'make_default', name='admin_make_default'),
 

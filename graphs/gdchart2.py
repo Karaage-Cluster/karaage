@@ -4,10 +4,15 @@ Graph generation using gdchart2
 
 from django.conf import settings
 from django.db import connection
+
 import gdchart
 import datetime
-from accounts.main.models import Institute, Project, CPUJob, MachineCategory
-from accounts.util.helpers import get_available_time
+
+from karaage.people.models import Institute
+from karaage.machines.models import MachineCategory
+from karaage.projects.models import Project
+from karaage.usage.models import CPUJob
+from karaage.util.helpers import get_available_time
 
 import base
 from util import *

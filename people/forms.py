@@ -156,22 +156,6 @@ class PasswordChangeForm(AdminPasswordChangeForm):
             raise forms.ValidationError(u'Your old password was incorrect')
         return self.cleaned_data['old']
 
-        
-
-
-class ShellForm(forms.Form):
-
-    shell = forms.ChoiceField(choices=settings.SHELLS)
-
-    def save(self, user=None):
-
-        if user is None:
-            user = get_current_user().get_profile()
-
-
-        from accounts.ldap_utils.ldap_users import change_shell
-        change_shell(user, self.cleaned_data['shell'])
-
 
 
 class DelegateForm(forms.Form):
