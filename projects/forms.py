@@ -1,14 +1,18 @@
 from django import forms
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
+
 import datetime
-from karaage.people.models import Institute, Person
-from karaage.machines.models import MachineCategory
-from models import Project
-from karaage.constants import DATE_FORMATS
 from django_common.middleware.threadlocals import get_current_user
 
-from accounts.util.helpers import get_new_pid
+from karaage.people.models import Institute, Person
+from karaage.machines.models import MachineCategory
+from karaage.requests.models import ProjectRequest, UserRequest
+from karaage.constants import DATE_FORMATS
+from karaage.util.helpers import get_new_pid
+
+from models import Project
+
 
 
 class ProjectForm(forms.Form):
@@ -79,3 +83,87 @@ class ProjectForm(forms.Form):
                 return self.cleaned_data['pid']
             raise forms.ValidationError(u'PID already exists')
 
+
+
+
+
+class UserProjectForm(forms.Form):
+    """
+    This form is for people who have an account and want to start a new project
+    or edit it
+    """
+    name = forms.CharField(widget=forms.TextInput(attrs={ 'size':60 }))
+    description = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }))
+    additional_req = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
+    is_expertise = forms.BooleanField(required=False, help_text=u"Is this a current VPAC funded Expertise or Education Project?")
+    pid = forms.CharField(label="PIN", max_length=10, required=False, help_text="If yes, please provide Project Identification Number")
+    needs_account = forms.BooleanField(required=False, label=u"Will you be working on this project yourself?")
+    machine_category = forms.ModelChoiceField(queryset=MachineCategory.objects.all(), initial=1, required=False)
+    institute = forms.ModelChoiceField(queryset=Institute.valid.all())
+
+    def save(self, leader=None, p=None):
+        data = self.cleaned_data
+
+        if p is None:
+            p = Project()
+            p.pid = get_new_pid(data['institute'], data['is_expertise'])
+            p.leader = leader
+            p.institute = data['institute']
+            p.machine_category=data['machine_category']
+            p.start_date = datetime.datetime.today()
+            p.is_approved, p.is_active = False, False
+            p.is_expertise = data['is_expertise']
+            p.name = data['name']
+            p.description = data['description']
+            p.additional_req = data['additional_req']
+            p.is_expertise = data['is_expertise']
+            p.save()
+
+            user_request = None
+            if data['needs_account']:
+                # Create a user request
+                user_request = UserRequest.objects.create(
+                    person=leader,
+                    project=p,
+                    machine_category=data['machine_category'],
+                    leader_approved=False,
+                    needs_account=True,
+                )
+            project_request = ProjectRequest.objects.create(
+                project=p,
+                user_request=user_request,
+            )
+            LogEntry.objects.create(
+                user=get_current_user(),
+                content_type=ContentType.objects.get_for_model(p.__class__),
+                object_id=p.pid,
+                object_repr=p.pid,
+                action_flag=1,
+                change_message='Created'
+            )
+            return project_request
+
+        #edit
+        p.name = data['name']
+        p.description = data['description']
+        p.additional_req = data['additional_req']
+        p.is_expertise = data['is_expertise']
+        p.save()
+
+        LogEntry.objects.create(
+            user=get_current_user(),
+            content_type=ContentType.objects.get_for_model(p.__class__),
+            object_id=p.pid,
+            object_repr=p.pid,
+            action_flag=2,
+            change_message='Edited'
+        )
+
+
+    def clean(self):
+        data = self.cleaned_data
+
+        if data.get('is_expertise') and data['pid'] == '':
+                raise forms.ValidationError("Please provide your Expertise Grant project identifcation number")
+            
+        return data
