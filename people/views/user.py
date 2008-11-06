@@ -12,7 +12,8 @@ from karaage.util import get_date_range
 from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
 from karaage.requests.models import UserRequest, ProjectRequest
-from karaage.people.forms import ShellForm, PasswordChangeForm, DelegateForm
+from karaage.people.forms import PasswordChangeForm, DelegateForm
+from karaage.machines.forms import ShellForm
 
 
 @login_required
