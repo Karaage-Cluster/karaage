@@ -71,6 +71,9 @@ def profile(request):
     return render_to_response('people/profile.html', locals(), context_instance=RequestContext(request))
     
 
+def edit_user(request):
+    from admin import add_edit_user
+    return add_edit_user(request, username=request.user.get_profile().username)
 
 @login_required
 def profile_accounts(request):
