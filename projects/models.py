@@ -90,8 +90,11 @@ class Project(models.Model):
         if usage is None:
             usage = Decimal('0')
         total_time, ave_cpus = get_available_time()
-        
-        return ((usage / total_time) * 100 * 1000).quantize(TWOPLACES)
+
+        try:
+            return ((usage / total_time) * 100 * 1000).quantize(TWOPLACES)
+        except:
+            return None
 
     def is_over_quota(self):
         if self.get_mpots() > self.get_cap():
