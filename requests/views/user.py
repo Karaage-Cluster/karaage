@@ -15,7 +15,7 @@ from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory
 from karaage.util.email_messages import *
 from karaage.requests.forms import UserRegistrationForm
-from accounts.ajabber.jab import send_jab
+#from accounts.ajabber.jab import send_jab
 #from accounts.util.shib import get_shib_attrs
 from karaage.util import log_object as log
 
@@ -33,7 +33,7 @@ def user_registration(request):
  
     im = Image.open('%s/img/captcha_bg.jpg' % settings.MEDIA_ROOT)
     draw = ImageDraw.Draw(im)
-    font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSansBold.ttf', 18)
+    font = ImageFont.truetype(settings.CAPTCHA_FONT, 18)
     draw.text((10,10), imgtext, font=font, fill=(100,100,50))
 
     temp = '%s/img/captcha/user_%s.jpg' % (settings.MEDIA_ROOT, request.META.get('REMOTE_ADDR', 'unknown'))
@@ -202,7 +202,8 @@ def approve_person(request, user_request_id):
         user_request.person.user.message_set.create(message="Your request to join the project %s has been accepted" % user_request.project.pid)
         user_request.delete()
     else:
-        send_jab('sam@vpac.org', 'Accounts', 'There is a new account waiting for approval')
+        pass
+        #send_jab('sam@vpac.org', 'Accounts', 'There is a new account waiting for approval')
 
     return HttpResponseRedirect(reverse('kg_user_profile')) 
 
