@@ -176,7 +176,7 @@ def account_created(request, user_request_id):
     project = user_request.project
     machine_category = user_request.machine_category
     
-    return render_to_response('requests/account_created.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('requests/account_pending.html', locals(), context_instance=RequestContext(request))
 
 @login_required
 def approve_person(request, user_request_id):
