@@ -4,59 +4,59 @@
 
 {% block content %}
 <div id="content-main">
-
-	<div class="module">
-	<h2>Institutes</h2>
-	{% if graph %}
-	<a href="{{ institute.get_usage_url }}">
-   		<img src="{{ MEDIA_URL }}graphs/institutes/{{ graph }}"  class="float-right" width="300" height="150"/>
-   	</a>
-   {% endif %}
-	<h3>{{ institute }}</h3>
-	
-	<table>
-			{% if institute.is_primary %}
-			<tr><td colspan="2"><a href="{{ institute.get_usage_url }}">View Usage</a></td></tr>
-   		<tr><td>Delegate:</td><td><a href="{{ institute.delegate.get_absolute_url }}">{{ institute.delegate }}</a></td></tr>
-   		<tr><td>Active Delegate:</td><td><a href="{{ institute.active_delegate.get_absolute_url }}">{{ institute.active_delegate }}</a></td></tr>
-   		<tr><td>Gid:</td><td>{{ institute.gid }}</td></tr>
-   		{% endif %}
-			{% if perms.main.change_institute %}
-   		<tr><td colspan="2"><a href="edit/" class="changelink">Edit</a></td></tr>
-   		{% endif %} 
-	</table>
-	</div>
-	<div class="module">
-	<h2>Caps and quotas</h2>
-		<table>
-			<thead>
-				<tr>
-					<th>Machine Category</th>
-					<th>Quota</th>
-					<th>Cap (mPoTS)</th>				
-				</tr>			
-			</thead>
-			<tbody>
-			{% for iq in institute.institutequota_set.all %}
-   		<tr class="{% cycle row1,row2 %}">
-   			<td>{{ iq.machine_category }}</td>
-				<td>{{ iq.quota }}</td>
-				<td>{{ iq.get_cap }}</td>
-				{% if perms.main.change_institutequota %}<td><a href="{% url ac_institute_quota_edit iq.id %}" class="changelink">edit</a></td>{% endif %}
-			</tr>
-			{% endfor %}
-			</tbody>
-	</table>
-	</div>
-	{% if institute.project_set.all %}
-	<div class="module">
-	<h2>Projects</h2>
-	{% gen_table institute.project_set.all %}
-	</div>
-	{% endif %}
-	<div class="module">
-	<h2>Users</h2>
-	{% gen_table institute.person_set.all %}
-	</div>
+  
+  <div class="module">
+    <h2>Institutes</h2>
+    {% if graph %}
+    <a href="{{ institute.get_usage_url }}">
+      <img src="{{ MEDIA_URL }}graphs/institutes/{{ graph }}"  class="float-right" width="300" height="150"/>
+    </a>
+    {% endif %}
+    <h3>{{ institute }}</h3>
+    
+    <table>
+      {% if institute.is_primary %}
+      <tr><td colspan="2"><a href="{{ institute.get_usage_url }}">View Usage</a></td></tr>
+      <tr><td>Delegate:</td><td><a href="{{ institute.delegate.get_absolute_url }}">{{ institute.delegate }}</a></td></tr>
+      <tr><td>Active Delegate:</td><td><a href="{{ institute.active_delegate.get_absolute_url }}">{{ institute.active_delegate }}</a></td></tr>
+      <tr><td>Gid:</td><td>{{ institute.gid }}</td></tr>
+      {% endif %}
+      {% if perms.people.change_institute %}
+      <tr><td colspan="2"><a href="edit/" class="changelink">Edit</a></td></tr>
+      {% endif %} 
+    </table>
+  </div>
+  <div class="module">
+    <h2>Caps and quotas</h2>
+    <table>
+      <thead>
+	<tr>
+	  <th>Machine Category</th>
+	  <th>Quota</th>
+	  <th>Cap (mPoTS)</th>				
+	</tr>			
+      </thead>
+      <tbody>
+	{% for iq in institute.institutequota_set.all %}
+   	<tr class="{% cycle row1,row2 %}">
+   	  <td>{{ iq.machine_category }}</td>
+	  <td>{{ iq.quota }}</td>
+	  <td>{{ iq.get_cap }}</td>
+	  {% if perms.institutes.change_institutequota %}<td><a href="{% url ac_institute_quota_edit iq.id %}" class="changelink">edit</a></td>{% endif %}
+	</tr>
+	{% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if institute.project_set.all %}
+  <div class="module">
+    <h2>Projects</h2>
+    {% gen_table institute.project_set.all %}
+  </div>
+  {% endif %}
+  <div class="module">
+    <h2>Users</h2>
+    {% gen_table institute.person_set.all %}
+  </div>
 </div>
 {% endblock %}
