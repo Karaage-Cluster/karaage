@@ -15,8 +15,6 @@ from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory
 from karaage.util.email_messages import *
 from karaage.requests.forms import UserRegistrationForm
-#from accounts.ajabber.jab import send_jab
-#from accounts.util.shib import get_shib_attrs
 from karaage.util import log_object as log
 
 
@@ -203,7 +201,6 @@ def approve_person(request, user_request_id):
         user_request.delete()
     else:
         pass
-        #send_jab('sam@vpac.org', 'Accounts', 'There is a new account waiting for approval')
 
     return HttpResponseRedirect(reverse('kg_user_profile')) 
 

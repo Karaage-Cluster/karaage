@@ -13,7 +13,7 @@ from karaage.projects.models import Project
 from karaage.util.email_messages import send_bounced_warning
 from karaage.people.forms import AdminPasswordChangeForm
 from karaage.machines.forms import ShellForm
-from accounts.util import get_date_range, log_object as log
+from karaage.util import get_date_range, log_object as log
 
 @login_required
 def delete_user(request, username):

@@ -3,32 +3,20 @@ Holds various helper methods
 """
 __author__ = 'Sam Morrison'
 
-from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
-from django.core.mail import mail_admins
-from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
-from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 
-import crypt
 import random, string
-from django_common.middleware.threadlocals import get_current_user
 import datetime
 
-from placard.connection import LDAPConnection
 from placard.ldap_passwd import md5crypt
 
 from karaage.machines.models import MachineCategory, UserAccount
-from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
 
-from accounts.ldap_utils.ldap_users import *
-
-   
 
 def create_password_hash(raw_password):
     return '{crypt}%s' % md5crypt(raw_password)
-
 
 
 def _getsalt(chars=string.letters + string.digits):

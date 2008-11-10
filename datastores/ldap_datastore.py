@@ -1,3 +1,6 @@
+from django.core.mail import mail_admins
+from django.conf import settings
+
 from placard.connection import LDAPConnection
 
 import base
@@ -22,7 +25,7 @@ class PersonalDataStore(base.PersonalDataStore):
         
         conn = LDAPConnection()
         conn.add_user(**attrs)
-        person.save()
+        person.save(update_datastore=False)
 
         return person
 
@@ -47,6 +50,40 @@ class PersonalDataStore(base.PersonalDataStore):
             mail=str(person.email),
             o=str(person.institute.name),
             )
+
+    def is_locked(self, person):
+        super(PersonalDataStore, self).is_locked(person)
+
+        conn = LDAPConnection()
+        ldap_user = conn.get_user('uid=%s' % person.username)
+
+        if hasattr(ldap_user, 'nsAccountLock'):
+            return True
+
+        return False
+
+
+    def lock_user(self, person):
+        super(PersonalDataStore, self).lock_user(person)
+        
+        conn = LDAPConnection()
+        conn.update_user(
+            person.username,
+            nsRoleDN='cn=nsManagedDisabledRole,dc=vpac,dc=org',
+            )
+
+    def unlock_user(self, person):
+        super(PersonalDataStore, self).unlock_user(person)
+        
+        conn = LDAPConnection()
+        dn="uid=%s,%s" % (person.username, settings.LDAP_USER_BASE)
+        old = {
+            'nsRoleDN': 'cn=nsManagedDisabledRole,dc=vpac,dc=org',
+            }
+        new = {}
+        conn.update_ldap(dn, old, new)
+        
+
 
 class AccountDataStore(base.AccountDataStore):
 
@@ -99,4 +136,22 @@ class AccountDataStore(base.AccountDataStore):
             gidNumber=str(ua.user.institute.gid),
             )
 
+
+    def lock_account(self, ua):
+        super(AccountDataStore, self).lock_account(ua)
+
+        conn = LDAPConnection()
+        
+        conn.update_user(
+            ua.username,
+            loginShell='/usr/local/sbin/insecure'
+            )
+        
+
+    def unlock_account(self, ua):
+        super(AccountDataStore, self).unlock_account(ua)
+
+        conn = LDAPConnection()
+        conn.update_user(ua.username, loginShell=settings.SHELLS[0][0])
+        
 

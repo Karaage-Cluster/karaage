@@ -90,13 +90,13 @@ class PersonalDataStore(object):
 
         from karaage.datastores import delete_account
 
-        for ua in user.useraccount_set.filter(date_deleted__isnull=True):
+        for ua in person.useraccount_set.filter(date_deleted__isnull=True):
             delete_account(ua)
             
         LogEntry.objects.create(
             action_time=datetime.datetime.now(), user=get_current_user(),
-            content_type=ContentType.objects.get_for_model(user.__class__),
-            object_id=user.id, object_repr=user.__str__(), action_flag=DELETION,
+            content_type=ContentType.objects.get_for_model(person.__class__),
+            object_id=person.id, object_repr=str(person), action_flag=DELETION,
             change_message='Deleted person')    
 
 
@@ -104,6 +104,22 @@ class PersonalDataStore(object):
     def update_user(self, person):
         pass
         
+    def is_locked(self, person):
+        pass
+
+    def lock_user(self, person):
+        from karaage.datastores import lock_account
+
+        for ua in person.useraccount_set.filter(date_deleted__isnull=True):
+            lock_account(ua)
+
+
+    def unlock_user(self, person):
+        from karaage.datastores import unlock_account
+
+        for ua in person.useraccount_set.filter(date_deleted__isnull=True):
+            unlock_account(ua)
+
 
 class AccountDataStore(object):
 
@@ -155,22 +171,13 @@ class AccountDataStore(object):
             change_message='Deleted account on %s' % ua.machine_category)
         
 
+
     def update_account(self, ua):
         pass
 
-
     def lock_account(self, ua):
-        
-        ua.user.user.is_active = False
-        ua.save()
-
-        
+        pass    
 
     def unlock_account(self, ua):
-        ua.user.user.is_active = True
-        ua.save()
-    
-        
-    def is_account_locked(self, ua):
-        s = 0
+        pass
         

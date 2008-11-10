@@ -48,7 +48,7 @@ class Institute(models.Model):
         return get_institute_usage(self, start, end, machine_category)
 
     def gen_usage_graph(self, start, end, machine_category):
-        from accounts.graphs import gen_institute_bar
+        from karaage.graphs import gen_institute_bar
         gen_institute_bar(self, start, end, machine_category)
 
 
@@ -91,8 +91,9 @@ class Person(models.Model):
     def get_absolute_url(self):
         return reverse('kg_user_detail', kwargs={'username': self.user.username })
 
-    def save(self, update_ldap=True, force_insert=False, force_update=False):
-        if self.id:
+    def save(self, update_datastore=True, force_insert=False, force_update=False):
+        if self.id and update_datastore:
+            
             from karaage.datastores import update_user, update_account
             update_user(self)
             for ua in self.useraccount_set.filter(date_deleted__isnull=True):
@@ -155,7 +156,7 @@ class Person(models.Model):
         return None
 
     def get_usage(self, project, start, end):
-        from accounts.util.usage import get_user_usage
+        from karaage.util.usage import get_user_usage
         return get_user_usage(self, project, start, end)
     
     def is_leader(self):
@@ -178,8 +179,8 @@ class Person(models.Model):
         activate_user(self)
 
     def deactivate(self):
-        from accounts.util.helpers import delete_person
-        delete_person(self)
+        from karaage.datastores import delete_user
+        delete_user(self)
 
     def set_password(self, password):
         conn = LDAPConnection()
@@ -195,15 +196,15 @@ class Person(models.Model):
             return False
 
     def lock(self):
-        from accounts.ldap_utils.ldap_users import lock_account
-        lock_account(self)
+        from karaage.datastores import lock_user
+        lock_user(self)
 
     def unlock(self):
-        from accounts.ldap_utils.ldap_users import unlock_account
-        unlock_account(self)
+        from karaage.datastores import unlock_user
+        unlock_user(self)
 
     def is_locked(self):
-        from accounts.ldap_utils.ldap_users import is_locked as is_ldap_locked
+        from karaage.datastores import is_locked as is_ldap_locked
         return is_ldap_locked(self)
                 
     def loginShell(self):

@@ -17,8 +17,8 @@ import datetime
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory, UserAccount
 
-from accounts.emails.models import EmailTemplate
-from accounts.util import log_object as log
+from karaage.emails.models import EmailTemplate
+from karaage.util import log_object as log
 
 # Not good should be id=settings.SITE_ID
 #TODO
