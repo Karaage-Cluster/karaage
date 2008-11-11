@@ -40,7 +40,7 @@ def add_edit_machine(request, machine_id=None):
         form = MachineForm(m)
     return render_to_response('machines/machine_form.html', locals(), context_instance=RequestContext(request))
 
-add_edit_machine = permission_required('main.add_machine')(add_edit_machine)
+add_edit_machine = permission_required('machines.add_machine')(add_edit_machine)
 
 
 def machine_accounts(request, machine_id):

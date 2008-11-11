@@ -49,7 +49,7 @@ def add_edit_project(request, project_id=None):
             
     return render_to_response('projects/project_form.html', locals(), context_instance=RequestContext(request))
 
-add_edit_project = permission_required('main.add_project')(add_edit_project)
+add_edit_project = permission_required('projects.add_project')(add_edit_project)
 
 @login_required
 def delete_project(request, project_id):
@@ -65,7 +65,7 @@ def delete_project(request, project_id):
 
     return render_to_response('projects/project_confirm_delete.html', locals(), context_instance=RequestContext(request))
 
-delete_project = permission_required('main.delete_project')(delete_project)
+delete_project = permission_required('projects.delete_project')(delete_project)
     
 @login_required
 def project_detail(request, project_id):
@@ -80,7 +80,7 @@ def project_detail(request, project_id):
     
     if request.method == 'POST':
         # Post means adding a user to this project
-        if not request.user.has_perm('main.change_project'):
+        if not request.user.has_perm('projects.change_project'):
             return HttpResponseForbidden('<h1>Access Denied</h1>')
         
         data = request.POST.copy()     

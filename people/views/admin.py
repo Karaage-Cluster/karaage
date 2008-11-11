@@ -191,7 +191,7 @@ def add_edit_useraccount(request, username=None, useraccount_id=None):
 
     return render_to_response('machines/useraccount_form.html', locals(), context_instance=RequestContext(request))
 
-add_edit_useraccount = permission_required('main.add_useraccount')(add_edit_useraccount)
+add_edit_useraccount = permission_required('machines.add_useraccount')(add_edit_useraccount)
 
 
 @login_required
@@ -207,7 +207,7 @@ def delete_useraccount(request, useraccount_id):
         
         return render_to_response('machines/useraccount_confirm_delete.html', locals(), context_instance=RequestContext(request))
 
-delete_useraccount = permission_required('main.delete_useraccount')(delete_useraccount)
+delete_useraccount = permission_required('machines.delete_useraccount')(delete_useraccount)
 
 @login_required
 def no_default_list(request):
@@ -325,7 +325,7 @@ def struggling(request):
 
 def change_shell(request, useraccount_id):
 
-    if not request.user.has_perm('main.change_person'):
+    if not request.user.has_perm('people.change_person'):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     ua = get_object_or_404(UserAccount, pk=useraccount_id)
     

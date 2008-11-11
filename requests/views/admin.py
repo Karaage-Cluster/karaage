@@ -15,7 +15,7 @@ def account_request_list(request):
     
     return render_to_response('requests/user_request_list.html', locals(), context_instance=RequestContext(request)) 
 
-account_request_list = permission_required('main.add_useraccount')(account_request_list)
+account_request_list = permission_required('machines.add_useraccount')(account_request_list)
 
 
 def account_request_detail(request, ar_id):
@@ -26,7 +26,7 @@ def account_request_detail(request, ar_id):
 
     return render_to_response('requests/user_request_detail.html', locals(), context_instance=RequestContext(request))
 
-account_request_detail = permission_required('main.add_useraccount')(account_request_detail)
+account_request_detail = permission_required('machines.add_useraccount')(account_request_detail)
 
 
 def account_request_approve(request, ar_id):
@@ -54,7 +54,7 @@ def account_request_approve(request, ar_id):
     request.user.message_set.create(message="User '%s' approved succesfully and an email has been sent" % person)
     return HttpResponseRedirect(person.get_absolute_url())
 
-account_request_approve = permission_required('main.add_useraccount')(account_request_approve)
+account_request_approve = permission_required('machines.add_useraccount')(account_request_approve)
 
 
 
@@ -80,5 +80,5 @@ def account_request_reject(request, ar_id):
         
     return HttpResponseRedirect(reverse('kg_account_request_list'))
 
-account_request_reject = permission_required('main.add_useraccount')(account_request_reject)
+account_request_reject = permission_required('machines.add_useraccount')(account_request_reject)
     

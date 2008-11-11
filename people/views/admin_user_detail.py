@@ -27,7 +27,7 @@ def delete_user(request, username):
         
     return render_to_response('people/person_confirm_delete.html', locals(), context_instance=RequestContext(request))
 
-delete_user = permission_required('main.delete_person')(delete_user)
+delete_user = permission_required('people.delete_person')(delete_user)
 
 
 @login_required
@@ -80,7 +80,7 @@ def activate(request, username):
 
     return HttpResponseRedirect('%spassword_change/' % user.get_absolute_url())
     
-activate = permission_required('main.add_useraccount')(activate)
+activate = permission_required('machines.add_useraccount')(activate)
 
 
 @login_required
