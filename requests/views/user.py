@@ -102,7 +102,7 @@ def choose_project(request):
 
             log(user_request.person.user, user_request.person, 1, 'Request for account and to join project %s' % user_request.project.pid)
 
-            return HttpResponseRedirect(reverse('user_account_created', args=[user_request.id]))
+            return HttpResponseRedirect(reverse('kg_user_account_pending', args=[user_request.id]))
         else:
             return HttpResponseRedirect('%s?%s&error=true' % (reverse('user_choose_project'), qs))
 

@@ -5,13 +5,13 @@
 
 <p>Thanks {{ person.first_name }} for your project request for <i>{{ project.name }}</i>.</p>
 
-<p>{{ project.institute }}'s Operations Committee Member, <b>{{ project.institute.delegate }}</b>, has been emailed
+<p>{{ project.institute }}'s Operations Committee Member, <b>{{ project.institute.active_delegate }}</b>, has been emailed
 about the request, and we're waiting for their authorisation.</p>
 
-<p>You can contact {{ project.institute.delegate }} by:<br />
+<p>You can contact {{ project.institute.active_delegate }} by:<br />
 	<ul>
-		<li>Email: {{ project.institute.delegate.email|urlize }}</li> 
-		<li>Phone: {{ project.institute.delegate.telephone }}</li>
+		<li>Email: {{ project.institute.active_delegate.email|urlize }}</li> 
+		<li>Phone: {{ project.institute.active_delegate.telephone }}</li>
 	</ul>
 </p>
 {% endblock %}
