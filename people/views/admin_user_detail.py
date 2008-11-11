@@ -153,7 +153,7 @@ def bounced_email(request, username):
         log(request.user, person, 2, 'Emails sent to project leaders and account locked')
         return HttpResponseRedirect(person.get_absolute_url())
 
-    return render_to_response('users/bounced_email.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('people/bounced_email.html', locals(), context_instance=RequestContext(request))
 
 def user_job_list(request, username):
     today = datetime.date.today()
