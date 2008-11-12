@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
+
 import datetime
 from django_common.middleware.threadlocals import get_current_user
 
@@ -123,7 +124,9 @@ class UserForm(BaseUserForm):
             LogEntry.objects.create(
                 user=get_current_user(),
                 content_type=ContentType.objects.get_for_model(user.__class__),
-                object_id=user.id, object_repr=user.__str__(), action_flag=2,
+                object_id=user.id, 
+                object_repr=str(user),
+                action_flag=2,
                 change_message='Edit')
 
         user.first_name = data['first_name']
