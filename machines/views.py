@@ -25,28 +25,10 @@ def machine_detail(request, machine_id):
     return render_to_response('machines/machine_detail.html', locals(), context_instance=RequestContext(request))
 
 
-def add_edit_machine(request, machine_id=None):
-    if machine_id is None:
-        m = None
-    else:
-        m = get_object_or_404(Machine, pk=machine_id)
-
-    if request.method == 'POST':
-        form = MachineForm(request.POST, m)
-        if form.is_valid():
-            m = form.save()
-            return HttpResponseRedirect(m.get_absolute_url())
-    else:
-        form = MachineForm(m)
-    return render_to_response('machines/machine_form.html', locals(), context_instance=RequestContext(request))
-
-add_edit_machine = permission_required('machines.add_machine')(add_edit_machine)
-
-
 def machine_accounts(request, machine_id):
 
     machine = get_object_or_404(Machine, pk=machine_id)
-    user_accounts = machine.category.useraccount_set.filter(date_deleted__isnull=True).select_related().order_by('auth_user.first_name', 'auth_user.last_name')
+    user_accounts = machine.category.useraccount_set.filter(date_deleted__isnull=True)
 
     return render_to_response('machines/machine_accounts.html', locals(), context_instance=RequestContext(request))
 

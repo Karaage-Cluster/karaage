@@ -5,20 +5,16 @@ from karaage.software.models import SoftwarePackage, SoftwareCategory, SoftwareL
 
 info_dict = {
     'model': SoftwarePackage,
-    'template_name': 'software/package_form.html',
     }
 c_info_dict = {
     'model': SoftwareCategory,
-    'template_name': 'software/category_form.html',
     }
 
 
-urlpatterns = patterns('accounts.main.generic_views',
-                       
-    (r'^(?P<object_id>\d+)/edit/$', 'add_edit', info_dict),
-    (r'^categories/add/$', 'add_edit', c_info_dict),    
-    (r'^categories/(?P<object_id>\d+)/edit/$', 'add_edit', c_info_dict),
-                 
+urlpatterns = patterns('django.views.generic.create_update',                       
+    (r'^(?P<object_id>\d+)/edit/$', 'update_object', info_dict),
+    (r'^categories/add/$', 'create_object', c_info_dict),    
+    (r'^categories/(?P<object_id>\d+)/edit/$', 'update_object', c_info_dict),               
 )
 
 

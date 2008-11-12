@@ -20,7 +20,7 @@ urlpatterns = patterns('karaage.projects.views.admin',
     url(r'^(?P<project_id>[-.\w]+)/remove_user/(?P<username>[-.\w]+)/$', 'remove_user', name='kg_remove_project_member'),                     
 )
 
-urlpatterns += patterns('accounts.admin.views',                   
+urlpatterns += patterns('karaage.views',                   
 
     url(r'^(?P<object_id>[-.\w]+)/logs/$', 'log_detail', {'model': Project }),   
     url(r'^(?P<object_id>[-.\w]+)/comments/$', 'comments_detail', {'model': Project }),

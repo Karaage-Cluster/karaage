@@ -4,15 +4,13 @@ from models import Machine
 
 info_dict = {
     'model': Machine,
-    'template_name': 'machines/machine_form.html',
     }
 
-urlpatterns = patterns('accounts.main.generic_views',
-                       
-    url(r'^add/$', 'add_edit', info_dict),    
-    url(r'^(?P<object_id>\d+)/edit/$', 'add_edit', info_dict),                     
-)
 
+urlpatterns = patterns('django.views.generic.create_update',                        url(r'^add/$', 'create_object', info_dict),    
+    url(r'^(?P<object_id>\d+)/edit/$', 'update_object', info_dict),
+        
+)
 
 urlpatterns += patterns('karaage.machines.views',
 
