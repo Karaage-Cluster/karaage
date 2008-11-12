@@ -5,20 +5,18 @@ from karaage.institutes.models import InstituteQuota
 
 info_dict = {
     'model': Institute,
-    'template_name': 'institutes/institute_form.html',
     }
 
 iq_info_dict = {
     'model': InstituteQuota,
-    'template_name': 'institutes/institutequota_form.html',
     }
 
 
 
-urlpatterns = patterns('accounts.main.generic_views',
-    url(r'^institutequota/(?P<object_id>\d+)/$', 'add_edit', iq_info_dict, name='ac_institute_quota_edit'),
-    url(r'^add/$', 'add_edit', info_dict, name='ac_institute_add'),                  
-    url(r'^(?P<object_id>\d+)/edit/$', 'add_edit', info_dict, name='ac_institute_edit'),   
+urlpatterns = patterns('django.views.generic.create_update', 
+    url(r'^institutequota/(?P<object_id>\d+)/$', 'update_object', iq_info_dict, name='kg_institute_quota_edit'),
+    url(r'^add/$', 'create_object', info_dict, name='kg_institute_add'),                  
+    url(r'^(?P<object_id>\d+)/edit/$', 'update_object', info_dict, name='kg_institute_edit'),   
                  
 )
 

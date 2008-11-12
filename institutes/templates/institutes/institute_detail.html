@@ -42,7 +42,7 @@
    	  <td>{{ iq.machine_category }}</td>
 	  <td>{{ iq.quota }}</td>
 	  <td>{{ iq.get_cap }}</td>
-	  {% if perms.institutes.change_institutequota %}<td><a href="{% url ac_institute_quota_edit iq.id %}" class="changelink">edit</a></td>{% endif %}
+	  {% if perms.institutes.change_institutequota %}<td><a href="{% url kg_institute_quota_edit iq.id %}" class="changelink">edit</a></td>{% endif %}
 	</tr>
 	{% endfor %}
       </tbody>
