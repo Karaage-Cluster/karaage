@@ -1,0 +1,36 @@
+{% extends "forms.html" %}
+
+{% block style %}<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/forms_custom.css"/>{% endblock %}
+
+{% block title %}Users{% endblock %}
+
+{% block content_title %}{% if user %}Edit{% else %}Create{% endif %} User{% endblock %}
+
+{% block content %}
+<form method="post" action=".">
+<div>
+{% load forms %}
+{% if form.errors  or form.non_field_errors %}
+	<p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
+{% endif %}
+<fieldset class="module aligned ()">
+<h2>Personal Details</h2>
+{{ form.non_field_errors }}
+{% formfield form.title %}
+{% inlineformfield form.first_name form.last_name %}
+{% inlineformfield form.department form.position %}
+{% formfield form.email %}
+{% inlineformfield form.telephone form.mobile %}
+{% inlineformfield form.fax form.website %}
+{% formfield form.address %}
+{% formfield form.country %}
+</fieldset>
+
+
+</div>
+<div class="submit-row">
+		
+		<input type="submit" value="Save" class="default" />
+	</div>
+</form>
+{% endblock %}

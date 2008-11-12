@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 
 from karaage.people.models import Institute
-from models import InstituteQuota
+from karaage.institutes.models import InstituteQuota
 
 info_dict = {
     'model': Institute,
@@ -22,9 +22,11 @@ urlpatterns = patterns('accounts.main.generic_views',
                  
 )
 
-urlpatterns += patterns('karaage.institutes.views',
+urlpatterns += patterns('karaage.institutes.views.admin',
 
     url(r'^$', 'institute_list', name='kg_institute_list'),
     url(r'^(?P<institute_id>\d+)/$', 'institute_detail', name='kg_institute_detail'),
+    url(r'^(?P<institute_id>\d+)/$', 'institute_detail', name='kg_institute_users'),
+    url(r'^(?P<institute_id>\d+)/$', 'institute_detail', name='kg_institute_projects'),
 )
                   

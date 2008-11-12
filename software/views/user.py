@@ -55,7 +55,7 @@ def add_package(request, package_id):
         conn = LDAPConnection()
         conn.add_group_member(license.package.gid, str(person.username))
 
-        return HttpResponseRedirect(reverse('user_profile'))
+        return HttpResponseRedirect(reverse('kg_user_profile'))
         
 
     else:

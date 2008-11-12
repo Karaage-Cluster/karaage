@@ -62,7 +62,7 @@
 	   		<td><a href="{{ p.leader.get_absolute_url }}">{{ p.leader }}</a></td>
 	   		<td>{% ifequal p ua.default_project %}
 	   		<img src="{{ MEDIA_URL }}img/admin/icon-yes.gif" alt="1" />{% else %}
-	   		<a href="{% url user_make_default ua.id,p.pid %}">Make default</a>{% endifequal %}</td>
+	   		<a href="{% url kg_user_make_default ua.id,p.pid %}">Make default</a>{% endifequal %}</td>
 	   	</tr>
 	   {% endfor %}
    	</tbody>  	

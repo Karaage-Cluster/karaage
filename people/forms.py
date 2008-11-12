@@ -15,18 +15,12 @@ from karaage.util.helpers import check_password
 from karaage.validators import username_re
 
 
-class UserForm(forms.Form):
-    username = forms.CharField(label=u"Requested username", max_length=30, help_text=u"30 characters or fewer. Alphanumeric characters only (letters, digits and underscores).")
-    email = forms.EmailField()
-    password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
-    password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)')
-    machine_category = forms.ModelChoiceField(queryset=MachineCategory.objects.all(), initial=1, required=False)
-    project = forms.ModelChoiceField(queryset=Project.objects.all(), label=u"Default Project", required=False)
+class BaseUserForm(forms.Form):
     title = forms.ChoiceField(choices=TITLES)
     first_name = forms.CharField()
     last_name = forms.CharField()
     position = forms.CharField()
-    institute = forms.ModelChoiceField(queryset=Institute.valid.all())
+    email = forms.EmailField()
     department = forms.CharField()
     telephone = forms.CharField(label=u"Office Telephone")
     mobile = forms.CharField(required=False)
@@ -34,6 +28,35 @@ class UserForm(forms.Form):
     address = forms.CharField(label=u"Mailing Address", required=False, widget=forms.Textarea())
     country = forms.ChoiceField(choices=COUNTRIES, initial='AU')
     website = forms.URLField(required=False)
+
+    def save(self, person):
+        data = self.cleaned_data
+    
+        person.first_name = data['first_name']
+        person.last_name = data['last_name']
+        person.email = data['email']
+        person.title = data['title']
+        person.position = data['position']
+        person.department =data['department']
+        person.telephone = data['telephone']
+        person.mobile = data['mobile']
+        person.fax = data['fax']
+        person.address = data['address']
+        person.country = data['country']
+        person.website = data['website']
+        person.save()
+        person.user.save()
+
+        return person
+
+
+class UserForm(BaseUserForm):
+    username = forms.CharField(label=u"Requested username", max_length=30, help_text=u"30 characters or fewer. Alphanumeric characters only (letters, digits and underscores).")
+    password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
+    password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)')
+    machine_category = forms.ModelChoiceField(queryset=MachineCategory.objects.all(), initial=1, required=False)
+    project = forms.ModelChoiceField(queryset=Project.objects.all(), label=u"Default Project", required=False)
+    institute = forms.ModelChoiceField(queryset=Institute.valid.all())
     comment = forms.CharField(widget=forms.Textarea(), required=False)
     needs_account = forms.BooleanField(required=False, label=u"Do you require a VPAC computer account", help_text=u"eg. Will you be working on the project yourself")
     expires = forms.DateField(widget=forms.TextInput(attrs={ 'class':'vDateField' }), required=False)

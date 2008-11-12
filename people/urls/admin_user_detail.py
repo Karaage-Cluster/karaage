@@ -1,4 +1,5 @@
 from django.conf.urls.defaults import *
+from karaage.people.forms import UserForm
 
 urlpatterns = patterns('karaage.people.views.admin_user_detail',
 
@@ -18,7 +19,7 @@ urlpatterns = patterns('karaage.people.views.admin_user_detail',
 urlpatterns += patterns('karaage.people.views.admin',
     
     url(r'^add_useraccount/$', 'add_edit_useraccount'),
-    url(r'^edit/$', 'add_edit_user'),
+    url(r'^edit/$', 'add_edit_user', {'form_class': UserForm }),
 )
 
 urlpatterns += patterns('',

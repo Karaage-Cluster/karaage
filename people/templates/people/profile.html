@@ -7,6 +7,7 @@
 <h2>Personal Details</h2>
 
 <table>
+	      <tr><td>Username:</td><td>{{ person.username }}</td></tr>
    		<tr><td>Email:</td><td>{{ person.email|urlize }}</td></tr>
    		<tr><td>Position:</td><td>{{ person.position|default:"" }}</td></tr>
    		<tr><td>Department:</td><td>{{ person.department|default:"" }}</td></tr>
@@ -23,8 +24,8 @@
 
 {% if person.is_delegate or person.is_active_delegate %}
 <h2>Institute Stats</h2>
-<p><a href="../institutes/{{ person.institute.id }}/users/">{{ person.institute }} users</a> | 
-<a href="../institutes/{{ person.institute.id }}/projects/">{{ person.institute }} projects</a></p>
+<p><a href="{% url kg_institute_users person.institute.id %}">{{ person.institute }} users</a> | 
+<a href="{% url kg_institute_projects person.institute.id %}">{{ person.institute }} projects</a></p>
 {% endif %}
 
 {% ifequal person person.institute.delegate %}

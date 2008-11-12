@@ -13,7 +13,6 @@ from django_common.util.filterspecs import Filter, FilterBar, DateFilter
 
 from karaage.projects.models import Project
 from karaage.people.models import Person, Institute
-from karaage.people.forms import UserForm
 from karaage.machines.models import UserAccount, MachineCategory
 from karaage.machines.forms import UserAccountForm, ShellForm
 from karaage.util.email_messages import *
@@ -27,9 +26,10 @@ def index(request):
 
 
 @login_required
-def add_edit_user(request, username=None):
+def add_edit_user(request, form_class, template_name='people/person_form.html', redirect_url=None, username=None):
     site = Site.objects.get_current()
-    
+    UserForm = form_class
+
     if request.user.has_perm('people.add_person'):
         if username is None:
             person = False
@@ -50,9 +50,11 @@ def add_edit_user(request, username=None):
                 #Add
                 person = form.save()
                 request.user.message_set.create(message="User '%s' was created succesfully" % person)
-
-        
-            return HttpResponseRedirect(person.get_absolute_url())
+                
+            if redirect_url is None:
+                return HttpResponseRedirect(person.get_absolute_url())
+            else:
+                return HttpResponseRedirect(redirect_url)
 
     else:
         form = UserForm()
@@ -66,7 +68,7 @@ def add_edit_user(request, username=None):
             form.initial = initial
 
             
-    return render_to_response('people/person_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
 
 def user_list(request, queryset=Person.objects.all()):

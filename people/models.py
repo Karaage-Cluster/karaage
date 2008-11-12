@@ -4,7 +4,7 @@ from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 
 from placard.connection import LDAPConnection
-
+from django_common.middleware.threadlocals import get_current_user
 from karaage.institutes.managers import PrimaryInstituteManager, ValidChoiceManager
 from karaage.constants import TITLES, STATES, COUNTRIES
 
@@ -89,6 +89,12 @@ class Person(models.Model):
         return self.user.get_full_name()
     
     def get_absolute_url(self):
+        person = get_current_user().get_profile()
+        if person == self:
+            try:
+                return reverse('kg_user_profile')
+            except:
+                pass
         return reverse('kg_user_detail', kwargs={'username': self.user.username })
 
     def save(self, update_datastore=True, force_insert=False, force_update=False):
