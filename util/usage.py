@@ -10,7 +10,7 @@ import datetime
 
 from karaage.cache.models import InstituteCache, ProjectCache, UserCache
 from karaage.usage.models import CPUJob
-
+from karaage.machines.models import UserAccount
 
 def get_instititue_usage_period(institute, period, machine_category):
     """Return a tuple of cpu hours and number of jobs for an institute
