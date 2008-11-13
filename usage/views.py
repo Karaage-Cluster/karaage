@@ -141,6 +141,7 @@ def project_usage(request, project_id, institute_id=None, machine_category_id=se
     
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
     project = get_object_or_404(Project, pk=project_id)
+    machine_category = project.machine_category
     usage_list = []
     total, total_jobs = 0, 0
 
