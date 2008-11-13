@@ -90,7 +90,8 @@
    	{% for u in ua.get_latest_usage %}
 	   	<tr class="{% cycle row1,row2 %}">   	
 	   		<td><a href="{{ u.project.get_absolute_url }}">{{ u.project.pid }}</a></td>
-	   		<td><a href="{{ u.machine.get_absolute_url }}">{{ u.machine }}</a></td>
+	   		{#<td><a href="{{ u.machine.get_absolute_url }}">{{ u.machine }}</a></td>#}
+	   		<td>{{ u.machine }}</td>
 	   		<td>{{ u.date }}</td>
 	   		<td>{{ u.queue }}</td>
 	   		<td class="right">{{ u.cpu_usage|timeformat }}</td>

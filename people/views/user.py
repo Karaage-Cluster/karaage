@@ -13,6 +13,7 @@ from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
 from karaage.requests.models import UserRequest, ProjectRequest
 from karaage.people.forms import PasswordChangeForm, DelegateForm, BaseUserForm
+from karaage.machines.models import MachineCategory
 from karaage.machines.forms import ShellForm
 
 
@@ -85,13 +86,14 @@ def edit_profile(request):
 def profile_accounts(request):
 
     person = request.user.get_profile()
-    
+    user_account = person.get_user_account(MachineCategory.objects.get_default())
+
     if request.method == 'POST' and 'shell-form' in request.POST:
 
         shell_form = ShellForm(request.POST)
 
         if shell_form.is_valid():
-            shell_form.save()
+            shell_form.save(user_account)
             request.user.message_set.create(message='Shell changed successfully')
 
             return HttpResponseRedirect(reverse('kg_user_profile'))

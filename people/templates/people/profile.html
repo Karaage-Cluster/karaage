@@ -76,7 +76,7 @@
 &nbsp;&nbsp;|&nbsp;&nbsp;<a href="{% url kg_software_list %}" class="addlink">Add software</a></p>
 {#<p><a href="{% url user_choose_project %}" class="addlink">Request to join an existing project</a>#}
 {#&nbsp;&nbsp;|&nbsp;&nbsp;<a href="{% url user_add_project %}" class="addlink">Request to start a new project</a></p>#}
-<h2>Usage Summary</h2>
+<h2>Usage Summary (last 90 days)</h2>
 
 <table>
 	<thead>
@@ -89,7 +89,8 @@
 	<tbody>
 	{% for u in usage_list|dictsortreversed:"cpu_hours" %}
 		<tr class="{% cycle row1,row2 %}">
-			<td><a href="{{ u.project.get_usage_url }}">{{ u.project.pid }}</a></td>
+			{#<td><a href="{{ u.project.get_usage_url }}">{{ u.project.pid }}</a></td>#}
+			<td>{{ u.project.pid }}</td>
 			<td>{{ u.cpu_hours|timeformat }}</td>
 			<td>{{ u.no_jobs }}</td>
 		</tr>
