@@ -2,6 +2,7 @@ from django.db import models
 
 import datetime
 from decimal import Decimal
+from django_common.middleware.threadlocals import get_current_user
 
 from karaage.people.models import Person, Institute
 from karaage.machines.models import MachineCategory
