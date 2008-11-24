@@ -29,7 +29,7 @@ def project_registration(request):
  
     im = Image.open('%s/img/captcha_bg.jpg' % settings.MEDIA_ROOT)
     draw = ImageDraw.Draw(im)
-    font = ImageFont.truetype(settings.CAPTCH_FONT, 18)
+    font = ImageFont.truetype(settings.CAPTCHA_FONT, 18)
     draw.text((10,10), imgtext, font=font, fill=(100,100,50))
 
     temp = '%s/img/captcha/project_%s.jpg' % (settings.MEDIA_ROOT, request.META.get('REMOTE_ADDR', 'unknown'))
