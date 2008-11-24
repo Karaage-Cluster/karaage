@@ -71,6 +71,7 @@ class PersonalDataStore(base.PersonalDataStore):
             person.username,
             nsRoleDN='cn=nsManagedDisabledRole,dc=vpac,dc=org',
             )
+        
 
     def unlock_user(self, person):
         super(PersonalDataStore, self).unlock_user(person)
