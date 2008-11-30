@@ -42,6 +42,7 @@ class Institute(models.Model):
         return False
 
     def get_usage(self, start, end, machine_category=None):
+        from karaage.machines.models import MachineCategory
         if machine_category is None:
             machine_category = MachineCategory.objects.get_default()
         from karaage.util.usage import get_institute_usage
