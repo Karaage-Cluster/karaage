@@ -12,7 +12,7 @@ class UserRequest(models.Model):
     machine_category = models.ForeignKey(MachineCategory)
     leader_approved = models.BooleanField()
     needs_account = models.BooleanField()
-    date = models.DateField(null=True, blank=True, default=datetime.now)
+    date = models.DateTimeField(auto_now_add=True, editable=False)
 
     class Meta:
         ordering = ['date']
@@ -29,7 +29,7 @@ class UserRequest(models.Model):
 class ProjectRequest(models.Model):
     project = models.ForeignKey(Project)
     user_request = models.ForeignKey(UserRequest, null=True, blank=True)
-    date = models.DateField(null=True, blank=True, default=datetime.now)
+    date = models.DateTimeField(auto_now_add=True, editable=False)
 
     class Meta:
         ordering = ['date']
