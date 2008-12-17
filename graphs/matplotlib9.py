@@ -47,7 +47,7 @@ class GraphGenerator(gdchart2.GraphGenerator):
         start_t = start.strftime('%d/%m/%y')
         end_t = end.strftime('%d/%m/%y')
         fig = Figure(figsize=(6,3))
-        ax = fig.add_axes([0.1, 0.1, 0.8, 0.8])
+        ax = fig.add_axes([0.2, 0.2, 0.7, 0.7])
         period = (end-start).days
         x_data = []
         j = 1
