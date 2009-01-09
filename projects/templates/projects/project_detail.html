@@ -44,7 +44,7 @@
       <tr><td>Leader:</td><td><a href="{{ project.leader.get_absolute_url }}">{{ project.leader }}</a></td></tr>
       <tr><td>Institiute:</td><td><a href="{{ project.institute.get_absolute_url }}">{{ project.institute }}</a></td></tr>
       <tr><td>Last Usage:</td><td>{{ project.last_usage|date }} ({{ project.last_usage|timesince }})</td></tr>
-      <tr><td>mPoTS:</td><td>Actual: {{ project.get_mpots|floatformat:"2" }} Quota: {{ project.get_cap }}</td></tr>
+      <tr><td>mPoTS:</td><td>Actual: {{ project.projectchunk.get_mpots|floatformat:"2" }} Quota: {{ project.projectchunk.get_cap }} <a href="{% url kg_projectchunk_edit project.pid %}" class="changelink">Edit</a></td></tr>
       <tr><td>Start Date:</td><td>{{ project.start_date|date }}</td></tr>
       <tr><td>End Date:</td><td>{{ project.end_date|date }}</td></tr>
       

@@ -83,7 +83,7 @@ class UserAccount(models.Model):
         if self.disk_quota:
             return self.disk_quota
         try:
-            iq = self.user.institute.institutequota_set.get(machine_category=self.machine_category)
+            iq = self.user.institute.institutechunk_set.get(machine_category=self.machine_category)
         except:
             return None
         

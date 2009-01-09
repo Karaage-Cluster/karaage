@@ -1,0 +1,20 @@
+{% extends "forms.html" %}
+{% load forms %}
+
+{% block title %}Projects{% endblock %}
+
+{% block content_title %}{% if project %}Edit{% else %}Create{% endif %} Project{% endblock %}
+
+
+{% block content %}
+<form method="post" action=".">
+
+
+<fieldset class="module aligned ()">
+{% form_as_div form %}
+</fieldset>
+<div class="submit-row">
+		<input type="submit" value="Save" class="default" />
+	</div>
+</form>
+{% endblock %}

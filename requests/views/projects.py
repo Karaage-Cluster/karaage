@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 
 import datetime
 
+from karaage.pbsmoab.models import ProjectChunk
 from karaage.requests.models import ProjectRequest, UserRequest
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory
@@ -94,6 +95,7 @@ def approve_project(request, project_request_id):
     request.user.message_set.create(message="Project approved successfully and a notification email has been sent to %s" % leader)
     leader.user.message_set.create(message="Your project request has been accepted")
 
+    project_chunk, created = ProjectChunk.objects.get_or_create(project=project)
 
     if not leader.user.is_active:
         leader.activate()
