@@ -71,7 +71,7 @@ def search(request):
 
         return render_to_response('site_search.html', locals(), context_instance=RequestContext(request))
     else:
-        return HttpResponseRedirect(reverse('admin_index'))
+        return HttpResponseRedirect(reverse('kg_admin_index'))
 
 
 def log_detail(request, object_id, model):

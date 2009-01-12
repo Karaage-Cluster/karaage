@@ -307,7 +307,7 @@ def project_search(request):
             return HttpResponseRedirect('%s?start=%s&end=%s' % (project.get_usage_url(), start, end))    
 
     else:
-        return HttpResponseRedirect(reverse('ac_admin_index'))
+        return HttpResponseRedirect(reverse('kg_admin_index'))
 
         
 
