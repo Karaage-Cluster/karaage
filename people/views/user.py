@@ -7,6 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.comments.models import Comment
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from karaage.util import get_date_range
 from karaage.people.models import Person, Institute
