@@ -82,7 +82,7 @@ class PersonalDataStore(base.PersonalDataStore):
             'nsRoleDN': 'cn=nsManagedDisabledRole,dc=vpac,dc=org',
             }
         new = {}
-        conn.update_ldap(dn, old, new)
+        conn.ldap_modify(dn, old, new)
         
 
 
