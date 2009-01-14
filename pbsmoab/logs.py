@@ -14,7 +14,7 @@ import sys, os
 import datetime
 
 from karaage.machines.models import Machine, UserAccount
-from karaage.usage.models import CPUJob
+from karaage.usage.models import CPUJob, Queue
 from karaage.projects.models import Project
 
 from alogger_ng.utils import log_to_dict, get_in_seconds, print_error
@@ -35,7 +35,7 @@ def parse_logs(log_list, date, machine_name, log_type):
     """
 
     output = []
-    count = fail = skip = 0
+    count = fail = skip = updated = 0
     line_no = 0
 
 
@@ -128,19 +128,23 @@ def parse_logs(log_list, date, machine_name, log_type):
             cpujob.cores = data['cores']
 
             cpujob.save()
-
-            count = count + 1
+            
+            if created:
+                count += 1
+            else:
+                updated += 1
             
         except Exception, e:
             output.append("Failed to insert a line  - %s" % e)
             fail = fail + 1
             continue
 
-    summary = 'Inserted : %i\nFailed   : %i\nSkiped   : %i' % (count, fail, skip)
+    summary = 'Inserted : %i\nUpdated  : %i\nFailed   : %i\nSkiped   : %i' % (count, updated, fail, skip)
 
 
     if DEBUG:
         print 'Inserted : %i' % count
+        print 'Updated  : %i' % updated
         print 'Failed   : %i' % fail
         print 'Skiped   : %i' % skip
 
