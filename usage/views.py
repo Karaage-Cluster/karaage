@@ -282,7 +282,7 @@ def search(request):
                     i['jobs'] = jobs
 
             else:
-                return HttpResponseRedirect('%s?start=%s&end=%s' % (reverse('ac_usage_list'), start_str, end_str)) 
+                return HttpResponseRedirect('%s?start=%s&end=%s' % (reverse('kg_usage_list'), start_str, end_str)) 
 
     else:
 
