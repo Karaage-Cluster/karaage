@@ -16,21 +16,23 @@ class Queue(models.Model):
     
 
 class CPUJob(models.Model):
-    user = models.ForeignKey(UserAccount)
+    user = models.ForeignKey(UserAccount, blank=True, null=True)
     username = models.CharField(max_length=50, blank=True, null=True) 
-    project = models.ForeignKey(Project)
-    machine = models.ForeignKey(Machine)
-    date = models.DateField()
-    queue = models.ForeignKey(Queue)
-    cpu_usage = models.IntegerField()
-    mem = models.IntegerField()
-    vmem = models.IntegerField()
-    ctime = models.DateTimeField()
-    qtime = models.DateTimeField()
-    etime = models.DateTimeField()
-    start = models.DateTimeField()
-    act_wall_time = models.IntegerField()
-    est_wall_time = models.IntegerField()
+    project = models.ForeignKey(Project, blank=True, null=True)
+    machine = models.ForeignKey(Machine, blank=True, null=True)
+    date = models.DateField(blank=True, null=True)
+    queue = models.ForeignKey(Queue, blank=True, null=True)
+    cpu_usage = models.IntegerField(blank=True, null=True)
+    mem = models.IntegerField(blank=True, null=True)
+    vmem = models.IntegerField(blank=True, null=True)
+    ctime = models.DateTimeField(blank=True, null=True)
+    qtime = models.DateTimeField(blank=True, null=True)
+    etime = models.DateTimeField(blank=True, null=True)
+    start = models.DateTimeField(blank=True, null=True)
+    act_wall_time = models.IntegerField(blank=True, null=True)
+    est_wall_time = models.IntegerField(blank=True, null=True)
+    jobid = models.CharField(max_length=50, blank=True, null=True, unique=True)
+    cores = models.IntegerField(blank=True, null=True)
     
     class Meta:
         ordering = ['-date']
