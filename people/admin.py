@@ -1,10 +1,6 @@
 from django.contrib import admin
 from models import Institute, Person
 
-from django.contrib.contenttypes.models import ContentType
-
-admin.site.register(ContentType)
-
 class InstituteAdmin(admin.ModelAdmin):
     list_display = ('name','delegate','active_delegate', 'gid',)
     search_fields = ['name',]
