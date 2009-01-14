@@ -258,7 +258,14 @@ def make_default(request, useraccount_id, project_id):
     user_account = get_object_or_404(UserAccount, pk=useraccount_id)
     project = get_object_or_404(Project, pk=project_id)
     
-    if not request.user.has_perm('machines.change_useraccount') or request.user != user_account.user.user:
+    access = False
+    if request.user.has_perm('machines.change_useraccount'):
+        access = True
+
+    if request.user != user_account.user.user:
+        access = True
+
+    if not access:
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     user_account = get_object_or_404(UserAccount, pk=useraccount_id)
@@ -270,15 +277,8 @@ def make_default(request, useraccount_id, project_id):
     request.user.message_set.create(message="Default project changed succesfully")
     log(request.user, user_account.user, 2, 'Changed default project to %s' % project.pid)
 
-    
-    
+
     return HttpResponseRedirect(user_account.get_absolute_url())
-    #if site.name == 'admin':       
-    #    return HttpResponseRedirect(user_account.get_absolute_url())
-    #if site.name == 'user':
-    #    return HttpResponseRedirect(reverse('user_profile'))
-    #else:
-    #    return HttpResponseRedirect('/')
 
 
 @login_required
