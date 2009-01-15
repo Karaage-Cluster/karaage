@@ -41,7 +41,7 @@
 	<li><a href="comments/">Comments</a>&nbsp;({{ comment_count }})<br /><br /></li>
 	{% if person.is_active %}
 	<li><a href="ldap/">LDAP</a><br /><br /></li>
-	{% if perms.people.delete_person and person.is_active %}
+	{% if perms.people.change_person and person.is_active %}
 	{% if person.is_locked %}
 	<li><a href="unlock/"><img src="{{ MEDIA_URL }}img/lock.png" />&nbsp;Unlock</a><br /><br /></li>
 	{% else %}
