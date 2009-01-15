@@ -42,7 +42,6 @@ class Machine(models.Model):
 
 from karaage.projects.models import Project
 
-
 class UserAccount(models.Model):
     user = models.ForeignKey(Person)
     username = models.CharField(max_length=100)

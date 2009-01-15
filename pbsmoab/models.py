@@ -6,7 +6,6 @@ import datetime
 from karaage.people.models import Institute
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory
-from karaage.util.helpers import get_available_time
 
 
 class InstituteChunk(models.Model):
@@ -40,6 +39,7 @@ class ProjectChunk(models.Model):
     cap = models.IntegerField(null=True, blank=True)
 
     def get_mpots(self, start=datetime.date.today()-datetime.timedelta(days=90), end=datetime.date.today()):
+	from karaage.util.helpers import get_available_time
 
         TWOPLACES = Decimal(10) ** -2
         usage, jobs = self.project.get_usage(start, end)
