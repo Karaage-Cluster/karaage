@@ -80,6 +80,7 @@ class PersonalDataStore(object):
     def delete_user(self, person):
         """ Sets Person not active and deletes all UserAccounts"""
         person.user.is_active = False
+        person.expires = None
         person.user.save()
     
         deletor = get_current_user()
