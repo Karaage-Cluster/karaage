@@ -53,13 +53,18 @@ class SoftwarePackage(models.Model):
 
     def group_name(self):
         conn = LDAPConnection()
-        ldap_group = conn.get_group(self.gid)
-        return ldap_group.name()
+        try:
+            ldap_group = conn.get_group(self.gid)
+            return ldap_group.name()
+        except:
+            return 'No LDAP Group'
 
     def get_group_members(self):
         conn = LDAPConnection()
-        return conn.get_group_members(self.gid)
-
+        try:
+            return conn.get_group_members(self.gid)
+        except:
+            return []
 
 class SoftwareVersion(models.Model):
     package = models.ForeignKey(SoftwarePackage)

@@ -22,10 +22,12 @@
    		<tr><td>Homepage:</td><td>{{ package.homepage|urlize }}</td></tr>
    		<tr><td>Tutorial:</td><td>{{ package.tutorial_url|urlize }}</td></tr>
    		<tr><td>Group:</td><td>{{ package.group_name }} ({{ package.gid }})</td></tr>
-			{% if perms.software.change_softwarepackage %}
-   		<tr><td colspan="2"><a href="edit/" class="changelink">Edit</a></td></tr>
-   		{% endif %}
-   		<td><a href="logs/">Logs</a></td>
+			
+   		<tr><td colspan="2"><p>
+   		<a href="logs/">Logs</a>
+   		{% if perms.software.change_softwarepackage %}&nbsp;|&nbsp;<a href="edit/" class="changelink">Edit</a>{% endif %}
+   		{% if perms.software.delete_softwarepackage %}&nbsp;|&nbsp;<a href="delete/" class="deletelink">delete</a>{% endif %}
+   		</p></td></tr>
 	</table>
 	</div>
 	<div class="module">
@@ -64,8 +66,7 @@
 		<tr>
 			<th>Version</th>
 			<th>Date</th>
-			<th></th>
-			<th></th>
+			<th colspan="3"></th>
 			<th>Users</th>
 		</tr>
 	</thead>   	
@@ -75,7 +76,9 @@
 				<td>{{ license.version }}</td>
 				<td>{{ license.date|date }}</td>
 				<td><a href="../license/{{ license.id }}/">view</a></td>
-				<td><a href="license/edit/{{ license.id }}/" class="changelink">Edit</a></td>
+
+				<td>{% if perms.software.change_softwarelicense %}<a href="license/edit/{{ license.id }}/" class="changelink">Edit</a>{% endif %}</td>
+				<td>{% if perms.software.change_softwarelicense %}<a href="{% url kg_softwarelicense_delete license.id %}" class="deletelink">Delete</a>{% endif %}</td>
 				<td>
 				<table cellspacing="0">
 				<thead>
