@@ -1,16 +1,15 @@
 <table cellspacing="0">
 	<thead>
 		<tr>
-			<th>Software License</th>
+			<th>Software</th>
 			<th>Date Accepted</th>
 		</tr>
 	</thead>   	
    <tbody>
 	{% for a in object_list %}
 		<tr class="{% cycle row1,row2 %}">
-			<td><a href="{{ a.license.get_absolute_url }}">{{ a.license }}</a></td>
+			<td><a href="{{ a.license.get_absolute_url }}">{{ a.license.package }}</a></td>
 			<td>{{ a.date }}</td>
 		</tr>
 	{% endfor %}
 </table>	
- 	
