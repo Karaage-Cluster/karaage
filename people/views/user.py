@@ -234,6 +234,7 @@ def password_change_done(request):
 
 def login(request):
 
+    error = ''
     redirect_to = settings.LOGIN_REDIRECT_URL
     if request.REQUEST.has_key('next'):
         redirect_to = request.REQUEST['next']
@@ -247,14 +248,22 @@ def login(request):
             password = form.cleaned_data['password']
             from django.contrib.auth import login, authenticate
             user = authenticate(username=username, password=password)
-            login(request, user)
-            return HttpResponseRedirect(redirect_to)
-      
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    return HttpResponseRedirect(redirect_to)
+                else:
+                    error = 'User account is locked'
+            else:
+                error = 'Username or passord was incorrect'
     else:
         form = LoginForm()
 
     return render_to_response('registration/login.html', {
         'form': form,
         'next': redirect_to,
+        'error': error,
         }, context_instance=RequestContext(request))
+
+
 
