@@ -1,0 +1,27 @@
+{% extends "main.html" %}
+{% load surveys %}
+{% block title %}Project Reports{% endblock %}
+
+{% block content_title %}{% endblock %}
+    
+{% block bread_crumbs_1 %}
+ &rsaquo; <a href="../">Project Reports</a>
+ &rsaquo; {{ report.project.pid }}
+{% endblock %}    
+
+{% block content %}
+<div id="content-main">
+
+	<div class="module">
+		<h2>{{ report.survey_group }}</h2>
+			<h3><a href="{{ report.project.get_absolute_url }}">{{ report.project.pid }}</a>: {{ report.project.name }}</h3>
+			<p>Leader: <a href="{{ report.project.leader.get_absolute_url }}">{{ report.project.leader }}</a><p>
+			<dl>
+			{% for q in report.survey_group.question_set.all %}
+				{% qa_row report q %}
+			{% endfor %}
+			</dl>
+	</div>	
+	
+</div>
+{% endblock %}

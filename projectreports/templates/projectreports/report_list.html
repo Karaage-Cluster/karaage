@@ -1,0 +1,13 @@
+{% extends "changelist.html" %}
+
+{% block title %}Project Reports{% endblock %}
+
+{% block content_title %}&nbsp;{% endblock %}
+
+{% block breadcrumbs %}{{ block.super }} &rsaquo; Project Reports{% endblock %}   
+
+{% block objecttools %}
+{% if perms.projectreports.add_projectsurvey %}
+<ul class="object-tools"><li><a href="add/" class="addlink">Add report</a></li></ul>
+{% endif %}
+{% endblock %}
