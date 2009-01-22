@@ -26,6 +26,7 @@ class Machine(models.Model):
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
     pbs_server_host = models.CharField(max_length=50, null=True, blank=True)
+    mem_per_core = models.IntegerField(help_text="In GB", null=True, blank=True)
     objects = models.Manager()
     active = ActiveMachineManager()
 
