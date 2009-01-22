@@ -12,6 +12,7 @@ just implement a method like pbs_to_dict (see below)
 
 import sys, os
 import datetime
+from math import ceil
 
 from karaage.machines.models import Machine, UserAccount
 from karaage.usage.models import CPUJob, Queue
@@ -62,9 +63,13 @@ def parse_logs(log_list, date, machine_name, log_type):
         try:
              data = log_to_dict(line, log_type)
         except ValueError:
-            print_error(line_no, "Error reading line")
-        except:
+            output.append("Error reading line")
+        except Exception, e:
             skip = skip + 1
+            f = open('/tmp/alogger_log', 'a')
+            f.write('%s\n' % e)
+            f.close()
+
             continue
 
         try:
@@ -84,7 +89,7 @@ def parse_logs(log_list, date, machine_name, log_type):
                 try:
                     project = user_account.default_project
                 except:
-                    output.append(line_no, "Couldn't find specified project: %s" % data['project'])
+                    output.append("Couldn't find specified project: %s" % data['project'])
                     project = Project.objects.get(pk='Unknown_Project')
                     fail = fail + 1
 
@@ -93,7 +98,7 @@ def parse_logs(log_list, date, machine_name, log_type):
                 project = user_account.default_project
             except:
                 # Couldn't find project - Assign to 'Unknown_Project'
-                output.append(line_no, "Couldn't find default project for username=%s and machine category=%s" % (data['user'], machine.category.name))
+                output.append("Couldn't find default project for username=%s and machine category=%s" % (data['user'], machine.category.name))
                 project = Project.objects.get(pk='Unknown_Project')
                 fail +=  1
                 
@@ -101,7 +106,7 @@ def parse_logs(log_list, date, machine_name, log_type):
             project = Project.objects.get(pk='Unknown_Project')
         
         if user_account.user not in project.users.all():
-            output.append(line_no, "%s is not in project %s, cpu usage: %s" % (user_account.user, project, data['cpu_usage']))
+            output.append("%s is not in project %s, cpu usage: %s" % (user_account.user, project, data['cpu_usage']))
             fail += 1
 
         # Everything is good so add entry
@@ -139,8 +144,8 @@ def parse_logs(log_list, date, machine_name, log_type):
             cpujob.exit_status = data['exit_status']
             cpujob.jobname = data['jobname']
             cpujob.list_mem = data['list_mem']
-            cpujob.list_vmem = data['list_pmem']
-            cpujob.list_pmem = data['list_vmem']
+            cpujob.list_vmem = data['list_vmem']
+            cpujob.list_pmem = data['list_pmem']
             cpujob.list_pvmem = data['list_pvmem']
             cpujob.save()
             
