@@ -33,7 +33,13 @@ class CPUJob(models.Model):
     est_wall_time = models.IntegerField(blank=True, null=True)
     jobid = models.CharField(max_length=50, blank=True, null=True, unique=True)
     cores = models.IntegerField(blank=True, null=True)
-    
+    list_mem = models.IntegerField(blank=True, null=True)
+    list_pmem = models.IntegerField(blank=True, null=True)
+    list_vmem = models.IntegerField(blank=True, null=True)
+    list_pvmem = models.IntegerField(blank=True, null=True)
+    exit_status = models.IntegerField(blank=True, null=True)
+    jobname = models.CharField(max_length=20, blank=True, null=True)
+
     class Meta:
         ordering = ['-date']
         db_table = 'cpu_job'

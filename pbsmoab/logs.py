@@ -126,7 +126,12 @@ def parse_logs(log_list, date, machine_name, log_type):
             cpujob.etime = data['etime']
             cpujob.start = data['start']
             cpujob.cores = data['cores']
-
+            cpujob.exit_status = data['exit_status']
+            cpujob.jobname = data['jobname']
+            cpujob.list_mem = data['list_mem']
+            cpujob.list_vmem = data['list_pmem']
+            cpujob.list_pmem = data['list_vmem']
+            cpujob.list_pvmem = data['list_pvmem']
             cpujob.save()
             
             if created:
