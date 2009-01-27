@@ -105,12 +105,13 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
 
         for p in institute.project_set.filter(machine_category=machine_category):
             p_usage, p_jobs = p.get_usage(start, end)
+            chunk = p.projectchunk
             if p_jobs > 0:
                 project_list.append(
                     {'project': p, 
                      'usage': p_usage, 
                      'jobs': p_jobs, 
-                     'percent': ((p.get_mpots()/p.get_cap())*100), 
+                     'percent': ((chunk.get_mpots()/chunk.get_cap())*100), 
                      'quota_percent': (p_usage/(available_usage*quota.quota)*10000),
                      })
 
