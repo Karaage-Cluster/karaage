@@ -25,6 +25,10 @@ def lock_user(person):
 def unlock_user(person):
     pds.unlock_user(person)
 
+def set_password(person, raw_password):
+    pds.set_password(person, raw_password)
+
+
 account_datastores = settings.ACCOUNT_DATASTORES
 
 def create_account(person, default_project, machine_category):

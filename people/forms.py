@@ -178,8 +178,12 @@ class PasswordChangeForm(AdminPasswordChangeForm):
 
     def clean_old(self):
         person = get_current_user().get_profile()
-        if not person.check_password(self.cleaned_data['old']):
+        
+        from django.contrib.auth import authenticate
+        user = authenticate(username=person.user.username, password=self.cleaned_data['old'])
+        if user is None:
             raise forms.ValidationError(u'Your old password was incorrect')
+
         return self.cleaned_data['old']
 
 

@@ -126,6 +126,11 @@ class PersonalDataStore(object):
             unlock_account(ua)
 
 
+    def set_password(self, person, raw_password):
+        person.user.set_password(raw_password)
+        person.user.save()
+
+
 class AccountDataStore(object):
 
     def __init__(self, machine_category):

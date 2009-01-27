@@ -21,8 +21,3 @@ urlpatterns += patterns('karaage.people.views.admin',
     url(r'^add_useraccount/$', 'add_edit_useraccount'),
     url(r'^edit/$', 'add_edit_user', {'form_class': UserForm }),
 )
-
-urlpatterns += patterns('',
-    url(r'^ldap/$', 'placard.lusers.views.user_detail_verbose'),
-
-)

@@ -84,20 +84,6 @@ activate = permission_required('machines.add_useraccount')(activate)
 
 
 @login_required
-def ldap_detail(request, username):
-    person = get_object_or_404(Person, user__username=username)
-
-    from placard.connection import LDAPConnection
-    conn = LDAPConnection()
-    try:
-        ldap = conn.get_user('uid=%s' % username)
-    except:
-        raise Http404
-
-    return render_to_response('people/ldap_detail.html', locals(), context_instance=RequestContext(request))
-
-
-@login_required
 def password_change(request, username):
     person = get_object_or_404(Person, user__username=username)
     

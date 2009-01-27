@@ -1,8 +1,6 @@
 from django.core.mail import mail_admins
 from django.conf import settings
 
-from placard.connection import LDAPConnection
-
 import base
 
 

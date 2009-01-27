@@ -1,5 +1,3 @@
-from placard.connection import LDAPConnection
-
 import base
 
 
@@ -27,6 +25,9 @@ class PersonalDataStore(base.PersonalDataStore):
 
     def unlock_user(self, person):
         super(PersonalDataStore, self).unlock_user(person)
+
+    def set_password(self, person, raw_password):
+        super(PersonalDataStore, self).set_password(person, raw_password)
 
 
 class AccountDataStore(base.AccountDataStore):

@@ -191,17 +191,8 @@ class Person(models.Model):
         delete_user(self)
 
     def set_password(self, password):
-        conn = LDAPConnection()
-        conn.change_password(self.user.username, password)
-
-    def check_password(self, raw_password):
-        from django_common.backends.auth import LDAPBackend
-        ldap_backend = LDAPBackend()
-        user = ldap_backend.authenticate(self.username, raw_password)
-        if user:
-            return True
-        else:
-            return False
+        from karaage.datastores import set_password
+        set_password(self, password)
 
     def lock(self):
         from karaage.datastores import lock_user
@@ -212,8 +203,8 @@ class Person(models.Model):
         unlock_user(self)
 
     def is_locked(self):
-        from karaage.datastores import is_locked as is_ldap_locked
-        return is_ldap_locked(self)
+        from karaage.datastores import is_locked
+        return is_locked(self)
                 
     def loginShell(self):
         conn = LDAPConnection()
