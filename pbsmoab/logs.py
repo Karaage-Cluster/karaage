@@ -18,7 +18,7 @@ from karaage.machines.models import Machine, UserAccount
 from karaage.usage.models import CPUJob, Queue
 from karaage.projects.models import Project
 
-from alogger_ng.utils import log_to_dict, get_in_seconds, print_error
+from alogger_ng import log_to_dict
 
 
 DEBUG = False
