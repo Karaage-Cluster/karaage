@@ -29,7 +29,6 @@ class Project(models.Model):
     deleted_by = models.ForeignKey(Person, related_name='project_deletor', null=True, blank=True, editable=False)
     date_deleted = models.DateField(null=True, blank=True, editable=False)
     last_usage = models.DateField(null=True, blank=True, editable=False)
-    cap = models.IntegerField(null=True, blank=True)
     objects = models.Manager()
     active = ActiveProjectManager()
     deleted = DeletedProjectManager()
@@ -70,34 +69,3 @@ class Project(models.Model):
     def get_latest_usage(self):
         return self.cpujob_set.all()[:5]
 
-    def get_cap(self):
-        try:
-            iq = self.institute.institutequota_set.filter(machine_category=self.machine_category)[0]
-        except:
-            return None
-
-        if self.cap is not None:
-            return self.cap
-        if iq.cap is not None:
-            return iq.cap
-        return iq.quota * 1000
-
-
-    def get_mpots(self, start=datetime.date.today()-datetime.timedelta(days=90), end=datetime.date.today()):
-
-        TWOPLACES = Decimal(10) ** -2
-        from karaage.util.helpers import get_available_time
-        usage, jobs = self.get_usage(start, end)
-        if usage is None:
-            usage = Decimal('0')
-        total_time, ave_cpus = get_available_time()
-
-        try:
-            return ((usage / total_time) * 100 * 1000).quantize(TWOPLACES)
-        except:
-            return None
-
-    def is_over_quota(self):
-        if self.get_mpots() > self.get_cap():
-            return True
-        return False

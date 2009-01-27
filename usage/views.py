@@ -14,7 +14,7 @@ from karaage.util.graphs import *
 from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
 from karaage.machines.models import UserAccount, Machine, MachineCategory
-from karaage.institutes.models import InstituteQuota
+from karaage.pbsmoab.models import InstituteChunk
 from karaage.usage.forms import UsageSearchForm
 from karaage.cache.models import UserCache
 from karaage.util import get_date_range
@@ -50,7 +50,7 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
         total = total + time
         total_jobs = total_jobs + jobs
         try:
-            quota = InstituteQuota.objects.get(institute=i, machine_category=machine_category)
+            quota = InstituteChunk.objects.get(institute=i, machine_category=machine_category)
         except:
             continue
         if show_zeros or jobs > 0:
@@ -97,7 +97,7 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
 
     querystring = request.META['QUERY_STRING']
 
-    quota = get_object_or_404(InstituteQuota, institute=institute, machine_category=machine_category)
+    quota = get_object_or_404(InstituteChunk, institute=institute, machine_category=machine_category)
 
     i_usage, i_jobs = institute.get_usage(start, end, machine_category)
 
