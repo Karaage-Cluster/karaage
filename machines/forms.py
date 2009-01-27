@@ -30,5 +30,6 @@ class ShellForm(forms.Form):
     shell = forms.ChoiceField(choices=settings.SHELLS)
 
     def save(self, user_account):
+        
         user_account.change_shell(self.cleaned_data['shell'])
         

@@ -128,7 +128,7 @@ class AccountDataStore(base.AccountDataStore):
     def update_account(self, ua):
 
         super(AccountDataStore, self).update_account(ua)
-        print 'dddss'
+
         conn = LDAPConnection()
 
         conn.update_user(
@@ -156,3 +156,7 @@ class AccountDataStore(base.AccountDataStore):
         conn.update_user(ua.username, loginShell=settings.SHELLS[0][0])
         
 
+
+    def change_shell(self, ua, shell):
+        conn =  LDAPConnection()
+        conn.update_user(ua.username, loginShell=str(shell))

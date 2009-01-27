@@ -54,3 +54,9 @@ def unlock_account(ua):
 
     ads = module.AccountDataStore(ua.machine_category)
     ads.unlock_account(ua)
+
+def change_shell(ua, shell):
+    ads_module = __import__(account_datastores[ua.machine_category.id], {}, {}, [''])
+
+    ads = module.AccountDataStore(ua.machine_category)
+    ads.change_shell(ua, shell)
