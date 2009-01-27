@@ -3,7 +3,6 @@ from django.template import RequestContext
 from django.conf import settings
 
 from django_common.util.filterspecs import Filter, FilterBar
-from placard.connection import LDAPConnection
 
 from karaage.util.graphs import get_institute_trend_graph_url
 from karaage.people.models import Institute
