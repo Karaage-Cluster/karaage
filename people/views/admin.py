@@ -321,7 +321,7 @@ def struggling(request):
     p = QuerySetPaginator(user_accounts, 50)
     page = p.page(page_no)
 
-    return render_to_response('users/struggling.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('people/struggling.html', locals(), context_instance=RequestContext(request))
 
 
 
