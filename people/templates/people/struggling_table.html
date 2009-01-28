@@ -14,7 +14,7 @@
 	</thead>   	
    <tbody>
    	{% for ua in object_list %}
-   		{% get_comment_count for main.person ua.user.id as comment_count %}
+   		{% get_comment_count for people.person ua.user.id as comment_count %}
    	
 	   	<tr class="{% cycle row1,row2 %}">
 	   		<td>
