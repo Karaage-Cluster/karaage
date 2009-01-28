@@ -15,14 +15,8 @@ from karaage.projects.models import Project
 from karaage.people.models import Person, Institute
 from karaage.machines.models import UserAccount, MachineCategory
 from karaage.machines.forms import UserAccountForm, ShellForm
-from karaage.util.email_messages import *
 from karaage.util import log_object as log
 from karaage.datastores import create_account
-
-@login_required
-def index(request):
-    
-    return render_to_response('users/index.html', locals(), context_instance=RequestContext(request))
 
 
 @login_required
