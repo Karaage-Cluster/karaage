@@ -6,9 +6,6 @@ from karaage.people.forms import UserForm
 
 urlpatterns = patterns('karaage.people.views.admin',
 
-
-    url(r'^index/$', 'index', name='kg_trouble_shooting_list'),
-                       
     url(r'^$', 'user_list', name='kg_user_list'),
     url(r'^deleted/$', 'user_list', { 'queryset': Person.deleted.all(),}),
     url(r'^last_used/$', 'user_list', { 'queryset': Person.active.order_by('last_usage'),}),
