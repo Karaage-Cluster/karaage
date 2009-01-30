@@ -1,6 +1,5 @@
 from django import forms
-from django.contrib.admin.models import LogEntry
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.admin.widgets import AdminDateWidget
 
 import datetime
 from django_common.middleware.threadlocals import get_current_user
@@ -8,8 +7,8 @@ from django_common.middleware.threadlocals import get_current_user
 from karaage.people.models import Institute, Person
 from karaage.machines.models import MachineCategory
 from karaage.requests.models import ProjectRequest, UserRequest
-from karaage.constants import DATE_FORMATS
 from karaage.util.helpers import get_new_pid
+from karaage.util import log_object
 
 from models import Project
 
@@ -23,10 +22,9 @@ class ProjectForm(forms.Form):
     additional_req = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
     is_expertise = forms.BooleanField(required=False, help_text=u"Is this a current VPAC funded Expertise or Education Project?")
     leader = forms.ModelChoiceField(queryset=Person.active.all())
-    start_date = forms.DateField(widget=forms.TextInput(attrs={ 'class':'vDateField' }), input_formats=DATE_FORMATS)
-    end_date = forms.DateField(widget=forms.TextInput(attrs={ 'class':'vDateField' }), input_formats=DATE_FORMATS, required=False)
+    start_date = forms.DateField(widget=AdminDateWidget)
+    end_date = forms.DateField(widget=AdminDateWidget, required=False)
     machine_category = forms.ModelChoiceField(queryset=MachineCategory.objects.all(), initial=1)
-    cap = forms.IntegerField(required=False)
 
     def save(self, p=None):
         data = self.cleaned_data
@@ -43,23 +41,10 @@ class ProjectForm(forms.Form):
             approver = get_current_user()
             p.approved_by = approver.get_profile()
 
-            LogEntry.objects.create(
-                user=get_current_user(),
-                content_type=ContentType.objects.get_for_model(p.__class__),
-                object_id=p.pid,
-                object_repr=p.pid,
-                action_flag=1,
-                change_message='Created'
-            )
+            log_object(get_current_user(), p, 1, 'Created')
+ 
         else:
-            LogEntry.objects.create(
-                user=get_current_user(),
-                content_type=ContentType.objects.get_for_model(p.__class__),
-                object_id=p.pid,
-                object_repr=p.pid,
-                action_flag=2,
-                change_message='Edited'
-            )
+            log_object(get_current_user(), p, 2, 'Edited')
             
         p.name = data['name']
         p.description = data['description']
@@ -70,7 +55,6 @@ class ProjectForm(forms.Form):
         p.start_date = data['start_date']
         p.end_date = data['end_date']
         p.machine_category = data['machine_category']
-        p.cap = data['cap']
         p.save()
 
         return p
@@ -133,14 +117,9 @@ class UserProjectForm(forms.Form):
                 project=p,
                 user_request=user_request,
             )
-            LogEntry.objects.create(
-                user=get_current_user(),
-                content_type=ContentType.objects.get_for_model(p.__class__),
-                object_id=p.pid,
-                object_repr=p.pid,
-                action_flag=1,
-                change_message='Created'
-            )
+
+            log_object(get_current_user(), p, 1, 'Created')
+
             return project_request
 
         #edit
@@ -150,14 +129,9 @@ class UserProjectForm(forms.Form):
         p.is_expertise = data['is_expertise']
         p.save()
 
-        LogEntry.objects.create(
-            user=get_current_user(),
-            content_type=ContentType.objects.get_for_model(p.__class__),
-            object_id=p.pid,
-            object_repr=p.pid,
-            action_flag=2,
-            change_message='Edited'
-        )
+        log_object(get_current_user(), p, 2, 'Edited')
+
+        return p
 
 
     def clean(self):
