@@ -4,7 +4,7 @@ import datetime
 
 from karaage.people.models import Institute, Person
 from karaage.projects.models import Project
-from karaage.machines.models import MachineCategory
+from karaage.machines.models import MachineCategory, Machine
 
 
 class UsageCache(models.Model):
@@ -46,3 +46,13 @@ class UserCache(UsageCache):
         if not self.id:
             self.date = datetime.date.today()
         super(self.__class__, self).save(force_insert, force_update)
+
+
+class MachineCache(UsageCache):
+    machine = models.ForeignKey(Machine)
+    
+    def save(self, force_insert=False, force_update=False):
+        if not self.id:
+            self.date = datetime.date.today()
+        super(self.__class__, self).save(force_insert, force_update)
+

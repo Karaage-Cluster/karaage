@@ -8,7 +8,7 @@ from django.db import connection
 
 import datetime
 
-from karaage.cache.models import InstituteCache, ProjectCache, UserCache
+from karaage.cache.models import InstituteCache, ProjectCache, UserCache, MachineCache
 from karaage.usage.models import CPUJob
 from karaage.machines.models import UserAccount
 
@@ -138,6 +138,34 @@ def get_user_usage(user, project, start, end):
             total_jobs = total_jobs + 1
 
         cache = UserCache.objects.create(user=user, project=project, start=start, end=end, cpu_hours=total_usage, no_jobs=total_jobs)
+
+    return cache.cpu_hours, cache.no_jobs
+
+
+
+def get_machine_usage(machine, start, end):
+    """Return a tuple of cpu hours and number of jobs for a machine
+    for a given period
+
+    Keyword arguments:
+    machine -- 
+    start -- start date
+    end -- end date
+    
+    """
+    
+    try:
+        cache = MachineCache.objects.get(machine=machine, date=datetime.date.today(), start=start, end=end)
+    except:
+        
+        start_str = start.strftime('%Y-%m-%d')
+        end_str = end.strftime('%Y-%m-%d')
+  
+        cursor = connection.cursor()
+        SQL = "SELECT SUM(cpu_usage), COUNT(*) FROM cpu_job WHERE machine_id LIKE '%s' AND date >= '%s' AND date <= '%s'" % (str(machine.id), start_str, end_str)
+        cursor.execute(SQL)
+        row = cursor.fetchone()
+        cache =  MachineCache.objects.create(machine=machine, start=start, end=end, cpu_hours=row[0], no_jobs=row[1])
 
     return cache.cpu_hours, cache.no_jobs
 

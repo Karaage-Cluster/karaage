@@ -1,5 +1,7 @@
 from django.db import models
 
+import datetime
+
 from karaage.people.models import Person
 
 from managers import MachineCategoryManager, ActiveMachineManager
@@ -39,6 +41,11 @@ class Machine(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('kg_machine_detail', [self.id])
+
+    def get_usage(self, start=datetime.date.today()-datetime.timedelta(days=90), end=datetime.date.today()):
+        from karaage.util.usage import get_machine_usage
+        return get_machine_usage(self, start, end)
+
 
 
 from karaage.projects.models import Project

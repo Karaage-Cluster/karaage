@@ -16,4 +16,5 @@ class ProjectCacheAdmin(admin.ModelAdmin):
 
 admin.site.register(ProjectCache, ProjectCacheAdmin)
 admin.site.register(UserCache)
+admin.site.register(MachineCache)
 
