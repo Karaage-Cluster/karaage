@@ -55,7 +55,10 @@ class PersonalDataStore(base.PersonalDataStore):
         super(PersonalDataStore, self).is_locked(person)
 
         conn = LDAPConnection()
-        ldap_user = conn.get_user('uid=%s' % person.username)
+        try:
+            ldap_user = conn.get_user('uid=%s' % person.username)
+        except:
+            return True
 
         if hasattr(ldap_user, 'nsAccountLock'):
             return True
