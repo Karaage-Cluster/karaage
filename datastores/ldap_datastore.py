@@ -85,7 +85,7 @@ class PersonalDataStore(base.PersonalDataStore):
         conn.ldap_modify(dn, old, new)
     
 
-    def set_password(self, person, raw_person):
+    def set_password(self, person, raw_password):
         conn = LDAPConnection()
         conn.change_password(person.user.username, raw_password)
 
