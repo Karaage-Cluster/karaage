@@ -44,8 +44,8 @@ class GraphGenerator(object):
         end -- end date
         machine_category -- MachineCategory object
         """
-        pass
-        #raise NotImplementedError
+        
+        raise NotImplementedError
     
     
     def gen_institute_bar(self, institute, start, end, machine_category): 
@@ -57,6 +57,6 @@ class GraphGenerator(object):
         end -- end date
         machine_category -- MachineCategory object
         """
-        pass
-        #raise NotImplementedError
+
+        raise NotImplementedError
 
