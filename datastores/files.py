@@ -116,6 +116,11 @@ class AccountDataStore(base.AccountDataStore):
 
         id_list.sort()
 
-        return id_list[-1] + 1
+        id = id_list[-1] + 1
+
+        if id < settings.UID_START:
+            return settings.UID_START
+        else:
+            return id
 
 
