@@ -33,34 +33,34 @@ account_datastores = settings.ACCOUNT_DATASTORES
 
 def create_account(person, default_project, machine_category):
     ads_module = __import__(account_datastores[machine_category.id], {}, {}, [''])
-    ads = module.AccountDataStore(machine_category)
+    ads = ads_module.AccountDataStore(machine_category)
     return ads.create_account(person, default_project)
 
 def delete_account(ua):
     ads_module = __import__(account_datastores[ua.machine_category.id], {}, {}, [''])
-    ads = module.AccountDataStore(ua.machine_category)
+    ads = ads_module.AccountDataStore(ua.machine_category)
     ads.delete_account(ua)
 
 def update_account(ua):
     ads_module = __import__(account_datastores[ua.machine_category.id], {}, {}, [''])
 
-    ads = module.AccountDataStore(ua.machine_category)
+    ads = ads_module.AccountDataStore(ua.machine_category)
     ads.update_account(ua)
 
 def lock_account(ua):
     ads_module = __import__(account_datastores[ua.machine_category.id], {}, {}, [''])
 
-    ads = module.AccountDataStore(ua.machine_category)
+    ads = ads_module.AccountDataStore(ua.machine_category)
     ads.lock_account(ua)
 
 def unlock_account(ua):
     ads_module = __import__(account_datastores[ua.machine_category.id], {}, {}, [''])
 
-    ads = module.AccountDataStore(ua.machine_category)
+    ads = ads_module.AccountDataStore(ua.machine_category)
     ads.unlock_account(ua)
 
 def change_shell(ua, shell):
     ads_module = __import__(account_datastores[ua.machine_category.id], {}, {}, [''])
 
-    ads = module.AccountDataStore(ua.machine_category)
+    ads = ads_module.AccountDataStore(ua.machine_category)
     ads.change_shell(ua, shell)

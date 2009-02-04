@@ -104,10 +104,14 @@ class PersonalDataStore(object):
 
     def update_user(self, person):
         from karaage.datastores import update_account
+        g = open('/tmp/kglog', 'a')
+        g.write('person update\n')
 
         for ua in person.useraccount_set.filter(date_deleted__isnull=True):
+            g.write('accounts update\n')
             update_account(ua)
 
+        g.close()
         
     def is_locked(self, person):
         pass

@@ -120,7 +120,6 @@ def send_account_rejected_email(user_request):
     c = Context({
         'receiver':  user_request.person,
         'project': user_request.project,
-        'site': '%s%s' % (site.domain, reverse('kg_user_profile')),
         })
     t = Template(email.body)
     

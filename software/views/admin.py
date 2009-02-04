@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.core.paginator import QuerySetPaginator
 
 from django_common.util.filterspecs import Filter, FilterBar
-from placard.connection import LDAPConnection
+#from placard.connection import LDAPConnection
 
 from karaage.software.models import *
 from karaage.software.forms import AddPackageForm
@@ -74,8 +74,8 @@ def software_detail(request, package_id):
 
     if request.method == 'POST' and 'member-add' in request.POST:
         p = get_object_or_404(Person, pk=request.POST['member'])
-        conn = LDAPConnection()
-        conn.add_group_member(package.gid, str(p.username))
+#        conn = LDAPConnection()
+#        conn.add_group_member(package.gid, str(p.username))
 
         request.user.message_set.create(message="User %s added to LDAP group" % p)
         log(request.user, package, 1, "User %s added to LDAP group manually" % p)
@@ -199,8 +199,8 @@ def remove_member(request, package_id, user_id):
     package = get_object_or_404(SoftwarePackage, pk=package_id)
     person = get_object_or_404(Person, pk=user_id)
 
-    conn = LDAPConnection()
-    conn.remove_group_member(package.gid, str(person.username))
+#    conn = LDAPConnection()
+#    conn.remove_group_member(package.gid, str(person.username))
 
     log(request.user, package, 3, 'Removed %s from group' % person)
     log(request.user, person, 3, 'Removed from software group %s' % package)

@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 
 import datetime
-from placard.connection import LDAPConnection
+#from placard.connection import LDAPConnection
 
 from karaage.people.models import Person
 from karaage.machines.models import Machine
@@ -52,7 +52,7 @@ class SoftwarePackage(models.Model):
             return None
 
     def group_name(self):
-        conn = LDAPConnection()
+        #conn = LDAPConnection()
         try:
             ldap_group = conn.get_group(self.gid)
             return ldap_group.name()
@@ -60,7 +60,7 @@ class SoftwarePackage(models.Model):
             return 'No LDAP Group'
 
     def get_group_members(self):
-        conn = LDAPConnection()
+        #conn = LDAPConnection()
         try:
             return conn.get_group_members(self.gid)
         except:

@@ -21,14 +21,14 @@ from karaage.machines.models import MachineCategory, UserAccount
 from karaage.usage.models import CPUJob
 from karaage.util.helpers import get_available_time
 
-import gdchart2
+#import gdchart2
 import base
 from util import *
 
 __author__ = 'Sam Morrison'
 
 
-class GraphGenerator(gdchart2.GraphGenerator):
+class GraphGenerator(base.GraphGenerator):
 
 
     def gen_project_graph(self, project, start, end, machine_category):
