@@ -9,7 +9,7 @@ from django.template.defaultfilters import wordwrap
 from django.contrib.auth.decorators import permission_required, login_required
 
 import datetime
-#from placard.connection import LDAPConnection
+from placard.connection import LDAPConnection
 
 from karaage.software.models import *
 from karaage.people.models import Person
@@ -52,8 +52,8 @@ def add_package(request, package_id):
             date=datetime.datetime.today(),
         )
         
-#        conn = LDAPConnection()
-#        conn.add_group_member(license.package.gid, str(person.username))
+        conn = LDAPConnection()
+        conn.add_group_member(license.package.gid, str(person.username))
 
         return HttpResponseRedirect(reverse('kg_user_profile'))
         
