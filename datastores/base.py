@@ -1,6 +1,4 @@
 from django.contrib.auth.models import User
-from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
-from django.contrib.contenttypes.models import ContentType
 
 import datetime
 from django_common.middleware.threadlocals import get_current_user
@@ -8,7 +6,7 @@ from django_common.middleware.threadlocals import get_current_user
 from karaage.util.helpers import create_password_hash 
 from karaage.people.models import Person
 from karaage.machines.models import UserAccount
-
+from karaage.util import log_object as log
 
 class PersonalDataStore(object):
 
@@ -46,11 +44,7 @@ class PersonalDataStore(object):
             )
         
         try:
-            LogEntry.objects.create(
-                action_time=datetime.datetime.now(), user=get_current_user(),
-                content_type=ContentType.objects.get_for_model(person.__class__),
-                object_id=person.id, object_repr=person.__str__(), action_flag=ADDITION,
-                change_message='Created')
+            log(get_current_user(), person, 1, 'Created')
         except:
             pass
         
@@ -68,11 +62,7 @@ class PersonalDataStore(object):
         person.user.is_active = True
         person.user.save()
         
-        LogEntry.objects.create(
-            action_time=datetime.datetime.now(), user=get_current_user(),
-            content_type=ContentType.objects.get_for_model(person.__class__),
-            object_id=person.id, object_repr=person.__str__(), action_flag=ADDITION,
-            change_message='Activated')
+        log(get_current_user(), person, 1, 'Activated')
 
         return person
         
@@ -93,13 +83,8 @@ class PersonalDataStore(object):
 
         for ua in person.useraccount_set.filter(date_deleted__isnull=True):
             delete_account(ua)
-            
-        LogEntry.objects.create(
-            action_time=datetime.datetime.now(), user=get_current_user(),
-            content_type=ContentType.objects.get_for_model(person.__class__),
-            object_id=person.id, object_repr=str(person), action_flag=DELETION,
-            change_message='Deleted person')    
 
+        log(get_current_user(), person, 3, 'Deleted')    
 
 
     def update_user(self, person):
@@ -153,12 +138,9 @@ class AccountDataStore(object):
         if default_project is not None:
             default_project.users.add(person)
     
-        LogEntry.objects.create(
-            action_time=datetime.datetime.now(), user=get_current_user(),
-            content_type=ContentType.objects.get_for_model(ua.user.__class__),
-            object_id=ua.user.id, object_repr=ua.user.__str__(), action_flag=ADDITION,
-            change_message='Created account on %s' % self.machine_category)
-            
+        log(get_current_user(), ua.user, 1, 'Created account on %s' % self.machine_category)
+
+
         return ua
 
 
@@ -173,13 +155,8 @@ class AccountDataStore(object):
             p.users.remove(ua.user)
         
         
-        LogEntry.objects.create(
-            action_time=datetime.datetime.now(), user=get_current_user(),
-            content_type=ContentType.objects.get_for_model(ua.user.__class__),
-            object_id=ua.user.id, object_repr=ua.user.__str__(), action_flag=DELETION,
-            change_message='Deleted account on %s' % ua.machine_category)
+        log(get_current_user(), ua.user, 3, 'Deleted account on %s' % ua.machine_category)
         
-
 
     def update_account(self, ua):
         pass
