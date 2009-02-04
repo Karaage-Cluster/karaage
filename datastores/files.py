@@ -37,7 +37,7 @@ class PersonalDataStore(base.PersonalDataStore):
 
 class AccountDataStore(base.AccountDataStore):
     
-    password_file = '/tmp/passwd'
+    passwd_files = settings.PASSWD_FILES
 
     def create_account(self, person, default_project):
         ua = super(AccountDataStore, self).create_account(person, default_project)
@@ -47,9 +47,10 @@ class AccountDataStore(base.AccountDataStore):
 
         line = "%s:x:%s:%s:%s:%s:%s\n" % (person.username, userid, person.institute.gid, person.get_full_name(), home_dir, '/bin/bash')
 
-        f = open(self.password_file, 'a')
-        f.write(line)
-        f.close()
+        for file in self.passwd_files:
+            f = open(file, 'a')
+            f.write(line)
+            f.close()
 
         return ua
 
@@ -57,41 +58,40 @@ class AccountDataStore(base.AccountDataStore):
     def delete_account(self, ua):
         super(AccountDataStore, self).delete_account(ua)
 
-        f = open(self.password_file)
-        data = f.readlines()
-        f.close()
-        new_data = []
-        for l in data:
-            if l.find(ua.username) != 0:
-                new_data.append(l)
+        for file in self.passwd_files:
 
-        f = open(self.password_file, 'w')
-        f.writelines(new_data)
-        f.close()
+            f = open(file)
+            data = f.readlines()
+            f.close()
+            new_data = []
+            for l in data:
+                if l.find(ua.username) != 0:
+                    new_data.append(l)
+
+            f = open(file, 'w')
+            f.writelines(new_data)
+            f.close()
 
 
     def update_account(self, ua):
         super(AccountDataStore, self).update_account(ua)
 
-        g = open('/tmp/kglog', 'a')
-        g.write('ggsdggsd\n')
-        f = open(self.password_file)
-        data = f.readlines()
-        f.close()
-        new_data = []
-        for l in data:
-            if l.find(ua.username) == 0:
-                g.write('found user\n')
-                username, shad, uid, gid, name, homedir, shell = l.split(':')
-                homedir = '/home/%s' % ua.username
-                l = "%s:x:%s:%s:%s:%s:%s\n" % (ua.username, uid, ua.user.institute.gid, ua.user.get_full_name(), homedir, shell)
-            new_data.append(l)
+        for file in self.passwd_files:
+            f = open(file)
+            data = f.readlines()
+            f.close()
+            new_data = []
+            for l in data:
+                if l.find(ua.username) == 0:
+                    username, shad, uid, gid, name, homedir, shell = l.split(':')
+                    homedir = '/home/%s' % ua.username
+                    l = "%s:x:%s:%s:%s:%s:%s\n" % (ua.username, uid, ua.user.institute.gid, ua.user.get_full_name(), homedir, shell)
+                new_data.append(l)
 
-        g.write('writing data\n%s\n' % new_data)
-        f = open(self.password_file, 'w')
-        f.writelines(new_data)
-        f.close()
-        g.close()
+            f = open(file, 'w')
+            f.writelines(new_data)
+            f.close()
+
 
     def lock_account(self, ua):
         super(AccountDataStore, self).lock_account(ua)
@@ -102,17 +102,20 @@ class AccountDataStore(base.AccountDataStore):
 
  
     def get_next_uid(self):
-        f = open(self.password_file)
-        data = f.readlines()
-        f.close()
         id_list = []
-        for l in data:
-            try:
-                id_list.append(int(l.split(':')[2]))
-            except:
-                pass
+
+        for file in self.passwd_files:
+            f = open(file)
+            data = f.readlines()
+            f.close()
+            for l in data:
+                try:
+                    id_list.append(int(l.split(':')[2]))
+                except:
+                    pass
 
         id_list.sort()
+
         return id_list[-1] + 1
 
 
