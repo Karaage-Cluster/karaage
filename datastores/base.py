@@ -107,8 +107,6 @@ class PersonalDataStore(object):
 
         for ua in person.useraccount_set.filter(date_deleted__isnull=True):
             update_account(ua)
-
-        g.close()
         
     def is_locked(self, person):
         pass
