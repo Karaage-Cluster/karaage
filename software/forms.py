@@ -1,5 +1,5 @@
 from django import forms
-#from placard.connection import LDAPConnection
+from placard.connection import LDAPConnection
 
 from karaage.machines.models import Machine
 from models import *
@@ -10,7 +10,7 @@ class SoftwarePackageForm(forms.Form):
     category = forms.ModelChoiceField(queryset=SoftwareCategory.objects.all())
     name = forms.CharField()
     description = forms.CharField(required=False, widget=forms.Textarea())
-    gid = forms.IntegerField()
+    gid = forms.ChoiceField(required=False, choices=[(x.gidNumber, x.name()) for x in LDAPConnection().get_groups()])
     homepage = forms.URLField(required=False)
     tutorial_url = forms.URLField(required=False)
     academic_only = forms.BooleanField(required=False)
