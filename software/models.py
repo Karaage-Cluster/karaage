@@ -1,6 +1,4 @@
 from django.db import models
-from django.contrib.admin.models import LogEntry
-from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 
 import datetime

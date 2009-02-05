@@ -1,7 +1,5 @@
 from django import forms
 from django.conf import settings
-from django.contrib.admin.models import LogEntry
-from django.contrib.contenttypes.models import ContentType
 
 import datetime
 from django_common.middleware.threadlocals import get_current_user

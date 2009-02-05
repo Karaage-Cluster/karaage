@@ -1,8 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.conf import settings
-from django.contrib.admin.models import LogEntry
-from django.contrib.contenttypes.models import ContentType
 
 import datetime
 from django_common.middleware.threadlocals import get_current_user
@@ -14,7 +12,7 @@ from karaage.constants import TITLES, STATES, COUNTRIES, DATE_FORMATS
 from karaage.datastores import create_new_user, create_account
 from karaage.util.helpers import check_password
 from karaage.validators import username_re
-
+from karaage.util import log_object as log
 
 class BaseUserForm(forms.Form):
     title = forms.ChoiceField(choices=TITLES)
@@ -121,13 +119,7 @@ class UserForm(BaseUserForm):
                 create_account(user, project, machine_category)
 
         else:
-            LogEntry.objects.create(
-                user=get_current_user(),
-                content_type=ContentType.objects.get_for_model(user.__class__),
-                object_id=user.id, 
-                object_repr=str(user),
-                action_flag=2,
-                change_message='Edit')
+            log(get_current_user(), user, 2, 'Edit')
 
         user.first_name = data['first_name']
         user.last_name = data['last_name']
