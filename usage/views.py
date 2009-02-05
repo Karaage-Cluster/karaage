@@ -57,7 +57,7 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
         time, jobs = m.get_usage(start, end)
         if time is None:
             time = 0
-        if show_zeros or jobs > 0:
+        if jobs > 0:
             m_list.append({ 'machine': m, 'usage': time, 'jobs': jobs})
             
     for i in institute_list:
