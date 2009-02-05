@@ -13,7 +13,7 @@ def smooth_data(rows, start, end):
     colours = []
     period = (end - start).days
     
-    if period >= 300:
+    if period >= 3000:
         while start <= end:
             start_e = start
             if start != today:
@@ -29,10 +29,10 @@ def smooth_data(rows, start, end):
                     start_e= start_e  + datetime.timedelta(days=1)
 
                 total = total / 3600  
-                data.append(total)
+                data.append(float(total))
                 colours.append(0x9AB8D7)
             start = start + datetime.timedelta(days=15)
-    elif period >= 30:
+    elif period >= 300:
         while start <= end:
             start_e = start
             if start != today:
@@ -48,7 +48,7 @@ def smooth_data(rows, start, end):
                     start_e= start_e  + datetime.timedelta(days=1)
 
                 total = total / 3600  
-                data.append(total)
+                data.append(float(total))
                 colours.append(0x9AB8D7)
             start = start + datetime.timedelta(days=5)
     else:
@@ -59,7 +59,7 @@ def smooth_data(rows, start, end):
                 except:
                     total = 0
                 total = total / 3600  
-                data.append(total)
+                data.append(float(total))
                 colours.append(0x9AB8D7)
             start = start + datetime.timedelta(days=1)
 

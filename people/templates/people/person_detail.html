@@ -36,7 +36,7 @@
         {% if perms.people.delete_person and person.is_active %}
         <li class="deletelink"><a href="delete/">Delete</a><br /><br /></li>
 	{% endif %}
-	<li><a href="{% url ac_userlogs person.id %}">Logs</a><br /><br /></li>
+	<li><a href="{% url kg_userlogs person.id %}">Logs</a><br /><br /></li>
 	<li class="addlink"><a href="add_comment/">Add comment</a><br /><br /></li>
 	<li><a href="comments/">Comments</a>&nbsp;({{ comment_count }})<br /><br /></li>
 	{% if person.is_active %}

@@ -11,8 +11,8 @@ urlpatterns = patterns('karaage.people.views.admin_user_detail',
     url(r'^lock/$', 'lock_person'),
     url(r'^unlock/$', 'unlock_person'),
     url(r'^bounced_email/$', 'bounced_email'),
-    url(r'^comments/$', 'user_comments', name='ac_user_comments'),
-    url(r'^add_comment/$', 'add_comment', name='ac_user_add_comment'),
+    url(r'^comments/$', 'user_comments', name='kg_user_comments'),
+    url(r'^add_comment/$', 'add_comment', name='kg_user_add_comment'),
 
 )
 

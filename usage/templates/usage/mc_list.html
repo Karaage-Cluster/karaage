@@ -1,5 +1,5 @@
 {% extends "main.html" %}
-{% load humanize filters usage_graphs %}
+{% load humanize %}{% load filters usage_graphs %}
 
 {% block title %}Usage{% endblock %}
 
@@ -11,12 +11,8 @@
 
 {% block content %}
 <div id="content-main">
-<h2>{{ machine_category }} Usage {{ start|date }} - {{ end|date }}</h2>
-<ul class="object-tools">
-<li><a href="institute/trends/?{{ querystring }}">Trends</a></li>
-<li><a href="top_users/?{{ querystring }}">Top Users</a></li>
-<li><a href="{% url kg_usage_search %}" class="viewsitelink">Advanced Search</a></li>
-</ul>
+<h2>Usage {{ start|date }} - {{ end|date }}</h2>
+
 <p>
 {% date_filter start end %}
 </p>
@@ -28,7 +24,7 @@
 	</div>
 	<div class="module">	
 	
-   	<h2>Institutes</h2>
+   	<h2>Machines</h2>
    	<img src="{{ graph }}" / class="float-right middle">
    	<table>
 			<thead>
@@ -42,16 +38,9 @@
 				<th>% quota used</th>
 			</tr>   	
    	</thead>
-   	<tfoot>
-			<tr>
-				<td>Total</td>
-				<td>{{ total|timeformat }}</td>
-				<td>{{ total_jobs|intcomma }}</td>	
-			</tr>   	
-   	</tfoot>
    	<tbody>
    	
-   	{% for i in i_list|dictsortreversed:"usage" %}
+   	{% for i in mc_list %}
 			<tr class="{% cycle row1,row2 as rowcolours %}">
 				<td><a href="institute/{{ i.institute.id }}/?{{ querystring }}">{{ i.institute.name }}</a> </td>
 				<td class="right">{{ i.usage|timeformat }}</td>	
@@ -70,14 +59,15 @@
 				<td class="right">&nbsp;</td>
 				<td class="right {{ unused.class }}">{{ unused.diff|floatformat:"2" }}</td>
 				<td>&nbsp;</td>
-			</tr>
+			</tr> 
    	</tbody>
    	</table>
-   	<br class="clear" />
 	</div>
+	
+	{% for mc in mc_list %}
 	<div class="module">
-		<h2>Machines</h2>
-		<img src="{% mc_pie_chart machine_category start end %}" class="float-right"/>
+		<h2>{{ mc }}</h2>
+		<img src="{% mc_pie_chart mc start end %}" class="float-right"/>
 			<table>
 			<thead>
 			<tr>
@@ -87,18 +77,20 @@
 			</tr>   	
    	</thead>
    	<tbody>  	
-   	{% for m in m_list %}
+   	{% for m in mc.machine_set.all %}
 			<tr class="{% cycle row1,row2 as rowcolours %}">
-				<td>{{ m.machine }}</td>
-				<td class="right">{{ m.usage|timeformat }}</td>	
-				<td class="right">{{ m.jobs|intcomma }}</td>
+				<td>{{ m.name }}</td>
+				<td class="right">{{ m.get_usage.0|timeformat }}</td>	
+				<td class="right">{{ m.get_usage.1|intcomma }}</td>
 			</tr> 
 		{% endfor %}		
    	</tbody>
    	</table>
-   	<br class="clear" />
    	
-	</div>
+   	<br clear="all" />
+   		</div>
+	{% endfor %}
+
 	
 
 </div>

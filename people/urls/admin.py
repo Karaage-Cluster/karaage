@@ -13,10 +13,10 @@ urlpatterns = patterns('karaage.people.views.admin',
     url(r'^struggling/$', 'struggling', name='kg_struggling_users_list'),
 
                    
-    url(r'^no_default/$', 'no_default_list', name='ac_no_default_list'),
-    url(r'^wrong_default/$', 'wrong_default_list', name='ac_wrong_default_list'),
-    url(r'^no_account/$', 'no_account_list', name='ac_no_account_list'),
-    url(r'^locked/$', 'locked_list', name='ac_locked_users_list'),
+    url(r'^no_default/$', 'no_default_list', name='kg_no_default_list'),
+    url(r'^wrong_default/$', 'wrong_default_list', name='kg_wrong_default_list'),
+    url(r'^no_account/$', 'no_account_list', name='kg_no_account_list'),
+    url(r'^locked/$', 'locked_list', name='kg_locked_users_list'),
     url(r'^add/$', 'add_edit_user', {'form_class': UserForm }, name='kg_add_user'),
     url(r'^accounts/(?P<useraccount_id>\d+)/change_shell/$', 'change_shell', name='kg_change_shell'),
     url(r'^accounts/(?P<useraccount_id>\d+)/edit/$', 'add_edit_useraccount'),
@@ -33,5 +33,5 @@ urlpatterns = patterns('karaage.people.views.admin',
 
 urlpatterns += patterns('karaage.views',                   
 
-    url(r'^(?P<object_id>\d+)/logs/$', 'log_detail', {'model': Person }, name='ac_userlogs'),
+    url(r'^(?P<object_id>\d+)/logs/$', 'log_detail', {'model': Person }, name='kg_userlogs'),
 )

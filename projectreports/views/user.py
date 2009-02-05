@@ -21,8 +21,8 @@ def survey(request, project_id):
     
     project = get_object_or_404(Project, pk=project_id)
 
-    #if not person == project.leader:
-    #    return HttpResponseForbidden("Access Denied - must be project leader.")
+    if not person == project.leader:
+        return HttpResponseForbidden("Access Denied - must be project leader.")
     
     today = datetime.date.today()
     
@@ -31,7 +31,7 @@ def survey(request, project_id):
     survey.submitter = project.pid
     survey.save()
 
-    return do_survey(request, survey.id, template_name='surveys/projectsurvey%s.html' % today.year)
+    return do_survey(request, survey.id, template_name='surveys/projectsurvey%s.html' % today.year, extra_context={'project': project })
 
 
 @login_required

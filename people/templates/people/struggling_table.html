@@ -34,7 +34,7 @@
 	   		<td><a href="{{ ua.user.institute.get_absolute_url }}">{{ ua.user.institute }}</a></td>
 	   		<td><a href="{{ ua.default_project.get_absolute_url}}">{{ ua.default_project.pid }}</a></td>
 	   		<td>{{ ua.date_created }}</td>
-	   		<td><a href="{% url ac_user_comments ua.user.username %}">{{ comment_count }}</a>&nbsp;&nbsp; <a href="{% url ac_user_add_comment ua.user.username %}" class="addlink"></a></td>
+	   		<td><a href="{% url kg_user_comments ua.user.username %}">{{ comment_count }}</a>&nbsp;&nbsp; <a href="{% url kg_user_add_comment ua.user.username %}" class="addlink"></a></td>
 	   	</tr>
 	   {% endfor %}
    </tbody>  	

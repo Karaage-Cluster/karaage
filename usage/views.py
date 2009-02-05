@@ -23,6 +23,17 @@ from karaage.graphs.util import get_colour
 from models import CPUJob
 
 
+def usage_index(request):
+    
+    mc_list = MachineCategory.objects.all()
+    start, end = get_date_range(request)
+
+    querystring = request.META['QUERY_STRING']
+
+    return render_to_response('usage/mc_list.html', locals(), context_instance=RequestContext(request))
+
+
+
 def index(request, machine_category_id=settings.DEFAULT_MC):
 
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
@@ -35,13 +46,20 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
     institute_list = Institute.primary.all()
     total, total_jobs = 0, 0
     i_list = []
-
+    m_list = []
     start, end = get_date_range(request)
 
     querystring = request.META['QUERY_STRING']
 
     available_time, avg_cpus = get_available_time(start, end, machine_category)
     
+    for m in machine_category.machine_set.all():
+        time, jobs = m.get_usage(start, end)
+        if time is None:
+            time = 0
+        if show_zeros or jobs > 0:
+            m_list.append({ 'machine': m, 'usage': time, 'jobs': jobs})
+            
     for i in institute_list:
         time, jobs = i.get_usage(start, end, machine_category)
         if time is None:
