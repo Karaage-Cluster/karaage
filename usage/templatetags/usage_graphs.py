@@ -14,5 +14,5 @@ def mc_pie_chart(machine_category, start, end):
         if usage[0] is not None:
             data[m.name] = float(usage[0])
             
-    return grapher.pie_chart(data_dict=data)
+    return grapher.pie_chart(data_dict=data).get_url()
 
