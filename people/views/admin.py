@@ -256,7 +256,7 @@ def make_default(request, useraccount_id, project_id):
     if request.user.has_perm('machines.change_useraccount'):
         access = True
 
-    if request.user != user_account.user.user:
+    if request.user == user_account.user.user:
         access = True
 
     if not access:
