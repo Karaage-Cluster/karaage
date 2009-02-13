@@ -2,7 +2,6 @@ from django.core import serializers
 from django.shortcuts import get_object_or_404
 
 from django_xmlrpc.decorators import xmlrpc_func, permission_required
-import datetime
 
 from karaage.people.models import Person
 from karaage.machines.models import MachineCategory, UserAccount
