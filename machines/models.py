@@ -58,6 +58,7 @@ class UserAccount(models.Model):
     date_created = models.DateField()
     date_deleted = models.DateField(null=True, blank=True)
     disk_quota = models.IntegerField(null=True, blank=True)
+    previous_shell = models.CharField(max_length=50, null=True, blank=True)
 
     class Meta:
         ordering = ['user',]
