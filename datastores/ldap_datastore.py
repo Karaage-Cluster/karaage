@@ -157,10 +157,10 @@ class AccountDataStore(base.AccountDataStore):
         
 
     def unlock_account(self, ua):
-        super(AccountDataStore, self).unlock_account(ua)
+        shell = super(AccountDataStore, self).unlock_account(ua)
 
         conn = LDAPConnection()
-        conn.update_user(ua.username, loginShell=settings.SHELLS[0][0])
+        conn.update_user(ua.username, loginShell=shell)
         
 
 

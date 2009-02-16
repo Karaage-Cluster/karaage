@@ -162,8 +162,11 @@ class AccountDataStore(object):
         pass
 
     def lock_account(self, ua):
-        pass    
+        ua.previous_shell = ua.loginShell()
+        ua.save()
 
     def unlock_account(self, ua):
-        pass
+        shell = getattr(ua, 'previous_shell', '/bin/bash')
+        return shell
+
         

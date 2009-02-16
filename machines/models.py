@@ -97,3 +97,17 @@ class UserAccount(models.Model):
         
         return iq.disk_quota
     
+    def loginShell(self):
+        try:
+            from placard.connection import LDAPConnection
+            conn = LDAPConnection()
+            try:
+                ldap_user = conn.get_user('uid=%s' % self.username)
+            except:
+                return ''
+            try:
+                return ldap_user.loginShell
+            except:
+                return ''
+        except:
+            pass
