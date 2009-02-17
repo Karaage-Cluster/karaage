@@ -2,12 +2,28 @@ from django.core import serializers
 from django.shortcuts import get_object_or_404
 
 from django_xmlrpc.decorators import xmlrpc_func, permission_required
+import datetime
 
 from karaage.people.models import Person
 from karaage.machines.models import MachineCategory, UserAccount
 from karaage.projects.models import Project
 
 from models import ProjectChunk
+from logs import parse_logs
+
+@xmlrpc_func(returns='string', args=['string', 'date'])
+@permission_required(perm='projects.change_project')
+def parse_usage(user, usage, date, machine_name, log_type):
+    """                                                                                                                                         
+    Parses usage                                                                                                                                
+    """
+
+    year, month, day = date.split('-')
+    date = datetime.date(int(year), int(month), int(day))
+
+    return parse_logs(usage, date, machine_name, log_type)
+
+
 
 @xmlrpc_func(returns='string', args=['string', 'string'])
 def get_project(username, proj=None):

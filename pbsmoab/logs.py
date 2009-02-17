@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-
 """
 
 To Configure this program see alogger-ng.cfg
@@ -159,7 +158,6 @@ def parse_logs(log_list, date, machine_name, log_type):
             continue
 
     summary = 'Inserted : %i\nUpdated  : %i\nFailed   : %i\nSkiped   : %i' % (count, updated, fail, skip)
-    summary = ''
 
     if DEBUG:
         print 'Inserted : %i' % count
