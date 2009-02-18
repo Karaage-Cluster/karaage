@@ -155,6 +155,8 @@ def remove_user(request, project_id, username):
 
    # send_removed_from_project_email(user, project)
     
+    if 'next' in request.REQUEST:
+        return HttpResponseRedirect(request.REQUEST['next'])
     if site.id == 2:
         return HttpResponseRedirect(project.get_absolute_url())
     return HttpResponseRedirect(user.get_absolute_url())
