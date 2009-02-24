@@ -27,13 +27,13 @@ class EmailForm(forms.Form):
         group = data['group']
         subject = data['subject']
         body = data['body']
-
+        mc = MachineCategory.objects.get(name='VPAC')
         
         if group == 'leaders':
-            projects = Project.active.all()
+            projects = Project.active.filter(machine_category=mc)
 
         elif group == 'vpac_users':
-            mc = MachineCategory.objects.get(name='VPAC')
+            
             user_ids = []
             for u in Person.active.all():
                 if u.has_account(mc):
