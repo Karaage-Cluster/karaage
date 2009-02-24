@@ -1,7 +1,6 @@
 from django.contrib import admin
-from models import ProjectReport
+from models import ProjectSurvey
 
-
-admin.site.register(ProjectReport)
+admin.site.register(ProjectSurvey)
 
 
