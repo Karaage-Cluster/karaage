@@ -107,6 +107,7 @@
 			<th>Start Date</th>
 			<th>End Date</th>
 			<th></th>
+			<th></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -117,6 +118,7 @@
 			<td>{{ p.start_date|date }}</td>
 			<td>{{ p.end_date|date }}</td>
 			<td><a href="{% url kg_project_edit p.pid %}" class="changelink">Edit</a></td>
+			<td><a href="{% url kg_survey p.pid %}">Report</a></td>
 		</tr>
 	{% endfor %}
 	</tbody>
