@@ -13,7 +13,7 @@ from karaage.projectreports.models import ProjectSurvey
 @login_required
 def report_list(request):
 
-    report_list = ProjectSurvey.objects.all()
+    report_list = ProjectSurvey.objects.filter(date_submitted__isnull=False)
 
     page_no = int(request.GET.get('page', 1))
 
