@@ -25,7 +25,8 @@ class ProjectForm(forms.Form):
     start_date = forms.DateField(widget=AdminDateWidget)
     end_date = forms.DateField(widget=AdminDateWidget, required=False)
     machine_category = forms.ModelChoiceField(queryset=MachineCategory.objects.all(), initial=1)
-
+    machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all())
+    
     def save(self, p=None):
         data = self.cleaned_data
 
@@ -55,6 +56,7 @@ class ProjectForm(forms.Form):
         p.start_date = data['start_date']
         p.end_date = data['end_date']
         p.machine_category = data['machine_category']
+        p.machine_categories = data['machine_categories']
         p.save()
 
         return p
@@ -83,6 +85,7 @@ class UserProjectForm(forms.Form):
     pid = forms.CharField(label="PIN", max_length=10, required=False, help_text="If yes, please provide Project Identification Number")
     needs_account = forms.BooleanField(required=False, label=u"Will you be working on this project yourself?")
     machine_category = forms.ModelChoiceField(queryset=MachineCategory.objects.all(), initial=1, required=False)
+    machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all())
     institute = forms.ModelChoiceField(queryset=Institute.valid.all())
 
     def save(self, leader=None, p=None):
@@ -94,6 +97,7 @@ class UserProjectForm(forms.Form):
             p.leader = leader
             p.institute = data['institute']
             p.machine_category=data['machine_category']
+            p.machine_categories=data['machine_categories']
             p.start_date = datetime.datetime.today()
             p.is_approved, p.is_active = False, False
             p.is_expertise = data['is_expertise']
