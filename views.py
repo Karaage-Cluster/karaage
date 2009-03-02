@@ -21,10 +21,7 @@ def admin_index(request):
     newest_users = Person.objects.order_by('-date_approved', '-id').filter(date_approved__isnull=False)[:5]
     newest_projects = Project.objects.order_by('-date_approved').filter(date_approved__isnull=False).filter(is_active=True)[:5]
     
-
-    exclude_ids = [ x.user_request.id for x in ProjectCreateRequest.objects.filter(user_request__isnull=False)]
-    userrequest_list = ProjectJoinRequest.objects.filter(leader_approved=False).exclude(id__in=exclude_ids)
-
+    userrequest_list = ProjectJoinRequest.objects.filter(leader_approved=False)
     projectrequest_list = ProjectCreateRequest.objects.all()
 
     recent_actions = request.user.logentry_set.all()[:10]
