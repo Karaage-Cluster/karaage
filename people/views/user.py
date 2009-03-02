@@ -11,7 +11,7 @@ from django.conf import settings
 from karaage.util import get_date_range
 from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
-from karaage.requests.models import UserRequest, ProjectRequest
+from karaage.requests.models import ProjectCreateRequest
 from karaage.people.forms import PasswordChangeForm, DelegateForm, BaseUserForm, LoginForm
 from karaage.machines.models import MachineCategory
 from karaage.machines.forms import ShellForm
@@ -41,7 +41,7 @@ def profile(request):
     if person.is_active_delegate():
         project_requests = []
         #for project in person.institute.project_set.all():
-        for project_request in ProjectRequest.objects.filter(project__institute=person.institute):
+        for project_request in ProjectCreateRequest.objects.filter(project__institute=person.institute):
             project_requests.append(project_request)
         
     

@@ -11,7 +11,7 @@ from django_common.util.filterspecs import Filter, FilterBar
 
 from karaage.pbsmoab.models import ProjectChunk
 from karaage.people.models import Person, Institute
-from karaage.requests.models import ProjectRequest
+from karaage.requests.models import ProjectCreateRequest
 from karaage.projects.models import Project
 from karaage.projects.forms import ProjectForm
 from karaage.util.email_messages import send_removed_from_project_email
@@ -199,6 +199,6 @@ def project_logs(request, project_id):
 
 @login_required       
 def pending_requests(request):
-    request_list = ProjectRequest.objects.all()
+    request_list = ProjectCreateRequest.objects.all()
 
     return render_to_response('projects/pending_requests.html', locals(), context_instance=RequestContext(request))

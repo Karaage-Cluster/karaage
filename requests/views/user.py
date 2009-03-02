@@ -10,12 +10,12 @@ import datetime
 
 from karaage.datastores import create_new_user
 from karaage.people.models import Person
-from karaage.requests.models import UserRequest
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory
 from karaage.util.email_messages import *
-from karaage.requests.forms import UserRegistrationForm
 from karaage.util import log_object as log
+from karaage.requests.models import ProjectJoinRequest
+from karaage.requests.forms import UserRegistrationForm
 
 
 def user_registration(request):
@@ -81,12 +81,10 @@ def choose_project(request):
                     request.session['password']
                     )
             
-            user_request = UserRequest.objects.create(
+            user_request = ProjectJoinRequest.objects.create(
                 person=person,
                 project=project,
-                machine_category=MachineCategory.objects.get_default(),
                 leader_approved=False,
-                needs_account=request.session.get('account', True)
                 )
             
             if 'user_data' in request.session:
@@ -152,7 +150,7 @@ def choose_project(request):
 
 
 def cancel_user_registration(request, user_request_id):
-    user_request = get_object_or_404(UserRequest, pk=user_request_id)
+    user_request = get_object_or_404(ProjectJoinRequest, pk=user_request_id)
 
     person = user_request.person
     user = person.user
@@ -170,51 +168,70 @@ def cancel_user_registration(request, user_request_id):
 
 
 def account_created(request, user_request_id):
-    user_request = get_object_or_404(UserRequest, pk=user_request_id)
+    user_request = get_object_or_404(ProjectJoinRequest, pk=user_request_id)
     person = user_request.person
     project = user_request.project
-    machine_category = user_request.machine_category
     
     return render_to_response('requests/account_pending.html', locals(), context_instance=RequestContext(request))
 
 @login_required
 def approve_person(request, user_request_id):
-    user_request = get_object_or_404(UserRequest, pk=user_request_id)
+    join_request = get_object_or_404(ProjectJoinRequest, pk=user_request_id)
     
     #Make sure the request is coming from the project leader
     if not request.user == user_request.project.leader.user:
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
-    user_request.leader_approved = True
-    user_request.save()
+    join_request.leader_approved = True
+    join_request.save()
 
-    request.user.message_set.create(message="%s approved successfully" % user_request.person)
+    project = join_request.project
+    person = join_request.person
+
+    request.user.message_set.create(message="%s approved successfully" % person)
     
-    log(request.user, user_request.person, 2, 'Approved by leader')
+    log(request.user, person, 2, 'Approved by leader')
 
     needs_account = False
     for mc in project.machine_categories.all():
-        if not user_request.person.has_account(mc):
+        if not person.has_account(mc):
             needs_account = True
             break
         
     if not needs_account:
-        log(request.user, user_request.person, 2, 'Added to project %s' % user_request.project)
-        log(request.user, user_request.project, 2, '%s added to project' % user_request.person)
+        log(request.user, person, 2, 'Added to project %s' % project)
+        log(request.user, project, 2, '%s added to project' % person)
 
-        user_request.project.users.add(user_request.person)
-        send_project_join_approved_email(user_request)
-        user_request.person.user.message_set.create(message="Your request to join the project %s has been accepted" % user_request.project.pid)
-        user_request.delete()
-    else:
-        pass
+        project.users.add(person)
+        send_project_join_approved_email(join_request)
+        person.user.message_set.create(message="Your request to join the project %s has been accepted" % project.pid)
+        join_request.delete()
+
+        return HttpResponseRedirect(reverse('kg_user_profile'))
+
+    if not settings.ADMIN_APPROVE_ACCOUNTS:
+        project.users.add(person)
+
+        person.activate()
+
+        log(request.user, person, 2, 'Added to project %s' % project)
+        log(request.user, project, 2, '%s added to project' % person)
+
+        # Create accounts on all the MachineCategories attached to the project
+        for mc in project.machine_categories.all():
+            if not person.has_account(mc):
+                create_account(person, project, mc)
+
+        send_account_approved_email(join_request)
+        join_request.delete()
+
 
     return HttpResponseRedirect(reverse('kg_user_profile')) 
 
 
 @login_required
 def reject_person(request, user_request_id):
-    user_request = get_object_or_404(UserRequest, pk=user_request_id)
+    user_request = get_object_or_404(ProjectJoinRequest, pk=user_request_id)
     project = user_request.project
     person = user_request.person
     user = user_request.person.user
@@ -239,7 +256,7 @@ def reject_person(request, user_request_id):
 def request_detail(request, user_request_id):
 
     
-    user_request = get_object_or_404(UserRequest, pk=user_request_id)
+    user_request = get_object_or_404(ProjectJoinRequest, pk=user_request_id)
 
     project = user_request.project
     person = user_request.person

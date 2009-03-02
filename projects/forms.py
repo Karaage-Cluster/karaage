@@ -6,7 +6,7 @@ from django_common.middleware.threadlocals import get_current_user
 
 from karaage.people.models import Institute, Person
 from karaage.machines.models import MachineCategory
-from karaage.requests.models import ProjectRequest, UserRequest
+from karaage.requests.models import ProjectCreateRequest
 from karaage.util.helpers import get_new_pid
 from karaage.util import log_object
 
@@ -107,19 +107,10 @@ class UserProjectForm(forms.Form):
             p.is_expertise = data['is_expertise']
             p.save()
 
-            user_request = None
-            if data['needs_account']:
-                # Create a user request
-                user_request = UserRequest.objects.create(
-                    person=leader,
-                    project=p,
-                    machine_category=data['machine_category'],
-                    leader_approved=False,
-                    needs_account=True,
-                )
-            project_request = ProjectRequest.objects.create(
+            project_request = ProjectCreateRequest.objects.create(
                 project=p,
-                user_request=user_request,
+                person=leader,
+                needs_account=data['needs_account'],
             )
 
             log_object(get_current_user(), p, 1, 'Created')

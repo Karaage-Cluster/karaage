@@ -12,7 +12,7 @@ from karaage.people.forms import UserForm
 from karaage.datastores import create_new_user
 from karaage.util.helpers import check_password, create_password_hash, get_new_pid
 
-from models import UserRequest, ProjectRequest
+from models import ProjectCreateRequest
 
 
 class UserRegistrationForm(UserForm):
@@ -91,22 +91,14 @@ class ProjectRegistrationForm(UserRegistrationForm):
 
 
         p = create_new_user(data)
-            
-        # Create a user request
-        user_request = UserRequest.objects.create(
-            person=p,
-            project=project,
-            machine_category=data['machine_category'],
-            leader_approved=False,
-            needs_account=data['needs_account'],
-        )
 
         project.leader = user_request.person
         project.save()
         
-        project_request = ProjectRequest.objects.create(
+        project_request = ProjectCreateRequest.objects.create(
             project=project,
-            user_request=user_request,
+            person=p,
+            needs_account=data['needs_account']
         )
 
         return project_request

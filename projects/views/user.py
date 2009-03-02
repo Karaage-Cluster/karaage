@@ -10,7 +10,6 @@ import datetime
 from karaage.people.models import Institute
 from karaage.projects.forms import UserProjectForm as ProjectForm
 from karaage.projects.models import Project
-from karaage.requests.models import ProjectRequest, UserRequest
 from karaage.machines.models import Machine
 from karaage.datastores import create_account
 from karaage.util.email_messages import *

@@ -13,7 +13,7 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 
 from karaage.people.models import Person
 from karaage.projects.models import Project
-from karaage.requests.models import UserRequest, ProjectRequest
+from karaage.requests.models import ProjectJoinRequest, ProjectCreateRequest
 
 
 @login_required
@@ -22,10 +22,10 @@ def admin_index(request):
     newest_projects = Project.objects.order_by('-date_approved').filter(date_approved__isnull=False).filter(is_active=True)[:5]
     
 
-    exclude_ids = [ x.user_request.id for x in ProjectRequest.objects.filter(user_request__isnull=False)]
-    userrequest_list = UserRequest.objects.filter(leader_approved=False).exclude(id__in=exclude_ids)
+    exclude_ids = [ x.user_request.id for x in ProjectCreateRequest.objects.filter(user_request__isnull=False)]
+    userrequest_list = ProjectJoinRequest.objects.filter(leader_approved=False).exclude(id__in=exclude_ids)
 
-    projectrequest_list = ProjectRequest.objects.all()
+    projectrequest_list = ProjectCreateRequest.objects.all()
 
     recent_actions = request.user.logentry_set.all()[:10]
 

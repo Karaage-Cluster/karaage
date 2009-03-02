@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 import datetime
 
 from karaage.pbsmoab.models import ProjectChunk
-from karaage.requests.models import ProjectRequest, UserRequest
+from karaage.requests.models import ProjectCreateRequest, ProjectJoinRequest
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory
 from karaage.requests.forms import ProjectRegistrationForm
@@ -62,7 +62,7 @@ def project_registration(request):
 
 
 def project_created(request, project_request_id):
-    project_request = get_object_or_404(ProjectRequest, pk=project_request_id)
+    project_request = get_object_or_404(ProjectCreateRequest, pk=project_request_id)
     project = project_request.project
     person = project_request.project.leader
     
@@ -73,7 +73,7 @@ def project_created(request, project_request_id):
 
 @login_required
 def approve_project(request, project_request_id):
-    project_request = get_object_or_404(ProjectRequest, pk=project_request_id)
+    project_request = get_object_or_404(ProjectCreateRequest, pk=project_request_id)
     project = project_request.project
     institute = project.institute
     leader = project.leader
@@ -100,21 +100,15 @@ def approve_project(request, project_request_id):
     if not leader.user.is_active:
         leader.activate()
         
-    if project_request.user_request:
+    if project_request.needs_account:
         # Leader has requested an account as well
-        user_request = project_request.user_request
-        person = user_request.person
-        project = user_request.project
-        machine_category = user_request.machine_category
-        if user_request.needs_account:
-            project.users.add(leader)
-            # Check to see if he has account for machine_category
-            # If not create one
-            if not person.has_account(machine_category):
-                create_account(person, project, machine_category)
+        project.users.add(leader)
+        # Check to see if he has account for machine_category
+        # If not create one
+        for mc in project.machine_categories.all():
+            if not leader.has_account(mc):
+                create_account(leader, project, mc)
                 
-        user_request.delete()  
-
     send_project_approved_email(project_request)
     
     project_request.delete()
@@ -124,7 +118,7 @@ def approve_project(request, project_request_id):
 
 @login_required
 def reject_project(request, project_request_id):
-    project_request = get_object_or_404(ProjectRequest, pk=project_request_id)
+    project_request = get_object_or_404(ProjectCreateRequest, pk=project_request_id)
     project = project_request.project
     institute = project.institute
     leader = project.leader
@@ -151,11 +145,9 @@ def reject_project(request, project_request_id):
     
 @login_required
 def request_detail(request, project_request_id):
-    project_request = get_object_or_404(ProjectRequest, pk=project_request_id)
+    project_request = get_object_or_404(ProjectCreateRequest, pk=project_request_id)
 
-    user_request = project_request.user_request
     project = project_request.project
-
     person = project_request.project.leader
 
     # Make sure the request is coming from the institutes delegate
