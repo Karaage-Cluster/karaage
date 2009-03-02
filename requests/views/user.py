@@ -60,8 +60,9 @@ def choose_project(request):
         institute = request.user.get_profile().institute
     else:
         institute = request.session['user_data']['institute']
-                                        
 
+    select_project_list = Project.objects.filter(institute=institute)
+    
     project_list = False
     qs = request.META['QUERY_STRING']
 
@@ -191,7 +192,13 @@ def approve_person(request, user_request_id):
     
     log(request.user, user_request.person, 2, 'Approved by leader')
 
-    if user_request.person.has_account(user_request.machine_category):
+    needs_account = False
+    for mc in project.machine_categories.all():
+        if not user_request.person.has_account(mc):
+            needs_account = True
+            break
+        
+    if not needs_account:
         log(request.user, user_request.person, 2, 'Added to project %s' % user_request.project)
         log(request.user, user_request.project, 2, '%s added to project' % user_request.person)
 
