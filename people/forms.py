@@ -53,12 +53,12 @@ class UserForm(BaseUserForm):
     username = forms.CharField(label=u"Requested username", max_length=30, help_text=u"30 characters or fewer. Alphanumeric characters only (letters, digits and underscores).")
     password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
     password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)')
-    machine_category = forms.ModelChoiceField(queryset=MachineCategory.objects.all(), initial=1, required=False)
     project = forms.ModelChoiceField(queryset=Project.objects.all(), label=u"Default Project", required=False)
     institute = forms.ModelChoiceField(queryset=Institute.valid.all())
     comment = forms.CharField(widget=forms.Textarea(), required=False)
     needs_account = forms.BooleanField(required=False, label=u"Do you require a VPAC computer account", help_text=u"eg. Will you be working on the project yourself")
     expires = forms.DateField(widget=forms.TextInput(attrs={ 'class':'vDateField' }), required=False)
+
 
     def clean_username(self):
 
@@ -71,21 +71,15 @@ class UserForm(BaseUserForm):
 
         try:
             user = User.objects.get(username__exact=username)
+            raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old VPAC account please email accounts@vpac.org')
         except:
-            try:
-                user_account = UserAccount.objects.get(username__exact=username, machine_category=machine_category, date_deleted__isnull=True)
-            except:
-                return username
-
-        raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old VPAC account please email accounts@vpac.org')
+            pass
+        
+        return username
 
     
     def clean(self):
         data = self.cleaned_data
-        
-        if data['needs_account']:
-            if not data.get('machine_category'):
-                raise forms.ValidationError(u'To make an account you must select a machine category.')
 
         if data.get('password1') and data.get('password2'):
         
@@ -105,18 +99,11 @@ class UserForm(BaseUserForm):
         if user is None:
             user = create_new_user(data)
             
-            if data['project'] is not None:
-                project = data['project']
-                project.users.add(user)
-            else:
-                project = None
-
             # Since adding with this method is only done with admin
             user.activate()
 
-            if data['needs_account']:
-                machine_category = data['machine_category']
-                create_account(user, project, machine_category)
+            if data['needs_account'] and data['project']:
+                add_user_to_project(user, data['project'])
 
         else:
             log(get_current_user(), user, 2, 'Edit')

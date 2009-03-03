@@ -11,6 +11,7 @@ import datetime
 from karaage.datastores import create_new_user
 from karaage.people.models import Person
 from karaage.projects.models import Project
+from karaage.projects.util import add_user_to_project
 from karaage.machines.models import MachineCategory
 from karaage.util.email_messages import *
 from karaage.util import log_object as log
@@ -210,17 +211,13 @@ def approve_person(request, user_request_id):
         return HttpResponseRedirect(reverse('kg_user_profile'))
 
     if not settings.ADMIN_APPROVE_ACCOUNTS:
-        project.users.add(person)
 
         person.activate()
 
         log(request.user, person, 2, 'Added to project %s' % project)
         log(request.user, project, 2, '%s added to project' % person)
 
-        # Create accounts on all the MachineCategories attached to the project
-        for mc in project.machine_categories.all():
-            if not person.has_account(mc):
-                create_account(person, project, mc)
+        add_user_to_project(person, project)
 
         send_account_approved_email(join_request)
         join_request.delete()

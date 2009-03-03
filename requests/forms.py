@@ -66,6 +66,7 @@ class ProjectRegistrationForm(UserRegistrationForm):
     project_description = forms.CharField(max_length=1000, widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), help_text="Include any information about any grants you have received. Please keep this brief")
     additional_req = forms.CharField(label="Additional requirements", widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), help_text=u"Do you have any special requirements?", required=False)
     is_expertise = forms.BooleanField(required=False, label=u"Is this a current VPAC funded Expertise or Education Project?")
+    machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all, widget=forms.CheckboxSelectMultiple)
 
     def save(self):
 
@@ -81,14 +82,13 @@ class ProjectRegistrationForm(UserRegistrationForm):
             additional_req=data['additional_req'],
             start_date=datetime.datetime.today(),
             end_date=datetime.datetime.today() + datetime.timedelta(days=365),
-            machine_category=data['machine_category'],
+            machine_categories=data['machine_categories'],
         )
 
         if data['is_expertise']:
             project.pid = data['pid']
         else:
             project.pid = get_new_pid(data['institute'], data['is_expertise'])
-
 
         p = create_new_user(data)
 

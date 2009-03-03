@@ -10,9 +10,9 @@ import datetime
 from karaage.pbsmoab.models import ProjectChunk
 from karaage.requests.models import ProjectCreateRequest, ProjectJoinRequest
 from karaage.projects.models import Project
+from karaage.projects.util import add_user_to_project
 from karaage.machines.models import MachineCategory
 from karaage.requests.forms import ProjectRegistrationForm
-from karaage.datastores import create_account
 from karaage.util.email_messages import *
 from karaage.util import log_object as log
 
@@ -101,14 +101,8 @@ def approve_project(request, project_request_id):
         leader.activate()
         
     if project_request.needs_account:
-        # Leader has requested an account as well
-        project.users.add(leader)
-        # Check to see if he has account for machine_category
-        # If not create one
-        for mc in project.machine_categories.all():
-            if not leader.has_account(mc):
-                create_account(leader, project, mc)
-                
+        add_user_to_project(leader, project)
+ 
     send_project_approved_email(project_request)
     
     project_request.delete()

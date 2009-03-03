@@ -3,9 +3,9 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import permission_required, login_required
 
+from karaage.projects.util import add_user_to_project
 from karaage.requests.models import ProjectJoinRequest
 from karaage.util import log_object as log
-from karaage.datastores import create_account
 from karaage.util.email_messages import *
 
 @login_required
@@ -35,17 +35,12 @@ def account_request_approve(request, ar_id):
     person = join_request.person
     project = join_request.project
 
-    project.users.add(person)
-
     person.activate()
 
     log(request.user, person, 2, 'Added to project %s' % project)
     log(request.user, project, 2, '%s added to project' % person)
 
-    # Create accounts on all the MachineCategories attached to the project
-    for mc in project.machine_categories.all():
-        if not person.has_account(mc):
-            create_account(person, project, mc)
+    add_user_to_project(person, project)
 
     send_account_approved_email(join_request)
     join_request.delete()

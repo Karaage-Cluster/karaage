@@ -60,9 +60,8 @@
 		{% formfield form.additional_req %}
 		<input type="hidden" name="imghash" value="{{ imghash }}" id="id_imghash" />
 		<img src="{{ MEDIA_URL }}img/captcha/{{ tempname }}"><br />
-		{% formfield form.imgtext %}
-		
-		<input type="hidden" name="machine_category" value="1" />
+		{% formfield form.imgtext %}		
+		<input type="hidden" name="machine_categories" value="1" />
 	</fieldset>
 	<div class="submit-row">
 			<input type="submit" value="Submit" class="default" />
