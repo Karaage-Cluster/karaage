@@ -16,7 +16,7 @@ from models import Project
 
 class ProjectForm(forms.Form):
     pid = forms.CharField(max_length=10, required=False, help_text="If left blank the next available pid will be used")
-    name = forms.CharField(widget=forms.TextInput(attrs={ 'size':60 }))
+    name = forms.CharField(label='Project Title', widget=forms.TextInput(attrs={ 'size':60 }))
     description = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
     institute = forms.ModelChoiceField(queryset=Institute.valid.all())
     additional_req = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
@@ -24,8 +24,7 @@ class ProjectForm(forms.Form):
     leader = forms.ModelChoiceField(queryset=Person.active.all())
     start_date = forms.DateField(widget=AdminDateWidget)
     end_date = forms.DateField(widget=AdminDateWidget, required=False)
-    machine_category = forms.ModelChoiceField(queryset=MachineCategory.objects.all(), initial=1)
-    machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all())
+    machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all(), widget=forms.CheckboxSelectMultiple)
     
     def save(self, p=None):
         data = self.cleaned_data
@@ -55,7 +54,6 @@ class ProjectForm(forms.Form):
         p.leader = data['leader']
         p.start_date = data['start_date']
         p.end_date = data['end_date']
-        p.machine_category = data['machine_category']
         p.machine_categories = data['machine_categories']
         p.save()
 
@@ -78,14 +76,13 @@ class UserProjectForm(forms.Form):
     This form is for people who have an account and want to start a new project
     or edit it
     """
-    name = forms.CharField(widget=forms.TextInput(attrs={ 'size':60 }))
+    name = forms.CharField(label='Project Title', widget=forms.TextInput(attrs={ 'size':60 }))
     description = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }))
     additional_req = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
     is_expertise = forms.BooleanField(required=False, help_text=u"Is this a current VPAC funded Expertise or Education Project?")
     pid = forms.CharField(label="PIN", max_length=10, required=False, help_text="If yes, please provide Project Identification Number")
     needs_account = forms.BooleanField(required=False, label=u"Will you be working on this project yourself?")
-    machine_category = forms.ModelChoiceField(queryset=MachineCategory.objects.all(), initial=1, required=False)
-    machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all())
+    machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all(), widget=forms.CheckboxSelectMultiple)
     institute = forms.ModelChoiceField(queryset=Institute.valid.all())
 
     def save(self, leader=None, p=None):
@@ -96,7 +93,6 @@ class UserProjectForm(forms.Form):
             p.pid = get_new_pid(data['institute'], data['is_expertise'])
             p.leader = leader
             p.institute = data['institute']
-            p.machine_category=data['machine_category']
             p.machine_categories=data['machine_categories']
             p.start_date = datetime.datetime.today()
             p.is_approved, p.is_active = False, False
