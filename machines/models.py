@@ -71,7 +71,7 @@ class UserAccount(models.Model):
         return self.user.get_absolute_url()
     
     def project_list(self):
-        return self.user.project_set.filter(machine_category=self.machine_category)
+        return self.user.project_set.filter(machine_categories=self.machine_category)
     
     def get_latest_usage(self):
         try:
