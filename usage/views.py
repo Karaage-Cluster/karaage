@@ -121,7 +121,7 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
 
     if i_jobs > 0:
 
-        for p in institute.project_set.filter(machine_category=machine_category):
+        for p in institute.project_set.filter(machine_categories=machine_category):
             p_usage, p_jobs = p.get_usage(start, end)
             chunk = p.projectchunk
             if p_jobs > 0:
@@ -137,7 +137,7 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
         user_list = []
         user_total, user_total_jobs = 0, 0
         if i_usage:
-            for u in UserCache.objects.order_by('-cpu_hours').filter(start=start, end=end).filter(project__institute=institute).filter(project__machine_category=machine_category)[:5]:
+            for u in UserCache.objects.order_by('-cpu_hours').filter(start=start, end=end).filter(project__institute=institute).filter(project__machine_categories=machine_category)[:5]:
                 user_total += u.cpu_hours
                 user_total_jobs += u.no_jobs
                 user_list.append(
@@ -160,7 +160,7 @@ def project_usage(request, project_id, institute_id=None, machine_category_id=se
     
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
     project = get_object_or_404(Project, pk=project_id)
-    machine_category = project.machine_category
+    #machine_category = project.machine_category
     usage_list = []
     total, total_jobs = 0, 0
 
