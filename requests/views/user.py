@@ -24,6 +24,9 @@ def user_registration(request):
     This is for a new user wanting to join a project
 
     """
+    if request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('user_choose_project'))
+
     from random import choice
     import Image, ImageDraw, ImageFont, sha
     import os
@@ -56,10 +59,13 @@ def user_registration(request):
 
 
 def choose_project(request):
-    session = request.session
+
     if request.user.is_authenticated():
         institute = request.user.get_profile().institute
     else:
+        if not 'user_data' in request.session:
+            return HttpResponseRedirect(reverse('user_registration'))
+        
         institute = request.session['user_data']['institute']
 
     select_project_list = Project.objects.filter(institute=institute)
@@ -180,7 +186,7 @@ def approve_person(request, user_request_id):
     join_request = get_object_or_404(ProjectJoinRequest, pk=user_request_id)
     
     #Make sure the request is coming from the project leader
-    if not request.user == user_request.project.leader.user:
+    if not request.user == join_request.project.leader.user:
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     join_request.leader_approved = True

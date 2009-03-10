@@ -34,7 +34,7 @@ def profile(request):
         leader_project_list = leader_project_list.filter(is_approved=True)
         account_requests = []
         for project in leader_project_list:
-            for user_request in project.userrequest_set.filter(leader_approved=False):
+            for user_request in project.projectjoinrequest_set.filter(leader_approved=False):
                 account_requests.append(user_request)
 
 

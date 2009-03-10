@@ -35,7 +35,7 @@ def user_detail(request, username):
     
     person = get_object_or_404(Person, user__username=username)
 
-    if person.userrequest_set.count() > 0 and not person.user.is_active:
+    if person.projectjoinrequest_set.count() > 0 and not person.user.is_active:
         requestor = True
 
     my_projects = person.project_set.all()
