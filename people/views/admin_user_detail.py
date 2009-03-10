@@ -51,13 +51,15 @@ def user_detail(request, username):
         # Post means adding this user to a project
         data = request.POST.copy()
         project = Project.objects.get(pk=data['project'])
-        if person.has_account(project.machine_category):
+        no_account_error = ''
+        for mc in project.machine_categories.all():
+            if not person.has_account(mc):
+                no_account_error = "%s has no account on %s. Please create one first" % (person, project.machine_category)
+                break
+        if not no_account_error:
             project.users.add(person)
             request.user.message_set.create(message="User '%s' was added to %s succesfully" % (person, project))
-            
             log(request.user, project, 2, '%s added to project' % person)
-        else:
-            no_account_error = "%s has no account on %s. Please create one first" % (person, project.machine_category)
 
     #change shell form
     shell_form = ShellForm()

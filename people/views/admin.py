@@ -220,8 +220,9 @@ def no_account_list(request):
     
     for u in users:
         for p in u.project_set.all():
-            if not u.has_account(p.machine_category):
-                user_id_list.append(u.id)
+            for mc in p.machine_categories.all():
+                if not u.has_account(mc):
+                    user_id_list.append(u.id)
 
 
     return user_list(request, Person.objects.filter(id__in=user_id_list))
