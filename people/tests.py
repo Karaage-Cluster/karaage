@@ -189,7 +189,7 @@ class UserTestCase(TestCase):
             country='AU',
         )
         project = Project.objects.get(pk='test')
-        ur = UserRequest.objects.create(
+        ur = ProjectJoinRequest.objects.create(
             person=user,
             project=project,
             machine_category=MachineCategory.objects.get(name='VPAC'),
