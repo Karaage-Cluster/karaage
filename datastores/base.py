@@ -169,4 +169,11 @@ class AccountDataStore(object):
         shell = getattr(ua, 'previous_shell', '/bin/bash')
         return shell
 
-        
+    def get_shell(self, ua):
+        pass
+
+    def change_shell(self, ua, shell):
+        from karaage.datastores import get_shell
+        ua.previous_shell = get_shell(ua)
+        ua.save()
+

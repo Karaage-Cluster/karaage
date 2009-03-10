@@ -163,7 +163,16 @@ class AccountDataStore(base.AccountDataStore):
         conn.update_user(ua.username, loginShell=shell)
         
 
+    def get_shell(self, ua):
+        super(AccountDataStore, self).get_shell(ua)
+
+        conn = LDAPConnection()
+        luser = conn.get_user('uid=%s' % ua.username)
+        return luser.loginShell
+
 
     def change_shell(self, ua, shell):
+        super(AccountDataStore, self).change_shell(ua, shell)
+
         conn =  LDAPConnection()
         conn.update_user(ua.username, loginShell=str(shell))
