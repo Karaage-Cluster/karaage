@@ -9,7 +9,6 @@ from django.db.models import Q
 from django.core.paginator import QuerySetPaginator
 from django_common.util.filterspecs import Filter, FilterBar
 
-from karaage.pbsmoab.models import ProjectChunk
 from karaage.people.models import Person, Institute
 from karaage.requests.models import ProjectCreateRequest
 from karaage.projects.models import Project
@@ -38,8 +37,6 @@ def add_edit_project(request, project_id=None):
             else:
                 project = form.save()
                 request.user.message_set.create(message="Project '%s' added succesfully" % project)
-
-            project_chunk, created = ProjectChunk.objects.get_or_create(project=project)
 
             return HttpResponseRedirect(project.get_absolute_url())        
     else:        
