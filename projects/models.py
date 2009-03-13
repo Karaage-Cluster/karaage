@@ -22,7 +22,7 @@ class Project(models.Model):
     end_date = models.DateField(null=True, blank=True)
     is_expertise = models.BooleanField()
     additional_req = models.TextField(null=True, blank=True)
-    machine_category = models.ForeignKey(MachineCategory) 
+    machine_category = models.ForeignKey(MachineCategory)
     machine_categories = models.ManyToManyField(MachineCategory, null=True, blank=True, related_name='projects')
     is_active = models.BooleanField()
     approved_by = models.ForeignKey(Person, related_name='project_approver', null=True, blank=True, editable=False)
@@ -49,6 +49,14 @@ class Project(models.Model):
     def get_usage_url(self):
         return ('kg_project_usage', [self.institute.id, self.pid])
         
+    def activate(self):
+        self.is_active = True
+        self.is_approved = True
+        self.date_approved = datetime.datetime.today()
+        approver = get_current_user()
+        self.approved_by = approver.get_profile()
+        self.save()
+
     def deactivate(self):
         self.is_active = False
         deletor = get_current_user()    

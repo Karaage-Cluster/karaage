@@ -73,6 +73,8 @@ def get_insitutes_trend(institute, start, end, machine_category=MachineCategory.
     if len(project_ids) == 1:
         project_ids = "('%s')" % str(project_ids[0])
 
+    if not project_ids:
+        return {}
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
 

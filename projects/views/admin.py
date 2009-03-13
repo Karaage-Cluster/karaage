@@ -7,12 +7,15 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.models import LogEntry
 from django.db.models import Q
 from django.core.paginator import QuerySetPaginator
+
 from django_common.util.filterspecs import Filter, FilterBar
+from django_common.middleware.threadlocals import get_current_user
 
 from karaage.people.models import Person, Institute
 from karaage.requests.models import ProjectCreateRequest
 from karaage.projects.models import Project
 from karaage.projects.forms import ProjectForm
+from karaage.projects.util import get_new_pid, add_user_to_project
 from karaage.util.email_messages import send_removed_from_project_email
 from karaage.util import log_object as log
 from karaage.usage.forms import UsageSearchForm
@@ -22,31 +25,32 @@ from karaage.usage.forms import UsageSearchForm
 def add_edit_project(request, project_id=None):
 
     if project_id is None:
-        project = False
+        project = None
+        flag = 1
     else:
         project = get_object_or_404(Project, pk=project_id)
+        flag = 2
 
     if request.method == 'POST':
-        form = ProjectForm(request.POST)
+        form = ProjectForm(request.POST, instance=project)
         
         if form.is_valid():
-            
-            if project:
-                form.save(project)
+            project = form.save(commit=False)
+            if not project.pid:
+                project.pid = get_new_pid(project.institute, project.is_expertise)
+            project.save()
+            project.activate()
+            form.save_m2m()
+            if flag == 1:
                 request.user.message_set.create(message="Project '%s' edited succesfully" % project)
+                log(get_current_user(), project, 1, 'Created')
             else:
-                project = form.save()
                 request.user.message_set.create(message="Project '%s' added succesfully" % project)
+                log(get_current_user(), project, 2, 'Edited')
 
             return HttpResponseRedirect(project.get_absolute_url())        
     else:        
-        form = ProjectForm()
-        
-        if project:
-            form.initial = project.__dict__
-            form.initial['machine_category'] = form.initial['machine_category_id']
-            form.initial['leader'] = form.initial['leader_id']
-            form.initial['institute'] = form.initial['institute_id']
+        form = ProjectForm(instance=project)
             
     return render_to_response('projects/project_form.html', locals(), context_instance=RequestContext(request))
 
@@ -86,13 +90,13 @@ def project_detail(request, project_id):
         
         data = request.POST.copy()     
         person = Person.objects.get(pk=data['person'])
-
-        if person.has_account(project.machine_category):
-            project.users.add(person)
-            request.user.message_set.create(message="User '%s' added succesfully" % person)
-            log(request.user, project, 1, 'Added user %s' % person)
-        else:
-            no_account_error = "%s has no account on %s. Please create one first" % (person, project.machine_category)
+        add_user_to_project(person, project)
+        #if person.has_account(project.machine_category):
+        #    project.users.add(person)
+        #    request.user.message_set.create(message="User '%s' added succesfully" % person)
+        #    log(request.user, project, 1, 'Added user %s' % person)
+        #else:
+        #    no_account_error = "%s has no account on %s. Please create one first" % (person, project.machine_category)
     
     return render_to_response('projects/project_detail.html', locals(), context_instance=RequestContext(request))
 

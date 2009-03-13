@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import post_save, pre_delete
 
 from decimal import Decimal
 import datetime
@@ -68,3 +69,14 @@ class ProjectChunk(models.Model):
         return iq.quota * 1000
 
 
+
+def create_project_chunk(sender, **kwargs):
+    ProjectChunk.objects.get_or_create(project=kwargs['instance'])
+
+def delete_project_chunk(sender, **kwargs):
+    ProjectChunk.objects.get(project=kwargs['instance']).delete()
+
+
+
+post_save.connect(create_project_chunk, sender=Project)
+pre_delete.connect(delete_project_chunk, sender=Project)

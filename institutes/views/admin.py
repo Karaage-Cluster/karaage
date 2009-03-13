@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
+from django.core.paginator import QuerySetPaginator
 from django.conf import settings
 
 from django_common.util.filterspecs import Filter, FilterBar
@@ -21,6 +22,7 @@ def institute_detail(request, institute_id):
 def institute_list(request):
 
     institute_list = Institute.objects.all()
+    page_no = int(request.GET.get('page', 1))
 
     if request.REQUEST.has_key('primary'):
         institute_list = Institute.primary.all()
@@ -29,6 +31,9 @@ def institute_list(request):
     filter_list = []
     filter_list.append(Filter(request, 'primary', {'primary': 'Primary',}))
     filter_bar = FilterBar(request, filter_list)
+
+    p = QuerySetPaginator(institute_list, 50)
+    page = p.page(page_no)
 
     return render_to_response('institutes/institute_list.html', locals(), context_instance=RequestContext(request))
 

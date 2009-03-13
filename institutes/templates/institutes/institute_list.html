@@ -12,19 +12,3 @@
 {% endif %}
 {% endblock %}
 
-{% block content %}
-<div class="module filtered" id="changelist">
-  
-  
-  <div id="changelist-filter">
-    <h2>Filter</h2> 					
-    {{ filter_bar|safe }}
-  </div>
-  
-  {% gen_table institute_list %}
-  <p class="paginator">
-    {{ institute_list|length }} institutes
-  </p>	
-</div>
-{% endblock %}
- 

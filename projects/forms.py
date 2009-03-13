@@ -12,9 +12,22 @@ from karaage.util import log_object
 
 from models import Project
 
+class ProjectForm(forms.ModelForm):
+    name = forms.CharField(label='Project Title', widget=forms.TextInput(attrs={ 'size':60 }))
+    description = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
+    institute = forms.ModelChoiceField(queryset=Institute.valid.all())
+    additional_req = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
+    leader = forms.ModelChoiceField(queryset=Person.active.all())
+    start_date = forms.DateField(widget=AdminDateWidget)
+    end_date = forms.DateField(widget=AdminDateWidget, required=False)
+    machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all(), widget=forms.CheckboxSelectMultiple())
+
+    class Meta:
+        model = Project
+        fields = ('name', 'institute', 'leader', 'description', 'start_date', 'end_date', 'additional_req', 'machine_categories',)
 
 
-class ProjectForm(forms.Form):
+class ProjectForm2(forms.Form):
     pid = forms.CharField(max_length=10, required=False, help_text="If left blank the next available pid will be used")
     name = forms.CharField(label='Project Title', widget=forms.TextInput(attrs={ 'size':60 }))
     description = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
