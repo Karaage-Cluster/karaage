@@ -1,0 +1,14 @@
+{% extends "changelist.html" %}
+
+{% block title %}Users{% endblock %}
+
+{% block content_title %}&nbsp;{% endblock %}
+
+{% block breadcrumbs %}{{ block.super }} &rsaquo; Users {% endblock %}   
+
+ {% block content %}
+<div class="module" id="changelist">
+
+   	{% gen_table useraccount_list %}
+</div>
+{% endblock %}

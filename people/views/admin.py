@@ -210,7 +210,8 @@ def no_default_list(request):
 
     useraccount_list = UserAccount.objects.filter(default_project__isnull=True).filter(date_deleted__isnull=True)
 
-    return render_to_response('users/no_default_list.html', locals(), context_instance=RequestContext(request))
+
+    return render_to_response('people/no_default_list.html', locals(), context_instance=RequestContext(request))
 
 
 def no_account_list(request):
