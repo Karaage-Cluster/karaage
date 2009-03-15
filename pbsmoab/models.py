@@ -38,6 +38,7 @@ class InstituteChunk(models.Model):
 class ProjectChunk(models.Model):
     project = models.OneToOneField(Project)
     cap = models.IntegerField(null=True, blank=True)
+    machine_category = models.ForeignKey(MachineCategory)
 
     def get_mpots(self, start=datetime.date.today()-datetime.timedelta(days=90), end=datetime.date.today()):
 	from karaage.util.helpers import get_available_time
@@ -57,7 +58,7 @@ class ProjectChunk(models.Model):
 
     def get_cap(self):
         try:
-            iq = self.project.institute.institutechunk_set.get(machine_category=self.project.machine_category)
+            iq = self.project.institute.institutechunk_set.get(machine_category=self.machine_category)
         except:
             print 'failed'
             return None
