@@ -72,10 +72,12 @@ class ProjectChunk(models.Model):
 
 
 def create_project_chunk(sender, **kwargs):
-    ProjectChunk.objects.get_or_create(project=kwargs['instance'])
+    project = kwargs['instance']
+    for mc in project.machine_categories.all():
+        ProjectChunk.objects.get_or_create(project=project, machine_category=mc)
 
 def delete_project_chunk(sender, **kwargs):
-    ProjectChunk.objects.get(project=kwargs['instance']).delete()
+    ProjectChunk.objects.filter(project=kwargs['instance']).delete()
 
 
 
