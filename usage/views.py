@@ -123,7 +123,7 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
 
         for p in institute.project_set.filter(machine_categories=machine_category):
             p_usage, p_jobs = p.get_usage(start, end)
-            chunk = p.projectchunk
+            chunk = p.projectchunk_set.get(machine_category=machine_category)
             if p_jobs > 0:
                 project_list.append(
                     {'project': p, 

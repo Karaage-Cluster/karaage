@@ -179,8 +179,9 @@ def over_quota(request):
     project_ids = []
 
     for p in Project.active.all():
-        if p.projectchunk.is_over_quota():
-            project_ids.append(p.pid)
+        for mc in p.machine_categories.all():
+            if p.projectchunk_set.get(machine_category=mc).is_over_quota():
+                project_ids.append(p.pid)
 
     return project_list(request, Project.objects.filter(pid__in=project_ids))
 
