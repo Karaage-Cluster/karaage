@@ -44,7 +44,6 @@
       <tr><td>Leader:</td><td><a href="{{ project.leader.get_absolute_url }}">{{ project.leader }}</a></td></tr>
       <tr><td>Institiute:</td><td><a href="{{ project.institute.get_absolute_url }}">{{ project.institute }}</a></td></tr>
       <tr><td>Last Usage:</td><td>{{ project.last_usage|date }} ({{ project.last_usage|timesince }})</td></tr>
-      <tr><td>mPoTS:</td><td>Actual: {{ project.projectchunk.get_mpots|floatformat:"2" }} Quota: {{ project.projectchunk.get_cap }} <a href="{% url kg_projectchunk_edit project.pid %}" class="changelink">Edit</a></td></tr>
       <tr><td>Start Date:</td><td>{{ project.start_date|date }}</td></tr>
       <tr><td>End Date:</td><td>{{ project.end_date|date }}</td></tr>
       
@@ -68,7 +67,27 @@
     </table>	
     
   </div>
-  
+   <div class="module">
+    <h2>Project Caps/quota <a href="{% url kg_projectchunk_edit project.pid %}" class="changelink">Edit</a></h2>
+    <table>
+      <thead>
+	<tr>
+	  <th>Machine Category</th>
+	  <th>Actual</th>
+	  <th>Quota</th>
+	</tr>
+      </thead>
+      <tbody>
+	{% for pc in project.projectchunk_set.all %}
+	<tr class="{% cycle row1,row2 %}">
+	  <td>{{ pc.machine_category }}</td>
+	  <td>{{ pc.get_mpots|floatformat:"2" }}</td>
+	  <td>{{ pc.get_cap }}</td>
+	</tr>
+	{% endfor %}
+	</tbody>
+    </table>
+   </div> 
   {% if project.users.all %}
   <div class="module">
     <h2>Users</h2>
