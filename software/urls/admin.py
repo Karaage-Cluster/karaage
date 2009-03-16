@@ -24,7 +24,7 @@ urlpatterns = patterns('django.views.generic.create_update',
     (r'^(?P<object_id>\d+)/delete/$', 'delete_object', d_info_dict),
     (r'^categories/add/$', 'create_object', c_info_dict),    
     (r'^categories/(?P<object_id>\d+)/edit/$', 'update_object', c_info_dict),
-    url(r'^license/(?P<object_id>\d+)/$', 'delete_object', d_license_dict, name='kg_softwarelicense_delete'),
+    url(r'^license/(?P<object_id>\d+)/delete/$', 'delete_object', d_license_dict, name='kg_softwarelicense_delete'),
 )
 
 
