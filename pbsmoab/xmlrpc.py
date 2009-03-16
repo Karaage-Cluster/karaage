@@ -56,13 +56,13 @@ def project_under_quota(project_id):
     Returns True if project is under quota
     """
     
- 
+    machine_category = MachineCategory.objects.get_default()
     try:
         project = Project.objects.get(pid=project_id)
     except:
         return 'Project not found'
         
-    project_chunk, created = ProjectChunk.objects.get_or_create(project=project)
+    project_chunk, created = ProjectChunk.objects.get_or_create(project=project, machine_category=machine_category)
 
     if project_chunk.is_over_quota():
         return False
@@ -105,7 +105,7 @@ def showquota(username):
 
     p_l = []
     for project in person.project_set.filter(is_active=True, machine_categories=machine_category):
-        project_chunk, created = ProjectChunk.objects.get_or_create(project=project)
+        project_chunk, created = ProjectChunk.objects.get_or_create(project=project, machine_category=machine_category)
         is_default = False
         if project == d_p:
             is_default = True
