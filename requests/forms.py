@@ -60,13 +60,10 @@ class ProjectRegistrationForm(UserRegistrationForm):
     """
     Form used for users without accounts to register user and project at once
     """
-    pid = forms.CharField(label="PIN", max_length=10, required=False, help_text="If yes, please provide Project Identification Number")
     project_name = forms.CharField(label="Project Title", widget=forms.TextInput(attrs={ 'size':60 }))
     project_institute = forms.ModelChoiceField(queryset=Institute.valid.all())
     project_description = forms.CharField(max_length=1000, widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), help_text="Include any information about any grants you have received. Please keep this brief")
     additional_req = forms.CharField(label="Additional requirements", widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), help_text=u"Do you have any special requirements?", required=False)
-    is_expertise = forms.BooleanField(required=False, label=u"Is this a current VPAC funded Expertise or Education Project?")
-    machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all(), widget=forms.CheckboxSelectMultiple)
 
     def save(self):
 
@@ -78,21 +75,19 @@ class ProjectRegistrationForm(UserRegistrationForm):
             institute=data['project_institute'],
             is_approved=False,
             is_active=False,
-            is_expertise=data['is_expertise'],
+            is_expertise=False,
             additional_req=data['additional_req'],
             start_date=datetime.datetime.today(),
             end_date=datetime.datetime.today() + datetime.timedelta(days=365),
-            machine_categories=data['machine_categories'],
         )
-
-        if data['is_expertise']:
-            project.pid = data['pid']
-        else:
-            project.pid = get_new_pid(data['institute'], data['is_expertise'])
+        
+        project.pid = get_new_pid(data['institute'], False)
 
         p = create_new_user(data)
-
-        project.leader = user_request.person
+        
+        project.leader = p
+        project.machine_category = MachineCategory.objects.get_default()
+        project.machine_categories.add(MachineCategory.objects.get_default())
         project.save()
         
         project_request = ProjectCreateRequest.objects.create(
@@ -102,20 +97,6 @@ class ProjectRegistrationForm(UserRegistrationForm):
         )
 
         return project_request
-
         
-    def clean(self):
-        data = self.cleaned_data
-
-        super(ProjectRegistrationForm, self).clean()
-
-        if data.get('is_expertise') and data['pid'] == '':
-                raise forms.ValidationError("Please provide your Expertise Grant project identifcation number")
-            
-        return data                        
-
-    def clean_project(self):
-        return self.cleaned_data['project']
-    
 
 
