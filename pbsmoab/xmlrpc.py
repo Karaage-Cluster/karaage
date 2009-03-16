@@ -104,15 +104,27 @@ def showquota(username):
         return -1, 'Default Project not found'
 
     p_l = []
-    for project in person.project_set.filter(is_active=True):
+    for project in person.project_set.filter(is_active=True, machine_categories=machine_category):
         project_chunk, created = ProjectChunk.objects.get_or_create(project=project)
         is_default = False
         if project == d_p:
             is_default = True
+
+
+	try:
+	    mpots = str(float(project_chunk.get_mpots()))
+	except:
+	   mpots = 0
+
+        try:
+	    cap = str(float(project_chunk.get_cap()))
+        except:
+            cap = 0
+
         p_l.append([
                 project.pid, 
-                str(float(project_chunk.get_mpots())), 
-                str(float(project_chunk.get_cap())),
+		mpots,
+		cap,
                 is_default,
                 ])
 
