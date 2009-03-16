@@ -36,7 +36,7 @@ class InstituteChunk(models.Model):
 
 
 class ProjectChunk(models.Model):
-    project = models.OneToOneField(Project)
+    project = models.ForeignKeyField(Project)
     cap = models.IntegerField(null=True, blank=True)
     machine_category = models.ForeignKey(MachineCategory)
 
