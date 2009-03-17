@@ -9,6 +9,7 @@ urlpatterns = patterns('karaage.people.views.admin',
     url(r'^$', 'user_list', name='kg_user_list'),
     url(r'^deleted/$', 'user_list', { 'queryset': Person.deleted.all(),}),
     url(r'^last_used/$', 'user_list', { 'queryset': Person.active.order_by('last_usage'),}),
+    url(r'^no_project/$', 'user_list', { 'queryset': Person.active.filter(project__isnull=True),}),
 
     url(r'^struggling/$', 'struggling', name='kg_struggling_users_list'),
 

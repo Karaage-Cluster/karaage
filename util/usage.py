@@ -84,7 +84,10 @@ def get_project_usage(project, start, end):
     end -- end date
     
     """
-    machine_category = project.machine_category
+    if project.machine_categories.count() == 1:
+        machine_category = project.machine_categories.all()[0]
+    else:
+        machine_category = project.machine_category
     try:
         cache = ProjectCache.objects.get(pid=project, date=datetime.date.today(), start=start, end=end, machine_category=machine_category)
     except:
