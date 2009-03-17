@@ -22,7 +22,8 @@ def survey(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
 
     if not person == project.leader:
-        return HttpResponseForbidden("Access Denied - must be project leader.")
+        if not request.user.has_perm('projectreports.add_projectsurvey'):
+            return HttpResponseForbidden("Access Denied - must be project leader.")
     
     today = datetime.date.today()
     
