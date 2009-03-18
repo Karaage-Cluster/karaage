@@ -344,7 +344,7 @@ def top_users(request, machine_category_id=settings.DEFAULT_MC, count=20):
     user_list = []
 
     user_total, user_total_jobs = 0,0
-    for u in UserCache.objects.order_by('-cpu_hours').filter(start=start, end=end).filter(project__machine_category=machine_category)[:count]:
+    for u in UserCache.objects.order_by('-cpu_hours').filter(start=start, end=end).filter(project__machine_categories=machine_category)[:count]:
         user_total += u.cpu_hours
         user_total_jobs += u.no_jobs
         user_list.append({'user': u.user, 'project': u.project, 'usage': u.cpu_hours, 'jobs': u.no_jobs, 'percent': ((u.cpu_hours/available_time)*100)}) 
@@ -442,7 +442,7 @@ def institute_users(request, institute_id, machine_category_id=1):
     user_list = []
 
     user_total, user_total_jobs = 0,0
-    for u in UserCache.objects.order_by('-cpu_hours').filter(start=start, end=end).filter(project__machine_category=machine_category).filter(user__institute=institute).filter(no_jobs__gt=0):
+    for u in UserCache.objects.order_by('-cpu_hours').filter(start=start, end=end).filter(project__machine_categories=machine_category).filter(user__institute=institute).filter(no_jobs__gt=0):
         user_total = user_total + u.cpu_hours
         user_total_jobs = user_total_jobs + u.no_jobs
         user_list.append({'user': u.user, 'project': u.project, 'usage': u.cpu_hours, 'jobs': u.no_jobs, 'percent': ((u.cpu_hours/available_time)*100)}) 
