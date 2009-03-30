@@ -16,6 +16,9 @@ class Request(models.Model):
     class Meta:
         abstract = True
 
+    def __unicode__(self):
+	return "%s - %s" % (self.person, self.project)
+
 class ProjectJoinRequest(Request):
     leader_approved = models.BooleanField()
 
