@@ -6,6 +6,8 @@
 			<th>Institute</th>
 			<th>Leader</th>
 			<th>Active</th>
+			<th>Cap</th>
+			<th>% Cap used</th>
 			<th>Last Usage</th>
 		</tr>
 	</thead>   	
@@ -17,6 +19,8 @@
 	   		<td><a href="{{ p.institute.get_absolute_url }}">{{ p.institute }}</a></td>
 	   		<td><a href="{{ p.leader.get_absolute_url }}">{{ p.leader }}</a></td>
 	   		<td>{% yes_no_img p.is_active %}</td>
+	   		<td>{{ p.get_cap }}</td>
+	   		<td>{{ p.get_cap_percent|floatformat:"2" }}%</td>
 				<td>{{ p.last_usage }}</td>
 	   	</tr>
 	   {% endfor %}

@@ -94,6 +94,7 @@ def get_available_time(start=datetime.date.today()-datetime.timedelta(days=90), 
     Calculates the total available time on a machine category for a given period
     Takes into account machines being commissioned and decommisioned
     """
+
     machines = machine_category.machine_set.all()
     total = 0
     

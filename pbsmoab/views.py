@@ -32,3 +32,11 @@ def projectchunk_edit(request, project_id):
 
 projectchunk_edit = permission_required('pbsmoab.change_projectchunk')(projectchunk_edit)
     
+
+
+
+def projects_by_cap_used(request):
+    from karaage.projects.views.admin import project_list
+    return project_list(request, queryset=Project.active.all(), paginate=False, template_name='pbsmoab/project_capsort.html')
+    
+    

@@ -101,7 +101,7 @@ def project_detail(request, project_id):
     return render_to_response('projects/project_detail.html', locals(), context_instance=RequestContext(request))
 
 @login_required
-def project_list(request, queryset=Project.objects.all()):
+def project_list(request, queryset=Project.objects.all(), template_name='projects/project_list.html', paginate=True):
 
     project_list = queryset
 
@@ -131,10 +131,14 @@ def project_list(request, queryset=Project.objects.all()):
     filter_list.append(Filter(request, 'institute', Institute.primary.all()))
     filter_bar = FilterBar(request, filter_list)
 
-    p = QuerySetPaginator(project_list, 50)
-    page = p.page(page_no)
+    if paginate:
+        p = QuerySetPaginator(project_list, 50)
+        page = p.page(page_no)
+    else:
+        p = QuerySetPaginator(project_list, 100000)
+        page = p.page(page_no)
 
-    return render_to_response('projects/project_list.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
 
 @login_required

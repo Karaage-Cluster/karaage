@@ -78,3 +78,14 @@ class Project(models.Model):
     def get_latest_usage(self):
         return self.cpujob_set.all()[:5]
 
+
+    def get_cap(self):
+        pc = self.projectchunk_set.get(machine_category=self.machine_category)
+        return pc.get_cap()
+
+    def get_cap_percent(self):
+        pc = self.projectchunk_set.get(machine_category=self.machine_category)
+        try:
+            return (pc.get_mpots() / self.get_cap()) * 100
+        except:
+            return 0
