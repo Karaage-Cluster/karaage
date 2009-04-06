@@ -76,17 +76,15 @@ def check_username(username, machine_category):
 
     
 
-def check_password(password):
+def check_password(password, old_password=None):
     """Return True if password valid"""
-    if password.isdigit():
-        return False
-    
-    if len(password) > 5:
-        for i in password:
-            if i.isdigit():
-                return True
+    from crack import VeryFascistCheck
+    try:
+        VeryFascistCheck(password, old=old_password)
+    except:
+	return False
 
-    return False
+    return True
 
 
 def get_available_time(start=datetime.date.today()-datetime.timedelta(days=90), end=datetime.date.today(), machine_category=MachineCategory.objects.get_default()):
