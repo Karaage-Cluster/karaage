@@ -88,4 +88,4 @@ class Project(models.Model):
         try:
             return (pc.get_mpots() / self.get_cap()) * 100
         except:
-            return 0
+            return 'NAN'

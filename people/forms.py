@@ -142,7 +142,7 @@ class AdminPasswordChangeForm(forms.Form):
 
             if data['new1'] != data['new2']:
                 raise forms.ValidationError(u'You must type the same password each time')
-            if not check_password(data['new1']):
+            if not check_password(data['new1'], data.get('old', None)):
                 raise forms.ValidationError(u'Passwords must be at least 6 characters and contain at least one digit')
             return data
 

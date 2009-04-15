@@ -134,11 +134,13 @@ def bounced_email(request, username):
     person = get_object_or_404(Person, user__username=username)
 
     if request.method == 'POST':
-
         person.lock()
         send_bounced_warning(person)
         request.user.message_set.create(message="%s's account has been locked and emails have been sent" % person)
         log(request.user, person, 2, 'Emails sent to project leaders and account locked')
+	for ua in person.useraccount_set.all():
+	    ua.change_shell(ua.previous_shell)
+	    ua.change_shell('/usr/local/sbin/bouncedemail')
         return HttpResponseRedirect(person.get_absolute_url())
 
     return render_to_response('people/bounced_email.html', locals(), context_instance=RequestContext(request))
