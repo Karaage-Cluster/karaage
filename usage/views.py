@@ -125,11 +125,15 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
             p_usage, p_jobs = p.get_usage(start, end)
             chunk = p.projectchunk_set.get(machine_category=machine_category)
             if p_jobs > 0:
+                try:
+                    percent = (chunk.get_mpots()/chunk.get_cap())*100
+                except:
+                    percent = 0
                 project_list.append(
                     {'project': p, 
                      'usage': p_usage, 
                      'jobs': p_jobs, 
-                     'percent': ((chunk.get_mpots()/chunk.get_cap())*100), 
+                     'percent': percent, 
                      'quota_percent': (p_usage/(available_usage*quota.quota)*10000),
                      })
 
