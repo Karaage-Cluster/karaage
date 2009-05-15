@@ -95,7 +95,7 @@ class UserProjectForm(forms.Form):
     is_expertise = forms.BooleanField(required=False, help_text=u"Is this a current VPAC funded Expertise or Education Project?")
     pid = forms.CharField(label="PIN", max_length=10, required=False, help_text="If yes, please provide Project Identification Number")
     needs_account = forms.BooleanField(required=False, label=u"Will you be working on this project yourself?")
-    machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all(), widget=forms.CheckboxSelectMultiple)
+    #machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all(), widget=forms.CheckboxSelectMultiple)
     institute = forms.ModelChoiceField(queryset=Institute.valid.all())
 
     def save(self, leader=None, p=None):
@@ -106,7 +106,7 @@ class UserProjectForm(forms.Form):
             p.pid = get_new_pid(data['institute'], data['is_expertise'])
             p.leader = leader
             p.institute = data['institute']
-            p.machine_categories=data['machine_categories']
+            p.machine_category=MachineCategory.objects.get_default()
             p.start_date = datetime.datetime.today()
             p.is_approved, p.is_active = False, False
             p.is_expertise = data['is_expertise']
@@ -115,7 +115,8 @@ class UserProjectForm(forms.Form):
             p.additional_req = data['additional_req']
             p.is_expertise = data['is_expertise']
             p.save()
-
+            p.machine_categories.add(MachineCategory.objects.get_default())
+            p.save()
             project_request = ProjectCreateRequest.objects.create(
                 project=p,
                 person=leader,

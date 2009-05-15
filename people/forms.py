@@ -87,7 +87,7 @@ class UserForm(BaseUserForm):
                 raise forms.ValidationError(u'You must type the same password each time')
 
             if not check_password(data['password1']):
-                raise forms.ValidationError(u'Passwords must be at least 6 characters and contain at least one digit')
+                raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (upercase, lowercase), numbers and is at least 8 characters long.')
 
             return data
     

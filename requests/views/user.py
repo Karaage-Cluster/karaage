@@ -88,6 +88,10 @@ def choose_project(request):
                     request.session['password']
                     )
             
+            if person in project.users.all():
+                error = 'Already in project'
+                
+                
             user_request = ProjectJoinRequest.objects.create(
                 person=person,
                 project=project,

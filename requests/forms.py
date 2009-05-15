@@ -6,6 +6,7 @@ from django_common.middleware.threadlocals import get_current_user
 from django_common.widgets import CaptchaInput
 
 from karaage.projects.models import Project
+from karaage.people.models import Person
 from karaage.machines.models import MachineCategory
 from karaage.people.models import Institute
 from karaage.people.forms import UserForm
@@ -54,6 +55,16 @@ class UserRegistrationForm(UserForm):
             return self.cleaned_data['imgtext']
 
         raise forms.ValidationError(u'Please type the code shown')
+
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        try:
+            p = Person.objects.get(user__email=email)
+            raise forms.ValidationError(u'Account with this email already exists. Please email accounts@vpac.org to reinstate your account')
+        except:
+            pass
+        return email
 
 
 class ProjectRegistrationForm(UserRegistrationForm):
