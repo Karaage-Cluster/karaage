@@ -71,10 +71,11 @@ class UserForm(BaseUserForm):
 
         try:
             user = User.objects.get(username__exact=username)
-            raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old VPAC account please email accounts@vpac.org')
         except:
-            pass
+            user = None
         
+        if user is not None:
+            raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old VPAC account please email accounts@vpac.org')
         return username
 
     

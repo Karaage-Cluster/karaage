@@ -59,11 +59,14 @@ class UserRegistrationForm(UserForm):
 
     def clean_email(self):
         email = self.cleaned_data['email']
+
         try:
             p = Person.objects.get(user__email=email)
-            raise forms.ValidationError(u'Account with this email already exists. Please email accounts@vpac.org to reinstate your account')
         except:
-            pass
+            p = None
+        if p is not None:
+            raise forms.ValidationError(u'Account with this email already exists. Please email accounts@vpac.org to reinstate your account')
+
         return email
 
 
