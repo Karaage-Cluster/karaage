@@ -7,6 +7,7 @@ import datetime
 from karaage.people.models import Person
 from karaage.machines.models import MachineCategory, UserAccount
 from karaage.projects.models import Project
+from karaage.util import log_object as log
 
 from models import ProjectChunk
 from logs import parse_logs
@@ -130,3 +131,31 @@ def showquota(username):
 
 
     return 0, p_l
+
+
+
+@xmlrpc_func(returns='int', args=['string'])
+@permission_required()
+def change_default_project(user, project):
+    """
+    Change default project
+    """
+    user = user.get_profile()
+    try:
+        project = Project.objects.get(pid=project)
+    except Project.DoesNotExist:
+        return -1, "Project %s does not exist" % project
+    
+    if not user in project.users.all():
+        return -2, "User %s not a member of project %s" % (user, project.pid)
+    
+    mc = MachineCategory.objects.get_default()
+    
+    user_account = user.get_user_account(mc)
+    
+    user_account.default_project = project
+    user_account.save()
+    
+    log(user.user, user, 2, 'Changed default project to %s' % project.pid)
+    
+    return 0, "Default project changed"
