@@ -7,7 +7,6 @@ from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory
 
 
-
 class Request(models.Model):
     person = models.ForeignKey(Person)
     project = models.ForeignKey(Project)
@@ -15,6 +14,7 @@ class Request(models.Model):
 
     class Meta:
         abstract = True
+	ordering = ('date',)
 
     def __unicode__(self):
 	return "%s - %s" % (self.person, self.project)
