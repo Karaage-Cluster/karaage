@@ -13,6 +13,11 @@
 {% block content %}
 
 <div id="content-main">
+  {% if requestor %}
+  <p class="errornote">This project is waiting for approval by an institute rep.</p>
+  {% endif %}
+
+
   <div id="content-related-extra">
     <div class="module">
       <h2>Tasks</h2>
@@ -38,7 +43,7 @@
     </h3>
     
     <table>
-      {% if not project.is_active %}
+      {% if not project.is_active and not requestor %}
       <tr><td colspan="2">Deleted by {{ project.deleted_by }} on {{ project.date_deleted }}</td></tr>
       {% endif %}
       <tr><td>Leader:</td><td><a href="{{ project.leader.get_absolute_url }}">{{ project.leader }}</a></td></tr>
