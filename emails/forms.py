@@ -44,13 +44,17 @@ class EmailForm(forms.Form):
 
 
         elif group == 'vpac_users':
-            
             user_ids = []
-            for u in Person.active.all():
-                if u.has_account(mc):
-                    if u.email:
-                        user_ids.append(u.id)
             
+	    mc = MachineCategory.objects.get(name='VPAC')
+
+	    for u in Person.active.all():
+        	if not u.is_locked():
+            	    if u.has_account(mc):
+                        if u.email:
+                            if u.email != 'unknown@vpac.org':
+			        user_ids.append(u.id)
+
             users = Person.objects.filter(id__in=user_ids)
 
         emails = []
