@@ -7,12 +7,14 @@ from django_common.middleware.threadlocals import get_current_user
 
 from karaage.people.models import Institute, Person
 from karaage.projects.models import Project
+from karaage.projects.util import add_user_to_project
 from karaage.machines.models import MachineCategory, UserAccount
 from karaage.constants import TITLES, STATES, COUNTRIES, DATE_FORMATS
 from karaage.datastores import create_new_user, create_account
 from karaage.util.helpers import check_password
-from karaage.validators import username_re
 from karaage.util import log_object as log
+from karaage.validators import username_re
+
 
 class BaseUserForm(forms.Form):
     title = forms.ChoiceField(choices=TITLES)
