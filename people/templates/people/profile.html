@@ -7,122 +7,120 @@
 <h2>Personal Details</h2>
 
 <table>
-	      <tr><td>Username:</td><td>{{ person.username }}</td></tr>
-   		<tr><td>Email:</td><td>{{ person.email|urlize }}</td></tr>
-   		<tr><td>Position:</td><td>{{ person.position|default:"" }}</td></tr>
-   		<tr><td>Department:</td><td>{{ person.department|default:"" }}</td></tr>
-   		<tr><td>Institute:</td><td>{{ person.institute }}</td></tr>
-   		{% if person.telephone %}<tr><td>Phone:</td><td>{{ person.telephone|default:"" }}</td></tr>{% endif %}
-   		{% if person.mobile %}<tr><td>Mobile:</td><td>{{ person.mobile|default:"" }}</td></tr>{% endif %}
-   		{% if person.fax %}<tr><td>Fax:</td><td>{{ person.fax }}</td></tr>{% endif %}
-   		<tr><td>Address:</td><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>
-   		{% if person.country %}<tr><td>Country:</td><td>{{ person.get_country_display|default:"" }}</td></tr>{% endif %}
-   		<tr><td colspan="2"><a href="edit/" class="changelink">Edit personal details</a></td></tr>
-   		
+  <tr><td>Username:</td><td>{{ person.username }}</td></tr>
+  <tr><td>Email:</td><td>{{ person.email|urlize }}</td></tr>
+  <tr><td>Position:</td><td>{{ person.position|default:"" }}</td></tr>
+  <tr><td>Department:</td><td>{{ person.department|default:"" }}</td></tr>
+  <tr><td>Institute:</td><td>{{ person.institute }}</td></tr>
+  {% if person.telephone %}<tr><td>Phone:</td><td>{{ person.telephone|default:"" }}</td></tr>{% endif %}
+  {% if person.mobile %}<tr><td>Mobile:</td><td>{{ person.mobile|default:"" }}</td></tr>{% endif %}
+  {% if person.fax %}<tr><td>Fax:</td><td>{{ person.fax }}</td></tr>{% endif %}
+  <tr><td>Address:</td><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>
+  {% if person.country %}<tr><td>Country:</td><td>{{ person.get_country_display|default:"" }}</td></tr>{% endif %}
+  <tr><td colspan="2"><a href="edit/" class="changelink">Edit personal details</a></td></tr>
+  
 </table>
 
 
 {% if person.is_delegate or person.is_active_delegate %}
 <h2>Institute Stats</h2>
 <p><a href="{% url kg_institute_users person.institute.id %}">{{ person.institute }} users</a> | 
-<a href="{% url kg_institute_projects person.institute.id %}">{{ person.institute }} projects</a></p>
+  <a href="{% url kg_institute_projects person.institute.id %}">{{ person.institute }} projects</a></p>
 {% endif %}
 
 {% ifequal person person.institute.delegate %}
 <h2>Delegate Tasks</h2>
 <p>Active Delegate: <b>{{ person.institute.active_delegate }}</b></p>
 <form action="." method="post">
-{% formfield form.active_delegate %}
-<input type="submit" value="Change" name="delegate-form" />
+  {% formfield form.active_delegate %}
+  <input type="submit" value="Change" name="delegate-form" />
 </form> 
 {% endifequal %}
 
 {% if project_requests %}
 <h2 class="alert">Project Requests</h2>
 <ul>
-{% for request in project_requests %}
-<li>
-{{ request.project.leader }} - {{ request.project.name|truncatewords:"8" }} |
-<a href="{% url user_project_request_detail request.id %}">Details</a> | 
-<a href="{% url user_approve_project request.id %}">
-<img src="{{ MEDIA_URL }}img/admin/icon-yes.gif" alt="Approve"/>&nbsp;Approve</a> |  
-<a href="{% url user_reject_project request.id %}">
-<img src="{{ MEDIA_URL }}img/admin/icon-no.gif" alt="Reject"/>&nbsp;Reject</a></li>
-{% endfor %}
+  {% for request in project_requests %}
+  <li>
+    {{ request.project.leader }} - {{ request.project.name|truncatewords:"8" }} |
+    <a href="{% url user_project_request_detail request.id %}">Details</a> | 
+    <a href="{% url user_approve_project request.id %}">
+      <img src="{{ MEDIA_URL }}img/admin/icon-yes.gif" alt="Approve"/>&nbsp;Approve</a> |  
+    <a href="{% url user_reject_project request.id %}">
+      <img src="{{ MEDIA_URL }}img/admin/icon-no.gif" alt="Reject"/>&nbsp;Reject</a></li>
+  {% endfor %}
 </ul>
 {% endif %}
 
 {% if account_requests %}
 <h2 class="alert">Project Join Requests</h2>
 <ul>
-{% for request in account_requests %}
-<li>
-{{ request.person }} - 
-{{ request.project.name|truncatewords:"8" }} |
-<a href="{% url user_account_request_detail request.id %}">Details</a> | 
-<a href="{% url user_approve_account request.id %}">
-<img src="{{ MEDIA_URL }}img/admin/icon-yes.gif" alt="Approve"/>&nbsp;Approve</a> | 
-<a href="{% url user_reject_account request.id %}">
-<img src="{{ MEDIA_URL }}img/admin/icon-no.gif" alt="Reject"/>&nbsp;Reject</a>
-</li>
-{% endfor %}
+  {% for request in account_requests %}
+  <li>
+    {{ request.person }} - 
+    {{ request.project.name|truncatewords:"8" }} |
+    <a href="{% url user_account_request_detail request.id %}">Details</a> | 
+    <a href="{% url user_approve_account request.id %}">
+      <img src="{{ MEDIA_URL }}img/admin/icon-yes.gif" alt="Approve"/>&nbsp;Approve</a> | 
+    <a href="{% url user_reject_account request.id %}">
+      <img src="{{ MEDIA_URL }}img/admin/icon-no.gif" alt="Reject"/>&nbsp;Reject</a>
+  </li>
+  {% endfor %}
 </ul>
 {% endif %}
 <a href="/supercomputers/cpustats">
-<img class="float-right" src="http://www.vpac.org/accounts_media/img/cpu_stats-small.png" width="130px" alt="VPAC CPU Statistics - click to enlarge" title="VPAC CPU Statistics - click to enlarge" />
+  <img class="float-right" src="http://www.vpac.org/accounts_media/img/cpu_stats-small.png" width="130px" alt="VPAC CPU Statistics - click to enlarge" title="VPAC CPU Statistics - click to enlarge" />
 </a>
 <h2>Tasks</h2>
 <p><a href="{% url kg_user_change_password %}" class="changelink">Change password</a>
-&nbsp;&nbsp;|&nbsp;&nbsp;<a href="{% url kg_software_list %}" class="addlink">Add software</a></p>
+  &nbsp;&nbsp;|&nbsp;&nbsp;<a href="{% url kg_software_list %}" class="addlink">Add software</a></p>
 <p><a href="{% url user_choose_project %}" class="addlink">Request to join an existing project</a>
-&nbsp;&nbsp;|&nbsp;&nbsp;<a href="{% url kg_project_add %}" class="addlink">Request to start a new project</a></p>
+  &nbsp;&nbsp;|&nbsp;&nbsp;<a href="{% url kg_project_add %}" class="addlink">Request to start a new project</a></p>
 <h2>Usage Summary (last 90 days)</h2>
 
 <table>
-	<thead>
-		<tr>
-			<th>Project ID</th>
-			<th>CPU time</th>
-			<th>No. of Jobs</th>
-		</tr>
-	</thead>
-	<tbody>
-	{% for u in usage_list|dictsortreversed:"cpu_hours" %}
-		<tr class="{% cycle row1,row2 %}">
-			{#<td><a href="{{ u.project.get_usage_url }}">{{ u.project.pid }}</a></td>#}
-			<td>{{ u.project.pid }}</td>
-			<td>{{ u.cpu_hours|timeformat }}</td>
-			<td>{{ u.no_jobs }}</td>
-		</tr>
-	{% endfor %}
-	</tbody>
-	</table>
+  <thead>
+    <tr>
+      <th>Project ID</th>
+      <th>CPU time</th>
+      <th>No. of Jobs</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for u in usage_list|dictsortreversed:"cpu_hours" %}
+    <tr class="{% cycle row1,row2 %}">
+      {#<td><a href="{{ u.project.get_usage_url }}">{{ u.project.pid }}</a></td>#}
+      <td>{{ u.project.pid }}</td>
+      <td>{{ u.cpu_hours|timeformat }}</td>
+      <td>{{ u.no_jobs }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% if leader_project_list %}
-	<h2>Projects I lead</h2>
-	<table>
-	<thead>
-		<tr>
-			<th>Project ID</th>
-			<th>Name</th>
-			<th>Start Date</th>
-			<th>End Date</th>
-			<th></th>
-			<th></th>
-		</tr>
-	</thead>
-	<tbody>
-	{% for p in leader_project_list %}
-		<tr class="{% cycle row1,row2 %}">
-			<td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
-			<td>{{ p.name|truncatewords:"8" }}</td>
-			<td>{{ p.start_date|date }}</td>
-			<td>{{ p.end_date|date }}</td>
-			<td><a href="{% url kg_project_edit p.pid %}" class="changelink">Edit</a></td>
-			<td><a href="{% url kg_survey p.pid %}">Report</a></td>
-		</tr>
-	{% endfor %}
-	</tbody>
-	</table>
+<h2>Projects I lead</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Project ID</th>
+      <th>Name</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in leader_project_list %}
+    <tr class="{% cycle row1,row2 %}">
+      <td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
+      <td>{{ p.name|truncatewords:"8" }}</td>
+      <td>{{ p.start_date|date }}</td>
+      <td>{{ p.end_date|date }}</td>
+      <td><a href="{% url kg_project_edit p.pid %}" class="changelink">Edit</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endif %}
 
 {% endblock %}
