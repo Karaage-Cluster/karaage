@@ -90,10 +90,11 @@ class UserAccount(models.Model):
     def get_disk_quota(self):
         if self.disk_quota:
             return self.disk_quota
-        try:
-            iq = self.user.institute.institutechunk_set.get(machine_category=self.machine_category)
-        except:
-            return None
+
+        #try:
+        iq = self.user.institute.institutechunk_set.get(machine_category=self.machine_category)
+        #except:
+        #    return None
         
         return iq.disk_quota
     
