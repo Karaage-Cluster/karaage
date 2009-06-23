@@ -95,7 +95,7 @@ class ProjectRegistrationForm(UserRegistrationForm):
             end_date=datetime.datetime.today() + datetime.timedelta(days=365),
         )
         
-        project.pid = get_new_pid(data['institute'], False)
+        project.pid = get_new_pid(data['project_institute'], False)
 
         p = create_new_user(data)
         
