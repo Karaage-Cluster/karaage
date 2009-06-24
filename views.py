@@ -65,7 +65,6 @@ def search(request):
         if not (user_list or project_list):
             empty = True
         
-
         return render_to_response('site_search.html', locals(), context_instance=RequestContext(request))
     else:
         return HttpResponseRedirect(reverse('kg_admin_index'))
