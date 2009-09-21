@@ -57,7 +57,7 @@ class UserAccount(models.Model):
     default_project = models.ForeignKey(Project, null=True, blank=True)
     date_created = models.DateField()
     date_deleted = models.DateField(null=True, blank=True)
-    disk_quota = models.IntegerField(null=True, blank=True)
+    disk_quota = models.IntegerField(null=True, blank=True, help_text="In GB")
     previous_shell = models.CharField(max_length=50, null=True, blank=True)
 
     class Meta:
