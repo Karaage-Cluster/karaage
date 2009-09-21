@@ -24,7 +24,7 @@ class BaseUserForm(forms.Form):
     email = forms.EmailField()
     department = forms.CharField()
     telephone = forms.CharField(label=u"Office Telephone")
-    mobile = forms.CharField(required=False)
+    mobile = forms.CharField(required=False, help_text=u"Used for emergency contact and password reset service.")
     fax = forms.CharField(required=False)
     address = forms.CharField(label=u"Mailing Address", required=False, widget=forms.Textarea())
     country = forms.ChoiceField(choices=COUNTRIES, initial='AU')
