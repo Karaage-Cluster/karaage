@@ -230,18 +230,21 @@ def no_account_list(request):
 
 
 def wrong_default_list(request):
-    users = Person.objects.filter(user__is_active=True)
+    users = Person.active.all()
     wrong = []
     for u in users:
-        for ua in u.useraccount_set.all():
+        for ua in u.useraccount_set.filter(machine_category__id=1, date_deleted__isnull=True):
             d = False
             
+	    #if ua.default_project is None:
+	#	d = True
             for p in ua.project_list():
                 if p == ua.default_project:
                     d = True
 
             if not d:
-                wrong.append(u.id)
+		if not u.is_locked():
+                    wrong.append(u.id)
 
     return user_list(request, Person.objects.filter(id__in=wrong))
     
