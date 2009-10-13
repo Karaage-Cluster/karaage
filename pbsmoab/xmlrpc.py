@@ -37,19 +37,16 @@ def get_project(username, proj=None):
     except:
         return "User '%s' not found" % username
     if proj is None:
-        return user_account.default_project.pid
+        project = user_account.default_project
     else:
         try:
             project = Project.objects.get(pid=proj)
-        except:
-            return user_account.default_project.pid
-        
-    
+        except Project.DoesNotExist:
+            project = user_account.default_project
+    if project:
         if user_account.user in project.users.all():
             return project.pid
-        else:
-            return user_account.default_project.pid
-
+    return "None"
 
 @xmlrpc_func(returns='boolean', args=['string'])
 def project_under_quota(project_id):
