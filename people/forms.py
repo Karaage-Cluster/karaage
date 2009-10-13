@@ -52,7 +52,7 @@ class BaseUserForm(forms.Form):
 
 
 class UserForm(BaseUserForm):
-    username = forms.CharField(label=u"Requested username", max_length=30, help_text=u"30 characters or fewer. Alphanumeric characters only (letters, digits and underscores).")
+    username = forms.CharField(label=u"Requested username", max_length=16, help_text=u"16 characters or fewer. Alphanumeric characters only (letters, digits and underscores).")
     password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
     password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)')
     project = forms.ModelChoiceField(queryset=Project.objects.all(), label=u"Default Project", required=False)
