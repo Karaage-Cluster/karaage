@@ -76,6 +76,7 @@
       <tr><td>Email:</td><td>{{ person.email|urlize }}</td></tr>
       <tr><td>Position:</td><td>{{ person.position|default:"" }}</td></tr>
       <tr><td>Department:</td><td>{{ person.department|default:"" }}</td></tr>
+      <tr><td>Supervisor:</td><td>{{ person.supervisor|default:"" }}</td></tr>
       <tr><td>Institute:</td><td><a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a></td></tr>
       
       <tr><td>Phone:</td><td>{{ person.telephone|default:"" }}</td></tr>

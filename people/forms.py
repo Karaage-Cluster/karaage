@@ -23,6 +23,7 @@ class BaseUserForm(forms.Form):
     position = forms.CharField()
     email = forms.EmailField()
     department = forms.CharField()
+    supervisor = forms.CharField(required=False)
     telephone = forms.CharField(label=u"Office Telephone")
     mobile = forms.CharField(required=False, help_text=u"Used for emergency contact and password reset service.")
     fax = forms.CharField(required=False)
@@ -38,6 +39,7 @@ class BaseUserForm(forms.Form):
         person.email = data['email']
         person.title = data['title']
         person.position = data['position']
+        person.supervisor = data['supervisor']
         person.department =data['department']
         person.telephone = data['telephone']
         person.mobile = data['mobile']
@@ -116,6 +118,7 @@ class UserForm(BaseUserForm):
         user.email = data['email']
         user.title = data['title']
         user.position = data['position']
+        user.supervisor = data['supervisor']
         user.department =data['department']
         user.institute = data['institute']
         user.telephone = data['telephone']

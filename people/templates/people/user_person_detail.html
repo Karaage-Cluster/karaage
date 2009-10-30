@@ -8,6 +8,7 @@
    		<tr><td>Email:</td><td>{{ person.email|urlize }}</td></tr>
    		<tr><td>Position:</td><td>{{ person.position|default:"" }}</td></tr>
    		<tr><td>Institute:</td><td>{{ person.institute }}</td></tr>
+   		{% if person.supervisor %}<tr><td>Supervisor:</td><td>{{ person.supervisor|default:"" }}</td></tr>{% endif %}
    		{% if person.telephone %}<tr><td>Phone:</td><td>{{ person.telephone|default:"" }}</td></tr>{% endif %}
    		{% if person.mobile %}<tr><td>Mobile:</td><td>{{ person.mobile|default:"" }}</td></tr>{% endif %}
    		{% if person.fax %}<tr><td>Fax:</td><td>{{ person.fax }}</td></tr>{% endif %}

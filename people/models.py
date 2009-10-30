@@ -60,6 +60,7 @@ class Person(models.Model):
     telephone = models.CharField(max_length=200, null=True, blank=True)
     mobile = models.CharField(max_length=200, null=True, blank=True)
     department = models.CharField(max_length=200, null=True, blank=True)
+    supervisor = models.CharField(max_length=100, null=True, blank=True)
     institute = models.ForeignKey(Institute)
     title = models.CharField(choices=TITLES, max_length=10, null=True, blank=True)
     address = models.CharField(max_length=200, null=True, blank=True)
