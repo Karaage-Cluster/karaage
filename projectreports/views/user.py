@@ -32,7 +32,7 @@ def survey(request, project_id):
     survey.submitter = project.pid
     survey.save()
 
-    return do_survey(request, survey.id, template_name='surveys/projectsurvey%s.html' % today.year, extra_context={'project': project })
+    return do_survey(request, survey, template_name='surveys/projectsurvey%s.html' % today.year, extra_context={'project': project }, redirect_url='thanks/')
 
 
 @login_required
