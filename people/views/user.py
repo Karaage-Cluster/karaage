@@ -30,8 +30,7 @@ def profile(request):
 
     if person.is_leader():
         leader = True
-        leader_project_list = Project.objects.filter(leader=person)
-        leader_project_list = leader_project_list.filter(is_approved=True)
+        leader_project_list = Project.objects.filter(leader=person, is_active=True)
         account_requests = []
         for project in leader_project_list:
             for user_request in project.projectjoinrequest_set.filter(leader_approved=False):
