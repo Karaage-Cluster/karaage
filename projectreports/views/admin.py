@@ -18,7 +18,7 @@ def report_list(request):
 
     page_no = int(request.GET.get('page', 1))
 
-    if request.REQUEST.has_key('institute'):
+    if request.REQUEST.has_key('survey_group'):
         report_list = report_list.filter(survey_group=int(request.GET['survey_group']))
 
     filter_list = []
