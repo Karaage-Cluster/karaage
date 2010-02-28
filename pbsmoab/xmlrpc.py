@@ -46,6 +46,10 @@ def get_project(username, proj=None):
     if project:
         if user_account.user in project.users.all():
             return project.pid
+        else:
+            if user_account.user in user_account.default_project.users.all():
+                return user_account.default_project.pid
+            
     return "None"
 
 @xmlrpc_func(returns='boolean', args=['string'])
