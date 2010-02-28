@@ -120,7 +120,7 @@ def add_edit_useraccount(request, username=None, useraccount_id=None):
         user = user_account.user
     else:
         #Add
-        user =  get_object_or_404(Person, user__username=username)
+        user = get_object_or_404(Person, user__username=username)
         user_account = False
 
     if request.method == 'POST':
@@ -167,7 +167,7 @@ def add_edit_useraccount(request, username=None, useraccount_id=None):
                 try:
                     test_user_account = UserAccount.objects.get(
                         username__exact=data['username'], machine_category=machine_category, date_deleted__isnull=True)
-                except:
+                except UserAccount.DoesNotExist:
 
                     user_account = create_account(user, project, machine_category)               
                     request.user.message_set.create(message="User account for '%s' created succesfully" % user_account.user)
