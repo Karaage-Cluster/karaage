@@ -28,7 +28,7 @@ def usage_index(request):
     mc_list = MachineCategory.objects.all()
     start, end = get_date_range(request)
 
-    querystring = request.META['QUERY_STRING']
+    querystring = request.META.get('QUERY_STRING', '')
 
     return render_to_response('usage/mc_list.html', locals(), context_instance=RequestContext(request))
 
@@ -49,7 +49,7 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
     m_list = []
     start, end = get_date_range(request)
 
-    querystring = request.META['QUERY_STRING']
+    querystring = request.META.get('QUERY_STRING', '')
 
     available_time, avg_cpus = get_available_time(start, end, machine_category)
     
@@ -75,7 +75,10 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
             i_list.append({ 'institute': i, 'usage': time, 'jobs': jobs, 'quota': quota.quota})
             
     for i in i_list:
-        i['percent'] = (i['usage'] / available_time) * 100
+        try:
+            i['percent'] = (i['usage'] / available_time) * 100
+        except:
+            i['percent'] = 0
         try:
             i['p_used'] = (i['percent'] / i['quota']) * 100
         except:
@@ -88,18 +91,27 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
 
     # Unused Entry
     unused = { 'usage': available_time - total, 'quota': 0 }
-    unused['percent'] = (unused['usage'] / available_time) * 100
+    try:
+        unused['percent'] = (unused['usage'] / available_time) * 100
+    except:
+        unused['percent'] = 0
     unused['diff'] = unused['percent'] - unused['quota'] / 100
     if unused['diff'] <= 0:
         unused['class'] = 'green'
     else:
         unused['class'] = 'red'
 
-    utilization = (total / available_time) * 100
-        
-    graph = get_institute_graph_url(start, end, machine_category)
-    trend_graph = get_trend_graph_url(start, end, machine_category)
-    
+    try:
+        utilization = (total / available_time) * 100
+    except:
+        utilization = 0
+  
+    try:
+        graph = get_institute_graph_url(start, end, machine_category)
+        trend_graph = get_trend_graph_url(start, end, machine_category)
+    except:
+        pass
+
     return render_to_response('usage/usage_institue_list.html', locals(), context_instance=RequestContext(request))
 
 
@@ -113,7 +125,7 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
 
     available_usage, ave_cpus = get_available_time(start, end, machine_category)
 
-    querystring = request.META['QUERY_STRING']
+    querystring = request.META.get('QUERY_STRING', '')
 
     quota = get_object_or_404(InstituteChunk, institute=institute, machine_category=machine_category)
 
@@ -170,7 +182,7 @@ def project_usage(request, project_id, institute_id=None, machine_category_id=se
     usage_list = []
     total, total_jobs = 0, 0
 
-    querystring = request.META['QUERY_STRING']
+    querystring = request.META.get('QUERY_STRING', '')
     start, end = get_date_range(request)
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
@@ -355,7 +367,7 @@ def top_users(request, machine_category_id=settings.DEFAULT_MC, count=20):
         
     user_percent = (user_total / available_time) * 100
     
-    querystring = request.META['QUERY_STRING']
+    querystring = request.META.get('QUERY_STRING', '')
     
     return render_to_response('usage/top_users.html', locals(), context_instance=RequestContext(request))
 
@@ -451,8 +463,11 @@ def institute_users(request, institute_id, machine_category_id=1):
         user_total_jobs = user_total_jobs + u.no_jobs
         user_list.append({'user': u.user, 'project': u.project, 'usage': u.cpu_hours, 'jobs': u.no_jobs, 'percent': ((u.cpu_hours/available_time)*100)}) 
         
-    user_percent = (user_total / available_time) * 100
+    try:
+        user_percent = (user_total / available_time) * 100
+    except:
+        user_percent = 0
     
-    querystring = request.META['QUERY_STRING']
+    querystring = request.META.get('QUERY_STRING', '')
     
     return render_to_response('usage/institute_users.html', locals(), context_instance=RequestContext(request))
