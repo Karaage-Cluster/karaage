@@ -20,9 +20,10 @@ class UserAccountForm(forms.Form):
 
     def clean(self):
         data = self.cleaned_data
-        if not data['machine_category'] in data['default_project'].machine_categories.all():
-            raise forms.ValidationError(u'Default project not in machine category')
-        return data
+        if 'default_project' in data:
+            if not data['machine_category'] in data['default_project'].machine_categories.all():
+                raise forms.ValidationError(u'Default project not in machine category')
+            return data
 
 
 class ShellForm(forms.Form):
