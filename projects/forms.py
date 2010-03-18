@@ -12,6 +12,7 @@ from karaage.util import log_object
 
 from models import Project
 
+
 class ProjectForm(forms.ModelForm):
     name = forms.CharField(label='Project Title', widget=forms.TextInput(attrs={ 'size':60 }))
     description = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
@@ -24,7 +25,7 @@ class ProjectForm(forms.ModelForm):
 
     class Meta:
         model = Project
-        fields = ('name', 'institute', 'leader', 'description', 'start_date', 'end_date', 'additional_req', 'machine_categories',)
+        fields = ('name', 'institute', 'leader', 'description', 'start_date', 'end_date', 'additional_req', 'machine_categories', 'machine_category')
 
 
 class ProjectForm2(forms.Form):
