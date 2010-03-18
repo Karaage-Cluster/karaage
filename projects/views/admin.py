@@ -8,8 +8,8 @@ from django.contrib.admin.models import LogEntry
 from django.db.models import Q
 from django.core.paginator import QuerySetPaginator
 
-from django_common.util.filterspecs import Filter, FilterBar
-from django_common.middleware.threadlocals import get_current_user
+from andsome.util.filterspecs import Filter, FilterBar
+from andsome.middleware.threadlocals import get_current_user
 
 from karaage.people.models import Person, Institute
 from karaage.requests.models import ProjectCreateRequest

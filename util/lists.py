@@ -1,4 +1,4 @@
-from django_common.util import unique
+from andsome.util import unique
 
 from karaage.people.models import Person
 from karaage.machines.models import MachineCategory

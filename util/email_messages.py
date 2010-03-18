@@ -11,7 +11,7 @@ from django.db import connection
 from django.core.urlresolvers import reverse
 from django.template.defaultfilters import dictsortreversed
 
-from django_common.middleware.threadlocals import get_current_user
+from andsome.middleware.threadlocals import get_current_user
 import datetime
 
 from karaage.projects.models import Project

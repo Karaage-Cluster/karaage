@@ -9,7 +9,7 @@ class ApacheSiteLogin:
         if request.user.is_anonymous():
             try:
                 user = User.objects.get(username__exact=request.META['REMOTE_USER'])
-                user.backend = 'django_common.backends.auth.LDAPBackend'
+                user.backend = 'placard.backends.LDAPBackend'
                 login(request, user)
             except:
                 return HttpResponseForbidden("<h1>Failed log in.</h1><p>Try to refresh page</p>")

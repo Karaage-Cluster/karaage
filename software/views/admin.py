@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.db.models import Q
 from django.core.paginator import QuerySetPaginator
 
-from django_common.util.filterspecs import Filter, FilterBar
+from andsome.util.filterspecs import Filter, FilterBar
 from placard.client import LDAPClient
 
 from karaage.software.models import *

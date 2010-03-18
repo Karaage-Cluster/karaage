@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.contrib.sites.models import Site
 
 import datetime
-from django_common.util.filterspecs import Filter, FilterBar, DateFilter
+from andsome.util.filterspecs import Filter, FilterBar, DateFilter
 
 from karaage.projects.models import Project
 from karaage.people.models import Person, Institute

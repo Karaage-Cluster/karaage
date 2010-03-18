@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 
 import datetime
-from django_common.middleware.threadlocals import get_current_user
+from andsome.middleware.threadlocals import get_current_user
 
 from karaage.util.helpers import create_password_hash 
 from karaage.people.models import Person

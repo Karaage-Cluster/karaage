@@ -3,7 +3,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth.decorators import permission_required, login_required
 from django.core.paginator import QuerySetPaginator
-from django_common.util.filterspecs import Filter, FilterBar
+from andsome.util.filterspecs import Filter, FilterBar
 
 import datetime
 from django_surveys.models import SurveyGroup

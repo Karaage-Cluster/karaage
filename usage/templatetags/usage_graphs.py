@@ -1,6 +1,6 @@
 from django.template import Library
 
-from django_common.graphs.googlechart import GraphGenerator
+from andsome.graphs.googlechart import GraphGenerator
 
 grapher = GraphGenerator()
 register = Library()

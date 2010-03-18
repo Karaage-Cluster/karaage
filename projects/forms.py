@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.admin.widgets import AdminDateWidget
 
 import datetime
-from django_common.middleware.threadlocals import get_current_user
+from andsome.middleware.threadlocals import get_current_user
 
 from karaage.people.models import Institute, Person
 from karaage.machines.models import MachineCategory

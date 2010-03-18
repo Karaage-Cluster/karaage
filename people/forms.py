@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 import datetime
-from django_common.middleware.threadlocals import get_current_user
+from andsome.middleware.threadlocals import get_current_user
 
 from karaage.people.models import Institute, Person
 from karaage.projects.models import Project

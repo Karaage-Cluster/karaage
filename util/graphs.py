@@ -3,7 +3,7 @@ from django.db import connection
 
 import datetime
 from decimal import Decimal
-from django_common.graphs.googlechart import GraphGenerator
+from andsome.graphs.googlechart import GraphGenerator
 
 from karaage.machines.models import MachineCategory
 from karaage.people.models import Institute
