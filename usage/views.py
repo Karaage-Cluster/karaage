@@ -69,25 +69,29 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
         total_jobs = total_jobs + jobs
         try:
             quota = InstituteChunk.objects.get(institute=i, machine_category=machine_category)
+            display_quota = quota.quota
         except:
-            continue
+            display_quota = None
         if show_zeros or jobs > 0:
-            i_list.append({ 'institute': i, 'usage': time, 'jobs': jobs, 'quota': quota.quota})
+            i_list.append({ 'institute': i, 'usage': time, 'jobs': jobs, 'quota': display_quota})
             
     for i in i_list:
         try:
             i['percent'] = (i['usage'] / available_time) * 100
         except:
             i['percent'] = 0
-        try:
-            i['p_used'] = (i['percent'] / i['quota']) * 100
-        except:
-            i['p_used'] = 0
-        i['diff'] = i['percent'] - i['quota']
-        if i['diff'] <= 0:
-            i['class'] = 'green'
+        if i['quota'] is not None:
+            try:
+                i['p_used'] = (i['percent'] / i['quota']) * 100
+            except:
+                i['p_used'] = 0
+            i['diff'] = i['percent'] - i['quota']
+            if i['diff'] <= 0:
+                i['class'] = 'green'
+            else:
+                i['class'] = 'red'
         else:
-            i['class'] = 'red'
+            i['class'] = 'green'
 
     # Unused Entry
     unused = { 'usage': available_time - total, 'quota': 0 }
