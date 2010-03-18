@@ -9,7 +9,7 @@ from karaage.projects.models import Project
 
 EMAIL_GROUPS = (
     ('leaders', 'All Project Leaders'),
-    ('leaders_noreport', "All Project Leaders that haven't filled in report"),
+    ('leaders_noreport', "All Project Leaders that haven't filled in report - current year"),
     ('vpac_users', 'All VPAC Users'),
     #('academic_leaders', 'All VPAC Users (Academic only)'),
     #('academic_users', 'All Project Leaders (Academic only)'),
