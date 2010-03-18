@@ -1,7 +1,8 @@
 from django.core.mail import mail_admins
 from django.conf import settings
 
-from placard.connection import LDAPConnection
+from placard.client import LDAPClient
+from placard.exceptions import DoesNotExistException
 
 import base
 
@@ -23,7 +24,7 @@ class PersonalDataStore(base.PersonalDataStore):
         attrs['o'] = str(person.institute.name)
         attrs['userPassword'] = str(person.user.password)
         
-        conn = LDAPConnection()
+        conn = LDAPClient()
         conn.add_user(**attrs)
         person.save(update_datastore=False)
 
@@ -32,17 +33,17 @@ class PersonalDataStore(base.PersonalDataStore):
     def delete_user(self, person):
         super(PersonalDataStore, self).delete_user(person)
 
-        conn = LDAPConnection()
-        conn.delete_user(person.user.username)
+        conn = LDAPClient()
+        conn.delete_user('uid=%s' % person.user.username)
         
 
     def update_user(self, person):
         super(PersonalDataStore, self).update_user(person)
 
-        conn = LDAPConnection()
+        conn = LDAPClient()
     
         conn.update_user(
-            person.username,
+            'uid=%s' % person.username,
             cn='%s %s' % (str(person.first_name), str(person.last_name)),
             givenName=str(person.first_name),
             sn=str(person.last_name),
@@ -54,10 +55,10 @@ class PersonalDataStore(base.PersonalDataStore):
     def is_locked(self, person):
         super(PersonalDataStore, self).is_locked(person)
 
-        conn = LDAPConnection()
+        conn = LDAPClient()
         try:
             ldap_user = conn.get_user('uid=%s' % person.username)
-        except:
+        except DoesNotExistException:
             return True
 
         if hasattr(ldap_user, 'nsAccountLock'):
@@ -69,9 +70,9 @@ class PersonalDataStore(base.PersonalDataStore):
     def lock_user(self, person):
         super(PersonalDataStore, self).lock_user(person)
         
-        conn = LDAPConnection()
+        conn = LDAPClient()
         conn.update_user(
-            person.username,
+            'uid=%s' % person.username,
             nsRoleDN='cn=nsManagedDisabledRole,dc=vpac,dc=org',
             )
         
@@ -79,7 +80,7 @@ class PersonalDataStore(base.PersonalDataStore):
     def unlock_user(self, person):
         super(PersonalDataStore, self).unlock_user(person)
         
-        conn = LDAPConnection()
+        conn = LDAPClient()
         dn="uid=%s,%s" % (person.username, settings.LDAP_USER_BASE)
         old = {
             'nsRoleDN': 'cn=nsManagedDisabledRole,dc=vpac,dc=org',
@@ -89,8 +90,8 @@ class PersonalDataStore(base.PersonalDataStore):
     
 
     def set_password(self, person, raw_password):
-        conn = LDAPConnection()
-        conn.change_password(person.user.username, raw_password)
+        conn = LDAPClient()
+        conn.change_password('uid=%s' % person.user.username, raw_password)
 
 
 class AccountDataStore(base.AccountDataStore):
@@ -98,11 +99,11 @@ class AccountDataStore(base.AccountDataStore):
     def create_account(self, person, default_project):
         ua = super(AccountDataStore, self).create_account(person, default_project)
             
-        conn = LDAPConnection()
+        conn = LDAPClient()
         
         #TODO - Get generated attrs from ldap_attrs.py
         conn.update_user(
-            person.username,
+            'uid=%s' % person.username,
             gecos='%s %s (%s)' % (str(person.first_name), str(person.last_name), str(person.institute.name)),
             uidNumber=conn.get_new_uid(),
             gidNumber=str(person.institute.gid),
@@ -117,12 +118,12 @@ class AccountDataStore(base.AccountDataStore):
     def delete_account(self, ua):
         super(AccountDataStore, self).delete_account(ua)
 
-        conn = LDAPConnection()
+        conn = LDAPClient()
 
         #TODO - Get generated attrs from ldap_attrs.py
 
         conn.update_user(
-            ua.username,
+            'uid=%s' % ua.username,
             gecos='', 
             uidNumber='',
             gidNumber='',
@@ -136,10 +137,10 @@ class AccountDataStore(base.AccountDataStore):
 
         super(AccountDataStore, self).update_account(ua)
 
-        conn = LDAPConnection()
+        conn = LDAPClient()
 
         conn.update_user(
-            ua.user.username,
+            'uid=%s' % ua.user.username,
             gecos='%s %s (%s)' % ((ua.user.first_name), str(ua.user.last_name), str(ua.user.institute.name)),
             gidNumber=str(ua.user.institute.gid),
             )
@@ -148,10 +149,10 @@ class AccountDataStore(base.AccountDataStore):
     def lock_account(self, ua):
         super(AccountDataStore, self).lock_account(ua)
 
-        conn = LDAPConnection()
+        conn = LDAPClient()
         
         conn.update_user(
-            ua.username,
+            'uid=%s' % ua.username,
             loginShell='/usr/local/sbin/insecure'
             )
         
@@ -159,14 +160,14 @@ class AccountDataStore(base.AccountDataStore):
     def unlock_account(self, ua):
         shell = super(AccountDataStore, self).unlock_account(ua)
 
-        conn = LDAPConnection()
-        conn.update_user(ua.username, loginShell=shell)
+        conn = LDAPClient()
+        conn.update_user('uid=%s' % ua.username, loginShell=shell)
         
 
     def get_shell(self, ua):
         super(AccountDataStore, self).get_shell(ua)
 
-        conn = LDAPConnection()
+        conn = LDAPClient()
         luser = conn.get_user('uid=%s' % ua.username)
         return luser.loginShell
 
@@ -174,5 +175,5 @@ class AccountDataStore(base.AccountDataStore):
     def change_shell(self, ua, shell):
         super(AccountDataStore, self).change_shell(ua, shell)
 
-        conn =  LDAPConnection()
-        conn.update_user(ua.username, loginShell=str(shell))
+        conn =  LDAPClient()
+        conn.update_user('uid=%s' % ua.username, loginShell=str(shell))

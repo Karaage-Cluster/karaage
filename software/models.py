@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 
 import datetime
-from placard.connection import LDAPConnection
+from placard.client import LDAPClient
 
 from karaage.people.models import Person
 from karaage.machines.models import Machine
@@ -50,17 +50,17 @@ class SoftwarePackage(models.Model):
             return None
 
     def group_name(self):
-        conn = LDAPConnection()
+        conn = LDAPClient()
         try:
-            ldap_group = conn.get_group(self.gid)
+            ldap_group = conn.get_group('gidNumber=%s' % self.gid)
             return ldap_group.name()
         except:
             return 'No LDAP Group'
 
     def get_group_members(self):
-        conn = LDAPConnection()
+        conn = LDAPClient()
         try:
-            return conn.get_group_members(self.gid)
+            return conn.get_group_members('gidNumber=%s' % self.gid)
         except:
             return []
 

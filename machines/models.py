@@ -100,8 +100,8 @@ class UserAccount(models.Model):
     
     def loginShell(self):
         try:
-            from placard.connection import LDAPConnection
-            conn = LDAPConnection()
+            from placard.client import LDAPClient
+            conn = LDAPClient()
             try:
                 ldap_user = conn.get_user('uid=%s' % self.username)
             except:
