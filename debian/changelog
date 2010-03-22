@@ -1,3 +1,21 @@
+karaage (2.0.4) testing; urgency=low
+
+  * Actually use new alogger library
+
+ -- Sam Morrison <sam@vpac.org>  Mon, 22 Mar 2010 12:50:54 +1100
+
+karaage (2.0.3) testing; urgency=low
+
+  * Depend on python-alogger
+
+ -- Sam Morrison <sam@vpac.org>  Mon, 22 Mar 2010 10:57:39 +1100
+
+karaage (2.0.2) testing; urgency=low
+
+  * Fixed gdchart2 requirment 
+
+ -- Sam Morrison <sam@vpac.org>  Fri, 19 Mar 2010 11:51:00 +1100
+
 karaage (2.0.1) testing; urgency=low
 
   * Initial release.
