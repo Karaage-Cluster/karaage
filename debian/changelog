@@ -1,3 +1,9 @@
+karaage (2.0.5) testing; urgency=low
+
+  * Depend on django-xmlrpc package
+
+ -- Sam Morrison <sam@vpac.org>  Mon, 22 Mar 2010 13:48:39 +1100
+
 karaage (2.0.4) testing; urgency=low
 
   * Actually use new alogger library
