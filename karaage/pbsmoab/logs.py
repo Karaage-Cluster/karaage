@@ -15,16 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-#! /usr/bin/env python
-"""
-
-To Configure this program see alogger-ng.cfg
-
-To customise this to read a different log format
-just implement a method like pbs_to_dict (see below)
-
-"""
-
 
 import sys, os
 import datetime
@@ -34,7 +24,7 @@ from karaage.machines.models import Machine, UserAccount
 from karaage.usage.models import CPUJob, Queue
 from karaage.projects.models import Project
 
-from alogger_ng import log_to_dict
+from alogger import log_to_dict
 
 
 DEBUG = False
