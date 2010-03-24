@@ -69,7 +69,7 @@ def thanks(request, project_id):
     survey, created = ProjectSurvey.objects.get_or_create(project=project, survey_group=survey_group)
 
     if created:
-        return HttpResponseRedirect(reverse('kg_survey'))
+        return HttpResponseRedirect(reverse('kg_survey', args=project.pid))
 
 
     return render_to_response('surveys/thanks.html', locals(), context_instance=RequestContext(request))
