@@ -116,52 +116,27 @@ def get_available_time(start=datetime.date.today()-datetime.timedelta(days=90), 
     for m in machines:
         m_start = m.start_date
         m_end = m.end_date
-        if settings.DEBUG:
-            print m
-            print start
-            print end
         if not m_end:
             m_end = end#datetime.date.today() - datetime.timedelta(days=1)
-        if settings.DEBUG:
-            print m_start   
-            print m_end   
         if start >= m_end or m_start >= end:
-            if settings.DEBUG:
-                print '0'
             total += 0
 
         elif start < m_start and end > m_end:
-            if settings.DEBUG:
-                print '1'
             total += (m.no_cpus * ((m_end - m_start).days+1) * 24 * 60 * 60)
             
         elif end > m_end and start < m_start:
-            if settings.DEBUG:
-                print '2'
             total += (m.no_cpus * ((end - start).days+1) * 24 * 60 * 60)
         
         elif end > m_end:
-            if settings.DEBUG:
-                print '3'
             total += (m.no_cpus * ((m_end - start).days+1) * 24 * 60 * 60)
 
         elif start < m_start:
-            if settings.DEBUG:
-                print '4'
             total += (m.no_cpus * ((end - m_start).days+1) * 24 * 60 * 60)
 
         else:
-            if settings.DEBUG:
-                print '5'
             total += (m.no_cpus * ((end - start).days+1) * 24 * 60 * 60)
             
-        #print '%s, %s' % (m, m_cpus)
-
-            
     return total, get_ave_cpus(start, end, machine_category)
-
-   
-
 
 
 def get_ave_cpus(start, end, machine_category):
