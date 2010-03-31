@@ -82,9 +82,15 @@ class Project(models.Model):
         self.users.clear()
         self.save()
 
-    def get_usage(self, start=datetime.date.today()-datetime.timedelta(days=90), end=datetime.date.today()):
+    def get_usage(self, 
+                  start=datetime.date.today()-datetime.timedelta(days=90), 
+                  end=datetime.date.today(),
+                  machine_category=None):
+        from karaage.machines.models import MachineCategory
+        if machine_category is None:
+            machine_category = MachineCategory.objects.get_default()
         from karaage.util.usage import get_project_usage
-        return get_project_usage(self, start, end)
+        return get_project_usage(self, start, end, machine_category)
 
     def gen_usage_graph(self, start, end, machine_category=None):
         if machine_category is None:
