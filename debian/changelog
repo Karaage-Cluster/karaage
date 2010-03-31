@@ -1,3 +1,17 @@
+karaage (2.0.7) testing; urgency=low
+
+  * Fixed totals displaying in usage_institute_detail page
+  * Use new django aggregation support instead of raw sql
+  * Show project usage based on machine_category
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 31 Mar 2010 14:56:41 +1100
+
+karaage (2.0.6) testing; urgency=low
+
+  * Fixed bug in project reports url redirection
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 24 Mar 2010 14:52:54 +1100
+
 karaage (2.0.5) testing; urgency=low
 
   * Depend on django-xmlrpc package
