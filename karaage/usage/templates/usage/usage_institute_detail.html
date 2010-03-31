@@ -55,6 +55,7 @@
 				<td class="right">{{ user_total|timeformat }}</td>	
 				<td class="right">{{ user_total_jobs|intcomma }}</td>	
 				<td class="right">{{ user_percent|floatformat:"2" }}%</td>
+				<td></td>
 			</tr>		
 		</tfoot>  	
    	</tbody>
@@ -89,8 +90,8 @@
 		<tfoot>
 			<tr>
 				<td>Total</td>
-				<td class="right">{{ total|timeformat }}</td>	
-				<td class="right">{{ total_jobs|intcomma }}</td>	
+				<td class="right">{{ i_usage|timeformat }}</td>	
+				<td class="right">{{ i_jobs|intcomma }}</td>	
 				<td></td>
 			</tr>		
 		</tfoot>  	
