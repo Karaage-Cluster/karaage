@@ -59,7 +59,7 @@ def get_institute_graph_url(start, end, machine_category):
         chart = grapher.pie_chart(data_dict=data)
         chart.download("%s/institutes/%s-%s_%i.png" % (settings.GRAPH_ROOT, start_str, end_str, machine_category.id))
 
-    return "%sgraphs/institutes/%s-%s_%i.png" % (settings.GRAPH_URL, start_str, end_str, machine_category.id)
+    return "%sinstitutes/%s-%s_%i.png" % (settings.GRAPH_URL, start_str, end_str, machine_category.id)
 
     
 def get_trend_graph_url(start, end, machine_category):
@@ -91,7 +91,7 @@ def get_trend_graph_url(start, end, machine_category):
         chart.download("%s/trends/trend_%i_%s-%s.png" % (settings.GRAPH_ROOT, machine_category.id, start_str, end_str))
         
 
-    return "%sgraphs/trends/trend_%i_%s-%s.png" % (settings.GRAPH_URL, machine_category.id, start_str, end_str) 
+    return "%strends/trend_%i_%s-%s.png" % (settings.GRAPH_URL, machine_category.id, start_str, end_str) 
 
 
 def get_institute_trend_graph_url(institute, 
