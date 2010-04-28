@@ -89,7 +89,7 @@ class GraphGenerator(base.GraphGenerator):
         x.ext_color = colours
         x.setData(data)
         try:
-            x.draw("%s/graphs/projects/%s_%s-%s_%i.png" % (settings.MEDIA_ROOT, project.pid, start_str, end_str, machine_category.id))
+            x.draw("%s/projects/%s_%s-%s_%i.png" % (settings.GRAPH_ROOT, project.pid, start_str, end_str, machine_category.id))
 
         except:
             pass
@@ -145,7 +145,7 @@ class GraphGenerator(base.GraphGenerator):
         myPie.color = ["red", "green", "yellow", "orange", "blue", "red", "green", "yellow", "orange", "blue"]
 
         try:
-            myPie.draw("%s/graphs/institutes/%s-%s_%i.png" % (settings.MEDIA_ROOT, start_str, end_str, machine_category.id))
+            myPie.draw("%s/institutes/%s-%s_%i.png" % (settings.GRAPH_ROOT, start_str, end_str, machine_category.id))
         except:
             pass
     
@@ -179,7 +179,7 @@ class GraphGenerator(base.GraphGenerator):
         #myPie.explode = [10,10,10,10,10,10,10,10,10,10]
         
         myPie.color = ["red", "green", "yellow", "orange", "blue", "red", "green", "yellow", "orange", "blue"]
-        myPie.draw("%s/graphs/quota_pie.png" % settings.MEDIA_ROOT)
+        myPie.draw("%s/quota_pie.png" % settings.GRAPH_ROOT)
         
 
 
@@ -223,7 +223,7 @@ class GraphGenerator(base.GraphGenerator):
         x.ext_color = colours
         x.setData(data)
         try:
-            x.draw("%s/graphs/trends/trend_%i_%s-%s.png" % (settings.MEDIA_ROOT, machine_category.id, start_str, end_str))
+            x.draw("%s/trends/trend_%i_%s-%s.png" % (settings.GRAPH_ROOT, machine_category.id, start_str, end_str))
         except:
             pass
 
@@ -260,7 +260,7 @@ class GraphGenerator(base.GraphGenerator):
         x.setData(data)
         #x.setComboData(data)
         try:
-            x.draw("%s/graphs/institutes/bar_%s_%s-%s_%i.png" % (settings.MEDIA_ROOT, institute.id, start_str, end_str, machine_category.id))
+            x.draw("%s/institutes/bar_%s_%s-%s_%i.png" % (settings.GRAPH_ROOT, institute.id, start_str, end_str, machine_category.id))
         except:
             pass
 
@@ -294,5 +294,5 @@ class GraphGenerator(base.GraphGenerator):
             x.grid = "NONE"
 
             x.setData(i_data)
-            x.draw("%s/graphs/i_trends/%s_%s_%s-trend.png" % (settings.MEDIA_ROOT, i.name.replace(' ', '').lower(), start_str, end_str))
+            x.draw("%s/i_trends/%s_%s_%s-trend.png" % (settings.GRAPH_ROOT, i.name.replace(' ', '').lower(), start_str, end_str))
             

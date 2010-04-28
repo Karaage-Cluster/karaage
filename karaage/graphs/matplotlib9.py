@@ -175,7 +175,7 @@ class GraphGenerator(gdchart2.GraphGenerator):
             count += 1
     
         canvas = FigureCanvasAgg(fig)
-        canvas.print_figure("%s/graphs/projects/%s_%s-%s_%i.png" % (str(settings.MEDIA_ROOT), str(project.pid), str(start_str), str(end_str), machine_category.id))
+        canvas.print_figure("%s/projects/%s_%s-%s_%i.png" % (str(settings.GRAPH_ROOT), str(project.pid), str(start_str), str(end_str), machine_category.id))
 
 
     def gen_institutes_pie(self, start, end, machine_category):
@@ -225,7 +225,7 @@ class GraphGenerator(gdchart2.GraphGenerator):
 
     
         canvas = FigureCanvasAgg(fig)
-        canvas.print_figure("%s/graphs/institutes/%s-%s_%i.png" % (settings.MEDIA_ROOT, start_str, end_str, machine_category.id))
+        canvas.print_figure("%s/institutes/%s-%s_%i.png" % (settings.GRAPH_ROOT, start_str, end_str, machine_category.id))
 
 
 
@@ -248,7 +248,7 @@ class GraphGenerator(gdchart2.GraphGenerator):
         ax.pie(data, labels=labels, colors=colours)
             
         canvas = FigureCanvasAgg(fig)
-        canvas.print_figure("%s/graphs/quota_pie.png" % settings.MEDIA_ROOT)
+        canvas.print_figure("%s/quota_pie.png" % settings.GRAPH_ROOT)
 
 
 

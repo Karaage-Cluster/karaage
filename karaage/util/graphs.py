@@ -37,7 +37,7 @@ def get_institute_graph_url(start, end, machine_category):
 
 
     try:
-        f = open("%s/graphs/institutes/%s-%s_%i.png" % (settings.MEDIA_ROOT, start_str, end_str, machine_category.id))
+        f = open("%s/institutes/%s-%s_%i.png" % (settings.GRAPH_ROOT, start_str, end_str, machine_category.id))
     except:
     
         today = datetime.date.today()
@@ -57,9 +57,9 @@ def get_institute_graph_url(start, end, machine_category):
         data['Unused'] = float(available_time - total)
         
         chart = grapher.pie_chart(data_dict=data)
-        chart.download("%s/graphs/institutes/%s-%s_%i.png" % (settings.MEDIA_ROOT, start_str, end_str, machine_category.id))
+        chart.download("%s/institutes/%s-%s_%i.png" % (settings.GRAPH_ROOT, start_str, end_str, machine_category.id))
 
-    return "%sgraphs/institutes/%s-%s_%i.png" % (settings.MEDIA_URL, start_str, end_str, machine_category.id)
+    return "%sgraphs/institutes/%s-%s_%i.png" % (settings.GRAPH_URL, start_str, end_str, machine_category.id)
 
     
 def get_trend_graph_url(start, end, machine_category):
@@ -68,7 +68,7 @@ def get_trend_graph_url(start, end, machine_category):
     end_str = end.strftime('%Y-%m-%d')
 
     try: 
-        f = open("%s/graphs/trends/trend_%i_%s-%s.png" % (settings.MEDIA_ROOT, machine_category.id, start_str, end_str))
+        f = open("%s/trends/trend_%i_%s-%s.png" % (settings.GRAPH_ROOT, machine_category.id, start_str, end_str))
     except: 
 
         period = (end - start).days
@@ -88,10 +88,10 @@ def get_trend_graph_url(start, end, machine_category):
         data, colours = smooth_data(rows, start, end)
     
         chart = grapher.sparkline(data)
-        chart.download("%s/graphs/trends/trend_%i_%s-%s.png" % (settings.MEDIA_ROOT, machine_category.id, start_str, end_str))
+        chart.download("%s/trends/trend_%i_%s-%s.png" % (settings.GRAPH_ROOT, machine_category.id, start_str, end_str))
         
 
-    return "%sgraphs/trends/trend_%i_%s-%s.png" % (settings.MEDIA_URL, machine_category.id, start_str, end_str) 
+    return "%sgraphs/trends/trend_%i_%s-%s.png" % (settings.GRAPH_URL, machine_category.id, start_str, end_str) 
 
 
 def get_institute_trend_graph_url(institute, 
@@ -107,7 +107,7 @@ def get_institute_trend_graph_url(institute,
         institute.gen_usage_graph(start, end, machine_category)
 
     try:
-        f = open("%s/graphs/institutes/bar_%i_%s-%s_%i.png" % (settings.MEDIA_ROOT, institute.id, start_str, end_str, machine_category.id))
+        f = open("%s/institutes/bar_%i_%s-%s_%i.png" % (settings.GRAPH_ROOT, institute.id, start_str, end_str, machine_category.id))
     except:
         try:
             institute.gen_usage_graph(start, end, machine_category)
@@ -129,7 +129,7 @@ def get_project_trend_graph_url(project,
         gen_project_graph(project, start, end, machine_category)
 
     try:
-        f = open("%s/graphs/projects/%s_%s-%s_%i.png" % (settings.MEDIA_ROOT, project.pid, start_str, end_str, machine_category.id))
+        f = open("%s/projects/%s_%s-%s_%i.png" % (settings.GRAPH_ROOT, project.pid, start_str, end_str, machine_category.id))
     except:
         try:
             gen_project_graph(project, start, end, machine_category)
@@ -149,7 +149,7 @@ def get_institutes_trend_graph_urls(start, end, machine_category=MachineCategory
 
     try:
         for i in Institute.primary.all():
-            f = open("%s/graphs/i_trends/%s_%s_%s-trend.png" % (settings.MEDIA_ROOT, i.name.replace(' ', '').lower(), start_str, end_str)) 
+            f = open("%s/i_trends/%s_%s_%s-trend.png" % (settings.GRAPH_ROOT, i.name.replace(' ', '').lower(), start_str, end_str)) 
     except:
         try:
             gen_institutes_trend(start, end, machine_category)
