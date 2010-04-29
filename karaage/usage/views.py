@@ -175,6 +175,8 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
         user_total, user_total_jobs = 0, 0
         if i_usage:
             for u in UserCache.objects.order_by('-cpu_hours').filter(start=start, end=end).filter(project__institute=institute).filter(project__machine_categories=machine_category)[:5]:
+                if not u.cpu_hours:
+                    continue
                 user_total += u.cpu_hours
                 user_total_jobs += u.no_jobs
                 user_list.append(
