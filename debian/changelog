@@ -1,3 +1,27 @@
+karaage (2.0.12) testing; urgency=low
+
+  * Attempts to fix usage error. addresses #25
+
+ -- Sam Morrison <sam@vpac.org>  Thu, 29 Apr 2010 16:14:15 +1000
+
+karaage (2.0.11) testing; urgency=low
+
+  * Fixed broken graph urls
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 28 Apr 2010 16:07:28 +1000
+
+karaage (2.0.10) testing; urgency=low
+
+  * Provide GRAPH_URL in template context
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 28 Apr 2010 15:59:09 +1000
+
+karaage (2.0.9) testing; urgency=low
+
+  * GRAPH_URL and GRAPH_ROOT settings if graph dir separate to MEDIA_* 
+	
+ -- Sam Morrison <sam@vpac.org>  Wed, 28 Apr 2010 15:49:10 +1000
+
 karaage (2.0.8) testing; urgency=high
 
   * Fixed software_detail bug
