@@ -18,15 +18,6 @@
 import datetime
 from django.contrib.contenttypes.models import ContentType
 
-def unique(seq):
-    """Makes a list unique"""
-    # Not order preserving
-    keys = {}
-    for e in seq:
-        keys[e] = 1
-    return keys.keys()
-
-
 
 def get_date_range(request, default_start=(datetime.date.today()-datetime.timedelta(days=90)), default_end=datetime.date.today()):
 
