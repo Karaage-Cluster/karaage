@@ -27,7 +27,7 @@ from django.template.defaultfilters import dictsortreversed
 import datetime
 
 from karaage.util.helpers import get_available_time
-from karaage.util.graphs import *
+from karaage.util.graphs import get_institute_graph_url, get_trend_graph_url, get_institute_trend_graph_url, get_project_trend_graph_url, get_institutes_trend_graph_urls
 from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
 from karaage.machines.models import UserAccount, Machine, MachineCategory
