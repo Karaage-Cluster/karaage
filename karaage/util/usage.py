@@ -21,14 +21,12 @@ uses a database cache to speed up proccess
 
 """
 __author__ = 'Sam Morrison'
-from django.db import connection
 from django.db.models import Count, Sum
 
 import datetime
 
 from karaage.cache.models import InstituteCache, ProjectCache, UserCache, MachineCache
 from karaage.usage.models import CPUJob
-from karaage.machines.models import UserAccount
 
 
 def get_institute_usage(institute, start, end, machine_category):
@@ -95,9 +93,6 @@ def get_user_usage(user, project, start, end):
     try:
         cache = UserCache.objects.get(user=user, project=project, date=datetime.date.today(), start=start, end=end)
     except:
-        total_usage = total_jobs = 0
-        accounts = UserAccount.objects.filter(user=user)
-
         data = CPUJob.objects.filter(date__range=(start, end),
                                       project=project,
                                       user__user=user).aggregate(usage=Sum('cpu_usage'), jobs=Count('id'))
