@@ -30,18 +30,6 @@ from karaage.cache.models import InstituteCache, ProjectCache, UserCache, Machin
 from karaage.usage.models import CPUJob
 from karaage.machines.models import UserAccount
 
-def get_instititue_usage_period(institute, period, machine_category):
-    """Return a tuple of cpu hours and number of jobs for an institute
-
-    Keyword arguments:
-    institute -- 
-    period -- number of days back from today
-    machine_category -- MachineCategory object
-    
-    """
-    end = datetime.date.today()
-    start = end - datetime.timedelta(days=int(period))
-    return get_institute_usage_date(institute, start, end, machine_category)
 
 def get_institute_usage(institute, start, end, machine_category):
     """Return a tuple of cpu hours and number of jobs for an institute
@@ -93,19 +81,6 @@ def get_project_usage(project, start, end, machine_category):
                                              end=end, machine_category=machine_category, 
                                              cpu_hours=data['usage'], no_jobs=data['jobs'])
     return cache.cpu_hours, cache.no_jobs
-
-
-def get_user_usage_period(user, project, period):
-    """Return a tuple of cpu hours and number of jobs for a user in a specific project
-
-    Keyword arguments:
-    user -- 
-    project -- The project the usage is from 
-    period -- number of days back from today  
-    """
-    end = datetime.date.today()
-    start = end - datetime.timedelta(days=int(period))
-    return get_user_usage_date(project, start, end)
 
 
 def get_user_usage(user, project, start, end):
