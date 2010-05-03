@@ -156,7 +156,7 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
 
         for p in institute.project_set.filter(machine_categories=machine_category):
             p_usage, p_jobs = p.get_usage(start, end, machine_category)
-            chunk = p.projectchunk_set.get(machine_category=machine_category)
+            chunk, created = p.projectchunk_set.get_or_create(machine_category=machine_category)
             if p_jobs > 0:
                 try:
                     percent = (chunk.get_mpots()/chunk.get_cap())*100
