@@ -57,7 +57,7 @@
   
   <div class="module">
     <h2>Users</h2>
-    <h3>{{ person.title }} {{ person }}
+    <h3>{% if person.title %}{{ person.title }}{% endif %} {{ person }}
       {% if not person.is_active %}
       <img src="{{ MEDIA_URL }}img/admin/icon_error.gif" alt="Not Active" title="Not Active" />  
       {% else %}
