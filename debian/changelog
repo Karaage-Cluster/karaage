@@ -1,3 +1,13 @@
+karaage (2.0.13) testing; urgency=low
+
+  * Added initial data for default MachineCategory. Fixes #31
+  * Added initial api docs
+  * Added some management commands for clearing and populating 
+	usage cache and locking expired users
+  * Don't display title if it doesn't exist. Fixes #30
+	
+ -- Sam Morrison <sam@vpac.org>  Mon, 03 May 2010 12:41:19 +1000
+
 karaage (2.0.12) testing; urgency=low
 
   * Attempts to fix usage error. addresses #25
