@@ -33,6 +33,7 @@ class Project(models.Model):
     users = models.ManyToManyField(Person, blank=True, null=True)
     institute = models.ForeignKey(Institute)
     leader = models.ForeignKey(Person, related_name='leader')
+    leaders = models.ManyToManyField(Person, related_name='leaders')
     description = models.TextField(null=True, blank=True)
     is_approved = models.BooleanField()
     start_date = models.DateField()
