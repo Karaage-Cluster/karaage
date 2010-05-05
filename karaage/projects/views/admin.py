@@ -139,7 +139,7 @@ def project_list(request, queryset=Project.objects.all(), template_name='project
         terms = new_data['search'].lower()
         query = Q()
         for term in terms.split(' '):
-            q = Q(pid__icontains=term) | Q(name__icontains=term) | Q(description__icontains=term) | Q(leader__user__first_name__icontains=term) | Q(leader__user__last_name__icontains=term) | Q(institute__name__icontains=term)
+            q = Q(pid__icontains=term) | Q(name__icontains=term) | Q(description__icontains=term) | Q(leaders__user__first_name__icontains=term) | Q(leaders__user__last_name__icontains=term) | Q(institute__name__icontains=term)
             query = query & q
         
         project_list = project_list.filter(query)
@@ -170,7 +170,7 @@ def remove_user(request, project_id, username):
     user = get_object_or_404(Person, user__username=username)
 
     if site.id == 2:
-        if not request.user.get_profile() == project.leader:
+        if not request.user.get_profile() in project.leaders.all():
             return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     project.users.remove(user)

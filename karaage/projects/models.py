@@ -32,7 +32,6 @@ class Project(models.Model):
     name = models.CharField(max_length=200)
     users = models.ManyToManyField(Person, blank=True, null=True)
     institute = models.ForeignKey(Institute)
-    leader = models.ForeignKey(Person, related_name='leader')
     leaders = models.ManyToManyField(Person, related_name='leaders')
     description = models.TextField(null=True, blank=True)
     is_approved = models.BooleanField()

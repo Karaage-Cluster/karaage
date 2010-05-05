@@ -35,14 +35,14 @@ class ProjectForm(forms.ModelForm):
     description = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
     institute = forms.ModelChoiceField(queryset=Institute.valid.all())
     additional_req = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
-    leader = forms.ModelChoiceField(queryset=Person.active.all())
+    leaders = forms.ModelMultipleChoiceField(queryset=Person.active.all())
     start_date = forms.DateField(widget=AdminDateWidget)
     end_date = forms.DateField(widget=AdminDateWidget, required=False)
     machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all(), widget=forms.CheckboxSelectMultiple())
 
     class Meta:
         model = Project
-        fields = ('name', 'institute', 'leader', 'description', 'start_date', 'end_date', 'additional_req', 'machine_categories', 'machine_category')
+        fields = ('name', 'institute', 'leaders', 'description', 'start_date', 'end_date', 'additional_req', 'machine_categories', 'machine_category')
 
 
 class UserProjectForm(forms.Form):
@@ -65,7 +65,6 @@ class UserProjectForm(forms.Form):
         if p is None:
             p = Project()
             p.pid = get_new_pid(data['institute'], data['is_expertise'])
-            p.leader = leader
             p.institute = data['institute']
             p.machine_category=MachineCategory.objects.get_default()
             p.start_date = datetime.datetime.today()
@@ -78,6 +77,7 @@ class UserProjectForm(forms.Form):
             p.save()
             p.machine_categories.add(MachineCategory.objects.get_default())
             p.save()
+            p.leaders.add(leader)
             project_request = ProjectCreateRequest.objects.create(
                 project=p,
                 person=leader,

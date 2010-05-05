@@ -37,7 +37,7 @@ def add_edit_project(request, project_id=None):
         project = False
     else :
         project = get_object_or_404(Project, pk=project_id)
-        if not request.user == project.leader.user:
+        if not request.user.get_profile() in project.leaders.all():
             return HttpResponseForbidden('<h1>Access Denied</h1>')
                                     
     leader = request.user.get_profile()
