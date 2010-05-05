@@ -90,7 +90,7 @@ class PersonalDataStore(base.PersonalDataStore):
         conn = LDAPClient()
         conn.update_user(
             'uid=%s' % person.username,
-            nsRoleDN='cn=nsManagedDisabledRole,dc=vpac,dc=org',
+            nsRoleDN=settings.LDAP_LOCK_DN,
             )
         
 
@@ -100,7 +100,7 @@ class PersonalDataStore(base.PersonalDataStore):
         conn = LDAPClient()
         dn="uid=%s,%s" % (person.username, settings.LDAP_USER_BASE)
         old = {
-            'nsRoleDN': 'cn=nsManagedDisabledRole,dc=vpac,dc=org',
+            'nsRoleDN': settings.LDAP_LOCK_DN,
             }
         new = {}
         conn.ldap_modify(dn, old, new)
