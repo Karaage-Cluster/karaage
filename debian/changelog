@@ -1,3 +1,9 @@
+karaage (2.0.16) testing; urgency=low
+
+  * Better way of checking to see if user is locked or not
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 05 May 2010 14:23:01 +1000
+
 karaage (2.0.15) testing; urgency=low
 
   * Removed VPAC specific lock DN" 
