@@ -77,10 +77,12 @@ class PersonalDataStore(base.PersonalDataStore):
             ldap_user = conn.get_user('uid=%s' % person.username)
         except DoesNotExistException:
             return True
-
-        if hasattr(ldap_user, 'nsAccountLock'):
+        output = conn.ldap_search(settings.LDAP_USER_BASE, 
+                                  'uid=%s' % person.username,
+                                  retrieve_attributes=['nsAccountLock'])
+        if output[0][1]:
             return True
-
+        
         return False
 
 
