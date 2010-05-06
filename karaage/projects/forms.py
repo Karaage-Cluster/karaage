@@ -53,8 +53,6 @@ class UserProjectForm(forms.Form):
     name = forms.CharField(label='Project Title', widget=forms.TextInput(attrs={ 'size':60 }))
     description = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }))
     additional_req = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
-    is_expertise = forms.BooleanField(required=False, help_text=u"Is this a current VPAC funded Expertise or Education Project?")
-    pid = forms.CharField(label="PIN", max_length=10, required=False, help_text="If yes, please provide Project Identification Number")
     needs_account = forms.BooleanField(required=False, label=u"Will you be working on this project yourself?")
     #machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all(), widget=forms.CheckboxSelectMultiple)
     institute = forms.ModelChoiceField(queryset=Institute.valid.all())
@@ -64,17 +62,15 @@ class UserProjectForm(forms.Form):
 
         if p is None:
             p = Project()
-            p.pid = get_new_pid(data['institute'], data['is_expertise'])
+            p.pid = get_new_pid(data['institute'])
             p.leader = leader
             p.institute = data['institute']
             p.machine_category=MachineCategory.objects.get_default()
             p.start_date = datetime.datetime.today()
             p.is_approved, p.is_active = False, False
-            p.is_expertise = data['is_expertise']
             p.name = data['name']
             p.description = data['description']
             p.additional_req = data['additional_req']
-            p.is_expertise = data['is_expertise']
             p.save()
             p.machine_categories.add(MachineCategory.objects.get_default())
             p.save()
@@ -92,18 +88,9 @@ class UserProjectForm(forms.Form):
         p.name = data['name']
         p.description = data['description']
         p.additional_req = data['additional_req']
-        p.is_expertise = data['is_expertise']
         p.save()
 
         log_object(get_current_user(), p, 2, 'Edited')
 
         return p
 
-
-    def clean(self):
-        data = self.cleaned_data
-
-        if data.get('is_expertise') and data['pid'] == '':
-                raise forms.ValidationError("Please provide your Expertise Grant project identifcation number")
-            
-        return data
