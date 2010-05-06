@@ -96,7 +96,7 @@ class UserForm(BaseUserForm):
             user = None
         
         if user is not None:
-            raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old account please email %s' settings.ACCOUNTS_EMAIL_FROM)
+            raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old account please email %s' % settings.ACCOUNTS_EMAIL_FROM)
         return username
 
     
