@@ -77,7 +77,7 @@ class UserForm(BaseUserForm):
     project = forms.ModelChoiceField(queryset=Project.objects.all(), label=u"Default Project", required=False)
     institute = forms.ModelChoiceField(queryset=Institute.valid.all())
     comment = forms.CharField(widget=forms.Textarea(), required=False)
-    needs_account = forms.BooleanField(required=False, label=u"Do you require a VPAC computer account", help_text=u"eg. Will you be working on the project yourself")
+    needs_account = forms.BooleanField(required=False, label=u"Do you require a cluster account", help_text=u"eg. Will you be working on the project yourself")
     expires = forms.DateField(widget=forms.TextInput(attrs={ 'class':'vDateField' }), required=False)
 
 
@@ -96,7 +96,7 @@ class UserForm(BaseUserForm):
             user = None
         
         if user is not None:
-            raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old VPAC account please email accounts@vpac.org')
+            raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old account please email %s' settings.ACCOUNTS_EMAIL_FROM)
         return username
 
     
