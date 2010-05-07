@@ -123,7 +123,7 @@ class AccountDataStore(base.AccountDataStore):
             gidNumber=str(person.institute.gid),
             homeDirectory='/home/%s' % str(person.username),
             loginShell='/bin/bash',
-            objectClass=['top','person','organizationalPerson','inetOrgPerson', 'shadowAccount','posixAccount']
+            objectClass=settings.ACCOUNT_OBJECTCLASS
             )
 
         return ua
@@ -140,7 +140,7 @@ class AccountDataStore(base.AccountDataStore):
             gidNumber='',
             homeDirectory='',
             loginShell='',
-            objectClass=['top','person','organizationalPerson','inetOrgPerson', 'shadowAccount',]
+            objectClass=settings.USER_OBJECTCLASS
             )
 
     def update_account(self, ua):
