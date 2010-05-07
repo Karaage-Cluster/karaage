@@ -122,7 +122,7 @@ def project_detail(request, project_id):
     return render_to_response('projects/project_detail.html', locals(), context_instance=RequestContext(request))
 
 @login_required
-def project_list(request, queryset=Project.objects.all(), template_name='projects/project_list.html', paginate=True):
+def project_list(request, queryset=Project.objects.select_related().all(), template_name='projects/project_list.html', paginate=True):
 
     project_list = queryset
 
