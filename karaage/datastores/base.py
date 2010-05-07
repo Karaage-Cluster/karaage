@@ -16,6 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib.auth.models import User
+from django.conf import settings
 
 import datetime
 from andsome.middleware.threadlocals import get_current_user
@@ -181,10 +182,13 @@ class AccountDataStore(object):
     def lock_account(self, ua):
         ua.previous_shell = ua.loginShell()
         ua.save()
+        from karaage.datastores import change_shell
+        change_shell(ua, settings.LOCKED_SHELL)
 
     def unlock_account(self, ua):
         shell = getattr(ua, 'previous_shell', '/bin/bash')
-        return shell
+        from karaage.datastores import change_shell
+        change_shell(ua, shell)
 
     def get_shell(self, ua):
         pass
