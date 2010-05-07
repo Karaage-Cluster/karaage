@@ -1,3 +1,10 @@
+karaage (2.1.1) testing; urgency=low
+
+  * Ability to set LOCKED_SHELL. Fixes #34
+  * objectClass now configurable
+
+ -- Sam Morrison <sam@vpac.org>  Fri, 07 May 2010 14:25:52 +1000
+
 karaage (2.1) testing; urgency=low
 
   * Changed size of cpu_job.jobname from 20 -> 100. REQUIRES DB change
