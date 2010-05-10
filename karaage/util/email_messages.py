@@ -20,7 +20,7 @@ All email sending is done from this module
 """
 __author__ = 'Sam Morrison'
 
-from django.core.mail import send_mail, send_mass_mail
+from django.core.mail import send_mail
 from django.contrib.sites.models import Site
 from django.template import Context, Template
 from django.conf import settings
@@ -37,15 +37,11 @@ from karaage.machines.models import MachineCategory, UserAccount
 from karaage.emails.models import EmailTemplate
 from karaage.util import log_object as log
 
-# Not good should be id=settings.SITE_ID
-#TODO
-#site = Site.objects.get(name='user')
-site = Site.objects.get_current()
-
 
 def send_account_request_email(user_request):
     """Sends an email to project leader asking to approve person"""
     
+    site = Site.objects.get_current()
     email = EmailTemplate.objects.get(name='account_request')
 
     c = Context({
@@ -63,6 +59,7 @@ def send_account_request_email(user_request):
 def send_project_request_email(project_request):
     """Sends an email to the projects institutes active delegate for approval"""
     
+    site = Site.objects.get_current()
     email = EmailTemplate.objects.get(name='project_request')
 
     c = Context({
@@ -81,6 +78,7 @@ def send_project_request_email(project_request):
 def send_project_approved_email(project_request):
     """ Sends an email if project has been approved"""
 
+    site = Site.objects.get_current()
     email = EmailTemplate.objects.get(name='project_approved')
 
     c = Context({
@@ -98,6 +96,7 @@ def send_project_approved_email(project_request):
 def send_project_rejected_email(project_request):
     """ Sends email if project has been rejected"""
 
+    site = Site.objects.get_current()
     email = EmailTemplate.objects.get(name='project_rejected')
 
     c = Context({
@@ -148,6 +147,7 @@ def send_account_rejected_email(user_request):
 def send_project_join_approved_email(user_request):
     """Sends an email informing person request to join project approved"""
 
+    site = Site.objects.get_current()
     email = EmailTemplate.objects.get(name='project_joined_approved')
 
     c = Context({
@@ -165,6 +165,7 @@ def send_project_join_approved_email(user_request):
 def send_removed_from_project_email(person, project):
     """Sends an email informing person they have been removed from project"""
 
+    site = Site.objects.get_current()
     email = EmailTemplate.objects.get(name='removed_from_project')
 
     c = Context({
@@ -206,6 +207,7 @@ def send_bounced_warning(person):
 def send_leader_quarter_summary_emails():
     """Sends an email informing person request to join project approved"""
 
+    site = Site.objects.get_current()
     email = EmailTemplate.objects.get(name='leader_quarter_summary')
     body_t = Template(email.body)
     subject_t = Template(email.subject)
@@ -257,10 +259,7 @@ def send_leader_quarter_summary_emails():
                 'site': '%s%s%s' % (site.domain, settings.BASE_URL, reverse('kg_user_profile')),
                 })
     
-        #to_email = p.leader.email
         to_email = 'sam@vpac.org'
-    
-#        send_mail(subject_t.render(c), body_t.render(c), settings.ACCOUNTS_EMAIL_FROM, [to_email], fail_silently=False)
     
         body = body_t.render(c)
         print body
@@ -271,4 +270,3 @@ def send_leader_quarter_summary_emails():
     
     
         
-#    send_mass_mail(email_list)

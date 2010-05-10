@@ -29,8 +29,9 @@ from karaage.projects.models import Project
 from karaage.projects.util import add_user_to_project
 from karaage.machines.models import MachineCategory
 from karaage.requests.forms import ProjectRegistrationForm
-from karaage.util.email_messages import *
 from karaage.util import log_object as log
+from karaage.util.email_messages import send_account_request_email, send_project_request_email, send_project_approved_email, send_project_rejected_email, send_account_approved_email, send_account_rejected_email, send_project_join_approved_email, send_removed_from_project_email, send_bounced_warning
+
 
 # Create your views here.
 def project_registration(request):

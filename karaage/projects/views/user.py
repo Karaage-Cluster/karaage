@@ -28,7 +28,8 @@ from karaage.people.models import Institute
 from karaage.projects.forms import UserProjectForm as ProjectForm
 from karaage.projects.models import Project
 from karaage.machines.models import Machine
-from karaage.util.email_messages import *
+from karaage.util.email_messages import send_account_request_email, send_project_request_email, send_project_approved_email, send_project_rejected_email, send_account_approved_email, send_account_rejected_email, send_project_join_approved_email, send_removed_from_project_email, send_bounced_warning
+
 
 @login_required
 def add_edit_project(request, project_id=None):
