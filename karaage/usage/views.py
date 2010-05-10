@@ -30,14 +30,13 @@ from karaage.util.helpers import get_available_time
 from karaage.util.graphs import get_institute_graph_url, get_trend_graph_url, get_institute_trend_graph_url, get_project_trend_graph_url, get_institutes_trend_graph_urls
 from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
-from karaage.machines.models import UserAccount, Machine, MachineCategory
+from karaage.machines.models import UserAccount, MachineCategory
 from karaage.pbsmoab.models import InstituteChunk
 from karaage.usage.forms import UsageSearchForm
 from karaage.cache.models import UserCache
 from karaage.util import get_date_range
 from karaage.graphs.util import get_colour
-
-from models import CPUJob
+from karaage.usage.models import CPUJob
 
 
 def usage_index(request):
@@ -87,7 +86,7 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
         try:
             quota = InstituteChunk.objects.get(institute=i, machine_category=machine_category)
             display_quota = quota.quota
-        except:
+        except InstituteChunk.DoesNotExist:
             display_quota = None
         if show_zeros or jobs > 0:
             i_list.append({ 'institute': i, 'usage': time, 'jobs': jobs, 'quota': display_quota})
@@ -217,8 +216,8 @@ def project_usage(request, project_id, institute_id=None, machine_category_id=se
     # Custom SQL as need to get users that were remove from project too
 #    for u in project.users.all():
     cursor = connection.cursor()
-    SQL = "SELECT user_id from cpu_job where project_id = '%s' and `machine_id` IN %s AND `date` >= '%s' AND `date` <= '%s' GROUP BY user_id" % (str(project.pid), mc_ids, start_str, end_str)
-    cursor.execute(SQL)
+    sql = "SELECT user_id from cpu_job where project_id = '%s' and `machine_id` IN %s AND `date` >= '%s' AND `date` <= '%s' GROUP BY user_id" % (str(project.pid), mc_ids, start_str, end_str)
+    cursor.execute(sql)
     rows = list(cursor.fetchall())
     cursor.close()
 
@@ -228,7 +227,7 @@ def project_usage(request, project_id, institute_id=None, machine_category_id=se
         total += time
         total_jobs += jobs
         if jobs > 0:
-            usage_list.append({ 'user': u, 'usage': time, 'jobs': jobs,})
+            usage_list.append({ 'user': u, 'usage': time, 'jobs': jobs})
 
     for u in usage_list:
         if total == 0:
@@ -238,10 +237,10 @@ def project_usage(request, project_id, institute_id=None, machine_category_id=se
     
     usage_list = dictsortreversed(usage_list, 'usage')
 
-    c = 0
+    count = 0
     for i in usage_list:
-        i['colour'] = get_colour(c)
-        c += 1
+        i['colour'] = get_colour(count)
+        count += 1
 
     graph = get_project_trend_graph_url(project, start, end, machine_category)
 
@@ -258,11 +257,11 @@ def unknown_usage(request):
 
         try:
             project_s = Project.objects.get(pk=request.POST['project'])
-        except:
+        except Project.DoesNotExist:
             project_s = False
         try:
             person = Person.objects.get(pk=request.POST['user'])
-        except:
+        except Person.DoesNotExist:
            person = False
         
         jobs = CPUJob.objects.filter(id__in=request.POST.getlist('uid'))
@@ -382,7 +381,7 @@ def top_users(request, machine_category_id=settings.DEFAULT_MC, count=20):
 
     user_list = []
 
-    user_total, user_total_jobs = 0,0
+    user_total, user_total_jobs = 0, 0
     for u in UserCache.objects.order_by('-cpu_hours').filter(start=start, end=end).filter(project__machine_categories=machine_category)[:count]:
         user_total += u.cpu_hours
         user_total_jobs += u.no_jobs
@@ -409,9 +408,9 @@ def job_list(request, object_id, model):
     obj = get_object_or_404(model, pk=object_id)
 
     if model == Project:
-        type = 'project'
+        j_type = 'project'
     elif model == UserAccount:
-        type = 'user'
+        j_type = 'user'
     
     job_list = obj.cpujob_set.all()
 
@@ -425,9 +424,9 @@ def job_list_year(request, object_id, model, year):
     obj = get_object_or_404(model, pk=object_id)
 
     if model == Project:
-        type = 'project'
+        j_type = 'project'
     elif model == UserAccount:
-        type = 'user'
+        j_type = 'user'
     
     job_list = obj.cpujob_set.filter(date__year=year)
 

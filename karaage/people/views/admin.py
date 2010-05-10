@@ -19,11 +19,8 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth.decorators import permission_required, login_required
-from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.core.paginator import QuerySetPaginator
 from django.db.models import Q
-from django.contrib.sites.models import Site
 
 import datetime
 from andsome.util.filterspecs import Filter, FilterBar, DateFilter
@@ -38,7 +35,6 @@ from karaage.datastores import create_account
 
 @login_required
 def add_edit_user(request, form_class, template_name='people/person_form.html', redirect_url=None, username=None):
-    site = Site.objects.get_current()
     UserForm = form_class
 
     if request.user.has_perm('people.add_person'):
@@ -48,7 +44,6 @@ def add_edit_user(request, form_class, template_name='people/person_form.html', 
             person = get_object_or_404(Person, user__username=username)
     else:   
         person = request.user.get_profile()
-
     
     if request.method == 'POST':
         form = UserForm(request.POST)
@@ -66,7 +61,6 @@ def add_edit_user(request, form_class, template_name='people/person_form.html', 
                 return HttpResponseRedirect(person.get_absolute_url())
             else:
                 return HttpResponseRedirect(redirect_url)
-
     else:
         form = UserForm()
         if person:
@@ -77,7 +71,6 @@ def add_edit_user(request, form_class, template_name='people/person_form.html', 
             initial['institute'] = initial['institute_id']
             
             form.initial = initial
-
             
     return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
@@ -150,42 +143,40 @@ def add_edit_useraccount(request, username=None, useraccount_id=None):
 
             if user_account:
                 # Edit
-                 try:
-                     test_user_account = UserAccount.objects.get(
-                         username__exact=data['username'], machine_category=data['machine_category'], date_deleted__isnull=True)
-                 except:
-                     user_account.username = data['username']
-                     user_account.machine_category = data['machine_category']
-                     user_account.default_project = data['default_project']
-                     user_account.save()
+                try:
+                    test_user_account = UserAccount.objects.get(
+                        username__exact=data['username'], machine_category=data['machine_category'], date_deleted__isnull=True)
+                except:
+                    user_account.username = data['username']
+                    user_account.machine_category = data['machine_category']
+                    user_account.default_project = data['default_project']
+                    user_account.save()
+                    
+                    request.user.message_set.create(message="User account for '%s' changed succesfully" % user_account.user)
+                    return HttpResponseRedirect(user.get_absolute_url())
                  
-                     request.user.message_set.create(message="User account for '%s' changed succesfully" % user_account.user)
-                     
-                     return HttpResponseRedirect(user.get_absolute_url())
-                 
-                 if test_user_account.username == user_account.username:
-                     # didn't change
-                     user_account.machine_category = data['machine_category']
-                     user_account.default_project = data['default_project']
-                     user_account.save()
-                     request.user.message_set.create(message="User account for '%s' changed succesfully" % user_account.user)
-                     return HttpResponseRedirect(user.get_absolute_url())
-                 
-                 username_error = True                                                                   
+                if test_user_account.username == user_account.username:
+                    # didn't change
+                    user_account.machine_category = data['machine_category']
+                    user_account.default_project = data['default_project']
+                    user_account.save()
+                    request.user.message_set.create(message="User account for '%s' changed succesfully" % user_account.user)
+                    return HttpResponseRedirect(user.get_absolute_url())
+                
+                username_error = True                                                                   
             else:
                 #add
                 try:
                     project = data['default_project']
                 except:
                     project = None
-                
+                    
                 machine_category = data['machine_category']
-
+                
                 try:
                     test_user_account = UserAccount.objects.get(
                         username__exact=data['username'], machine_category=machine_category, date_deleted__isnull=True)
                 except UserAccount.DoesNotExist:
-
                     user_account = create_account(user, project, machine_category)               
                     request.user.message_set.create(message="User account for '%s' created succesfully" % user_account.user)
                     
@@ -201,7 +192,7 @@ def add_edit_useraccount(request, username=None, useraccount_id=None):
             form.initial = user_account.__dict__
             form.initial['default_project'] = form.initial['default_project_id']
             form.initial['machine_category'] = form.initial['machine_category_id']
-
+            
     return render_to_response('machines/useraccount_form.html', locals(), context_instance=RequestContext(request))
 
 add_edit_useraccount = permission_required('machines.add_useraccount')(add_edit_useraccount)
@@ -224,15 +215,11 @@ delete_useraccount = permission_required('machines.delete_useraccount')(delete_u
 
 @login_required
 def no_default_list(request):
-
     useraccount_list = UserAccount.objects.filter(default_project__isnull=True).filter(date_deleted__isnull=True)
-
-
     return render_to_response('people/no_default_list.html', locals(), context_instance=RequestContext(request))
 
 
 def no_account_list(request):
-
     users = Person.objects.all()
     user_id_list = []
     
@@ -242,9 +229,7 @@ def no_account_list(request):
                 if not u.has_account(mc):
                     user_id_list.append(u.id)
 
-
     return user_list(request, Person.objects.filter(id__in=user_id_list))
-
 
 def wrong_default_list(request):
     users = Person.active.all()
@@ -252,24 +237,16 @@ def wrong_default_list(request):
     for u in users:
         for ua in u.useraccount_set.filter(machine_category__id=1, date_deleted__isnull=True):
             d = False
-            
-	    #if ua.default_project is None:
-	#	d = True
             for p in ua.project_list():
                 if p == ua.default_project:
                     d = True
-
             if not d:
 		if not u.is_locked():
                     wrong.append(u.id)
-
     return user_list(request, Person.objects.filter(id__in=wrong))
-    
 
 @login_required
 def make_default(request, useraccount_id, project_id):
-
-    site = Site.objects.get_current()
 
     user_account = get_object_or_404(UserAccount, pk=useraccount_id)
     project = get_object_or_404(Project, pk=project_id)
@@ -293,9 +270,7 @@ def make_default(request, useraccount_id, project_id):
     request.user.message_set.create(message="Default project changed succesfully")
     log(request.user, user_account.user, 2, 'Changed default project to %s' % project.pid)
 
-
     return HttpResponseRedirect(user_account.get_absolute_url())
-
 
 @login_required
 def locked_list(request):

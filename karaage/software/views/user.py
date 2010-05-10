@@ -28,7 +28,7 @@ from django.contrib.auth.decorators import permission_required, login_required
 import datetime
 from placard.client import LDAPClient
 
-from karaage.software.models import *
+from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense, SoftwareLicenseAgreement
 from karaage.people.models import Person
 
 

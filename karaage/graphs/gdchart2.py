@@ -30,9 +30,8 @@ from karaage.machines.models import MachineCategory
 from karaage.projects.models import Project
 from karaage.usage.models import CPUJob
 from karaage.util.helpers import get_available_time
-
-import base
-from util import *
+from karaage.graphs import base
+from karaage.graphs.util import smooth_data, get_insitutes_trend, get_inst_colour, get_colour
 
 __author__ = 'Sam Morrison'
 
