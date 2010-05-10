@@ -2,6 +2,7 @@
 <table cellspacing="0">
 	<thead>
 		<tr>
+			<th>Job ID</th>
 			{% ifnotequal type "user" %}
 			<th>User</th>
 			{% if user.is_authenticated %}
@@ -26,6 +27,7 @@
 	<tbody>
    	{% for u in object_list %}
 	   	<tr class="{% cycle row1,row2 %}">
+	   		<td>{{ u.jobid }}</td>
 	   	{% ifnotequal type "user" %}
 	   		<td><a href="{{ u.user.get_absolute_url }}">{{ u.user.user }}</a></td>
 	   		{% if user.is_authenticated %}
