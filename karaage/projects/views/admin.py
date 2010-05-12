@@ -33,7 +33,6 @@ from karaage.requests.models import ProjectCreateRequest
 from karaage.projects.models import Project
 from karaage.projects.forms import ProjectForm
 from karaage.projects.util import get_new_pid, add_user_to_project
-from karaage.util.email_messages import send_removed_from_project_email
 from karaage.util import log_object as log
 from karaage.usage.forms import UsageSearchForm
 
@@ -179,8 +178,6 @@ def remove_user(request, project_id, username):
     log(request.user, project, 3, 'Removed %s from project' % user)
     log(request.user, user, 3, 'Removed from project %s' % project)
 
-   # send_removed_from_project_email(user, project)
-    
     if 'next' in request.REQUEST:
         return HttpResponseRedirect(request.REQUEST['next'])
     if site.id == 2:
