@@ -30,10 +30,6 @@ from andsome.middleware.threadlocals import get_current_user
 
 from karaage.util import log_object as log
 
-# Not good should be id=settings.SITE_ID
-#TODO
-#site = Site.objects.get(name='user')
-site = Site.objects.get_current()
 
 CONTEXT = {
     'org_email': settings.ACCOUNTS_EMAIL_FROM,
@@ -43,6 +39,7 @@ CONTEXT = {
 
 def send_account_request_email(user_request):
     """Sends an email to each project leader asking to approve person"""
+    site = Site.objects.get_current()
     context = CONTEXT.copy()
     context['requester'] = user_request.person
     context['site'] = '%s%s' % (site.domain, reverse('user_account_request_detail', args=[user_request.id]))
@@ -60,6 +57,7 @@ def send_account_request_email(user_request):
 
 def send_project_request_email(project_request):
     """Sends an email to the projects institutes active delegate for approval"""
+    site = Site.objects.get_current()
     context = CONTEXT.copy()
     context['requester'] = project_request.project.leaders.all()[0]
     context['receiver'] =  project_request.project.institute.active_delegate
@@ -68,6 +66,7 @@ def send_project_request_email(project_request):
 
     subject = render_to_string('requests/emails/create_project_request_subject.txt', context)
     body = render_to_string('requests/emails/create_project_request_body.txt', context)
+
     to_email = project_request.project.institute.active_delegate.email
 
     send_mail(subject, body, settings.ACCOUNTS_EMAIL_FROM, [to_email], fail_silently=False)
@@ -75,6 +74,7 @@ def send_project_request_email(project_request):
 
 def send_project_approved_email(project_request):
     """ Sends an email if project has been approved"""
+    site = Site.objects.get_current()
     context = CONTEXT.copy()
     context['project'] = project_request.project   
     context['site'] = '%s%s' % (site.domain, reverse('kg_user_profile'))
@@ -90,6 +90,7 @@ def send_project_approved_email(project_request):
 
 def send_project_rejected_email(project_request):
     """ Sends email if project has been rejected"""
+    site = Site.objects.get_current()
     context = CONTEXT.copy()
     context['project'] = project_request.project 
     context['site'] = '%s%s' % (site.domain, reverse('kg_user_profile'))
@@ -132,6 +133,7 @@ def send_account_rejected_email(user_request):
 
 def send_project_join_approved_email(user_request):
     """Sends an email informing person request to join project approved"""
+    site = Site.objects.get_current()
     context = CONTEXT.copy()
     context['receiver'] = user_request.person
     context['project'] = user_request.project
@@ -142,7 +144,7 @@ def send_project_join_approved_email(user_request):
     to_email = user_request.person.email
     
     send_mail(subject, body, settings.ACCOUNTS_EMAIL_FROM, [to_email], fail_silently=False)
-    
+
 
 def send_bounced_warning(person):
     """Sends an email to each project leader for person

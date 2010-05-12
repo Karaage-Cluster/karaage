@@ -19,7 +19,7 @@ from django import forms
 from placard.client import LDAPClient
 
 from karaage.machines.models import Machine
-from models import *
+from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense, 
 
 
 class SoftwarePackageForm(forms.Form):

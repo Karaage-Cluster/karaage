@@ -53,7 +53,6 @@ class PersonalDataStore(base.PersonalDataStore):
         conn = LDAPClient()
         conn.delete_user('uid=%s' % person.user.username)
         
-
     def update_user(self, person):
         super(PersonalDataStore, self).update_user(person)
 
@@ -77,12 +76,13 @@ class PersonalDataStore(base.PersonalDataStore):
             ldap_user = conn.get_user('uid=%s' % person.username)
         except DoesNotExistException:
             return True
-
-        if hasattr(ldap_user, 'nsAccountLock'):
+        output = conn.ldap_search(settings.LDAP_USER_BASE, 
+                                  'uid=%s' % person.username,
+                                  retrieve_attributes=['nsAccountLock'])
+        if output[0][1]:
             return True
-
+        
         return False
-
 
     def lock_user(self, person):
         super(PersonalDataStore, self).lock_user(person)
@@ -90,21 +90,19 @@ class PersonalDataStore(base.PersonalDataStore):
         conn = LDAPClient()
         conn.update_user(
             'uid=%s' % person.username,
-            nsRoleDN='cn=nsManagedDisabledRole,dc=vpac,dc=org',
+            nsRoleDN=settings.LDAP_LOCK_DN,
             )
         
-
     def unlock_user(self, person):
         super(PersonalDataStore, self).unlock_user(person)
         
         conn = LDAPClient()
         dn="uid=%s,%s" % (person.username, settings.LDAP_USER_BASE)
         old = {
-            'nsRoleDN': 'cn=nsManagedDisabledRole,dc=vpac,dc=org',
+            'nsRoleDN': settings.LDAP_LOCK_DN,
             }
         new = {}
-        conn.ldap_modify(dn, old, new)
-    
+        conn.ldap_modify(dn, old, new)  
 
     def set_password(self, person, raw_password):
         conn = LDAPClient()
@@ -114,8 +112,7 @@ class PersonalDataStore(base.PersonalDataStore):
 class AccountDataStore(base.AccountDataStore):
 
     def create_account(self, person, default_project):
-        ua = super(AccountDataStore, self).create_account(person, default_project)
-            
+        ua = super(AccountDataStore, self).create_account(person, default_project)          
         conn = LDAPClient()
         
         #TODO - Get generated attrs from ldap_attrs.py
@@ -126,19 +123,16 @@ class AccountDataStore(base.AccountDataStore):
             gidNumber=str(person.institute.gid),
             homeDirectory='/home/%s' % str(person.username),
             loginShell='/bin/bash',
-            objectClass=['top','person','organizationalPerson','inetOrgPerson', 'shadowAccount','posixAccount']
+            objectClass=settings.ACCOUNT_OBJECTCLASS
             )
 
         return ua
 
-
     def delete_account(self, ua):
         super(AccountDataStore, self).delete_account(ua)
-
         conn = LDAPClient()
 
         #TODO - Get generated attrs from ldap_attrs.py
-
         conn.update_user(
             'uid=%s' % ua.username,
             gecos='', 
@@ -146,51 +140,31 @@ class AccountDataStore(base.AccountDataStore):
             gidNumber='',
             homeDirectory='',
             loginShell='',
-            objectClass=['top','person','organizationalPerson','inetOrgPerson', 'shadowAccount',]
+            objectClass=settings.USER_OBJECTCLASS
             )
 
-
     def update_account(self, ua):
-
         super(AccountDataStore, self).update_account(ua)
-
         conn = LDAPClient()
-
         conn.update_user(
             'uid=%s' % ua.user.username,
             gecos='%s %s (%s)' % ((ua.user.first_name), str(ua.user.last_name), str(ua.user.institute.name)),
             gidNumber=str(ua.user.institute.gid),
             )
 
-
     def lock_account(self, ua):
         super(AccountDataStore, self).lock_account(ua)
 
-        conn = LDAPClient()
-        
-        conn.update_user(
-            'uid=%s' % ua.username,
-            loginShell='/usr/local/sbin/insecure'
-            )
-        
-
     def unlock_account(self, ua):
-        shell = super(AccountDataStore, self).unlock_account(ua)
-
-        conn = LDAPClient()
-        conn.update_user('uid=%s' % ua.username, loginShell=shell)
-        
+        super(AccountDataStore, self).unlock_account(ua)
 
     def get_shell(self, ua):
         super(AccountDataStore, self).get_shell(ua)
-
         conn = LDAPClient()
         luser = conn.get_user('uid=%s' % ua.username)
         return luser.loginShell
 
-
     def change_shell(self, ua, shell):
         super(AccountDataStore, self).change_shell(ua, shell)
-
         conn =  LDAPClient()
         conn.update_user('uid=%s' % ua.username, loginShell=str(shell))

@@ -16,9 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.db import models
-from django.conf import settings
 
-import datetime
 from placard.client import LDAPClient
 
 from karaage.people.models import Person

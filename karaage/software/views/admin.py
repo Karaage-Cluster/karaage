@@ -27,7 +27,7 @@ from django.core.paginator import QuerySetPaginator
 from andsome.util.filterspecs import Filter, FilterBar
 from placard.client import LDAPClient
 
-from karaage.software.models import *
+from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense, SoftwareLicenseAgreement
 from karaage.software.forms import AddPackageForm
 from karaage.people.models import Person
 from karaage.util import log_object as log

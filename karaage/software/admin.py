@@ -16,7 +16,8 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib import admin
-from models import *
+
+from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense, SoftwareLicenseAgreement
 
 
 admin.site.register(SoftwareCategory)

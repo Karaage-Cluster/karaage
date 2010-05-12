@@ -24,7 +24,7 @@ from andsome.graphs.googlechart import GraphGenerator
 
 from karaage.machines.models import MachineCategory
 from karaage.people.models import Institute
-from karaage.graphs import *
+from karaage.graphs import gen_project_graph, gen_institutes_pie, gen_quota_graph, gen_trend_graph, gen_institute_bar, gen_institutes_trend
 from karaage.graphs.util import smooth_data
 from karaage.util.helpers import get_available_time
 

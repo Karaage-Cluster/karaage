@@ -1,3 +1,31 @@
+karaage (2.1.1) testing; urgency=low
+
+  * Ability to set LOCKED_SHELL. Fixes #34
+  * objectClass now configurable
+
+ -- Sam Morrison <sam@vpac.org>  Fri, 07 May 2010 14:25:52 +1000
+
+karaage (2.1) testing; urgency=low
+
+  * Changed size of cpu_job.jobname from 20 -> 100. REQUIRES DB change
+  * removed is_expertise from user project form
+  * By default expect a non expertise project when creating a project ID
+  * Removed VPAC in text on admin person form
+
+ -- Sam Morrison <sam@vpac.org>  Thu, 06 May 2010 16:31:53 +1000
+
+karaage (2.0.16) testing; urgency=low
+
+  * Better way of checking to see if user is locked or not
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 05 May 2010 14:23:01 +1000
+
+karaage (2.0.15) testing; urgency=low
+
+  * Removed VPAC specific lock DN" 
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 05 May 2010 12:00:45 +1000
+
 karaage (2.0.14) testing; urgency=low
 
   * Fixed usage bug when no projectchunk

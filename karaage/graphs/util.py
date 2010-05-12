@@ -85,7 +85,8 @@ def smooth_data(rows, start, end):
 
 
 def get_insitutes_trend(institute, start, end, machine_category=MachineCategory.objects.get(pk=settings.DEFAULT_MC)):
-
+    if institute.project_set.count() == 0 or machine_category.machine_set.count() == 0:
+        return []
     project_ids = tuple([str((p.pid)) for p in institute.project_set.all()])
     if len(project_ids) == 1:
         project_ids = "('%s')" % str(project_ids[0])

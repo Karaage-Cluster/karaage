@@ -21,21 +21,15 @@
 {% if project %}
 {{ form.machine_category.as_hidden }}
 {{ form.institute.as_hidden }}
-{{ form.is_expertise.as_hidden }}
-{{ form.pid.as_hidden }}
 {% else %}
-
-{% formfield form.is_expertise %}
-{% formfield form.pid %}
 {% formfield form.institute %}
 {% formfield form.needs_account %}
-
 <input type="hidden" name="machine_category" value="1" />
 {#{% formfield form.machine_category %}#}
 {% endif %}
 </fieldset>
 <div class="submit-row">
-		<input type="submit" value="Proceed" class="default" />
-	</div>
+  <input type="submit" value="Proceed" class="default" />
+</div>
 </form>
 {% endblock %}

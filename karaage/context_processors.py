@@ -17,8 +17,6 @@
 
 from django.conf import settings
 
-import socket
-
 from karaage.requests.models import ProjectJoinRequest
 
 def common(request):

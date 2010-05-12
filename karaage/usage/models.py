@@ -55,7 +55,7 @@ class CPUJob(models.Model):
     list_vmem = models.IntegerField(blank=True, null=True)
     list_pvmem = models.IntegerField(blank=True, null=True)
     exit_status = models.IntegerField(blank=True, null=True)
-    jobname = models.CharField(max_length=20, blank=True, null=True)
+    jobname = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         ordering = ['-date']

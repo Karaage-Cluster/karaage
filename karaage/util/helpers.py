@@ -41,7 +41,7 @@ def _getsalt(chars=string.letters + string.digits):
     return random.choice(chars) + random.choice(chars)
 
 
-def get_new_pid(institute, is_expertise):
+def get_new_pid(institute, is_expertise=False):
     """ Return a new Project ID
 
     Keyword arguments:

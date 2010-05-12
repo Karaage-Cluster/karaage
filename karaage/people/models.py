@@ -17,15 +17,13 @@
 
 from django.db import models
 from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 
 from placard.client import LDAPClient
 from andsome.middleware.threadlocals import get_current_user
 from karaage.institutes.managers import PrimaryInstituteManager, ValidChoiceManager
 from karaage.constants import TITLES, STATES, COUNTRIES
-
-from managers import ActiveUserManager, DeletedUserManager, LeaderManager
+from karaage.people.managers import ActiveUserManager, DeletedUserManager, LeaderManager
 
 
 class Institute(models.Model):
@@ -100,11 +98,10 @@ class Person(models.Model):
     leaders = LeaderManager()
     
     class Meta:
-        verbose_name_plural ='people'
-        ordering = ['user__first_name', 'user__last_name',]
+        verbose_name_plural = 'people'
+        ordering = ['user__first_name', 'user__last_name']
         db_table = 'person'
-        permissions = (("lock_person", "Can lock/unlock a person"),)
-
+        permissions = ("lock_person", "Can lock/unlock a person")
     
     def __unicode__(self):
         return self.user.get_full_name()
@@ -175,13 +172,10 @@ class Person(models.Model):
         return False
 
     def get_user_account(self, machine_category):
-        if self.has_account(machine_category):
-            ua = self.useraccount_set.filter(machine_category=machine_category)
-            try:
-                return ua[0]
-            except:
-               return None 
-        return None
+        try:
+            return self.useraccount_set.get(machine_category=machine_category, date_deleted__isnull=True)
+        except:
+            return None
 
     def get_usage(self, project, start, end):
         from karaage.util.usage import get_user_usage
