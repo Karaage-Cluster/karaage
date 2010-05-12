@@ -1,0 +1,9 @@
+Hello {{ receiver }}
+
+Your request to join the project "{{ project }}" has been declined. This may have been by either the leader of the project, {{ project.leader }}, or by the {{ org_name }} administrative team.
+
+Please contact the {{ org_name }} administrative team at {{ org_email }}
+
+Thanks,
+
+{% include emails/email_footer.txt %}

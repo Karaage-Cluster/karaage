@@ -1,0 +1,10 @@
+Hello {{ receiver.first_name }},
+
+Your request to join project "{{ project.name }}" with project ID {{ project.pid }} has been approved. You may view the project details and your {{ org_name }} profile at {{ site }}
+
+Please NOTE that your default project has not changed. If you would like to change it please go to the link mentioned above.
+
+
+Thanks,
+
+{% include emails/email_footer.txt %}
