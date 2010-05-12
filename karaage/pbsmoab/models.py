@@ -65,7 +65,8 @@ class ProjectChunk(models.Model):
         if usage is None:
             usage = Decimal('0')
         total_time, ave_cpus = get_available_time()
-        
+        if total_time == 0:
+            return 0
         return ((usage / total_time) * 100 * 1000).quantize(TWOPLACES)
 
     def is_over_quota(self):
@@ -85,6 +86,20 @@ class ProjectChunk(models.Model):
         if iq.cap is not None:
             return iq.cap
         return iq.quota * 1000
+
+
+def create_institute_chunk(sender, **kwargs):
+    institute = kwargs['instance']
+    for mc in MachineCategory.objects.all():
+        InstituteChunk.objects.get_or_create(institute=institute, machine_category=mc, defaults={'quota': 0 })
+
+def delete_institute_chunk(sender, **kwargs):
+    InstituteChunk.objects.filter(institute=kwargs['instance']).delete()
+
+
+post_save.connect(create_institute_chunk, sender=Institute)
+pre_delete.connect(delete_institute_chunk, sender=Institute)
+
 
 
 
