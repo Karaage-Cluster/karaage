@@ -114,16 +114,16 @@ class ProjectRegistrationForm(UserRegistrationForm):
         
         project.pid = get_new_pid(data['project_institute'], False)
 
-        p = create_new_user(data)
+        person = create_new_user(data)
         
-        project.leader = p
         project.machine_category = MachineCategory.objects.get_default()
         project.machine_categories.add(MachineCategory.objects.get_default())
         project.save()
+        project.leaders.add(person)
         
         project_request = ProjectCreateRequest.objects.create(
             project=project,
-            person=p,
+            person=person,
             needs_account=data['needs_account']
         )
 

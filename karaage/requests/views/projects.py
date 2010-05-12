@@ -80,7 +80,7 @@ def project_registration(request):
 def project_created(request, project_request_id):
     project_request = get_object_or_404(ProjectCreateRequest, pk=project_request_id)
     project = project_request.project
-    person = project_request.project.leader
+    person = request.user.get_profile()
     
     log(person.user, project, 1, 'Requested project for approval')
     
@@ -92,7 +92,7 @@ def approve_project(request, project_request_id):
     project_request = get_object_or_404(ProjectCreateRequest, pk=project_request_id)
     project = project_request.project
     institute = project.institute
-    leader = project.leader
+    project_leaders = project.leaders.all()
 
     # Make sure the request is coming from the institutes' delegate
     if not request.user == institute.delegate.user:
@@ -108,14 +108,15 @@ def approve_project(request, project_request_id):
     project.save()
 
     log(request.user, project, 2, 'Approved Project')
-    request.user.message_set.create(message="Project approved successfully and a notification email has been sent to %s" % leader)
-    leader.user.message_set.create(message="Your project request has been accepted")
+    for leader in project_leaders:
+        request.user.message_set.create(message="Project approved successfully and a notification email has been sent to %s" % leader)
+        leader.user.message_set.create(message="Your project request has been accepted")
 
-    if not leader.user.is_active:
-        leader.activate()
+        if not leader.user.is_active:
+            leader.activate()
         
-    if project_request.needs_account:
-        add_user_to_project(leader, project)
+        if project_request.needs_account:
+            add_user_to_project(leader, project)
  
     send_project_approved_email(project_request)
     
@@ -129,8 +130,7 @@ def reject_project(request, project_request_id):
     project_request = get_object_or_404(ProjectCreateRequest, pk=project_request_id)
     project = project_request.project
     institute = project.institute
-    leader = project.leader
-    user = leader.user
+    project_leaders = project.leaders.all()
 
     # Make sure the request is coming from the institutes delegate
     if not request.user == institute.delegate.user:
@@ -140,13 +140,15 @@ def reject_project(request, project_request_id):
     send_project_rejected_email(project_request)
 
     log(request.user, project, 2, 'Rejected Project')
-    request.user.message_set.create(message="Project rejected and a notification email has been sent to %s" % leader)
+    for leader in project_leaders:
+        request.user.message_set.create(message="Project rejected and a notification email has been sent to %s" % leader)
     
     project_request.delete()
     project.delete()
-    if not leader.user.is_active:
-        leader.delete()
-        user.delete()
+    for leader in project_leaders:
+        if not leader.user.is_active:
+            leader.delete()
+            user.delete()
 
     return HttpResponseRedirect(reverse('kg_user_profile'))
 
@@ -156,7 +158,7 @@ def request_detail(request, project_request_id):
     project_request = get_object_or_404(ProjectCreateRequest, pk=project_request_id)
 
     project = project_request.project
-    person = project_request.project.leader
+    person = project_request.project.leaders.all()[0]
 
     # Make sure the request is coming from the institutes delegate
     if not request.user == project.institute.delegate.user:

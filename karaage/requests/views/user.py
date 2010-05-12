@@ -207,7 +207,7 @@ def approve_person(request, user_request_id):
     join_request = get_object_or_404(ProjectJoinRequest, pk=user_request_id)
     
     #Make sure the request is coming from the project leader
-    if not request.user == join_request.project.leader.user:
+    if not request.user.get_profile() in join_request.project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     join_request.leader_approved = True
@@ -260,7 +260,7 @@ def reject_person(request, user_request_id):
     person = user_request.person
     user = user_request.person.user
                                         
-    if not request.user == project.leader.user:
+    if not request.user.get_profile() in project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     
     send_account_rejected_email(user_request)
@@ -285,7 +285,7 @@ def request_detail(request, user_request_id):
     project = user_request.project
     person = user_request.person
 
-    if not request.user.get_profile() == project.leader:
+    if not request.user.get_profile() in project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     
