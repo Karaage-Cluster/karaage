@@ -220,13 +220,13 @@ def approve_person(request, user_request_id):
     
     log(request.user, person, 2, 'Approved by leader')
 
-    needs_account = False
+    needs_account_created = False
     for mc in project.machine_categories.all():
         if not person.has_account(mc):
-            needs_account = True
+            needs_account_created = True
             break
         
-    if not needs_account:
+    if not needs_account_created:
         log(request.user, person, 2, 'Added to project %s' % project)
         log(request.user, project, 2, '%s added to project' % person)
 
@@ -248,7 +248,6 @@ def approve_person(request, user_request_id):
 
         send_account_approved_email(join_request)
         join_request.delete()
-
 
     return HttpResponseRedirect(reverse('kg_user_profile')) 
 
