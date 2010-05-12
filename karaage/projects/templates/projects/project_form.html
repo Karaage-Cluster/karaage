@@ -18,11 +18,11 @@
 {% block content %}
 <form method="post" action=".">
 {% load forms %}
-
+{{ form.errors }}
 <fieldset class="module aligned ()">
 {% formfield form.name %}
 {% formfield form.institute %}
-{% formfield form.leader %}
+{% formfield form.leaders %}
 {% formfield form.description %}
 {% formfield form.additional_req %}
 {% formfield form.start_date %}
