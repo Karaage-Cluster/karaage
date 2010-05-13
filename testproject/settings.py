@@ -1,0 +1,138 @@
+# Django settings for grunt project.
+from os import uname, path as os_path
+
+GRAPH_DEBUG = True
+
+GRAPH_LIB = 'karaage.graphs.matplotlib9'
+
+ADMIN_APPROVE_ACCOUNTS = True
+
+PERSONAL_DATASTORE = 'karaage.datastores.ldap_datastore'
+
+ACCOUNTS_ORG_NAME = 'TestOrg'
+
+ACCOUNT_DATASTORES = {
+    1: 'karaage.datastores.ldap_datastore',
+    2: 'karaage.datastores.dummy',
+    3: 'karaage.datastores.dummy',
+    4: 'karaage.datastores.dummy',
+    5: 'karaage.datastores.dummy',
+}
+
+LOCKED_SHELL = '/usr/local/sbin/insecure'
+
+USER_OBJECTCLASS = ['top','person','organizationalPerson','inetOrgPerson', 'shadowAccount',]
+ACCOUNT_OBJECTCLASS = ['top','person','organizationalPerson','inetOrgPerson', 'shadowAccount','posixAccount']
+
+
+DEFAULT_MC = 1
+AUTH_PROFILE_MODULE = 'people.Person'
+
+LDAP_URL = 'ldap://localhost:38911'
+LDAP_USE_TLS=False
+LDAP_ADMIN_PASSWORD="password"
+LDAP_BASE="dc=python-ldap,dc=org"
+LDAP_ADMIN_USER="cn=Manager,dc=python-ldap,dc=org"
+LDAP_USER_BASE='ou=People, %s' % LDAP_BASE
+LDAP_GROUP_BASE='ou=Groups, %s' % LDAP_BASE
+LDAP_ATTRS = 'testproject.ldap_attrs'
+
+# either
+#  sha      : SHA-1
+#  ssha     : salted SHA-1
+#  md5      : MD5
+# md5-crypt : MD5 crypt
+#  smd5     : salted MD5
+#  crypt    : Unix crypt
+#  ''       : plain text
+LDAP_PASSWD_SCHEME = 'md5-crypt'
+
+SERVER_EMAIL = 'django@' + uname()[1]
+ACCOUNTS_EMAIL_FROM = 'accounts@vpac.org'
+EMAIL_SUBJECT_PREFIX = '[Grunt VPAC] - '
+
+SHELLS = ( ('/bin/bash','bash'),
+           ('/bin/csh', 'csh'),
+           ('/bin/ksh', 'ksh'),
+           ('/bin/tcsh', 'tcsh'),
+           ('/bin/zsh', 'zsh'), )
+           
+
+ADMINS = (
+     ('Sam Morrison', 'sam@vpac.org'),
+)
+
+MANAGERS = ADMINS
+
+TIME_ZONE = 'Australia/Melbourne'
+LANGUAGE_CODE = 'en-au'
+
+DATABASE_ENGINE = 'sqlite3'
+
+MEDIA_ROOT = '/tmp'
+MEDIA_URL = '/media/'
+GRAPH_ROOT = MEDIA_ROOT + '/graphs/'
+GRAPH_URL = MEDIA_URL + 'graphs/'
+
+SITE_ID = 1
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.request',
+    'django.core.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.media',
+    'karaage.context_processors.common',
+)
+
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'django.middleware.doc.XViewMiddleware',
+    'andsome.middleware.threadlocals.ThreadLocals',  
+    'django.middleware.transaction.TransactionMiddleware',
+)
+
+
+ROOT_URLCONF = 'testproject.urls'
+
+
+INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.admin',
+    'django.contrib.humanize',
+    'django.contrib.flatpages',
+    'andsome.layout',
+    'andsome',
+    'karaage',
+    'karaage.people',
+    'karaage.machines',
+    'karaage.institutes',
+    'karaage.projects',
+    'karaage.usage',
+    'karaage.requests',
+    'karaage.cache',
+    'karaage.software',
+    'karaage.pbsmoab',
+    'karaage.projectreports',
+    'karaage.emails',
+    'placard.lgroups',
+    'placard.lusers',
+    'django_pbs.servers',
+    'django_pbs.jobs',
+    'karaage.test_data',
+
+)
+
+
+LOCAL_PBS_SERVERS = []
+
+
+INTERNAL_IPS = (
+    '127.0.0.1',
+    '172.25.10.10',
+    )
