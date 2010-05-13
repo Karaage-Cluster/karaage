@@ -19,31 +19,47 @@ from django.test import TestCase
 from django.test.client import Client
 from django.core import mail
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
+
 import datetime
 from time import sleep
+from placard.server import slapd
+from placard.client import LDAPClient
 
-from models import Person, Institute
+from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
 from karaage.machines.models import UserAccount
-
-from karaage.tests.util import fill_database
+from karaage.test_data.initial_ldap_data import test_ldif
 
 class UserTestCase(TestCase):
-    fixtures = ['emails', 'sites']
 
     def setUp(self):
-        self.client = Client()
-        fill_database()
+        global server
+        server = slapd.Slapd()
+        server.set_port(38911)
+        server.start()
+        base = server.get_dn_suffix()
+        server.ldapadd("\n".join(test_ldif)+"\n")
+
+        self.server = server
+        #try:
+        super_user = User.objects.create_user('super', 'sam@vpac.org', 'secret')
+        super_user.is_superuser = True
+        super_user.save()
+        Person.objects.create(user=super_user, country='AU', institute_id=1)
+        #except:
+        #    pass
+
+    def tearDown(self):
+        self.server.stop()
 
 
-    def test_create_user(self):
+    def test_admin_create_user(self):
 
         users = Person.objects.count()
-        project = Project.objects.get(pid='test')
-
+        project = Project.objects.get(pid='TestProject1')
         p_users = project.users.count()
-        
-        logged_in = self.client.login(username='super', password='aq12ws')
+        logged_in = self.client.login(username='super', password='secret')
         self.failUnlessEqual(logged_in, True)
         response = self.client.get(reverse('kg_add_user'))
         
@@ -60,34 +76,29 @@ class UserTestCase(TestCase):
             'country': 'AU',
             'telephone': '4444444',
             'username': 'samtest',
-            'password1': 'aq12ws',
-            'password2': 'aq12ws',
-            'project': 'test',
+            'password1': 'Exaiquouxei0',
+            'password2': 'Exaiquouxei0',
+            'project': 'TestProject1',
             'needs_account': True,
             'machine_category': 1,
         }
 
         response = self.client.post(reverse('kg_add_user'), form_data)
-
         self.failUnlessEqual(response.status_code, 302)
 
         self.assertEqual(Person.objects.count(), users+1)
         users = users + 1
         person = Person.objects.get(pk=users)
         self.assertEqual(person.is_active, True)
-        self.assertEqual(UserAccount.objects.count(), 1)
+        self.assertEqual(person.user.username, 'samtest')
+        self.assertEqual(UserAccount.objects.count(), 2)
         self.assertEqual(project.users.count(), p_users+1)
+        lcon = LDAPClient()
+        luser = lcon.get_user('uid=samtest')
+        self.assertEqual(luser.givenName, 'Sam')
         
         
         
-    def tearDown(self):
-        pass
-        #user = Person.objects.get(pk=Person.objects.count())
-        #self.assertEqual(in_ldap(user), True)
-        #user.deactivate()
-        # LDAP doesn't update fast enough
-        #self.assertEqual(in_ldap(user), False)
-
 
     def stest_delete_activate_user(self):
         user = Person.objects.get(pk=Person.objects.count())
