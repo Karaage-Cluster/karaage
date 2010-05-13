@@ -101,7 +101,9 @@ class Person(models.Model):
         verbose_name_plural = 'people'
         ordering = ['user__first_name', 'user__last_name']
         db_table = 'person'
-        permissions = ("lock_person", "Can lock/unlock a person")
+        permissions = (
+            ("lock_person", "Can lock/unlock a person"),
+            )
     
     def __unicode__(self):
         return self.user.get_full_name()
