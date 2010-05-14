@@ -20,11 +20,13 @@ from django.test.client import Client
 from django.core import mail
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.conf import settings
 
 import datetime
 from time import sleep
 from placard.server import slapd
 from placard.client import LDAPClient
+from placard import exceptions as placard_exceptions
 
 from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
@@ -42,19 +44,19 @@ class UserTestCase(TestCase):
         server.ldapadd("\n".join(test_ldif)+"\n")
 
         self.server = server
-        #try:
-        super_user = User.objects.create_user('super', 'sam@vpac.org', 'secret')
-        super_user.is_superuser = True
-        super_user.save()
-        Person.objects.create(user=super_user, country='AU', institute_id=1)
-        #except:
-        #    pass
+        try:
+            super_user = User.objects.create_user('super', 'sam@vpac.org', 'secret')
+            super_user.is_superuser = True
+            super_user.save()
+            Person.objects.create(user=super_user, country='AU', institute_id=1)
+        except:
+            pass
 
     def tearDown(self):
         self.server.stop()
 
 
-    def test_admin_create_user(self):
+    def test_admin_create_user_with_account(self):
 
         users = Person.objects.count()
         project = Project.objects.get(pid='TestProject1')
@@ -96,38 +98,84 @@ class UserTestCase(TestCase):
         lcon = LDAPClient()
         luser = lcon.get_user('uid=samtest')
         self.assertEqual(luser.givenName, 'Sam')
+        self.assertEqual(luser.objectClass, settings.ACCOUNT_OBJECTCLASS)
         
-        
-        
+     
+    def test_admin_create_user(self):
 
-    def stest_delete_activate_user(self):
-        user = Person.objects.get(pk=Person.objects.count())
-        self.assertEqual(in_ldap(user), True)
+        users = Person.objects.count()
+        project = Project.objects.get(pid='TestProject1')
+        p_users = project.users.count()
+        logged_in = self.client.login(username='super', password='secret')
+        self.failUnlessEqual(logged_in, True)
+        response = self.client.get(reverse('kg_add_user'))
+        
+        self.failUnlessEqual(response.status_code, 200)
+
+        form_data = {
+            'title' : 'Mr',
+            'first_name': 'Sam',
+            'last_name': 'Morrison2',
+            'position': 'Sys Admin',
+            'institute': 1,
+            'department': 'eddf',
+            'email': 'sam@vpac.org',
+            'country': 'AU',
+            'telephone': '4444444',
+            'username': 'samtest2',
+            'password1': 'Exaiquouxei0',
+            'password2': 'Exaiquouxei0',
+            'needs_account': False,
+        }
+
+        response = self.client.post(reverse('kg_add_user'), form_data)
+        self.failUnlessEqual(response.status_code, 302)
+
+        self.assertEqual(Person.objects.count(), users+1)
+        users = users + 1
+        person = Person.objects.get(pk=users)
+        self.assertEqual(person.is_active, True)
+        self.assertEqual(person.user.username, 'samtest2')
+        lcon = LDAPClient()
+        luser = lcon.get_user('uid=samtest2')
+        self.assertEqual(luser.givenName, 'Sam')
+        self.assertEqual(luser.objectClass, settings.USER_OBJECTCLASS)
+        # Try adding it again - Should fail
+        response = self.client.post(reverse('kg_add_user'), form_data)
+        self.failUnlessEqual(response.status_code, 200)
+
+    def test_delete_activate_user(self):
+        logged_in = self.client.login(username='super', password='secret')
+        user = Person.objects.get(user__username='kgtestuser3')
         self.assertEqual(user.is_active, True)
         self.assertEqual(user.project_set.count(), 1)
         self.assertEqual(user.useraccount_set.count(), 1)
         self.assertEqual(user.useraccount_set.all()[0].date_deleted, None)
+        lcon = LDAPClient()
+        luser = lcon.get_user('uid=kgtestuser3')
+        self.assertEqual(luser.givenName, 'Test')
+
+        response = self.client.get(reverse('admin_delete_user', args=[user.username]))
+        self.failUnlessEqual(response.status_code, 200)
         # Test deleting
         response = self.client.post(reverse('admin_delete_user', args=[user.username]))
         self.failUnlessEqual(response.status_code, 302)
         
-        user = Person.objects.get(pk=Person.objects.count())
+        user = Person.objects.get(user__username='kgtestuser3')
 
         self.assertEqual(user.is_active, False)
         self.assertEqual(user.project_set.count(), 0)
         self.assertEqual(user.useraccount_set.count(), 1)
         self.assertEqual(user.useraccount_set.all()[0].date_deleted, datetime.date.today())
-        #sleep(90)
-        self.assertEqual(in_ldap(user), False)
+        self.failUnlessRaises(placard_exceptions.DoesNotExistException, lcon.get_user, 'uid=kgtestuser3')
 
         # Test activating
         response = self.client.post(reverse('admin_activate_user', args=[user.username]))
-
-        user = Person.objects.get(pk=Person.objects.count())
         self.failUnlessEqual(response.status_code, 302)
+        user = Person.objects.get(user__username='kgtestuser3')
         self.assertEqual(user.is_active, True)
-        #sleep(90)
-        self.assertEqual(in_ldap(user), True)
+        luser = lcon.get_user('uid=kgtestuser3')
+        self.assertEqual(luser.givenName, 'Test')
         
     def stest_remove_from_project(self):
         user = Person.objects.get(pk=Person.objects.count())
