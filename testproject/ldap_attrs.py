@@ -44,6 +44,7 @@ REQUIRED_GROUP_ATTRS = [
     ]
 
 OPTIONAL_GROUP_ATTRS = [
+    'description',
     
 ]
 #GENERATED METHODS
