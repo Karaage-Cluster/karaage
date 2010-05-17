@@ -1,3 +1,9 @@
+karaage (2.2.1) testing; urgency=low
+
+  * Fixed create_account bug with ldap_attrs
+
+ -- Sam Morrison <sam@vpac.org>  Mon, 17 May 2010 15:44:37 +1000
+
 karaage (2.2) testing; urgency=low
 
   * Use dynamic values when creating an LDAP account. Also supply default_project when creating accounts
