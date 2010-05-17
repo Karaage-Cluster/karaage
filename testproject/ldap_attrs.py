@@ -25,7 +25,7 @@ def get_next_uid(data):
         from placard.client import LDAPClient
         conn = LDAPClient()
         uidNumber = conn.get_new_uid()
-        return [str(uidNumber)]
+        return str(uidNumber)
     else:
         return ''
 
