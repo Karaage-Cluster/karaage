@@ -115,14 +115,19 @@ class AccountDataStore(base.AccountDataStore):
         ua = super(AccountDataStore, self).create_account(person, default_project)          
         conn = LDAPClient()
         
-        #TODO - Get generated attrs from ldap_attrs.py
+        ldap_attrs = __import__(settings.LDAP_ATTRS, {}, {}, [''])
+        
+        from ldap_attrs import GENERATED_USER_ATTRS
+        data = conn.get_user('uid=%s' % person.username).__dict__
+        data['objectClass'] = settings.ACCOUNT_OBJECTCLASS
+        data['default_project'] = default_project
         conn.update_user(
             'uid=%s' % person.username,
             gecos='%s %s (%s)' % (str(person.first_name), str(person.last_name), str(person.institute.name)),
-            uidNumber=conn.get_new_uid(),
+            uidNumber=GENERATED_USER_ATTRS['uidNumber'](data),
             gidNumber=str(person.institute.gid),
-            homeDirectory='/home/%s' % str(person.username),
-            loginShell='/bin/bash',
+            homeDirectory=GENERATED_USER_ATTRS['homeDirectory'](data),
+            loginShell=GENERATED_USER_ATTRS['loginShell'](data),
             objectClass=settings.ACCOUNT_OBJECTCLASS
             )
 
