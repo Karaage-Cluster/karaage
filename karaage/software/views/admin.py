@@ -17,9 +17,7 @@
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django import forms
 from django.http import HttpResponseRedirect
-from django.conf import settings
 from django.contrib.auth.decorators import permission_required, login_required
 from django.db.models import Q
 from django.core.paginator import QuerySetPaginator
@@ -27,8 +25,8 @@ from django.core.paginator import QuerySetPaginator
 from andsome.util.filterspecs import Filter, FilterBar
 from placard.client import LDAPClient
 
-from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense, SoftwareLicenseAgreement
-from karaage.software.forms import AddPackageForm
+from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense
+from karaage.software.forms import AddPackageForm, LicenseForm, SoftwareVersionForm
 from karaage.people.models import Person
 from karaage.util import log_object as log
 
@@ -74,15 +72,15 @@ def software_detail(request, package_id):
     non_ids = []
     member_list = []
     if members:
-        for m in members:
+        for member in members:
             try:
-                person = Person.objects.get(user__username=m.uid)
+                person = Person.objects.get(user__username=member.uid)
                 non_ids.append(person.id)
-            except:
+            except Person.DoesNotExist:
                 person = None
             
             member_list.append({
-                'username': m.uid,
+                'username': member.uid,
                 'person': person,
                 })
 
@@ -90,12 +88,12 @@ def software_detail(request, package_id):
 
 
     if request.method == 'POST' and 'member-add' in request.POST:
-        p = get_object_or_404(Person, pk=request.POST['member'])
+        person = get_object_or_404(Person, pk=request.POST['member'])
         conn = LDAPClient()
-        conn.add_group_member('gidNumber=%s' % package.gid, str(p.username))
+        conn.add_group_member('gidNumber=%s' % package.gid, str(person.username))
 
-        request.user.message_set.create(message="User %s added to LDAP group" % p)
-        log(request.user, package, 1, "User %s added to LDAP group manually" % p)
+        request.user.message_set.create(message="User %s added to LDAP group" % person)
+        log(request.user, package, 1, "User %s added to LDAP group manually" % person)
         return HttpResponseRedirect(package.get_absolute_url())
         
 
@@ -131,19 +129,12 @@ def license_detail(request, license_id):
 @login_required
 def add_edit_license(request, package_id, license_id=None):
 
-    class LicenseForm(forms.ModelForm):
-        class Meta:
-            model = SoftwareLicense
-
-
     package = get_object_or_404(SoftwarePackage, pk=package_id)
     
     if license_id is None:
         l = None
     else:
         l = get_object_or_404(SoftwareLicense, pk=license_id)
-
-    
     
     if request.method == 'POST':
         form = LicenseForm(request.POST, instance=l)
@@ -162,14 +153,14 @@ add_edit_license = permission_required('software.delete_softwarelicense')(add_ed
 @login_required
 def delete_version(request, package_id, version_id):
     
-    v = get_object_or_404(SoftwareVersion, pk=version_id)
+    version = get_object_or_404(SoftwareVersion, pk=version_id)
 
     if request.method == 'POST':
-        v.delete()
-        log(request.user, v.package, 3, 'Deleted version: %s' % v)
+        version.delete()
+        log(request.user, version.package, 3, 'Deleted version: %s' % version)
         
-        request.user.message_set.create(message="Version '%s' was deleted succesfully" % v)
-        return HttpResponseRedirect(v.get_absolute_url())
+        request.user.message_set.create(message="Version '%s' was deleted succesfully" % version)
+        return HttpResponseRedirect(version.get_absolute_url())
 
     return render_to_response('software/version_confirm_delete.html', locals(), context_instance=RequestContext(request))
     
@@ -178,26 +169,20 @@ delete_version = permission_required('software.delete_softwareversion')(delete_v
 @login_required
 def add_edit_version(request, package_id, version_id=None):
 
-    class SoftwareVersionForm(forms.ModelForm):
-        class Meta:
-            model = SoftwareVersion
-
-
     package = get_object_or_404(SoftwarePackage, pk=package_id)
     
     if version_id is None:
-        v= None
+        version = None
     else:
-        v = get_object_or_404(SoftwareVersion, pk=version_id)
+        version = get_object_or_404(SoftwareVersion, pk=version_id)
 
-    
     if request.method == 'POST':
-        form = SoftwareVersionForm(request.POST, instance=v)
+        form = SoftwareVersionForm(request.POST, instance=version)
         if form.is_valid():
-            v = form.save()
+            version = form.save()
             return HttpResponseRedirect(package.get_absolute_url())
     else:
-        form = SoftwareVersionForm(instance=v)
+        form = SoftwareVersionForm(instance=version)
         
     return render_to_response('software/version_form.html', locals(), context_instance=RequestContext(request))
 

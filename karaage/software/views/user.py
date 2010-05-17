@@ -17,19 +17,15 @@
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django import forms
 from django.core.urlresolvers import reverse
-from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect, HttpResponse
-from django.conf import settings
 from django.template.defaultfilters import wordwrap
-from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import login_required
 
 import datetime
 from placard.client import LDAPClient
 
-from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense, SoftwareLicenseAgreement
-from karaage.people.models import Person
+from karaage.software.models import SoftwarePackage, SoftwareLicenseAgreement
 
 
 @login_required
@@ -54,29 +50,23 @@ def add_package_list(request):
 def add_package(request, package_id):
 
     package = get_object_or_404(SoftwarePackage, pk=package_id)
-    license = package.get_current_license()
+    software_license = package.get_current_license()
     
     person = request.user.get_profile()
     
     if request.method == 'POST':
 
-        
-        post = request.POST.copy()
-
         SoftwareLicenseAgreement.objects.create(
             user=person,
-            license=license,
+            license=software_license,
             date=datetime.datetime.today(),
         )
         
         conn = LDAPClient()
-        conn.add_group_member('gidNumber=%s' % license.package.gid, str(person.username))
+        conn.add_group_member('gidNumber=%s' % software_license.package.gid, str(person.username))
 
         return HttpResponseRedirect(reverse('kg_user_profile'))
-        
-
     else:
-
         
         return render_to_response('software/accept_license.html', locals(), context_instance=RequestContext(request))
         
@@ -84,6 +74,6 @@ def add_package(request, package_id):
 def license_txt(request, package_id):
     
     package = get_object_or_404(SoftwarePackage, pk=package_id)
-    license = package.get_current_license()
+    software_license = package.get_current_license()
 
-    return HttpResponse(wordwrap(license.text, 80), mimetype="text/plain")
+    return HttpResponse(wordwrap(software_license.text, 80), mimetype="text/plain")
