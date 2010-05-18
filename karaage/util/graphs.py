@@ -71,7 +71,7 @@ def get_trend_graph_url(start, end, machine_category):
 
         cursor = connection.cursor()
         
-       sql = "SELECT date, SUM( cpu_usage ) FROM `cpu_job` WHERE `machine_id` IN %s AND `date` >= '%s' AND `date` <= '%s' Group By date" % (mc_ids, start_str, end_str)
+        sql = "SELECT date, SUM( cpu_usage ) FROM `cpu_job` WHERE `machine_id` IN %s AND `date` >= '%s' AND `date` <= '%s' Group By date" % (mc_ids, start_str, end_str)
         cursor.execute(sql)
         rows = dict(cursor.fetchall())
         
