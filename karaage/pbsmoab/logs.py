@@ -15,9 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-
-import sys, os
-import datetime
 from math import ceil
 
 from karaage.machines.models import Machine, UserAccount
@@ -32,15 +29,12 @@ DEBUG = False
     
 """
 Assumes the file name is in the format YYYYMMDD
-
 """
 
 def parse_logs(log_list, date, machine_name, log_type):
     """
     filename format YYYYMMDD
-    
     """
-
     output = []
     count = fail = skip = updated = 0
     line_no = 0
@@ -49,21 +43,20 @@ def parse_logs(log_list, date, machine_name, log_type):
     # Check things are setup correctly
     try:
         machine = Machine.objects.get(name=machine_name)
-    except:
+    except Machine.DoesNotExist:
         return "ERROR: Couldn't find machine named: %s" % machine_name
 
     try:
         user_account = UserAccount.objects.get(username='unknown_user', machine_category=machine.category)
-    except:
+    except UserAccount.DoesNotExist:
         return "ERROR: Couldn't find unknown_user for machine category %s, please create one" % machine.category.name
 
     try:
         project = Project.objects.get(pk='Unknown_Project')
-    except:
+    except Project.DoesNotExist:
         return "ERROR: Couldn't find project Unknown_Project, please create one"
 
     # Process each line  
-  
     for line in log_list:
         line_no = line_no + 1
         try:
@@ -72,26 +65,20 @@ def parse_logs(log_list, date, machine_name, log_type):
             output.append("Error reading line")
         except Exception, e:
             skip = skip + 1
-            f = open('/tmp/alogger_log', 'a')
-            f.write('%s\n' % e)
-            f.close()
-
             continue
 
         try:
             user_account = UserAccount.objects.get(username=data['user'], machine_category=machine.category)
-        except:
+        except UserAccount.DoesNotExist:
             # Couldn't find user account - Assign to user 'Unknown_User'
             user_account = UserAccount.objects.get(username='unknown_user', machine_category=machine.category)
             output.append("Couldn't find user account for username=%s and machine category=%s" % (data['user'], machine.category.name))
             fail = fail + 1
 
-
-
         if 'project' in data:
             try:
                 project = Project.objects.get(pk=data['project'])
-            except:
+            except Project.DoesNotExist:
                 try:
                     project = user_account.default_project
                 except:

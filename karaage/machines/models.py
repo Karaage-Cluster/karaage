@@ -20,8 +20,7 @@ from django.db import models
 import datetime
 
 from karaage.people.models import Person
-
-from managers import MachineCategoryManager, ActiveMachineManager
+from karaage.machines.managers import MachineCategoryManager, ActiveMachineManager
 
 
 class MachineCategory(models.Model):
@@ -29,7 +28,7 @@ class MachineCategory(models.Model):
     objects = MachineCategoryManager()
 
     class Meta:
-        verbose_name_plural ='machine categories'
+        verbose_name_plural = 'machine categories'
         db_table = 'machine_category'
 
     def __unicode__(self):
@@ -78,7 +77,7 @@ class UserAccount(models.Model):
     previous_shell = models.CharField(max_length=50, null=True, blank=True)
 
     class Meta:
-        ordering = ['user',]
+        ordering = ['user', ]
         db_table = 'user_account'
 
     def __unicode__(self):
@@ -108,24 +107,10 @@ class UserAccount(models.Model):
         if self.disk_quota:
             return self.disk_quota
 
-        #try:
         iq = self.user.institute.institutechunk_set.get(machine_category=self.machine_category)
-        #except:
-        #    return None
-        
         return iq.disk_quota
     
     def loginShell(self):
-        try:
-            from placard.client import LDAPClient
-            conn = LDAPClient()
-            try:
-                ldap_user = conn.get_user('uid=%s' % self.username)
-            except:
-                return ''
-            try:
-                return ldap_user.loginShell
-            except:
-                return ''
-        except:
-            pass
+        from karaage.datastores import get_shell
+        return get_shell(self)
+

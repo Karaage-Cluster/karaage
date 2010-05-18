@@ -15,13 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.core.mail import mail_admins
 from django.conf import settings
 
 from placard.client import LDAPClient
 from placard.exceptions import DoesNotExistException
 
-import base
+from karaage.datastores import base
 
 
 class PersonalDataStore(base.PersonalDataStore):
@@ -136,7 +135,6 @@ class AccountDataStore(base.AccountDataStore):
         super(AccountDataStore, self).delete_account(ua)
         conn = LDAPClient()
 
-        #TODO - Get generated attrs from ldap_attrs.py
         conn.update_user(
             'uid=%s' % ua.username,
             gecos='', 

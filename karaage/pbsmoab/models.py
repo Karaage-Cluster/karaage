@@ -58,7 +58,7 @@ class ProjectChunk(models.Model):
     machine_category = models.ForeignKey(MachineCategory)
 
     def get_mpots(self, start=datetime.date.today()-datetime.timedelta(days=90), end=datetime.date.today()):
-	from karaage.util.helpers import get_available_time
+        from karaage.util.helpers import get_available_time
 
         TWOPLACES = Decimal(10) ** -2
         usage, jobs = self.project.get_usage(start, end)

@@ -19,12 +19,11 @@ from django.conf import settings
 from django.db import connection
 
 import datetime
-from decimal import Decimal
 from andsome.graphs.googlechart import GraphGenerator
 
 from karaage.machines.models import MachineCategory
 from karaage.people.models import Institute
-from karaage.graphs import gen_project_graph, gen_institutes_pie, gen_quota_graph, gen_trend_graph, gen_institute_bar, gen_institutes_trend
+from karaage.graphs import gen_project_graph, gen_institutes_trend
 from karaage.graphs.util import smooth_data
 from karaage.util.helpers import get_available_time
 
@@ -35,16 +34,11 @@ def get_institute_graph_url(start, end, machine_category):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
 
-
     try:
         f = open("%s/institutes/%s-%s_%i.png" % (settings.GRAPH_ROOT, start_str, end_str, machine_category.id))
-    except:
-    
-        today = datetime.date.today()
+    except IOError:
         institute_list = Institute.primary.all()
         available_time, avg_cpus = get_available_time(start, end, machine_category)
-        
-        title = "Institutes Usage - (%s - %s) - %s" % (start_str, end_str, machine_category.name) 
         
         data = {}
         total = 0
@@ -69,11 +63,7 @@ def get_trend_graph_url(start, end, machine_category):
 
     try: 
         f = open("%s/trends/trend_%i_%s-%s.png" % (settings.GRAPH_ROOT, machine_category.id, start_str, end_str))
-    except: 
-
-        period = (end - start).days
-        
-        today = datetime.date.today()
+    except IOError: 
         
         mc_ids = tuple([(int(m.id)) for m in machine_category.machine_set.all()])
         if len(mc_ids) == 1:
@@ -81,8 +71,8 @@ def get_trend_graph_url(start, end, machine_category):
 
         cursor = connection.cursor()
         
-        SQL = "SELECT date, SUM( cpu_usage ) FROM `cpu_job` WHERE `machine_id` IN %s AND `date` >= '%s' AND `date` <= '%s' Group By date" % (mc_ids, start_str, end_str)
-        cursor.execute(SQL)
+       sql = "SELECT date, SUM( cpu_usage ) FROM `cpu_job` WHERE `machine_id` IN %s AND `date` >= '%s' AND `date` <= '%s' Group By date" % (mc_ids, start_str, end_str)
+        cursor.execute(sql)
         rows = dict(cursor.fetchall())
         
         data, colours = smooth_data(rows, start, end)
@@ -99,7 +89,6 @@ def get_institute_trend_graph_url(institute,
                                   end=datetime.date.today(), 
                                   machine_category=MachineCategory.objects.get_default()):
 
-
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
 
@@ -108,11 +97,8 @@ def get_institute_trend_graph_url(institute,
 
     try:
         f = open("%s/institutes/bar_%i_%s-%s_%i.png" % (settings.GRAPH_ROOT, institute.id, start_str, end_str, machine_category.id))
-    except:
-        try:
-            institute.gen_usage_graph(start, end, machine_category)
-        except:
-            return ''
+    except IOError:
+        institute.gen_usage_graph(start, end, machine_category)
             
     return "bar_%i_%s-%s_%i.png" % (institute.id, start_str, end_str, machine_category.id)
 
@@ -130,11 +116,8 @@ def get_project_trend_graph_url(project,
 
     try:
         f = open("%s/projects/%s_%s-%s_%i.png" % (settings.GRAPH_ROOT, project.pid, start_str, end_str, machine_category.id))
-    except:
-        try:
-            gen_project_graph(project, start, end, machine_category)
-        except:
-            return ''
+    except IOError:
+        gen_project_graph(project, start, end, machine_category)
 
     return "%s_%s-%s_%i.png" % (project.pid, start_str, end_str, machine_category.id)
 
@@ -150,15 +133,11 @@ def get_institutes_trend_graph_urls(start, end, machine_category=MachineCategory
     try:
         for i in Institute.primary.all():
             f = open("%s/i_trends/%s_%s_%s-trend.png" % (settings.GRAPH_ROOT, i.name.replace(' ', '').lower(), start_str, end_str)) 
-    except:
-        try:
-            gen_institutes_trend(start, end, machine_category)
-        except:
-            return ''
+    except IOError:
+        gen_institutes_trend(start, end, machine_category)
 
     graph_list = []
     for i in Institute.primary.all():
         graph_list.append("%s_%s_%s-trend.png" % (i.name.replace(' ', '').lower(), start_str, end_str))
 
-    
     return graph_list
