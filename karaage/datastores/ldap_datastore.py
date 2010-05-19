@@ -119,11 +119,12 @@ class AccountDataStore(base.AccountDataStore):
         data = conn.get_user('uid=%s' % person.username).__dict__
         data['objectClass'] = settings.ACCOUNT_OBJECTCLASS
         data['default_project'] = default_project
+        data['person'] = person
         conn.update_user(
             'uid=%s' % person.username,
-            gecos='%s %s (%s)' % (str(person.first_name), str(person.last_name), str(person.institute.name)),
+            gecos=ldap_attrs.GENERATED_USER_ATTRS['gecos'](data),
             uidNumber=ldap_attrs.GENERATED_USER_ATTRS['uidNumber'](data),
-            gidNumber=str(person.institute.gid),
+            gidNumber=ldap_attrs.GENERATED_USER_ATTRS['gidNumber'](data),
             homeDirectory=ldap_attrs.GENERATED_USER_ATTRS['homeDirectory'](data),
             loginShell=ldap_attrs.GENERATED_USER_ATTRS['loginShell'](data),
             objectClass=settings.ACCOUNT_OBJECTCLASS
@@ -148,10 +149,16 @@ class AccountDataStore(base.AccountDataStore):
     def update_account(self, ua):
         super(AccountDataStore, self).update_account(ua)
         conn = LDAPClient()
+        ldap_attrs = __import__(settings.LDAP_ATTRS, {}, {}, [''])
+        
+        data = conn.get_user('uid=%s' % ua.username).__dict__
+        data['default_project'] = ua.default_project
+        data['person'] = ua.user
+
         conn.update_user(
-            'uid=%s' % ua.user.username,
-            gecos='%s %s (%s)' % ((ua.user.first_name), str(ua.user.last_name), str(ua.user.institute.name)),
-            gidNumber=str(ua.user.institute.gid),
+            'uid=%s' % ua.username,
+            gecos=ldap_attrs.GENERATED_USER_ATTRS['gecos'](data),
+            gidNumber=ldap_attrs.GENERATED_USER_ATTRS['gidNumber'](data),
             )
 
     def lock_account(self, ua):
