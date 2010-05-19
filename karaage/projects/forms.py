@@ -33,7 +33,7 @@ from models import Project
 class ProjectForm(forms.ModelForm):
     name = forms.CharField(label='Project Title', widget=forms.TextInput(attrs={ 'size':60 }))
     description = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
-    institute = forms.ModelChoiceField(queryset=Institute.valid.all())
+    institute = forms.ModelChoiceField(queryset=Institute.active.all())
     additional_req = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
     leader = forms.ModelChoiceField(queryset=Person.active.all())
     start_date = forms.DateField(widget=AdminDateWidget)
@@ -55,7 +55,7 @@ class UserProjectForm(forms.Form):
     additional_req = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
     needs_account = forms.BooleanField(required=False, label=u"Will you be working on this project yourself?")
     #machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all(), widget=forms.CheckboxSelectMultiple)
-    institute = forms.ModelChoiceField(queryset=Institute.valid.all())
+    institute = forms.ModelChoiceField(queryset=Institute.active.all())
 
     def save(self, leader=None, p=None):
         data = self.cleaned_data

@@ -75,7 +75,7 @@ class UserForm(BaseUserForm):
     password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
     password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)')
     project = forms.ModelChoiceField(queryset=Project.objects.all(), label=u"Default Project", required=False)
-    institute = forms.ModelChoiceField(queryset=Institute.valid.all())
+    institute = forms.ModelChoiceField(queryset=Institute.active.all())
     comment = forms.CharField(widget=forms.Textarea(), required=False)
     needs_account = forms.BooleanField(required=False, label=u"Do you require a cluster account", help_text=u"eg. Will you be working on the project yourself")
     expires = forms.DateField(widget=forms.TextInput(attrs={ 'class':'vDateField' }), required=False)

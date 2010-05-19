@@ -92,7 +92,7 @@ class ProjectRegistrationForm(UserRegistrationForm):
     Form used for users without accounts to register user and project at once
     """
     project_name = forms.CharField(label="Project Title", widget=forms.TextInput(attrs={ 'size':60 }))
-    project_institute = forms.ModelChoiceField(queryset=Institute.valid.all())
+    project_institute = forms.ModelChoiceField(queryset=Institute.active.all())
     project_description = forms.CharField(max_length=1000, widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), help_text="Include any information about any grants you have received. Please keep this brief")
     additional_req = forms.CharField(label="Additional requirements", widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), help_text=u"Do you have any special requirements?", required=False)
 
