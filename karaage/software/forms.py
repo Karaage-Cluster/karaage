@@ -83,7 +83,7 @@ class AddPackageForm(SoftwarePackageForm):
             module=data['module'],
         )
         version.save()
-        version.machines=data['machines']
+        version.machines = data['machines']
         version.save()
 
         if data['license_text']:
