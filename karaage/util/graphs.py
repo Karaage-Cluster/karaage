@@ -37,7 +37,7 @@ def get_institute_graph_url(start, end, machine_category):
     try:
         f = open("%s/institutes/%s-%s_%i.png" % (settings.GRAPH_ROOT, start_str, end_str, machine_category.id))
     except IOError:
-        institute_list = Institute.primary.all()
+        institute_list = Institute.active.all()
         available_time, avg_cpus = get_available_time(start, end, machine_category)
         
         data = {}
@@ -131,13 +131,13 @@ def get_institutes_trend_graph_urls(start, end, machine_category=MachineCategory
         gen_institutes_trend(start, end, machine_category)
 
     try:
-        for i in Institute.primary.all():
+        for i in Institute.active.all():
             f = open("%s/i_trends/%s_%s_%s-trend.png" % (settings.GRAPH_ROOT, i.name.replace(' ', '').lower(), start_str, end_str)) 
     except IOError:
         gen_institutes_trend(start, end, machine_category)
 
     graph_list = []
-    for i in Institute.primary.all():
+    for i in Institute.active.all():
         graph_list.append("%s_%s_%s-trend.png" % (i.name.replace(' ', '').lower(), start_str, end_str))
 
     return graph_list

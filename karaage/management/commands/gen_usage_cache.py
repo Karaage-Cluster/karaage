@@ -19,7 +19,7 @@ def pop_institute_cache(period):
     end = datetime.date.today()
     start = end - datetime.timedelta(days=period)
     
-    for i in Institute.primary.all():
+    for i in Institute.active.all():
         i.get_usage(start, end)
 
 

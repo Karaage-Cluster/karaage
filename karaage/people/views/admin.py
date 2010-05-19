@@ -74,12 +74,12 @@ def add_edit_user(request, form_class, template_name='people/person_form.html', 
             
     return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
-
+@login_required
 def user_list(request, queryset=Person.objects.all()):
     page_no = int(request.GET.get('page', 1))
 
     user_list = queryset
-    institute_list = Institute.primary.all()
+    institute_list = Institute.active.all()
 
     if request.REQUEST.has_key('institute'):
         institute_id = int(request.GET['institute'])
@@ -106,7 +106,7 @@ def user_list(request, queryset=Person.objects.all()):
 
     filter_list = []
     filter_list.append(Filter(request, 'status', {1: 'Active', 0: 'Deleted'}))
-    filter_list.append(Filter(request, 'institute', Institute.primary.all()))
+    filter_list.append(Filter(request, 'institute', Institute.active.all()))
     filter_list.append(DateFilter(request, 'date_approved'))
     filter_bar = FilterBar(request, filter_list)
 
@@ -213,12 +213,14 @@ def delete_useraccount(request, useraccount_id):
 
 delete_useraccount = permission_required('machines.delete_useraccount')(delete_useraccount)
 
+
 @login_required
 def no_default_list(request):
     useraccount_list = UserAccount.objects.filter(default_project__isnull=True).filter(date_deleted__isnull=True)
     return render_to_response('people/no_default_list.html', locals(), context_instance=RequestContext(request))
 
 
+@login_required
 def no_account_list(request):
     users = Person.objects.all()
     user_id_list = []
@@ -231,6 +233,7 @@ def no_account_list(request):
 
     return user_list(request, Person.objects.filter(id__in=user_id_list))
 
+@login_required
 def wrong_default_list(request):
     users = Person.active.all()
     wrong = []
@@ -284,6 +287,7 @@ def locked_list(request):
     return user_list(request, Person.objects.filter(id__in=ids))
 
 
+@login_required
 def struggling(request):
 
     today = datetime.date.today()
@@ -305,7 +309,7 @@ def struggling(request):
     page_no = int(request.GET.get('page', 1))
 
     filter_list = []
-    filter_list.append(Filter(request, 'institute', Institute.primary.all()))
+    filter_list.append(Filter(request, 'institute', Institute.active.all()))
     filter_list.append(DateFilter(request, 'date_created'))
     filter_bar = FilterBar(request, filter_list)
 
@@ -315,7 +319,7 @@ def struggling(request):
     return render_to_response('people/struggling.html', locals(), context_instance=RequestContext(request))
 
 
-
+@login_required
 def change_shell(request, useraccount_id):
 
     if not request.user.has_perm('people.change_person'):

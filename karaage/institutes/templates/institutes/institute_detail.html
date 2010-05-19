@@ -15,12 +15,10 @@
     <h3>{{ institute }}</h3>
     
     <table>
-      {% if institute.is_primary %}
       <tr><td colspan="2"><a href="{{ institute.get_usage_url }}">View Usage</a></td></tr>
       <tr><td>Delegate:</td><td><a href="{{ institute.delegate.get_absolute_url }}">{{ institute.delegate }}</a></td></tr>
       <tr><td>Active Delegate:</td><td><a href="{{ institute.active_delegate.get_absolute_url }}">{{ institute.active_delegate }}</a></td></tr>
       <tr><td>Gid:</td><td>{{ institute.gid }}</td></tr>
-      {% endif %}
       {% if perms.people.change_institute %}
       <tr><td colspan="2"><a href="edit/" class="changelink">Edit</a></td></tr>
       {% endif %} 

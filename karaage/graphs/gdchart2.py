@@ -91,7 +91,7 @@ class GraphGenerator(base.GraphGenerator):
 
 
     def gen_institutes_pie(self, start, end, machine_category):
-        """Generates a pie graph showing all primary institutes usage
+        """Generates a pie graph showing all active institutes usage
     
         Keyword arguments:
         start -- start date
@@ -103,7 +103,7 @@ class GraphGenerator(base.GraphGenerator):
         start_str = start.strftime('%Y-%m-%d')
         end_str = end.strftime('%Y-%m-%d')
         
-        institute_list = Institute.primary.all()
+        institute_list = Institute.active.all()
         
         available_time, avg_cpus = get_available_time(start, end, machine_category)
         
@@ -143,9 +143,9 @@ class GraphGenerator(base.GraphGenerator):
     
 
     def gen_quota_graph(self):
-        """Generates a pie graph for all primary institutes quota       
+        """Generates a pie graph for all active institutes quota       
         """
-        institute_list = Institute.primary.all()
+        institute_list = Institute.active.all()
     
         myPie = gdchart.Pie()
         myPie.width = 500
@@ -260,7 +260,7 @@ class GraphGenerator(base.GraphGenerator):
         i_start = start
         i_end = end
         
-        for i in Institute.primary.all():
+        for i in Institute.active.all():
             start = i_start
             end = i_end
             rows = get_insitutes_trend(i, start, end, machine_category)

@@ -149,7 +149,7 @@ def project_list(request, queryset=Project.objects.select_related().all(), templ
 
     filter_list = []
     filter_list.append(Filter(request, 'status', {1: 'Active', 0: 'Deleted'}))
-    filter_list.append(Filter(request, 'institute', Institute.primary.all()))
+    filter_list.append(Filter(request, 'institute', Institute.active.all()))
     filter_bar = FilterBar(request, filter_list)
 
     if paginate:

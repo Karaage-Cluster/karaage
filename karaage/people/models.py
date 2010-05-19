@@ -21,7 +21,7 @@ from django.core.urlresolvers import reverse
 
 from placard.client import LDAPClient
 from andsome.middleware.threadlocals import get_current_user
-from karaage.institutes.managers import PrimaryInstituteManager, ValidChoiceManager
+from karaage.institutes.managers import PrimaryInstituteManager, ValidChoiceManager, ActiveInstituteManager
 from karaage.constants import TITLES, STATES, COUNTRIES
 from karaage.people.managers import ActiveUserManager, DeletedUserManager, LeaderManager
 
@@ -32,7 +32,9 @@ class Institute(models.Model):
     active_delegate = models.ForeignKey('Person', related_name='active_delegate', null=True, blank=True)
     sub_delegates = models.ManyToManyField('Person', related_name='sub_delegates', blank=True, null=True)
     gid = models.IntegerField()
+    is_active = models.BooleanField()
     objects = models.Manager()
+    active = ActiveInstituteManager()
     primary = PrimaryInstituteManager()
     valid = ValidChoiceManager()
 
@@ -119,7 +121,7 @@ class Person(models.Model):
 
     def save(self, update_datastore=True, force_insert=False, force_update=False):
         update = False
-        if self.id:
+        if self.id and self.is_active:
             update = True
 
         super(self.__class__, self).save(force_insert, force_update)

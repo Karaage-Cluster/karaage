@@ -35,3 +35,11 @@ class ValidChoiceManager(models.Manager):
         removed_ids = [ 40, 11 ]
         return super(self.__class__, self).get_query_set().filter(delegate__isnull=False).exclude(id__in=removed_ids)
     
+
+class ActiveInstituteManager(models.Manager):
+    """
+    Returns only 'active' institutes.
+    """
+    def get_query_set(self):
+        return super(self.__class__, self).get_query_set().filter(is_active=True)
+    
