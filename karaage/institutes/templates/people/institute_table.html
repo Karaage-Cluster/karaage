@@ -1,17 +1,17 @@
 <table cellspacing="0">
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Delegate</th>
-			<th>Active Delegate</th>
-		</tr>
-	</thead>   	
-   <tbody>
-   	{% for i in object_list %}
-	   	<tr class="{% cycle row1,row2 %}">
-	   		<td><a href="{{ i.get_absolute_url }}">{{ i.name }}</a></td>
-	   		<td>{% if i.is_active %}<a href="{{ i.delegate.get_absolute_url }}">{{ i.delegate }}</a>{% endif %}</td>
-	   		<td>{% if i.is_active %}<a href="{{ i.active_delegate.get_absolute_url }}">{{ i.active_delegate }}</a>{% endif %}</td>
-	   {% endfor %}
-   </tbody>  	
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Delegate</th>
+      <th>Active Delegate</th>
+    </tr>
+  </thead>   	
+  <tbody>
+    {% for i in object_list %}
+    <tr class="{% cycle row1,row2 %}">
+      <td><a href="{{ i.get_absolute_url }}">{{ i.name }}</a></td>
+      <td><a href="{{ i.delegate.get_absolute_url }}">{{ i.delegate }}</a></td>
+      <td><a href="{{ i.active_delegate.get_absolute_url }}">{{ i.active_delegate }}</a></td>
+      {% endfor %}
+  </tbody>  	
 </table>
