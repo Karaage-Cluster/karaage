@@ -1,3 +1,9 @@
+karaage (2.3.1) testing; urgency=low
+
+  * Use active institutes in forms
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 19 May 2010 15:23:58 +1000
+
 karaage (2.3) testing; urgency=low
 
   * Use Django-south for DB migrations
