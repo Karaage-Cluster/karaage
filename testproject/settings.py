@@ -94,7 +94,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'andsome.middleware.threadlocals.ThreadLocals',  
-    'django.middleware.transaction.TransactionMiddleware',
 )
 
 
@@ -139,3 +138,4 @@ INTERNAL_IPS = (
     '127.0.0.1',
     '172.25.10.10',
     )
+

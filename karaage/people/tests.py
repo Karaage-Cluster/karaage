@@ -32,6 +32,7 @@ from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
 from karaage.machines.models import UserAccount
 from karaage.test_data.initial_ldap_data import test_ldif
+#from karaage.datastores import exceptions as kg_exceptions
 
 class UserTestCase(TestCase):
 
@@ -56,7 +57,6 @@ class UserTestCase(TestCase):
         p_users = project.users.count()
         logged_in = self.client.login(username='super', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
-
         response = self.client.get(reverse('kg_add_user'))
         self.failUnlessEqual(response.status_code, 200)
         
@@ -92,14 +92,14 @@ class UserTestCase(TestCase):
         luser = lcon.get_user('uid=samtest')
         self.assertEqual(luser.givenName, 'Sam')
         self.assertEqual(luser.objectClass, settings.ACCOUNT_OBJECTCLASS)
+        self.assertEqual(luser.homeDirectory, '/vpac/TestProject1/samtest/')
         
      
-    def stest_admin_create_user(self):
-
+    def test_admin_create_user(self):
         users = Person.objects.count()
         project = Project.objects.get(pid='TestProject1')
         p_users = project.users.count()
-        logged_in = self.client.login(username='super', password='secret')
+        logged_in = self.client.login(username='super', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         response = self.client.get(reverse('kg_add_user'))
         
@@ -137,8 +137,9 @@ class UserTestCase(TestCase):
         response = self.client.post(reverse('kg_add_user'), form_data)
         self.failUnlessEqual(response.status_code, 200)
 
-    def stest_delete_activate_user(self):
-        logged_in = self.client.login(username='super', password='secret')
+
+    def test_delete_activate_user(self):
+        logged_in = self.client.login(username='super', password='aq12ws')
         user = Person.objects.get(user__username='kgtestuser3')
         self.assertEqual(user.is_active, True)
         self.assertEqual(user.project_set.count(), 1)
@@ -169,9 +170,6 @@ class UserTestCase(TestCase):
         self.assertEqual(user.is_active, True)
         luser = lcon.get_user('uid=kgtestuser3')
         self.assertEqual(luser.givenName, 'Test')
-        
-    def stest_remove_from_project(self):
-        user = Person.objects.get(pk=Person.objects.count())
 
     def stest_delete_user_account(self):
         user = Person.objects.get(pk=Person.objects.count())

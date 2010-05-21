@@ -29,12 +29,25 @@ def get_next_uid(data):
     else:
         return ''
 
+def get_homedir(data):
+    if 'posixAccount' in data['objectClass']:
+        return '/vpac/%s/%s/' % (data['default_project'].pid, data['uid'])
+    else:
+        return ''
+
+def get_gid(data):
+    if 'posixAccount' in data['objectClass']:
+        return data['person'].institute.gid
+    else:
+        return ''
+
 
 GENERATED_USER_ATTRS = {
     'uidNumber': get_next_uid,
     'gecos': lambda x: 'posixAccount' in x['objectClass'] and '%s %s (%s)' % (str(x['givenName']), str(x['sn']), str(x['o'])) or '', 
+    'gidNumber': get_gid,
     'cn': lambda x: '%s %s' % (str(x['givenName']), str(x['sn'])),
-    'homeDirectory': lambda x: 'posixAccount' in x['objectClass'] and '/home/%s' % x['uid'] or '',
+    'homeDirectory': get_homedir,
     'loginShell': lambda x: 'posixAccount' in x['objectClass'] and '/bin/bash' or '',
 }
 
