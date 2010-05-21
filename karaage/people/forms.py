@@ -71,47 +71,11 @@ class BaseUserForm(forms.Form):
 
 
 class UserForm(BaseUserForm):
-    username = forms.CharField(label=u"Requested username", max_length=16, help_text=u"16 characters or fewer. Alphanumeric characters only (letters, digits and underscores).")
-    password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
-    password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)')
     project = forms.ModelChoiceField(queryset=Project.objects.all(), label=u"Default Project", required=False)
     institute = forms.ModelChoiceField(queryset=Institute.active.all())
     comment = forms.CharField(widget=forms.Textarea(), required=False)
     needs_account = forms.BooleanField(required=False, label=u"Do you require a cluster account", help_text=u"eg. Will you be working on the project yourself")
     expires = forms.DateField(widget=forms.TextInput(attrs={ 'class':'vDateField' }), required=False)
-
-
-    def clean_username(self):
-
-        username = self.cleaned_data['username']
-        if not username.islower():
-            raise forms.ValidationError(u'Username must be all lowercase')
- 
-        if not username_re.search(username):
-            raise forms.ValidationError(u'Usernames can only contain letters, numbers and underscores')
-
-        try:
-            user = User.objects.get(username__exact=username)
-        except:
-            user = None
-        
-        if user is not None:
-            raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old account please email %s' % settings.ACCOUNTS_EMAIL_FROM)
-        return username
-
-    
-    def clean(self):
-        data = self.cleaned_data
-
-        if data.get('password1') and data.get('password2'):
-        
-            if data['password1'] != data['password2']:
-                raise forms.ValidationError(u'You must type the same password each time')
-
-            if not check_password(data['password1']):
-                raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (upercase, lowercase), numbers and is at least 8 characters long.')
-
-            return data
     
     def save(self, user=None):
 
@@ -126,7 +90,6 @@ class UserForm(BaseUserForm):
 
             if data['needs_account'] and data['project']:
                 add_user_to_project(user, data['project'])
-
         else:
             log(get_current_user(), user, 2, 'Edit')
 
@@ -152,6 +115,44 @@ class UserForm(BaseUserForm):
         user.save()
 
         return user
+
+
+class AddUserForm(UserForm):
+    username = forms.CharField(label=u"Requested username", max_length=16, help_text=u"16 characters or fewer. Alphanumeric characters only (letters, digits and underscores).")
+    password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
+    password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)')
+
+    def clean_username(self):
+
+        username = self.cleaned_data['username']
+        if not username.islower():
+            raise forms.ValidationError(u'Username must be all lowercase')
+ 
+        if not username_re.search(username):
+            raise forms.ValidationError(u'Usernames can only contain letters, numbers and underscores')
+
+        try:
+            user = User.objects.get(username__exact=username)
+        except:
+            user = None
+        
+        if user is not None:
+            raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old account please email %s' % settings.ACCOUNTS_EMAIL_FROM)
+        return username
+
+    def clean(self):
+        data = self.cleaned_data
+
+        if data.get('password1') and data.get('password2'):
+        
+            if data['password1'] != data['password2']:
+                raise forms.ValidationError(u'You must type the same password each time')
+
+            if not check_password(data['password1']):
+                raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (upercase, lowercase), numbers and is at least 8 characters long.')
+
+            return data
+    
 
 
 class AdminPasswordChangeForm(forms.Form):

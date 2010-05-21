@@ -36,5 +36,5 @@ urlpatterns = patterns('karaage.people.views.admin_user_detail',
 urlpatterns += patterns('karaage.people.views.admin',
     
     url(r'^add_useraccount/$', 'add_edit_useraccount'),
-    url(r'^edit/$', 'add_edit_user', {'form_class': UserForm }),
+    url(r'^edit/$', 'add_edit_user', {'form_class': UserForm }, name='kg_user_edit'),
 )

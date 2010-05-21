@@ -26,14 +26,14 @@ from karaage.projects.models import Project
 from karaage.people.models import Person
 from karaage.machines.models import MachineCategory
 from karaage.people.models import Institute
-from karaage.people.forms import UserForm
+from karaage.people.forms import AddUserForm
 from karaage.datastores import create_new_user
 from karaage.util.helpers import check_password, create_password_hash, get_new_pid
 
 from models import ProjectCreateRequest
 
 
-class UserRegistrationForm(UserForm):
+class UserRegistrationForm(AddUserForm):
     tos = forms.BooleanField(required=False, label=u'I have read and agree to the <a href="/users/policy" target="_blank">Acceptable Use Policy</a>')
     imghash = forms.CharField(widget=forms.HiddenInput)
     imgtext = forms.CharField(label=u'Text from the image', widget=CaptchaInput())
@@ -67,19 +67,18 @@ class UserRegistrationForm(UserForm):
         
         if not data['imghash'] or not data['imgtext']:
             raise forms.ValidationError(u'Error')
+
         if data['imghash'] == sha.new(SALT+data['imgtext'].upper()).hexdigest():
             
             return self.cleaned_data['imgtext']
-
         raise forms.ValidationError(u'Please type the code shown')
-
 
     def clean_email(self):
         email = self.cleaned_data['email']
 
         try:
             p = Person.objects.get(user__email=email)
-        except:
+        except Person.DoesNotExist:
             p = None
         if p is not None:
             raise forms.ValidationError(u'Account with this email already exists. Please email accounts@vpac.org to reinstate your account')
