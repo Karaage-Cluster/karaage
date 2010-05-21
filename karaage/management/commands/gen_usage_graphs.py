@@ -23,7 +23,7 @@ class Command(BaseCommand):
         verbose = int(options.get('verbosity'))
 
         for p in PERIODS:
-            if verbose >= 1:
+            if verbose > 1:
                 print "Generating project graphs for last %s days" % p
             gen_all_project_graphs(p)
 

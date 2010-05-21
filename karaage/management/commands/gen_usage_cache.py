@@ -69,19 +69,19 @@ class Command(BaseCommand):
         verbose = int(options.get('verbosity'))
 
         for p in PERIODS:
-            if verbose >= 1:
+            if verbose > 1:
                 print "Populating Project cache for last %s days" % p
             pop_project_cache(p)
-            if verbose >= 1:
+            if verbose > 1:
                 print "Populating Institute cache for last %s days" % p
             pop_institute_cache(p)
-            if verbose >= 1:
+            if verbose > 1:
                 print "Populating User cache for last %s days" % p
             pop_user_cache(p)
 
-        if verbose >= 1:
+        if verbose > 1:
             print "Populating last usage date for projects"
         gen_last_usage_project()
-        if verbose >= 1:
+        if verbose > 1:
             print "Populating last usage date for users"
         gen_last_usage_user()
