@@ -96,7 +96,7 @@ class PersonalDataStore(base.PersonalDataStore):
         super(PersonalDataStore, self).unlock_user(person)
         
         conn = LDAPClient()
-        dn="uid=%s,%s" % (person.username, settings.LDAP_USER_BASE)
+        dn = "uid=%s,%s" % (person.username, settings.LDAP_USER_BASE)
         old = {
             'nsRoleDN': settings.LDAP_LOCK_DN,
             }
