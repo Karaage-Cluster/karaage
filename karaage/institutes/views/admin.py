@@ -30,7 +30,7 @@ def institute_detail(request, institute_id):
     
     institute = get_object_or_404(Institute, pk=institute_id)
 
-    if institute.is_primary():
+    if institute.is_active:
         graph = get_institute_trend_graph_url(institute)
     
     return render_to_response('institutes/institute_detail.html', locals(), context_instance=RequestContext(request))
@@ -42,7 +42,7 @@ def institute_list(request):
     page_no = int(request.GET.get('page', 1))
 
     if request.REQUEST.has_key('primary'):
-        institute_list = Institute.primary.all()
+        institute_list = Institute.active.all()
 
 
     filter_list = []

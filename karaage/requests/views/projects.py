@@ -30,52 +30,28 @@ from karaage.projects.util import add_user_to_project
 from karaage.machines.models import MachineCategory
 from karaage.requests.forms import ProjectRegistrationForm
 from karaage.util import log_object as log
-from karaage.util.email_messages import send_account_request_email, send_project_request_email, send_project_approved_email, send_project_rejected_email, send_account_approved_email, send_account_rejected_email, send_project_join_approved_email
+from karaage.util.email_messages import send_project_request_email, send_project_approved_email, send_project_rejected_email
+
 
 
 # Create your views here.
 def project_registration(request):
     """
     This is for a new user wanting to start a project
-    
     """
-    from random import choice
-    import Image, ImageDraw, ImageFont, sha
-    import os
-    SALT = settings.SECRET_KEY[:20]
-    imgtext = ''.join([choice('QWERTYUOPASDFGHJKLZXCVBNM') for i in range(5)])
- 
-    im = Image.open('%s/img/captcha_bg.jpg' % settings.MEDIA_ROOT)
-    draw = ImageDraw.Draw(im)
-    font = ImageFont.truetype(settings.CAPTCHA_FONT, 18)
-    draw.text((10,10), imgtext, font=font, fill=(100,100,50))
-
-    temp = '%s/img/captcha/project_%s.jpg' % (settings.MEDIA_ROOT, request.META.get('REMOTE_ADDR', 'unknown'))
-    tempname = 'project_' + request.META.get('REMOTE_ADDR', 'unknown') + '.jpg'
-    im.save(temp, "JPEG")
-
-
     if request.method == 'POST':
-
         form = ProjectRegistrationForm(request.POST)
 
         if form.is_valid():
-
             project_request = form.save()
 
             # Send email to Institute Delegate for approval
             send_project_request_email(project_request)
-
-            os.remove('%s/img/captcha/project_%s.jpg' % (settings.MEDIA_ROOT, request.META.get('REMOTE_ADDR', 'unknown')))
-            
             return HttpResponseRedirect(reverse('project_created', args=[project_request.id]))
-
     else:     
         form = ProjectRegistrationForm()
 
-    imghash = sha.new(SALT+imgtext).hexdigest()
-
-    return render_to_response('requests/project_request_form.html', { 'form': form, 'tempname': tempname, 'imghash': imghash }, context_instance=RequestContext(request))
+    return render_to_response('requests/project_request_form.html', { 'form': form, }, context_instance=RequestContext(request))
 
 
 def project_created(request, project_request_id):

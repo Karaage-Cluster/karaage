@@ -26,13 +26,9 @@ import gdchart
 import datetime
 
 from karaage.people.models import Institute
-from karaage.machines.models import MachineCategory
-from karaage.projects.models import Project
-from karaage.usage.models import CPUJob
 from karaage.util.helpers import get_available_time
 from karaage.graphs import base
-from karaage.graphs.util import smooth_data, get_insitutes_trend, get_inst_colour, get_colour
-
+from karaage.graphs.util import smooth_data, get_insitutes_trend
 __author__ = 'Sam Morrison'
 
 
@@ -68,8 +64,8 @@ class GraphGenerator(base.GraphGenerator):
             mc_ids = "(%i)" % mc_ids[0]
 
         cursor = connection.cursor()
-        SQL = "SELECT date, SUM( cpu_usage ) FROM `cpu_job` WHERE `project_id` LIKE '%s' AND `machine_id` IN %s AND `date` >= '%s' AND `date` <= '%s' Group By date" % (str(project.pid), mc_ids, start_str, end_str)
-        cursor.execute(SQL)
+        sql = "SELECT date, SUM( cpu_usage ) FROM `cpu_job` WHERE `project_id` LIKE '%s' AND `machine_id` IN %s AND `date` >= '%s' AND `date` <= '%s' Group By date" % (str(project.pid), mc_ids, start_str, end_str)
+        cursor.execute(sql)
         rows = dict(cursor.fetchall())
         
 
@@ -89,14 +85,13 @@ class GraphGenerator(base.GraphGenerator):
         x.setData(data)
         try:
             x.draw("%s/projects/%s_%s-%s_%i.png" % (settings.GRAPH_ROOT, project.pid, start_str, end_str, machine_category.id))
-
         except:
             pass
 
 
 
     def gen_institutes_pie(self, start, end, machine_category):
-        """Generates a pie graph showing all primary institutes usage
+        """Generates a pie graph showing all active institutes usage
     
         Keyword arguments:
         start -- start date
@@ -104,12 +99,11 @@ class GraphGenerator(base.GraphGenerator):
         machine_category -- MachineCategory object
         
         """
-        today = datetime.date.today()
         
         start_str = start.strftime('%Y-%m-%d')
         end_str = end.strftime('%Y-%m-%d')
         
-        institute_list = Institute.primary.all()
+        institute_list = Institute.active.all()
         
         available_time, avg_cpus = get_available_time(start, end, machine_category)
         
@@ -119,7 +113,6 @@ class GraphGenerator(base.GraphGenerator):
         myPie.title = "Institutes Usage - (%s - %s) - %s" % (start_str, end_str, machine_category.name) 
         myPie.bg_color = "white"
         data = []
-        i_list = []
         labels = []
         total = 0
         for i in institute_list:  
@@ -150,9 +143,9 @@ class GraphGenerator(base.GraphGenerator):
     
 
     def gen_quota_graph(self):
-        """Generates a pie graph for all primary institutes quota       
+        """Generates a pie graph for all active institutes quota       
         """
-        institute_list = Institute.primary.all()
+        institute_list = Institute.active.all()
     
         myPie = gdchart.Pie()
         myPie.width = 500
@@ -160,7 +153,6 @@ class GraphGenerator(base.GraphGenerator):
         myPie.title = "Institutes Quota"
         myPie.bg_color = "white"
         data = []
-        i_list = []
         labels = []
         for i in institute_list:  
             data.append(int(i.quota))
@@ -193,9 +185,7 @@ class GraphGenerator(base.GraphGenerator):
         
         start_str = start.strftime('%Y-%m-%d')
         end_str = end.strftime('%Y-%m-%d')
-        
-        period = (end - start).days
-        
+      
         x = gdchart.Bar()
         x.width = 700
         x.height = 350
@@ -205,16 +195,14 @@ class GraphGenerator(base.GraphGenerator):
         x.title = '%s - %s-%s' % (machine_category.name, start_str, end_str)
         x.grid = "NONE"
         
-        today = datetime.date.today()
-        
         mc_ids = tuple([(int(m.id)) for m in machine_category.machine_set.all()])
         if len(mc_ids) == 1:
             mc_ids = "(%i)" % mc_ids[0]
 
         cursor = connection.cursor()
         
-        SQL = "SELECT date, SUM( cpu_usage ) FROM `cpu_job` WHERE `machine_id` IN %s AND `date` >= '%s' AND `date` <= '%s' Group By date" % (mc_ids, start_str, end_str)
-        cursor.execute(SQL)
+        sql = "SELECT date, SUM( cpu_usage ) FROM `cpu_job` WHERE `machine_id` IN %s AND `date` >= '%s' AND `date` <= '%s' Group By date" % (mc_ids, start_str, end_str)
+        cursor.execute(sql)
         rows = dict(cursor.fetchall())
         
         data, colours = smooth_data(rows, start, end)
@@ -239,8 +227,6 @@ class GraphGenerator(base.GraphGenerator):
  
         start_str = start.strftime('%Y-%m-%d')
         end_str = end.strftime('%Y-%m-%d')
-        
-        period = (end - start).days
         
         x = gdchart.Bar()
         x.width = 700
@@ -271,13 +257,10 @@ class GraphGenerator(base.GraphGenerator):
         start_str = start.strftime('%Y-%m-%d')
         end_str = end.strftime('%Y-%m-%d')
         
-        period = (end - start).days
-        today = datetime.date.today()
-        
         i_start = start
         i_end = end
         
-        for i in Institute.primary.all():
+        for i in Institute.active.all():
             start = i_start
             end = i_end
             rows = get_insitutes_trend(i, start, end, machine_category)

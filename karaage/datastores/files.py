@@ -15,15 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.core.mail import mail_admins
 from django.conf import settings
 
-import base
+from karaage.datastores import base
 
 
 class PersonalDataStore(base.PersonalDataStore):
     
-    def create_new_user(self, data, hashed_password):
+    def create_new_user(self, data, hashed_password=None):
         return super(PersonalDataStore, self).create_new_user(data, hashed_password)
 
     def activate_user(self, person):
@@ -64,8 +63,8 @@ class AccountDataStore(base.AccountDataStore):
 
         line = "%s:x:%s:%s:%s:%s:%s\n" % (person.username, userid, person.institute.gid, person.get_full_name(), home_dir, '/bin/bash')
 
-        for file in self.passwd_files:
-            f = open(file, 'a')
+        for pwfile in self.passwd_files:
+            f = open(pwfile, 'a')
             f.write(line)
             f.close()
 
@@ -75,9 +74,9 @@ class AccountDataStore(base.AccountDataStore):
     def delete_account(self, ua):
         super(AccountDataStore, self).delete_account(ua)
 
-        for file in self.passwd_files:
+        for pwfile in self.passwd_files:
 
-            f = open(file)
+            f = open(pwfile)
             data = f.readlines()
             f.close()
             new_data = []
@@ -93,8 +92,8 @@ class AccountDataStore(base.AccountDataStore):
     def update_account(self, ua):
         super(AccountDataStore, self).update_account(ua)
 
-        for file in self.passwd_files:
-            f = open(file)
+        for pwfile in self.passwd_files:
+            f = open(pwfile)
             data = f.readlines()
             f.close()
             new_data = []
@@ -105,7 +104,7 @@ class AccountDataStore(base.AccountDataStore):
                     l = "%s:x:%s:%s:%s:%s:%s\n" % (ua.username, uid, ua.user.institute.gid, ua.user.get_full_name(), homedir, shell)
                 new_data.append(l)
 
-            f = open(file, 'w')
+            f = open(pwfile, 'w')
             f.writelines(new_data)
             f.close()
 
@@ -121,8 +120,8 @@ class AccountDataStore(base.AccountDataStore):
     def get_next_uid(self):
         id_list = []
 
-        for file in self.passwd_files:
-            f = open(file)
+        for pwfile in self.passwd_files:
+            f = open(pwfile)
             data = f.readlines()
             f.close()
             for l in data:

@@ -9,11 +9,11 @@
 
 
 <div class="border">
-{% if license %}
+{% if software_license %}
 <h3>End User License Agreement</h3>
 <p><a href="print/">Print version</a></p>
-{% if license.version %}<p>Version: {{ license.version }}</p>{% endif %}
-{{ license.text|safe|linebreaks }}
+{% if software_license.version %}<p>Version: {{ software_license.version }}</p>{% endif %}
+{{ software_license.text|safe|linebreaks }}
 </div>
 {% endif %}
 <form method="post" action=".">

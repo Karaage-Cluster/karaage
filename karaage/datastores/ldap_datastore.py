@@ -15,13 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.core.mail import mail_admins
 from django.conf import settings
 
 from placard.client import LDAPClient
 from placard.exceptions import DoesNotExistException
 
-import base
+from karaage.datastores import base
 
 
 class PersonalDataStore(base.PersonalDataStore):
@@ -97,7 +96,7 @@ class PersonalDataStore(base.PersonalDataStore):
         super(PersonalDataStore, self).unlock_user(person)
         
         conn = LDAPClient()
-        dn="uid=%s,%s" % (person.username, settings.LDAP_USER_BASE)
+        dn = "uid=%s,%s" % (person.username, settings.LDAP_USER_BASE)
         old = {
             'nsRoleDN': settings.LDAP_LOCK_DN,
             }
@@ -115,14 +114,19 @@ class AccountDataStore(base.AccountDataStore):
         ua = super(AccountDataStore, self).create_account(person, default_project)          
         conn = LDAPClient()
         
-        #TODO - Get generated attrs from ldap_attrs.py
+        ldap_attrs = __import__(settings.LDAP_ATTRS, {}, {}, [''])
+        
+        data = conn.get_user('uid=%s' % person.username).__dict__
+        data['objectClass'] = settings.ACCOUNT_OBJECTCLASS
+        data['default_project'] = default_project
+        data['person'] = person
         conn.update_user(
             'uid=%s' % person.username,
-            gecos='%s %s (%s)' % (str(person.first_name), str(person.last_name), str(person.institute.name)),
-            uidNumber=conn.get_new_uid(),
-            gidNumber=str(person.institute.gid),
-            homeDirectory='/home/%s' % str(person.username),
-            loginShell='/bin/bash',
+            gecos=ldap_attrs.GENERATED_USER_ATTRS['gecos'](data),
+            uidNumber=ldap_attrs.GENERATED_USER_ATTRS['uidNumber'](data),
+            gidNumber=ldap_attrs.GENERATED_USER_ATTRS['gidNumber'](data),
+            homeDirectory=ldap_attrs.GENERATED_USER_ATTRS['homeDirectory'](data),
+            loginShell=ldap_attrs.GENERATED_USER_ATTRS['loginShell'](data),
             objectClass=settings.ACCOUNT_OBJECTCLASS
             )
 
@@ -132,7 +136,6 @@ class AccountDataStore(base.AccountDataStore):
         super(AccountDataStore, self).delete_account(ua)
         conn = LDAPClient()
 
-        #TODO - Get generated attrs from ldap_attrs.py
         conn.update_user(
             'uid=%s' % ua.username,
             gecos='', 
@@ -146,10 +149,16 @@ class AccountDataStore(base.AccountDataStore):
     def update_account(self, ua):
         super(AccountDataStore, self).update_account(ua)
         conn = LDAPClient()
+        ldap_attrs = __import__(settings.LDAP_ATTRS, {}, {}, [''])
+        
+        data = conn.get_user('uid=%s' % ua.username).__dict__
+        data['default_project'] = ua.default_project
+        data['person'] = ua.user
+
         conn.update_user(
-            'uid=%s' % ua.user.username,
-            gecos='%s %s (%s)' % ((ua.user.first_name), str(ua.user.last_name), str(ua.user.institute.name)),
-            gidNumber=str(ua.user.institute.gid),
+            'uid=%s' % ua.username,
+            gecos=ldap_attrs.GENERATED_USER_ATTRS['gecos'](data),
+            gidNumber=ldap_attrs.GENERATED_USER_ATTRS['gidNumber'](data),
             )
 
     def lock_account(self, ua):

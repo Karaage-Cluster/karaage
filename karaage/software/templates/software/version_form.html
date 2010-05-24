@@ -2,11 +2,11 @@
 
 {% block title %}Software{% endblock %}
 
-{% block content_title %}{% if v %}Edit{% else %}Create{% endif %} Software Version{% endblock %}
+{% block content_title %}{% if version %}Edit{% else %}Create{% endif %} Software Version{% endblock %}
 
 {% block bread_crumbs_1 %}
  &rsaquo; <a href="{% url kg_software_list %}">Software</a>
- &rsaquo; {% if v %}Edit{% else %}Create{% endif %} Software Version
+ &rsaquo; {% if version %}Edit{% else %}Create{% endif %} Software Version
 {% endblock %}   
 
 {% block content %}

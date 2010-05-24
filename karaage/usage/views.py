@@ -59,7 +59,7 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
     if machine_category.id == settings.DEFAULT_MC:
         show_zeros = True
 
-    institute_list = Institute.primary.all()
+    institute_list = Institute.active.all()
     total, total_jobs = 0, 0
     i_list = []
     m_list = []
@@ -141,7 +141,7 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
     institute = get_object_or_404(Institute, pk=institute_id)
     project_list = []
     start, end = get_date_range(request)
-    institute_list = Institute.primary.all()
+    institute_list = Institute.active.all()
 
     available_usage, ave_cpus = get_available_time(start, end, machine_category)
 

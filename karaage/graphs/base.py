@@ -35,7 +35,7 @@ class GraphGenerator(object):
         raise NotImplementedError
 
     def gen_institutes_pie(self, start, end, machine_category):
-        """Generates a pie graph showing all primary institutes usage
+        """Generates a pie graph showing all active institutes usage
     
         Keyword arguments:
         start -- start date
@@ -47,7 +47,7 @@ class GraphGenerator(object):
 
 
     def gen_quota_graph(self):
-        """Generates a pie graph for all primary institutes quota       
+        """Generates a pie graph for all active institutes quota       
         """
         raise NotImplementedError
 

@@ -19,7 +19,7 @@ from django import forms
 from placard.client import LDAPClient
 
 from karaage.machines.models import Machine
-from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense, 
+from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense
 
 
 class SoftwarePackageForm(forms.Form):
@@ -72,7 +72,7 @@ class AddPackageForm(SoftwarePackageForm):
         return data
 
 
-    def save(self):
+    def save(self, package=None):
         data = self.cleaned_data
 
         package = super(self.__class__, self).save()
@@ -83,11 +83,11 @@ class AddPackageForm(SoftwarePackageForm):
             module=data['module'],
         )
         version.save()
-        version.machines=data['machines']
+        version.machines = data['machines']
         version.save()
 
         if data['license_text']:
-            software_license = SoftwareLicense.objects.create(
+            SoftwareLicense.objects.create(
                 package=package,
                 version=data['license_version'],
                 date=data['license_date'],
@@ -98,3 +98,11 @@ class AddPackageForm(SoftwarePackageForm):
 
         
     
+class LicenseForm(forms.ModelForm):
+
+    class Meta:
+        model = SoftwareLicense
+
+class SoftwareVersionForm(forms.ModelForm):
+    class Meta:
+        model = SoftwareVersion

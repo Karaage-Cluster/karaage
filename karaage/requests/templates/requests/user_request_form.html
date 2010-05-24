@@ -45,9 +45,7 @@ and also your account on the VPAC supercomputers. You will be asked for your pro
 {% formfield form.password1 %}
 {% formfield form.password2 %}
 {% formfield form.tos %}
-<input type="hidden" name="imghash" value="{{ imghash }}" id="id_imghash" />
-<img src="{{ MEDIA_URL }}img/captcha/{{ tempname }}"><br />
-{% formfield form.imgtext %}
+{% formfield form.captcha %}
 </fieldset>
 <div class="submit-row">
 		<input type="submit" value="Next" class="default" />

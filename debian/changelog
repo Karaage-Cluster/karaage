@@ -1,3 +1,46 @@
+karaage (2.3.3) testing; urgency=low
+
+  * Gecos and gidNumber are now also configurable via ldap_attrs
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 19 May 2010 16:34:37 +1000
+
+karaage (2.3.2) testing; urgency=low
+
+  * Pull in django-south dependency
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 19 May 2010 15:34:44 +1000
+
+karaage (2.3.1) testing; urgency=low
+
+  * Use active institutes in forms
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 19 May 2010 15:23:58 +1000
+
+karaage (2.3) testing; urgency=low
+
+  * Use Django-south for DB migrations
+  * Added is_active field to Institute
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 19 May 2010 15:12:06 +1000
+
+karaage (2.2.1) testing; urgency=low
+
+  * Fixed create_account bug with ldap_attrs
+
+ -- Sam Morrison <sam@vpac.org>  Mon, 17 May 2010 15:44:37 +1000
+
+karaage (2.2) testing; urgency=low
+
+  * Use dynamic values when creating an LDAP account. Also supply default_project when creating accounts
+  * Code clean up
+  * Added unittests for people and set up testing framework and project
+  * Bugfix for graphs when no machines
+  * Quota equals zero bug and signals to add IntituteChuck automatically
+  * Show jobID in default usage list.
+  * Added pylint file
+	
+ -- Sam Morrison <sam@vpac.org>  Mon, 17 May 2010 13:18:25 +1000
+
 karaage (2.1.1) testing; urgency=low
 
   * Ability to set LOCKED_SHELL. Fixes #34
