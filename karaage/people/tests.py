@@ -138,6 +138,43 @@ class UserTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 200)
 
 
+    def test_admin_update_user(self):
+        logged_in = self.client.login(username='super', password='aq12ws')
+        self.failUnlessEqual(logged_in, True)
+
+        person = Person.objects.get(user__username='kgtestuser3')
+        lcon = LDAPClient()
+        luser = lcon.get_user('uid=kgtestuser3')
+        self.failUnlessEqual(person.mobile, '')
+        self.failUnlessEqual(luser.gidNumber, '500')
+        self.failUnlessEqual(luser.o, 'Example')
+        self.failUnlessEqual(luser.gecos, 'Test User3 (Example)')
+        response = self.client.get(reverse('kg_user_edit', args=['kgtestuser3']))
+        self.failUnlessEqual(response.status_code, 200)
+        
+        form_data = {
+            'title' : 'Mr',
+            'first_name': 'Test',
+            'last_name': 'User3',
+            'position': 'Sys Admin',
+            'institute': 2,
+            'department': 'eddf',
+            'email': 'sam@vpac.org',
+            'country': 'AU',
+            'telephone': '4444444',
+            'mobile': '555666',
+        }
+        response = self.client.post(reverse('kg_user_edit', args=['kgtestuser3']), form_data)
+        self.failUnlessEqual(response.status_code, 302)
+
+        person = Person.objects.get(user__username='kgtestuser3')
+        lcon = LDAPClient()
+        luser = lcon.get_user('uid=kgtestuser3')
+        self.failUnlessEqual(person.mobile, '555666')
+        self.failUnlessEqual(luser.gidNumber, '501')
+        self.failUnlessEqual(luser.o, 'OtherInst')
+        self.failUnlessEqual(luser.gecos, 'Test User3 (OtherInst)')
+
     def test_delete_activate_user(self):
         logged_in = self.client.login(username='super', password='aq12ws')
         user = Person.objects.get(user__username='kgtestuser3')
