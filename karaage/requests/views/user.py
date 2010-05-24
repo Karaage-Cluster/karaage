@@ -42,35 +42,15 @@ def user_registration(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect(reverse('user_choose_project'))
 
-    from random import choice
-    import Image, ImageDraw, ImageFont, sha
-    import os
-    SALT = settings.SECRET_KEY[:20]
-    imgtext = ''.join([choice('QWERTYUPASDFGHJKLZXCVBNM') for i in range(5)])
- 
-    im = Image.open('%s/img/captcha_bg.jpg' % settings.MEDIA_ROOT)
-    draw = ImageDraw.Draw(im)
-    font = ImageFont.truetype(settings.CAPTCHA_FONT, 18)
-    draw.text((10,10), imgtext, font=font, fill=(100,100,50))
-
-    temp = '%s/img/captcha/user_%s.jpg' % (settings.MEDIA_ROOT, request.META.get('REMOTE_ADDR', 'unknown'))
-    tempname = 'user_' + request.META.get('REMOTE_ADDR', 'unknown') + '.jpg'
-    im.save(temp, "JPEG")
-
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             form.save(request=request)
-            os.remove('%s/img/captcha/user_%s.jpg' % (settings.MEDIA_ROOT, request.META.get('REMOTE_ADDR', 'unknown')))
             return HttpResponseRedirect(reverse('user_choose_project'))
     else:
         form = UserRegistrationForm()
-        #form.initial = get_shib_attrs(request.META)
 
-
-    imghash = sha.new(SALT+imgtext).hexdigest()
-
-    return render_to_response('requests/user_request_form.html', { 'form': form, 'tempname': tempname, 'imghash': imghash }, context_instance=RequestContext(request))
+    return render_to_response('requests/user_request_form.html', { 'form': form, }, context_instance=RequestContext(request))
 
 
 def choose_project(request):
@@ -94,7 +74,7 @@ def choose_project(request):
             #  Store the request in the database
             project = Project.objects.get(pk=request.POST['project'])
             
-            # If user is logged in ignore form and use origional user
+            # If user is logged in ignore form and use original user
             if request.user.is_authenticated():
                 person = request.user.get_profile()
             else:

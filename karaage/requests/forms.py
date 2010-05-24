@@ -19,8 +19,8 @@ from django import forms
 from django.conf import settings
 
 import datetime
+from captcha.fields import CaptchaField
 from andsome.middleware.threadlocals import get_current_user
-from andsome.widgets import CaptchaInput
 
 from karaage.projects.models import Project
 from karaage.people.models import Person
@@ -35,8 +35,7 @@ from models import ProjectCreateRequest
 
 class UserRegistrationForm(AddUserForm):
     tos = forms.BooleanField(required=False, label=u'I have read and agree to the <a href="/users/policy" target="_blank">Acceptable Use Policy</a>')
-    imghash = forms.CharField(widget=forms.HiddenInput)
-    imgtext = forms.CharField(label=u'Text from the image', widget=CaptchaInput())
+    captcha = CaptchaField(label=u'CAPTCHA', help_text=u"Please enter the text displayed in the imge above.")
 
     def save(self, request, project=None, account=True):
 
@@ -59,19 +58,6 @@ class UserRegistrationForm(AddUserForm):
         if self.cleaned_data.get('tos', False):
             return self.cleaned_data['tos']
         raise forms.ValidationError(u'You must agree to the terms to register')
-
-    def clean_imgtext(self):
-        import sha
-        SALT = settings.SECRET_KEY[:20]
-        data = self.cleaned_data
-        
-        if not data['imghash'] or not data['imgtext']:
-            raise forms.ValidationError(u'Error')
-
-        if data['imghash'] == sha.new(SALT+data['imgtext'].upper()).hexdigest():
-            
-            return self.cleaned_data['imgtext']
-        raise forms.ValidationError(u'Please type the code shown')
 
     def clean_email(self):
         email = self.cleaned_data['email']

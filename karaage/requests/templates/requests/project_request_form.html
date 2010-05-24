@@ -58,9 +58,7 @@
     {% formfield form.project_institute %}
     {% formfield form.project_description %}
     {% formfield form.additional_req %}
-    <input type="hidden" name="imghash" value="{{ imghash }}" id="id_imghash" />
-    <img src="{{ MEDIA_URL }}img/captcha/{{ tempname }}"><br />
-    {% formfield form.imgtext %}		
+    {% formfield form.captcha %}
     <input type="hidden" name="machine_categories" value="1" />
   </fieldset>
   <div class="submit-row">
