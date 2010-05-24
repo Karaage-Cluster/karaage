@@ -37,28 +37,29 @@ class PersonalDataStore(object):
         hashed_password -- 
     
         """
+        # Make sure username isn't taken in Datastore
         random_passwd = User.objects.make_random_password()
-        u = User.objects.create_user(data['username'], data['email'], random_passwd)
+        user = User.objects.create_user(data['username'], data['email'], random_passwd)
         
         if hashed_password:
-            u.password = hashed_password
+            user.password = hashed_password
         else:
-            u.password = create_password_hash(data['password1'])
+            user.password = create_password_hash(data['password1'])
             
-        u.is_active = False
-        u.save()
+        user.is_active = False
+        user.save()
     
         #Create Person
         person = Person.objects.create(
-            user=u, first_name=data['first_name'],
+            user=user, first_name=data['first_name'],
             last_name=data['last_name'],
             position=data['position'],department=data['department'],
             institute=data['institute'],
-            title=data['title'], address=data['address'],
+            title=data['title'], address=data.get('address', ''),
             country=data['country'],
-            website=data['website'], fax=data['fax'],
-            comment=data['comment'], telephone=data['telephone'],
-            mobile=data['mobile'],
+            website=data.get('website', ''), fax=data.get('fax', ''),
+            comment=data.get('comment', ''), telephone=data.get('telephone', ''),
+            mobile=data.get('mobile', ''),
             )
         
         try:
@@ -95,7 +96,7 @@ class PersonalDataStore(object):
     
         person.date_deleted = datetime.datetime.today()
         person.deleted_by = deletor.get_profile()
-        person.save()
+        person.save(update_datastore=False)
 
         from karaage.datastores import delete_account
 
@@ -169,8 +170,8 @@ class AccountDataStore(object):
             ua.date_deleted = datetime.datetime.now()
             ua.save()
 
-        for p in ua.project_list():
-            p.users.remove(ua.user)
+        for project in ua.project_list():
+            project.users.remove(ua.user)
         
         
         log(get_current_user(), ua.user, 3, 'Deleted account on %s' % ua.machine_category)
