@@ -67,20 +67,20 @@ class Project(models.Model):
         return ('kg_project_usage', [self.institute.id, self.pid])
         
     def activate(self):
-        self.is_active = True
-        self.is_approved = True
-        self.date_approved = datetime.datetime.today()
-        approver = get_current_user()
-        self.approved_by = approver.get_profile()
-        self.save()
+        from karaage.datastores.projects import activate_project
+        activate_project(self)
 
     def deactivate(self):
-        self.is_active = False
-        deletor = get_current_user()    
-        self.deleted_by = deletor.get_profile()
-        self.date_deleted = datetime.datetime.today()
-        self.users.clear()
-        self.save()
+        from karaage.datastores.projects import deactivate_project
+        deactivate_project(self)
+
+    def add_user(self, person):
+        from karaage.datastores.projects import add_user_to_project
+        add_user_to_project(person, self)
+
+    def remove_user(self, person):
+        from karaage.datastores.projects import remove_user_from_project
+        remove_user_from_project(person, self)
 
     def get_usage(self, 
                   start=datetime.date.today()-datetime.timedelta(days=90), 

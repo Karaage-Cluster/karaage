@@ -75,13 +75,7 @@ def approve_project(request, project_request_id):
         if not request.user == institute.active_delegate.user:
             return HttpResponseForbidden('<h1>Access Denied</h1>')
     
-    project.is_approved = True
-    project.is_active = True
-    project.start_date = datetime.date.today()
-    project.end_date = datetime.date.today() + datetime.timedelta(days=365)
-    project.date_approved = datetime.date.today()
-    project.approved_by = request.user.get_profile()
-    project.save()
+    project.activate()
 
     log(request.user, project, 2, 'Approved Project')
     request.user.message_set.create(message="Project approved successfully and a notification email has been sent to %s" % leader)
@@ -91,7 +85,7 @@ def approve_project(request, project_request_id):
         leader.activate()
         
     if project_request.needs_account:
-        add_user_to_project(leader, project)
+        project.add_user(leader)
  
     send_project_approved_email(project_request)
     

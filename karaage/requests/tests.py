@@ -261,7 +261,9 @@ class ProjectRegistrationTestCase(TestCase):
         self.failUnlessEqual(project.is_active, False)
         self.failUnlessEqual(project.pid, 'pExam0001')
         self.failUnlessEqual(project.projectcreaterequest_set.all()[0], person.projectcreaterequest_set.all()[0])
-
+        lcon = LDAPClient()
+        lgroup = lcon.get_group('cn=%s' % project.pid)
+        self.failUnlessEqual(lgroup.cn, project.pid)
 
         # Delegate logs in to approve      
         logged_in = self.client.login(username='kgtestuser1', password='aq12ws')
@@ -278,6 +280,11 @@ class ProjectRegistrationTestCase(TestCase):
         project = Project.objects.get(name='Lasers')
         self.failUnlessEqual(project.is_active, True)
         self.failUnlessEqual(project.users.all()[0], person)
+
+        lgroup = lcon.get_group('cn=%s' % project.pid)
+        lgroup_members = lcon.get_group_members('cn=%s' % project.pid)
+        self.failUnlessEqual(lgroup_members[0].uid, project.users.all()[0].username)
+        self.failUnlessEqual(lgroup.cn, project.pid)
 
         person = Person.objects.get(user__username='jimbob')
         self.failUnlessEqual(person.is_active, True)

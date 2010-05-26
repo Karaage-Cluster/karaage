@@ -28,6 +28,7 @@ from karaage.machines.models import MachineCategory
 from karaage.people.models import Institute
 from karaage.people.forms import AddUserForm
 from karaage.datastores import create_new_user
+from karaage.datastores.projects import create_new_project
 from karaage.util.helpers import check_password, create_password_hash, get_new_pid
 
 from models import ProjectCreateRequest
@@ -84,31 +85,17 @@ class ProjectRegistrationForm(UserRegistrationForm):
     def save(self):
 
         data = self.cleaned_data
-
-        project = Project(
-            name=data['project_name'],
-            description=data['project_description'],
-            institute=data['project_institute'],
-            is_approved=False,
-            is_active=False,
-            is_expertise=False,
-            additional_req=data['additional_req'],
-            start_date=datetime.datetime.today(),
-            end_date=datetime.datetime.today() + datetime.timedelta(days=365),
-        )
+        project = create_new_project(data)
+        person = create_new_user(data)
         
-        project.pid = get_new_pid(data['project_institute'], False)
-
-        p = create_new_user(data)
-        
-        project.leader = p
+        project.leader = person
         project.machine_category = MachineCategory.objects.get_default()
         project.machine_categories.add(MachineCategory.objects.get_default())
         project.save()
         
         project_request = ProjectCreateRequest.objects.create(
             project=project,
-            person=p,
+            person=person,
             needs_account=data['needs_account']
         )
 
