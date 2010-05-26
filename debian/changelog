@@ -1,3 +1,15 @@
+karaage (2.3.4) testing; urgency=low
+
+  * Decreased verbosity in management scripts
+  * Split user forms up one with username/password, one without
+  * Don't update datastore when saving a user in create script
+  * Only require required attributes in create_new_user method
+  * Moved to using django-simple-captcha instead of custom one
+  * Changed ordering when updating users in ldap datastore. Fixes #41
+  * More unit tests
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 26 May 2010 10:20:47 +1000
+
 karaage (2.3.3) testing; urgency=low
 
   * Gecos and gidNumber are now also configurable via ldap_attrs
