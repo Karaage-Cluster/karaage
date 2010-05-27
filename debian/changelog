@@ -1,3 +1,13 @@
+karaage (2.3.5) testing; urgency=low
+
+  * Fix issue of not being able to search from page 2+ in userlist, Fixes #40
+  * Fixed #44 </tr> tag now in correct place for valid html
+  * Fixed bug in get_available_time and created a test to make sure it's correct
+  * Allow PID to be specified in admin project form
+  * More testing
+
+ -- Sam Morrison <sam@vpac.org>  Fri, 28 May 2010 09:46:35 +1000
+
 karaage (2.3.4) testing; urgency=low
 
   * Decreased verbosity in management scripts
