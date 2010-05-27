@@ -59,7 +59,7 @@ class UserAccountTestCase(TestCase):
             'password2': 'Exaiquouxei0',
             'needs_account': False,
             }
-        self.client.login(username='super', password='aq12ws')
+        self.client.login(username='kgsuper', password='aq12ws')
         response = self.client.post(reverse('kg_add_user'), form_data)
         self.failUnlessEqual(response.status_code, 302)
 

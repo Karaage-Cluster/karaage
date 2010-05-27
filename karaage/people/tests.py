@@ -55,7 +55,7 @@ class UserTestCase(TestCase):
         users = Person.objects.count()
         project = Project.objects.get(pid='TestProject1')
         p_users = project.users.count()
-        logged_in = self.client.login(username='super', password='aq12ws')
+        logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         response = self.client.get(reverse('kg_add_user'))
         self.failUnlessEqual(response.status_code, 200)
@@ -99,7 +99,7 @@ class UserTestCase(TestCase):
         users = Person.objects.count()
         project = Project.objects.get(pid='TestProject1')
         p_users = project.users.count()
-        logged_in = self.client.login(username='super', password='aq12ws')
+        logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         response = self.client.get(reverse('kg_add_user'))
         
@@ -139,7 +139,7 @@ class UserTestCase(TestCase):
 
 
     def test_admin_update_user(self):
-        logged_in = self.client.login(username='super', password='aq12ws')
+        logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
 
         person = Person.objects.get(user__username='kgtestuser3')
@@ -176,7 +176,7 @@ class UserTestCase(TestCase):
         self.failUnlessEqual(luser.gecos, 'Test User3 (OtherInst)')
 
     def test_delete_activate_user(self):
-        logged_in = self.client.login(username='super', password='aq12ws')
+        logged_in = self.client.login(username='kgsuper', password='aq12ws')
         user = Person.objects.get(user__username='kgtestuser3')
         self.assertEqual(user.is_active, True)
         self.assertEqual(user.project_set.count(), 1)

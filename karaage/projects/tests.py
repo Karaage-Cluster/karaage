@@ -45,7 +45,7 @@ class ProjectTestCase(TestCase):
     def test_admin_add_project(self):
         projects = Project.objects.count()
         
-        self.client.login(username='super', password='aq12ws')
+        self.client.login(username='kgsuper', password='aq12ws')
         response = self.client.get(reverse('kg_add_project'))
         self.failUnlessEqual(response.status_code, 200)
 
@@ -65,12 +65,39 @@ class ProjectTestCase(TestCase):
         
         self.assertEqual(project.is_active, True)
         self.assertEqual(project.date_approved, datetime.date.today())
-        self.assertEqual(project.approved_by, Person.objects.get(user__username='super'))
+        self.assertEqual(project.approved_by, Person.objects.get(user__username='kgsuper'))
         self.assertEqual(project.pid, 'pExam0001')
+
+    def test_admin_add_project_pid(self):
+        projects = Project.objects.count()
+        
+        self.client.login(username='kgsuper', password='aq12ws')
+        response = self.client.get(reverse('kg_add_project'))
+        self.failUnlessEqual(response.status_code, 200)
+
+        form_data = {
+            'pid': "Enrico",
+            'name': 'Test Project 4',
+            'institute': 1,
+            'leader': 2,
+            'machine_category': 1,
+            'machine_categories': [1,],
+            'start_date': datetime.date.today(),
+        }
+
+        response = self.client.post(reverse('kg_add_project'), form_data)
+        self.failUnlessEqual(response.status_code, 302)
+        
+        project = Project.objects.get(pid="Enrico")
+        
+        self.assertEqual(project.is_active, True)
+        self.assertEqual(project.date_approved, datetime.date.today())
+        self.assertEqual(project.approved_by, Person.objects.get(user__username='kgsuper'))
+        self.assertEqual(project.pid, 'Enrico')
 
 
     def test_add_remove_user_to_project(self):
-        self.client.login(username='super', password='aq12ws')
+        self.client.login(username='kgsuper', password='aq12ws')
         project = Project.objects.get(pk='TestProject1')
         self.assertEqual(project.users.count(), 1)
         response = self.client.get(reverse('kg_project_detail', args=[project.pid]))
@@ -91,7 +118,7 @@ class ProjectTestCase(TestCase):
         
     def test_delete_project(self):
 
-        self.client.login(username='super', password='aq12ws')
+        self.client.login(username='kgsuper', password='aq12ws')
 
         project = Project.objects.get(pk='TestProject1')
 
@@ -105,5 +132,5 @@ class ProjectTestCase(TestCase):
         self.assertEqual(project.is_active, False)
         self.assertEqual(project.users.count(), 0)
         self.assertEqual(project.date_deleted, datetime.date.today())
-        self.assertEqual(project.deleted_by, Person.objects.get(user__username='super'))
+        self.assertEqual(project.deleted_by, Person.objects.get(user__username='kgsuper'))
         
