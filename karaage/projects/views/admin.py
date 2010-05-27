@@ -54,7 +54,7 @@ def add_edit_project(request, project_id=None):
         if form.is_valid():
             project = form.save(commit=False)
             if not project.pid:
-                project.pid = get_new_pid(project.institute, project.is_expertise)
+                project.pid = get_new_pid(project.institute)
             project.save()
             project.activate()
             form.save_m2m()
