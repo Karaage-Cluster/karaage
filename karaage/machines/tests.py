@@ -30,7 +30,7 @@ from placard import exceptions as placard_exceptions
 
 from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
-from karaage.machines.models import UserAccount, MachineCategory
+from karaage.machines.models import UserAccount, MachineCategory, Machine
 from karaage.test_data.initial_ldap_data import test_ldif
 
 class UserAccountTestCase(TestCase):
@@ -167,3 +167,51 @@ class UserAccountTestCase(TestCase):
 
         response = self.client.post(reverse('kg_add_useraccount', args=['samtest2']), form_data)
         self.assertContains(response, "Default project not in machine category")
+
+
+
+class MachineTestCase(TestCase):
+
+    def setUp(self):
+        global server
+        server = slapd.Slapd()
+        server.set_port(38911)
+        server.start()
+        base = server.get_dn_suffix()
+        server.ldapadd("\n".join(test_ldif)+"\n")
+
+        self.server = server
+        today = datetime.datetime.now()
+        # 10cpus
+        mach1 = Machine.objects.get(pk=1)
+        mach1.start_date = today - datetime.timedelta(days=100)
+        mach1.save()
+        # 40 cpus
+        mach2 = Machine.objects.get(pk=2)
+        mach2.start_date = today - datetime.timedelta(days=100)
+        mach2.end_date = today - datetime.timedelta(days=20)
+        mach2.save()
+        # 8000 cpus
+        mach3 = Machine.objects.get(pk=3)
+        mach3.start_date = today - datetime.timedelta(days=30)
+        mach3.save()
+
+    def tearDown(self):
+        self.server.stop()
+
+    def test_available_time(self):
+        from karaage.util.helpers import get_available_time
+        mc1 = MachineCategory.objects.get(pk=1)
+        mc2 = MachineCategory.objects.get(pk=2)
+        day = 60*60*24
+        available_time, avg_cpus = get_available_time(machine_category=mc1)
+
+        self.failUnlessEqual(avg_cpus, 10)
+        self.failUnlessEqual(available_time, 90*day*avg_cpus)
+        self.failUnlessEqual(available_time, 90*day*10)
+
+        available_time, avg_cpus = get_available_time(machine_category=mc2)
+
+        self.failUnlessEqual(avg_cpus, 2697.7777777777778)
+        self.failUnlessEqual(available_time, 90*day*avg_cpus)
+        self.failUnlessEqual(available_time, (40*(70*day))+(8000*(30*day)))
