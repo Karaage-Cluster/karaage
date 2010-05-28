@@ -1,3 +1,10 @@
+karaage (2.3.6) testing; urgency=low
+
+  * Removed comment field from request detail
+  * Only activate a user if not already active
+
+ -- Sam Morrison <sam@vpac.org>  Fri, 28 May 2010 10:45:43 +1000
+
 karaage (2.3.5) testing; urgency=low
 
   * Fix issue of not being able to search from page 2+ in userlist, Fixes #40
