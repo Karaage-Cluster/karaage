@@ -31,6 +31,7 @@ from models import Project
 
 
 class ProjectForm(forms.ModelForm):
+    pid = forms.CharField(label='PID', help_text='Leave blank for auto generation', required=False)
     name = forms.CharField(label='Project Title', widget=forms.TextInput(attrs={ 'size':60 }))
     description = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
     institute = forms.ModelChoiceField(queryset=Institute.active.all())
@@ -42,7 +43,7 @@ class ProjectForm(forms.ModelForm):
 
     class Meta:
         model = Project
-        fields = ('name', 'institute', 'leaders', 'description', 'start_date', 'end_date', 'additional_req', 'machine_categories', 'machine_category')
+        fields = ('pid', 'name', 'institute', 'leaders', 'description', 'start_date', 'end_date', 'additional_req', 'machine_categories', 'machine_category')
 
 
 class UserProjectForm(forms.Form):

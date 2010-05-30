@@ -101,6 +101,7 @@ def user_list(request, queryset=Person.objects.all()):
             query = query & q
         
         user_list = user_list.filter(query)
+        page_no = 1
     else:
         terms = ""
 

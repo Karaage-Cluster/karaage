@@ -19,11 +19,9 @@
 							<td>&nbsp;</td>
 					{% endif %}
 					<td>{{ version.version }}</td>
-					<td>{% for m in version.machines.all %}
-							<a href="{{ m.get_absolute_url }}">{{ m }}</a>
-							{% endfor %}</td>
+					<td>{% for m in version.machines.all %}<a href="{{ m.get_absolute_url }}">{{ m }}</a>{% endfor %}</td>
+					</tr>
 				{% endfor %}
-			</tr>
 		{% endfor %}
    </tbody>  	
 </table>

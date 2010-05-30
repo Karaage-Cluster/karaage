@@ -161,6 +161,7 @@ class Person(models.Model):
     def _set_is_active(self, value):
         self.user.is_active = value
         self.user.save()
+
     def _get_is_active(self):
         return self.user.is_active
     is_active = property(_get_is_active, _set_is_active)
@@ -201,8 +202,9 @@ class Person(models.Model):
         return False
 
     def activate(self):
-        from karaage.datastores import activate_user
-        activate_user(self)
+        if not self.is_active:
+            from karaage.datastores import activate_user
+            activate_user(self)
 
     def deactivate(self):
         from karaage.datastores import delete_user

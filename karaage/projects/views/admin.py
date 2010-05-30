@@ -53,7 +53,7 @@ def add_edit_project(request, project_id=None):
         if form.is_valid():
             project = form.save(commit=False)
             if not project.pid:
-                project.pid = get_new_pid(project.institute, project.is_expertise)
+                project.pid = get_new_pid(project.institute)
             project.save()
             project.activate()
             form.save_m2m()
@@ -111,12 +111,6 @@ def project_detail(request, project_id):
         data = request.POST.copy()     
         person = Person.objects.get(pk=data['person'])
         add_user_to_project(person, project)
-        #if person.has_account(project.machine_category):
-        #    project.users.add(person)
-        #    request.user.message_set.create(message="User '%s' added succesfully" % person)
-        #    log(request.user, project, 1, 'Added user %s' % person)
-        #else:
-        #    no_account_error = "%s has no account on %s. Please create one first" % (person, project.machine_category)
     
     return render_to_response('projects/project_detail.html', locals(), context_instance=RequestContext(request))
 
@@ -168,6 +162,7 @@ def remove_user(request, project_id, username):
     project = get_object_or_404(Project, pk=project_id)
     user = get_object_or_404(Person, user__username=username)
 
+    #Dirty VPAC hack
     if site.id == 2:
         if not request.user.get_profile() in project.leaders.all():
             return HttpResponseForbidden('<h1>Access Denied</h1>')

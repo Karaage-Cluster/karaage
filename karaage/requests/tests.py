@@ -140,7 +140,7 @@ class AdminRegistrationTestCase(TestCase):
         from karaage.datastores import create_new_user
         from karaage.requests.models import ProjectJoinRequest
 
-        logged_in = self.client.login(username='super', password='aq12ws')
+        logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         project = Project.objects.get(pid='TestProject1')
         p_users = project.users.count()
