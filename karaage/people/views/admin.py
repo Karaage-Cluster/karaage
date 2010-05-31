@@ -144,27 +144,12 @@ def add_edit_useraccount(request, username=None, useraccount_id=None):
 
             if user_account:
                 # Edit
-                try:
-                    test_user_account = UserAccount.objects.get(
-                        username__exact=data['username'], machine_category=data['machine_category'], date_deleted__isnull=True)
-                except:
-                    user_account.username = data['username']
-                    user_account.machine_category = data['machine_category']
-                    user_account.default_project = data['default_project']
-                    user_account.save()
-                    
-                    request.user.message_set.create(message="User account for '%s' changed succesfully" % user_account.user)
-                    return HttpResponseRedirect(user.get_absolute_url())
-                 
-                if test_user_account.username == user_account.username:
-                    # didn't change
-                    user_account.machine_category = data['machine_category']
-                    user_account.default_project = data['default_project']
-                    user_account.save()
-                    request.user.message_set.create(message="User account for '%s' changed succesfully" % user_account.user)
-                    return HttpResponseRedirect(user.get_absolute_url())
+                user_account.machine_category = data['machine_category']
+                user_account.default_project = data['default_project']
+                user_account.save()
+                request.user.message_set.create(message="User account for '%s' changed succesfully" % user_account.user)
+                return HttpResponseRedirect(user.get_absolute_url())
                 
-                username_error = True                                                                   
             else:
                 #add
                 try:
@@ -176,7 +161,7 @@ def add_edit_useraccount(request, username=None, useraccount_id=None):
                 
                 try:
                     test_user_account = UserAccount.objects.get(
-                        username__exact=data['username'], machine_category=machine_category, date_deleted__isnull=True)
+                        username__exact=user.username, machine_category=machine_category, date_deleted__isnull=True)
                 except UserAccount.DoesNotExist:
                     user_account = create_account(user, project, machine_category)               
                     request.user.message_set.create(message="User account for '%s' created succesfully" % user_account.user)
