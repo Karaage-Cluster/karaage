@@ -87,18 +87,6 @@ class UserAccountTestCase(TestCase):
 
     def test_fail_add_useraccounts_username(self):
         form_data = {
-            'username': 'samtest2',
-            'machine_category': 1,
-            'default_project': 'TestProject1',
-            }          
-        response = self.client.post(reverse('kg_add_useraccount', args=['samtest2']), form_data)
-        self.failUnlessEqual(response.status_code, 302)
-        
-        response = self.client.post(reverse('kg_add_useraccount', args=['samtest2']), form_data)
-        self.assertContains(response, "Username already in use")
-
-    def test_fail_add_useraccounts_username(self):
-        form_data = {
             'machine_category': 1,
             'default_project': 'TestProject1',
             }          
