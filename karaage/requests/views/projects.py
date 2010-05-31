@@ -30,8 +30,6 @@ from karaage.util import log_object as log
 from karaage.util.email_messages import send_project_request_email, send_project_approved_email, send_project_rejected_email
 
 
-
-# Create your views here.
 def project_registration(request):
     """
     This is for a new user wanting to start a project
@@ -54,7 +52,7 @@ def project_registration(request):
 def project_created(request, project_request_id):
     project_request = get_object_or_404(ProjectCreateRequest, pk=project_request_id)
     project = project_request.project
-    person = request.user.get_profile()
+    person = project_request.person
     
     log(person.user, project, 1, 'Requested project for approval')
     
