@@ -169,6 +169,26 @@ class UserAccountTestCase(TestCase):
         self.assertContains(response, "Default project not in machine category")
 
 
+    def test_lock_unlock_account(self):
+        response = self.client.get(reverse('kg_add_useraccount', args=['samtest2']))
+        self.failUnlessEqual(response.status_code, 200)
+        
+        form_data = {
+            'username': 'samtest2',
+            'machine_category': 1,
+            'default_project': 'TestProject1',
+            }
+            
+        response = self.client.post(reverse('kg_add_useraccount', args=['samtest2']), form_data)
+        self.failUnlessEqual(response.status_code, 302)
+        
+        person = Person.objects.get(user__username='samtest2')
+        person.lock()
+        lcon = LDAPClient()
+        
+        self.failUnlessEqual(person.is_locked(), True)
+        person.unlock()
+        self.failUnlessEqual(person.is_locked(), False)
 
 class MachineTestCase(TestCase):
 
