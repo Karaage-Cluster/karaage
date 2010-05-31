@@ -1,3 +1,10 @@
+karaage (2.3.7) testing; urgency=low
+
+  * Remove username from account creation form, fixes #43.
+  * Allow searching for project ID's in choose project that are longer that 8 characters
+
+ -- Sam Morrison <sam@vpac.org>  Mon, 31 May 2010 16:08:35 +1000
+
 karaage (2.3.6) testing; urgency=low
 
   * Removed comment field from request detail
