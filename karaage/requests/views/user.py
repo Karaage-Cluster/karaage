@@ -118,7 +118,6 @@ def choose_project(request):
     if request.REQUEST.has_key('leader_q'):
         q_project = False
         try:
-            test = request.GET['leader_q'][7]
             q_project = Project.objects.get(pid__icontains=request.GET['leader_q'])
         except:
             pass
