@@ -1,7 +1,7 @@
 Hello {{ receiver }},
 
 Your request to create the new project "{{ project }}"  approved and you can now start using your {{ org_name }} computer account.
-You can now also log into the {{{ org_name }} account management tool to see the status of your account by going to {{ site }}
+You can now also log into the {{ org_name }} account management tool to see the status of your account by going to {{ site }}
 
 
 Thanks,
