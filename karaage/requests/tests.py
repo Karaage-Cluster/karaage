@@ -100,7 +100,7 @@ class UserRegistrationTestCase(TestCase):
         self.failUnlessEqual(person.is_active, False)
         self.failUnlessEqual(person.projectjoinrequest_set.count(), 1)
         self.assertEquals(len(mail.outbox), 1)
-        self.assertEquals(mail.outbox[0].subject, 'Project join request')
+        self.assertEquals(mail.outbox[0].subject, 'TestOrg Project join request')
         self.assertEquals(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL_FROM)
         self.assertEquals(mail.outbox[0].to[0], 'leader@example.com')
         # Leader logs in to approve      
@@ -179,7 +179,7 @@ class AdminRegistrationTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 302)
 
         self.assertEquals(len(mail.outbox), 1)
-        self.assertEquals(mail.outbox[0].subject, 'VPAC Account approval')
+        self.assertEquals(mail.outbox[0].subject, 'TestOrg Account approval')
         self.assertEquals(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL_FROM)
         self.assertEquals(mail.outbox[0].to[0], 'jim.bob@example.com')
 
@@ -248,7 +248,7 @@ class ProjectRegistrationTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 200)
      
         self.assertEquals(len(mail.outbox), 1)
-        self.assertEquals(mail.outbox[0].subject, 'VPAC new project request')
+        self.assertEquals(mail.outbox[0].subject, 'TestOrg new project request')
         self.assertEquals(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL_FROM)
         self.assertEquals(mail.outbox[0].to[0], 'leader@example.com')
 
@@ -282,6 +282,6 @@ class ProjectRegistrationTestCase(TestCase):
         person = Person.objects.get(user__username='jimbob')
         self.failUnlessEqual(person.is_active, True)
         self.assertEquals(len(mail.outbox), 2)
-        self.assertEquals(mail.outbox[1].subject, 'VPAC Project has been approved')
+        self.assertEquals(mail.outbox[1].subject, 'TestOrg Project has been approved')
         self.assertEquals(mail.outbox[1].from_email, settings.ACCOUNTS_EMAIL_FROM)
         self.assertEquals(mail.outbox[1].to[0], 'jim.bob@example.com')
