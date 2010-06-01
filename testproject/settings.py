@@ -9,16 +9,13 @@ GRAPH_LIB = 'karaage.graphs.matplotlib9'
 
 ADMIN_APPROVE_ACCOUNTS = True
 
-PERSONAL_DATASTORE = 'karaage.datastores.ldap_datastore'
+PERSONAL_DATASTORE = 'karaage.datastores.openldap_datastore'
 
 ACCOUNTS_ORG_NAME = 'TestOrg'
 
 ACCOUNT_DATASTORES = {
-    1: 'karaage.datastores.ldap_datastore',
+    1: 'karaage.datastores.openldap_datastore',
     2: 'karaage.datastores.dummy',
-    3: 'karaage.datastores.dummy',
-    4: 'karaage.datastores.dummy',
-    5: 'karaage.datastores.dummy',
 }
 
 LOCKED_SHELL = '/usr/local/sbin/insecure'
