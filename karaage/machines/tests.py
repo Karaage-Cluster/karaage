@@ -181,14 +181,20 @@ class UserAccountTestCase(TestCase):
             
         response = self.client.post(reverse('kg_add_useraccount', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
-        
         person = Person.objects.get(user__username='samtest2')
-        person.lock()
-        lcon = LDAPClient()
+        ua = person.get_user_account(MachineCategory.objects.get(pk=1))
         
-        self.failUnlessEqual(person.is_locked(), True)
-        person.unlock()
         self.failUnlessEqual(person.is_locked(), False)
+        self.failUnlessEqual(ua.loginShell(), '/bin/bash')
+
+        response = self.client.get(reverse('kg_lock_user', args=['samtest2']))
+        self.failUnlessEqual(person.is_locked(), True)
+        self.failUnlessEqual(ua.loginShell(), settings.LOCKED_SHELL)
+
+        response = self.client.get(reverse('kg_unlock_user', args=['samtest2']))
+        self.failUnlessEqual(person.is_locked(), False)
+        self.failUnlessEqual(ua.loginShell(), '/bin/bash')
+
 
 class MachineTestCase(TestCase):
 
