@@ -52,7 +52,7 @@ class ProjectTestCase(TestCase):
         form_data = {
             'name': 'Test Project 4',
             'institute': 1,
-            'leader': 2,
+            'leaders': [2,3],
             'machine_category': 1,
             'machine_categories': [1,],
             'start_date': datetime.date.today(),
@@ -67,6 +67,8 @@ class ProjectTestCase(TestCase):
         self.assertEqual(project.date_approved, datetime.date.today())
         self.assertEqual(project.approved_by, Person.objects.get(user__username='kgsuper'))
         self.assertEqual(project.pid, 'pExam0001')
+        self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
+        self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())
 
     def test_admin_add_project_pid(self):
         projects = Project.objects.count()
@@ -79,7 +81,7 @@ class ProjectTestCase(TestCase):
             'pid': "Enrico",
             'name': 'Test Project 4',
             'institute': 1,
-            'leader': 2,
+            'leaders': [2,3],
             'machine_category': 1,
             'machine_categories': [1,],
             'start_date': datetime.date.today(),
@@ -94,7 +96,8 @@ class ProjectTestCase(TestCase):
         self.assertEqual(project.date_approved, datetime.date.today())
         self.assertEqual(project.approved_by, Person.objects.get(user__username='kgsuper'))
         self.assertEqual(project.pid, 'Enrico')
-
+        self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
+        self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())
 
     def test_add_remove_user_to_project(self):
         self.client.login(username='kgsuper', password='aq12ws')
