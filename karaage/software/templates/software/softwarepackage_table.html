@@ -9,12 +9,12 @@
 	</thead>   	
    <tbody>
    	{% for package in object_list %}
-	   	<tr class="{% cycle "row1" "row2" as rowcolours %}">
+	   	<tr class="{% cycle "row1" "row2" as rowcolour %}">
 	   		<td><a href="{{ package.get_absolute_url }}">{{ package.name }}</a></td>
 	   		<td>{{ package.gid }}</td>
 	   		{% for version in package.softwareversion_set.all %}
 					{% if not forloop.first %}
-						<tr class="{{ rowcolours }}">	   		
+						<tr class="{{ rowcolour }}">	   		
 	   					<td>&nbsp;</td>
 							<td>&nbsp;</td>
 					{% endif %}
