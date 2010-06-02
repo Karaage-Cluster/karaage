@@ -24,7 +24,7 @@ from andsome.middleware.threadlocals import get_current_user
 from karaage.people.models import Institute, Person
 from karaage.machines.models import MachineCategory
 from karaage.requests.models import ProjectCreateRequest
-from karaage.util.helpers import get_new_pid
+from karaage.projects.utils import get_new_pid
 from karaage.util import log_object
 
 from models import Project

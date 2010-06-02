@@ -73,7 +73,6 @@ class UserAccountTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 200)
         
         form_data = {
-            'username': 'samtest2',
             'machine_category': 1,
             'default_project': 'TestProject1',
             }
@@ -86,41 +85,8 @@ class UserAccountTestCase(TestCase):
         self.assertEqual(luser.objectClass, settings.ACCOUNT_OBJECTCLASS)
         self.assertTrue(person.has_account(MachineCategory.objects.get(pk=1)))
 
-    def test_add_useraccount_different_username(self):
-
-        response = self.client.get(reverse('kg_add_useraccount', args=['samtest2']))
-        self.failUnlessEqual(response.status_code, 200)
-        
-        form_data = {
-            'username': 'samtest77',
-            'machine_category': 1,
-            'default_project': 'TestProject1',
-            }
-            
-        response = self.client.post(reverse('kg_add_useraccount', args=['samtest2']), form_data)
-        self.failUnlessEqual(response.status_code, 302)
-        person = Person.objects.get(user__username="samtest2")
-        lcon = LDAPClient()
-        luser = lcon.get_user('uid=samtest77')
-        self.assertEqual(luser.objectClass, settings.ACCOUNT_OBJECTCLASS)
-        self.assertTrue(person.has_account(MachineCategory.objects.get(pk=1)))
-
-
     def test_fail_add_useraccounts_username(self):
         form_data = {
-            'username': 'samtest2',
-            'machine_category': 1,
-            'default_project': 'TestProject1',
-            }          
-        response = self.client.post(reverse('kg_add_useraccount', args=['samtest2']), form_data)
-        self.failUnlessEqual(response.status_code, 302)
-        
-        response = self.client.post(reverse('kg_add_useraccount', args=['samtest2']), form_data)
-        self.assertContains(response, "Username already in use")
-
-    def test_fail_add_useraccounts_username(self):
-        form_data = {
-            'username': 'samtest2',
             'machine_category': 1,
             'default_project': 'TestProject1',
             }          
@@ -133,7 +99,6 @@ class UserAccountTestCase(TestCase):
 
     def test_fail_add_useraccounts_project(self):
         form_data = {
-            'username': 'samtest2',
             'machine_category': 1,
             'default_project': 'TestProject1',
             }          
@@ -141,7 +106,6 @@ class UserAccountTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 302)
 
         form_data = {
-            'username': 'samtest2',
             'machine_category': 2,
             'default_project': 'TestProject1',
             }
@@ -150,24 +114,31 @@ class UserAccountTestCase(TestCase):
         self.assertContains(response, "Default project not in machine category")
 
 
-    def test_fail_add_useraccounts_mc(self):
+    def test_lock_unlock_account(self):
+        response = self.client.get(reverse('kg_add_useraccount', args=['samtest2']))
+        self.failUnlessEqual(response.status_code, 200)
+        
         form_data = {
             'username': 'samtest2',
             'machine_category': 1,
             'default_project': 'TestProject1',
-            }          
+            }
+            
         response = self.client.post(reverse('kg_add_useraccount', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
+        person = Person.objects.get(user__username='samtest2')
+        ua = person.get_user_account(MachineCategory.objects.get(pk=1))
+        
+        self.failUnlessEqual(person.is_locked(), False)
+        self.failUnlessEqual(ua.loginShell(), '/bin/bash')
 
-        form_data = {
-            'username': 'samtest3',
-            'machine_category': 1,
-            'default_project': 'TestProject1',
-            }
+        response = self.client.get(reverse('kg_lock_user', args=['samtest2']))
+        self.failUnlessEqual(person.is_locked(), True)
+        self.failUnlessEqual(ua.loginShell(), settings.LOCKED_SHELL)
 
-        response = self.client.post(reverse('kg_add_useraccount', args=['samtest2']), form_data)
-        self.assertContains(response, "Default project not in machine category")
-
+        response = self.client.get(reverse('kg_unlock_user', args=['samtest2']))
+        self.failUnlessEqual(person.is_locked(), False)
+        self.failUnlessEqual(ua.loginShell(), '/bin/bash')
 
 
 class MachineTestCase(TestCase):

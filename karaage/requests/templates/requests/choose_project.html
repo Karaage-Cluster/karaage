@@ -4,7 +4,7 @@
 
 {% block content %}
 <h1>{% if user.is_anonymous %}Step 2 - {% endif %}Choose Project</h1>
-<h2>Search for your project leader or enter an 8 character project ID</h2>
+<h2>Search for your project leader or the ID of the project</h2>
 <form method="get" action=".">
 <div>
 {% if term_error %}

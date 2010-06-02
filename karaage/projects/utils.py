@@ -30,9 +30,10 @@ def add_user_to_project(person, project):
 
 
 def get_new_pid(institute, is_expertise=False):
-    """ Return a new Project ID                                                                                                                                         Keyword arguments:                                                                                                                                               
-    institute_id -- Institute id                                                                                                                                     
-    is_expertise -- is project an expertise                                                                                                                          
+    """ Return a new Project ID
+    Keyword arguments:                              
+    institute_id -- Institute id
+    is_expertise -- is project an expertise
     """
     no = 1
     number = '0001'

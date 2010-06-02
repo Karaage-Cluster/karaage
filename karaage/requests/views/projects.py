@@ -24,7 +24,7 @@ from django.contrib.auth.decorators import login_required
 import datetime
 
 from karaage.requests.models import ProjectCreateRequest
-from karaage.projects.util import add_user_to_project
+from karaage.projects.utils import add_user_to_project
 from karaage.requests.forms import ProjectRegistrationForm
 from karaage.util import log_object as log
 from karaage.util.email_messages import send_project_request_email, send_project_approved_email, send_project_rejected_email
