@@ -14,7 +14,7 @@
 	   		<td>{{ package.gid }}</td>
 	   		{% for version in package.softwareversion_set.all %}
 					{% if not forloop.first %}
-						<tr class="{% cycle rowcolours %}">	   		
+						<tr class="{{ rowcolours }}">	   		
 	   					<td>&nbsp;</td>
 							<td>&nbsp;</td>
 					{% endif %}
