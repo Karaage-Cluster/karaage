@@ -32,7 +32,7 @@ from karaage.people.models import Person, Institute
 from karaage.requests.models import ProjectCreateRequest
 from karaage.projects.models import Project
 from karaage.projects.forms import ProjectForm
-from karaage.projects.util import get_new_pid, add_user_to_project
+from karaage.projects.utils import get_new_pid, add_user_to_project
 from karaage.util.email_messages import send_removed_from_project_email
 from karaage.util import log_object as log
 from karaage.usage.forms import UsageSearchForm

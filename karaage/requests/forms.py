@@ -23,14 +23,14 @@ from captcha.fields import CaptchaField
 from andsome.middleware.threadlocals import get_current_user
 
 from karaage.projects.models import Project
+from karaage.projects.utils import get_new_pid
 from karaage.people.models import Person
 from karaage.machines.models import MachineCategory
 from karaage.people.models import Institute
 from karaage.people.forms import AddUserForm
 from karaage.datastores import create_new_user
-from karaage.util.helpers import check_password, create_password_hash, get_new_pid
-
-from models import ProjectCreateRequest
+from karaage.util.helpers import check_password, create_password_hash
+from karaage.requests.models import ProjectCreateRequest
 
 
 class UserRegistrationForm(AddUserForm):
@@ -91,13 +91,12 @@ class ProjectRegistrationForm(UserRegistrationForm):
             institute=data['project_institute'],
             is_approved=False,
             is_active=False,
-            is_expertise=False,
             additional_req=data['additional_req'],
             start_date=datetime.datetime.today(),
             end_date=datetime.datetime.today() + datetime.timedelta(days=365),
         )
         
-        project.pid = get_new_pid(data['project_institute'], False)
+        project.pid = get_new_pid(data['project_institute'])
 
         p = create_new_user(data)
         

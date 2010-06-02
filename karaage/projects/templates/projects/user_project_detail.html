@@ -17,7 +17,6 @@
   <tr><td>Additional Req:</td><td>{{ project.additional_req }}</td></tr>
   <tr><td>Approved:</td><td>{% yes_no_img project.is_active %}</td></tr>
   <tr><td>Active:</td><td>{% yes_no_img project.is_approved %}</td></tr>
-  <tr><td>Expertise:</td><td>{% yes_no_img project.is_expertise %}</td></tr>
 </table>	
 {% if project.users.all %}
 <div class="module">
