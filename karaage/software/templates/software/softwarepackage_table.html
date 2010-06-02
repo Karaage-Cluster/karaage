@@ -9,7 +9,7 @@
 	</thead>   	
    <tbody>
    	{% for package in object_list %}
-	   	<tr class="{% cycle row1,row2  as rowcolours %}">
+	   	<tr class="{% cycle "row1" "row2" as rowcolours %}">
 	   		<td><a href="{{ package.get_absolute_url }}">{{ package.name }}</a></td>
 	   		<td>{{ package.gid }}</td>
 	   		{% for version in package.softwareversion_set.all %}
