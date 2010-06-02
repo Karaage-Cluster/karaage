@@ -56,8 +56,6 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
     mc_list = MachineCategory.objects.exclude(id__exact=settings.DEFAULT_MC)
     
     show_zeros = True
-    if machine_category.id == settings.DEFAULT_MC:
-        show_zeros = True
 
     institute_list = Institute.active.all()
     total, total_jobs = 0, 0
@@ -88,7 +86,7 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
             display_quota = quota.quota
         except InstituteChunk.DoesNotExist:
             display_quota = None
-        if show_zeros or jobs > 0:
+        if display_quota or jobs > 0:
             i_list.append({ 'institute': i, 'usage': time, 'jobs': jobs, 'quota': display_quota})
             
     for i in i_list:
