@@ -1,3 +1,15 @@
+karaage (2.3.9) testing; urgency=low
+
+  * Fixed syntax error
+
+ -- Sam Morrison <sam@vpac.org>  Tue, 08 Jun 2010 17:26:00 +1000
+
+karaage (2.3.8) testing; urgency=low
+
+  * Fixed Django 1.2 incompatability
+
+ -- Sam Morrison <sam@vpac.org>  Tue, 08 Jun 2010 17:22:25 +1000
+
 karaage (2.3.7) testing; urgency=low
 
   * Remove username from account creation form, fixes #43.
