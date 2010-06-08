@@ -39,37 +39,37 @@ class InstituteCache(UsageCache):
     institute = models.ForeignKey(Institute)
     machine_category = models.ForeignKey(MachineCategory)
     
-    def save(self, force_insert=False, force_update=False):
+    def save(self, *args, **kwargs):
         if not self.id:
             self.date = datetime.date.today()
-        super(self.__class__, self).save(force_insert, force_update)
+        super(self.__class__, self).save(*args, **kwargs)
 
 
 class ProjectCache(UsageCache):
     pid = models.ForeignKey(Project)
     machine_category = models.ForeignKey(MachineCategory) 
 
-    def save(self, force_insert=False, force_update=False):
+    def save(self, *args, **kwargs):
         if not self.id:
             self.date = datetime.date.today()
-        super(self.__class__, self).save(force_insert, force_update)
+        super(self.__class__, self).save()*args, **kwargs
 
 
 class UserCache(UsageCache):
     user = models.ForeignKey(Person)
     project = models.ForeignKey(Project)
 
-    def save(self, force_insert=False, force_update=False):
+    def save(self, *args, **kwargs):
         if not self.id:
             self.date = datetime.date.today()
-        super(self.__class__, self).save(force_insert, force_update)
+        super(self.__class__, self).save(*args, **kwargs)
 
 
 class MachineCache(UsageCache):
     machine = models.ForeignKey(Machine)
     
-    def save(self, force_insert=False, force_update=False):
+    def save(self, *args, **kwargs):
         if not self.id:
             self.date = datetime.date.today()
-        super(self.__class__, self).save(force_insert, force_update)
+        super(self.__class__, self).save(*args, **kwargs)
 
