@@ -52,7 +52,7 @@ class ProjectCache(UsageCache):
     def save(self, *args, **kwargs):
         if not self.id:
             self.date = datetime.date.today()
-        super(self.__class__, self).save()*args, **kwargs
+        super(self.__class__, self).save(*args, **kwargs)
 
 
 class UserCache(UsageCache):
