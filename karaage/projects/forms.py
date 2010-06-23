@@ -41,6 +41,13 @@ class ProjectForm(forms.ModelForm):
     end_date = forms.DateField(widget=AdminDateWidget, required=False)
     machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all(), widget=forms.CheckboxSelectMultiple())
 
+    def __init__(self, *args, **kwargs):
+        # Make PID field read only if we are editing a project
+        super(ProjectForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pid:
+            self.fields['pid'].widget.attrs['readonly'] = True
+
     class Meta:
         model = Project
         fields = ('pid', 'name', 'institute', 'leader', 'description', 'start_date', 'end_date', 'additional_req', 'machine_categories', 'machine_category')
