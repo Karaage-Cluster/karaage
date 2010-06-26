@@ -262,8 +262,10 @@ def unknown_usage(request):
         except Person.DoesNotExist:
            person = False
         
-        jobs = CPUJob.objects.filter(id__in=request.POST.getlist('uid'))
-
+        if request.POST.getlist('uid'):
+            jobs = CPUJob.objects.filter(id__in=request.POST.getlist('uid'))
+        else:
+            jobs = []
         if project_s:
             for job in jobs:
                 job.project = project_s
