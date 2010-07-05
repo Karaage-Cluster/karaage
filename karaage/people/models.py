@@ -119,12 +119,12 @@ class Person(models.Model):
                 pass
         return reverse('kg_user_detail', kwargs={'username': self.user.username })
 
-    def save(self, update_datastore=True, force_insert=False, force_update=False):
+    def save(self, update_datastore=True, *args, **kwargs):
         update = False
         if self.id and self.is_active:
             update = True
 
-        super(self.__class__, self).save(force_insert, force_update)
+        super(self.__class__, self).save(*args, **kwargs)
  
         if update and update_datastore:            
             from karaage.datastores import update_user
