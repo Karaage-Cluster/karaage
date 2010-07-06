@@ -187,17 +187,17 @@ class Person(models.Model):
         return get_user_usage(self, project, start, end)
     
     def is_leader(self):
-        if self.leader.count() != 0:
+        if self.leaders.count() > 0:
             return True
         return False
     
     def is_delegate(self):
-        if self.delegate.count() != 0:
+        if self.delegate.count() > 0:
             return True
         return False
 
     def is_active_delegate(self):
-        if self.active_delegate.count() != 0:
+        if self.active_delegate.count() > 0:
             return True
         return False
 
