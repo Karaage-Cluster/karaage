@@ -72,7 +72,7 @@ def search(request):
          # projects
         query = Q()
         for term in term_list:
-            q = Q(pid__icontains=term) | Q(name__icontains=term) | Q(leader__user__username__icontains=term) | Q(leader__user__first_name__icontains=term) | Q(leader__user__last_name__icontains=term) 
+            q = Q(pid__icontains=term) | Q(name__icontains=term) | Q(leaders__user__username__icontains=term) | Q(leaders__user__first_name__icontains=term) | Q(leaders__user__last_name__icontains=term) 
             query = query & q
 
         project_list = project_list.filter(query)
