@@ -97,7 +97,7 @@ class Person(models.Model):
     objects = models.Manager()
     active = ActiveUserManager()
     deleted = DeletedUserManager()
-    leaders = LeaderManager()
+    projectleaders = LeaderManager()
     
     class Meta:
         verbose_name_plural = 'people'
