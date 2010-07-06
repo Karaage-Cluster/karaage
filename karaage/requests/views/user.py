@@ -121,7 +121,7 @@ def choose_project(request):
             q_project = Project.objects.get(pid__icontains=request.GET['leader_q'])
         except:
             pass
-        leader_list = Person.leaders.filter(institute=institute)
+        leader_list = Person.projectleaders.filter(institute=institute)
         terms = request.GET['leader_q'].lower()
         length = len(terms)
         if len(terms) >= 3:
@@ -133,7 +133,7 @@ def choose_project(request):
             leader_list = leader_list.filter(query)
             if leader_list.count() == 1:
                 leader = leader_list[0]
-                project_list = leader.leader.filter(is_active=True)
+                project_list = leader.leaders.filter(is_active=True)
                 leader_list = False
             elif leader_list.count() == 0 and not q_project:
                 term_error = "No projects found."
@@ -176,7 +176,8 @@ def account_created(request, user_request_id):
     user_request = get_object_or_404(ProjectJoinRequest, pk=user_request_id)
     person = user_request.person
     project = user_request.project
-    
+    leader = project.leaders.all()[0]
+
     return render_to_response('requests/account_pending.html', locals(), context_instance=RequestContext(request))
 
 @login_required
