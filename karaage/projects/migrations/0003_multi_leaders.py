@@ -12,8 +12,9 @@ class Migration(DataMigration):
             project.save()
 
     def backwards(self, orm):
-        raise RuntimeError("Cannot reverse this migration.")
-
+        for project in orm.Project.objects.all():
+            project.leader = project.leaders.all()[0]
+            project.save()
 
     models = {
         'auth.group': {
