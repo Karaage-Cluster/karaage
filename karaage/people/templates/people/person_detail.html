@@ -138,7 +138,7 @@
 	  <td>{{ ua.date_deleted|date }}</td>
 	  {% endif %}
 	  {% ifequal ua.machine_category.id 1 %}
-	  <td>{% if not ua.date_deleted and perms.machines.change_useraccount %}<form action="{% url kg_change_shell ua.id %}" method="post">
+	  <td>{% if not ua.date_deleted and perms.machines.change_useraccount %}<form action="{% url kg_change_shell ua.id %}" method="post">{% csrf_token %}
 	      {{ shell_form.shell }}
 	      <input type="submit" value="Change" />
 	    </form>{% else %}&nbsp;{% endif %}</td>
@@ -188,7 +188,7 @@
   </div>
   {% endfor %}
   {% if person.useraccount_set.all and person.is_active and perms.projects.change_project %}
-  <form action="" method="post" id="joinproject_form">
+  <form action="" method="post" id="joinproject_form">{% csrf_token %}
     <div class="form-row" >
       {% if no_account_error %}<p class="error">{{ no_account_error }}</p>{% endif %}
       <label for="id_project">Add to existing project:</label> 

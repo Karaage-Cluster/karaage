@@ -106,7 +106,7 @@
 	<div class="module">
 		<h2>LDAP Group members</h2>
 		{% if perms.software.change_softwarepackage %}
-	<form action="" method="post" id="add_member_form">
+	<form action="" method="post" id="add_member_form">{% csrf_token %}
 	<div class="form-row" >
   <label for="id_member">Add member:</label> 
 	<select id="id_member" class="vNullSelectField" name="member" size="1">

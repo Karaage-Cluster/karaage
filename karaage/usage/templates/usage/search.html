@@ -12,7 +12,7 @@
 {% block content %}
 {% load forms %}
 {% load filters %}
-<form method="post" action=".">
+<form method="post" action=".">{% csrf_token %}
 <fieldset class="module aligned ()">
 {% form_as_div form %}
 </fieldset>

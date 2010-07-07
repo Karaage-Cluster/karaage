@@ -3,7 +3,7 @@
 {% block content %}
     <h1>Are you sure?</h1>    
     <p>Are you sure you want to delete the software package "{{ object }}"? </p>
-    <form action="" method="post">
+    <form method="post" action=".">{% csrf_token %}
     <div>
     <input type="hidden" name="post" value="yes" />
     <input type="submit" value="Yes, I'm sure" />

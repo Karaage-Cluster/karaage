@@ -10,7 +10,7 @@
 {% endblock %}   
 
 {% block content %}
-<form method="post" action=".">
+<form method="post" action=".">{% csrf_token %}
 {% load forms %}
 {% if username_error %}
 <ul class="errorlist">

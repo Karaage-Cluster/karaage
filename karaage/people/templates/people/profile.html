@@ -31,7 +31,7 @@
 {% ifequal person person.institute.delegate %}
 <h2>Delegate Tasks</h2>
 <p>Active Delegate: <b>{{ person.institute.active_delegate }}</b></p>
-<form action="." method="post">
+<form method="post" action=".">{% csrf_token %}
   {% formfield form.active_delegate %}
   <input type="submit" value="Change" name="delegate-form" />
 </form> 

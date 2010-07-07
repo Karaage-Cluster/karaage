@@ -16,7 +16,7 @@
 {{ software_license.text|safe|linebreaks }}
 </div>
 {% endif %}
-<form method="post" action=".">
+<form method="post" action=".">{% csrf_token %}
 
 <p>By clicking on 'I accept' you are agreeing to the conditions above.</p>
 <div class="submit-row">	
