@@ -23,7 +23,7 @@
 <label for="id_honeypot">If you enter anything in this field your comment will be treated as spam</label> 
 <input type="text" name="honeypot" id="id_honeypot" />
 </p>
-
+{% csrf_token %}
 {{ form.content_type }}
 {{ form.object_pk }}
 {{ form.timestamp }}
