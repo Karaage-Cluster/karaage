@@ -8,7 +8,7 @@
 {% block style %}<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/forms_custom.css"/>{% endblock %}
 {% load forms %}
 {% block content %}
-<form method="post" action=".">
+<form method="post" action=".">{% csrf_token %}
   
   {% if form.errors  or form.non_field_errors %}
   <p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>

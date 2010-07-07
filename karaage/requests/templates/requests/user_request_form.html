@@ -9,7 +9,7 @@
 
 {% block content %}
 <h1>Step 1 - User Details</h1>
-<form method="post" action=".">
+<form method="post" action=".">{% csrf_token %}
 {% load forms %}
 {% if form.errors  or form.non_field_errors %}
 	<p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>

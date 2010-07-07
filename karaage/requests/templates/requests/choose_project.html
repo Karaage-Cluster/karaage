@@ -34,7 +34,7 @@
 </ul>
 {% endif %}
 {% if project_list or project or q_project %}
-<form method="post" action="./?{{ qs }}">
+<form method="post" action="./?{{ qs }}">{% csrf_token %}
 {% if project_list %}
 <p>{{ project_list.count }} projects led by <b>{{ leader }}</b>. Please select one from the list below:</p>
 	<table cellspacing="0">

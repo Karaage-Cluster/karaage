@@ -27,7 +27,6 @@ from django.contrib.sites.models import Site
 from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.views.decorators.csrf import csrf_protect
 
 from karaage.people.models import Person
 from karaage.projects.models import Project
@@ -113,7 +112,7 @@ def comments_detail(request, object_id, model):
 
     return render_to_response('comments/%s_detail.html' % content_type.model, locals(), context_instance=RequestContext(request))
 
-@csrf_protect
+
 def add_comment(request, object_id, model):
 
     obj = get_object_or_404(model, pk=object_id)

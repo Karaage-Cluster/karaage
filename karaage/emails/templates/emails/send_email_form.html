@@ -29,7 +29,7 @@
 <p>{{ e }}</p>
 {% endfor %}
 {% endcomment %}
-<form method="post" action=".">
+<form method="post" action=".">{% csrf_token %}
 {% load forms %}
 <fieldset class="module aligned ()">
 {% form_as_div form %}
