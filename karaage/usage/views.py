@@ -87,25 +87,26 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
         except InstituteChunk.DoesNotExist:
             display_quota = None
         if display_quota or jobs > 0:
-            i_list.append({ 'institute': i, 'usage': time, 'jobs': jobs, 'quota': display_quota})
-            
-    for i in i_list:
-        try:
-            i['percent'] = (i['usage'] / available_time) * 100
-        except:
-            i['percent'] = 0
-        if i['quota'] is not None:
+            data_row = { 'institute': i, 'usage': time, 'jobs': jobs, 'quota': display_quota}
             try:
-                i['p_used'] = (i['percent'] / i['quota']) * 100
+                data_row['percent'] = Decimal(time) / Decimal(available_time) * 100
             except:
-                i['p_used'] = 0
-            i['diff'] = i['percent'] - i['quota']
-            if i['diff'] <= 0:
-                i['class'] = 'green'
+                data_row['percent'] = 0
+            if data_row['quota'] is not None:
+                try:
+                    data_row['p_used'] = (data_row['percent'] / data_row['quota']) * 100
+                except:
+                    data_row['p_used'] = 0
+                data_row['diff'] = data_row['percent'] - data_row['quota']
+        	if data_row['diff'] <= 0:
+                    data_row['class'] = 'green'
+        	else:
+                    data_row['class'] = 'red'
             else:
-                i['class'] = 'red'
-        else:
-            i['class'] = 'green'
+                data_row['class'] = 'green'
+
+            i_list.append(data_row)
+
 
     # Unused Entry
     unused = { 'usage': available_time - total, 'quota': 0 }
