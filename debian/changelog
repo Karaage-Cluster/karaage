@@ -1,3 +1,9 @@
+karaage (2.3.9-1) unstable; urgency=low
+
+  * Change to Debian native format.
+
+ -- Brian May <brian@vpac.org>  Mon, 19 Jul 2010 12:06:29 +1000
+
 karaage (2.3.9) testing; urgency=low
 
   * Fixed syntax error
@@ -129,9 +135,9 @@ karaage (2.0.13) testing; urgency=low
   * Added initial data for default MachineCategory. Fixes #31
   * Added initial api docs
   * Added some management commands for clearing and populating 
-	usage cache and locking expired users
+    usage cache and locking expired users
   * Don't display title if it doesn't exist. Fixes #30
-	
+
  -- Sam Morrison <sam@vpac.org>  Mon, 03 May 2010 12:41:19 +1000
 
 karaage (2.0.12) testing; urgency=low

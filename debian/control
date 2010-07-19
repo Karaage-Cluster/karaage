@@ -2,13 +2,14 @@ Source: karaage
 Section: python
 Priority: optional
 Maintainer: Sam Morrison <sam@vpac.org>
+Uploaders: Brian May <brian@vpac.org>
 Build-Depends: debhelper (>=7.0.0), python (>= 2.4), python-support (>= 0.6), cdbs (>= 0.4.49)
-Standards-Version: 3.8.3.0
+Standards-Version: 3.8.4.0
 
 Package: karaage
 Architecture: all
 Homepage: http://trac.vpac.org/karaage/
-Depends: ${misc:Depends}, ${python:Depends}, python-pygooglechart (> 0.2), python-matplotlib (> 0.98), python-gdchart2 (>= 0.beta1-3.4), python-django (>= 1.2.1), python-alogger (>= 2.0), django-placard (>= 1.2), django-andsome (>= 1.0), django-pbs (>= 1.1.1), django-surveys (>= 1.0.1), django-xmlrpc (>= 0.1), python-django-south (>= 0.7), django-simple-captcha
+Depends: ${misc:Depends}, ${python:Depends}, python-pygooglechart (>= 0.2), python-matplotlib (>= 0.98), python-gdchart2 (>= 0.beta1-3.4), python-django (>= 1.2.1), python-alogger (>= 2.0), django-placard (>= 1.2), django-andsome (>= 1.0), django-pbs (>= 1.1.1), django-surveys (>= 1.0.1), django-xmlrpc (>= 0.1), python-django-south (>= 0.7), django-simple-captcha
 Description: Collection of Django apps to manage a clusters
  Features 
  .
