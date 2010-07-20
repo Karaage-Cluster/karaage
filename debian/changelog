@@ -1,3 +1,10 @@
+karaage (2.3.10-2) testing; urgency=low
+
+  * Minor updates to configuration.
+  * Add script to set default secret.
+
+ -- Brian May <bam@debian.org>  Tue, 20 Jul 2010 15:28:56 +1000
+
 karaage (2.3.10-1) testing; urgency=low
 
   * Change to non-native format.
