@@ -39,7 +39,7 @@ LANGUAGE_CODE = 'en-au'
 SITE_ID = 1
 
 # Make this unique, and don't share it with anybody. AKA CHANGE THIS!
-SECRET_KEY = '%g6mqnpu)l!$*1dlav#!$bc9bhnufvj)878uug2$6ize_9jn0c'
+SECRET_KEY = ''
 
 
 ABSOLUTE_URL_OVERRIDES = {
@@ -60,9 +60,9 @@ ACCOUNT_DATASTORES = {
 }
 
 ACCOUNTS_EMAIL_FROM = 'accounts@example.com'
+ACCOUNTS_ORG_NAME = 'Example'
 
 LOCKED_SHELL = '/usr/local/sbin/insecure'
-ACCOUNTS_ORG_NAME = 'Example'
 
 ###
 ### Placard Settings
