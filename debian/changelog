@@ -1,4 +1,4 @@
-karaage (2.3.10-1) unstable; urgency=low
+karaage (2.3.10-1) testing; urgency=low
 
   * Change to non-native format.
   * Use new configuration system.
