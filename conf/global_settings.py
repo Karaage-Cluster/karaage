@@ -46,11 +46,6 @@ SITE_ID = 1
 # Make this unique, and don't share it with anybody. AKA CHANGE THIS!
 SECRET_KEY = ''
 
-
-ABSOLUTE_URL_OVERRIDES = {
-    'auth.user': lambda o: "/accounts/users/%s/" % o.username,
-}
-
 ###
 ### Karaage settings
 ###
