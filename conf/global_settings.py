@@ -30,6 +30,10 @@ SERVER_EMAIL = 'karaage@example.org'
 EMAIL_HOST = 'localhost'
 EMAIL_SUBJECT_PREFIX = '[Karaage] - '
 
+# Defaults are generally fine
+#LOGIN_URL="/accounts/login/"
+#LOGIN_REDIRECT_URL="/accounts/"
+
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
