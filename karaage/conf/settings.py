@@ -90,11 +90,6 @@ AUTHENTICATION_BACKENDS = (
 LDAP_ATTRS = 'karaage.conf.ldap_attrs'
 LDAP_PASSWD_SCHEME = 'md5-crypt'
 
-from os import uname
-SERVER_EMAIL = 'karaage@' + uname()[1]
-EMAIL_HOST = 'localhost'
-EMAIL_SUBJECT_PREFIX = '[Karaage] - '
-
 SEND_BROKEN_LINK_EMAILS = True
 
 USER_OBJECTCLASS = ['top','person','organizationalPerson','inetOrgPerson', 'shadowAccount',]

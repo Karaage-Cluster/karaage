@@ -25,6 +25,11 @@ DATABASES = {
     }
 }
 
+# Defaults used for error reports
+SERVER_EMAIL = 'karaage@example.org'
+EMAIL_HOST = 'localhost'
+EMAIL_SUBJECT_PREFIX = '[Karaage] - '
+
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -70,8 +75,8 @@ LOCKED_SHELL = '/usr/local/sbin/insecure'
 ###
 
 
-LDAP_URL = 'ldap://ldap.example.com'
-LDAP_BASE = 'dc=example, dc=com'
+LDAP_URL = 'ldap://ldap.example.org'
+LDAP_BASE = 'dc=example, dc=org'
 LDAP_USER_BASE='ou=People, %s' % LDAP_BASE
 LDAP_GROUP_BASE='ou=Groups, %s' % LDAP_BASE
 LDAP_USE_TLS = False
