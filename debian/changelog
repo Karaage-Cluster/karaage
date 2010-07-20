@@ -4,7 +4,7 @@ karaage (2.3.10-1) unstable; urgency=low
   * Use new configuration system.
   * Other improvements to packaging.
 
- -- Brian May <brian@debian.org>  Tue, 20 Jul 2010 13:37:44 +1000
+ -- Brian May <bam@debian.org>  Tue, 20 Jul 2010 13:37:44 +1000
 
 karaage (2.3.9) testing; urgency=low
 
