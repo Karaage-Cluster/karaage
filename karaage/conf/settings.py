@@ -112,4 +112,6 @@ MIDDLEWARE_CLASSES = (
     'andsome.middleware.threadlocals.ThreadLocals',
 )
 
+LOGIN_REDIRECT_URL="/accounts/"
+
 execfile("/etc/karaage/global_settings.py")
