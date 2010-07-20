@@ -76,6 +76,10 @@ data_files.append(
         'conf/ldap_attrs.py' ])
 )
 
+data_files.append(
+    ('/usr/sbin', ['sbin/kg_set_secret_key'])
+)
+
 setup(
     name = "karaage",
     version = version,
