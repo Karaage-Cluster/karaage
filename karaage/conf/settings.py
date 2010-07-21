@@ -80,10 +80,6 @@ ADMIN_MEDIA_PREFIX = '/django_media/'
 # to load the internationalization machinery.
 USE_I18N = False
 
-AUTHENTICATION_BACKENDS = (
-    'placard.backends.LDAPBackend',
-)
-
 LDAP_ATTRS = 'karaage.conf.ldap_attrs'
 LDAP_PASSWD_SCHEME = 'md5-crypt'
 
