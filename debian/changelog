@@ -1,6 +1,6 @@
 karaage (2.3.11-1) testing; urgency=low
 
-  * Compatable with Django 1.1
+  * Compatible with Django 1.1
   * Other tweaks to default configuration.
 
  -- Brian May <bam@debian.org>  Wed, 21 Jul 2010 11:41:49 +1000
