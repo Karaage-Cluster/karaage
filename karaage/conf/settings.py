@@ -21,7 +21,6 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.humanize',
@@ -63,7 +62,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.auth',
     'django.core.context_processors.debug',
     'django.core.context_processors.media',
-    'django.contrib.messages.context_processors.messages',
     'karaage.context_processors.common',
 )
 
@@ -99,12 +97,25 @@ ACCOUNT_OBJECTCLASS = ['top','person','organizationalPerson','inetOrgPerson', 's
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'andsome.middleware.threadlocals.ThreadLocals',
 )
+
+from django import VERSION as v
+if v[0]>1 or (v[0]==1 and v[1]>1):
+    INSTALLED_APPS += (
+        'django.contrib.messages',
+    )
+
+    TEMPLATE_CONTEXT_PROCESSORS += (
+        'django.contrib.messages.context_processors.messages',
+    )
+
+    MIDDLEWARE_CLASSES += (
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+    )
 
 execfile("/etc/karaage/global_settings.py")
