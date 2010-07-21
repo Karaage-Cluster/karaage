@@ -44,7 +44,6 @@ INSTALLED_APPS = (
     'placard',
     'placard.lgroups',
     'placard.lusers',
-    'django_xmlrpc',
     'django_pbs.servers',
     'django_pbs.jobs',
     'django.contrib.comments',
