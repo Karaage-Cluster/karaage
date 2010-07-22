@@ -8,3 +8,4 @@ recursive-include scripts *
 recursive-include karaage *
 recursive-include testproject *
 recursive-include sbin *
+recursive-include conf *
