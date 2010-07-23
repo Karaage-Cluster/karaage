@@ -34,7 +34,7 @@ from karaage.requests.models import ProjectCreateRequest
 
 
 class UserRegistrationForm(AddUserForm):
-    tos = forms.BooleanField(required=False, label=u'I have read and agree to the <a href="/users/policy" target="_blank">Acceptable Use Policy</a>')
+    tos = forms.BooleanField(required=False, label=u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>'%(settings.AUP_URL))
     captcha = CaptchaField(label=u'CAPTCHA', help_text=u"Please enter the text displayed in the imge above.")
 
     def save(self, request, project=None, account=True):
@@ -67,7 +67,7 @@ class UserRegistrationForm(AddUserForm):
         except Person.DoesNotExist:
             p = None
         if p is not None:
-            raise forms.ValidationError(u'Account with this email already exists. Please email accounts@vpac.org to reinstate your account')
+            raise forms.ValidationError(u'Account with this email already exists. Please email %s to reinstate your account'%(settings.ACCOUNTS_EMAIL_FROM))
 
         return email
 
