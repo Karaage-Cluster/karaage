@@ -140,3 +140,5 @@ INTERNAL_IPS = (
     '172.25.10.10',
     )
 
+
+AUP_URL = 'http://example.com/aup.html'
