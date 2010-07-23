@@ -37,8 +37,8 @@
   <fieldset class="module aligned ()">
     <div class="form-row checkbox-row" >
       <label class="vCheckboxLabel heading">
-	This username and password will be for your VPAC account. It will be used for this account interface, 
-	and also your (optional) account on the VPAC supercomputers.
+	This username and password will be for your {{ org_name }} account. It will be used for this account interface, 
+	and also your (optional) account on the {{ org_name }} supercomputers.
       </label> 
     </div>
     {% formfield form.username %}
@@ -51,7 +51,7 @@
   <fieldset class="module aligned ()">
     <div class="form-row checkbox-row" >
       <label class="vCheckboxLabel heading">
-	Please enter the details of the project you would like to register at VPAC.
+	Please enter the details of the project you would like to register at {{ org_name }}.
       </label> 
     </div>
     {% formfield form.project_name %}

@@ -23,4 +23,5 @@ def common(request):
     ctx = {}
     ctx['GRAPH_URL'] = settings.GRAPH_URL
     ctx['request_count'] = ProjectJoinRequest.objects.filter(leader_approved=True).count()
+    ctx['org_name'] = settings.ACCOUNTS_ORG_NAME
     return ctx
