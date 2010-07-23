@@ -15,15 +15,3 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.contrib import admin
-from models import Project
-
-
-class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('pid','name','is_expertise','is_active',)
-    search_fields = ['pid','name', 'leaders__user__first_name','leaders__user__last_name',]
-    list_filter = ['institute','start_date','end_date','machine_categories','is_expertise','is_active',]
-    date_hierarchy = 'start_date'
-
-
-admin.site.register(Project, ProjectAdmin)

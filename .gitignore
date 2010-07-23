@@ -1,2 +1,4 @@
 build
 MANIFEST
+.pc
+*.pyc

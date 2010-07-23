@@ -1,3 +1,25 @@
+karaage (2.3.11-1) testing; urgency=low
+
+  * Compatible with Django 1.1
+  * Other tweaks to default configuration.
+
+ -- Brian May <bam@debian.org>  Wed, 21 Jul 2010 11:41:49 +1000
+
+karaage (2.3.10-2) testing; urgency=low
+
+  * Minor updates to configuration.
+  * Add script to set default secret.
+
+ -- Brian May <bam@debian.org>  Tue, 20 Jul 2010 15:28:56 +1000
+
+karaage (2.3.10-1) testing; urgency=low
+
+  * Change to non-native format.
+  * Use new configuration system.
+  * Other improvements to packaging.
+
+ -- Brian May <bam@debian.org>  Tue, 20 Jul 2010 13:37:44 +1000
+
 karaage (2.3.9) testing; urgency=low
 
   * Fixed syntax error
@@ -129,9 +151,9 @@ karaage (2.0.13) testing; urgency=low
   * Added initial data for default MachineCategory. Fixes #31
   * Added initial api docs
   * Added some management commands for clearing and populating 
-	usage cache and locking expired users
+    usage cache and locking expired users
   * Don't display title if it doesn't exist. Fixes #30
-	
+
  -- Sam Morrison <sam@vpac.org>  Mon, 03 May 2010 12:41:19 +1000
 
 karaage (2.0.12) testing; urgency=low

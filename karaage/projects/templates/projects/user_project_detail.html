@@ -9,7 +9,7 @@
   <tr><td colspan="2">
       {#<a href="{{ project.get_usage_url }}">View Usage</a>#}
   </td></tr>
-  <tr><td>Leader:</td><td><a href="{{ project.leader.get_absolute_url }}">{{ project.leader }}</a></td></tr>
+  <tr><td>Leaders:</td><td>{% for l in project.leaders.all %}<a href="{{ l.get_absolute_url }}">{{ l }}</a> {% endfor %}</td></tr>
   <tr><td>Institiute:</td><td>{{ project.institute }}</td></tr>
   <tr><td>Start Date:</td><td>{{ project.start_date|date }}</td></tr>
   {% if project.end_date %}<tr><td>End Date:</td><td>{{ project.end_date|date }}</td></tr>{% endif %}

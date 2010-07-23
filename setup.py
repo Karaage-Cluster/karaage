@@ -70,6 +70,16 @@ version = __import__(code_dir).get_version()
 #if u'dev' in version:
 #    version = ' '.join(version.split(' ')[:-1])
 
+data_files.append(
+    ('/etc/karaage', [
+        'conf/global_settings.py',
+        'conf/ldap_attrs.py' ])
+)
+
+data_files.append(
+    ('/usr/sbin', ['sbin/kg_set_secret_key'])
+)
+
 setup(
     name = "karaage",
     version = version,

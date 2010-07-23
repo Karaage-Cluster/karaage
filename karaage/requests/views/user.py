@@ -121,7 +121,7 @@ def choose_project(request):
             q_project = Project.objects.get(pid__icontains=request.GET['leader_q'])
         except:
             pass
-        leader_list = Person.leaders.filter(institute=institute)
+        leader_list = Person.projectleaders.filter(institute=institute)
         terms = request.GET['leader_q'].lower()
         length = len(terms)
         if len(terms) >= 3:
@@ -133,7 +133,7 @@ def choose_project(request):
             leader_list = leader_list.filter(query)
             if leader_list.count() == 1:
                 leader = leader_list[0]
-                project_list = leader.leader.filter(is_active=True)
+                project_list = leader.leaders.filter(is_active=True)
                 leader_list = False
             elif leader_list.count() == 0 and not q_project:
                 term_error = "No projects found."
@@ -176,7 +176,8 @@ def account_created(request, user_request_id):
     user_request = get_object_or_404(ProjectJoinRequest, pk=user_request_id)
     person = user_request.person
     project = user_request.project
-    
+    leader = project.leaders.all()[0]
+
     return render_to_response('requests/account_pending.html', locals(), context_instance=RequestContext(request))
 
 @login_required
@@ -184,7 +185,7 @@ def approve_person(request, user_request_id):
     join_request = get_object_or_404(ProjectJoinRequest, pk=user_request_id)
     
     #Make sure the request is coming from the project leader
-    if not request.user == join_request.project.leader.user:
+    if not request.user.get_profile() in join_request.project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     join_request.leader_approved = True
@@ -197,13 +198,13 @@ def approve_person(request, user_request_id):
     
     log(request.user, person, 2, 'Approved by leader')
 
-    needs_account = False
+    needs_account_created = False
     for mc in project.machine_categories.all():
         if not person.has_account(mc):
-            needs_account = True
+            needs_account_created = True
             break
         
-    if not needs_account:
+    if not needs_account_created:
         log(request.user, person, 2, 'Added to project %s' % project)
         log(request.user, project, 2, '%s added to project' % person)
 
@@ -226,7 +227,6 @@ def approve_person(request, user_request_id):
         send_account_approved_email(join_request)
         join_request.delete()
 
-
     return HttpResponseRedirect(reverse('kg_user_profile')) 
 
 
@@ -237,7 +237,7 @@ def reject_person(request, user_request_id):
     person = user_request.person
     user = user_request.person.user
                                         
-    if not request.user == project.leader.user:
+    if not request.user.get_profile() in project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     
     send_account_rejected_email(user_request)
@@ -262,7 +262,7 @@ def request_detail(request, user_request_id):
     project = user_request.project
     person = user_request.person
 
-    if not request.user.get_profile() == project.leader:
+    if not request.user.get_profile() in project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     
