@@ -1,5 +1,5 @@
-# Locally defined Karaage settings
-
+# Globally defined Karaage settings
+# These settings will be used for karaage-admin and/or karaage-registration
 ###
 ### Standard Django settings 
 ### see http://docs.djangoproject.com/en/1.2/ref/settings/#ref-settings
@@ -59,10 +59,12 @@ ADMIN_APPROVE_ACCOUNTS = True
 
 PERSONAL_DATASTORE = 'karaage.datastores.ldap_datastore'
 
+# Dictionary of MachineCategory.id and python module to use for storing accounts
 ACCOUNT_DATASTORES = {
     1: 'karaage.datastores.ldap_datastore',
 }
 
+# Used in various places
 ACCOUNTS_EMAIL = 'accounts@example.com'
 ACCOUNTS_ORG_NAME = 'Example'
 
@@ -93,8 +95,4 @@ LOCAL_PBS_SERVERS = [
     'cluster2.example.com',
 ]
 
-# Enable REMOTE_USER auth
-#MIDDLEWARE_CLASSES += (
-#    ('karaage.middleware.auth.ApacheSiteLogin',)
-#)
 
