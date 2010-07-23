@@ -32,7 +32,7 @@ from karaage.util import log_object as log
 
 
 CONTEXT = {
-    'org_email': settings.ACCOUNTS_EMAIL_FROM,
+    'org_email': settings.ACCOUNTS_EMAIL,
     'org_name': settings.ACCOUNTS_ORG_NAME,
     }
 
@@ -52,7 +52,7 @@ def send_account_request_email(user_request):
         subject = render_to_string('requests/emails/join_project_request_subject.txt', context)
         body = render_to_string('requests/emails/join_project_request_body.txt', context)
 
-        send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL_FROM, [to_email], fail_silently=False)
+        send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
 
 
 def send_project_request_email(project_request):
@@ -69,7 +69,7 @@ def send_project_request_email(project_request):
 
     to_email = project_request.project.institute.active_delegate.email
 
-    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL_FROM, [to_email], fail_silently=False)
+    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
 
 
 def send_project_approved_email(project_request):
@@ -85,7 +85,7 @@ def send_project_approved_email(project_request):
         subject = render_to_string('requests/emails/project_approved_subject.txt', context)
         body = render_to_string('requests/emails/project_approved_body.txt', context)
 
-        send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL_FROM, [to_email], fail_silently=False)
+        send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
 
 
 def send_project_rejected_email(project_request):
@@ -101,7 +101,7 @@ def send_project_rejected_email(project_request):
         body = render_to_string('requests/emails/project_rejected_body.txt', context)
         to_email = leader.email
 
-        send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL_FROM, [to_email], fail_silently=False)
+        send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
 
 
 def send_account_approved_email(user_request):
@@ -115,7 +115,7 @@ def send_account_approved_email(user_request):
     body = render_to_string('requests/emails/account_approved_body.txt', context)
     to_email = user_request.person.email
     
-    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL_FROM, [to_email], fail_silently=False)
+    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
 
 
 def send_account_rejected_email(user_request):
@@ -128,7 +128,7 @@ def send_account_rejected_email(user_request):
     body = render_to_string('requests/emails/account_rejected_body.txt', context)  
     to_email = user_request.person.email
     
-    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL_FROM, [to_email], fail_silently=False)
+    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
     
 
 def send_project_join_approved_email(user_request):
@@ -143,7 +143,7 @@ def send_project_join_approved_email(user_request):
     body = render_to_string('requests/emails/project_join_approved_body.txt', context)  
     to_email = user_request.person.email
     
-    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL_FROM, [to_email], fail_silently=False)
+    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
 
 
 def send_bounced_warning(person):
@@ -161,7 +161,7 @@ def send_bounced_warning(person):
                 to_email = leader.email
                 subject = render_to_string('requests/emails/bounced_email_subject.txt', context)
                 body = render_to_string('requests/emails/bounced_email_body.txt', context)
-                send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL_FROM, [to_email], fail_silently=False)
+                send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
                 active_user = get_current_user()
                 log(active_user, p.leader, 2, 'Sent email about bounced emails from %s' % person)
 

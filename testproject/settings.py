@@ -47,7 +47,7 @@ LDAP_ATTRS = 'testproject.ldap_attrs'
 LDAP_PASSWD_SCHEME = 'md5-crypt'
 
 SERVER_EMAIL = 'django@' + uname()[1]
-ACCOUNTS_EMAIL_FROM = 'accounts@vpac.org'
+ACCOUNTS_EMAIL = 'accounts@vpac.org'
 EMAIL_SUBJECT_PREFIX = '[Grunt VPAC] - '
 
 SHELLS = ( ('/bin/bash','bash'),

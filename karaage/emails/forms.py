@@ -89,7 +89,7 @@ class EmailForm(forms.Form):
 
                     subject = subject_t.render(ctx)
                     body = body_t.render(ctx)
-                    emails.append((subject, body, settings.ACCOUNTS_EMAIL_FROM, [p.leader.email]))
+                    emails.append((subject, body, settings.ACCOUNTS_EMAIL, [p.leader.email]))
                     ctx = 0
 
         if users:
@@ -99,7 +99,7 @@ class EmailForm(forms.Form):
                     })
                 subject = subject_t.render(ctx)
                 body = body_t.render(ctx)
-                emails.append((subject, body, settings.ACCOUNTS_EMAIL_FROM, [u.email]))
+                emails.append((subject, body, settings.ACCOUNTS_EMAIL, [u.email]))
                 ctx = 0
 
         return emails

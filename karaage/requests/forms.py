@@ -67,7 +67,7 @@ class UserRegistrationForm(AddUserForm):
         except Person.DoesNotExist:
             p = None
         if p is not None:
-            raise forms.ValidationError(u'Account with this email already exists. Please email %s to reinstate your account'%(settings.ACCOUNTS_EMAIL_FROM))
+            raise forms.ValidationError(u'Account with this email already exists. Please email %s to reinstate your account'%(settings.ACCOUNTS_EMAIL))
 
         return email
 

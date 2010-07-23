@@ -63,7 +63,7 @@ ACCOUNT_DATASTORES = {
     1: 'karaage.datastores.ldap_datastore',
 }
 
-ACCOUNTS_EMAIL_FROM = 'accounts@example.com'
+ACCOUNTS_EMAIL = 'accounts@example.com'
 ACCOUNTS_ORG_NAME = 'Example'
 
 LOCKED_SHELL = '/usr/local/sbin/insecure'
