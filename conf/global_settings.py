@@ -14,6 +14,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+# Multi DB Syntax (Django >= 1.2)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
@@ -24,6 +25,15 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
+
+# Single DB (Django < 1.2)
+DATABASE_ENGINE = '' # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+DATABASE_NAME = '' # Or path to database file if using sqlite3.
+DATABASE_USER = '' # Not used with sqlite3
+DATABASE_PASSWORD = '' # Not used with sqlite3.
+DATABASE_HOST = '' # Set to empty string for localhost. Not used with sqlite3.
+DATABASE_PORT = '' # Set to empty string for default. Not used with sqlite3.
+
 
 # Defaults used for error reports
 SERVER_EMAIL = 'karaage@example.org'
@@ -47,7 +57,8 @@ LANGUAGE_CODE = 'en-au'
 
 SITE_ID = 1
 
-# Make this unique, and don't share it with anybody. AKA CHANGE THIS!
+# Unique key used for storing session data etc.
+# To generate this key run kg_set_secret_key
 SECRET_KEY = ''
 
 ###
@@ -57,11 +68,11 @@ SECRET_KEY = ''
 # Do new cluster accounts need a 2nd stage of approval
 ADMIN_APPROVE_ACCOUNTS = True
 
-PERSONAL_DATASTORE = 'karaage.datastores.ldap_datastore'
+PERSONAL_DATASTORE = 'karaage.datastores.openldap_datastore'
 
 # Dictionary of MachineCategory.id and python module to use for storing accounts
 ACCOUNT_DATASTORES = {
-    1: 'karaage.datastores.ldap_datastore',
+    1: 'karaage.datastores.openldap_datastore',
 }
 
 # Used in various places
@@ -83,7 +94,6 @@ LDAP_GROUP_BASE='ou=Groups, %s' % LDAP_BASE
 LDAP_USE_TLS = False
 LDAP_ADMIN_USER = 'cn=admin,dc=example,dc=org'
 LDAP_ADMIN_PASSWORD = 'secret'
-LDAP_LOCK_DN = 'cn=locked,dc=example,dc=org'
 
 ###
 ### Django PBS settings
