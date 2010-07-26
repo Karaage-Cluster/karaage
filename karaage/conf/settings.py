@@ -17,6 +17,7 @@ SHELLS = ( ('/bin/bash','bash'),
    
 
 INSTALLED_APPS = (
+    'andsome.layout',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -26,7 +27,6 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.flatpages',
     'south',
-    'andsome.layout',
     'andsome',
     'django_surveys',
     'karaage',
