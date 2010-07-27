@@ -6,3 +6,4 @@ karaage.substvars
 karaage/
 pycompat
 python-module-stampdir/
+patches
