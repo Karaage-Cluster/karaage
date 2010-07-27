@@ -98,6 +98,11 @@ MIDDLEWARE_CLASSES = (
     'andsome.middleware.threadlocals.ThreadLocals',
 )
 
+AUTHENTICATION_BACKENDS = (
+ 'placard.backends.LDAPBackend',
+)
+
+
 from django import VERSION as v
 if v[0]>1 or (v[0]==1 and v[1]>1):
     INSTALLED_APPS += (
