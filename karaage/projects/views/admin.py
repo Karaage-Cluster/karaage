@@ -52,16 +52,23 @@ def add_edit_project(request, project_id=None):
         
         if form.is_valid():
             project = form.save(commit=False)
-            if not project.pid:
+            if project_id is not None:
+                # if project is being edited, project_id cannot change, so we
+                # should always use the value supplied on the URL.
+                project.pid = project_id
+            elif not project.pid:
+                # if project was being created, did the user give a project_id
+                # we should use? If not, then we have to generate one
+                # ourselves.
                 project.pid = get_new_pid(project.institute)
             project.save()
             project.activate()
             form.save_m2m()
             if flag == 1:
-                request.user.message_set.create(message="Project '%s' edited succesfully" % project)
+                request.user.message_set.create(message="Project '%s' created succesfully" % project)
                 log(get_current_user(), project, 1, 'Created')
             else:
-                request.user.message_set.create(message="Project '%s' added succesfully" % project)
+                request.user.message_set.create(message="Project '%s' edited succesfully" % project)
                 log(get_current_user(), project, 2, 'Edited')
 
             return HttpResponseRedirect(project.get_absolute_url())        
