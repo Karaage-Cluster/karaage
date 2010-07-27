@@ -17,6 +17,7 @@
 
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 
 import datetime
 from andsome.middleware.threadlocals import get_current_user
@@ -70,8 +71,10 @@ class PersonalDataStore(object):
         
         try:
             current_user = get_current_user()
+            if current_user.is_anonymous():
+                current_user = person.user
         except:
-            current_user = person
+            current_user = person.user
 
         log(current_user, person, 1, 'Created')
         
@@ -82,6 +85,8 @@ class PersonalDataStore(object):
         """ Activates a user """
         try:
             approver = get_current_user().get_profile()
+            if current_user.is_anonymous():
+                current_user = person
         except:
             approver = person
 
