@@ -1,3 +1,11 @@
+karaage (2.4-1) testing; urgency=low
+
+  * Minor config changes
+  * Changes to default settings for new installs
+  * Bug fixes to project form
+
+ -- Sam Morrison <sam@vpac.org>  Tue, 27 Jul 2010 11:25:01 +1000
+
 karaage (2.3.11-1) testing; urgency=low
 
   * Compatible with Django 1.1
