@@ -26,6 +26,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'django.contrib.humanize',
     'django.contrib.flatpages',
+    'django.contrib.messages',
     'south',
     'andsome',
     'django_surveys',
@@ -61,6 +62,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.auth',
     'django.core.context_processors.debug',
     'django.core.context_processors.media',
+    'django.contrib.messages.context_processors.messages',
     'karaage.context_processors.common',
 )
 
@@ -96,26 +98,12 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'andsome.middleware.threadlocals.ThreadLocals',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
 )
 
 AUTHENTICATION_BACKENDS = (
  'placard.backends.LDAPBackend',
 )
-
-
-from django import VERSION as v
-if v[0]>1 or (v[0]==1 and v[1]>1):
-    INSTALLED_APPS += (
-        'django.contrib.messages',
-    )
-
-    TEMPLATE_CONTEXT_PROCESSORS += (
-        'django.contrib.messages.context_processors.messages',
-    )
-
-    MIDDLEWARE_CLASSES += (
-        'django.middleware.csrf.CsrfViewMiddleware',
-        'django.contrib.messages.middleware.MessageMiddleware',
-    )
 
 execfile("/etc/karaage/global_settings.py")
