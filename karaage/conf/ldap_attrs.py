@@ -34,7 +34,6 @@ def get_gid(data):
         return data['person'].institute.gid
     return ''
 
-
 GENERATED_USER_ATTRS = {
     'uidNumber': get_next_uid,
     'gidNumber': get_gid,
