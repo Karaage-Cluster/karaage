@@ -1,3 +1,12 @@
+karaage (2.4.1-1) testing; urgency=low
+
+  * Added command to create a karaage superuser 
+  * Make LDAP Auth backend the default
+  * If no logged in user log events under the new user
+  * Make country field optional on Person model
+
+ -- Sam Morrison <sam@vpac.org>  Tue, 27 Jul 2010 14:19:06 +1000
+
 karaage (2.4-1) testing; urgency=low
 
   * Minor config changes
