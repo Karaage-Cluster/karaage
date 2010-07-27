@@ -51,15 +51,21 @@ class PersonalDataStore(object):
     
         #Create Person
         person = Person.objects.create(
-            user=user, first_name=data['first_name'],
+            user=user, 
+            first_name=data['first_name'],
             last_name=data['last_name'],
-            position=data['position'],department=data['department'],
             institute=data['institute'],
-            title=data['title'], address=data.get('address', ''),
-            country=data['country'],
-            website=data.get('website', ''), fax=data.get('fax', ''),
-            comment=data.get('comment', ''), telephone=data.get('telephone', ''),
+            position=data.get('position', ''),
+            department=data.get('department', ''),
+            title=data.get('title', ''), 
+            address=data.get('address', ''),
+            country=data.get('country', ''),
+            website=data.get('website', ''), 
+            fax=data.get('fax', ''),
+            comment=data.get('comment', ''), 
+            telephone=data.get('telephone', ''),
             mobile=data.get('mobile', ''),
+            supervisor=data.get('supervisor', ''),
             )
         
         try:

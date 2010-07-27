@@ -84,7 +84,7 @@ class Person(models.Model):
     city = models.CharField(max_length=100, null=True, blank=True)
     postcode = models.CharField(max_length=8, null=True, blank=True)
     state = models.CharField(choices=STATES, max_length=4, null=True, blank=True)
-    country = models.CharField(max_length=2, choices=COUNTRIES)
+    country = models.CharField(max_length=2, choices=COUNTRIES, null=True, blank=True)
     website = models.URLField(null=True, blank=True)
     fax = models.CharField(max_length=50, null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
