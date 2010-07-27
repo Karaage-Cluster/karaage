@@ -69,27 +69,32 @@ class PersonalDataStore(object):
             )
         
         try:
-            log(get_current_user(), person, 1, 'Created')
+            current_user = get_current_user()
         except:
-            pass
+            current_user = person
+
+        log(current_user, person, 1, 'Created')
         
         return person
 
 
     def activate_user(self, person):
         """ Activates a user """
-        approver = get_current_user().get_profile()
-    
+        try:
+            approver = get_current_user().get_profile()
+        except:
+            approver = person
+
         person.date_approved = datetime.datetime.today()
+
         person.approved_by = approver
         person.deleted_by = None
         person.date_deleted = None
         person.user.is_active = True
         person.user.save()
-        try:
-            log(get_current_user(), person, 1, 'Activated')
-        except:
-            pass
+
+        log(person.user, person, 1, 'Activated')
+
         return person
         
 
