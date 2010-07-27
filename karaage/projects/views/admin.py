@@ -58,10 +58,10 @@ def add_edit_project(request, project_id=None):
             project.activate()
             form.save_m2m()
             if flag == 1:
-                request.user.message_set.create(message="Project '%s' edited succesfully" % project)
+                request.user.message_set.create(message="Project '%s' created succesfully" % project)
                 log(get_current_user(), project, 1, 'Created')
             else:
-                request.user.message_set.create(message="Project '%s' added succesfully" % project)
+                request.user.message_set.create(message="Project '%s' edited succesfully" % project)
                 log(get_current_user(), project, 2, 'Edited')
 
             return HttpResponseRedirect(project.get_absolute_url())        
