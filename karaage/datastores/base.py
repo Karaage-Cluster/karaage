@@ -98,7 +98,7 @@ class PersonalDataStore(object):
         person.user.is_active = True
         person.user.save()
 
-        log(person.user, person, 1, 'Activated')
+        log(approver.user, person, 1, 'Activated')
 
         return person
         
