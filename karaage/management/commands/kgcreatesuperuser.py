@@ -130,7 +130,7 @@ class Command(BaseCommand):
                         institute_gid = raw_input('New Institute GID: ')
                     else:
                         break
-                institute = Institute.objects.create(name=institute_name, gid=institute_gid)
+                institute = Institute.objects.create(name=institute_name, gid=institute_gid, is_active=True)
             else:
                 print "Choose an existing institute for new superuser:"
                 print "Valid choices are:"
