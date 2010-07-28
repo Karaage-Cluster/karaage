@@ -43,6 +43,8 @@ class Command(BaseCommand):
         try:
             import pwd
             default_username = pwd.getpwuid(os.getuid())[0].replace(' ', '').lower()
+            if default_username == 'root':
+                default_username = ''
         except (ImportError, KeyError):
             # KeyError will be raised by getpwuid() if there is no
             # corresponding entry in the /etc/passwd file (a very restricted
