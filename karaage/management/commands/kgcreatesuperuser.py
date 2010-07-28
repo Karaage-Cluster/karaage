@@ -75,10 +75,11 @@ class Command(BaseCommand):
                     sys.stderr.write("Error: That username is invalid. Use only letters, digits and underscores.\n")
                     username = None
                     continue
+                db_username_free = ldap_username_free = False
                 try:
                     User.objects.get(username=username)
                 except User.DoesNotExist:
-                    pass
+                    db_username_free = True
                 else:
                     sys.stderr.write("Error: That username is already taken.\n")
                     username = None
@@ -87,10 +88,12 @@ class Command(BaseCommand):
                 try:
                     conn.get_user('uid=%s' % username)
                 except placard_exceptions.DoesNotExistException:
-                    break
+                    ldap_username_free = True
                 else:
                     sys.stderr.write("Error: Username is already in LDAP.\n")
                     username = None
+                if ldap_username_free and db_username_free:
+                    break
                 
             # Get an email
             while 1:
