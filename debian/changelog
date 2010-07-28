@@ -1,3 +1,10 @@
+karaage (2.4.2-1) testing; urgency=low
+
+  * Dropped support for Django 1.1.1
+  * LOGIN_URL settings move to karaage-admin
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 28 Jul 2010 10:00:50 +1000
+
 karaage (2.4.1-1) testing; urgency=low
 
   * Added command to create a karaage superuser 
