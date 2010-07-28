@@ -1,3 +1,10 @@
+karaage (2.4.3-1) testing; urgency=low
+
+  * Make kgcreatesuperuser script smarter
+  * Don't error if graphs not implemented in specific library
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 28 Jul 2010 14:44:26 +1000
+
 karaage (2.4.2-1) testing; urgency=low
 
   * Dropped support for Django 1.1.1
