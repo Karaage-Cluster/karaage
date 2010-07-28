@@ -12,6 +12,9 @@ from django.core.management.base import BaseCommand
 from django.utils.translation import ugettext as _
 from karaage.datastores import create_new_user
 from karaage.people.models import Institute
+from placard import exceptions as placard_exceptions
+from placard.client import LDAPClient
+
 
 RE_VALID_USERNAME = re.compile('[\w.@+-]+$')
 
@@ -75,11 +78,20 @@ class Command(BaseCommand):
                 try:
                     User.objects.get(username=username)
                 except User.DoesNotExist:
-                    break
+                    pass
                 else:
                     sys.stderr.write("Error: That username is already taken.\n")
                     username = None
-            
+                    
+                conn = LDAPClient()
+                try:
+                    conn.get_user('uid=%s' % username)
+                except placard_exceptions.DoesNotExistException:
+                    break
+                else:
+                    sys.stderr.write("Error: Username is already in LDAP.\n")
+                    username = None
+                
             # Get an email
             while 1:
                 if not email:
@@ -127,7 +139,12 @@ class Command(BaseCommand):
                         break
                 while 1:
                     if not institute_gid:
-                        institute_gid = raw_input('New Institute GID: ')
+                        institute_gid = raw_input('New Institute GID (If GID does not exist new group will be created): ')
+                        conn = LDAPClient()
+                        try:
+                            lgroup = conn.get_group('gidNumber=%s' % institute_gid)
+                        except placard_exceptions.DoesNotExistException:
+                            conn.add_group(cn=institute_name.replace(' ', '').lower(), gidNumber=institute_gid)
                     else:
                         break
                 institute = Institute.objects.create(name=institute_name, gid=institute_gid, is_active=True)
