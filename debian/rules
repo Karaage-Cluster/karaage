@@ -7,6 +7,7 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
 clean::
+	rm -rf testproject/TEST-*
 	rm -rf build build-stamp configure-stamp build/ MANIFEST
 	dh_clean
 
