@@ -42,8 +42,10 @@ class PersonalDataStore(base.PersonalDataStore):
         
         conn = LDAPClient()
         conn.add_user(**attrs)
+        person.user.set_unusable_password()
+        person.user.save()
         person.save(update_datastore=False)
-
+        
         return person
 
     def delete_user(self, person):
