@@ -104,10 +104,10 @@
     </table>
     
   </div>
-  {% if person.leader.all %}
+  {% if person.leaders.all %}
   <div class="module">
     <h2>Projects I lead</h2>
-    {% gen_table person.leader.all %}
+    {% gen_table person.leaders.all %}
   </div>
   {% endif %}	
   
