@@ -90,12 +90,12 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
             data_row = { 'institute': i, 'usage': time, 'jobs': jobs, 'quota': display_quota}
             try:
                 data_row['percent'] = Decimal(time) / Decimal(available_time) * 100
-            except:
+            except ZeroDivisionError:
                 data_row['percent'] = 0
             if data_row['quota'] is not None:
                 try:
                     data_row['p_used'] = (data_row['percent'] / data_row['quota']) * 100
-                except:
+                except ZeroDivisionError:
                     data_row['p_used'] = 0
                 data_row['diff'] = data_row['percent'] - data_row['quota']
         	if data_row['diff'] <= 0:
@@ -112,7 +112,7 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
     unused = { 'usage': available_time - total, 'quota': 0 }
     try:
         unused['percent'] = (unused['usage'] / available_time) * 100
-    except:
+    except ZeroDivisionError:
         unused['percent'] = 0
     unused['diff'] = unused['percent'] - unused['quota'] / 100
     if unused['diff'] <= 0:
@@ -122,7 +122,7 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
 
     try:
         utilization = (total / available_time) * 100
-    except:
+    except ZeroDivisionError:
         utilization = 0
   
     try:
@@ -158,14 +158,18 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
             if p_jobs > 0:
                 try:
                     percent = (chunk.get_mpots()/chunk.get_cap())*100
-                except:
+                except ZeroDivisionError:
                     percent = 0
+                try:
+                    quota_percent = p_usage/(available_usage*quota.quota)*10000
+                except ZeroDivisionError:
+                    quota_percent = 0
                 project_list.append(
                     {'project': p, 
                      'usage': p_usage, 
                      'jobs': p_jobs, 
                      'percent': percent, 
-                     'quota_percent': (p_usage/(available_usage*quota.quota)*10000),
+                     'quota_percent': quota_percent,
                      })
 
 
