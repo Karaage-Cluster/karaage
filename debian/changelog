@@ -1,3 +1,104 @@
+karaage (2.4.3-1) testing; urgency=low
+
+  * Make kgcreatesuperuser script smarter
+  * Don't error if graphs not implemented in specific library
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 28 Jul 2010 14:44:26 +1000
+
+karaage (2.4.2-1) testing; urgency=low
+
+  * Dropped support for Django 1.1.1
+  * LOGIN_URL settings move to karaage-admin
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 28 Jul 2010 10:00:50 +1000
+
+karaage (2.4.1-1) testing; urgency=low
+
+  * Added command to create a karaage superuser 
+  * Make LDAP Auth backend the default
+  * If no logged in user log events under the new user
+  * Make country field optional on Person model
+
+ -- Sam Morrison <sam@vpac.org>  Tue, 27 Jul 2010 14:19:06 +1000
+
+karaage (2.4-1) testing; urgency=low
+
+  * Minor config changes
+  * Changes to default settings for new installs
+  * Bug fixes to project form
+
+ -- Sam Morrison <sam@vpac.org>  Tue, 27 Jul 2010 11:25:01 +1000
+
+karaage (2.3.11-1) testing; urgency=low
+
+  * Compatible with Django 1.1
+  * Other tweaks to default configuration.
+
+ -- Brian May <bam@debian.org>  Wed, 21 Jul 2010 11:41:49 +1000
+
+karaage (2.3.10-2) testing; urgency=low
+
+  * Minor updates to configuration.
+  * Add script to set default secret.
+
+ -- Brian May <bam@debian.org>  Tue, 20 Jul 2010 15:28:56 +1000
+
+karaage (2.3.10-1) testing; urgency=low
+
+  * Change to non-native format.
+  * Use new configuration system.
+  * Other improvements to packaging.
+
+ -- Brian May <bam@debian.org>  Tue, 20 Jul 2010 13:37:44 +1000
+
+karaage (2.3.9) testing; urgency=low
+
+  * Fixed syntax error
+
+ -- Sam Morrison <sam@vpac.org>  Tue, 08 Jun 2010 17:26:00 +1000
+
+karaage (2.3.8) testing; urgency=low
+
+  * Fixed Django 1.2 incompatability
+
+ -- Sam Morrison <sam@vpac.org>  Tue, 08 Jun 2010 17:22:25 +1000
+
+karaage (2.3.7) testing; urgency=low
+
+  * Remove username from account creation form, fixes #43.
+  * Allow searching for project ID's in choose project that are longer that 8 characters
+
+ -- Sam Morrison <sam@vpac.org>  Mon, 31 May 2010 16:08:35 +1000
+
+karaage (2.3.6) testing; urgency=low
+
+  * Removed comment field from request detail
+  * Only activate a user if not already active
+
+ -- Sam Morrison <sam@vpac.org>  Fri, 28 May 2010 10:45:43 +1000
+
+karaage (2.3.5) testing; urgency=low
+
+  * Fix issue of not being able to search from page 2+ in userlist, Fixes #40
+  * Fixed #44 </tr> tag now in correct place for valid html
+  * Fixed bug in get_available_time and created a test to make sure it's correct
+  * Allow PID to be specified in admin project form
+  * More testing
+
+ -- Sam Morrison <sam@vpac.org>  Fri, 28 May 2010 09:46:35 +1000
+
+karaage (2.3.4) testing; urgency=low
+
+  * Decreased verbosity in management scripts
+  * Split user forms up one with username/password, one without
+  * Don't update datastore when saving a user in create script
+  * Only require required attributes in create_new_user method
+  * Moved to using django-simple-captcha instead of custom one
+  * Changed ordering when updating users in ldap datastore. Fixes #41
+  * More unit tests
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 26 May 2010 10:20:47 +1000
+
 karaage (2.3.3) testing; urgency=low
 
   * Gecos and gidNumber are now also configurable via ldap_attrs
@@ -81,9 +182,9 @@ karaage (2.0.13) testing; urgency=low
   * Added initial data for default MachineCategory. Fixes #31
   * Added initial api docs
   * Added some management commands for clearing and populating 
-	usage cache and locking expired users
+    usage cache and locking expired users
   * Don't display title if it doesn't exist. Fixes #30
-	
+
  -- Sam Morrison <sam@vpac.org>  Mon, 03 May 2010 12:41:19 +1000
 
 karaage (2.0.12) testing; urgency=low

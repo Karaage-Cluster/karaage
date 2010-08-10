@@ -46,7 +46,7 @@
       {% if not project.is_active and not requestor %}
       <tr><td colspan="2">Deleted by {{ project.deleted_by }} on {{ project.date_deleted }}</td></tr>
       {% endif %}
-      <tr><td>Leader:</td><td><a href="{{ project.leader.get_absolute_url }}">{{ project.leader }}</a></td></tr>
+      <tr><td>Leaders:</td><td>{% for l in project.leaders.all %}<a href="{{ l.get_absolute_url }}">{{ l }}</a> {% endfor %}</td></tr>
       <tr><td>Institiute:</td><td><a href="{{ project.institute.get_absolute_url }}">{{ project.institute }}</a></td></tr>
       <tr><td>Last Usage:</td><td>{{ project.last_usage|date }} ({{ project.last_usage|timesince }})</td></tr>
       <tr><td>Start Date:</td><td>{{ project.start_date|date }}</td></tr>
@@ -54,7 +54,6 @@
       
       <tr><td>Approved:</td><td>{% yes_no_img project.is_approved %}</td></tr>
       <tr><td>Active:</td><td>{% yes_no_img project.is_active %}</td></tr>
-      <tr><td>Expertise:</td><td>{% yes_no_img project.is_expertise %}</td></tr>
       {% if showall %}
       <tr><td>Description:</td><td>{{ project.description }}</td></tr>
       <tr><td>Additional Req:</td><td>{{ project.additional_req }}</td></tr>
@@ -135,7 +134,7 @@
   </div>
   {% endif %}
   {% if perms.projects.change_project and project.is_active %}
-  <form action="" method="post" id="joinproject_form">
+  <form action="" method="post" id="joinproject_form">{% csrf_token %}
     <div class="form-row" >
       {% if no_account_error %}<p class="error">{{ no_account_error }}</p>{% endif %}
       <label for="id_person">Add user to project:</label> 

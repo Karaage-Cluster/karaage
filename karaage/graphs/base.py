@@ -32,7 +32,7 @@ class GraphGenerator(object):
         machine_category -- MachineCategory object
     
         """
-        raise NotImplementedError
+        pass
 
     def gen_institutes_pie(self, start, end, machine_category):
         """Generates a pie graph showing all active institutes usage
@@ -43,13 +43,13 @@ class GraphGenerator(object):
         machine_category -- MachineCategory object
         
         """
-        raise NotImplementedError
+        pass
 
 
     def gen_quota_graph(self):
         """Generates a pie graph for all active institutes quota       
         """
-        raise NotImplementedError
+        pass
 
 
 
@@ -62,7 +62,7 @@ class GraphGenerator(object):
         machine_category -- MachineCategory object
         """
         
-        raise NotImplementedError
+        pass
     
     
     def gen_institute_bar(self, institute, start, end, machine_category): 
@@ -75,5 +75,5 @@ class GraphGenerator(object):
         machine_category -- MachineCategory object
         """
 
-        raise NotImplementedError
+        pass
 

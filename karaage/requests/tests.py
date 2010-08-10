@@ -100,8 +100,8 @@ class UserRegistrationTestCase(TestCase):
         self.failUnlessEqual(person.is_active, False)
         self.failUnlessEqual(person.projectjoinrequest_set.count(), 1)
         self.assertEquals(len(mail.outbox), 1)
-        self.assertEquals(mail.outbox[0].subject, 'Project join request')
-        self.assertEquals(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL_FROM)
+        self.assertEquals(mail.outbox[0].subject, 'TestOrg Project join request')
+        self.assertEquals(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL)
         self.assertEquals(mail.outbox[0].to[0], 'leader@example.com')
         # Leader logs in to approve      
         logged_in = self.client.login(username='kgtestuser1', password='aq12ws')
@@ -140,7 +140,7 @@ class AdminRegistrationTestCase(TestCase):
         from karaage.datastores import create_new_user
         from karaage.requests.models import ProjectJoinRequest
 
-        logged_in = self.client.login(username='super', password='aq12ws')
+        logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         project = Project.objects.get(pid='TestProject1')
         p_users = project.users.count()
@@ -179,8 +179,8 @@ class AdminRegistrationTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 302)
 
         self.assertEquals(len(mail.outbox), 1)
-        self.assertEquals(mail.outbox[0].subject, 'VPAC Account approval')
-        self.assertEquals(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL_FROM)
+        self.assertEquals(mail.outbox[0].subject, 'TestOrg Account approval')
+        self.assertEquals(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL)
         self.assertEquals(mail.outbox[0].to[0], 'jim.bob@example.com')
 
         self.failUnlessRaises(ProjectJoinRequest.DoesNotExist, ProjectJoinRequest.objects.get, pk=join_request.id)
@@ -248,8 +248,8 @@ class ProjectRegistrationTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 200)
      
         self.assertEquals(len(mail.outbox), 1)
-        self.assertEquals(mail.outbox[0].subject, 'VPAC new project request')
-        self.assertEquals(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL_FROM)
+        self.assertEquals(mail.outbox[0].subject, 'TestOrg new project request')
+        self.assertEquals(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL)
         self.assertEquals(mail.outbox[0].to[0], 'leader@example.com')
 
         person = Person.objects.get(user__username='jimbob')
@@ -289,6 +289,6 @@ class ProjectRegistrationTestCase(TestCase):
         person = Person.objects.get(user__username='jimbob')
         self.failUnlessEqual(person.is_active, True)
         self.assertEquals(len(mail.outbox), 2)
-        self.assertEquals(mail.outbox[1].subject, 'VPAC Project has been approved')
-        self.assertEquals(mail.outbox[1].from_email, settings.ACCOUNTS_EMAIL_FROM)
+        self.assertEquals(mail.outbox[1].subject, 'TestOrg Project has been approved')
+        self.assertEquals(mail.outbox[1].from_email, settings.ACCOUNTS_EMAIL)
         self.assertEquals(mail.outbox[1].to[0], 'jim.bob@example.com')

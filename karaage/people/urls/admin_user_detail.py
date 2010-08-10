@@ -25,8 +25,8 @@ urlpatterns = patterns('karaage.people.views.admin_user_detail',
     url(r'^jobs/$', 'user_job_list'), 
     url(r'^delete/$', 'delete_user', name='admin_delete_user'),
     url(r'^password_change/$', 'password_change'),
-    url(r'^lock/$', 'lock_person'),
-    url(r'^unlock/$', 'unlock_person'),
+    url(r'^lock/$', 'lock_person', name='kg_lock_user'),
+    url(r'^unlock/$', 'unlock_person', name='kg_unlock_user'),
     url(r'^bounced_email/$', 'bounced_email'),
     url(r'^comments/$', 'user_comments', name='kg_user_comments'),
     url(r'^add_comment/$', 'add_comment', name='kg_user_add_comment'),
@@ -35,6 +35,6 @@ urlpatterns = patterns('karaage.people.views.admin_user_detail',
 
 urlpatterns += patterns('karaage.people.views.admin',
     
-    url(r'^add_useraccount/$', 'add_edit_useraccount'),
+    url(r'^add_useraccount/$', 'add_edit_useraccount', name='kg_add_useraccount'),
     url(r'^edit/$', 'add_edit_user', {'form_class': UserForm }, name='kg_user_edit'),
 )

@@ -22,8 +22,8 @@ import datetime
 from andsome.middleware.threadlocals import get_current_user
 
 from karaage.projects.models import Project
+from karaage.projects.utils import get_new_pid
 from karaage.util import log_object as log
-from karaage.util.helpers import get_new_pid
 
 class ProjectDataStore(object):
 

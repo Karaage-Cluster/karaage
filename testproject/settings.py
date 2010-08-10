@@ -9,17 +9,14 @@ GRAPH_LIB = 'karaage.graphs.matplotlib9'
 
 ADMIN_APPROVE_ACCOUNTS = True
 
-PERSONAL_DATASTORE = 'karaage.datastores.ldap_datastore'
 PROJECT_DATASTORE = 'karaage.datastores.projects.ldap_datastore'
+PERSONAL_DATASTORE = 'karaage.datastores.openldap_datastore'
 
 ACCOUNTS_ORG_NAME = 'TestOrg'
 
 ACCOUNT_DATASTORES = {
-    1: 'karaage.datastores.ldap_datastore',
+    1: 'karaage.datastores.openldap_datastore',
     2: 'karaage.datastores.dummy',
-    3: 'karaage.datastores.dummy',
-    4: 'karaage.datastores.dummy',
-    5: 'karaage.datastores.dummy',
 }
 
 LOCKED_SHELL = '/usr/local/sbin/insecure'
@@ -51,7 +48,7 @@ LDAP_ATTRS = 'testproject.ldap_attrs'
 LDAP_PASSWD_SCHEME = 'md5-crypt'
 
 SERVER_EMAIL = 'django@' + uname()[1]
-ACCOUNTS_EMAIL_FROM = 'accounts@vpac.org'
+ACCOUNTS_EMAIL = 'accounts@vpac.org'
 EMAIL_SUBJECT_PREFIX = '[Grunt VPAC] - '
 
 SHELLS = ( ('/bin/bash','bash'),
@@ -84,13 +81,16 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.auth',
     'django.core.context_processors.debug',
     'django.core.context_processors.media',
+    'django.contrib.messages.context_processors.messages',
     'karaage.context_processors.common',
 )
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'andsome.middleware.threadlocals.ThreadLocals',  
@@ -105,6 +105,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
+    'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.humanize',
     'django.contrib.flatpages',
@@ -140,3 +141,5 @@ INTERNAL_IPS = (
     '172.25.10.10',
     )
 
+
+AUP_URL = 'http://example.com/aup.html'

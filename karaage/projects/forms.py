@@ -24,7 +24,7 @@ from andsome.middleware.threadlocals import get_current_user
 from karaage.people.models import Institute, Person
 from karaage.machines.models import MachineCategory
 from karaage.requests.models import ProjectCreateRequest
-from karaage.util.helpers import get_new_pid
+from karaage.projects.utils import get_new_pid
 from karaage.util import log_object
 from karaage.datastores.projects import create_new_project
 
@@ -32,18 +32,26 @@ from models import Project
 
 
 class ProjectForm(forms.ModelForm):
+    pid = forms.CharField(label='PID', help_text='Leave blank for auto generation', required=False)
     name = forms.CharField(label='Project Title', widget=forms.TextInput(attrs={ 'size':60 }))
     description = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
     institute = forms.ModelChoiceField(queryset=Institute.active.all())
     additional_req = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
-    leader = forms.ModelChoiceField(queryset=Person.active.all())
+    leaders = forms.ModelMultipleChoiceField(queryset=Person.active.all())
     start_date = forms.DateField(widget=AdminDateWidget)
     end_date = forms.DateField(widget=AdminDateWidget, required=False)
     machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all(), widget=forms.CheckboxSelectMultiple())
 
+    def __init__(self, *args, **kwargs):
+        # Make PID field read only if we are editing a project
+        super(ProjectForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pid:
+            self.fields['pid'].widget.attrs['readonly'] = True
+
     class Meta:
         model = Project
-        fields = ('name', 'institute', 'leader', 'description', 'start_date', 'end_date', 'additional_req', 'machine_categories', 'machine_category')
+        fields = ('pid', 'name', 'institute', 'leaders', 'description', 'start_date', 'end_date', 'additional_req', 'machine_categories', 'machine_category')
 
 
 class UserProjectForm(forms.Form):
@@ -64,7 +72,6 @@ class UserProjectForm(forms.Form):
         if p is None:
             p = Project()
             p.pid = get_new_pid(data['institute'])
-            p.leader = leader
             p.institute = data['institute']
             p.machine_category=MachineCategory.objects.get_default()
             p.start_date = datetime.datetime.today()
@@ -75,6 +82,7 @@ class UserProjectForm(forms.Form):
             p.save()
             p.machine_categories.add(MachineCategory.objects.get_default())
             p.save()
+            p.leaders.add(leader)
             project_request = ProjectCreateRequest.objects.create(
                 project=p,
                 person=leader,

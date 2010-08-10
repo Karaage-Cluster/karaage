@@ -42,8 +42,10 @@ class PersonalDataStore(base.PersonalDataStore):
         
         conn = LDAPClient()
         conn.add_user(**attrs)
+        person.user.set_unusable_password()
+        person.user.save()
         person.save(update_datastore=False)
-
+        
         return person
 
     def delete_user(self, person):
@@ -53,8 +55,6 @@ class PersonalDataStore(base.PersonalDataStore):
         conn.delete_user('uid=%s' % person.user.username)
         
     def update_user(self, person):
-        super(PersonalDataStore, self).update_user(person)
-
         conn = LDAPClient()
     
         conn.update_user(
@@ -66,6 +66,8 @@ class PersonalDataStore(base.PersonalDataStore):
             mail=str(person.email),
             o=str(person.institute.name),
             )
+
+        super(PersonalDataStore, self).update_user(person)
 
     def is_locked(self, person):
         super(PersonalDataStore, self).is_locked(person)

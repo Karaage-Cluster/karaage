@@ -84,7 +84,7 @@ class Person(models.Model):
     city = models.CharField(max_length=100, null=True, blank=True)
     postcode = models.CharField(max_length=8, null=True, blank=True)
     state = models.CharField(choices=STATES, max_length=4, null=True, blank=True)
-    country = models.CharField(max_length=2, choices=COUNTRIES)
+    country = models.CharField(max_length=2, choices=COUNTRIES, null=True, blank=True)
     website = models.URLField(null=True, blank=True)
     fax = models.CharField(max_length=50, null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
@@ -97,7 +97,7 @@ class Person(models.Model):
     objects = models.Manager()
     active = ActiveUserManager()
     deleted = DeletedUserManager()
-    leaders = LeaderManager()
+    projectleaders = LeaderManager()
     
     class Meta:
         verbose_name_plural = 'people'
@@ -119,12 +119,12 @@ class Person(models.Model):
                 pass
         return reverse('kg_user_detail', kwargs={'username': self.user.username })
 
-    def save(self, update_datastore=True, force_insert=False, force_update=False):
+    def save(self, update_datastore=True, *args, **kwargs):
         update = False
         if self.id and self.is_active:
             update = True
 
-        super(self.__class__, self).save(force_insert, force_update)
+        super(self.__class__, self).save(*args, **kwargs)
  
         if update and update_datastore:            
             from karaage.datastores import update_user
@@ -161,6 +161,7 @@ class Person(models.Model):
     def _set_is_active(self, value):
         self.user.is_active = value
         self.user.save()
+
     def _get_is_active(self):
         return self.user.is_active
     is_active = property(_get_is_active, _set_is_active)
@@ -186,23 +187,24 @@ class Person(models.Model):
         return get_user_usage(self, project, start, end)
     
     def is_leader(self):
-        if self.leader.count() != 0:
+        if self.leaders.count() > 0:
             return True
         return False
     
     def is_delegate(self):
-        if self.delegate.count() != 0:
+        if self.delegate.count() > 0:
             return True
         return False
 
     def is_active_delegate(self):
-        if self.active_delegate.count() != 0:
+        if self.active_delegate.count() > 0:
             return True
         return False
 
     def activate(self):
-        from karaage.datastores import activate_user
-        activate_user(self)
+        if not self.is_active:
+            from karaage.datastores import activate_user
+            activate_user(self)
 
     def deactivate(self):
         from karaage.datastores import delete_user

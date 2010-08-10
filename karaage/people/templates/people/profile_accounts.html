@@ -30,7 +30,7 @@
 	   		<td>{{ ua.date_created|date }}</td>
 	   		{% if date_deleted %}<td>{{ ua.date_deleted|date }}</td>{% endif %}
 	   		{% ifequal ua.machine_category.id 1 %}
-	   		<td><form action="." method="post">
+	   		<td><form method="post" action=".">{% csrf_token %}
 	   			<div>
 					{{ shell_form.shell }}
 					<input type="submit" value="Change" name="shell-form" />

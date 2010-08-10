@@ -24,7 +24,7 @@ from andsome.middleware.threadlocals import get_current_user
 
 from karaage.people.models import Institute, Person
 from karaage.projects.models import Project
-from karaage.projects.util import add_user_to_project
+from karaage.projects.utils import add_user_to_project
 from karaage.machines.models import MachineCategory, UserAccount
 from karaage.constants import TITLES, STATES, COUNTRIES, DATE_FORMATS
 from karaage.datastores import create_new_user, create_account
@@ -137,7 +137,7 @@ class AddUserForm(UserForm):
             user = None
         
         if user is not None:
-            raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old account please email %s' % settings.ACCOUNTS_EMAIL_FROM)
+            raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old account please email %s' % settings.ACCOUNTS_EMAIL)
         return username
 
     def clean(self):

@@ -55,7 +55,7 @@ class UserTestCase(TestCase):
         users = Person.objects.count()
         project = Project.objects.get(pid='TestProject1')
         p_users = project.users.count()
-        logged_in = self.client.login(username='super', password='aq12ws')
+        logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         response = self.client.get(reverse('kg_add_user'))
         self.failUnlessEqual(response.status_code, 200)
@@ -99,7 +99,7 @@ class UserTestCase(TestCase):
         users = Person.objects.count()
         project = Project.objects.get(pid='TestProject1')
         p_users = project.users.count()
-        logged_in = self.client.login(username='super', password='aq12ws')
+        logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         response = self.client.get(reverse('kg_add_user'))
         
@@ -139,7 +139,7 @@ class UserTestCase(TestCase):
 
 
     def test_admin_update_user(self):
-        logged_in = self.client.login(username='super', password='aq12ws')
+        logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
 
         person = Person.objects.get(user__username='kgtestuser3')
@@ -176,7 +176,7 @@ class UserTestCase(TestCase):
         self.failUnlessEqual(luser.gecos, 'Test User3 (OtherInst)')
 
     def test_delete_activate_user(self):
-        logged_in = self.client.login(username='super', password='aq12ws')
+        logged_in = self.client.login(username='kgsuper', password='aq12ws')
         user = Person.objects.get(user__username='kgtestuser3')
         self.assertEqual(user.is_active, True)
         self.assertEqual(user.project_set.count(), 1)
@@ -207,6 +207,7 @@ class UserTestCase(TestCase):
         self.assertEqual(user.is_active, True)
         luser = lcon.get_user('uid=kgtestuser3')
         self.assertEqual(luser.givenName, 'Test')
+
 
     def stest_delete_user_account(self):
         user = Person.objects.get(pk=Person.objects.count())
@@ -278,41 +279,3 @@ class UserTestCase(TestCase):
         response = self.client.post(reverse('kg_user_detail', args=[user.username]), { 'project': 'test2', 'project-add': 'true' })
         self.failUnlessEqual(response.status_code, 200)
         self.assertEqual(user.project_set.count(), 2)
-
-
-    def stest_approve_account(self):
-        u = User.objects.create_user('dummy2', 'sam@vpac.org', 'aq12ws')
-        u.is_active = False
-        u.save()
-        user = Person.objects.create(
-            user=u,
-            first_name='approve',
-            last_name='Test',
-            title='Mr',
-            institute=Institute.objects.get(name='VPAC'),
-            country='AU',
-        )
-        project = Project.objects.get(pk='test')
-        ur = ProjectJoinRequest.objects.create(
-            person=user,
-            project=project,
-            machine_category=MachineCategory.objects.get(name='VPAC'),
-            leader_approved=True,
-            needs_account=True,
-        )
-        
-        self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(project.users.count(), 1)
-        self.assertEqual(user.useraccount_set.count(), 0)
-        
-        response = self.client.get(reverse('admin_account_approve', args=[ur.id]))
-        self.failUnlessEqual(response.status_code, 302)
-
-        self.assertEqual(len(mail.outbox), 2)
-        
-        user = Person.objects.get(user__username='dummy2')
-        project = Project.objects.get(pk='test')
-        
-        self.assertEqual(user.is_active, True)
-        self.assertEqual(project.users.count(), 2)
-        self.assertEqual(user.useraccount_set.count(), 1)

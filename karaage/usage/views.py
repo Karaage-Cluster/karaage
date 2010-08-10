@@ -56,8 +56,6 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
     mc_list = MachineCategory.objects.exclude(id__exact=settings.DEFAULT_MC)
     
     show_zeros = True
-    if machine_category.id == settings.DEFAULT_MC:
-        show_zeros = True
 
     institute_list = Institute.active.all()
     total, total_jobs = 0, 0
@@ -88,32 +86,33 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
             display_quota = quota.quota
         except InstituteChunk.DoesNotExist:
             display_quota = None
-        if show_zeros or jobs > 0:
-            i_list.append({ 'institute': i, 'usage': time, 'jobs': jobs, 'quota': display_quota})
-            
-    for i in i_list:
-        try:
-            i['percent'] = (i['usage'] / available_time) * 100
-        except:
-            i['percent'] = 0
-        if i['quota'] is not None:
+        if display_quota or jobs > 0:
+            data_row = { 'institute': i, 'usage': time, 'jobs': jobs, 'quota': display_quota}
             try:
-                i['p_used'] = (i['percent'] / i['quota']) * 100
-            except:
-                i['p_used'] = 0
-            i['diff'] = i['percent'] - i['quota']
-            if i['diff'] <= 0:
-                i['class'] = 'green'
+                data_row['percent'] = Decimal(time) / Decimal(available_time) * 100
+            except ZeroDivisionError:
+                data_row['percent'] = 0
+            if data_row['quota'] is not None:
+                try:
+                    data_row['p_used'] = (data_row['percent'] / data_row['quota']) * 100
+                except ZeroDivisionError:
+                    data_row['p_used'] = 0
+                data_row['diff'] = data_row['percent'] - data_row['quota']
+        	if data_row['diff'] <= 0:
+                    data_row['class'] = 'green'
+        	else:
+                    data_row['class'] = 'red'
             else:
-                i['class'] = 'red'
-        else:
-            i['class'] = 'green'
+                data_row['class'] = 'green'
+
+            i_list.append(data_row)
+
 
     # Unused Entry
     unused = { 'usage': available_time - total, 'quota': 0 }
     try:
         unused['percent'] = (unused['usage'] / available_time) * 100
-    except:
+    except ZeroDivisionError:
         unused['percent'] = 0
     unused['diff'] = unused['percent'] - unused['quota'] / 100
     if unused['diff'] <= 0:
@@ -123,7 +122,7 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
 
     try:
         utilization = (total / available_time) * 100
-    except:
+    except ZeroDivisionError:
         utilization = 0
   
     try:
@@ -159,14 +158,18 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
             if p_jobs > 0:
                 try:
                     percent = (chunk.get_mpots()/chunk.get_cap())*100
-                except:
+                except ZeroDivisionError:
                     percent = 0
+                try:
+                    quota_percent = p_usage/(available_usage*quota.quota)*10000
+                except ZeroDivisionError:
+                    quota_percent = 0
                 project_list.append(
                     {'project': p, 
                      'usage': p_usage, 
                      'jobs': p_jobs, 
                      'percent': percent, 
-                     'quota_percent': (p_usage/(available_usage*quota.quota)*10000),
+                     'quota_percent': quota_percent,
                      })
 
 
@@ -264,8 +267,10 @@ def unknown_usage(request):
         except Person.DoesNotExist:
            person = False
         
-        jobs = CPUJob.objects.filter(id__in=request.POST.getlist('uid'))
-
+        if request.POST.getlist('uid'):
+            jobs = CPUJob.objects.filter(id__in=request.POST.getlist('uid'))
+        else:
+            jobs = []
         if project_s:
             for job in jobs:
                 job.project = project_s

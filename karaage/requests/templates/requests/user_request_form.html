@@ -9,7 +9,7 @@
 
 {% block content %}
 <h1>Step 1 - User Details</h1>
-<form method="post" action=".">
+<form method="post" action=".">{% csrf_token %}
 {% load forms %}
 {% if form.errors  or form.non_field_errors %}
 	<p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
@@ -37,8 +37,8 @@ may not function correctly.
 <fieldset class="module aligned ()">
 <div class="form-row checkbox-row" >
 <label class="vCheckboxLabel heading">
-This username and password will be for your VPAC account. It will be used for this account interface, 
-and also your account on the VPAC supercomputers. You will be asked for your project on the next page.
+This username and password will be for your {{ org_name }} account. It will be used for this account interface, 
+and also your account on the {{ org_name }} supercomputers. You will be asked for your project on the next page.
 </label> 
 </div>
 {% formfield form.username %}

@@ -72,7 +72,7 @@ def search(request):
          # projects
         query = Q()
         for term in term_list:
-            q = Q(pid__icontains=term) | Q(name__icontains=term) | Q(leader__user__username__icontains=term) | Q(leader__user__first_name__icontains=term) | Q(leader__user__last_name__icontains=term) 
+            q = Q(pid__icontains=term) | Q(name__icontains=term) | Q(leaders__user__username__icontains=term) | Q(leaders__user__first_name__icontains=term) | Q(leaders__user__last_name__icontains=term) 
             query = query & q
 
         project_list = project_list.filter(query)
@@ -112,7 +112,7 @@ def comments_detail(request, object_id, model):
 
     return render_to_response('comments/%s_detail.html' % content_type.model, locals(), context_instance=RequestContext(request))
 
-    
+
 def add_comment(request, object_id, model):
 
     obj = get_object_or_404(model, pk=object_id)

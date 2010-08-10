@@ -29,13 +29,12 @@ from karaage.people.models import Institute
 from karaage.people.forms import AddUserForm
 from karaage.datastores import create_new_user
 from karaage.datastores.projects import create_new_project
-from karaage.util.helpers import check_password, create_password_hash, get_new_pid
-
-from models import ProjectCreateRequest
+from karaage.util.helpers import check_password, create_password_hash
+from karaage.requests.models import ProjectCreateRequest
 
 
 class UserRegistrationForm(AddUserForm):
-    tos = forms.BooleanField(required=False, label=u'I have read and agree to the <a href="/users/policy" target="_blank">Acceptable Use Policy</a>')
+    tos = forms.BooleanField(required=False, label=u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>'%(settings.AUP_URL))
     captcha = CaptchaField(label=u'CAPTCHA', help_text=u"Please enter the text displayed in the imge above.")
 
     def save(self, request, project=None, account=True):
@@ -68,7 +67,7 @@ class UserRegistrationForm(AddUserForm):
         except Person.DoesNotExist:
             p = None
         if p is not None:
-            raise forms.ValidationError(u'Account with this email already exists. Please email accounts@vpac.org to reinstate your account')
+            raise forms.ValidationError(u'Account with this email already exists. Please email %s to reinstate your account'%(settings.ACCOUNTS_EMAIL))
 
         return email
 
@@ -85,6 +84,7 @@ class ProjectRegistrationForm(UserRegistrationForm):
     def save(self):
 
         data = self.cleaned_data
+
         project = create_new_project(data)
         person = create_new_user(data)
         
@@ -92,6 +92,7 @@ class ProjectRegistrationForm(UserRegistrationForm):
         project.machine_category = MachineCategory.objects.get_default()
         project.machine_categories.add(MachineCategory.objects.get_default())
         project.save()
+        project.leaders.add(person)
         
         project_request = ProjectCreateRequest.objects.create(
             project=project,

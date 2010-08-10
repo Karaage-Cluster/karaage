@@ -41,37 +41,6 @@ def _getsalt(chars=string.letters + string.digits):
     return random.choice(chars) + random.choice(chars)
 
 
-def get_new_pid(institute, is_expertise=False):
-    """ Return a new Project ID
-
-    Keyword arguments:
-    institute_id -- Institute id
-    ia_expertise -- is project an expertise
-    
-    """
-    no = 1
-    number = '0001'
-    if is_expertise:
-        prefix = 'eppn%s' % institute.name.replace(' ', '')[:4]
-    else:
-        prefix = 'p%s' % institute.name.replace(' ', '')[:4]
-
-    found = True
-    while found:
-        try:
-            project = Project.objects.get(pid=prefix+number)
-            number = str(int(number) + 1)
-            if len(number) == 1:
-                number = '000' + number
-            elif len(number) == 2:
-                number = '00' + number
-            elif len(number) == 3:
-                number = '0' + number
-        except:
-            found = False    
-    
-    return prefix+number
-
 
 def check_username(username, machine_category):
     """Return True if username not taken and valid
@@ -109,7 +78,6 @@ def get_available_time(start=datetime.date.today()-datetime.timedelta(days=90), 
     Calculates the total available time on a machine category for a given period
     Takes into account machines being commissioned and decommisioned
     """
-
     machines = machine_category.machine_set.all()
     total = 0
     
@@ -117,24 +85,24 @@ def get_available_time(start=datetime.date.today()-datetime.timedelta(days=90), 
         m_start = m.start_date
         m_end = m.end_date
         if not m_end:
-            m_end = end#datetime.date.today() - datetime.timedelta(days=1)
+            m_end = end
         if start >= m_end or m_start >= end:
             total += 0
 
         elif start < m_start and end > m_end:
-            total += (m.no_cpus * ((m_end - m_start).days+1) * 24 * 60 * 60)
+            total += (m.no_cpus * ((m_end - m_start).days) * 24 * 60 * 60)
             
         elif end > m_end and start < m_start:
-            total += (m.no_cpus * ((end - start).days+1) * 24 * 60 * 60)
+            total += (m.no_cpus * ((end - start).days) * 24 * 60 * 60)
         
         elif end > m_end:
-            total += (m.no_cpus * ((m_end - start).days+1) * 24 * 60 * 60)
+            total += (m.no_cpus * ((m_end - start).days) * 24 * 60 * 60)
 
         elif start < m_start:
-            total += (m.no_cpus * ((end - m_start).days+1) * 24 * 60 * 60)
+            total += (m.no_cpus * ((end - m_start).days) * 24 * 60 * 60)
 
         else:
-            total += (m.no_cpus * ((end - start).days+1) * 24 * 60 * 60)
+            total += (m.no_cpus * ((end - start).days) * 24 * 60 * 60)
             
     return total, get_ave_cpus(start, end, machine_category)
 

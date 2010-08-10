@@ -5,13 +5,15 @@
 
 <p>Thanks {{ person.first_name }} for your account request to join the project - <b>{{ project.name }}</b>.</p>
 
-<p>{{ project.leader }} has been emailed about the request. Now we're just waiting 
-for {{ project.leader.first_name }}'s authorisation, before you can join the project.</p>
+<p>{{ leader }} has been emailed about the request. Now we're just waiting
+for {{ leader.first_name }}'s authorisation, before you can join the project.</p>
 
-<p>You can contact {{ project.leader }} by:<br />
-	<ul>
-		{% if project.leader.email %}<li>Email: {{ project.leader.email|urlize }}</li>{% endif %}
-		{% if project.leader.telephone %}<li>Phone: {{ project.leader.telephone }}</li>{% endif %}
-	</ul>
+<p>You can contact {{ leader }} by:<br />
+        <ul>
+                {% if leader.email %}<li>Email: {{ leader.email|urlize }}</li>{% endif %}
+                {% if leader.telephone %}<li>Phone: {{ leader.telephone }}</li>{% endif %}
+        </ul>
 </p>
 {% endblock %}
+
+

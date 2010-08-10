@@ -17,6 +17,7 @@
 
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 
 import datetime
 from andsome.middleware.threadlocals import get_current_user
@@ -51,37 +52,53 @@ class PersonalDataStore(object):
     
         #Create Person
         person = Person.objects.create(
-            user=user, first_name=data['first_name'],
+            user=user, 
+            first_name=data['first_name'],
             last_name=data['last_name'],
-            position=data['position'],department=data['department'],
             institute=data['institute'],
-            title=data['title'], address=data.get('address', ''),
-            country=data['country'],
-            website=data.get('website', ''), fax=data.get('fax', ''),
-            comment=data.get('comment', ''), telephone=data.get('telephone', ''),
+            position=data.get('position', ''),
+            department=data.get('department', ''),
+            title=data.get('title', ''), 
+            address=data.get('address', ''),
+            country=data.get('country', ''),
+            website=data.get('website', ''), 
+            fax=data.get('fax', ''),
+            comment=data.get('comment', ''), 
+            telephone=data.get('telephone', ''),
             mobile=data.get('mobile', ''),
+            supervisor=data.get('supervisor', ''),
             )
         
         try:
-            log(get_current_user(), person, 1, 'Created')
+            current_user = get_current_user()
+            if current_user.is_anonymous():
+                current_user = person.user
         except:
-            pass
+            current_user = person.user
+
+        log(current_user, person, 1, 'Created')
         
         return person
 
 
     def activate_user(self, person):
         """ Activates a user """
-        approver = get_current_user().get_profile()
-    
+        try:
+            approver = get_current_user().get_profile()
+            if current_user.is_anonymous():
+                current_user = person
+        except:
+            approver = person
+
         person.date_approved = datetime.datetime.today()
+
         person.approved_by = approver
         person.deleted_by = None
         person.date_deleted = None
         person.user.is_active = True
         person.user.save()
-        
-        log(get_current_user(), person, 1, 'Activated')
+
+        log(approver.user, person, 1, 'Activated')
 
         return person
         

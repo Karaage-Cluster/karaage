@@ -1,0 +1,8 @@
+Hello {{ receiver }}
+
+Your request to create the project "{{ project }}" has been declined by your institutes delegate.
+
+
+Thanks,
+
+{% include emails/email_footer.txt %}

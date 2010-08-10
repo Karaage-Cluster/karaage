@@ -2,15 +2,10 @@ include README
 include AUTHORS
 include COPYING
 include MANIFEST.in
-recursive-include karaage/templates *
-recursive-include karaage/emails/templates *
-recursive-include karaage/institutes/templates *
-recursive-include karaage/machines/templates *
-recursive-include karaage/pbsmoab/templates *
-recursive-include karaage/people/templates *
-recursive-include karaage/projectreports/templates *
-recursive-include karaage/projects/templates *
-recursive-include karaage/requests/templates *
-recursive-include karaage/software/templates *
-recursive-include karaage/usage/templates *
-
+include pylint.conf
+recursive-include docs *
+recursive-include scripts *
+recursive-include karaage *
+recursive-include testproject *
+recursive-include sbin *
+recursive-include conf *

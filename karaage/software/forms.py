@@ -41,7 +41,10 @@ class SoftwarePackageForm(forms.Form):
         package.category = data['category']
         package.name = data['name']
         package.description = data['description']
-        package.gid = data['gid']
+        if data['gid'] == "":
+            package.gid = None
+        else:
+            package.gid = data['gid']
         package.homepage = data['homepage']
         package.tutorial_url = data['tutorial_url']
         package.academic_only = data['academic_only']

@@ -28,7 +28,6 @@ class MachineForm(forms.ModelForm):
 
 
 class UserAccountForm(forms.Form): 
-    username = forms.CharField()
     machine_category = forms.ModelChoiceField(queryset=MachineCategory.objects.all(), initial=1)
     default_project = forms.ModelChoiceField(queryset=Project.active.all())
 

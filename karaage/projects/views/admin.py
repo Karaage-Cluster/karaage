@@ -32,8 +32,7 @@ from karaage.people.models import Person, Institute
 from karaage.requests.models import ProjectCreateRequest
 from karaage.projects.models import Project
 from karaage.projects.forms import ProjectForm
-from karaage.projects.util import get_new_pid, add_user_to_project
-from karaage.util.email_messages import send_removed_from_project_email
+from karaage.projects.utils import get_new_pid, add_user_to_project
 from karaage.util import log_object as log
 from karaage.usage.forms import UsageSearchForm
 
@@ -53,16 +52,23 @@ def add_edit_project(request, project_id=None):
         
         if form.is_valid():
             project = form.save(commit=False)
-            if not project.pid:
-                project.pid = get_new_pid(project.institute, project.is_expertise)
+            if project_id is not None:
+                # if project is being edited, project_id cannot change, so we
+                # should always use the value supplied on the URL.
+                project.pid = project_id
+            elif not project.pid:
+                # if project was being created, did the user give a project_id
+                # we should use? If not, then we have to generate one
+                # ourselves.
+                project.pid = get_new_pid(project.institute)
             project.save()
             project.activate()
             form.save_m2m()
             if flag == 1:
-                request.user.message_set.create(message="Project '%s' edited succesfully" % project)
+                request.user.message_set.create(message="Project '%s' created succesfully" % project)
                 log(get_current_user(), project, 1, 'Created')
             else:
-                request.user.message_set.create(message="Project '%s' added succesfully" % project)
+                request.user.message_set.create(message="Project '%s' edited succesfully" % project)
                 log(get_current_user(), project, 2, 'Edited')
 
             return HttpResponseRedirect(project.get_absolute_url())        
@@ -112,12 +118,6 @@ def project_detail(request, project_id):
         data = request.POST.copy()     
         person = Person.objects.get(pk=data['person'])
         add_user_to_project(person, project)
-        #if person.has_account(project.machine_category):
-        #    project.users.add(person)
-        #    request.user.message_set.create(message="User '%s' added succesfully" % person)
-        #    log(request.user, project, 1, 'Added user %s' % person)
-        #else:
-        #    no_account_error = "%s has no account on %s. Please create one first" % (person, project.machine_category)
     
     return render_to_response('projects/project_detail.html', locals(), context_instance=RequestContext(request))
 
@@ -139,7 +139,7 @@ def project_list(request, queryset=Project.objects.select_related().all(), templ
         terms = new_data['search'].lower()
         query = Q()
         for term in terms.split(' '):
-            q = Q(pid__icontains=term) | Q(name__icontains=term) | Q(description__icontains=term) | Q(leader__user__first_name__icontains=term) | Q(leader__user__last_name__icontains=term) | Q(institute__name__icontains=term)
+            q = Q(pid__icontains=term) | Q(name__icontains=term) | Q(description__icontains=term) | Q(leaders__user__first_name__icontains=term) | Q(leaders__user__last_name__icontains=term) | Q(institute__name__icontains=term)
             query = query & q
         
         project_list = project_list.filter(query)
@@ -169,8 +169,9 @@ def remove_user(request, project_id, username):
     project = get_object_or_404(Project, pk=project_id)
     user = get_object_or_404(Person, user__username=username)
 
+    #Dirty VPAC hack
     if site.id == 2:
-        if not request.user.get_profile() == project.leader:
+        if not request.user.get_profile() in project.leaders.all():
             return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     project.users.remove(user)
@@ -179,8 +180,6 @@ def remove_user(request, project_id, username):
     log(request.user, project, 3, 'Removed %s from project' % user)
     log(request.user, user, 3, 'Removed from project %s' % project)
 
-   # send_removed_from_project_email(user, project)
-    
     if 'next' in request.REQUEST:
         return HttpResponseRedirect(request.REQUEST['next'])
     if site.id == 2:
