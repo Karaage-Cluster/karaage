@@ -28,7 +28,6 @@
         {% endif %}
         {% if perms.people.change_person and person.is_active %}
         <li class="changelink"><a href="edit/">Edit details</a><br /><br /></li>
-        <li class="changelink"><a href="password_change/">Change Password</a><br /><br /></li>
         {% endif %}
         {% if perms.machines.add_useraccount and person.is_active %}
         <li class="addlink"><a href="add_useraccount/">Add user account</a><br /><br /></li>
@@ -45,6 +44,7 @@
 	{% if person.is_locked %}
 	<li><a href="unlock/"><img src="{{ MEDIA_URL }}img/lock.png" />&nbsp;Unlock</a><br /><br /></li>
 	{% else %}
+	<li class="changelink"><a href="password_change/">Change Password</a><br /><br /></li>
 	<li><a href="lock/"><img src="{{ MEDIA_URL }}img/unlock.png" />&nbsp;Lock</a><br /><br /></li>
 	{% endif %}
 	<li><a href="bounced_email/">Bounced Email</a><br /><br /></li>
