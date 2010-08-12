@@ -1,3 +1,13 @@
+karaage (2.4.4-1) testing; urgency=low
+
+  * Set django password to unusable once user has password in ldap
+  * Removed required fields on most user form fields.
+  * Only able to change password if user is unlocked. Fixes #63
+  * Remove hardcoded link to VPAC usage graph.
+  * Other small bug fixes
+
+ -- Sam Morrison <sam@vpac.org>  Thu, 12 Aug 2010 13:08:26 +1000
+
 karaage (2.4.3-1) testing; urgency=low
 
   * Make kgcreatesuperuser script smarter
