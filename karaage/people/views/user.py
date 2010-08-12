@@ -150,7 +150,7 @@ def user_detail(request, username):
     except:
         pass
 
-    for project in person.leader.all():
+    for project in person.leaders.all():
         approved_viewers.append(project.leader.id)
         approved_viewers.append(project.institute.delegate.id)
         approved_viewers.append(project.institute.active_delegate.id)
