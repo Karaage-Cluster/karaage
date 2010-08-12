@@ -21,7 +21,7 @@ from django.core.urlresolvers import reverse
 
 from placard.client import LDAPClient
 from andsome.middleware.threadlocals import get_current_user
-from karaage.institutes.managers import PrimaryInstituteManager, ValidChoiceManager, ActiveInstituteManager
+from karaage.institutes.managers import PrimaryInstituteManager, ActiveInstituteManager
 from karaage.constants import TITLES, STATES, COUNTRIES
 from karaage.people.managers import ActiveUserManager, DeletedUserManager, LeaderManager
 
@@ -36,7 +36,6 @@ class Institute(models.Model):
     objects = models.Manager()
     active = ActiveInstituteManager()
     primary = PrimaryInstituteManager()
-    valid = ValidChoiceManager()
 
     class Meta:
         ordering = ['name']
