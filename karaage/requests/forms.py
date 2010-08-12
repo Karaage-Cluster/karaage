@@ -34,6 +34,12 @@ from karaage.requests.models import ProjectCreateRequest
 
 
 class UserRegistrationForm(AddUserForm):
+    title = forms.ChoiceField(choices=TITLES)
+    position = forms.CharField()
+    department = forms.CharField()
+    country = forms.ChoiceField(choices=COUNTRIES, initial='AU')
+    telephone = forms.CharField(label=u"Office Telephone")
+
     tos = forms.BooleanField(required=False, label=u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>'%(settings.AUP_URL))
     captcha = CaptchaField(label=u'CAPTCHA', help_text=u"Please enter the text displayed in the imge above.")
 

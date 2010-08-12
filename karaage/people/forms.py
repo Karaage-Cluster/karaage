@@ -34,19 +34,18 @@ from karaage.validators import username_re
 
 
 class BaseUserForm(forms.Form):
-    title = forms.ChoiceField(choices=TITLES)
+    title = forms.ChoiceField(choices=TITLES, required=False)
     first_name = forms.CharField()
     last_name = forms.CharField()
-    position = forms.CharField()
+    position = forms.CharField(required=False)
     email = forms.EmailField()
-    department = forms.CharField()
+    department = forms.CharField(required=False)
     supervisor = forms.CharField(required=False)
-    telephone = forms.CharField(label=u"Office Telephone")
+    telephone = forms.CharField(label=u"Office Telephone", required=False)
     mobile = forms.CharField(required=False, help_text=u"Used for emergency contact and password reset service.")
     fax = forms.CharField(required=False)
     address = forms.CharField(label=u"Mailing Address", required=False, widget=forms.Textarea())
-    country = forms.ChoiceField(choices=COUNTRIES, initial='AU')
-    website = forms.URLField(required=False)
+    country = forms.ChoiceField(choices=COUNTRIES, initial='AU', required=False)
 
     def save(self, person):
         data = self.cleaned_data
@@ -63,7 +62,6 @@ class BaseUserForm(forms.Form):
         person.fax = data['fax']
         person.address = data['address']
         person.country = data['country']
-        person.website = data['website']
         person.save()
         person.user.save()
 
@@ -106,7 +104,6 @@ class UserForm(BaseUserForm):
         user.fax = data['fax']
         user.address = data['address']
         user.country = data['country']
-        user.website = data['website']
         user.expires = data['expires']
         # This is here so comment is not overriden when user changes detail.
         if 'comment' in self.data:
