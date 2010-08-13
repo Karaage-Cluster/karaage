@@ -31,6 +31,7 @@ from karaage.people.forms import AddUserForm
 from karaage.datastores import create_new_user
 from karaage.util.helpers import check_password, create_password_hash
 from karaage.requests.models import ProjectCreateRequest
+from karaage.constants import TITLES
 
 
 class UserRegistrationForm(AddUserForm):
