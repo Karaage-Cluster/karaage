@@ -144,24 +144,33 @@ def user_detail(request, username):
 
     approved_viewers.append(person.id)
     
+    # institute delegate for the person
     try:
         approved_viewers.append(person.institute.delegate.id)
         approved_viewers.append(person.institute.active_delegate.id)
     except:
         pass
 
+    # other users, leaders and institute delegates of projects the person leads
     for project in person.leaders.all():
-        approved_viewers.append(project.leader.id)
-        approved_viewers.append(project.institute.delegate.id)
-        approved_viewers.append(project.institute.active_delegate.id)
-        
-    for project in person.project_set.all():
-        approved_viewers.append(project.leader.id)
+        for leader in project.leaders.all():
+            approved_viewers.append(leader.id)
         try:
             approved_viewers.append(project.institute.delegate.id)
             approved_viewers.append(project.institute.active_delegate.id)
         except:
             pass
+
+    # users, leaders and institute delegates of projects the person is in
+    for project in person.project_set.all():
+        for leader in project.leaders.all():
+            approved_viewers.append(leader.id)
+        try:
+            approved_viewers.append(project.institute.delegate.id)
+            approved_viewers.append(project.institute.active_delegate.id)
+        except:
+            pass
+
     d = True
     if not request.user.get_profile().id in approved_viewers:
         return HttpResponseForbidden('<h1>Access Denied</h1><p>You do not have permission to view details about this user.</p>')
