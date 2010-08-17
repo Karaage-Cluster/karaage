@@ -30,7 +30,6 @@ urlpatterns = patterns('karaage.usage.views',
     url(r'^institute/(?P<institute_id>\d+)/users/$', 'institute_users'),
     url(r'^(?P<machine_category_id>\d+)/institute/(?P<institute_id>\d+)/users/$', 'institute_users'),        
     url(r'^institute/(?P<institute_id>\d+)/$', 'institute_usage', name='kg_institute_usage'),
-    url(r'^institute/(?P<institute_id>\d+)/(?P<project_id>[-.\w]+)/$', 'project_usage', name='kg_project_usage'),
 
     url(r'^institute/(?P<institute_id>\d+)/$', 'institute_usage', name='kg_usage_institute'),
     url(r'^projects/(?P<project_id>[-.\w]+)/$', 'project_usage', name='kg_usage_project'),

@@ -198,7 +198,7 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
     return render_to_response('usage/usage_institute_detail.html', locals(), context_instance=RequestContext(request))
 
 
-def project_usage(request, project_id, institute_id=None, machine_category_id=settings.DEFAULT_MC):
+def project_usage(request, project_id, machine_category_id=settings.DEFAULT_MC):
     
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
     project = get_object_or_404(Project, pk=project_id)

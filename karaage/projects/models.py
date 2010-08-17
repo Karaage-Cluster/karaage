@@ -64,7 +64,7 @@ class Project(models.Model):
         
     @models.permalink
     def get_usage_url(self):
-        return ('kg_project_usage', [self.institute.id, self.pid])
+        return ('kg_usage_project', [self.pid])
         
     def activate(self):
         self.is_active = True
