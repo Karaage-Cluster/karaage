@@ -1,3 +1,10 @@
+karaage (2.4.5-1) testing; urgency=low
+
+  * Use BigInteger field in usage fields
+  * Fix import error in request forms
+
+ -- Sam Morrison <sam@vpac.org>  Tue, 17 Aug 2010 10:15:46 +1000
+
 karaage (2.4.4-1) testing; urgency=low
 
   * Set django password to unusable once user has password in ldap
