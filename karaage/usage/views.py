@@ -25,7 +25,7 @@ from django.core.urlresolvers import reverse
 from django.template.defaultfilters import dictsortreversed
 
 import datetime
-from decimal import *
+from decimal import Decimal
 
 from karaage.util.helpers import get_available_time
 from karaage.util.graphs import get_institute_graph_url, get_trend_graph_url, get_institute_trend_graph_url, get_project_trend_graph_url, get_institutes_trend_graph_urls
