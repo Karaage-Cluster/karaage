@@ -67,7 +67,6 @@ def add_edit_project(request, project_id=None):
 
             form.initial = project.__dict__
             form.initial['machine_category'] = form.initial['machine_category_id']
-            form.initial['leader'] = form.initial['leader_id']
             form.initial['institute'] = form.initial['institute_id']
     return render_to_response('projects/user_project_form.html', { 'form': form, 'project': project }, context_instance=RequestContext(request))
 
