@@ -66,6 +66,27 @@ class Project(models.Model):
     def get_usage_url(self):
         return ('kg_usage_project', [self.pid])
         
+    # Can person view this self record?
+    def can_view(self, person):
+
+        # Institute delegate==person can view any projects of institute
+        if self.institute.delegate.id == person.id:
+            return True
+        if self.institute.active_delegate.id == person.id:
+            return True
+
+        # Leader==person can view projects they lead
+        tmp = person.leaders.filter(pid=self.pid)
+        if tmp.count() > 0:
+            return True
+
+        # person can view own projects
+        tmp = person.project_set.filter(pid=self.pid)
+        if tmp.count() > 0:
+            return True
+
+        return False
+
     def activate(self):
         self.is_active = True
         self.is_approved = True

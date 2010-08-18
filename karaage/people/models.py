@@ -68,6 +68,14 @@ class Institute(models.Model):
         from karaage.graphs import gen_institute_bar
         gen_institute_bar(self, start, end, machine_category)
 
+    def can_view(self, person):
+        if institute.delegate.id == person.id:
+            return True
+        if institute.active_delegate.id == person.id:
+            return True
+
+        return False
+
 
 
 class Person(models.Model):
@@ -165,6 +173,31 @@ class Person(models.Model):
         return self.user.is_active
     is_active = property(_get_is_active, _set_is_active)
     
+    # Can person view this self record?
+    def can_view(self, person):
+
+        # Institute delegate==person can view any member of institute
+        if self.institute.delegate.id == person.id:
+            return True
+        if self.institute.active_delegate.id == person.id:
+            return True
+
+        # Leader==person can view people in projects they belong to
+        tmp = person.project_set.filter(users=self.id)
+        if tmp.count() > 0:
+            return True
+
+        # Leader==person can view people in projects they lead
+        tmp = person.leaders.filter(users=self.id)
+        if tmp.count() > 0:
+            return True
+
+        # person can view own self
+        if self.id == person.id:
+            return True
+
+        return False
+
     def get_full_name(self):
         return self.user.get_full_name()
     

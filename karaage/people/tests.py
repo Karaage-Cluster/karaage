@@ -50,6 +50,54 @@ class UserTestCase(TestCase):
         self.server.stop()
 
 
+    def do_permission_tests(self, test_object, users):
+        for person_id in users:
+            person = Person.objects.get(id=person_id)
+            result = test_object.can_view(person)
+            expected_result = users[person_id]
+            self.failUnlessEqual(result, expected_result)
+
+    def test_permissions(self):
+        project = Project.objects.get(pid="TestProject1")
+        self.do_permission_tests(project, {
+            1: True, # person 1 can view project as institute delegate and leader
+            2: False, # person 2 cannot view project
+            3: True, # person 3 can view project as member
+            4: False, # person 4 cannot view project
+        })
+
+        project = Person.objects.get(id=1)
+        self.do_permission_tests(project, {
+            1: True, # person 1 can view self, members in own project, members in institute
+            2: False, # person 2 cannot view project
+            3: True, # person 3 can view project as member
+            4: False, # person 4 cannot view project
+        })
+
+        project = Person.objects.get(id=2)
+        self.do_permission_tests(project, {
+            1: True, # person 1 can view self, members in own project, members in institute
+            2: False, # person 2 cannot view project
+            3: True, # person 3 can view project as member
+            4: False, # person 4 cannot view project
+        })
+
+        project = Person.objects.get(id=3)
+        self.do_permission_tests(project, {
+            1: True, # person 1 can view self, members in own project, members in institute
+            2: False, # person 2 cannot view project
+            3: True, # person 3 can view project as member
+            4: False, # person 4 cannot view project
+        })
+
+        project = Person.objects.get(id=4)
+        self.do_permission_tests(project, {
+            1: True, # person 1 can view self, members in own project, members in institute
+            2: False, # person 2 cannot view project
+            3: True, # person 3 can view project as member
+            4: False, # person 4 cannot view project
+        })
+
     def test_admin_create_user_with_account(self):
 
         users = Person.objects.count()

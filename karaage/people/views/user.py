@@ -139,47 +139,9 @@ def profile_software(request):
 def user_detail(request, username):
 
     person = get_object_or_404(Person, user__username=username)
-
-    approved_viewers = []
-
-    approved_viewers.append(person.id)
-    
-    # institute delegate for the person
-    try:
-        approved_viewers.append(person.institute.delegate.id)
-        approved_viewers.append(person.institute.active_delegate.id)
-    except:
-        pass
-
-    # other users, leaders and institute delegates of projects the person leads
-    for project in person.leaders.all():
-        for leader in project.leaders.all():
-            approved_viewers.append(leader.id)
-        for member in project.users.all():
-            approved_viewers.append(member.id)
-        try:
-            approved_viewers.append(project.institute.delegate.id)
-            approved_viewers.append(project.institute.active_delegate.id)
-        except:
-            pass
-
-    # users, leaders and institute delegates of projects the person is in
-    for project in person.project_set.all():
-        for leader in project.leaders.all():
-            approved_viewers.append(leader.id)
-        for member in project.users.all():
-            approved_viewers.append(member.id)
-        try:
-            approved_viewers.append(project.institute.delegate.id)
-            approved_viewers.append(project.institute.active_delegate.id)
-        except:
-            pass
-
-    d = True
-    if not request.user.get_profile().id in approved_viewers:
+    if not person.can_view(request.user.get_profile()):
         return HttpResponseForbidden('<h1>Access Denied</h1><p>You do not have permission to view details about this user.</p>')
 
-    
     return render_to_response('people/user_person_detail.html', locals(), context_instance=RequestContext(request))
 
 
@@ -229,9 +191,7 @@ def institute_users_list(request, institute_id):
 
     institute = get_object_or_404(Institute, pk=institute_id)
 
-    ids = [ institute.delegate.id , institute.active_delegate.id, ]
-
-    if not request.user.get_profile().id in ids:
+    if not institute.can_view(request.user.get_profile()):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     user_list = institute.person_set.all()
