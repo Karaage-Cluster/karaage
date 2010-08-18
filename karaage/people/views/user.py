@@ -155,8 +155,8 @@ def user_detail(request, username):
     for project in person.leaders.all():
         for leader in project.leaders.all():
             approved_viewers.append(leader.id)
-        for user in project.users.all():
-            approved_viewers.append(user.id)
+        for member in project.users.all():
+            approved_viewers.append(member.id)
         try:
             approved_viewers.append(project.institute.delegate.id)
             approved_viewers.append(project.institute.active_delegate.id)
@@ -167,8 +167,8 @@ def user_detail(request, username):
     for project in person.project_set.all():
         for leader in project.leaders.all():
             approved_viewers.append(leader.id)
-        for user in project.users.all():
-            approved_viewers.append(user.id)
+        for member in project.users.all():
+            approved_viewers.append(member.id)
         try:
             approved_viewers.append(project.institute.delegate.id)
             approved_viewers.append(project.institute.active_delegate.id)
