@@ -75,6 +75,9 @@ def add_edit_project(request, project_id=None):
 def project_detail(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
 
+    if not project.can_view(request.user.get_profile()):
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
+
     return render_to_response('projects/user_project_detail.html', locals(), context_instance=RequestContext(request))
 
 
@@ -83,9 +86,7 @@ def institute_projects_list(request, institute_id):
 
     institute = get_object_or_404(Institute, pk=institute_id)
 
-    ids = [ institute.delegate.id , institute.active_delegate.id, ]
-
-    if not request.user.get_profile().id in ids:
+    if not institute.can_view(request.user.get_profile()):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     project_list = institute.project_set.all()
