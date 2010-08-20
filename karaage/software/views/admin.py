@@ -62,7 +62,6 @@ def software_list(request):
     return render_to_response('software/software_list.html', locals(), context_instance=RequestContext(request))
 
 
-
 def software_detail(request, package_id):
     package = get_object_or_404(SoftwarePackage, pk=package_id)
 
@@ -199,7 +198,6 @@ def remove_member(request, package_id, user_id):
     return HttpResponseRedirect(package.get_absolute_url())
 
 
-
 @permission_required('software.change_softwareaccessrequest')
 def softwarerequest_list(request):
     page_no = int(request.GET.get('page', 1))
@@ -227,7 +225,6 @@ def softwarerequest_approve(request, softwarerequest_id):
         return HttpResponseRedirect(reverse('kg_softwarerequest_list'))
 
     return render_to_response('software/request_approve.html', {'softwarerequest': softwarerequest,}, context_instance=RequestContext(request))
-
 
 
 @permission_required('software.change_softwareaccessrequest')
