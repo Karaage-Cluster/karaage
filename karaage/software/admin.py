@@ -17,7 +17,7 @@
 
 from django.contrib import admin
 
-from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense, SoftwareLicenseAgreement
+from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense, SoftwareLicenseAgreement, SoftwareAccessRequest
 
 
 admin.site.register(SoftwareCategory)
