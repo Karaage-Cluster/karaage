@@ -222,6 +222,7 @@ def softwarerequest_approve(request, softwarerequest_id):
         conn.add_group_member('gidNumber=%s' % (softwarerequest.software_license.package.gid, softwarerequest.person.username))
         messages.add_message(request, messages.INFO, "Software request approved successfully ")
         log(request.user, softwarerequest.software_license.package, 1, "User %s approved" % person)
+        softwarerequest.delete()
         return HttpResponseRedirect(reverse('kg_softwarerequest_list'))
 
     return render_to_response('software/request_approve.html', {'softwarerequest': softwarerequest,}, context_instance=RequestContext(request))
