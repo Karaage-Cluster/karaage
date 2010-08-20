@@ -23,6 +23,7 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from django.contrib import messages
 
+import datetime
 from andsome.util.filterspecs import Filter, FilterBar
 from placard.client import LDAPClient
 
