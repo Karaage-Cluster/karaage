@@ -16,6 +16,9 @@
 {{ software_license.text|safe|linebreaks }}
 </div>
 {% endif %}
+{% if package.restricted %}
+<p>NOTE: This software is restrcted and requires admin approval. You will recieve notification via email once your request has been processed</p>
+{% endif %}
 <form method="post" action=".">{% csrf_token %}
 
 <p>By clicking on 'I accept' you are agreeing to the conditions above.</p>
