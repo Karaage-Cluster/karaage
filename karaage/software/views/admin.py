@@ -22,6 +22,7 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.contrib import messages
+from django.core.urlresolvers import reverse
 
 import datetime
 from andsome.util.filterspecs import Filter, FilterBar
@@ -220,9 +221,9 @@ def softwarerequest_approve(request, softwarerequest_id):
             date=datetime.datetime.today(),
             )
         conn = LDAPClient()
-        conn.add_group_member('gidNumber=%s' % (softwarerequest.software_license.package.gid, softwarerequest.person.username))
+        conn.add_group_member('gidNumber=%s' % softwarerequest.software_license.package.gid, softwarerequest.person.username)
         messages.add_message(request, messages.INFO, "Software request approved successfully ")
-        log(request.user, softwarerequest.software_license.package, 1, "User %s approved" % person)
+        log(request.user, softwarerequest.software_license.package, 1, "User %s approved" % softwarerequest.person)
         softwarerequest.delete()
         return HttpResponseRedirect(reverse('kg_softwarerequest_list'))
 
