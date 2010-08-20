@@ -3,6 +3,10 @@
 {% block content %}
  
 <h1>{{ package.name }}</h1>
+{% if package.restricted %}
+<p class="errornote">NOTE: This software is restrcted and requires admin approval. You will recieve notification via email once your request has been processed</p>
+{% endif %}
+
 {{ package.description|linebreaks }}
 <p>Homepage: {{ package.homepage|urlize }}</p>
 {% if package.tutorial_url %}<p>Tutorial: {{ package.tutorial_url|urlize }}</p>{% endif %}
@@ -16,9 +20,7 @@
 {{ software_license.text|safe|linebreaks }}
 </div>
 {% endif %}
-{% if package.restricted %}
-<p>NOTE: This software is restrcted and requires admin approval. You will recieve notification via email once your request has been processed</p>
-{% endif %}
+
 <form method="post" action=".">{% csrf_token %}
 
 <p>By clicking on 'I accept' you are agreeing to the conditions above.</p>
