@@ -52,7 +52,7 @@ urlpatterns += patterns('karaage.software.views.admin',
     url(r'^add/$', 'add_package', name='kg_software_add'),
     url(r'^categories/$', 'category_list', name='kg_software_category_list'),
     url(r'^requests/$', 'softwarerequest_list', name='kg_softwarerequest_list'),
-    url(r'^requests/(?P<package_id>\d+)/approve/$', 'softwarerequest_detail', name='kg_softwarerequest_approve'),
+    url(r'^requests/(?P<package_id>\d+)/approve/$', 'softwarerequest_approve', name='kg_softwarerequest_approve'),
     url(r'^requests/(?P<package_id>\d+)/decline/$', 'softwarerequest_delete', name='kg_softwarerequest_delete'),
                         
     url(r'^(?P<package_id>\d+)/$', 'software_detail', name='kg_software_detail'),

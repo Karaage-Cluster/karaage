@@ -145,18 +145,18 @@ def add_edit_license(request, package_id, license_id=None):
 def delete_version(request, package_id, version_id):
     
     version = get_object_or_404(SoftwareVersion, pk=version_id)
-
+    
     if request.method == 'POST':
         version.delete()
         log(request.user, version.package, 3, 'Deleted version: %s' % version)
         
         request.user.message_set.create(message="Version '%s' was deleted succesfully" % version)
         return HttpResponseRedirect(version.get_absolute_url())
-
+    
     return render_to_response('software/version_confirm_delete.html', locals(), context_instance=RequestContext(request))
 
 
-@add_edit_version = permission_required('software.change_softwareversion')
+@permission_required('software.change_softwareversion')
 def add_edit_version(request, package_id, version_id=None):
 
     package = get_object_or_404(SoftwarePackage, pk=package_id)
