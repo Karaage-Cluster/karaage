@@ -19,7 +19,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth.decorators import permission_required, login_required
-from django.core.paginator import QuerySetPaginator
+from django.core.paginator import Paginator
 from django.db.models import Q
 
 import datetime
@@ -111,7 +111,7 @@ def user_list(request, queryset=Person.objects.all()):
     filter_list.append(DateFilter(request, 'date_approved'))
     filter_bar = FilterBar(request, filter_list)
 
-    p = QuerySetPaginator(user_list, 50)
+    p = Paginator(user_list, 50)
     page = p.page(page_no)
     locked_count = 0
 
@@ -299,7 +299,7 @@ def struggling(request):
     filter_list.append(DateFilter(request, 'date_created'))
     filter_bar = FilterBar(request, filter_list)
 
-    p = QuerySetPaginator(user_accounts, 50)
+    p = Paginator(user_accounts, 50)
     page = p.page(page_no)
 
     return render_to_response('people/struggling.html', locals(), context_instance=RequestContext(request))

@@ -19,7 +19,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth.decorators import permission_required, login_required
-from django.core.paginator import QuerySetPaginator
+from django.core.paginator import Paginator
 from andsome.util.filterspecs import Filter, FilterBar
 
 import datetime
@@ -42,7 +42,7 @@ def report_list(request):
     filter_list.append(Filter(request, 'survey_group', SurveyGroup.objects.all()))
     filter_bar = FilterBar(request, filter_list)
 
-    p = QuerySetPaginator(report_list, 50)
+    p = Paginator(report_list, 50)
     page = p.page(page_no)
 
     return render_to_response('projectreports/report_list.html', locals(), context_instance=RequestContext(request))
