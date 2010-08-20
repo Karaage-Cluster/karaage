@@ -206,7 +206,7 @@ def softwarerequest_list(request):
     softwarerequest_list = SoftwareAccessRequest.objects.all()  
     p = Paginator(softwarerequest_list, 50)
     page = p.page(page_no)
-    return render_to_response('software/request_list.html', {'softwarerequest_list': softwarerequest_list,}, context_instance=RequestContext(request))
+    return render_to_response('software/request_list.html', {'softwarerequest_list': softwarerequest_list, 'page': page,}, context_instance=RequestContext(request))
     
 
 @permission_required('software.change_softwareaccessrequest')
