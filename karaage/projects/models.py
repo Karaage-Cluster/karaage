@@ -69,14 +69,13 @@ class Project(models.Model):
     # Can person view this self record?
     def can_view(self, person):
 
-        # Institute delegate==person can view any projects of institute
-        try:
+        # Institute delegate==person can view any member of institute
+        if self.institute.delegate is not None:
             if self.institute.delegate.id == person.id:
                 return True
-            if self.institute.active_delegate.id == person.id:
+        if self.institute.active_delegate is not None:
+            if  self.institute.active_delegate.id == person.id:
                 return True
-        except:
-            pass
 
         # Leader==person can view projects they lead
         tmp = person.leaders.filter(pid=self.pid)

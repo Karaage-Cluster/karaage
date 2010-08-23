@@ -177,13 +177,12 @@ class Person(models.Model):
     def can_view(self, person):
 
         # Institute delegate==person can view any member of institute
-        try:
+        if self.institute.delegate is not None:
             if self.institute.delegate.id == person.id:
                 return True
-            if self.institute.active_delegate.id == person.id:
+        if self.institute.active_delegate is not None:
+            if  self.institute.active_delegate.id == person.id:
                 return True
-        except:
-            pass
 
         # Leader==person can view people in projects they belong to
         tmp = person.project_set.filter(users=self.id)
