@@ -18,7 +18,7 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django import forms
-from django.core.paginator import QuerySetPaginator
+from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
@@ -97,7 +97,7 @@ def log_detail(request, object_id, model):
         object_id=object_id
     )
     page_no = 1
-    p = QuerySetPaginator(log_list, 50)
+    p = Paginator(log_list, 50)
     page_obj = p.page(page_no)
     
     short = True

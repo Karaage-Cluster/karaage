@@ -57,7 +57,7 @@ def add_package(request, package_id):
         
         if package.restricted:
             software_request, created = SoftwareAccessRequest.objects.get_or_create(
-                user=person,
+                person=person,
                 software_license=software_license,
                 )
         else:

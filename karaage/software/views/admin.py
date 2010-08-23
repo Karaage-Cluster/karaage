@@ -22,11 +22,13 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.contrib import messages
+from django.core.urlresolvers import reverse
 
+import datetime
 from andsome.util.filterspecs import Filter, FilterBar
 from placard.client import LDAPClient
 
-from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense, SoftwareAccessRequest
+from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense, SoftwareAccessRequest, SoftwareLicenseAgreement
 from karaage.software.forms import AddPackageForm, LicenseForm, SoftwareVersionForm
 from karaage.people.models import Person
 from karaage.util import log_object as log
@@ -60,7 +62,6 @@ def software_list(request):
     page = p.page(page_no)
 
     return render_to_response('software/software_list.html', locals(), context_instance=RequestContext(request))
-
 
 
 def software_detail(request, package_id):
@@ -145,18 +146,18 @@ def add_edit_license(request, package_id, license_id=None):
 def delete_version(request, package_id, version_id):
     
     version = get_object_or_404(SoftwareVersion, pk=version_id)
-
+    
     if request.method == 'POST':
         version.delete()
         log(request.user, version.package, 3, 'Deleted version: %s' % version)
         
         request.user.message_set.create(message="Version '%s' was deleted succesfully" % version)
         return HttpResponseRedirect(version.get_absolute_url())
-
+    
     return render_to_response('software/version_confirm_delete.html', locals(), context_instance=RequestContext(request))
 
 
-@add_edit_version = permission_required('software.change_softwareversion')
+@permission_required('software.change_softwareversion')
 def add_edit_version(request, package_id, version_id=None):
 
     package = get_object_or_404(SoftwarePackage, pk=package_id)
@@ -199,14 +200,13 @@ def remove_member(request, package_id, user_id):
     return HttpResponseRedirect(package.get_absolute_url())
 
 
-
 @permission_required('software.change_softwareaccessrequest')
 def softwarerequest_list(request):
     page_no = int(request.GET.get('page', 1))
     softwarerequest_list = SoftwareAccessRequest.objects.all()  
     p = Paginator(softwarerequest_list, 50)
     page = p.page(page_no)
-    return render_to_response('software/request_list.html', {'softwarerequest_list': softwarerequest_list,}, context_instance=RequestContext(request))
+    return render_to_response('software/request_list.html', {'softwarerequest_list': softwarerequest_list, 'page': page,}, context_instance=RequestContext(request))
     
 
 @permission_required('software.change_softwareaccessrequest')
@@ -221,13 +221,13 @@ def softwarerequest_approve(request, softwarerequest_id):
             date=datetime.datetime.today(),
             )
         conn = LDAPClient()
-        conn.add_group_member('gidNumber=%s' % (softwarerequest.software_license.package.gid, softwarerequest.person.username))
+        conn.add_group_member('gidNumber=%s' % softwarerequest.software_license.package.gid, softwarerequest.person.username)
         messages.add_message(request, messages.INFO, "Software request approved successfully ")
-        log(request.user, softwarerequest.software_license.package, 1, "User %s approved" % person)
+        log(request.user, softwarerequest.software_license.package, 1, "User %s approved" % softwarerequest.person)
+        softwarerequest.delete()
         return HttpResponseRedirect(reverse('kg_softwarerequest_list'))
 
     return render_to_response('software/request_approve.html', {'softwarerequest': softwarerequest,}, context_instance=RequestContext(request))
-
 
 
 @permission_required('software.change_softwareaccessrequest')

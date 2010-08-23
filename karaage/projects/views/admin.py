@@ -23,7 +23,7 @@ from django.contrib.sites.models import Site
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.models import LogEntry
 from django.db.models import Q
-from django.core.paginator import QuerySetPaginator
+from django.core.paginator import Paginator
 
 from andsome.util.filterspecs import Filter, FilterBar
 from andsome.middleware.threadlocals import get_current_user
@@ -153,10 +153,10 @@ def project_list(request, queryset=Project.objects.select_related().all(), templ
     filter_bar = FilterBar(request, filter_list)
 
     if paginate:
-        p = QuerySetPaginator(project_list, 50)
+        p = Paginator(project_list, 50)
         page = p.page(page_no)
     else:
-        p = QuerySetPaginator(project_list, 100000)
+        p = Paginator(project_list, 100000)
         page = p.page(page_no)
 
     return render_to_response(template_name, locals(), context_instance=RequestContext(request))
