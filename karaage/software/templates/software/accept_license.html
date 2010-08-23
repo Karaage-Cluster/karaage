@@ -12,8 +12,8 @@
 {% if package.tutorial_url %}<p>Tutorial: {{ package.tutorial_url|urlize }}</p>{% endif %}
 
 
-<div class="border">
 {% if software_license %}
+<div class="border">
 <h3>End User License Agreement</h3>
 <p><a href="print/">Print version</a></p>
 {% if software_license.version %}<p>Version: {{ software_license.version }}</p>{% endif %}
