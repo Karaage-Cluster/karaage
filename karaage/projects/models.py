@@ -69,24 +69,38 @@ class Project(models.Model):
     # Can person view this self record?
     def can_view(self, person):
 
+        if person.user.is_staff:
+            print "Yes: is staff"
+            return True
+
+        if not self.is_active:
+            print "No: is deleted"
+            return False
+
         # Institute delegate==person can view any member of institute
-        if self.institute.delegate is not None:
-            if self.institute.delegate.id == person.id:
-                return True
-        if self.institute.active_delegate is not None:
-            if  self.institute.active_delegate.id == person.id:
-                return True
+        if self.institute.is_active:
+            if self.institute.delegate is not None:
+                if self.institute.delegate.id == person.id:
+                    print "Yes: is institute '%d' delegate"%(self.institute.pk)
+                    return True
+            if self.institute.active_delegate is not None:
+                if  self.institute.active_delegate.id == person.id:
+                    print "Yes: is institute '%d' active delegate"%(self.institute.pk)
+                    return True
 
         # Leader==person can view projects they lead
-        tmp = person.leaders.filter(pid=self.pid)
+        tmp = self.leaders.filter(pk=person.pk)
         if tmp.count() > 0:
+            print "Yes: is project leader"
             return True
 
         # person can view own projects
-        tmp = person.project_set.filter(pid=self.pid)
+        tmp = self.users.filter(pk=person.pk)
         if tmp.count() > 0:
+            print "Yes: is own project"
             return True
 
+        print "No"
         return False
 
     def activate(self):

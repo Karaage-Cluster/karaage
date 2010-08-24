@@ -69,6 +69,15 @@ class Institute(models.Model):
         gen_institute_bar(self, start, end, machine_category)
 
     def can_view(self, person):
+        # staff members can view everything
+        if person.user.is_staff:
+            return True
+
+        if not self.is_active:
+            print "No: is deleted"
+            return False
+
+        # Institute delegate==person can view institute
         if institute.delegate.id == person.id:
             return True
         if institute.active_delegate.id == person.id:
@@ -175,29 +184,46 @@ class Person(models.Model):
     
     # Can person view this self record?
     def can_view(self, person):
+        from karaage.projects.models import Project
 
-        # Institute delegate==person can view any member of institute
-        if self.institute.delegate is not None:
-            if self.institute.delegate.id == person.id:
-                return True
-        if self.institute.active_delegate is not None:
-            if  self.institute.active_delegate.id == person.id:
-                return True
-
-        # Leader==person can view people in projects they belong to
-        tmp = person.project_set.filter(users=self.id)
-        if tmp.count() > 0:
+        # staff members can view everything
+        if person.user.is_staff:
+            print "Yes: is_staff"
             return True
 
-        # Leader==person can view people in projects they lead
-        tmp = person.leaders.filter(users=self.id)
-        if tmp.count() > 0:
-            return True
+        if not self.is_active:
+            print "No: is deleted"
+            return False
 
         # person can view own self
         if self.id == person.id:
+            print "Yes: person is self"
             return True
 
+        # Institute delegate==person can view any member of institute
+        if self.institute.is_active:
+            if self.institute.delegate is not None:
+                if self.institute.delegate.id == person.id:
+                    print "Yes: is institute '%d' delegate"%(self.institute.pk)
+                    return True
+            if self.institute.active_delegate is not None:
+                if  self.institute.active_delegate.id == person.id:
+                    print "Yes: is institute '%d' active delegate"%(self.institute.pk)
+                    return True
+
+        # person can view people in projects they belong to
+        tmp = Project.objects.filter(users=self.id).filter(users=person.id).filter(is_active=True)
+        if tmp.count() > 0:
+            print "Yes: person also belongs to same project"
+            return True
+
+        # Leader==person can view people in projects they lead
+        tmp = Project.objects.filter(users=self.id).filter(leaders=person.id).filter(is_active=True)
+        if tmp.count() > 0:
+            print "Yes: person also leads the same project"
+            return True
+
+        print "No"
         return False
 
     def get_full_name(self):
