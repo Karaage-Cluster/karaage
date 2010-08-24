@@ -18,6 +18,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 
 from placard.client import LDAPClient
 from andsome.middleware.threadlocals import get_current_user
@@ -204,12 +205,18 @@ class Person(models.Model):
         if self.institute.is_active:
             if self.institute.delegate is not None:
                 if self.institute.delegate.id == person.id:
-                    print "Yes: is institute '%d' delegate"%(self.institute.pk)
+                    print "Yes: is institute '%d' delegate of user"%(self.institute.pk)
                     return True
             if self.institute.active_delegate is not None:
                 if  self.institute.active_delegate.id == person.id:
-                    print "Yes: is institute '%d' active delegate"%(self.institute.pk)
+                    print "Yes: is institute '%d' active delegate of user"%(self.institute.pk)
                     return True
+
+        # Institute delegate==person can view people in projects that are a member of institute
+        tmp = Project.objects.filter(users=self.id).filter(Q(institute__delegate=person)|Q(institute__active_delegate=person)).filter(is_active=True)
+        if tmp.count() > 0:
+            print "Yes: is institute delegate of project"
+            return True
 
         # person can view people in projects they belong to
         tmp = Project.objects.filter(users=self.id).filter(users=person.id).filter(is_active=True)

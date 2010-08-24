@@ -148,8 +148,8 @@ class UserTestCase(TestCase):
         })
 
         # change institute of all people
-        # Test institute leader cannot access people in project despite being institute leader for project,
-        # as people are not in institute
+        # Test institute leader can access people in project despite not being
+        # institute leader for these people.
         print "-------------------------------------------------------------------"
         Person.objects.all().update(institute=2)
         Institute.objects.filter(pk=2).update(delegate=2,active_delegate=2)
@@ -175,7 +175,7 @@ class UserTestCase(TestCase):
 
         test_object = Person.objects.get(id=2)
         self.do_permission_tests(test_object, {
-            1: False, # person 1 cannot view: project delegate doesn't count
+            1: True, # person 1 can view: project's institute leader
             2: True, # person 2 can view: self, person's institute delegate, project leader
             3: True, # person 3 can view: project member
             4: True, # person 4 can view: is_staff
@@ -183,7 +183,7 @@ class UserTestCase(TestCase):
 
         test_object = Person.objects.get(id=3)
         self.do_permission_tests(test_object, {
-            1: False, # person 1 cannot view
+            1: True, # person 1 can view: project's institute leader
             2: True, # person 2 can view: project member, person's institute delegate, project leader
             3: True, # person 3 can view: self, project member
             4: True, # person 4 can view: is_staff
