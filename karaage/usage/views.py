@@ -17,7 +17,7 @@
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.conf import settings
 from django.db.models import Q
 from django.db import connection
@@ -143,6 +143,9 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
     start, end = get_date_range(request)
     institute_list = Institute.active.all()
 
+    if not institute.can_view(request.user.get_profile()):
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
+
     available_usage, ave_cpus = get_available_time(start, end, machine_category)
 
     querystring = request.META.get('QUERY_STRING', '')
@@ -202,6 +205,9 @@ def project_usage(request, project_id, machine_category_id=settings.DEFAULT_MC):
     
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
     project = get_object_or_404(Project, pk=project_id)
+
+    if not project.can_view(request.user.get_profile()):
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     if project.machine_categories.count() == 1:
         machine_category = project.machine_categories.all()[0]
@@ -479,6 +485,9 @@ def institute_users(request, institute_id, machine_category_id=1):
     machine_category = MachineCategory.objects.get(pk=machine_category_id)
     institute = get_object_or_404(Institute, pk=institute_id)
     
+    if not institute.can_view(request.user.get_profile()):
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
+
     start, end = get_date_range(request)
 
     available_time, cpus = get_available_time(start, end, machine_category)
