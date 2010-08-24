@@ -75,7 +75,6 @@ class Institute(models.Model):
             return True
 
         if not self.is_active:
-            print "No: is deleted"
             return False
 
         # Institute delegate==person can view institute
@@ -189,48 +188,38 @@ class Person(models.Model):
 
         # staff members can view everything
         if person.user.is_staff:
-            print "Yes: is_staff"
             return True
 
         if not self.is_active:
-            print "No: is deleted"
             return False
 
         # person can view own self
         if self.id == person.id:
-            print "Yes: person is self"
             return True
 
         # Institute delegate==person can view any member of institute
         if self.institute.is_active:
             if self.institute.delegate is not None:
                 if self.institute.delegate.id == person.id:
-                    print "Yes: is institute '%d' delegate of user"%(self.institute.pk)
                     return True
             if self.institute.active_delegate is not None:
                 if  self.institute.active_delegate.id == person.id:
-                    print "Yes: is institute '%d' active delegate of user"%(self.institute.pk)
                     return True
 
         # Institute delegate==person can view people in projects that are a member of institute
         tmp = Project.objects.filter(users=self.id).filter(Q(institute__delegate=person)|Q(institute__active_delegate=person)).filter(is_active=True)
         if tmp.count() > 0:
-            print "Yes: is institute delegate of project"
             return True
 
         # person can view people in projects they belong to
         tmp = Project.objects.filter(users=self.id).filter(users=person.id).filter(is_active=True)
         if tmp.count() > 0:
-            print "Yes: person also belongs to same project"
             return True
 
         # Leader==person can view people in projects they lead
         tmp = Project.objects.filter(users=self.id).filter(leaders=person.id).filter(is_active=True)
         if tmp.count() > 0:
-            print "Yes: person also leads the same project"
             return True
-
-        print "No"
         return False
 
     def get_full_name(self):
