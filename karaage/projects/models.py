@@ -18,13 +18,11 @@
 from django.db import models
 
 import datetime
-from decimal import Decimal
 from andsome.middleware.threadlocals import get_current_user
 
 from karaage.people.models import Person, Institute
 from karaage.machines.models import MachineCategory
-
-from managers import ActiveProjectManager, DeletedProjectManager
+from karaage.projects.managers import ActiveProjectManager, DeletedProjectManager
 
 
 class Project(models.Model):
