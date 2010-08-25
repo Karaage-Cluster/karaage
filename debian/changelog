@@ -1,3 +1,12 @@
+karaage (2.4.6-1) testing; urgency=low
+
+  * Added ability to request software.
+  * Cleaned up permission system on who can view what
+  * Moved project usage URL
+  * Bug fixes
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 25 Aug 2010 10:06:53 +1000
+
 karaage (2.4.5-1) testing; urgency=low
 
   * Use BigInteger field in usage fields
