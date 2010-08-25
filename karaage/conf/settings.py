@@ -64,6 +64,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
     'django.contrib.messages.context_processors.messages',
     'karaage.context_processors.common',
+    'andsome.context_processors.base_url',
 )
 
 # List of callables that know how to import templates from various sources.
