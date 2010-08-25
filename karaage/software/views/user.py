@@ -26,7 +26,7 @@ import datetime
 from placard.client import LDAPClient
 
 from karaage.software.models import SoftwarePackage, SoftwareLicenseAgreement, SoftwareAccessRequest
-from karaage.utils.email_messages import send_software_request_email
+from karaage.util.email_messages import send_software_request_email
 
 @login_required
 def add_package_list(request):
