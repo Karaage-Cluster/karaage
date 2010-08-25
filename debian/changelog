@@ -1,4 +1,4 @@
-karaage (2.4.7-1) lucid; urgency=low
+karaage (2.4.7-1) testing; urgency=low
 
   * Use django-andsome baseurl context
   * Bug fixes
