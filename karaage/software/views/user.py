@@ -21,6 +21,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template.defaultfilters import wordwrap
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 import datetime
 from placard.client import LDAPClient
@@ -65,6 +66,7 @@ def add_package(request, package_id):
                 )
             if created:
                 send_software_request_email(software_request)
+                messages.add_message(request, messages.INFO, "Software request sent.")
         else:
             SoftwareLicenseAgreement.objects.create(
                 user=person,
