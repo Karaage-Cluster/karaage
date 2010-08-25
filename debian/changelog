@@ -1,3 +1,10 @@
+karaage (2.4.7-1) lucid; urgency=low
+
+  * Use django-andsome baseurl context
+  * Bug fixes
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 25 Aug 2010 16:27:30 +1000
+
 karaage (2.4.6-1) testing; urgency=low
 
   * Added ability to request software.
