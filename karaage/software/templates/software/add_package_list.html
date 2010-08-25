@@ -7,7 +7,7 @@
 	{% for s in software_list %}
 		{% if s.accepted or s.pending_request %}
  			<h2>{{ s.package }}<span class="small green">
- 			{% if s.accepted %}- accepted {{ s.accepted_date|date }}{% endif %}{% s.pending_request %}- Request pending{% endif %}</span></h2>
+ 			{% if s.accepted %}- accepted {{ s.accepted_date|date }}{% endif %}{% if s.pending_request %}- Request pending{% endif %}</span></h2>
  		{% else %}
  			<a href="{{ s.package.id }}/">{{ s.package }}</a>
  		{% endif %}
