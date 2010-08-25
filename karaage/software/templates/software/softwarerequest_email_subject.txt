@@ -1,1 +1,1 @@
-New software request from {{ requestor }}
+New software request from {{ requester }}
