@@ -179,3 +179,17 @@ def send_software_request_email(software_request):
 
     send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
     
+
+def send_software_request_approved_email(software_request):
+    """Sends an email to user when software request approved"""
+    site = Site.objects.get_current()
+    context = CONTEXT.copy()
+    context['receiver'] = software_request.person
+    context['software'] = software_request.software_license.package
+
+    to_email = software_request.person.email   
+    subject = render_to_string('software/softwarerequest_approved_email_subject.txt', context)
+    body = render_to_string('software/softwarerequest_approved_email_body.txt', context)
+
+    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+    

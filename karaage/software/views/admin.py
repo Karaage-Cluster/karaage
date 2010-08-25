@@ -32,7 +32,7 @@ from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareV
 from karaage.software.forms import AddPackageForm, LicenseForm, SoftwareVersionForm
 from karaage.people.models import Person
 from karaage.util import log_object as log
-
+from karaage.util.email_messages import send_software_request_approved_email
 
 def software_list(request):
     software_list = SoftwarePackage.objects.all()
@@ -222,6 +222,7 @@ def softwarerequest_approve(request, softwarerequest_id):
         conn = LDAPClient()
         conn.add_group_member('gidNumber=%s' % softwarerequest.software_license.package.gid, softwarerequest.person.username)
         messages.info(request, "Software request approved successfully")
+        send_software_request_approved_email(softwarerequest)
         log(request.user, softwarerequest.software_license.package, 1, "User %s approved" % softwarerequest.person)
         softwarerequest.delete()
         return HttpResponseRedirect(reverse('kg_softwarerequest_list'))
@@ -236,7 +237,7 @@ def softwarerequest_delete(request, softwarerequest_id):
     if request.method == 'POST':
         
         softwarerequest.delete()
-        messages.info(request, "Software request declined successfully")
+        messages.info(request, "Software request deleted successfully")
         return HttpResponseRedirect(reverse('kg_softwarerequest_list'))
 
     return render_to_response('software/request_delete.html', {'softwarerequest': softwarerequest,}, context_instance=RequestContext(request))
