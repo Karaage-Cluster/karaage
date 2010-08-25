@@ -26,7 +26,7 @@ import datetime
 from placard.client import LDAPClient
 
 from karaage.software.models import SoftwarePackage, SoftwareLicenseAgreement, SoftwareAccessRequest
-
+from karaage.utils.email_messages import send_software_request_email
 
 @login_required
 def add_package_list(request):
@@ -37,10 +37,13 @@ def add_package_list(request):
     for s in SoftwarePackage.objects.all():
         data = {'package': s}
         license_agreements = SoftwareLicenseAgreement.objects.filter(user=person, license__package=s)
-        if len(license_agreements) > 0:
+        if license_agreements.count() > 0:
             la = license_agreements.latest()
             data['accepted'] = True
             data['accepted_date'] = la.date
+        software_requests = SoftwareAccessRequest.objects.filter(person=person, software_license__package=s)
+        if software_requests.count() > 0:
+            data['pending_request'] = True
         software_list.append(data)
             
     return render_to_response('software/add_package_list.html', locals(), context_instance=RequestContext(request))
@@ -60,6 +63,8 @@ def add_package(request, package_id):
                 person=person,
                 software_license=software_license,
                 )
+            if created:
+                send_software_request_email(software_request)
         else:
             SoftwareLicenseAgreement.objects.create(
                 user=person,

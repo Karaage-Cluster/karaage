@@ -166,3 +166,16 @@ def send_bounced_warning(person):
                 log(active_user, p.leader, 2, 'Sent email about bounced emails from %s' % person)
 
 
+def send_software_request_email(software_request):
+    """Sends an email to ACCOUNTS_EMAIL when user requests restricted software"""
+    site = Site.objects.get_current()
+    context = CONTEXT.copy()
+    context['requester'] = software_request.person
+    context['software'] = software_request.software_license.package
+
+    to_email = settings.ACCOUNTS_EMAIL      
+    subject = render_to_string('software/softwarerequest_email_subject.txt', context)
+    body = render_to_string('software/softwarerequest_email_body.txt', context)
+
+    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+    
