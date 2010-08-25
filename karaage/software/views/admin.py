@@ -35,7 +35,7 @@ from karaage.util import log_object as log
 
 
 def software_list(request):
-
+    messages.info(request, 'SAMM')
     software_list = SoftwarePackage.objects.all()
     page_no = int(request.GET.get('page', 1))
 
@@ -222,7 +222,7 @@ def softwarerequest_approve(request, softwarerequest_id):
             )
         conn = LDAPClient()
         conn.add_group_member('gidNumber=%s' % softwarerequest.software_license.package.gid, softwarerequest.person.username)
-        messages.add_message(request, messages.INFO, "Software request approved successfully")
+        messages.info(request, "Software request approved successfully")
         log(request.user, softwarerequest.software_license.package, 1, "User %s approved" % softwarerequest.person)
         softwarerequest.delete()
         return HttpResponseRedirect(reverse('kg_softwarerequest_list'))
@@ -237,7 +237,7 @@ def softwarerequest_delete(request, softwarerequest_id):
     if request.method == 'POST':
         
         softwarerequest.delete()
-        messages.add_message(request, messages.INFO, "Software request declined successfully")
+        messages.info(request, "Software request declined successfully")
         return HttpResponseRedirect(reverse('kg_softwarerequest_list'))
 
     return render_to_response('software/request_delete.html', {'softwarerequest': softwarerequest,}, context_instance=RequestContext(request))
