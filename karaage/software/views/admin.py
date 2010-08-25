@@ -35,7 +35,6 @@ from karaage.util import log_object as log
 
 
 def software_list(request):
-    messages.info(request, 'SAMM')
     software_list = SoftwarePackage.objects.all()
     page_no = int(request.GET.get('page', 1))
 
