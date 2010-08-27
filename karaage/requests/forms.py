@@ -20,7 +20,6 @@ from django.conf import settings
 
 import datetime
 from captcha.fields import CaptchaField
-from andsome.middleware.threadlocals import get_current_user
 
 from karaage.projects.models import Project
 from karaage.projects.utils import get_new_pid
@@ -29,7 +28,7 @@ from karaage.machines.models import MachineCategory
 from karaage.people.models import Institute
 from karaage.people.forms import PersonForm, UsernamePasswordForm
 from karaage.datastores import create_new_user
-from karaage.util.helpers import check_password, create_password_hash
+from karaage.util.helpers import create_password_hash
 from karaage.requests.models import ProjectCreateRequest
 from karaage.constants import TITLES, COUNTRIES
 

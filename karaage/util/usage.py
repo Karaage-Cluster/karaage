@@ -42,7 +42,7 @@ def get_institute_usage(institute, start, end, machine_category):
     """
     try:
         cache = InstituteCache.objects.get(institute=institute, date=datetime.date.today(), start=start, end=end, machine_category=machine_category)
-    except:
+    except InstituteCache.DoesNotExist:
 
         data = CPUJob.objects.filter(machine__category=machine_category, 
                                      project__institute=institute, 
@@ -69,7 +69,7 @@ def get_project_usage(project, start, end, machine_category):
     """
     try:
         cache = ProjectCache.objects.get(pid=project, date=datetime.date.today(), start=start, end=end, machine_category=machine_category)
-    except:
+    except ProjectCache.DoesNotExist:
 
         data = CPUJob.objects.filter(machine__category=machine_category, 
                                      project=project, 
@@ -92,7 +92,7 @@ def get_user_usage(user, project, start, end):
     """
     try:
         cache = UserCache.objects.get(user=user, project=project, date=datetime.date.today(), start=start, end=end)
-    except:
+    except UserCache.DoesNotExist:
         data = CPUJob.objects.filter(date__range=(start, end),
                                       project=project,
                                       user__user=user).aggregate(usage=Sum('cpu_usage'), jobs=Count('id'))
@@ -118,7 +118,7 @@ def get_machine_usage(machine, start, end):
     
     try:
         cache = MachineCache.objects.get(machine=machine, date=datetime.date.today(), start=start, end=end)
-    except:
+    except MachineCache.DoesNotExist:
         
         data = CPUJob.objects.filter(machine=machine,
                                      date__range=(start, end)).aggregate(usage=Sum('cpu_usage'), jobs=Count('id'))
