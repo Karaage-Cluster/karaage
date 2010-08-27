@@ -99,9 +99,9 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
                 except ZeroDivisionError:
                     data_row['p_used'] = 0
                 data_row['diff'] = data_row['percent'] - data_row['quota']
-        	if data_row['diff'] <= 0:
+                if data_row['diff'] <= 0:
                     data_row['class'] = 'green'
-        	else:
+                else:
                     data_row['class'] = 'red'
             else:
                 data_row['class'] = 'green'
