@@ -27,14 +27,17 @@ from karaage.projects.utils import get_new_pid
 from karaage.people.models import Person
 from karaage.machines.models import MachineCategory
 from karaage.people.models import Institute
-from karaage.people.forms import AddUserForm
+from karaage.people.forms import PersonForm, UsernamePasswordForm
 from karaage.datastores import create_new_user
 from karaage.util.helpers import check_password, create_password_hash
 from karaage.requests.models import ProjectCreateRequest
 from karaage.constants import TITLES, COUNTRIES
 
 
-class UserRegistrationForm(AddUserForm):
+class UserRegistrationForm(PersonForm, UsernamePasswordForm):
+    institute = forms.ModelChoiceField(queryset=Institute.active.all())
+    needs_account = forms.BooleanField(required=False, label=u"Do you require a cluster account", help_text=u"eg. Will you be working on the project yourself")
+
     title = forms.ChoiceField(choices=TITLES)
     position = forms.CharField()
     department = forms.CharField()

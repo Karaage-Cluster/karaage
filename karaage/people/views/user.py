@@ -29,7 +29,7 @@ from karaage.util import get_date_range
 from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
 from karaage.requests.models import ProjectCreateRequest
-from karaage.people.forms import PasswordChangeForm, DelegateForm, BaseUserForm, LoginForm
+from karaage.people.forms import PasswordChangeForm, DelegateForm, PersonForm, LoginForm
 from karaage.machines.models import MachineCategory
 from karaage.machines.forms import ShellForm
 
@@ -93,7 +93,7 @@ def edit_profile(request):
     from admin import add_edit_user
     return add_edit_user(
         request, 
-        form_class=BaseUserForm,
+        form_class=PersonForm,
         template_name='people/edit_profile.html',
         redirect_url=reverse('kg_user_profile'),
         username=request.user.get_profile().username)

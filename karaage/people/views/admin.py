@@ -35,7 +35,7 @@ from karaage.datastores import create_account
 
 @login_required
 def add_edit_user(request, form_class, template_name='people/person_form.html', redirect_url=None, username=None):
-    UserForm = form_class
+    PersonForm = form_class
 
     if request.user.has_perm('people.add_person'):
         if username is None:
@@ -46,7 +46,7 @@ def add_edit_user(request, form_class, template_name='people/person_form.html', 
         person = request.user.get_profile()
     
     if request.method == 'POST':
-        form = UserForm(request.POST)
+        form = PersonForm(request.POST)
         if form.is_valid():
             if person:
                 # edit
@@ -62,7 +62,7 @@ def add_edit_user(request, form_class, template_name='people/person_form.html', 
             else:
                 return HttpResponseRedirect(redirect_url)
     else:
-        form = UserForm()
+        form = PersonForm()
         if person:
             # Fill form with initial     
             initial = person.__dict__
