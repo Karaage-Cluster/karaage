@@ -21,6 +21,7 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 import datetime
 
@@ -51,7 +52,7 @@ def add_edit_project(request, project_id=None):
             if project:
                 # edit
                 form.save(p=project)
-                request.user.message_set.create(message="Project edited successfully")
+                messages.info(request, "Project edited successfully")
                 return HttpResponseRedirect(reverse('kg_user_profile'))
             else:
                 # add

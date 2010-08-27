@@ -20,6 +20,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import permission_required, login_required
 from django.core.urlresolvers import reverse
+from django.contrib import messages
 
 from karaage.projects.utils import add_user_to_project
 from karaage.requests.models import ProjectJoinRequest
@@ -58,7 +59,7 @@ def account_request_approve(request, ar_id):
     send_account_approved_email(join_request)
     join_request.delete()
 
-    request.user.message_set.create(message="User '%s' approved succesfully and an email has been sent" % person)
+    messages.info(request, "User '%s' approved succesfully and an email has been sent" % person)
     return HttpResponseRedirect(person.get_absolute_url())
 
 
@@ -77,7 +78,7 @@ def account_request_reject(request, ar_id):
         person.delete()
         user.delete()
 
-    request.user.message_set.create(message="User '%s' rejected succesfully and an email has been sent" % person)
+    messages.info(request, "User '%s' rejected succesfully and an email has been sent" % person)
         
     return HttpResponseRedirect(reverse('kg_account_request_list'))
 

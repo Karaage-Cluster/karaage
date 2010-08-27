@@ -22,6 +22,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import permission_required, login_required
 from django.core.mail import send_mass_mail
 from django.core.urlresolvers import reverse
+from django.contrib import messages
 
 from karaage.emails.forms import EmailForm
 
@@ -43,7 +44,7 @@ def send_email(request):
             else:
             
                 send_mass_mail(form.get_emails())
-                request.user.message_set.create(message="Emails sent successfully")
+                messages.info(request, "Emails sent successfully")
                     
                 return HttpResponseRedirect(reverse('kg_admin_index'))
             

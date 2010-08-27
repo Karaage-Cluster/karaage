@@ -89,7 +89,7 @@ def software_detail(request, package_id):
         conn = LDAPClient()
         conn.add_group_member('gidNumber=%s' % package.gid, str(person.username))
 
-        request.user.message_set.create(message="User %s added to LDAP group" % person)
+        messages.info(request, "User %s added to LDAP group" % person)
         log(request.user, package, 1, "User %s added to LDAP group manually" % person)
         return HttpResponseRedirect(package.get_absolute_url())
 
@@ -150,7 +150,7 @@ def delete_version(request, package_id, version_id):
         version.delete()
         log(request.user, version.package, 3, 'Deleted version: %s' % version)
         
-        request.user.message_set.create(message="Version '%s' was deleted succesfully" % version)
+        messages.info(request, "Version '%s' was deleted succesfully" % version)
         return HttpResponseRedirect(version.get_absolute_url())
     
     return render_to_response('software/version_confirm_delete.html', locals(), context_instance=RequestContext(request))
@@ -194,7 +194,7 @@ def remove_member(request, package_id, user_id):
     log(request.user, package, 3, 'Removed %s from group' % person)
     log(request.user, person, 3, 'Removed from software group %s' % package)
         
-    request.user.message_set.create(message="User '%s' removed successfuly" % person)
+    messages.info(request, "User '%s' removed successfuly" % person)
 
     return HttpResponseRedirect(package.get_absolute_url())
 

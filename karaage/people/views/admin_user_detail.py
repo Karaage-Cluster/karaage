@@ -19,6 +19,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib import messages
 import datetime
 
 from karaage.people.models import Person
@@ -36,7 +37,7 @@ def delete_user(request, username):
 
     if request.method == 'POST':
         user.deactivate()
-        request.user.message_set.create(message="User '%s' was deleted succesfully" % user)
+        messages.info(request, "User '%s' was deleted succesfully" % user)
         return HttpResponseRedirect(user.get_absolute_url())
         
     return render_to_response('people/person_confirm_delete.html', locals(), context_instance=RequestContext(request))
@@ -70,7 +71,7 @@ def user_detail(request, username):
                 break
         if not no_account_error:
             project.users.add(person)
-            request.user.message_set.create(message="User '%s' was added to %s succesfully" % (person, project))
+            messages.info(request, "User '%s' was added to %s succesfully" % (person, project))
             log(request.user, project, 2, '%s added to project' % person)
 
     #change shell form
@@ -85,12 +86,9 @@ def user_detail(request, username):
 
 @permission_required('machines.add_useraccount')
 def activate(request, username):
-
     user = get_object_or_404(Person, user__username=username)
-
     user.activate()
-
-    request.user.message_set.create(message="User '%s' activated succesfully" % user)
+    messages.info(request, "User '%s' activated succesfully" % user)
 
     return HttpResponseRedirect('%spassword_change/' % user.get_absolute_url())
 
@@ -104,7 +102,7 @@ def password_change(request, username):
         
         if form.is_valid():
             form.save(person)
-            request.user.message_set.create(message="Password changed successfully")
+            messages.info(request, "Password changed successfully")
             log(request.user, person, 2, 'Changed password')
                         
             return HttpResponseRedirect(person.get_absolute_url())
@@ -118,7 +116,7 @@ def password_change(request, username):
 def lock_person(request, username):
     person = get_object_or_404(Person, user__username=username)
     person.lock()
-    request.user.message_set.create(message="%s's account has been locked" % person)
+    messages.info(request, "%s's account has been locked" % person)
     log(request.user, person, 2, 'Account locked')
     
     return HttpResponseRedirect(person.get_absolute_url())
@@ -128,7 +126,7 @@ def lock_person(request, username):
 def unlock_person(request, username):
     person = get_object_or_404(Person, user__username=username)
     person.unlock()
-    request.user.message_set.create(message="%s's account has been unlocked" % person)
+    messages.info(request, "%s's account has been unlocked" % person)
     log(request.user, person, 2, 'Account unlocked')
     
     return HttpResponseRedirect(person.get_absolute_url())
@@ -141,7 +139,7 @@ def bounced_email(request, username):
     if request.method == 'POST':
         person.lock()
         send_bounced_warning(person)
-        request.user.message_set.create(message="%s's account has been locked and emails have been sent" % person)
+        messages.info(request, "%s's account has been locked and emails have been sent" % person)
         log(request.user, person, 2, 'Emails sent to project leaders and account locked')
         for ua in person.useraccount_set.all():
             ua.change_shell(ua.previous_shell)

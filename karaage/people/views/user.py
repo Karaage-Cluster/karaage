@@ -24,6 +24,7 @@ from django.contrib.comments.models import Comment
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.contrib import messages
 
 from karaage.util import get_date_range
 from karaage.people.models import Person, Institute
@@ -110,7 +111,7 @@ def profile_accounts(request):
 
         if shell_form.is_valid():
             shell_form.save(user_account)
-            request.user.message_set.create(message='Shell changed successfully')
+            messages.info(request, 'Shell changed successfully')
 
             return HttpResponseRedirect(reverse('kg_user_profile'))
 
@@ -181,7 +182,7 @@ def flag_left(request, username):
         is_removed=False,
     )
 
-    request.user.message_set.create(message='User flagged as left institution')
+    messages.info(request, 'User flagged as left institution')
 
     return HttpResponseRedirect(person.get_absolute_url())
 
