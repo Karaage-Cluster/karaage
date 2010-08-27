@@ -210,7 +210,6 @@ def approve_person(request, user_request_id):
 
         project.users.add(person)
         send_project_join_approved_email(join_request)
-        person.user.message_set.create(message="Your request to join the project %s has been accepted" % project.pid)
         join_request.delete()
 
         return HttpResponseRedirect(reverse('kg_user_profile'))

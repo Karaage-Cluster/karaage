@@ -83,7 +83,6 @@ def approve_project(request, project_request_id):
     log(request.user, project, 2, 'Approved Project')
     for leader in project_leaders:
         messages.info(request, "Project approved successfully and a notification email has been sent to %s" % leader)
-        leader.user.message_set.create(message="Your project request has been accepted")
 
         if not leader.user.is_active:
             leader.activate()
