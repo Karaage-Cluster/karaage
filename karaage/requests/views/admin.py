@@ -19,34 +19,29 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import permission_required, login_required
+from django.core.urlresolvers import reverse
 
 from karaage.projects.utils import add_user_to_project
 from karaage.requests.models import ProjectJoinRequest
 from karaage.util import log_object as log
-from karaage.util.email_messages import send_account_request_email, send_project_request_email, send_project_approved_email, send_project_rejected_email, send_account_approved_email, send_account_rejected_email, send_project_join_approved_email
+from karaage.util.email_messages import send_account_approved_email, send_account_rejected_email
 
 
-@login_required
+@permission_required('machines.add_useraccount')
 def account_request_list(request):
-
-    request_list = ProjectJoinRequest.objects.filter(leader_approved=True)
-    
+    request_list = ProjectJoinRequest.objects.filter(leader_approved=True) 
     return render_to_response('requests/user_request_list.html', locals(), context_instance=RequestContext(request)) 
 
-account_request_list = permission_required('machines.add_useraccount')(account_request_list)
 
-
+@permission_required('machines.add_useraccount')
 def account_request_detail(request, ar_id):
     ar = get_object_or_404(ProjectJoinRequest, pk=ar_id)
-
     person = ar.person
     project = ar.project
-
     return render_to_response('requests/user_request_detail.html', locals(), context_instance=RequestContext(request))
 
-account_request_detail = permission_required('machines.add_useraccount')(account_request_detail)
 
-
+@permission_required('machines.add_useraccount')
 def account_request_approve(request, ar_id):
     join_request = get_object_or_404(ProjectJoinRequest, pk=ar_id)
 
@@ -66,21 +61,16 @@ def account_request_approve(request, ar_id):
     request.user.message_set.create(message="User '%s' approved succesfully and an email has been sent" % person)
     return HttpResponseRedirect(person.get_absolute_url())
 
-account_request_approve = permission_required('machines.add_useraccount')(account_request_approve)
 
-
-
+@permission_required('machines.add_useraccount')
 def account_request_reject(request, ar_id):
     ar = get_object_or_404(ProjectJoinRequest, pk=ar_id)
 
     person = ar.person
     user = person.user
     project = ar.project
-
-    send_account_rejected_email(ar)
-    
+    send_account_rejected_email(ar)   
     ar.delete()
-
     log(request.user, person, 2, "Account rejected")
 
     if not person.is_active:
@@ -91,5 +81,3 @@ def account_request_reject(request, ar_id):
         
     return HttpResponseRedirect(reverse('kg_account_request_list'))
 
-account_request_reject = permission_required('machines.add_useraccount')(account_request_reject)
-    
