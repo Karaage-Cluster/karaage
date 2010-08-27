@@ -71,7 +71,9 @@ class AdminPersonForm(PersonForm):
     institute = forms.ModelChoiceField(queryset=Institute.active.all())
     comment = forms.CharField(widget=forms.Textarea(), required=False)
     expires = forms.DateField(widget=forms.TextInput(attrs={ 'class':'vDateField' }), required=False)
-    
+    is_staff = models.BooleanField(help_text="Designates whether the user can log into this admin site.", required=False)
+    is_superuser = models.BooleanField(help_text="Designates that this user has all permissions without explicitly assigning them.", required=False)
+
     def save(self, person):    
         data = self.cleaned_data
 
@@ -90,6 +92,8 @@ class AdminPersonForm(PersonForm):
         person.country = data['country']
         person.expires = data['expires']
         person.comment = data['comment']
+        person.user.is_staff = data['is_staff']
+        person.user.is_superuser = data['is_superuser']
         person.user.save()
         person.save()
         return person
