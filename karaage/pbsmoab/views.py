@@ -26,6 +26,7 @@ from karaage.util import log_object as log
 from models import ProjectChunk
 from forms import ProjectChunkForm
 
+@permission_required('pbsmoab.change_projectchunk')
 def projectchunk_edit(request, project_id):
 
     project = get_object_or_404(Project, pk=project_id)
@@ -46,10 +47,6 @@ def projectchunk_edit(request, project_id):
         form = ProjectChunkForm(instance=project_chunk)
 
     return render_to_response('pbsmoab/projectchunk_form.html', locals(), context_instance=RequestContext(request))
-
-projectchunk_edit = permission_required('pbsmoab.change_projectchunk')(projectchunk_edit)
-    
-
 
 
 def projects_by_cap_used(request):

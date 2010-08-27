@@ -26,33 +26,26 @@ from django.contrib import messages
 
 from karaage.emails.forms import EmailForm
 
-@login_required
+@permission_required('emails.send_email')
 def send_email(request):
 
-    if request.method == 'POST':
-        
+    if request.method == 'POST':        
         form = EmailForm(request.POST)
             
         if form.is_valid():
-
             if 'preview' in request.POST:
                 emails = form.get_emails()
                 try:
                     preview = emails[0]
                 except:
                     pass
-            else:
-            
+            else:           
                 send_mass_mail(form.get_emails())
                 messages.info(request, "Emails sent successfully")
                     
                 return HttpResponseRedirect(reverse('kg_admin_index'))
-            
-    else:
-        
+    else:        
         form = EmailForm()
         
     return render_to_response('emails/send_email_form.html', locals(), context_instance=RequestContext(request))
 
-
-send_email = permission_required('emails.send_email')(send_email)

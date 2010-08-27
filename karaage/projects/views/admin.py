@@ -38,7 +38,7 @@ from karaage.util import log_object as log
 from karaage.usage.forms import UsageSearchForm
 
 
-@login_required
+@permission_required('projects.add_project')
 def add_edit_project(request, project_id=None):
 
     if project_id is None:
@@ -78,9 +78,8 @@ def add_edit_project(request, project_id=None):
             
     return render_to_response('projects/project_form.html', locals(), context_instance=RequestContext(request))
 
-add_edit_project = permission_required('projects.add_project')(add_edit_project)
 
-@login_required
+@permission_required('projects.delete_project')
 def delete_project(request, project_id):
 
     project = get_object_or_404(Project, pk=project_id)
@@ -94,7 +93,6 @@ def delete_project(request, project_id):
 
     return render_to_response('projects/project_confirm_delete.html', locals(), context_instance=RequestContext(request))
 
-delete_project = permission_required('projects.delete_project')(delete_project)
     
 @login_required
 def project_detail(request, project_id):
@@ -121,6 +119,7 @@ def project_detail(request, project_id):
         add_user_to_project(person, project)
     
     return render_to_response('projects/project_detail.html', locals(), context_instance=RequestContext(request))
+
 
 @login_required
 def project_list(request, queryset=Project.objects.select_related().all(), template_name='projects/project_list.html', paginate=True):
@@ -187,6 +186,7 @@ def remove_user(request, project_id, username):
         return HttpResponseRedirect(project.get_absolute_url())
     return HttpResponseRedirect(user.get_absolute_url())
 
+
 @login_required
 def no_users(request):
 
@@ -211,6 +211,7 @@ def over_quota(request):
     return project_list(request, Project.objects.filter(pid__in=project_ids))
 
 
+@login_required    
 def project_logs(request, project_id):
 
     project = get_object_or_404(Project, pk=project_id)

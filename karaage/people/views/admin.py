@@ -123,7 +123,7 @@ def user_list(request, queryset=Person.objects.all()):
     return render_to_response('people/person_list.html', locals(), context_instance=RequestContext(request)) 
 
 
-@login_required
+@permission_required('machines.add_useraccount')
 def add_edit_useraccount(request, username=None, useraccount_id=None):
 
     if username is None:
@@ -182,10 +182,8 @@ def add_edit_useraccount(request, username=None, useraccount_id=None):
             
     return render_to_response('machines/useraccount_form.html', locals(), context_instance=RequestContext(request))
 
-add_edit_useraccount = permission_required('machines.add_useraccount')(add_edit_useraccount)
 
-
-@login_required
+@permission_required('machines.delete_useraccount')
 def delete_useraccount(request, useraccount_id):
 
     user_account = get_object_or_404(UserAccount, pk=useraccount_id)
@@ -197,8 +195,6 @@ def delete_useraccount(request, useraccount_id):
     else:
         
         return render_to_response('machines/useraccount_confirm_delete.html', locals(), context_instance=RequestContext(request))
-
-delete_useraccount = permission_required('machines.delete_useraccount')(delete_useraccount)
 
 
 @login_required
