@@ -80,7 +80,7 @@
    	<tbody>
    	{% for p in project_list|dictsortreversed:"usage" %}
 			<tr class="{% cycle row1,row2 %}">
-				<td><a href="{{ p.project.pid }}/?{{ querystring }}">{{ p.project }}</a></td>
+				<td><a href="{{ p.project.get_usage_url }}?{{ querystring }}">{{ p.project }}</a></td>
 				<td class="right">{{ p.usage|timeformat }}</td>	
 				<td class="right">{{ p.jobs|intcomma }}</td>
 				<td class="right">{{ p.percent|floatformat:"2" }}%</td>
