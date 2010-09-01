@@ -15,9 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.core import serializers
-from django.shortcuts import get_object_or_404
-
 from django_xmlrpc.decorators import xmlrpc_func, permission_required
 import datetime
 
@@ -25,22 +22,20 @@ from karaage.people.models import Person
 from karaage.machines.models import MachineCategory, UserAccount
 from karaage.projects.models import Project
 from karaage.util import log_object as log
-
-from models import ProjectChunk
-from logs import parse_logs
+from karaage.pbsmoab.models import ProjectChunk
+from karaage.pbsmoab.logs import parse_logs
 
 @xmlrpc_func(returns='string', args=['string', 'date'])
 @permission_required(perm='projects.change_project')
 def parse_usage(user, usage, date, machine_name, log_type):
-    """                                                                                                                                         
-    Parses usage                                                                                                                                
+    """
+    Parses usage
     """
 
     year, month, day = date.split('-')
     date = datetime.date(int(year), int(month), int(day))
 
     return parse_logs(usage, date, machine_name, log_type)
-
 
 
 @xmlrpc_func(returns='string', args=['string', 'string'])
@@ -51,7 +46,7 @@ def get_project(username, proj=None):
     
     try:
         user_account = UserAccount.objects.get(username=username,machine_category=MachineCategory.objects.get_default())
-    except:
+    except UserAccount.DoesNotExist:
         return "User '%s' not found" % username
     if proj is None:
         project = user_account.default_project
@@ -78,7 +73,7 @@ def project_under_quota(project_id):
     machine_category = MachineCategory.objects.get_default()
     try:
         project = Project.objects.get(pid=project_id)
-    except:
+    except Project.DoesNotExist:
         return 'Project not found'
         
     project_chunk, created = ProjectChunk.objects.get_or_create(project=project, machine_category=machine_category)
@@ -98,7 +93,7 @@ def get_disk_quota(username):
     machine_category = MachineCategory.objects.get_default()
     try:
         ua = UserAccount.objects.get(user__user__username=username, machine_category=machine_category, date_deleted__isnull=True)
-    except:
+    except UserAccount.DoesNotExist:
         return 'User account not found'
         
     return ua.get_disk_quota() * 1048576
@@ -113,7 +108,7 @@ def showquota(username):
     machine_category = MachineCategory.objects.get_default()
     try:
         person = Person.active.get(user__username=username)
-    except:
+    except Person.DoesNotExist:
         return -1, 'User not found'
         
     try:
@@ -130,20 +125,20 @@ def showquota(username):
             is_default = True
 
 
-	try:
-	    mpots = str(float(project_chunk.get_mpots()))
-	except:
-	   mpots = 0
+        try:
+            mpots = str(float(project_chunk.get_mpots()))
+        except:
+            mpots = 0
 
         try:
-	    cap = str(float(project_chunk.get_cap()))
+            cap = str(float(project_chunk.get_cap()))
         except:
             cap = 0
 
         p_l.append([
                 project.pid, 
-		mpots,
-		cap,
+                mpots,
+                cap,
                 is_default,
                 ])
 

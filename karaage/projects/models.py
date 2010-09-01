@@ -114,7 +114,6 @@ class Project(models.Model):
                   start=datetime.date.today()-datetime.timedelta(days=90), 
                   end=datetime.date.today(),
                   machine_category=None):
-        from karaage.machines.models import MachineCategory
         if machine_category is None:
             machine_category = MachineCategory.objects.get_default()
         from karaage.util.usage import get_project_usage

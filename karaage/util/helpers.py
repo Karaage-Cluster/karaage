@@ -21,7 +21,6 @@ Holds various helper methods
 __author__ = 'Sam Morrison'
 
 from django.contrib.auth.models import User
-from django.conf import settings
 
 import random, string
 import datetime
@@ -29,7 +28,6 @@ import datetime
 from placard.ldap_passwd import md5crypt
 
 from karaage.machines.models import MachineCategory, UserAccount
-from karaage.projects.models import Project
 
 
 def create_password_hash(raw_password):
@@ -88,46 +86,46 @@ def get_available_time(start=datetime.date.today()-datetime.timedelta(days=90), 
             m_end = end
         if start >= m_end or m_start >= end:
             total += 0
-
+            
         elif start < m_start and end > m_end:
             total += (m.no_cpus * ((m_end - m_start).days) * 24 * 60 * 60)
             
         elif end > m_end and start < m_start:
             total += (m.no_cpus * ((end - start).days) * 24 * 60 * 60)
-        
+            
         elif end > m_end:
             total += (m.no_cpus * ((m_end - start).days) * 24 * 60 * 60)
-
+            
         elif start < m_start:
             total += (m.no_cpus * ((end - m_start).days) * 24 * 60 * 60)
-
+            
         else:
             total += (m.no_cpus * ((end - start).days) * 24 * 60 * 60)
             
     return total, get_ave_cpus(start, end, machine_category)
-
+        
 
 def get_ave_cpus(start, end, machine_category):
     cpus = 0.
     for m in machine_category.machine_set.all():
-         m_start = m.start_date
-         m_end = m.end_date
+        m_start = m.start_date
+        m_end = m.end_date
 
-         if not m_end:
+        if not m_end:
             m_end = datetime.date.today()
-         if start >= m_end or end <= m_start:
-             cpus += 0
+        if start >= m_end or end <= m_start:
+            cpus += 0
 
-         elif start < m_start and end > m_end:
-             cpus += m.no_cpus * (m_end - m_start).days
+        elif start < m_start and end > m_end:
+            cpus += m.no_cpus * (m_end - m_start).days
 
-         elif end > m_end:
-             cpus += m.no_cpus * (m_end - start).days
+        elif end > m_end:
+            cpus += m.no_cpus * (m_end - start).days
+            
+        elif start < m_start:
+            cpus += m.no_cpus * (end - m_start).days
 
-         elif start < m_start:
-             cpus += m.no_cpus * (end - m_start).days
-
-         else:
-             cpus += m.no_cpus * (end - start).days
-
+        else:
+            cpus += m.no_cpus * (end - start).days
+            
     return cpus / (end-start).days

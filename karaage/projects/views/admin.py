@@ -24,6 +24,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.models import LogEntry
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django.contrib import messages
 
 from andsome.util.filterspecs import Filter, FilterBar
 from andsome.middleware.threadlocals import get_current_user
@@ -37,7 +38,7 @@ from karaage.util import log_object as log
 from karaage.usage.forms import UsageSearchForm
 
 
-@login_required
+@permission_required('projects.add_project')
 def add_edit_project(request, project_id=None):
 
     if project_id is None:
@@ -65,10 +66,10 @@ def add_edit_project(request, project_id=None):
             project.activate()
             form.save_m2m()
             if flag == 1:
-                request.user.message_set.create(message="Project '%s' created succesfully" % project)
+                messages.info(request, "Project '%s' created succesfully" % project)
                 log(get_current_user(), project, 1, 'Created')
             else:
-                request.user.message_set.create(message="Project '%s' edited succesfully" % project)
+                messages.info(request, "Project '%s' edited succesfully" % project)
                 log(get_current_user(), project, 2, 'Edited')
 
             return HttpResponseRedirect(project.get_absolute_url())        
@@ -77,9 +78,8 @@ def add_edit_project(request, project_id=None):
             
     return render_to_response('projects/project_form.html', locals(), context_instance=RequestContext(request))
 
-add_edit_project = permission_required('projects.add_project')(add_edit_project)
 
-@login_required
+@permission_required('projects.delete_project')
 def delete_project(request, project_id):
 
     project = get_object_or_404(Project, pk=project_id)
@@ -88,12 +88,11 @@ def delete_project(request, project_id):
         
         project.deactivate()
         log(request.user, project, 3, 'Deleted')
-        request.user.message_set.create(message="Project '%s' deleted succesfully" % project)
+        messages.info(request, "Project '%s' deleted succesfully" % project)
         return HttpResponseRedirect(project.get_absolute_url()) 
 
     return render_to_response('projects/project_confirm_delete.html', locals(), context_instance=RequestContext(request))
 
-delete_project = permission_required('projects.delete_project')(delete_project)
     
 @login_required
 def project_detail(request, project_id):
@@ -120,6 +119,7 @@ def project_detail(request, project_id):
         add_user_to_project(person, project)
     
     return render_to_response('projects/project_detail.html', locals(), context_instance=RequestContext(request))
+
 
 @login_required
 def project_list(request, queryset=Project.objects.select_related().all(), template_name='projects/project_list.html', paginate=True):
@@ -175,7 +175,7 @@ def remove_user(request, project_id, username):
             return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     project.users.remove(user)
-    request.user.message_set.create(message="User '%s' removed succesfully from project %s" % (user, project.pid))
+    messages.info(request, "User '%s' removed succesfully from project %s" % (user, project.pid))
     
     log(request.user, project, 3, 'Removed %s from project' % user)
     log(request.user, user, 3, 'Removed from project %s' % project)
@@ -185,6 +185,7 @@ def remove_user(request, project_id, username):
     if site.id == 2:
         return HttpResponseRedirect(project.get_absolute_url())
     return HttpResponseRedirect(user.get_absolute_url())
+
 
 @login_required
 def no_users(request):
@@ -210,6 +211,7 @@ def over_quota(request):
     return project_list(request, Project.objects.filter(pid__in=project_ids))
 
 
+@login_required    
 def project_logs(request, project_id):
 
     project = get_object_or_404(Project, pk=project_id)
