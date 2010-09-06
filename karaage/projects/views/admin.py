@@ -23,7 +23,7 @@ from django.contrib.sites.models import Site
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.models import LogEntry
 from django.db.models import Q
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib import messages
 
 from andsome.util.filterspecs import Filter, FilterBar
@@ -126,7 +126,11 @@ def project_list(request, queryset=Project.objects.select_related().all(), templ
 
     project_list = queryset
 
-    page_no = int(request.GET.get('page', 1))
+    # Make sure page request is an int. If not, deliver first page.
+    try:
+        page_no = int(request.GET.get('page', '1'))
+    except ValueError:
+        page_no = 1
 
     if request.REQUEST.has_key('institute'):
         project_list = project_list.filter(institute=int(request.GET['institute']))
@@ -154,10 +158,14 @@ def project_list(request, queryset=Project.objects.select_related().all(), templ
 
     if paginate:
         p = Paginator(project_list, 50)
-        page = p.page(page_no)
     else:
         p = Paginator(project_list, 100000)
+
+    # If page request (9999) is out of range, deliver last page of results.
+    try:
         page = p.page(page_no)
+    except (EmptyPage, InvalidPage):
+        page = p.page(p.num_pages)
 
     return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
