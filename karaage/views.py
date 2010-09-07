@@ -18,7 +18,7 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django import forms
-from django.core.paginator import QuerySetPaginator
+from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
@@ -26,7 +26,7 @@ from django.contrib.comments.models import Comment
 from django.contrib.sites.models import Site
 from django.db.models import Q
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect
 
 from karaage.people.models import Person
 from karaage.projects.models import Project
@@ -46,6 +46,7 @@ def admin_index(request):
     return render_to_response('index.html', locals(), context_instance=RequestContext(request))
 
 
+@login_required
 def search(request):
 
     if request.method == 'POST':
@@ -97,22 +98,21 @@ def log_detail(request, object_id, model):
         object_id=object_id
     )
     page_no = 1
-    p = QuerySetPaginator(log_list, 50)
+    p = Paginator(log_list, 50)
     page_obj = p.page(page_no)
     
     short = True
     return render_to_response(['%s/log_list.html' % content_type.app_label, 'log_list.html'], locals(), context_instance=RequestContext(request))
 
 
+@login_required
 def comments_detail(request, object_id, model):
-
     obj = get_object_or_404(model, pk=object_id)
-
     content_type = ContentType.objects.get_for_model(obj.__class__)
-
     return render_to_response('comments/%s_detail.html' % content_type.model, locals(), context_instance=RequestContext(request))
 
 
+@login_required
 def add_comment(request, object_id, model):
 
     obj = get_object_or_404(model, pk=object_id)
@@ -133,15 +133,15 @@ def add_comment(request, object_id, model):
             is_removed=False)
 
         return HttpResponseRedirect(obj.get_absolute_url())
-
     else:
-
         field = forms.CharField(widget=forms.Textarea(), label='Comment').widget.render('comment', '')
 
     return render_to_response('comments/add_comment.html', locals(), context_instance=RequestContext(request))
     
+
+@login_required
 def meta(request):
     
-    meta = request.META.items()
+    meta_data = request.META.items()
 
-    return render_to_response('meta.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('meta.html', {'meta': metadata}, context_instance=RequestContext(request))

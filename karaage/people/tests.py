@@ -50,6 +50,154 @@ class UserTestCase(TestCase):
         self.server.stop()
 
 
+    def do_permission_tests(self, test_object, users):
+        for person_id in users:
+            print "can person '%d' access '%s'?"%(person_id, test_object)
+            person = Person.objects.get(id=person_id)
+            result = test_object.can_view(person)
+            expected_result = users[person_id]
+            print "---> got:'%s' expected:'%s'"%(result, expected_result)
+            self.failUnlessEqual(result, expected_result)
+            print
+
+    def test_permissions(self):
+        test_object = Project.objects.get(pid="TestProject1")
+        self.do_permission_tests(test_object, {
+            1: True, # person 1 can view: person's institute delegate, project leader
+            2: False, # person 2 cannot view
+            3: True, # person 3 can view: project member
+            4: True, # person 4 can view: is_staff
+        })
+
+        test_object = Person.objects.get(id=1)
+        self.do_permission_tests(test_object, {
+            1: True, # person 1 can view: self, project member, person's institute delegate
+            2: False, # person 2 cannot view
+            3: False, # person 3 cannot view
+            4: True, # person 4 can view: is_staff, institute delegate
+        })
+
+        test_object = Person.objects.get(id=2)
+        self.do_permission_tests(test_object, {
+            1: True, # person 1 can view: person's institute delegate
+            2: True, # person 2 can view: self
+            3: False, # person 3 cannot view
+            4: True, # person 4 can view: is_staff
+        })
+
+        test_object = Person.objects.get(id=3)
+        self.do_permission_tests(test_object, {
+            1: True, # person 1 can view: person's institute delegate, project leader
+            2: False, # person 2 cannot view
+            3: True, # person 3 can view: self, project member
+            4: True, # person 4 can view: is_staff
+        })
+
+        test_object = Person.objects.get(id=4)
+        self.do_permission_tests(test_object, {
+            1: True, # person 1 can view: person's institute delegate
+            2: False, # person 2 cannot view
+            3: False, # person 3 cannot view
+            4: True, # person 4 can view: self, is_staff
+        })
+
+        # add user 2 to project
+        # test that members can see other people in own project
+        print "-------------------------------------------------------------------"
+        project = Project.objects.get(pid="TestProject1")
+        project.users=[2,3]
+
+        test_object = Project.objects.get(pid="TestProject1")
+        self.do_permission_tests(test_object, {
+            1: True, # person 1 can view: person's institute delegate
+            2: True, # person 2 can view: project member
+            3: True, # person 3 can view: project member
+            4: True, # person 4 can view: is_staff
+        })
+
+        test_object = Person.objects.get(id=1)
+        self.do_permission_tests(test_object, {
+            1: True, # person 1 can view:  self, project member, delegate of institute
+            2: False, # person 2 cannot view
+            3: False, # person 3 cannot view
+            4: True, # person 4 can view: is_staff
+        })
+
+        test_object = Person.objects.get(id=2)
+        self.do_permission_tests(test_object, {
+            1: True, # person 1 can view: person's institute delegate, project leader
+            2: True, # person 2 can view: self
+            3: True, # person 3 can view: project member
+            4: True, # person 4 can view: is_staff
+        })
+
+        test_object = Person.objects.get(id=3)
+        self.do_permission_tests(test_object, {
+            1: True, # person 1 can view: person's institute delegate, project leader
+            2: True, # person 2 can view: project member
+            3: True, # person 3 can view: self, project member
+            4: True, # person 4 can view: is_staff
+        })
+
+        test_object = Person.objects.get(id=4)
+        self.do_permission_tests(test_object, {
+            1: True, # person 1 can view: person's institute delegate
+            2: False, # person 2 cannot view
+            3: False, # person 3 cannot view
+            4: True, # person 4 can view: self, is_staff
+        })
+
+        # change institute of all people
+        # Test institute leader can access people in project despite not being
+        # institute leader for these people.
+        print "-------------------------------------------------------------------"
+        Person.objects.all().update(institute=2)
+        Institute.objects.filter(pk=2).update(delegate=2,active_delegate=2)
+
+        project = Project.objects.get(pid="TestProject1")
+        project.leaders=[2]
+
+        test_object = Project.objects.get(pid="TestProject1")
+        self.do_permission_tests(test_object, {
+            1: True, # person 1 can view: person's institute delegate
+            2: True, # person 2 can view: project member, person's institute delegate, project leader
+            3: True, # person 3 can view: project member
+            4: True, # person 4 can view: is_staff
+        })
+
+        test_object = Person.objects.get(id=1)
+        self.do_permission_tests(test_object, {
+            1: True, # person 1 can view: self, project member
+            2: True, # person 2 can view: person's institute delegate
+            3: False, # person 3 cannot view
+            4: True, # person 4 can view: is_staff
+        })
+
+        test_object = Person.objects.get(id=2)
+        self.do_permission_tests(test_object, {
+            1: True, # person 1 can view: project's institute leader
+            2: True, # person 2 can view: self, person's institute delegate, project leader
+            3: True, # person 3 can view: project member
+            4: True, # person 4 can view: is_staff
+        })
+
+        test_object = Person.objects.get(id=3)
+        self.do_permission_tests(test_object, {
+            1: True, # person 1 can view: project's institute leader
+            2: True, # person 2 can view: project member, person's institute delegate, project leader
+            3: True, # person 3 can view: self, project member
+            4: True, # person 4 can view: is_staff
+        })
+
+        test_object = Person.objects.get(id=4)
+        self.do_permission_tests(test_object, {
+            1: False, # person 1 cannot view
+            2: True, # person 2 can view: person's institute delegate
+            3: False, # person 3 cannot view
+            4: True, # person 4 can view: self, is_staff
+        })
+
+
     def test_admin_create_user_with_account(self):
 
         users = Person.objects.count()

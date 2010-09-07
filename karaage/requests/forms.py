@@ -20,20 +20,29 @@ from django.conf import settings
 
 import datetime
 from captcha.fields import CaptchaField
-from andsome.middleware.threadlocals import get_current_user
 
 from karaage.projects.models import Project
 from karaage.people.models import Person
 from karaage.machines.models import MachineCategory
 from karaage.people.models import Institute
-from karaage.people.forms import AddUserForm
+from karaage.people.forms import PersonForm, UsernamePasswordForm
 from karaage.datastores import create_new_user
 from karaage.datastores.projects import create_new_project
-from karaage.util.helpers import check_password, create_password_hash
+from karaage.util.helpers import create_password_hash
 from karaage.requests.models import ProjectCreateRequest
+from karaage.constants import TITLES, COUNTRIES
 
 
-class UserRegistrationForm(AddUserForm):
+class UserRegistrationForm(PersonForm, UsernamePasswordForm):
+    institute = forms.ModelChoiceField(queryset=Institute.active.all())
+    needs_account = forms.BooleanField(required=False, label=u"Do you require a cluster account", help_text=u"eg. Will you be working on the project yourself")
+
+    title = forms.ChoiceField(choices=TITLES)
+    position = forms.CharField()
+    department = forms.CharField()
+    country = forms.ChoiceField(choices=COUNTRIES, initial='AU')
+    telephone = forms.CharField(label=u"Office Telephone")
+
     tos = forms.BooleanField(required=False, label=u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>'%(settings.AUP_URL))
     captcha = CaptchaField(label=u'CAPTCHA', help_text=u"Please enter the text displayed in the imge above.")
 

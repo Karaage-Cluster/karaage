@@ -31,6 +31,7 @@ class SoftwarePackageForm(forms.Form):
     homepage = forms.URLField(required=False)
     tutorial_url = forms.URLField(required=False)
     academic_only = forms.BooleanField(required=False)
+    restricted = forms.BooleanField(required=False, help_text="Will require admin approval")
 
     def save(self, package=None):
         data = self.cleaned_data
@@ -48,6 +49,7 @@ class SoftwarePackageForm(forms.Form):
         package.homepage = data['homepage']
         package.tutorial_url = data['tutorial_url']
         package.academic_only = data['academic_only']
+        package.restrcted = data['restricted']
         package.save()
 
         return package

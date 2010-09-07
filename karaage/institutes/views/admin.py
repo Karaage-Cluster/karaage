@@ -17,7 +17,7 @@
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.core.paginator import QuerySetPaginator
+from django.core.paginator import Paginator
 from django.conf import settings
 
 from andsome.util.filterspecs import Filter, FilterBar
@@ -49,7 +49,7 @@ def institute_list(request):
     filter_list.append(Filter(request, 'primary', {'primary': 'Primary',}))
     filter_bar = FilterBar(request, filter_list)
 
-    p = QuerySetPaginator(institute_list, 50)
+    p = Paginator(institute_list, 50)
     page = p.page(page_no)
 
     return render_to_response('institutes/institute_list.html', locals(), context_instance=RequestContext(request))

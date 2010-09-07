@@ -9,8 +9,15 @@
 {% block objecttools %}
 {% if perms.software.add_softwarepackage %}
 <ul class="object-tools">
-<li><a href="categories/">Categories</a></li>
-<li><a href="add/" class="addlink">Add software</a></li>
+{% if perms.software.change_softwareaccess_request %}
+<li><a href="{% url kg_softwarerequest_list %}">Requests</a></li>
+{% endif %}
+{% if perms.software.add_softwarecategory %}
+<li><a href="{% url kg_software_category_list %}">Categories</a></li>
+{% endif %}
+{% if perms.software.add_softwarepackage %}
+<li><a href="{% url kg_software_add %}" class="addlink">Add software</a></li>
+{% endif %}
 </ul>
 {% endif %}
 {% endblock %}

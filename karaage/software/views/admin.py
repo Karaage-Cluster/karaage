@@ -20,25 +20,26 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import permission_required, login_required
 from django.db.models import Q
-from django.core.paginator import QuerySetPaginator
+from django.core.paginator import Paginator
+from django.contrib import messages
+from django.core.urlresolvers import reverse
 
+import datetime
 from andsome.util.filterspecs import Filter, FilterBar
 from placard.client import LDAPClient
 
-from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense
+from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense, SoftwareAccessRequest, SoftwareLicenseAgreement
 from karaage.software.forms import AddPackageForm, LicenseForm, SoftwareVersionForm
 from karaage.people.models import Person
 from karaage.util import log_object as log
+from karaage.util.email_messages import send_software_request_approved_email
 
 def software_list(request):
-
     software_list = SoftwarePackage.objects.all()
-
     page_no = int(request.GET.get('page', 1))
 
     if request.REQUEST.has_key('category'):
         software_list = software_list.filter(category=int(request.GET['category']))
-
 
     if request.method == 'POST':
         new_data = request.POST.copy()
@@ -51,18 +52,15 @@ def software_list(request):
         software_list = software_list.filter(query)
     else:
         terms = ""
-    
 
     filter_list = []
     filter_list.append(Filter(request, 'category', SoftwareCategory.objects.all()))
     filter_bar = FilterBar(request, filter_list)
 
-    p = QuerySetPaginator(software_list, 50)
+    p = Paginator(software_list, 50)
     page = p.page(page_no)
 
-
     return render_to_response('software/software_list.html', locals(), context_instance=RequestContext(request))
-
 
 
 def software_detail(request, package_id):
@@ -86,21 +84,19 @@ def software_detail(request, package_id):
 
     not_member_list = Person.objects.exclude(id__in=non_ids)
 
-
     if request.method == 'POST' and 'member-add' in request.POST:
         person = get_object_or_404(Person, pk=request.POST['member'])
         conn = LDAPClient()
         conn.add_group_member('gidNumber=%s' % package.gid, str(person.username))
 
-        request.user.message_set.create(message="User %s added to LDAP group" % person)
+        messages.info(request, "User %s added to LDAP group" % person)
         log(request.user, package, 1, "User %s added to LDAP group manually" % person)
         return HttpResponseRedirect(package.get_absolute_url())
-        
-
 
     return render_to_response('software/software_detail.html', locals(), context_instance=RequestContext(request))
 
-@login_required
+
+@permission_required('software.add_softwarepackage')
 def add_package(request):
 
     if request.method == 'POST':
@@ -110,23 +106,19 @@ def add_package(request):
             package = form.save()
             log(request.user, package, 1, "Added")
             return HttpResponseRedirect(package.get_absolute_url())
-
     else:
         form = AddPackageForm()
         
     return render_to_response('software/add_package_form.html', locals(), context_instance=RequestContext(request))
 
-add_package = permission_required('software.add_softwarepackage')(add_package)
-
 
 @login_required
 def license_detail(request, license_id):
     l = get_object_or_404(SoftwareLicense, pk=license_id)
-
     return render_to_response('software/license_detail.html', locals(), context_instance=RequestContext(request))
 
 
-@login_required
+@permission_required('software.delete_softwarelicense')
 def add_edit_license(request, package_id, license_id=None):
 
     package = get_object_or_404(SoftwarePackage, pk=package_id)
@@ -148,25 +140,23 @@ def add_edit_license(request, package_id, license_id=None):
         
     return render_to_response('software/license_form.html', locals(), context_instance=RequestContext(request))
 
-add_edit_license = permission_required('software.delete_softwarelicense')(add_edit_license)
 
-@login_required
+@permission_required('software.delete_softwareversion')
 def delete_version(request, package_id, version_id):
     
     version = get_object_or_404(SoftwareVersion, pk=version_id)
-
+    
     if request.method == 'POST':
         version.delete()
         log(request.user, version.package, 3, 'Deleted version: %s' % version)
         
-        request.user.message_set.create(message="Version '%s' was deleted succesfully" % version)
+        messages.info(request, "Version '%s' was deleted succesfully" % version)
         return HttpResponseRedirect(version.get_absolute_url())
-
-    return render_to_response('software/version_confirm_delete.html', locals(), context_instance=RequestContext(request))
     
-delete_version = permission_required('software.delete_softwareversion')(delete_version)
+    return render_to_response('software/version_confirm_delete.html', locals(), context_instance=RequestContext(request))
 
-@login_required
+
+@permission_required('software.change_softwareversion')
 def add_edit_version(request, package_id, version_id=None):
 
     package = get_object_or_404(SoftwarePackage, pk=package_id)
@@ -186,16 +176,13 @@ def add_edit_version(request, package_id, version_id=None):
         
     return render_to_response('software/version_form.html', locals(), context_instance=RequestContext(request))
 
-add_edit_version = permission_required('software.change_softwareversion')(add_edit_version)
 
 def category_list(request):
-
-    category_list = SoftwareCategory.objects.all()
-    
+    category_list = SoftwareCategory.objects.all()   
     return render_to_response('software/category_list.html', locals(), context_instance=RequestContext(request))
     
 
-@login_required
+@permission_required('software.change_softwarepackage')
 def remove_member(request, package_id, user_id):
 
     package = get_object_or_404(SoftwarePackage, pk=package_id)
@@ -207,8 +194,51 @@ def remove_member(request, package_id, user_id):
     log(request.user, package, 3, 'Removed %s from group' % person)
     log(request.user, person, 3, 'Removed from software group %s' % package)
         
-    request.user.message_set.create(message="User '%s' removed successfuly" % person)
+    messages.info(request, "User '%s' removed successfuly" % person)
 
     return HttpResponseRedirect(package.get_absolute_url())
 
-remove_member = permission_required('software.change_softwarepackage')(remove_member)
+
+@permission_required('software.change_softwareaccessrequest')
+def softwarerequest_list(request):
+    page_no = int(request.GET.get('page', 1))
+    softwarerequest_list = SoftwareAccessRequest.objects.all()  
+    p = Paginator(softwarerequest_list, 50)
+    page = p.page(page_no)
+    return render_to_response('software/request_list.html', {'softwarerequest_list': softwarerequest_list, 'page': page,}, context_instance=RequestContext(request))
+    
+
+@permission_required('software.change_softwareaccessrequest')
+def softwarerequest_approve(request, softwarerequest_id):
+    softwarerequest = get_object_or_404(SoftwareAccessRequest, pk=softwarerequest_id)
+
+    if request.method == 'POST':
+        
+        SoftwareLicenseAgreement.objects.create(
+            user=softwarerequest.person,
+            license=softwarerequest.software_license,
+            date=datetime.datetime.today(),
+            )
+        conn = LDAPClient()
+        conn.add_group_member('gidNumber=%s' % softwarerequest.software_license.package.gid, softwarerequest.person.username)
+        messages.info(request, "Software request approved successfully")
+        send_software_request_approved_email(softwarerequest)
+        log(request.user, softwarerequest.software_license.package, 1, "User %s approved" % softwarerequest.person)
+        softwarerequest.delete()
+        return HttpResponseRedirect(reverse('kg_softwarerequest_list'))
+
+    return render_to_response('software/request_approve.html', {'softwarerequest': softwarerequest,}, context_instance=RequestContext(request))
+
+
+@permission_required('software.change_softwareaccessrequest')
+def softwarerequest_delete(request, softwarerequest_id):
+    softwarerequest = get_object_or_404(SoftwareAccessRequest, pk=softwarerequest_id)
+    
+    if request.method == 'POST':
+        
+        softwarerequest.delete()
+        messages.info(request, "Software request deleted successfully")
+        return HttpResponseRedirect(reverse('kg_softwarerequest_list'))
+
+    return render_to_response('software/request_delete.html', {'softwarerequest': softwarerequest,}, context_instance=RequestContext(request))
+

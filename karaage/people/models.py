@@ -18,6 +18,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 
 from placard.client import LDAPClient
 from andsome.middleware.threadlocals import get_current_user
@@ -67,6 +68,22 @@ class Institute(models.Model):
     def gen_usage_graph(self, start, end, machine_category):
         from karaage.graphs import gen_institute_bar
         gen_institute_bar(self, start, end, machine_category)
+
+    def can_view(self, person):
+        # staff members can view everything
+        if person.user.is_staff:
+            return True
+
+        if not self.is_active:
+            return False
+
+        # Institute delegate==person can view institute
+        if institute.delegate.id == person.id:
+            return True
+        if institute.active_delegate.id == person.id:
+            return True
+
+        return False
 
 
 
@@ -165,6 +182,46 @@ class Person(models.Model):
         return self.user.is_active
     is_active = property(_get_is_active, _set_is_active)
     
+    # Can person view this self record?
+    def can_view(self, person):
+        from karaage.projects.models import Project
+
+        # staff members can view everything
+        if person.user.is_staff:
+            return True
+
+        if not self.is_active:
+            return False
+
+        # person can view own self
+        if self.id == person.id:
+            return True
+
+        # Institute delegate==person can view any member of institute
+        if self.institute.is_active:
+            if self.institute.delegate is not None:
+                if self.institute.delegate.id == person.id:
+                    return True
+            if self.institute.active_delegate is not None:
+                if  self.institute.active_delegate.id == person.id:
+                    return True
+
+        # Institute delegate==person can view people in projects that are a member of institute
+        tmp = Project.objects.filter(users=self.id).filter(Q(institute__delegate=person)|Q(institute__active_delegate=person)).filter(is_active=True)
+        if tmp.count() > 0:
+            return True
+
+        # person can view people in projects they belong to
+        tmp = Project.objects.filter(users=self.id).filter(users=person.id).filter(is_active=True)
+        if tmp.count() > 0:
+            return True
+
+        # Leader==person can view people in projects they lead
+        tmp = Project.objects.filter(users=self.id).filter(leaders=person.id).filter(is_active=True)
+        if tmp.count() > 0:
+            return True
+        return False
+
     def get_full_name(self):
         return self.user.get_full_name()
     

@@ -21,6 +21,7 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 import datetime
 
@@ -51,7 +52,7 @@ def add_edit_project(request, project_id=None):
             if project:
                 # edit
                 form.save(p=project)
-                request.user.message_set.create(message="Project edited successfully")
+                messages.info(request, "Project edited successfully")
                 return HttpResponseRedirect(reverse('kg_user_profile'))
             else:
                 # add
@@ -67,7 +68,6 @@ def add_edit_project(request, project_id=None):
 
             form.initial = project.__dict__
             form.initial['machine_category'] = form.initial['machine_category_id']
-            form.initial['leader'] = form.initial['leader_id']
             form.initial['institute'] = form.initial['institute_id']
     return render_to_response('projects/user_project_form.html', { 'form': form, 'project': project }, context_instance=RequestContext(request))
 
@@ -75,6 +75,9 @@ def add_edit_project(request, project_id=None):
 
 def project_detail(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
+
+    if not project.can_view(request.user.get_profile()):
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     return render_to_response('projects/user_project_detail.html', locals(), context_instance=RequestContext(request))
 
@@ -84,9 +87,7 @@ def institute_projects_list(request, institute_id):
 
     institute = get_object_or_404(Institute, pk=institute_id)
 
-    ids = [ institute.delegate.id , institute.active_delegate.id, ]
-
-    if not request.user.get_profile().id in ids:
+    if not institute.can_view(request.user.get_profile()):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     project_list = institute.project_set.all()

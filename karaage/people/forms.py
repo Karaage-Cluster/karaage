@@ -26,27 +26,26 @@ from karaage.people.models import Institute, Person
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
 from karaage.machines.models import MachineCategory, UserAccount
-from karaage.constants import TITLES, STATES, COUNTRIES, DATE_FORMATS
+from karaage.constants import TITLES, COUNTRIES
 from karaage.datastores import create_new_user, create_account
 from karaage.util.helpers import check_password
 from karaage.util import log_object as log
 from karaage.validators import username_re
 
 
-class BaseUserForm(forms.Form):
-    title = forms.ChoiceField(choices=TITLES)
+class PersonForm(forms.Form):
+    title = forms.ChoiceField(choices=TITLES, required=False)
     first_name = forms.CharField()
     last_name = forms.CharField()
-    position = forms.CharField()
+    position = forms.CharField(required=False)
     email = forms.EmailField()
-    department = forms.CharField()
+    department = forms.CharField(required=False)
     supervisor = forms.CharField(required=False)
-    telephone = forms.CharField(label=u"Office Telephone")
+    telephone = forms.CharField(label=u"Office Telephone", required=False)
     mobile = forms.CharField(required=False, help_text=u"Used for emergency contact and password reset service.")
     fax = forms.CharField(required=False)
     address = forms.CharField(label=u"Mailing Address", required=False, widget=forms.Textarea())
-    country = forms.ChoiceField(choices=COUNTRIES, initial='AU')
-    website = forms.URLField(required=False)
+    country = forms.ChoiceField(choices=COUNTRIES, initial='AU', required=False)
 
     def save(self, person):
         data = self.cleaned_data
@@ -63,61 +62,44 @@ class BaseUserForm(forms.Form):
         person.fax = data['fax']
         person.address = data['address']
         person.country = data['country']
-        person.website = data['website']
-        person.save()
         person.user.save()
-
+        person.save()
         return person
 
 
-class UserForm(BaseUserForm):
-    project = forms.ModelChoiceField(queryset=Project.objects.all(), label=u"Default Project", required=False)
+class AdminPersonForm(PersonForm):
     institute = forms.ModelChoiceField(queryset=Institute.active.all())
     comment = forms.CharField(widget=forms.Textarea(), required=False)
-    needs_account = forms.BooleanField(required=False, label=u"Do you require a cluster account", help_text=u"eg. Will you be working on the project yourself")
     expires = forms.DateField(widget=forms.TextInput(attrs={ 'class':'vDateField' }), required=False)
-    
-    def save(self, user=None):
+    is_staff = forms.BooleanField(help_text="Designates whether the user can log into this admin site.", required=False)
+    is_superuser = forms.BooleanField(help_text="Designates that this user has all permissions without explicitly assigning them.", required=False)
 
-        
+    def save(self, person):    
         data = self.cleaned_data
-                
-        if user is None:
-            user = create_new_user(data)
-            
-            # Since adding with this method is only done with admin
-            user.activate()
 
-            if data['needs_account'] and data['project']:
-                add_user_to_project(user, data['project'])
-        else:
-            log(get_current_user(), user, 2, 'Edit')
-
-        user.first_name = data['first_name']
-        user.last_name = data['last_name']
-        user.email = data['email']
-        user.title = data['title']
-        user.position = data['position']
-        user.supervisor = data['supervisor']
-        user.department =data['department']
-        user.institute = data['institute']
-        user.telephone = data['telephone']
-        user.mobile = data['mobile']
-        user.fax = data['fax']
-        user.address = data['address']
-        user.country = data['country']
-        user.website = data['website']
-        user.expires = data['expires']
-        # This is here so comment is not overriden when user changes detail.
-        if 'comment' in self.data:
-            user.comment = data['comment']
-        user.user.save()
-        user.save()
-
-        return user
+        person.first_name = data['first_name']
+        person.last_name = data['last_name']
+        person.email = data['email']
+        person.title = data['title']
+        person.position = data['position']
+        person.supervisor = data['supervisor']
+        person.department =data['department']
+        person.institute = data['institute']
+        person.telephone = data['telephone']
+        person.mobile = data['mobile']
+        person.fax = data['fax']
+        person.address = data['address']
+        person.country = data['country']
+        person.expires = data['expires']
+        person.comment = data['comment']
+        person.user.is_staff = data['is_staff']
+        person.user.is_superuser = data['is_superuser']
+        person.user.save()
+        person.save()
+        return person
 
 
-class AddUserForm(UserForm):
+class UsernamePasswordForm(forms.Form):
     username = forms.CharField(label=u"Requested username", max_length=16, help_text=u"16 characters or fewer. Alphanumeric characters only (letters, digits and underscores).")
     password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
     password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)')
@@ -139,8 +121,9 @@ class AddUserForm(UserForm):
         if user is not None:
             raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old account please email %s' % settings.ACCOUNTS_EMAIL)
         return username
-
-    def clean(self):
+    
+    
+    def clean_password2(self):
         data = self.cleaned_data
 
         if data.get('password1') and data.get('password2'):
@@ -153,6 +136,28 @@ class AddUserForm(UserForm):
 
             return data
     
+
+
+
+class AddPersonForm(AdminPersonForm, UsernamePasswordForm):
+    project = forms.ModelChoiceField(queryset=Project.objects.all(), label=u"Default Project", required=False)
+    needs_account = forms.BooleanField(required=False, label=u"Do you require a cluster account", help_text=u"eg. Will you be working on the project yourself")
+
+    def save(self, person=None):
+    
+        data = self.cleaned_data
+                
+        if person is None:
+            person = create_new_user(data)
+            
+            # Since adding with this method is only done with admin
+            person.activate()
+
+            if data['needs_account'] and data['project']:
+                add_user_to_project(person, data['project'])
+
+        person = super(self.__class__, self).save(person)
+        return person
 
 
 class AdminPasswordChangeForm(forms.Form):

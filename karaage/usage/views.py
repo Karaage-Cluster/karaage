@@ -17,7 +17,7 @@
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.conf import settings
 from django.db.models import Q
 from django.db import connection
@@ -25,6 +25,8 @@ from django.core.urlresolvers import reverse
 from django.template.defaultfilters import dictsortreversed
 
 import datetime
+from decimal import Decimal
+from andsome.graphs import bar_chart
 
 from karaage.util.helpers import get_available_time
 from karaage.util.graphs import get_institute_graph_url, get_trend_graph_url, get_institute_trend_graph_url, get_project_trend_graph_url, get_institutes_trend_graph_urls
@@ -98,9 +100,9 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
                 except ZeroDivisionError:
                     data_row['p_used'] = 0
                 data_row['diff'] = data_row['percent'] - data_row['quota']
-        	if data_row['diff'] <= 0:
+                if data_row['diff'] <= 0:
                     data_row['class'] = 'green'
-        	else:
+                else:
                     data_row['class'] = 'red'
             else:
                 data_row['class'] = 'green'
@@ -141,6 +143,9 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
     project_list = []
     start, end = get_date_range(request)
     institute_list = Institute.active.all()
+
+    if not institute.can_view(request.user.get_profile()):
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     available_usage, ave_cpus = get_available_time(start, end, machine_category)
 
@@ -197,10 +202,13 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
     return render_to_response('usage/usage_institute_detail.html', locals(), context_instance=RequestContext(request))
 
 
-def project_usage(request, project_id, institute_id=None, machine_category_id=settings.DEFAULT_MC):
+def project_usage(request, project_id, machine_category_id=settings.DEFAULT_MC):
     
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
     project = get_object_or_404(Project, pk=project_id)
+
+    if not project.can_view(request.user.get_profile()):
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     if project.machine_categories.count() == 1:
         machine_category = project.machine_categories.all()[0]
@@ -478,6 +486,9 @@ def institute_users(request, institute_id, machine_category_id=1):
     machine_category = MachineCategory.objects.get(pk=machine_category_id)
     institute = get_object_or_404(Institute, pk=institute_id)
     
+    if not institute.can_view(request.user.get_profile()):
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
+
     start, end = get_date_range(request)
 
     available_time, cpus = get_available_time(start, end, machine_category)
@@ -498,3 +509,57 @@ def institute_users(request, institute_id, machine_category_id=1):
     querystring = request.META.get('QUERY_STRING', '')
     
     return render_to_response('usage/institute_users.html', locals(), context_instance=RequestContext(request))
+
+
+def core_report(request, machine_category_id=settings.DEFAULT_MC):
+
+    machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
+    mc_list = MachineCategory.objects.exclude(id__exact=settings.DEFAULT_MC)
+    
+    start, end = get_date_range(request)
+
+    job_list = CPUJob.objects.filter(date__gte=start, date__lte=end, machine__category=machine_category)
+    core_1 = job_list.filter(cores=1).count()
+    core_2_4 = job_list.filter(cores__gte=2, cores__lte=4).count()
+    core_5_8 = job_list.filter(cores__gte=5, cores__lte=8).count()
+    core_9_16 = job_list.filter(cores__gte=9, cores__lte=16).count()
+    core_17_32 = job_list.filter(cores__gte=17, cores__lte=32).count()
+    core_33_64 = job_list.filter(cores__gte=33, cores__lte=64).count()
+    core_65_128 = job_list.filter(cores__gte=65, cores__lte=128).count()
+    core_128 = job_list.filter(cores__gte=128).count()
+    data = [core_1, core_2_4, core_5_8, core_9_16, core_17_32, core_33_64, core_65_128, core_128]
+    x_labels = ['1', '2-4', '5-8', '9-16', '17-32', '33-64', '65-128', '128+']
+    labels = []
+    max_y = max(data)
+    graph = bar_chart(data, labels, x_labels, max_y).get_url()
+
+    return render_to_response('usage/core_report.html', locals(), context_instance=RequestContext(request))
+
+
+def mem_report(request, machine_category_id=settings.DEFAULT_MC):
+
+    machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
+    mc_list = MachineCategory.objects.exclude(id__exact=settings.DEFAULT_MC)
+    
+    start, end = get_date_range(request)
+
+    job_list = CPUJob.objects.filter(date__gte=start, date__lte=end, machine__category=machine_category)
+    mem_0_4 = job_list.filter(mem__lte=4*1024*1024).count()
+    mem_4_8 = job_list.filter(mem__gt=4*1024*1024, mem__lte=8*1024*1024).count()
+    mem_8_16 = job_list.filter(mem__gt=8*1024*1024, mem__lte=16*1024*1024).count()
+    mem_16_32 = job_list.filter(mem__gt=16*1024*1024, mem__lte=32*1024*1024).count()
+    mem_32_64 = job_list.filter(mem__gt=32*1024*1024, mem__lte=64*1024*1024).count()
+    mem_64_128 = job_list.filter(mem__gt=64*1024*1024, mem__lte=128*1024*1024).count()
+    mem_128 = job_list.filter(mem__gt=128*1024*1024).count()
+
+    data = [mem_0_4, mem_4_8, mem_8_16, mem_16_32, mem_32_64, mem_64_128, mem_128]
+    x_labels = ['0-4', '4-8', '8-16', '16-32', '32-64', '64-128', '128+']
+    labels = []
+    max_y = max(data)
+    graph = bar_chart(data, labels, x_labels, max_y).get_url()
+
+    return render_to_response('usage/mem_report.html', locals(), context_instance=RequestContext(request))
+
+
+
+

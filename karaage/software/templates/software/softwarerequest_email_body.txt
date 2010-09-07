@@ -1,0 +1,9 @@
+Hello,
+
+{{ requester }} has requested access to the software package {{ software }}.
+
+Please log into Karaage admin to approve/decline their request.
+
+Thanks,
+
+{% include emails/email_footer.txt %}

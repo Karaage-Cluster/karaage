@@ -18,13 +18,11 @@
 from django.db import models
 
 import datetime
-from decimal import Decimal
 from andsome.middleware.threadlocals import get_current_user
 
 from karaage.people.models import Person, Institute
 from karaage.machines.models import MachineCategory
-
-from managers import ActiveProjectManager, DeletedProjectManager
+from karaage.projects.managers import ActiveProjectManager, DeletedProjectManager
 
 
 class Project(models.Model):
@@ -64,8 +62,38 @@ class Project(models.Model):
         
     @models.permalink
     def get_usage_url(self):
-        return ('kg_project_usage', [self.institute.id, self.pid])
+        return ('kg_usage_project', [self.pid])
         
+    # Can person view this self record?
+    def can_view(self, person):
+
+        if person.user.is_staff:
+            return True
+
+        if not self.is_active:
+            return False
+
+        # Institute delegate==person can view any member of institute
+        if self.institute.is_active:
+            if self.institute.delegate is not None:
+                if self.institute.delegate.id == person.id:
+                    return True
+            if self.institute.active_delegate is not None:
+                if  self.institute.active_delegate.id == person.id:
+                    return True
+
+        # Leader==person can view projects they lead
+        tmp = self.leaders.filter(pk=person.pk)
+        if tmp.count() > 0:
+            return True
+
+        # person can view own projects
+        tmp = self.users.filter(pk=person.pk)
+        if tmp.count() > 0:
+            return True
+
+        return False
+
     def activate(self):
         from karaage.datastores.projects import activate_project
         activate_project(self)
@@ -86,7 +114,6 @@ class Project(models.Model):
                   start=datetime.date.today()-datetime.timedelta(days=90), 
                   end=datetime.date.today(),
                   machine_category=None):
-        from karaage.machines.models import MachineCategory
         if machine_category is None:
             machine_category = MachineCategory.objects.get_default()
         from karaage.util.usage import get_project_usage

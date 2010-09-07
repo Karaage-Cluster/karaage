@@ -19,7 +19,8 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth.decorators import permission_required, login_required
-from django.core.paginator import QuerySetPaginator
+from django.contrib import messages
+from django.core.paginator import Paginator
 from django.db.models import Q
 
 import datetime
@@ -35,7 +36,7 @@ from karaage.datastores import create_account
 
 @login_required
 def add_edit_user(request, form_class, template_name='people/person_form.html', redirect_url=None, username=None):
-    UserForm = form_class
+    PersonForm = form_class
 
     if request.user.has_perm('people.add_person'):
         if username is None:
@@ -46,23 +47,23 @@ def add_edit_user(request, form_class, template_name='people/person_form.html', 
         person = request.user.get_profile()
     
     if request.method == 'POST':
-        form = UserForm(request.POST)
+        form = PersonForm(request.POST)
         if form.is_valid():
             if person:
                 # edit
                 person = form.save(person)
-                request.user.message_set.create(message="User '%s' was edited succesfully" % person)
+                messages.info(request, "User '%s' was edited succesfully" % person)
             else:
                 #Add
                 person = form.save()
-                request.user.message_set.create(message="User '%s' was created succesfully" % person)
+                messages.info(request, "User '%s' was created succesfully" % person)
                 
             if redirect_url is None:
                 return HttpResponseRedirect(person.get_absolute_url())
             else:
                 return HttpResponseRedirect(redirect_url)
     else:
-        form = UserForm()
+        form = PersonForm()
         if person:
             # Fill form with initial     
             initial = person.__dict__
@@ -111,7 +112,7 @@ def user_list(request, queryset=Person.objects.all()):
     filter_list.append(DateFilter(request, 'date_approved'))
     filter_bar = FilterBar(request, filter_list)
 
-    p = QuerySetPaginator(user_list, 50)
+    p = Paginator(user_list, 50)
     page = p.page(page_no)
     locked_count = 0
 
@@ -122,7 +123,7 @@ def user_list(request, queryset=Person.objects.all()):
     return render_to_response('people/person_list.html', locals(), context_instance=RequestContext(request)) 
 
 
-@login_required
+@permission_required('machines.add_useraccount')
 def add_edit_useraccount(request, username=None, useraccount_id=None):
 
     if username is None:
@@ -147,7 +148,7 @@ def add_edit_useraccount(request, username=None, useraccount_id=None):
                 user_account.machine_category = data['machine_category']
                 user_account.default_project = data['default_project']
                 user_account.save()
-                request.user.message_set.create(message="User account for '%s' changed succesfully" % user_account.user)
+                messages.info(request, "User account for '%s' changed succesfully" % user_account.user)
                 return HttpResponseRedirect(user.get_absolute_url())
                 
             else:
@@ -164,7 +165,7 @@ def add_edit_useraccount(request, username=None, useraccount_id=None):
                         username__exact=user.username, machine_category=machine_category, date_deleted__isnull=True)
                 except UserAccount.DoesNotExist:
                     user_account = create_account(user, project, machine_category)               
-                    request.user.message_set.create(message="User account for '%s' created succesfully" % user_account.user)
+                    messages.info(request, "User account for '%s' created succesfully" % user_account.user)
                     
                     return HttpResponseRedirect(user.get_absolute_url())                
                 username_error = True                
@@ -181,23 +182,19 @@ def add_edit_useraccount(request, username=None, useraccount_id=None):
             
     return render_to_response('machines/useraccount_form.html', locals(), context_instance=RequestContext(request))
 
-add_edit_useraccount = permission_required('machines.add_useraccount')(add_edit_useraccount)
 
-
-@login_required
+@permission_required('machines.delete_useraccount')
 def delete_useraccount(request, useraccount_id):
 
     user_account = get_object_or_404(UserAccount, pk=useraccount_id)
 
     if request.method == 'POST':
         user_account.deactivate()
-        request.user.message_set.create(message="User account for '%s' deleted succesfully" % user_account.user)
+        messages.info(request, "User account for '%s' deleted succesfully" % user_account.user)
         return HttpResponseRedirect(user_account.get_absolute_url())
     else:
         
         return render_to_response('machines/useraccount_confirm_delete.html', locals(), context_instance=RequestContext(request))
-
-delete_useraccount = permission_required('machines.delete_useraccount')(delete_useraccount)
 
 
 @login_required
@@ -256,7 +253,7 @@ def make_default(request, useraccount_id, project_id):
     user_account.default_project = project
     user_account.save()
     
-    request.user.message_set.create(message="Default project changed succesfully")
+    messages.info(request, "Default project changed succesfully")
     log(request.user, user_account.user, 2, 'Changed default project to %s' % project.pid)
 
     return HttpResponseRedirect(user_account.get_absolute_url())
@@ -299,7 +296,7 @@ def struggling(request):
     filter_list.append(DateFilter(request, 'date_created'))
     filter_bar = FilterBar(request, filter_list)
 
-    p = QuerySetPaginator(user_accounts, 50)
+    p = Paginator(user_accounts, 50)
     page = p.page(page_no)
 
     return render_to_response('people/struggling.html', locals(), context_instance=RequestContext(request))
@@ -316,7 +313,7 @@ def change_shell(request, useraccount_id):
         shell_form = ShellForm(request.POST)
         if shell_form.is_valid():
             shell_form.save(user_account=ua)
-            request.user.message_set.create(message='Shell changed successfully')
+            messages.info(request, 'Shell changed successfully')
             return HttpResponseRedirect(ua.get_absolute_url())
     else:
         

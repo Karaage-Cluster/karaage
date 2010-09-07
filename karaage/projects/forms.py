@@ -25,10 +25,9 @@ from karaage.people.models import Institute, Person
 from karaage.machines.models import MachineCategory
 from karaage.requests.models import ProjectCreateRequest
 from karaage.projects.utils import get_new_pid
+from karaage.projects.models import Project
 from karaage.util import log_object
 from karaage.datastores.projects import create_new_project
-
-from models import Project
 
 
 class ProjectForm(forms.ModelForm):

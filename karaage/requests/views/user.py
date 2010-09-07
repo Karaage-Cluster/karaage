@@ -22,7 +22,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.conf import settings
-
+from django.contrib import messages
 
 from karaage.datastores import create_new_user
 from karaage.people.models import Person
@@ -194,7 +194,7 @@ def approve_person(request, user_request_id):
     project = join_request.project
     person = join_request.person
 
-    request.user.message_set.create(message="%s approved successfully" % person)
+    messages.info(request, "%s approved successfully" % person)
     
     log(request.user, person, 2, 'Approved by leader')
 
@@ -210,7 +210,6 @@ def approve_person(request, user_request_id):
 
         project.users.add(person)
         send_project_join_approved_email(join_request)
-        person.user.message_set.create(message="Your request to join the project %s has been accepted" % project.pid)
         join_request.delete()
 
         return HttpResponseRedirect(reverse('kg_user_profile'))

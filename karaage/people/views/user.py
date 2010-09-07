@@ -24,12 +24,13 @@ from django.contrib.comments.models import Comment
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.contrib import messages
 
 from karaage.util import get_date_range
 from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
 from karaage.requests.models import ProjectCreateRequest
-from karaage.people.forms import PasswordChangeForm, DelegateForm, BaseUserForm, LoginForm
+from karaage.people.forms import PasswordChangeForm, DelegateForm, PersonForm, LoginForm
 from karaage.machines.models import MachineCategory
 from karaage.machines.forms import ShellForm
 
@@ -93,7 +94,7 @@ def edit_profile(request):
     from admin import add_edit_user
     return add_edit_user(
         request, 
-        form_class=BaseUserForm,
+        form_class=PersonForm,
         template_name='people/edit_profile.html',
         redirect_url=reverse('kg_user_profile'),
         username=request.user.get_profile().username)
@@ -110,7 +111,7 @@ def profile_accounts(request):
 
         if shell_form.is_valid():
             shell_form.save(user_account)
-            request.user.message_set.create(message='Shell changed successfully')
+            messages.info(request, 'Shell changed successfully')
 
             return HttpResponseRedirect(reverse('kg_user_profile'))
 
@@ -139,34 +140,9 @@ def profile_software(request):
 def user_detail(request, username):
 
     person = get_object_or_404(Person, user__username=username)
-
-    approved_viewers = []
-
-    approved_viewers.append(person.id)
-    
-    try:
-        approved_viewers.append(person.institute.delegate.id)
-        approved_viewers.append(person.institute.active_delegate.id)
-    except:
-        pass
-
-    for project in person.leader.all():
-        approved_viewers.append(project.leader.id)
-        approved_viewers.append(project.institute.delegate.id)
-        approved_viewers.append(project.institute.active_delegate.id)
-        
-    for project in person.project_set.all():
-        approved_viewers.append(project.leader.id)
-        try:
-            approved_viewers.append(project.institute.delegate.id)
-            approved_viewers.append(project.institute.active_delegate.id)
-        except:
-            pass
-    d = True
-    if not request.user.get_profile().id in approved_viewers:
+    if not person.can_view(request.user.get_profile()):
         return HttpResponseForbidden('<h1>Access Denied</h1><p>You do not have permission to view details about this user.</p>')
 
-    
     return render_to_response('people/user_person_detail.html', locals(), context_instance=RequestContext(request))
 
 
@@ -206,7 +182,7 @@ def flag_left(request, username):
         is_removed=False,
     )
 
-    request.user.message_set.create(message='User flagged as left institution')
+    messages.info(request, 'User flagged as left institution')
 
     return HttpResponseRedirect(person.get_absolute_url())
 
@@ -216,9 +192,7 @@ def institute_users_list(request, institute_id):
 
     institute = get_object_or_404(Institute, pk=institute_id)
 
-    ids = [ institute.delegate.id , institute.active_delegate.id, ]
-
-    if not request.user.get_profile().id in ids:
+    if not institute.can_view(request.user.get_profile()):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     user_list = institute.person_set.all()

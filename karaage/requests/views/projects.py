@@ -20,6 +20,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 import datetime
 
@@ -75,8 +76,7 @@ def approve_project(request, project_request_id):
 
     log(request.user, project, 2, 'Approved Project')
     for leader in project_leaders:
-        request.user.message_set.create(message="Project approved successfully and a notification email has been sent to %s" % leader)
-        leader.user.message_set.create(message="Your project request has been accepted")
+        messages.info(request, "Project approved successfully and a notification email has been sent to %s" % leader)
 
         if not leader.user.is_active:
             leader.activate()
@@ -106,7 +106,7 @@ def reject_project(request, project_request_id):
 
     log(request.user, project, 2, 'Rejected Project')
     for leader in project_leaders:
-        request.user.message_set.create(message="Project rejected and a notification email has been sent to %s" % leader)
+        messages.info(request, "Project rejected and a notification email has been sent to %s" % leader)
     
     project_request.delete()
     project.delete()

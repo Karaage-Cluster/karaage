@@ -1,0 +1,22 @@
+{% extends "main.html" %}
+
+{% block title %}Usage{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block bread_crumbs_1 %}
+ &rsaquo; <a href="../../../?{{ querystring }}">Usage</a>
+
+{% endblock %}
+     
+{% load humanize %}
+{% load filters %}
+{% block content %}
+<div id="content-main">
+<h2>Usage {{ start|date }} - {{ end|date }}</h2>
+<p>{% date_filter start end %}</p>
+
+	<img src="{{ graph }}" />
+
+</div>
+{% endblock %}
