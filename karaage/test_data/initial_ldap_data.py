@@ -99,4 +99,11 @@ test_ldif = [
     'cn: Example',
     'description: Example',
     '',
+    'dn: cn=TestProject1, ' + settings.LDAP_GROUP_BASE,
+    'objectClass: posixGroup',
+    'gidNumber: 501',
+    'cn: TestProject1',
+    'description: TestProject1',
+    'memberUid: kgtestuser3',
+    '',
     ]
