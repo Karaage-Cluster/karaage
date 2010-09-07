@@ -20,6 +20,7 @@ from django.core import mail
 from django.core.urlresolvers import reverse
 
 from placard.server import slapd
+from placard.client import LDAPClient
 import datetime
 
 from karaage.people.models import Person
@@ -43,6 +44,7 @@ class ProjectTestCase(TestCase):
         self.server.stop()
 
     def test_admin_add_project(self):
+
         projects = Project.objects.count()
         
         self.client.login(username='kgsuper', password='aq12ws')
@@ -50,8 +52,9 @@ class ProjectTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 200)
 
         form_data = {
-            'name': 'Test Project 4',
-            'institute': 1,
+            'project_name': 'Test Project 4',
+            'project_description': 'Test',
+            'project_institute': 1,
             'leaders': [2,3],
             'machine_category': 1,
             'machine_categories': [1,],
@@ -59,6 +62,7 @@ class ProjectTestCase(TestCase):
         }
 
         response = self.client.post(reverse('kg_add_project'), form_data)
+        print response.content
         self.failUnlessEqual(response.status_code, 302)
         
         project = Project.objects.get(name='Test Project 4')
@@ -68,7 +72,10 @@ class ProjectTestCase(TestCase):
         self.assertEqual(project.approved_by, Person.objects.get(user__username='kgsuper'))
         self.assertEqual(project.pid, 'pExam0001')
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
-        self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())
+        self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())    
+        lcon = LDAPClient()
+        lgroup = lcon.get_group('cn=%s' % project.pid)
+        self.assertEqual(lgroup.cn, project.pid)
 
     def test_admin_add_project_pid(self):
         projects = Project.objects.count()
@@ -79,8 +86,9 @@ class ProjectTestCase(TestCase):
 
         form_data = {
             'pid': "Enrico",
-            'name': 'Test Project 4',
-            'institute': 1,
+            'project_name': 'Test Project 4',
+            'project_description': 'Test',
+            'project_institute': 1,
             'leaders': [2,3],
             'machine_category': 1,
             'machine_categories': [1,],
@@ -98,26 +106,40 @@ class ProjectTestCase(TestCase):
         self.assertEqual(project.pid, 'Enrico')
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
         self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())
+        lcon = LDAPClient()
+        lgroup = lcon.get_group('cn=%s' % project.pid)
+        self.assertEqual(lgroup.cn, project.pid)
 
     def test_add_remove_user_to_project(self):
+        lcon = LDAPClient()
+        luser = lcon.get_user('uid=kgtestuser2')
+
         self.client.login(username='kgsuper', password='aq12ws')
         project = Project.objects.get(pk='TestProject1')
         self.assertEqual(project.users.count(), 1)
         response = self.client.get(reverse('kg_project_detail', args=[project.pid]))
         self.failUnlessEqual(response.status_code, 200)
-        
+
+        ldap_members = lcon.get_group_members('cn=%s' % project.pid)
+        self.assertFalse(luser in ldap_members)
+
         new_user = Person.objects.get(user__username='kgtestuser2')
         response = self.client.post(reverse('kg_project_detail', args=[project.pid]), { 'person': new_user.id} )
         self.failUnlessEqual(response.status_code, 200)
         project = Project.objects.get(pk='TestProject1')
         self.assertEqual(project.users.count(), 2)
-        
+
+        ldap_members = lcon.get_group_members('cn=%s' % project.pid)     
+        self.assertTrue(luser in ldap_members)
+
         # remove user
         response = self.client.post(reverse('kg_remove_project_member', args=[project.pid, new_user.username]))
         self.failUnlessEqual(response.status_code, 302)
         project = Project.objects.get(pk='TestProject1')
         self.assertEqual(project.users.count(), 1)
-        
+
+        ldap_members = lcon.get_group_members('cn=%s' % project.pid)
+        self.assertFalse(luser in ldap_members)
         
     def test_delete_project(self):
 
