@@ -25,4 +25,4 @@ class ProjectLookup(object):
         """ given a list of ids, return the objects ordered as you would like them on the admin page.
             this is for displaying the currently selected items (in the case of a ManyToMany field)
         """
-        return ReportPerson.objects.filter(pk__in=ids)
+        return Project.objects.filter(pk__in=ids)
