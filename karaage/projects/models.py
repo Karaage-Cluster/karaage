@@ -50,7 +50,7 @@ class Project(models.Model):
     deleted = DeletedProjectManager()
 
     class Meta:
-        ordering = ['institute', 'pid']
+        ordering = ['pid',]
         db_table = 'project'
 
     def __unicode__(self):
