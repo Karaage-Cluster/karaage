@@ -21,6 +21,7 @@ from django.core import mail
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.core.management import call_command
 
 import datetime
 from time import sleep
@@ -43,6 +44,7 @@ class UserTestCase(TestCase):
         server.start()
         base = server.get_dn_suffix()
         server.ldapadd("\n".join(test_ldif)+"\n")
+        call_command('loaddata', 'karaage_data', **{'verbosity': 0})
 
         self.server = server
 

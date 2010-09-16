@@ -19,6 +19,7 @@ from django.test import TestCase
 from django.test.client import Client
 from django.core import mail
 from django.core.urlresolvers import reverse
+from django.core.management import call_command
 from django.contrib.auth.models import User
 from django.conf import settings
 
@@ -42,7 +43,7 @@ class UserAccountTestCase(TestCase):
         server.start()
         base = server.get_dn_suffix()
         server.ldapadd("\n".join(test_ldif)+"\n")
-
+        call_command('loaddata', 'karaage_data', **{'verbosity': 0})
         self.server = server
         form_data = {
             'title' : 'Mr',
@@ -150,6 +151,7 @@ class MachineTestCase(TestCase):
         server.start()
         base = server.get_dn_suffix()
         server.ldapadd("\n".join(test_ldif)+"\n")
+        call_command('loaddata', 'karaage_data', **{'verbosity': 0})
 
         self.server = server
         today = datetime.datetime.now()
