@@ -193,3 +193,18 @@ def send_software_request_approved_email(software_request):
 
     send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
     
+
+def send_user_invite(userapplication):
+    """ Sends an email inviting someone to create an account"""
+    site = Site.objects.get_current()
+    context = CONTEXT.copy()
+    context['token'] = userapplication.secret_token
+    
+    to_email = userapplication.email 
+    subject = render_to_string('applications/user_invite_email_subject.txt', context)
+    body = render_to_string('software/user_invite_email_body.txt', context)
+    
+    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+    
+    
+    

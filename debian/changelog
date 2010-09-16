@@ -1,3 +1,13 @@
+karaage (2.4.8-1) testing; urgency=low
+
+  * Added memory and core usage reports
+  * Use django-ajax-selects
+  * Use new messaging framework
+  * Ability to change is_staff and is_superuser
+  * Bug fixes and code cleanup
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 15 Sep 2010 10:07:08 +1000
+
 karaage (2.4.7-1) testing; urgency=low
 
   * Use django-andsome baseurl context
