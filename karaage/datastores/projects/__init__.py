@@ -21,18 +21,10 @@ module = __import__(settings.PROJECT_DATASTORE, {}, {}, [''])
 
 pds = module.ProjectDataStore()
 
-def create_new_project(data):
-    return pds.create_new_project(data)
 
-def activate_project(project):
-    return pds.activate_project(project)
+def create_or_update_project(project):
+    return pds.create_or_update_project(project)
 
-def deactivate_project(project):
-    pds.deactivate_project(project)
-
-def add_user_to_project(person, project):
-    pds.add_user_to_project(person, project)
-
-def remove_user_from_project(person, project):
-    pds.remove_user_from_project(person, project)
+def delete_project(self, project):
+    return pds.delete_project(project)
 

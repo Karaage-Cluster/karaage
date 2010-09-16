@@ -183,6 +183,7 @@ def remove_user(request, project_id, username):
             return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     project.users.remove(user)
+    project.save()
     messages.info(request, "User '%s' removed succesfully from project %s" % (user, project.pid))
     
     log(request.user, project, 3, 'Removed %s from project' % user)

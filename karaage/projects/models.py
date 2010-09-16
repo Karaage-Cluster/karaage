@@ -16,6 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.db import models
+from django.db.models.signals import post_save, pre_delete
 
 import datetime
 from andsome.middleware.threadlocals import get_current_user
@@ -63,7 +64,7 @@ class Project(models.Model):
     @models.permalink
     def get_usage_url(self):
         return ('kg_usage_project', [self.pid])
-        
+
     # Can person view this self record?
     def can_view(self, person):
 
@@ -95,20 +96,20 @@ class Project(models.Model):
         return False
 
     def activate(self):
-        from karaage.datastores.projects import activate_project
-        activate_project(self)
+        self.is_active = True
+        self.is_approved = True
+        self.date_approved = datetime.datetime.today()
+        approver = get_current_user()
+        self.approved_by = approver.get_profile()
+        self.save()
 
     def deactivate(self):
-        from karaage.datastores.projects import deactivate_project
-        deactivate_project(self)
-
-    def add_user(self, person):
-        from karaage.datastores.projects import add_user_to_project
-        add_user_to_project(person, self)
-
-    def remove_user(self, person):
-        from karaage.datastores.projects import remove_user_from_project
-        remove_user_from_project(person, self)
+        self.is_active = False
+        deletor = get_current_user()    
+        self.deleted_by = deletor.get_profile()
+        self.date_deleted = datetime.datetime.today()
+        self.users.clear()
+        self.save()
 
     def get_usage(self, 
                   start=datetime.date.today()-datetime.timedelta(days=90), 
@@ -139,3 +140,17 @@ class Project(models.Model):
             return (pc.get_mpots() / self.get_cap()) * 100
         except:
             return 'NAN'
+
+
+def update_project_datastore(sender, **kwargs):
+    project = kwargs['instance']
+    from karaage.datastores.projects import create_or_update_project
+    create_or_update_project(project)
+
+def delete_project_datastore(sender, **kwargs):
+    project = kwargs['instance']
+    from karaage.datastores.projects import delete_project
+    delete_project(project)
+
+post_save.connect(update_project_datastore, sender=Project)
+pre_delete.connect(delete_project_datastore, sender=Project)

@@ -15,23 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from placard.client import LDAPClient
-
 from karaage.datastores.projects import base
 
 
 class ProjectDataStore(base.ProjectDataStore):
     
     def create_or_update_project(self, project):
-        conn = LDAPClient()
-        try:
-            lgroup = conn.get_group('cn=%s' % project.pid)
-        except:
-            conn.add_group(cn=str(project.pid))
-        users = [str(person.user.username) for person in project.users.all()]
-        conn.update_group('cn=%s' % project.pid, memberUid=users)
+        pass
 
     def delete_project(self, project):
-        conn.delete_group('cn=%s' % project.pid)
+        pass
 
 

@@ -209,6 +209,7 @@ def approve_person(request, user_request_id):
         log(request.user, project, 2, '%s added to project' % person)
 
         project.users.add(person)
+        project.save()
         send_project_join_approved_email(join_request)
         join_request.delete()
 
