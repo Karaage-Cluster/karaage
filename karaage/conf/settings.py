@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'karaage.pbsmoab',
     'karaage.projectreports',
     'karaage.emails',
+    'karaage.applications',
     'ajax_select',
     'placard',
     'placard.lgroups',
