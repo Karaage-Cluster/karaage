@@ -15,17 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+from django.conf.urls.defaults import *
 
-VERSION = (2, 4, 8, 'final', 0)
+urlpatterns = patterns('karaage.applications.views.admin',
 
-def get_version():
-    """ Return the current version"""
-    version = '%s.%s' % (VERSION[0], VERSION[1])
-    if VERSION[2]:
-        version = '%s.%s' % (version, VERSION[2])
-    if VERSION[3:] == ('alpha', 0):
-        version = '%s pre-alpha' % version
-    else:
-        if VERSION[3] != 'final':
-            version = '%s %s %s' % (version, VERSION[3], VERSION[4])
-    return version
+#    url(r'^$', 'application_list', name='kg_account_request_list'),
+    url(r'^add/$', 'add_edit_userapplication', name='kg_userapplication_add'),
+#    url(r'^(?P<application_id>\d+)/$', 'userapplication_detail', name='kg_userapplication_detail'),
+    url(r'^(?P<application_id>\d+)/edit/$', 'add_edit_userapplication', name='kg_userapplication_edit'),
+
+)
