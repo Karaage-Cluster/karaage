@@ -22,12 +22,12 @@ import datetime
 from captcha.fields import CaptchaField
 
 from karaage.projects.models import Project
+from karaage.projects.utils import get_new_pid
 from karaage.people.models import Person
 from karaage.machines.models import MachineCategory
 from karaage.people.models import Institute
 from karaage.people.forms import PersonForm, UsernamePasswordForm
 from karaage.datastores import create_new_user
-from karaage.datastores.projects import create_new_project
 from karaage.util.helpers import create_password_hash
 from karaage.requests.models import ProjectCreateRequest
 from karaage.constants import TITLES, COUNTRIES
@@ -94,10 +94,21 @@ class ProjectRegistrationForm(UserRegistrationForm):
 
         data = self.cleaned_data
 
-        project = create_new_project(data)
+        project = Project(
+            name=data['project_name'],
+            description=data['project_description'],
+            institute=data['project_institute'],
+            is_approved=False,
+            is_active=False,
+            additional_req=data['additional_req'],
+            start_date=datetime.datetime.today(),
+            end_date=datetime.datetime.today() + datetime.timedelta(days=365),
+        )
+        
+        project.pid = get_new_pid(data['project_institute'])
+
         person = create_new_user(data)
         
-        project.leader = person
         project.machine_category = MachineCategory.objects.get_default()
         project.machine_categories.add(MachineCategory.objects.get_default())
         project.save()
