@@ -84,21 +84,21 @@ class PersonalDataStore(object):
     def activate_user(self, person):
         """ Activates a user """
         try:
-            approver = get_current_user().get_profile()
+            current_user = get_current_user()
             if current_user.is_anonymous():
-                current_user = person
+                current_user = person.user
         except:
-            approver = person
+            current_user = person.user
 
         person.date_approved = datetime.datetime.today()
 
-        person.approved_by = approver
+        person.approved_by = current_user.get_profile()
         person.deleted_by = None
         person.date_deleted = None
         person.user.is_active = True
         person.user.save()
 
-        log(approver.user, person, 1, 'Activated')
+        log(current_user, person, 1, 'Activated')
 
         return person
         
@@ -120,7 +120,7 @@ class PersonalDataStore(object):
         for ua in person.useraccount_set.filter(date_deleted__isnull=True):
             delete_account(ua)
 
-        log(get_current_user(), person, 3, 'Deleted')    
+        log(deletor, person, 3, 'Deleted')    
 
 
     def update_user(self, person):
