@@ -45,6 +45,7 @@ class Application(models.Model):
             self.created_by = get_current_user().get_profile()
         super(Application, self).save(*args, **kwargs)
 
+
 class UserApplication(Application):
     project = models.ForeignKey(Project)
     needs_account = models.BooleanField(u"Do you require a cluster account?", help_text=u"Will you be working on the project yourself?")
