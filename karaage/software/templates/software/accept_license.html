@@ -1,7 +1,11 @@
 {% extends "main.html" %}
 
+{% block bread_crumbs_1 %}
+ &rsaquo; <a href="{% url kg_software_list %}">Software</a>
+ &rsaquo; {{ package }}
+{% endblock %}   
+
 {% block content %}
- 
 <h1>{{ package.name }}</h1>
 {% if package.restricted %}
 <p class="errornote">NOTE: This software is restricted and requires admin approval. You will recieve notification via email once your request has been processed</p>

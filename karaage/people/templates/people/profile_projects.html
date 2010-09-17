@@ -1,0 +1,56 @@
+{% extends "people/profile_base.html" %}
+
+{% block profile_content %}
+
+{% if leader_project_list %}
+<h2>Projects I lead or manage</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Project ID</th>
+      <th>Name</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in leader_project_list %}
+    <tr class="{% cycle row1,row2 %}">
+      <td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
+      <td>{{ p.name|truncatewords:"8" }}</td>
+      <td>{{ p.start_date|date }}</td>
+      <td>{{ p.end_date|date }}</td>
+      <td><a href="{{ p.get_usage_url }}">Usage</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+{% if project_list %}
+<h2>Projects I am a member of</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Project ID</th>
+      <th>Name</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in project_list %}
+    <tr class="{% cycle row1,row2 %}">
+      <td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
+      <td>{{ p.name|truncatewords:"8" }}</td>
+      <td>{{ p.start_date|date }}</td>
+      <td>{{ p.end_date|date }}</td>
+      <td><a href="{{ p.get_usage_url }}">Usage</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}
