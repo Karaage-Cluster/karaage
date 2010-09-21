@@ -18,12 +18,14 @@ class Application(models.Model):
     WAITING_FOR_LEADER = 'L'
     WAITING_FOR_DELEGATE = 'D'
     WAITING_FOR_ADMIN = 'K'
+    COMPLETE = 'C'
     APPLICATION_STATES = (
         (NEW, 'New'),
         (OPEN, 'Open'),
         (WAITING_FOR_LEADER, 'Waiting for project leader approval'),
         (WAITING_FOR_DELEGATE, 'Waiting for institute delegate approval'),
         (WAITING_FOR_ADMIN, 'Waiting for Karaage admin approval'),
+        (COMPLETE, 'Complete'),
         )
     
     secret_token = models.CharField(max_length=64, default=new_random_token, editable=False, unique=True)
@@ -67,6 +69,8 @@ class UserApplication(Application):
             add_user_to_project(person, self.project)
         if self.make_leader:
             self.project.leaders.add(person)
+        self.state = Application.COMPLETE
+        self.save()
                 
 
 class ProjectApplication(Application):
