@@ -11,28 +11,12 @@ class Migration(SchemaMigration):
         # Adding model 'Application'
         db.create_table('applications_application', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('secret_token', self.gf('django.db.models.fields.CharField')(default='1ac92acc4de2e4787f2f704f273b0a7d26772324', unique=True, max_length=64)),
-            ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.Person'])),
+            ('secret_token', self.gf('django.db.models.fields.CharField')(default='ee5e25bca5a9a67b3dd5736dec8a15440c2dec81', unique=True, max_length=64)),
+            ('expires', self.gf('django.db.models.fields.DateTimeField')()),
+            ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.Person'], null=True, blank=True)),
             ('created_date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('submitted_date', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('state', self.gf('django.db.models.fields.CharField')(default='N', max_length=1)),
-            ('email', self.gf('django.db.models.fields.EmailField')(max_length=75)),
-            ('username', self.gf('django.db.models.fields.CharField')(max_length=16, unique=True, null=True, blank=True)),
-            ('password', self.gf('django.db.models.fields.CharField')(max_length=128, null=True, blank=True)),
-            ('first_name', self.gf('django.db.models.fields.CharField')(max_length=30, null=True, blank=True)),
-            ('last_name', self.gf('django.db.models.fields.CharField')(max_length=30, null=True, blank=True)),
-            ('position', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
-            ('telephone', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
-            ('mobile', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
-            ('department', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
-            ('supervisor', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
-            ('institute', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.Institute'], null=True, blank=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=10, null=True, blank=True)),
-            ('address', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
-            ('city', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
-            ('postcode', self.gf('django.db.models.fields.CharField')(max_length=8, null=True, blank=True)),
-            ('country', self.gf('django.db.models.fields.CharField')(max_length=2, null=True, blank=True)),
-            ('fax', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('header_message', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
         ))
         db.send_create_signal('applications', ['Application'])
@@ -40,11 +24,62 @@ class Migration(SchemaMigration):
         # Adding model 'UserApplication'
         db.create_table('applications_userapplication', (
             ('application_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['applications.Application'], unique=True, primary_key=True)),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.Project'])),
+            ('content_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contenttypes.ContentType'], null=True, blank=True)),
+            ('object_id', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
+            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.Project'], null=True, blank=True)),
             ('needs_account', self.gf('django.db.models.fields.BooleanField')(default=False, blank=True)),
             ('make_leader', self.gf('django.db.models.fields.BooleanField')(default=False, blank=True)),
         ))
         db.send_create_signal('applications', ['UserApplication'])
+
+        # Adding model 'ProjectApplication'
+        db.create_table('applications_projectapplication', (
+            ('application_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['applications.Application'], unique=True, primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=200)),
+            ('institute', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.Institute'])),
+            ('description', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
+            ('additional_req', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
+        ))
+        db.send_create_signal('applications', ['ProjectApplication'])
+
+        # Adding M2M table for field machine_categories on 'ProjectApplication'
+        db.create_table('applications_projectapplication_machine_categories', (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('projectapplication', models.ForeignKey(orm['applications.projectapplication'], null=False)),
+            ('machinecategory', models.ForeignKey(orm['machines.machinecategory'], null=False))
+        ))
+        db.create_unique('applications_projectapplication_machine_categories', ['projectapplication_id', 'machinecategory_id'])
+
+        # Adding M2M table for field user_applications on 'ProjectApplication'
+        db.create_table('applications_projectapplication_user_applications', (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('projectapplication', models.ForeignKey(orm['applications.projectapplication'], null=False)),
+            ('userapplication', models.ForeignKey(orm['applications.userapplication'], null=False))
+        ))
+        db.create_unique('applications_projectapplication_user_applications', ['projectapplication_id', 'userapplication_id'])
+
+        # Adding model 'Applicant'
+        db.create_table('applications_applicant', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('email', self.gf('django.db.models.fields.EmailField')(max_length=75)),
+            ('username', self.gf('django.db.models.fields.CharField')(unique=True, max_length=16)),
+            ('password', self.gf('django.db.models.fields.CharField')(max_length=128, null=True, blank=True)),
+            ('title', self.gf('django.db.models.fields.CharField')(max_length=10)),
+            ('first_name', self.gf('django.db.models.fields.CharField')(max_length=30)),
+            ('last_name', self.gf('django.db.models.fields.CharField')(max_length=30)),
+            ('institute', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.Institute'])),
+            ('department', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
+            ('position', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
+            ('telephone', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
+            ('mobile', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
+            ('supervisor', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
+            ('address', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
+            ('city', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
+            ('postcode', self.gf('django.db.models.fields.CharField')(max_length=8, null=True, blank=True)),
+            ('country', self.gf('django.db.models.fields.CharField')(max_length=2, null=True, blank=True)),
+            ('fax', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
+        ))
+        db.send_create_signal('applications', ['Applicant'])
 
 
     def backwards(self, orm):
@@ -55,41 +90,70 @@ class Migration(SchemaMigration):
         # Deleting model 'UserApplication'
         db.delete_table('applications_userapplication')
 
+        # Deleting model 'ProjectApplication'
+        db.delete_table('applications_projectapplication')
+
+        # Removing M2M table for field machine_categories on 'ProjectApplication'
+        db.delete_table('applications_projectapplication_machine_categories')
+
+        # Removing M2M table for field user_applications on 'ProjectApplication'
+        db.delete_table('applications_projectapplication_user_applications')
+
+        # Deleting model 'Applicant'
+        db.delete_table('applications_applicant')
+
 
     models = {
-        'applications.application': {
-            'Meta': {'object_name': 'Application'},
+        'applications.applicant': {
+            'Meta': {'object_name': 'Applicant'},
             'address': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'city': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'country': ('django.db.models.fields.CharField', [], {'max_length': '2', 'null': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['people.Person']"}),
-            'created_date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'department': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75'}),
             'fax': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'null': 'True', 'blank': 'True'}),
-            'header_message': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['people.Institute']", 'null': 'True', 'blank': 'True'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'null': 'True', 'blank': 'True'}),
+            'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['people.Institute']"}),
+            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             'mobile': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128', 'null': 'True', 'blank': 'True'}),
             'position': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'postcode': ('django.db.models.fields.CharField', [], {'max_length': '8', 'null': 'True', 'blank': 'True'}),
-            'secret_token': ('django.db.models.fields.CharField', [], {'default': "'b274329be74a5245e43450fcbfbe64315df37bd1'", 'unique': 'True', 'max_length': '64'}),
-            'state': ('django.db.models.fields.CharField', [], {'default': "'N'", 'max_length': '1'}),
-            'submitted_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'supervisor': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'telephone': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
-            'username': ('django.db.models.fields.CharField', [], {'max_length': '16', 'unique': 'True', 'null': 'True', 'blank': 'True'})
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
+            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '16'})
+        },
+        'applications.application': {
+            'Meta': {'object_name': 'Application'},
+            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['people.Person']", 'null': 'True', 'blank': 'True'}),
+            'created_date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'expires': ('django.db.models.fields.DateTimeField', [], {}),
+            'header_message': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'secret_token': ('django.db.models.fields.CharField', [], {'default': "'7fedb9f6abc89264a2e6364b094d977e77a0c074'", 'unique': 'True', 'max_length': '64'}),
+            'state': ('django.db.models.fields.CharField', [], {'default': "'N'", 'max_length': '1'}),
+            'submitted_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'})
+        },
+        'applications.projectapplication': {
+            'Meta': {'object_name': 'ProjectApplication', '_ormbases': ['applications.Application']},
+            'additional_req': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'application_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['applications.Application']", 'unique': 'True', 'primary_key': 'True'}),
+            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['people.Institute']"}),
+            'machine_categories': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['machines.MachineCategory']", 'null': 'True', 'blank': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'user_applications': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['applications.UserApplication']", 'null': 'True', 'blank': 'True'})
         },
         'applications.userapplication': {
             'Meta': {'object_name': 'UserApplication', '_ormbases': ['applications.Application']},
             'application_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['applications.Application']", 'unique': 'True', 'primary_key': 'True'}),
+            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']", 'null': 'True', 'blank': 'True'}),
             'make_leader': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
             'needs_account': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['projects.Project']"})
+            'object_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['projects.Project']", 'null': 'True', 'blank': 'True'})
         },
         'auth.group': {
             'Meta': {'object_name': 'Group'},

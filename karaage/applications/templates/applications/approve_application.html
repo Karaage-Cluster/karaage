@@ -1,0 +1,33 @@
+{% extends "forms.html" %}
+
+{% block title %}Applications{% endblock %}
+
+{% block content_title %}User Application{% endblock %}
+
+{% block bread_crumbs_1 %}
+ &rsaquo; User Application
+{% endblock %}   
+
+{% block content %}
+<p>To approve {{ application.applicant }} into you project press submit. Note you may also make this person a project leader at the same time.</p>
+<p>{{ application.applicant }} will recieve an email once their account has been confirmed.</p>
+
+<form method="post" action=".">{% csrf_token %}
+<div>
+{% load forms %}
+{% if form.errors or form.non_field_errors %}
+	<p class="errornote">Please correct the error(s) below.</p>
+{% endif %}
+
+<fieldset class="module aligned ()">
+{{ form.non_field_errors }}
+{% form_as_div form %}
+</fieldset>
+
+</div>
+<div class="submit-row">
+		
+		<input type="submit" value="Submit" class="default" />
+	</div>
+</form>
+{% endblock %}

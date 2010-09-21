@@ -16,8 +16,10 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib import admin
-from models import UserApplication
+from models import UserApplication, ProjectApplication, Applicant
 
 
 
 admin.site.register(UserApplication)
+admin.site.register(ProjectApplication)
+admin.site.register(Applicant)

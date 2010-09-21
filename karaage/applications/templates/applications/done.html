@@ -1,0 +1,22 @@
+{% extends "main.html" %}
+
+{% block title %}Applications{% endblock %}
+{% block content %}
+
+<p>Thanks {{ application.applicant.first_name }} for your account request to join the project - <b>{{ application.project }}</b>.</p>
+
+<p>The project leader{{ application.project.leaders.all|pluralize }} ha{{ application.project.leaders.all|pluralize:"s,ve" }} been emailed about this application. Now we're just waiting
+for their authorisation before you can join the project.</p>
+
+<p>Leader{{ application.project.leaders.all|pluralize }} contact details:<br />
+	{% for leader in application.project.leaders.all %}
+        <ul>
+        			<li>{{ leader.get_full_name }}</li>
+                {% if leader.email %}<li>Email: {{ leader.email|urlize }}</li>{% endif %}
+                {% if leader.telephone %}<li>Phone: {{ leader.telephone }}</li>{% endif %}
+        </ul>
+     {% endfor %}
+</p>
+{% endblock %}
+
+

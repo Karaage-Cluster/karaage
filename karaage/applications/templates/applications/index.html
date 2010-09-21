@@ -1,0 +1,32 @@
+{% extends "threecol.html" %}
+{% load common %}
+{% block title %}Home{% endblock %}
+
+{% block content_title %}Apply for an Account{% endblock %}
+
+{% block breadcrumbs %}Home{% endblock %}
+    
+{% block content %}
+<div id="content-main">
+{% if user.is_authenticated %}
+<p>You already have an account! Why do you want another one?</p>
+{% else %}
+
+<h3>Join an existing project</h3>
+<p>To join an existing project, fill in the <a href="{% url kg_new_userapplication %}">Account Form</a>.<p>
+<p>All accounts must be associated with a registered Project.</p>
+
+<h3>Start a new project</h3>
+
+<p>If you cannot become part of an existing Project, fill in the <a href="{% url project_registration %}">Project Form</a></p>
+
+<p>Upon approval, authority is provided to the nominated project leader to
+authorise personal accounts associated with the Project.</p>
+
+<h3>Contact</h3>
+
+<p>Contact {{ accounts_email }} for further information.</p>
+{% endif %}
+	
+</div>
+{% endblock %}
