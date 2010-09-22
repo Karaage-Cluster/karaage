@@ -24,6 +24,7 @@ from django.contrib import messages
 
 from karaage.applications.models import UserApplication, Applicant
 from karaage.applications.forms import AdminUserApplicationForm as UserApplicationForm, ApplicantForm
+from karaage.applications.emails import send_user_invite_email
 
 
 @permission_required('applications.add_userapplication')
@@ -46,6 +47,7 @@ def add_edit_userapplication(request, application_id=None):
             application.applicant
             application.save()
             application = form.save()
+            send_user_invite_email(application)
             return HttpResponseRedirect(application.get_absolute_url())
         
     else:

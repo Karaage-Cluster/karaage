@@ -45,7 +45,7 @@ def send_account_request_email(application):
         send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
 
 
-def send_user_invite(userapplication):
+def send_user_invite_email(userapplication):
     """ Sends an email inviting someone to create an account"""
     site = Site.objects.get(id=settings.REGISTRATION_SITE_ID)
     context = CONTEXT.copy()
@@ -66,7 +66,7 @@ def send_account_approved_email(userapplication):
     context = CONTEXT.copy()
     context['receiver'] = userapplication.applicant
     context['project'] = userapplication.project
-    context['site'] = reverse('kg_profile', urlconf='kgreg.conf.urls')
+    context['site'] = reverse('kg_user_profile', urlconf='kgreg.conf.urls')
     subject = render_to_string('applications/emails/account_approved_subject.txt', context)
     body = render_to_string('applications/emails/account_approved_body.txt', context)
     to_email = user_request.person.email
