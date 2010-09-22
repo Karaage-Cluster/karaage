@@ -148,7 +148,10 @@ def application_done(request, token):
 @login_required
 def approve_userapplication(request, application_id):
     application = get_object_or_404(UserApplication, pk=application_id)
-    
+
+    if application.state != Application.WAITING_FOR_LEADER:
+        raise Http404
+
     if not request.user.get_profile() in application.project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
@@ -181,7 +184,8 @@ def approve_userapplication(request, application_id):
 @login_required
 def decline_userapplication(request, application_id):
     application = get_object_or_404(UserApplication, pk=application_id)
-  
+    if application.state != Application.WAITING_FOR_LEADER:
+        raise Http404
     if not request.user.get_profile() in application.project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     
@@ -199,6 +203,9 @@ def decline_userapplication(request, application_id):
 @login_required
 def userapplication_detail(request, application_id):
     application = get_object_or_404(UserApplication, pk=application_id)
+
+    if application.state != Application.WAITING_FOR_LEADER:
+        raise Http404
     if not request.user.get_profile() in application.project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     
