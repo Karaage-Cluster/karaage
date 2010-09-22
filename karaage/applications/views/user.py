@@ -29,7 +29,7 @@ import datetime
 
 from karaage.applications.models import UserApplication, Applicant, Application
 from karaage.applications.forms import UserApplicationForm, UserApplicantForm, LeaderUserApplicationForm
-from karaage.applications.emails import send_account_request_email
+from karaage.applications.emails import send_account_request_email, send_account_approved_email
 from karaage.people.models import Person
 from karaage.projects.models import Project
 
@@ -171,7 +171,7 @@ def approve_userapplication(request, application_id):
                 return HttpResponseRedirect(reverse('kg_userapplication_pending', args=[application.id]))
 
             application.approve()
-
+            send_account_approved_email(application)
             return HttpResponseRedirect(reverse('kg_userapplication_complete', args=[application.id]))
     else:
         form = LeaderUserApplicationForm(instance=application)

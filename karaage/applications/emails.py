@@ -43,3 +43,32 @@ def send_account_request_email(application):
         body = render_to_string('applications/emails/join_project_request_body.txt', context)
 
         send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+
+
+def send_user_invite(userapplication):
+    """ Sends an email inviting someone to create an account"""
+    site = Site.objects.get(id=settings.REGISTRATION_SITE_ID)
+    context = CONTEXT.copy()
+    context['site'] = reverse('kg_invited_userapplication', args=[userapplication.secret_token], urlconf='kgreg.conf.urls')
+    context['sender'] = userapplication.created_by
+    context['project'] = userapplication.project
+    context['make_leader'] = userapplication.make_leader
+
+    to_email = userapplication.email 
+    subject = render_to_string('applications/emails/user_invite_email_subject.txt', context)
+    body = render_to_string('applications/emails/user_invite_email_body.txt', context)
+    
+    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+
+
+def send_account_approved_email(userapplication):
+    """Sends an email informing person account is ready"""
+    context = CONTEXT.copy()
+    context['receiver'] = userapplication.applicant
+    context['project'] = userapplication.project
+    context['site'] = reverse('kg_profile', urlconf='kgreg.conf.urls')
+    subject = render_to_string('applications/emails/account_approved_subject.txt', context)
+    body = render_to_string('applications/emails/account_approved_body.txt', context)
+    to_email = user_request.person.email
+    
+    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
