@@ -21,9 +21,10 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
 from django.contrib import messages
+from django.contrib.contenttypes.models import ContentType
 
-from karaage.applications.models import UserApplication
-from karaage.applications.forms import AdminUserApplicationForm as UserApplicationForm
+from karaage.applications.models import UserApplication, Applicant
+from karaage.applications.forms import AdminUserApplicationForm as UserApplicationForm, ApplicantForm
 
 
 @permission_required('applications.add_userapplication')
@@ -31,18 +32,26 @@ def add_edit_userapplication(request, application_id=None):
     
     if application_id:
         application = get_object_or_404(UserApplication, pk=application_id)
+        applicant = application.applicant
     else:
-        application=None
+        application = None
+        applicant = None
 
     if request.method == 'POST':
         form = UserApplicationForm(request.POST, instance=application)
+        applicant_form = ApplicantForm(request.POST, instance=applicant)
 
-        if form.is_valid():
+        if form.is_valid() and applicant_form.is_valid():
+            applicant = applicant_form.save()
+            application = form.save(commit=False)
+            application.object_id = applicant.id
+            application.content_type = ContentType.objects.get_for_model(Applicant)
+            application.save()
             application = form.save()
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect(application.get_absolute_url())
         
-
     else:
         form = UserApplicationForm(instance=application)
-    
-    return render_to_response('applications/admin_userapplication_form.html', {'form': form, 'application': application}, context_instance=RequestContext(request)) 
+        applicant_form = ApplicantForm(instance=applicant)
+
+    return render_to_response('applications/admin_userapplication_form.html', {'form': form, 'applicant_form': applicant_form, 'application': application}, context_instance=RequestContext(request)) 

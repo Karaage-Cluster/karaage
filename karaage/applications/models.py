@@ -88,12 +88,12 @@ class ProjectApplication(Application):
 
 class Applicant(models.Model):
     email = models.EmailField()
-    username = models.CharField(max_length=16, unique=True, help_text="Required. 16 characters or fewer. Letters, numbers and @.+-_ characters")
+    username = models.CharField(max_length=16, unique=True, help_text="Required. 16 characters or fewer. Letters, numbers and @.+-_ characters", null=True, blank=True)
     password = models.CharField(max_length=128, null=True, blank=True)
-    title = models.CharField(choices=TITLES, max_length=10)
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    institute = models.ForeignKey(Institute, help_text="If your institute is not listed please contact %s" % settings.ACCOUNTS_EMAIL, limit_choices_to={'is_active': True})
+    title = models.CharField(choices=TITLES, max_length=10, null=True, blank=True)
+    first_name = models.CharField(max_length=30, null=True, blank=True)
+    last_name = models.CharField(max_length=30, null=True, blank=True)
+    institute = models.ForeignKey(Institute, help_text="If your institute is not listed please contact %s" % settings.ACCOUNTS_EMAIL, limit_choices_to={'is_active': True}, null=True, blank=True)
     department = models.CharField(max_length=200, null=True, blank=True)
     position = models.CharField(max_length=200, null=True, blank=True)
     telephone = models.CharField("Office Telephone", max_length=200, null=True, blank=True)

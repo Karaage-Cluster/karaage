@@ -28,7 +28,7 @@ from django.conf import settings
 import datetime
 
 from karaage.applications.models import UserApplication, Applicant, Application
-from karaage.applications.forms import UserApplicationForm, ApplicantForm, LeaderUserApplicationForm
+from karaage.applications.forms import UserApplicationForm, UserApplicantForm, LeaderUserApplicationForm
 from karaage.applications.emails import send_account_request_email
 from karaage.people.models import Person
 from karaage.projects.models import Project
@@ -49,7 +49,7 @@ def do_userapplication(request, token=None):
         applicant = None
     if request.method == 'POST':
         form = UserApplicationForm(request.POST, instance=application)
-        applicant_form = ApplicantForm(request.POST, instance=applicant)
+        applicant_form = UserApplicantForm(request.POST, instance=applicant)
         if form.is_valid() and applicant_form.is_valid():
             applicant = applicant_form.save()
             application = form.save(commit=False)
@@ -65,7 +65,7 @@ def do_userapplication(request, token=None):
             return HttpResponseRedirect(reverse('kg_application_done',  args=[application.secret_token]))
     else:
         form = UserApplicationForm(instance=application)
-        applicant_form = ApplicantForm(instance=applicant)
+        applicant_form = UserApplicantForm(instance=applicant)
     
     return render_to_response('applications/userapplication_form.html', {'form': form, 'applicant_form': applicant_form, 'application': application}, context_instance=RequestContext(request)) 
 
