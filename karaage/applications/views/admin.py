@@ -17,7 +17,7 @@
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import permission_required, login_required
 from django.core.urlresolvers import reverse
 from django.contrib import messages
@@ -25,7 +25,7 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from andsome.util.filterspecs import Filter, FilterBar
 
-from karaage.applications.models import UserApplication, Applicant
+from karaage.applications.models import UserApplication, Applicant, Application
 from karaage.applications.forms import AdminUserApplicationForm as UserApplicationForm, ApplicantForm
 from karaage.applications.emails import send_user_invite_email
 
@@ -94,4 +94,47 @@ def application_list(request, queryset=UserApplication.objects.select_related().
         page = p.page(page_no)
 
     return render_to_response(template_name, {'page':page, 'filter_bar':filter_bar}, context_instance=RequestContext(request))
+
+@login_required
+def approve_userapplication(request, application_id):
+    application = get_object_or_404(UserApplication, pk=application_id)
+
+    if request.method == 'POST':
+        form = LeaderUserApplicationForm(request.POST, instance=application)
+        if form.is_valid():
+            application = form.save()
+
+            application.approve()
+            send_account_approved_email(application)
+            return HttpResponseRedirect(reverse('kg_userapplication_complete', args=[application.id]))
+    else:
+        form = LeaderUserApplicationForm(instance=application)
+
+    return render_to_response('applications/approve_application.html', {'form': form, 'application': application}, context_instance=RequestContext(request))
+
+
+@login_required
+def decline_userapplication(request, application_id):
+    application = get_object_or_404(UserApplication, pk=application_id)
+
+    if request.method == 'POST':
+        send_account_rejected_email(application)
+
+        application.delete()
+
+        return HttpResponseRedirect(reverse('kg_user_profile'))
+
+    return render_to_response('applications/confirm_decline.html', {'application': application}, context_instance=RequestContext(request))
+
+@login_required
+def userapplication_detail(request, application_id):
+    application = get_object_or_404(UserApplication, pk=application_id)
+
+    return render_to_response('applications/adminapplication_detail.html', {'application': application}, context_instance=RequestContext(request))
+
+@login_required
+def userapplication_complete(request, application_id):
+    application = get_object_or_404(UserApplication, pk=application_id)
+
+    return render_to_response('applications/userapplication_complete.html', {'application': application}, context_instance=RequestContext(request))
 

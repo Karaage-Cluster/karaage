@@ -21,15 +21,11 @@ urlpatterns = patterns('karaage.applications.views.admin',
 
     url(r'^$', 'application_list', name='kg_account_request_list'),
     url(r'^add/$', 'add_edit_userapplication', name='kg_userapplication_add'),
-#    url(r'^(?P<application_id>\d+)/$', 'userapplication_detail', name='kg_userapplication_detail'),
-    url(r'^(?P<application_id>\d+)/edit/$', 'add_edit_userapplication', name='kg_userapplication_edit'),
-
-)
-
-urlpatterns += patterns('karaage.applications.views.user',
-
     url(r'^(?P<application_id>\d+)/$', 'userapplication_detail', name='kg_userapplication_detail'),
+    url(r'^(?P<application_id>\d+)/edit/$', 'add_edit_userapplication', name='kg_userapplication_edit'),
     url(r'^(?P<application_id>\d+)/approve/$', 'approve_userapplication', name='kg_userapplication_approve'),
     url(r'^(?P<application_id>\d+)/decline/$', 'decline_userapplication', name='kg_userapplication_decline'),
+    url(r'^(?P<application_id>\d+)/complete/$', 'userapplication_complete', name='kg_userapplication_complete'),
 
 )
+
