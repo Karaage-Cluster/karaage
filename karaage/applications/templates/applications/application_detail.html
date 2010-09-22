@@ -3,6 +3,7 @@
 {% block title %}Applications{% endblock %}
 {% block content %}
 
+{% if application.state == 'K' %}
 <h1>{{ application.applicant }}'s Request</h1>
 
 <p>{{ application.applicant }} has requested to join the project <b>{{ application.project }}</b></p>
@@ -13,6 +14,7 @@
 
 {% if application.needs_account %}
 <p>A computer account on the {{ org_name }} clusters will be made for {{ application.applicant }} if he does not already have one.</p>
+{% endif %}
 {% endif %}
 <h1>{{ person }} Details</h1>
    	<table>

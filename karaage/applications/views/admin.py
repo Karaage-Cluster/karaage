@@ -18,9 +18,12 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.core.urlresolvers import reverse
 from django.contrib import messages
+from django.db.models import Q
+from django.core.paginator import Paginator
+from andsome.util.filterspecs import Filter, FilterBar
 
 from karaage.applications.models import UserApplication, Applicant
 from karaage.applications.forms import AdminUserApplicationForm as UserApplicationForm, ApplicantForm
@@ -54,3 +57,41 @@ def add_edit_userapplication(request, application_id=None):
         applicant_form = ApplicantForm(instance=applicant)
 
     return render_to_response('applications/admin_userapplication_form.html', {'form': form, 'applicant_form': applicant_form, 'application': application}, context_instance=RequestContext(request)) 
+
+@login_required
+def application_list(request, queryset=UserApplication.objects.select_related().all(), template_name='applications/application_list.html', paginate=True):
+
+    querystring = request.META.get('QUERY_STRING', '')
+
+    apps = queryset
+
+    page_no = int(request.GET.get('page', 1))
+
+    if request.REQUEST.has_key('state'):
+        apps = apps.filter(state=request.GET['state'])
+
+    if request.method == 'POST':
+        new_data = request.POST.copy()
+        terms = new_data['search'].lower()
+        query = Q()
+        for term in terms.split(' '):
+            q = Q(created_by__user__first_name__icontains=term) | Q(created_by__user__last_name__icontains=term) | Q(project__icontains=term)
+            query = query & q
+
+        apps = apps.filter(query)
+    else:
+        terms = ""
+
+    filter_list = []
+    filter_list.append(Filter(request, 'state', UserApplication.APPLICATION_STATES))
+    filter_bar = FilterBar(request, filter_list)
+
+    if paginate:
+        p = Paginator(apps, 50)
+        page = p.page(page_no)
+    else:
+        p = Paginator(apps, 100000)
+        page = p.page(page_no)
+
+    return render_to_response(template_name, {'page':page, 'filter_bar':filter_bar}, context_instance=RequestContext(request))
+
