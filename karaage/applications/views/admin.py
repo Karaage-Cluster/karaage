@@ -44,9 +44,8 @@ def add_edit_userapplication(request, application_id=None):
         if form.is_valid() and applicant_form.is_valid():
             applicant = applicant_form.save()
             application = form.save(commit=False)
-            application.applicant
+            application.applicant = applicant
             application.save()
-            application = form.save()
             send_user_invite_email(application)
             return HttpResponseRedirect(application.get_absolute_url())
         
