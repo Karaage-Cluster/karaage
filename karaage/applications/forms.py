@@ -11,30 +11,40 @@ from karaage.validators import username_re
 
 
 class ApplicantForm(forms.ModelForm):
-   # password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
-   # password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)') 
-    password1 = forms.CharField(widget=forms.PasswordInput(), label=u'Password')
-    password2 = forms.CharField(widget=forms.PasswordInput(), label=u'Password (again)') 
-
     class Meta:
         model = Applicant
+
+
+class UserApplicantForm(ApplicantForm):
+
+    def __init__(self, *args, **kwargs):
+        super(UserApplicantForm, self).__init__(*args, **kwargs)
+        self.fields['title'].required = True
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
+        self.fields['username'].required = True
+        self.fields['institute'].required = True
+
+    password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
+    password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)') 
 
     def clean_username(self):
 
         username = self.cleaned_data['username']
-        if not username.islower():
-            raise forms.ValidationError(u'Username must be all lowercase')
+        if username:
+            if not username.islower():
+                raise forms.ValidationError(u'Username must be all lowercase')
  
-        if not username_re.search(username):
-            raise forms.ValidationError(u'Usernames can only contain letters, numbers and underscores')
+            if not username_re.search(username):
+                raise forms.ValidationError(u'Usernames can only contain letters, numbers and underscores')
 
-        try:
-            user = User.objects.get(username__exact=username)
-        except User.DoesNotExist:
-            user = None
+            try:
+                user = User.objects.get(username__exact=username)
+            except User.DoesNotExist:
+                user = None
         
-        if user is not None:
-            raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old account please email %s' % settings.ACCOUNTS_EMAIL)
+            if user is not None:
+                raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old account please email %s' % settings.ACCOUNTS_EMAIL)
         return username
     
     def clean_password2(self):
@@ -70,10 +80,14 @@ class UserApplicationForm(forms.ModelForm):
 
 
 class AdminUserApplicationForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(AdminUserApplicationForm, self).__init__(*args, **kwargs)
+        self.fields['project'].required = True
 
     class Meta:
         model = UserApplication        
         exclude = ['submitted_date', 'state',]
+
 
 class LeaderUserApplicationForm(forms.ModelForm):
     class Meta:
