@@ -21,7 +21,6 @@ from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import permission_required, login_required
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.conf import settings
 
@@ -53,8 +52,7 @@ def do_userapplication(request, token=None):
         if form.is_valid() and applicant_form.is_valid():
             applicant = applicant_form.save()
             application = form.save(commit=False)
-            application.object_id = applicant.id
-            application.content_type = ContentType.objects.get_for_model(Applicant)
+            application.applicant = applicant
             application.save()
             if not application.project:
                 return HttpResponseRedirect(reverse('kg_application_choose_project', args=[application.secret_token]))
