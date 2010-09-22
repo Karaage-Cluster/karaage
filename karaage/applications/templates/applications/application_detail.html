@@ -17,19 +17,16 @@
 <h1>{{ person }} Details</h1>
    	<table>
    		<tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
-   		<tr><td>Email:</td><td>{{ application.applicant.email|urlize }}</td></tr>
-   		<tr><td>Position:</td><td>{{ application.applicant.position|default:"" }}</td></tr>
+   		<tr><td>First name:</td><td>{{ application.applicant.first_name }}</td></tr>
+   		<tr><td>Last name:</td><td>{{ application.applicant.last_name }}</td></tr>
+   		<tr><td>Email:</td><td>{{ application.applicant.email|urlize }}</td></tr>	
    		<tr><td>Institute:</td><td><a href="{{ application.applicant.institute.get_absolute_url }}">{{ application.applicant.institute }}</a></td></tr>		
-   		<tr><td>Phone:</td><td>{{ application.applicant.telephone|default:"" }}</td></tr>
-   		<tr><td>Mobile:</td><td>{{ application.applicant.mobile|default:"" }}</td></tr>
-   		<tr><td>Department:</td><td>{{ application.applicant.department|default:"" }}</td></tr>
-   		<tr><td>Supervisor:</td><td>{{ application.applicant.supervisor|default:"" }}</td></tr>
-   		<tr><td>Address:</td><td>{{ application.applicant.address|default:"" }}</td></tr>
-   		<tr><td>Fax:</td><td>{{ application.applicant.fax }}</td></tr>
-   		<tr><td>City:</td><td>{{ application.applicant.city|default:"" }}</td></tr>
-   		<tr><td>State:</td><td>{{ application.applicant.get_state_display|default:"" }}</td></tr>
-   		<tr><td>Postcode:</td><td>{{ application.applicant.postcode|default:"" }}</td></tr>
-   		<tr><td>Country:</td><td>{{ application.applicant.get_country_display|default:"" }}</td></tr>
+   		{% if application.applicant.position %}<tr><td>Position:</td><td>{{ application.applicant.position }}</td></tr>{% endif %}
+   		{% if application.applicant.telephone %}<tr><td>Phone:</td><td>{{ application.applicant.telephone }}</td></tr>{% endif %}
+   		{% if application.applicant.mobile %}<tr><td>Mobile:</td><td>{{ application.applicant.mobile }}</td></tr>{% endif %}
+   		{% if application.applicant.department %}<tr><td>Department:</td><td>{{ application.applicant.department }}</td></tr>{% endif %}
+   		{% if application.applicant.supervisor %}<tr><td>Supervisor:</td><td>{{ application.applicant.supervisor }}</td></tr>{% endif %}
+   		{% if application.applicant.fax %}<tr><td>Fax:</td><td>{{ application.applicant.fax }}</td></tr>{% endif %}
 		
 	</table>
 
