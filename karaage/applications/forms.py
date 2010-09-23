@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 
 from karaage.applications.models import UserApplication, Applicant
+from karaage.people.models import Person
 from karaage.people.forms import UsernamePasswordForm
 from karaage.util.helpers import check_password
 from karaage.constants import TITLES
@@ -80,6 +81,8 @@ class UserApplicationForm(forms.ModelForm):
 
 
 class AdminUserApplicationForm(forms.ModelForm):
+    email = forms.EmailField()
+
     def __init__(self, *args, **kwargs):
         super(AdminUserApplicationForm, self).__init__(*args, **kwargs)
         self.fields['project'].required = True
@@ -88,9 +91,21 @@ class AdminUserApplicationForm(forms.ModelForm):
         model = UserApplication        
         exclude = ['submitted_date', 'state',]
 
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        try:
+            person = Person.active.get(user__email=email)
+        except Person.MultipleObjectsReturned:
+            raise forms.ValidationError(u'Multiple users with this email exist. Please add manually as no way to invite.')
+        except Exception, e:
+            pass
+        return email
+            
+
 
 class LeaderUserApplicationForm(forms.ModelForm):
     class Meta:
         model = UserApplication
         fields = ['make_leader',]
+
 

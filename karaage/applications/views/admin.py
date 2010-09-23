@@ -25,28 +25,29 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from andsome.util.filterspecs import Filter, FilterBar
 
+from karaage.people.models import Person
 from karaage.applications.models import UserApplication, Applicant, Application
 from karaage.applications.forms import AdminUserApplicationForm as UserApplicationForm, ApplicantForm
 from karaage.applications.emails import send_user_invite_email
 
 
 @permission_required('applications.add_userapplication')
-def add_edit_userapplication(request, application_id=None):
+def send_invitation(request):
     
-    if application_id:
-        application = get_object_or_404(UserApplication, pk=application_id)
-        applicant = application.applicant
-    else:
-        application = None
-        applicant = None
+    application = None
 
     if request.method == 'POST':
         form = UserApplicationForm(request.POST, instance=application)
-        applicant_form = ApplicantForm(request.POST, instance=applicant)
 
-        if form.is_valid() and applicant_form.is_valid():
-            applicant = applicant_form.save()
+        if form.is_valid():
             application = form.save(commit=False)
+            email = form.cleaned_data['email']
+            try:
+                applicant = Person.active.get(user__email=email)
+            except Person.DoesNotExist:
+                applicant, created = Applicant.objects.get_or_create(email=email)
+            except Person.MultipleObjectsReturned:
+                pass
             application.applicant = applicant
             application.save()
             send_user_invite_email(application)
@@ -54,9 +55,8 @@ def add_edit_userapplication(request, application_id=None):
         
     else:
         form = UserApplicationForm(instance=application)
-        applicant_form = ApplicantForm(instance=applicant)
 
-    return render_to_response('applications/admin_userapplication_form.html', {'form': form, 'applicant_form': applicant_form, 'application': application}, context_instance=RequestContext(request)) 
+    return render_to_response('applications/userapplication_invite_form.html', {'form': form, 'application': application}, context_instance=RequestContext(request)) 
 
 @login_required
 def application_list(request, queryset=UserApplication.objects.select_related().all(), template_name='applications/application_list.html', paginate=True):

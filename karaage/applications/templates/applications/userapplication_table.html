@@ -1,12 +1,11 @@
 <table cellspacing="0">
 	<thead>
-	    <caption><h2>Account applications</h2></caption>
 		<tr>
 		    <th>Details</th>
 			<th>email</th>
 			<th>Project</th>
 			<th>Leader</th>
-			<th>Cluster<br>Account</th>
+			<th>Cluster Account</th>
 			<th>State</th>
 			<th>Accept</th>
 			<th>Decline</th>
@@ -20,7 +19,7 @@
 	   	    <td>{{ app.project.pid }}</td>
 	   	    <td>{% yes_no_img app.make_leader %}</td>
 	   	    <td>{% yes_no_img app.needs_account %}</td>
-	   	    <td>{{ app.state }}</td>
+	   	    <td>{{ app.get_state_display }}</td>
 	   	    {% if app.state == "K" %}
             <td><a href="{% url kg_userapplication_approve app.id %}" class="yeslink">&nbsp;Accept</a></td>
             <td><a href="{% url kg_userapplication_decline app.id %}" class="nolink">&nbsp;Decline</a></td>
