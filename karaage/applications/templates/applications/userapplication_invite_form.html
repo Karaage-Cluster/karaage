@@ -19,9 +19,10 @@
 <fieldset class="module aligned ()">
 {{ form.non_field_errors }}
 <h2>Details</h2>
-{% formfield applicant_form.email %}
+{% formfield form.email %}
 {% formfield form.project %}
 {% formfield form.make_leader %}
+{% formfield form.header_message %}
 </fieldset>
 
 </div>
