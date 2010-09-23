@@ -64,7 +64,7 @@ def send_invitation(request):
     return render_to_response('applications/userapplication_invite_form.html', {'form': form, 'application': application}, context_instance=RequestContext(request)) 
 
 @login_required
-def application_list(request, queryset=UserApplication.objects.select_related().all(), template_name='applications/application_list.html', paginate=True):
+def application_list(request, queryset=UserApplication.objects.select_related().all(), template_name='applications/application_list.html'):
 
     querystring = request.META.get('QUERY_STRING', '')
 
@@ -91,20 +91,16 @@ def application_list(request, queryset=UserApplication.objects.select_related().
     filter_list.append(Filter(request, 'state', UserApplication.APPLICATION_STATES))
     filter_bar = FilterBar(request, filter_list)
 
-    if paginate:
-        p = Paginator(apps, 50)
-        page = p.page(page_no)
-    else:
-        p = Paginator(apps, 100000)
-        page = p.page(page_no)
+    p = Paginator(apps, 50)
+    page = p.page(page_no)
 
-    return render_to_response(template_name, {'page':page, 'filter_bar':filter_bar}, context_instance=RequestContext(request))
+    return render_to_response(template_name, {'page': page, 'filter_bar': filter_bar}, context_instance=RequestContext(request))
 
-@login_required
+@permission_required('applications.change_application')
 def approve_userapplication(request, application_id):
     application = get_object_or_404(UserApplication, pk=application_id)
 
-    if application.state != Application.WAITING_FOR_ADMIN or application.state == Application.COMPLETE:
+    if application.state != Application.WAITING_FOR_ADMIN:
         raise Http404
     if request.method == 'POST':
         application.approve()
@@ -116,11 +112,11 @@ def approve_userapplication(request, application_id):
     return render_to_response('applications/approve_application.html', {'form': form, 'application': application}, context_instance=RequestContext(request))
 
 
-@login_required
+@permission_required('applications.delete_application')
 def decline_userapplication(request, application_id):
     application = get_object_or_404(UserApplication, pk=application_id)
 
-    if application.state != Application.WAITING_FOR_ADMIN or application.state == Application.COMPLETE:
+    if application.state != Application.WAITING_FOR_ADMIN:
         raise Http404
     if request.method == 'POST':
         send_account_rejected_email(application)
@@ -131,15 +127,10 @@ def decline_userapplication(request, application_id):
 
     return render_to_response('applications/confirm_decline.html', {'application': application}, context_instance=RequestContext(request))
 
+
 @login_required
 def userapplication_detail(request, application_id):
     application = get_object_or_404(UserApplication, pk=application_id)
 
     return render_to_response('applications/adminapplication_detail.html', {'application': application}, context_instance=RequestContext(request))
-
-@login_required
-def userapplication_complete(request, application_id):
-    application = get_object_or_404(UserApplication, pk=application_id)
-
-    return render_to_response('applications/userapplication_complete.html', {'application': application}, context_instance=RequestContext(request))
 
