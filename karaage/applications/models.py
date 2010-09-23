@@ -41,7 +41,7 @@ class Application(models.Model):
             import datetime
             if get_current_user().is_authenticated():
                 self.created_by = get_current_user().get_profile()
-            self.expires = datetime.datetime.now() + datetime.timedelta(days=5)
+            self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
         super(Application, self).save(*args, **kwargs)
   
 
