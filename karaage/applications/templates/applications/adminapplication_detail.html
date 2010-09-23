@@ -14,12 +14,12 @@
     <tr><td>Needs cluster account:</td><td>{% yes_no_img application.needs_account %}</td></tr>
     <tr><td>Make leader:</td><td>{% yes_no_img application.make_leader %}</td></tr>
     </table>
-<br>
+<br />
 {% if application.state == 'K' %}
 <h1>Approval options:</h1>
 <p><a href="{% url kg_userapplication_approve application.id %}" class="yeslink">&nbsp;Accept</a></p>
 <p><a href="{% url kg_userapplication_decline application.id %}" class="nolink">&nbsp;Decline</a></p>
-<br>
+<br />
 {% endif %}
 <h1>{{ application.applicant }} Details</h1>
    	<table>

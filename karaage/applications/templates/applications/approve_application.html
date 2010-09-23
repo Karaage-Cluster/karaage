@@ -9,11 +9,6 @@
 {% endblock %}   
 
 {% block content %}
-{% comment %}
-<p>To approve {{ application.applicant }} into you project press submit. Note you may also make this person a project leader at the same time.</p>
-<p>{{ application.applicant }} will recieve an email once their account has been confirmed.</p>
-{% endcomment %}
-
 <p>The following request is awaiting your approval</p>
 <table>
    	<tr><td>Name:</td><td>{{ application.applicant }}</td></tr>
@@ -23,10 +18,9 @@
     <tr><td>Needs cluster account:</td><td>{% yes_no_img application.needs_account %}</td></tr>
     <tr><td>Make a leader:</td><td>{% yes_no_img application.make_leader %}</td></tr>
 </table>
-<br>
-<p>Press the "Approve" button to approve the application.</p>
+<br />
 <p>{{ application.applicant }} will recieve an email once their account has been confirmed.</p>
-<br>
+<br />
 {% if form %}
 <p>Please ammend the following to suit.</p>
 {% endif %}

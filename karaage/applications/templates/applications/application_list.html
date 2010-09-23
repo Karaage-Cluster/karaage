@@ -6,8 +6,6 @@
 
 {% block content_title %}&nbsp;{% endblock %}
 
-{% block searchform %}{% endblock %}
-
 {% block objecttools %}
 {% if perms.applications.add_application %}
 <ul class="object-tools"><li><a href="{% url kg_userapplication_invite %}" class="addlink">Send invitation</a></li></ul>
