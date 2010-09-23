@@ -30,7 +30,6 @@ from karaage.applications.models import UserApplication, Applicant, Application
 from karaage.applications.forms import AdminUserApplicationForm as UserApplicationForm, ApplicantForm
 from karaage.applications.emails import send_user_invite_email, send_account_approved_email
 
-
 @permission_required('applications.add_userapplication')
 def send_invitation(request):
     
@@ -105,16 +104,14 @@ def application_list(request, queryset=UserApplication.objects.select_related().
 def approve_userapplication(request, application_id):
     application = get_object_or_404(UserApplication, pk=application_id)
 
+    if application.state != Application.WAITING_FOR_ADMIN or application.state == Application.COMPLETE:
+        raise Http404
     if request.method == 'POST':
-        form = LeaderUserApplicationForm(request.POST, instance=application)
-        if form.is_valid():
-            application = form.save()
+        application.approve()
+        send_account_approved_email(application)
+        return HttpResponseRedirect(reverse('kg_userapplication_complete', args=[application.id]))
 
-            application.approve()
-            send_account_approved_email(application)
-            return HttpResponseRedirect(reverse('kg_userapplication_complete', args=[application.id]))
-    else:
-        form = LeaderUserApplicationForm(instance=application)
+    form = None
 
     return render_to_response('applications/approve_application.html', {'form': form, 'application': application}, context_instance=RequestContext(request))
 
@@ -123,6 +120,8 @@ def approve_userapplication(request, application_id):
 def decline_userapplication(request, application_id):
     application = get_object_or_404(UserApplication, pk=application_id)
 
+    if application.state != Application.WAITING_FOR_ADMIN or application.state == Application.COMPLETE:
+        raise Http404
     if request.method == 'POST':
         send_account_rejected_email(application)
 

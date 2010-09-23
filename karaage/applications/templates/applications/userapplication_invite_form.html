@@ -12,8 +12,10 @@
 {% block content %}
 <form method="post" action=".">{% csrf_token %}
 <div>
+{% comment %}
 {{ form.errors }}
 {{ applicant_form.errors }}
+{% endcomment %}
 {% load forms %}
 {% if form.errors or form.non_field_errors or applicant_form.errors or applicant_form.non_field_errors%}
 	<p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
@@ -21,16 +23,15 @@
 <fieldset class="module aligned ()">
 {{ form.non_field_errors }}
 <h2>Details</h2>
-{% formfield form.email %}
+{% formfield applicant_form.email %}
 {% formfield form.project %}
 {% formfield form.make_leader %}
-{% formfield form.header_message %}
 </fieldset>
 
 </div>
 <div class="submit-row">
 		
-		<input type="submit" value="Send" class="default" />
+		<input type="submit" value="Invite" class="default" />
 	</div>
 </form>
 {% endblock %}

@@ -9,8 +9,27 @@
 {% endblock %}   
 
 {% block content %}
+{% comment %}
 <p>To approve {{ application.applicant }} into you project press submit. Note you may also make this person a project leader at the same time.</p>
 <p>{{ application.applicant }} will recieve an email once their account has been confirmed.</p>
+{% endcomment %}
+
+<p>The following request is awaiting your approval</p>
+<table>
+   	<tr><td>Name:</td><td>{{ application.applicant }}</td></tr>
+   	<tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
+   	<tr><td>Email:</td><td>{{ application.applicant.email|urlize }}</td></tr>	
+    <tr><td>Project</td><td>{{ application.project }}</td></tr>
+    <tr><td>Needs cluster account:</td><td>{% yes_no_img application.needs_account %}</td></tr>
+    <tr><td>Make a leader:</td><td>{% yes_no_img application.make_leader %}</td></tr>
+</table>
+<br>
+<p>Press the "Approve" button to approve the application.</p>
+<p>{{ application.applicant }} will recieve an email once their account has been confirmed.</p>
+<br>
+{% if form %}
+<p>Please ammend the following to suit.</p>
+{% endif %}
 
 <form method="post" action=".">{% csrf_token %}
 <div>
@@ -27,7 +46,7 @@
 </div>
 <div class="submit-row">
 		
-		<input type="submit" value="Submit" class="default" />
+		<input type="submit" value="Approve" class="default" />
 	</div>
 </form>
 {% endblock %}
