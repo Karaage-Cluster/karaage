@@ -69,6 +69,6 @@ def send_account_approved_email(userapplication):
     context['site'] = reverse('kg_user_profile', urlconf='kgreg.conf.urls')
     subject = render_to_string('applications/emails/account_approved_subject.txt', context)
     body = render_to_string('applications/emails/account_approved_body.txt', context)
-    to_email = user_request.person.email
+    to_email = userapplication.applicant.email
     
     send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
