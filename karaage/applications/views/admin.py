@@ -28,7 +28,7 @@ from andsome.util.filterspecs import Filter, FilterBar
 from karaage.people.models import Person
 from karaage.applications.models import UserApplication, Applicant, Application
 from karaage.applications.forms import AdminUserApplicationForm as UserApplicationForm, ApplicantForm
-from karaage.applications.emails import send_user_invite_email
+from karaage.applications.emails import send_user_invite_email, send_account_approved_email
 
 
 @permission_required('applications.add_userapplication')
@@ -50,6 +50,12 @@ def send_invitation(request):
                 pass
             application.applicant = applicant
             application.save()
+            if application.content_type.model == 'person':
+                application.approve()
+                send_account_approved_email(application)
+                messages.info(request, "%s added to project %s" % (application.applicant, application.project))
+                return HttpResponseRedirect(application.applicant.get_absolute_url())
+
             send_user_invite_email(application)
             return HttpResponseRedirect(application.get_absolute_url())
         
