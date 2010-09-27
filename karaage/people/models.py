@@ -32,7 +32,7 @@ class Institute(models.Model):
     delegate = models.ForeignKey('Person', related_name='delegate', null=True, blank=True)
     active_delegate = models.ForeignKey('Person', related_name='active_delegate', null=True, blank=True)
     sub_delegates = models.ManyToManyField('Person', related_name='sub_delegates', blank=True, null=True)
-    gid = models.IntegerField()
+    gid = models.IntegerField(editable=False)
     is_active = models.BooleanField()
     objects = models.Manager()
     active = ActiveInstituteManager()
@@ -42,6 +42,12 @@ class Institute(models.Model):
         ordering = ['name']
         db_table = 'institute'
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            from karaage.datastores.institutes import create_institute
+            self.gid = create_institute(self)
+        super(Institute, self).save(*args, **kwargs)
+        
     def __unicode__(self):
         return self.name
     
