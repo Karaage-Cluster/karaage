@@ -1,11 +1,11 @@
 {% extends "forms.html" %}
 
-{% block title %}Users{% endblock %}
+{% block title %}Applications{% endblock %}
 
-{% block content_title %}{% if application %}Edit{% else %}Create{% endif %} User Application{% endblock %}
+{% block content_title %}Send User Application Invite{% endblock %}
 
 {% block bread_crumbs_1 %}
- &rsaquo; <a href="">Users</a>
+ &rsaquo; <a href="{% url kg_application_list %}">Applications</a>
  &rsaquo; {% if application %}Edit{% else %}Create{% endif %} User Application
 {% endblock %}   
 
@@ -18,7 +18,7 @@
 {% endif %}
 <fieldset class="module aligned ()">
 {{ form.non_field_errors }}
-<h2>Details</h2>
+<h2>Application Details</h2>
 {% formfield form.email %}
 {% formfield form.project %}
 {% formfield form.make_leader %}

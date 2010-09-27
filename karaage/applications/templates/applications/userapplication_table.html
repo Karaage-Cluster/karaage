@@ -7,14 +7,14 @@
 			<th>Leader</th>
 			<th>Cluster Account</th>
 			<th>State</th>
-			<th>Accept</th>
-			<th>Decline</th>
+			<th></th>
+			<th></th>
 		</tr>
 	</thead>
     <tbody>
     {% for app in object_list %}
 	   	<tr class="{% cycle row1,row2 %}">
-	   	    <td><a href="{% url kg_userapplication_detail app.id %}">Detail</a></td>
+	   	    <td><a href="{% url kg_userapplication_detail app.id %}">{{ app.id }}</a></td>
 	   	    <td>{{ app.applicant.email|urlize }}</td>
 	   	    <td>{{ app.project.pid }}</td>
 	   	    <td>{% yes_no_img app.make_leader %}</td>
