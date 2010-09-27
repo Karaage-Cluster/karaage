@@ -2,7 +2,8 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
 
-from karaage.applications.models import UserApplication, Application
+from karaage.applications.models import UserApplication, Applicant
+from karaage.people.models import Person
 from karaage.people.forms import UsernamePasswordForm
 from karaage.util.helpers import check_password
 from karaage.constants import TITLES
@@ -10,38 +11,42 @@ from karaage.people.models import Institute
 from karaage.validators import username_re
 
 
-class UserApplicationForm(forms.ModelForm):
-    username = forms.CharField(max_length=16, help_text="Required. 16 characters or fewer. Letters, numbers and @.+-_ characters")
-    password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
-    password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)')
-    aup = forms.BooleanField(required=False, label=u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>'%(settings.AUP_URL))
-    title = forms.ChoiceField(choices=TITLES)
-    institute = forms.ModelChoiceField(queryset=Institute.active.all(), help_text="If your institute is not listed please contact %s" % settings.ACCOUNTS_EMAIL)
-    first_name = forms.CharField()
-    last_name = forms.CharField()
-    
+class ApplicantForm(forms.ModelForm):
     class Meta:
-        model = UserApplication
-        exclude = ['submitted_date', 'state', 'project', 'make_leader']
+        model = Applicant
+
+
+class UserApplicantForm(ApplicantForm):
+
+    def __init__(self, *args, **kwargs):
+        super(UserApplicantForm, self).__init__(*args, **kwargs)
+        self.fields['title'].required = True
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
+        self.fields['username'].required = True
+        self.fields['institute'].required = True
+
+    password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
+    password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)') 
 
     def clean_username(self):
 
         username = self.cleaned_data['username']
-        if not username.islower():
-            raise forms.ValidationError(u'Username must be all lowercase')
+        if username:
+            if not username.islower():
+                raise forms.ValidationError(u'Username must be all lowercase')
  
-        if not username_re.search(username):
-            raise forms.ValidationError(u'Usernames can only contain letters, numbers and underscores')
+            if not username_re.search(username):
+                raise forms.ValidationError(u'Usernames can only contain letters, numbers and underscores')
 
-        try:
-            user = User.objects.get(username__exact=username)
-        except User.DoesNotExist:
-            user = None
+            try:
+                user = User.objects.get(username__exact=username)
+            except User.DoesNotExist:
+                user = None
         
-        if user is not None:
-            raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old account please email %s' % settings.ACCOUNTS_EMAIL)
+            if user is not None:
+                raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old account please email %s' % settings.ACCOUNTS_EMAIL)
         return username
-    
     
     def clean_password2(self):
         data = self.cleaned_data
@@ -65,8 +70,42 @@ class UserApplicationForm(forms.ModelForm):
         return self.cleaned_data
 
 
+
+class UserApplicationForm(forms.ModelForm):
+    aup = forms.BooleanField(label=u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>' % settings.AUP_URL, 
+                             error_messages={'required': 'You must accept to proceed.'})
+
+    class Meta:
+        model = UserApplication
+        exclude = ['submitted_date', 'state', 'project', 'make_leader', 'content_type', 'object_id']
+
+
 class AdminUserApplicationForm(forms.ModelForm):
+    email = forms.EmailField()
+
+    def __init__(self, *args, **kwargs):
+        super(AdminUserApplicationForm, self).__init__(*args, **kwargs)
+        self.fields['project'].required = True
 
     class Meta:
         model = UserApplication        
         exclude = ['submitted_date', 'state',]
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        try:
+            person = Person.active.get(user__email=email)
+        except Person.MultipleObjectsReturned:
+            raise forms.ValidationError(u'Multiple users with this email exist. Please add manually as no way to invite.')
+        except Exception, e:
+            pass
+        return email
+            
+
+
+class LeaderUserApplicationForm(forms.ModelForm):
+    class Meta:
+        model = UserApplication
+        fields = ['make_leader',]
+
+

@@ -1,7 +1,8 @@
 {% extends "main.html" %}
 
-{% block content %}
+{% block breadcrumbs %}{{ block.super }} &rsaquo; Software {% endblock %}  
 
+{% block content %}
 {% if software_list %}
 	<h1>Restricted Software</h1>
 	{% for s in software_list %}

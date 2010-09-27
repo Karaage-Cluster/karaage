@@ -80,6 +80,29 @@ class PersonalDataStore(object):
         
         return person
 
+    def create_new_person_from_applicant(self, applicant):
+        from karaage.datastores import create_new_user
+        data = {
+            'email': applicant.email,
+            'username': applicant.username,
+            'title': applicant.title,
+            'first_name': applicant.first_name,
+            'last_name': applicant.last_name,
+            'institute': applicant.institute,
+            'department': applicant.department,
+            'position': applicant.position,
+            'telephone':applicant.telephone,
+            'mobile': applicant.mobile,
+            'supervisor': applicant.supervisor,
+            'address': applicant.address,
+            'city': applicant.city,
+            'postcode': applicant.postcode,
+            'country': applicant.country,
+            'fax':  applicant.fax,
+            }
+        
+        return create_new_user(data, hashed_password=applicant.password)
+
 
     def activate_user(self, person):
         """ Activates a user """

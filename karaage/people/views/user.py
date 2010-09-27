@@ -134,6 +134,16 @@ def profile_software(request):
   
     return render_to_response('people/profile_software.html', locals(), context_instance=RequestContext(request))
     
+@login_required
+def profile_projects(request):
+
+    person = request.user.get_profile()
+    project_list = person.project_set.all()
+
+    if person.is_leader():
+        leader_project_list = Project.objects.filter(leaders=person, is_active=True)
+    
+    return render_to_response('people/profile_projects.html', {'person': person, 'project_list': project_list, 'leader_project_list': leader_project_list}, context_instance=RequestContext(request))
 
 
 @login_required

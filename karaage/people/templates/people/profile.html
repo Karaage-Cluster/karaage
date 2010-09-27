@@ -2,8 +2,9 @@
 
 {% load forms %}{% load filters %}
 
-{% block profile_content %}
+{% block breadcrumbs %}{{ block.super }} &rsaquo; Profile {% endblock %}   
 
+{% block profile_content %}
 <h2>Personal Details</h2>
 
 <table>
@@ -68,11 +69,7 @@
   {% endfor %}
 </ul>
 {% endif %}
-<h2>Tasks</h2>
-<p><a href="{% url kg_user_change_password %}" class="changelink">Change password</a>
-  &nbsp;&nbsp;|&nbsp;&nbsp;<a href="{% url kg_software_list %}" class="addlink">Add software</a></p>
-<p><a href="{% url user_choose_project %}" class="addlink">Request to join an existing project</a>
-  &nbsp;&nbsp;|&nbsp;&nbsp;<a href="{% url kg_project_add %}" class="addlink">Request to start a new project</a></p>
+
 <h2>Usage Summary (last 90 days)</h2>
 
 <table>
@@ -94,30 +91,6 @@
     {% endfor %}
   </tbody>
 </table>
-{% if leader_project_list %}
-<h2>Projects I lead</h2>
-<table>
-  <thead>
-    <tr>
-      <th>Project ID</th>
-      <th>Name</th>
-      <th>Start Date</th>
-      <th>End Date</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for p in leader_project_list %}
-    <tr class="{% cycle row1,row2 %}">
-      <td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
-      <td>{{ p.name|truncatewords:"8" }}</td>
-      <td>{{ p.start_date|date }}</td>
-      <td>{{ p.end_date|date }}</td>
-      <td><a href="{% url kg_project_edit p.pid %}" class="changelink">Edit</a></td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% endif %}
+
 
 {% endblock %}

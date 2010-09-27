@@ -17,8 +17,20 @@
 
 from django.conf.urls.defaults import *
 
+
 urlpatterns = patterns('karaage.applications.views.user',
 
-    url(r'^user/(?P<token>.+)/$', 'do_userapplication', name='kg_userapplication'),
+    url(r'^$', 'application_index', name='kg_application_index'),
+    url(r'^new_user/$', 'do_userapplication', name='kg_new_userapplication'),
+
+    url(r'^(?P<application_id>\d+)/$', 'userapplication_detail', name='kg_userapplication_detail'),
+    url(r'^(?P<application_id>\d+)/approve/$', 'approve_userapplication', name='kg_userapplication_approve'),
+    url(r'^(?P<application_id>\d+)/decline/$', 'decline_userapplication', name='kg_userapplication_decline'),
+    url(r'^(?P<application_id>\d+)/complete/$', 'userapplication_complete', name='kg_userapplication_complete'),
+    url(r'^(?P<application_id>\d+)/pending/$', 'userapplication_pending', name='kg_userapplication_pending'),
+
+    url(r'^(?P<token>.+)/choose_project/$', 'choose_project', name='kg_application_choose_project'),
+    url(r'^(?P<token>.+)/done/$', 'application_done', name='kg_application_done'),
+    url(r'^(?P<token>.+)/do/$', 'do_userapplication', name='kg_invited_userapplication'),
 
 )

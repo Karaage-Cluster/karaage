@@ -1,0 +1,13 @@
+{% extends "changelist.html" %}
+
+{% block title %}Applications{% endblock %}
+
+{% block breadcrumbs %}{{ block.super }} &rsaquo; Applications{% endblock %}
+
+{% block content_title %}&nbsp;{% endblock %}
+
+{% block objecttools %}
+{% if perms.applications.add_application %}
+<ul class="object-tools"><li><a href="{% url kg_userapplication_invite %}" class="addlink">Send invitation</a></li></ul>
+{% endif %}
+{% endblock %}

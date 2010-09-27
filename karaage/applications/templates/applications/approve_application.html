@@ -1,0 +1,46 @@
+{% extends "forms.html" %}
+
+{% block title %}Applications{% endblock %}
+
+{% block content_title %}User Application{% endblock %}
+
+{% block bread_crumbs_1 %}
+ &rsaquo; User Application
+{% endblock %}   
+
+{% block content %}
+<p>The following request is awaiting your approval</p>
+<table>
+   	<tr><td>Name:</td><td>{{ application.applicant }}</td></tr>
+   	<tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
+   	<tr><td>Email:</td><td>{{ application.applicant.email|urlize }}</td></tr>	
+    <tr><td>Project</td><td>{{ application.project }}</td></tr>
+    <tr><td>Needs cluster account:</td><td>{% yes_no_img application.needs_account %}</td></tr>
+    <tr><td>Make a leader:</td><td>{% yes_no_img application.make_leader %}</td></tr>
+</table>
+<br />
+<p>{{ application.applicant }} will recieve an email once their account has been confirmed.</p>
+<br />
+{% if form %}
+<p>Please ammend the following to suit.</p>
+{% endif %}
+
+<form method="post" action=".">{% csrf_token %}
+<div>
+{% load forms %}
+{% if form.errors or form.non_field_errors %}
+	<p class="errornote">Please correct the error(s) below.</p>
+{% endif %}
+
+<fieldset class="module aligned ()">
+{{ form.non_field_errors }}
+{% form_as_div form %}
+</fieldset>
+
+</div>
+<div class="submit-row">
+		
+		<input type="submit" value="Approve" class="default" />
+	</div>
+</form>
+{% endblock %}
