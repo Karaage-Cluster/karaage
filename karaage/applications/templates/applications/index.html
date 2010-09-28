@@ -8,20 +8,16 @@
     
 {% block content %}
 <div id="content-main">
+
+<p class="errornote">This is an example template. You should create your own in /etc/karaage/templates/applications/index.html</p>
+
 {% if user.is_authenticated %}
 <p>You already have an account! Why do you want another one?</p>
 {% else %}
 
 <h3>Join an existing project</h3>
-<p>To join an existing project, fill in the <a href="{% url kg_new_userapplication %}">Account Form</a>.<p>
 <p>All accounts must be associated with a registered Project.</p>
-
-<h3>Start a new project</h3>
-
-<p>If you cannot become part of an existing Project, fill in the <a href="{% url project_registration %}">Project Form</a></p>
-
-<p>Upon approval, authority is provided to the nominated project leader to
-authorise personal accounts associated with the Project.</p>
+<p>To join an existing project, fill in the <a href="{% url kg_new_userapplication %}">Account Form</a>.<p>
 
 <h3>Contact</h3>
 
