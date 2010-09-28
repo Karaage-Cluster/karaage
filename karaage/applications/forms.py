@@ -61,12 +61,18 @@ class UserApplicantForm(ApplicantForm):
 
             return data
 
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        users = Person.active.filter(user__email__exact=email)
+        if users:
+            raise forms.ValidationError(u'An account with this email already exists. Please email %s' % settings.ACCOUNTS_EMAIL)
+        return email
+
     def clean(self):
         from karaage.util.helpers import create_password_hash
         super(self.__class__, self).clean()
         if 'password1' in self.cleaned_data:
             self.cleaned_data['password'] = create_password_hash(self.cleaned_data['password1'])
-            print self.cleaned_data
         return self.cleaned_data
 
 
