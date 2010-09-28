@@ -19,28 +19,38 @@ from django.core.mail import send_mail
 from django.contrib.sites.models import Site
 from django.template.loader import render_to_string
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, get_script_prefix
 
 CONTEXT = {
     'org_email': settings.ACCOUNTS_EMAIL,
     'org_name': settings.ACCOUNTS_ORG_NAME,
     }
 
+TEMPLATE_DIRS = ['emails/', 'applications/emails/']
+
+def render_email(name, context):
+    subject = render_to_string(['emails/%s_subject.txt' % name, 'applications/emails/%s_subject.txt' % name], context)
+    body = render_to_string(['emails/%s_body.txt' % name, 'applications/emails/%s_body.txt' % name], context)
+    return subject, body
+
+def remove_url_prefix(url):
+    if get_script_prefix() != '/':
+        return url.replace(get_script_prefix(), '/', 1)
+    return url
 
 def send_account_request_email(application):
     """Sends an email to each project leader asking to approve user application"""
     site = Site.objects.get_current()
     context = CONTEXT.copy()
     context['requester'] = application.applicant
-    context['site'] = '%s%s' % (site.domain, reverse('kg_userapplication_detail', args=[application.id]))
+    context['site'] = '%s' % remove_url_prefix(reverse('kg_userapplication_detail', args=[application.id], urlconf='kgreg.conf.urls'))
     context['project'] = application.project
 
     for leader in application.project.leaders.all():
         context['receiver'] = leader
-            
-        to_email = leader.email        
-        subject = render_to_string('applications/emails/join_project_request_subject.txt', context)
-        body = render_to_string('applications/emails/join_project_request_body.txt', context)
+        
+        to_email = leader.email
+        subject, body = render_email('join_project_request', context)
 
         send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
 
@@ -49,14 +59,13 @@ def send_user_invite_email(userapplication):
     """ Sends an email inviting someone to create an account"""
 
     context = CONTEXT.copy()
-    context['site'] = reverse('kg_invited_userapplication', args=[userapplication.secret_token], urlconf='kgreg.conf.urls')
+    context['site'] = remove_url_prefix(reverse('kg_invited_userapplication', args=[userapplication.secret_token], urlconf='kgreg.conf.urls'))
     context['sender'] = userapplication.created_by
     context['project'] = userapplication.project
     context['make_leader'] = userapplication.make_leader
 
     to_email = userapplication.applicant.email 
-    subject = render_to_string('applications/emails/user_invite_email_subject.txt', context)
-    body = render_to_string('applications/emails/user_invite_email_body.txt', context)
+    subject, body = render_email('user_invite', context)
     
     send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
 
@@ -66,9 +75,8 @@ def send_account_approved_email(userapplication):
     context = CONTEXT.copy()
     context['receiver'] = userapplication.applicant
     context['project'] = userapplication.project
-    context['site'] = reverse('kg_user_profile', urlconf='kgreg.conf.urls')
-    subject = render_to_string('applications/emails/account_approved_subject.txt', context)
-    body = render_to_string('applications/emails/account_approved_body.txt', context)
+    context['site'] = remove_url_prefix(reverse('kg_user_profile', urlconf='kgreg.conf.urls'))
+    subject, body = render_email('account_approved', context)
     to_email = userapplication.applicant.email
     
     send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)

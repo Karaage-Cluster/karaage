@@ -1,3 +1,13 @@
+=============================
+THIS IS AN EXAMPLE EMAIL ONLY
+========================================================================================================================
+To create your own email copy this example 
+From:
+/etc/karaage/templates/emails/user_invite_body.txt.template
+To:
+/etc/karaage/templates/emails/user_invite_body.txt
+=========================================================================================================================
+
 Hi,
 
 {{ sender }} has invited you to join the {{ org_name }} project {{ project }}
@@ -9,6 +19,4 @@ They have also asked you to become a project leader
 To create your account and also an account on the cluster if you choose please visit http://example.com/kgreg{{ site }}
 
 
-Thanks,
-
-{% include emails/email_footer.txt %}
+{% include "emails/email_footer.txt" %}
