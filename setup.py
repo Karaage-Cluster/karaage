@@ -67,14 +67,13 @@ if len(sys.argv) > 1 and sys.argv[1] == 'bdist_wininst':
 
 # Dynamically calculate the version based on vomit.VERSION.
 version = __import__(code_dir).get_version()
-#if u'dev' in version:
-#    version = ' '.join(version.split(' ')[:-1])
 
-data_files.append(
-    ('/etc/karaage', [
-        'conf/global_settings.py',
-        'conf/ldap_attrs.py' ])
-)
+for dirpath, dirnames, filenames in os.walk('conf'):
+    for i, dirname in enumerate(dirnames):
+        if dirname.startswith('.'): del dirnames[i]
+    if filenames:
+        data_files.append([dirpath.replace('conf', '/etc/karaage'), [os.path.join(dirpath, f) for f in filenames]])
+
 
 data_files.append(
     ('/usr/sbin', ['sbin/kg_set_secret_key'])
