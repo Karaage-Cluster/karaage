@@ -54,7 +54,7 @@ def send_invitation(request):
                 messages.info(request, "%s was added to project %s directly since they have an existing account." % (application.applicant, application.project))
                 return HttpResponseRedirect(application.applicant.get_absolute_url())
             send_user_invite_email(application)
-            messages.info(request, "Invitation send to %s." % email)
+            messages.info(request, "Invitation sent to %s." % email)
             return HttpResponseRedirect(application.get_absolute_url())
         
     else:

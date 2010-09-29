@@ -263,7 +263,7 @@ def send_invitation(request, project_id):
                 return HttpResponseRedirect(application.applicant.get_absolute_url())
 
             send_user_invite_email(application)
-            messages.info(request, "Invitation send to %s." % email)
+            messages.info(request, "Invitation sent to %s." % email)
             return HttpResponseRedirect(reverse('kg_user_profile'))
         
     else:
