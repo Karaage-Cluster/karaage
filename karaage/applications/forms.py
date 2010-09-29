@@ -99,7 +99,8 @@ class LeaderInviteUserApplicationForm(forms.ModelForm):
             person = Person.active.get(user__email=email)
         except Person.MultipleObjectsReturned:
             raise forms.ValidationError(u'Multiple users with this email exist. Please add manually as no way to invite.')
-
+        except Person.DoesNotExist:
+            pass
         return email
 
 
