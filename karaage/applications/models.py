@@ -71,6 +71,7 @@ class UserApplication(Application):
             self.project.leaders.add(person)
         self.state = Application.COMPLETE
         self.save()
+        return person
                 
 
 class ProjectApplication(Application):
