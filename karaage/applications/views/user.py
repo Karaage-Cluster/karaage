@@ -167,7 +167,7 @@ def approve_userapplication(request, application_id):
                         needs_account_created = True
                         break
 
-            if needs_account_created and application.needs_account and settings.ADMIN_APPROVE_ACCOUNTS:
+            if settings.ADMIN_APPROVE_ACCOUNTS:
                 application.state = Application.WAITING_FOR_ADMIN
                 application.save()
                 return HttpResponseRedirect(reverse('kg_userapplication_pending', args=[application.id]))
