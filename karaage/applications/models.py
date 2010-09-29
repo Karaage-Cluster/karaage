@@ -34,7 +34,7 @@ class Application(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, editable=False)
     submitted_date = models.DateTimeField(null=True, blank=True)
     state = models.CharField(max_length=1, choices=APPLICATION_STATES, default=NEW)
-    header_message = models.TextField(null=True, blank=True, help_text=u"Message displayed at top of application form for the invitee")
+    header_message = models.TextField('Message', null=True, blank=True, help_text=u"Message displayed at top of application form for the invitee and also in invitation email")
 
     def save(self, *args, **kwargs):
         if not self.pk:
