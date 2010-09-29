@@ -105,7 +105,7 @@ def approve_userapplication(request, application_id):
         person = application.approve()
         send_account_approved_email(application)
         messages.info(request, "Application approved successfully")
-        return HttpResponseRedirect(person.get_absoulte_url())
+        return HttpResponseRedirect(person.get_absolute_url())
 
     form = None
 
