@@ -42,8 +42,6 @@ TIME_ZONE = 'Australia/Melbourne'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-au'
 
-SITE_ID = 1
-
 # Unique key used for storing session data etc.
 # To generate this key run /usr/sbin/kg_set_secret_key
 SECRET_KEY = ''
