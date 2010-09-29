@@ -170,30 +170,23 @@ def project_list(request, queryset=Project.objects.select_related().all(), templ
     return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
 
-@login_required
+@permission_required('projects.change_project')
 def remove_user(request, project_id, username):
-    site = Site.objects.get_current()
 
     project = get_object_or_404(Project, pk=project_id)
-    user = get_object_or_404(Person, user__username=username)
+    person = get_object_or_404(Person, user__username=username)
 
-    #Dirty VPAC hack
-    if site.id == 2:
-        if not request.user.get_profile() in project.leaders.all():
-            return HttpResponseForbidden('<h1>Access Denied</h1>')
-
-    project.users.remove(user)
-    messages.info(request, "User '%s' removed succesfully from project %s" % (user, project.pid))
+    if request.method == 'POST':
+        project.users.remove(person)
+        messages.info(request, "User '%s' removed succesfully from project %s" % (person, project.pid))
     
-    log(request.user, project, 3, 'Removed %s from project' % user)
-    log(request.user, user, 3, 'Removed from project %s' % project)
+        log(request.user, project, 3, 'Removed %s from project' % person)
+        log(request.user, person, 3, 'Removed from project %s' % project)
 
-    if 'next' in request.REQUEST:
-        return HttpResponseRedirect(request.REQUEST['next'])
-    if site.id == 2:
         return HttpResponseRedirect(project.get_absolute_url())
-    return HttpResponseRedirect(user.get_absolute_url())
-
+    
+    return render_to_response('projects/remove_user_confirm.html', {'project': project, 'person': person}, context_instance=RequestContext(request))
+  
 
 @login_required
 def no_users(request):
