@@ -27,7 +27,7 @@ from andsome.util.filterspecs import Filter, FilterBar
 
 from karaage.people.models import Person
 from karaage.applications.models import UserApplication, Applicant, Application
-from karaage.applications.forms import AdminUserApplicationForm as UserApplicationForm, ApplicantForm
+from karaage.applications.forms import AdminInviteUserApplicationForm, ApplicantForm
 from karaage.applications.emails import send_user_invite_email, send_account_approved_email
 
 @permission_required('applications.add_userapplication')
@@ -36,7 +36,7 @@ def send_invitation(request):
     application = None
 
     if request.method == 'POST':
-        form = UserApplicationForm(request.POST, instance=application)
+        form = AdminInviteUserApplicationForm(request.POST, instance=application)
 
         if form.is_valid():
             application = form.save(commit=False)
@@ -45,21 +45,20 @@ def send_invitation(request):
                 applicant = Person.active.get(user__email=email)
             except Person.DoesNotExist:
                 applicant, created = Applicant.objects.get_or_create(email=email)
-            except Person.MultipleObjectsReturned:
-                pass
+
             application.applicant = applicant
             application.save()
             if application.content_type.model == 'person':
                 application.approve()
                 send_account_approved_email(application)
-                messages.info(request, "%s added to project %s" % (application.applicant, application.project))
+                messages.info(request, "%s was added to project %s directly since they have an existing account." % (application.applicant, application.project))
                 return HttpResponseRedirect(application.applicant.get_absolute_url())
-
             send_user_invite_email(application)
+            messages.info(request, "Invitation send to %s." % email)
             return HttpResponseRedirect(application.get_absolute_url())
         
     else:
-        form = UserApplicationForm(instance=application)
+        form = AdminInviteUserApplicationForm(instance=application)
 
     return render_to_response('applications/userapplication_invite_form.html', {'form': form, 'application': application}, context_instance=RequestContext(request)) 
 

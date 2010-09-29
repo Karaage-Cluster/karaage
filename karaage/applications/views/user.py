@@ -27,7 +27,7 @@ from django.conf import settings
 import datetime
 
 from karaage.applications.models import UserApplication, Applicant, Application
-from karaage.applications.forms import UserApplicationForm, UserApplicantForm, LeaderUserApplicationForm
+from karaage.applications.forms import UserApplicationForm, UserApplicantForm, LeaderApproveUserApplicationForm, LeaderInviteUserApplicationForm
 from karaage.applications.emails import send_account_request_email, send_account_approved_email
 from karaage.people.models import Person
 from karaage.projects.models import Project
@@ -152,7 +152,7 @@ def approve_userapplication(request, application_id):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     if request.method == 'POST':
-        form = LeaderUserApplicationForm(request.POST, instance=application)
+        form = LeaderApproveUserApplicationForm(request.POST, instance=application)
         if form.is_valid():
             application = form.save()
 
@@ -172,7 +172,7 @@ def approve_userapplication(request, application_id):
             send_account_approved_email(application)
             return HttpResponseRedirect(reverse('kg_userapplication_complete', args=[application.id]))
     else:
-        form = LeaderUserApplicationForm(instance=application)
+        form = LeaderApproveUserApplicationForm(instance=application)
 
     return render_to_response('applications/approve_application.html', {'form': form, 'application': application}, context_instance=RequestContext(request))
 
@@ -234,3 +234,39 @@ def application_index(request):
 
     return render_to_response('applications/index.html', {}, context_instance=RequestContext(request))
 
+
+@login_required
+def send_invitation(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    if not request.user.get_profile() in project.leaders.all():
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
+    application = None
+
+    if request.method == 'POST':
+        form = LeaderInviteUserApplicationForm(request.POST, instance=application)
+
+        if form.is_valid():
+            application = form.save(commit=False)
+            email = form.cleaned_data['email']
+            try:
+                applicant = Person.active.get(user__email=email)
+            except Person.DoesNotExist:
+                applicant, created = Applicant.objects.get_or_create(email=email)
+
+            application.applicant = applicant
+            application.project = project
+            application.save()
+            if application.content_type.model == 'person':
+                application.approve()
+                send_account_approved_email(application)
+                messages.info(request, "%s was added to project %s directly since they have an existing account." % (application.applicant, application.project))
+                return HttpResponseRedirect(application.applicant.get_absolute_url())
+
+            send_user_invite_email(application)
+            messages.info(request, "Invitation send to %s." % email)
+            return HttpResponseRedirect(reverse('kg_user_profile'))
+        
+    else:
+        form = LeaderInviteUserApplicationForm(instance=application)
+
+    return render_to_response('applications/leaderuserapplication_invite_form.html', {'form': form, 'application': application, 'project': project}, context_instance=RequestContext(request)) 

@@ -86,13 +86,9 @@ class UserApplicationForm(forms.ModelForm):
         exclude = ['submitted_date', 'state', 'project', 'make_leader', 'content_type', 'object_id']
 
 
-class AdminUserApplicationForm(forms.ModelForm):
+class LeaderInviteUserApplicationForm(forms.ModelForm):
     email = forms.EmailField()
-
-    def __init__(self, *args, **kwargs):
-        super(AdminUserApplicationForm, self).__init__(*args, **kwargs)
-        self.fields['project'].required = True
-
+    
     class Meta:
         model = UserApplication        
         exclude = ['submitted_date', 'state',]
@@ -103,15 +99,20 @@ class AdminUserApplicationForm(forms.ModelForm):
             person = Person.active.get(user__email=email)
         except Person.MultipleObjectsReturned:
             raise forms.ValidationError(u'Multiple users with this email exist. Please add manually as no way to invite.')
-        except Exception, e:
-            pass
+
         return email
+
+
+class AdminInviteUserApplicationForm(LeaderInviteUserApplicationForm):
+
+    def __init__(self, *args, **kwargs):
+        super(AdminInviteUserApplicationForm, self).__init__(*args, **kwargs)
+        self.fields['project'].required = True
             
 
 
-class LeaderUserApplicationForm(forms.ModelForm):
+class LeaderApproveUserApplicationForm(forms.ModelForm):
     class Meta:
         model = UserApplication
         fields = ['make_leader',]
-
 
