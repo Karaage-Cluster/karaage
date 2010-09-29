@@ -46,7 +46,7 @@ def send_account_request_email(application):
     context['site'] = '%s' % remove_url_prefix(reverse('kg_userapplication_detail', args=[application.id], urlconf='kgreg.conf.urls'))
     context['project'] = application.project
 
-    for leader in application.project.leaders.all():
+    for leader in application.project.leaders.filter(user__is_active=True):
         context['receiver'] = leader
         
         to_email = leader.email
