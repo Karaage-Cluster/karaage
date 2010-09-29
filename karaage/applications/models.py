@@ -88,7 +88,7 @@ class ProjectApplication(Application):
 
 class Applicant(models.Model):
     email = models.EmailField()
-    username = models.CharField(max_length=16, unique=True, help_text="Required. 16 characters or fewer. Letters, numbers and @.+-_ characters", null=True, blank=True)
+    username = models.CharField(max_length=16, unique=True, help_text="Required. 16 characters or fewer. Letters, numbers and underscores only", null=True, blank=True)
     password = models.CharField(max_length=128, null=True, blank=True)
     title = models.CharField(choices=TITLES, max_length=10, null=True, blank=True)
     first_name = models.CharField(max_length=30, null=True, blank=True)
