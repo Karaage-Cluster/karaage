@@ -34,6 +34,10 @@ from karaage.projects.models import Project
 
 
 def do_userapplication(request, token=None):
+    if request.user.is_authenticated():
+        messages.info(request, "You are already logged in")
+        return HttpResponseRedirect(reverse('kg_user_profile'))
+
     if token:
         application = get_object_or_404(UserApplication, secret_token=token)
         if application.state not in (Application.NEW, Application.OPEN):
