@@ -63,6 +63,7 @@ def send_user_invite_email(userapplication):
     context['sender'] = userapplication.created_by
     context['project'] = userapplication.project
     context['make_leader'] = userapplication.make_leader
+    context['message'] = userapplication.header_message
 
     to_email = userapplication.applicant.email 
     subject, body = render_email('user_invite', context)
