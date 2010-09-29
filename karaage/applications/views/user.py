@@ -28,7 +28,7 @@ import datetime
 
 from karaage.applications.models import UserApplication, Applicant, Application
 from karaage.applications.forms import UserApplicationForm, UserApplicantForm, LeaderApproveUserApplicationForm, LeaderInviteUserApplicationForm
-from karaage.applications.emails import send_account_request_email, send_account_approved_email
+from karaage.applications.emails import send_account_request_email, send_account_approved_email, send_user_invite_email
 from karaage.people.models import Person
 from karaage.projects.models import Project
 
