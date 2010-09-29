@@ -102,9 +102,10 @@ def approve_userapplication(request, application_id):
     if application.state != Application.WAITING_FOR_ADMIN:
         raise Http404
     if request.method == 'POST':
-        application.approve()
+        person = application.approve()
         send_account_approved_email(application)
-        return HttpResponseRedirect(reverse('kg_userapplication_complete', args=[application.id]))
+        messages.info(request, "Application approved successfully")
+        return HttpResponseRedirect(person.get_absoulte_url())
 
     form = None
 
@@ -119,9 +120,7 @@ def decline_userapplication(request, application_id):
         raise Http404
     if request.method == 'POST':
         send_account_rejected_email(application)
-
         application.delete()
-
         return HttpResponseRedirect(reverse('kg_user_profile'))
 
     return render_to_response('applications/confirm_decline.html', {'application': application}, context_instance=RequestContext(request))
