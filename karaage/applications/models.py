@@ -34,6 +34,9 @@ class Application(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, editable=False)
     submitted_date = models.DateTimeField(null=True, blank=True)
     state = models.CharField(max_length=1, choices=APPLICATION_STATES, default=NEW)
+    content_type = models.ForeignKey(ContentType, limit_choices_to={'model__in': ['person', 'applicant']}, null=True, blank=True)
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    applicant = generic.GenericForeignKey()
     header_message = models.TextField('Message', null=True, blank=True, help_text=u"Message displayed at top of application form for the invitee and also in invitation email")
 
     def save(self, *args, **kwargs):
@@ -48,9 +51,6 @@ class Application(models.Model):
 
 class UserApplication(Application):
     """ Associated with an Applicant or a Person"""
-    content_type = models.ForeignKey(ContentType, limit_choices_to={'model__in': ['person', 'applicant']}, null=True, blank=True)
-    object_id = models.PositiveIntegerField(null=True, blank=True)
-    applicant = generic.GenericForeignKey()
     project = models.ForeignKey(Project, null=True, blank=True, limit_choices_to={'is_active': True})
     needs_account = models.BooleanField(u"Do you require a cluster account?", help_text=u"Will you be working on the project yourself?")
     make_leader = models.BooleanField(help_text="Make this person a project leader")
