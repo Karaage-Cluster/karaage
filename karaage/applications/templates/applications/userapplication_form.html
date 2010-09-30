@@ -1,7 +1,7 @@
 {% extends "forms.html" %}
 
 {% block title %}Applications{% endblock %}
-
+{% block style %}<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/forms_custom.css"/>{% endblock %}
 {% block content_title %}User Application{% endblock %}
 
 {% block bread_crumbs_1 %}
@@ -33,7 +33,8 @@
 <fieldset class="module aligned ()">
 <h2>Personal Details</h2>
 {% formfield applicant_form.email %}
-{% inlineformfield applicant_form.title applicant_form.first_name applicant_form.last_name %}
+{% formfield applicant_form.title %}
+{% inlineformfield applicant_form.first_name applicant_form.last_name %}
 {% inlineformfield applicant_form.institute applicant_form.department %}
 {% inlineformfield applicant_form.telephone applicant_form.mobile %}
 {% formfield form.aup %}
