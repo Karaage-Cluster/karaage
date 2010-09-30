@@ -72,9 +72,13 @@ def do_userapplication(request, token=None):
     return render_to_response('applications/userapplication_form.html', {'form': form, 'applicant_form': applicant_form, 'application': application}, context_instance=RequestContext(request)) 
 
 
-def choose_project(request, token):
-    application = get_object_or_404(UserApplication, secret_token=token)
-    if application.state not in (Application.NEW, Application.OPEN):
+def choose_project(request, token=None):
+    if request.user.is_authenticated():
+        application = UserApplication()
+        application.applicant = request.user.get_profile()
+    else:
+        application = get_object_or_404(UserApplication, secret_token=token)
+        if application.state not in (Application.NEW, Application.OPEN):
             raise Http404
         
     institute = application.applicant.institute
