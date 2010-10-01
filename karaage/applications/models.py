@@ -76,11 +76,11 @@ class UserApplication(Application):
 
 class ProjectApplication(Application):
     name = models.CharField(max_length=200)
-    institute = models.ForeignKey(Institute)
+    institute = models.ForeignKey(Institute, limit_choices_to={'is_active': True})
     description = models.TextField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
+    needs_account = models.BooleanField(u"Do you require a cluster account?", help_text=u"Will you be working on the project yourself?")
     machine_categories = models.ManyToManyField(MachineCategory, null=True, blank=True)
-    user_applications = models.ManyToManyField(UserApplication, null=True, blank=True)
 
     @models.permalink
     def get_absolute_url(self):
