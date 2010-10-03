@@ -75,7 +75,7 @@ class UserApplication(Application):
                 
 
 class ProjectApplication(Application):
-    name = models.CharField(max_length=200)
+    name = models.CharField('Title', max_length=200)
     institute = models.ForeignKey(Institute, limit_choices_to={'is_active': True})
     description = models.TextField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
