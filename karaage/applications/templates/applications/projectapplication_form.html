@@ -1,0 +1,48 @@
+{% extends "forms.html" %}
+
+{% block title %}Applications{% endblock %}
+{% block style %}<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/forms_custom.css"/>{% endblock %}
+{% block content_title %}Project Application{% endblock %}
+
+{% block bread_crumbs_1 %}
+ &rsaquo; Project Application
+{% endblock %}   
+
+{% block content %}
+<form method="post" action=".">{% csrf_token %}
+<div>
+{% load forms %}
+{% if form.errors or form.non_field_errors or applicant_form.errors or applicant_form.non_field_errors %}
+	<p class="errornote">Please correct the error(s) below.</p>
+{% endif %}
+{{ application.header_message|linebreaks }}
+<fieldset class="module aligned ()">
+{{ form.non_field_errors }}
+<h2>Account Details</h2>
+{% formfield applicant_form.username %}
+{% formfield applicant_form.password1 %}
+{% formfield applicant_form.password2 %}
+{% formfield form.needs_account %}
+{% formfield form.aup %}
+</fieldset>
+<fieldset class="module aligned ()">
+<h2>Personal Details</h2>
+{% formfield applicant_form.email %}
+{% formfield applicant_form.title %}
+{% inlineformfield applicant_form.first_name applicant_form.last_name %}
+{% inlineformfield applicant_form.institute applicant_form.department %}
+{% inlineformfield applicant_form.telephone applicant_form.mobile %}
+</fieldset>
+<fieldset class="module aligned ()">
+<h2>Project Details</h2>
+{% formfield form.name %}
+{% formfield form.institute %}
+{% formfield form.description %}
+{% formfield form.additional_req %}
+</fieldset>
+</div>
+<div class="submit-row">
+		<input type="submit" value="Submit" class="default" />
+	</div>
+</form>
+{% endblock %}
