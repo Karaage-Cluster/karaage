@@ -1,3 +1,9 @@
+karaage (2.4.10-1) testing; urgency=high
+
+  * Fixed serious cirular import bug
+
+ -- Sam Morrison <sam@vpac.org>  Mon, 04 Oct 2010 10:05:51 +1100
+
 karaage (2.4.9-1) testing; urgency=low
 
   * New Application app
