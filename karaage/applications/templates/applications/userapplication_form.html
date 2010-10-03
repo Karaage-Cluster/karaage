@@ -29,6 +29,7 @@
 {% if application.project %}
 {% formfield form.needs_account %}
 {% endif %}
+{% formfield form.aup %}
 </fieldset>
 <fieldset class="module aligned ()">
 <h2>Personal Details</h2>
@@ -37,7 +38,6 @@
 {% inlineformfield applicant_form.first_name applicant_form.last_name %}
 {% inlineformfield applicant_form.institute applicant_form.department %}
 {% inlineformfield applicant_form.telephone applicant_form.mobile %}
-{% formfield form.aup %}
 </fieldset>
 
 </div>
