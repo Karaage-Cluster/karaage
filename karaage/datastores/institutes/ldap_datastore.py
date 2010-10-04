@@ -24,12 +24,19 @@ class InstituteDataStore(base.InstituteDataStore):
     
     def create_institute(self, institute):  
         conn = LDAPClient()
-        
-        try:
-            lgroup = conn.get_group(cn=str(institute.name.lower().replace(' ', '')))
-            gid = lgroup.gidNumber
-        except:
-            gid = int(conn.add_group(cn=str(institute.name.lower().replace(' ', '')))[0])
+        if institute.gid:
+             try:
+                 lgroup = conn.get_group("gidNumber=%s" % institute.gid)
+                 gid = int(lgroup.gidNumber)
+             except:
+                 gid = int(conn.add_group(cn=str(institute.name.lower().replace(' ', '')))[0], gidNumber=institute.gid)
+        else:
+                 
+            try:
+                lgroup = conn.get_group("cn=%s" % str(institute.name.lower().replace(' ', '')))
+                gid = int(lgroup.gidNumber)
+            except:
+                gid = int(conn.add_group(cn=str(institute.name.lower().replace(' ', '')))[0])
         return gid
 
     def delete_institute(self, institute):
