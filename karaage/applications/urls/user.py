@@ -18,21 +18,22 @@
 from django.conf.urls.defaults import *
 
 
-urlpatterns = patterns('karaage.applications.views.user',
+urlpatterns = patterns('karaage.applications.views',
 
-    url(r'^$', 'application_index', name='kg_application_index'),
-    url(r'^new_user/$', 'do_userapplication', name='kg_new_userapplication'),
-    url(r'^choose_project/$', 'choose_project', name='kg_choose_project_existing'),
-    url(r'^invite/(?P<project_id>[-.\w]+)/$', 'send_invitation', name='kg_userapplication_invite'),
+    url(r'^$', 'user.application_index', name='kg_application_index'),
+    url(r'^new_user/$', 'user.do_userapplication', name='kg_new_userapplication'),
+    url(r'^new_project/$', 'projects.do_projectapplication', name='kg_new_projectapplication'),
+    url(r'^choose_project/$', 'user.choose_project', name='kg_choose_project_existing'),
+    url(r'^invite/(?P<project_id>[-.\w]+)/$', 'user.send_invitation', name='kg_userapplication_invite'),
 
-    url(r'^(?P<application_id>\d+)/$', 'userapplication_detail', name='kg_userapplication_detail'),
-    url(r'^(?P<application_id>\d+)/approve/$', 'approve_userapplication', name='kg_userapplication_approve'),
-    url(r'^(?P<application_id>\d+)/decline/$', 'decline_userapplication', name='kg_userapplication_decline'),
-    url(r'^(?P<application_id>\d+)/complete/$', 'userapplication_complete', name='kg_userapplication_complete'),
-    url(r'^(?P<application_id>\d+)/pending/$', 'userapplication_pending', name='kg_userapplication_pending'),
+    url(r'^(?P<application_id>\d+)/$', 'user.userapplication_detail', name='kg_userapplication_detail'),
+    url(r'^(?P<application_id>\d+)/approve/$', 'user.approve_userapplication', name='kg_userapplication_approve'),
+    url(r'^(?P<application_id>\d+)/decline/$', 'user.decline_userapplication', name='kg_userapplication_decline'),
+    url(r'^(?P<application_id>\d+)/complete/$', 'user.userapplication_complete', name='kg_userapplication_complete'),
+    url(r'^(?P<application_id>\d+)/pending/$', 'user.userapplication_pending', name='kg_userapplication_pending'),
 
-    url(r'^(?P<token>.+)/choose_project/$', 'choose_project', name='kg_application_choose_project'),
-    url(r'^(?P<token>.+)/done/$', 'application_done', name='kg_application_done'),
-    url(r'^(?P<token>.+)/do/$', 'do_userapplication', name='kg_invited_userapplication'),
+    url(r'^(?P<token>.+)/choose_project/$', 'user.choose_project', name='kg_application_choose_project'),
+    url(r'^(?P<token>.+)/done/$', 'user.application_done', name='kg_application_done'),
+    url(r'^(?P<token>.+)/do/$', 'user.do_userapplication', name='kg_invited_userapplication'),
 
 )
