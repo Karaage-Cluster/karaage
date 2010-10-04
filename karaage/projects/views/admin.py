@@ -98,7 +98,7 @@ def delete_project(request, project_id):
 def project_detail(request, project_id):
 
     project = get_object_or_404(Project, pk=project_id)
-    user_list = Person.active.all()
+    user_list = Person.active.select_related()
     
     requestor = False
     if project.projectcreaterequest_set.count() > 0:
@@ -122,7 +122,7 @@ def project_detail(request, project_id):
 
 
 @login_required
-def project_list(request, queryset=Project.objects.select_related().all(), template_name='projects/project_list.html', paginate=True):
+def project_list(request, queryset=Project.objects.select_related(), template_name='projects/project_list.html', paginate=True):
 
     project_list = queryset
 
