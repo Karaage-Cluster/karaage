@@ -2,7 +2,7 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
 
-from karaage.applications.models import UserApplication, Applicant
+from karaage.applications.models import UserApplication, ProjectApplication, Applicant
 from karaage.people.models import Person
 from karaage.people.forms import UsernamePasswordForm
 from karaage.util.helpers import check_password
@@ -85,6 +85,12 @@ class UserApplicationForm(forms.ModelForm):
         model = UserApplication
         exclude = ['submitted_date', 'state', 'project', 'make_leader', 'content_type', 'object_id']
 
+
+class ProjectApplicationForm(forms.ModelForm):
+    
+    class Meta:
+        model = ProjectApplication
+        exclude = ['submitted_date', 'state', 'content_type', 'object_id']
 
 class LeaderInviteUserApplicationForm(forms.ModelForm):
     email = forms.EmailField()
