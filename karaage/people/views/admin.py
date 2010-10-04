@@ -76,7 +76,7 @@ def add_edit_user(request, form_class, template_name='people/person_form.html', 
     return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
 @login_required
-def user_list(request, queryset=Person.objects.all()):
+def user_list(request, queryset=Person.objects.select_related()):
     page_no = int(request.GET.get('page', 1))
 
     user_list = queryset

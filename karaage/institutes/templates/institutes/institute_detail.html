@@ -46,15 +46,15 @@
       </tbody>
     </table>
   </div>
-  {% if institute.project_set.all %}
+  {% if institute.project_set.select_related %}
   <div class="module">
     <h2>Projects</h2>
-    {% gen_table institute.project_set.all %}
+    {% gen_table institute.project_set.select_related %}
   </div>
   {% endif %}
   <div class="module">
     <h2>Users</h2>
-    {% gen_table institute.person_set.all %}
+    {% gen_table institute.person_set.select_related %}
   </div>
 </div>
 {% endblock %}
