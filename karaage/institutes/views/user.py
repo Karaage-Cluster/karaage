@@ -34,7 +34,7 @@ def institute_users_list(request, institute_id):
     if not request.user.get_profile().id in ids:
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
-    user_list = institute.person_set.all()
+    user_list = institute.person_set.select_related()
 
     return render_to_response('institutes/institute_user_list.html', locals(), context_instance=RequestContext(request))
 
@@ -49,7 +49,7 @@ def institute_projects_list(request, institute_id):
     if not request.user.get_profile().id in ids:
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
-    project_list = institute.project_set.all()
+    project_list = institute.project_set.select_related()
 
     return render_to_response('institutes/institute_projects_list.html', locals(), context_instance=RequestContext(request))
 
