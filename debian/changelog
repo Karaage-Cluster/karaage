@@ -1,3 +1,17 @@
+karaage (2.4.10-1) testing; urgency=high
+
+  * Fixed serious cirular import bug
+
+ -- Sam Morrison <sam@vpac.org>  Mon, 04 Oct 2010 10:05:51 +1100
+
+karaage (2.4.9-1) testing; urgency=low
+
+  * New Application app
+  * Fixed bug in password done template
+  * Other minor fixes
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 29 Sep 2010 15:55:17 +1000
+
 karaage (2.4.8-1) testing; urgency=low
 
   * Added memory and core usage reports

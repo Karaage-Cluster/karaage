@@ -17,17 +17,13 @@ for i in `cat INSTALLED_FILES`; do
     echo %dir $i >>DIRS
   fi
 done
+install -d -m 755 $RPM_BUILD_ROOT%_sysconfdir/karaage/templates
+echo %dir /etc/karaage/templates >> DIRS
 
-CONFIGFILES="\
-%config(noreplace) /etc/karaage
-%config(noreplace) /etc/karaage/global_settings.py
-%config(noreplace) /etc/karaage/ldap_attrs.py"
-
+cat DIRS > INSTALLED_FILES
 # Make sure we match foo.pyo and foo.pyc along with foo.py (but only once each)
-sed -e "/\.py[co]$/d" -e "s/\.py$/.py*/" DIRS FILES >INSTALLED_FILES
+sed -e "/\.py[co]$/d" -e "s/\.py$/.py*/" -e '/\/etc\//s|^|%config(noreplace) |' FILES >>INSTALLED_FILES
 
-echo "$CONFIGFILES" | cat INSTALLED_FILES - >> INSTALLED_FILES.new
-mv INSTALLED_FILES.new INSTALLED_FILES
 
 
 

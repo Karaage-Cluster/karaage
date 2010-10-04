@@ -2,17 +2,13 @@
 
 {% block title %}Applications{% endblock %}
 {% block style %}<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/forms_custom.css"/>{% endblock %}
-{% block content_title %}User Application{% endblock %}
+{% block content_title %}Project Application{% endblock %}
 
 {% block bread_crumbs_1 %}
- &rsaquo; User Application
+ &rsaquo; Project Application
 {% endblock %}   
 
 {% block content %}
-{% if application.project %}
-<p>{{ application.created_by }} has invited you to join the following {{ org_name }} project:</p>
-<p>PID: {{ application.project.pid }}<br/>Title: {{ application.project.name }}</p>
-{% endif %}
 <form method="post" action=".">{% csrf_token %}
 <div>
 {% load forms %}
@@ -26,9 +22,7 @@
 {% formfield applicant_form.username %}
 {% formfield applicant_form.password1 %}
 {% formfield applicant_form.password2 %}
-{% if application.project %}
 {% formfield form.needs_account %}
-{% endif %}
 {% formfield form.aup %}
 </fieldset>
 <fieldset class="module aligned ()">
@@ -39,7 +33,13 @@
 {% inlineformfield applicant_form.institute applicant_form.department %}
 {% inlineformfield applicant_form.telephone applicant_form.mobile %}
 </fieldset>
-
+<fieldset class="module aligned ()">
+<h2>Project Details</h2>
+{% formfield form.name %}
+{% formfield form.institute %}
+{% formfield form.description %}
+{% formfield form.additional_req %}
+</fieldset>
 </div>
 <div class="submit-row">
 		<input type="submit" value="Submit" class="default" />

@@ -27,6 +27,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.flatpages',
     'django.contrib.messages',
+    'django_xmlrpc',
     'south',
     'andsome',
     'django_surveys',

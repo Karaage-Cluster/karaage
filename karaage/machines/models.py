@@ -63,14 +63,11 @@ class Machine(models.Model):
         return get_machine_usage(self, start, end)
 
 
-
-from karaage.projects.models import Project
-
 class UserAccount(models.Model):
     user = models.ForeignKey(Person)
     username = models.CharField(max_length=100)
     machine_category = models.ForeignKey(MachineCategory)
-    default_project = models.ForeignKey(Project, null=True, blank=True)
+    default_project = models.ForeignKey('projects.Project', null=True, blank=True)
     date_created = models.DateField()
     date_deleted = models.DateField(null=True, blank=True)
     disk_quota = models.IntegerField(null=True, blank=True, help_text="In GB")

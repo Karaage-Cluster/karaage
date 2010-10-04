@@ -1,4 +1,4 @@
-{% extends "main.html" %}
+{% extends "base_site.html" %}
 
 {% block title %}Applications{% endblock %}
 {% block content %}
@@ -7,6 +7,8 @@
 
 <p>The project leader{{ application.project.leaders.all|pluralize }} ha{{ application.project.leaders.all|pluralize:"s,ve" }} been emailed about this application. Now we're just waiting
 for their authorisation before you can join the project.</p>
+
+<p>You will receive an email once your account has been approved.</p>
 
 <p>Leader{{ application.project.leaders.all|pluralize }} contact details:<br />
 	{% for leader in application.project.leaders.all %}

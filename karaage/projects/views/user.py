@@ -25,10 +25,11 @@ from django.contrib import messages
 
 import datetime
 
-from karaage.people.models import Institute
+from karaage.people.models import Institute, Person
 from karaage.projects.forms import UserProjectForm as ProjectForm
 from karaage.projects.models import Project
 from karaage.machines.models import Machine
+from karaage.util import log_object as log
 from karaage.util.email_messages import send_account_request_email, send_project_request_email, send_project_approved_email, send_project_rejected_email, send_account_approved_email, send_account_rejected_email, send_project_join_approved_email, send_bounced_warning
 
 
@@ -37,7 +38,7 @@ def add_edit_project(request, project_id=None):
 
     if project_id is None:
         project = False
-    else :
+    else:
         project = get_object_or_404(Project, pk=project_id)
         if not request.user.get_profile() in project.leaders.all():
             return HttpResponseForbidden('<h1>Access Denied</h1>')
@@ -94,3 +95,24 @@ def institute_projects_list(request, institute_id):
 
     return render_to_response('projects/institute_projects_list.html', locals(), context_instance=RequestContext(request))
 
+
+@login_required
+def remove_user(request, project_id, username):
+
+    project = get_object_or_404(Project, pk=project_id)
+    person = get_object_or_404(Person, user__username=username)
+
+    if not request.user.get_profile() in project.leaders.all():
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
+
+    if request.method == 'POST':
+        project.users.remove(person)
+        messages.info(request, "User '%s' removed succesfully from project %s" % (person, project.pid))
+    
+        log(request.user, project, 3, 'Removed %s from project' % person)
+        log(request.user, person, 3, 'Removed from project %s' % project)
+
+        return HttpResponseRedirect(project.get_absolute_url())
+    
+    return render_to_response('projects/remove_user_confirm.html', {'project': project, 'person': person}, context_instance=RequestContext(request))
+  

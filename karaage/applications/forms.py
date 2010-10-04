@@ -2,7 +2,7 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
 
-from karaage.applications.models import UserApplication, Applicant
+from karaage.applications.models import UserApplication, ProjectApplication, Applicant
 from karaage.people.models import Person
 from karaage.people.forms import UsernamePasswordForm
 from karaage.util.helpers import check_password
@@ -61,12 +61,18 @@ class UserApplicantForm(ApplicantForm):
 
             return data
 
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        users = Person.active.filter(user__email__exact=email)
+        if users:
+            raise forms.ValidationError(u'An account with this email already exists. Please email %s' % settings.ACCOUNTS_EMAIL)
+        return email
+
     def clean(self):
         from karaage.util.helpers import create_password_hash
         super(self.__class__, self).clean()
         if 'password1' in self.cleaned_data:
             self.cleaned_data['password'] = create_password_hash(self.cleaned_data['password1'])
-            print self.cleaned_data
         return self.cleaned_data
 
 
@@ -80,13 +86,15 @@ class UserApplicationForm(forms.ModelForm):
         exclude = ['submitted_date', 'state', 'project', 'make_leader', 'content_type', 'object_id']
 
 
-class AdminUserApplicationForm(forms.ModelForm):
+class ProjectApplicationForm(forms.ModelForm):
+    
+    class Meta:
+        model = ProjectApplication
+        exclude = ['submitted_date', 'state', 'content_type', 'object_id']
+
+class LeaderInviteUserApplicationForm(forms.ModelForm):
     email = forms.EmailField()
-
-    def __init__(self, *args, **kwargs):
-        super(AdminUserApplicationForm, self).__init__(*args, **kwargs)
-        self.fields['project'].required = True
-
+    
     class Meta:
         model = UserApplication        
         exclude = ['submitted_date', 'state',]
@@ -97,15 +105,21 @@ class AdminUserApplicationForm(forms.ModelForm):
             person = Person.active.get(user__email=email)
         except Person.MultipleObjectsReturned:
             raise forms.ValidationError(u'Multiple users with this email exist. Please add manually as no way to invite.')
-        except Exception, e:
+        except Person.DoesNotExist:
             pass
         return email
+
+
+class AdminInviteUserApplicationForm(LeaderInviteUserApplicationForm):
+
+    def __init__(self, *args, **kwargs):
+        super(AdminInviteUserApplicationForm, self).__init__(*args, **kwargs)
+        self.fields['project'].required = True
             
 
 
-class LeaderUserApplicationForm(forms.ModelForm):
+class LeaderApproveUserApplicationForm(forms.ModelForm):
     class Meta:
         model = UserApplication
         fields = ['make_leader',]
-
 

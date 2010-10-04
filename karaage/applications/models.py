@@ -34,7 +34,10 @@ class Application(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, editable=False)
     submitted_date = models.DateTimeField(null=True, blank=True)
     state = models.CharField(max_length=1, choices=APPLICATION_STATES, default=NEW)
-    header_message = models.TextField(null=True, blank=True, help_text=u"Message displayed at top of application form for the invitee")
+    content_type = models.ForeignKey(ContentType, limit_choices_to={'model__in': ['person', 'applicant']}, null=True, blank=True)
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    applicant = generic.GenericForeignKey()
+    header_message = models.TextField('Message', null=True, blank=True, help_text=u"Message displayed at top of application form for the invitee and also in invitation email")
 
     def save(self, *args, **kwargs):
         if not self.pk:
@@ -48,9 +51,6 @@ class Application(models.Model):
 
 class UserApplication(Application):
     """ Associated with an Applicant or a Person"""
-    content_type = models.ForeignKey(ContentType, limit_choices_to={'model__in': ['person', 'applicant']}, null=True, blank=True)
-    object_id = models.PositiveIntegerField(null=True, blank=True)
-    applicant = generic.GenericForeignKey()
     project = models.ForeignKey(Project, null=True, blank=True, limit_choices_to={'is_active': True})
     needs_account = models.BooleanField(u"Do you require a cluster account?", help_text=u"Will you be working on the project yourself?")
     make_leader = models.BooleanField(help_text="Make this person a project leader")
@@ -71,15 +71,16 @@ class UserApplication(Application):
             self.project.leaders.add(person)
         self.state = Application.COMPLETE
         self.save()
+        return person
                 
 
 class ProjectApplication(Application):
-    name = models.CharField(max_length=200)
-    institute = models.ForeignKey(Institute)
+    name = models.CharField('Title', max_length=200)
+    institute = models.ForeignKey(Institute, limit_choices_to={'is_active': True})
     description = models.TextField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
+    needs_account = models.BooleanField(u"Do you require a cluster account?", help_text=u"Will you be working on the project yourself?")
     machine_categories = models.ManyToManyField(MachineCategory, null=True, blank=True)
-    user_applications = models.ManyToManyField(UserApplication, null=True, blank=True)
 
     @models.permalink
     def get_absolute_url(self):
@@ -88,7 +89,7 @@ class ProjectApplication(Application):
 
 class Applicant(models.Model):
     email = models.EmailField()
-    username = models.CharField(max_length=16, unique=True, help_text="Required. 16 characters or fewer. Letters, numbers and @.+-_ characters", null=True, blank=True)
+    username = models.CharField(max_length=16, unique=True, help_text="Required. 16 characters or fewer. Letters, numbers and underscores only", null=True, blank=True)
     password = models.CharField(max_length=128, null=True, blank=True)
     title = models.CharField(choices=TITLES, max_length=10, null=True, blank=True)
     first_name = models.CharField(max_length=30, null=True, blank=True)
