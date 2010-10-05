@@ -33,7 +33,7 @@ from karaage.requests.models import ProjectCreateRequest
 from karaage.people.forms import PasswordChangeForm, DelegateForm, PersonForm, LoginForm
 from karaage.machines.models import MachineCategory
 from karaage.machines.forms import ShellForm
-
+from karaage.applications.models import Application
 
 @login_required
 def profile(request):
@@ -42,17 +42,16 @@ def profile(request):
     
     project_list = person.project_set.all()
     project_requests = []
-    account_requests = []
-
+    user_applications = []
     start, end = get_date_range(request)
 
     if person.is_leader():
         leader = True
         leader_project_list = Project.objects.filter(leaders=person, is_active=True)
-        account_requests = []
+
         for project in leader_project_list:
-            for user_request in project.projectjoinrequest_set.filter(leader_approved=False):
-                account_requests.append(user_request)
+            for user_application in project.userapplication_set.filter(state=Application.WAITING_FOR_LEADER):
+                user_applications.append(user_application)
 
 
     if person.is_active_delegate():
