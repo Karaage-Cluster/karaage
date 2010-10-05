@@ -16,7 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from placard.client import LDAPClient
-
+from placard.exceptions import DoesNotExistException
 from karaage.datastores.institutes import base
 
 
@@ -28,15 +28,15 @@ class InstituteDataStore(base.InstituteDataStore):
              try:
                  lgroup = conn.get_group("gidNumber=%s" % institute.gid)
                  gid = int(lgroup.gidNumber)
-             except:
-                 gid = int(conn.add_group(cn=str(institute.name.lower().replace(' ', '')))[0], gidNumber=institute.gid)
+             except DoesNotExistException:
+                 gid = conn.add_group(cn=str(institute.name.lower().replace(' ', ''), gidNumber=institute.gid))
         else:
                  
             try:
                 lgroup = conn.get_group("cn=%s" % str(institute.name.lower().replace(' ', '')))
                 gid = int(lgroup.gidNumber)
-            except:
-                gid = int(conn.add_group(cn=str(institute.name.lower().replace(' ', '')))[0])
+            except DoesNotExistException:
+                gid = conn.add_group(cn=str(institute.name.lower().replace(' ', '')))
         return gid
 
     def delete_institute(self, institute):
