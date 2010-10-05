@@ -54,18 +54,13 @@
 </ul>
 {% endif %}
 
-{% if account_requests %}
-<h2 class="alert">Project Join Requests</h2>
+{% if user_applications %}
+<h2 class="alert">Project Join Applications</h2>
 <ul>
-  {% for request in account_requests %}
+  {% for application in user_applications %}
   <li>
-    {{ request.person }} - 
-    {{ request.project.name|truncatewords:"8" }} |
-    <a href="{% url user_account_request_detail request.id %}">Details</a> | 
-    <a href="{% url user_approve_account request.id %}">
-      <img src="{{ MEDIA_URL }}img/admin/icon-yes.gif" alt="Approve"/>&nbsp;Approve</a> | 
-    <a href="{% url user_reject_account request.id %}">
-      <img src="{{ MEDIA_URL }}img/admin/icon-no.gif" alt="Reject"/>&nbsp;Reject</a>
+    <a href="{% url kg_userapplication_detail application.id %}">{{ application.applicant }} - 
+    {{ application.project.pid }}</a>
   </li>
   {% endfor %}
 </ul>

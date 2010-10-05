@@ -22,6 +22,9 @@
 <br />
 {% endif %}
 <h1>{{ application.applicant }} Details</h1>
+{% if application.applicant.user %}
+<p>This person is an existing user. <a href="{{ application.applicant.get_absolute_url }} ">{{ application.applicant }} details</a></p>
+{% else %}
    	<table>
    		<tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
    		<tr><td>First name:</td><td>{{ application.applicant.first_name }}</td></tr>
@@ -36,7 +39,7 @@
    		{% if application.applicant.fax %}<tr><td>Fax:</td><td>{{ application.applicant.fax }}</td></tr>{% endif %}
 		
 	</table>
-
+{% endif %}
 {% endblock %}
 
 
