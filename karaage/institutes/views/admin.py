@@ -41,12 +41,11 @@ def institute_list(request):
     institute_list = Institute.objects.all()
     page_no = int(request.GET.get('page', 1))
 
-    if request.REQUEST.has_key('primary'):
-        institute_list = Institute.active.all()
-
+    if request.REQUEST.has_key('active'):
+        institute_list = institute_list.filter(is_active=int(request.GET['active']))
 
     filter_list = []
-    filter_list.append(Filter(request, 'primary', {'primary': 'Primary',}))
+    filter_list.append(Filter(request, 'active', {1: 'Yes', 0: 'No'}))
     filter_bar = FilterBar(request, filter_list)
 
     p = Paginator(institute_list, 50)

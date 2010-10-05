@@ -68,11 +68,15 @@ def parse_logs(log_list, date, machine_name, log_type):
             continue
 
         try:
-            user_account = UserAccount.objects.get(username=data['user'], machine_category=machine.category)
+            user_account = UserAccount.objects.get(username=data['user'], machine_category=machine.category, date_deleted__isnull=True)
         except UserAccount.DoesNotExist:
             # Couldn't find user account - Assign to user 'Unknown_User'
             user_account = UserAccount.objects.get(username='unknown_user', machine_category=machine.category)
-            output.append("Couldn't find user account for username=%s and machine category=%s" % (data['user'], machine.category.name))
+            output.append("Couldn't find user account for username=%s and machine category=%s. Assigned to unknown user" % (data['user'], machine.category.name))
+            fail = fail + 1
+        except UserAccount.MultipleObjectsReturned:
+            user_account = UserAccount.objects.get(username='unknown_user', machine_category=machine.category)
+            output.append("Username %s has multiple active accounts on machine category %s. Assigned to unknown user" % (data['user'], machine.category.name))
             fail = fail + 1
 
         if 'project' in data:
