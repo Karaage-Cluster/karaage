@@ -51,9 +51,39 @@ class InstituteTestCase(TestCase):
         self.server.stop()
 
 
-    def test_adding_institute(self):
+    def test_add(self):
         institute = Institute.objects.create(name='TestInstitute54')
         
         lcon = LDAPClient()
         lgroup = lcon.get_group('gidNumber=%s' % institute.gid)
-        self.assertEqual(institute.name.lower(), lgroup.cn)
+        self.assertEqual(institute.name.lower().replace(' ' , ''), lgroup.cn)
+
+
+    def test_add_spaces(self):
+        institute = Institute.objects.create(name='Test Institute 60')
+        
+        lcon = LDAPClient()
+        lgroup = lcon.get_group('gidNumber=%s' % institute.gid)
+        self.assertEqual(institute.name.lower().replace(' ' , ''), lgroup.cn)
+
+    def test_add_existing_name(self):
+        
+        lcon = LDAPClient()
+        gid = lcon.add_group(cn='testinstitute27')
+
+        institute = Institute.objects.create(name='Test Institute 27')
+
+        lgroup = lcon.get_group('gidNumber=%s' % institute.gid)
+        self.assertEqual(gid, institute.gid) 
+        self.assertEqual(institute.name.lower().replace(' ' , ''), lgroup.cn) 
+
+    def test_add_existing_gid(self):
+        
+        lcon = LDAPClient()
+        gid = lcon.add_group(cn='testinstituteother', gidNumber=['700'])
+
+        institute = Institute.objects.create(name='Test Institute 26', gid=700)
+
+        lgroup = lcon.get_group('gidNumber=%s' % institute.gid)
+        self.assertEqual(gid, institute.gid) 
+        self.assertEqual(gid, 700) 
