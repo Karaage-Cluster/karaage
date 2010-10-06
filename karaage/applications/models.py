@@ -20,7 +20,7 @@ class Application(models.Model):
     WAITING_FOR_ADMIN = 'K'
     COMPLETE = 'C'
     APPLICATION_STATES = (
-        (NEW, 'New'),
+        (NEW, 'Invitiation Sent'),
         (OPEN, 'Open'),
         (WAITING_FOR_LEADER, 'Waiting for project leader approval'),
         (WAITING_FOR_DELEGATE, 'Waiting for institute delegate approval'),
