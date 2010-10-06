@@ -81,3 +81,15 @@ def send_account_approved_email(userapplication):
     to_email = userapplication.applicant.email
     
     send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+
+
+def send_account_declined_email(userapplication):
+    """Sends an email informing person account is declined"""
+    context = CONTEXT.copy()
+    context['receiver'] = userapplication.applicant
+    context['project'] = userapplication.project
+    context['site'] = remove_url_prefix(reverse('kg_user_profile', urlconf='kgreg.conf.urls'))
+    subject, body = render_email('account_declined', context)
+    to_email = userapplication.applicant.email
+    
+    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)

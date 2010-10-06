@@ -21,12 +21,13 @@ from django.conf.urls.defaults import *
 urlpatterns = patterns('karaage.applications.views',
 
     url(r'^$', 'user.application_index', name='kg_application_index'),
+    url(r'^pending/$', 'user.pending_applications', name='kg_application_pendinglist'),
     url(r'^new_user/$', 'user.do_userapplication', name='kg_new_userapplication'),
     url(r'^new_project/$', 'projects.do_projectapplication', name='kg_new_projectapplication'),
     url(r'^choose_project/$', 'user.choose_project', name='kg_choose_project_existing'),
     url(r'^invite/(?P<project_id>[-.\w]+)/$', 'user.send_invitation', name='kg_userapplication_invite'),
 
-    url(r'^(?P<application_id>\d+)/$', 'user.userapplication_detail', name='kg_userapplication_detail'),
+    url(r'^(?P<application_id>\d+)/$', 'user.approve_userapplication', name='kg_userapplication_detail'),
     url(r'^(?P<application_id>\d+)/approve/$', 'user.approve_userapplication', name='kg_userapplication_approve'),
     url(r'^(?P<application_id>\d+)/decline/$', 'user.decline_userapplication', name='kg_userapplication_decline'),
     url(r'^(?P<application_id>\d+)/complete/$', 'user.userapplication_complete', name='kg_userapplication_complete'),

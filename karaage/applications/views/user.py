@@ -23,12 +23,13 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.db.models import Q
 from django.conf import settings
+from django.core.paginator import Paginator
 
 import datetime
 
 from karaage.applications.models import UserApplication, Applicant, Application
 from karaage.applications.forms import UserApplicationForm, UserApplicantForm, LeaderApproveUserApplicationForm, LeaderInviteUserApplicationForm
-from karaage.applications.emails import send_account_request_email, send_account_approved_email, send_user_invite_email
+from karaage.applications.emails import send_account_request_email, send_account_approved_email, send_user_invite_email, send_account_declined_email
 from karaage.people.models import Person
 from karaage.projects.models import Project
 
@@ -194,10 +195,9 @@ def decline_userapplication(request, application_id):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     
     if request.method == 'POST':
-        send_account_rejected_email(application)
-        
-        application.delete()
-        
+
+        send_account_declined_email(application)
+        application.delete()        
         return HttpResponseRedirect(reverse('kg_user_profile'))
 
     return render_to_response('applications/confirm_decline.html', {'application': application}, context_instance=RequestContext(request))
@@ -278,3 +278,14 @@ def send_invitation(request, project_id):
         form = LeaderInviteUserApplicationForm(instance=application)
 
     return render_to_response('applications/leaderuserapplication_invite_form.html', {'form': form, 'application': application, 'project': project}, context_instance=RequestContext(request)) 
+
+@login_required
+def pending_applications(request):
+    person = request.user.get_profile()
+    page_no = int(request.GET.get('page', 1))
+    user_applications = UserApplication.objects.filter(project__in=person.leaders.all())
+
+    p = Paginator(user_applications, 50)
+    page = p.page(page_no)
+
+    return render_to_response('applications/pending_application_list.html', {'user_applications': user_applications, 'page': page}, context_instance=RequestContext(request)) 

@@ -1,0 +1,51 @@
+{% extends "changelist.html" %}
+{% load paginator %}
+{% block title %}Applications{% endblock %}
+
+{% block breadcrumbs %}{{ block.super }} &rsaquo; Applications{% endblock %}
+
+{% block content_title %}&nbsp;{% endblock %}
+
+{% block content %}
+<div class="module  {% if filter_bar %}filtered{% endif %}" id="changelist">
+  {% if filter_bar %}
+  <div id="changelist-filter">
+    <h2>Filter</h2> 					
+    {{ filter_bar|safe }}	
+  </div>
+  {% endif %}
+  <table cellspacing="0">
+	<thead>
+		<tr>
+			<th>Email</th>
+			<th>Project</th>
+			<th>Leader</th>
+			<th>Cluster Account</th>
+			<th>State</th>
+			<th></th>
+			<th></th>
+		</tr>
+	</thead>
+    <tbody>
+    {% for app in page.object_list %}
+	   	<tr class="{% cycle row1,row2 %}">
+	   	    <td>{{ app.applicant.email|urlize }}</td>
+	   	    <td>{{ app.project.pid }}</td>
+	   	    <td>{% yes_no_img app.make_leader %}</td>
+	   	    <td>{% yes_no_img app.needs_account %}</td>
+	   	    <td>{{ app.get_state_display }}</td>
+	   	    {% if app.state == "L" %}
+            <td><a href="{% url kg_userapplication_approve app.id %}" class="yeslink">&nbsp;Accept</a></td>
+            <td><a href="{% url kg_userapplication_decline app.id %}" class="nolink">&nbsp;Decline</a></td>
+            {% else %}
+            <td></td>
+            <td></td>
+            {% endif %}
+	   	</tr>
+	{% endfor %}
+    </tbody>  	
+</table>
+
+  {% pagination page request %}
+</div>
+{% endblock %}
