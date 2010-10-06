@@ -121,5 +121,5 @@ class AdminInviteUserApplicationForm(LeaderInviteUserApplicationForm):
 class LeaderApproveUserApplicationForm(forms.ModelForm):
     class Meta:
         model = UserApplication
-        fields = ['make_leader',]
+        fields = ['make_leader', 'needs_account',]
 
