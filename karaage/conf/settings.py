@@ -109,4 +109,6 @@ AUTHENTICATION_BACKENDS = (
  'placard.backends.LDAPBackend',
 )
 
+AUP_URL = ''
+
 execfile("/etc/karaage/global_settings.py")
