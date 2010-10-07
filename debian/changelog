@@ -1,3 +1,19 @@
+karaage (2.4.11-1) stable; urgency=low
+
+  * Select related to lessen SQL queries
+  * Fixed bug in log parser if user has two accounts
+  * Allow existing users to apply for new projects
+  * Added project application form
+  * Ensure Applicant email is unique
+  * Changes to ProjectApplication model
+  * Display pending applications to project leaders in profile
+  * Allow project leader to select 'needs account'
+  * Pending applications for user plus decline applications
+  * Name of NEW state is Invitaion sent
+  * More explicit confirm when inviting users that already exist in system
+
+ -- Sam Morrison <sam@vpac.org>  Thu, 07 Oct 2010 15:18:41 +1100
+
 karaage (2.4.10-1) testing; urgency=high
 
   * Fixed serious cirular import bug
@@ -71,7 +87,7 @@ karaage (2.4.2-1) testing; urgency=low
 
 karaage (2.4.1-1) testing; urgency=low
 
-  * Added command to create a karaage superuser 
+  * Added command to create a karaage superuser
   * Make LDAP Auth backend the default
   * If no logged in user log events under the new user
   * Make country field optional on Person model
@@ -196,7 +212,7 @@ karaage (2.2) testing; urgency=low
   * Quota equals zero bug and signals to add IntituteChuck automatically
   * Show jobID in default usage list.
   * Added pylint file
-	
+
  -- Sam Morrison <sam@vpac.org>  Mon, 17 May 2010 13:18:25 +1000
 
 karaage (2.1.1) testing; urgency=low
@@ -223,7 +239,7 @@ karaage (2.0.16) testing; urgency=low
 
 karaage (2.0.15) testing; urgency=low
 
-  * Removed VPAC specific lock DN" 
+  * Removed VPAC specific lock DN
 
  -- Sam Morrison <sam@vpac.org>  Wed, 05 May 2010 12:00:45 +1000
 
@@ -238,7 +254,7 @@ karaage (2.0.13) testing; urgency=low
 
   * Added initial data for default MachineCategory. Fixes #31
   * Added initial api docs
-  * Added some management commands for clearing and populating 
+  * Added some management commands for clearing and populating
     usage cache and locking expired users
   * Don't display title if it doesn't exist. Fixes #30
 
@@ -264,8 +280,8 @@ karaage (2.0.10) testing; urgency=low
 
 karaage (2.0.9) testing; urgency=low
 
-  * GRAPH_URL and GRAPH_ROOT settings if graph dir separate to MEDIA_* 
-	
+  * GRAPH_URL and GRAPH_ROOT settings if graph dir separate to MEDIA_*
+
  -- Sam Morrison <sam@vpac.org>  Wed, 28 Apr 2010 15:49:10 +1000
 
 karaage (2.0.8) testing; urgency=high
@@ -308,7 +324,7 @@ karaage (2.0.3) testing; urgency=low
 
 karaage (2.0.2) testing; urgency=low
 
-  * Fixed gdchart2 requirment 
+  * Fixed gdchart2 requirment
 
  -- Sam Morrison <sam@vpac.org>  Fri, 19 Mar 2010 11:51:00 +1100
 
