@@ -96,8 +96,8 @@ class LeaderInviteUserApplicationForm(forms.ModelForm):
     email = forms.EmailField()
     
     class Meta:
-        model = UserApplication        
-        exclude = ['submitted_date', 'state',]
+        model = UserApplication
+        fields = ['email', 'project', 'make_leader', 'header_message']
 
     def clean_email(self):
         email = self.cleaned_data['email']
