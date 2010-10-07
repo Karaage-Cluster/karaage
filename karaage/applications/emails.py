@@ -16,7 +16,6 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.core.mail import send_mail
-from django.contrib.sites.models import Site
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.core.urlresolvers import reverse, get_script_prefix
@@ -40,7 +39,6 @@ def remove_url_prefix(url):
 
 def send_account_request_email(application):
     """Sends an email to each project leader asking to approve user application"""
-    site = Site.objects.get_current()
     context = CONTEXT.copy()
     context['requester'] = application.applicant
     context['site'] = '%s' % remove_url_prefix(reverse('kg_userapplication_detail', args=[application.id], urlconf='kgreg.conf.urls'))
