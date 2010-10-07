@@ -1,0 +1,14 @@
+{% extends "base_site.html" %}
+
+{% block content %}
+    <h1>User already in system</h1>    
+    <p>A user with this email address ({{ email }}) already exists in the system.</p><p>Do you want to add them directly to the project and send an email informing them.</p>
+    <form method="post" action=".">{% csrf_token %}
+    	{% for field in form %}{{ field.as_hidden }}
+    	{% endfor %}
+    <div>
+    <input type="hidden" name="existing" value="yes" />
+    <input type="submit" value="Yes, I'm sure" />
+    </div>
+    </form>
+{% endblock %}
