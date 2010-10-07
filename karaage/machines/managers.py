@@ -18,11 +18,23 @@
 from django.db import models
 import datetime
 
+MC_CACHE = {}
+
 class MachineCategoryManager(models.Manager):
     def get_default(self):
         from django.conf import settings
-        return self.get(pk=settings.DEFAULT_MC)
-
+        
+        try:
+            mc = MC_CACHE[settings.DEFAULT_MC]
+        except KeyError:
+            mc = self.get(pk=settings.DEFAULT_MC)
+            MC_CACHE[settings.DEFAULT_MC] = mc
+        
+        return mc
+    
+    def clear_cache(self):
+        global MC_CACHE
+        MC_CACHE = {}
 
 class ActiveMachineManager(models.Manager):
     def get_query_set(self):

@@ -20,7 +20,8 @@ from django.db import models
 import datetime
 
 from karaage.people.models import Person
-from karaage.machines.managers import MachineCategoryManager, ActiveMachineManager
+from karaage.machines.managers import MachineCategoryManager, ActiveMachineManager, MC_CACHE
+
 
 
 class MachineCategory(models.Model):
@@ -33,6 +34,20 @@ class MachineCategory(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        super(MachineCategory, self).save(*args, **kwargs)
+        # Cached information will likely be incorrect now.
+        if self.id in MC_CACHE:
+            del MC_CACHE[self.id]
+
+    def delete(self):
+        pk = self.pk
+        super(MachineCategory, self).delete()
+        try:
+            del MC_CACHE[pk]
+        except KeyError:
+            pass
 
 
 class Machine(models.Model):
