@@ -95,6 +95,10 @@ class ProjectApplicationForm(forms.ModelForm):
 class LeaderInviteUserApplicationForm(forms.ModelForm):
     email = forms.EmailField()
     
+    def __init__(self, *args, **kwargs):
+        super(LeaderInviteUserApplicationForm, self).__init__(*args, **kwargs)
+        self.fields['header_message'].required = True
+
     class Meta:
         model = UserApplication
         fields = ['email', 'project', 'make_leader', 'header_message']
