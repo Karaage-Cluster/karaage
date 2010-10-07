@@ -159,17 +159,7 @@ class Command(BaseCommand):
                         institute_name = raw_input('New Institute Name: ')
                     else:
                         break
-                while 1:
-                    if not institute_gid:
-                        institute_gid = raw_input('New Institute GID (If GID does not exist new group will be created): ')
-                        conn = LDAPClient()
-                        try:
-                            lgroup = conn.get_group('gidNumber=%s' % institute_gid)
-                        except placard_exceptions.DoesNotExistException:
-                            conn.add_group(cn=institute_name.replace(' ', '').lower(), gidNumber=institute_gid)
-                    else:
-                        break
-                institute = Institute.objects.create(name=institute_name, gid=institute_gid, is_active=True)
+                institute = Institute.objects.create(name=institute_name, is_active=True)
             else:
                 print "Choose an existing institute for new superuser:"
                 print "Valid choices are:"
