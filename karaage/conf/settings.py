@@ -113,5 +113,6 @@ AUTHENTICATION_BACKENDS = (
 PROJECT_DATASTORE = 'karaage.datastores.projects.ldap_datastore'
 INSTITUTE_DATASTORE = 'karaage.datastores.institutes.ldap_datastore'
 
+AUP_URL = ''
 
 execfile("/etc/karaage/global_settings.py")
