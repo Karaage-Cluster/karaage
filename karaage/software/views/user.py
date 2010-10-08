@@ -35,7 +35,7 @@ def add_package_list(request):
     person = request.user.get_profile()
 
     software_list = []
-    for s in SoftwarePackage.objects.all():
+    for s in SoftwarePackage.objects.filter(softwarelicense__isnull=False):
         data = {'package': s}
         license_agreements = SoftwareLicenseAgreement.objects.filter(user=person, license__package=s)
         if license_agreements.count() > 0:
