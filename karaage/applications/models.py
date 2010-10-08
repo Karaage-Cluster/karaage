@@ -39,6 +39,9 @@ class Application(models.Model):
     applicant = generic.GenericForeignKey()
     header_message = models.TextField('Message', null=True, blank=True, help_text=u"Message displayed at top of application form for the invitee and also in invitation email")
 
+    def __unicode__(self):
+        return "Application #%s" % self.id
+
     def save(self, *args, **kwargs):
         if not self.pk:
             import datetime
@@ -108,10 +111,15 @@ class Applicant(models.Model):
     applications = generic.GenericRelation(UserApplication)
 
     def __unicode__(self):
-        return "%s %s" % (self.first_name, self.last_name)
+        if self.first_name:
+            return self.get_full_name()
+        return self.email
 
     def has_account(self, mc):
         return False
+
+    def get_full_name(self):
+        return "%s %s" % (self.first_name, self.last_name)
 
     def approve(self):
         from karaage.datastores import create_new_person_from_applicant as create_new_person
