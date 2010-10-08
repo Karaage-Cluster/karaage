@@ -87,7 +87,9 @@ class UserApplicationForm(forms.ModelForm):
 
 
 class ProjectApplicationForm(forms.ModelForm):
-    
+    aup = forms.BooleanField(label=u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>' % settings.AUP_URL, 
+                             error_messages={'required': 'You must accept to proceed.'})
+
     class Meta:
         model = ProjectApplication
         exclude = ['submitted_date', 'state', 'content_type', 'object_id']
