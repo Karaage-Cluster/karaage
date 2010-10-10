@@ -18,7 +18,7 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.template.defaultfilters import wordwrap
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -56,7 +56,10 @@ def add_package(request, package_id):
     package = get_object_or_404(SoftwarePackage, pk=package_id)
     software_license = package.get_current_license()    
     person = request.user.get_profile()
-    
+
+    if software_license is None:
+        raise Http404("Package '%s' has no software license." % (package))
+
     if request.method == 'POST':
         
         if package.restricted:
