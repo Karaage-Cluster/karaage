@@ -54,18 +54,6 @@
 </ul>
 {% endif %}
 
-{% if user_applications %}
-<h2 class="alert">Project Join Applications</h2>
-<ul>
-  {% for application in user_applications %}
-  <li>
-    <a href="{% url kg_userapplication_detail application.id %}">{{ application.applicant }} - 
-    {{ application.project.pid }}</a>
-  </li>
-  {% endfor %}
-</ul>
-{% endif %}
-
 <h2>Usage Summary (last 90 days)</h2>
 
 <table>

@@ -17,18 +17,6 @@
 {% endblock %}
 
 {% block content %}
-{% if project_requests %}
-<ul class="messagelist">
-	<li>You have new project requests</li>
-</ul>
-{% endif %}
-{% if user_applications %}
-<ul class="messagelist">
-	<li>You have pending applications to join one of your projects</li>
-</ul>
-{% endif %}
-
-
 <h1>Welcome {{ person }}
 {% ifequal person person.institute.active_delegate %}, you are the active delegate for {{ person.institute }}{% endifequal %}</h1>
 <p>
