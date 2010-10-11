@@ -1,0 +1,18 @@
+{% extends "base_site.html" %}
+
+{% block title %}Applications{% endblock %}
+{% block content %}
+
+<p>Thanks {{ application.applicant.first_name }} for your new project application.</p>
+
+<p>{{ application.institute }}'s delegate, <b>{{ application.institute.active_delegate }}</b>, has been emailed about the request, and we're waiting for their authorisation.</p>
+
+<p>You can contact {{ application.institute.active_delegate.first_name }} by:<br />
+	<ul>
+		<li>Email: {{ application.institute.active_delegate.email|urlize }}</li> 
+		<li>Phone: {{ application.institute.active_delegate.telephone }}</li>
+	</ul>
+</p>
+{% endblock %}
+
+

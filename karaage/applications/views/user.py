@@ -27,7 +27,7 @@ from django.core.paginator import Paginator
 
 import datetime
 
-from karaage.applications.models import UserApplication, Applicant, Application
+from karaage.applications.models import UserApplication, ProjectApplication, Applicant, Application
 from karaage.applications.forms import UserApplicationForm, UserApplicantForm, LeaderApproveUserApplicationForm, LeaderInviteUserApplicationForm
 from karaage.applications.emails import send_account_request_email, send_account_approved_email, send_user_invite_email, send_account_declined_email
 from karaage.people.models import Person
@@ -145,12 +145,13 @@ def choose_project(request, token=None):
 
 
 def application_done(request, token):
-    application = get_object_or_404(UserApplication, secret_token=token)
+    application = get_object_or_404(Application, secret_token=token)
     if application.state in (Application.NEW, Application.OPEN):
         raise Http404
-
-    return render_to_response('applications/done.html', {'application': application }, context_instance=RequestContext(request))
-
+    if hasattr(application, 'userapplication'):
+        return render_to_response('applications/done.html', {'application': application.userapplication }, context_instance=RequestContext(request))
+    elif hasattr(application, 'projectapplication'):
+        return render_to_response('applications/projectapplication_done.html', {'application': application.projectapplication }, context_instance=RequestContext(request))
 
 @login_required
 def approve_userapplication(request, application_id):
@@ -288,8 +289,11 @@ def pending_applications(request):
     person = request.user.get_profile()
     page_no = int(request.GET.get('page', 1))
     user_applications = UserApplication.objects.filter(project__in=person.leaders.all())
-
+    project_applications = ProjectApplication.objects.filter(institute__in=person.delegate.all())
     p = Paginator(user_applications, 50)
+    projects_p = Paginator(project_applications, 50)
     page = p.page(page_no)
-
-    return render_to_response('applications/pending_application_list.html', {'user_applications': user_applications, 'page': page}, context_instance=RequestContext(request)) 
+    projects_page = projects_p.page(page_no)
+    return render_to_response('applications/pending_application_list.html', {'user_applications': user_applications, 'page': page, 
+                                                                             'project_applications': project_applications, 'projects_page': projects_page},
+                              context_instance=RequestContext(request)) 
