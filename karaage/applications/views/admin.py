@@ -82,7 +82,7 @@ def application_list(request, queryset=UserApplication.objects.select_related().
         terms = new_data['search'].lower()
         query = Q()
         for term in terms.split(' '):
-            q = Q(created_by__user__first_name__icontains=term) | Q(created_by__user__last_name__icontains=term) | Q(project__icontains=term)
+            q = Q(created_by__user__first_name__icontains=term) | Q(created_by__user__last_name__icontains=term) | Q(project__pid__icontains=term)
             query = query & q
 
         apps = apps.filter(query)
