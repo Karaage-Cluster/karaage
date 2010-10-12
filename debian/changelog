@@ -1,3 +1,11 @@
+karaage (2.4.12-1) stable; urgency=low
+
+  * Make header_message required field in application invite form
+  * Only show software that has a license for users to accept
+  * Bug fixes
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 13 Oct 2010 09:40:32 +1100
+
 karaage (2.4.11-1) stable; urgency=low
 
   * Select related to lessen SQL queries
