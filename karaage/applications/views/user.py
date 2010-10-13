@@ -40,9 +40,10 @@ def do_userapplication(request, token=None):
         return HttpResponseRedirect(reverse('kg_user_profile'))
 
     if token:
-        application = get_object_or_404(UserApplication, secret_token=token)
-        if application.state not in (Application.NEW, Application.OPEN):
-            raise Http404
+        application = get_object_or_404(UserApplication, 
+                                        secret_token=token, 
+                                        state__in=[Application.NEW, Application.OPEN], 
+                                        expires__lt=datetime.datetime.now())
         applicant = application.applicant
         application.state = Application.OPEN
         application.save()
@@ -78,9 +79,10 @@ def choose_project(request, token=None):
         application = UserApplication()
         application.applicant = request.user.get_profile()
     else:
-        application = get_object_or_404(UserApplication, secret_token=token)
-        if application.state not in (Application.NEW, Application.OPEN):
-            raise Http404
+        application = get_object_or_404(UserApplication, 
+                                        secret_token=token, 
+                                        state__in=[Application.NEW, Application.OPEN], 
+                                        expires__lt=datetime.datetime.now())
         
     institute = application.applicant.institute
     
