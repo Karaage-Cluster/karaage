@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" = "configure" ]; then
+    
+    # The following only on a new install
+    if [ "$2" = "" ]; then
+	
+	/usr/sbin/kg_set_secret_key
+	
+    fi
+fi
+
+
+
+#DEBHELPER#
+
+exit 0
+
