@@ -163,7 +163,7 @@ def send_bounced_warning(person):
                 body = render_to_string('requests/emails/bounced_email_body.txt', context)
                 send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
                 active_user = get_current_user()
-                log(active_user, p.leader, 2, 'Sent email about bounced emails from %s' % person)
+                log(active_user, leader, 2, 'Sent email about bounced emails from %s' % person)
 
 
 def send_software_request_email(software_request):
