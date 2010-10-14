@@ -236,7 +236,7 @@ def make_default(request, useraccount_id, project_id):
 
     user_account = get_object_or_404(UserAccount, pk=useraccount_id)
     project = get_object_or_404(Project, pk=project_id)
-    
+
     access = False
     if request.user.has_perm('machines.change_useraccount'):
         access = True
@@ -256,6 +256,8 @@ def make_default(request, useraccount_id, project_id):
     messages.info(request, "Default project changed succesfully")
     log(request.user, user_account.user, 2, 'Changed default project to %s' % project.pid)
 
+    if request.REQUEST.has_key('next'):
+        return HttpResponseRedirect(request.GET['next'])
     return HttpResponseRedirect(user_account.get_absolute_url())
 
 @login_required
