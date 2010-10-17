@@ -125,7 +125,13 @@ class AdminInviteUserApplicationForm(LeaderInviteUserApplicationForm):
 
 
 class LeaderApproveUserApplicationForm(forms.ModelForm):
+
     class Meta:
         model = UserApplication
         fields = ['make_leader', 'needs_account',]
+
+    def __init__(self, *args, **kwargs):
+        super(LeaderApproveUserApplicationForm, self).__init__(*args, **kwargs)
+        self.fields['needs_account'].label = u"Does this person require a cluster account?"
+        self.fields['needs_account'].help_text = u"Will this person be working on the project?"
 
