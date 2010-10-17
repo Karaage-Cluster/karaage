@@ -27,12 +27,12 @@ from andsome.util.filterspecs import Filter, FilterBar
 
 from karaage.people.models import Person
 from karaage.applications.models import UserApplication, Applicant, Application
-from karaage.applications.forms import AdminInviteUserApplicationForm, ApplicantForm
+from karaage.applications.forms import AdminInviteUserApplicationForm, ApplicantForm, LeaderApproveUserApplicationForm
 from karaage.applications.emails import send_user_invite_email, send_account_approved_email
 
 @permission_required('applications.add_userapplication')
 def send_invitation(request):
-    
+
     application = None
 
     if request.method == 'POST':
@@ -104,13 +104,17 @@ def approve_userapplication(request, application_id):
 
     if application.state != Application.WAITING_FOR_ADMIN:
         raise Http404
-    if request.method == 'POST':
-        person = application.approve()
-        send_account_approved_email(application)
-        messages.info(request, "Application approved successfully")
-        return HttpResponseRedirect(person.get_absolute_url())
 
-    form = None
+    if request.method == 'POST':
+        form = LeaderApproveUserApplicationForm(request.POST, instance=application)
+        if form.is_valid():
+            application = form.save()
+            person = application.approve()
+            send_account_approved_email(application)
+            messages.info(request, "Application approved successfully")
+            return HttpResponseRedirect(person.get_absolute_url())
+    else:
+        form = LeaderApproveUserApplicationForm(instance=application)
 
     return render_to_response('applications/approve_application.html', {'form': form, 'application': application}, context_instance=RequestContext(request))
 
