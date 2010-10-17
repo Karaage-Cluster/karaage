@@ -31,6 +31,7 @@ from django.http import HttpResponseRedirect
 from karaage.people.models import Person
 from karaage.projects.models import Project
 from karaage.requests.models import ProjectJoinRequest, ProjectCreateRequest
+from karaage.applications.models import Application, UserApplication
 
 
 @login_required
@@ -42,6 +43,8 @@ def admin_index(request):
     projectrequest_list = ProjectCreateRequest.objects.all()
 
     recent_actions = request.user.logentry_set.all()[:10]
+
+    user_applications = UserApplication.objects.filter(state=Application.WAITING_FOR_ADMIN)
 
     return render_to_response('index.html', locals(), context_instance=RequestContext(request))
 
