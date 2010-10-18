@@ -22,9 +22,9 @@ urlpatterns = patterns('karaage.applications.views',
 
     url(r'^$', 'user.application_index', name='kg_application_index'),
     url(r'^pending/$', 'user.pending_applications', name='kg_application_pendinglist'),
-    url(r'^new_user/$', 'user.do_userapplication', name='kg_new_userapplication'),
-    url(r'^new_project/$', 'projects.do_projectapplication', name='kg_new_projectapplication'),
-    url(r'^choose_project/$', 'user.choose_project', name='kg_choose_project_existing'),
+    url(r'^new-user/$', 'user.do_userapplication', name='kg_new_userapplication'),
+    url(r'^new-project/$', 'projects.do_projectapplication', name='kg_new_projectapplication'),
+    url(r'^choose-project/$', 'user.choose_project', name='kg_choose_project_existing'),
     url(r'^invite/(?P<project_id>[-.\w]+)/$', 'user.send_invitation', name='kg_userapplication_invite'),
 
     url(r'^(?P<application_id>\d+)/$', 'user.approve_userapplication', name='kg_userapplication_detail'),
