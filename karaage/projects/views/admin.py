@@ -19,7 +19,6 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth.decorators import permission_required, login_required
-from django.contrib.sites.models import Site
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.models import LogEntry
 from django.db.models import Q
