@@ -186,13 +186,17 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
                     continue
                 user_total += u.cpu_hours
                 user_total_jobs += u.no_jobs
+                try:
+                    quota_percent = u.cpu_hours/(available_usage*quota.quota)*10000
+                except ZeroDivisionError:
+                   quota_percent = 0 
                 user_list.append(
                     {'user': u.user, 
                      'project': u.project, 
                      'usage': u.cpu_hours, 
                      'jobs': u.no_jobs, 
                      'percent': ((u.cpu_hours/i_usage)*100),
-                     'quota_percent': (u.cpu_hours/(available_usage*quota.quota)*10000),
+                     'quota_percent': quota_percent,
                      }) 
                 
             user_percent = (user_total / i_usage) * 100
