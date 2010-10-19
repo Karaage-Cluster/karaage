@@ -128,7 +128,7 @@ def decline_userapplication(request, application_id):
     if request.method == 'POST':
         send_account_rejected_email(application)
         application.delete()
-        return HttpResponseRedirect(reverse('kg_user_profile'))
+        return HttpResponseRedirect(reverse('kg_application_list'))
 
     return render_to_response('applications/confirm_decline.html', {'application': application}, context_instance=RequestContext(request))
 
@@ -139,3 +139,13 @@ def userapplication_detail(request, application_id):
 
     return render_to_response('applications/adminapplication_detail.html', {'application': application}, context_instance=RequestContext(request))
 
+
+@permission_required('applications.delete_application')
+def delete_application(request, application_id):
+    application = get_object_or_404(Application, pk=application_id)
+
+    if request.method == 'POST':
+        application.delete()
+        return HttpResponseRedirect(reverse('kg_application_list'))
+
+    return render_to_response('applications/application_confirm_delete.html', {'application': application}, context_instance=RequestContext(request))
