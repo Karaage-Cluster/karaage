@@ -116,6 +116,7 @@ class Person(models.Model):
     date_deleted = models.DateField(null=True, blank=True)
     last_usage = models.DateField(null=True, blank=True)
     expires = models.DateField(null=True, blank=True)
+    is_systemuser = models.BooleanField(default=False)
     objects = models.Manager()
     active = ActiveUserManager()
     deleted = DeletedUserManager()

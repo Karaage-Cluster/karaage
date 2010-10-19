@@ -20,7 +20,7 @@ from django.db import models
 
 class ActiveUserManager(models.Manager):
     def get_query_set(self):
-        return super(ActiveUserManager, self).get_query_set().filter(user__is_active=True)
+        return super(ActiveUserManager, self).get_query_set().filter(user__is_active=True, is_systemuser=False)
 
 
 class DeletedUserManager(models.Manager):
@@ -34,7 +34,6 @@ class LeaderManager(models.Manager):
             if l.is_leader():
                 leader_ids.append(l.id)
 
-        from karaage.people.models import Person
-        return Person.objects.filter(id__in=leader_ids)
+        return self.filter(id__in=leader_ids)
         
        

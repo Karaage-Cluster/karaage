@@ -1,0 +1,10 @@
+Hello {{ receiver }},
+
+You have been added as a member of the {{ org_name }} project "{{ project }}".
+
+You can log into the {{ org_name }} account management tool to see details of your account by going to {{ site }}.
+
+For your records, your username is: {{ receiver.username }}
+
+
+{% include "emails/email_footer.txt" %}
