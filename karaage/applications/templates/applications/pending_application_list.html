@@ -76,5 +76,8 @@
 </table>
   {% pagination projects_page request %}
 {% endif %}
+{% if not projects_page.object_list and not page.object_list %}
+<h3>You currently have no pending applications.</h3>
+{% endif %}
 </div>
 {% endblock %}
