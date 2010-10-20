@@ -28,7 +28,7 @@ from andsome.util.filterspecs import Filter, FilterBar
 from karaage.people.models import Person
 from karaage.applications.models import UserApplication, Applicant, Application
 from karaage.applications.forms import AdminInviteUserApplicationForm, ApplicantForm, LeaderApproveUserApplicationForm
-from karaage.applications.emails import send_user_invite_email, send_account_approved_email, send_account_rejected_email
+from karaage.applications.emails import send_user_invite_email, send_account_approved_email, send_account_declined_email
 
 @permission_required('applications.add_userapplication')
 def send_invitation(request):
@@ -126,7 +126,7 @@ def decline_userapplication(request, application_id):
     if application.state != Application.WAITING_FOR_ADMIN:
         raise Http404
     if request.method == 'POST':
-        send_account_rejected_email(application)
+        send_account_declined_email(application)
         application.delete()
         return HttpResponseRedirect(reverse('kg_application_list'))
 
