@@ -1,3 +1,16 @@
+karaage (2.4.13-1) stable; urgency=low
+
+  * Make sure invitation isn't expired
+  * Send different email if existing user on account creation
+  * Usage bug fixes
+  * allow admin to change application request options
+  * optional redirect after changing default project
+  * Ability to delete applications in admin view
+  * Spelling mistakes
+  * Other various bug fixes
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 20 Oct 2010 17:51:01 +1100
+
 karaage (2.4.12-1) stable; urgency=low
 
   * Make header_message required field in application invite form
