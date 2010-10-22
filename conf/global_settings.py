@@ -8,7 +8,7 @@
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
-# Will recieve error reports if something goes wrong
+# Will receive error reports if something goes wrong
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
