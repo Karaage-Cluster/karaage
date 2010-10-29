@@ -66,11 +66,9 @@ def send_invitation(request):
     return render_to_response('applications/userapplication_invite_form.html', {'form': form, 'application': application}, context_instance=RequestContext(request)) 
 
 @login_required
-def application_list(request, queryset=UserApplication.objects.select_related().all(), template_name='applications/application_list.html'):
+def application_list(request):
 
-    querystring = request.META.get('QUERY_STRING', '')
-
-    apps = queryset
+    apps = Application.objects.select_related()
 
     page_no = int(request.GET.get('page', 1))
 
@@ -96,7 +94,7 @@ def application_list(request, queryset=UserApplication.objects.select_related().
     p = Paginator(apps, 50)
     page = p.page(page_no)
 
-    return render_to_response(template_name, {'page': page, 'filter_bar': filter_bar}, context_instance=RequestContext(request))
+    return render_to_response('applications/application_list.html', {'page': page, 'filter_bar': filter_bar}, context_instance=RequestContext(request))
 
 @permission_required('applications.change_application')
 def approve_userapplication(request, application_id):
@@ -135,9 +133,9 @@ def decline_userapplication(request, application_id):
 
 @login_required
 def userapplication_detail(request, application_id):
-    application = get_object_or_404(UserApplication, pk=application_id)
-
-    return render_to_response('applications/adminapplication_detail.html', {'application': application}, context_instance=RequestContext(request))
+    application = get_object_or_404(Application, pk=application_id)
+    application = application.get_object()
+    return render_to_response('%s/%s_admindetail.html' % (application._meta.app_label, application._meta.object_name.lower()), {'application': application }, context_instance=RequestContext(request))
 
 
 @permission_required('applications.delete_application')

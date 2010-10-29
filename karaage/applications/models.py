@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.fields import FieldDoesNotExist
+from django.db.models.related import RelatedObject
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.conf import settings
@@ -38,6 +40,7 @@ class Application(models.Model):
     object_id = models.PositiveIntegerField(null=True, blank=True)
     applicant = generic.GenericForeignKey()
     header_message = models.TextField('Message', null=True, blank=True, help_text=u"Message displayed at top of application form for the invitee and also in invitation email")
+    _class = models.CharField(max_length=100, editable=False)
 
     def __unicode__(self):
         return "Application #%s" % self.id
@@ -48,8 +51,21 @@ class Application(models.Model):
             if get_current_user().is_authenticated():
                 self.created_by = get_current_user().get_profile()
             self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
-        super(Application, self).save(*args, **kwargs)
-  
+            parent = self._meta.parents.keys()[0]
+            subclasses = parent._meta.get_all_related_objects()
+            for klass in subclasses:
+                if isinstance(klass, RelatedObject) and klass.field.primary_key and klass.opts == self._meta:
+                    self._class = klass.get_accessor_name()
+                    break
+        return super(Application, self).save(*args, **kwargs)
+
+    def get_object(self):
+        try:
+            if self._class and self._meta.get_field_by_name(self._class)[0].opts != self._meta:
+                return getattr(self, self._class)
+        except FieldDoesNotExist:
+            pass
+        return self
 
 
 class UserApplication(Application):
@@ -108,7 +124,7 @@ class Applicant(models.Model):
     postcode = models.CharField(max_length=8, null=True, blank=True)
     country = models.CharField(max_length=2, choices=COUNTRIES, null=True, blank=True)
     fax = models.CharField(max_length=50, null=True, blank=True)
-    applications = generic.GenericRelation(UserApplication)
+    applications = generic.GenericRelation(Application)
 
     def __unicode__(self):
         if self.first_name:

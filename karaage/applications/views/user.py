@@ -83,10 +83,10 @@ def choose_project(request, token=None):
                                         secret_token=token, 
                                         state__in=[Application.NEW, Application.OPEN], 
                                         expires__gt=datetime.datetime.now())
-        
+
     institute = application.applicant.institute
     
-    select_project_list = Project.objects.filter(institute=institute)
+    #select_project_list = Project.objects.filter(institute=institute)
     
     project_list = False
     qs = request.META['QUERY_STRING']
@@ -114,7 +114,7 @@ def choose_project(request, token=None):
             q_project = Project.objects.get(pid__icontains=request.GET['leader_q'])
         except:
             pass
-        leader_list = Person.projectleaders.filter(institute=institute)
+        leader_list = Person.active.filter(institute=institute, leaders__isnull=False).distinct()
         terms = request.GET['leader_q'].lower()
         length = len(terms)
         if len(terms) >= 3:
@@ -122,7 +122,6 @@ def choose_project(request, token=None):
             for term in terms.split(' '):
                 q = Q(user__username__icontains=term) | Q(user__first_name__icontains=term) | Q(user__last_name__icontains=term) 
                 query = query & q
-        
             leader_list = leader_list.filter(query)
             if leader_list.count() == 1:
                 leader = leader_list[0]
@@ -133,7 +132,6 @@ def choose_project(request, token=None):
         else:
             term_error = "Please enter at lease three characters for search."
             leader_list = False
-
     if request.REQUEST.has_key('leader'):
         leader = Person.objects.get(pk=request.GET['leader'])
         project_list = leader.leader.filter(is_active=True)
@@ -148,12 +146,11 @@ def choose_project(request, token=None):
 
 def application_done(request, token):
     application = get_object_or_404(Application, secret_token=token)
+    application = application.get_object()
     if application.state in (Application.NEW, Application.OPEN):
         raise Http404
-    if hasattr(application, 'userapplication'):
-        return render_to_response('applications/done.html', {'application': application.userapplication }, context_instance=RequestContext(request))
-    elif hasattr(application, 'projectapplication'):
-        return render_to_response('applications/projectapplication_done.html', {'application': application.projectapplication }, context_instance=RequestContext(request))
+    return render_to_response('%s/%s_done.html' % (application._meta.app_label, application._meta.object_name.lower()), {'application': application }, context_instance=RequestContext(request))
+
 
 @login_required
 def approve_userapplication(request, application_id):
