@@ -132,7 +132,7 @@ def decline_userapplication(request, application_id):
 
 
 @login_required
-def userapplication_detail(request, application_id):
+def application_detail(request, application_id):
     application = get_object_or_404(Application, pk=application_id)
     application = application.get_object()
     return render_to_response('%s/%s_admindetail.html' % (application._meta.app_label, application._meta.object_name.lower()), {'application': application }, context_instance=RequestContext(request))

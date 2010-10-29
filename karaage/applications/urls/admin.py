@@ -21,7 +21,7 @@ urlpatterns = patterns('karaage.applications.views.admin',
 
     url(r'^$', 'application_list', name='kg_application_list'),
     url(r'^invite/$', 'send_invitation', name='kg_userapplication_invite'),
-    url(r'^(?P<application_id>\d+)/$', 'userapplication_detail', name='kg_userapplication_detail'),
+    url(r'^(?P<application_id>\d+)/$', 'application_detail', name='kg_application_detail'),
     url(r'^(?P<application_id>\d+)/approve/$', 'approve_userapplication', name='kg_userapplication_approve'),
     url(r'^(?P<application_id>\d+)/decline/$', 'decline_userapplication', name='kg_userapplication_decline'),
     url(r'^(?P<application_id>\d+)/delete/$', 'delete_application', name='kg_application_delete'),
