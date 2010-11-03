@@ -112,13 +112,14 @@ def parse_logs(log_list, date, machine_name, log_type):
         try:
             cpujob, created = CPUJob.objects.get_or_create(jobid=data['jobid'])
             if machine.mem_per_core:
+                avail_mem_per_core = machine.mem_per_core * 1024
                
                 if data['list_pmem'] * data['cores'] > data['list_mem']:
-                    if data['list_pmem'] > machine.mem_per_core * 1024:
-                        data['cpu_usage'] = ceil(data['list_pmem']/(machine.mem_per_core * 1024) * data['act_wall_time'] * data['cores'])
+                    if data['list_pmem'] > avail_mem_per_core:
+                        data['cpu_usage'] = ceil(data['list_pmem']/avail_mem_per_core * data['act_wall_time'] * data['cores'])
                 else:
-                    if data['list_mem'] > machine.mem_per_core * 1024 * data['cores']:
-                        data['cpu_usage'] = ceil(data['list_pmem']/(machine.mem_per_core * 1024) * data['act_wall_time'])
+                    if data['list_mem'] > avail_mem_per_core * data['cores']:
+                        data['cpu_usage'] = ceil(data['list_pmem']/avail_mem_per_core * data['act_wall_time'])
  
 
             cpujob.user=user_account
