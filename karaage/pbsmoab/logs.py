@@ -111,11 +111,16 @@ def parse_logs(log_list, date, machine_name, log_type):
 
         if machine.mem_per_core:
             avail_mem_per_core = machine.mem_per_core * 1024
+            avail_mem_for_job  = avail_mem_per_core * data['cores']
 
             if data['list_pmem'] * data['cores'] > data['list_mem']:
+                memory_used_per_core = data['list_pmem']
+                memory_used_for_job  = data['list_pmem'] * data['cores']
                 if data['list_pmem'] * data['cores'] > avail_mem_per_core * data['cores']:
                     data['cpu_usage'] = ceil(data['list_pmem']/avail_mem_per_core * data['act_wall_time'] * data['cores'])
             else:
+                memory_used_per_core = data['list_mem'] / data['cores']
+                memory_used_for_job = data['list_mem']
                 if data['list_mem'] > avail_mem_per_core * data['cores']:
                     data['cpu_usage'] = ceil(data['list_pmem']/avail_mem_per_core * data['act_wall_time'])
 
