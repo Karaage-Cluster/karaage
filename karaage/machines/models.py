@@ -62,6 +62,7 @@ class Machine(models.Model):
     mem_per_core = models.IntegerField(help_text="In GB", null=True, blank=True)
     objects = models.Manager()
     active = ActiveMachineManager()
+    scaling_factor = models.IntegerField(default=1)
 
     class Meta:
         db_table = 'machine'
