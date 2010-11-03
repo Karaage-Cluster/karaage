@@ -89,6 +89,7 @@ def profile(request):
     return render_to_response('people/profile.html', locals(), context_instance=RequestContext(request))
     
 
+@login_required
 def edit_profile(request):
     from admin import add_edit_user
     return add_edit_user(
@@ -176,6 +177,7 @@ def change_active_delegate(request, institute_id):
     return HttpResponseForbidden('<h1>Access Denied</h1>')
         
 
+@login_required
 def flag_left(request, username):
 
     person = get_object_or_404(Person, user__username=username)
@@ -209,6 +211,7 @@ def institute_users_list(request, institute_id):
     return render_to_response('users/institute_user_list.html', locals(), context_instance=RequestContext(request))
 
 
+@login_required
 def password_change(request):
 
     person = request.user.get_profile()
@@ -225,6 +228,7 @@ def password_change(request):
     return render_to_response('people/user_password_form.html', {'form': form}, context_instance=RequestContext(request))
 
 
+@login_required
 def password_change_done(request):
     
     return render_to_response('people/password_change_done.html', context_instance=RequestContext(request))
