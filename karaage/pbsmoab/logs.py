@@ -109,19 +109,18 @@ def parse_logs(log_list, date, machine_name, log_type):
         # Everything is good so add entry
         queue, created = Queue.objects.get_or_create(name=data['queue'])
 
+        if machine.mem_per_core:
+            avail_mem_per_core = machine.mem_per_core * 1024
+
+            if data['list_pmem'] * data['cores'] > data['list_mem']:
+                if data['list_pmem'] > avail_mem_per_core:
+                    data['cpu_usage'] = ceil(data['list_pmem']/avail_mem_per_core * data['act_wall_time'] * data['cores'])
+            else:
+                if data['list_mem'] > avail_mem_per_core * data['cores']:
+                    data['cpu_usage'] = ceil(data['list_pmem']/avail_mem_per_core * data['act_wall_time'])
+
         try:
             cpujob, created = CPUJob.objects.get_or_create(jobid=data['jobid'])
-            if machine.mem_per_core:
-                avail_mem_per_core = machine.mem_per_core * 1024
-               
-                if data['list_pmem'] * data['cores'] > data['list_mem']:
-                    if data['list_pmem'] > avail_mem_per_core:
-                        data['cpu_usage'] = ceil(data['list_pmem']/avail_mem_per_core * data['act_wall_time'] * data['cores'])
-                else:
-                    if data['list_mem'] > avail_mem_per_core * data['cores']:
-                        data['cpu_usage'] = ceil(data['list_pmem']/avail_mem_per_core * data['act_wall_time'])
- 
-
             cpujob.user=user_account
             cpujob.username=data['user']
             cpujob.project=project
