@@ -49,6 +49,8 @@ def get_date_range(request, default_start=(datetime.date.today()-datetime.timede
 
 
 def log_object(user, object, flag, message):
+    if not user:
+        return
     if user.is_authenticated():
         user.logentry_set.create(
             content_type = ContentType.objects.get_for_model(object.__class__),
