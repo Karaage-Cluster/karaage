@@ -65,6 +65,7 @@ def send_invitation(request):
 
     return render_to_response('applications/userapplication_invite_form.html', {'form': form, 'application': application}, context_instance=RequestContext(request)) 
 
+
 @login_required
 def application_list(request):
 
@@ -80,7 +81,7 @@ def application_list(request):
         terms = new_data['search'].lower()
         query = Q()
         for term in terms.split(' '):
-            q = Q(created_by__user__first_name__icontains=term) | Q(created_by__user__last_name__icontains=term) | Q(project__pid__icontains=term)
+            q = Q(created_by__user__first_name__icontains=term) | Q(created_by__user__last_name__icontains=term)
             query = query & q
 
         apps = apps.filter(query)
@@ -88,13 +89,14 @@ def application_list(request):
         terms = ""
 
     filter_list = []
-    filter_list.append(Filter(request, 'state', UserApplication.APPLICATION_STATES))
+    filter_list.append(Filter(request, 'state', Application.APPLICATION_STATES))
     filter_bar = FilterBar(request, filter_list)
 
     p = Paginator(apps, 50)
     page = p.page(page_no)
 
     return render_to_response('applications/application_list.html', {'page': page, 'filter_bar': filter_bar}, context_instance=RequestContext(request))
+
 
 @permission_required('applications.change_application')
 def approve_userapplication(request, application_id):

@@ -45,6 +45,10 @@ class Application(models.Model):
     def __unicode__(self):
         return "Application #%s" % self.id
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('kg_application_detail', [self.id])
+
     def save(self, *args, **kwargs):
         if not self.pk:
             import datetime
@@ -74,10 +78,6 @@ class UserApplication(Application):
     needs_account = models.BooleanField(u"Do you require a cluster account?", help_text=u"Will you be working on the project yourself?")
     make_leader = models.BooleanField(help_text="Make this person a project leader")
 
-    @models.permalink
-    def get_absolute_url(self):
-        return ('kg_userapplication_detail', [self.id])
-
     def approve(self):
         if self.content_type.model == 'applicant':
             person = self.applicant.approve()
@@ -100,10 +100,6 @@ class ProjectApplication(Application):
     additional_req = models.TextField(null=True, blank=True)
     needs_account = models.BooleanField(u"Do you require a cluster account?", help_text=u"Will you be working on the project yourself?")
     machine_categories = models.ManyToManyField(MachineCategory, null=True, blank=True)
-
-    @models.permalink
-    def get_absolute_url(self):
-        return ('kg_projectapplication_detail', [self.id])
 
 
 class Applicant(models.Model):

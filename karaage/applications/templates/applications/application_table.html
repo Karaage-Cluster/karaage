@@ -4,8 +4,6 @@
 		   <th>Details</th>
 			<th>Email</th>
 			<th>State</th>
-			<th></th>
-			<th></th>
 		</tr>
 	</thead>
     <tbody>
@@ -14,13 +12,6 @@
 	   	    <td><a href="{% url kg_application_detail app.id %}">{{ app.id }}</a></td>
 	   	    <td>{{ app.applicant.email|urlize }}</td>
 	   	    <td>{{ app.get_state_display }}</td>
-	   	    {% if app.state == "K" %}
-            <td><a href="{% url kg_userapplication_approve app.id %}" class="yeslink">&nbsp;Accept</a></td>
-            <td><a href="{% url kg_userapplication_decline app.id %}" class="nolink">&nbsp;Decline</a></td>
-            {% else %}
-            <td></td>
-            <td></td>
-            {% endif %}
 	   	</tr>
 	{% endfor %}
     </tbody>  	
