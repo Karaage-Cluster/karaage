@@ -5,11 +5,9 @@
 {% block content_title %}{% if person %}Edit{% else %}Create{% endif %} User{% endblock %}
 
 {% block extrahead %}
-<script type="text/javascript" src="/accounts/admin/jsi18n/"></script> 
-<script type="text/javascript" src="/django_media/js/core.js"></script>
-<script type="text/javascript" src="/django_media/js/admin/RelatedObjectLookups.js"></script>
-<script type="text/javascript" src="/django_media/js/calendar.js"></script>
-<script type="text/javascript" src="/django_media/js/admin/DateTimeShortcuts.js"></script> 
+<script type="text/javascript" src="{% url admin:jsi18n %}"></script> 
+<script type="text/javascript" src="{{ MEDIA_URL }}js/core.js"></script>
+{{ form.media }}
 {% endblock %}
 
 {% block bread_crumbs_1 %}
@@ -39,6 +37,7 @@
 {% formfield form.expires %}
 {% formfield form.is_staff %}
 {% formfield form.is_superuser %}
+{% formfield form.is_systemuser %}
 {% if not person %}
 {% formfield form.username %}
 {% formfield form.password1 %}

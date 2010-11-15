@@ -16,6 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django import forms
+from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.auth.models import User
 from django.conf import settings
 
@@ -70,9 +71,10 @@ class PersonForm(forms.Form):
 class AdminPersonForm(PersonForm):
     institute = forms.ModelChoiceField(queryset=Institute.active.all())
     comment = forms.CharField(widget=forms.Textarea(), required=False)
-    expires = forms.DateField(widget=forms.TextInput(attrs={ 'class':'vDateField' }), required=False)
+    expires = forms.DateField(widget=AdminDateWidget, required=False)
     is_staff = forms.BooleanField(help_text="Designates whether the user can log into this admin site.", required=False)
     is_superuser = forms.BooleanField(help_text="Designates that this user has all permissions without explicitly assigning them.", required=False)
+    is_systemuser = forms.BooleanField(help_text="Designates that this user is a sytem user only.", required=False)
 
     def save(self, person):    
         data = self.cleaned_data
