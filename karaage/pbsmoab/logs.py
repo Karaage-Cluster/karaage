@@ -123,6 +123,8 @@ def parse_logs(log_list, date, machine_name, log_type):
             if memory_used_for_job > avail_mem_for_job:
                 data['cpu_usage'] = ceil(memory_used_per_core/avail_mem_per_core * data['act_wall_time'] * data['cores'])
 
+        data['cpu_usage'] = data['cpu_usage'] * machine.scaling_factor
+
         try:
             cpujob, created = CPUJob.objects.get_or_create(jobid=data['jobid'])
             cpujob.user=user_account
