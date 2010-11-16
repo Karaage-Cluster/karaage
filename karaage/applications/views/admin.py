@@ -22,7 +22,7 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.db.models import Q
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from andsome.util.filterspecs import Filter, FilterBar
 
 from karaage.people.models import Person
@@ -71,7 +71,10 @@ def application_list(request):
 
     apps = Application.objects.select_related()
 
-    page_no = int(request.GET.get('page', 1))
+    try:
+        page_no = int(request.GET.get('page', 1))
+    except ValueError:
+        page_no = 1
 
     if request.REQUEST.has_key('state'):
         apps = apps.filter(state=request.GET['state'])
@@ -93,7 +96,11 @@ def application_list(request):
     filter_bar = FilterBar(request, filter_list)
 
     p = Paginator(apps, 50)
-    page = p.page(page_no)
+
+    try:
+        page = p.page(page_no)
+    except (EmptyPage, InvalidPage):
+        page = p.page(p.num_pages)
 
     return render_to_response('applications/application_list.html', {'page': page, 'filter_bar': filter_bar}, context_instance=RequestContext(request))
 
