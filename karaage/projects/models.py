@@ -99,14 +99,18 @@ class Project(models.Model):
         self.is_active = True
         self.is_approved = True
         self.date_approved = datetime.datetime.today()
-        approver = get_current_user()
-        self.approved_by = approver.get_profile()
+        try:
+            self.approved_by = get_current_user().get_profile()
+        except:
+            pass
         self.save()
 
     def deactivate(self):
         self.is_active = False
-        deletor = get_current_user()    
-        self.deleted_by = deletor.get_profile()
+        try:
+            self.deleted_by = get_current_user().get_profile()
+        except:
+            pass
         self.date_deleted = datetime.datetime.today()
         self.users.clear()
         self.save()
