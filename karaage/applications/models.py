@@ -71,6 +71,16 @@ class Application(models.Model):
             pass
         return self
 
+    def approve(self):
+        if self.content_type.model == 'applicant':
+            person = self.applicant.approve()
+        else:
+            person = self.applicant
+        self.applicant = person
+        self.state = Application.COMPLETE
+        self.save()
+        return person
+
 
 class UserApplication(Application):
     """ Associated with an Applicant or a Person"""
@@ -79,16 +89,12 @@ class UserApplication(Application):
     make_leader = models.BooleanField(help_text="Make this person a project leader")
 
     def approve(self):
-        if self.content_type.model == 'applicant':
-            person = self.applicant.approve()
-        else:
-            person = self.applicant
+        person = super(UserApplication, self).approve()
         if self.needs_account:
             from karaage.projects.utils import add_user_to_project
             add_user_to_project(person, self.project)
         if self.make_leader:
             self.project.leaders.add(person)
-        self.state = Application.COMPLETE
         self.save()
         return person
                 
@@ -137,5 +143,6 @@ class Applicant(models.Model):
         from karaage.datastores import create_new_person_from_applicant as create_new_person
         person = create_new_person(self)
         person.activate()
+        self.delete()
         return person
         
