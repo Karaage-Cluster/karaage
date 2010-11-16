@@ -3,20 +3,24 @@
 
 {% block title %}Usage{% endblock %}
 
-{% block content_title %}{% endblock %}
+{% block content_title %}&nbsp;{% endblock %}
 
 {% block bread_crumbs_1 %}
  &rsaquo; Usage
 {% endblock %}
 
-{% block content %}
-<div id="content-main">
-<h2>{{ machine_category }} Usage {{ start|date }} - {{ end|date }}</h2>
+{% block objecttools %}
 <ul class="object-tools">
 <li><a href="institute/trends/?{{ querystring }}">Trends</a></li>
 <li><a href="top_users/?{{ querystring }}">Top Users</a></li>
 <li><a href="{% url kg_usage_search %}" class="viewsitelink">Advanced Search</a></li>
 </ul>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+<h2>{{ machine_category }} Usage {{ start|date }} - {{ end|date }}</h2>
+
 <p>
 {% date_filter start end %}
 </p>
