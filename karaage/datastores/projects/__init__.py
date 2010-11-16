@@ -25,6 +25,6 @@ pds = module.ProjectDataStore()
 def create_or_update_project(project):
     return pds.create_or_update_project(project)
 
-def delete_project(self, project):
+def delete_project(project):
     return pds.delete_project(project)
 

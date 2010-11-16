@@ -32,6 +32,7 @@ class ProjectDataStore(base.ProjectDataStore):
         conn.update_group('cn=%s' % project.pid, memberUid=users)
 
     def delete_project(self, project):
+        conn = LDAPClient()
         conn.delete_group('cn=%s' % project.pid)
 
 
