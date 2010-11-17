@@ -28,10 +28,13 @@ class Command(BaseCommand):
         verbose = int(options.get('verbosity'))
         
         for application in Application.objects.filter(expires__lte=now, state=Application.NEW):
-            application.delete()
             if verbose >= 1:
                 print "Deleted expired application #%s" % application.id
-
+            application.delete()
+ 
         
         for application in Application.objects.filter(state=Application.COMPLETE):
+            if verbose >= 1:
+                print "Deleted completed application #%s" % application.id
+
             application.delete()
