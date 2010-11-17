@@ -9,7 +9,7 @@
     <tbody>
     {% for app in object_list %}
 	   	<tr class="{% cycle row1,row2 %}">
-	   	    <td><a href="{% url kg_application_detail app.id %}">{{ app.id }}</a></td>
+	   	    <td><a href="{{ app.get_absolute_url }}">{{ app.id }}</a></td>
 	   	    <td>{{ app.applicant.email|urlize }}</td>
 	   	    <td>{{ app.get_state_display }}</td>
 	   	</tr>
