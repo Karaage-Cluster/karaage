@@ -1,3 +1,17 @@
+karaage (2.5-1) testing; urgency=low
+
+  * Project Datastores
+  * Support for system users
+  * Machine scaling factor
+  * Handle Applications more generically and allow easier subclassing
+  * Institute datastores
+  * ProjectApplications
+  * Create default machine category when machines app is created
+  * Generate SECRET_KEY in new installations
+  * Many bug fixes throughout code
+	
+ -- Sam Morrison <sam@vpac.org>  Wed, 17 Nov 2010 14:05:35 +1100
+
 karaage (2.4.14-1) stable; urgency=low
 
   * Added CSV user import command
