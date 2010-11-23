@@ -71,7 +71,7 @@ def search(request):
             q = Q(user__username__icontains=term) | Q(user__first_name__icontains=term) | Q(user__last_name__icontains=term) | Q(user__email__icontains=term)  
             query = query & q
 
-        user_list = user_list.filter(query)
+        user_list = user_list.filter(query).distinct()
 
          # projects
         query = Q()
@@ -79,7 +79,7 @@ def search(request):
             q = Q(pid__icontains=term) | Q(name__icontains=term) | Q(leaders__user__username__icontains=term) | Q(leaders__user__first_name__icontains=term) | Q(leaders__user__last_name__icontains=term) 
             query = query & q
 
-        project_list = project_list.filter(query)
+        project_list = project_list.filter(query).distinct()
 
         empty = False
 
