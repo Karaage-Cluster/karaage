@@ -139,6 +139,8 @@ def profile_projects(request):
 
     person = request.user.get_profile()
     project_list = person.project_set.all()
+    
+    leader_project_list = []
 
     if person.is_leader():
         leader_project_list = Project.objects.filter(leaders=person, is_active=True)
