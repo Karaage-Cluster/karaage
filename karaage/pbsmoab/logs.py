@@ -83,12 +83,14 @@ def parse_logs(log_list, date, machine_name, log_type):
             try:
                 project = Project.objects.get(pk=data['project'])
             except Project.DoesNotExist:
+                output.append("Couldn't find specified project %s, using default project" % data['project'])
+                fail = fail + 1
+
                 try:
                     project = user_account.default_project
                 except:
-                    output.append("Couldn't find specified project: %s" % data['project'])
+                    output.append("Couldn't find default project %s, using Unknown_Project" % user_account.default_project)
                     project = Project.objects.get(pk='Unknown_Project')
-                    fail = fail + 1
 
         else:
             try:
