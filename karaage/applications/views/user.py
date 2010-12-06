@@ -148,7 +148,7 @@ def application_done(request, token):
     application = get_object_or_404(Application, secret_token=token)
     application = application.get_object()
     if application.state in (Application.NEW, Application.OPEN):
-        raise Http404
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
     return render_to_response('%s/%s_done.html' % (application._meta.app_label, application._meta.object_name.lower()), {'application': application }, context_instance=RequestContext(request))
 
 
@@ -156,7 +156,7 @@ def application_done(request, token):
 def approve_userapplication(request, application_id):
     application = get_object_or_404(UserApplication, pk=application_id)
     if application.state != Application.WAITING_FOR_LEADER:
-        raise Http404
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
     if not request.user.get_profile() in application.project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
@@ -190,7 +190,7 @@ def approve_userapplication(request, application_id):
 def decline_userapplication(request, application_id):
     application = get_object_or_404(UserApplication, pk=application_id)
     if application.state != Application.WAITING_FOR_LEADER:
-        raise Http404
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
     if not request.user.get_profile() in application.project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     
@@ -209,7 +209,7 @@ def userapplication_detail(request, application_id):
     application = get_object_or_404(UserApplication, pk=application_id)
 
     if application.state != Application.WAITING_FOR_LEADER:
-        raise Http404
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
     if not request.user.get_profile() in application.project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     
@@ -219,7 +219,7 @@ def userapplication_detail(request, application_id):
 def userapplication_complete(request, application_id):
     application = get_object_or_404(UserApplication, pk=application_id)
     if application.state != Application.COMPLETE:
-        raise Http404
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
     if not request.user.get_profile() in application.project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>') 
 
@@ -229,7 +229,7 @@ def userapplication_complete(request, application_id):
 def userapplication_pending(request, application_id):
     application = get_object_or_404(UserApplication, pk=application_id)
     if application.state != Application.WAITING_FOR_ADMIN:
-        raise Http404
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
     if not request.user.get_profile() in application.project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>') 
 
