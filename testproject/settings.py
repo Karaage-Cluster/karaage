@@ -1,7 +1,7 @@
 # Django settings for grunt project.
 from os import uname, path as os_path
 
-TEST_RUNNER='andsome.test_utils.xmlrunner.run_tests'
+#TEST_RUNNER='andsome.test_utils.xmlrunner.run_tests'
 
 GRAPH_DEBUG = True
 
@@ -125,6 +125,7 @@ INSTALLED_APPS = (
     'karaage.pbsmoab',
     'karaage.projectreports',
     'karaage.emails',
+    'karaage.applications',
     'placard.lgroups',
     'placard.lusers',
     'django_pbs.servers',
@@ -144,3 +145,5 @@ INTERNAL_IPS = (
 
 
 AUP_URL = 'http://example.com/aup.html'
+
+ALLOW_REGISTRATIONS = True
