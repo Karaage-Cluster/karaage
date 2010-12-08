@@ -252,6 +252,7 @@ def make_default(request, useraccount_id, project_id):
 
     user_account.default_project = project
     user_account.save()
+    user_account.user.save()
     
     messages.info(request, "Default project changed succesfully")
     log(request.user, user_account.user, 2, 'Changed default project to %s' % project.pid)
