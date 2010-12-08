@@ -8,6 +8,7 @@
     <tr><td>Application State:</td><td>{{ application.get_state_display }}</td></tr>
     <tr><td>Project</td><td>{{ application.project }}</td></tr>
     <tr><td>Created by:</td><td>{{ application.created_by|default:"Applicant" }}</td></tr>
+    <tr><td>Secret token:</td><td>{{ application.secret_token }}</td></tr>
     <tr><td>Expires:</td><td>{{ application.expires }}</td></tr>
     <tr><td>Submitted on:</td><td>{{ application.submitted_date }}</td></tr>
     <tr><td>Message:</td><td>{{ application.message }}</td></tr>
