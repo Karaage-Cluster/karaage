@@ -31,7 +31,6 @@ from karaage.validators import username_re
 class ApplicantForm(forms.ModelForm):
     class Meta:
         model = Applicant
-        exclude = ('password', )
 
 class UserApplicantForm(ApplicantForm):
 
