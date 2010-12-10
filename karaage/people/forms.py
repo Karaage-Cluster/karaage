@@ -22,6 +22,7 @@ from django.conf import settings
 
 import datetime
 from andsome.middleware.threadlocals import get_current_user
+from andsome.util import is_password_strong
 
 from karaage.people.models import Institute, Person
 from karaage.projects.models import Project
@@ -29,7 +30,6 @@ from karaage.projects.utils import add_user_to_project
 from karaage.machines.models import MachineCategory, UserAccount
 from karaage.constants import TITLES, COUNTRIES
 from karaage.datastores import create_new_user, create_account
-from karaage.util.helpers import check_password
 from karaage.util import log_object as log
 from karaage.validators import username_re
 
@@ -133,7 +133,7 @@ class UsernamePasswordForm(forms.Form):
             if data['password1'] != data['password2']:
                 raise forms.ValidationError(u'You must type the same password each time')
 
-            if not check_password(data['password1']):
+            if not is_password_strong(data['password1']):
                 raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (upercase, lowercase), numbers and is at least 8 characters long.')
 
             return data
@@ -173,7 +173,7 @@ class AdminPasswordChangeForm(forms.Form):
 
             if data['new1'] != data['new2']:
                 raise forms.ValidationError(u'You must type the same password each time')
-            if not check_password(data['new1'], data.get('old', None)):
+            if not is_password_strong(data['new1'], data.get('old', None)):
                 raise forms.ValidationError(u'Passwords must be at least 6 characters and contain at least one digit')
             return data
 

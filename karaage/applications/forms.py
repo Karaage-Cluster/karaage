@@ -18,11 +18,11 @@
 from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
+from andsome.util import is_password_strong
 
 from karaage.applications.models import UserApplication, ProjectApplication, Applicant
 from karaage.people.models import Person
 from karaage.people.forms import UsernamePasswordForm
-from karaage.util.helpers import check_password
 from karaage.constants import TITLES
 from karaage.people.models import Institute
 from karaage.validators import username_re
@@ -73,7 +73,7 @@ class UserApplicantForm(ApplicantForm):
             if data['password1'] != data['password2']:
                 raise forms.ValidationError(u'You must type the same password each time')
 
-            if not check_password(data['password1']):
+            if not is_password_strong(data['password1']):
                 raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (upercase, lowercase), numbers and is at least 8 characters long.')
 
             return data
