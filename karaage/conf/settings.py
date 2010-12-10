@@ -108,6 +108,7 @@ MIDDLEWARE_CLASSES = (
 
 AUTHENTICATION_BACKENDS = (
  'placard.backends.LDAPBackend',
+ 'django.contrib.auth.backends.ModelBackend',
 )
 
 PROJECT_DATASTORE = 'karaage.datastores.projects.ldap_datastore'
