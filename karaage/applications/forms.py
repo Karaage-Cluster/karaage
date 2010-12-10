@@ -32,7 +32,6 @@ class ApplicantForm(forms.ModelForm):
     class Meta:
         model = Applicant
 
-
 class UserApplicantForm(ApplicantForm):
 
     def __init__(self, *args, **kwargs):
