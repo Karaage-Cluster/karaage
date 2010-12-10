@@ -1,3 +1,15 @@
+karaage (2.5.1-1) testing; urgency=low
+
+  * Return distinct results in global search form
+  * Raise 403 error instead of 404 when application exists 
+    but is in wrong state.
+  * Force user sync for LDAP on changing default project
+  * Show secret token in admin view
+  * Use model auth backend too to support alogger and the likes
+  * Use andsomes is_password_strong method instead of own
+
+ -- Sam Morrison <sam@vpac.org>  Fri, 10 Dec 2010 14:53:49 +1100
+
 karaage (2.5-1) testing; urgency=low
 
   * Project Datastores
