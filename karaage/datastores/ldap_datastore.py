@@ -159,6 +159,7 @@ class AccountDataStore(base.AccountDataStore):
 
         conn.update_user(
             'uid=%s' % ua.username,
+            homeDirectory=ldap_attrs.GENERATED_USER_ATTRS['homeDirectory'](data),
             gecos=ldap_attrs.GENERATED_USER_ATTRS['gecos'](data),
             gidNumber=ldap_attrs.GENERATED_USER_ATTRS['gidNumber'](data),
             )
