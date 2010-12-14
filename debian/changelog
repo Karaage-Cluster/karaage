@@ -1,3 +1,12 @@
+karaage (2.4.15-1) stable; urgency=low
+
+  * Use model auth backend too to support alogger and the likes
+  * Force user sync on changing default project
+  * Add transaction middleware
+  * Force close LDAP connection to avoid stale data
+
+ -- Sam Morrison <sam@vpac.org>  Tue, 14 Dec 2010 13:34:35 +1100
+
 karaage (2.4.14-1) stable; urgency=low
 
   * Added CSV user import command
