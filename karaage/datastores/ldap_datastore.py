@@ -45,7 +45,7 @@ class PersonalDataStore(base.PersonalDataStore):
         person.user.set_unusable_password()
         person.user.save()
         person.save(update_datastore=False)
-        
+        del(conn)
         return person
 
     def delete_user(self, person):
@@ -66,7 +66,7 @@ class PersonalDataStore(base.PersonalDataStore):
             mail=str(person.email),
             o=str(person.institute.name),
             )
-
+        del(conn)
         super(PersonalDataStore, self).update_user(person)
 
     def is_locked(self, person):
@@ -131,7 +131,7 @@ class AccountDataStore(base.AccountDataStore):
             loginShell=ldap_attrs.GENERATED_USER_ATTRS['loginShell'](data),
             objectClass=settings.ACCOUNT_OBJECTCLASS
             )
-
+        del(conn)
         return ua
 
     def delete_account(self, ua):
@@ -162,6 +162,8 @@ class AccountDataStore(base.AccountDataStore):
             gecos=ldap_attrs.GENERATED_USER_ATTRS['gecos'](data),
             gidNumber=ldap_attrs.GENERATED_USER_ATTRS['gidNumber'](data),
             )
+        del(conn)
+
 
     def lock_account(self, ua):
         super(AccountDataStore, self).lock_account(ua)
