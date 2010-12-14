@@ -168,6 +168,7 @@ def change_default_project(user, project):
     
     user_account.default_project = project
     user_account.save()
+    user_account.user.save()
     
     log(user.user, user, 2, 'Changed default project to %s' % project.pid)
     
