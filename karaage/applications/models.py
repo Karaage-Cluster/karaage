@@ -38,6 +38,7 @@ class Application(models.Model):
     WAITING_FOR_DELEGATE = 'D'
     WAITING_FOR_ADMIN = 'K'
     COMPLETE = 'C'
+    ARCHIVED = 'A'
     APPLICATION_STATES = (
         (NEW, 'Invitiation Sent'),
         (OPEN, 'Open'),
@@ -45,6 +46,7 @@ class Application(models.Model):
         (WAITING_FOR_DELEGATE, 'Waiting for institute delegate approval'),
         (WAITING_FOR_ADMIN, 'Waiting for Karaage admin approval'),
         (COMPLETE, 'Complete'),
+        (ARCHIVED, ' Archived'),
         )
     
     secret_token = models.CharField(max_length=64, default=new_random_token, editable=False, unique=True)
@@ -82,7 +84,8 @@ class Application(models.Model):
 
     def delete(self):
         if self.content_type and self.content_type.model == 'applicant':
-            self.applicant.delete()
+            if self.applicant.applications.count() <= 1:
+                self.applicant.delete()
         super(Application, self).delete()
 
 
@@ -166,6 +169,9 @@ class Applicant(models.Model):
         from karaage.datastores import create_new_person_from_applicant as create_new_person
         person = create_new_person(self)
         person.activate()
+        for application in self.applications.all():
+            application.applicant = person
+            application.save()
         self.delete()
         return person
         
