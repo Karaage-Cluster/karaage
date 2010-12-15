@@ -33,8 +33,8 @@ class Command(BaseCommand):
             application.delete()
  
         
-        for application in Application.objects.filter(state=Application.COMPLETE):
+        for application in UserApplication.objects.filter(state=Application.COMPLETE):
             if verbose >= 1:
-                print "Deleted completed application #%s" % application.id
+                print "Deleted completed user application #%s" % application.id
 
             application.delete()
