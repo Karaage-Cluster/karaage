@@ -45,6 +45,7 @@ def do_userapplication(request, token=None):
                                         secret_token=token, 
                                         state__in=[Application.NEW, Application.OPEN],
                                         expires__gt=datetime.datetime.now())
+        
         applicant = application.applicant
         application.state = Application.OPEN
         application.save()
@@ -53,6 +54,10 @@ def do_userapplication(request, token=None):
             return render_to_response('applications/registrations_disabled.html', {}, context_instance=RequestContext(request)) 
         application = None
         applicant = None
+
+    if application.content_type and application.content_type.model == 'person':
+        return existing_user_application(request, token)
+    
     if request.method == 'POST':
         form = UserApplicationForm(request.POST, instance=application)
         applicant_form = UserApplicantForm(request.POST, instance=applicant)
@@ -73,6 +78,22 @@ def do_userapplication(request, token=None):
         applicant_form = UserApplicantForm(instance=applicant)
     
     return render_to_response('applications/userapplication_form.html', {'form': form, 'applicant_form': applicant_form, 'application': application}, context_instance=RequestContext(request)) 
+
+
+def existing_user_application(request, token):
+    
+    application = get_object_or_404(UserApplication, 
+                                    secret_token=token, 
+                                    state__in=[Application.NEW, Application.OPEN],
+                                    expires__gt=datetime.datetime.now())
+
+    if request.method == 'POST':
+        application.submitted_date = datetime.datetime.now()
+        application.state = Application.WAITING_FOR_LEADER
+        application.save()
+        send_account_request_email(application)
+    
+    return render_to_response('applications/existing_user_confirm.html', {'application': application}, context_instance=RequestContext(request)) 
 
 
 def choose_project(request, token=None):

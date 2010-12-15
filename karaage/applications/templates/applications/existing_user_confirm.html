@@ -1,0 +1,22 @@
+{% extends "forms.html" %}
+
+{% block title %}Applications{% endblock %}
+
+{% block content_title %}New User Application{% endblock %}
+
+{% block bread_crumbs_1 %}
+ &rsaquo; User Application
+
+{% endblock %}   
+
+{% block content %}
+<p>Hi {{ application.applicant.first_name }}, looks like we already have your details on record.</p>
+<p>To finish your application all you need to do is submit this form.</p>
+
+<form method="post" action=".">{% csrf_token %}
+
+<div class="submit-row">
+		<input type="submit" value="Submit" class="default" />
+	</div>
+</form>
+{% endblock %}
