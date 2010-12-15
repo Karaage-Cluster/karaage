@@ -32,6 +32,7 @@ from karaage.applications.forms import UserApplicationForm, UserApplicantForm, L
 from karaage.applications.emails import send_account_request_email, send_account_approved_email, send_user_invite_email, send_account_declined_email
 from karaage.people.models import Person
 from karaage.projects.models import Project
+from karaage.util import log_object as log
 
 
 def do_userapplication(request, token=None):
@@ -175,10 +176,12 @@ def approve_userapplication(request, application_id):
             if settings.ADMIN_APPROVE_ACCOUNTS:
                 application.state = Application.WAITING_FOR_ADMIN
                 application.save()
+                log(request.user, application, 2, 'Leader approved application')
                 return HttpResponseRedirect(reverse('kg_userapplication_pending', args=[application.id]))
 
             application.approve()
             send_account_approved_email(application)
+            log(request.user, application, 2, 'Application fully approved')
             return HttpResponseRedirect(reverse('kg_userapplication_complete', args=[application.id]))
     else:
         form = LeaderApproveUserApplicationForm(instance=application)
@@ -198,6 +201,7 @@ def decline_userapplication(request, application_id):
 
         send_account_declined_email(application)
         application.delete()        
+        log(request.user, application, 3, "Application declined")
         return HttpResponseRedirect(reverse('kg_user_profile'))
 
     return render_to_response('applications/confirm_decline.html', {'application': application}, context_instance=RequestContext(request))

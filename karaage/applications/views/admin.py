@@ -29,6 +29,7 @@ from karaage.people.models import Person
 from karaage.applications.models import UserApplication, Applicant, Application
 from karaage.applications.forms import AdminInviteUserApplicationForm, ApplicantForm, LeaderApproveUserApplicationForm
 from karaage.applications.emails import send_user_invite_email, send_account_approved_email, send_account_declined_email
+from karaage.util import log_object as log
 
 @permission_required('applications.add_userapplication')
 def send_invitation(request):
@@ -119,6 +120,7 @@ def approve_userapplication(request, application_id):
             person = application.approve()
             send_account_approved_email(application)
             messages.info(request, "Application approved successfully")
+            log(request.user, application, 2, 'Application fully approved')
             return HttpResponseRedirect(person.get_absolute_url())
     else:
         form = LeaderApproveUserApplicationForm(instance=application)
@@ -135,6 +137,7 @@ def decline_userapplication(request, application_id):
     if request.method == 'POST':
         send_account_declined_email(application)
         application.delete()
+        log(request.user, application, 3, 'Application declined')
         return HttpResponseRedirect(reverse('kg_application_list'))
 
     return render_to_response('applications/confirm_decline.html', {'application': application}, context_instance=RequestContext(request))
@@ -153,6 +156,7 @@ def delete_application(request, application_id):
 
     if request.method == 'POST':
         application.delete()
+        log(request.user, application, 3, 'Application deleted')
         return HttpResponseRedirect(reverse('kg_application_list'))
 
     return render_to_response('applications/application_confirm_delete.html', {'application': application}, context_instance=RequestContext(request))
