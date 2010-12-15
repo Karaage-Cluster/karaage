@@ -1,3 +1,15 @@
+karaage (2.5.2-1) testing; urgency=low
+
+  * Add transaction middleware
+  * Force close LDAP connection to avoid stale data
+  * Update person when changing default project
+  * Update homeDir on account update
+  * friendlier message when application not in correct state
+  * Delete the applicant associated with application on deletion
+  * Added logging for application state changes
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 15 Dec 2010 11:26:25 +1100
+
 karaage (2.5.1-1) testing; urgency=low
 
   * Return distinct results in global search form
