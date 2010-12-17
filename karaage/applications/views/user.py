@@ -98,6 +98,7 @@ def existing_user_application(request, token):
         application.state = Application.WAITING_FOR_LEADER
         application.save()
         send_account_request_email(application)
+        return HttpResponseRedirect(reverse('kg_application_done',  args=[application.secret_token]))
     
     return render_to_response('applications/existing_user_confirm.html', {'application': application}, context_instance=RequestContext(request)) 
 
