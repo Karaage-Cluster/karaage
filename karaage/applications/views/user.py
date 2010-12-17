@@ -29,10 +29,11 @@ import datetime
 
 from karaage.applications.models import UserApplication, ProjectApplication, Applicant, Application
 from karaage.applications.forms import UserApplicationForm, UserApplicantForm, LeaderApproveUserApplicationForm, LeaderInviteUserApplicationForm
-from karaage.applications.emails import send_account_request_email, send_account_approved_email, send_user_invite_email, send_account_declined_email
+from karaage.applications.emails import send_account_request_email, send_account_approved_email, send_user_invite_email, send_account_declined_email, send_notify_admin
+
 from karaage.people.models import Person
 from karaage.projects.models import Project
-from karaage.util import log_object as log
+from karaage.util import log_object as logs
 
 
 def do_userapplication(request, token=None):
@@ -204,6 +205,7 @@ def approve_userapplication(request, application_id):
             if settings.ADMIN_APPROVE_ACCOUNTS:
                 application.state = Application.WAITING_FOR_ADMIN
                 application.save()
+                send_notify_admin(application, request.user)
                 log(request.user, application, 2, 'Leader approved application')
                 return HttpResponseRedirect(reverse('kg_userapplication_pending', args=[application.id]))
 
