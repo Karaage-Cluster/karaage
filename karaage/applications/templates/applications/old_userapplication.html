@@ -6,14 +6,15 @@
 {% block content %}
 <div id="content-main">
 
-<p>This application is no longer viewable. This could be due to:</p>
-<ul>
-	<li>You have already submitted the application.</li>
-	<li>The application has expired.</li>
-	<li>There is an error in the provided link (the link may be broken across two lines).</li>
-	<li>The application has been modified by an administrator.</li>
-</ul>
-
-<p>If you have any comments or enquiries, please contact <a href="mailto:{{ help_email }}">{{ help_email }}</a></p>
+  <p>This application is no longer viewable. This could be due to:</p>
+  <ul>
+    <li>You entered an incorrect token.</li>
+    <li>You have already submitted the application.</li>
+    <li>The application has expired.</li>
+    <li>There is an error in the provided link (the link may be broken across two lines).</li>
+    <li>The application has been modified by an administrator.</li>
+  </ul>
+  
+  <p>If you have any comments or enquiries, please contact <a href="{{ help_email|urlize }}">{{ help_email }}</a></p>
 </div>
 {% endblock %}
