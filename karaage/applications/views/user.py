@@ -33,7 +33,7 @@ from karaage.applications.emails import send_account_request_email, send_account
 
 from karaage.people.models import Person
 from karaage.projects.models import Project
-from karaage.util import log_object as logs
+from karaage.util import log_object as log
 
 
 def do_userapplication(request, token=None):
@@ -43,14 +43,13 @@ def do_userapplication(request, token=None):
 
     if token:
         try:
-            help_email = settings.ACCOUNTS_EMAIL
             application = UserApplication.objects.get(
                                         secret_token=token, 
                                         state__in=[Application.NEW, Application.OPEN],
                                         expires__gt=datetime.datetime.now())
         except UserApplication.DoesNotExist:
             return render_to_response('applications/old_userapplication.html',
-                                        {'help_email': help_email,},
+                                        {'help_email': settings.ACCOUNTS_EMAIL,},
                                         context_instance=RequestContext(request))
 
         applicant = application.applicant
