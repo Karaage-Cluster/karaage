@@ -29,10 +29,11 @@ import datetime
 
 from karaage.applications.models import UserApplication, ProjectApplication, Applicant, Application
 from karaage.applications.forms import UserApplicationForm, UserApplicantForm, LeaderApproveUserApplicationForm, LeaderInviteUserApplicationForm
-from karaage.applications.emails import send_account_request_email, send_account_approved_email, send_user_invite_email, send_account_declined_email
+from karaage.applications.emails import send_account_request_email, send_account_approved_email, send_user_invite_email, send_account_declined_email, send_notify_admin
+
 from karaage.people.models import Person
 from karaage.projects.models import Project
-from karaage.util import log_object as log
+from karaage.util import log_object as logs
 
 
 def do_userapplication(request, token=None):
@@ -41,11 +42,17 @@ def do_userapplication(request, token=None):
         return HttpResponseRedirect(reverse('kg_user_profile'))
 
     if token:
-        application = get_object_or_404(UserApplication, 
+        try:
+            help_email = settings.ACCOUNTS_EMAIL
+            application = UserApplication.objects.get(
                                         secret_token=token, 
                                         state__in=[Application.NEW, Application.OPEN],
                                         expires__gt=datetime.datetime.now())
-        
+        except UserApplication.DoesNotExist:
+            return render_to_response('applications/old_userapplication.html',
+                                        {'help_email': help_email,},
+                                        context_instance=RequestContext(request))
+
         applicant = application.applicant
         application.state = Application.OPEN
         application.save()
@@ -92,6 +99,7 @@ def existing_user_application(request, token):
         application.state = Application.WAITING_FOR_LEADER
         application.save()
         send_account_request_email(application)
+        return HttpResponseRedirect(reverse('kg_application_done',  args=[application.secret_token]))
     
     return render_to_response('applications/existing_user_confirm.html', {'application': application}, context_instance=RequestContext(request)) 
 
@@ -197,6 +205,7 @@ def approve_userapplication(request, application_id):
             if settings.ADMIN_APPROVE_ACCOUNTS:
                 application.state = Application.WAITING_FOR_ADMIN
                 application.save()
+                send_notify_admin(application, request.user)
                 log(request.user, application, 2, 'Leader approved application')
                 return HttpResponseRedirect(reverse('kg_userapplication_pending', args=[application.id]))
 
