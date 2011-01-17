@@ -38,11 +38,13 @@ def remove_url_prefix(url):
     return url
 
 
-def send_notify_admin(application):
+def send_notify_admin(application, leader=None):
     """Sends an email to admin asking to approve user application"""
     context = CONTEXT.copy()
     context['requester'] = application.applicant
     context['project'] = application.project
+    if leader:
+        context['leader'] = leader
     context['site'] = '%s' % remove_url_prefix(reverse('kg_application_detail', args=[application.id], urlconf='kgreg.conf.urls'))
 
     to_email = settings.ACCOUNTS_EMAIL

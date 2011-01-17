@@ -8,7 +8,7 @@ To:
 /etc/karaage/templates/emails/join_project_request_body.txt
 =========================================================================================================================
 
-{{ requester }}'s application to join the project {{ project }} has been approved by a project leader.
+{{ requester }}'s application to join the project {{ project }} has been approved by project leader {{ leader }}.
 
 They are now waiting for a {{ org_name }} administrator to process the application.
 
