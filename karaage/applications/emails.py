@@ -45,7 +45,7 @@ def send_notify_admin(application, leader=None):
     context['project'] = application.project
     if leader:
         context['leader'] = leader
-    context['site'] = '%s' % remove_url_prefix(reverse('kg_application_detail', args=[application.id], urlconf='kgreg.conf.urls'))
+    context['site'] = '%s' % remove_url_prefix(reverse('kg_userapplication_detail', args=[application.id], urlconf='kgreg.conf.urls'))
 
     to_email = settings.ACCOUNTS_EMAIL
     subject, body = render_email('notify_admin', context)
