@@ -29,8 +29,9 @@ class ProjectDataStore(base.ProjectDataStore):
         except:
             conn.add_group(cn=str(project.pid))
         users = [str(person.user.username) for person in project.users.all()]
-        conn.update_group('cn=%s' % project.pid, memberUid=users)
-
+        if users:
+            conn.update_group('cn=%s' % project.pid, memberUid=users)
+            
     def delete_project(self, project):
         conn = LDAPClient()
         conn.delete_group('cn=%s' % project.pid)
