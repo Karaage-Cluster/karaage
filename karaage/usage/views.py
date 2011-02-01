@@ -23,6 +23,7 @@ from django.db.models import Q
 from django.db import connection
 from django.core.urlresolvers import reverse
 from django.template.defaultfilters import dictsortreversed
+from django.contrib.auth.decorators import login_required
 
 import datetime
 from decimal import Decimal
@@ -136,6 +137,7 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
     return render_to_response('usage/usage_institue_list.html', locals(), context_instance=RequestContext(request))
 
 
+@login_required
 def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_MC):
 
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
@@ -205,7 +207,7 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
 
     return render_to_response('usage/usage_institute_detail.html', locals(), context_instance=RequestContext(request))
 
-
+@login_required
 def project_usage(request, project_id, machine_category_id=settings.DEFAULT_MC):
     
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
@@ -486,6 +488,7 @@ def job_list_day(request, object_id, model, year, month, day):
     return render_to_response('usage/job_list_day.html', locals(), context_instance=RequestContext(request))
 
 
+@login_required
 def institute_users(request, institute_id, machine_category_id=1):
 
     machine_category = MachineCategory.objects.get(pk=machine_category_id)
