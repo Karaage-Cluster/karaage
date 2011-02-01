@@ -63,6 +63,8 @@ ACCOUNT_DATASTORES = {
 # Used in various places
 ACCOUNTS_EMAIL = 'accounts@example.com'
 ACCOUNTS_ORG_NAME = 'Example'
+# Address email is sent to for admin approval
+APPROVE_ACCOUNTS_EMAIL = ACCOUNTS_EMAIL
 
 LOCKED_SHELL = '/usr/local/sbin/insecure'
 
