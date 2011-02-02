@@ -185,8 +185,7 @@ class AccountDataStore(object):
         person_id -- Person id
         project_id -- Project id
         
-        """
-    
+        """   
         ua = UserAccount.objects.create(
             user=person, username=person.username,
             machine_category=self.machine_category,
@@ -194,28 +193,23 @@ class AccountDataStore(object):
             date_created=datetime.datetime.today())
     
         if default_project is not None:
-            default_project.users.add(person)
+            from karaage.projects.utils import add_user_to_project
+            add_user_to_project(person, default_project)
     
         log(get_current_user(), ua.user, 1, 'Created account on %s' % self.machine_category)
-
 
         return ua
 
 
-
-    def delete_account(self, ua):
-        
+    def delete_account(self, ua):       
         if not ua.date_deleted:
             ua.date_deleted = datetime.datetime.now()
             ua.save()
-
         for project in ua.project_list():
             project.users.remove(ua.user)
-        
-        
+        project.save()
         log(get_current_user(), ua.user, 3, 'Deleted account on %s' % ua.machine_category)
         
-
     def update_account(self, ua):
         pass
 
