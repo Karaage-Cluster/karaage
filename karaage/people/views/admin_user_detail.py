@@ -104,7 +104,8 @@ def password_change(request, username):
             form.save(person)
             messages.info(request, "Password changed successfully")
             log(request.user, person, 2, 'Changed password')
-            person.unlock()
+            if person.is_locked():
+                person.unlock()
             return HttpResponseRedirect(person.get_absolute_url())
     else:
         form = AdminPasswordChangeForm()
