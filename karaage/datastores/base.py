@@ -170,8 +170,7 @@ class PersonalDataStore(object):
 
 
     def set_password(self, person, raw_password):
-        person.user.set_password(raw_password)
-        person.user.save()
+        pass
 
 
 class AccountDataStore(object):
