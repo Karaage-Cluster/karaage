@@ -29,7 +29,7 @@ class InstituteDataStore(base.InstituteDataStore):
                  lgroup = conn.get_group("gidNumber=%s" % institute.gid)
                  gid = int(lgroup.gidNumber)
              except DoesNotExistException:
-                 gid = conn.add_group(cn=str(institute.name.lower().replace(' ', ''), gidNumber=institute.gid))
+                 gid = conn.add_group(cn=str(institute.name.lower().replace(' ', '')), gidNumber=str(institute.gid))
         else:
                  
             try:
