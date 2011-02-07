@@ -43,9 +43,8 @@ class Institute(models.Model):
         db_table = 'institute'
 
     def save(self, *args, **kwargs):
-        if not self.pk:
-            from karaage.datastores.institutes import create_institute
-            self.gid = create_institute(self)
+        from karaage.datastores.institutes import create_institute
+        self.gid = create_institute(self)
         super(Institute, self).save(*args, **kwargs)
         
     def __unicode__(self):
