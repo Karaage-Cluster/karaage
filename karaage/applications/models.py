@@ -119,11 +119,14 @@ class UserApplication(Application):
         if self.needs_account:
             from karaage.projects.utils import add_user_to_project
             add_user_to_project(person, self.project)
+        else:
+            self.project.users.add(person)
+            self.project.save()
         if self.make_leader:
             self.project.leaders.add(person)
         self.save()
         return person
-                
+
 
 class ProjectApplication(Application):
     name = models.CharField('Title', max_length=200)

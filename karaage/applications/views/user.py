@@ -204,7 +204,7 @@ def approve_userapplication(request, application_id):
             if settings.ADMIN_APPROVE_ACCOUNTS:
                 application.state = Application.WAITING_FOR_ADMIN
                 application.save()
-                send_notify_admin(application, request.user)
+                send_notify_admin(application, request.user.get_full_name())
                 log(request.user, application, 2, 'Leader approved application')
                 return HttpResponseRedirect(reverse('kg_userapplication_pending', args=[application.id]))
 
@@ -308,10 +308,12 @@ def send_invitation(request, project_id):
                 application.approve()
                 send_account_approved_email(application)
                 messages.info(request, "%s was added to project %s directly since they have an existing account." % (application.applicant, application.project))
+                log(request.user, application, 1, "%s added directly to %s" % (applicant, project))
                 return HttpResponseRedirect(application.applicant.get_absolute_url())
 
             send_user_invite_email(application)
             messages.info(request, "Invitation sent to %s." % email)
+            log(request.user, application, 1, 'Invitation sent')
             return HttpResponseRedirect(reverse('kg_user_profile'))
         
     else:

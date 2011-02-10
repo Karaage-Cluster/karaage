@@ -73,7 +73,7 @@ def add_edit_project(request, project_id=None):
     return render_to_response('projects/user_project_form.html', { 'form': form, 'project': project }, context_instance=RequestContext(request))
 
 
-
+@login_required
 def project_detail(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
 
