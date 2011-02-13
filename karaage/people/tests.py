@@ -53,11 +53,11 @@ class UserTestCase(TestCase):
 
 
     def do_permission_tests(self, test_object, users):
-        for person_id in users:
-            print "can person '%d' access '%s'?"%(person_id, test_object)
-            person = Person.objects.get(id=person_id)
-            result = test_object.can_view(person)
-            expected_result = users[person_id]
+        for user_id in users:
+            print "can user '%d' access '%s'?"%(user_id, test_object)
+            user = User.objects.get(id=user_id)
+            result = test_object.can_view(user)
+            expected_result = users[user_id]
             print "---> got:'%s' expected:'%s'"%(result, expected_result)
             self.failUnlessEqual(result, expected_result)
             print

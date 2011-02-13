@@ -152,7 +152,7 @@ def profile_projects(request):
 def user_detail(request, username):
 
     person = get_object_or_404(Person, user__username=username)
-    if not person.can_view(request.user.get_profile()):
+    if not person.can_view(request.user):
         return HttpResponseForbidden('<h1>Access Denied</h1><p>You do not have permission to view details about this user.</p>')
 
     return render_to_response('people/user_person_detail.html', locals(), context_instance=RequestContext(request))
@@ -205,7 +205,7 @@ def institute_users_list(request, institute_id):
 
     institute = get_object_or_404(Institute, pk=institute_id)
 
-    if not institute.can_view(request.user.get_profile()):
+    if not institute.can_view(request.user):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     user_list = institute.person_set.all()

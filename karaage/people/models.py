@@ -75,7 +75,12 @@ class Institute(models.Model):
         from karaage.graphs import gen_institute_bar
         gen_institute_bar(self, start, end, machine_category)
 
-    def can_view(self, person):
+    def can_view(self, user):
+        if not user.is_authenticated():
+            return False
+
+        person = user.get_profile()
+
         # staff members can view everything
         if person.user.is_staff:
             return True
@@ -190,8 +195,13 @@ class Person(models.Model):
     is_active = property(_get_is_active, _set_is_active)
     
     # Can person view this self record?
-    def can_view(self, person):
+    def can_view(self, user):
         from karaage.projects.models import Project
+
+        if not user.is_authenticated():
+            return False
+
+        person = user.get_profile()
 
         # staff members can view everything
         if person.user.is_staff:
