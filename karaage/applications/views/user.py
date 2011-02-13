@@ -58,7 +58,7 @@ def do_userapplication(request, token=None):
     else:
         if not settings.ALLOW_REGISTRATIONS:
             return render_to_response('applications/registrations_disabled.html', {}, context_instance=RequestContext(request)) 
-        application = None
+        application = UserApplication()
         applicant = None
 
     if application.content_type and application.content_type.model == 'person':

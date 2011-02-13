@@ -27,6 +27,7 @@ urlpatterns = patterns('karaage.applications.views',
     url(r'^choose-project/$', 'user.choose_project', name='kg_choose_project_existing'),
     url(r'^invite/(?P<project_id>[-.\w]+)/$', 'user.send_invitation', name='kg_userapplication_invite'),
 
+    url(r'^projects/(?P<application_id>\d+)/$', 'projects.approve_projectapplication', name='kg_projectapplication_detail'),
     url(r'^(?P<application_id>\d+)/$', 'user.approve_userapplication', name='kg_userapplication_detail'),
     url(r'^(?P<application_id>\d+)/approve/$', 'user.approve_userapplication', name='kg_userapplication_approve'),
     url(r'^(?P<application_id>\d+)/decline/$', 'user.decline_userapplication', name='kg_userapplication_decline'),

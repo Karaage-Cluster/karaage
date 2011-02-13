@@ -22,6 +22,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.conf import settings
 
+import datetime
 from andsome.middleware.threadlocals import get_current_user
 
 from karaage.constants import TITLES, COUNTRIES
@@ -71,7 +72,7 @@ class Application(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk:
             import datetime
-            if get_current_user().is_authenticated():
+            if get_current_user() and get_current_user().is_authenticated():
                 self.created_by = get_current_user().get_profile()
             self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
             parent = self._meta.parents.keys()[0]
@@ -135,6 +136,28 @@ class ProjectApplication(Application):
     additional_req = models.TextField(null=True, blank=True)
     needs_account = models.BooleanField(u"Do you require a cluster account?", help_text=u"Will you be working on the project yourself?")
     machine_categories = models.ManyToManyField(MachineCategory, null=True, blank=True)
+
+    def approve(self):
+        person = super(ProjectApplication, self).approve()
+        from karaage.projects.utils import add_user_to_project, get_new_pid
+        project = Project(
+            pid=get_new_pid(self.institute),
+            name=self.name,
+            description=self.description,
+            institute=self.institute,
+            additional_req=self.additional_req,
+            start_date=datetime.datetime.today(),
+            end_date=datetime.datetime.today() + datetime.timedelta(days=365),
+            )
+        project.machine_category = MachineCategory.objects.get_default()
+        project.save()
+        project.leaders.add(person)
+        for mc in self.machine_categories.all():
+            project.machine_categories.add(mc)
+        project.activate()
+        if self.needs_account:
+            add_user_to_project(person, project)
+        return project
 
 
 class Applicant(models.Model):

@@ -111,3 +111,17 @@ def send_account_declined_email(userapplication):
     to_email = userapplication.applicant.email
     
     send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+
+
+def send_project_request_email(application):
+    """Sends an email to the projects institutes active delegate for approval"""
+    context = CONTEXT.copy()
+    context['requester'] = application.applicant
+    context['receiver'] =  application.institute.active_delegate
+    context['site'] = remove_url_prefix(reverse('kg_projectapplication_detail', args=[application.id], urlconf='kgreg.conf.urls'))
+    context['application'] = application 
+    subject, body = render_email('project_request', context)
+
+    to_email = application.institute.active_delegate.email
+
+    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)

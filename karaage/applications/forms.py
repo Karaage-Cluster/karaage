@@ -152,3 +152,15 @@ class LeaderApproveUserApplicationForm(forms.ModelForm):
         self.fields['needs_account'].label = u"Does this person require a cluster account?"
         self.fields['needs_account'].help_text = u"Will this person be working on the project?"
 
+
+class ApproveProjectApplicationForm(forms.ModelForm):
+
+    class Meta:
+        model = ProjectApplication
+        fields = ['needs_account',]
+
+    def __init__(self, *args, **kwargs):
+        super(ApproveProjectApplicationForm, self).__init__(*args, **kwargs)
+        self.fields['needs_account'].label = u"Does this person require a cluster account?"
+        self.fields['needs_account'].help_text = u"Will this person be working on the project?"
+

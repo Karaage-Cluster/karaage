@@ -2,7 +2,7 @@
 
 {% block title %}Applications{% endblock %}
 
-{% block content_title %}User Application{% endblock %}
+{% block content_title %}Project Application{% endblock %}
 
 {% block bread_crumbs_1 %}
  &rsaquo; User Application
@@ -10,11 +10,17 @@
 
 {% block content %}
 <p>The following request is awaiting your approval</p>
+<h2>User details</h2>
 <table>
    	<tr><td>Name:</td><td>{{ application.applicant }}</td></tr>
    	<tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
    	<tr><td>Email:</td><td>{{ application.applicant.email|urlize }}</td></tr>	
-    <tr><td>Project</td><td>{{ application.project }}</td></tr>
+</table>
+<h2>Project Details</h2>
+<table>
+   	<tr><td>Name:</td><td>{{ application.name }}</td></tr>
+   	<tr><td>Description:</td><td>{{ application.description|linebreaks }}</td></tr>
+   	<tr><td>Additional requirements:</td><td>{{ application.additional_req|linebreaks }}</td></tr>	
 </table>
 <br />
 <p>{{ application.applicant }} will receive an email once their account has been confirmed.</p>

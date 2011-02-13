@@ -31,5 +31,8 @@ def common(request):
 def registration(request):
     ctx = {}
     if request.user.is_authenticated():
-        ctx['pending_applications'] = request.user.get_profile().leaders.filter(userapplication__state=Application.WAITING_FOR_LEADER)
+        user_apps = request.user.get_profile().leaders.filter(userapplication__state=Application.WAITING_FOR_LEADER)
+        project_apps = request.user.get_profile().delegate.filter(projectapplication__state=Application.WAITING_FOR_DELEGATE)
+        if user_apps or project_apps:
+            ctx['pending_applications'] = True
     return ctx

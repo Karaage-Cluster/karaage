@@ -21,19 +21,17 @@ from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import permission_required, login_required
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.db.models import Q
 from django.conf import settings
 
 import datetime
 
-from karaage.applications.models import UserApplication, Applicant, ProjectApplication, Application
-from karaage.applications.forms import ProjectApplicationForm, UserApplicantForm, LeaderApproveUserApplicationForm, LeaderInviteUserApplicationForm
-from karaage.applications.emails import send_account_request_email, send_account_approved_email, send_user_invite_email
-from karaage.people.models import Person
-from karaage.projects.models import Project
+from karaage.applications.models import ProjectApplication, Application
+from karaage.applications.forms import ProjectApplicationForm, UserApplicantForm, ApproveProjectApplicationForm
+from karaage.applications.emails import send_project_request_email
+from karaage.util import log_object as log
 
 
-def do_projectapplication(request, token=None, application_form=ProjectApplicationForm):
+def do_projectapplication(request, token=None, application_form=ProjectApplicationForm, mc=MachineCategory.objects.get_default()):
     if request.user.is_authenticated():
         messages.info(request, "You are already logged in")
         return HttpResponseRedirect(reverse('kg_user_profile'))
@@ -61,7 +59,8 @@ def do_projectapplication(request, token=None, application_form=ProjectApplicati
             application.submitted_date = datetime.datetime.now()
             application.state = Application.WAITING_FOR_DELEGATE
             application.save()
-            #send_project_request_email(application)
+            application.machine_categories.add(mc)
+            send_project_request_email(application)
             return HttpResponseRedirect(reverse('kg_application_done',  args=[application.secret_token]))
     else:
         form = application_form(instance=application)
@@ -70,3 +69,24 @@ def do_projectapplication(request, token=None, application_form=ProjectApplicati
     return render_to_response('applications/projectapplication_form.html', {'form': form, 'applicant_form': applicant_form, 'application': application}, context_instance=RequestContext(request)) 
 
 
+@login_required
+def approve_projectapplication(request, application_id):
+    application = get_object_or_404(ProjectApplication, pk=application_id)
+    if not request.user.get_profile() == application.institute.delegate:
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
+    if application.state != Application.WAITING_FOR_DELEGATE:
+        return render_to_response('applications/unable_to_approve.html', {'application': application }, context_instance=RequestContext(request))
+
+    if request.method == 'POST':
+        form = ApproveProjectApplicationForm(request.POST, instance=application)
+        if form.is_valid():
+            application = form.save()
+ 
+            application.approve()
+            #send_project_approved_email(application)
+            log(request.user, application, 2, 'Delegate approved')
+            return HttpResponseRedirect(reverse('kg_userapplication_complete', args=[application.id]))
+    else:
+        form = ApproveProjectApplicationForm(instance=application)
+
+    return render_to_response('applications/projectapplication_approve.html', {'form': form, 'application': application}, context_instance=RequestContext(request))
