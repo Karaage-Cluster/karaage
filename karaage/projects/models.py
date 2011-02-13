@@ -65,8 +65,12 @@ class Project(models.Model):
     def get_usage_url(self):
         return ('kg_usage_project', [self.pid])
 
-    # Can person view this self record?
-    def can_view(self, person):
+    # Can user view this self record?
+    def can_view(self, user):
+        if not user.is_authenticated():
+            return False
+
+        person = user.get_profile()
 
         if person.user.is_staff:
             return True
