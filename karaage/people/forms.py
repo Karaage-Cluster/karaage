@@ -94,6 +94,7 @@ class AdminPersonForm(PersonForm):
         person.country = data['country']
         person.expires = data['expires']
         person.comment = data['comment']
+        person.is_systemuser = data['is_systemuser']
         person.user.is_staff = data['is_staff']
         person.user.is_superuser = data['is_superuser']
         person.user.save()
