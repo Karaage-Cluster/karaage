@@ -28,6 +28,7 @@ import datetime
 from karaage.applications.models import ProjectApplication, Application
 from karaage.applications.forms import ProjectApplicationForm, UserApplicantForm, ApproveProjectApplicationForm
 from karaage.applications.emails import send_project_request_email
+from karaage.machines.models import MachineCategory
 from karaage.util import log_object as log
 
 
