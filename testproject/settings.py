@@ -50,6 +50,7 @@ LDAP_PASSWD_SCHEME = 'md5-crypt'
 
 SERVER_EMAIL = 'django@' + uname()[1]
 ACCOUNTS_EMAIL = 'accounts@vpac.org'
+APPROVE_ACCOUNTS_EMAIL = ACCOUNTS_EMAIL
 EMAIL_SUBJECT_PREFIX = '[Grunt VPAC] - '
 
 SHELLS = ( ('/bin/bash','bash'),
