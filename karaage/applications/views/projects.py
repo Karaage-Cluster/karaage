@@ -86,8 +86,19 @@ def approve_projectapplication(request, application_id):
             application.approve()
             #send_project_approved_email(application)
             log(request.user, application, 2, 'Delegate approved')
-            return HttpResponseRedirect(reverse('kg_userapplication_complete', args=[application.id]))
+            return HttpResponseRedirect(reverse('kg_projectapplication_complete', args=[application.id]))
     else:
         form = ApproveProjectApplicationForm(instance=application)
 
     return render_to_response('applications/projectapplication_approve.html', {'form': form, 'application': application}, context_instance=RequestContext(request))
+
+
+@login_required
+def projectapplication_complete(request, application_id):
+    application = get_object_or_404(ProjectApplication, pk=application_id)
+    if application.state != Application.COMPLETE:
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
+    if not request.user.get_profile() == application.institute.delegate:
+        return HttpResponseForbidden('<h1>Access Denied</h1>') 
+    
+    return render_to_response('applications/projectapplication_complete.html', {'application': application}, context_instance=RequestContext(request))
