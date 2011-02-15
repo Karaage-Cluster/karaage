@@ -20,7 +20,7 @@
 {% endif %}
 <h1>{{ application.applicant }} Details</h1>
 {% if application.applicant.user %}
-<p>This person is an existing user. <a href="{{ application.applicant.get_absolute_url }} ">{{ application.applicant }} details</a></p>
+<p>This person is an existing user. <a href="{{ application.applicant.get_absolute_url }} ">{{ application.applicant }} details.</a></p>
 {% else %}
    	<table>
    		<tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
@@ -40,10 +40,14 @@
 {% endif %}
 <br />
 <h1>Project Details</h1>
+{% if application.project %}
+	<p>This application has been approved. See <a href="{{ application.project.get_absolute_url }}">project {{ application.project.pid }} details.</a></p>
+	{% else %}
 <table>
    		<tr><td>Title:</td><td>{{ application.name }}</td></tr>
    		<tr><td>Description:</td><td>{{ application.description }}</td></tr>
 		
 	</table>
+	{% endif %}
 <p><a href="{% url kg_application_delete application.id %}" class="deletelink">Delete application.</a></p>
 {% endblock %}

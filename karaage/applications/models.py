@@ -56,6 +56,7 @@ class Application(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, editable=False)
     submitted_date = models.DateTimeField(null=True, blank=True)
     state = models.CharField(max_length=1, choices=APPLICATION_STATES, default=NEW)
+    complete_date = models.DateTimeField(null=True, blank=True, editable=False)
     content_type = models.ForeignKey(ContentType, limit_choices_to={'model__in': ['person', 'applicant']}, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     applicant = generic.GenericForeignKey()
@@ -105,6 +106,7 @@ class Application(models.Model):
             person = self.applicant
         self.applicant = person
         self.state = Application.COMPLETE
+        self.complete_date = datetime.datetime.now()
         self.save()
         return person
 
@@ -136,6 +138,7 @@ class ProjectApplication(Application):
     additional_req = models.TextField(null=True, blank=True)
     needs_account = models.BooleanField(u"Do you require a cluster account?", help_text=u"Will you be working on the project yourself?")
     machine_categories = models.ManyToManyField(MachineCategory, null=True, blank=True)
+    project = models.ForeignKey(Project, null=True, blank=True)
 
     def approve(self):
         person = super(ProjectApplication, self).approve()
@@ -157,6 +160,8 @@ class ProjectApplication(Application):
         project.activate()
         if self.needs_account:
             add_user_to_project(person, project)
+        self.project = project
+        self.save()
         return project
 
 
