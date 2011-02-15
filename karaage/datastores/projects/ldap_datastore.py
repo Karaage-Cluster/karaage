@@ -16,6 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from placard.client import LDAPClient
+from placard.exceptions import DoesNotExistException
 
 from karaage.datastores.projects import base
 
@@ -34,6 +35,8 @@ class ProjectDataStore(base.ProjectDataStore):
             
     def delete_project(self, project):
         conn = LDAPClient()
-        conn.delete_group('cn=%s' % project.pid)
-
+        try:
+            conn.delete_group('cn=%s' % project.pid)
+        except DoesNotExistException:
+            pass
 
