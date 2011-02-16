@@ -18,12 +18,11 @@
   {% if person.fax %}<tr><td>Fax:</td><td>{{ person.fax }}</td></tr>{% endif %}
   {% if person.address %}<tr><td>Address:</td><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>{% endif %}
   <tr><td colspan="2"><a href="edit/" class="changelink">Edit personal details</a></td></tr>
-  
 </table>
 
 <h2>Tasks</h2>
-<p><a href="{% url kg_choose_project_existing %}" class="addlink">Apply to join an existing project</a>
-
+<p><a href="{% url kg_choose_project_existing %}" class="addlink">Apply to join an existing project</a></p>
+<p><a href="{% url kg_projectapplication_existing %}" class="addlink">Apply to start a new project</a></p>
 {% if person.is_delegate or person.is_active_delegate %}
 <h2>Institute Stats</h2>
 <p><a href="{% url kg_institute_users person.institute.id %}">{{ person.institute }} users</a> | 

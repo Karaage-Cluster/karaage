@@ -102,3 +102,28 @@ def projectapplication_complete(request, application_id):
         return HttpResponseForbidden('<h1>Access Denied</h1>') 
     
     return render_to_response('applications/projectapplication_complete.html', {'application': application}, context_instance=RequestContext(request))
+
+
+@login_required
+def projectapplication_existing(request, application_form=ProjectApplicationForm, mc=MachineCategory.objects.get_default()):
+
+    application = ProjectApplication()
+    applicant = request.user.get_profile()
+    if request.method == 'POST':
+        form = application_form(request.POST, instance=application)
+
+        if form.is_valid():
+            application = form.save(commit=False)
+            application.applicant = applicant
+            application.save()
+            application.submitted_date = datetime.datetime.now()
+            application.state = Application.WAITING_FOR_DELEGATE
+            application.save()
+            application.machine_categories.add(mc)
+            send_project_request_email(application)
+            return HttpResponseRedirect(reverse('kg_application_done',  args=[application.secret_token]))
+    else:
+        form = application_form(instance=application)
+    
+    return render_to_response('applications/projectapplication_existing_form.html', {'form': form, 'application': application}, context_instance=RequestContext(request)) 
+
