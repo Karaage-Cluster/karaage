@@ -117,4 +117,6 @@ INSTITUTE_DATASTORE = 'karaage.datastores.institutes.ldap_datastore'
 
 AUP_URL = ''
 
+USAGE_IS_PUBLIC = False
+
 execfile("/etc/karaage/global_settings.py")
