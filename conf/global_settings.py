@@ -70,7 +70,7 @@ LOCKED_SHELL = '/usr/local/sbin/insecure'
 
 ###
 ### Placard Settings
-### see - https://code.arcs.org.au/hudson/job/Placard/javadoc/
+### see - https://code.vpac.org/hudson/job/django-placard/javadoc/
 ###
 
 
