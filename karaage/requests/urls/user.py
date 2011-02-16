@@ -16,19 +16,15 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf.urls.defaults import *
+from django.core.urlresolvers import get_script_prefix
 
+urlpatterns = patterns('django.views.generic.simple',
 
-urlpatterns = patterns('karaage.requests.views.user',
+    url(r'^$', 'redirect_to', {'url': '%sapplications/new-user/' % get_script_prefix()}, name='user_registration'),
+    url(r'^choose_project/$', 'redirect_to', {'url': '%sapplications/choose-project/' % get_script_prefix()}, name='user_choose_project'),
+    url(r'^(?P<user_request_id>\d+)/$', 'redirect_to', {'url': '%sapplications/pending/' % get_script_prefix()}, name='user_account_request_detail'),
+    url(r'^(?P<user_request_id>\d+)/approve/$', 'redirect_to', {'url': '%sapplications/pending/' % get_script_prefix()}, name='user_approve_account'),
+    url(r'^(?P<user_request_id>\d+)/reject/$', 'redirect_to', {'url': '%sapplications/pending/' % get_script_prefix()}, name='user_reject_account'),
 
-    url(r'^$', 'user_registration', name='user_registration'),
-    url(r'^cancel/(?P<user_request_id>\d+)/$', 'cancel_user_registration'),
-    url(r'^choose_project/$', 'choose_project', name='user_choose_project'),
-    url(r'^(?P<user_request_id>\d+)/created/$', 'account_created', name='kg_user_account_pending'),
-                        
-    url(r'^(?P<user_request_id>\d+)/$', 'request_detail', name='user_account_request_detail'),
-    url(r'^(?P<user_request_id>\d+)/approve/$', 'approve_person', name='user_approve_account'),
-    url(r'^(?P<user_request_id>\d+)/reject/$', 'reject_person', name='user_reject_account'),
-
-                       
 )
 

@@ -16,14 +16,12 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf.urls.defaults import *
+from django.core.urlresolvers import get_script_prefix
 
-
-urlpatterns = patterns('karaage.requests.views.projects',           
-    url(r'^$', 'project_registration', name='project_registration'),
-    url(r'^created/(?P<project_request_id>\d+)/$', 'project_created', name='project_created'),
-    url(r'^approve/(?P<project_request_id>\d+)/$', 'approve_project', name='user_approve_project'),
-    url(r'^reject/(?P<project_request_id>\d+)/$', 'reject_project', name='user_reject_project'),
-
-    url(r'^(?P<project_request_id>\d+)/$', 'request_detail', name='user_project_request_detail'),
+urlpatterns = patterns('django.views.generic.simple',           
+    url(r'^$', 'redirect_to', {'url': '%sapplications/new-project/' % get_script_prefix()}, name='project_registration'),
+    url(r'^approve/(?P<project_request_id>\d+)/$', 'redirect_to', {'url': '%sapplications/pending/' % get_script_prefix()},  name='user_approve_project'),
+    url(r'^reject/(?P<project_request_id>\d+)/$', 'redirect_to', {'url': '%sapplications/pending/' % get_script_prefix()}, , name='user_reject_project'),
+    url(r'^(?P<project_request_id>\d+)/$', 'redirect_to', {'url': '%sapplications/pending/' % get_script_prefix()},  name='user_project_request_detail'),
     
 )
