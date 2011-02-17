@@ -19,6 +19,7 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
 from andsome.util import is_password_strong
+from captcha.fields import CaptchaField
 
 from karaage.applications.models import UserApplication, ProjectApplication, Applicant
 from karaage.people.models import Person
@@ -39,6 +40,7 @@ class UserApplicantForm(ApplicantForm):
         self.fields['title'].required = True
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
+        self.fields['username'].label = 'Requested username'
         self.fields['username'].required = True
         self.fields['institute'].required = True
 
@@ -97,6 +99,12 @@ class UserApplicationForm(forms.ModelForm):
     aup = forms.BooleanField(label=u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>' % settings.AUP_URL, 
                              error_messages={'required': 'You must accept to proceed.'})
 
+    def __init__(self, *args, **kwargs):
+        captcha = kwargs.pop('captcha')
+        super(UserApplicationForm, self).__init__(*args, **kwargs)
+        if captcha:
+            self.fields['captcha'] = CaptchaField(label=u'CAPTCHA', help_text=u"Please enter the text displayed in the imge above.")
+
     class Meta:
         model = UserApplication
         exclude = ['submitted_date', 'state', 'project', 'make_leader', 'content_type', 'object_id']
@@ -105,6 +113,13 @@ class UserApplicationForm(forms.ModelForm):
 class ProjectApplicationForm(forms.ModelForm):
     aup = forms.BooleanField(label=u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>' % settings.AUP_URL, 
                              error_messages={'required': 'You must accept to proceed.'})
+
+    
+    def __init__(self, *args, **kwargs):
+        captcha = kwargs.pop('captcha')
+        super(ProjectApplicationForm, self).__init__(*args, **kwargs)
+        if captcha:
+            self.fields['captcha'] = CaptchaField(label=u'CAPTCHA', help_text=u"Please enter the text displayed in the imge above.")
 
     class Meta:
         model = ProjectApplication

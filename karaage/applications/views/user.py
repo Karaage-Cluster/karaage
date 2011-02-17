@@ -55,17 +55,19 @@ def do_userapplication(request, token=None):
         applicant = application.applicant
         application.state = Application.OPEN
         application.save()
+        captcha = False
     else:
         if not settings.ALLOW_REGISTRATIONS:
             return render_to_response('applications/registrations_disabled.html', {}, context_instance=RequestContext(request)) 
         application = UserApplication()
         applicant = None
+        captcha = True
 
     if application.content_type and application.content_type.model == 'person':
         return existing_user_application(request, token)
     
     if request.method == 'POST':
-        form = UserApplicationForm(request.POST, instance=application)
+        form = UserApplicationForm(request.POST, instance=application, captcha=captcha)
         applicant_form = UserApplicantForm(request.POST, instance=applicant)
         if form.is_valid() and applicant_form.is_valid():
             applicant = applicant_form.save()
@@ -80,7 +82,7 @@ def do_userapplication(request, token=None):
             send_account_request_email(application)
             return HttpResponseRedirect(reverse('kg_application_done',  args=[application.secret_token]))
     else:
-        form = UserApplicationForm(instance=application)
+        form = UserApplicationForm(instance=application, captcha=captcha)
         applicant_form = UserApplicantForm(instance=applicant)
     
     return render_to_response('applications/userapplication_form.html', {'form': form, 'applicant_form': applicant_form, 'application': application}, context_instance=RequestContext(request)) 

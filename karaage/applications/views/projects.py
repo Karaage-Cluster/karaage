@@ -27,7 +27,7 @@ import datetime
 
 from karaage.applications.models import ProjectApplication, Application
 from karaage.applications.forms import ProjectApplicationForm, UserApplicantForm, ApproveProjectApplicationForm
-from karaage.applications.emails import send_project_request_email
+from karaage.applications.emails import send_project_request_email, send_project_approved_email
 from karaage.machines.models import MachineCategory
 from karaage.util import log_object as log
 
@@ -44,13 +44,15 @@ def do_projectapplication(request, token=None, application_form=ProjectApplicati
         applicant = application.applicant
         application.state = Application.OPEN
         application.save()
+        captcha = False
     else:
         if not settings.ALLOW_REGISTRATIONS:
             return render_to_response('applications/registrations_disabled.html', {}, context_instance=RequestContext(request)) 
         application = None
         applicant = None
+        captcha = True
     if request.method == 'POST':
-        form = application_form(request.POST, instance=application)
+        form = application_form(request.POST, instance=application, captcha=captcha)
         applicant_form = UserApplicantForm(request.POST, instance=applicant)
         if form.is_valid() and applicant_form.is_valid():
             applicant = applicant_form.save()
@@ -64,7 +66,7 @@ def do_projectapplication(request, token=None, application_form=ProjectApplicati
             send_project_request_email(application)
             return HttpResponseRedirect(reverse('kg_application_done',  args=[application.secret_token]))
     else:
-        form = application_form(instance=application)
+        form = application_form(instance=application, captcha=captcha)
         applicant_form = UserApplicantForm(instance=applicant)
     
     return render_to_response('applications/projectapplication_form.html', {'form': form, 'applicant_form': applicant_form, 'application': application}, context_instance=RequestContext(request)) 
@@ -84,7 +86,7 @@ def approve_projectapplication(request, application_id):
             application = form.save()
  
             application.approve()
-            #send_project_approved_email(application)
+            send_project_approved_email(application)
             log(request.user, application, 2, 'Delegate approved')
             return HttpResponseRedirect(reverse('kg_projectapplication_complete', args=[application.id]))
     else:
