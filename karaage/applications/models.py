@@ -114,7 +114,7 @@ class Application(models.Model):
 class UserApplication(Application):
     """ Associated with an Applicant or a Person"""
     project = models.ForeignKey(Project, null=True, blank=True, limit_choices_to={'is_active': True})
-    needs_account = models.BooleanField(u"Do you require a cluster account?", help_text=u"Will you be working on the project yourself?")
+    needs_account = models.BooleanField(u"Do you need a personal cluster account?", help_text=u"Required if you will be working on the project yourself.")
     make_leader = models.BooleanField(help_text="Make this person a project leader")
 
     def approve(self):
@@ -136,7 +136,7 @@ class ProjectApplication(Application):
     institute = models.ForeignKey(Institute, limit_choices_to={'is_active': True})
     description = models.TextField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
-    needs_account = models.BooleanField(u"Do you require a cluster account?", help_text=u"Will you be working on the project yourself?")
+    needs_account = models.BooleanField(u"Do you need a personal cluster account?", help_text=u"Required if you will be working on the project yourself.")
     machine_categories = models.ManyToManyField(MachineCategory, null=True, blank=True)
     project = models.ForeignKey(Project, null=True, blank=True)
 
