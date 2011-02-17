@@ -125,3 +125,17 @@ def send_project_request_email(application):
     to_email = application.institute.active_delegate.email
 
     send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+
+
+def send_project_approved_email(application):
+    """Sends an email to the projects leaders once approved"""
+    context = CONTEXT.copy()
+    context['site'] = remove_url_prefix(reverse('kg_project_detail', args=[application.project.pid], urlconf='kgreg.conf.urls'))
+    context['project'] = application.project 
+ 
+    for leader in application.project.leaders.all():
+        context['receiver'] =  application.institute.active_delegate
+        subject, body = render_email('project_approved', context)
+        to_email = application.institute.active_delegate.email
+        send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+        
