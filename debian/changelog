@@ -1,3 +1,18 @@
+karaage (2.5.3-1) testing; urgency=low
+
+  * New application state ARCHIVE, handle multiple applications per applicant
+  * APPROVE_ACCOUNTS_EMAIL added
+  * Active Directory datastore
+  * Project applications
+  * Management command now deletes all applications that have been
+    complete for 30 days
+  * Ability to allow public access to usage information.
+    Default is to keep restricted
+  * Add CAPTCHA fields to application forms if no token and open
+    registrations allowed
+
+ -- Sam Morrison <sam@vpac.org>  Mon, 21 Feb 2011 10:19:08 +1100
+
 karaage (2.5.2-1) testing; urgency=low
 
   * Add transaction middleware
@@ -13,7 +28,7 @@ karaage (2.5.2-1) testing; urgency=low
 karaage (2.5.1-1) testing; urgency=low
 
   * Return distinct results in global search form
-  * Raise 403 error instead of 404 when application exists 
+  * Raise 403 error instead of 404 when application exists
     but is in wrong state.
   * Force user sync for LDAP on changing default project
   * Show secret token in admin view
