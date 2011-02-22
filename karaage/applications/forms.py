@@ -100,7 +100,7 @@ class UserApplicationForm(forms.ModelForm):
                              error_messages={'required': 'You must accept to proceed.'})
 
     def __init__(self, *args, **kwargs):
-        captcha = kwargs.pop('captcha')
+        captcha = kwargs.pop('captcha', False)
         super(UserApplicationForm, self).__init__(*args, **kwargs)
         if captcha:
             self.fields['captcha'] = CaptchaField(label=u'CAPTCHA', help_text=u"Please enter the text displayed in the imge above.")
@@ -116,7 +116,7 @@ class ProjectApplicationForm(forms.ModelForm):
 
     
     def __init__(self, *args, **kwargs):
-        captcha = kwargs.pop('captcha')
+        captcha = kwargs.pop('captcha', False)
         super(ProjectApplicationForm, self).__init__(*args, **kwargs)
         if captcha:
             self.fields['captcha'] = CaptchaField(label=u'CAPTCHA', help_text=u"Please enter the text displayed in the imge above.")
