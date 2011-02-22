@@ -209,6 +209,7 @@ class AccountDataStore(base.AccountDataStore):
         data = conn.get_user('sAMAccountName=%s' % ua.username).__dict__
         data['default_project'] = ua.default_project
         data['person'] = ua.user
+        data['cluster_account'] = True
         
         conn.update_user(
             'sAMAccountName=%s' % ua.username,
