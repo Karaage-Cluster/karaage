@@ -1,3 +1,10 @@
+karaage (2.5.4-1) testing; urgency=low
+
+  * Change default url for graphs to /karaage_graphs/
+  * Minor bug fixes
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 23 Feb 2011 13:56:43 +1100
+
 karaage (2.5.3-1) testing; urgency=low
 
   * New application state ARCHIVE, handle multiple applications per applicant
