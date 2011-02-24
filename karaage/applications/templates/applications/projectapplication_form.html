@@ -40,6 +40,11 @@
 {% formfield form.description %}
 {% formfield form.additional_req %}
 </fieldset>
+{% if form.captcha %}
+<fieldset class="module aligned ()">
+{% formfield form.captcha %}
+</fieldset>
+{% endif %}
 </div>
 <div class="submit-row">
 		<input type="submit" value="Submit" class="default" />
