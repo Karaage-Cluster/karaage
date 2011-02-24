@@ -109,6 +109,14 @@ class PersonalDataStore(base.PersonalDataStore):
         conn = LDAPClient()
         conn.change_password('uid=%s' % person.user.username, raw_password)
 
+    def user_exists(self, username):
+        conn = LDAPClient()
+        try:
+            conn.get_user('uid=%s' % username)
+            return True
+        except DoesNotExistException:
+            return False
+
 
 class AccountDataStore(base.AccountDataStore):
 

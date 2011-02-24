@@ -48,6 +48,9 @@ def unlock_user(person):
 def set_password(person, raw_password):
     pds.set_password(person, raw_password)
 
+def user_exists(username):
+    pds.user_exists(username)
+
 
 account_datastores = settings.ACCOUNT_DATASTORES
 

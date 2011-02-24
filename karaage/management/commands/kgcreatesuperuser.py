@@ -27,11 +27,8 @@ from django.contrib.auth.models import User
 from django.core import exceptions
 from django.core.management.base import BaseCommand
 from django.utils.translation import ugettext as _
-from karaage.datastores import create_new_user
+from karaage.datastores import create_new_user, user_exists
 from karaage.people.models import Institute
-from placard import exceptions as placard_exceptions
-from placard.client import LDAPClient
-
 
 RE_VALID_USERNAME = re.compile('[\w.@+-]+$')
 
@@ -103,14 +100,12 @@ class Command(BaseCommand):
                     sys.stderr.write("Error: That username is already taken.\n")
                     username = None
                     
-                conn = LDAPClient()
-                try:
-                    conn.get_user('uid=%s' % username)
-                except placard_exceptions.DoesNotExistException:
-                    ldap_username_free = True
-                else:
-                    sys.stderr.write("Error: Username is already in LDAP.\n")
+                if user_exists(username):
+                    sys.stderr.write("Error: Username is already in external datastore.\n")
                     username = None
+                else:
+                    ldap_username_free = True
+
                 if ldap_username_free and db_username_free:
                     break
                 

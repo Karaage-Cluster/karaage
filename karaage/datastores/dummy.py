@@ -46,6 +46,9 @@ class PersonalDataStore(base.PersonalDataStore):
     def set_password(self, person, raw_password):
         super(PersonalDataStore, self).set_password(person, raw_password)
 
+    def user_exists(self, username):
+        super(PersonalDataStore, self).user_exists(username)
+
 
 class AccountDataStore(base.AccountDataStore):
 
