@@ -165,7 +165,7 @@ def choose_project(request, token=None):
             leader_list = False
     if request.REQUEST.has_key('leader'):
         leader = Person.objects.get(pk=request.GET['leader'])
-        project_list = leader.leader.filter(is_active=True)
+        project_list = leader.leaders.filter(is_active=True)
 
     if project_list:
         if project_list.count() == 1:
