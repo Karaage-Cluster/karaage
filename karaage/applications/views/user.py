@@ -28,18 +28,25 @@ from django.core.paginator import Paginator
 import datetime
 
 from karaage.applications.models import UserApplication, ProjectApplication, Applicant, Application
-from karaage.applications.forms import UserApplicationForm, UserApplicantForm, LeaderApproveUserApplicationForm, LeaderInviteUserApplicationForm
+from karaage.applications.forms import UserApplicationForm, UserApplicantForm, LeaderApproveUserApplicationForm, LeaderInviteUserApplicationForm, StartApplicationForm
 from karaage.applications.emails import send_account_request_email, send_account_approved_email, send_user_invite_email, send_account_declined_email, send_notify_admin
-
+from karaage.applications.saml import SAMLApplicantForm, get_saml_user, add_saml_data
 from karaage.people.models import Person
 from karaage.projects.models import Project
 from karaage.util import log_object as log
 
 
-def do_userapplication(request, token=None):
+
+def do_userapplication(request, token=None, saml=False):
     if request.user.is_authenticated():
         messages.info(request, "You are already logged in")
         return HttpResponseRedirect(reverse('kg_user_profile'))
+    
+    if saml:
+        from django_shibboleth.utils import parse_attributes
+        attr, error = parse_attributes(request.META)
+        if error:
+            return render_to_response('shibboleth/attribute_error.html', {'shib_attrs': attr}, context_instance=RequestContext(request))
 
     if token:
         try:
@@ -62,15 +69,27 @@ def do_userapplication(request, token=None):
         application = UserApplication()
         applicant = None
         captcha = True
+    if saml:
+        captcha = False
+        saml_user = get_saml_user(request)
+    else:
+        saml_user = None
 
     if application.content_type and application.content_type.model == 'person':
         return existing_user_application(request, token)
-    
+    init_institute = request.GET.get('institute', '')
+
     if request.method == 'POST':
         form = UserApplicationForm(request.POST, instance=application, captcha=captcha)
-        applicant_form = UserApplicantForm(request.POST, instance=applicant)
+        if saml:
+            applicant_form = SAMLApplicantForm(request.POST, instance=applicant)
+        else:
+            applicant_form = UserApplicantForm(request.POST, instance=applicant)
         if form.is_valid() and applicant_form.is_valid():
-            applicant = applicant_form.save()
+            applicant = applicant_form.save(commit=False)
+            if saml:
+                applicant = add_saml_data(applicant, request)
+            applicant.save()
             application = form.save(commit=False)
             application.applicant = applicant
             application.save()
@@ -83,9 +102,14 @@ def do_userapplication(request, token=None):
             return HttpResponseRedirect(reverse('kg_application_done',  args=[application.secret_token]))
     else:
         form = UserApplicationForm(instance=application, captcha=captcha)
-        applicant_form = UserApplicantForm(instance=applicant)
-    
-    return render_to_response('applications/userapplication_form.html', {'form': form, 'applicant_form': applicant_form, 'application': application}, context_instance=RequestContext(request)) 
+        if saml:
+            applicant_form = SAMLApplicantForm(instance=applicant)
+        else:
+            applicant_form = UserApplicantForm(instance=applicant, initial={'institute': init_institute})
+    return render_to_response('applications/userapplication_form.html', 
+                              {'form': form, 'applicant_form': applicant_form, 'application': application, 
+                               'saml': saml, 'saml_user': saml_user, }, 
+                              context_instance=RequestContext(request)) 
 
 
 def existing_user_application(request, token):
@@ -276,9 +300,33 @@ def userapplication_pending(request, application_id):
 
 def application_index(request):
     if not settings.ALLOW_REGISTRATIONS:
-        return render_to_response('applications/registrations_disabled.html', {}, context_instance=RequestContext(request)) 
+        return render_to_response('applications/registrations_disabled.html', {}, context_instance=RequestContext(request))
+    url_base = 'http%s://%s' % (request.is_secure() and 's' or '', request.get_host())
+    shib_url = "%s%s" % (url_base, getattr(settings, 'SHIB_HANDLER', '/Shibboleth.sso/DS'))
 
-    return render_to_response('applications/index.html', {}, context_instance=RequestContext(request))
+    if request.method == 'POST':
+        form = StartApplicationForm(request.POST)
+        if form.is_valid():
+            institute = form.cleaned_data['institute']
+            app_type = form.cleaned_data['application_type']
+            if app_type == 'U':
+                if institute.saml_entityid:
+                    return HttpResponseRedirect('%s?target=%s&entityID=%s' % (shib_url, 
+                                                                              url_base + reverse('kg_saml_new_userapplication'), 
+                                                                              institute.saml_entityid))
+                else:
+                    return HttpResponseRedirect(reverse('kg_new_userapplication') + '?institute=%s' % institute.id)
+            elif app_type == 'P':
+                if institute.saml_entityid:
+                    return HttpResponseRedirect('%s?target=%s&entityID=%s' % (shib_url, 
+                                                                              url_base + reverse('kg_saml_new_projectapplication'),
+                                                                              institute.saml_entityid))
+                else:
+                    return HttpResponseRedirect(reverse('kg_new_projectapplication') + '?institute=%s' % institute.id)
+    else:
+        form = StartApplicationForm()
+
+    return render_to_response('applications/index.html', {'form': form}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -336,3 +384,4 @@ def pending_applications(request):
     return render_to_response('applications/pending_application_list.html', {'user_applications': user_applications, 'page': page, 
                                                                              'project_applications': project_applications, 'projects_page': projects_page},
                               context_instance=RequestContext(request)) 
+

@@ -33,6 +33,7 @@ class Institute(models.Model):
     active_delegate = models.ForeignKey('Person', related_name='active_delegate', null=True, blank=True)
     sub_delegates = models.ManyToManyField('Person', related_name='sub_delegates', blank=True, null=True)
     gid = models.IntegerField(editable=False)
+    saml_entityid = models.CharField(max_length=200, null=True, blank=True, unique=True)
     is_active = models.BooleanField()
     objects = models.Manager()
     active = ActiveInstituteManager()
@@ -99,6 +100,7 @@ class Institute(models.Model):
 
 class Person(models.Model):
     user = models.ForeignKey(User, unique=True)
+    saml_id = models.CharField(max_length=200, null=True, blank=True, unique=True)
     position = models.CharField(max_length=200, null=True, blank=True)
     telephone = models.CharField(max_length=200, null=True, blank=True)
     mobile = models.CharField(max_length=200, null=True, blank=True)

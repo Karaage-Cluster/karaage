@@ -31,6 +31,7 @@ INSTALLED_APPS = (
     'south',
     'andsome',
     'django_surveys',
+    'django_shibboleth',
     'karaage',
     'karaage.people',
     'karaage.machines',
@@ -105,11 +106,13 @@ MIDDLEWARE_CLASSES = (
     'andsome.middleware.threadlocals.ThreadLocals',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'karaage.middleware.saml.SamlUserMiddleware',
 )
 
 AUTHENTICATION_BACKENDS = (
- 'placard.backends.LDAPBackend',
- 'django.contrib.auth.backends.ModelBackend',
+    'karaage.backends.SamlUserBackend',
+    'placard.backends.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 PROJECT_DATASTORE = 'karaage.datastores.projects.ldap_datastore'
@@ -118,5 +121,14 @@ INSTITUTE_DATASTORE = 'karaage.datastores.institutes.ldap_datastore'
 AUP_URL = ''
 
 USAGE_IS_PUBLIC = False
+
+SHIB_ATTRIBUTE_MAP = {
+    "HTTP_SHIB_IDENTITY_PROVIDER": (True, "idp"),
+    "HTTP_PERSISTENT_ID": (True, "persistent_id"),
+    "HTTP_MAIL": (True, "email"),
+    "HTTP_GIVENNAME": (True, "first_name"),
+    "HTTP_SN": (True, "last_name"),
+    "HTTP_TELEPHONENUMBER": (False, "telephone"),
+    }
 
 execfile("/etc/karaage/global_settings.py")

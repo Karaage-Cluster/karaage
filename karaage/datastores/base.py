@@ -68,6 +68,7 @@ class PersonalDataStore(object):
             mobile=data.get('mobile', ''),
             supervisor=data.get('supervisor', ''),
             is_systemuser=data.get('is_systemuser', ''),
+            saml_id=data.get('saml_id', ''),
             )
         
         try:
@@ -100,6 +101,7 @@ class PersonalDataStore(object):
             'postcode': applicant.postcode,
             'country': applicant.country,
             'fax':  applicant.fax,
+            'saml_id': applicant.saml_id,
             }
         
         return create_new_user(data, hashed_password=applicant.password)

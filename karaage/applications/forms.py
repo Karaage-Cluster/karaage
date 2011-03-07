@@ -29,6 +29,15 @@ from karaage.people.models import Institute
 from karaage.validators import username_re
 
 
+APP_CHOICES = (
+    ('U', 'Join an existing project'),
+    ('P', 'Apply to start a new project'),
+)
+
+class StartApplicationForm(forms.Form):
+    institute = forms.ModelChoiceField(queryset=Institute.active.all())
+    application_type = forms.ChoiceField(choices=APP_CHOICES, widget=forms.RadioSelect())
+
 class ApplicantForm(forms.ModelForm):
     class Meta:
         model = Applicant
@@ -46,6 +55,7 @@ class UserApplicantForm(ApplicantForm):
 
     password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
     password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)') 
+    institute = forms.ModelChoiceField(queryset=Institute.active.filter(saml_entityid__isnull=True))
 
     def clean_username(self):
 
@@ -88,7 +98,7 @@ class UserApplicantForm(ApplicantForm):
 
     def clean(self):
         from karaage.util.helpers import create_password_hash
-        super(self.__class__, self).clean()
+        super(UserApplicantForm, self).clean()
         if 'password1' in self.cleaned_data:
             self.cleaned_data['password'] = create_password_hash(self.cleaned_data['password1'])
         return self.cleaned_data
@@ -111,6 +121,9 @@ class UserApplicationForm(forms.ModelForm):
 
 
 class ProjectApplicationForm(forms.ModelForm):
+    name = forms.CharField(label="Project Title", widget=forms.TextInput(attrs={ 'size':60 }))
+    description = forms.CharField(max_length=1000, widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }))
+    additional_req = forms.CharField(label="Additional requirements", widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), help_text=u"Do you have any special requirements?", required=False)
     aup = forms.BooleanField(label=u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>' % settings.AUP_URL, 
                              error_messages={'required': 'You must accept to proceed.'})
 

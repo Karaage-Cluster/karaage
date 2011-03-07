@@ -28,14 +28,23 @@ import datetime
 from karaage.applications.models import ProjectApplication, Application
 from karaage.applications.forms import ProjectApplicationForm, UserApplicantForm, ApproveProjectApplicationForm
 from karaage.applications.emails import send_project_request_email, send_project_approved_email
+from karaage.applications.saml import SAMLApplicantForm, get_saml_user, add_saml_data
 from karaage.machines.models import MachineCategory
 from karaage.util import log_object as log
 
 
-def do_projectapplication(request, token=None, application_form=ProjectApplicationForm, mc=MachineCategory.objects.get_default()):
+def do_projectapplication(request, token=None, application_form=ProjectApplicationForm, 
+                          mc=MachineCategory.objects.get_default(), saml=False):
+
     if request.user.is_authenticated():
         messages.info(request, "You are already logged in")
         return HttpResponseRedirect(reverse('kg_user_profile'))
+
+    if saml:
+        from django_shibboleth.utils import parse_attributes
+        attr, error = parse_attributes(request.META)
+        if error:
+            return render_to_response('shibboleth/attribute_error.html', {'shib_attrs': attr}, context_instance=RequestContext(request))
 
     if token:
         application = get_object_or_404(ProjectApplication, secret_token=token)
@@ -51,14 +60,27 @@ def do_projectapplication(request, token=None, application_form=ProjectApplicati
         application = None
         applicant = None
         captcha = True
+
+    if saml:
+        captcha = False
+        saml_user = get_saml_user(request)
+    else:
+        saml_user = None
+    init_institute = request.GET.get('institute', '')
     if request.method == 'POST':
         form = application_form(request.POST, instance=application, captcha=captcha)
-        applicant_form = UserApplicantForm(request.POST, instance=applicant)
+        if saml:
+            applicant_form = SAMLApplicantForm(request.POST, instance=applicant)
+        else:
+            applicant_form = UserApplicantForm(request.POST, instance=applicant)
+
         if form.is_valid() and applicant_form.is_valid():
-            applicant = applicant_form.save()
+            applicant = applicant_form.save(commit=False)
+            if saml:
+                applicant = add_saml_data(applicant, request)
+            applicant.save()
             application = form.save(commit=False)
             application.applicant = applicant
-            application.save()
             application.submitted_date = datetime.datetime.now()
             application.state = Application.WAITING_FOR_DELEGATE
             application.save()
@@ -66,10 +88,16 @@ def do_projectapplication(request, token=None, application_form=ProjectApplicati
             send_project_request_email(application)
             return HttpResponseRedirect(reverse('kg_application_done',  args=[application.secret_token]))
     else:
-        form = application_form(instance=application, captcha=captcha)
-        applicant_form = UserApplicantForm(instance=applicant)
+        form = application_form(instance=application, captcha=captcha, initial={'institute': init_institute})
+        if saml:
+            applicant_form = SAMLApplicantForm(instance=applicant)
+        else:
+            applicant_form = UserApplicantForm(instance=applicant, initial={'institute': init_institute})
     
-    return render_to_response('applications/projectapplication_form.html', {'form': form, 'applicant_form': applicant_form, 'application': application}, context_instance=RequestContext(request)) 
+    return render_to_response('applications/projectapplication_form.html', {'form': form, 'applicant_form': applicant_form, 
+                                                                            'application': application, 'saml': saml,
+                                                                            'saml_user': saml_user, }, 
+                              context_instance=RequestContext(request)) 
 
 
 @login_required

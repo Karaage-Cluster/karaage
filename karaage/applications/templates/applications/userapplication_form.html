@@ -1,5 +1,5 @@
 {% extends "forms.html" %}
-
+{% load forms %}
 {% block title %}Applications{% endblock %}
 
 {% block content_title %}New User Application{% endblock %}
@@ -10,6 +10,9 @@
 {% endblock %}   
 
 {% block content %}
+{% if saml %}
+<p>Hi {{ saml_user.first_name}}</p>
+{% endif %}
 {% if application.project %}
 <p>{{ application.created_by }} has invited you to join the following {{ org_name }} project:</p>
 <p>PID: {{ application.project.pid }}<br/>Title: {{ application.project.name }}</p>
@@ -18,7 +21,6 @@
 {% endif %}
 <form method="post" action=".">{% csrf_token %}
 <div>
-{% load forms %}
 {% if form.errors or form.non_field_errors or applicant_form.errors or applicant_form.non_field_errors %}
 	<p class="errornote">Please correct the error(s) below.</p>
 {% endif %}
@@ -35,6 +37,7 @@
 {% endif %}
 {% formfield form.aup %}
 </fieldset>
+{% if not saml %}
 <fieldset class="module aligned ()">
 <h2>Personal Details</h2>
 {% formfield applicant_form.email %}
@@ -43,6 +46,7 @@
 {% inlineformfield applicant_form.institute applicant_form.department %}
 {% inlineformfield applicant_form.telephone applicant_form.mobile %}
 </fieldset>
+{% endif %}
 {% if form.captcha %}
 <fieldset class="module aligned ()">
 {% formfield form.captcha %}

@@ -35,7 +35,7 @@ from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
 from karaage.machines.models import UserAccount
 from karaage.test_data.initial_ldap_data import test_ldif
-#from karaage.datastores import exceptions as kg_exceptions
+
 
 class UserApplicationTestCase(TestCase):
     urls = 'testproject.registration_urls'
@@ -59,12 +59,12 @@ class UserApplicationTestCase(TestCase):
         self.assertEquals(len(mail.outbox), 0)
         response = self.client.get(reverse('kg_new_userapplication'))
         self.failUnlessEqual(response.status_code, 200)
-        #hash_ = response.content[response.content.find('name="captcha_0" value="')+24:response.content.find('name="captcha_0" value="')+64]
+        hash_ = response.content[response.content.find('name="captcha_0" value="')+24:response.content.find('name="captcha_0" value="')+64]
 
-        #try:
-        #    captcha_text = CaptchaStore.objects.get(hashkey=hash_).response
-        #except:
-        #    self.fail()
+        try:
+            captcha_text = CaptchaStore.objects.get(hashkey=hash_).response
+        except:
+            self.fail()
 
         form_data = {
             'title' : 'Mr',
@@ -79,8 +79,8 @@ class UserApplicationTestCase(TestCase):
             'password1': 'Exaiquouxei0',
             'password2': 'Exaiquouxei0',
             'aup': True,
-            #'captcha_0': hash_,
-            #'captcha_1': captcha_text,
+            'captcha_0': hash_,
+            'captcha_1': captcha_text,
         }
 
         response = self.client.post(reverse('kg_new_userapplication'), form_data, follow=True)
@@ -118,7 +118,7 @@ class UserApplicationTestCase(TestCase):
         application = Application.objects.get(pk=application.id)
         self.failUnlessEqual(application.state, Application.WAITING_FOR_ADMIN)
 
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEquals(len(mail.outbox), 2)
         
 
 

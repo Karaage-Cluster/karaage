@@ -183,6 +183,7 @@ class Applicant(models.Model):
     postcode = models.CharField(max_length=8, null=True, blank=True)
     country = models.CharField(max_length=2, choices=COUNTRIES, null=True, blank=True)
     fax = models.CharField(max_length=50, null=True, blank=True)
+    saml_id = models.CharField(max_length=200, null=True, blank=True)
     applications = generic.GenericRelation(Application)
 
     def __unicode__(self):

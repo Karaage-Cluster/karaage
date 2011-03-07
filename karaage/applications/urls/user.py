@@ -25,6 +25,8 @@ urlpatterns = patterns('karaage.applications.views',
     url(r'^new-user/$', 'user.do_userapplication', name='kg_new_userapplication'),
     url(r'^new-project/$', 'projects.do_projectapplication', name='kg_new_projectapplication'),
     url(r'^choose-project/$', 'user.choose_project', name='kg_choose_project_existing'),
+    url(r'^saml/new-user/$', 'user.do_userapplication', {'saml': True}, name='kg_saml_new_userapplication'),
+    url(r'^saml/new-project/$', 'projects.do_projectapplication', {'saml': True}, name='kg_saml_new_projectapplication'),
     url(r'^invite/(?P<project_id>[-.\w]+)/$', 'user.send_invitation', name='kg_userapplication_invite'),
 
     url(r'^projects/add/$', 'projects.projectapplication_existing', name='kg_projectapplication_existing'),

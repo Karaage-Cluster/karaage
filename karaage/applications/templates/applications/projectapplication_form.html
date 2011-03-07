@@ -9,6 +9,9 @@
 {% endblock %}   
 
 {% block content %}
+{% if saml %}
+<p>Hi {{ saml_user.first_name}}, we have received needed personal information from your identity provider.</p>
+{% endif %}
 <form method="post" action=".">{% csrf_token %}
 <div>
 {% load forms %}
@@ -25,6 +28,7 @@
 {% formfield form.needs_account %}
 {% formfield form.aup %}
 </fieldset>
+{% if not saml %}
 <fieldset class="module aligned ()">
 <h2>Personal Details</h2>
 {% formfield applicant_form.email %}
@@ -33,6 +37,7 @@
 {% inlineformfield applicant_form.institute applicant_form.department %}
 {% inlineformfield applicant_form.telephone applicant_form.mobile %}
 </fieldset>
+{% endif %}
 <fieldset class="module aligned ()">
 <h2>Project Details</h2>
 {% formfield form.name %}
