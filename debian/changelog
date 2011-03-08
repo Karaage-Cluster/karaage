@@ -1,3 +1,11 @@
+karaage (2.5.5-1) testing; urgency=low
+
+  * Added initial code for SAML support
+  * Don't assume LDAP in kgcreateuser command
+  * Add CAPTCHA to application forms if in use
+
+ -- Sam Morrison <sam@vpac.org>  Tue, 08 Mar 2011 13:14:10 +1100
+
 karaage (2.5.4-1) testing; urgency=low
 
   * Change default url for graphs to /karaage_graphs/
