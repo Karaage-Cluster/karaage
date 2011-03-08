@@ -47,11 +47,11 @@ class SamlUserMiddleware(object):
         if request.user.is_authenticated():
             if request.user.get_profile().saml_id == self.clean_username(username, request):
                 return
-        else:
-            person = request.user.get_profile()
-            person.saml_id = self.clean_username(username, request)
-            person.save()
-            return
+            else:
+                person = request.user.get_profile()
+                person.saml_id = self.clean_username(username, request)
+                person.save()
+                return
 
         # We are seeing this user for the first time in this session, attempt
         # to authenticate the user.
