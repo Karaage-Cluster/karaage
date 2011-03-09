@@ -27,55 +27,9 @@ from karaage.util import log_object as log
 
 class PersonalDataStore(base.PersonalDataStore):
     
-    def create_new_user(self, data, hashed_password=None):
-        """Creates a new user (not active)
-        Keyword arguments:
-        data -- a dictonary of user data
-        hashed_password --
-        """
-        # Make sure username isn't taken in Datastore
-        random_passwd = User.objects.make_random_password()
-        user = User.objects.create_user(data['username'], data['email'], random_passwd)
-        
-        if hashed_password:
-            user.password = hashed_password
-        else:
-            user.password = unicode("\"" + str(data['password1']) + "\"", "iso-8859-1").encode("utf-16-le")
-       
-        user.is_active = False
-        user.save()
-       
-        #Create Person 
-        person = Person.objects.create(
-            user=user,
-            first_name=data['first_name'],
-            last_name=data['last_name'],
-            institute=data['institute'],
-            position=data.get('position', ''),
-            department=data.get('department', ''),
-            title=data.get('title', ''),
-            address=data.get('address', ''),
-            country=data.get('country', ''),
-            website=data.get('website', ''),
-            fax=data.get('fax', ''),
-            comment=data.get('comment', ''),
-            telephone=data.get('telephone', ''),
-            mobile=data.get('mobile', ''),
-            supervisor=data.get('supervisor', ''),
-            )
-      
-        try:
-            current_user = get_current_user()
-            if current_user.is_anonymous():
-                current_user = person.user
-        except:
-            current_user = person.user
-         
-        log(current_user, person, 1, 'Created')
-
-        return person
-  
-     
+    def create_new_user(self, data, hashed_password):
+        return super(PersonalDataStore, self).create_new_user(data, hashed_password)
+ 
     def activate_user(self, person):
         person = super(PersonalDataStore, self).activate_user(person)
         attrs = {}
@@ -163,6 +117,10 @@ class PersonalDataStore(base.PersonalDataStore):
             return True
         except DoesNotExistException:
             return False
+
+    def create_password_hash(self, raw_password):
+        return unicode("\"" + str(raw_password) + "\"", "iso-8859-1").encode("utf-16-le")
+
 
 class AccountDataStore(base.AccountDataStore):
 

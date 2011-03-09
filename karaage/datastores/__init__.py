@@ -51,6 +51,9 @@ def set_password(person, raw_password):
 def user_exists(username):
     pds.user_exists(username)
 
+def create_password_hash(raw_password):
+    return pds.create_password_hash(raw_password)
+
 
 account_datastores = settings.ACCOUNT_DATASTORES
 

@@ -25,13 +25,11 @@ from django.contrib.auth.models import User
 import random, string
 import datetime
 
-from placard.ldap_passwd import md5crypt
-
 from karaage.machines.models import MachineCategory, UserAccount
-
+from karaage.datastores import create_password_hash as ds_create_password_hash
 
 def create_password_hash(raw_password):
-    return '{crypt}%s' % md5crypt(raw_password)
+    return ds_create_password_hash(raw_password)
 
 
 def _getsalt(chars=string.letters + string.digits):

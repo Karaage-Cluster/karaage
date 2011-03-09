@@ -116,6 +116,10 @@ class PersonalDataStore(base.PersonalDataStore):
             return True
         except DoesNotExistException:
             return False
+        
+    def create_password_hash(self, raw_password):
+        from placard.ldap_passwd import md5crypt
+        return '{crypt}%s' % md5crypt(raw_password)
 
 
 class AccountDataStore(base.AccountDataStore):

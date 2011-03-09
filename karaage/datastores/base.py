@@ -178,6 +178,9 @@ class PersonalDataStore(object):
     def user_exists(self, username):
         pass
 
+    def create_password_hash(self, raw_password):
+        pass
+
 
 class AccountDataStore(object):
 
