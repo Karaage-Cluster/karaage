@@ -97,6 +97,9 @@
       {% endif %}
       {#<tr><td>Last Login:</td><td>{{ person.user.last_login }}</td></tr>#}
       <tr><td>Accounts username:</td><td>{{ person.username }}</td></tr>
+      {% if person.saml_id %}
+      <tr><td>SAML ID:</td><td>{{ person.saml_id }}</td></tr>
+      {% endif %}
       <tr><td colspan="2"><a href="?">Less.....</a></td></tr>
       {% else %}
       <tr><td colspan="2"><a href="?showall=true">More....</a></td></tr>

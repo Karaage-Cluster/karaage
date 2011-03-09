@@ -16,9 +16,13 @@
     
     <table>
       <tr><td colspan="2"><a href="{{ institute.get_usage_url }}">View Usage</a></td></tr>
+      <tr><td>Active:</td><td>{% yes_no_img institute.is_active %}</td></tr>
       <tr><td>Delegate:</td><td><a href="{{ institute.delegate.get_absolute_url }}">{{ institute.delegate }}</a></td></tr>
       <tr><td>Active Delegate:</td><td><a href="{{ institute.active_delegate.get_absolute_url }}">{{ institute.active_delegate }}</a></td></tr>
       <tr><td>Gid:</td><td>{{ institute.gid }}</td></tr>
+      {% if institute.saml_entityid %}
+      <tr><td>SAML entityID:</td><td>{{ institute.saml_entityid }}</td></tr>
+      {% endif %}
       {% if perms.people.change_institute %}
       <tr><td colspan="2"><a href="edit/" class="changelink">Edit</a></td></tr>
       {% endif %} 
