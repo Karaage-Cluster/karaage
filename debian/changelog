@@ -1,3 +1,11 @@
+karaage (2.5.6-1) testing; urgency=low
+
+  * Bug fixes
+  * Show saml ids in admin detail pages
+  * Changed create_password_hash to handle different formats
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 09 Mar 2011 15:17:01 +1100
+
 karaage (2.5.5-1) testing; urgency=low
 
   * Added initial code for SAML support
