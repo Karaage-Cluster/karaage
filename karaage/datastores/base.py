@@ -22,7 +22,6 @@ from django.contrib.auth.models import AnonymousUser
 import datetime
 from andsome.middleware.threadlocals import get_current_user
 
-from karaage.util.helpers import create_password_hash 
 from karaage.people.models import Person
 from karaage.machines.models import UserAccount
 from karaage.util import log_object as log
@@ -45,6 +44,7 @@ class PersonalDataStore(object):
         if hashed_password:
             user.password = hashed_password
         else:
+            from karaage.datastores import create_password_hash
             user.password = create_password_hash(data['password1'])
             
         user.is_active = False
