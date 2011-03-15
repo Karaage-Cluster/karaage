@@ -75,14 +75,13 @@ class ProjectChunk(models.Model):
         return False
 
     def get_cap(self):
+        if self.cap is not None:
+            return self.cap
+
         try:
             iq = self.project.institute.institutechunk_set.get(machine_category=self.machine_category)
         except:
-            print 'failed'
             return None
-
-        if self.cap is not None:
-            return self.cap
         if iq.cap is not None:
             return iq.cap
         return iq.quota * 1000
