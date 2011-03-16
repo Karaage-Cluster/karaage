@@ -72,7 +72,10 @@
     
   </div>
    <div class="module">
-    <h2>Project Caps/quota <a href="{% url kg_projectchunk_edit project.pid %}" class="changelink">Edit</a></h2>
+    <h2>Project Caps/quota {% if perms.pbsmoab.add_projectchunk %}
+      <a href="{% url kg_projectchunk_add project.pid %}" 
+         class="addlink">Add</a>
+    {% endif %}</h2>
     <table>
       <thead>
 	<tr>
@@ -87,6 +90,12 @@
 	  <td>{{ pc.machine_category }}</td>
 	  <td>{{ pc.get_mpots|floatformat:"2" }}</td>
 	  <td>{{ pc.get_cap }}</td>
+	  {% if perms.pbsmoab.create_projectchunk %}
+	  <td><a href="{% url kg_projectchunk_edit pc.id %}" class="changelink">edit</a></td>
+	  {% endif %}
+	  {% if perms.projects.delete_project %}
+	  <td><a href="{% url kg_projectchunk_delete pc.id %}" class="deletelink">Remove</a>
+	  {% endif %}
 	</tr>
 	{% endfor %}
 	</tbody>
