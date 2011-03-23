@@ -40,6 +40,10 @@ class InstituteDataStore(base.InstituteDataStore):
         return gid
 
     def delete_institute(self, institute):
-        conn.delete_group('cn=%s' % institute.pid)
+        conn = LDAPClient()
+        try:
+            conn.delete_group('cn=%s' % institute.gid)
+        except DoesNotExistException:
+            pass
 
 
