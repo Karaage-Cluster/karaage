@@ -297,13 +297,8 @@ def unknown_usage(request):
                     job.user = ua
                     job.save()
                 
-                
-            
-    project = Project.objects.get(pid='Unknown_Project')
-
     year_ago = datetime.date.today() - datetime.timedelta(days=365)
-    usage_list = project.cpujob_set.filter(date__gte=year_ago)
-        
+    usage_list = CPUJob.objects.filter(project__isnull=True, date__gte=year_ago)        
 
     return render_to_response('usage/unknown_usage.html', locals(), context_instance=RequestContext(request))
 

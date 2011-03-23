@@ -46,16 +46,6 @@ def parse_logs(log_list, date, machine_name, log_type):
     except Machine.DoesNotExist:
         return "ERROR: Couldn't find machine named: %s" % machine_name
 
-    try:
-        user_account = UserAccount.objects.get(username='unknown_user', machine_category=machine.category)
-    except UserAccount.DoesNotExist:
-        return "ERROR: Couldn't find unknown_user for machine category %s, please create one" % machine.category.name
-
-    try:
-        project = Project.objects.get(pk='Unknown_Project')
-    except Project.DoesNotExist:
-        return "ERROR: Couldn't find project Unknown_Project, please create one"
-
     # Process each line  
     for line in log_list:
         line_no = line_no + 1
@@ -70,13 +60,13 @@ def parse_logs(log_list, date, machine_name, log_type):
         try:
             user_account = UserAccount.objects.get(username=data['user'], machine_category=machine.category, date_deleted__isnull=True)
         except UserAccount.DoesNotExist:
-            # Couldn't find user account - Assign to user 'Unknown_User'
-            user_account = UserAccount.objects.get(username='unknown_user', machine_category=machine.category)
-            output.append("Couldn't find user account for username=%s and machine category=%s. Assigned to unknown user" % (data['user'], machine.category.name))
+            # Couldn't find user account - Assign to user None
+            user_account = None
+            output.append("Couldn't find user account for username=%s and machine category=%s. Assigned to None" % (data['user'], machine.category.name))
             fail = fail + 1
         except UserAccount.MultipleObjectsReturned:
-            user_account = UserAccount.objects.get(username='unknown_user', machine_category=machine.category)
-            output.append("Username %s has multiple active accounts on machine category %s. Assigned to unknown user" % (data['user'], machine.category.name))
+            user_account = None
+            output.append("Username %s has multiple active accounts on machine category %s. Assigned to None" % (data['user'], machine.category.name))
             fail = fail + 1
 
         if 'project' in data:
@@ -89,24 +79,23 @@ def parse_logs(log_list, date, machine_name, log_type):
                 try:
                     project = user_account.default_project
                 except:
-                    output.append("Couldn't find default project %s, using Unknown_Project" % user_account.default_project)
-                    project = Project.objects.get(pk='Unknown_Project')
+                    output.append("Couldn't find default project %s, using None" % user_account.default_project)
+                    project = None
 
         else:
             try:
                 project = user_account.default_project
             except:
-                # Couldn't find project - Assign to 'Unknown_Project'
+                # Couldn't find project - Assign to None
                 output.append("Couldn't find default project for username=%s and machine category=%s" % (data['user'], machine.category.name))
-                project = Project.objects.get(pk='Unknown_Project')
+                project = None
                 fail +=  1
                 
-        if project is None:
-            project = Project.objects.get(pk='Unknown_Project')
+        if project is not None:
         
-        if user_account.user not in project.users.all():
-            output.append("%s is not in project %s, cpu usage: %s" % (user_account.user, project, data['cpu_usage']))
-            fail += 1
+            if user_account.user not in project.users.all():
+                output.append("%s is not in project %s, cpu usage: %s" % (user_account.user, project, data['cpu_usage']))
+                fail += 1
 
         # Everything is good so add entry
         queue, created = Queue.objects.get_or_create(name=data['queue'])
