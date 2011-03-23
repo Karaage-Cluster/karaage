@@ -16,7 +16,6 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django import forms
-from placard.client import LDAPClient
 
 from karaage.machines.models import Machine
 from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense
@@ -27,7 +26,6 @@ class SoftwarePackageForm(forms.Form):
     category = forms.ModelChoiceField(queryset=SoftwareCategory.objects.all())
     name = forms.CharField()
     description = forms.CharField(required=False, widget=forms.Textarea())
-    gid = forms.ChoiceField(required=False, choices=[(x.gidNumber, x.cn) for x in LDAPClient().get_groups()])
     homepage = forms.URLField(required=False)
     tutorial_url = forms.URLField(required=False)
     academic_only = forms.BooleanField(required=False)
@@ -42,10 +40,6 @@ class SoftwarePackageForm(forms.Form):
         package.category = data['category']
         package.name = data['name']
         package.description = data['description']
-        if data['gid'] == "":
-            package.gid = None
-        else:
-            package.gid = data['gid']
         package.homepage = data['homepage']
         package.tutorial_url = data['tutorial_url']
         package.academic_only = data['academic_only']

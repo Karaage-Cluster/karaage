@@ -17,8 +17,6 @@
 
 from django.db import models
 
-from placard.client import LDAPClient
-
 from karaage.people.models import Person
 from karaage.machines.models import Machine
 
@@ -42,7 +40,7 @@ class SoftwarePackage(models.Model):
     category = models.ForeignKey(SoftwareCategory)
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
-    gid = models.IntegerField(blank=True, null=True)
+    gid = models.IntegerField(blank=True, null=True, editable=False)
     homepage = models.URLField(blank=True, null=True)
     tutorial_url = models.URLField(blank=True, null=True)
     academic_only = models.BooleanField()
@@ -52,6 +50,11 @@ class SoftwarePackage(models.Model):
         ordering = ['name']
         db_table = 'software_package'
 
+    def save(self, *args, **kwargs):
+        from karaage.datastores.software import create_software
+        self.gid = create_software(self)
+        super(SoftwarePackage, self).save(*args, **kwargs)
+        
     def __unicode__(self):
         return self.name
     
@@ -66,19 +69,12 @@ class SoftwarePackage(models.Model):
             return None
 
     def group_name(self):
-        conn = LDAPClient()
-        try:
-            ldap_group = conn.get_group('gidNumber=%s' % self.gid)
-            return ldap_group.name()
-        except:
-            return 'No LDAP Group'
+        from karaage.datastores.software import get_name as ds_get_name
+        return ds_get_name(self)
 
     def get_group_members(self):
-        conn = LDAPClient()
-        try:
-            return conn.get_group_members('gidNumber=%s' % self.gid)
-        except:
-            return []
+        from karaage.datastores.software import get_members
+        return get_members(self)
 
 class SoftwareVersion(models.Model):
     package = models.ForeignKey(SoftwarePackage)

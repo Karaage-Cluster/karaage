@@ -26,7 +26,6 @@ from django.core.urlresolvers import reverse
 
 import datetime
 from andsome.util.filterspecs import Filter, FilterBar
-from placard.client import LDAPClient
 
 from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense, SoftwareAccessRequest, SoftwareLicenseAgreement
 from karaage.software.forms import AddPackageForm, LicenseForm, SoftwareVersionForm
@@ -86,11 +85,11 @@ def software_detail(request, package_id):
 
     if request.method == 'POST' and 'member-add' in request.POST:
         person = get_object_or_404(Person, pk=request.POST['member'])
-        conn = LDAPClient()
-        conn.add_group_member('gidNumber=%s' % package.gid, str(person.username))
+        from karaage.datastores.software import add_member
+        add_member(package, person)
 
-        messages.info(request, "User %s added to LDAP group" % person)
-        log(request.user, package, 1, "User %s added to LDAP group manually" % person)
+        messages.info(request, "User %s added to group" % person)
+        log(request.user, package, 1, "User %s added to group manually" % person)
         return HttpResponseRedirect(package.get_absolute_url())
 
     return render_to_response('software/software_detail.html', locals(), context_instance=RequestContext(request))
@@ -188,8 +187,8 @@ def remove_member(request, package_id, user_id):
     package = get_object_or_404(SoftwarePackage, pk=package_id)
     person = get_object_or_404(Person, pk=user_id)
 
-    conn = LDAPClient()
-    conn.remove_group_member('gidNumber=%s' % package.gid, str(person.username))
+    from karaage.datastores.software import remove_member as ds_remove_member
+    ds_remove_member(package, person)
 
     log(request.user, package, 3, 'Removed %s from group' % person)
     log(request.user, person, 3, 'Removed from software group %s' % package)
@@ -219,8 +218,9 @@ def softwarerequest_approve(request, softwarerequest_id):
             license=softwarerequest.software_license,
             date=datetime.datetime.today(),
             )
-        conn = LDAPClient()
-        conn.add_group_member('gidNumber=%s' % softwarerequest.software_license.package.gid, softwarerequest.person.username)
+        from karaage.datastores.software import add_member
+        add_member(softwarerequest.software_license.package, softwarerequest.person)
+
         messages.info(request, "Software request approved successfully")
         send_software_request_approved_email(softwarerequest)
         log(request.user, softwarerequest.software_license.package, 1, "User %s approved" % softwarerequest.person)

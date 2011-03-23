@@ -24,7 +24,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 import datetime
-from placard.client import LDAPClient
 
 from karaage.software.models import SoftwarePackage, SoftwareLicenseAgreement, SoftwareAccessRequest
 from karaage.util.email_messages import send_software_request_email
@@ -76,8 +75,8 @@ def add_package(request, package_id):
                 license=software_license,
                 date=datetime.datetime.today(),
                 )
-            conn = LDAPClient()
-            conn.add_group_member('gidNumber=%s' % software_license.package.gid, str(person.username))
+            from karaage.datastores.software import add_member
+            add_member(software_license.package, person)
 
         return HttpResponseRedirect(reverse('kg_user_profile'))
 
