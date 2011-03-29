@@ -1,0 +1,36 @@
+{% extends "forms.html" %}
+{% load forms %}
+
+{% block title %}Projects{% endblock %}
+
+{% block content_title %}Delete Project Cap{% endblock %}
+
+
+{% block content %}
+   <div class="module">
+    <h2>Project Caps/quota</h2>
+    <table>
+      <thead>
+	<tr>
+	  <th>Machine Category</th>
+	  <th>Actual</th>
+	  <th>Quota</th>
+	</tr>
+      </thead>
+      <tbody>
+	<tr class="row1">
+	  <td>{{ project_chunk.machine_category }}</td>
+	  <td>{{ project_chunk.get_mpots|floatformat:"2" }}</td>
+	  <td>{{ project_chunk.get_cap }}</td>
+	</tr>
+	</tbody>
+    </table>
+   </div> 
+
+<form method="post" action=".">{% csrf_token %}
+
+<div class="submit-row">
+<input type="submit" value="Delete" class="default" />
+</div>
+</form>
+{% endblock %}
