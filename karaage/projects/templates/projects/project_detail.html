@@ -48,7 +48,7 @@
       {% endif %}
       <tr><td>Leaders:</td><td>{% for l in project.leaders.all %}<a href="{{ l.get_absolute_url }}">{{ l }}</a> {% endfor %}</td></tr>
       <tr><td>Institiute:</td><td><a href="{{ project.institute.get_absolute_url }}">{{ project.institute }}</a></td></tr>
-      <tr><td>Last Usage:</td><td>{{ project.last_usage|date }} ({{ project.last_usage|timesince }})</td></tr>
+      <tr><td>Last Usage:</td><td>{% if project.last_usage %}{{ project.last_usage|date }} ({{ project.last_usage|timesince }}){% else %}No usage{% endif %}</td></tr>
       <tr><td>Start Date:</td><td>{{ project.start_date|date }}</td></tr>
       <tr><td>End Date:</td><td>{{ project.end_date|date }}</td></tr>
       
