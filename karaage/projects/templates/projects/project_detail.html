@@ -90,7 +90,7 @@
 	  <td>{{ pc.machine_category }}</td>
 	  <td>{{ pc.get_mpots|floatformat:"2" }}</td>
 	  <td>{{ pc.get_cap }}</td>
-	  {% if perms.pbsmoab.create_projectchunk %}
+	  {% if perms.pbsmoab.add_projectchunk %}
 	  <td><a href="{% url kg_projectchunk_edit pc.id %}" class="changelink">edit</a></td>
 	  {% endif %}
 	  {% if perms.projects.delete_project %}
