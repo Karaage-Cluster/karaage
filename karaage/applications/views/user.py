@@ -166,7 +166,7 @@ def choose_project(request, token=None):
     if request.REQUEST.has_key('leader_q'):
         q_project = False
         try:
-            q_project = Project.objects.get(pid__icontains=request.GET['leader_q'])
+            q_project = Project.active.get(pid__icontains=request.GET['leader_q'])
         except:
             pass
         leader_list = Person.active.filter(institute=institute, leaders__isnull=False).distinct()
