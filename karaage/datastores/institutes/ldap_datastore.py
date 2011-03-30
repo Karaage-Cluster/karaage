@@ -37,6 +37,7 @@ class InstituteDataStore(base.InstituteDataStore):
                 gid = int(lgroup.gidNumber)
             except DoesNotExistException:
                 gid = conn.add_group(cn=str(institute.name.lower().replace(' ', '')))
+        del(conn)
         return gid
 
     def delete_institute(self, institute):

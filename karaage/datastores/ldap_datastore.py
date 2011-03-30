@@ -93,6 +93,7 @@ class PersonalDataStore(base.PersonalDataStore):
             'uid=%s' % person.username,
             nsRoleDN=settings.LDAP_LOCK_DN,
             )
+        del(conn)
         
     def unlock_user(self, person):
         super(PersonalDataStore, self).unlock_user(person)
@@ -104,10 +105,12 @@ class PersonalDataStore(base.PersonalDataStore):
             }
         new = {}
         conn.ldap_modify(dn, old, new)  
+        del(conn)
 
     def set_password(self, person, raw_password):
         conn = LDAPClient()
         conn.change_password('uid=%s' % person.user.username, raw_password)
+        del(conn)
 
     def user_exists(self, username):
         conn = LDAPClient()
@@ -159,6 +162,7 @@ class AccountDataStore(base.AccountDataStore):
             loginShell='',
             objectClass=settings.USER_OBJECTCLASS
             )
+        del(conn)
 
     def update_account(self, ua):
         super(AccountDataStore, self).update_account(ua)
@@ -194,3 +198,4 @@ class AccountDataStore(base.AccountDataStore):
         super(AccountDataStore, self).change_shell(ua, shell)
         conn =  LDAPClient()
         conn.update_user('uid=%s' % ua.username, loginShell=str(shell))
+        del(conn)
