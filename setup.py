@@ -82,7 +82,7 @@ data_files.append(
 setup(
     name = "karaage",
     version = version,
-    url = 'http://trac.vpac.org/karaage/',
+    url = 'http://code.vpac.org/trac/karaage/',
     author = 'Sam Morrison',
     author_email = 'sam@vpac.org',
     description = 'Collection of Django apps to manage a clusters',
