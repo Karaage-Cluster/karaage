@@ -117,6 +117,7 @@ AUTHENTICATION_BACKENDS = (
 
 PROJECT_DATASTORE = 'karaage.datastores.projects.ldap_datastore'
 INSTITUTE_DATASTORE = 'karaage.datastores.institutes.ldap_datastore'
+SOFTWARE_DATASTORE = 'karaage.datastores.software.ldap_datastore'
 
 AUP_URL = ''
 
