@@ -34,8 +34,10 @@ APP_CHOICES = (
     ('P', 'Apply to start a new project'),
 )
 
-class StartApplicationForm(forms.Form):
+class StartInviteApplicationForm(forms.Form):
     institute = forms.ModelChoiceField(queryset=Institute.active.all())
+
+class StartApplicationForm(StartInviteApplicationForm):
     application_type = forms.ChoiceField(choices=APP_CHOICES, widget=forms.RadioSelect())
 
 class ApplicantForm(forms.ModelForm):
