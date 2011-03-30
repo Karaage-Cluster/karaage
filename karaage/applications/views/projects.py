@@ -24,6 +24,7 @@ from django.contrib import messages
 from django.conf import settings
 
 import datetime
+from django_shibboleth.utils import ensure_shib_session
 
 from karaage.applications.models import ProjectApplication, Application
 from karaage.applications.forms import ProjectApplicationForm, UserApplicantForm, ApproveProjectApplicationForm
@@ -41,10 +42,9 @@ def do_projectapplication(request, token=None, application_form=ProjectApplicati
         return HttpResponseRedirect(reverse('kg_user_profile'))
 
     if saml:
-        from django_shibboleth.utils import parse_attributes
-        attr, error = parse_attributes(request.META)
-        if error:
-            return render_to_response('shibboleth/attribute_error.html', {'shib_attrs': attr}, context_instance=RequestContext(request))
+        response = ensure_shib_session(request)
+        if response:
+            return response
 
     if token:
         application = get_object_or_404(ProjectApplication, secret_token=token)

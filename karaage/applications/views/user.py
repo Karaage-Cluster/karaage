@@ -26,9 +26,10 @@ from django.conf import settings
 from django.core.paginator import Paginator
 
 import datetime
+from django_shibboleth.utils import ensure_shib_session, build_shib_url
 
 from karaage.applications.models import UserApplication, ProjectApplication, Applicant, Application
-from karaage.applications.forms import UserApplicationForm, UserApplicantForm, LeaderApproveUserApplicationForm, LeaderInviteUserApplicationForm, StartApplicationForm
+from karaage.applications.forms import UserApplicationForm, UserApplicantForm, LeaderApproveUserApplicationForm, LeaderInviteUserApplicationForm, StartApplicationForm, StartInviteApplicationForm
 from karaage.applications.emails import send_account_request_email, send_account_approved_email, send_user_invite_email, send_account_declined_email, send_notify_admin
 from karaage.applications.saml import SAMLApplicantForm, get_saml_user, add_saml_data
 from karaage.people.models import Person
@@ -41,12 +42,11 @@ def do_userapplication(request, token=None, saml=False):
     if request.user.is_authenticated():
         messages.info(request, "You are already logged in")
         return HttpResponseRedirect(reverse('kg_user_profile'))
-    
+
     if saml:
-        from django_shibboleth.utils import parse_attributes
-        attr, error = parse_attributes(request.META)
-        if error:
-            return render_to_response('shibboleth/attribute_error.html', {'shib_attrs': attr}, context_instance=RequestContext(request))
+        response = ensure_shib_session(request)
+        if response:
+            return response
 
     if token:
         try:
@@ -58,7 +58,6 @@ def do_userapplication(request, token=None, saml=False):
             return render_to_response('applications/old_userapplication.html',
                                         {'help_email': settings.ACCOUNTS_EMAIL,},
                                         context_instance=RequestContext(request))
-
         applicant = application.applicant
         application.state = Application.OPEN
         application.save()
@@ -141,8 +140,6 @@ def choose_project(request, token=None):
 
     institute = application.applicant.institute
     
-    #select_project_list = Project.objects.filter(institute=institute)
-    
     project_list = False
     qs = request.META['QUERY_STRING']
 
@@ -220,13 +217,6 @@ def approve_userapplication(request, application_id):
         if form.is_valid():
             application = form.save()
 
-            needs_account_created = False
-            if application.needs_account:
-                for mc in application.project.machine_categories.all():
-                    if not application.applicant.has_account(mc):
-                        needs_account_created = True
-                        break
-
             if settings.ADMIN_APPROVE_ACCOUNTS:
                 application.state = Application.WAITING_FOR_ADMIN
                 application.save()
@@ -301,8 +291,6 @@ def userapplication_pending(request, application_id):
 def application_index(request):
     if not settings.ALLOW_REGISTRATIONS:
         return render_to_response('applications/registrations_disabled.html', {}, context_instance=RequestContext(request))
-    url_base = 'http%s://%s' % (request.is_secure() and 's' or '', request.get_host())
-    shib_url = "%s%s" % (url_base, getattr(settings, 'SHIB_HANDLER', '/Shibboleth.sso/DS'))
 
     if request.method == 'POST':
         form = StartApplicationForm(request.POST)
@@ -311,16 +299,15 @@ def application_index(request):
             app_type = form.cleaned_data['application_type']
             if app_type == 'U':
                 if institute.saml_entityid:
-                    return HttpResponseRedirect('%s?target=%s&entityID=%s' % (shib_url, 
-                                                                              url_base + reverse('kg_saml_new_userapplication'), 
-                                                                              institute.saml_entityid))
+                    return HttpResponseRedirect(build_shib_url(
+                            request, reverse('kg_saml_new_userapplication'), institute.saml_entityid))
                 else:
                     return HttpResponseRedirect(reverse('kg_new_userapplication') + '?institute=%s' % institute.id)
             elif app_type == 'P':
                 if institute.saml_entityid:
-                    return HttpResponseRedirect('%s?target=%s&entityID=%s' % (shib_url, 
-                                                                              url_base + reverse('kg_saml_new_projectapplication'),
-                                                                              institute.saml_entityid))
+                    return HttpResponseRedirect(build_shib_url(
+                            request, reverse('kg_saml_new_projectapplication'), institute.saml_entityid))
+
                 else:
                     return HttpResponseRedirect(reverse('kg_new_projectapplication') + '?institute=%s' % institute.id)
     else:
@@ -343,7 +330,9 @@ def send_invitation(request, project_id):
             email = form.cleaned_data['email']
             existing = Person.active.filter(user__email=email)
             if existing and not request.REQUEST.has_key('existing'):
-                return render_to_response('applications/userapplication_invite_existing.html', {'form': form, 'email': email}, context_instance=RequestContext(request))
+                return render_to_response('applications/userapplication_invite_existing.html', 
+                                          {'form': form, 'email': email}, 
+                                          context_instance=RequestContext(request))
             application = form.save(commit=False)
 
             try:
@@ -357,7 +346,8 @@ def send_invitation(request, project_id):
             if application.content_type.model == 'person':
                 application.approve()
                 send_account_approved_email(application)
-                messages.info(request, "%s was added to project %s directly since they have an existing account." % (application.applicant, application.project))
+                messages.info(request, "%s was added to project %s directly since they have an existing account." % 
+                              (application.applicant, application.project))
                 log(request.user, application, 1, "%s added directly to %s" % (applicant, project))
                 return HttpResponseRedirect(application.applicant.get_absolute_url())
 
@@ -369,7 +359,9 @@ def send_invitation(request, project_id):
     else:
         form = LeaderInviteUserApplicationForm(instance=application)
 
-    return render_to_response('applications/leaderuserapplication_invite_form.html', {'form': form, 'application': application, 'project': project}, context_instance=RequestContext(request)) 
+    return render_to_response('applications/leaderuserapplication_invite_form.html', 
+                              {'form': form, 'application': application, 'project': project}, 
+                              context_instance=RequestContext(request)) 
 
 @login_required
 def pending_applications(request):
@@ -381,7 +373,37 @@ def pending_applications(request):
     projects_p = Paginator(project_applications, 50)
     page = p.page(page_no)
     projects_page = projects_p.page(page_no)
-    return render_to_response('applications/pending_application_list.html', {'user_applications': user_applications, 'page': page, 
-                                                                             'project_applications': project_applications, 'projects_page': projects_page},
+    return render_to_response('applications/pending_application_list.html', 
+                              {'user_applications': user_applications, 'page': page,
+                               'project_applications': project_applications, 'projects_page': projects_page},
                               context_instance=RequestContext(request)) 
 
+
+
+def start_invite_application(request, token):
+    try:
+        application = Application.objects.get(
+            secret_token=token, 
+            state__in=[Application.NEW, Application.OPEN],
+            expires__gt=datetime.datetime.now())
+    except Application.DoesNotExist:
+        return render_to_response('applications/old_userapplication.html',
+                                  {'help_email': settings.ACCOUNTS_EMAIL,},
+                                  context_instance=RequestContext(request))
+
+    if request.method == 'POST':
+        form = StartInviteApplicationForm(request.POST)
+        if form.is_valid():
+            institute = form.cleaned_data['institute']
+            application.state = Application.OPEN
+            application.save()
+            if institute.saml_entityid:
+                return HttpResponseRedirect(build_shib_url(
+                        request, reverse('kg_saml_invited_userapplication', args=[application.secret_token]),
+                        institute.saml_entityid))
+            else:
+                return HttpResponseRedirect(reverse('kg_invited_userapplication', args=[application.secret_token]) + '?institute=%s' % institute.id)
+    else:
+        form = StartInviteApplicationForm()
+
+    return render_to_response('applications/start_invite.html', {'form': form}, context_instance=RequestContext(request))

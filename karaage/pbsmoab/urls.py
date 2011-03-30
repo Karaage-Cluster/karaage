@@ -20,6 +20,8 @@ from django.conf.urls.defaults import *
 
 urlpatterns = patterns('karaage.pbsmoab.views',
       
-    url(r'^projectchunk/(?P<project_id>[-.\w]+)/$', 'projectchunk_edit', name='kg_projectchunk_edit'),
+    url(r'^projectchunk/add/(?P<project_id>[-.\w]+)/$', 'projectchunk_add', name='kg_projectchunk_add'),
+    url(r'^projectchunk/(?P<projectchunk_id>\d+)/$', 'projectchunk_edit', name='kg_projectchunk_edit'),
+    url(r'^projectchunk/delete/(?P<projectchunk_id>\d+)/$', 'projectchunk_delete', name='kg_projectchunk_delete'),
     url(r'^projects_by_cap_used/$', 'projects_by_cap_used', name='kg_projects_by_cap_used'),
 )

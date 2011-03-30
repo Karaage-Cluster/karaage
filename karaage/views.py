@@ -29,6 +29,8 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.conf import settings
 
+from django_shibboleth.utils import build_shib_url
+
 from karaage.people.models import Person
 from karaage.projects.models import Project
 from karaage.requests.models import ProjectJoinRequest, ProjectCreateRequest
@@ -150,8 +152,6 @@ def meta(request):
 
 
 def saml_login(request):
-    url_base = 'http%s://%s' % (request.is_secure() and 's' or '', request.get_host())
-    shib_url = "%s%s" % (url_base, getattr(settings, 'SHIB_HANDLER', '/Shibboleth.sso/DS'))
 
     redirect_to = request.REQUEST.get('next', '')
     if not redirect_to or ' ' in redirect_to:
@@ -161,8 +161,7 @@ def saml_login(request):
         form = SAMLInstituteForm(request.POST)
         if form.is_valid():
             institute = form.cleaned_data['institute']
-            return HttpResponseRedirect('%s?target=%s&entityID=%s' % (
-                    shib_url, url_base + redirect_to, institute.saml_entityid))
+            return HttpResponseRedirect(build_shib_url(request, redirect_to, institute.saml_entityid))
     else:
         form = SAMLInstituteForm()
 

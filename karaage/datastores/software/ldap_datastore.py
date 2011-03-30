@@ -18,7 +18,7 @@
 from placard.client import LDAPClient
 from placard.exceptions import DoesNotExistException
 
-from karaage.datastores.softwares import base
+from karaage.datastores.software import base
 
 class SoftwareDataStore(base.SoftwareDataStore):
     
@@ -63,7 +63,7 @@ class SoftwareDataStore(base.SoftwareDataStore):
     def get_members(self, software):
         conn = LDAPClient()
         try:
-            return conn.get_group_members('gidNumber=%s' % self.gid)
+            return conn.get_group_members('gidNumber=%s' % software.gid)
         except:
             return []
         del(conn)
@@ -71,7 +71,7 @@ class SoftwareDataStore(base.SoftwareDataStore):
     def get_name(self, software):
         conn = LDAPClient()
         try:
-            ldap_group = conn.get_group('gidNumber=%s' % self.gid)
-            return ldap_group.name()
+            ldap_group = conn.get_group('gidNumber=%s' % software.gid)
+            return ldap_group.cn
         except DoesNotExistException:
             return 'No LDAP Group'
