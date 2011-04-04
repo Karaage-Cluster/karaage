@@ -7,4 +7,4 @@ if grep "SECRET_KEY = ''" /etc/karaage/global_settings.py &> /dev/null
 fi
 
 # Create cache directory
-mkdir -pf /var/cache/karaage/
+mkdir -p /var/cache/karaage/
