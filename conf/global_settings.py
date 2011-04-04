@@ -43,7 +43,6 @@ TIME_ZONE = 'Australia/Melbourne'
 LANGUAGE_CODE = 'en-au'
 
 # Unique key used for storing session data etc.
-# To generate this key run /usr/sbin/kg_set_secret_key
 SECRET_KEY = ''
 
 ###
