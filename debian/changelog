@@ -1,3 +1,13 @@
+karaage (2.5.7-1) testing; urgency=low
+
+  * Project Caps, multiple caps allowed
+  * Got rid of need for unknown user and project for missing usage
+  * Added software datastore
+  * Fixed some LDAP caching issues
+  * Various bug fixes and RPM packaging improvements
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 30 Mar 2011 11:05:29 +1100
+
 karaage (2.5.6-1) testing; urgency=low
 
   * Bug fixes
@@ -71,7 +81,7 @@ karaage (2.5-1) testing; urgency=low
   * Create default machine category when machines app is created
   * Generate SECRET_KEY in new installations
   * Many bug fixes throughout code
-	
+
  -- Sam Morrison <sam@vpac.org>  Wed, 17 Nov 2010 14:05:35 +1100
 
 karaage (2.4.14-1) stable; urgency=low
