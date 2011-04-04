@@ -120,6 +120,35 @@ Initial setup
         apt-get install rabbitmq-server
         apt-get install karaage3-celery
 
+#.  Karaage, by default, requires a https connection. While this default can be
+    changed, this is not advisable on a production system.
+
+    #.  Setup Apache to support secure https connections. Changes should be
+        made to the `/etc/apache2/sites-available/default-ssl`.  Read the comments
+        in this file. For more details on what changes are required, see the `Apache howto
+        <http://httpd.apache.org/docs/current/ssl/ssl_howto.html>`_.
+
+    #.  Connections to http should be redirected to https.  Please replace the
+        `/etc/apache2/sites-available/default` file entirely with the following::
+
+            <VirtualHost *:80>
+                ServerName accounts.example.org
+                Redirect permanent / https://accounts.example.org/
+            </VirtualHost>
+
+        For more information on this step,
+        see the `Apache wiki <https://wiki.apache.org/httpd/RedirectSSL>`_.
+
+    #.  Enable default-ssl with the following commands:
+
+        .. code-block:: bash
+
+            a2enmod ssl
+            a2ensite default-ssl.
+            service apache2 restart
+
+    #.  Test by loading both ``http://accounts.example.org/`` and ``https://accounts.example.org/`` in your browser.
+
 #.  Run kg_set_secret_key, this will automatically set SECRET_KEY inside /etc/karaage/global_settings.py
 
     .. code-block:: bash
@@ -176,8 +205,6 @@ Initial setup
         service apache2 reload
 
 #.  Test. You should now be able to go to http://hostname/kgadmin/
-
-#.  You should set up apache to use SSL.
 
 
 Data stores
