@@ -6,3 +6,5 @@ if grep "SECRET_KEY = ''" /etc/karaage/global_settings.py &> /dev/null
     then /usr/sbin/kg_set_secret_key
 fi
 
+# Create cache directory
+mkdir -pf /var/cache/karaage/
