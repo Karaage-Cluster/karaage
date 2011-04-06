@@ -25,15 +25,17 @@
    		<tr><td>Restricted:</td><td>{% yes_no_img package.restricted %}</td></tr>
 			
    		<tr><td colspan="2"><p>
-   		<a href="logs/">Logs</a>
-   		{% if perms.software.change_softwarepackage %}&nbsp;|&nbsp;<a href="edit/" class="changelink">Edit</a>{% endif %}
-   		{% if perms.software.delete_softwarepackage %}&nbsp;|&nbsp;<a href="delete/" class="deletelink">delete</a>{% endif %}
+   		<a href="{% url kg_software_logs package.id %}">Logs</a>
+   		{% if perms.software.change_softwarepackage %}&nbsp;|&nbsp;<a href="{% url kg_softwarepackage_edit package.id %}" class="changelink">Edit</a>{% endif %}
+   		{% if perms.software.delete_softwarepackage %}&nbsp;|&nbsp;<a href="{% url kg_softwarepackage_delete package.id %}" class="deletelink">delete</a>{% endif %}
    		</p></td></tr>
 	</table>
 	</div>
 	<div class="module">
 		<h2>Versions</h2>
-		<p><a href="version/add" class="addlink">Add Version</a></p>
+		{% if perms.software.add_softwareversion %}
+		<p><a href="{% url kg_softwareversion_add package.id %}" class="addlink">Add Version</a></p>
+		{% endif %}
 		<table cellspacing="0">
 	<thead>
 		<tr>
@@ -52,8 +54,12 @@
 						<a href="{{ m.get_absolute_url }}">{{ m }}</a>
 					{% endfor %}
 				</td>
-				<td><a href="version/edit/{{ version.id }}/" class="changelink">Edit</a></td>
-				<td><a href="version/delete/{{ version.id }}/" class="deletelink">Delete</a></td>
+				{% if perms.software.change_softwareversion %}
+				<td><a href="{% url kg_softwareversion_edit package.id,version.id %}" class="changelink">Edit</a></td>
+				{% endif %}
+				{% if perms.software.delete_software_version %}
+				<td><a href="{% url kg_softwareversion_delete package.id,version.id %}" class="deletelink">Delete</a></td>
+				{% endif %}
 			</tr>
 		{% endfor %}
    </tbody>  	
@@ -61,7 +67,9 @@
 	</div>
 	<div class="module">
 		<h2>Licenses</h2>
-		<p><a href="license/add" class="addlink">Add License</a></p>
+		{% if perms.software.add_softwarelicense %}
+		<p><a href="{% url kg_softwarelicense_add package.id %}" class="addlink">Add License</a></p>
+		{% endif %}
 		<table cellspacing="0">
 	<thead>
 		<tr>
@@ -76,10 +84,10 @@
 	   	<tr class="{% cycle row1,row2 %}">
 				<td>{{ license.version }}</td>
 				<td>{{ license.date|date }}</td>
-				<td><a href="../license/{{ license.id }}/">view</a></td>
+				<td><a href="{% url kg_softwarelicense_detail license.id %}">view</a></td>
 
-				<td>{% if perms.software.change_softwarelicense %}<a href="license/edit/{{ license.id }}/" class="changelink">Edit</a>{% endif %}</td>
-				<td>{% if perms.software.change_softwarelicense %}<a href="{% url kg_softwarelicense_delete license.id %}" class="deletelink">Delete</a>{% endif %}</td>
+				<td>{% if perms.software.change_softwarelicense %}<a href="{% url kg_softwarelicense_edit package.id,license.id %}" class="changelink">Edit</a>{% endif %}</td>
+				<td>{% if perms.software.delete_softwarelicense %}<a href="{% url kg_softwarelicense_delete license.id %}" class="deletelink">Delete</a>{% endif %}</td>
 				<td>
 				<table cellspacing="0">
 				<thead>
@@ -134,7 +142,7 @@
 				<td>{{ m.username }}</td>
 				<td><a href="{{ m.person.get_absolute_url }}">{{ m.person }}</a></td>
 				{% if perms.software.change_softwarepackage %}
-				<td><a href="remove/{{ m.person.id }}/" class="deletelink">Remove</a></td>
+				<td><a href="{% url kg_software_removeuser package.id,m.person.id %}" class="deletelink">Remove</a></td>
 				{% endif %}
 			</tr>
 			</tbody>  

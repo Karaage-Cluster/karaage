@@ -5,8 +5,9 @@
 {% block content_title %}{% endblock %}
     
 {% block bread_crumbs_1 %}
- &rsaquo; <a href="../">Software</a>
- &rsaquo; {{ package }}
+ &rsaquo; <a href="{% url kg_software_list %}">Software</a>
+ &rsaquo; <a href="{{ l.package.get_absolute_url }}">{{ l.package }}</a>
+ &rsaquo; {{ l }}
 {% endblock %}    
 
 {% block content %}
@@ -16,8 +17,7 @@
 		<h2>Licenses</h2>
 		<p>Version: {{ l.version }}</p>
 		<p>Date: {{ l.date|date }}</p>
-		{{ l.text|linebreaks }}
-
+		{{ l.text|safe|linebreaks }}
 	</div>	
 	
 </div>
