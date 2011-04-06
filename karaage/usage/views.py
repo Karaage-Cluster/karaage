@@ -265,7 +265,7 @@ def project_usage(request, project_id, machine_category_id=settings.DEFAULT_MC):
 
 
 def unknown_usage(request):
-
+    showall = request.REQUEST.get('showall', False)
     project_list = Project.objects.all()
     user_list = Person.objects.all()
 
@@ -296,9 +296,11 @@ def unknown_usage(request):
                 if ua:
                     job.user = ua
                     job.save()
-                
-    year_ago = datetime.date.today() - datetime.timedelta(days=365)
-    usage_list = CPUJob.objects.filter(project__isnull=True, date__gte=year_ago)        
+    usage_list = CPUJob.objects.filter(project__isnull=True) 
+
+    if not showall:
+        year_ago = datetime.date.today() - datetime.timedelta(days=365)
+        usage_list = usage_list.filter(date__gte=year_ago)
 
     return render_to_response('usage/unknown_usage.html', locals(), context_instance=RequestContext(request))
 

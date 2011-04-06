@@ -13,7 +13,7 @@
 <div id="content-main">
 
 	<div class="module">
-   	<h2>Unknown Usage ( in the past 365 days )</h2>
+   	<h2>Unknown Usage {% if not showall %} ( in the past 365 days ) <a href="?showall=true" />Show all</a>{% endif %}</h2>
    	{% load filters %}
 <form method="post" action=".">{% csrf_token %}
 <table cellspacing="0">
