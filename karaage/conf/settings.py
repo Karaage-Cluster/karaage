@@ -115,6 +115,13 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
+PERSONAL_DATASTORE = 'karaage.datastores.openldap_datastore'
+
+# Dictionary of MachineCategory.id and python module to use for storing accounts
+ACCOUNT_DATASTORES = {
+    1: 'karaage.datastores.openldap_datastore',
+}
+
 PROJECT_DATASTORE = 'karaage.datastores.projects.ldap_datastore'
 INSTITUTE_DATASTORE = 'karaage.datastores.institutes.ldap_datastore'
 SOFTWARE_DATASTORE = 'karaage.datastores.software.ldap_datastore'

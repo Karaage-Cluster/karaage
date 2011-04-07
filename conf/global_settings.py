@@ -52,13 +52,6 @@ SECRET_KEY = ''
 # Do new cluster accounts need a 2nd stage of approval
 ADMIN_APPROVE_ACCOUNTS = True
 
-PERSONAL_DATASTORE = 'karaage.datastores.openldap_datastore'
-
-# Dictionary of MachineCategory.id and python module to use for storing accounts
-ACCOUNT_DATASTORES = {
-    1: 'karaage.datastores.openldap_datastore',
-}
-
 # Used in various places
 ACCOUNTS_EMAIL = 'accounts@example.com'
 ACCOUNTS_ORG_NAME = 'Example'
