@@ -17,12 +17,11 @@
 
 from django.conf import settings
 
-from karaage.requests.models import ProjectJoinRequest
 from karaage.applications.models import Application
+
 def common(request):
     ctx = {}
     ctx['GRAPH_URL'] = settings.GRAPH_URL
-    ctx['request_count'] = ProjectJoinRequest.objects.filter(leader_approved=True).count()
     ctx['org_name'] = settings.ACCOUNTS_ORG_NAME
     ctx['accounts_email'] = settings.ACCOUNTS_EMAIL
     return ctx
