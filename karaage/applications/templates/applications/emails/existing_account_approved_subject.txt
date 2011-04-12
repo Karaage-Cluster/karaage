@@ -1,1 +1,0 @@
-Added to {{ org_name }} project {{ project.pid }}
