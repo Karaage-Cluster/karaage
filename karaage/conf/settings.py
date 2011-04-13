@@ -30,6 +30,7 @@ INSTALLED_APPS = (
     'django_xmlrpc',
     'south',
     'andsome',
+    'captcha',
     'django_surveys',
     'django_shibboleth',
     'karaage',
