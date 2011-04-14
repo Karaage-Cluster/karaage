@@ -57,7 +57,7 @@ class UserApplicantForm(ApplicantForm):
 
     password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
     password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)') 
-    institute = forms.ModelChoiceField(queryset=Institute.active.filter(saml_entityid__isnull=True))
+    institute = forms.ModelChoiceField(queryset=Institute.active.filter(saml_entityid="").filter(saml_entityid__isnull=False))
 
     def clean_username(self):
 
