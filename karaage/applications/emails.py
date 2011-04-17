@@ -92,10 +92,7 @@ def send_account_approved_email(userapplication):
     context['receiver'] = userapplication.applicant
     context['project'] = userapplication.project
     context['site'] = remove_url_prefix(reverse('kg_user_profile', urlconf='kgreg.conf.urls'))
-    if userapplication.content_type.model == 'person':
-        subject, body = render_email('existing_account_approved', context)
-    else:
-        subject, body = render_email('account_approved', context)
+    subject, body = render_email('account_approved', context)
     to_email = userapplication.applicant.email
     
     send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
