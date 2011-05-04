@@ -1,3 +1,12 @@
+karaage (2.5.8-1) stable; urgency=low
+
+  * Show all unknow usage function
+  * Set defaults for PERSONAL_DATASTORE and ACCOUNT_DATASTORES
+  * Use one template file for account approvals.
+  * Minor bug fixes
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 04 May 2011 10:35:12 +1000
+
 karaage (2.5.7-1) testing; urgency=low
 
   * Project Caps, multiple caps allowed
