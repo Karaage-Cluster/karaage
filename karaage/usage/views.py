@@ -296,7 +296,7 @@ def unknown_usage(request):
                 if ua:
                     job.user = ua
                     job.save()
-    usage_list = CPUJob.objects.filter(project__isnull=True) 
+    usage_list = CPUJob.objects.filter(Q(project__isnull=True) | Q(user__isnull=True))
 
     if not showall:
         year_ago = datetime.date.today() - datetime.timedelta(days=365)
