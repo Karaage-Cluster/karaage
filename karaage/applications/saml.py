@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Q
 from django_shibboleth.utils import parse_attributes
 
 from karaage.applications.forms import UserApplicantForm
@@ -41,4 +42,4 @@ class SAMLApplicantForm(UserApplicantForm):
 
  
 class SAMLInstituteForm(forms.Form):
-    institute = forms.ModelChoiceField(queryset=Institute.active.filter(saml_entityid__isnull=False))
+    institute = forms.ModelChoiceField(queryset=Institute.active.filter(saml_entityid__isnull=False).exclude(saml_entityid=""))

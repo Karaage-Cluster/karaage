@@ -18,6 +18,8 @@
 from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.db.models import Q
+
 from andsome.util import is_password_strong
 from captcha.fields import CaptchaField
 
@@ -57,7 +59,7 @@ class UserApplicantForm(ApplicantForm):
 
     password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
     password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)') 
-    institute = forms.ModelChoiceField(queryset=Institute.active.filter(saml_entityid="").filter(saml_entityid__isnull=False))
+    institute = forms.ModelChoiceField(queryset=Institute.active.filter(Q(saml_entityid="") | Q(saml_entityid__isnull=True)))
 
     def clean_username(self):
 

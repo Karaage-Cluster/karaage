@@ -29,7 +29,6 @@ from placard.server import slapd
 from placard.client import LDAPClient
 from placard import exceptions as placard_exceptions
 from captcha.models import CaptchaStore
-
 from karaage.applications.models import UserApplication, Application, Applicant
 from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
@@ -84,7 +83,6 @@ class UserApplicationTestCase(TestCase):
         }
 
         response = self.client.post(reverse('kg_new_userapplication'), form_data, follow=True)
-        # response.content
         token = Application.objects.all()[0].secret_token
         self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_choose_project', args=[token,]))
         self.failUnlessEqual(response.status_code, 200)
