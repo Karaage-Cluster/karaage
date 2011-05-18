@@ -105,16 +105,13 @@ class GraphGenerator(gdchart2.GraphGenerator):
         cursor.close()
 
         for uid in rows:
-            ua = UserAccount.objects.get(id=uid[0])
+            try:
+                ua = UserAccount.objects.get(id=uid[0])
+            except UserAccount.DoesNotExist:
+                # Usage is from an unknown user.
+                continue
             u = ua.user
 
-
-
-        #for u in project.users.all():
-
-#            ua = u.get_user_account(machine_category)
-#            if ua is None:
-#                continue
             cursor = connection.cursor()
             SQL = "SELECT date, SUM( cpu_usage ) FROM `cpu_job` WHERE `project_id` LIKE '%s' AND `user_id` = %s AND `machine_id` IN %s AND `date` >= '%s' AND `date` <= '%s' Group By date" % (str(project.pid), str(ua.id), mc_ids, start_str, end_str)
             cursor.execute(SQL)
@@ -149,6 +146,7 @@ class GraphGenerator(gdchart2.GraphGenerator):
                 #prev_data = data
             
         #print b_total/ 3600
+        
         count = 0
         prev_data = None
 
