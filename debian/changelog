@@ -1,3 +1,11 @@
+karaage (2.5.9-1) stable; urgency=low
+
+  * Fixed bug in graph generation when usage is unknown.
+  * Fixed bug in application saml institute logic
+  * Show unknow usage if user or project is NULL
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 18 May 2011 13:08:37 +1000
+
 karaage (2.5.8-1) stable; urgency=low
 
   * Show all unknow usage function
