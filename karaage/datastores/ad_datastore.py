@@ -46,7 +46,7 @@ class PersonalDataStore(base.PersonalDataStore):
         # Set password then unlock account
         if person.user.password != '!':
             import ldap
-            mod_attrs = [( ldap.MOD_REPLACE, 'unicodePwd', person.user.password),( ldap.MOD_REPLACE, 'unicodePwd', person.user.password)]
+            mod_attrs = [( ldap.MOD_REPLACE, 'unicodePwd', str(person.user.password)),( ldap.MOD_REPLACE, 'unicodePwd', str(person.user.password))]
             conn.conn.modify_s(dn, mod_attrs)
             conn.update_user('sAMAccountName=%s' % str(person.username), userAccountControl=512)
             
@@ -120,7 +120,6 @@ class PersonalDataStore(base.PersonalDataStore):
 
     def create_password_hash(self, raw_password):
         return unicode("\"" + str(raw_password) + "\"", "iso-8859-1").encode("utf-16-le")
-
 
 class AccountDataStore(base.AccountDataStore):
 
