@@ -38,7 +38,8 @@ from karaage.util import log_object as log
 
 
 
-def do_userapplication(request, token=None, saml=False):
+def do_userapplication(request, token=None, saml=False, 
+                       application_form=UserApplicationForm):
     if request.user.is_authenticated():
         messages.info(request, "You are already logged in")
         return HttpResponseRedirect(reverse('kg_user_profile'))
@@ -79,7 +80,7 @@ def do_userapplication(request, token=None, saml=False):
     init_institute = request.GET.get('institute', '')
 
     if request.method == 'POST':
-        form = UserApplicationForm(request.POST, instance=application, captcha=captcha)
+        form = application_form(request.POST, instance=application, captcha=captcha)
         if saml:
             applicant_form = SAMLApplicantForm(request.POST, instance=applicant)
         else:
@@ -100,7 +101,7 @@ def do_userapplication(request, token=None, saml=False):
             send_account_request_email(application)
             return HttpResponseRedirect(reverse('kg_application_done',  args=[application.secret_token]))
     else:
-        form = UserApplicationForm(instance=application, captcha=captcha)
+        form = application_form(instance=application, captcha=captcha)
         if saml:
             applicant_form = SAMLApplicantForm(instance=applicant)
         else:
