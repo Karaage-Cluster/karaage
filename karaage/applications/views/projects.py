@@ -139,6 +139,8 @@ def projectapplication_existing(request, application_form=ProjectApplicationForm
 
     application = ProjectApplication()
     applicant = request.user.get_profile()
+    init_institute = request.GET.get('institute', '')
+
     if request.method == 'POST':
         form = application_form(request.POST, instance=application)
 
@@ -153,7 +155,7 @@ def projectapplication_existing(request, application_form=ProjectApplicationForm
             send_project_request_email(application)
             return HttpResponseRedirect(reverse('kg_application_done',  args=[application.secret_token]))
     else:
-        form = application_form(instance=application)
+        form = application_form(instance=application, initial={'institute': init_institute})
     
     return render_to_response('applications/projectapplication_existing_form.html', {'form': form, 'application': application}, context_instance=RequestContext(request)) 
 
