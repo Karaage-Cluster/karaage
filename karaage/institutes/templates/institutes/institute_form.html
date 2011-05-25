@@ -2,11 +2,11 @@
 
 {% block title %}Institutes{% endblock %}
 
-{% block content_title %}{% if obj %}Edit{% else %}Create{% endif %} Institute{% endblock %}
+{% block content_title %}{% if institute %}Edit{% else %}Create{% endif %} Institute{% endblock %}
 
 {% block bread_crumbs_1 %}
  &rsaquo; <a href="{% url kg_institute_list %}">Institutes</a>
- &rsaquo; {% if obj %}Edit{% else %}Create{% endif %} Institute
+ &rsaquo; {% if institute %}Edit{% else %}Create{% endif %} Institute
 {% endblock %}   
 
 {% block content %}

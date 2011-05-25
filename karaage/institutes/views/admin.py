@@ -17,14 +17,16 @@
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
+from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator
 from django.conf import settings
+from django.contrib.auth.decorators import permission_required, login_required
 
 from andsome.util.filterspecs import Filter, FilterBar
 
 from karaage.util.graphs import get_institute_trend_graph_url
 from karaage.people.models import Institute
-
+from karaage.institutes.forms import InstituteForm
 
 def institute_detail(request, institute_id):
     
@@ -53,3 +55,21 @@ def institute_list(request):
 
     return render_to_response('institutes/institute_list.html', locals(), context_instance=RequestContext(request))
 
+
+@permission_required('people.add_institute')
+def add_edit_institute(request, institute_id=None):
+
+    if institute_id:
+        institute = get_object_or_404(Institute, pk=institute_id)
+    else:
+        institute = None
+
+    if request.method == 'POST':
+        form = InstituteForm(request.POST, instance=institute)
+        if form.is_valid():
+            institute = form.save()
+            return HttpResponseRedirect(institute.get_absolute_url())
+    else:
+        form = InstituteForm(instance=institute)
+        
+    return render_to_response('institutes/institute_form.html', {'institute': institute, 'form': form}, context_instance=RequestContext(request))
