@@ -35,3 +35,9 @@ def registration(request):
         if user_apps or project_apps:
             ctx['pending_applications'] = True
     return ctx
+
+
+def admin(request):
+    ctx = {}
+    ctx['pending_apps'] = Application.objects.filter(state=Application.WAITING_FOR_ADMIN)
+    return ctx
