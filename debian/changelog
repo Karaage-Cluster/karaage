@@ -1,3 +1,14 @@
+karaage (2.5.10-1) stable; urgency=low
+
+  * Fixed SAML entity ID bug when editing institutes
+  * Password encoding bug for AD fixed
+  * Project application workflows - Admin approval
+  * Admin context processor for pending app count
+  * Improvements in the institute form
+  * Ability to override UserApplicationForm
+
+ -- Sam Morrison <sam@vpac.org>  Wed, 25 May 2011 12:02:04 +1000
+
 karaage (2.5.9-1) stable; urgency=low
 
   * Fixed bug in graph generation when usage is unknown.
