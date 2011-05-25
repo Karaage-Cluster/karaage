@@ -34,42 +34,26 @@ from karaage.util.email_messages import send_account_request_email, send_project
 
 
 @login_required
-def add_edit_project(request, project_id=None):
+def add_edit_project(request, project_id):
 
-    if project_id is None:
-        project = False
-    else:
-        project = get_object_or_404(Project, pk=project_id)
-        if not request.user.get_profile() in project.leaders.all():
-            return HttpResponseForbidden('<h1>Access Denied</h1>')
+    project = get_object_or_404(Project, pk=project_id)
+    if not request.user.get_profile() in project.leaders.all():
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
                                     
     leader = request.user.get_profile()
     
     if request.method == 'POST':
 
-        form = ProjectForm(request.POST)
+        form = ProjectForm(request.POST, instance=project)
         
         if form.is_valid():
-            if project:
-                # edit
-                form.save(p=project)
-                messages.info(request, "Project edited successfully")
-                return HttpResponseRedirect(reverse('kg_user_profile'))
-            else:
-                # add
-                project_request = form.save(leader=leader)
-                # Send email to Institute Delegate for approval
-                send_project_request_email(project_request)
-                                                
-                return HttpResponseRedirect(reverse('project_created', args=[project_request.id]))                            	    
+            project = form.save()
+            messages.info(request, "Project edited successfully")
+            log(request.user, project, 2, "Edited project")
+            return HttpResponseRedirect(project.get_absolute_url())
     else:        
-        form = ProjectForm()
-        form.initial['institute'] = request.user.get_profile().institute.id
-        if project:
+        form = ProjectForm(instance=project)
 
-            form.initial = project.__dict__
-            form.initial['machine_category'] = form.initial['machine_category_id']
-            form.initial['institute'] = form.initial['institute_id']
     return render_to_response('projects/user_project_form.html', { 'form': form, 'project': project }, context_instance=RequestContext(request))
 
 

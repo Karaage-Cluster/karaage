@@ -18,15 +18,6 @@
 {% formfield form.name %}
 {% formfield form.description %}
 {% formfield form.additional_req %}
-{% if project %}
-{{ form.machine_category.as_hidden }}
-{{ form.institute.as_hidden }}
-{% else %}
-{% formfield form.institute %}
-{% formfield form.needs_account %}
-<input type="hidden" name="machine_category" value="1" />
-{#{% formfield form.machine_category %}#}
-{% endif %}
 </fieldset>
 <div class="submit-row">
   <input type="submit" value="Proceed" class="default" />
