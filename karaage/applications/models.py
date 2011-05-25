@@ -140,11 +140,11 @@ class ProjectApplication(Application):
     machine_categories = models.ManyToManyField(MachineCategory, null=True, blank=True)
     project = models.ForeignKey(Project, null=True, blank=True)
 
-    def approve(self):
+    def approve(self, pid=None):
         person = super(ProjectApplication, self).approve()
         from karaage.projects.utils import add_user_to_project, get_new_pid
         project = Project(
-            pid=get_new_pid(self.institute),
+            pid=pid or get_new_pid(self.institute),
             name=self.name,
             description=self.description,
             institute=self.institute,

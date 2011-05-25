@@ -28,6 +28,7 @@ from karaage.people.models import Person
 from karaage.people.forms import UsernamePasswordForm
 from karaage.constants import TITLES
 from karaage.people.models import Institute
+from karaage.projects.models import Project
 from karaage.validators import username_re
 
 
@@ -196,3 +197,14 @@ class ApproveProjectApplicationForm(forms.ModelForm):
         self.fields['needs_account'].label = u"Does this person require a cluster account?"
         self.fields['needs_account'].help_text = u"Will this person be working on the project?"
 
+
+class AdminApproveProjectApplicationForm(ApproveProjectApplicationForm):
+    pid = forms.CharField(label="Project ID", help_text="Leave blank for auto generation", required=False)
+    
+    def clean_pid(self):
+        pid = self.cleaned_data['pid']
+        try:
+            project = Project.objects.get(pid=pid)
+            raise forms.ValidationError(u'Project ID already in system')
+        except Project.DoesNotExist:
+            return pid

@@ -1,0 +1,53 @@
+{% extends "forms.html" %}
+
+{% block title %}Applications{% endblock %}
+
+{% block content_title %}Project Application{% endblock %}
+
+{% block bread_crumbs_1 %}
+ &rsaquo; Project Application
+{% endblock %}   
+
+{% block content %}
+<p>The following request is awaiting your approval</p>
+<h2>User details</h2>
+<table>
+   	<tr><td>Name:</td><td>{{ application.applicant }}</td></tr>
+   	<tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
+   	<tr><td>Email:</td><td>{{ application.applicant.email|urlize }}</td></tr>	
+   	<tr><td>Institute:</td><td>{{ application.applicant.institute }}</td></tr>	
+</table>
+<h2>Project details</h2>
+<table>
+   	<tr><td>Name:</td><td>{{ application.name }}</td></tr>
+   	<tr><td>Institute:</td><td>{{ application.institute }}</td></tr>
+   	<tr><td>Description:</td><td>{{ application.description|linebreaks }}</td></tr>
+   	<tr><td>Additional Requirements:</td><td>{{ application.additional_req|linebreaks }}</td></tr>
+</table>
+<br />
+<p>{{ application.applicant }} will receive an email once their account has been confirmed.</p>
+<br />
+{% if form %}
+<p>Please amend the following to suit.</p>
+{% endif %}
+
+<form method="post" action=".">{% csrf_token %}
+<div>
+{% load forms %}
+{% if form.errors or form.non_field_errors %}
+	<p class="errornote">Please correct the error(s) below.</p>
+{% endif %}
+
+<fieldset class="module aligned ()">
+{{ form.non_field_errors }}
+{% form_as_div form %}
+</fieldset>
+
+</div>
+<div class="submit-row">
+		<p class="float-left"><a href="{% url kg_userapplication_decline application.id %}" class="deletelink">Decline</a></p>
+
+		<input type="submit" value="Approve" class="default" />
+	</div>
+</form>
+{% endblock %}

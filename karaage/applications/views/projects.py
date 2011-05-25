@@ -28,7 +28,7 @@ from django_shibboleth.utils import ensure_shib_session
 
 from karaage.applications.models import ProjectApplication, Application
 from karaage.applications.forms import ProjectApplicationForm, UserApplicantForm, ApproveProjectApplicationForm
-from karaage.applications.emails import send_project_request_email, send_project_approved_email
+from karaage.applications.emails import send_project_request_email, send_project_approved_email, send_notify_admin
 from karaage.applications.saml import SAMLApplicantForm, get_saml_user, add_saml_data
 from karaage.machines.models import MachineCategory
 from karaage.util import log_object as log
@@ -112,15 +112,34 @@ def approve_projectapplication(request, application_id):
         form = ApproveProjectApplicationForm(request.POST, instance=application)
         if form.is_valid():
             application = form.save()
- 
+
+            if settings.ADMIN_APPROVE_ACCOUNTS:
+                application.state = Application.WAITING_FOR_ADMIN
+                application.save()
+                #send_notify_admin(application, request.user.get_full_name())
+                log(request.user, application, 2, 'Delegate approved application')
+                return HttpResponseRedirect(reverse('kg_projectapplication_pending', args=[application.id]))
+
             application.approve()
             send_project_approved_email(application)
-            log(request.user, application, 2, 'Delegate approved')
+            log(request.user, application, 2, 'Delegate fully approved')
             return HttpResponseRedirect(reverse('kg_projectapplication_complete', args=[application.id]))
     else:
         form = ApproveProjectApplicationForm(instance=application)
 
     return render_to_response('applications/projectapplication_approve.html', {'form': form, 'application': application}, context_instance=RequestContext(request))
+
+
+@login_required
+def projectapplication_pending(request, application_id):
+    application = get_object_or_404(ProjectApplication, pk=application_id)
+    if application.state != Application.WAITING_FOR_ADMIN:
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
+    if not request.user.get_profile() == application.institute.delegate:
+        return HttpResponseForbidden('<h1>Access Denied</h1>') 
+    
+    return render_to_response('applications/projectapplication_pending.html', {'application': application}, context_instance=RequestContext(request))
+
 
 
 @login_required

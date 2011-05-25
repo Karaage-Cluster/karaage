@@ -26,9 +26,9 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from andsome.util.filterspecs import Filter, FilterBar
 
 from karaage.people.models import Person
-from karaage.applications.models import UserApplication, Applicant, Application
-from karaage.applications.forms import AdminInviteUserApplicationForm, ApplicantForm, LeaderApproveUserApplicationForm
-from karaage.applications.emails import send_user_invite_email, send_account_approved_email, send_account_declined_email
+from karaage.applications.models import UserApplication, ProjectApplication, Applicant, Application
+from karaage.applications.forms import AdminInviteUserApplicationForm, ApplicantForm, LeaderApproveUserApplicationForm, AdminApproveProjectApplicationForm
+from karaage.applications.emails import send_user_invite_email, send_account_approved_email, send_account_declined_email, send_project_approved_email
 from karaage.util import log_object as log
 
 @permission_required('applications.add_userapplication')
@@ -143,6 +143,44 @@ def decline_userapplication(request, application_id):
         return HttpResponseRedirect(reverse('kg_application_list'))
 
     return render_to_response('applications/confirm_decline.html', {'application': application}, context_instance=RequestContext(request))
+
+
+@permission_required('applications.change_application')
+def approve_projectapplication(request, application_id):
+    application = get_object_or_404(ProjectApplication, pk=application_id)
+
+    if application.state != Application.WAITING_FOR_ADMIN:
+        raise Http404
+
+    if request.method == 'POST':
+        form = AdminApproveProjectApplicationForm(request.POST, instance=application)
+        if form.is_valid():
+            application = form.save()
+            project = application.approve(pid=form.cleaned_data['pid'])
+            send_project_approved_email(application)
+            messages.info(request, "Application approved successfully")
+            log(request.user, application, 2, 'Application fully approved')
+            return HttpResponseRedirect(project.get_absolute_url())
+    else:
+        form = AdminApproveProjectApplicationForm(instance=application)
+
+    return render_to_response('applications/approve_projectapplication.html', {'form': form, 'application': application}, context_instance=RequestContext(request))
+
+
+@permission_required('applications.delete_application')
+def decline_projectapplication(request, application_id):
+    application = get_object_or_404(UserApplication, pk=application_id)
+
+    if application.state != Application.WAITING_FOR_ADMIN:
+        raise Http404
+    if request.method == 'POST':
+        send_account_declined_email(application)
+        application.delete()
+        log(request.user, application, 3, 'Application declined')
+        return HttpResponseRedirect(reverse('kg_application_list'))
+
+    return render_to_response('applications/project_confirm_decline.html', {'application': application}, context_instance=RequestContext(request))
+
 
 
 @login_required
