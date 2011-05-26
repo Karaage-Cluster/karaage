@@ -17,8 +17,8 @@
 
 from karaage.datastores import create_account
 
-from models import Project
-
+from karaage.projects.models import Project
+from karaage.people.models import Institute
 
 def add_user_to_project(person, project):
 
@@ -58,3 +58,17 @@ def get_new_pid(institute, is_expertise=False):
             found = False
 
     return prefix+number
+
+
+def pid_unique(pid):
+    try:
+        institute = Institute.objects.get(name=pid)
+        return False
+    except Institute.DoesNotExist:
+        pass
+    try:
+        project = Project.objects.get(pid=pid)
+        return False
+    except Project.DoesNotExist:
+        pass
+    return True

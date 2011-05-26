@@ -16,11 +16,12 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django import forms
-from django.contrib.admin.widgets import AdminDateWidget
+from django.contrib.admin.widgets import AdminDateWidget, FilteredSelectMultiple
 
 from karaage.people.models import Institute, Person
 from karaage.machines.models import MachineCategory
 from karaage.projects.models import Project
+from karaage.projects.utils import pid_unique
 
 
 class ProjectForm(forms.ModelForm):
@@ -29,10 +30,14 @@ class ProjectForm(forms.ModelForm):
     description = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
     institute = forms.ModelChoiceField(queryset=Institute.active.all())
     additional_req = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
-    leaders = forms.ModelMultipleChoiceField(queryset=Person.active.all())
+    leaders = forms.ModelMultipleChoiceField(queryset=Person.active.select_related(), widget=FilteredSelectMultiple('Leaders', False))
     start_date = forms.DateField(widget=AdminDateWidget)
     end_date = forms.DateField(widget=AdminDateWidget, required=False)
     machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all(), widget=forms.CheckboxSelectMultiple())
+
+    class Meta:
+        model = Project
+        fields = ('pid', 'name', 'institute', 'leaders', 'description', 'start_date', 'end_date', 'additional_req', 'machine_categories', 'machine_category')
 
     def __init__(self, *args, **kwargs):
         # Make PID field read only if we are editing a project
@@ -41,10 +46,12 @@ class ProjectForm(forms.ModelForm):
         if instance and instance.pid:
             self.fields['pid'].widget.attrs['readonly'] = True
 
-    class Meta:
-        model = Project
-        fields = ('pid', 'name', 'institute', 'leaders', 'description', 'start_date', 'end_date', 'additional_req', 'machine_categories', 'machine_category')
-
+    def clean_pid(self):
+        pid = self.cleaned_data['pid']
+        if pid_unique(pid):
+            return pid
+        raise forms.ValidationError(u'Project ID already in system')
+ 
 
 class UserProjectForm(forms.ModelForm):
     name = forms.CharField(label='Project Title', widget=forms.TextInput(attrs={ 'size':60 }))

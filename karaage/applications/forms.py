@@ -24,13 +24,12 @@ from andsome.util import is_password_strong
 from captcha.fields import CaptchaField
 
 from karaage.applications.models import UserApplication, ProjectApplication, Applicant
-from karaage.people.models import Person
+from karaage.people.models import Person, Institute
 from karaage.people.forms import UsernamePasswordForm
 from karaage.constants import TITLES
-from karaage.people.models import Institute
 from karaage.projects.models import Project
 from karaage.validators import username_re
-
+from karaage.projects.utils import pid_unique
 
 APP_CHOICES = (
     ('U', 'Join an existing project'),
@@ -200,11 +199,10 @@ class ApproveProjectApplicationForm(forms.ModelForm):
 
 class AdminApproveProjectApplicationForm(ApproveProjectApplicationForm):
     pid = forms.CharField(label="Project ID", help_text="Leave blank for auto generation", required=False)
-    
+   
     def clean_pid(self):
         pid = self.cleaned_data['pid']
-        try:
-            project = Project.objects.get(pid=pid)
-            raise forms.ValidationError(u'Project ID already in system')
-        except Project.DoesNotExist:
+        if pid_unique(pid):
             return pid
+        raise forms.ValidationError(u'Project ID already in system')
+ 
