@@ -29,7 +29,6 @@ from karaage.people.forms import UsernamePasswordForm
 from karaage.constants import TITLES
 from karaage.projects.models import Project
 from karaage.validators import username_re
-from karaage.projects.utils import pid_unique
 
 APP_CHOICES = (
     ('U', 'Join an existing project'),
@@ -202,7 +201,14 @@ class AdminApproveProjectApplicationForm(ApproveProjectApplicationForm):
    
     def clean_pid(self):
         pid = self.cleaned_data['pid']
-        if pid_unique(pid):
-            return pid
-        raise forms.ValidationError(u'Project ID already in system')
- 
+        try:
+            institute = Institute.objects.get(name=pid)
+            raise forms.ValidationError(u'Project ID already in system')
+        except Institute.DoesNotExist:
+            pass
+        try:
+            project = Project.objects.get(pid=pid)
+            raise forms.ValidationError(u'Project ID already in system')
+        except Project.DoesNotExist:
+            pass
+        return pid

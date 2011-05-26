@@ -59,16 +59,3 @@ def get_new_pid(institute, is_expertise=False):
 
     return prefix+number
 
-
-def pid_unique(pid):
-    try:
-        institute = Institute.objects.get(name=pid)
-        return False
-    except Institute.DoesNotExist:
-        pass
-    try:
-        project = Project.objects.get(pid=pid)
-        return False
-    except Project.DoesNotExist:
-        pass
-    return True

@@ -21,7 +21,6 @@ from django.contrib.admin.widgets import AdminDateWidget, FilteredSelectMultiple
 from karaage.people.models import Institute, Person
 from karaage.machines.models import MachineCategory
 from karaage.projects.models import Project
-from karaage.projects.utils import pid_unique
 
 
 class ProjectForm(forms.ModelForm):
@@ -48,9 +47,11 @@ class ProjectForm(forms.ModelForm):
 
     def clean_pid(self):
         pid = self.cleaned_data['pid']
-        if pid_unique(pid):
+        try:
+            institute = Institute.objects.get(name=pid)
+            raise forms.ValidationError(u'Project ID already in system')
+        except Institute.DoesNotExist:
             return pid
-        raise forms.ValidationError(u'Project ID already in system')
  
 
 class UserProjectForm(forms.ModelForm):

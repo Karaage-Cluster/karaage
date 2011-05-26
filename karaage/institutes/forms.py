@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
 from karaage.people.models import Institute, Person
-from karaage.projects.utils import pid_unique
+from karaage.projects.models import Project
 
 class InstituteForm(forms.ModelForm):
     delegate = forms.ModelChoiceField(queryset=Person.active.select_related(), required=False)
@@ -22,7 +22,9 @@ class InstituteForm(forms.ModelForm):
 
     def clean_name(self):
         name = self.cleaned_data['name']
-        if pid_unique(name):
+        try:
+            project = Project.objects.get(pid=name)
+            raise forms.ValidationError(u'Institute name already in system')
+        except Project.DoesNotExist:
             return name
-        raise forms.ValidationError(u'Institute name already in system')
 
