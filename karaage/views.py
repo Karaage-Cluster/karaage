@@ -38,12 +38,10 @@ from karaage.applications.saml import SAMLInstituteForm
 
 @login_required
 def admin_index(request):
-    newest_users = Person.objects.order_by('-date_approved', '-id').filter(date_approved__isnull=False)[:5]
-    newest_projects = Project.objects.order_by('-date_approved').filter(date_approved__isnull=False).filter(is_active=True)[:5]
+    newest_users = Person.objects.order_by('-date_approved', '-id').filter(date_approved__isnull=False).select_related()[:5]
+    newest_projects = Project.objects.order_by('-date_approved').filter(date_approved__isnull=False).filter(is_active=True).select_related()[:5]
 
     recent_actions = request.user.logentry_set.all()[:10]
-
-    user_applications = UserApplication.objects.filter(state=Application.WAITING_FOR_ADMIN)
 
     return render_to_response('index.html', locals(), context_instance=RequestContext(request))
 

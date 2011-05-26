@@ -45,12 +45,12 @@
 		</tr>
 	</thead>   	
    <tbody>
-   	{% for version in package.softwareversion_set.all %}
+   	{% for version in package.softwareversion_set.select_related %}
 	   	<tr class="{% cycle row1,row2 %}">
 				<td>{{ version.version }}</td>
 				<td>{{ version.module }}</td>
 				<td>
-					{% for m in version.machines.all %}
+					{% for m in version.machines %}
 						<a href="{{ m.get_absolute_url }}">{{ m }}</a>
 					{% endfor %}
 				</td>
@@ -97,7 +97,7 @@
 					</tr>
 				</thead>   	
    			<tbody>
-				{% for a in license.softwarelicenseagreement_set.all %}
+				{% for a in license.softwarelicenseagreement_set.select_related %}
 				<tr>
 						<td><a href="{{ a.user.get_absolute_url }}">{{ a.user }}</a></td>
 						<td>{{ a.date }}</td>

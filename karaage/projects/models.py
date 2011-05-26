@@ -135,8 +135,7 @@ class Project(models.Model):
         gen_project_graph(self, start, end, machine_category)
 
     def get_latest_usage(self):
-        return self.cpujob_set.all()[:5]
-
+        return self.cpujob_set.select_related()[:5]
 
     def get_cap(self):
         pc = self.projectchunk_set.get(machine_category=self.machine_category)

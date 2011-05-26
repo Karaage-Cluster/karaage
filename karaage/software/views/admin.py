@@ -81,7 +81,7 @@ def software_detail(request, package_id):
                 'person': person,
                 })
 
-    not_member_list = Person.objects.exclude(id__in=non_ids)
+    not_member_list = Person.objects.select_related().exclude(id__in=non_ids)
 
     if request.method == 'POST' and 'member-add' in request.POST:
         person = get_object_or_404(Person, pk=request.POST['member'])
