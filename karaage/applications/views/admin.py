@@ -54,9 +54,9 @@ def send_invitation(request):
             application.save()
             if application.content_type.model == 'person':
                 application.approve()
-                send_account_approved_email(application)
                 messages.info(request, "%s was added to project %s directly since they have an existing account." % (application.applicant, application.project))
-                log(request.user, application, 1, "%s added directly to %s" % (applicant, project))
+                log(request.user, application, 1, "%s added directly to %s" % (application.applicant, application.project))
+                send_account_approved_email(application)
                 return HttpResponseRedirect(application.applicant.get_absolute_url())
             send_user_invite_email(application)
             messages.info(request, "Invitation sent to %s." % email)
