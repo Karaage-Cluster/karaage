@@ -96,7 +96,7 @@ def do_userapplication(request, token=None, saml=False,
             application.applicant = applicant
             application.save()
             if not application.project:
-                application.state = APPLICATION.OPEN
+                application.state = Application.OPEN
                 application.save()
                 return HttpResponseRedirect(reverse('kg_application_choose_project', args=[application.secret_token]))
             application.submitted_date = datetime.datetime.now()
