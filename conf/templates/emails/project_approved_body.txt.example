@@ -1,0 +1,20 @@
+=============================
+THIS IS AN EXAMPLE EMAIL ONLY
+========================================================================================================================
+To create your own email copy this example 
+From:
+/etc/karaage/templates/emails/project_approved_body.txt.template
+To:
+/etc/karaage/templates/emails/project_approved_body.txt
+=========================================================================================================================
+
+Hello {{ receiver }},
+
+Your {{ org_name }} project {{ project.name }} has been approved and has been assigned the project ID {{ project.pid }}
+
+You can log into the {{ org_name }} account management tool to see the status of your account by going to {{ site }}.
+
+For your records, your username is: {{ receiver.username }}
+
+
+{% include "emails/email_footer.txt" %}

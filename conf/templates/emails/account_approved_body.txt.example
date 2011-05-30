@@ -3,16 +3,18 @@ THIS IS AN EXAMPLE EMAIL ONLY
 ========================================================================================================================
 To create your own email copy this example 
 From:
-/etc/karaage/templates/emails/account_declined_body.txt.template
+/etc/karaage/templates/emails/account_approved_body.txt.template
 To:
-/etc/karaage/templates/emails/account_declined_body.txt
+/etc/karaage/templates/emails/account_approved_body.txt
 =========================================================================================================================
 
 Hello {{ receiver }},
 
-Your {{ org_name }} computer account has been declined by a leader of the project "{{ project }}".
+Your {{ org_name }} computer account has been approved and you are now a member of the project "{{ project }}".
 
-If you think this is an error please email {{ org_email }}
+You can log into the {{ org_name }} account management tool to see the status of your account by going to {{ site }}.
+
+For your records, your username is: {{ receiver.username }}
 
 
 {% include "emails/email_footer.txt" %}
