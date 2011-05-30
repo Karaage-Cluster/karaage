@@ -28,7 +28,7 @@ from karaage.people.managers import ActiveUserManager, DeletedUserManager, Leade
 
 
 class Institute(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     delegate = models.ForeignKey('Person', related_name='delegate', null=True, blank=True)
     active_delegate = models.ForeignKey('Person', related_name='active_delegate', null=True, blank=True)
     sub_delegates = models.ManyToManyField('Person', related_name='sub_delegates', blank=True, null=True)
