@@ -11,12 +11,11 @@ function showForm() {
 </script> 
 {% endblock %}
 
-
 {% block content %}
     <h1>Are you sure?</h1>    
-    <p>Are you sure you want to decline {{ application.applicant }}'s application to join {{ application.project.pid }}? </p>
-	<p>An email will be sent to {{ application.applicant }}. <a id="show-email" href="#" onclick="showForm()">Customise email</a></p>
-	
+    <p>Are you sure you want to decline {{ application.applicant }}'s project application? </p>
+<p>An email will be sent to {{ application.applicant.first_name }}. <a id="show-email" href="#" onclick="showForm()">Customise email</a></p>
+    
 <form method="post" action=".">{% csrf_token %}
 <div id="form-body" style="display: none">
 {% if form.errors or form.non_field_errors %}

@@ -24,13 +24,15 @@ from django.contrib import messages
 from django.db.models import Q
 from django.conf import settings
 from django.core.paginator import Paginator
+from django.core.mail import send_mail
 
 import datetime
 from django_shibboleth.utils import ensure_shib_session, build_shib_url
+from andsome.forms import EmailForm
 
 from karaage.applications.models import UserApplication, ProjectApplication, Applicant, Application
 from karaage.applications.forms import UserApplicationForm, UserApplicantForm, LeaderApproveUserApplicationForm, LeaderInviteUserApplicationForm, StartApplicationForm, StartInviteApplicationForm
-from karaage.applications.emails import send_account_request_email, send_account_approved_email, send_user_invite_email, send_account_declined_email, send_notify_admin
+from karaage.applications.emails import send_account_request_email, send_account_approved_email, send_user_invite_email, send_account_declined_email, send_notify_admin, render_email
 from karaage.applications.saml import SAMLApplicantForm, get_saml_user, add_saml_data
 from karaage.people.models import Person
 from karaage.projects.models import Project
@@ -94,6 +96,8 @@ def do_userapplication(request, token=None, saml=False,
             application.applicant = applicant
             application.save()
             if not application.project:
+                application.state = APPLICATION.OPEN
+                application.save()
                 return HttpResponseRedirect(reverse('kg_application_choose_project', args=[application.secret_token]))
             application.submitted_date = datetime.datetime.now()
             application.state = Application.WAITING_FOR_LEADER
@@ -242,15 +246,22 @@ def decline_userapplication(request, application_id):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     if application.state != Application.WAITING_FOR_LEADER:
         return render_to_response('applications/unable_to_approve.html', {'application': application }, context_instance=RequestContext(request))
-    
+
     if request.method == 'POST':
-
-        send_account_declined_email(application)
-        application.delete()        
-        log(request.user, application, 3, "Application declined")
-        return HttpResponseRedirect(reverse('kg_user_profile'))
-
-    return render_to_response('applications/confirm_decline.html', {'application': application}, context_instance=RequestContext(request))
+        form = EmailForm(request.POST)
+        if form.is_valid():
+            to_email = application.applicant.email
+            subject, body = form.get_data()
+            log(request.user, application, 3, "Application declined")
+            application.delete()        
+            send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+            return HttpResponseRedirect(reverse('kg_user_profile'))
+    else:
+        subject, body = render_email('account_declined', { 'receiver': application.applicant, 'project': application.project })
+        initial_data = {'body': body, 'subject': subject,}
+        form = EmailForm(initial=initial_data)
+    
+    return render_to_response('applications/confirm_decline.html', {'application': application, 'form': form}, context_instance=RequestContext(request))
 
 
 

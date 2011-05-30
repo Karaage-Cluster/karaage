@@ -1,5 +1,5 @@
 {% extends "forms.html" %}
-
+{% load forms %}
 {% block title %}Applications{% endblock %}
 
 {% block content_title %}Send User Application Invite to join {{ project.pid }}{% endblock %}
@@ -13,7 +13,6 @@
 <p>NOTE: If the email exists in our system the user will be added directly to your project.</p>
 <form method="post" action=".">{% csrf_token %}
 <div>
-{% load forms %}
 {% if form.errors or form.non_field_errors %}
 	<p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
 {% endif %}
