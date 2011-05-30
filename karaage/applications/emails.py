@@ -46,7 +46,7 @@ def send_notify_admin(application, leader=None):
     context['project'] = application.project
     if leader:
         context['leader'] = leader
-    context['site'] = '%s' % remove_url_prefix(reverse('kg_userapplication_detail', args=[application.id], urlconf='kgreg.conf.urls'))
+    context['site'] = '%s' % remove_url_prefix(reverse('kg_userapplication_detail', args=[application.id]))
 
     to_email = settings.APPROVE_ACCOUNTS_EMAIL
     subject, body = render_email('notify_admin', context)
@@ -59,7 +59,7 @@ def send_account_request_email(application):
     """Sends an email to each project leader asking to approve user application"""
     context = CONTEXT.copy()
     context['requester'] = application.applicant
-    context['site'] = '%s' % remove_url_prefix(reverse('kg_userapplication_detail', args=[application.id], urlconf='kgreg.conf.urls'))
+    context['site'] = '%s/applications/%s/' % (settings.REGISTRATION_BASE_URL, application.id)
     context['project'] = application.project
 
     for leader in application.project.leaders.filter(user__is_active=True):
@@ -75,7 +75,7 @@ def send_user_invite_email(userapplication):
     """ Sends an email inviting someone to create an account"""
 
     context = CONTEXT.copy()
-    context['site'] = remove_url_prefix(reverse('kg_invited_userapplication', args=[userapplication.secret_token], urlconf='kgreg.conf.urls'))
+    context['site'] = '%s/applications/%s/do/' % (settings.REGISTRATION_BASE_URL, application.secret_token)
     context['sender'] = userapplication.created_by
     context['project'] = userapplication.project
     context['make_leader'] = userapplication.make_leader
@@ -92,7 +92,7 @@ def send_account_approved_email(userapplication):
     context = CONTEXT.copy()
     context['receiver'] = userapplication.applicant
     context['project'] = userapplication.project
-    context['site'] = remove_url_prefix(reverse('kg_user_profile', urlconf='kgreg.conf.urls'))
+    context['site'] = '%s/profile/' % settings.REGISTRATION_BASE_URL
     subject, body = render_email('account_approved', context)
     to_email = userapplication.applicant.email
     
@@ -104,7 +104,7 @@ def send_account_declined_email(userapplication):
     context = CONTEXT.copy()
     context['receiver'] = userapplication.applicant
     context['project'] = userapplication.project
-    context['site'] = remove_url_prefix(reverse('kg_user_profile', urlconf='kgreg.conf.urls'))
+    context['site'] = '%s/profile/' % settings.REGISTRATION_BASE_URL
     subject, body = render_email('account_declined', context)
     to_email = userapplication.applicant.email
     
@@ -116,7 +116,7 @@ def send_project_request_email(application):
     context = CONTEXT.copy()
     context['requester'] = application.applicant
     context['receiver'] =  application.institute.active_delegate
-    context['site'] = remove_url_prefix(reverse('kg_projectapplication_detail', args=[application.id], urlconf='kgreg.conf.urls'))
+    context['site'] = '%s/applications/projects/%s/' % (settings.REGISTRATION_BASE_URL, application.id)
     context['application'] = application 
     subject, body = render_email('project_request', context)
 
@@ -128,7 +128,7 @@ def send_project_request_email(application):
 def send_project_approved_email(application):
     """Sends an email to the projects leaders once approved"""
     context = CONTEXT.copy()
-    context['site'] = remove_url_prefix(reverse('kg_project_detail', args=[application.project.pid], urlconf='kgreg.conf.urls'))
+    context['site'] = '%s/projects/%s/' % (settings.REGISTRATION_BASE_URL, application.project.pid)
     context['project'] = application.project 
  
     for leader in application.project.leaders.all():

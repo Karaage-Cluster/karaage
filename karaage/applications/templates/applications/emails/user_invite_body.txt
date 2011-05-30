@@ -16,7 +16,7 @@ Hi,
 
 {% if make_leader %}They have also asked you to become a project leader.{% endif %}
 
-To create your account and also an account on the cluster if you choose please visit http://example.com/kgreg{{ site }}
+To create your account and also an account on the cluster if you choose please visit {{ site }}
 
 This link will expire in 7 days.
 

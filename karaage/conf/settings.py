@@ -140,4 +140,7 @@ SHIB_ATTRIBUTE_MAP = {
     "HTTP_TELEPHONENUMBER": (False, "telephone"),
     }
 
+from socket import getfqdn
+REGISTRATION_BASE_URL = 'https://%s/users' % getfqdn()
+
 execfile("/etc/karaage/global_settings.py")

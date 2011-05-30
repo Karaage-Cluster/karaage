@@ -12,7 +12,7 @@ Hello {{ receiver }},
 
 {{ requester }} is requesting to start a new project titled: {{ application.name }}.
 
-Please visit the {{ org_name }} Account Management site at https://example.org/kgreg{{ site }} for more information and to accept or decline this request.
+Please visit the {{ org_name }} Account Management site at {{ site }} for more information and to accept or decline this request.
 
 
 {% include "emails/email_footer.txt" %}
