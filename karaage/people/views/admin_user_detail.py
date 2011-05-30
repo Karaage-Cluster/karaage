@@ -48,9 +48,6 @@ def user_detail(request, username):
     
     person = get_object_or_404(Person, user__username=username)
 
-    if person.projectjoinrequest_set.count() > 0 and not person.user.is_active:
-        requestor = True
-
     my_projects = person.project_set.all()
     my_pids = [ p.pid for p in my_projects ]
     

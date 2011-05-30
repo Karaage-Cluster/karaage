@@ -29,7 +29,6 @@ from andsome.util.filterspecs import Filter, FilterBar
 from andsome.middleware.threadlocals import get_current_user
 
 from karaage.people.models import Person, Institute
-from karaage.requests.models import ProjectCreateRequest
 from karaage.projects.models import Project
 from karaage.projects.forms import ProjectForm
 from karaage.projects.utils import get_new_pid, add_user_to_project
@@ -98,10 +97,6 @@ def project_detail(request, project_id):
 
     project = get_object_or_404(Project, pk=project_id)
     user_list = Person.active.select_related()
-    
-    requestor = False
-    if project.projectcreaterequest_set.count() > 0:
-        requestor = True
 
     if request.REQUEST.has_key('showall'):
         showall = True

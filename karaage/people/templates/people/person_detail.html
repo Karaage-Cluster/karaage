@@ -12,10 +12,7 @@
 {% block content %}
 {% get_comment_count for person as comment_count %}
 <div id="content-main">
-  {% if requestor %}
-  <p class="errornote">This user is waiting for approval by an institute rep or project leader.</p>
-  {% endif %}
-  
+
   <div id="content-related-extra">
     <div class="module">
       <h2>Tasks</h2>

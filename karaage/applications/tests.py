@@ -138,7 +138,6 @@ class AdminRegistrationTestCase(TestCase):
 
     def stest_admin_approve_account(self):
         from karaage.datastores import create_new_user
-        from karaage.requests.models import ProjectJoinRequest
 
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)

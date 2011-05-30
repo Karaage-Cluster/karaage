@@ -29,7 +29,6 @@ from django.contrib import messages
 from karaage.util import get_date_range
 from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
-from karaage.requests.models import ProjectCreateRequest
 from karaage.people.forms import PasswordChangeForm, PersonForm, LoginForm
 from karaage.machines.models import MachineCategory
 from karaage.machines.forms import ShellForm
