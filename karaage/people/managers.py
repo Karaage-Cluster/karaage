@@ -18,10 +18,13 @@
 from django.db import models
 
 
+class PersonManager(models.Manager):
+    def get_query_set(self):
+        return super(PersonManager, self).get_query_set().select_related()
+
 class ActiveUserManager(models.Manager):
     def get_query_set(self):
-        return super(ActiveUserManager, self).get_query_set().filter(user__is_active=True, is_systemuser=False)
-
+        return super(ActiveUserManager, self).get_query_set().select_related().filter(user__is_active=True, is_systemuser=False)
 
 class DeletedUserManager(models.Manager):
     def get_query_set(self):

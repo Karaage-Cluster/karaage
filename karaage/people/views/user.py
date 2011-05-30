@@ -30,7 +30,7 @@ from karaage.util import get_date_range
 from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
 from karaage.requests.models import ProjectCreateRequest
-from karaage.people.forms import PasswordChangeForm, DelegateForm, PersonForm, LoginForm
+from karaage.people.forms import PasswordChangeForm, PersonForm, LoginForm
 from karaage.machines.models import MachineCategory
 from karaage.machines.forms import ShellForm
 from karaage.applications.models import Application
@@ -52,36 +52,6 @@ def profile(request):
         for project in leader_project_list:
             for user_application in project.userapplication_set.filter(state=Application.WAITING_FOR_LEADER):
                 user_applications.append(user_application)
-
-
-    if person.is_active_delegate():
-        project_requests = []
-        #for project in person.institute.project_set.all():
-        for project_request in ProjectCreateRequest.objects.filter(project__institute=person.institute):
-            project_requests.append(project_request)
-        
-    
-    if person.is_delegate():
-        form = DelegateForm()
-        d_ids = [p.id for p in person.institute.sub_delegates.all()]
-        d_ids.append(person.id)
-        
-        delegates = Person.objects.filter(id__in=d_ids)
-        from django import forms
-        form.fields['active_delegate'] = forms.ModelChoiceField(queryset=delegates)
-        try:
-            form.initial['active_delegate'] = person.institute.active_delegate.id
-        except:
-            pass
-        delegate = True
-
-        if request.method == 'POST' and 'delegate-form' in request.POST:
-
-            form = DelegateForm(request.POST)
-
-            if form.is_valid():
-                form.save(person.institute)
-                return HttpResponseRedirect(reverse('kg_user_profile'))
 
     
     usage_list = person.usercache_set.filter(start=start, end=end)
@@ -157,27 +127,6 @@ def user_detail(request, username):
 
     return render_to_response('people/user_person_detail.html', locals(), context_instance=RequestContext(request))
 
-
-@login_required
-def change_active_delegate(request, institute_id):
-
-    institute = get_object_or_404(Institute, pk=institute_id)
-    
-    if not request.user.get_profile() == institute.delegate:
-        return HttpResponseForbidden('<h1>Access Denied</h1>')
-
-    if request.method == 'POST':
-
-        form = DelegateForm(request.POST)
-
-        if form.is_valid():
-
-            form.save()
-            return HttpResponseRedirect(reverse('kg_user_profile'))
-
-
-    return HttpResponseForbidden('<h1>Access Denied</h1>')
-        
 
 @login_required
 def flag_left(request, username):

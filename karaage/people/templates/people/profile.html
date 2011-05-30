@@ -23,35 +23,13 @@
 <h2>Tasks</h2>
 <p><a href="{% url kg_choose_project_existing %}" class="addlink">Apply to join an existing project</a></p>
 <p><a href="{% url kg_projectapplication_existing %}" class="addlink">Apply to start a new project</a></p>
-{% if person.is_delegate or person.is_active_delegate %}
+
+{% if person.is_delegate %}
 <h2>Institute Stats</h2>
 <p><a href="{% url kg_institute_users person.institute.id %}">{{ person.institute }} users</a> | 
   <a href="{% url kg_institute_projects person.institute.id %}">{{ person.institute }} projects</a></p>
 {% endif %}
 
-{% ifequal person person.institute.delegate %}
-<h2>Delegate Tasks</h2>
-<p>Active Delegate: <b>{{ person.institute.active_delegate }}</b></p>
-<form method="post" action=".">{% csrf_token %}
-  {% formfield form.active_delegate %}
-  <input type="submit" value="Change" name="delegate-form" />
-</form> 
-{% endifequal %}
-
-{% if project_requests %}
-<h2 class="alert">Project Requests</h2>
-<ul>
-  {% for request in project_requests %}
-  <li>
-    {{ request.project.leader }} - {{ request.project.name|truncatewords:"8" }} |
-    <a href="{% url user_project_request_detail request.id %}">Details</a> | 
-    <a href="{% url user_approve_project request.id %}">
-      <img src="{{ MEDIA_URL }}img/admin/icon-yes.gif" alt="Approve"/>&nbsp;Approve</a> |  
-    <a href="{% url user_reject_project request.id %}">
-      <img src="{{ MEDIA_URL }}img/admin/icon-no.gif" alt="Reject"/>&nbsp;Reject</a></li>
-  {% endfor %}
-</ul>
-{% endif %}
 
 <h2>Usage Summary (last 90 days)</h2>
 

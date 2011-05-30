@@ -5,14 +5,20 @@
 
 <p>Thanks {{ application.applicant.first_name }} for your new project application.</p>
 
-<p>{{ application.institute }}'s delegate, <b>{{ application.institute.active_delegate }}</b>, has been emailed about the request, and we're waiting for their authorisation.</p>
+<p>{{ application.institute }}'s delegate{{ application.institute.delegates.all|pluralize }} ha{{ application.institute.delegates.all|pluralize:"s,ve" }} been emailed about this application. Now we're just waiting
+for their authorisation.</p>
 
-<p>You can contact {{ application.institute.active_delegate.first_name }} by:<br />
-	<ul>
-		<li>Email: {{ application.institute.active_delegate.email|urlize }}</li> 
-		<li>Phone: {{ application.institute.active_delegate.telephone }}</li>
-	</ul>
+
+<p>Delegate{{ application.institute.delegates.all|pluralize }} contact details:<br />
+	{% for delegate in application.institute.delegates.all %}
+        <ul>
+        			<li>{{ delegate.get_full_name }}</li>
+                {% if delegate.email %}<li>Email: {{ delegate.email|urlize }}</li>{% endif %}
+                {% if delegate.telephone %}<li>Phone: {{ delegate.telephone }}</li>{% endif %}
+        </ul>
+     {% endfor %}
 </p>
+
 {% endblock %}
 
 
