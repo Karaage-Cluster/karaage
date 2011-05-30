@@ -148,3 +148,4 @@ INTERNAL_IPS = (
 AUP_URL = 'http://example.com/aup.html'
 
 ALLOW_REGISTRATIONS = True
+REGISTRATION_BASE_URL = 'https://example.com/users'
