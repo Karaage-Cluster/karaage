@@ -1,1 +1,1 @@
-INSERT INTO machine_category (id, name) VALUES (1, 'Default');
+INSERT INTO machine_category (id, name, datastore) VALUES (1, 'Default', 'karaage.datastores.openldap_datastore');
