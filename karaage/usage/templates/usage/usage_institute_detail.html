@@ -20,7 +20,7 @@
 {% if user_list %}
 
 <div class="module">
-   	<h2>Top 5 users&nbsp;&nbsp;<a href="users/">Show all</a></h2>
+   	<h2>Top 5 users&nbsp;&nbsp;<a href="users/?{{ querystring }}">Show all</a></h2>
    	<a href="#graph">
    		<img src="{{ GRAPH_URL }}institutes/{{ graph }}"  class="float-right" width="300" height="150"/>
    	</a>
