@@ -19,7 +19,6 @@ urlpatterns = patterns('',
     url(r'^software/', include('karaage.software.urls.admin')),
     url(r'^projectreports/', include('karaage.projectreports.urls.admin')),
     url(r'^surveys/', include('django_surveys.urls')),
-    url(r'^requests/', include('karaage.requests.urls.admin')),
     url(r'^pbsmoab/', include('karaage.pbsmoab.urls')),
     url(r'^emails/', include('karaage.emails.urls')),
 

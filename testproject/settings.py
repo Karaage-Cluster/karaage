@@ -1,7 +1,7 @@
 # Django settings for grunt project.
 from os import uname, path as os_path
 
-TEST_RUNNER='andsome.test_utils.xmlrunner.run_tests'
+#TEST_RUNNER='andsome.test_utils.xmlrunner.run_tests'
 
 GRAPH_DEBUG = True
 

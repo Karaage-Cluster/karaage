@@ -29,7 +29,7 @@ from placard.server import slapd
 from placard.client import LDAPClient
 from placard import exceptions as placard_exceptions
 
-from karaage.people.models import Person, Institute
+from karaage.people.models import Person, Institute, InstituteDelegate
 from karaage.projects.models import Project
 from karaage.machines.models import UserAccount
 from karaage.test_data.initial_ldap_data import test_ldif
@@ -154,8 +154,8 @@ class UserTestCase(TestCase):
         # institute leader for these people.
         print "-------------------------------------------------------------------"
         Person.objects.all().update(institute=2)
-        Institute.objects.filter(pk=2).update(delegate=2,active_delegate=2)
-
+        #Institute.objects.filter(pk=2).update(delegate=2,active_delegate=2)
+        InstituteDelegate.objects.get_or_create(institute=Institute.objects.get(id=2), person=Person.objects.get(id=2))
         project = Project.objects.get(pid="TestProject1")
         project.leaders=[2]
 
