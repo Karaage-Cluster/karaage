@@ -32,7 +32,7 @@ from andsome.forms import EmailForm
 
 from karaage.applications.models import UserApplication, ProjectApplication, Applicant, Application
 from karaage.applications.forms import UserApplicationForm, UserApplicantForm, LeaderApproveUserApplicationForm, LeaderInviteUserApplicationForm, StartApplicationForm, StartInviteApplicationForm
-from karaage.applications.emails import send_account_request_email, send_account_approved_email, send_user_invite_email, send_account_declined_email, send_notify_admin, render_email
+from karaage.applications.emails import send_account_request_email, send_account_approved_email, send_user_invite_email, send_notify_admin, render_email
 from karaage.applications.saml import SAMLApplicantForm, get_saml_user, add_saml_data
 from karaage.people.models import Person
 from karaage.projects.models import Project
