@@ -60,6 +60,11 @@ APPROVE_ACCOUNTS_EMAIL = ACCOUNTS_EMAIL
 
 LOCKED_SHELL = '/usr/local/sbin/insecure'
 
+# Registration base URL - Used in email templates
+# Uncomment to override default
+# REGISTRATION_BASE_URL = 'https://<hostname>/users'
+
+
 ###
 ### Placard Settings
 ### see - https://code.vpac.org/hudson/job/django-placard/javadoc/
