@@ -16,7 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 
-VERSION = (2, 5, 11, 'final', 0)
+VERSION = (2, 5, 12, 'final', 0)
 
 def get_version():
     """ Return the current version"""

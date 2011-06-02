@@ -1,3 +1,12 @@
+karaage (2.5.12-1) stable; urgency=low
+
+  * Project approved emails were going to the wrong place
+  * Log view for applications. Log against the parent Application model
+  * Add example setting for REGISTRATION_BASE_URL
+  * Minor bugs fixed
+
+ -- Sam Morrison <sam@vpac.org>  Fri, 03 Jun 2011 09:32:34 +1000
+
 karaage (2.5.11-1) stable; urgency=low
 
   * Ensure project PIDs and institute names don't clash
@@ -6,7 +15,7 @@ karaage (2.5.11-1) stable; urgency=low
   * Ensure institute name is unique. Ensure saml attributes are unique
   * Have a variable for user site for url links in emails
   * Refactored email templates. Use .example as suffixes
-	
+
  -- Sam Morrison <sam@vpac.org>  Wed, 01 Jun 2011 14:02:17 +1000
 
 karaage (2.5.10-1) stable; urgency=low
