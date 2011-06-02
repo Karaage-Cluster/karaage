@@ -41,7 +41,7 @@
 		
 	</table>
 {% endif %}
-<p><a href="{% url kg_application_delete application.id %}" class="deletelink">Delete application.</a></p>
+<p><a href="{% url kg_application_logs application.id %}">Logs</a> | <a href="{% url kg_application_delete application.id %}" class="deletelink">Delete application.</a></p>
 {% endblock %}
 
 

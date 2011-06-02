@@ -226,12 +226,12 @@ def approve_userapplication(request, application_id):
                 application.state = Application.WAITING_FOR_ADMIN
                 application.save()
                 send_notify_admin(application, request.user.get_full_name())
-                log(request.user, application, 2, 'Leader approved application')
+                log(request.user, application.application_ptr, 2, 'Leader approved application')
                 return HttpResponseRedirect(reverse('kg_userapplication_pending', args=[application.id]))
 
             application.approve()
             send_account_approved_email(application)
-            log(request.user, application, 2, 'Application fully approved')
+            log(request.user, application.application_ptr, 2, 'Application fully approved')
             return HttpResponseRedirect(reverse('kg_userapplication_complete', args=[application.id]))
     else:
         form = LeaderApproveUserApplicationForm(instance=application)
@@ -252,7 +252,7 @@ def decline_userapplication(request, application_id):
         if form.is_valid():
             to_email = application.applicant.email
             subject, body = form.get_data()
-            log(request.user, application, 3, "Application declined")
+            log(request.user, application.application_ptr, 3, "Application declined")
             application.delete()        
             send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
             return HttpResponseRedirect(reverse('kg_user_profile'))
@@ -360,12 +360,12 @@ def send_invitation(request, project_id):
                 send_account_approved_email(application)
                 messages.info(request, "%s was added to project %s directly since they have an existing account." % 
                               (application.applicant, application.project))
-                log(request.user, application, 1, "%s added directly to %s" % (applicant, project))
+                log(request.user, application.application_ptr, 1, "%s added directly to %s" % (applicant, project))
                 return HttpResponseRedirect(application.applicant.get_absolute_url())
 
             send_user_invite_email(application)
             messages.info(request, "Invitation sent to %s." % email)
-            log(request.user, application, 1, 'Invitation sent')
+            log(request.user, application.application_ptr, 1, 'Invitation sent')
             return HttpResponseRedirect(reverse('kg_user_profile'))
         
     else:

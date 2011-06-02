@@ -119,12 +119,12 @@ def approve_projectapplication(request, application_id):
                 application.state = Application.WAITING_FOR_ADMIN
                 application.save()
                 #send_notify_admin(application, request.user.get_full_name())
-                log(request.user, application, 2, 'Delegate approved application')
+                log(request.user, application.application_ptr, 2, 'Delegate approved application')
                 return HttpResponseRedirect(reverse('kg_projectapplication_pending', args=[application.id]))
 
             application.approve()
             send_project_approved_email(application)
-            log(request.user, application, 2, 'Delegate fully approved')
+            log(request.user, application.application_ptr, 2, 'Delegate fully approved')
             return HttpResponseRedirect(reverse('kg_projectapplication_complete', args=[application.id]))
     else:
         form = ApproveProjectApplicationForm(instance=application)
@@ -195,7 +195,7 @@ def decline_projectapplication(request, application_id):
         if form.is_valid():
             to_email = application.applicant.email
             subject, body = form.get_data()
-            log(request.user, application, 3, 'Application declined')
+            log(request.user, application.application_ptr, 3, 'Application declined')
             application.delete()
             send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
             return HttpResponseRedirect(reverse('kg_application_pendinglist'))

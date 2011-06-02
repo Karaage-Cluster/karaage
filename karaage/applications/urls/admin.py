@@ -17,6 +17,8 @@
 
 from django.conf.urls.defaults import *
 
+from karaage.applications.models import Application
+
 urlpatterns = patterns('karaage.applications.views.admin',
 
     url(r'^$', 'application_list', name='kg_application_list'),
@@ -30,3 +32,6 @@ urlpatterns = patterns('karaage.applications.views.admin',
 
 )
 
+urlpatterns += patterns('karaage.views',                   
+    url(r'^(?P<object_id>\d+)/logs/$', 'log_detail', {'model': Application }, name='kg_application_logs'),
+)
