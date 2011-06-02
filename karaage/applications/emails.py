@@ -132,8 +132,8 @@ def send_project_approved_email(application):
     context['project'] = application.project 
  
     for leader in application.project.leaders.all():
-        context['receiver'] =  application.institute.active_delegate
+        context['receiver'] = leader
         subject, body = render_email('project_approved', context)
-        to_email = application.institute.active_delegate.email
+        to_email = leader.email
         send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
         
