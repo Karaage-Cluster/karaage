@@ -113,10 +113,12 @@ def project_detail(request, project_id):
         if not request.user.has_perm('projects.change_project'):
             return HttpResponseForbidden('<h1>Access Denied</h1>')
         
-        data = request.POST.copy()     
-        person = Person.objects.get(pk=data['person'])
-        add_user_to_project(person, project)
-    
+        data = request.POST.copy()
+        if data['person']:
+            person = Person.objects.get(pk=data['person'])
+            add_user_to_project(person, project)
+        return HttpResponseRedirect(project.get_absolute_url())
+
     return render_to_response('projects/project_detail.html', locals(), context_instance=RequestContext(request))
 
 
