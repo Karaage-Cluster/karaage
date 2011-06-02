@@ -125,7 +125,7 @@ class ProjectTestCase(TestCase):
 
         new_user = Person.objects.get(user__username='kgtestuser2')
         response = self.client.post(reverse('kg_project_detail', args=[project.pid]), { 'person': new_user.id} )
-        self.failUnlessEqual(response.status_code, 200)
+        self.failUnlessEqual(response.status_code, 302)
         project = Project.objects.get(pk='TestProject1')
         self.assertEqual(project.users.count(), 2)
 
