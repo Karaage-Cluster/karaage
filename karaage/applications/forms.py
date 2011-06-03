@@ -44,6 +44,7 @@ class StartApplicationForm(StartInviteApplicationForm):
 class ApplicantForm(forms.ModelForm):
     class Meta:
         model = Applicant
+        exclude = ('saml_id',)
 
 class UserApplicantForm(ApplicantForm):
 
