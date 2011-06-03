@@ -1,3 +1,10 @@
+karaage (2.5.13-1) stable; urgency=high
+
+  * Ensure SAML ID doesn't get set on new applications
+  * This fixes a serious bug
+
+ -- Sam Morrison <sam@vpac.org>  Fri, 03 Jun 2011 14:07:11 +1000
+
 karaage (2.5.12-1) stable; urgency=low
 
   * Project approved emails were going to the wrong place
