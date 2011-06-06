@@ -2,6 +2,11 @@
 
 {% block title %}Applications{% endblock %}
 
+{% block bread_crumbs_1 %}
+&rsaquo; <a href="{% url kg_application_list %}">Applications</a>
+&rsaquo; {{ application }}
+{% endblock %}
+
 {% block content %}
 <h1>Application Details</h1>
     <table>
