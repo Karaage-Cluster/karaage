@@ -18,7 +18,8 @@
 <h3><a href="{{ project.get_absolute_url }}">{{ project }}</a></h3>
 <p>{% date_filter start end %}</p>
 
-	<p>Leader: <a href="{{ project.leader.get_absolute_url }}">{{ project.leader }}</a></p>
+	<p>Leader{{ project.leaders.all|pluralize }}: 
+	{% for leader in project.leaders.all %}<a href="{{ leader.get_absolute_url }}">{{ leader }}</a> {% endfor %}</p>
 	<div class="module">
    	<h2>Users</h2>
    	
