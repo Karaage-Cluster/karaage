@@ -51,7 +51,6 @@ def usage_index(request):
     return render_to_response('usage/mc_list.html', locals(), context_instance=RequestContext(request))
 
 
-
 def index(request, machine_category_id=settings.DEFAULT_MC):
 
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
@@ -176,7 +175,6 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
                      'quota_percent': quota_percent,
                      })
 
-
         user_list = []
         user_total, user_total_jobs = 0, 0
         if i_usage:
@@ -228,7 +226,6 @@ def project_usage(request, project_id, machine_category_id=settings.DEFAULT_MC):
         mc_ids = "(%i)" % mc_ids[0]
 
     # Custom SQL as need to get users that were remove from project too
-#    for u in project.users.all():
     cursor = connection.cursor()
     sql = "SELECT user_id from cpu_job where project_id = '%s' and `machine_id` IN %s AND `date` >= '%s' AND `date` <= '%s' GROUP BY user_id" % (str(project.pid), mc_ids, start_str, end_str)
     cursor.execute(sql)
@@ -260,7 +257,6 @@ def project_usage(request, project_id, machine_category_id=settings.DEFAULT_MC):
     graph = get_project_trend_graph_url(project, start, end, machine_category)
 
     return render_to_response('usage/project_usage.html', locals(), context_instance=RequestContext(request))
-
 
 
 def unknown_usage(request):
@@ -305,7 +301,6 @@ def unknown_usage(request):
 
 
 def search(request):
-
 
     if request.method == 'POST':
 
@@ -356,11 +351,8 @@ def search(request):
 
             else:
                 return HttpResponseRedirect('%s?start=%s&end=%s' % (reverse('kg_usage_list'), start_str, end_str)) 
-
     else:
-
         form = UsageSearchForm()
-
 
     return render_to_response('usage/search.html', locals(), context_instance=RequestContext(request))
     
@@ -368,7 +360,6 @@ def search(request):
 def project_search(request):
 
     if request.method == 'POST':
-
         form = UsageSearchForm(request.POST)
 
         if form.is_valid():
@@ -378,10 +369,8 @@ def project_search(request):
             end = data['end_date'].strftime('%Y-%m-%d')
             
             return HttpResponseRedirect('%s?start=%s&end=%s' % (project.get_usage_url(), start, end))    
-
     else:
         return HttpResponseRedirect(reverse('kg_admin_index'))
-
         
 
 def top_users(request, machine_category_id=settings.DEFAULT_MC, count=20):
