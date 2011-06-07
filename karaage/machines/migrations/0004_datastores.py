@@ -8,7 +8,7 @@ class Migration(DataMigration):
     
     def forwards(self, orm):
         from django.conf import settings
-        if 'ACCOUNT_DATASTORES' in settings:
+        if hasattr(settings, 'ACCOUNT_DATASTORES'):
             for mcid, datastore in settings.ACCOUNT_DATASTORES.items():
                 try:
                     mc = orm.MachineCategory.objects.get(id=mcid)
