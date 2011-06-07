@@ -17,8 +17,7 @@
 {% endblock %}
 
 {% block content %}
-<h1>Welcome {{ person }}
-{% ifequal person person.institute.active_delegate %}, you are the active delegate for {{ person.institute }}{% endifequal %}</h1>
+<h1>Welcome {{ person.first_name }}</h1>
 <p>
 <a href="{% url kg_user_profile %}">Personal Details</a>&nbsp;|&nbsp;
 <a href="{% url kg_user_profile_accounts %}">Cluster Account</a>&nbsp;|&nbsp;

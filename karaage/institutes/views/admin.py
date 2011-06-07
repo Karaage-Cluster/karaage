@@ -20,11 +20,12 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import permission_required
+from django.forms.models import inlineformset_factory
 
 from andsome.util.filterspecs import Filter, FilterBar
 
 from karaage.util.graphs import get_institute_trend_graph_url
-from karaage.people.models import Institute
+from karaage.people.models import Institute, InstituteDelegate
 from karaage.institutes.forms import InstituteForm
 
 def institute_detail(request, institute_id):
@@ -60,15 +61,29 @@ def add_edit_institute(request, institute_id=None):
 
     if institute_id:
         institute = get_object_or_404(Institute, pk=institute_id)
+        flag = 2
     else:
         institute = None
+        flag = 1
+
+    DelegateFormSet = inlineformset_factory(Institute, InstituteDelegate, extra=3)
 
     if request.method == 'POST':
         form = InstituteForm(request.POST, instance=institute)
-        if form.is_valid():
+        delegate_formset = DelegateFormSet(request.POST, instance=institute)
+
+        if form.is_valid() and delegate_formset.is_valid():
             institute = form.save()
+            if flag == 1:
+                delegate_formset = DelegateFormSet(request.POST, instance=institute)
+                delegate_formset.is_valid()
+            delegate_formset.save()
             return HttpResponseRedirect(institute.get_absolute_url())
     else:
         form = InstituteForm(instance=institute)
-        
-    return render_to_response('institutes/institute_form.html', {'institute': institute, 'form': form}, context_instance=RequestContext(request))
+        delegate_formset = DelegateFormSet(instance=institute)
+
+    return render_to_response(
+        'institutes/institute_form.html', 
+        {'institute': institute, 'form': form, 'delegate_formset': delegate_formset}, 
+        context_instance=RequestContext(request))

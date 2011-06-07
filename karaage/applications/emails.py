@@ -51,7 +51,7 @@ def send_notify_admin(application, leader=None):
     to_email = settings.APPROVE_ACCOUNTS_EMAIL
     subject, body = render_email('notify_admin', context)
 
-    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+    send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
 
 
 
@@ -68,7 +68,7 @@ def send_account_request_email(application):
         to_email = leader.email
         subject, body = render_email('join_project_request', context)
 
-        send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+        send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
 
 
 def send_user_invite_email(userapplication):
@@ -84,7 +84,7 @@ def send_user_invite_email(userapplication):
     to_email = userapplication.applicant.email 
     subject, body = render_email('user_invite', context)
     
-    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+    send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
 
 
 def send_account_approved_email(userapplication):
@@ -96,7 +96,7 @@ def send_account_approved_email(userapplication):
     subject, body = render_email('account_approved', context)
     to_email = userapplication.applicant.email
     
-    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+    send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
 
 
 def send_account_declined_email(userapplication):
@@ -108,21 +108,21 @@ def send_account_declined_email(userapplication):
     subject, body = render_email('account_declined', context)
     to_email = userapplication.applicant.email
     
-    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+    send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
 
 
 def send_project_request_email(application):
     """Sends an email to the projects institutes active delegate for approval"""
     context = CONTEXT.copy()
     context['requester'] = application.applicant
-    context['receiver'] =  application.institute.active_delegate
     context['site'] = '%s/applications/projects/%s/' % (settings.REGISTRATION_BASE_URL, application.id)
     context['application'] = application 
-    subject, body = render_email('project_request', context)
 
-    to_email = application.institute.active_delegate.email
-
-    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+    for delegate in application.institute.delegates.filter(institutedelegate__send_email=True):
+        context['receiver'] = delegate
+        to_email = delegate.email
+        subject, body = render_email('project_request', context)
+        send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
 
 
 def send_project_approved_email(application):
@@ -132,8 +132,9 @@ def send_project_approved_email(application):
     context['project'] = application.project 
  
     for leader in application.project.leaders.all():
-        context['receiver'] = leader
+        context['receiver'] =  leader
         subject, body = render_email('project_approved', context)
         to_email = leader.email
-        send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+        send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+
         

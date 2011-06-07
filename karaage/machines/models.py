@@ -25,7 +25,20 @@ from karaage.machines.managers import MachineCategoryManager, ActiveMachineManag
 
 
 class MachineCategory(models.Model):
+    OPENLDAP = 'karaage.datastores.openldap_datastore'
+    DS_LDAP = 'karaage.datastores.ldap_datastore'
+    AD = 'karaage.datastores.ad_datastore'
+    FILES = 'karaage.datastores.files'
+    DUMMY = 'karaage.datastores.dummy'
+    ACCOUNT_DATASTORES = (
+        (OPENLDAP, 'OpenLDAP'),
+        (DS_LDAP, 'Netsacape LDAP'),
+        (AD, 'Active Directory'),
+        (FILES, 'Files'),
+        (DUMMY, 'Dummy'),
+        )
     name = models.CharField(max_length=100)
+    datastore = models.CharField(max_length=255, choices=ACCOUNT_DATASTORES, default=OPENLDAP)
     objects = MachineCategoryManager()
 
     class Meta:

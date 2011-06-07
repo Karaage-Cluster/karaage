@@ -21,7 +21,6 @@ import datetime
 from karaage.people.models import Person
 from karaage.machines.models import MachineCategory, UserAccount
 from karaage.projects.models import Project
-from karaage.util import log_object as log
 from karaage.pbsmoab.models import ProjectChunk
 from karaage.pbsmoab.logs import parse_logs
 
@@ -38,31 +37,6 @@ def parse_usage(user, usage, date, machine_name, log_type):
     return parse_logs(usage, date, machine_name, log_type)
 
 
-@xmlrpc_func(returns='string', args=['string', 'string'])
-def get_project(username, proj=None):
-    """
-    Used in the submit filter to make sure user is in project
-    """
-    
-    try:
-        user_account = UserAccount.objects.get(username=username,machine_category=MachineCategory.objects.get_default())
-    except UserAccount.DoesNotExist:
-        return "User '%s' not found" % username
-    if proj is None:
-        project = user_account.default_project
-    else:
-        try:
-            project = Project.objects.get(pid=proj)
-        except Project.DoesNotExist:
-            project = user_account.default_project
-    if project:
-        if user_account.user in project.users.all():
-            return project.pid
-        else:
-            if user_account.user in user_account.default_project.users.all():
-                return user_account.default_project.pid
-            
-    return "None"
 
 @xmlrpc_func(returns='boolean', args=['string'])
 def project_under_quota(project_id):
@@ -147,29 +121,3 @@ def showquota(username):
 
 
 
-@xmlrpc_func(returns='int', args=['string'])
-@permission_required()
-def change_default_project(user, project):
-    """
-    Change default project
-    """
-    user = user.get_profile()
-    try:
-        project = Project.objects.get(pid=project)
-    except Project.DoesNotExist:
-        return -1, "Project %s does not exist" % project
-    
-    if not user in project.users.all():
-        return -2, "User %s not a member of project %s" % (user, project.pid)
-    
-    mc = MachineCategory.objects.get_default()
-    
-    user_account = user.get_user_account(mc)
-    
-    user_account.default_project = project
-    user_account.save()
-    user_account.user.save()
-    
-    log(user.user, user, 2, 'Changed default project to %s' % project.pid)
-    
-    return 0, "Default project changed"

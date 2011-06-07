@@ -16,14 +16,16 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib import admin
-from karaage.people.models import Institute, Person
+
+from karaage.people.models import Institute, Person, InstituteDelegate
 
 class InstituteAdmin(admin.ModelAdmin):
-    list_display = ('name','delegate','active_delegate', 'gid',)
+    list_display = ('name','gid',)
     search_fields = ['name',]
 
 admin.site.register(Institute, InstituteAdmin)
 
+admin.site.register(InstituteDelegate)
 
 class PersonAdmin(admin.ModelAdmin):
     list_display = ('username', 'get_full_name','email', 'is_active','last_usage')

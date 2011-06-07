@@ -195,24 +195,6 @@ class PasswordChangeForm(AdminPasswordChangeForm):
         return self.cleaned_data['old']
 
 
-
-class DelegateForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        super(self.__class__, self).__init__(*args, **kwargs)
-        self.fields['active_delegate'] = forms.ModelChoiceField(label="Change to", queryset=Person.active.all())
-
-
-    def save(self, institute):
-
-        data = self.cleaned_data
-
-        previous = institute.active_delegate
-
-        institute.active_delegate = data['active_delegate']
-
-        institute.save()
-
-
 class LoginForm(forms.Form):
     username = forms.CharField(label="Username", max_length=30)
     password = forms.CharField(label="Password", widget=forms.PasswordInput)

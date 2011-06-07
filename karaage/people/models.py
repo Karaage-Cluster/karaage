@@ -22,22 +22,19 @@ from django.db.models import Q
 
 from placard.client import LDAPClient
 from andsome.middleware.threadlocals import get_current_user
-from karaage.institutes.managers import PrimaryInstituteManager, ActiveInstituteManager
+from karaage.institutes.managers import ActiveInstituteManager
 from karaage.constants import TITLES, STATES, COUNTRIES
-from karaage.people.managers import ActiveUserManager, DeletedUserManager, LeaderManager
+from karaage.people.managers import ActiveUserManager, DeletedUserManager, LeaderManager, PersonManager
 
 
 class Institute(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    delegate = models.ForeignKey('Person', related_name='delegate', null=True, blank=True)
-    active_delegate = models.ForeignKey('Person', related_name='active_delegate', null=True, blank=True)
-    sub_delegates = models.ManyToManyField('Person', related_name='sub_delegates', blank=True, null=True)
+    delegates = models.ManyToManyField('Person', related_name='delegate', blank=True, null=True, through='InstituteDelegate')
     gid = models.IntegerField(editable=False)
     saml_entityid = models.CharField(max_length=200, null=True, blank=True, unique=True)
-    is_active = models.BooleanField()
+    is_active = models.BooleanField(default=True)
     objects = models.Manager()
     active = ActiveInstituteManager()
-    primary = PrimaryInstituteManager()
 
     class Meta:
         ordering = ['name']
@@ -58,11 +55,6 @@ class Institute(models.Model):
     @models.permalink
     def get_usage_url(self):
         return ('kg_usage_institute', [1, self.id])
-    
-    def is_primary(self):
-        if self.delegate:
-            return True
-        return False
 
     def get_usage(self, start, end, machine_category=None):
         from karaage.machines.models import MachineCategory
@@ -88,14 +80,11 @@ class Institute(models.Model):
         if not self.is_active:
             return False
 
-        # Institute delegate==person can view institute
-        if institute.delegate.id == person.id:
-            return True
-        if institute.active_delegate.id == person.id:
+        # Institute delegates==person can view institute
+        if person in institute.delegates.all():
             return True
 
         return False
-
 
 
 class Person(models.Model):
@@ -123,7 +112,7 @@ class Person(models.Model):
     last_usage = models.DateField(null=True, blank=True)
     expires = models.DateField(null=True, blank=True)
     is_systemuser = models.BooleanField(default=False)
-    objects = models.Manager()
+    objects = PersonManager()
     active = ActiveUserManager()
     deleted = DeletedUserManager()
     projectleaders = LeaderManager()
@@ -217,16 +206,11 @@ class Person(models.Model):
 
         # Institute delegate==person can view any member of institute
         if self.institute.is_active:
-            if self.institute.delegate is not None:
-                if self.institute.delegate.id == person.id:
-                    return True
-            if self.institute.active_delegate is not None:
-                if  self.institute.active_delegate.id == person.id:
-                    return True
+            if person in self.institute.delegates.all():
+                return True
 
         # Institute delegate==person can view people in projects that are a member of institute
-        tmp = Project.objects.filter(users=self.id).filter(Q(institute__delegate=person)|Q(institute__active_delegate=person)).filter(is_active=True)
-        if tmp.count() > 0:
+        if Project.objects.filter(users=self.id).filter(institute__delegates=person):
             return True
 
         # person can view people in projects they belong to
@@ -262,16 +246,6 @@ class Person(models.Model):
     
     def is_leader(self):
         if self.leaders.count() > 0:
-            return True
-        return False
-    
-    def is_delegate(self):
-        if self.delegate.count() > 0:
-            return True
-        return False
-
-    def is_active_delegate(self):
-        if self.active_delegate.count() > 0:
             return True
         return False
 
@@ -310,3 +284,9 @@ class Person(models.Model):
             return ldap_user.loginShell
         except:
             return ''
+
+class InstituteDelegate(models.Model):
+    person = models.ForeignKey(Person)
+    institute = models.ForeignKey(Institute)
+    send_email = models.BooleanField()
+

@@ -1,4 +1,5 @@
 {% extends "forms.html" %}
+{% load forms %}
 
 {% block title %}Institutes{% endblock %}
 
@@ -15,12 +16,27 @@
 {% endblock %}   
 
 {% block content %}
+    {% if form.errors or delegate_formset.errors  %}
+    <p class="errornote">
+      Please correct the error{{ form.errors|pluralize }} below.
+    </p>
+    {% endif %}
 <form method="post" action=".">{% csrf_token %}
-{% load forms %}
+{{ delegate_formset.management_form }}
+
 <fieldset class="module aligned ()">
 {% form_as_div form %}
 </fieldset>
-
+<fieldset class="module aligned ()">
+<h2>Delegates</h2>
+    {% for dform in delegate_formset.forms %}
+    
+    	{{ dform.id }}
+      {% inlineformfield  dform.person dform.send_email %}
+      {% formfield lineform.DELETE %}
+    
+    {% endfor %}
+</fieldset>
 <div class="submit-row">
 		<input type="submit" value="Save" class="default" />
 	</div>

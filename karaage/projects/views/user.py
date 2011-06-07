@@ -25,7 +25,6 @@ from karaage.people.models import Institute, Person
 from karaage.projects.forms import UserProjectForm as ProjectForm
 from karaage.projects.models import Project
 from karaage.util import log_object as log
-from karaage.util.email_messages import send_account_request_email, send_project_request_email, send_project_approved_email, send_project_rejected_email, send_account_approved_email, send_account_rejected_email, send_project_join_approved_email, send_bounced_warning
 
 
 @login_required

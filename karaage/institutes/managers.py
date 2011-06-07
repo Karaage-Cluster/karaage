@@ -17,14 +17,6 @@
 
 from django.db import models
 
-class PrimaryInstituteManager(models.Manager):
-    """
-    Returns only 'primary' institutes.
-    Primary institute is one that can host projects.
-    """
-    def get_query_set(self):
-        return super(PrimaryInstituteManager, self).get_query_set().filter(delegate__isnull=False)
-
 
 class ActiveInstituteManager(models.Manager):
     """

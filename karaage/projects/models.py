@@ -80,12 +80,8 @@ class Project(models.Model):
 
         # Institute delegate==person can view any member of institute
         if self.institute.is_active:
-            if self.institute.delegate is not None:
-                if self.institute.delegate.id == person.id:
-                    return True
-            if self.institute.active_delegate is not None:
-                if  self.institute.active_delegate.id == person.id:
-                    return True
+            if person in self.institute.delegates.all():
+                return True
 
         # Leader==person can view projects they lead
         tmp = self.leaders.filter(pk=person.pk)

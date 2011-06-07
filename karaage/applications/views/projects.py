@@ -105,7 +105,7 @@ def do_projectapplication(request, token=None, application_form=ProjectApplicati
 @login_required
 def approve_projectapplication(request, application_id):
     application = get_object_or_404(ProjectApplication, pk=application_id)
-    if not request.user.get_profile() == application.institute.delegate:
+    if not request.user.get_profile() in application.institute.delegates.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     if application.state != Application.WAITING_FOR_DELEGATE:
         return render_to_response('applications/unable_to_approve.html', {'application': application }, context_instance=RequestContext(request))
@@ -137,7 +137,7 @@ def projectapplication_pending(request, application_id):
     application = get_object_or_404(ProjectApplication, pk=application_id)
     if application.state != Application.WAITING_FOR_ADMIN:
         return HttpResponseForbidden('<h1>Access Denied</h1>')
-    if not request.user.get_profile() == application.institute.delegate:
+    if not request.user.get_profile() in application.institute.delegates.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>') 
     
     return render_to_response('applications/projectapplication_pending.html', {'application': application}, context_instance=RequestContext(request))
@@ -149,7 +149,7 @@ def projectapplication_complete(request, application_id):
     application = get_object_or_404(ProjectApplication, pk=application_id)
     if application.state != Application.COMPLETE:
         return HttpResponseForbidden('<h1>Access Denied</h1>')
-    if not request.user.get_profile() == application.institute.delegate:
+    if not request.user.get_profile() in application.institute.delegates.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>') 
     
     return render_to_response('applications/projectapplication_complete.html', {'application': application}, context_instance=RequestContext(request))
@@ -184,7 +184,7 @@ def projectapplication_existing(request, application_form=ProjectApplicationForm
 def decline_projectapplication(request, application_id):
     application = get_object_or_404(ProjectApplication, pk=application_id)
 
-    if not request.user.get_profile() == application.institute.delegate:
+    if not request.user.get_profile() in application.institute.delegates.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     
     if application.state != Application.WAITING_FOR_DELEGATE:
