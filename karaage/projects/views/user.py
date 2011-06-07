@@ -18,17 +18,12 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
-import datetime
 
 from karaage.people.models import Institute, Person
 from karaage.projects.forms import UserProjectForm as ProjectForm
 from karaage.projects.models import Project
-from karaage.machines.models import Machine
 from karaage.util import log_object as log
 from karaage.util.email_messages import send_account_request_email, send_project_request_email, send_project_approved_email, send_project_rejected_email, send_account_approved_email, send_account_rejected_email, send_project_join_approved_email, send_bounced_warning
 

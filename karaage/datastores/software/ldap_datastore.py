@@ -25,11 +25,11 @@ class SoftwareDataStore(base.SoftwareDataStore):
     def create_software(self, software):  
         conn = LDAPClient()
         if software.gid:
-             try:
-                 lgroup = conn.get_group("gidNumber=%s" % software.gid)
-                 gid = int(lgroup.gidNumber)
-             except DoesNotExistException:
-                 gid = conn.add_group(cn=str(software.name.lower().replace(' ', '')), gidNumber=str(software.gid))
+            try:
+                lgroup = conn.get_group("gidNumber=%s" % software.gid)
+                gid = int(lgroup.gidNumber)
+            except DoesNotExistException:
+                gid = conn.add_group(cn=str(software.name.lower().replace(' ', '')), gidNumber=str(software.gid))
         else:
                  
             try:

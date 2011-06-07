@@ -17,14 +17,9 @@
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
-from django import forms
-from django.contrib.auth.decorators import permission_required
 
-from karaage.people.models import Institute
+from karaage.machines.models import Machine, MachineCategory
 
-from forms import MachineForm
-from models import Machine, MachineCategory
 
 def index(request):
 

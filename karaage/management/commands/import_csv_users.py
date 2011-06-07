@@ -27,8 +27,6 @@ bob,secret2,Bob,Smith,bob@example.com,Example University,pEx0032
 
 """
 
-import getpass
-import os
 import re
 import sys
 from csv import DictReader

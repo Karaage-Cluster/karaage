@@ -16,7 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib import admin
-from models import Project
+from karaage.projects.models import Project
 
 
 class ProjectAdmin(admin.ModelAdmin):

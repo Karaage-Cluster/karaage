@@ -1,5 +1,4 @@
 from django import forms
-from django.db.models import Q
 from django_shibboleth.utils import parse_attributes
 
 from karaage.applications.forms import UserApplicantForm

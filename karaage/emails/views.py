@@ -15,11 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.shortcuts import get_object_or_404, render_to_response
-from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
-from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import permission_required
 from django.core.mail import send_mass_mail
 from django.core.urlresolvers import reverse
 from django.contrib import messages

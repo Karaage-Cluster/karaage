@@ -20,17 +20,14 @@ from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.auth.models import User
 from django.conf import settings
 
-import datetime
 from andsome.middleware.threadlocals import get_current_user
 from andsome.util import is_password_strong
 
 from karaage.people.models import Institute, Person
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
-from karaage.machines.models import MachineCategory, UserAccount
 from karaage.constants import TITLES, COUNTRIES
-from karaage.datastores import create_new_user, create_account
-from karaage.util import log_object as log
+from karaage.datastores import create_new_user
 from karaage.validators import username_re
 
 

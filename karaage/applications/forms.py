@@ -25,8 +25,6 @@ from captcha.fields import CaptchaField
 
 from karaage.applications.models import UserApplication, ProjectApplication, Applicant
 from karaage.people.models import Person, Institute
-from karaage.people.forms import UsernamePasswordForm
-from karaage.constants import TITLES
 from karaage.projects.models import Project
 from karaage.validators import username_re
 

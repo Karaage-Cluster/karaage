@@ -23,9 +23,9 @@ from django.forms import util
 
 from karaage.projects.models import Project
 from karaage.util import log_object as log
+from karaage.pbsmoab.models import ProjectChunk
+from karaage.pbsmoab.forms import ProjectChunkForm
 
-from models import ProjectChunk
-from forms import ProjectChunkForm
 
 @permission_required('pbsmoab.add_projectchunk')
 def projectchunk_add(request, project_id):

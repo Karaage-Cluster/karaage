@@ -17,10 +17,8 @@
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django import forms
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden
-from django.conf import settings
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 
 import datetime
@@ -28,7 +26,6 @@ from django_surveys.models import SurveyGroup
 from django_surveys.views import do_survey
 
 from karaage.projects.models import Project
-from karaage.people.models import Person
 from karaage.projectreports.models import ProjectSurvey
 
 @login_required

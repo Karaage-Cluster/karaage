@@ -19,8 +19,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator
-from django.conf import settings
-from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import permission_required
 
 from andsome.util.filterspecs import Filter, FilterBar
 

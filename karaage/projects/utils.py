@@ -18,7 +18,6 @@
 from karaage.datastores import create_account
 
 from karaage.projects.models import Project
-from karaage.people.models import Institute
 
 def add_user_to_project(person, project):
 

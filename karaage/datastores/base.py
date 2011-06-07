@@ -17,7 +17,6 @@
 
 from django.contrib.auth.models import User
 from django.conf import settings
-from django.contrib.auth.models import AnonymousUser
 
 import datetime
 from andsome.middleware.threadlocals import get_current_user

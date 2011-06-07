@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import base
+from karaage.datastores import base
 
 
 class PersonalDataStore(base.PersonalDataStore):

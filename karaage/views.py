@@ -33,7 +33,6 @@ from django_shibboleth.utils import build_shib_url
 
 from karaage.people.models import Person
 from karaage.projects.models import Project
-from karaage.applications.models import Application, UserApplication
 from karaage.applications.saml import SAMLInstituteForm
 
 @login_required

@@ -16,11 +16,10 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 import datetime
 
-from karaage.machines.models import Machine
 from karaage.projects.models import Project
 from karaage.people.models import Institute, Person
 

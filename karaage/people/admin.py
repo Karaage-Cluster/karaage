@@ -16,7 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib import admin
-from models import Institute, Person
+from karaage.people.models import Institute, Person
 
 class InstituteAdmin(admin.ModelAdmin):
     list_display = ('name','delegate','active_delegate', 'gid',)
