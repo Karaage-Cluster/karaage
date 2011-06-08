@@ -8,7 +8,7 @@
    <tbody>
 	{% for a in object_list %}
 		<tr class="{% cycle row1,row2 %}">
-			<td><a href="{{ a.license.get_absolute_url }}">{{ a.license.package }}</a></td>
+			<td>{{ a.license.package }} - <a href="{{ a.license.get_absolute_url }}">View license</a></td>
 			<td>{{ a.date }}</td>
 		</tr>
 	{% endfor %}
