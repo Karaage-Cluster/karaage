@@ -147,6 +147,7 @@ def decline_userapplication(request, application_id):
             to_email = application.applicant.email
             subject, body = form.get_data()
             log(request.user, application.application_ptr, 3, 'Application declined')
+            messages.info(request, "%s declined successfully." % application)
             application.delete()
             send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
             return HttpResponseRedirect(reverse('kg_application_list'))
@@ -171,7 +172,7 @@ def approve_projectapplication(request, application_id):
             application = form.save()
             project = application.approve(pid=form.cleaned_data['pid'])
             send_project_approved_email(application)
-            messages.info(request, "Application approved successfully")
+            messages.info(request, "Application approved successfully.")
             log(request.user, application.application_ptr, 2, 'Application fully approved')
             return HttpResponseRedirect(project.get_absolute_url())
     else:
@@ -192,6 +193,7 @@ def decline_projectapplication(request, application_id):
             to_email = application.applicant.email
             subject, body = form.get_data()
             log(request.user, application.application_ptr, 3, 'Application declined')
+            messages.info(request, "%s declined successfully." % application)
             application.delete()
             send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
             return HttpResponseRedirect(reverse('kg_application_list'))
@@ -219,6 +221,22 @@ def delete_application(request, application_id):
     if request.method == 'POST':
         application.delete()
         log(request.user, application, 3, 'Application deleted')
+        messages.info(request, "%s deleted successfully." % application)
         return HttpResponseRedirect(reverse('kg_application_list'))
 
     return render_to_response('applications/application_confirm_delete.html', {'application': application}, context_instance=RequestContext(request))
+
+
+@permission_required('applications.change_application')
+def archive_application(request, application_id):
+    application = get_object_or_404(Application, pk=application_id)
+
+    if request.method == 'POST':
+        application.state = Application.ARCHIVED
+        application.save()
+        log(request.user, application, 2, 'Application archived')
+        messages.info(request, "%s archived successfully." % application)
+        return HttpResponseRedirect(application.get_absolute_url())
+
+    return render_to_response('applications/application_archive.html', {'application': application}, context_instance=RequestContext(request))
+

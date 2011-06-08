@@ -1,0 +1,28 @@
+{% extends "threecol.html" %}
+{% block title %}Applications{% endblock %}
+
+{% block bread_crumbs_1 %}
+&rsaquo; <a href="{% url kg_application_list %}">Applications</a>
+&rsaquo; {{ application }}
+{% endblock %}
+
+{% block content %}
+
+<div id="content-related-extra">
+	<div class="module">
+	<h2>Tasks</h2>
+      
+	<ul class="plainlist">
+		<li>&nbsp;</li>
+		<li><a href="{% url kg_application_logs application.id %}">Logs</a><br /><br /></li>
+		{% if application.state == 'C' %}
+		<li><a href="{% url kg_application_archive application.id %}" class="changelink">Archive application</a><br /><br /></li>
+		{% endif %}
+		<li><a href="{% url kg_application_delete application.id %}" class="deletelink">Delete application</a><br /><br /></li>
+			
+	</ul>
+	</div>
+</div>
+{% block application_detail %}{% endblock %}
+
+{% endblock %}
