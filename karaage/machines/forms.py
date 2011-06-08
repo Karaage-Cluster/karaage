@@ -26,6 +26,10 @@ class MachineForm(forms.ModelForm):
     class Meta:
         model = Machine
 
+class MachineCategoryForm(forms.ModelForm):
+    class Meta:
+        model = MachineCategory
+
 
 class UserAccountForm(forms.Form): 
     machine_category = forms.ModelChoiceField(queryset=MachineCategory.objects.all(), initial=1)

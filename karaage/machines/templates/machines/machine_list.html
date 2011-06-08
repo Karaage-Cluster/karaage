@@ -8,24 +8,28 @@
 {% block content %}
 <div id="content-main">
   {% if perms.machines.add_machine %}
-  <ul class="object-tools"><li><a href="add/" class="addlink">Add machine</a></li></ul>
+  <ul class="object-tools">
+  <li><a href="{% url kg_machinecategory_add %}" class="addlink">Add machine category</a></li>  
+  <li><a href="add/" class="addlink">Add machine</a></li></ul>
   {% endif %}
   <div class="module">
     <h2>Machines</h2>
     <ul>
       {% for c in category_list %}
       <li><h3>{{ c.name }}</h3>
+      - <a href="{% url kg_machinecategory_edit c.id %}" class="changelink">Edit category</a>
+      | <a href="{% url kg_mc_usage c.id %}">Usage</a>
+      	
     	<ul>
     	  {% for m in c.machine_set.all %}
     	  <li><a href="{{ m.get_absolute_url }}">{{ m.name }}</a>&nbsp;
 	    {% if m.end_date %}
 	    <span class="red">*Decommissioned</span>
-	    {% else %}
-	    - <a href="{% url kg_mc_usage c.id %}">Usage</a>
 	    {% endif %}
     	  </li>
     	  {% endfor %}
     	</ul>
+    	 
       </li>
       {% endfor %}
     </ul>

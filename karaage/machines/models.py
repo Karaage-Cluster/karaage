@@ -38,7 +38,7 @@ class MachineCategory(models.Model):
         (DUMMY, 'Dummy'),
         )
     name = models.CharField(max_length=100)
-    datastore = models.CharField(max_length=255, choices=ACCOUNT_DATASTORES, default=OPENLDAP)
+    datastore = models.CharField(max_length=255, choices=ACCOUNT_DATASTORES, default=OPENLDAP, help_text="Modifying this value on existing categories will affect accounts created under the old datastore")
     objects = MachineCategoryManager()
 
     class Meta:
@@ -61,6 +61,10 @@ class MachineCategory(models.Model):
             del MC_CACHE[pk]
         except KeyError:
             pass
+    
+    @models.permalink
+    def get_absolute_url(self):
+        return ('kg_machine_list',)
 
 
 class Machine(models.Model):

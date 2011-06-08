@@ -17,16 +17,14 @@
 
 from django.conf.urls.defaults import *
 
-from models import Machine
-
-info_dict = {
-    'model': Machine,
-    }
+from models import Machine, MachineCategory
 
 
-urlpatterns = patterns('django.views.generic.create_update',                        url(r'^add/$', 'create_object', info_dict),    
-    url(r'^(?P<object_id>\d+)/edit/$', 'update_object', info_dict),
-        
+urlpatterns = patterns('django.views.generic.create_update',                        
+    url(r'^add/$', 'create_object', {'model': Machine}),    
+    url(r'^(?P<object_id>\d+)/edit/$', 'update_object', {'model': Machine}),       
+    url(r'^categories/add/$', 'create_object', {'model': MachineCategory}, name='kg_machinecategory_add'),    
+    url(r'^categories/(?P<object_id>\d+)/edit/$', 'update_object', {'model': MachineCategory}, name='kg_machinecategory_edit'),
 )
 
 urlpatterns += patterns('karaage.machines.views',
