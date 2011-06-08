@@ -11,13 +11,13 @@
 
 {% block content %}
 {% get_comment_count for person as comment_count %}
-<div id="content-main">
 
   <div id="content-related-extra">
     <div class="module">
       <h2>Tasks</h2>
       
-      <ul class="plainlist"><br />
+      <ul class="plainlist">
+        <li>&nbsp;</li>
         {% if not person.is_active %}
         {% if not requestor %}
         <li><a href="activate/">Activate</a></li>
@@ -39,10 +39,10 @@
 	<li><a href="ldap/">LDAP</a><br /><br /></li>
 	{% if perms.people.change_person and person.is_active %}
 	{% if person.is_locked %}
-	<li><a href="unlock/"><img src="{{ MEDIA_URL }}img/lock.png" />&nbsp;Unlock</a><br /><br /></li>
+	<li><a href="unlock/"><img src="{{ MEDIA_URL }}img/lock.png" alt="Lock"/>&nbsp;Unlock</a><br /><br /></li>
 	{% else %}
 	<li class="changelink"><a href="password_change/">Change Password</a><br /><br /></li>
-	<li><a href="lock/"><img src="{{ MEDIA_URL }}img/unlock.png" />&nbsp;Lock</a><br /><br /></li>
+	<li><a href="lock/"><img src="{{ MEDIA_URL }}img/unlock.png" alt="Unlock"/>&nbsp;Lock</a><br /><br /></li>
 	{% endif %}
 	<li><a href="bounced_email/">Bounced Email</a><br /><br /></li>
 	{% endif %}
@@ -139,8 +139,10 @@
 	  {% endif %}
 	  {% ifequal ua.machine_category.id 1 %}
 	  <td>{% if not ua.date_deleted and perms.machines.change_useraccount %}<form action="{% url kg_change_shell ua.id %}" method="post">{% csrf_token %}
+	  	<div>
 	      {{ shell_form.shell }}
 	      <input type="submit" value="Change" />
+	      </div>
 	    </form>{% else %}&nbsp;{% endif %}</td>
 	  {% endifequal %}
 	  {% if not ua.date_deleted and perms.machines.delete_useraccount %}
@@ -211,6 +213,6 @@
   	</div>
   	{% endif %}
 
-</div>
+
 {% endblock %}
  
