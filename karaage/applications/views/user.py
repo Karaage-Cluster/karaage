@@ -36,6 +36,7 @@ from karaage.applications.emails import send_account_request_email, send_account
 from karaage.applications.saml import SAMLApplicantForm, get_saml_user, add_saml_data
 from karaage.people.models import Person
 from karaage.projects.models import Project
+from karaage.datastores import create_password_hash
 from karaage.util import log_object as log
 
 
@@ -91,6 +92,7 @@ def do_userapplication(request, token=None, saml=False,
             applicant = applicant_form.save(commit=False)
             if saml:
                 applicant = add_saml_data(applicant, request)
+            applicant.password = create_password_hash(applicant_form.cleaned_data['password1'])
             applicant.save()
             application = form.save(commit=False)
             application.applicant = applicant

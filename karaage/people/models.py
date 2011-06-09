@@ -89,7 +89,7 @@ class Institute(models.Model):
 
 class Person(models.Model):
     user = models.ForeignKey(User, unique=True)
-    saml_id = models.CharField(max_length=200, null=True, blank=True, unique=True)
+    saml_id = models.CharField(max_length=200, null=True, blank=True, unique=True, editable=False)
     position = models.CharField(max_length=200, null=True, blank=True)
     telephone = models.CharField(max_length=200, null=True, blank=True)
     mobile = models.CharField(max_length=200, null=True, blank=True)

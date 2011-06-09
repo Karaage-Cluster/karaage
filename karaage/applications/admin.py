@@ -18,9 +18,6 @@
 from django.contrib import admin
 from models import UserApplication, ProjectApplication, Applicant
 
-class ApplicantAdmin(admin.ModelAdmin):
-    exclude = ('password',)
-
 admin.site.register(UserApplication)
 admin.site.register(ProjectApplication)
-admin.site.register(Applicant, ApplicantAdmin)
+admin.site.register(Applicant)

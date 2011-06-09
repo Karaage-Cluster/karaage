@@ -168,7 +168,7 @@ class ProjectApplication(Application):
 class Applicant(models.Model):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=16, unique=True, help_text="Required. 16 characters or fewer. Letters, numbers and underscores only", null=True, blank=True)
-    password = models.CharField(max_length=128, null=True, blank=True)
+    password = models.CharField(max_length=128, null=True, blank=True, editable=False)
     title = models.CharField(choices=TITLES, max_length=10, null=True, blank=True)
     first_name = models.CharField(max_length=30, null=True, blank=True)
     last_name = models.CharField(max_length=30, null=True, blank=True)
@@ -183,7 +183,7 @@ class Applicant(models.Model):
     postcode = models.CharField(max_length=8, null=True, blank=True)
     country = models.CharField(max_length=2, choices=COUNTRIES, null=True, blank=True)
     fax = models.CharField(max_length=50, null=True, blank=True)
-    saml_id = models.CharField(max_length=200, null=True, blank=True)
+    saml_id = models.CharField(max_length=200, null=True, blank=True, editable=False)
     applications = generic.GenericRelation(Application)
 
     def __unicode__(self):
