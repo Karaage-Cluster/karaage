@@ -33,6 +33,7 @@ from karaage.applications.forms import ProjectApplicationForm, UserApplicantForm
 from karaage.applications.emails import send_project_request_email, send_project_approved_email, send_notify_admin, render_email
 from karaage.applications.saml import SAMLApplicantForm, get_saml_user, add_saml_data
 from karaage.machines.models import MachineCategory
+from karaage.datastores import create_password_hash
 from karaage.util import log_object as log
 
 
@@ -80,6 +81,7 @@ def do_projectapplication(request, token=None, application_form=ProjectApplicati
             applicant = applicant_form.save(commit=False)
             if saml:
                 applicant = add_saml_data(applicant, request)
+            applicant.password = create_password_hash(applicant_form.cleaned_data['password1'])
             applicant.save()
             application = form.save(commit=False)
             application.applicant = applicant

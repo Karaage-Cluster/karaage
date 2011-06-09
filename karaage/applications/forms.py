@@ -44,7 +44,6 @@ class StartApplicationForm(StartInviteApplicationForm):
 class ApplicantForm(forms.ModelForm):
     class Meta:
         model = Applicant
-        exclude = ('saml_id',)
 
 class UserApplicantForm(ApplicantForm):
 
@@ -99,14 +98,6 @@ class UserApplicantForm(ApplicantForm):
         if users:
             raise forms.ValidationError(u'An account with this email already exists. Please email %s' % settings.ACCOUNTS_EMAIL)
         return email
-
-    def clean(self):
-        from karaage.util.helpers import create_password_hash
-        super(UserApplicantForm, self).clean()
-        if 'password1' in self.cleaned_data:
-            self.cleaned_data['password'] = create_password_hash(self.cleaned_data['password1'])
-        return self.cleaned_data
-
 
 
 class UserApplicationForm(forms.ModelForm):
