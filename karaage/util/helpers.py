@@ -22,20 +22,9 @@ __author__ = 'Sam Morrison'
 
 from django.contrib.auth.models import User
 
-import random, string
 import datetime
 
 from karaage.machines.models import MachineCategory, UserAccount
-from karaage.datastores import create_password_hash as ds_create_password_hash
-
-def create_password_hash(raw_password):
-    return ds_create_password_hash(raw_password)
-
-
-def _getsalt(chars=string.letters + string.digits):
-    """generate a random 2-character 'salt'"""
-    return random.choice(chars) + random.choice(chars)
-
 
 
 def check_username(username, machine_category):
