@@ -50,7 +50,7 @@
 				<td>{{ version.version }}</td>
 				<td>{{ version.module }}</td>
 				<td>
-					{% for m in version.machines %}
+					{% for m in version.machines.all %}
 						<a href="{{ m.get_absolute_url }}">{{ m }}</a>
 					{% endfor %}
 				</td>
