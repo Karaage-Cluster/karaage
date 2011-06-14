@@ -421,3 +421,17 @@ def start_invite_application(request, token):
         form = StartInviteApplicationForm()
 
     return render_to_response('applications/start_invite.html', {'form': form}, context_instance=RequestContext(request))
+
+
+def cancel(request, token):    
+    
+    application = get_object_or_404(Application,
+                                    secret_token=token, 
+                                    state__in=[Application.NEW, Application.OPEN],
+                                    expires__gt=datetime.datetime.now())
+    if request.method == 'POST':
+        application.delete()
+        return HttpResponseRedirect(reverse('index'))
+
+    return render_to_response('applications/cancel.html', {'application': application}, context_instance=RequestContext(request))
+

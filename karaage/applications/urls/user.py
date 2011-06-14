@@ -43,6 +43,7 @@ urlpatterns = patterns('karaage.applications.views',
 
     url(r'^(?P<token>.+)/start/$', 'user.start_invite_application', name='kg_application_start_invite'),
     url(r'^(?P<token>.+)/choose_project/$', 'user.choose_project', name='kg_application_choose_project'),
+    url(r'^(?P<token>.+)/cancel/$', 'user.cancel', name='kg_application_cancel'),
     url(r'^(?P<token>.+)/done/$', 'user.application_done', name='kg_application_done'),
     url(r'^(?P<token>.+)/do/$', 'user.do_userapplication', name='kg_invited_userapplication'),
 

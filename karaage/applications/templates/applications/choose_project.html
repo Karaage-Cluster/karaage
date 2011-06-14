@@ -84,7 +84,7 @@
 	{% if user.is_authenticated %}
 	<a href="{% url kg_user_profile %}" class="deletelink float-left">Cancel request</a>
 	{% else %}
-	<a href="/" class="deletelink float-left">Cancel request</a>
+	<a href="{% url kg_application_cancel application.secret_token %}" class="deletelink float-left">Cancel request</a>
 	{% endif %}
 	<br/>
 </div>
