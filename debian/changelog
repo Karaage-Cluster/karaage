@@ -1,3 +1,11 @@
+karaage (2.5.15-1) stable; urgency=high
+
+  * Fixed bug in user invite email sending
+  * Fixed broken decline link in project applications
+  * Fixed bug in software detail template
+
+ -- Sam Morrison <sam@vpac.org>  Tue, 14 Jun 2011 15:05:00 +1000
+
 karaage (2.5.14-1) stable; urgency=low
 
   * Ability to view accepted licenses
