@@ -75,7 +75,7 @@ def send_user_invite_email(userapplication):
     """ Sends an email inviting someone to create an account"""
 
     context = CONTEXT.copy()
-    context['site'] = '%s/applications/%s/do/' % (settings.REGISTRATION_BASE_URL, application.secret_token)
+    context['site'] = '%s/applications/%s/do/' % (settings.REGISTRATION_BASE_URL, userapplication.secret_token)
     context['sender'] = userapplication.created_by
     context['project'] = userapplication.project
     context['make_leader'] = userapplication.make_leader
