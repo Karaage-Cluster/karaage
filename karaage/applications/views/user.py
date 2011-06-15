@@ -342,10 +342,13 @@ def send_invitation(request, project_id):
 
         if form.is_valid():
             email = form.cleaned_data['email']
-            existing = Person.active.filter(user__email=email)
+            try:
+                existing = Person.active.get(user__email=email)
+            except Person.DoesNotExist:
+                existing = False
             if existing and not request.REQUEST.has_key('existing'):
                 return render_to_response('applications/userapplication_invite_existing.html', 
-                                          {'form': form, 'email': email}, 
+                                          {'form': form, 'person': existing}, 
                                           context_instance=RequestContext(request))
             application = form.save(commit=False)
 
