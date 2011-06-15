@@ -15,7 +15,7 @@
 {% endif %}
 {% if application.project %}
 <p>{{ application.created_by }} has invited you to join the following {{ org_name }} project:</p>
-<p>PID: {{ application.project.pid }}<br/>Title: {{ application.project.name }}</p>
+<p>Project ID: {{ application.project.pid }}<br/>Title: {{ application.project.name }}</p>
 {% else %}
 <p>Please fill in the form below. You will be asked which project you would like to join on the next page.</p>
 {% endif %}
