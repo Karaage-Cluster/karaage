@@ -52,8 +52,11 @@ class PersonalDataStore(base.PersonalDataStore):
         super(PersonalDataStore, self).delete_user(person)
 
         conn = LDAPClient()
-        conn.delete_user('uid=%s' % person.user.username)
-        
+        try:
+            conn.delete_user('uid=%s' % person.user.username)
+        except DoesNotExistException:
+            pass
+
     def update_user(self, person):
         conn = LDAPClient()
     
