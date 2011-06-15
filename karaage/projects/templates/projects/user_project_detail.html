@@ -14,7 +14,6 @@
   <tr><td>Start Date:</td><td>{{ project.start_date|date }}</td></tr>
   {% if project.end_date %}<tr><td>End Date:</td><td>{{ project.end_date|date }}</td></tr>{% endif %}
   <tr><td>Description:</td><td>{{ project.description }}</td></tr>
-  <tr><td>Additional Req:</td><td>{{ project.additional_req }}</td></tr>
   <tr><td>Approved:</td><td>{% yes_no_img project.is_active %}</td></tr>
   <tr><td>Active:</td><td>{% yes_no_img project.is_approved %}</td></tr>
 </table>	
