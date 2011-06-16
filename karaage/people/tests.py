@@ -193,7 +193,7 @@ class UserTestCase(TestCase):
 
         test_object = Person.objects.get(id=4)
         self.do_permission_tests(test_object, {
-            1: False, # person 1 cannot view
+            1: True, # person 1 can view: person's institute delegate
             2: True, # person 2 can view: person's institute delegate
             3: False, # person 3 cannot view
             4: True, # person 4 can view: self, is_staff
