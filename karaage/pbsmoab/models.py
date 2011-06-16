@@ -67,7 +67,7 @@ class ProjectChunk(models.Model):
         total_time, ave_cpus = get_available_time()
         if total_time == 0:
             return 0
-        return ((usage / total_time) * 100 * 1000).quantize(TWOPLACES)
+        return ((Decimal(usage) / total_time) * 100 * 1000).quantize(TWOPLACES)
 
     def is_over_quota(self):
         if self.get_mpots() > self.get_cap():
