@@ -18,9 +18,10 @@
 {% if form.errors or form.non_field_errors or applicant_form.errors or applicant_form.non_field_errors %}
 	<p class="errornote">Please correct the error(s) below.</p>
 {% endif %}
-{{ application.header_message|linebreaks }}
+{% if application.header_message %}{{ application.header_message|linebreaks }}{% endif %}
 <fieldset class="module aligned ()">
 {{ form.non_field_errors }}
+{% if applicant_form.errors.email and saml %}{{ applicant_form.errors.email }}{% endif %}
 <h2>Account Details</h2>
 {% formfield applicant_form.username %}
 {% formfield applicant_form.password1 %}
