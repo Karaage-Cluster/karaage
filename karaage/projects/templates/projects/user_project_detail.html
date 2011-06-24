@@ -44,11 +44,11 @@
 	<td>{{ person.email|urlize }}</td>
 	<td>{% yes_no_img person.is_active %}</td>
 	{% endif %}
-	{% comment %}
-	{% ifequal request.user.get_profile project.leader %}
-	<td><a href="{% url user_remove_from_project project.pid,person.id %}" class="deletelink">Remove</a></td>
-	{% endifequal %}
-	{% endcomment %}
+    {% comment %}
+	{% if request.user.get_profile in project.leaders.all %}
+	<td><a href="{% url kg_remove_project_member project.pid,person.username%}" class="deletelink">Remove</a></td>
+	{% endif %}
+    {% endcomment %}
       </tr>
       {% endfor %}
     </tbody>  	
