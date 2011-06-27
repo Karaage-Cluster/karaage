@@ -82,7 +82,7 @@ def send_invitation(request):
 @login_required
 def application_list(request):
 
-    apps = Application.objects.select_related()
+    apps = Application.objects.select_related().order_by('-id')
 
     try:
         page_no = int(request.GET.get('page', 1))
