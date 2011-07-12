@@ -67,7 +67,7 @@ class PersonalDataStore(object):
             mobile=data.get('mobile', ''),
             supervisor=data.get('supervisor', ''),
             is_systemuser=data.get('is_systemuser', ''),
-            saml_id=data.get('saml_id', ''),
+            saml_id=data.get('saml_id', None),
             )
         
         try:
