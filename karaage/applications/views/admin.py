@@ -92,9 +92,8 @@ def application_list(request):
     if request.REQUEST.has_key('state'):
         apps = apps.filter(state=request.GET['state'])
 
-    if request.method == 'POST':
-        new_data = request.POST.copy()
-        terms = new_data['search'].lower()
+    if request.REQUEST.has_key('search'):
+        terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
             q = Q(created_by__user__first_name__icontains=term) | Q(created_by__user__last_name__icontains=term)

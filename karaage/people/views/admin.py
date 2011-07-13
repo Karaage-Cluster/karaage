@@ -93,9 +93,8 @@ def user_list(request, queryset=Person.objects.select_related()):
     m_params = dict([(str(k), str(v)) for k, v in params.items() if k.startswith('date_approved__')])
     user_list = user_list.filter(**m_params)
 
-    if request.method == 'POST':
-        new_data = request.POST.copy()
-        terms = new_data['search'].lower()
+    if request.REQUEST.has_key('search'):
+        terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
             q = Q(user__username__icontains=term) | Q(user__first_name__icontains=term) | Q(user__last_name__icontains=term) | Q(comment__icontains=term) 

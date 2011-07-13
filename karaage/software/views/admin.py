@@ -40,9 +40,8 @@ def software_list(request):
     if request.REQUEST.has_key('category'):
         software_list = software_list.filter(category=int(request.GET['category']))
 
-    if request.method == 'POST':
-        new_data = request.POST.copy()
-        terms = new_data['search'].lower()
+    if request.REQUEST.has_key('search'):
+        terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
             q = Q(name__icontains=term) | Q(description__icontains=term) | Q(gid__icontains=term) | Q(homepage__icontains=term) 

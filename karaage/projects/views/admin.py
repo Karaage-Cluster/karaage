@@ -134,9 +134,8 @@ def project_list(request, queryset=Project.objects.select_related(), template_na
     if request.REQUEST.has_key('status'):
         project_list = project_list.filter(is_active=int(request.GET['status']))
 
-    if request.method == 'POST':
-        new_data = request.POST.copy()
-        terms = new_data['search'].lower()
+    if request.REQUEST.has_key('search'):
+        terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
             q = Q(pid__icontains=term) | Q(name__icontains=term) | Q(description__icontains=term) | Q(leaders__user__first_name__icontains=term) | Q(leaders__user__last_name__icontains=term) | Q(institute__name__icontains=term)
