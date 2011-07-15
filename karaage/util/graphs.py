@@ -117,7 +117,10 @@ def get_project_trend_graph_url(project,
     try:
         f = open("%s/projects/%s_%s-%s_%i.png" % (settings.GRAPH_ROOT, project.pid, start_str, end_str, machine_category.id))
     except IOError:
-        gen_project_graph(project, start, end, machine_category)
+        try:
+            gen_project_graph(project, start, end, machine_category)
+        except AssertionError:
+            pass
 
     return "%s_%s-%s_%i.png" % (project.pid, start_str, end_str, machine_category.id)
 
