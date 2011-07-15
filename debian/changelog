@@ -1,3 +1,11 @@
+karaage (2.5.17-1) stable; urgency=low
+
+  * Workaround for long standing matplotlib bug. Don't error
+    if can't display graph
+  * Fixed another SAML_ID unique bug
+
+ -- Sam Morrison <sam@vpac.org>  Fri, 15 Jul 2011 13:48:19 +1000
+
 karaage (2.5.16-1) stable; urgency=low
 
   * Fixed instutute usage bug
