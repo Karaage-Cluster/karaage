@@ -2,8 +2,8 @@
 <table cellspacing="0">
 	<thead>
 		<tr>
+			<th>Job ID</th>
 			<th>Project</th>
-			<th>Machine</th>
 			<th>date</th>
 			<th>queue</th>
 			<th>cpu_usage</th>
@@ -18,8 +18,8 @@
 	<tbody>
    	{% for u in object_list %}
 	   	<tr class="{% cycle row1,row2 %}">
+	   		<td><a href="{{ u.get_absolute_url }}">{{ u.jobid }}</a></td>
 	   		<td><a href="{{ u.project.get_absolute_url }}">{{ u.project.pid }}</a></td>
-	   		<td><a href="{{ u.machine.get_absolute_url }}">{{ u.machine }}</a></td>
 	   		<td>{{ u.date }}</td>
 	   		<td>{{ u.queue }}</td>
 	   		<td class="right">{{ u.cpu_usage|timeformat }}</td>
