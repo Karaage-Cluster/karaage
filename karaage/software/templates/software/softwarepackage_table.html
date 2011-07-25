@@ -5,6 +5,7 @@
 			<th>GID</th>
 			<th>Version</th>
 			<th>Machines</th>
+			<th>Module</td>
 		</tr>
 	</thead>   	
    <tbody>
@@ -20,6 +21,7 @@
 					{% endif %}
 					<td>{{ version.version }}</td>
 					<td>{% for m in version.machines.all %}<a href="{{ m.get_absolute_url }}">{{ m }}</a>{% endfor %}</td>
+					<td>{{ version.module }}</td>
 					</tr>
 				{% endfor %}
 		{% endfor %}
