@@ -43,21 +43,6 @@ class ApplicantForm(forms.ModelForm):
     class Meta:
         model = Applicant
 
-class UserApplicantForm(ApplicantForm):
-
-    def __init__(self, *args, **kwargs):
-        super(UserApplicantForm, self).__init__(*args, **kwargs)
-        self.fields['title'].required = True
-        self.fields['first_name'].required = True
-        self.fields['last_name'].required = True
-        self.fields['username'].label = 'Requested username'
-        self.fields['username'].required = True
-        self.fields['institute'].required = True
-
-    password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
-    password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)') 
-    institute = forms.ModelChoiceField(queryset=Institute.active.filter(Q(saml_entityid="") | Q(saml_entityid__isnull=True)))
-
     def clean_username(self):
 
         username = self.cleaned_data['username']
@@ -76,6 +61,22 @@ class UserApplicantForm(ApplicantForm):
             if user is not None:
                 raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old account please email %s' % settings.ACCOUNTS_EMAIL)
         return username
+
+
+class UserApplicantForm(ApplicantForm):
+
+    def __init__(self, *args, **kwargs):
+        super(UserApplicantForm, self).__init__(*args, **kwargs)
+        self.fields['title'].required = True
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
+        self.fields['username'].label = 'Requested username'
+        self.fields['username'].required = True
+        self.fields['institute'].required = True
+
+    password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
+    password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)') 
+    institute = forms.ModelChoiceField(queryset=Institute.active.filter(Q(saml_entityid="") | Q(saml_entityid__isnull=True)))
     
     def clean_password2(self):
         data = self.cleaned_data

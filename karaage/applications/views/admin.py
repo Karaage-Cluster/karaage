@@ -244,3 +244,22 @@ def archive_application(request, application_id):
 
     return render_to_response('applications/application_archive.html', {'application': application}, context_instance=RequestContext(request))
 
+@permission_required('applications.change_applicant')
+def applicant_edit(request, applicant_id):
+    
+    applicant = get_object_or_404(Applicant, id=applicant_id)
+
+    if request.method == 'POST':
+        form = ApplicantForm(request.POST, instance=applicant)
+        if form.is_valid():
+            applicant = form.save()
+            log(request.user, applicant, 2, 'Edited')
+            messages.info(request, "%s modified successfully." % applicant)
+            try:
+                return HttpResponseRedirect(applicant.applications.all()[0].get_absolute_url())
+            except IndexError:
+                return HttpResponseRedirect(reverse('kg_application_list'))
+    else:
+        form = ApplicantForm(instance=applicant)
+    
+    return render_to_response('applications/applicant_form.html', {'applicant': applicant, 'form': form}, context_instance=RequestContext(request)) 
