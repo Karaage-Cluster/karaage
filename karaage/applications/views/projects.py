@@ -120,7 +120,7 @@ def approve_projectapplication(request, application_id):
             if settings.ADMIN_APPROVE_ACCOUNTS:
                 application.state = Application.WAITING_FOR_ADMIN
                 application.save()
-                #send_notify_admin(application, request.user.get_full_name())
+                send_notify_admin(application)
                 log(request.user, application.application_ptr, 2, 'Delegate approved application')
                 return HttpResponseRedirect(reverse('kg_projectapplication_pending', args=[application.id]))
 
