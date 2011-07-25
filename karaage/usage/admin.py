@@ -16,8 +16,9 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib import admin
-from models import CPUJob, Queue
+from models import CPUJob, Queue, UsedModules
 
 
 admin.site.register(CPUJob)
 admin.site.register(Queue)
+admin.site.register(UsedModules)

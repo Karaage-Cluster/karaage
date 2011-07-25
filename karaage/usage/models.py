@@ -19,6 +19,7 @@ from django.db import models
 
 from karaage.machines.models import UserAccount, Machine
 from karaage.projects.models import Project
+from karaage.software.models import SoftwareVersion
 
 
 class Queue(models.Model):
@@ -56,15 +57,28 @@ class CPUJob(models.Model):
     list_pvmem = models.BigIntegerField(blank=True, null=True)
     exit_status = models.BigIntegerField(blank=True, null=True)
     jobname = models.CharField(max_length=100, blank=True, null=True)
+    software = models.ManyToManyField(SoftwareVersion, blank=True, null=True)
 
     class Meta:
         ordering = ['-date']
         db_table = 'cpu_job'
 
     def __unicode__(self):
+        if self.jobid:
+            return self.jobid
         return '%s - %s - %s - %s' % (self.username, self.project, self.machine, self.date)
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('kg_job_detail', [self.jobid])
     
     def wait_time(self):
         diff = self.start - self.qtime
         d = (diff.days * 86400) + diff.seconds
         return d
+
+
+class UsedModules(models.Model):
+    jobid = models.CharField(max_length=100, primary_key=True)
+    date_added = models.DateField(auto_now_add=True)
+    modules = models.TextField()
