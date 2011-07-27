@@ -6,6 +6,14 @@ from django.db import models
 
 class Migration(DataMigration):
 
+    needed_by = (
+        ('people', '0007_auto__add_institutedelegate'),
+    )
+    depends_on = (
+        ('projects', '0004_auto__del_field_project_leader'),
+        ('people', '0006_auto__add_unique_institute_name__add_unique_institute_saml_entityid__a'),
+    )
+
     def forwards(self, orm):
         try:
             unknown_user = orm['people.Person'].objects.get(user__username='unknown_user')
