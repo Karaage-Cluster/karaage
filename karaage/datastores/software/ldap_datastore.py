@@ -31,7 +31,8 @@ class SoftwareDataStore(base.SoftwareDataStore):
             except DoesNotExistException:
                 gid = conn.add_group(cn=str(software.name.lower().replace(' ', '')), gidNumber=str(software.gid))
         else:
-                 
+            if not software.restricted and software.softwarelicense_set.count() == 0:
+                return None     
             try:
                 lgroup = conn.get_group("cn=%s" % str(software.name.lower().replace(' ', '')))
                 gid = int(lgroup.gidNumber)
