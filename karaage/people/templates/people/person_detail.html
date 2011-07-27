@@ -159,7 +159,7 @@
 	  <th>Project</th>
 	  <th>Name</th>
 	  <th>Institute</th>
-	  <th>Leader</th>
+	  <th>Leaders</th>
 	  <th>Default</th>
 	</tr>
       </thead>   	
@@ -169,7 +169,7 @@
 	  <td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
 	  <td>{{ p.name|truncatewords:"10" }}</td>
 	  <td><a href="{{ p.institute.get_absolute_url }}">{{ p.institute }}</a></td>
-	  <td><a href="{{ p.leader.get_absolute_url }}">{{ p.leader }}</a></td>
+	  <td>{% for leader in p.leaders.all %}<a href="{{ leader.get_absolute_url }}">{{ leader }}, </a>{% endfor %}</td>
 	  <td>{% ifequal p ua.default_project %}
 	    <img src="{{ MEDIA_URL }}img/admin/icon-yes.gif" alt="1" />{% else %}
 	    {% if perms.machines.change_useraccount %}
