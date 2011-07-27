@@ -43,7 +43,7 @@ def send_notify_admin(application):
     """Sends an email to admin asking to approve user application"""
     context = CONTEXT.copy()
     context['requester'] = application.applicant
-    context['site'] = '%s' % remove_url_prefix(reverse('kg_application_detail', args=[application.id]))
+    context['site'] = '/applications/%s/' % application.id
 
     to_email = settings.APPROVE_ACCOUNTS_EMAIL
     subject, body = render_email('notify_admin', context)
