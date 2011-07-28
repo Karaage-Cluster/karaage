@@ -21,7 +21,7 @@ from optparse import make_option
 import datetime
 
 from karaage.usage.models import CPUJob, UsedModules
-from karaage.software.models import SoftwareVersion
+from karaage.software.models import SoftwareVersion, SoftwarePackage
 
 
 class Command(BaseCommand):
@@ -60,18 +60,32 @@ class Command(BaseCommand):
                 job = CPUJob.objects.get(jobid=um.jobid)
             except CPUJob.DoesNotExist:
                 continue
-            modules = um.modules.split(':')
-            not_found = False
+            modules = um.modules.strip().split(':')
             for module in modules:
                 if module in ignored_modules:
                     continue
                 try:
                     sv = SoftwareVersion.objects.get(module=module)
                 except SoftwareVersion.DoesNotExist:
-                    not_found = True
-                    continue
+                    try:
+                        package_name, version_name = module.split('/')
+                    except ValueError:
+                        print "Failed to create a new software package from module string %s" % module
+                        continue
+                    package, created = SoftwarePackage.objects.get_or_create(name=package_name)
+                    if created and verbose > 0:
+                        print "Created new Software package %s" % package
+                    sv, created = SoftwareVersion.objects.get_or_create(package=package, version=version_name)
+                    if created and verbose > 0:
+                        print "Created new Software version %s" % sv
+                    sv.module = module
+                    sv.save()
                 if verbose > 1:
                     print "Adding %s to %s" % (sv, job.jobid)
                 job.software.add(sv)
-            if not not_found:
-                m.delete()
+                sv.machines.add(job.machine)
+                if not sv.last_used or job.date > sv.last_used:
+                    sv.last_used = job.date
+                    sv.save()
+            
+            um.delete()
