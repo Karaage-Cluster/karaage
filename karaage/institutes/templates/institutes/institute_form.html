@@ -32,8 +32,7 @@
     {% for dform in delegate_formset.forms %}
     
     	{{ dform.id }}
-      {% inlineformfield  dform.person dform.send_email %}
-      {% formfield lineform.DELETE %}
+      {% inlineformfield dform.person dform.send_email dform.DELETE %}
     
     {% endfor %}
 </fieldset>
