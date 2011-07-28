@@ -26,6 +26,9 @@
    		{% if application.applicant.fax %}<tr><td>Fax:</td><td>{{ application.applicant.fax }}</td></tr>{% endif %}
 		
 	</table>
+		{% if perms.applications.change_applicant %}
+	<p><a href="{% url kg_applicant_edit application.applicant.id %}" class="changelink">Edit Applicant details</a></p>
+	{% endif %}
 {% endif %}
 <br />
 <h1>Project Details</h1>
