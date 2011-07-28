@@ -23,6 +23,7 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.db.models import Count, Sum
 
 import datetime
 from andsome.util.filterspecs import Filter, FilterBar
@@ -30,8 +31,10 @@ from andsome.util.filterspecs import Filter, FilterBar
 from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense, SoftwareAccessRequest, SoftwareLicenseAgreement
 from karaage.software.forms import AddPackageForm, LicenseForm, SoftwareVersionForm
 from karaage.people.models import Person
-from karaage.util import log_object as log
+from karaage.usage.models import CPUJob
+from karaage.util import get_date_range, log_object as log
 from karaage.util.email_messages import send_software_request_approved_email
+
 
 def software_list(request):
     software_list = SoftwarePackage.objects.all()
@@ -132,6 +135,7 @@ def add_edit_license(request, package_id, license_id=None):
             l = form.save()
             if license_id is None:
                 log(request.user, package, 1, "license: %s added" % l)
+            package.save()
             return HttpResponseRedirect(package.get_absolute_url())
     else:
         form = LicenseForm(instance=l)
@@ -241,3 +245,42 @@ def softwarerequest_delete(request, softwarerequest_id):
 
     return render_to_response('software/request_delete.html', {'softwarerequest': softwarerequest,}, context_instance=RequestContext(request))
 
+
+def software_stats(request, package_id):
+    package = get_object_or_404(SoftwarePackage, pk=package_id)
+    start, end = get_date_range(request)
+    querystring = request.META.get('QUERY_STRING', '')
+    if package.softwareversion_set.count() == 1:
+        return HttpResponseRedirect(reverse('kg_softwareversion_stats', args=[package.id, package.softwareversion_set.all()[0].id]))
+    version_stats = SoftwareVersion.objects.filter(package=package, cpujob__date__range=(start, end)).annotate(jobs=Count('cpujob'), usage=Sum('cpujob__cpu_usage')).filter(usage__isnull=False)
+    version_totaljobs = version_stats.aggregate(Sum('jobs'))['jobs__sum']
+    #version_totalusage = version_stats.aggregate(Sum('usage'))
+    person_stats = Person.objects.filter(useraccount__cpujob__software__package=package, useraccount__cpujob__date__range=(start, end)).annotate(jobs=Count('useraccount__cpujob'), usage=Sum('useraccount__cpujob__cpu_usage'))
+
+    context = {
+        'package': package,
+        'version_stats': version_stats,
+        'version_totaljobs': version_totaljobs,
+        'person_stats': person_stats,
+        'start': start,
+        'end': end,
+        'querystring': querystring,
+    }
+    return render_to_response('software/software_stats.html', context, context_instance=RequestContext(request))
+
+
+def version_stats(request, package_id, version_id):
+    version = get_object_or_404(SoftwareVersion, pk=version_id)
+    start, end = get_date_range(request)
+    querystring = request.META.get('QUERY_STRING', '')
+
+    person_stats = Person.objects.filter(useraccount__cpujob__software=version, useraccount__cpujob__date__range=(start, end)).annotate(jobs=Count('useraccount__cpujob'), usage=Sum('useraccount__cpujob__cpu_usage'))
+
+    context = {
+        'version': version,
+        'person_stats': person_stats,
+        'start': start,
+        'end': end,
+        'querystring': querystring,
+    }
+    return render_to_response('software/version_stats.html', context, context_instance=RequestContext(request))

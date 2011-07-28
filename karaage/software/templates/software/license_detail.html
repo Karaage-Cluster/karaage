@@ -12,13 +12,11 @@
 
 {% block content %}
 <div id="content-main">
-
 	<div class="module">
 		<h2>Licenses</h2>
 		<p>Version: {{ l.version }}</p>
 		<p>Date: {{ l.date|date }}</p>
 		{{ l.text|safe|linebreaks }}
 	</div>	
-	
 </div>
 {% endblock %}

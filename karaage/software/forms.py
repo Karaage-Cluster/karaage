@@ -91,7 +91,8 @@ class AddPackageForm(SoftwarePackageForm):
                 version=data['license_version'],
                 date=data['license_date'],
                 text=data['license_text'],
-            )
+                )
+            package.save()
 
         return package
 

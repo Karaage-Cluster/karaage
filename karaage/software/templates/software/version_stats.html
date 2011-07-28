@@ -1,0 +1,48 @@
+{% extends "main.html" %}
+{% load humanize filters %}
+{% block title %}Software{% endblock %}
+
+{% block content_title %}Usage statistics for period {{ start }} - {{ end }}{% endblock %}
+    
+{% block bread_crumbs_1 %}
+ &rsaquo; <a href="{% url kg_software_list %}">Software</a>
+ &rsaquo; <a href="{{ version.package.get_absolute_url }}">{{ version.package }}</a>
+ &rsaquo; {{ version }} Statistics
+{% endblock %}    
+
+{% block content %}
+<p>
+{% date_filter start end %}
+</p>
+<div class="module">
+	<h2>Users</h2>
+   <table>
+			<thead>
+			<tr>
+				<th>User</th>
+				<th>CPU Time</th>
+				<th>No. Jobs</th>
+			</tr>   	
+   	</thead>
+   	{% comment %}
+   	<tfoot>
+			<tr>
+				<td>Total</td>
+				<td>{{ total|timeformat }}</td>
+				<td>{{ total_jobs|intcomma }}</td>	
+			</tr>   	
+   	</tfoot>
+   	{% endcomment %}
+   	<tbody>
+   	
+   	{% for person in person_stats|dictsortreversed:"usage" %}
+			<tr class="{% cycle row1,row2 as rowcolours %}">
+				<td><a href="{{ person.get_absolute_url }}">{{ person }}</a></td>
+				<td class="right">{{ person.usage|timeformat }}</td>	
+				<td class="right">{{ person.jobs|intcomma }}</td>
+			</tr> 
+		{% endfor %}
+   	</tbody>
+   	</table>
+</div>
+{% endblock %}

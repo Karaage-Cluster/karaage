@@ -26,6 +26,7 @@
 			
    		<tr><td colspan="2"><p>
    		<a href="{% url kg_software_logs package.id %}">Logs</a>
+   		&nbsp;|&nbsp;<a href="{% url kg_software_stats package.id %}">Statistics</a>
    		{% if perms.software.change_softwarepackage %}&nbsp;|&nbsp;<a href="{% url kg_softwarepackage_edit package.id %}" class="changelink">Edit</a>{% endif %}
    		{% if perms.software.delete_softwarepackage %}&nbsp;|&nbsp;<a href="{% url kg_softwarepackage_delete package.id %}" class="deletelink">delete</a>{% endif %}
    		</p></td></tr>

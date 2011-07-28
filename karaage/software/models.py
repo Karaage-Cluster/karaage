@@ -37,7 +37,7 @@ class SoftwareCategory(models.Model):
 
 
 class SoftwarePackage(models.Model):
-    category = models.ForeignKey(SoftwareCategory)
+    category = models.ForeignKey(SoftwareCategory, blank=True, null=True)
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
     gid = models.IntegerField(blank=True, null=True, editable=False)
@@ -76,11 +76,13 @@ class SoftwarePackage(models.Model):
         from karaage.datastores.software import get_members
         return get_members(self)
 
+
 class SoftwareVersion(models.Model):
     package = models.ForeignKey(SoftwarePackage)
     version = models.CharField(max_length=100)
     machines = models.ManyToManyField(Machine)
     module = models.CharField(max_length=100, blank=True, null=True)
+    last_used = models.DateField(blank=True, null=True)
 
     class Meta:
         db_table = 'software_version'
@@ -91,7 +93,6 @@ class SoftwareVersion(models.Model):
     
     def get_absolute_url(self):
         return self.package.get_absolute_url()
-
 
     def machine_list(self):
         machines = ''

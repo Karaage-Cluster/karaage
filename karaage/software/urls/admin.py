@@ -56,11 +56,13 @@ urlpatterns += patterns('karaage.software.views.admin',
     url(r'^requests/(?P<softwarerequest_id>\d+)/decline/$', 'softwarerequest_delete', name='kg_softwarerequest_delete'),
                         
     url(r'^(?P<package_id>\d+)/$', 'software_detail', name='kg_software_detail'),
+    url(r'^(?P<package_id>\d+)/stats/$', 'software_stats', name='kg_software_stats'),
     url(r'^(?P<package_id>\d+)/remove/(?P<user_id>\d+)/$', 'remove_member', name='kg_software_removeuser'),
     url(r'^(?P<package_id>\d+)/license/add/$', 'add_edit_license', name='kg_softwarelicense_add'),
     url(r'^(?P<package_id>\d+)/license/edit/(?P<license_id>\d+)/$', 'add_edit_license', name='kg_softwarelicense_edit'),
     url(r'^(?P<package_id>\d+)/version/add/$', 'add_edit_version', name='kg_softwareversion_add'),
     url(r'^(?P<package_id>\d+)/version/edit/(?P<version_id>\d+)/$', 'add_edit_version', name='kg_softwareversion_edit'),
+    url(r'^(?P<package_id>\d+)/version/stats/(?P<version_id>\d+)/$', 'version_stats', name='kg_softwareversion_stats'),
     url(r'^(?P<package_id>\d+)/version/delete/(?P<version_id>\d+)/$', 'delete_version', name='kg_softwareversion_delete'),
                         
     url(r'^license/(?P<license_id>\d+)/$', 'license_detail', name='kg_softwarelicense_detail'),
