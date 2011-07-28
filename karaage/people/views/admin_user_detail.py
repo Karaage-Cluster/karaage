@@ -54,9 +54,6 @@ def user_detail(request, username):
     
     not_project_list = Project.active.exclude(pid__in=my_pids)
 
-    if request.REQUEST.has_key('showall'):
-        showall = True
-
     #Add to project form
     if request.method == 'POST' and 'project-add' in request.POST:
         # Post means adding this user to a project

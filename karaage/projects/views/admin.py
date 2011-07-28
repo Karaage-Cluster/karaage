@@ -98,9 +98,6 @@ def project_detail(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     user_list = Person.active.select_related()
 
-    if request.REQUEST.has_key('showall'):
-        showall = True
-
     form = UsageSearchForm()
     
     if request.method == 'POST':

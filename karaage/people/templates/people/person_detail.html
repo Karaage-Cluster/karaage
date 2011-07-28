@@ -4,6 +4,11 @@
 
 {% block content_title %}{% endblock %}
 
+{% block extrahead %}
+<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.min.js"></script> 
+<script type="text/javascript" src="{{ MEDIA_URL }}js/karaage.js"></script> 
+{% endblock %}
+
 {% block bread_crumbs_1 %}
 &rsaquo; <a href="../">Users</a>
 &rsaquo; {{ person }}
@@ -80,8 +85,9 @@
       {% if person.mobile %}
       <tr><td>Mobile:</td><td>{{ person.mobile|default:"" }}</td></tr>
       {% endif %}
-      
-      {% if showall %}
+      <tr id="hidden-link"><td colspan="2"><a href="#" onclick="showHidden()">More....</a></td></tr>
+      </table>
+      <table id="hidden" style="display: none">
       <tr><td>Fax:</td><td>{{ person.fax }}</td></tr>
       <tr><td>Address:</td><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>
       <tr><td>Country:</td><td>{{ person.get_country_display|default:"" }}</td></tr>
@@ -97,10 +103,7 @@
       {% if person.saml_id %}
       <tr><td>SAML ID:</td><td>{{ person.saml_id }}</td></tr>
       {% endif %}
-      <tr><td colspan="2"><a href="?">Less.....</a></td></tr>
-      {% else %}
-      <tr><td colspan="2"><a href="?showall=true">More....</a></td></tr>
-      {% endif %}
+      
     </table>
     
   </div>

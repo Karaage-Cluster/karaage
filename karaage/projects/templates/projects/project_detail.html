@@ -5,6 +5,11 @@
 
 {% block content_title %}{% endblock %}
 
+{% block extrahead %}
+<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.min.js"></script> 
+<script type="text/javascript" src="{{ MEDIA_URL }}js/karaage.js"></script> 
+{% endblock %}
+
 {% block bread_crumbs_1 %}
 &rsaquo; <a href="../">Projects</a>
 &rsaquo; {{ project.pid }}
@@ -50,20 +55,18 @@
       
       <tr><td>Approved:</td><td>{% yes_no_img project.is_approved %}</td></tr>
       <tr><td>Active:</td><td>{% yes_no_img project.is_active %}</td></tr>
-      {% if showall %}
+      <tr id="hidden-link"><td colspan="2"><a href="#" onclick="showHidden()">More....</a></td></tr>
+     </table>
+	<table id="hidden" style="display: none">
       <tr><td>Description:</td><td>{{ project.description|linebreaks }}</td></tr>
       <tr><td>Additional Req:</td><td>{{ project.additional_req|linebreaks }}</td></tr>
       <tr><td>Machine Cat.</td><td>{{ project.machine_category }}</td></tr>
-      <tr><td>Approved by:</td><td>{{ project.approved_by }}</td></tr>
+      <tr><td>Approved by:</td><td><a href="{{ project.approved_by.get_absolute_url }}">{{ project.approved_by }}</a></td></tr>
       <tr><td>Date Approved:</td><td>{{ project.date_approved|date }}</td></tr>
       {% if project.deleted_by %}
-      <tr><td>Deleted by:</td><td>{{ project.deleted_by }}</td></tr>
+      <tr><td>Deleted by:</td><td><a href="{{ project.deleted_by.get_absolute_url }}">{{ project.deleted_by }}</a></td></tr>
       <tr><td>Date Deleted:</td><td>{{ project.date_deleted|date }}</td></tr>
-      {% endif %}
-      <tr><td colspan="2"><a href="?">Less.....</a></td></tr>
-      {% else %}
-      <tr><td colspan="2"><a href="?showall=true">More....</a></td></tr>
-      {% endif %}
+      {% endif %}    
     </table>	
     
   </div>
