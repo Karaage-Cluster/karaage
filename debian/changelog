@@ -1,3 +1,34 @@
+karaage (2.5.17-1) stable; urgency=low
+
+  * Workaround for long standing matplotlib bug. Don't error
+    if can't display graph
+  * Fixed another SAML_ID unique bug
+
+ -- Sam Morrison <sam@vpac.org>  Fri, 15 Jul 2011 13:48:19 +1000
+
+karaage (2.5.16-1) stable; urgency=low
+
+  * Fixed instutute usage bug
+
+ -- Sam Morrison <sam@vpac.org>  Mon, 27 Jun 2011 11:20:50 +1000
+
+karaage (2.5.15-1) stable; urgency=high
+
+  * Fixed bug in user invite email sending
+  * Fixed broken decline link in project applications
+  * Fixed bug in software detail template
+
+ -- Sam Morrison <sam@vpac.org>  Tue, 14 Jun 2011 15:05:00 +1000
+
+karaage (2.5.14-1) stable; urgency=low
+
+  * Ability to view accepted licenses
+  * Fixed bug where utilisation only showed up after 2nd request
+  * Prevent saml_id and passwords from being edited in any forms
+  * Other minor bug fixes
+
+ -- Sam Morrison <sam@vpac.org>  Fri, 10 Jun 2011 09:09:34 +1000
+
 karaage (2.5.13-1) stable; urgency=high
 
   * Ensure SAML ID doesn't get set on new applications
