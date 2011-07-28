@@ -389,7 +389,6 @@ class UserTestCase(TestCase):
             machine_category=MachineCategory.objects.get(name='VPAC'),
             institute=Institute.objects.get(name='VPAC'),
             is_active=True,
-            is_expertise=True,
             is_approved=True,
         )
         project.users.add(user)
@@ -422,7 +421,6 @@ class UserTestCase(TestCase):
             machine_category=MachineCategory.objects.get(name='VPAC'),
             institute=Institute.objects.get(name='VPAC'),
             is_active=True,
-            is_expertise=True,
             is_approved=True,
         )
 

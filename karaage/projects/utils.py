@@ -29,18 +29,14 @@ def add_user_to_project(person, project):
             create_account(person, project, mc)
 
 
-def get_new_pid(institute, is_expertise=False):
+def get_new_pid(institute):
     """ Return a new Project ID
     Keyword arguments:                              
     institute_id -- Institute id
-    is_expertise -- is project an expertise
     """
     no = 1
     number = '0001'
-    if is_expertise:
-        prefix = 'eppn%s' % institute.name.replace(' ', '')[:4]
-    else:
-        prefix = 'p%s' % institute.name.replace(' ', '')[:4]
+    prefix = 'p%s' % institute.name.replace(' ', '')[:4]
 
     found = True
     while found:

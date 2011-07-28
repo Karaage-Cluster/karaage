@@ -36,7 +36,6 @@ class Project(models.Model):
     is_approved = models.BooleanField()
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
-    is_expertise = models.BooleanField()
     additional_req = models.TextField(null=True, blank=True)
     machine_category = models.ForeignKey(MachineCategory)
     machine_categories = models.ManyToManyField(MachineCategory, null=True, blank=True, related_name='projects')
