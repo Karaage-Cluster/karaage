@@ -180,6 +180,9 @@ class PersonalDataStore(object):
     def create_password_hash(self, raw_password):
         pass
 
+    def change_username(self, person, new_username):
+        pass
+
 
 class AccountDataStore(object):
 

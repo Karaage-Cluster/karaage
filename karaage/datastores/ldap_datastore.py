@@ -127,6 +127,10 @@ class PersonalDataStore(base.PersonalDataStore):
         from placard.ldap_passwd import md5crypt
         return '{crypt}%s' % md5crypt(raw_password)
 
+    def change_username(self, person, new_username):
+        conn = LDAPClient()
+        conn.change_uid('uid=%s' % person.user.username, new_username)
+        del(conn)
 
 class AccountDataStore(base.AccountDataStore):
 

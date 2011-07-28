@@ -54,6 +54,8 @@ def user_exists(username):
 def create_password_hash(raw_password):
     return pds.create_password_hash(raw_password)
 
+def change_username(person, new_username):
+    return pds.change_username(person, new_username)
 
 def create_account(person, default_project, machine_category):
     ads_module = __import__(machine_category.datastore, {}, {}, [''])

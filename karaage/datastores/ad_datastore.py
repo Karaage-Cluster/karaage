@@ -121,6 +121,11 @@ class PersonalDataStore(base.PersonalDataStore):
     def create_password_hash(self, raw_password):
         return unicode("\"" + str(raw_password) + "\"", "iso-8859-1").encode("utf-16-le")
 
+    def change_username(self, person, new_username):
+        conn = LDAPClient()
+        conn.change_uid('uid=%s' % person.user.username, new_username)
+        del(conn)
+
 class AccountDataStore(base.AccountDataStore):
 
     def create_account(self, person, default_project):
