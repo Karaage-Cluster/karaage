@@ -20,11 +20,12 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib import messages
+from django.core.urlresolvers import reverse
+
 import datetime
 
 from karaage.people.models import Person
 from karaage.projects.models import Project
-
 from karaage.util.email_messages import send_bounced_warning
 from karaage.people.forms import AdminPasswordChangeForm
 from karaage.machines.forms import ShellForm
@@ -83,11 +84,14 @@ def user_detail(request, username):
 
 @permission_required('machines.add_useraccount')
 def activate(request, username):
-    user = get_object_or_404(Person, user__username=username)
-    user.activate()
-    messages.info(request, "User '%s' activated succesfully" % user)
+    person = get_object_or_404(Person, user__username=username, user__is_active=False)
 
-    return HttpResponseRedirect('%spassword_change/' % user.get_absolute_url())
+    if request.method == 'POST':     
+        person.activate()
+        messages.info(request, "User '%s' activated succesfully" % person)
+        return HttpResponseRedirect(reverse('kg_password_change', args=[person.username,]))
+    
+    return render_to_response('people/reactivate_confirm.html', {'person': person}, context_instance=RequestContext(request))
 
 
 @permission_required('people.change_person')
@@ -107,7 +111,7 @@ def password_change(request, username):
     else:
         form = AdminPasswordChangeForm()
         
-    return render_to_response('admin_password_change_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('people/password_change_form.html', {'person': person, 'form': form}, context_instance=RequestContext(request))
 
 
 @permission_required('people.change_person')

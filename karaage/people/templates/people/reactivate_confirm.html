@@ -1,0 +1,13 @@
+{% extends "base_site.html" %}
+
+{% block content %}
+    <h1>Are you sure?</h1>    
+    <p>Are you sure you want to re activate the user "{{ person }}"? </p>
+    <p>They will be assigned a new user ID number and you will need to set a password for them next.</p>
+    <form method="post" action=".">{% csrf_token %}
+    <div>
+    <input type="hidden" name="post" value="yes" />
+    <input type="submit" value="Yes, I'm sure" />
+    </div>
+    </form>
+{% endblock %}
