@@ -110,27 +110,6 @@ def get_insitutes_trend(institute, start, end, machine_category=MachineCategory.
 
 
 
-def get_inst_colour(name):
-    colours = {
-        'Monash': 'red',
-        'Melbourne': 'blue',
-        'Victoria': 'yellow',
-        'RMIT': 'black',
-        'Swinburne': 'green',
-        'La Trobe': 'pink',
-        'Ballarat': 'purple',
-        'VPAC': 'orange',
-        'Commercial': 'magenta',
-        'Unused': 'white',
-        'Deakin': 'cyan',
-    }
-
-    try:
-        return colours[name]
-    except:
-        return 'white'
-        
-
 def get_colour(index):
     colours = ['red','blue','green','pink', 'yellow', 'magenta','orange', 'cyan',]
     default_colour = 'purple'

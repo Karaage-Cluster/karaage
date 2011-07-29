@@ -36,7 +36,7 @@ from karaage.machines.models import UserAccount
 from karaage.util.helpers import get_available_time
 
 from karaage.graphs import gdchart2
-from karaage.graphs.util import get_inst_colour, get_colour
+from karaage.graphs.util import get_colour
 
 
 __author__ = 'Sam Morrison'
@@ -171,82 +171,5 @@ class GraphGenerator(gdchart2.GraphGenerator):
     
         canvas = FigureCanvasAgg(fig)
         canvas.print_figure("%s/projects/%s_%s-%s_%i.png" % (str(settings.GRAPH_ROOT), str(project.pid), str(start_str), str(end_str), machine_category.id))
-
-
-    def gen_institutes_pie(self, start, end, machine_category):
-        """Generates a pie graph showing all active institutes usage
-    
-        Keyword arguments:
-        start -- start date
-        end -- end date
-        machine_category -- MachineCategory object
-        
-        """
-        today = datetime.date.today()
-        
-        start_str = start.strftime('%Y-%m-%d')
-        end_str = end.strftime('%Y-%m-%d')
-        
-        institute_list = Institute.active.all()
-        
-        available_time, avg_cpus = get_available_time(start, end, machine_category)
-        
-        fig = Figure(figsize=(4,4))
-        ax = fig.add_axes([0.1, 0.1, 0.8, 0.8])
-        ax.set_title = "Institutes Usage - (%s - %s) - %s" % (start_str, end_str, machine_category.name) 
-        
-        data, labels, colours = [], [], []
-        total = 0
-        for i in institute_list:  
-            usage = i.get_usage(start, end, machine_category)
-            if usage[0] is not None:
-                total = total + Decimal(usage[0])
-                data.append(Decimal(usage[0]))
-                labels.append(i.name)
-                colours.append(get_inst_colour(i.name))
-
-        data.append(Decimal(available_time - total))
-        labels.append('Unused')
-        colours.append(get_inst_colour('Unused'))
-
-        fracs = []
-
-        for i in data:
-            if total:
-                fracs.append((i/total) * 100)
-    
-            
-        ax.pie(fracs, labels=labels, colors=colours)
-
-    
-        canvas = FigureCanvasAgg(fig)
-        canvas.print_figure("%s/institutes/%s-%s_%i.png" % (settings.GRAPH_ROOT, start_str, end_str, machine_category.id))
-
-
-
-    def gen_quota_graph(self):
-        """Generates a pie graph for all active institutes quota       
-        """
-        institute_list = Institute.active.all()
-        fig = Figure(figsize=(6,6))
-        ax = fig.add_axes([0.1, 0.1, 0.8, 0.8])
-        ax.set_title = "Institutes Quota"
-
-    
-        data, labels, colours = [], [], []
-        
-        for i in institute_list:  
-            data.append(Decimal(i.quota))
-            labels.append(i.name)
-            colours.append(get_inst_colour(i.name))
-            
-        ax.pie(data, labels=labels, colors=colours)
-            
-        canvas = FigureCanvasAgg(fig)
-        canvas.print_figure("%s/quota_pie.png" % settings.GRAPH_ROOT)
-
-
-
-
 
 
