@@ -23,22 +23,25 @@ from django.db.models import Q
 from django.db import connection
 from django.core.urlresolvers import reverse
 from django.template.defaultfilters import dictsortreversed
+from django.core.paginator import Paginator
 
 import datetime
 from decimal import Decimal
 from andsome.graphs import bar_chart
+from andsome.util.filterspecs import Filter, FilterBar, DateFilter
 
 from karaage.util.helpers import get_available_time
 from karaage.util.graphs import get_institute_graph_url, get_trend_graph_url, get_institute_trend_graph_url, get_project_trend_graph_url, get_institutes_trend_graph_urls
 from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
-from karaage.machines.models import UserAccount, MachineCategory
+from karaage.machines.models import UserAccount, MachineCategory, Machine
 from karaage.pbsmoab.models import InstituteChunk
+from karaage.usage.models import CPUJob
 from karaage.usage.forms import UsageSearchForm
 from karaage.cache.models import UserCache
+from karaage.software.models import SoftwarePackage
 from karaage.util import get_date_range
 from karaage.graphs.util import get_colour
-from karaage.usage.models import CPUJob
 
 
 def usage_index(request):
@@ -159,9 +162,13 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
             p_usage, p_jobs = p.get_usage(start, end, machine_category)
             chunk, created = p.projectchunk_set.get_or_create(machine_category=machine_category)
             if p_jobs > 0:
-                try:
-                    percent = (chunk.get_mpots()/chunk.get_cap())*100
-                except ZeroDivisionError:
+                mpots = chunk.get_mpots()
+                if mpots:
+                    try:
+                        percent = (mpots/chunk.get_cap())*100
+                    except ZeroDivisionError:
+                        percent = 0
+                else:
                     percent = 0
                 try:
                     quota_percent = p_usage/(available_usage*quota.quota)*10000
@@ -393,7 +400,6 @@ def top_users(request, machine_category_id=settings.DEFAULT_MC, count=20):
     return render_to_response('usage/top_users.html', locals(), context_instance=RequestContext(request))
 
 
-
 def institute_trends(request):
 
     start, end = get_date_range(request)
@@ -416,56 +422,6 @@ def job_list(request, object_id, model):
     date_list = job_list.dates('date', 'year')
 
     return render_to_response('usage/job_list.html', locals(), context_instance=RequestContext(request))
-
-        
-def job_list_year(request, object_id, model, year):
-
-    obj = get_object_or_404(model, pk=object_id)
-
-    if model == Project:
-        j_type = 'project'
-    elif model == UserAccount:
-        j_type = 'user'
-    
-    job_list = obj.cpujob_set.filter(date__year=year)
-
-    date_list = job_list.dates('date', 'month')
-     
-    return render_to_response('usage/job_list_year.html', locals(), context_instance=RequestContext(request))
-
-def job_list_month(request, object_id, model, year, month):
-
-    obj = get_object_or_404(model, pk=object_id)
-
-    if model == Project:
-        type = 'project'
-    elif model == UserAccount:
-        type = 'user'
-    
-    job_list = obj.cpujob_set.filter(date__year=year)        
-    job_list = job_list.filter(date__month=month)
-    
-    date_list = job_list.dates('date', 'day')
-
-    return render_to_response('usage/job_list_month.html', locals(), context_instance=RequestContext(request))
-
-
-def job_list_day(request, object_id, model, year, month, day):
-
-    obj = get_object_or_404(model, pk=object_id)
-
-    if model == Project:
-        type = 'project'
-    elif model == UserAccount:
-        type = 'user'
-    
-    job_list = obj.cpujob_set.filter(date__year=year)    
-    job_list = job_list.filter(date__month=month)
-    job_list = job_list.filter(date__day=day)
-
-
-    return render_to_response('usage/job_list_day.html', locals(), context_instance=RequestContext(request))
-
 
 
 def institute_users(request, institute_id, machine_category_id=1):
@@ -553,3 +509,51 @@ def job_detail(request, jobid):
     job = get_object_or_404(CPUJob, jobid=jobid)
 
     return render_to_response('usage/job_detail.html', {'job': job}, context_instance=RequestContext(request))
+
+
+def job_list(request):
+    page_no = int(request.GET.get('page', 1))
+
+    job_list = CPUJob.objects.select_related()
+    
+    if request.REQUEST.has_key('machine'):
+        job_list = job_list.filter(machine__id=int(request.GET['machine'])) 
+
+    if request.REQUEST.has_key('software'):
+        job_list = job_list.filter(software__package__id=int(request.GET['software'])) 
+
+    if request.REQUEST.has_key('user'):
+        job_list = job_list.filter(user__user__user__username=request.GET['user']) 
+
+    if request.REQUEST.has_key('project'):
+        job_list = job_list.filter(project__pid=request.GET['project']) 
+   
+    params = dict(request.GET.items())
+    m_params = dict([(str(k), str(v)) for k, v in params.items() if k.startswith('date__')])
+    job_list = job_list.filter(**m_params)
+
+    if request.REQUEST.has_key('search'):
+        terms = request.REQUEST['search'].lower()
+        query = Q()
+        for term in terms.split(' '):
+            q = Q(user__user__user__username__icontains=term) | Q(project__pid__icontains=term)
+            query = query & q
+        
+        job_list = job_list.filter(query)
+        page_no = 1
+    else:
+        terms = ""
+
+
+    filter_list = []
+    filter_list.append(DateFilter(request, 'date'))
+    filter_list.append(Filter(request, 'machine', Machine.objects.all()))
+    filter_list.append(Filter(request, 'software', SoftwarePackage.objects.all()))
+    filter_bar = FilterBar(request, filter_list)
+
+
+    p = Paginator(job_list, 50)
+    page = p.page(page_no)
+    
+
+    return render_to_response('usage/job_list.html', {'page': page, 'filter_bar': filter_bar}, context_instance=RequestContext(request))

@@ -1,4 +1,4 @@
-{% extends "main.html" %}
+{% extends "threecol.html" %}
 
 {% block title %}Software{% endblock %}
 
@@ -10,10 +10,35 @@
 {% endblock %}    
 
 {% block content %}
-<div id="content-main">
+  <div id="content-related-extra">
+    <div class="module">
+      <h2>Tasks</h2>
+      
+      <ul class="plainlist">
+      <li>&nbsp;</li>
+      
+      <li><a href="{% url kg_software_stats package.id %}">Statistics</a><br /><br /></li>
+      {% if perms.software.change_softwarepackage %}
+      <li><a href="{% url kg_softwarepackage_edit package.id %}" class="changelink">Edit</a><br /><br /></li>
+      {% endif %}
+      {% if perms.software.delete_softwarepackage %}
+      <li><a href="{% url kg_softwarepackage_delete package.id %}" class="deletelink">Delete</a><br /><br /></li>
+      {% endif %}
+      <li><a href="{% url kg_software_logs package.id %}">Logs</a><br /><br /></li>
+      {% if perms.software.add_softwareversion %}
+      <li><a href="{% url kg_softwareversion_add package.id %}" class="addlink">Add Version</a><br /><br /></li>
+      {% endif %}
+      {% if perms.software.add_softwarelicense %}
+      <li><a href="{% url kg_softwarelicense_add package.id %}" class="addlink">Add License</a><br /><br /></li>
+      {% endif %}
+		<li><a href="{% url kg_job_list %}?software={{ package.id }}">Display all jobs</a><br /><br /></li>
+      </ul>
+    </div>
+  </div>
+
 
 	<div class="module">
-	<h2>Software</h2>
+	<h2>Details</h2>
 	<h3>{{ package }}</h3>
 	
 	<table>
@@ -22,27 +47,19 @@
    		<tr><td>Homepage:</td><td>{{ package.homepage|urlize }}</td></tr>
    		<tr><td>Tutorial:</td><td>{{ package.tutorial_url|urlize }}</td></tr>
    		<tr><td>Group:</td><td>{{ package.group_name }} ({{ package.gid }})</td></tr>
-   		<tr><td>Restricted:</td><td>{% yes_no_img package.restricted %}</td></tr>
-			
-   		<tr><td colspan="2"><p>
-   		<a href="{% url kg_software_logs package.id %}">Logs</a>
-   		&nbsp;|&nbsp;<a href="{% url kg_software_stats package.id %}">Statistics</a>
-   		{% if perms.software.change_softwarepackage %}&nbsp;|&nbsp;<a href="{% url kg_softwarepackage_edit package.id %}" class="changelink">Edit</a>{% endif %}
-   		{% if perms.software.delete_softwarepackage %}&nbsp;|&nbsp;<a href="{% url kg_softwarepackage_delete package.id %}" class="deletelink">delete</a>{% endif %}
-   		</p></td></tr>
+   		<tr><td>Restricted:</td><td>{% yes_no_img package.restricted %}</td></tr> 
 	</table>
 	</div>
 	<div class="module">
 		<h2>Versions</h2>
-		{% if perms.software.add_softwareversion %}
-		<p><a href="{% url kg_softwareversion_add package.id %}" class="addlink">Add Version</a></p>
-		{% endif %}
 		<table cellspacing="0">
 	<thead>
 		<tr>
 			<th>Version</th>
 			<th>Module</th>
 			<th>Machines</th>	
+			<th></th>
+			<th></th>
 		</tr>
 	</thead>   	
    <tbody>
@@ -68,9 +85,6 @@
 	</div>
 	<div class="module">
 		<h2>Licenses</h2>
-		{% if perms.software.add_softwarelicense %}
-		<p><a href="{% url kg_softwarelicense_add package.id %}" class="addlink">Add License</a></p>
-		{% endif %}
 		<table cellspacing="0">
 	<thead>
 		<tr>
@@ -152,5 +166,4 @@
 </table>	
 	</div>	
 	
-</div>
 {% endblock %}

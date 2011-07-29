@@ -51,6 +51,7 @@
 	{% endif %}
 	<li><a href="bounced_email/">Bounced Email</a><br /><br /></li>
 	{% endif %}
+	<li><a href="{% url kg_job_list %}?user={{ person.username }}">Display all jobs</a><br /><br /></li>
 	<li><a href="{% url pbs_user_detail person.username %}">Submitted jobs</a><br /><br /></li>
 	{% endif %}
       </ul>

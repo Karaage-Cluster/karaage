@@ -25,6 +25,7 @@
       <ul class="plainlist"><br />
         <li><a href="{{ project.get_usage_url }}">View Usage</a><br /><br /></li>
         <li><a href="logs/">View logs</a><br /><br /></li>
+        	<li><a href="{% url kg_job_list %}?project={{ project.pid }}">Display all jobs</a><br /><br /></li>
         {% if perms.projects.change_project %}<li><a href="edit/" class="changelink">Edit project details</a><br /><br /></li>{% endif %}
         {% if perms.projects.delete_project and project.is_active%}<li><a href="delete/" class="deletelink">Delete project</a></li>{% endif %}
       </ul>

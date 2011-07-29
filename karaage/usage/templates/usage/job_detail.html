@@ -29,12 +29,10 @@
 			<tr><td>Memory Used:</td><td>{{ job.mem|fileformat }}</td></tr>
 			<tr><td>Virtual Memory Used:</td><td>{{ job.vmem|fileformat }}</td></tr>
 			<tr><td>Estimated Wall time:</td><td>{{ job.est_wall_time }}s (~{{ job.est_wall_time|timeformat }})</td></tr>
-			<tr><td>Actual Wall time:</td><td>{{ job.est_wall_time }}s (~{{ job.act_wall_time|timeformat }})</td></tr>
+			<tr><td>Actual Wall time:</td><td>{{ job.act_wall_time }}s (~{{ job.act_wall_time|timeformat }})</td></tr>
 			<tr><td>Cores:</td><td>{{ job.cores }}</td></tr>
 			<tr><td>Exit Status:</td><td>{{ job.exit_status }}</td></tr>
 			<tr><td>Software Used:</td><td>{% for s in job.software.all %}<a href="{{ s.get_absolute_url }}">{{ s }}, </a>{% endfor %}</td></tr>
-			
-
 		</table>
 	</div>	
 	

@@ -11,6 +11,7 @@
 
 {% block objecttools %}
 <ul class="object-tools">
+<li><a href="{% url kg_job_list %}">All Jobs</a></li>
 <li><a href="institute/trends/?{{ querystring }}">Trends</a></li>
 <li><a href="top_users/?{{ querystring }}">Top Users</a></li>
 <li><a href="{% url kg_usage_search %}" class="viewsitelink">Advanced Search</a></li>
