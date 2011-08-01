@@ -19,91 +19,65 @@ from django import forms
 from django.conf import settings
 from django.template import Context, Template
 
+from andsome.forms import EmailForm
+
 from karaage.machines.models import MachineCategory
 from karaage.people.models import Person
 from karaage.projects.models import Project
 
 
 EMAIL_GROUPS = (
-    ('leaders', 'All Project Leaders'),
-    ('leaders_noreport', "All Project Leaders that haven't filled in report - current year"),
-    ('vpac_users', 'All VPAC Users'),
-    #('academic_leaders', 'All VPAC Users (Academic only)'),
-    #('academic_users', 'All Project Leaders (Academic only)'),
+    ('leaders', 'All Project Leaders (active projects only)'),
+    ('users', 'All Active Users'),
+    ('cluster_users', 'All Users with cluster accounts'),
 )
 
 
-class EmailForm(forms.Form):
+class EmailForm(EmailForm):
 
     group = forms.ChoiceField(choices=EMAIL_GROUPS)
-    subject = forms.CharField(widget=forms.TextInput(attrs={ 'size':60 }))
-    body = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }))
 
     def get_emails(self):
-        projects, users = None, None
-        data = self.cleaned_data
-        group = data['group']
-        subject = data['subject']
-        body = data['body']
-        mc = MachineCategory.objects.get(name='VPAC')
-        
-        if group == 'leaders':
-            projects = Project.active.filter(machine_category=mc)
-        if group == 'leaders_noreport':
-            from karaage.projectreports.models import ProjectSurvey
-            from django_surveys.models import SurveyGroup
-            import datetime
-            today = datetime.date.today()
-            survey_group = SurveyGroup.objects.get(start_date__year=today.year)
-            p_s = ProjectSurvey.objects.filter(survey_group=survey_group)
-            exclude_ids = [x.project.pid for x in p_s]
-            projects = Project.active.filter(machine_category=mc).exclude(pid__in=exclude_ids)
+        group = self.cleaned_data['group']
+        subject, body = self.get_data()
 
-
-        elif group == 'vpac_users':
-            user_ids = []
-            
-	    mc = MachineCategory.objects.get(name='VPAC')
-
-	    for u in Person.active.all():
-        	if not u.is_locked():
-            	    if u.has_account(mc):
-                        if u.email:
-                            if u.email != 'unknown@vpac.org':
-			        user_ids.append(u.id)
-
-            users = Person.objects.filter(id__in=user_ids)
-
-        emails = []
+        email_list = []
 
         subject_t = Template(subject)
         body_t = Template(body)
+        emails = []
         
-        if projects:
-            for p in projects:
-                if p.leader.email:
+        if group == 'leaders':
+            for p in Project.active.all():
+                for leader in p.leaders.all():
                     ctx = Context({
-                        'receiver': p.leader,
+                        'receiver': leader,
                         'project': p,
-                        })
-
+                    })
                     subject = subject_t.render(ctx)
                     body = body_t.render(ctx)
-                    emails.append((subject, body, settings.ACCOUNTS_EMAIL, [p.leader.email]))
-                    ctx = 0
-
-        if users:
-            addresses = []
-            for u in users:
-                if u.email not in addresses:
+                    emails.append((subject, body, settings.ACCOUNTS_EMAIL, [leader.email]))
+            return emails
+                    
+        elif group == 'users':
+            person_list = Person.active.all()
+                
+                
+        elif group == 'cluster_users':
+            person_list = Person.active.filter(useraccount__isnull=False)
+                
+        if person_list:
+            for person in person_list:
+                if person.email not in email_list:
                     ctx = Context({
-                            'receiver': u,
+                            'receiver': person,
                             })
                     subject = subject_t.render(ctx)
                     body = body_t.render(ctx)
-                    emails.append((subject, body, settings.ACCOUNTS_EMAIL, [u.email]))
-                    ctx = 0
-                    addresses.append(u.email)
+                    emails.append((subject, body, settings.ACCOUNTS_EMAIL, [person.email]))
+                    email_list.append(person.email)
 
-        return emails
+            return emails
             
+        return []
+        

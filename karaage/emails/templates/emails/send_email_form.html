@@ -11,11 +11,13 @@
 {% block content %}
 {% if emails %}
 <p>Email will be sent to {{ emails|length }} p{{ emails|pluralize:"erson,eople" }}.</p>
-<p>From email: {{ preview.2 }}</p>
+
 {% if preview %}
 <div class="module">
 <h2>Preview of 1st email</h2>
 <p>To: {{ preview.3.0 }}</p>
+<hr />
+<p>From: {{ preview.2 }}</p>
 <hr />
 <p>Subject: {{ preview.0 }}</p>
 <hr />
@@ -37,7 +39,7 @@
 <p>All Project Leaders Context:
 	<ul><li>{% templatetag openvariable %} project {% templatetag closevariable %} </li><li>{% templatetag openvariable %} receiver {% templatetag closevariable %}</li></ul>
 </p>
-<p>All VPAC Users Context:
+<p>All Users Context:
 	<ul><li>{% templatetag openvariable %} receiver {% templatetag closevariable %}</li></ul>
 </p>
 <div class="submit-row">
