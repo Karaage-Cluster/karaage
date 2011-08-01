@@ -36,10 +36,9 @@ from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
 from karaage.machines.models import UserAccount, MachineCategory, Machine
 from karaage.pbsmoab.models import InstituteChunk
-from karaage.usage.models import CPUJob
+from karaage.usage.models import CPUJob, Queue
 from karaage.usage.forms import UsageSearchForm
 from karaage.cache.models import UserCache
-from karaage.software.models import SoftwarePackage
 from karaage.util import get_date_range
 from karaage.graphs.util import get_colour
 
@@ -232,7 +231,7 @@ def project_usage(request, project_id, machine_category_id=settings.DEFAULT_MC):
     if len(mc_ids) == 1:
         mc_ids = "(%i)" % mc_ids[0]
 
-    # Custom SQL as need to get users that were remove from project too
+    # Custom SQL as need to get users that were removed from project too
     cursor = connection.cursor()
     sql = "SELECT user_id from cpu_job where project_id = '%s' and `machine_id` IN %s AND `date` >= '%s' AND `date` <= '%s' GROUP BY user_id" % (str(project.pid), mc_ids, start_str, end_str)
     cursor.execute(sql)
@@ -519,6 +518,9 @@ def job_list(request):
     if request.REQUEST.has_key('machine'):
         job_list = job_list.filter(machine__id=int(request.GET['machine'])) 
 
+    if request.REQUEST.has_key('queue'):
+        job_list = job_list.filter(queue=request.GET['queue']) 
+
     if request.REQUEST.has_key('software'):
         job_list = job_list.filter(software__package__id=int(request.GET['software'])) 
 
@@ -548,7 +550,7 @@ def job_list(request):
     filter_list = []
     filter_list.append(DateFilter(request, 'date'))
     filter_list.append(Filter(request, 'machine', Machine.objects.all()))
-    filter_list.append(Filter(request, 'software', SoftwarePackage.objects.all()))
+    filter_list.append(Filter(request, 'queue', Queue.objects.all()))
     filter_bar = FilterBar(request, filter_list)
 
 
