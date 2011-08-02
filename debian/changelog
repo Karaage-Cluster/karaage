@@ -1,3 +1,24 @@
+karaage (2.6-1) testing; urgency=low
+
+  * Institutes now have 0 or many delegates, got rid of active/sub delegates
+  * Removed deprecated requests app
+  * Refactor Account datastores. Setting now stored in DB
+  * Archive applications
+  * Ability to add/edit machine categories
+  * Reverse order of applications in admin site
+  * Set DEFAULT_FROM_EMAIL to be equal to ACCOUNTS_EMAIL
+  * Added software field to CPUJob
+  * Added CPU Job detail and list pages
+  * Send admin notification for pending project applications too
+  * Ability for an admin to modify an applicant
+  * Only create a group for a software package if it's restricted or has a license
+  * New management command to change a users username
+  * Added software usage statistics views
+  * Removed is_expertise field from projects
+  * Made the Send Email function more generic
+
+ -- Sam Morrison <sam@vpac.org>  Tue, 02 Aug 2011 10:40:01 +1000
+
 karaage (2.5.17-1) stable; urgency=low
 
   * Workaround for long standing matplotlib bug. Don't error
