@@ -167,7 +167,7 @@ class ProjectApplication(Application):
 
 class Applicant(models.Model):
     email = models.EmailField(unique=True)
-    email_verified = models.BooleanField()
+    email_verified = models.BooleanField(editable=False)
     username = models.CharField(max_length=16, unique=True, help_text="Required. 16 characters or fewer. Letters, numbers and underscores only", null=True, blank=True)
     password = models.CharField(max_length=128, null=True, blank=True, editable=False)
     title = models.CharField(choices=TITLES, max_length=10, null=True, blank=True)
