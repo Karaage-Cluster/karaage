@@ -56,6 +56,8 @@
       
       <tr><td>Approved:</td><td>{% yes_no_img project.is_approved %}</td></tr>
       <tr><td>Active:</td><td>{% yes_no_img project.is_active %}</td></tr>
+      <tr><td>Cap:</td><td>{{ project.get_cap }}</td></tr>
+      <tr><td>% Cap used:</td><td>{{ project.get_cap_percent|floatformat:"2" }}%</td></tr>
       <tr id="hidden-link"><td colspan="2"><a href="#" onclick="showHidden()">More....</a></td></tr>
      </table>
 	<table id="hidden" style="display: none">
