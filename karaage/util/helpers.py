@@ -59,24 +59,20 @@ def get_available_time(start=datetime.date.today()-datetime.timedelta(days=90), 
         m_end = m.end_date
         if not m_end:
             m_end = end
-        if start >= m_end or m_start >= end:
+        if start > m_end or m_start > end:
             total += 0
-            
         elif start < m_start and end > m_end:
-            total += (m.no_cpus * ((m_end - m_start).days) * 24 * 60 * 60)
-            
+            total += (m.no_cpus * ((m_end - m_start).days + 1) * 24 * 60 * 60)
         elif end > m_end and start < m_start:
-            total += (m.no_cpus * ((end - start).days) * 24 * 60 * 60)
-            
+            total += (m.no_cpus * ((end - start).days + 1) * 24 * 60 * 60)
         elif end > m_end:
-            total += (m.no_cpus * ((m_end - start).days) * 24 * 60 * 60)
-            
+            total += (m.no_cpus * ((m_end - start).days + 1) * 24 * 60 * 60)
         elif start < m_start:
-            total += (m.no_cpus * ((end - m_start).days) * 24 * 60 * 60)
-            
+            total += (m.no_cpus * ((end - m_start).days + 1) * 24 * 60 * 60)
+        elif start == end:
+            total += (m.no_cpus * 24 * 60 * 60)
         else:
-            total += (m.no_cpus * ((end - start).days) * 24 * 60 * 60)
-            
+            total += (m.no_cpus * ((end - start).days + 1) * 24 * 60 * 60)
     return total, get_ave_cpus(start, end, machine_category)
         
 
@@ -88,19 +84,17 @@ def get_ave_cpus(start, end, machine_category):
 
         if not m_end:
             m_end = datetime.date.today()
-        if start >= m_end or end <= m_start:
+        if start > m_end or end < m_start:
             cpus += 0
-
         elif start < m_start and end > m_end:
-            cpus += m.no_cpus * (m_end - m_start).days
-
+            cpus += m.no_cpus * ((m_end - m_start).days + 1)
         elif end > m_end:
-            cpus += m.no_cpus * (m_end - start).days
-            
+            cpus += m.no_cpus * ((m_end - start).days + 1)
         elif start < m_start:
-            cpus += m.no_cpus * (end - m_start).days
-
+            cpus += m.no_cpus * ((end - m_start).days + 1)
+        elif start == end:
+            cpus += m.no_cpus
         else:
-            cpus += m.no_cpus * (end - start).days
-            
-    return cpus / (end-start).days
+            cpus += m.no_cpus * ((end - start).days + 1)
+        
+    return cpus / ((end-start).days + 1)

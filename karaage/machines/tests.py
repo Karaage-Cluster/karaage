@@ -157,7 +157,7 @@ class MachineTestCase(TestCase):
         today = datetime.datetime.now()
         # 10cpus
         mach1 = Machine.objects.get(pk=1)
-        mach1.start_date = today - datetime.timedelta(days=100)
+        mach1.start_date = today - datetime.timedelta(days=80)
         mach1.save()
         # 40 cpus
         mach2 = Machine.objects.get(pk=2)
@@ -172,19 +172,39 @@ class MachineTestCase(TestCase):
     def tearDown(self):
         self.server.stop()
 
+    def do_availablity_test(self, start, end, mc, expected_time, expected_cpu):
+        from karaage.util.helpers import get_available_time
+        available_time, avg_cpus = get_available_time(start.date(), end.date(), mc)
+        self.failUnlessEqual(avg_cpus, expected_cpu)
+        self.failUnlessEqual(available_time, expected_time)
+        
     def test_available_time(self):
         from karaage.util.helpers import get_available_time
         mc1 = MachineCategory.objects.get(pk=1)
         mc2 = MachineCategory.objects.get(pk=2)
+        for machine in Machine.objects.all():
+            machine.category = mc1
+            machine.save()
+            
         day = 60*60*24
-        available_time, avg_cpus = get_available_time(machine_category=mc1)
+        today = datetime.datetime.now()
+        
+        end = today - datetime.timedelta(days=20)
+        start = today - datetime.timedelta(days=30)
+        self.do_availablity_test(start, end, mc1, 8050*day*11, 8050)
+        
+        start = today - datetime.timedelta(days=99)
+        end = today - datetime.timedelta(days=90)
+        self.do_availablity_test(start, end, mc1, 40*day*10, 40)
 
-        self.failUnlessEqual(avg_cpus, 10)
-        self.failUnlessEqual(available_time, 90*day*avg_cpus)
-        self.failUnlessEqual(available_time, 90*day*10)
+        start = today - datetime.timedelta(days=85)
+        end = today - datetime.timedelta(days=76)
+        self.do_availablity_test(start, end, mc1, 45*day*10, 45)
 
-        available_time, avg_cpus = get_available_time(machine_category=mc2)
+        start = today - datetime.timedelta(days=35)
+        end = today - datetime.timedelta(days=16)
+        self.do_availablity_test(start, end, mc1, 6042*day*20, 6042)
 
-        self.failUnlessEqual(avg_cpus, 2697.7777777777778)
-        self.failUnlessEqual(available_time, 90*day*avg_cpus)
-        self.failUnlessEqual(available_time, (40*(70*day))+(8000*(30*day)))
+        start = today - datetime.timedelta(days=20)
+        end = today - datetime.timedelta(days=20)
+        self.do_availablity_test(start, end, mc1, 8050*day, 8050)
