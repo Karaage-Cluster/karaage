@@ -27,7 +27,7 @@ from django.core.paginator import Paginator
 
 import datetime
 from decimal import Decimal
-from andsome.graphs import bar_chart
+from andsome.graphs.googlechart import GraphGenerator
 from andsome.util.filterspecs import Filter, FilterBar, DateFilter
 
 from karaage.util.helpers import get_available_time
@@ -456,7 +456,6 @@ def institute_users(request, institute_id, machine_category_id=1):
 def core_report(request, machine_category_id=settings.DEFAULT_MC):
 
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
-    mc_list = MachineCategory.objects.exclude(id__exact=settings.DEFAULT_MC)
     
     start, end = get_date_range(request)
 
@@ -470,10 +469,13 @@ def core_report(request, machine_category_id=settings.DEFAULT_MC):
     core_65_128 = job_list.filter(cores__gte=65, cores__lte=128).count()
     core_128 = job_list.filter(cores__gte=128).count()
     data = [core_1, core_2_4, core_5_8, core_9_16, core_17_32, core_33_64, core_65_128, core_128]
+    total = sum(data)
+
     x_labels = ['1', '2-4', '5-8', '9-16', '17-32', '33-64', '65-128', '128+']
-    labels = []
     max_y = max(data)
-    graph = bar_chart(data, labels, x_labels, max_y).get_url()
+    data = {'Total jobs': data}
+    g = GraphGenerator()
+    graph = g.bar_chart(data, x_labels, max_y, bar_width=50)
 
     return render_to_response('usage/core_report.html', locals(), context_instance=RequestContext(request))
 
@@ -481,7 +483,6 @@ def core_report(request, machine_category_id=settings.DEFAULT_MC):
 def mem_report(request, machine_category_id=settings.DEFAULT_MC):
 
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
-    mc_list = MachineCategory.objects.exclude(id__exact=settings.DEFAULT_MC)
     
     start, end = get_date_range(request)
 
@@ -495,10 +496,13 @@ def mem_report(request, machine_category_id=settings.DEFAULT_MC):
     mem_128 = job_list.filter(mem__gt=128*1024*1024).count()
 
     data = [mem_0_4, mem_4_8, mem_8_16, mem_16_32, mem_32_64, mem_64_128, mem_128]
+    total = sum(data)
     x_labels = ['0-4', '4-8', '8-16', '16-32', '32-64', '64-128', '128+']
     labels = []
     max_y = max(data)
-    graph = bar_chart(data, labels, x_labels, max_y).get_url()
+    data = {'Total jobs': data}
+    g = GraphGenerator()
+    graph = g.bar_chart(data, x_labels, max_y, bar_width=50)
 
     return render_to_response('usage/mem_report.html', locals(), context_instance=RequestContext(request))
 
