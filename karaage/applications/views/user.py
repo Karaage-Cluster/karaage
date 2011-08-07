@@ -92,6 +92,7 @@ def do_userapplication(request, token=None, saml=False,
             applicant = applicant_form.save(commit=False)
             if saml:
                 applicant = add_saml_data(applicant, request)
+                applicant.email_verified = True
             applicant.password = create_password_hash(applicant_form.cleaned_data['password1'])
             applicant.save()
             application = form.save(commit=False)
