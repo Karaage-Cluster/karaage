@@ -38,7 +38,7 @@ class CPUJob(models.Model):
     username = models.CharField(max_length=50, blank=True, null=True) 
     project = models.ForeignKey(Project, blank=True, null=True)
     machine = models.ForeignKey(Machine, blank=True, null=True)
-    date = models.DateField(blank=True, null=True)
+    date = models.DateField(db_index=True, blank=True, null=True)
     queue = models.ForeignKey(Queue, blank=True, null=True)
     cpu_usage = models.BigIntegerField(blank=True, null=True)
     mem = models.BigIntegerField(blank=True, null=True)
