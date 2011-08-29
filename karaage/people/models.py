@@ -81,7 +81,7 @@ class Institute(models.Model):
             return False
 
         # Institute delegates==person can view institute
-        if person in institute.delegates.all():
+        if person in self.delegates.all():
             return True
 
         return False
