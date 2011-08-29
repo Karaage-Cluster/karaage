@@ -25,7 +25,7 @@ from karaage.machines.models import MachineCategory, Machine
 
 
 class UsageCache(models.Model):
-    date = models.DateField(editable=False)
+    date = models.DateField(editable=False, auto_now_add=True)
     start = models.DateField()
     end = models.DateField()
     cpu_hours = models.DecimalField(max_digits=30, decimal_places=2, blank=True, null=True)
@@ -33,43 +33,24 @@ class UsageCache(models.Model):
 
     class Meta:
         abstract = True
-
+        
 
 class InstituteCache(UsageCache):
     institute = models.ForeignKey(Institute)
     machine_category = models.ForeignKey(MachineCategory)
     
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.date = datetime.date.today()
-        super(self.__class__, self).save(*args, **kwargs)
-
 
 class ProjectCache(UsageCache):
     pid = models.ForeignKey(Project)
     machine_category = models.ForeignKey(MachineCategory) 
-
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.date = datetime.date.today()
-        super(self.__class__, self).save(*args, **kwargs)
 
 
 class UserCache(UsageCache):
     user = models.ForeignKey(Person)
     project = models.ForeignKey(Project)
 
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.date = datetime.date.today()
-        super(self.__class__, self).save(*args, **kwargs)
-
 
 class MachineCache(UsageCache):
     machine = models.ForeignKey(Machine)
     
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.date = datetime.date.today()
-        super(self.__class__, self).save(*args, **kwargs)
 
