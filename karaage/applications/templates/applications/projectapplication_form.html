@@ -2,7 +2,7 @@
 
 {% block title %}Applications{% endblock %}
 {% block style %}<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/forms_custom.css"/>{% endblock %}
-{% block content_title %}Project Application{% endblock %}
+{% block content_title %}New {{ org_name }} Project Application{% endblock %}
 
 {% block bread_crumbs_1 %}
  &rsaquo; Project Application
@@ -23,6 +23,7 @@
 {{ form.non_field_errors }}
 {% if applicant_form.errors.email and saml %}{{ applicant_form.errors.email }}{% endif %}
 <h2>Account Details</h2>
+<p>This will be used to manage your project and also for your cluster account if you choose to have one.</p>
 {% formfield applicant_form.username %}
 {% formfield applicant_form.password1 %}
 {% formfield applicant_form.password2 %}
