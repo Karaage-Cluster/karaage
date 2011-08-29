@@ -78,7 +78,7 @@ def add_package(request, package_id):
             from karaage.datastores.software import add_member
             add_member(software_license.package, person)
 
-        return HttpResponseRedirect(reverse('kg_user_profile'))
+        return HttpResponseRedirect(reverse('kg_user_profile_software'))
 
     return render_to_response('software/accept_license.html', locals(), context_instance=RequestContext(request))
     
