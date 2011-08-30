@@ -475,7 +475,7 @@ def core_report(request, machine_category_id=settings.DEFAULT_MC):
     max_y = max(data)
     data = {'Total jobs': data}
     g = GraphGenerator()
-    graph = g.bar_chart(data, x_labels, max_y, bar_width=50)
+    graph = g.bar_chart(data, x_labels, max_y, bar_width=50).get_url()
 
     return render_to_response('usage/core_report.html', locals(), context_instance=RequestContext(request))
 
@@ -502,7 +502,7 @@ def mem_report(request, machine_category_id=settings.DEFAULT_MC):
     max_y = max(data)
     data = {'Total jobs': data}
     g = GraphGenerator()
-    graph = g.bar_chart(data, x_labels, max_y, bar_width=50)
+    graph = g.bar_chart(data, x_labels, max_y, bar_width=50).get_url()
 
     return render_to_response('usage/mem_report.html', locals(), context_instance=RequestContext(request))
 
