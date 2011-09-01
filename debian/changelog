@@ -1,3 +1,14 @@
+karaage (2.6.1-1) stable; urgency=low
+
+  * Fixed out by 1 error when calculating available cpus
+  * Added memory and core usage reports
+  * Fixed institute usage permission view
+  * More sensible redirect after accepting a license
+  * Added DB index to date field on CPUJob
+  * Fixed longstanding matplotlib project graph error
+
+ -- Sam Morrison <sam@vpac.org>  Tue, 30 Aug 2011 09:24:00 +1000
+
 karaage (2.6-1) testing; urgency=low
 
   * Institutes now have 0 or many delegates, got rid of active/sub delegates
