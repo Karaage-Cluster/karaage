@@ -63,11 +63,6 @@ class GraphGenerator(gdchart2.GraphGenerator):
         fig = Figure(figsize=(6,3))
         ax = fig.add_axes([0.2, 0.2, 0.7, 0.7])
         period = (end-start).days
-        x_data = []
-        j = 1
-        while j <= period:
-            x_data.append(j)
-            j += 1
 
         ax.set_xlim(0,period+1)
         if period < 10:
@@ -156,6 +151,7 @@ class GraphGenerator(gdchart2.GraphGenerator):
         user_data = dictsortreversed(user_data, 'total')
         user_data = [d['data'] for d in user_data]
         for data in user_data:
+            x_data = range(1, len(data) + 1)
             if prev_data:
                 ax.bar(x_data, data, color=get_colour(count), edgecolor=get_colour(count), bottom=prev_data, align='center')
                 p = 0
