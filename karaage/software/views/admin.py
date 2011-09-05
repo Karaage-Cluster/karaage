@@ -26,11 +26,12 @@ from django.core.urlresolvers import reverse
 from django.db.models import Count, Sum
 
 import datetime
-from andsome.util.filterspecs import Filter, FilterBar
+from andsome.util.filterspecs import Filter, FilterBar, DateFilter
 
 from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense, SoftwareAccessRequest, SoftwareLicenseAgreement
 from karaage.software.forms import AddPackageForm, LicenseForm, SoftwareVersionForm
 from karaage.people.models import Person
+from karaage.machines.models import Machine
 from karaage.usage.models import CPUJob
 from karaage.util import get_date_range, log_object as log
 from karaage.util.email_messages import send_software_request_approved_email
@@ -42,7 +43,13 @@ def software_list(request):
 
     if request.REQUEST.has_key('category'):
         software_list = software_list.filter(category=int(request.GET['category']))
+    if request.REQUEST.has_key('machine'):
+        software_list = software_list.filter(softwareversion__machines=int(request.GET['machine']))
 
+    params = dict(request.GET.items())
+    m_params = dict([(str(k), str(v)) for k, v in params.items() if k.startswith('softwareversion__last_used_')])
+    software_list = software_list.filter(**m_params)
+        
     if request.REQUEST.has_key('search'):
         terms = request.REQUEST['search'].lower()
         query = Q()
@@ -57,7 +64,9 @@ def software_list(request):
     filter_list = []
     filter_list.append(Filter(request, 'category', SoftwareCategory.objects.all()))
     filter_bar = FilterBar(request, filter_list)
-
+    filter_list.append(Filter(request, 'machine', Machine.objects.all()))
+    filter_list.append(DateFilter(request, 'softwareversion__last_used'))
+    
     p = Paginator(software_list, 50)
     page = p.page(page_no)
 
