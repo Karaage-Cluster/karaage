@@ -55,6 +55,9 @@ def usage_index(request):
 
 def index(request, machine_category_id=settings.DEFAULT_MC):
 
+    if not getattr(settings, 'USAGE_IS_PUBLIC', False):
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
+    
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
     mc_list = MachineCategory.objects.exclude(id__exact=settings.DEFAULT_MC)
     
