@@ -44,6 +44,7 @@ class ProjectForm(forms.ModelForm):
         instance = getattr(self, 'instance', None)
         if instance and instance.pid:
             self.fields['pid'].widget.attrs['readonly'] = True
+            self.fields['pid'].help_text = "You can't change the PID of an existing project"
 
     def clean_pid(self):
         pid = self.cleaned_data['pid']
