@@ -99,7 +99,7 @@ def software_detail(request, package_id):
         from karaage.datastores.software import add_member
         add_member(package, person)
 
-        messages.info(request, "User %s added to group" % person)
+        messages.success(request, "User %s added to group" % person)
         log(request.user, package, 1, "User %s added to group manually" % person)
         return HttpResponseRedirect(package.get_absolute_url())
 
@@ -161,7 +161,7 @@ def delete_version(request, package_id, version_id):
         version.delete()
         log(request.user, version.package, 3, 'Deleted version: %s' % version)
         
-        messages.info(request, "Version '%s' was deleted succesfully" % version)
+        messages.success(request, "Version '%s' was deleted succesfully" % version)
         return HttpResponseRedirect(version.get_absolute_url())
     
     return render_to_response('software/version_confirm_delete.html', locals(), context_instance=RequestContext(request))
@@ -205,7 +205,7 @@ def remove_member(request, package_id, user_id):
     log(request.user, package, 3, 'Removed %s from group' % person)
     log(request.user, person, 3, 'Removed from software group %s' % package)
         
-    messages.info(request, "User '%s' removed successfuly" % person)
+    messages.success(request, "User '%s' removed successfuly" % person)
 
     return HttpResponseRedirect(package.get_absolute_url())
 
@@ -233,7 +233,7 @@ def softwarerequest_approve(request, softwarerequest_id):
         from karaage.datastores.software import add_member
         add_member(softwarerequest.software_license.package, softwarerequest.person)
 
-        messages.info(request, "Software request approved successfully")
+        messages.success(request, "Software request approved successfully")
         send_software_request_approved_email(softwarerequest)
         log(request.user, softwarerequest.software_license.package, 1, "User %s approved" % softwarerequest.person)
         softwarerequest.delete()
@@ -249,7 +249,7 @@ def softwarerequest_delete(request, softwarerequest_id):
     if request.method == 'POST':
         
         softwarerequest.delete()
-        messages.info(request, "Software request deleted successfully")
+        messages.success(request, "Software request deleted successfully")
         return HttpResponseRedirect(reverse('kg_softwarerequest_list'))
 
     return render_to_response('software/request_delete.html', {'softwarerequest': softwarerequest,}, context_instance=RequestContext(request))

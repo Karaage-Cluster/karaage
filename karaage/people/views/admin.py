@@ -52,11 +52,11 @@ def add_edit_user(request, form_class, template_name='people/person_form.html', 
             if person:
                 # edit
                 person = form.save(person)
-                messages.info(request, "User '%s' was edited succesfully" % person)
+                messages.success(request, "User '%s' was edited succesfully" % person)
             else:
                 #Add
                 person = form.save()
-                messages.info(request, "User '%s' was created succesfully" % person)
+                messages.success(request, "User '%s' was created succesfully" % person)
                 
             if redirect_url is None:
                 return HttpResponseRedirect(person.get_absolute_url())
@@ -147,7 +147,7 @@ def add_edit_useraccount(request, username=None, useraccount_id=None):
                 user_account.machine_category = data['machine_category']
                 user_account.default_project = data['default_project']
                 user_account.save()
-                messages.info(request, "User account for '%s' changed succesfully" % user_account.user)
+                messages.success(request, "User account for '%s' changed succesfully" % user_account.user)
                 return HttpResponseRedirect(user.get_absolute_url())
                 
             else:
@@ -164,7 +164,7 @@ def add_edit_useraccount(request, username=None, useraccount_id=None):
                         username__exact=user.username, machine_category=machine_category, date_deleted__isnull=True)
                 except UserAccount.DoesNotExist:
                     user_account = create_account(user, project, machine_category)               
-                    messages.info(request, "User account for '%s' created succesfully" % user_account.user)
+                    messages.success(request, "User account for '%s' created succesfully" % user_account.user)
                     
                     return HttpResponseRedirect(user.get_absolute_url())                
                 username_error = True                
@@ -189,7 +189,7 @@ def delete_useraccount(request, useraccount_id):
 
     if request.method == 'POST':
         user_account.deactivate()
-        messages.info(request, "User account for '%s' deleted succesfully" % user_account.user)
+        messages.success(request, "User account for '%s' deleted succesfully" % user_account.user)
         return HttpResponseRedirect(user_account.get_absolute_url())
     else:
         
@@ -253,7 +253,7 @@ def make_default(request, useraccount_id, project_id):
     user_account.save()
     user_account.user.save()
     
-    messages.info(request, "Default project changed succesfully")
+    messages.success(request, "Default project changed succesfully")
     log(request.user, user_account.user, 2, 'Changed default project to %s' % project.pid)
 
     if request.REQUEST.has_key('next'):
@@ -315,7 +315,7 @@ def change_shell(request, useraccount_id):
         shell_form = ShellForm(request.POST)
         if shell_form.is_valid():
             shell_form.save(user_account=ua)
-            messages.info(request, 'Shell changed successfully')
+            messages.success(request, 'Shell changed successfully')
             return HttpResponseRedirect(ua.get_absolute_url())
     else:
         

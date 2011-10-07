@@ -80,7 +80,7 @@ def profile_accounts(request):
 
         if shell_form.is_valid():
             shell_form.save(user_account)
-            messages.info(request, 'Shell changed successfully')
+            messages.success(request, 'Shell changed successfully')
 
             return HttpResponseRedirect(reverse('kg_user_profile'))
 
@@ -143,7 +143,7 @@ def flag_left(request, username):
         is_removed=False,
     )
 
-    messages.info(request, 'User flagged as left institution')
+    messages.success(request, 'User flagged as left institution')
 
     return HttpResponseRedirect(person.get_absolute_url())
 

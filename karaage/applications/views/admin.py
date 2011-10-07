@@ -64,12 +64,12 @@ def send_invitation(request):
             application.save()
             if application.content_type.model == 'person':
                 application.approve()
-                messages.info(request, "%s was added to project %s directly since they have an existing account." % (application.applicant, application.project))
+                messages.warning(request, "%s was added to project %s directly since they have an existing account." % (application.applicant, application.project))
                 log(request.user, application.application_ptr, 1, "%s added directly to %s" % (application.applicant, application.project))
                 send_account_approved_email(application)
                 return HttpResponseRedirect(application.applicant.get_absolute_url())
             send_user_invite_email(application)
-            messages.info(request, "Invitation sent to %s." % email)
+            messages.success(request, "Invitation sent to %s." % email)
             log(request.user, application.application_ptr, 1, 'Invitation sent')
             return HttpResponseRedirect(application.get_absolute_url())
         
@@ -130,7 +130,7 @@ def approve_userapplication(request, application_id):
             application = form.save()
             person = application.approve()
             send_account_approved_email(application)
-            messages.info(request, "Application approved successfully")
+            messages.success(request, "Application approved successfully")
             log(request.user, application.application_ptr, 2, 'Application fully approved')
             return HttpResponseRedirect(person.get_absolute_url())
     else:
@@ -151,7 +151,7 @@ def decline_userapplication(request, application_id):
             to_email = application.applicant.email
             subject, body = form.get_data()
             log(request.user, application.application_ptr, 3, 'Application declined')
-            messages.info(request, "%s declined successfully." % application)
+            messages.success(request, "%s declined successfully." % application)
             application.delete()
             send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
             return HttpResponseRedirect(reverse('kg_application_list'))
@@ -176,7 +176,7 @@ def approve_projectapplication(request, application_id):
             application = form.save()
             project = application.approve(pid=form.cleaned_data['pid'])
             send_project_approved_email(application)
-            messages.info(request, "Application approved successfully.")
+            messages.success(request, "Application approved successfully.")
             log(request.user, application.application_ptr, 2, 'Application fully approved')
             return HttpResponseRedirect(project.get_absolute_url())
     else:
@@ -197,7 +197,7 @@ def decline_projectapplication(request, application_id):
             to_email = application.applicant.email
             subject, body = form.get_data()
             log(request.user, application.application_ptr, 3, 'Application declined')
-            messages.info(request, "%s declined successfully." % application)
+            messages.success(request, "%s declined successfully." % application)
             application.delete()
             send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
             return HttpResponseRedirect(reverse('kg_application_list'))
@@ -225,7 +225,7 @@ def delete_application(request, application_id):
     if request.method == 'POST':
         application.delete()
         log(request.user, application, 3, 'Application deleted')
-        messages.info(request, "%s deleted successfully." % application)
+        messages.success(request, "%s deleted successfully." % application)
         return HttpResponseRedirect(reverse('kg_application_list'))
 
     return render_to_response('applications/application_confirm_delete.html', {'application': application}, context_instance=RequestContext(request))
@@ -239,7 +239,7 @@ def archive_application(request, application_id):
         application.state = Application.ARCHIVED
         application.save()
         log(request.user, application, 2, 'Application archived')
-        messages.info(request, "%s archived successfully." % application)
+        messages.success(request, "%s archived successfully." % application)
         return HttpResponseRedirect(application.get_absolute_url())
 
     return render_to_response('applications/application_archive.html', {'application': application}, context_instance=RequestContext(request))
@@ -254,7 +254,7 @@ def applicant_edit(request, applicant_id):
         if form.is_valid():
             applicant = form.save()
             log(request.user, applicant, 2, 'Edited')
-            messages.info(request, "%s modified successfully." % applicant)
+            messages.success(request, "%s modified successfully." % applicant)
             try:
                 return HttpResponseRedirect(applicant.applications.all()[0].get_absolute_url())
             except IndexError:

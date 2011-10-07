@@ -64,10 +64,10 @@ def add_edit_project(request, project_id=None):
             project.activate()
             form.save_m2m()
             if flag == 1:
-                messages.info(request, "Project '%s' created succesfully" % project)
+                messages.success(request, "Project '%s' created succesfully" % project)
                 log(get_current_user(), project, 1, 'Created')
             else:
-                messages.info(request, "Project '%s' edited succesfully" % project)
+                messages.success(request, "Project '%s' edited succesfully" % project)
                 log(get_current_user(), project, 2, 'Edited')
 
             return HttpResponseRedirect(project.get_absolute_url())        
@@ -86,7 +86,7 @@ def delete_project(request, project_id):
         
         project.deactivate()
         log(request.user, project, 3, 'Deleted')
-        messages.info(request, "Project '%s' deleted succesfully" % project)
+        messages.success(request, "Project '%s' deleted succesfully" % project)
         return HttpResponseRedirect(project.get_absolute_url()) 
 
     return render_to_response('projects/project_confirm_delete.html', locals(), context_instance=RequestContext(request))
@@ -171,7 +171,7 @@ def remove_user(request, project_id, username):
     if request.method == 'POST':
         project.users.remove(person)
         project.save()
-        messages.info(request, "User '%s' removed succesfully from project %s" % (person, project.pid))
+        messages.success(request, "User '%s' removed succesfully from project %s" % (person, project.pid))
     
         log(request.user, project, 3, 'Removed %s from project' % person)
         log(request.user, person, 3, 'Removed from project %s' % project)

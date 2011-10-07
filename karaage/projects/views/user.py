@@ -42,7 +42,7 @@ def add_edit_project(request, project_id):
         
         if form.is_valid():
             project = form.save()
-            messages.info(request, "Project edited successfully")
+            messages.success(request, "Project edited successfully")
             log(request.user, project, 2, "Edited project")
             return HttpResponseRedirect(project.get_absolute_url())
     else:        
@@ -85,7 +85,7 @@ def remove_user(request, project_id, username):
 
     if request.method == 'POST':
         project.users.remove(person)
-        messages.info(request, "User '%s' removed succesfully from project %s" % (person, project.pid))
+        messages.success(request, "User '%s' removed succesfully from project %s" % (person, project.pid))
     
         log(request.user, project, 3, 'Removed %s from project' % person)
         log(request.user, person, 3, 'Removed from project %s' % project)

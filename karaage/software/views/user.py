@@ -68,7 +68,7 @@ def add_package(request, package_id):
                 )
             if created:
                 send_software_request_email(software_request)
-                messages.info(request, "Software request sent.")
+                messages.success(request, "Software request sent.")
         else:
             SoftwareLicenseAgreement.objects.create(
                 user=person,

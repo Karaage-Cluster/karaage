@@ -38,7 +38,7 @@ def delete_user(request, username):
 
     if request.method == 'POST':
         user.deactivate()
-        messages.info(request, "User '%s' was deleted succesfully" % user)
+        messages.success(request, "User '%s' was deleted succesfully" % user)
         return HttpResponseRedirect(user.get_absolute_url())
         
     return render_to_response('people/person_confirm_delete.html', locals(), context_instance=RequestContext(request))
@@ -66,7 +66,7 @@ def user_detail(request, username):
                 break
         if not no_account_error:
             project.users.add(person)
-            messages.info(request, "User '%s' was added to %s succesfully" % (person, project))
+            messages.success(request, "User '%s' was added to %s succesfully" % (person, project))
             log(request.user, project, 2, '%s added to project' % person)
 
     #change shell form
@@ -85,7 +85,7 @@ def activate(request, username):
 
     if request.method == 'POST':     
         person.activate()
-        messages.info(request, "User '%s' activated succesfully" % person)
+        messages.success(request, "User '%s' activated succesfully" % person)
         return HttpResponseRedirect(reverse('kg_password_change', args=[person.username,]))
     
     return render_to_response('people/reactivate_confirm.html', {'person': person}, context_instance=RequestContext(request))
@@ -100,7 +100,7 @@ def password_change(request, username):
         
         if form.is_valid():
             form.save(person)
-            messages.info(request, "Password changed successfully")
+            messages.success(request, "Password changed successfully")
             log(request.user, person, 2, 'Changed password')
             if person.is_locked():
                 person.unlock()
@@ -115,7 +115,7 @@ def password_change(request, username):
 def lock_person(request, username):
     person = get_object_or_404(Person, user__username=username)
     person.lock()
-    messages.info(request, "%s's account has been locked" % person)
+    messages.success(request, "%s's account has been locked" % person)
     log(request.user, person, 2, 'Account locked')
     
     return HttpResponseRedirect(person.get_absolute_url())
@@ -125,7 +125,7 @@ def lock_person(request, username):
 def unlock_person(request, username):
     person = get_object_or_404(Person, user__username=username)
     person.unlock()
-    messages.info(request, "%s's account has been unlocked" % person)
+    messages.success(request, "%s's account has been unlocked" % person)
     log(request.user, person, 2, 'Account unlocked')
     
     return HttpResponseRedirect(person.get_absolute_url())
@@ -138,7 +138,7 @@ def bounced_email(request, username):
     if request.method == 'POST':
         person.lock()
         send_bounced_warning(person)
-        messages.info(request, "%s's account has been locked and emails have been sent" % person)
+        messages.success(request, "%s's account has been locked and emails have been sent" % person)
         log(request.user, person, 2, 'Emails sent to project leaders and account locked')
         for ua in person.useraccount_set.all():
             ua.change_shell(ua.previous_shell)

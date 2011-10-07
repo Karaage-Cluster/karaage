@@ -44,7 +44,7 @@ from karaage.util import log_object as log
 def do_userapplication(request, token=None, saml=False, 
                        application_form=UserApplicationForm):
     if request.user.is_authenticated():
-        messages.info(request, "You are already logged in")
+        messages.warning(request, "You are already logged in")
         return HttpResponseRedirect(reverse('kg_user_profile'))
 
     if saml:
@@ -364,13 +364,13 @@ def send_invitation(request, project_id):
             if application.content_type.model == 'person':
                 application.approve()
                 send_account_approved_email(application)
-                messages.info(request, "%s was added to project %s directly since they have an existing account." % 
+                messages.warning(request, "%s was added to project %s directly since they have an existing account." % 
                               (application.applicant, application.project))
                 log(request.user, application.application_ptr, 1, "%s added directly to %s" % (applicant, project))
                 return HttpResponseRedirect(application.applicant.get_absolute_url())
 
             send_user_invite_email(application)
-            messages.info(request, "Invitation sent to %s." % email)
+            messages.success(request, "Invitation sent to %s." % email)
             log(request.user, application.application_ptr, 1, 'Invitation sent')
             return HttpResponseRedirect(reverse('kg_user_profile'))
         

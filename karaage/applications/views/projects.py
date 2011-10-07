@@ -41,7 +41,7 @@ def do_projectapplication(request, token=None, application_form=ProjectApplicati
                           mc=MachineCategory.objects.get_default(), saml=False):
 
     if request.user.is_authenticated():
-        messages.info(request, "You are already logged in")
+        messages.warning(request, "You are already logged in")
         return HttpResponseRedirect(reverse('kg_user_profile'))
 
     if saml:
