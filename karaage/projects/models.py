@@ -95,7 +95,7 @@ class Project(models.Model):
         return False
 
     def activate(self):
-        if self.is_active = True:
+        if self.is_active == True:
             return
         self.is_active = True
         self.is_approved = True
