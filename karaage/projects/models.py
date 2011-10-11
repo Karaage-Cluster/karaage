@@ -95,6 +95,8 @@ class Project(models.Model):
         return False
 
     def activate(self):
+        if self.is_active = True:
+            return
         self.is_active = True
         self.is_approved = True
         self.date_approved = datetime.datetime.today()
