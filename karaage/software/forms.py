@@ -43,7 +43,7 @@ class SoftwarePackageForm(forms.Form):
         package.homepage = data['homepage']
         package.tutorial_url = data['tutorial_url']
         package.academic_only = data['academic_only']
-        package.restrcted = data['restricted']
+        package.restricted = data['restricted']
         package.save()
 
         return package
