@@ -27,10 +27,10 @@ from django.contrib.auth.models import User
 from django.core import exceptions
 from django.core.management.base import BaseCommand
 from django.utils.translation import ugettext as _
-from karaage.datastores import create_new_user, user_exists
+from karaage.datastores import create_new_user
 from karaage.people.models import Institute
+from karaage.people.utils import validate_username
 
-RE_VALID_USERNAME = re.compile('[\w.@+-]+$')
 
 EMAIL_RE = re.compile(
     r"(^[-!#$%&'*+/=?^_`{}|~0-9A-Z]+(\.[-!#$%&'*+/=?^_`{}|~0-9A-Z]+)*"  # dot-atom
@@ -87,27 +87,12 @@ class Command(BaseCommand):
                     username = raw_input(input_msg + ': ')
                 if default_username and username == '':
                     username = default_username
-                if not RE_VALID_USERNAME.match(username):
-                    sys.stderr.write("Error: That username is invalid. Use only letters, digits and underscores.\n")
+                try:
+                    validate_username(username)
+                except UsernameException, e:
+                    sys.stderr.write(e.message)
                     username = None
                     continue
-                db_username_free = ldap_username_free = False
-                try:
-                    User.objects.get(username=username)
-                except User.DoesNotExist:
-                    db_username_free = True
-                else:
-                    sys.stderr.write("Error: That username is already taken.\n")
-                    username = None
-                    
-                if user_exists(username):
-                    sys.stderr.write("Error: Username is already in external datastore.\n")
-                    username = None
-                else:
-                    ldap_username_free = True
-
-                if ldap_username_free and db_username_free:
-                    break
                 
             # Get an email
             while 1:

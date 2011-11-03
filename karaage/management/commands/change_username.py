@@ -17,7 +17,7 @@
 
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
-
+from karaage.people.utils import validate_username, UsernameInvalid, UsernameTaken
 import sys
 
 class Command(BaseCommand):
@@ -36,10 +36,11 @@ class Command(BaseCommand):
             raise CommandError('user %s does not exist' % old)
         
         try:
-            user = User.objects.get(username=new)
-            raise CommandError('new username %s already exists' % new)
-        except User.DoesNotExist:
-            pass
+            validate_username(new)
+        except UsernameInvalid, e:
+            raise CommandError(e.message)
+        except UsernameTaken:
+            raise CommandError('Username %s already exists' % new)
 
         while 1:
             confirm = raw_input('Change user "%s" to "%s (yes,no): ' % (old, new))
@@ -50,7 +51,6 @@ class Command(BaseCommand):
             else:
                 print "Please enter yes or no"
         
-    
         user = User.objects.get(username=old)
         person = user.get_profile()
 

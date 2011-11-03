@@ -24,11 +24,11 @@ from andsome.middleware.threadlocals import get_current_user
 from andsome.util import is_password_strong
 
 from karaage.people.models import Institute, Person
+from karaage.people.utils import validate_username, UsernameException
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
 from karaage.constants import TITLES, COUNTRIES
 from karaage.datastores import create_new_user
-from karaage.validators import username_re
 
 
 class PersonForm(forms.Form):
@@ -105,21 +105,12 @@ class UsernamePasswordForm(forms.Form):
     password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)')
 
     def clean_username(self):
-
         username = self.cleaned_data['username']
-        if not username.islower():
-            raise forms.ValidationError(u'Username must be all lowercase')
- 
-        if not username_re.search(username):
-            raise forms.ValidationError(u'Usernames can only contain letters, numbers and underscores')
-
         try:
-            user = User.objects.get(username__exact=username)
-        except:
-            user = None
-        
-        if user is not None:
-            raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old account please email %s' % settings.ACCOUNTS_EMAIL)
+            validate_username(username)
+        except UsernameException, e:
+            raise forms.ValidationError(e.message)
+            
         return username
     
     
@@ -135,8 +126,6 @@ class UsernamePasswordForm(forms.Form):
                 raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (upercase, lowercase), numbers and is at least 8 characters long.')
 
             return data
-    
-
 
 
 class AddPersonForm(AdminPersonForm, UsernamePasswordForm):

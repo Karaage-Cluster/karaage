@@ -25,8 +25,8 @@ from captcha.fields import CaptchaField
 
 from karaage.applications.models import UserApplication, ProjectApplication, Applicant
 from karaage.people.models import Person, Institute
+from karaage.people.utils import validate_username, UsernameException
 from karaage.projects.models import Project
-from karaage.validators import username_re
 
 APP_CHOICES = (
     ('U', 'Join an existing project'),
@@ -44,22 +44,12 @@ class ApplicantForm(forms.ModelForm):
         model = Applicant
 
     def clean_username(self):
-
         username = self.cleaned_data['username']
-        if username:
-            if not username.islower():
-                raise forms.ValidationError(u'Username must be all lowercase')
- 
-            if not username_re.search(username):
-                raise forms.ValidationError(u'Usernames can only contain letters, numbers and underscores')
-
-            try:
-                user = User.objects.get(username__exact=username)
-            except User.DoesNotExist:
-                user = None
-        
-            if user is not None:
-                raise forms.ValidationError(u'The username is already taken. Please choose another. If this was the name of your old account please email %s' % settings.ACCOUNTS_EMAIL)
+        try:
+            validate_username(username)
+        except UsernameException, e:
+            raise forms.ValidationError(e.message)
+            
         return username
 
 
