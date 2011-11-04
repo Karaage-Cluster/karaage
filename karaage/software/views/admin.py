@@ -48,7 +48,7 @@ def software_list(request):
 
     params = dict(request.GET.items())
     m_params = dict([(str(k), str(v)) for k, v in params.items() if k.startswith('softwareversion__last_used_')])
-    software_list = software_list.filter(**m_params)
+    software_list = software_list.filter(**m_params).distinct()
         
     if request.REQUEST.has_key('search'):
         terms = request.REQUEST['search'].lower()
