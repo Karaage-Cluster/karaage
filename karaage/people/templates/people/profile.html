@@ -18,6 +18,7 @@
   {% if person.fax %}<tr><td>Fax:</td><td>{{ person.fax }}</td></tr>{% endif %}
   {% if person.address %}<tr><td>Address:</td><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>{% endif %}
   <tr><td colspan="2"><a href="edit/" class="changelink">Edit personal details</a></td></tr>
+  <tr><td colspan="2"><a href="{% url kg_user_change_password %}" class="changelink">Change password</a></td></tr>
 </table>
 
 <h2>Tasks</h2>
