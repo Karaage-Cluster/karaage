@@ -7,16 +7,23 @@
 <table>
   
   <tr><td colspan="2">
-      {#<a href="{{ project.get_usage_url }}">View Usage</a>#}
+      
   </td></tr>
   <tr><td>Leaders:</td><td>{% for l in project.leaders.all %}<a href="{{ l.get_absolute_url }}">{{ l }}</a> {% endfor %}</td></tr>
-  <tr><td>Institiute:</td><td>{{ project.institute }}</td></tr>
+  <tr><td>Institute:</td><td>{{ project.institute }}</td></tr>
   <tr><td>Start Date:</td><td>{{ project.start_date|date }}</td></tr>
   {% if project.end_date %}<tr><td>End Date:</td><td>{{ project.end_date|date }}</td></tr>{% endif %}
   <tr><td>Description:</td><td>{{ project.description }}</td></tr>
   <tr><td>Approved:</td><td>{% yes_no_img project.is_active %}</td></tr>
   <tr><td>Active:</td><td>{% yes_no_img project.is_approved %}</td></tr>
 </table>	
+{% if project.is_active and user.get_profile in project.leaders.all %}
+<div class="module">
+  <h2>Management tasks</h2>
+  <p><a href="{% url kg_userapplication_invite project.pid %}" class="addlink">Invite a new user</a></p>
+  <p><a href="{{ project.get_usage_url }}">View Usage</a>
+</div>
+{% endif %}
 {% if project.users.all %}
 <div class="module">
   <h2>Users</h2>
