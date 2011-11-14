@@ -187,3 +187,38 @@ class PasswordChangeForm(AdminPasswordChangeForm):
 class LoginForm(forms.Form):
     username = forms.CharField(label="Username", max_length=30)
     password = forms.CharField(label="Password", widget=forms.PasswordInput)
+
+
+from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
+class SetPasswordForm(BaseSetPasswordForm):
+    
+    def clean_new_password1(self):
+        password1 = self.cleaned_data.get('new_password1')
+
+        if not is_password_strong(password1):
+            raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (upercase, lowercase), numbers and is at least 8 characters long.')
+                        
+        return password1
+
+
+    def save(self, commit=True):
+        person = self.user.get_profile()
+        person.set_password(self.cleaned_data['new_password1'])
+        return self.user
+
+
+from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
+class PasswordResetForm(BasePasswordResetForm):
+
+    email = forms.ModelChoiceField(queryset=Person.active.all(), label="Select person")
+
+    def clean_email(self):
+        email = self.cleaned_data["email"].email
+        self.users_cache = User.objects.filter(
+            email__iexact=email,
+            is_active=True
+        )
+        if len(self.users_cache) == 0:
+            raise forms.ValidationError(_("That e-mail address doesn't have an associated user account. Are you sure you've registered?"))
+        
+        return email

@@ -25,11 +25,12 @@ from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.tokens import default_token_generator
 
 from karaage.util import get_date_range
 from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
-from karaage.people.forms import PasswordChangeForm, PersonForm, LoginForm
+from karaage.people.forms import PasswordChangeForm, PersonForm, LoginForm, PasswordResetForm
 from karaage.machines.models import MachineCategory
 from karaage.machines.forms import ShellForm
 from karaage.applications.models import Application
@@ -218,4 +219,36 @@ def login(request):
         }, context_instance=RequestContext(request))
 
 
+
+@login_required
+def password_reset(request):
+    post_reset_redirect = reverse('password_reset_done')
+
+    if request.user.has_perm('people.change_person'):
+        person_list = Person.active.all()
+    if request.user.get_profile().is_leader():
+        person_list = Person.active.filter(project__leaders=request.user.get_profile()).distinct()
+    else:
+        person_list = Person.objects.none()
+
+    if request.method == "POST":
+        form = PasswordResetForm(request.POST)
+        form.fields['email'].queryset = person_list
+
+        if form.is_valid():
+            opts = {}
+            opts['use_https'] = request.is_secure()
+            opts['token_generator'] = default_token_generator
+            opts['email_template_name'] = 'registration/password_reset_email.html'
+            opts['domain_override'] = settings.ACCOUNTS_ORG_NAME
+            form.save(**opts)
+            return HttpResponseRedirect(post_reset_redirect)
+    else:
+        form = PasswordResetForm()
+        form.fields['email'].queryset = person_list
+
+    return render_to_response(
+        'registration/password_reset_form.html',
+        {'form': form,},
+        context_instance=RequestContext(request))
 
