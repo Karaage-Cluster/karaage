@@ -174,7 +174,7 @@ def choose_project(request, token=None):
             q_project = Project.active.get(pid__icontains=request.GET['leader_q'])
         except:
             pass
-        leader_list = Person.active.filter(institute=institute, leaders__isnull=False).distinct()
+        leader_list = Person.active.filter(institute=institute, leaders__is_active=True).distinct()
         terms = request.GET['leader_q'].lower()
         length = len(terms)
         if len(terms) >= 3:
