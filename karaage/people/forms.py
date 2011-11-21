@@ -18,7 +18,8 @@
 from django import forms
 from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.auth.models import User
-from django.conf import settings
+from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
+from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
 
 from andsome.middleware.threadlocals import get_current_user
 from andsome.util import is_password_strong
@@ -54,7 +55,7 @@ class PersonForm(forms.Form):
         person.title = data['title']
         person.position = data['position']
         person.supervisor = data['supervisor']
-        person.department =data['department']
+        person.department = data['department']
         person.telephone = data['telephone']
         person.mobile = data['mobile']
         person.fax = data['fax']
@@ -73,7 +74,7 @@ class AdminPersonForm(PersonForm):
     is_superuser = forms.BooleanField(help_text="Designates that this user has all permissions without explicitly assigning them.", required=False)
     is_systemuser = forms.BooleanField(help_text="Designates that this user is a sytem user only.", required=False)
 
-    def save(self, person):    
+    def save(self, person):
         data = self.cleaned_data
 
         person.first_name = data['first_name']
@@ -82,7 +83,7 @@ class AdminPersonForm(PersonForm):
         person.title = data['title']
         person.position = data['position']
         person.supervisor = data['supervisor']
-        person.department =data['department']
+        person.department = data['department']
         person.institute = data['institute']
         person.telephone = data['telephone']
         person.mobile = data['mobile']
@@ -112,7 +113,6 @@ class UsernamePasswordForm(forms.Form):
             raise forms.ValidationError(e.message)
             
         return username
-    
     
     def clean_password2(self):
         data = self.cleaned_data
@@ -161,13 +161,12 @@ class AdminPasswordChangeForm(forms.Form):
             if data['new1'] != data['new2']:
                 raise forms.ValidationError(u'You must type the same password each time')
             if not is_password_strong(data['new1'], data.get('old', None)):
-                raise forms.ValidationError(u'Passwords must be at least 6 characters and contain at least one digit')
+                raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (upercase, lowercase), numbers and is at least 8 characters long.')
             return data
 
-    def save(self, person):        
+    def save(self, person):
         data = self.cleaned_data
         person.set_password(data['new1'])
-
 
 
 class PasswordChangeForm(AdminPasswordChangeForm):
@@ -189,7 +188,6 @@ class LoginForm(forms.Form):
     password = forms.CharField(label="Password", widget=forms.PasswordInput)
 
 
-from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 class SetPasswordForm(BaseSetPasswordForm):
     
     def clean_new_password1(self):
@@ -200,14 +198,12 @@ class SetPasswordForm(BaseSetPasswordForm):
                         
         return password1
 
-
     def save(self, commit=True):
         person = self.user.get_profile()
         person.set_password(self.cleaned_data['new_password1'])
         return self.user
 
 
-from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
 class PasswordResetForm(BasePasswordResetForm):
 
     email = forms.ModelChoiceField(queryset=Person.active.all(), label="Select person")
@@ -219,6 +215,6 @@ class PasswordResetForm(BasePasswordResetForm):
             is_active=True
         )
         if len(self.users_cache) == 0:
-            raise forms.ValidationError(_("That e-mail address doesn't have an associated user account. Are you sure you've registered?"))
+            raise forms.ValidationError("That e-mail address doesn't have an associated user account. Are you sure you've registered?")
         
         return email
