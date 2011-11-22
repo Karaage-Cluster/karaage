@@ -38,7 +38,7 @@ class SoftwareCategory(models.Model):
 
 class SoftwarePackage(models.Model):
     category = models.ForeignKey(SoftwareCategory, blank=True, null=True)
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True)
     description = models.TextField(blank=True, null=True)
     gid = models.IntegerField(blank=True, null=True, editable=False)
     homepage = models.URLField(blank=True, null=True)
@@ -138,4 +138,3 @@ class SoftwareAccessRequest(models.Model):
     class Meta:
         db_table = 'software_access_request'
         get_latest_by = 'request_date'
-
