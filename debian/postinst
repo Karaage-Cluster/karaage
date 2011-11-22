@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/sh -e
 
-set -e
+. /usr/share/debconf/confmodule
 
 if [ "$1" = "configure" ]; then
     
@@ -12,7 +12,18 @@ if [ "$1" = "configure" ]; then
     fi
 fi
 
-
+if [ -x /usr/sbin/kg-manage ]
+then
+    if /usr/sbin/kg-manage migrate --list | grep -q "( )"
+    then     
+        db_get karaage/run_migrations
+        if [ "$RET" = "true" ]; then
+            echo "Running migrations"
+            /usr/sbin/kg-manage migrate
+        fi
+    fi
+fi
+db_fset karaage/run_migrations seen "false"
 
 #DEBHELPER#
 

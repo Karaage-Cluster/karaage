@@ -1,0 +1,21 @@
+#!/bin/sh -e
+
+. /usr/share/debconf/confmodule
+
+if [ -x /usr/sbin/kg-manage ]
+then
+    if /usr/sbin/kg-manage migrate --list | grep -q "( )"
+    then
+        db_input high karaage/run_migrations || true
+        db_go
+        
+        db_get karaage/run_migrations
+        if [ "$RET" = "false" ]; then
+            db_input high karaage/no_migrations || true
+            db_go
+        fi
+    fi
+fi
+
+
+
