@@ -23,7 +23,6 @@ from django.contrib.auth.decorators import login_required
 from karaage.people.models import Institute
 
 
-
 @login_required
 def institute_users_list(request, institute_id):
 
@@ -48,4 +47,3 @@ def institute_projects_list(request, institute_id):
     project_list = institute.project_set.select_related()
 
     return render_to_response('institutes/institute_projects_list.html', locals(), context_instance=RequestContext(request))
-

@@ -20,9 +20,10 @@ from placard.exceptions import DoesNotExistException
 
 from karaage.datastores.software import base
 
+
 class SoftwareDataStore(base.SoftwareDataStore):
     
-    def create_software(self, software):  
+    def create_software(self, software):
         conn = LDAPClient()
         if software.gid:
             try:
@@ -32,7 +33,7 @@ class SoftwareDataStore(base.SoftwareDataStore):
                 gid = conn.add_group(cn=str(software.name.lower().replace(' ', '')), gidNumber=str(software.gid))
         else:
             if not software.restricted and software.softwarelicense_set.count() == 0:
-                return None     
+                return None
             try:
                 lgroup = conn.get_group("cn=%s" % str(software.name.lower().replace(' ', '')))
                 gid = int(lgroup.gidNumber)
@@ -60,7 +61,6 @@ class SoftwareDataStore(base.SoftwareDataStore):
         conn.remove_group_member('gidNumber=%s' % software.gid, str(person.username))
         del(conn)
 
-        
     def get_members(self, software):
         conn = LDAPClient()
         try:

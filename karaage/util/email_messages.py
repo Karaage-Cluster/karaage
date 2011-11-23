@@ -24,17 +24,16 @@ from django.core.mail import EmailMessage
 from django.contrib.sites.models import Site
 from django.template.loader import render_to_string
 from django.conf import settings
-from django.core.urlresolvers import reverse
 
 from andsome.middleware.threadlocals import get_current_user
 
 from karaage.util import log_object as log
 
-
 CONTEXT = {
     'org_email': settings.ACCOUNTS_EMAIL,
     'org_name': settings.ACCOUNTS_ORG_NAME,
     }
+
 
 def send_mail(subject, message, from_email, recipient_list):
     headers = {
@@ -47,7 +46,6 @@ def send_mail(subject, message, from_email, recipient_list):
     return email.send()
 
 
-
 def send_bounced_warning(person):
     """Sends an email to each project leader for person
     informing them that person's email has bounced"""
@@ -58,12 +56,12 @@ def send_bounced_warning(person):
         if project.is_active:
             context['project'] = project
             for leader in project.leaders.all():
-                context['receiver'] =  leader
+                context['receiver'] = leader
 
                 to_email = leader.email
                 subject = render_to_string('requests/emails/bounced_email_subject.txt', context)
                 body = render_to_string('requests/emails/bounced_email_body.txt', context)
-                send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email])
+                send_mail(subject.replace('\n', ''), body, settings.ACCOUNTS_EMAIL, [to_email])
                 active_user = get_current_user()
                 log(active_user, leader, 2, 'Sent email about bounced emails from %s' % person)
 
@@ -75,11 +73,11 @@ def send_software_request_email(software_request):
     context['requester'] = software_request.person
     context['software'] = software_request.software_license.package
 
-    to_email = settings.ACCOUNTS_EMAIL      
+    to_email = settings.ACCOUNTS_EMAIL
     subject = render_to_string('software/softwarerequest_email_subject.txt', context)
     body = render_to_string('software/softwarerequest_email_body.txt', context)
 
-    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email])
+    send_mail(subject.replace('\n', ''), body, settings.ACCOUNTS_EMAIL, [to_email])
     
 
 def send_software_request_approved_email(software_request):
@@ -89,12 +87,8 @@ def send_software_request_approved_email(software_request):
     context['receiver'] = software_request.person
     context['software'] = software_request.software_license.package
 
-    to_email = software_request.person.email   
+    to_email = software_request.person.email
     subject = render_to_string('software/softwarerequest_approved_email_subject.txt', context)
     body = render_to_string('software/softwarerequest_approved_email_body.txt', context)
 
-    send_mail(subject.replace('\n',''), body, settings.ACCOUNTS_EMAIL, [to_email])
-    
-
-    
-    
+    send_mail(subject.replace('\n', ''), body, settings.ACCOUNTS_EMAIL, [to_email])

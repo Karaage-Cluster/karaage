@@ -35,6 +35,7 @@ from karaage.people.models import Person
 from karaage.projects.models import Project
 from karaage.applications.saml import SAMLInstituteForm
 
+
 @login_required
 def admin_index(request):
     newest_users = Person.objects.order_by('-date_approved', '-id').filter(date_approved__isnull=False).select_related()[:5]
@@ -60,11 +61,10 @@ def search(request):
         if term_list[0] == "":
             return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
-        
         # users
         query = Q()
         for term in term_list:
-            q = Q(user__username__icontains=term) | Q(user__first_name__icontains=term) | Q(user__last_name__icontains=term) | Q(user__email__icontains=term)  
+            q = Q(user__username__icontains=term) | Q(user__first_name__icontains=term) | Q(user__last_name__icontains=term) | Q(user__email__icontains=term)
             query = query & q
 
         user_list = user_list.filter(query).distinct()
@@ -72,7 +72,7 @@ def search(request):
          # projects
         query = Q()
         for term in term_list:
-            q = Q(pid__icontains=term) | Q(name__icontains=term) | Q(leaders__user__username__icontains=term) | Q(leaders__user__first_name__icontains=term) | Q(leaders__user__last_name__icontains=term) 
+            q = Q(pid__icontains=term) | Q(name__icontains=term) | Q(leaders__user__username__icontains=term) | Q(leaders__user__first_name__icontains=term) | Q(leaders__user__last_name__icontains=term)
             query = query & q
 
         project_list = project_list.filter(query).distinct()
@@ -138,12 +138,6 @@ def add_comment(request, object_id, model):
     return render_to_response('comments/add_comment.html', locals(), context_instance=RequestContext(request))
     
 
-@login_required
-def meta(request):    
-    meta_data = request.META.items()
-    return render_to_response('meta.html', {'meta': metadata}, context_instance=RequestContext(request))
-
-
 def saml_login(request):
 
     redirect_to = request.REQUEST.get('next', '')
@@ -159,5 +153,3 @@ def saml_login(request):
         form = SAMLInstituteForm()
 
     return render_to_response('saml_login.html', {'samlform': form}, context_instance=RequestContext(request))
-
-

@@ -20,6 +20,7 @@ import datetime
 
 MC_CACHE = {}
 
+
 class MachineCategoryManager(models.Manager):
     def get_default(self):
         from django.conf import settings
@@ -35,6 +36,7 @@ class MachineCategoryManager(models.Manager):
     def clear_cache(self):
         global MC_CACHE
         MC_CACHE = {}
+
 
 class ActiveMachineManager(models.Manager):
     def get_query_set(self):

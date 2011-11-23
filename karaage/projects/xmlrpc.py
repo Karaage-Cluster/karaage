@@ -36,6 +36,7 @@ def get_project_members(user, project_id):
         
     return [x.user.username for x in project.users.all()]
 
+
 @xmlrpc_func(returns='list')
 @permission_required(perm='projects.change_project')
 def get_projects(user):
@@ -53,7 +54,7 @@ def get_project(username, proj=None):
     """
     
     try:
-        user_account = UserAccount.objects.get(username=username,machine_category=MachineCategory.objects.get_default())
+        user_account = UserAccount.objects.get(username=username, machine_category=MachineCategory.objects.get_default())
     except UserAccount.DoesNotExist:
         return "User '%s' not found" % username
     if proj is None:

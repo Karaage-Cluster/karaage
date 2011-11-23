@@ -7,9 +7,11 @@ from karaage.validators import username_re
 
 class UsernameException(Exception):
     pass
-    
+
+
 class UsernameInvalid(UsernameException):
     pass
+
 
 class UsernameTaken(UsernameException):
     pass

@@ -25,5 +25,3 @@ class InstituteDataStore(base.InstituteDataStore):
 
     def delete_institute(self, institute):
         pass
-
-

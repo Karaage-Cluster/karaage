@@ -32,7 +32,6 @@ from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareV
 from karaage.software.forms import AddPackageForm, LicenseForm, SoftwareVersionForm
 from karaage.people.models import Person
 from karaage.machines.models import Machine
-from karaage.usage.models import CPUJob
 from karaage.util import get_date_range, log_object as log
 from karaage.util.email_messages import send_software_request_approved_email
 
@@ -41,20 +40,20 @@ def software_list(request):
     software_list = SoftwarePackage.objects.all()
     page_no = int(request.GET.get('page', 1))
 
-    if request.REQUEST.has_key('category'):
+    if 'category' in request.REQUEST:
         software_list = software_list.filter(category=int(request.GET['category']))
-    if request.REQUEST.has_key('machine'):
+    if 'machine' in request.REQUEST:
         software_list = software_list.filter(softwareversion__machines=int(request.GET['machine']))
 
     params = dict(request.GET.items())
     m_params = dict([(str(k), str(v)) for k, v in params.items() if k.startswith('softwareversion__last_used_')])
     software_list = software_list.filter(**m_params).distinct()
         
-    if request.REQUEST.has_key('search'):
+    if 'search' in request.REQUEST:
         terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
-            q = Q(name__icontains=term) | Q(description__icontains=term) | Q(gid__icontains=term) | Q(homepage__icontains=term) 
+            q = Q(name__icontains=term) | Q(description__icontains=term) | Q(gid__icontains=term) | Q(homepage__icontains=term)
             query = query & q
         
         software_list = software_list.filter(query)
@@ -118,7 +117,7 @@ def add_package(request):
             return HttpResponseRedirect(package.get_absolute_url())
     else:
         form = AddPackageForm()
-        
+
     return render_to_response('software/add_package_form.html', locals(), context_instance=RequestContext(request))
 
 
@@ -189,8 +188,8 @@ def add_edit_version(request, package_id, version_id=None):
 
 
 def category_list(request):
-    category_list = SoftwareCategory.objects.all()   
-    return render_to_response('software/category_list.html', locals(), context_instance=RequestContext(request))
+    category_list = SoftwareCategory.objects.all()
+    return render_to_response('software/category_list.html', {'category_list': category_list}, context_instance=RequestContext(request))
     
 
 @permission_required('software.change_softwarepackage')
@@ -213,10 +212,10 @@ def remove_member(request, package_id, user_id):
 @permission_required('software.change_softwareaccessrequest')
 def softwarerequest_list(request):
     page_no = int(request.GET.get('page', 1))
-    softwarerequest_list = SoftwareAccessRequest.objects.all()  
+    softwarerequest_list = SoftwareAccessRequest.objects.all()
     p = Paginator(softwarerequest_list, 50)
     page = p.page(page_no)
-    return render_to_response('software/request_list.html', {'softwarerequest_list': softwarerequest_list, 'page': page,}, context_instance=RequestContext(request))
+    return render_to_response('software/request_list.html', {'softwarerequest_list': softwarerequest_list, 'page': page}, context_instance=RequestContext(request))
     
 
 @permission_required('software.change_softwareaccessrequest')
@@ -239,7 +238,7 @@ def softwarerequest_approve(request, softwarerequest_id):
         softwarerequest.delete()
         return HttpResponseRedirect(reverse('kg_softwarerequest_list'))
 
-    return render_to_response('software/request_approve.html', {'softwarerequest': softwarerequest,}, context_instance=RequestContext(request))
+    return render_to_response('software/request_approve.html', {'softwarerequest': softwarerequest}, context_instance=RequestContext(request))
 
 
 @permission_required('software.change_softwareaccessrequest')
@@ -252,7 +251,7 @@ def softwarerequest_delete(request, softwarerequest_id):
         messages.success(request, "Software request deleted successfully")
         return HttpResponseRedirect(reverse('kg_softwarerequest_list'))
 
-    return render_to_response('software/request_delete.html', {'softwarerequest': softwarerequest,}, context_instance=RequestContext(request))
+    return render_to_response('software/request_delete.html', {'softwarerequest': softwarerequest}, context_instance=RequestContext(request))
 
 
 def software_stats(request, package_id):

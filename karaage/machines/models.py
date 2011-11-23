@@ -23,7 +23,6 @@ from karaage.people.models import Person
 from karaage.machines.managers import MachineCategoryManager, ActiveMachineManager, MC_CACHE
 
 
-
 class MachineCategory(models.Model):
     OPENLDAP = 'karaage.datastores.openldap_datastore'
     DS_LDAP = 'karaage.datastores.ldap_datastore'
@@ -91,7 +90,7 @@ class Machine(models.Model):
     def get_absolute_url(self):
         return ('kg_machine_detail', [self.id])
 
-    def get_usage(self, start=datetime.date.today()-datetime.timedelta(days=90), end=datetime.date.today()):
+    def get_usage(self, start=datetime.date.today() - datetime.timedelta(days=90), end=datetime.date.today()):
         from karaage.util.usage import get_machine_usage
         return get_machine_usage(self, start, end)
 
@@ -143,4 +142,3 @@ class UserAccount(models.Model):
     def loginShell(self):
         from karaage.datastores import get_shell
         return get_shell(self)
-

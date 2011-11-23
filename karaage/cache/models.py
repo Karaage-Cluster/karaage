@@ -17,8 +17,6 @@
 
 from django.db import models
 
-import datetime
-
 from karaage.people.models import Institute, Person
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory, Machine
@@ -42,7 +40,7 @@ class InstituteCache(UsageCache):
 
 class ProjectCache(UsageCache):
     pid = models.ForeignKey(Project)
-    machine_category = models.ForeignKey(MachineCategory) 
+    machine_category = models.ForeignKey(MachineCategory)
 
 
 class UserCache(UsageCache):
@@ -52,5 +50,3 @@ class UserCache(UsageCache):
 
 class MachineCache(UsageCache):
     machine = models.ForeignKey(Machine)
-    
-

@@ -23,7 +23,7 @@ from karaage.people.models import Institute
 
 
 def add_saml_data(applicant, request):
-    attrs, error = parse_attributes(request.META)   
+    attrs, error = parse_attributes(request.META)
     applicant.first_name = attrs['first_name']
     applicant.last_name = attrs['last_name']
     applicant.email = attrs['email']
@@ -38,6 +38,7 @@ class SAMLUser:
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
             setattr(self, k, v)
+
 
 def get_saml_user(request):
     attrs, error = parse_attributes(request.META)

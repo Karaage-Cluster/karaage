@@ -17,7 +17,6 @@
 
 from django import forms
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.db.models import Q
 
 from andsome.util import is_password_strong
@@ -33,11 +32,14 @@ APP_CHOICES = (
     ('P', 'Apply to start a new project'),
 )
 
+
 class StartInviteApplicationForm(forms.Form):
     institute = forms.ModelChoiceField(queryset=Institute.active.all())
 
+
 class StartApplicationForm(StartInviteApplicationForm):
     application_type = forms.ChoiceField(choices=APP_CHOICES, widget=forms.RadioSelect())
+
 
 class ApplicantForm(forms.ModelForm):
     class Meta:
@@ -65,7 +67,7 @@ class UserApplicantForm(ApplicantForm):
         self.fields['institute'].required = True
 
     password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
-    password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)') 
+    password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)')
     institute = forms.ModelChoiceField(queryset=Institute.active.filter(Q(saml_entityid="") | Q(saml_entityid__isnull=True)))
     
     def clean_password2(self):
@@ -90,7 +92,7 @@ class UserApplicantForm(ApplicantForm):
 
 
 class UserApplicationForm(forms.ModelForm):
-    aup = forms.BooleanField(label=u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>' % settings.AUP_URL, 
+    aup = forms.BooleanField(label=u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>' % settings.AUP_URL,
                              error_messages={'required': 'You must accept to proceed.'})
 
     def __init__(self, *args, **kwargs):
@@ -105,13 +107,12 @@ class UserApplicationForm(forms.ModelForm):
 
 
 class ProjectApplicationForm(forms.ModelForm):
-    name = forms.CharField(label="Project Title", widget=forms.TextInput(attrs={ 'size':60 }))
-    description = forms.CharField(max_length=1000, widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }))
-    additional_req = forms.CharField(label="Additional requirements", widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), help_text=u"Do you have any special requirements?", required=False)
-    aup = forms.BooleanField(label=u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>' % settings.AUP_URL, 
+    name = forms.CharField(label="Project Title", widget=forms.TextInput(attrs={'size': 60}))
+    description = forms.CharField(max_length=1000, widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}))
+    additional_req = forms.CharField(label="Additional requirements", widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), help_text=u"Do you have any special requirements?", required=False)
+    aup = forms.BooleanField(label=u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>' % settings.AUP_URL,
                              error_messages={'required': 'You must accept to proceed.'})
 
-    
     def __init__(self, *args, **kwargs):
         captcha = kwargs.pop('captcha', False)
         super(ProjectApplicationForm, self).__init__(*args, **kwargs)
@@ -121,6 +122,7 @@ class ProjectApplicationForm(forms.ModelForm):
     class Meta:
         model = ProjectApplication
         exclude = ['submitted_date', 'state', 'content_type', 'object_id']
+
 
 class LeaderInviteUserApplicationForm(forms.ModelForm):
     email = forms.EmailField()
@@ -150,14 +152,13 @@ class AdminInviteUserApplicationForm(LeaderInviteUserApplicationForm):
     def __init__(self, *args, **kwargs):
         super(AdminInviteUserApplicationForm, self).__init__(*args, **kwargs)
         self.fields['project'].required = True
-            
 
 
 class LeaderApproveUserApplicationForm(forms.ModelForm):
 
     class Meta:
         model = UserApplication
-        fields = ['make_leader', 'needs_account',]
+        fields = ['make_leader', 'needs_account']
 
     def __init__(self, *args, **kwargs):
         super(LeaderApproveUserApplicationForm, self).__init__(*args, **kwargs)
@@ -169,7 +170,7 @@ class ApproveProjectApplicationForm(forms.ModelForm):
 
     class Meta:
         model = ProjectApplication
-        fields = ['needs_account',]
+        fields = ['needs_account']
 
     def __init__(self, *args, **kwargs):
         super(ApproveProjectApplicationForm, self).__init__(*args, **kwargs)

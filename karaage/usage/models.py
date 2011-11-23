@@ -35,7 +35,7 @@ class Queue(models.Model):
 
 class CPUJob(models.Model):
     user = models.ForeignKey(UserAccount, blank=True, null=True)
-    username = models.CharField(max_length=50, blank=True, null=True) 
+    username = models.CharField(max_length=50, blank=True, null=True)
     project = models.ForeignKey(Project, blank=True, null=True)
     machine = models.ForeignKey(Machine, blank=True, null=True)
     date = models.DateField(db_index=True, blank=True, null=True)

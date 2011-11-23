@@ -19,17 +19,18 @@ from django.contrib import admin
 
 from karaage.people.models import Institute, Person, InstituteDelegate
 
+
 class InstituteAdmin(admin.ModelAdmin):
-    list_display = ('name','gid',)
-    search_fields = ['name',]
+    list_display = ('name', 'gid')
+    search_fields = ['name']
 
-admin.site.register(Institute, InstituteAdmin)
-
-admin.site.register(InstituteDelegate)
 
 class PersonAdmin(admin.ModelAdmin):
-    list_display = ('username', 'get_full_name','email', 'is_active','last_usage')
-    search_fields = ['user__first_name', 'user__last_name','comment','user__username','user__email','mobile', 'position']
+    list_display = ('username', 'get_full_name', 'email', 'is_active', 'last_usage')
+    search_fields = ['user__first_name', 'user__last_name', 'comment', 'user__username', 'user__email', 'mobile', 'position']
     list_filter = ['institute']
 
+
 admin.site.register(Person, PersonAdmin)
+admin.site.register(Institute, InstituteAdmin)
+admin.site.register(InstituteDelegate)

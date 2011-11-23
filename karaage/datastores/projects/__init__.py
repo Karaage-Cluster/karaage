@@ -18,13 +18,12 @@
 from django.conf import settings
 
 module = __import__(settings.PROJECT_DATASTORE, {}, {}, [''])
-
 pds = module.ProjectDataStore()
 
 
 def create_or_update_project(project):
     return pds.create_or_update_project(project)
 
+
 def delete_project(project):
     return pds.delete_project(project)
-

@@ -37,6 +37,3 @@ class SoftwareDataStore(base.SoftwareDataStore):
 
     def get_name(self, software):
         pass
-
-
-

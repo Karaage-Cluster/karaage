@@ -25,15 +25,15 @@ from karaage.people.models import Person
 from karaage.machines.models import UserAccount
 from karaage.util import log_object as log
 
-class PersonalDataStore(object):
 
+class PersonalDataStore(object):
 
     def create_new_user(self, data, hashed_password=None):
         """Creates a new user (not active)
 
         Keyword arguments:
         data -- a dictonary of user data
-        hashed_password -- 
+        hashed_password --
     
         """
         # Make sure username isn't taken in Datastore
@@ -51,18 +51,18 @@ class PersonalDataStore(object):
     
         #Create Person
         person = Person.objects.create(
-            user=user, 
+            user=user,
             first_name=data['first_name'],
             last_name=data['last_name'],
             institute=data['institute'],
             position=data.get('position', ''),
             department=data.get('department', ''),
-            title=data.get('title', ''), 
+            title=data.get('title', ''),
             address=data.get('address', ''),
             country=data.get('country', ''),
-            website=data.get('website', ''), 
+            website=data.get('website', ''),
             fax=data.get('fax', ''),
-            comment=data.get('comment', ''), 
+            comment=data.get('comment', ''),
             telephone=data.get('telephone', ''),
             mobile=data.get('mobile', ''),
             supervisor=data.get('supervisor', ''),
@@ -92,19 +92,18 @@ class PersonalDataStore(object):
             'institute': applicant.institute,
             'department': applicant.department,
             'position': applicant.position,
-            'telephone':applicant.telephone,
+            'telephone': applicant.telephone,
             'mobile': applicant.mobile,
             'supervisor': applicant.supervisor,
             'address': applicant.address,
             'city': applicant.city,
             'postcode': applicant.postcode,
             'country': applicant.country,
-            'fax':  applicant.fax,
+            'fax': applicant.fax,
             'saml_id': applicant.saml_id,
             }
         
         return create_new_user(data, hashed_password=applicant.password)
-
 
     def activate_user(self, person):
         """ Activates a user """
@@ -127,7 +126,6 @@ class PersonalDataStore(object):
 
         return person
         
-
     def delete_user(self, person):
         """ Sets Person not active and deletes all UserAccounts"""
         person.user.is_active = False
@@ -145,8 +143,7 @@ class PersonalDataStore(object):
         for ua in person.useraccount_set.filter(date_deleted__isnull=True):
             delete_account(ua)
 
-        log(deletor, person, 3, 'Deleted')    
-
+        log(deletor, person, 3, 'Deleted')
 
     def update_user(self, person):
         from karaage.datastores import update_account
@@ -163,13 +160,11 @@ class PersonalDataStore(object):
         for ua in person.useraccount_set.filter(date_deleted__isnull=True):
             lock_account(ua)
 
-
     def unlock_user(self, person):
         from karaage.datastores import unlock_account
 
         for ua in person.useraccount_set.filter(date_deleted__isnull=True):
             unlock_account(ua)
-
 
     def set_password(self, person, raw_password):
         pass
@@ -196,7 +191,7 @@ class AccountDataStore(object):
         person_id -- Person id
         project_id -- Project id
         
-        """   
+        """
         ua = UserAccount.objects.create(
             user=person, username=person.username,
             machine_category=self.machine_category,
@@ -211,8 +206,7 @@ class AccountDataStore(object):
 
         return ua
 
-
-    def delete_account(self, ua):       
+    def delete_account(self, ua):
         if not ua.date_deleted:
             ua.date_deleted = datetime.datetime.now()
             ua.save()
@@ -242,4 +236,3 @@ class AccountDataStore(object):
         from karaage.datastores import get_shell
         ua.previous_shell = get_shell(ua)
         ua.save()
-

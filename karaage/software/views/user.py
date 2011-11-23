@@ -28,6 +28,7 @@ import datetime
 from karaage.software.models import SoftwarePackage, SoftwareLicenseAgreement, SoftwareAccessRequest
 from karaage.util.email_messages import send_software_request_email
 
+
 @login_required
 def add_package_list(request):
     
@@ -53,7 +54,7 @@ def add_package_list(request):
 def add_package(request, package_id):
 
     package = get_object_or_404(SoftwarePackage, pk=package_id)
-    software_license = package.get_current_license()    
+    software_license = package.get_current_license()
     person = request.user.get_profile()
 
     if software_license is None:

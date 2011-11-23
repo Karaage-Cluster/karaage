@@ -2,6 +2,7 @@ from django.contrib.auth.backends import ModelBackend
 
 from karaage.people.models import Person
 
+
 class SamlUserBackend(ModelBackend):
     """
     This backend is to be used in conjunction with the ``RemoteUserMiddleware``
@@ -13,7 +14,6 @@ class SamlUserBackend(ModelBackend):
     this behavior by setting the ``create_unknown_user`` attribute to
     ``False``.
     """
-
 
     def authenticate(self, saml_user):
         """

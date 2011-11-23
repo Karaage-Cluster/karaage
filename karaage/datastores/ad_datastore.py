@@ -16,14 +16,12 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf import settings
-from django.contrib.auth.models import User
 
 from placard.client import LDAPClient
 from placard.exceptions import DoesNotExistException
 
-from karaage.people.models import Person
 from karaage.datastores import base
-from karaage.util import log_object as log
+
 
 class PersonalDataStore(base.PersonalDataStore):
     
@@ -46,7 +44,7 @@ class PersonalDataStore(base.PersonalDataStore):
         # Set password then unlock account
         if person.user.password != '!':
             import ldap
-            mod_attrs = [( ldap.MOD_REPLACE, 'unicodePwd', str(person.user.password)),( ldap.MOD_REPLACE, 'unicodePwd', str(person.user.password))]
+            mod_attrs = [(ldap.MOD_REPLACE, 'unicodePwd', str(person.user.password)), (ldap.MOD_REPLACE, 'unicodePwd', str(person.user.password))]
             conn.conn.modify_s(dn, mod_attrs)
             conn.update_user('sAMAccountName=%s' % str(person.username), userAccountControl=512)
             
@@ -126,10 +124,11 @@ class PersonalDataStore(base.PersonalDataStore):
         conn.change_uid('uid=%s' % person.user.username, new_username)
         del(conn)
 
+
 class AccountDataStore(base.AccountDataStore):
 
     def create_account(self, person, default_project):
-        ua = super(AccountDataStore, self).create_account(person, default_project)          
+        ua = super(AccountDataStore, self).create_account(person, default_project)
         conn = LDAPClient()
       
         ldap_attrs = __import__(settings.LDAP_ATTRS, {}, {}, [''])
@@ -188,7 +187,6 @@ class AccountDataStore(base.AccountDataStore):
             )
         del(conn)
       
-      
     def lock_account(self, ua):
         super(AccountDataStore, self).lock_account(ua)
         
@@ -203,5 +201,5 @@ class AccountDataStore(base.AccountDataStore):
 
     def change_shell(self, ua, shell):
         super(AccountDataStore, self).change_shell(ua, shell)
-        conn =  LDAPClient()
+        conn = LDAPClient()
         conn.update_user('sAMAccountName=%s' % ua.username, loginShell=str(shell))

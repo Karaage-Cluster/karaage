@@ -24,6 +24,7 @@ from django.db.models import signals
 from django.contrib.sites.models import Site
 from django.contrib.sites import models as site_app
 
+
 def create_secondary_site(app, created_models, verbosity, db, **kwargs):
     if Site in created_models:
         if verbosity >= 2:

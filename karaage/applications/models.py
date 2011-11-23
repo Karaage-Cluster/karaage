@@ -72,7 +72,6 @@ class Application(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            import datetime
             if get_current_user() and get_current_user().is_authenticated():
                 self.created_by = get_current_user().get_profile()
             self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
@@ -89,7 +88,6 @@ class Application(models.Model):
             if self.applicant.applications.count() <= 1:
                 self.applicant.delete()
         super(Application, self).delete()
-
 
     def get_object(self):
         try:
@@ -207,4 +205,3 @@ class Applicant(models.Model):
             application.save()
         self.delete()
         return person
-        

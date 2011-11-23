@@ -40,8 +40,7 @@ from karaage.datastores import create_password_hash
 from karaage.util import log_object as log
 
 
-
-def do_userapplication(request, token=None, saml=False, 
+def do_userapplication(request, token=None, saml=False,
                        application_form=UserApplicationForm):
     if request.user.is_authenticated():
         messages.warning(request, "You are already logged in")
@@ -55,12 +54,12 @@ def do_userapplication(request, token=None, saml=False,
     if token:
         try:
             application = UserApplication.objects.get(
-                                        secret_token=token, 
+                                        secret_token=token,
                                         state__in=[Application.NEW, Application.OPEN],
                                         expires__gt=datetime.datetime.now())
         except UserApplication.DoesNotExist:
             return render_to_response('applications/old_userapplication.html',
-                                        {'help_email': settings.ACCOUNTS_EMAIL,},
+                                        {'help_email': settings.ACCOUNTS_EMAIL},
                                         context_instance=RequestContext(request))
         applicant = application.applicant
         application.state = Application.OPEN
@@ -68,7 +67,7 @@ def do_userapplication(request, token=None, saml=False,
         captcha = False
     else:
         if not settings.ALLOW_REGISTRATIONS:
-            return render_to_response('applications/registrations_disabled.html', {}, context_instance=RequestContext(request)) 
+            return render_to_response('applications/registrations_disabled.html', {}, context_instance=RequestContext(request))
         application = UserApplication()
         applicant = None
         captcha = True
@@ -106,23 +105,23 @@ def do_userapplication(request, token=None, saml=False,
             application.state = Application.WAITING_FOR_LEADER
             application.save()
             send_account_request_email(application)
-            return HttpResponseRedirect(reverse('kg_application_done',  args=[application.secret_token]))
+            return HttpResponseRedirect(reverse('kg_application_done', args=[application.secret_token]))
     else:
         form = application_form(instance=application, captcha=captcha)
         if saml:
             applicant_form = SAMLApplicantForm(instance=applicant)
         else:
             applicant_form = UserApplicantForm(instance=applicant, initial={'institute': init_institute})
-    return render_to_response('applications/userapplication_form.html', 
-                              {'form': form, 'applicant_form': applicant_form, 'application': application, 
-                               'saml': saml, 'saml_user': saml_user, }, 
-                              context_instance=RequestContext(request)) 
+    return render_to_response('applications/userapplication_form.html',
+                              {'form': form, 'applicant_form': applicant_form, 'application': application,
+                               'saml': saml, 'saml_user': saml_user, },
+                              context_instance=RequestContext(request))
 
 
 def existing_user_application(request, token):
     
-    application = get_object_or_404(UserApplication, 
-                                    secret_token=token, 
+    application = get_object_or_404(UserApplication,
+                                    secret_token=token,
                                     state__in=[Application.NEW, Application.OPEN],
                                     expires__gt=datetime.datetime.now())
 
@@ -131,9 +130,9 @@ def existing_user_application(request, token):
         application.state = Application.WAITING_FOR_LEADER
         application.save()
         send_account_request_email(application)
-        return HttpResponseRedirect(reverse('kg_application_done',  args=[application.secret_token]))
+        return HttpResponseRedirect(reverse('kg_application_done', args=[application.secret_token]))
     
-    return render_to_response('applications/existing_user_confirm.html', {'application': application}, context_instance=RequestContext(request)) 
+    return render_to_response('applications/existing_user_confirm.html', {'application': application}, context_instance=RequestContext(request))
 
 
 def choose_project(request, token=None):
@@ -141,9 +140,9 @@ def choose_project(request, token=None):
         application = UserApplication()
         application.applicant = request.user.get_profile()
     else:
-        application = get_object_or_404(UserApplication, 
-                                        secret_token=token, 
-                                        state__in=[Application.NEW, Application.OPEN], 
+        application = get_object_or_404(UserApplication,
+                                        secret_token=token,
+                                        state__in=[Application.NEW, Application.OPEN],
                                         expires__gt=datetime.datetime.now())
 
     institute = application.applicant.institute
@@ -152,7 +151,7 @@ def choose_project(request, token=None):
     qs = request.META['QUERY_STRING']
 
     if request.method == 'POST':
-        if request.REQUEST.has_key('project'):
+        if 'project' in request.REQUEST:
             project = Project.objects.get(pk=request.POST['project'])
             application.project = project
             application.state = Application.WAITING_FOR_LEADER
@@ -161,14 +160,14 @@ def choose_project(request, token=None):
             application.save()
             send_account_request_email(application)
 
-            return HttpResponseRedirect(reverse('kg_application_done',  args=[application.secret_token]))
+            return HttpResponseRedirect(reverse('kg_application_done', args=[application.secret_token]))
         else:
             return HttpResponseRedirect('%s?%s&error=true' % (reverse('user_choose_project'), qs))
 
-    if request.REQUEST.has_key('error'):
+    if 'error' in request.REQUEST:
         project_error = True
     
-    if request.REQUEST.has_key('leader_q'):
+    if 'leader_q' in request.REQUEST:
         q_project = False
         try:
             q_project = Project.active.get(pid__icontains=request.GET['leader_q'])
@@ -180,7 +179,7 @@ def choose_project(request, token=None):
         if len(terms) >= 3:
             query = Q()
             for term in terms.split(' '):
-                q = Q(user__username__icontains=term) | Q(user__first_name__icontains=term) | Q(user__last_name__icontains=term) 
+                q = Q(user__username__icontains=term) | Q(user__first_name__icontains=term) | Q(user__last_name__icontains=term)
                 query = query & q
             leader_list = leader_list.filter(query)
             if leader_list.count() == 1:
@@ -192,7 +191,7 @@ def choose_project(request, token=None):
         else:
             term_error = "Please enter at lease three characters for search."
             leader_list = False
-    if request.REQUEST.has_key('leader'):
+    if 'leader' in request.REQUEST:
         leader = Person.objects.get(pk=request.GET['leader'])
         project_list = leader.leaders.filter(is_active=True)
 
@@ -209,7 +208,7 @@ def application_done(request, token):
     application = application.get_object()
     if application.state in (Application.NEW, Application.OPEN):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
-    return render_to_response('%s/%s_done.html' % (application._meta.app_label, application._meta.object_name.lower()), {'application': application }, context_instance=RequestContext(request))
+    return render_to_response('%s/%s_done.html' % (application._meta.app_label, application._meta.object_name.lower()), {'application': application}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -218,7 +217,7 @@ def approve_userapplication(request, application_id):
     if not request.user.get_profile() in application.project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     if application.state != Application.WAITING_FOR_LEADER:
-        return render_to_response('applications/unable_to_approve.html', {'application': application }, context_instance=RequestContext(request))
+        return render_to_response('applications/unable_to_approve.html', {'application': application}, context_instance=RequestContext(request))
 
     if request.method == 'POST':
         form = LeaderApproveUserApplicationForm(request.POST, instance=application)
@@ -248,7 +247,7 @@ def decline_userapplication(request, application_id):
     if not request.user.get_profile() in application.project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     if application.state != Application.WAITING_FOR_LEADER:
-        return render_to_response('applications/unable_to_approve.html', {'application': application }, context_instance=RequestContext(request))
+        return render_to_response('applications/unable_to_approve.html', {'application': application}, context_instance=RequestContext(request))
 
     if request.method == 'POST':
         form = EmailForm(request.POST)
@@ -256,16 +255,15 @@ def decline_userapplication(request, application_id):
             to_email = application.applicant.email
             subject, body = form.get_data()
             log(request.user, application.application_ptr, 3, "Application declined")
-            application.delete()        
+            application.delete()
             send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
             return HttpResponseRedirect(reverse('kg_user_profile'))
     else:
-        subject, body = render_email('account_declined', { 'receiver': application.applicant, 'project': application.project })
-        initial_data = {'body': body, 'subject': subject,}
+        subject, body = render_email('account_declined', {'receiver': application.applicant, 'project': application.project})
+        initial_data = {'body': body, 'subject': subject}
         form = EmailForm(initial=initial_data)
     
     return render_to_response('applications/confirm_decline.html', {'application': application, 'form': form}, context_instance=RequestContext(request))
-
 
 
 @login_required
@@ -275,12 +273,13 @@ def userapplication_detail(request, application_id):
     if not request.user.get_profile() in application.project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     if application.state != Application.WAITING_FOR_LEADER:
-        return render_to_response('applications/unable_to_approve.html', {'application': application }, context_instance=RequestContext(request))
+        return render_to_response('applications/unable_to_approve.html', {'application': application}, context_instance=RequestContext(request))
 
     if application.state != Application.WAITING_FOR_LEADER:
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     return render_to_response('applications/application_detail.html', {'application': application}, context_instance=RequestContext(request))
+
 
 @login_required
 def userapplication_complete(request, application_id):
@@ -288,9 +287,10 @@ def userapplication_complete(request, application_id):
     if application.state != Application.COMPLETE:
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     if not request.user.get_profile() in application.project.leaders.all():
-        return HttpResponseForbidden('<h1>Access Denied</h1>') 
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
     
     return render_to_response('applications/userapplication_complete.html', {'application': application}, context_instance=RequestContext(request))
+
 
 @login_required
 def userapplication_pending(request, application_id):
@@ -298,7 +298,7 @@ def userapplication_pending(request, application_id):
     if application.state != Application.WAITING_FOR_ADMIN:
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     if not request.user.get_profile() in application.project.leaders.all():
-        return HttpResponseForbidden('<h1>Access Denied</h1>') 
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     return render_to_response('applications/userapplication_pending.html', {'application': application}, context_instance=RequestContext(request))
 
@@ -347,9 +347,9 @@ def send_invitation(request, project_id):
                 existing = Person.active.get(user__email=email)
             except Person.DoesNotExist:
                 existing = False
-            if existing and not request.REQUEST.has_key('existing'):
-                return render_to_response('applications/userapplication_invite_existing.html', 
-                                          {'form': form, 'person': existing}, 
+            if existing and not 'existing' in request.REQUEST:
+                return render_to_response('applications/userapplication_invite_existing.html',
+                                          {'form': form, 'person': existing},
                                           context_instance=RequestContext(request))
             application = form.save(commit=False)
 
@@ -364,7 +364,7 @@ def send_invitation(request, project_id):
             if application.content_type.model == 'person':
                 application.approve()
                 send_account_approved_email(application)
-                messages.warning(request, "%s was added to project %s directly since they have an existing account." % 
+                messages.warning(request, "%s was added to project %s directly since they have an existing account." %
                               (application.applicant, application.project))
                 log(request.user, application.application_ptr, 1, "%s added directly to %s" % (applicant, project))
                 return HttpResponseRedirect(application.applicant.get_absolute_url())
@@ -377,9 +377,10 @@ def send_invitation(request, project_id):
     else:
         form = LeaderInviteUserApplicationForm(instance=application)
 
-    return render_to_response('applications/leaderuserapplication_invite_form.html', 
-                              {'form': form, 'application': application, 'project': project}, 
-                              context_instance=RequestContext(request)) 
+    return render_to_response('applications/leaderuserapplication_invite_form.html',
+                              {'form': form, 'application': application, 'project': project},
+                              context_instance=RequestContext(request))
+
 
 @login_required
 def pending_applications(request):
@@ -391,22 +392,21 @@ def pending_applications(request):
     projects_p = Paginator(project_applications, 50)
     page = p.page(page_no)
     projects_page = projects_p.page(page_no)
-    return render_to_response('applications/pending_application_list.html', 
+    return render_to_response('applications/pending_application_list.html',
                               {'user_applications': user_applications, 'page': page,
                                'project_applications': project_applications, 'projects_page': projects_page},
-                              context_instance=RequestContext(request)) 
-
+                              context_instance=RequestContext(request))
 
 
 def start_invite_application(request, token):
     try:
         application = Application.objects.get(
-            secret_token=token, 
+            secret_token=token,
             state__in=[Application.NEW, Application.OPEN],
             expires__gt=datetime.datetime.now())
     except Application.DoesNotExist:
         return render_to_response('applications/old_userapplication.html',
-                                  {'help_email': settings.ACCOUNTS_EMAIL,},
+                                  {'help_email': settings.ACCOUNTS_EMAIL},
                                   context_instance=RequestContext(request))
 
     if request.method == 'POST':
@@ -427,15 +427,15 @@ def start_invite_application(request, token):
     return render_to_response('applications/start_invite.html', {'form': form}, context_instance=RequestContext(request))
 
 
-def cancel(request, token):    
+def cancel(request, token):
     
-    application = get_object_or_404(Application,
-                                    secret_token=token, 
-                                    state__in=[Application.NEW, Application.OPEN],
-                                    expires__gt=datetime.datetime.now())
+    application = get_object_or_404(
+        Application,
+        secret_token=token,
+        state__in=[Application.NEW, Application.OPEN],
+        expires__gt=datetime.datetime.now())
     if request.method == 'POST':
         application.delete()
         return HttpResponseRedirect(reverse('index'))
 
     return render_to_response('applications/cancel.html', {'application': application}, context_instance=RequestContext(request))
-

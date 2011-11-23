@@ -16,7 +16,6 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf.urls.defaults import *
-from django.conf import settings
 from karaage.people.models import Person
 from karaage.people.forms import AddPersonForm
 

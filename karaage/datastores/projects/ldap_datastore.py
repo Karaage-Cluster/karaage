@@ -40,4 +40,3 @@ class ProjectDataStore(base.ProjectDataStore):
             conn.delete_group('cn=%s' % project.pid)
         except DoesNotExistException:
             pass
-

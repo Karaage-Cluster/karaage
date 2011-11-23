@@ -12,8 +12,8 @@ from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.models import Site, RequestSite
 
-## Backported Django1.3 login view as need extra_context
 
+## Backported Django1.3 login view as need extra_context
 @csrf_protect
 @never_cache
 def login(request, template_name='registration/login.html',

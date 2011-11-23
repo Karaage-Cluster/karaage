@@ -78,7 +78,7 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
         if time is None:
             time = 0
         if jobs > 0:
-            m_list.append({ 'machine': m, 'usage': time, 'jobs': jobs})
+            m_list.append({'machine': m, 'usage': time, 'jobs': jobs})
             
     for i in institute_list:
         time, jobs = i.get_usage(start, end, machine_category)
@@ -93,7 +93,7 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
         except InstituteChunk.DoesNotExist:
             display_quota = None
         if display_quota or jobs > 0:
-            data_row = { 'institute': i, 'usage': time, 'jobs': jobs, 'quota': display_quota}
+            data_row = {'institute': i, 'usage': time, 'jobs': jobs, 'quota': display_quota}
             try:
                 data_row['percent'] = Decimal(time) / Decimal(available_time) * 100
             except ZeroDivisionError:
@@ -113,9 +113,8 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
 
             i_list.append(data_row)
 
-
     # Unused Entry
-    unused = { 'usage': available_time - total, 'quota': 0 }
+    unused = {'usage': available_time - total, 'quota': 0}
     try:
         unused['percent'] = (unused['usage'] / available_time) * 100
     except ZeroDivisionError:
@@ -167,20 +166,20 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
                 mpots = chunk.get_mpots()
                 if mpots:
                     try:
-                        percent = (mpots/chunk.get_cap())*100
+                        percent = (mpots / chunk.get_cap()) * 100
                     except ZeroDivisionError:
                         percent = 0
                 else:
                     percent = 0
                 try:
-                    quota_percent = p_usage/(available_usage*quota.quota)*10000
+                    quota_percent = p_usage / (available_usage * quota.quota) * 10000
                 except ZeroDivisionError:
                     quota_percent = 0
                 project_list.append(
-                    {'project': p, 
-                     'usage': p_usage, 
-                     'jobs': p_jobs, 
-                     'percent': percent, 
+                    {'project': p,
+                     'usage': p_usage,
+                     'jobs': p_jobs,
+                     'percent': percent,
                      'quota_percent': quota_percent,
                      })
 
@@ -193,17 +192,17 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
                 user_total += u.cpu_hours
                 user_total_jobs += u.no_jobs
                 try:
-                    quota_percent = u.cpu_hours/(available_usage*quota.quota)*10000
+                    quota_percent = u.cpu_hours / (available_usage * quota.quota) * 10000
                 except ZeroDivisionError:
-                   quota_percent = 0 
+                    quota_percent = 0
                 user_list.append(
-                    {'user': u.user, 
-                     'project': u.project, 
-                     'usage': u.cpu_hours, 
-                     'jobs': u.no_jobs, 
-                     'percent': ((u.cpu_hours/i_usage)*100),
+                    {'user': u.user,
+                     'project': u.project,
+                     'usage': u.cpu_hours,
+                     'jobs': u.no_jobs,
+                     'percent': ((u.cpu_hours / i_usage) * 100),
                      'quota_percent': quota_percent,
-                     }) 
+                     })
                 
             user_percent = (user_total / i_usage) * 100
 
@@ -248,7 +247,7 @@ def project_usage(request, project_id, machine_category_id=settings.DEFAULT_MC):
             total += time
             total_jobs += jobs
             if jobs > 0:
-                usage_list.append({ 'user': u, 'usage': time, 'jobs': jobs})
+                usage_list.append({'user': u, 'usage': time, 'jobs': jobs})
 
     for u in usage_list:
         if total == 0:
@@ -282,7 +281,7 @@ def unknown_usage(request):
         try:
             person = Person.objects.get(pk=request.POST['user'])
         except Person.DoesNotExist:
-           person = False
+            person = False
         
         if request.POST.getlist('uid'):
             jobs = CPUJob.objects.filter(id__in=request.POST.getlist('uid'))
@@ -295,7 +294,7 @@ def unknown_usage(request):
 
         if person:
             for job in jobs:
-                machine_category = job.machine.category 
+                machine_category = job.machine.category
                 ua = person.get_user_account(machine_category)
                 if ua:
                     job.user = ua
@@ -359,7 +358,7 @@ def search(request):
                     i['jobs'] = jobs
 
             else:
-                return HttpResponseRedirect('%s?start=%s&end=%s' % (reverse('kg_usage_list'), start_str, end_str)) 
+                return HttpResponseRedirect('%s?start=%s&end=%s' % (reverse('kg_usage_list'), start_str, end_str))
     else:
         form = UsageSearchForm()
 
@@ -377,7 +376,7 @@ def project_search(request):
             start = data['start_date'].strftime('%Y-%m-%d')
             end = data['end_date'].strftime('%Y-%m-%d')
             
-            return HttpResponseRedirect('%s?start=%s&end=%s' % (project.get_usage_url(), start, end))    
+            return HttpResponseRedirect('%s?start=%s&end=%s' % (project.get_usage_url(), start, end))
     else:
         return HttpResponseRedirect(reverse('kg_admin_index'))
         
@@ -394,7 +393,7 @@ def top_users(request, machine_category_id=settings.DEFAULT_MC, count=20):
         if u.cpu_hours:
             user_total += u.cpu_hours
             user_total_jobs += u.no_jobs
-            user_list.append({'user': u.user, 'project': u.project, 'usage': u.cpu_hours, 'jobs': u.no_jobs, 'percent': ((u.cpu_hours/available_time)*100)}) 
+            user_list.append({'user': u.user, 'project': u.project, 'usage': u.cpu_hours, 'jobs': u.no_jobs, 'percent': ((u.cpu_hours / available_time) * 100)})
         
     user_percent = (user_total / available_time) * 100
     querystring = request.META.get('QUERY_STRING', '')
@@ -440,11 +439,11 @@ def institute_users(request, institute_id, machine_category_id=1):
 
     user_list = []
 
-    user_total, user_total_jobs = 0,0
+    user_total, user_total_jobs = 0, 0
     for u in UserCache.objects.order_by('-cpu_hours').filter(start=start, end=end).filter(project__machine_categories=machine_category).filter(user__institute=institute).filter(no_jobs__gt=0):
         user_total = user_total + u.cpu_hours
         user_total_jobs = user_total_jobs + u.no_jobs
-        user_list.append({'user': u.user, 'project': u.project, 'usage': u.cpu_hours, 'jobs': u.no_jobs, 'percent': ((u.cpu_hours/available_time)*100)}) 
+        user_list.append({'user': u.user, 'project': u.project, 'usage': u.cpu_hours, 'jobs': u.no_jobs, 'percent': ((u.cpu_hours / available_time) * 100)})
         
     try:
         user_percent = (user_total / available_time) * 100
@@ -490,13 +489,13 @@ def mem_report(request, machine_category_id=settings.DEFAULT_MC):
     start, end = get_date_range(request)
 
     job_list = CPUJob.objects.filter(date__gte=start, date__lte=end, machine__category=machine_category)
-    mem_0_4 = job_list.filter(mem__lte=4*1024*1024).count()
-    mem_4_8 = job_list.filter(mem__gt=4*1024*1024, mem__lte=8*1024*1024).count()
-    mem_8_16 = job_list.filter(mem__gt=8*1024*1024, mem__lte=16*1024*1024).count()
-    mem_16_32 = job_list.filter(mem__gt=16*1024*1024, mem__lte=32*1024*1024).count()
-    mem_32_64 = job_list.filter(mem__gt=32*1024*1024, mem__lte=64*1024*1024).count()
-    mem_64_128 = job_list.filter(mem__gt=64*1024*1024, mem__lte=128*1024*1024).count()
-    mem_128 = job_list.filter(mem__gt=128*1024*1024).count()
+    mem_0_4 = job_list.filter(mem__lte=4 * 1024 * 1024).count()
+    mem_4_8 = job_list.filter(mem__gt=4 * 1024 * 1024, mem__lte=8 * 1024 * 1024).count()
+    mem_8_16 = job_list.filter(mem__gt=8 * 1024 * 1024, mem__lte=16 * 1024 * 1024).count()
+    mem_16_32 = job_list.filter(mem__gt=16 * 1024 * 1024, mem__lte=32 * 1024 * 1024).count()
+    mem_32_64 = job_list.filter(mem__gt=32 * 1024 * 1024, mem__lte=64 * 1024 * 1024).count()
+    mem_64_128 = job_list.filter(mem__gt=64 * 1024 * 1024, mem__lte=128 * 1024 * 1024).count()
+    mem_128 = job_list.filter(mem__gt=128 * 1024 * 1024).count()
 
     data = [mem_0_4, mem_4_8, mem_8_16, mem_16_32, mem_32_64, mem_64_128, mem_128]
     total = sum(data)
@@ -510,7 +509,6 @@ def mem_report(request, machine_category_id=settings.DEFAULT_MC):
     return render_to_response('usage/mem_report.html', locals(), context_instance=RequestContext(request))
 
 
-
 def job_detail(request, jobid):
     job = get_object_or_404(CPUJob, jobid=jobid)
 
@@ -522,26 +520,26 @@ def job_list(request):
 
     job_list = CPUJob.objects.select_related()
     
-    if request.REQUEST.has_key('machine'):
-        job_list = job_list.filter(machine__id=int(request.GET['machine'])) 
+    if 'machine' in request.REQUEST:
+        job_list = job_list.filter(machine__id=int(request.GET['machine']))
 
-    if request.REQUEST.has_key('queue'):
-        job_list = job_list.filter(queue=request.GET['queue']) 
+    if 'queue' in request.REQUEST:
+        job_list = job_list.filter(queue=request.GET['queue'])
 
-    if request.REQUEST.has_key('software'):
-        job_list = job_list.filter(software__package__id=int(request.GET['software'])) 
+    if 'software' in request.REQUEST:
+        job_list = job_list.filter(software__package__id=int(request.GET['software']))
 
-    if request.REQUEST.has_key('user'):
-        job_list = job_list.filter(user__user__user__username=request.GET['user']) 
+    if 'user' in request.REQUEST:
+        job_list = job_list.filter(user__user__user__username=request.GET['user'])
 
-    if request.REQUEST.has_key('project'):
-        job_list = job_list.filter(project__pid=request.GET['project']) 
+    if 'project' in request.REQUEST:
+        job_list = job_list.filter(project__pid=request.GET['project'])
    
     params = dict(request.GET.items())
     m_params = dict([(str(k), str(v)) for k, v in params.items() if k.startswith('date__')])
     job_list = job_list.filter(**m_params)
 
-    if request.REQUEST.has_key('search'):
+    if 'search' in request.REQUEST:
         terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
@@ -553,16 +551,13 @@ def job_list(request):
     else:
         terms = ""
 
-
     filter_list = []
     filter_list.append(DateFilter(request, 'date'))
     filter_list.append(Filter(request, 'machine', Machine.objects.all()))
     filter_list.append(Filter(request, 'queue', Queue.objects.all()))
     filter_bar = FilterBar(request, filter_list)
 
-
     p = Paginator(job_list, 50)
     page = p.page(page_no)
     
-
     return render_to_response('usage/job_list.html', {'page': page, 'filter_bar': filter_bar}, context_instance=RequestContext(request))

@@ -35,5 +35,3 @@ class SoftwareDataStore:
 
     def get_name(self, software):
         raise NotImplemented
-
-

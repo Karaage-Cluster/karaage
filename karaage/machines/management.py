@@ -23,6 +23,7 @@ from django.db.models import signals
 from karaage.machines.models import MachineCategory
 from karaage.machines import models as machines_app
 
+
 def create_default_machinecategory(app, created_models, verbosity, db, **kwargs):
     if MachineCategory in created_models:
         if verbosity >= 2:

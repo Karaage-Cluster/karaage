@@ -18,7 +18,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.db.models import Q
 
 from placard.client import LDAPClient
 from andsome.middleware.threadlocals import get_current_user
@@ -135,7 +134,7 @@ class Person(models.Model):
                 return reverse('kg_user_profile')
             except:
                 pass
-        return reverse('kg_user_detail', kwargs={'username': self.user.username })
+        return reverse('kg_user_detail', kwargs={'username': self.user.username})
 
     def save(self, update_datastore=True, *args, **kwargs):
         update = False
@@ -144,20 +143,22 @@ class Person(models.Model):
 
         super(self.__class__, self).save(*args, **kwargs)
  
-        if update and update_datastore:            
+        if update and update_datastore:
             from karaage.datastores import update_user
             update_user(self)
 
     def _set_username(self, value):
         self.user.username = value
-        self.user.save()        
+        self.user.save()
+
     def _get_username(self):
-        return self.user.username   
+        return self.user.username
     username = property(_get_username, _set_username)
     
     def _set_last_name(self, value):
         self.user.last_name = value
         self.user.save()
+
     def _get_last_name(self):
         return self.user.last_name
     last_name = property(_get_last_name, _set_last_name)
@@ -165,6 +166,7 @@ class Person(models.Model):
     def _set_first_name(self, value):
         self.user.first_name = value
         self.user.save()
+
     def _get_first_name(self):
         return self.user.first_name
     first_name = property(_get_first_name, _set_first_name)
@@ -172,6 +174,7 @@ class Person(models.Model):
     def _set_email(self, value):
         self.user.email = value
         self.user.save()
+
     def _get_email(self):
         return self.user.email
     email = property(_get_email, _set_email)
@@ -183,7 +186,7 @@ class Person(models.Model):
     def _get_is_active(self):
         return self.user.is_active
     is_active = property(_get_is_active, _set_is_active)
-    
+
     # Can person view this self record?
     def can_view(self, user):
         from karaage.projects.models import Project
@@ -285,8 +288,8 @@ class Person(models.Model):
         except:
             return ''
 
+
 class InstituteDelegate(models.Model):
     person = models.ForeignKey(Person)
     institute = models.ForeignKey(Institute)
     send_email = models.BooleanField()
-

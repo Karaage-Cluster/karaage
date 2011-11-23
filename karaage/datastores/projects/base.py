@@ -23,5 +23,3 @@ class ProjectDataStore:
 
     def delete_project(self, project):
         raise NotImplemented
-
-

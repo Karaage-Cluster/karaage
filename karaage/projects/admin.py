@@ -20,9 +20,9 @@ from karaage.projects.models import Project
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('pid', 'name', 'is_active',)
-    search_fields = ['pid', 'name', 'leaders__user__first_name', 'leaders__user__last_name',]
-    list_filter = ['institute', 'start_date', 'end_date', 'machine_categories', 'is_active',]
+    list_display = ('pid', 'name', 'is_active')
+    search_fields = ['pid', 'name', 'leaders__user__first_name', 'leaders__user__last_name']
+    list_filter = ['institute', 'start_date', 'end_date', 'machine_categories', 'is_active']
     date_hierarchy = 'start_date'
 
 

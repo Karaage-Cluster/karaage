@@ -20,17 +20,16 @@ from django.contrib import admin
 from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense, SoftwareLicenseAgreement, SoftwareAccessRequest
 
 
+class SoftwareLicenseAgreementAdmin(admin.ModelAdmin):
+    list_display = ('user', 'license', 'date')
+
+
+class SoftwareAccessRequestAdmin(admin.ModelAdmin):
+    list_display = ('person', 'software_license', 'request_date')
+
+admin.site.register(SoftwareAccessRequest, SoftwareAccessRequestAdmin)
+admin.site.register(SoftwareLicenseAgreement, SoftwareLicenseAgreementAdmin)
 admin.site.register(SoftwareCategory)
 admin.site.register(SoftwarePackage)
 admin.site.register(SoftwareVersion)
 admin.site.register(SoftwareLicense)
-
-class SoftwareLicenseAgreementAdmin(admin.ModelAdmin):
-    list_display = ('user', 'license', 'date', )
-
-admin.site.register(SoftwareLicenseAgreement, SoftwareLicenseAgreementAdmin)
-
-class SoftwareAccessRequestAdmin(admin.ModelAdmin):
-    list_display = ('person', 'software_license', 'request_date', )
-
-admin.site.register(SoftwareAccessRequest, SoftwareAccessRequestAdmin)

@@ -9,11 +9,13 @@ GRAPH_URL = '/karaage_graphs/'
 
 DEFAULT_MC = 1
 
-SHELLS = ( ('/bin/bash','bash'),
-           ('/bin/csh', 'csh'),
-           ('/bin/ksh', 'ksh'),
-           ('/bin/tcsh', 'tcsh'),
-           ('/bin/zsh', 'zsh'), )
+SHELLS = (
+    ('/bin/bash', 'bash'),
+    ('/bin/csh', 'csh'),
+    ('/bin/ksh', 'ksh'),
+    ('/bin/tcsh', 'tcsh'),
+    ('/bin/zsh', 'zsh'),
+)
    
 
 INSTALLED_APPS = (
@@ -93,8 +95,8 @@ LDAP_PASSWD_SCHEME = 'md5-crypt'
 
 SEND_BROKEN_LINK_EMAILS = True
 
-USER_OBJECTCLASS = ['top','person','organizationalPerson','inetOrgPerson', 'shadowAccount',]
-ACCOUNT_OBJECTCLASS = ['top','person','organizationalPerson','inetOrgPerson', 'shadowAccount','posixAccount']
+USER_OBJECTCLASS = ['top', 'person', 'organizationalPerson', 'inetOrgPerson', 'shadowAccount']
+ACCOUNT_OBJECTCLASS = ['top', 'person', 'organizationalPerson', 'inetOrgPerson', 'shadowAccount', 'posixAccount']
 
 
 MIDDLEWARE_CLASSES = (

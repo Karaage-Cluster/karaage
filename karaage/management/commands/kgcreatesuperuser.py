@@ -29,7 +29,7 @@ from django.core.management.base import BaseCommand
 from django.utils.translation import ugettext as _
 from karaage.datastores import create_new_user
 from karaage.people.models import Institute
-from karaage.people.utils import validate_username
+from karaage.people.utils import validate_username, UsernameException
 
 
 EMAIL_RE = re.compile(

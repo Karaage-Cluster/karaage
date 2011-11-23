@@ -28,13 +28,9 @@ matplotlib.use('Agg')  # force the antigrain backend
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from matplotlib.figure import Figure
 from pylab import arange
-from decimal import Decimal
 import datetime
 
-from karaage.people.models import Institute
 from karaage.machines.models import UserAccount
-from karaage.util.helpers import get_available_time
-
 from karaage.graphs import gdchart2
 from karaage.graphs.util import get_colour
 

@@ -22,21 +22,22 @@ class PersonManager(models.Manager):
     def get_query_set(self):
         return super(PersonManager, self).get_query_set().select_related()
 
+
 class ActiveUserManager(models.Manager):
     def get_query_set(self):
         return super(ActiveUserManager, self).get_query_set().select_related().filter(user__is_active=True, is_systemuser=False)
+
 
 class DeletedUserManager(models.Manager):
     def get_query_set(self):
         return super(DeletedUserManager, self).get_query_set().filter(user__is_active=False)
 
+
 class LeaderManager(models.Manager):
     def get_query_set(self):
-        leader_ids= []
+        leader_ids = []
         for l in super(LeaderManager, self).get_query_set().filter(user__is_active=True):
             if l.is_leader():
                 leader_ids.append(l.id)
 
         return self.filter(id__in=leader_ids)
-        
-       

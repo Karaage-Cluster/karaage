@@ -28,6 +28,7 @@ from karaage.util.graphs import get_institute_trend_graph_url
 from karaage.people.models import Institute, InstituteDelegate
 from karaage.institutes.forms import InstituteForm
 
+
 def institute_detail(request, institute_id):
     
     institute = get_object_or_404(Institute, pk=institute_id)
@@ -43,7 +44,7 @@ def institute_list(request):
     institute_list = Institute.objects.all()
     page_no = int(request.GET.get('page', 1))
 
-    if request.REQUEST.has_key('active'):
+    if 'active' in request.REQUEST:
         institute_list = institute_list.filter(is_active=int(request.GET['active']))
 
     filter_list = []
@@ -84,6 +85,6 @@ def add_edit_institute(request, institute_id=None):
         delegate_formset = DelegateFormSet(instance=institute)
 
     return render_to_response(
-        'institutes/institute_form.html', 
-        {'institute': institute, 'form': form, 'delegate_formset': delegate_formset}, 
+        'institutes/institute_form.html',
+        {'institute': institute, 'form': form, 'delegate_formset': delegate_formset},
         context_instance=RequestContext(request))

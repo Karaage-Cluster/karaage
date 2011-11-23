@@ -18,13 +18,12 @@
 from django.conf import settings
 
 module = __import__(settings.INSTITUTE_DATASTORE, {}, {}, [''])
-
 pds = module.InstituteDataStore()
 
 
 def create_institute(institute):
     return pds.create_institute(institute)
 
+
 def delete_institute(self, institute):
     return pds.delete_institute(institute)
-

@@ -35,11 +35,11 @@ from karaage.machines.models import MachineCategory
 from karaage.machines.forms import ShellForm
 from karaage.applications.models import Application
 
+
 @login_required
 def profile(request):
 
     person = request.user.get_profile()
-    
     project_list = person.project_set.all()
     project_requests = []
     user_applications = []
@@ -53,21 +53,21 @@ def profile(request):
             for user_application in project.userapplication_set.filter(state=Application.WAITING_FOR_LEADER):
                 user_applications.append(user_application)
 
-    
     usage_list = person.usercache_set.filter(start=start, end=end)
 
     return render_to_response('people/profile.html', locals(), context_instance=RequestContext(request))
-    
+
 
 @login_required
 def edit_profile(request):
     from admin import add_edit_user
     return add_edit_user(
-        request, 
+        request,
         form_class=PersonForm,
         template_name='people/edit_profile.html',
         redirect_url=reverse('kg_user_profile'),
         username=request.user.get_profile().username)
+
 
 @login_required
 def profile_accounts(request):
@@ -76,55 +76,50 @@ def profile_accounts(request):
     user_account = person.get_user_account(MachineCategory.objects.get_default())
 
     if request.method == 'POST' and 'shell-form' in request.POST:
-
         shell_form = ShellForm(request.POST)
-
         if shell_form.is_valid():
             shell_form.save(user_account)
             messages.success(request, 'Shell changed successfully')
-
             return HttpResponseRedirect(reverse('kg_user_profile'))
 
     else:
         shell_form = ShellForm()
         try:
-            shell_form.initial = { 'shell': person.loginShell }
+            shell_form.initial = {'shell': person.loginShell}
         except:
             pass
-  
+
     return render_to_response('people/profile_accounts.html', locals(), context_instance=RequestContext(request))
-    
+
 
 @login_required
 def profile_software(request):
-
     person = request.user.get_profile()
-    
     software_list = person.softwarelicenseagreement_set.all()
-  
-    return render_to_response('people/profile_software.html', locals(), context_instance=RequestContext(request))
-    
+    return render_to_response(
+        'people/profile_software.html',
+        {'person': person, 'software_list': software_List},
+        context_instance=RequestContext(request))
+
+
 @login_required
 def profile_projects(request):
 
     person = request.user.get_profile()
     project_list = person.project_set.all()
-    
     leader_project_list = []
 
     if person.is_leader():
         leader_project_list = Project.objects.filter(leaders=person, is_active=True)
-    
+
     return render_to_response('people/profile_projects.html', {'person': person, 'project_list': project_list, 'leader_project_list': leader_project_list}, context_instance=RequestContext(request))
 
 
 @login_required
 def user_detail(request, username):
-
     person = get_object_or_404(Person, user__username=username)
     if not person.can_view(request.user):
         return HttpResponseForbidden('<h1>Access Denied</h1><p>You do not have permission to view details about this user.</p>')
-
     return render_to_response('people/user_person_detail.html', locals(), context_instance=RequestContext(request))
 
 
@@ -145,20 +140,17 @@ def flag_left(request, username):
     )
 
     messages.success(request, 'User flagged as left institution')
-
     return HttpResponseRedirect(person.get_absolute_url())
 
-    
+
 @login_required
 def institute_users_list(request, institute_id):
 
     institute = get_object_or_404(Institute, pk=institute_id)
-
     if not institute.can_view(request.user):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     user_list = institute.person_set.all()
-
     return render_to_response('users/institute_user_list.html', locals(), context_instance=RequestContext(request))
 
 
@@ -166,22 +158,21 @@ def institute_users_list(request, institute_id):
 def password_change(request):
 
     person = request.user.get_profile()
-    
+
     if request.POST:
         form = PasswordChangeForm(request.POST)
-        
+
         if form.is_valid():
             form.save(person)
             return HttpResponseRedirect(reverse('kg_user_password_done'))
     else:
         form = PasswordChangeForm()
-        
+
     return render_to_response('people/user_password_form.html', {'form': form}, context_instance=RequestContext(request))
 
 
 @login_required
 def password_change_done(request):
-    
     return render_to_response('people/password_change_done.html', context_instance=RequestContext(request))
 
 
@@ -189,14 +180,14 @@ def login(request):
 
     error = ''
     redirect_to = settings.LOGIN_REDIRECT_URL
-    if request.REQUEST.has_key('next'):
+    if 'next' in request.REQUEST:
         redirect_to = request.REQUEST['next']
 
     if request.POST:
 
         form = LoginForm(request.POST)
         if form.is_valid():
-            
+
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             from django.contrib.auth import login, authenticate
@@ -217,7 +208,6 @@ def login(request):
         'next': redirect_to,
         'error': error,
         }, context_instance=RequestContext(request))
-
 
 
 @login_required
@@ -249,6 +239,5 @@ def password_reset(request):
 
     return render_to_response(
         'registration/password_reset_form.html',
-        {'form': form,},
+        {'form': form},
         context_instance=RequestContext(request))
-

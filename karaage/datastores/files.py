@@ -32,24 +32,18 @@ class PersonalDataStore(base.PersonalDataStore):
     def delete_user(self, person):
         super(PersonalDataStore, self).delete_user(person)
         
-
     def update_user(self, person):
         super(PersonalDataStore, self).update_user(person)
-
 
     def is_locked(self, person):
         super(PersonalDataStore, self).is_locked(person)
 
-
     def lock_user(self, person):
         super(PersonalDataStore, self).lock_user(person)
-        
 
     def unlock_user(self, person):
         super(PersonalDataStore, self).unlock_user(person)
         
-        
-
 
 class AccountDataStore(base.AccountDataStore):
     
@@ -70,7 +64,6 @@ class AccountDataStore(base.AccountDataStore):
 
         return ua
 
-
     def delete_account(self, ua):
         super(AccountDataStore, self).delete_account(ua)
 
@@ -87,7 +80,6 @@ class AccountDataStore(base.AccountDataStore):
             f = open(file, 'w')
             f.writelines(new_data)
             f.close()
-
 
     def update_account(self, ua):
         super(AccountDataStore, self).update_account(ua)
@@ -108,14 +100,11 @@ class AccountDataStore(base.AccountDataStore):
             f.writelines(new_data)
             f.close()
 
-
     def lock_account(self, ua):
         super(AccountDataStore, self).lock_account(ua)
-        
 
     def unlock_account(self, ua):
         super(AccountDataStore, self).unlock_account(ua)
-
  
     def get_next_uid(self):
         id_list = []
@@ -131,12 +120,9 @@ class AccountDataStore(base.AccountDataStore):
                     pass
 
         id_list.sort()
-
         id = id_list[-1] + 1
 
         if id < settings.UID_START:
             return settings.UID_START
         else:
             return id
-
-

@@ -25,5 +25,3 @@ class ProjectDataStore(base.ProjectDataStore):
 
     def delete_project(self, project):
         pass
-
-

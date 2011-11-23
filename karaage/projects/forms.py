@@ -25,10 +25,10 @@ from karaage.projects.models import Project
 
 class ProjectForm(forms.ModelForm):
     pid = forms.CharField(label='PID', help_text='Leave blank for auto generation', required=False)
-    name = forms.CharField(label='Project Title', widget=forms.TextInput(attrs={ 'size':60 }))
-    description = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
+    name = forms.CharField(label='Project Title', widget=forms.TextInput(attrs={'size': 60}))
+    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), required=False)
     institute = forms.ModelChoiceField(queryset=Institute.active.all())
-    additional_req = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
+    additional_req = forms.CharField(widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), required=False)
     leaders = forms.ModelMultipleChoiceField(queryset=Person.active.select_related(), widget=FilteredSelectMultiple('Leaders', False))
     start_date = forms.DateField(widget=AdminDateWidget)
     end_date = forms.DateField(widget=AdminDateWidget, required=False)
@@ -56,11 +56,10 @@ class ProjectForm(forms.ModelForm):
  
 
 class UserProjectForm(forms.ModelForm):
-    name = forms.CharField(label='Project Title', widget=forms.TextInput(attrs={ 'size':60 }))
-    description = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }))
-    additional_req = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }), required=False)
+    name = forms.CharField(label='Project Title', widget=forms.TextInput(attrs={'size': 60}))
+    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}))
+    additional_req = forms.CharField(widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), required=False)
 
     class Meta:
         model = Project
         fields = ('name', 'description', 'additional_req')
-

@@ -18,24 +18,28 @@
 from django.conf import settings
 
 module = __import__(settings.SOFTWARE_DATASTORE, {}, {}, [''])
-
 pds = module.SoftwareDataStore()
+
 
 def create_software(software):
     return pds.create_software(software)
 
+
 def delete_software(software):
     return pds.delete_software(software)
+
 
 def add_member(software, person):
     return pds.add_member(software, person)
 
+
 def remove_member(software, person):
     return pds.remove_member(software, person)
+
 
 def get_members(software):
     return pds.get_members(software)
 
+
 def get_name(software):
     return pds.get_name(software)
-

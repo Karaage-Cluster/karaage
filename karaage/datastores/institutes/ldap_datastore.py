@@ -22,7 +22,7 @@ from karaage.datastores.institutes import base
 
 class InstituteDataStore(base.InstituteDataStore):
     
-    def create_institute(self, institute):  
+    def create_institute(self, institute):
         conn = LDAPClient()
         if institute.gid:
             try:
@@ -46,5 +46,3 @@ class InstituteDataStore(base.InstituteDataStore):
             conn.delete_group('cn=%s' % institute.gid)
         except DoesNotExistException:
             pass
-
-

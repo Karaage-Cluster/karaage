@@ -50,7 +50,7 @@ class Project(models.Model):
     deleted = DeletedProjectManager()
 
     class Meta:
-        ordering = ['pid',]
+        ordering = ['pid']
         db_table = 'project'
 
     def __unicode__(self):
@@ -116,8 +116,8 @@ class Project(models.Model):
         self.users.clear()
         self.save()
 
-    def get_usage(self, 
-                  start=datetime.date.today()-datetime.timedelta(days=90), 
+    def get_usage(self,
+                  start=datetime.date.today() - datetime.timedelta(days=90),
                   end=datetime.date.today(),
                   machine_category=None):
         if machine_category is None:
@@ -150,6 +150,7 @@ def update_project_datastore(sender, **kwargs):
     project = kwargs['instance']
     from karaage.datastores.projects import create_or_update_project
     create_or_update_project(project)
+
 
 def delete_project_datastore(sender, **kwargs):
     project = kwargs['instance']

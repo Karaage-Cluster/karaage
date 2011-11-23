@@ -16,10 +16,10 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django import forms
-from django.contrib.admin.widgets import FilteredSelectMultiple
 
-from karaage.people.models import Institute, Person
+from karaage.people.models import Institute
 from karaage.projects.models import Project
+
 
 class InstituteForm(forms.ModelForm):
 

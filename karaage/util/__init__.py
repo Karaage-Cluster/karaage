@@ -19,11 +19,11 @@ import datetime
 from django.contrib.contenttypes.models import ContentType
 
 
-def get_date_range(request, default_start=(datetime.date.today()-datetime.timedelta(days=90)), default_end=datetime.date.today()):
+def get_date_range(request, default_start=(datetime.date.today() - datetime.timedelta(days=90)), default_end=datetime.date.today()):
 
     today = datetime.date.today()
 
-    if request.REQUEST.has_key('start'):
+    if 'start' in request.REQUEST:
         try:
             years, months, days = request.GET['start'].split('-')
             start = datetime.datetime(int(years), int(months), int(days))
@@ -33,7 +33,7 @@ def get_date_range(request, default_start=(datetime.date.today()-datetime.timede
     else:
         start = default_start
 
-    if request.REQUEST.has_key('end'):
+    if 'end' in request.REQUEST:
         try:
             years, months, days = request.GET['end'].split('-')
             end = datetime.datetime(int(years), int(months), int(days))
@@ -46,14 +46,12 @@ def get_date_range(request, default_start=(datetime.date.today()-datetime.timede
     return start, end
 
 
-
-
 def log_object(user, object, flag, message):
     if not user:
         return
     if user.is_authenticated():
         user.logentry_set.create(
-            content_type = ContentType.objects.get_for_model(object.__class__),
+            content_type=ContentType.objects.get_for_model(object.__class__),
             object_id=object._get_pk_val(),
             object_repr=object.__unicode__(),
             action_flag=flag,

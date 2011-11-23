@@ -27,11 +27,13 @@ CONTEXT = {
 
 TEMPLATE_DIRS = ['emails/', 'applications/emails/']
 
+
 def render_email(name, context):
     context.update(CONTEXT)
-    subject = render_to_string(['emails/%s_subject.txt' % name, 'applications/emails/%s_subject.txt' % name], context).replace('\n','')
+    subject = render_to_string(['emails/%s_subject.txt' % name, 'applications/emails/%s_subject.txt' % name], context).replace('\n', '')
     body = render_to_string(['emails/%s_body.txt' % name, 'applications/emails/%s_body.txt' % name], context)
     return subject, body
+
 
 def remove_url_prefix(url):
     if get_script_prefix() != '/':
@@ -49,7 +51,6 @@ def send_notify_admin(application):
     subject, body = render_email('notify_admin', context)
 
     send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
-
 
 
 def send_account_request_email(application):
@@ -78,7 +79,7 @@ def send_user_invite_email(userapplication):
     context['make_leader'] = userapplication.make_leader
     context['message'] = userapplication.header_message
 
-    to_email = userapplication.applicant.email 
+    to_email = userapplication.applicant.email
     subject, body = render_email('user_invite', context)
     
     send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
@@ -113,7 +114,7 @@ def send_project_request_email(application):
     context = CONTEXT.copy()
     context['requester'] = application.applicant
     context['site'] = '%s/applications/projects/%s/' % (settings.REGISTRATION_BASE_URL, application.id)
-    context['application'] = application 
+    context['application'] = application
 
     for delegate in application.institute.delegates.filter(institutedelegate__send_email=True):
         context['receiver'] = delegate
@@ -126,12 +127,10 @@ def send_project_approved_email(application):
     """Sends an email to the projects leaders once approved"""
     context = CONTEXT.copy()
     context['site'] = '%s/projects/%s/' % (settings.REGISTRATION_BASE_URL, application.project.pid)
-    context['project'] = application.project 
+    context['project'] = application.project
  
     for leader in application.project.leaders.all():
-        context['receiver'] =  leader
+        context['receiver'] = leader
         subject, body = render_email('project_approved', context)
         to_email = leader.email
         send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
-
-        

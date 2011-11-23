@@ -47,7 +47,6 @@ class SoftwarePackageForm(forms.Form):
         package.save()
 
         return package
-        
 
 
 class AddPackageForm(SoftwarePackageForm):
@@ -59,7 +58,6 @@ class AddPackageForm(SoftwarePackageForm):
     license_date = forms.DateField(required=False)
     license_text = forms.CharField(required=False, widget=forms.Textarea())
 
-
     def clean(self):
 
         data = self.cleaned_data
@@ -69,7 +67,6 @@ class AddPackageForm(SoftwarePackageForm):
                 raise forms.ValidationError(u'You must specify all fields in the license section')
 
         return data
-
 
     def save(self, package=None):
         data = self.cleaned_data
@@ -96,12 +93,12 @@ class AddPackageForm(SoftwarePackageForm):
 
         return package
 
-        
     
 class LicenseForm(forms.ModelForm):
 
     class Meta:
         model = SoftwareLicense
+
 
 class SoftwareVersionForm(forms.ModelForm):
     class Meta:

@@ -50,10 +50,10 @@ def send_invitation(request):
                 existing = Person.active.get(user__email=email)
             except Person.DoesNotExist:
                 existing = False
-            if existing and not request.REQUEST.has_key('existing'):
+            if existing and not 'existing' in request.REQUEST:
                 return render_to_response(
-                    'applications/userapplication_invite_existing.html', 
-                    {'form': form, 'person': existing}, context_instance=RequestContext(request)) 
+                    'applications/userapplication_invite_existing.html',
+                    {'form': form, 'person': existing}, context_instance=RequestContext(request))
             application = form.save(commit=False)
             try:
                 applicant = Person.active.get(user__email=email)
@@ -76,7 +76,7 @@ def send_invitation(request):
     else:
         form = AdminInviteUserApplicationForm(instance=application)
 
-    return render_to_response('applications/userapplication_invite_form.html', {'form': form, 'application': application}, context_instance=RequestContext(request)) 
+    return render_to_response('applications/userapplication_invite_form.html', {'form': form, 'application': application}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -89,10 +89,10 @@ def application_list(request):
     except ValueError:
         page_no = 1
 
-    if request.REQUEST.has_key('state'):
+    if 'state' in request.REQUEST:
         apps = apps.filter(state=request.GET['state'])
 
-    if request.REQUEST.has_key('search'):
+    if 'search' in request.REQUEST:
         terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
@@ -156,8 +156,8 @@ def decline_userapplication(request, application_id):
             send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
             return HttpResponseRedirect(reverse('kg_application_list'))
     else:
-        subject, body = render_email('account_declined', { 'receiver': application.applicant, 'project': application.project })
-        initial_data = {'body': body, 'subject': subject,}
+        subject, body = render_email('account_declined', {'receiver': application.applicant, 'project': application.project})
+        initial_data = {'body': body, 'subject': subject}
         form = EmailForm(initial=initial_data)
 
     return render_to_response('applications/confirm_decline.html', {'application': application, 'form': form}, context_instance=RequestContext(request))
@@ -203,19 +203,18 @@ def decline_projectapplication(request, application_id):
             return HttpResponseRedirect(reverse('kg_application_list'))
 
     else:
-        subject, body = render_email('project_declined', { 'receiver': application.applicant })
-        initial_data = {'body': body, 'subject': subject,}
+        subject, body = render_email('project_declined', {'receiver': application.applicant})
+        initial_data = {'body': body, 'subject': subject}
         form = EmailForm(initial=initial_data)
 
     return render_to_response('applications/project_confirm_decline.html', {'application': application, 'form': form}, context_instance=RequestContext(request))
-
 
 
 @login_required
 def application_detail(request, application_id):
     application = get_object_or_404(Application, pk=application_id)
     application = application.get_object()
-    return render_to_response('%s/%s_admindetail.html' % (application._meta.app_label, application._meta.object_name.lower()), {'application': application }, context_instance=RequestContext(request))
+    return render_to_response('%s/%s_admindetail.html' % (application._meta.app_label, application._meta.object_name.lower()), {'application': application}, context_instance=RequestContext(request))
 
 
 @permission_required('applications.delete_application')
@@ -244,6 +243,7 @@ def archive_application(request, application_id):
 
     return render_to_response('applications/application_archive.html', {'application': application}, context_instance=RequestContext(request))
 
+
 @permission_required('applications.change_applicant')
 def applicant_edit(request, applicant_id):
     
@@ -262,4 +262,4 @@ def applicant_edit(request, applicant_id):
     else:
         form = ApplicantForm(instance=applicant)
     
-    return render_to_response('applications/applicant_form.html', {'applicant': applicant, 'form': form}, context_instance=RequestContext(request)) 
+    return render_to_response('applications/applicant_form.html', {'applicant': applicant, 'form': form}, context_instance=RequestContext(request))

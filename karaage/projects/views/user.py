@@ -45,10 +45,10 @@ def add_edit_project(request, project_id):
             messages.success(request, "Project edited successfully")
             log(request.user, project, 2, "Edited project")
             return HttpResponseRedirect(project.get_absolute_url())
-    else:        
+    else:
         form = ProjectForm(instance=project)
 
-    return render_to_response('projects/user_project_form.html', { 'form': form, 'project': project }, context_instance=RequestContext(request))
+    return render_to_response('projects/user_project_form.html', {'form': form, 'project': project}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -93,4 +93,3 @@ def remove_user(request, project_id, username):
         return HttpResponseRedirect(project.get_absolute_url())
     
     return render_to_response('projects/remove_user_confirm.html', {'project': project, 'person': person}, context_instance=RequestContext(request))
-  

@@ -70,10 +70,10 @@ def add_edit_project(request, project_id=None):
                 messages.success(request, "Project '%s' edited succesfully" % project)
                 log(get_current_user(), project, 2, 'Edited')
 
-            return HttpResponseRedirect(project.get_absolute_url())        
-    else:        
+            return HttpResponseRedirect(project.get_absolute_url())
+    else:
         form = ProjectForm(instance=project)
-            
+
     return render_to_response('projects/project_form.html', locals(), context_instance=RequestContext(request))
 
 
@@ -87,7 +87,7 @@ def delete_project(request, project_id):
         project.deactivate()
         log(request.user, project, 3, 'Deleted')
         messages.success(request, "Project '%s' deleted succesfully" % project)
-        return HttpResponseRedirect(project.get_absolute_url()) 
+        return HttpResponseRedirect(project.get_absolute_url())
 
     return render_to_response('projects/project_confirm_delete.html', locals(), context_instance=RequestContext(request))
 
@@ -125,13 +125,13 @@ def project_list(request, queryset=Project.objects.select_related(), template_na
     except ValueError:
         page_no = 1
 
-    if request.REQUEST.has_key('institute'):
+    if 'institute' in request.REQUEST:
         project_list = project_list.filter(institute=int(request.GET['institute']))
 
-    if request.REQUEST.has_key('status'):
+    if 'status' in request.REQUEST:
         project_list = project_list.filter(is_active=int(request.GET['status']))
 
-    if request.REQUEST.has_key('search'):
+    if 'search' in request.REQUEST:
         terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
@@ -141,7 +141,6 @@ def project_list(request, queryset=Project.objects.select_related(), template_na
         project_list = project_list.filter(query)
     else:
         terms = ""
-
 
     filter_list = []
     filter_list.append(Filter(request, 'status', {1: 'Active', 0: 'Deleted'}))
@@ -205,7 +204,7 @@ def over_quota(request):
     return project_list(request, Project.objects.filter(pid__in=project_ids))
 
 
-@login_required    
+@login_required
 def project_logs(request, project_id):
 
     project = get_object_or_404(Project, pk=project_id)
@@ -217,10 +216,3 @@ def project_logs(request, project_id):
 
     short = True
     return render_to_response('log_list.html', locals(), context_instance=RequestContext(request))
-
-
-@login_required       
-def pending_requests(request):
-    request_list = ProjectCreateRequest.objects.all()
-
-    return render_to_response('projects/pending_requests.html', locals(), context_instance=RequestContext(request))

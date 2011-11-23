@@ -19,6 +19,7 @@ from django.conf import settings
 
 from karaage.applications.models import Application
 
+
 def common(request):
     ctx = {}
     ctx['GRAPH_URL'] = settings.GRAPH_URL

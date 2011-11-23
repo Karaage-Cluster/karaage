@@ -20,6 +20,7 @@ from django.utils.html import escape
 
 from karaage.projects.models import Project
 
+
 class ProjectLookup(object):
 
     def get_query(self, q, request):

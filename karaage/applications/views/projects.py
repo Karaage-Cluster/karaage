@@ -37,7 +37,7 @@ from karaage.datastores import create_password_hash
 from karaage.util import log_object as log
 
 
-def do_projectapplication(request, token=None, application_form=ProjectApplicationForm, 
+def do_projectapplication(request, token=None, application_form=ProjectApplicationForm,
                           mc=MachineCategory.objects.get_default(), saml=False):
 
     if request.user.is_authenticated():
@@ -59,7 +59,7 @@ def do_projectapplication(request, token=None, application_form=ProjectApplicati
         captcha = False
     else:
         if not settings.ALLOW_REGISTRATIONS:
-            return render_to_response('applications/registrations_disabled.html', {}, context_instance=RequestContext(request)) 
+            return render_to_response('applications/registrations_disabled.html', {}, context_instance=RequestContext(request))
         application = None
         applicant = None
         captcha = True
@@ -91,18 +91,18 @@ def do_projectapplication(request, token=None, application_form=ProjectApplicati
             application.save()
             application.machine_categories.add(mc)
             send_project_request_email(application)
-            return HttpResponseRedirect(reverse('kg_application_done',  args=[application.secret_token]))
+            return HttpResponseRedirect(reverse('kg_application_done', args=[application.secret_token]))
     else:
         form = application_form(instance=application, captcha=captcha, initial={'institute': init_institute})
         if saml:
             applicant_form = SAMLApplicantForm(instance=applicant)
         else:
             applicant_form = UserApplicantForm(instance=applicant, initial={'institute': init_institute})
-    
-    return render_to_response('applications/projectapplication_form.html', {'form': form, 'applicant_form': applicant_form, 
-                                                                            'application': application, 'saml': saml,
-                                                                            'saml_user': saml_user, }, 
-                              context_instance=RequestContext(request)) 
+
+    return render_to_response(
+        'applications/projectapplication_form.html',
+        {'form': form, 'applicant_form': applicant_form, 'application': application, 'saml': saml, 'saml_user': saml_user},
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -111,7 +111,7 @@ def approve_projectapplication(request, application_id):
     if not request.user.get_profile() in application.institute.delegates.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     if application.state != Application.WAITING_FOR_DELEGATE:
-        return render_to_response('applications/unable_to_approve.html', {'application': application }, context_instance=RequestContext(request))
+        return render_to_response('applications/unable_to_approve.html', {'application': application}, context_instance=RequestContext(request))
 
     if request.method == 'POST':
         form = ApproveProjectApplicationForm(request.POST, instance=application)
@@ -141,10 +141,9 @@ def projectapplication_pending(request, application_id):
     if application.state != Application.WAITING_FOR_ADMIN:
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     if not request.user.get_profile() in application.institute.delegates.all():
-        return HttpResponseForbidden('<h1>Access Denied</h1>') 
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
     
     return render_to_response('applications/projectapplication_pending.html', {'application': application}, context_instance=RequestContext(request))
-
 
 
 @login_required
@@ -153,7 +152,7 @@ def projectapplication_complete(request, application_id):
     if application.state != Application.COMPLETE:
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     if not request.user.get_profile() in application.institute.delegates.all():
-        return HttpResponseForbidden('<h1>Access Denied</h1>') 
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
     
     return render_to_response('applications/projectapplication_complete.html', {'application': application}, context_instance=RequestContext(request))
 
@@ -177,11 +176,11 @@ def projectapplication_existing(request, application_form=ProjectApplicationForm
             application.save()
             application.machine_categories.add(mc)
             send_project_request_email(application)
-            return HttpResponseRedirect(reverse('kg_application_done',  args=[application.secret_token]))
+            return HttpResponseRedirect(reverse('kg_application_done', args=[application.secret_token]))
     else:
         form = application_form(instance=application, initial={'institute': init_institute})
     
-    return render_to_response('applications/projectapplication_existing_form.html', {'form': form, 'application': application}, context_instance=RequestContext(request)) 
+    return render_to_response('applications/projectapplication_existing_form.html', {'form': form, 'application': application}, context_instance=RequestContext(request))
 
 
 def decline_projectapplication(request, application_id):
@@ -191,7 +190,7 @@ def decline_projectapplication(request, application_id):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     
     if application.state != Application.WAITING_FOR_DELEGATE:
-        return render_to_response('applications/unable_to_approve.html', {'application': application }, context_instance=RequestContext(request))
+        return render_to_response('applications/unable_to_approve.html', {'application': application}, context_instance=RequestContext(request))
 
     if request.method == 'POST':
         form = EmailForm(request.POST)
@@ -204,8 +203,8 @@ def decline_projectapplication(request, application_id):
             return HttpResponseRedirect(reverse('kg_application_pendinglist'))
 
     else:
-        subject, body = render_email('project_declined', { 'receiver': application.applicant })
-        initial_data = {'body': body, 'subject': subject,}
+        subject, body = render_email('project_declined', {'receiver': application.applicant})
+        initial_data = {'body': body, 'subject': subject}
         form = EmailForm(initial=initial_data)
 
     return render_to_response('applications/project_confirm_decline.html', {'application': application, 'form': form}, context_instance=RequestContext(request))

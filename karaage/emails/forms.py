@@ -21,7 +21,6 @@ from django.template import Context, Template
 
 from andsome.forms import EmailForm
 
-from karaage.machines.models import MachineCategory
 from karaage.people.models import Person
 from karaage.projects.models import Project
 

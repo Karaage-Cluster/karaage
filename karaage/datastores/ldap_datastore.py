@@ -80,7 +80,7 @@ class PersonalDataStore(base.PersonalDataStore):
             ldap_user = conn.get_user('uid=%s' % person.username)
         except DoesNotExistException:
             return True
-        output = conn.ldap_search(settings.LDAP_USER_BASE, 
+        output = conn.ldap_search(settings.LDAP_USER_BASE,
                                   'uid=%s' % person.username,
                                   retrieve_attributes=['nsAccountLock'])
         if output[0][1]:
@@ -107,7 +107,7 @@ class PersonalDataStore(base.PersonalDataStore):
             'nsRoleDN': settings.LDAP_LOCK_DN,
             }
         new = {}
-        conn.ldap_modify(dn, old, new)  
+        conn.ldap_modify(dn, old, new)
         del(conn)
 
     def set_password(self, person, raw_password):
@@ -132,10 +132,11 @@ class PersonalDataStore(base.PersonalDataStore):
         conn.change_uid('uid=%s' % person.user.username, new_username)
         del(conn)
 
+
 class AccountDataStore(base.AccountDataStore):
 
     def create_account(self, person, default_project):
-        ua = super(AccountDataStore, self).create_account(person, default_project)          
+        ua = super(AccountDataStore, self).create_account(person, default_project)
         conn = LDAPClient()
         
         ldap_attrs = __import__(settings.LDAP_ATTRS, {}, {}, [''])
@@ -162,7 +163,7 @@ class AccountDataStore(base.AccountDataStore):
 
         conn.update_user(
             'uid=%s' % ua.username,
-            gecos='', 
+            gecos='',
             uidNumber='',
             gidNumber='',
             homeDirectory='',
@@ -188,7 +189,6 @@ class AccountDataStore(base.AccountDataStore):
             )
         del(conn)
 
-
     def lock_account(self, ua):
         super(AccountDataStore, self).lock_account(ua)
 
@@ -203,6 +203,6 @@ class AccountDataStore(base.AccountDataStore):
 
     def change_shell(self, ua, shell):
         super(AccountDataStore, self).change_shell(ua, shell)
-        conn =  LDAPClient()
+        conn = LDAPClient()
         conn.update_user('uid=%s' % ua.username, loginShell=str(shell))
         del(conn)

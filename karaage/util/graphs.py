@@ -29,6 +29,7 @@ from karaage.util.helpers import get_available_time
 
 grapher = GraphGenerator()
 
+
 def get_institute_graph_url(start, end, machine_category):
 
     start_str = start.strftime('%Y-%m-%d')
@@ -42,7 +43,7 @@ def get_institute_graph_url(start, end, machine_category):
         
         data = {}
         total = 0
-        for i in institute_list:  
+        for i in institute_list:
             usage = i.get_usage(start, end, machine_category)
             if usage[0] is not None:
                 total = total + float(usage[0])
@@ -61,9 +62,9 @@ def get_trend_graph_url(start, end, machine_category):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
 
-    try: 
+    try:
         f = open("%s/trends/trend_%i_%s-%s.png" % (settings.GRAPH_ROOT, machine_category.id, start_str, end_str))
-    except IOError: 
+    except IOError:
         
         mc_ids = tuple([(int(m.id)) for m in machine_category.machine_set.all()])
         if len(mc_ids) == 1:
@@ -81,10 +82,10 @@ def get_trend_graph_url(start, end, machine_category):
         chart.download("%s/trends/trend_%i_%s-%s.png" % (settings.GRAPH_ROOT, machine_category.id, start_str, end_str))
         
 
-    return "%strends/trend_%i_%s-%s.png" % (settings.GRAPH_URL, machine_category.id, start_str, end_str) 
+    return "%strends/trend_%i_%s-%s.png" % (settings.GRAPH_URL, machine_category.id, start_str, end_str)
 
 
-def get_institute_trend_graph_url(institute, 
+def get_institute_trend_graph_url(institute,
                                   start=datetime.date.today()-datetime.timedelta(days=90), 
                                   end=datetime.date.today(), 
                                   machine_category=MachineCategory.objects.get_default()):

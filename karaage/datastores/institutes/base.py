@@ -23,5 +23,3 @@ class InstituteDataStore:
 
     def delete_institute(self, institute):
         raise NotImplemented
-
-

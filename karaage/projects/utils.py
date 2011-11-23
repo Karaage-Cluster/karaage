@@ -16,14 +16,12 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from karaage.datastores import create_account
-
 from karaage.projects.models import Project
 
-def add_user_to_project(person, project):
 
+def add_user_to_project(person, project):
     project.users.add(person)
     project.save()
-    
     for mc in project.machine_categories.all():
         if not person.has_account(mc):
             create_account(person, project, mc)
@@ -31,7 +29,7 @@ def add_user_to_project(person, project):
 
 def get_new_pid(institute):
     """ Return a new Project ID
-    Keyword arguments:                              
+    Keyword arguments:
     institute_id -- Institute id
     """
     no = 1
@@ -41,7 +39,7 @@ def get_new_pid(institute):
     found = True
     while found:
         try:
-            project = Project.objects.get(pid=prefix+number)
+            project = Project.objects.get(pid=prefix + number)
             number = str(int(number) + 1)
             if len(number) == 1:
                 number = '000' + number
@@ -52,5 +50,4 @@ def get_new_pid(institute):
         except:
             found = False
 
-    return prefix+number
-
+    return prefix + number

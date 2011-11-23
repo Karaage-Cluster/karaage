@@ -32,6 +32,7 @@ from karaage.util.email_messages import send_bounced_warning
 from karaage.machines.forms import ShellForm
 from karaage.util import get_date_range, log_object as log
 
+
 @permission_required('people.delete_person')
 def delete_user(request, username):
 
@@ -51,7 +52,7 @@ def user_detail(request, username):
     person = get_object_or_404(Person, user__username=username)
 
     my_projects = person.project_set.all()
-    my_pids = [ p.pid for p in my_projects ]
+    my_pids = [p.pid for p in my_projects]
     
     not_project_list = Project.active.exclude(pid__in=my_pids)
 
@@ -73,7 +74,7 @@ def user_detail(request, username):
     #change shell form
     shell_form = ShellForm()
     try:
-        shell_form.initial = { 'shell': person.loginShell() }
+        shell_form.initial = {'shell': person.loginShell()}
     except:
         pass
     
@@ -84,10 +85,10 @@ def user_detail(request, username):
 def activate(request, username):
     person = get_object_or_404(Person, user__username=username, user__is_active=False)
 
-    if request.method == 'POST':     
+    if request.method == 'POST':
         person.activate()
         messages.success(request, "User '%s' activated succesfully" % person)
-        return HttpResponseRedirect(reverse('kg_password_change', args=[person.username,]))
+        return HttpResponseRedirect(reverse('kg_password_change', args=[person.username]))
     
     return render_to_response('people/reactivate_confirm.html', {'person': person}, context_instance=RequestContext(request))
 
