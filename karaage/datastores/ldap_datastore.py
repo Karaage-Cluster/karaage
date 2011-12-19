@@ -38,6 +38,7 @@ class PersonalDataStore(base.PersonalDataStore):
         attrs['telephoneNumber'] = str(person.telephone)
         attrs['mail'] = str(person.email)
         attrs['o'] = str(person.institute.name)
+        attrs['title'] = str(person.title)
         attrs['userPassword'] = str(person.user.password)
         
         conn = LDAPClient()
@@ -67,6 +68,7 @@ class PersonalDataStore(base.PersonalDataStore):
             sn=str(person.last_name),
             telephoneNumber=str(person.telephone),
             mail=str(person.email),
+            title=str(person.title),
             o=str(person.institute.name),
             )
         del(conn)
@@ -77,7 +79,7 @@ class PersonalDataStore(base.PersonalDataStore):
 
         conn = LDAPClient()
         try:
-            ldap_user = conn.get_user('uid=%s' % person.username)
+            conn.get_user('uid=%s' % person.username)
         except DoesNotExistException:
             return True
         output = conn.ldap_search(settings.LDAP_USER_BASE,

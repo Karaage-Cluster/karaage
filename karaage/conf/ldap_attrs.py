@@ -22,7 +22,7 @@ REQUIRED_USER_ATTRS = [
     'shadowLastChange', 'shadowMax', 'shadowWarning', 'objectClass',
     ]
 OPTIONAL_USER_ATTRS = [
-    'loginShell', 'homeDirectory', 'uidNumber', 'gidNumber', 'gecos',
+    'loginShell', 'homeDirectory', 'uidNumber', 'gidNumber', 'gecos', 'title',
 ]
 
 DEFAULT_USER_ATTRS = {
