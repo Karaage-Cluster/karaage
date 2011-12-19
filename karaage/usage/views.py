@@ -129,6 +129,9 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
         utilization = (Decimal(total) / available_time) * 100
     except ZeroDivisionError:
         utilization = 0
+    except:
+        utilization = 0
+        
     try:
         graph = get_institute_graph_url(start, end, machine_category)
         trend_graph = get_trend_graph_url(start, end, machine_category)
