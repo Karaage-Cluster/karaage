@@ -141,4 +141,7 @@ class UserAccount(models.Model):
     
     def loginShell(self):
         from karaage.datastores import get_shell
-        return get_shell(self)
+        try:
+            return get_shell(self)
+        except:
+            return ''
