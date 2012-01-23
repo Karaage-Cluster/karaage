@@ -98,7 +98,7 @@ def profile_software(request):
     software_list = person.softwarelicenseagreement_set.all()
     return render_to_response(
         'people/profile_software.html',
-        {'person': person, 'software_list': software_List},
+        {'person': person, 'software_list': software_list},
         context_instance=RequestContext(request))
 
 
