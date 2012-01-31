@@ -56,7 +56,7 @@ class CPUJob(models.Model):
     list_vmem = models.BigIntegerField(blank=True, null=True)
     list_pvmem = models.BigIntegerField(blank=True, null=True)
     exit_status = models.BigIntegerField(blank=True, null=True)
-    jobname = models.CharField(max_length=100, blank=True, null=True)
+    jobname = models.CharField(max_length=256, blank=True, null=True)
     software = models.ManyToManyField(SoftwareVersion, blank=True, null=True)
 
     class Meta:
