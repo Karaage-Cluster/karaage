@@ -3,14 +3,10 @@ THIS IS AN EXAMPLE EMAIL ONLY
 ========================================================================================================================
 To create your own email copy this example 
 From:
-/etc/karaage/templates/emails/notify_admin_subject.txt.example
+/etc/karaage/templates/emails/join_project_request_body.txt.template
 To:
-/etc/karaage/templates/emails/notify_admin_subject.txt
+/etc/karaage/templates/emails/join_project_request_body.txt
 =========================================================================================================================
-
-{{ requester }}'s application to join the project {{ project }} has been approved by project leader {{ leader }}.
-
-They are now waiting for a {{ org_name }} administrator to process the application.
 
 Please visit the {{ org_name }} Account Management site at https://example.org/kgadmin{{ site }} for more information and to accept or decline this request.
 
