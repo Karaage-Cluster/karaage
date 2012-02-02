@@ -227,7 +227,7 @@ def approve_userapplication(request, application_id):
             if settings.ADMIN_APPROVE_ACCOUNTS:
                 application.state = Application.WAITING_FOR_ADMIN
                 application.save()
-                send_notify_admin(application)
+                send_notify_admin(application, request.user.get_full_name())
                 log(request.user, application.application_ptr, 2, 'Leader approved application')
                 return HttpResponseRedirect(reverse('kg_userapplication_pending', args=[application.id]))
 

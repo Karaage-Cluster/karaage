@@ -41,11 +41,12 @@ def remove_url_prefix(url):
     return url
 
 
-def send_notify_admin(application):
+def send_notify_admin(application, approved_by):
     """Sends an email to admin asking to approve user application"""
     context = CONTEXT.copy()
     context['requester'] = application.applicant
     context['site'] = '/applications/%s/' % application.id
+    context['approved_by'] = approved_by
 
     to_email = settings.APPROVE_ACCOUNTS_EMAIL
     subject, body = render_email('notify_admin', context)
