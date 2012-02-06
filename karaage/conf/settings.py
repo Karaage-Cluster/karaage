@@ -143,6 +143,8 @@ SHIB_ATTRIBUTE_MAP = {
     }
 
 
+TRAINING_ACCOUNT_PREFIX = 'train'
+
 XMLRPC_METHODS = (
     ('karaage.pbsmoab.xmlrpc.parse_usage', 'parse_usage',),
     ('karaage.pbsmoab.xmlrpc.project_under_quota', 'project_under_quota',),
@@ -156,6 +158,9 @@ XMLRPC_METHODS = (
 
 from socket import getfqdn
 REGISTRATION_BASE_URL = 'https://%s/users' % getfqdn()
+
+#Overriden but here for code checking
+ACCOUNTS_EMAIL = 'accounts@example.com'
 
 execfile("/etc/karaage/global_settings.py")
 
