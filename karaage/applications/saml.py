@@ -53,10 +53,10 @@ class SAMLApplicantForm(UserApplicantForm):
         self.fields['first_name'].required = False
         self.fields['last_name'].required = False
         self.fields['email'].required = False
-        self.fields['institute'].required = False
         self.fields['username'].label = 'Requested username'
         self.fields['username'].required = True
+        del self.fields['institute']
 
- 
+
 class SAMLInstituteForm(forms.Form):
     institute = forms.ModelChoiceField(queryset=Institute.active.filter(saml_entityid__isnull=False).exclude(saml_entityid=""))

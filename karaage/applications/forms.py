@@ -47,12 +47,13 @@ class ApplicantForm(forms.ModelForm):
 
     def clean_username(self):
         username = self.cleaned_data['username']
-        try:
-            validate_username(username)
-        except UsernameException, e:
-            raise forms.ValidationError(e.message)
-            
-        return username
+        if username:
+            try:
+                validate_username(username)
+            except UsernameException, e:
+                raise forms.ValidationError(e.message)
+        
+            return username
 
 
 class UserApplicantForm(ApplicantForm):
@@ -138,7 +139,7 @@ class LeaderInviteUserApplicationForm(forms.ModelForm):
     def clean_email(self):
         email = self.cleaned_data['email']
         try:
-            person = Person.active.get(user__email=email)
+            Person.active.get(user__email=email)
         except Person.MultipleObjectsReturned:
             raise forms.ValidationError(u'Multiple users with this email exist. Please add manually as no way to invite.')
         except Person.DoesNotExist:
@@ -184,12 +185,12 @@ class AdminApproveProjectApplicationForm(ApproveProjectApplicationForm):
     def clean_pid(self):
         pid = self.cleaned_data['pid']
         try:
-            institute = Institute.objects.get(name=pid)
+            Institute.objects.get(name=pid)
             raise forms.ValidationError(u'Project ID already in system')
         except Institute.DoesNotExist:
             pass
         try:
-            project = Project.objects.get(pid=pid)
+            Project.objects.get(pid=pid)
             raise forms.ValidationError(u'Project ID already in system')
         except Project.DoesNotExist:
             pass
