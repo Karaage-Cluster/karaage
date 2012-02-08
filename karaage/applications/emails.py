@@ -46,6 +46,7 @@ def send_notify_admin(application, approved_by):
     context = CONTEXT.copy()
     context['requester'] = application.applicant
     context['site'] = '/applications/%s/' % application.id
+    context['application'] = application
     context['approved_by'] = approved_by
 
     to_email = settings.APPROVE_ACCOUNTS_EMAIL
