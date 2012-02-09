@@ -12,6 +12,26 @@ if [ "$1" = "configure" ]; then
     fi
 fi
 
+#DEBHELPER#
+
+update-python-modules -p karaage.public
+
+if [ -x /usr/sbin/kg-manage ]
+then
+    if /usr/sbin/kg-manage migrate --list | grep -q "( )"
+    then
+        db_input high karaage/run_migrations || true
+        db_go
+        
+        db_get karaage/run_migrations
+        if [ "$RET" = "false" ]; then
+            db_input high karaage/no_migrations || true
+            db_go
+        fi
+    fi
+fi
+
+
 if [ -x /usr/sbin/kg-manage ]
 then
     if /usr/sbin/kg-manage migrate --list | grep -q "( )"
@@ -25,7 +45,6 @@ then
 fi
 db_fset karaage/run_migrations seen "false"
 
-#DEBHELPER#
 
 exit 0
 
