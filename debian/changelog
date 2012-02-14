@@ -1,3 +1,20 @@
+karaage (2.6.3-1) stable; urgency=low
+
+  * Jobname for a CPU Job increased to 256 characters
+  * Fixed bug for trend graphs when institute name had a / in it
+  * Ensure locked users can't change login shell
+  * Add users title to ldap
+  * Make names of software packages unique
+  * Log when user details are changed
+  * Added debconf question for DB migrations
+  * Added password reset function
+  * Allow project leaders to invite users to their projects
+  * Allow users to change their default project
+  * Show change password view on profile page
+  * Added managment commands to lock/unlock training accounts
+
+ -- Sam Morrison <sam@vpac.org>  Tue, 7 Feb 2012 11:59:37 +1100
+
 karaage (2.6.2-1) stable; urgency=low
 
   * Handle module strings with // as a separator
