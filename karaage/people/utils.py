@@ -22,8 +22,8 @@ def validate_username(username):
         if username:
             if not username.islower():
                 raise UsernameInvalid(u'Username must be all lowercase')
-            if len(username) < 4:
-                raise UsernameInvalid(u'Username must be at least 4 characters')
+            if len(username) < 2:
+                raise UsernameInvalid(u'Username must be at least 2 characters')
             if not username_re.search(username):
                 raise UsernameInvalid(u'Usernames can only contain letters, numbers and underscores')
 
