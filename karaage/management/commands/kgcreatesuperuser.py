@@ -34,12 +34,14 @@ from karaage.people.utils import validate_username, UsernameException
 
 EMAIL_RE = re.compile(
     r"(^[-!#$%&'*+/=?^_`{}|~0-9A-Z]+(\.[-!#$%&'*+/=?^_`{}|~0-9A-Z]+)*"  # dot-atom
-    r'|^"([\001-\010\013\014\016-\037!#-\[\]-\177]|\\[\001-\011\013\014\016-\177])*"' # quoted-string
+    r'|^"([\001-\010\013\014\016-\037!#-\[\]-\177]|\\[\001-\011\013\014\016-\177])*"'  # quoted-string
     r')@(?:[A-Z0-9-]+\.)+[A-Z]{2,6}$', re.IGNORECASE)  # domain
+
 
 def is_valid_email(value):
     if not EMAIL_RE.search(value):
         raise exceptions.ValidationError(_('Enter a valid e-mail address.'))
+
 
 class Command(BaseCommand):
     help = 'Used to create a karaage superuser.'
@@ -50,7 +52,6 @@ class Command(BaseCommand):
         username = ''
         email = ''
         institute_name = ''
-        institute_gid = ''
         first_name = ''
         last_name = ''
         # Try to determine the current system user's username to use as a default.
@@ -89,8 +90,9 @@ class Command(BaseCommand):
                     username = default_username
                 try:
                     validate_username(username)
+                    break
                 except UsernameException, e:
-                    sys.stderr.write(e.message)
+                    sys.stderr.write("%s\n" % e)
                     username = None
                     continue
                 
