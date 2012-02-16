@@ -226,6 +226,8 @@ class AccountDataStore(object):
 
     def unlock_account(self, ua):
         shell = getattr(ua, 'previous_shell', '/bin/bash')
+        if shell.strip() == '':
+            shell = '/bin/bash'
         from karaage.datastores import change_shell
         change_shell(ua, shell)
 

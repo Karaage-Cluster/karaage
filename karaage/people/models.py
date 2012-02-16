@@ -266,10 +266,14 @@ class Person(models.Model):
         set_password(self, password)
 
     def lock(self):
+        if self.is_locked():
+            return
         from karaage.datastores import lock_user
         lock_user(self)
 
     def unlock(self):
+        if not self.is_locked():
+            return
         from karaage.datastores import unlock_user
         unlock_user(self)
 
