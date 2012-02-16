@@ -58,7 +58,7 @@ GENERATED_USER_ATTRS = {
     'gecos': lambda x: 'posixAccount' in x['objectClass'] and '%s %s (%s)' % (str(x['givenName']), str(x['sn']), str(x['o'])) or '',
     'cn': lambda x: '%s %s' % (str(x['givenName']), str(x['sn'])),
     'homeDirectory': lambda x: 'posixAccount' in x['objectClass'] and '/home/%s' % x['uid'] or '',
-    'loginShell': lambda x: 'posixAccount' in x['objectClass'] and '/bin/bash' or '',
+    'loginShell': lambda x: 'posixAccount' in x['objectClass'] and settings.DEFAULT_SHELL or '',
 }
 
 

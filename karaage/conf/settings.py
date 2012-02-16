@@ -17,6 +17,7 @@ SHELLS = (
     ('/bin/zsh', 'zsh'),
 )
    
+DEFAULT_SHELL = '/bin/bash'
 
 INSTALLED_APPS = (
     'andsome.layout',

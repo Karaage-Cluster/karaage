@@ -55,7 +55,7 @@ class AccountDataStore(base.AccountDataStore):
         home_dir = '/home/%s' % person.username
         userid = self.get_next_uid()
 
-        line = "%s:x:%s:%s:%s:%s:%s\n" % (person.username, userid, person.institute.gid, person.get_full_name(), home_dir, '/bin/bash')
+        line = "%s:x:%s:%s:%s:%s:%s\n" % (person.username, userid, person.institute.gid, person.get_full_name(), home_dir, settings.DEFAULT_SHELL)
 
         for pwfile in self.passwd_files:
             f = open(pwfile, 'a')
