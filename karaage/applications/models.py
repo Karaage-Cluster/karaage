@@ -66,6 +66,9 @@ class Application(models.Model):
     def __unicode__(self):
         return "Application #%s" % self.id
 
+    def get_type(self):
+        return self._class
+
     @models.permalink
     def get_absolute_url(self):
         return ('kg_application_detail', [self.id])
