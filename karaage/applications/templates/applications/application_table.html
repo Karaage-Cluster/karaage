@@ -2,6 +2,7 @@
 	<thead>
 		<tr>
 		   <th>Details</th>
+		   <th>Type</th>
 			<th>User</th>
 			<th>State</th>
 		</tr>
@@ -10,6 +11,7 @@
     {% for app in object_list %}
 	   	<tr class="{% cycle row1,row2 %}">
 	   	    <td><a href="{{ app.get_absolute_url }}">{{ app.id }}</a></td>
+	   	    <th>{{ app.get_type }}</th>
 	   	    {% if app.applicant.user %}
 	   	    <td><a href="{{ app.applicant.get_absolute_url }}">{{ app.applicant}}</a></td>
 	   	    {% else %}
