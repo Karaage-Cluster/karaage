@@ -153,7 +153,6 @@ class ProjectApplication(Application):
             start_date=datetime.datetime.today(),
             end_date=datetime.datetime.today() + datetime.timedelta(days=365),
             )
-        project.machine_category = MachineCategory.objects.get_default()
         project.save()
         project.leaders.add(person)
         for mc in self.machine_categories.all():
