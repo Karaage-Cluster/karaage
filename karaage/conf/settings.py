@@ -18,6 +18,7 @@ SHELLS = (
 )
    
 DEFAULT_SHELL = '/bin/bash'
+BOUNCED_SHELL = '/usr/local/sbin/bouncedemail'
 
 INSTALLED_APPS = (
     'andsome.layout',

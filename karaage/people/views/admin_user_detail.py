@@ -21,6 +21,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 import datetime
 
@@ -144,7 +145,7 @@ def bounced_email(request, username):
         log(request.user, person, 2, 'Emails sent to project leaders and account locked')
         for ua in person.useraccount_set.all():
             ua.change_shell(ua.previous_shell)
-            ua.change_shell('/usr/local/sbin/bouncedemail')
+            ua.change_shell(settings.BOUNCED_SHELL)
         return HttpResponseRedirect(person.get_absolute_url())
 
     return render_to_response('people/bounced_email.html', locals(), context_instance=RequestContext(request))

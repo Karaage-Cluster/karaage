@@ -21,6 +21,7 @@ ACCOUNT_DATASTORES = {
 }
 
 LOCKED_SHELL = '/usr/local/sbin/insecure'
+BOUNCED_SHELL = '/usr/local/sbin/bouncedemail'
 
 USER_OBJECTCLASS = ['top','person','organizationalPerson','inetOrgPerson', 'shadowAccount',]
 ACCOUNT_OBJECTCLASS = ['top','person','organizationalPerson','inetOrgPerson', 'shadowAccount','posixAccount']
