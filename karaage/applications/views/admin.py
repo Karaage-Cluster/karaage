@@ -55,13 +55,9 @@ def send_invitation(request):
                     'applications/userapplication_invite_existing.html',
                     {'form': form, 'person': existing}, context_instance=RequestContext(request))
             application = form.save(commit=False)
-            try:
-                applicant = Person.active.get(user__email=email)
-            except Person.DoesNotExist:
-                applicant, created = Applicant.objects.get_or_create(email=email)
-
-            application.applicant = applicant
+            application.applicant = Applicant.objects.create(email=email)
             application.save()
+            
             if application.content_type.model == 'person':
                 application.approve()
                 messages.warning(request, "%s was added to project %s directly since they have an existing account." % (application.applicant, application.project))

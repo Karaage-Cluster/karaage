@@ -145,6 +145,13 @@ class LeaderInviteUserApplicationForm(forms.ModelForm):
         except Person.DoesNotExist:
             pass
 
+        try:
+            applicant = Applicant.objects.get(email=email)
+        except Applicant.DoesNotExist:
+            applicant = None
+
+        if applicant:
+            raise forms.ValidationError(u'Applicant with email %s already exists' % email)
         return email
 
 
