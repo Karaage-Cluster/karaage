@@ -12,7 +12,7 @@
     {{ filter_bar|safe }}	
   </div>
   {% endif %}
-  {% if page.object_list %}
+  {% if user_applications %}
   <h2>User applications</h2>
   <table cellspacing="0">
 	<thead>
@@ -27,7 +27,7 @@
 		</tr>
 	</thead>
     <tbody>
-    {% for app in page.object_list %}
+    {% for app in user_applications %}
 	   	<tr class="{% cycle row1,row2 %}">
 	   	    <td>{{ app.applicant }}</td>
 	   	    <td>{{ app.project.pid }}</td>
@@ -45,9 +45,8 @@
 	{% endfor %}
     </tbody>  	
 </table>
-  {% pagination page request %}
 {% endif %}
-  {% if projects_page.object_list %}
+  {% if project_applications %}
   <h2>Project applications</h2>
   <table cellspacing="0">
 	<thead>
@@ -60,7 +59,7 @@
 		</tr>
 	</thead>
     <tbody>
-    {% for app in projects_page.object_list %}
+    {% for app in project_applications %}
 	   	<tr class="{% cycle row1,row2 %}">
 	   	    <td>{{ app.applicant }}</td>
 	   	    <td>{% yes_no_img app.needs_account %}</td>
@@ -76,9 +75,8 @@
 	{% endfor %}
     </tbody>  	
 </table>
-  {% pagination projects_page request %}
 {% endif %}
-{% if not projects_page.object_list and not page.object_list %}
+{% if not project_applications and not user_applications %}
 <h3>You currently have no pending applications.</h3>
 {% endif %}
 </div>

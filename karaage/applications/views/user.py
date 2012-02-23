@@ -23,7 +23,6 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.db.models import Q
 from django.conf import settings
-from django.core.paginator import Paginator
 from django.core.mail import send_mail
 
 import datetime
@@ -146,7 +145,8 @@ def choose_project(request, token=None):
                                         expires__gt=datetime.datetime.now())
 
     institute = application.applicant.institute
-    
+    term_error = leader_list = project_error = project = q_project = leader = None
+    terms = ""
     project_list = False
     qs = request.META['QUERY_STRING']
 
@@ -179,7 +179,6 @@ def choose_project(request, token=None):
             pass
         leader_list = Person.active.filter(institute=institute, leaders__is_active=True).distinct()
         terms = request.GET['leader_q'].lower()
-        length = len(terms)
         if len(terms) >= 3:
             query = Q()
             for term in terms.split(' '):
@@ -204,7 +203,13 @@ def choose_project(request, token=None):
             project = project_list[0]
             project_list = False
                                    
-    return render_to_response('applications/choose_project.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'applications/choose_project.html',
+        {'term_error': term_error, 'terms': terms,
+         'leader_list': leader_list, 'project_error': project_error,
+         'project_list': project_list, 'project': project, 'q_project': q_project,
+         'leader': leader, 'application': application},
+        context_instance=RequestContext(request))
 
 
 def application_done(request, token):
@@ -389,16 +394,12 @@ def send_invitation(request, project_id):
 @login_required
 def pending_applications(request):
     person = request.user.get_profile()
-    page_no = int(request.GET.get('page', 1))
     user_applications = UserApplication.objects.filter(project__in=person.leaders.all())
     project_applications = ProjectApplication.objects.filter(institute__in=person.delegate.all())
-    p = Paginator(user_applications, 50)
-    projects_p = Paginator(project_applications, 50)
-    page = p.page(page_no)
-    projects_page = projects_p.page(page_no)
+
     return render_to_response('applications/pending_application_list.html',
-                              {'user_applications': user_applications, 'page': page,
-                               'project_applications': project_applications, 'projects_page': projects_page},
+                              {'user_applications': user_applications,
+                               'project_applications': project_applications},
                               context_instance=RequestContext(request))
 
 
