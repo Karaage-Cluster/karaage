@@ -34,7 +34,7 @@ class Project(models.Model):
     leaders = models.ManyToManyField(Person, related_name='leaders')
     description = models.TextField(null=True, blank=True)
     is_approved = models.BooleanField()
-    start_date = models.DateField()
+    start_date = models.DateField(default=datetime.datetime.today)
     end_date = models.DateField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
     machine_category = models.ForeignKey(MachineCategory)

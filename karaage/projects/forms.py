@@ -17,6 +17,7 @@
 
 from django import forms
 from django.contrib.admin.widgets import AdminDateWidget, FilteredSelectMultiple
+import datetime
 
 from karaage.people.models import Institute, Person
 from karaage.machines.models import MachineCategory
@@ -30,7 +31,7 @@ class ProjectForm(forms.ModelForm):
     institute = forms.ModelChoiceField(queryset=Institute.active.all())
     additional_req = forms.CharField(widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), required=False)
     leaders = forms.ModelMultipleChoiceField(queryset=Person.active.select_related(), widget=FilteredSelectMultiple('Leaders', False))
-    start_date = forms.DateField(widget=AdminDateWidget)
+    start_date = forms.DateField(widget=AdminDateWidget, initial=datetime.datetime.today)
     end_date = forms.DateField(widget=AdminDateWidget, required=False)
     machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all(), widget=forms.CheckboxSelectMultiple())
 
@@ -49,7 +50,7 @@ class ProjectForm(forms.ModelForm):
     def clean_pid(self):
         pid = self.cleaned_data['pid']
         try:
-            institute = Institute.objects.get(name=pid)
+            Institute.objects.get(name=pid)
             raise forms.ValidationError(u'Project ID already in system')
         except Institute.DoesNotExist:
             return pid
