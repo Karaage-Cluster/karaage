@@ -9,7 +9,7 @@
 {% block objecttools %}
 {% if perms.software.add_softwarepackage %}
 <ul class="object-tools">
-{% if perms.software.change_softwareaccess_request %}
+{% if perms.software.change_softwareaccessrequest %}
 <li><a href="{% url kg_softwarerequest_list %}">Requests</a></li>
 {% endif %}
 {% if perms.software.add_softwarecategory %}
