@@ -264,7 +264,7 @@ def decline_userapplication(request, application_id):
             to_email = application.applicant.email
             subject, body = form.get_data()
             log(request.user, application.application_ptr, 3, "Application declined")
-            application.delete()
+            application.decline()
             send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
             return HttpResponseRedirect(reverse('kg_user_profile'))
     else:

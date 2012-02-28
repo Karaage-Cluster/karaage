@@ -148,7 +148,7 @@ def decline_userapplication(request, application_id):
             subject, body = form.get_data()
             log(request.user, application.application_ptr, 3, 'Application declined')
             messages.success(request, "%s declined successfully." % application)
-            application.delete()
+            application.decline()
             send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
             return HttpResponseRedirect(reverse('kg_application_list'))
     else:
@@ -194,7 +194,7 @@ def decline_projectapplication(request, application_id):
             subject, body = form.get_data()
             log(request.user, application.application_ptr, 3, 'Application declined')
             messages.success(request, "%s declined successfully." % application)
-            application.delete()
+            application.decline()
             send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
             return HttpResponseRedirect(reverse('kg_application_list'))
 

@@ -17,6 +17,7 @@
 
 from django.core.management.base import BaseCommand
 
+
 class Command(BaseCommand):
     help = "Deletes expired applications in the NEW state and applications that have been complete for a month"
     
@@ -34,14 +35,14 @@ class Command(BaseCommand):
  
         month_ago = now - datetime.timedelta(days=30)
         # Delete all User applications that have been complete for 1 month
-        for application in UserApplication.objects.filter(state=Application.COMPLETE, complete_date__lte=month_ago):
+        for application in UserApplication.objects.filter(state__in=[Application.COMPLETE, Application.DECLINED], complete_date__lte=month_ago):
             if verbose >= 1:
                 print "Deleted completed user application #%s" % application.id
 
             application.delete()
 
         # Delete all project applications that have been complete for 1 month
-        for application in ProjectApplication.objects.filter(state=Application.COMPLETE, complete_date__lte=month_ago): 
+        for application in ProjectApplication.objects.filter(state__in=[Application.COMPLETE, Application.DECLINED], complete_date__lte=month_ago):
             if verbose >= 1:
                 print "Deleted completed project application #%s" % application.id
 

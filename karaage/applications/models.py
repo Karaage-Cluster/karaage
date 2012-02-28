@@ -40,6 +40,7 @@ class Application(models.Model):
     WAITING_FOR_ADMIN = 'K'
     COMPLETE = 'C'
     ARCHIVED = 'A'
+    DECLINED = 'R'
     APPLICATION_STATES = (
         (NEW, 'Invitiation Sent'),
         (OPEN, 'Open'),
@@ -47,7 +48,8 @@ class Application(models.Model):
         (WAITING_FOR_DELEGATE, 'Waiting for institute delegate approval'),
         (WAITING_FOR_ADMIN, 'Waiting for Karaage admin approval'),
         (COMPLETE, 'Complete'),
-        (ARCHIVED, ' Archived'),
+        (ARCHIVED, 'Archived'),
+        (DECLINED, 'Declined'),
         )
     
     secret_token = models.CharField(max_length=64, default=new_random_token, editable=False, unique=True)
@@ -110,6 +112,11 @@ class Application(models.Model):
         self.complete_date = datetime.datetime.now()
         self.save()
         return person
+
+    def decline(self):
+        self.state = Application.DECLINED
+        self.complete_date = datetime.datetime.now()
+        self.save()
 
 
 class UserApplication(Application):
