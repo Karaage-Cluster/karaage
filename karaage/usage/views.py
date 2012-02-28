@@ -176,7 +176,7 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
                     percent = 0
                 try:
                     quota_percent = p_usage / (available_usage * quota.quota) * 10000
-                except ZeroDivisionError:
+                except:
                     quota_percent = 0
                 project_list.append(
                     {'project': p,
