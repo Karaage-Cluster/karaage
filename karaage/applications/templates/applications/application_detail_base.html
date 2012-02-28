@@ -1,4 +1,6 @@
 {% extends "threecol.html" %}
+{% load comments %}
+
 {% block title %}Applications{% endblock %}
 
 {% block bread_crumbs_1 %}
@@ -7,7 +9,6 @@
 {% endblock %}
 
 {% block content %}
-
 <div id="content-related-extra">
 	<div class="module">
 	<h2>Tasks</h2>
@@ -23,6 +24,7 @@
 	</ul>
 	</div>
 </div>
+<div>
 <h1>Application Details</h1>
     <table>
     <tr><td>Application State:</td><td>{{ application.get_state_display }}</td></tr>
@@ -34,7 +36,29 @@
     {% if application.message %}<tr><td>Message:</td><td>{{ application.message }}</td></tr>{% endif %}
     </table>
 <br />
-
+</div>
+<div>
 {% block application_detail %}{% endblock %}
+</div>
+<div>
+{% get_comment_count for application.application_ptr as comment_count %}
+<h2>Comments ({{ comment_count }})</h2>
+{% render_comment_list for application.application_ptr %}
 
+<h3>Add comment</h3>
+{% get_comment_form for application.application_ptr as form %}
+<form action="{% comment_form_target %}" method="post">{% csrf_token %}
+  {{ form.content_type }}
+  {{ form.object_pk }}
+  {{ form.timestamp }}
+  {{ form.security_hash }}
+  {{ form.comment }}
+  <input type="hidden" name="next" value="{% url kg_application_detail application.id %}" />
+  <p style="display:none;">{{ form.honeypot }}</p>
+  <p class="submit">
+    <input type="submit" name="post" class="submit-post" value="Post" />
+  </p>
+
+</form>
+</div>
 {% endblock %}
