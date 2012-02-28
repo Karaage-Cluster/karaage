@@ -33,9 +33,7 @@ def add_edit_project(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     if not request.user.get_profile() in project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
-                                    
-    leader = request.user.get_profile()
-    
+
     if request.method == 'POST':
 
         form = ProjectForm(request.POST, instance=project)
@@ -71,7 +69,10 @@ def institute_projects_list(request, institute_id):
 
     project_list = institute.project_set.all()
 
-    return render_to_response('projects/institute_projects_list.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'projects/institute_projects_list.html',
+        {'project_list': project_list, 'institute': institute},
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -85,11 +86,11 @@ def remove_user(request, project_id, username):
 
     if request.method == 'POST':
         project.users.remove(person)
+        project.save()
         messages.success(request, "User '%s' removed succesfully from project %s" % (person, project.pid))
     
         log(request.user, project, 3, 'Removed %s from project' % person)
         log(request.user, person, 3, 'Removed from project %s' % project)
-
         return HttpResponseRedirect(project.get_absolute_url())
     
     return render_to_response('projects/remove_user_confirm.html', {'project': project, 'person': person}, context_instance=RequestContext(request))

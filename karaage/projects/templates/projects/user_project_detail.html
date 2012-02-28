@@ -38,6 +38,9 @@
 	<th>Email</th>		
 	<th>Active</th>
 	{% endif %}
+    {% if request.user.get_profile in project.leaders.all %}
+    <th></th>
+    {% endif %}
       </tr>
     </thead>   	
     <tbody>
@@ -51,11 +54,9 @@
 	<td>{{ person.email|urlize }}</td>
 	<td>{% yes_no_img person.is_active %}</td>
 	{% endif %}
-    {% comment %}
 	{% if request.user.get_profile in project.leaders.all %}
 	<td><a href="{% url kg_remove_project_member project.pid,person.username%}" class="deletelink">Remove</a></td>
 	{% endif %}
-    {% endcomment %}
       </tr>
       {% endfor %}
     </tbody>  	
