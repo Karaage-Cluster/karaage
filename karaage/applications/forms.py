@@ -80,7 +80,7 @@ class UserApplicantForm(ApplicantForm):
                 raise forms.ValidationError(u'You must type the same password each time')
 
             if not is_password_strong(data['password1']):
-                raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (upercase, lowercase), numbers and is at least 8 characters long.')
+                raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (uppercase, lowercase), numbers and is at least 8 characters long.')
 
             return data
 
