@@ -210,9 +210,10 @@ class AccountDataStore(object):
         if not ua.date_deleted:
             ua.date_deleted = datetime.datetime.now()
             ua.save()
+        from karaage.projects.utils import remove_user_from_project
         for project in ua.project_list():
-            project.users.remove(ua.user)
-            project.save()
+            
+            remove_user_from_project(ua.user, project)
         log(get_current_user(), ua.user, 3, 'Deleted account on %s' % ua.machine_category)
         
     def update_account(self, ua):

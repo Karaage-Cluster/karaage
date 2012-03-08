@@ -31,7 +31,7 @@ from andsome.middleware.threadlocals import get_current_user
 from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
 from karaage.projects.forms import ProjectForm
-from karaage.projects.utils import get_new_pid, add_user_to_project
+from karaage.projects.utils import get_new_pid, add_user_to_project, remove_user_from_project
 from karaage.util import log_object as log
 from karaage.usage.forms import UsageSearchForm
 
@@ -83,13 +83,12 @@ def delete_project(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
 
     if request.method == 'POST':
-        
         project.deactivate()
         log(request.user, project, 3, 'Deleted')
         messages.success(request, "Project '%s' deleted succesfully" % project)
         return HttpResponseRedirect(project.get_absolute_url())
 
-    return render_to_response('projects/project_confirm_delete.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('projects/project_confirm_delete.html', {'project': project}, context_instance=RequestContext(request))
 
     
 @login_required
@@ -111,7 +110,9 @@ def project_detail(request, project_id):
             add_user_to_project(person, project)
         return HttpResponseRedirect(project.get_absolute_url())
 
-    return render_to_response('projects/project_detail.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('projects/project_detail.html',
+                              {'project': project, 'user_list': user_list, 'form': form},
+                              context_instance=RequestContext(request))
 
 
 @login_required
@@ -158,7 +159,9 @@ def project_list(request, queryset=Project.objects.select_related(), template_na
     except (EmptyPage, InvalidPage):
         page = p.page(p.num_pages)
 
-    return render_to_response(template_name, locals(), context_instance=RequestContext(request))
+    return render_to_response(template_name,
+                              {'page': page, 'filter_bar': filter_bar, 'project_list': project_list},
+                              context_instance=RequestContext(request))
 
 
 @permission_required('projects.change_project')
@@ -168,8 +171,7 @@ def remove_user(request, project_id, username):
     person = get_object_or_404(Person, user__username=username)
 
     if request.method == 'POST':
-        project.users.remove(person)
-        project.save()
+        remove_user_from_project(person, project)
         messages.success(request, "User '%s' removed succesfully from project %s" % (person, project.pid))
     
         log(request.user, project, 3, 'Removed %s from project' % person)
@@ -215,4 +217,6 @@ def project_logs(request, project_id):
     )
 
     short = True
-    return render_to_response('log_list.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('log_list.html',
+                              {'log_list': log_list, 'short': short, 'project': project},
+                              context_instance=RequestContext(request))

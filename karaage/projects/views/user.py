@@ -24,6 +24,7 @@ from django.contrib import messages
 from karaage.people.models import Institute, Person
 from karaage.projects.forms import UserProjectForm as ProjectForm
 from karaage.projects.models import Project
+from karaage.projects.utils import remove_user_from_project
 from karaage.util import log_object as log
 
 
@@ -85,8 +86,7 @@ def remove_user(request, project_id, username):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     if request.method == 'POST':
-        project.users.remove(person)
-        project.save()
+        remove_user_from_project(person, project)
         messages.success(request, "User '%s' removed succesfully from project %s" % (person, project.pid))
     
         log(request.user, project, 3, 'Removed %s from project' % person)

@@ -27,19 +27,23 @@ def add_user_to_project(person, project):
             create_account(person, project, mc)
 
 
+def remove_user_from_project(person, project):
+    project.users.remove(person)
+    project.save()
+
+
 def get_new_pid(institute):
     """ Return a new Project ID
     Keyword arguments:
     institute_id -- Institute id
     """
-    no = 1
     number = '0001'
     prefix = 'p%s' % institute.name.replace(' ', '')[:4]
 
     found = True
     while found:
         try:
-            project = Project.objects.get(pid=prefix + number)
+            Project.objects.get(pid=prefix + number)
             number = str(int(number) + 1)
             if len(number) == 1:
                 number = '000' + number
@@ -47,7 +51,7 @@ def get_new_pid(institute):
                 number = '00' + number
             elif len(number) == 3:
                 number = '0' + number
-        except:
+        except Project.DoesNotExist:
             found = False
 
     return prefix + number
