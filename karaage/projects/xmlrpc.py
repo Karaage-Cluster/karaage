@@ -100,3 +100,14 @@ def change_default_project(user, project):
     log(user.user, user, 2, 'Changed default project to %s' % project.pid)
     
     return 0, "Default project changed"
+
+
+@xmlrpc_func(returns='list')
+@permission_required()
+def get_users_projects(user):
+    """
+    List projects a user is part of
+    """
+    user = user.get_profile()
+    projects = user.project_set.filter(is_active=True)
+    return 0, [x.pid for x in projects]

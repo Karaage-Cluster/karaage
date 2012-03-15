@@ -156,6 +156,7 @@ XMLRPC_METHODS = (
     ('karaage.projects.xmlrpc.change_default_project', 'change_default_project',),
     ('karaage.projects.xmlrpc.get_project_members', 'get_project_members',),
     ('karaage.projects.xmlrpc.get_projects', 'get_projects',),
+    ('karaage.projects.xmlrpc.get_users_projects', 'get_users_projects',),
 )
 
 from socket import getfqdn
