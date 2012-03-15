@@ -19,11 +19,14 @@ from django import forms
 from django_shibboleth.utils import parse_attributes
 
 from karaage.applications.forms import UserApplicantForm
+from karaage.applications.models import Applicant
 from karaage.people.models import Institute
 
 
 def add_saml_data(applicant, request):
     attrs, error = parse_attributes(request.META)
+    if not applicant.email:
+        applicant, created = Applicant.objects.get_or_create(email=attrs['email'])
     applicant.first_name = attrs['first_name']
     applicant.last_name = attrs['last_name']
     applicant.email = attrs['email']
