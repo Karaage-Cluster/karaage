@@ -35,7 +35,7 @@
 	   	    <td>{% yes_no_img app.needs_account %}</td>
 	   	    <td>{{ app.get_state_display }}</td>
 	   	    {% if app.state == "L" %}
-            <td><a href="{% url kg_userapplication_approve app.id %}" class="yeslink">&nbsp;Accept</a></td>
+            <td><a href="{% url kg_userapplication_approve app.id %}" class="yeslink">&nbsp;Review/Accept</a></td>
             <td><a href="{% url kg_userapplication_decline app.id %}" class="nolink">&nbsp;Decline</a></td>
             {% else %}
             <td></td>
@@ -65,7 +65,7 @@
 	   	    <td>{% yes_no_img app.needs_account %}</td>
 	   	    <td>{{ app.get_state_display }}</td>
 	   	    {% if app.state == "D" %}
-            <td><a href="{% url kg_projectapplication_detail app.id %}" class="yeslink">&nbsp;Accept</a></td>
+            <td><a href="{% url kg_projectapplication_detail app.id %}" class="yeslink">&nbsp;Review/Accept</a></td>
             <td><a href="{% url kg_projectapplication_decline app.id %}" class="nolink">&nbsp;Decline</a></td>
             {% else %}
             <td></td>
