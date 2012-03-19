@@ -412,22 +412,6 @@ def institute_trends(request):
     return render_to_response('usage/institute_trends.html', locals(), context_instance=RequestContext(request))
 
 
-def job_list(request, object_id, model):
-
-    obj = get_object_or_404(model, pk=object_id)
-
-    if model == Project:
-        j_type = 'project'
-    elif model == UserAccount:
-        j_type = 'user'
-    
-    job_list = obj.cpujob_set.all()
-
-    date_list = job_list.dates('date', 'year')
-
-    return render_to_response('usage/job_list.html', locals(), context_instance=RequestContext(request))
-
-
 def institute_users(request, institute_id, machine_category_id=1):
 
     machine_category = MachineCategory.objects.get(pk=machine_category_id)
