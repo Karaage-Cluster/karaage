@@ -51,7 +51,7 @@ class ProjectForm(forms.ModelForm):
         pid = self.cleaned_data['pid']
         try:
             Institute.objects.get(name=pid)
-            raise forms.ValidationError(u'Project ID already in system')
+            raise forms.ValidationError(u'Project ID not available')
         except Institute.DoesNotExist:
             return pid
  
