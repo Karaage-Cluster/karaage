@@ -497,7 +497,11 @@ def mem_report(request, machine_category_id=settings.DEFAULT_MC):
 
 
 def job_detail(request, jobid):
+    
     job = get_object_or_404(CPUJob, jobid=jobid)
+    
+    if not job.project.can_view(request.user) and not getattr(settings, 'USAGE_IS_PUBLIC', False):
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     return render_to_response('usage/job_detail.html', {'job': job}, context_instance=RequestContext(request))
 
