@@ -1,3 +1,9 @@
+karaage (2.6.4-1) stable; urgency=low
+
+  * See https://github.com/Karaage-Cluster/karaage/issues?milestone=5&state=closed
+
+ -- Sam Morrison <sam@vpac.org>  Thu, 22 Mar 2012 16:51:27 +1100
+
 karaage (2.6.3-1) stable; urgency=low
 
   * Jobname for a CPU Job increased to 256 characters
