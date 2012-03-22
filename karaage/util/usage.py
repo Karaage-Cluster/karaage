@@ -34,7 +34,7 @@ def get_institute_usage(institute, start, end, machine_category):
     for a given period
 
     Keyword arguments:
-    institute -- 
+    institute --
     start -- start date
     end -- end date
     machine_category -- MachineCategory object
@@ -44,15 +44,15 @@ def get_institute_usage(institute, start, end, machine_category):
         cache = InstituteCache.objects.get(institute=institute, date=datetime.date.today(), start=start, end=end, machine_category=machine_category)
     except InstituteCache.DoesNotExist:
 
-        data = CPUJob.objects.filter(machine__category=machine_category, 
-                                     project__institute=institute, 
+        data = CPUJob.objects.filter(machine__category=machine_category,
+                                     project__institute=institute,
                                      date__range=(start, end)).aggregate(usage=Sum('cpu_usage'), jobs=Count('id'))
 
-        cache = InstituteCache.objects.create(institute=institute, 
-                                              start=start, 
-                                              end=end, 
-                                              machine_category=machine_category, 
-                                              cpu_hours=data['usage'], 
+        cache = InstituteCache.objects.create(institute=institute,
+                                              start=start,
+                                              end=end,
+                                              machine_category=machine_category,
+                                              cpu_hours=data['usage'],
                                               no_jobs=data['jobs'])
     return cache.cpu_hours, cache.no_jobs
 
@@ -62,7 +62,7 @@ def get_project_usage(project, start, end, machine_category):
     for a given period
 
     Keyword arguments:
-    project -- 
+    project --
     start -- start date
     end -- end date
     
@@ -71,12 +71,12 @@ def get_project_usage(project, start, end, machine_category):
         cache = ProjectCache.objects.get(pid=project, date=datetime.date.today(), start=start, end=end, machine_category=machine_category)
     except ProjectCache.DoesNotExist:
 
-        data = CPUJob.objects.filter(machine__category=machine_category, 
-                                     project=project, 
-                                     date__range=(start,end)).aggregate(usage=Sum('cpu_usage'), jobs=Count('id'))
+        data = CPUJob.objects.filter(machine__category=machine_category,
+                                     project=project,
+                                     date__range=(start, end)).aggregate(usage=Sum('cpu_usage'), jobs=Count('id'))
 
-        cache =  ProjectCache.objects.create(pid=project, start=start, 
-                                             end=end, machine_category=machine_category, 
+        cache = ProjectCache.objects.create(pid=project, start=start,
+                                             end=end, machine_category=machine_category,
                                              cpu_hours=data['usage'], no_jobs=data['jobs'])
     return cache.cpu_hours, cache.no_jobs
 
@@ -85,10 +85,10 @@ def get_user_usage(user, project, start, end):
     """Return a tuple of cpu hours and number of jobs for a user in a specific project
 
     Keyword arguments:
-    user -- 
+    user --
     project -- The project the usage is from
     start -- start date
-    end -- end date 
+    end -- end date
     """
     try:
         cache = UserCache.objects.get(user=user, project=project, date=datetime.date.today(), start=start, end=end)
@@ -97,12 +97,11 @@ def get_user_usage(user, project, start, end):
                                       project=project,
                                       user__user=user).aggregate(usage=Sum('cpu_usage'), jobs=Count('id'))
 
-        cache = UserCache.objects.create(user=user, project=project, 
-                                         start=start, end=end, 
+        cache = UserCache.objects.create(user=user, project=project,
+                                         start=start, end=end,
                                          cpu_hours=data['usage'], no_jobs=data['jobs'])
 
     return cache.cpu_hours, cache.no_jobs
-
 
 
 def get_machine_usage(machine, start, end):
@@ -110,7 +109,7 @@ def get_machine_usage(machine, start, end):
     for a given period
 
     Keyword arguments:
-    machine -- 
+    machine --
     start -- start date
     end -- end date
     
@@ -123,7 +122,9 @@ def get_machine_usage(machine, start, end):
         data = CPUJob.objects.filter(machine=machine,
                                      date__range=(start, end)).aggregate(usage=Sum('cpu_usage'), jobs=Count('id'))
 
-        cache =  MachineCache.objects.create(machine=machine, start=start, end=end, cpu_hours=data['usage'], no_jobs=data['jobs'])
-
+        cache = MachineCache.objects.create(machine=machine, start=start, end=end, cpu_hours=data['usage'], no_jobs=data['jobs'])
+    except MachineCache.MultipleObjectsReturned:
+        MachineCache.objects.filter(machine=machine, date=datetime.date.today(), start=start, end=end).delete()
+        return get_machine_usage(machine, start, end)
+        
     return cache.cpu_hours, cache.no_jobs
-
