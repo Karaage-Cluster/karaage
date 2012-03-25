@@ -61,7 +61,7 @@ class ProjectChunk(models.Model):
         from karaage.util.helpers import get_available_time
 
         TWOPLACES = Decimal(10) ** -2
-        usage, jobs = self.project.get_usage(start, end)
+        usage, jobs = self.project.get_usage(start, end, self.machine_category)
         if usage is None:
             usage = Decimal('0')
         total_time, ave_cpus = get_available_time()
