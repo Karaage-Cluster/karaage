@@ -32,14 +32,14 @@ class ProjectLookup(LookupChannel):
 
         return Project.objects.filter(Q(pid__icontains=q) | Q(name__icontains=q))
 
-    def get_result(self,obj):
+    def get_result(self, obj):
         u""" result is the simple text that is the completion of what the person typed """
         return obj.pid
 
-    def format_match(self, p):
+    def format_match(self, obj):
         """ (HTML) formatted item for display in the dropdown """
-        return escape(u"%s" % (p))
+        return escape(u"%s" % (obj))
 
-    def format_item_display(self, p):
+    def format_item_display(self, obj):
         """ (HTML) formatted item for displaying item in the selected deck area """
-        return escape(u"%s" % (p))
+        return escape(u"%s" % (obj))
