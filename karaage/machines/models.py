@@ -145,3 +145,14 @@ class UserAccount(models.Model):
             return get_shell(self)
         except:
             return ''
+
+class UserAccountLog(models.Model):
+    ua = models.ForeignKey(UserAccount)
+    machine = models.ForeignKey(Machine)
+    dt = models.DateTimeField()
+    hostname = models.CharField(max_length=50)
+    authentication_type = models.CharField(max_length=20)
+    ip = models.IPAddressField()
+    country = models.CharField(max_length=2, null=True)
+    subnet = models.IPAddressField()
+    subnet_prefix_len = models.IntegerField()
