@@ -53,8 +53,6 @@ class SAMLApplicantForm(UserApplicantForm):
         self.fields['first_name'].required = False
         self.fields['last_name'].required = False
         self.fields['email'].required = False
-        self.fields['username'].label = 'Requested username'
-        self.fields['username'].required = True
         del self.fields['institute']
 
 
