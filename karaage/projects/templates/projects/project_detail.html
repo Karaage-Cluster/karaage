@@ -50,6 +50,7 @@
       {% endif %}
       <tr><td>Leaders:</td><td>{% for l in project.leaders.all %}<a href="{{ l.get_absolute_url }}">{{ l }}</a> {% endfor %}</td></tr>
       <tr><td>Institiute:</td><td><a href="{{ project.institute.get_absolute_url }}">{{ project.institute }}</a></td></tr>
+      <tr><td>Description:</td><td>{{ project.description|linebreaks }}</td></tr>
       <tr><td>Last Usage:</td><td>{% if project.last_usage %}{{ project.last_usage|date }} ({{ project.last_usage|timesince }}){% else %}No usage{% endif %}</td></tr>
       <tr><td>Start Date:</td><td>{{ project.start_date|date }}</td></tr>
       <tr><td>End Date:</td><td>{{ project.end_date|date }}</td></tr>
@@ -61,7 +62,6 @@
       <tr id="hidden-link"><td colspan="2"><a href="#" onclick="showHidden()">More....</a></td></tr>
      </table>
 	<table id="hidden" style="display: none">
-      <tr><td>Description:</td><td>{{ project.description|linebreaks }}</td></tr>
       <tr><td>Additional Req:</td><td>{{ project.additional_req|linebreaks }}</td></tr>
       <tr><td>Machine Cat.</td><td>{{ project.machine_category }}</td></tr>
       <tr><td>Approved by:</td><td><a href="{{ project.approved_by.get_absolute_url }}">{{ project.approved_by }}</a></td></tr>
