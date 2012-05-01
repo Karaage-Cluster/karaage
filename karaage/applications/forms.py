@@ -26,6 +26,7 @@ from karaage.applications.models import UserApplication, ProjectApplication, App
 from karaage.people.models import Person, Institute
 from karaage.people.utils import validate_username, UsernameException
 from karaage.projects.models import Project
+from karaage.datastores import create_password_hash
 
 APP_CHOICES = (
     ('U', 'Join an existing project'),
@@ -90,6 +91,13 @@ class UserApplicantForm(ApplicantForm):
         if users:
             raise forms.ValidationError(u'An account with this email already exists. Please email %s' % settings.ACCOUNTS_EMAIL)
         return email
+
+    def save(self, commit=True):
+        applicant = super(UserApplicantForm, self).save(commit=commit)
+        applicant.password = create_password_hash(self.cleaned_data['password1'])
+        if commit:
+            applicant.save()
+        return applicant
 
 
 class UserApplicationForm(forms.ModelForm):
