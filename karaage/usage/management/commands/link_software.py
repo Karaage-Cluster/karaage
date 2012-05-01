@@ -74,7 +74,10 @@ class Command(BaseCommand):
                         try:
                             package_name, version_name = module.split('//')
                         except ValueError:
-                            print "Failed to create a new software package from module string %s" % module
+                            try:
+                                print 'Failed to create a new software package from module string %s' % module
+                            except UnicodeEncodeError:
+                                pass
                             continue
                     package, created = SoftwarePackage.objects.get_or_create(name=package_name)
                     if created and verbose > 0:
