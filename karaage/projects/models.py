@@ -37,7 +37,6 @@ class Project(models.Model):
     start_date = models.DateField(default=datetime.datetime.today)
     end_date = models.DateField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
-    machine_category = models.ForeignKey(MachineCategory)
     machine_categories = models.ManyToManyField(MachineCategory, null=True, blank=True, related_name='projects')
     is_active = models.BooleanField()
     approved_by = models.ForeignKey(Person, related_name='project_approver', null=True, blank=True, editable=False)
@@ -120,14 +119,21 @@ class Project(models.Model):
                   start=datetime.date.today() - datetime.timedelta(days=90),
                   end=datetime.date.today(),
                   machine_category=None):
-        if machine_category is None:
-            machine_category = MachineCategory.objects.get_default()
         from karaage.util.usage import get_project_usage
-        return get_project_usage(self, start, end, machine_category)
-
-    def gen_usage_graph(self, start, end, machine_category=None):
         if machine_category is None:
-            machine_category = self.machine_category
+            mc_list = [ machine_category ]
+        else:
+            mc_list = self.machine_categories
+            
+        results = (0, 0)
+        for mc in mc_list: 
+            (cpu_hours, no_jobs) = get_project_usage(self, start, end, mc)
+            results[0] += cpu_hours
+            results[1] += no_jobs
+            
+        return results
+
+    def gen_usage_graph(self, start, end, machine_category):
         from karaage.graphs import gen_project_graph
         gen_project_graph(self, start, end, machine_category)
 

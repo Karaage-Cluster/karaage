@@ -65,7 +65,7 @@ def user_detail(request, username):
         no_account_error = ''
         for mc in project.machine_categories.all():
             if not person.has_account(mc):
-                no_account_error = "%s has no account on %s. Please create one first" % (person, project.machine_category)
+                no_account_error = "%s has no account on %s. Please create one first" % (person, mc)
                 break
         if not no_account_error:
             add_user_to_project(person, project)
