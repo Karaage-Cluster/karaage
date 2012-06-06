@@ -227,7 +227,7 @@ class AccountDataStore(object):
 
     def unlock_account(self, ua):
         shell = getattr(ua, 'previous_shell', settings.DEFAULT_SHELL)
-        if shell.strip() == '':
+        if not shell or shell.strip() == '':
             shell = settings.DEFAULT_SHELL
         from karaage.datastores import change_shell
         change_shell(ua, shell)
