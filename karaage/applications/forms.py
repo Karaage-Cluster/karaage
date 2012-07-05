@@ -46,7 +46,7 @@ def _clean_email(email):
 
     found = False
     for string in email_match_list:
-        m = re.search(string, email)
+        m = re.search(string, email, re.IGNORECASE)
         if m is not None:
             found = True
             break
