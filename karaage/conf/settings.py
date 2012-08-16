@@ -71,6 +71,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.core.context_processors.auth',
     'django.core.context_processors.debug',
+    'django.core.context_processors.static',
     'django.core.context_processors.media',
     'django.contrib.messages.context_processors.messages',
     'karaage.context_processors.common',
