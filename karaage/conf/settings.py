@@ -31,6 +31,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.flatpages',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
     'django_xmlrpc',
     'south',
     'andsome',
@@ -82,11 +83,6 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.load_template_source',
 #     'django.template.loaders.eggs.load_template_source',
 )
-
-# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
-# trailing slash.
-# Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/django_media/'
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
