@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import re
+
 from django import forms
 from django.conf import settings
 from django.db.models import Q
@@ -32,6 +34,32 @@ APP_CHOICES = (
     ('U', 'Join an existing project'),
     ('P', 'Apply to start a new project'),
 )
+
+
+def _clean_email(email):
+    email_match_type = "exclude"
+    email_match_list = []
+    if hasattr(settings, 'EMAIL_MATCH_TYPE'):
+        email_match_type = settings.EMAIL_MATCH_TYPE
+    if hasattr(settings, 'EMAIL_MATCH_LIST'):
+        email_match_list = settings.EMAIL_MATCH_LIST
+
+    found = False
+    for string in email_match_list:
+        m = re.search(string, email, re.IGNORECASE)
+        if m is not None:
+            found = True
+            break
+
+    message = "This email address cannot be used."
+    if email_match_type == "include":
+        if not found:
+            raise forms.ValidationError(message)
+    elif email_match_type == "exclude":
+        if found:
+            raise forms.ValidationError(message)
+    else:
+        raise forms.ValidationError("Oops. Nothing is valid. Sorry.")
 
 
 class StartInviteApplicationForm(forms.Form):
@@ -67,6 +95,7 @@ class UserApplicantForm(ApplicantForm):
         self.fields['username'].label = 'Requested username'
         self.fields['username'].required = True
         self.fields['institute'].required = True
+        self.fields['telephone'].required = True
 
     password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
     password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)')
@@ -90,6 +119,7 @@ class UserApplicantForm(ApplicantForm):
         users = Person.active.filter(user__email__exact=email)
         if users:
             raise forms.ValidationError(u'An account with this email already exists. Please email %s' % settings.ACCOUNTS_EMAIL)
+        _clean_email(email)
         return email
 
     def save(self, commit=True):
@@ -161,6 +191,8 @@ class LeaderInviteUserApplicationForm(forms.ModelForm):
         if applicant:
             raise forms.ValidationError(u'Applicant with email %s already exists' % email)
         return email
+
+        _clean_email(email)
 
 
 class AdminInviteUserApplicationForm(LeaderInviteUserApplicationForm):
