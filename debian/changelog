@@ -1,6 +1,48 @@
+karaage (2.6.5-1) stable; urgency=low
+
+  * Update for latest django-ajax-selects.
+  * Remove obsolete code.
+  * Convert everything to use Django staticfiles.
+  * Make telehone number required in applicant form.
+  * Additional email address checks.
+  * Support Django 1.4.
+  * See https://github.com/Karaage-Cluster/karaage/issues?milestone=2&state=closed
+    * django-ajax-selects update
+    * project description
+    * Non-privileged admins can edit machine category
+    * latest django-ajax-selects support
+    * link_software error when unicode
+    * Error when no shell on unlocking
+    * Convert media files to staticfiles
+
+ -- Brian May <bam@debian.org>  Tue, 16 Oct 2012 09:01:56 +1100
+
 karaage (2.6.4-1) stable; urgency=low
 
   * See https://github.com/Karaage-Cluster/karaage/issues?milestone=5&state=closed
+    * Method to get a users projects via XML RPC
+    * Comments for Applications
+    * Don't allow people to join a project they are already a member of
+    * Project management as a project leader
+    * View pending project details before accepting
+    * Users stay in LDAP group when deleting project
+    * Set default project by webpage
+    * logging in takes you to home page
+    * application list doesn't display the application title
+    * Unlocking an account that is already unlocked
+    * Make default shell configurable
+    * Make bounced shell configurable
+    * Display application type in application table
+    * Multiple invitations to same email for same project
+    * Page 2 of applications on User site is Empty
+    * Project start date in form
+    * Deleted and Rejected applications
+    * Usage divide by zero issue
+    * Approve software request link doesn't show up
+    * SAML duplicate email error
+    * Spelling mistake.
+    * update project fails
+    * Machine Category usage cache errors
 
  -- Sam Morrison <sam@vpac.org>  Thu, 22 Mar 2012 16:51:27 +1100
 
