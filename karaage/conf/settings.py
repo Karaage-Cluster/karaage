@@ -1,4 +1,6 @@
 # Package defined Karaage Settings
+AJAX_SELECT_BOOTSTRAP = True
+AJAX_SELECT_INLINES = "staticfiles"
 
 AUTH_PROFILE_MODULE = 'people.Person'
 
@@ -53,8 +55,6 @@ INSTALLED_APPS = (
     'karaage.applications',
     'ajax_select',
     'placard',
-    'placard.lgroups',
-    'placard.lusers',
     'django_pbs.servers',
     'django_pbs.jobs',
     'django.contrib.comments',
