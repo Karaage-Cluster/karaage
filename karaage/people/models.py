@@ -19,7 +19,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
-from placard.client import LDAPClient
 from andsome.middleware.threadlocals import get_current_user
 from karaage.institutes.managers import ActiveInstituteManager
 from karaage.constants import TITLES, STATES, COUNTRIES
@@ -280,17 +279,6 @@ class Person(models.Model):
     def is_locked(self):
         from karaage.datastores import is_locked
         return is_locked(self)
-                
-    def loginShell(self):
-        conn = LDAPClient()
-        try:
-            ldap_user = conn.get_user('uid=%s' % self.username)
-        except:
-            return ''
-        try:
-            return ldap_user.loginShell
-        except:
-            return ''
 
 
 class InstituteDelegate(models.Model):

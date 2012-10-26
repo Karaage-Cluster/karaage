@@ -1,5 +1,6 @@
 {% extends "threecol.html" %}
 {% load comments %}
+{% load machines %}
 {% block title %}Users{% endblock %}
 
 {% block content_title %}{% endblock %}
@@ -144,7 +145,7 @@
 	  {% ifequal ua.machine_category.id 1 %}
 	  <td>{% if not ua.date_deleted and perms.machines.change_useraccount %}<form action="{% url kg_change_shell ua.id %}" method="post">{% csrf_token %}
 	  	<div>
-	      {{ shell_form.shell }}
+	      {% shell_field ua %}
 	      <input type="submit" value="Change" />
 	      </div>
 	    </form>{% else %}&nbsp;{% endif %}</td>

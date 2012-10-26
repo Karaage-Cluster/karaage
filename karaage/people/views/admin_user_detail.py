@@ -30,7 +30,6 @@ from karaage.people.forms import AdminPasswordChangeForm
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
 from karaage.util.email_messages import send_bounced_warning
-from karaage.machines.forms import ShellForm
 from karaage.util import get_date_range, log_object as log
 
 
@@ -72,13 +71,6 @@ def user_detail(request, username):
             messages.success(request, "User '%s' was added to %s succesfully" % (person, project))
             log(request.user, project, 2, '%s added to project' % person)
 
-    #change shell form
-    shell_form = ShellForm()
-    try:
-        shell_form.initial = {'shell': person.loginShell()}
-    except:
-        pass
-    
     return render_to_response('people/person_detail.html', locals(), context_instance=RequestContext(request))
 
 
