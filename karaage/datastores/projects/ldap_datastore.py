@@ -15,30 +15,23 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from placard.client import LDAPClient
-from placard.exceptions import DoesNotExistException
-
 from karaage.datastores.projects import base
-
+from karaage.datastores import ldap_models
 
 class ProjectDataStore(base.ProjectDataStore):
-    
+
     def create_or_update_project(self, project):
-        conn = LDAPClient()
         try:
-            conn.get_group('cn=%s' % project.pid)
-        except:
-            conn.add_group(cn=str(project.pid))
-        users = [str(person.user.username) for person in project.users.all()]
-        if users:
-            conn.update_group('cn=%s' % project.pid, memberUid=users)
-        else:
-            conn.update_group('cn=%s' % project.pid, memberUid='')
-        del(conn)
-            
+            group = ldap_models.group.objects.get(cn=project.pid)
+        except ldap_models.group.DoesNotExist:
+            group = ldap_models.group(cn=project.pid)
+            group.set_defaults()
+        group.secondary_accounts.clear(commit=False)
+        for person in project.users.all():
+            luser = ldap_models.account.objects.get(uid=person.user.username)
+            group.secondary_accounts.add(luser, commit=False)
+        group.save()
+
     def delete_project(self, project):
-        conn = LDAPClient()
-        try:
-            conn.delete_group('cn=%s' % project.pid)
-        except DoesNotExistException:
-            pass
+        group = ldap_models.group.objects.get(cn=project.pid)
+        group.delete()

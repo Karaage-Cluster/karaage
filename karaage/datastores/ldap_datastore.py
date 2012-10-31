@@ -17,11 +17,13 @@
 
 from django.conf import settings
 
-from placard.client import LDAPClient
-from placard.exceptions import DoesNotExistException
-
 from karaage.datastores import base
+from karaage.datastores import ldap_models
 
+def str_or_none(string):
+    if string is None or string == "":
+        return None
+    return ""
 
 class PersonalDataStore(base.PersonalDataStore):
     
@@ -31,165 +33,98 @@ class PersonalDataStore(base.PersonalDataStore):
     def activate_user(self, person):
         person = super(PersonalDataStore, self).activate_user(person)
 
-        attrs = {}
-        attrs['uid'] = str(person.username)
-        attrs['givenName'] = str(person.first_name)
-        attrs['sn'] = str(person.last_name)
-        attrs['telephoneNumber'] = str(person.telephone)
-        attrs['mail'] = str(person.email)
-        attrs['o'] = str(person.institute.name)
-        attrs['title'] = str(person.title)
-        attrs['userPassword'] = str(person.user.password)
-        
-        conn = LDAPClient()
-        conn.add_user(**attrs)
-        person.user.set_unusable_password()
-        person.user.save()
-        person.save(update_datastore=False)
-        del(conn)
+        p = ldap_models.person()
+        p.set_defaults()
+        p.uid = person.username
+        p.givenName = person.first_name
+        p.sn = person.last_name
+        p.telephoneNumber = str_or_none(person.telephone) or None
+        p.mail = str_or_none(person.email) or None
+        p.title = str_or_none(person.title) or None
+        p.o = person.institute.name
+        p.userPassword = person.user.password
+        p.save()
+
         return person
 
     def delete_user(self, person):
         super(PersonalDataStore, self).delete_user(person)
-
-        conn = LDAPClient()
         try:
-            conn.delete_user('uid=%s' % person.user.username)
-        except DoesNotExistException:
+            p = ldap_models.person.objects.get(uid=person.username)
+            p.delete()
+        except ldap_models.person.DoesNotExist:
             pass
 
     def update_user(self, person):
-        conn = LDAPClient()
-    
-        conn.update_user(
-            'uid=%s' % person.username,
-            cn='%s %s' % (str(person.first_name), str(person.last_name)),
-            givenName=str(person.first_name),
-            sn=str(person.last_name),
-            telephoneNumber=str(person.telephone),
-            mail=str(person.email),
-            title=str(person.title),
-            o=str(person.institute.name),
-            )
-        del(conn)
         super(PersonalDataStore, self).update_user(person)
+        p = ldap_models.person.objects.get(uid=person.username)
+        p.givenName = person.first_name
+        p.sn = person.last_name
+        p.telephoneNumber = str_or_none(person.telephone) or None
+        p.mail = str_or_none(person.email) or None
+        p.title = str_or_none(person.title) or None
+        p.o = person.institute.name
+        p.save()
 
     def is_locked(self, person):
-        super(PersonalDataStore, self).is_locked(person)
-
-        conn = LDAPClient()
-        try:
-            conn.get_user('uid=%s' % person.username)
-        except DoesNotExistException:
-            return True
-        output = conn.ldap_search(settings.LDAP_USER_BASE,
-                                  'uid=%s' % person.username,
-                                  retrieve_attributes=['nsAccountLock'])
-        if output[0][1]:
-            return True
-        
-        return False
+        p = ldap_models.person.objects.get(uid=person.username)
+        return p.is_locked()
 
     def lock_user(self, person):
         super(PersonalDataStore, self).lock_user(person)
-        
-        conn = LDAPClient()
-        conn.update_user(
-            'uid=%s' % person.username,
-            nsRoleDN=settings.LDAP_LOCK_DN,
-            )
-        del(conn)
-        
+        p = ldap_models.person.objects.get(uid=person.username)
+        p.lock()
+        p.save()
+
     def unlock_user(self, person):
         super(PersonalDataStore, self).unlock_user(person)
-        
-        conn = LDAPClient()
-        dn = "uid=%s,%s" % (person.username, settings.LDAP_USER_BASE)
-        old = {
-            'nsRoleDN': settings.LDAP_LOCK_DN,
-            }
-        new = {}
-        conn.ldap_modify(dn, old, new)
-        del(conn)
+        p = ldap_models.person.objects.get(uid=person.username)
+        p.unlock()
+        p.save()
 
     def set_password(self, person, raw_password):
-        conn = LDAPClient()
-        conn.change_password('uid=%s' % person.user.username, raw_password)
-        del(conn)
+        super(PersonalDataStore, self).set_password(person, raw_password)
+        p = ldap_models.person.objects.get(uid=person.username)
+        p.change_password(raw_password, settings.LDAP_PASSWD_SCHEME)
+        p.save()
 
     def user_exists(self, username):
-        conn = LDAPClient()
         try:
-            conn.get_user('uid=%s' % username)
+            p = ldap_models.person.objects.get(uid=username)
             return True
-        except DoesNotExistException:
+        except ldap_models.person.DoesNotExist:
             return False
-        
+
     def create_password_hash(self, raw_password):
         from placard.ldap_passwd import md5crypt
         return '{crypt}%s' % md5crypt(raw_password)
 
     def change_username(self, person, new_username):
-        conn = LDAPClient()
-        conn.change_uid('uid=%s' % person.user.username, new_username)
-        del(conn)
+        p = ldap_models.person.objects.get(uid=person.username)
+        p.rename(uid=new_username)
 
 
 class AccountDataStore(base.AccountDataStore):
 
     def create_account(self, person, default_project):
+        luser = ldap_models.account.objects.convert(ldap_models.person).get(uid=person.username)
+        luser.set_defaults()
+        luser.gidNumber = person.institute.gid
+        luser.save()
+
         ua = super(AccountDataStore, self).create_account(person, default_project)
-        conn = LDAPClient()
-        
-        ldap_attrs = __import__(settings.LDAP_ATTRS, {}, {}, [''])
-        
-        data = conn.get_user('uid=%s' % person.username).__dict__
-        data['objectClass'] = settings.ACCOUNT_OBJECTCLASS
-        data['default_project'] = default_project
-        data['person'] = person
-        conn.update_user(
-            'uid=%s' % person.username,
-            gecos=ldap_attrs.GENERATED_USER_ATTRS['gecos'](data),
-            uidNumber=ldap_attrs.GENERATED_USER_ATTRS['uidNumber'](data),
-            gidNumber=ldap_attrs.GENERATED_USER_ATTRS['gidNumber'](data),
-            homeDirectory=ldap_attrs.GENERATED_USER_ATTRS['homeDirectory'](data),
-            loginShell=ldap_attrs.GENERATED_USER_ATTRS['loginShell'](data),
-            objectClass=settings.ACCOUNT_OBJECTCLASS
-            )
-        del(conn)
         return ua
 
     def delete_account(self, ua):
         super(AccountDataStore, self).delete_account(ua)
-        conn = LDAPClient()
-
-        conn.update_user(
-            'uid=%s' % ua.username,
-            gecos='',
-            uidNumber='',
-            gidNumber='',
-            homeDirectory='',
-            loginShell='',
-            objectClass=settings.USER_OBJECTCLASS
-            )
-        del(conn)
+        luser = ldap_models.account.objects.get(uid=ua.username)
+        luser.delete()
 
     def update_account(self, ua):
         super(AccountDataStore, self).update_account(ua)
-        conn = LDAPClient()
-        ldap_attrs = __import__(settings.LDAP_ATTRS, {}, {}, [''])
-        
-        data = conn.get_user('uid=%s' % ua.username).__dict__
-        data['default_project'] = ua.default_project
-        data['person'] = ua.user
-
-        conn.update_user(
-            'uid=%s' % ua.username,
-            homeDirectory=ldap_attrs.GENERATED_USER_ATTRS['homeDirectory'](data),
-            gecos=ldap_attrs.GENERATED_USER_ATTRS['gecos'](data),
-            gidNumber=ldap_attrs.GENERATED_USER_ATTRS['gidNumber'](data),
-            )
-        del(conn)
+        luser = ldap_models.account.objects.get(uid=ua.username)
+        luser.gidNumber = ua.user.institute.gid
+        luser.save()
 
     def lock_account(self, ua):
         super(AccountDataStore, self).lock_account(ua)
@@ -198,13 +133,11 @@ class AccountDataStore(base.AccountDataStore):
         super(AccountDataStore, self).unlock_account(ua)
 
     def get_shell(self, ua):
-        super(AccountDataStore, self).get_shell(ua)
-        conn = LDAPClient()
-        luser = conn.get_user('uid=%s' % ua.username)
+        luser = ldap_models.account.objects.get(uid=ua.username)
         return luser.loginShell
 
     def change_shell(self, ua, shell):
         super(AccountDataStore, self).change_shell(ua, shell)
-        conn = LDAPClient()
-        conn.update_user('uid=%s' % ua.username, loginShell=str(shell))
-        del(conn)
+        luser = ldap_models.account.objects.get(uid=ua.username)
+        luser.loginShell = shell
+        luser.save()

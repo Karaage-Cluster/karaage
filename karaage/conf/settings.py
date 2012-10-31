@@ -1,4 +1,11 @@
 # Package defined Karaage Settings
+PLACARD_MODELS = 'karaage.datastores.ldap_models'
+
+AJAX_LOOKUP_CHANNELS = {
+    'account'  : ( 'placard.lookups', 'AccountLookup' ),
+    'group'  : ( 'placard.lookups', 'GroupLookup' )
+}
+
 AJAX_SELECT_BOOTSTRAP = True
 AJAX_SELECT_INLINES = "staticfiles"
 
@@ -110,6 +117,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'karaage.middleware.saml.SamlUserMiddleware',
+    'tldap.middleware.TransactionMiddleware',
 )
 
 AUTHENTICATION_BACKENDS = (
