@@ -54,7 +54,7 @@
       <td>{{ p.start_date|date }}</td>
       <td>{{ p.end_date|date }}</td>
       <td>{% ifequal p ua.default_project %}
-	    <img src="{{ STATIC_URL }}img/admin/icon-yes.gif" alt="1" />{% else %}
+	    <img src="{{ STATIC_URL }}admin/img/icon-yes.gif" alt="1" />{% else %}
 	    <a href="{% url kg_user_make_default ua.id,p.pid %}?next={% url kg_user_profile_projects %}">Make default</a>
 		{% endifequal %}</td>
       <td><a href="{{ p.get_usage_url }}">Usage</a></td>

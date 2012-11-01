@@ -37,9 +37,9 @@
     <h2>Project Details</h2>
     <h3>{{ project }}
       {% if project.is_active and project.is_approved %}
-      <img src="{{ STATIC_URL }}img/admin/icon_success.gif" alt="Active" />
+      <img src="{{ STATIC_URL }}admin/img/icon_success.gif" alt="Active" />
       {% else %}
-      <img src="{{ STATIC_URL }}img/admin/icon_error.gif" alt="Not Active"/>
+      <img src="{{ STATIC_URL }}admin/img/icon_error.gif" alt="Not Active"/>
       {% endif %}		
       
     </h3>
@@ -124,12 +124,12 @@
 	  <td>{{ user.email|urlize }}</td>
 	  <td>
 	    {% if not user.is_active %}
-	    <img src="{{ STATIC_URL }}img/admin/icon-no.gif" alt="inactive" />
+	    <img src="{{ STATIC_URL }}admin/img/icon-no.gif" alt="inactive" />
 	    {% else %}
 	    {% if user.is_locked %}
 	    <img src="{{ STATIC_URL }}img/lock.png" alt="locked" />
 	    {% else %}
-	    <img src="{{ STATIC_URL }}img/admin/icon-yes.gif" alt="active" />
+	    <img src="{{ STATIC_URL }}admin/img/icon-yes.gif" alt="active" />
 	    {% endif %}
 	    {% endif %}		  		
 	  </td>

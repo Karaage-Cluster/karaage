@@ -45,7 +45,7 @@
 	<li><a href="ldap/">LDAP</a><br /><br /></li>
 	{% if perms.people.change_person and person.is_active %}
 	{% if person.is_locked %}
-	<li><a href="unlock/"><img src="{{ STATIC_URL }}img/lock.png" alt="Lock"/>&nbsp;Unlock</a><br /><br /></li>
+	<li><a href="unlock/"><img src="{{ STATIC_URL }}img/lock.png" alt="Lock"/>&nbsp;Unlock</a></li>
 	{% else %}
 	<li class="changelink"><a href="password_change/">Change Password</a><br /><br /></li>
 	<li><a href="lock/"><img src="{{ STATIC_URL }}img/unlock.png" alt="Unlock"/>&nbsp;Lock</a><br /><br /></li>
@@ -63,12 +63,12 @@
     <h2>Users</h2>
     <h3>{% if person.title %}{{ person.title }}{% endif %} {{ person }}
       {% if not person.is_active %}
-      <img src="{{ STATIC_URL }}img/admin/icon_error.gif" alt="Not Active" title="Not Active" />  
+      <img src="{{ STATIC_URL }}admin/img/icon_error.gif" alt="Not Active" title="Not Active" />  
       {% else %}
       {% if person.is_locked %}
       <img src="{{ STATIC_URL }}img/lock.png" alt="locked" />
       {% else %}
-      <img src="{{ STATIC_URL }}img/admin/icon_success.gif" alt="Active" title="Active" />
+      <img src="{{ STATIC_URL }}admin/img/icon_success.gif" alt="Active" title="Active" />
       {% endif %}
       {% endif %}		
       
@@ -176,7 +176,7 @@
 	  <td><a href="{{ p.institute.get_absolute_url }}">{{ p.institute }}</a></td>
 	  <td>{% for leader in p.leaders.all %}<a href="{{ leader.get_absolute_url }}">{{ leader }}, </a>{% endfor %}</td>
 	  <td>{% ifequal p ua.default_project %}
-	    <img src="{{ STATIC_URL }}img/admin/icon-yes.gif" alt="1" />{% else %}
+	    <img src="{{ STATIC_URL }}admin/img/icon-yes.gif" alt="1" />{% else %}
 	    {% if perms.machines.change_useraccount %}
 	    <a href="{% url admin_make_default ua.id,p.pid %}">Make default</a>
 	    {% endif %}{% endifequal %}</td>

@@ -21,9 +21,9 @@
 	   	<tr class="{% cycle row1,row2 %}">
 	   		<td>
 					{% if ua.date_deleted %}
-					<img src="{{ STATIC_URL }}img/admin/icon-no.gif" alt="Not Active" />
+					<img src="{{ STATIC_URL }}admin/img/icon-no.gif" alt="Not Active" />
 	   			{% else %}
-	   			<img src="{{ STATIC_URL }}img/admin/icon-yes.gif" alt="Active"/>
+	   			<img src="{{ STATIC_URL }}admin/img/icon-yes.gif" alt="Active"/>
 					{% endif %}	   	   		
 	   		</td>
 	   		<td>{{ ua.username }}</td>
