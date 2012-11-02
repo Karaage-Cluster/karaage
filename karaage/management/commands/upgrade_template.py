@@ -152,7 +152,9 @@ class Command(BaseCommand):
 
                     a = soup.new_tag("a", href='{{ base_url|default:"/" }}')
                     a.string = "Home"
+                    bc.append(a)
 
+                    a = soup.new_string("&nbsp;")
                     bc.append(a)
 
                     body = soup.body
