@@ -142,13 +142,14 @@ class Command(BaseCommand):
                 nl_at_end = re.search("\n *$", value) is not None
 
                 soup = bs4.BeautifulSoup(value, "lxml")
-                bc = soup.find('div', id="breadcrumbs")
+                kwargs = { 'class': 'breadcrumbs' }
+                bc = soup.find('div', **kwargs)
 
                 split[1] = "breadcrumbs"
                 text.append("{%% %s %%}" % " ".join(split))
 
                 if bc is None:
-                    bc = soup.new_tag("div", id="breadcrumbs")
+                    bc = soup.new_tag("div", **kwargs)
 
                     a = soup.new_tag("a", href='{{ base_url|default:"/" }}')
                     a.string = "Home"
