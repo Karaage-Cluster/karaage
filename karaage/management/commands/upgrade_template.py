@@ -240,7 +240,7 @@ class Command(BaseCommand):
 
             elif split[1] == "objecttools" or split[1] == "object-tools":
                 value, stop_token = self.do_tokens("endblock")
-                split[1] = "sidebar_extra"
+                split[1] = "object-tools"
 
                 soup = bs4.BeautifulSoup(value, "lxml")
                 kwargs = { "class": "module" }
@@ -266,7 +266,6 @@ class Command(BaseCommand):
                 text.append("{%% %s %%}" % token.contents)
                 text.append(value)
                 text.append(self.do_end_block(stop_token, "endblock"))
-                self.found_object_tools = True
 
             else:
                 value, stop_token = self.do_tokens("endblock")
