@@ -201,8 +201,20 @@ class Command(BaseCommand):
                 soup = bs4.BeautifulSoup(value, "lxml")
                 cm = soup.find('div', id="content-main")
                 cre = soup.find('div', id="content-related-extra")
+                kwargs = { 'class': 'object-tools' }
+                ot_ul = soup.find('ul', **kwargs)
                 if cre is not None:
-                    self.object_tools = cre.extract()
+                    self.object_tools = cre.div
+                    cre.extract()
+
+                elif ot_ul is not None:
+                    kwargs = { 'class': 'module' }
+                    module = soup.new_tag("div", **kwargs)
+                    title = soup.new_tag("h2")
+                    title.string="Object links"
+                    module.insert(0, title)
+                    module.append(ot_ul.extract())
+                    self.object_tools = module
 
                 split[1] = "content"
                 text.append("{%% %s %%}" % " ".join(split))
@@ -311,7 +323,7 @@ class Command(BaseCommand):
             del ul['class']
 
             text.append("\n{% block sidebar_extra %}\n")
-            text.extend(self.soup_to_text(ot.children))
+            text.extend(self.soup_to_text([ ot ]))
             text.append("{% endblock %}\n")
         return "".join(text)
 
