@@ -320,9 +320,9 @@ class Command(BaseCommand):
                     i.decompose()
 
             ul = ot.find("ul")
-            del ul['class']
+            ul['class'] = "object-tools"
 
-            text.append("\n{% block sidebar_extra %}\n")
+            text.append("\n{% block object-tools %}\n")
             text.extend(self.soup_to_text([ ot ]))
             text.append("{% endblock %}\n")
         return "".join(text)
