@@ -97,9 +97,6 @@ TEMPLATE_LOADERS = (
 # to load the internationalization machinery.
 USE_I18N = False
 
-LDAP_ATTRS = 'karaage.conf.ldap_attrs'
-LDAP_PASSWD_SCHEME = 'md5-crypt'
-
 SEND_BROKEN_LINK_EMAILS = True
 
 USER_OBJECTCLASS = ['top', 'person', 'organizationalPerson', 'inetOrgPerson', 'shadowAccount']

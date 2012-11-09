@@ -85,7 +85,7 @@ class PersonalDataStore(base.PersonalDataStore):
     def set_password(self, person, raw_password):
         super(PersonalDataStore, self).set_password(person, raw_password)
         p = ldap_models.person.objects.get(uid=person.username)
-        p.change_password(raw_password, settings.LDAP_PASSWD_SCHEME)
+        p.change_password(raw_password)
         p.save()
 
     def user_exists(self, username):

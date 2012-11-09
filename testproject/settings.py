@@ -39,16 +39,6 @@ LDAP_USER_BASE='ou=People, %s' % LDAP_BASE
 LDAP_GROUP_BASE='ou=Groups, %s' % LDAP_BASE
 LDAP_ATTRS = 'testproject.ldap_attrs'
 
-# either
-#  sha      : SHA-1
-#  ssha     : salted SHA-1
-#  md5      : MD5
-# md5-crypt : MD5 crypt
-#  smd5     : salted MD5
-#  crypt    : Unix crypt
-#  ''       : plain text
-LDAP_PASSWD_SCHEME = 'md5-crypt'
-
 SERVER_EMAIL = 'django@' + uname()[1]
 ACCOUNTS_EMAIL = 'accounts@vpac.org'
 APPROVE_ACCOUNTS_EMAIL = ACCOUNTS_EMAIL
