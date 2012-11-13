@@ -36,6 +36,12 @@ class Command(BaseCommand):
             self.found_object_tools = False
             self.object_tools = None
 
+            # we don't handle base templates
+            split = name.split("/")
+            if split[-2] == "templates":
+                print "skipping base template %s" % name
+                continue
+
             print "processing %s" % name
             with codecs.open(name, "r", "utf-8") as f:
                 content = f.read()
@@ -138,52 +144,39 @@ class Command(BaseCommand):
                 self.in_breadcrumbs = True
                 value, stop_token = self.do_tokens("endblock")
                 self.in_breadcrumbs = False
-                nl_at_start = re.search("^ *\n", value) is not None
-                nl_at_end = re.search("\n *$", value) is not None
 
                 soup = bs4.BeautifulSoup(value, "lxml")
-                kwargs = { 'class': 'breadcrumbs' }
-                bc = soup.find('div', **kwargs)
+                body = soup.body
+                if body is not None:
+                    kwargs = { 'class': 'breadcrumbs' }
+                    bc = body.find('div', **kwargs)
 
-                split[1] = "breadcrumbs"
-                text.append("{%% %s %%}" % " ".join(split))
+                    split[1] = "breadcrumbs"
+                    text.append("{%% %s %%}" % " ".join(split))
 
-                if bc is None:
-                    bc = soup.new_tag("div", **kwargs)
+                    if bc is None:
+                        bc = soup.new_tag("div", **kwargs)
 
-                    a = soup.new_tag("a", href='{{ base_url|default:"/" }}')
-                    a.string = "Home"
-                    bc.append(a)
+                        a = soup.new_tag("a", href='{{ base_url|default:"/" }}')
+                        a.string = "Home"
+                        bc.append(a)
 
-                    a = soup.new_string("&nbsp;")
-                    bc.append(a)
+                        a = soup.new_string("&nbsp;")
+                        bc.append(a)
 
-                    body = soup.body
-                    p = body.contents[0]
-                    if p is not None and p.name == 'p':
-                        p.extract()
-                        contents = p.contents
-                    else:
-                        contents = body.contents
-                    for child in list(contents):
-                        bc.append(child.extract())
-                    body.append(bc)
+                        p = body.contents[0]
+                        if p is not None and p.name == 'p':
+                            p.extract()
+                            contents = p.contents
+                        else:
+                            contents = body.contents
+                        for child in list(contents):
+                            bc.append(child.extract())
+                        body.append(bc)
 
-#                if "<div" not in value:
-#                    text.append('\n<div class="breadcrumbs">\n')
-#                    text.append('<a href="{{ base_url|default:"/" }}">Home</a>')
-#                    if not nl_at_start:
-#                        text.append('\n')
-#                    text.append(value)
-#                    if not nl_at_end:
-#                        text.append('\n')
-#                    text.append('</div>\n')
-#                else:
-#                    text.append(value)
+                    text.extend(self.soup_to_text(soup.body.children))
 
-                text.extend(self.soup_to_text(soup.body.children))
-
-                text.append(self.do_end_block(stop_token, "endblock"))
+                    text.append(self.do_end_block(stop_token, "endblock"))
 
             elif (split[1] == "content" or split[1] == "content_main") and self.extends == "forms.html":
                 value, stop_token = self.do_tokens("endblock")
@@ -245,11 +238,6 @@ class Command(BaseCommand):
 
             elif split[1] == "content_title":
                 value, stop_token = self.do_tokens("endblock")
-                value = value.strip()
-                if value != "" and value != "&nbsp;":
-                    text.append("{%% %s %%}" % token.contents)
-                    text.append(value)
-                    text.append(self.do_end_block(stop_token, "endblock"))
 
             elif split[1] == "objecttools" or split[1] == "object-tools":
                 value, stop_token = self.do_tokens("endblock")
