@@ -4,4 +4,4 @@ Your request for access to the software package {{ software }} has been approved
 
 Thanks,
 
-{% include emails/email_footer.txt %}
+{% include "emails/email_footer.txt" %}
