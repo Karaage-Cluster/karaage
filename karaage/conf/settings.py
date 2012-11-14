@@ -55,6 +55,8 @@ INSTALLED_APPS = (
     'karaage.applications',
     'ajax_select',
     'placard',
+    'placard.lgroups',
+    'placard.lusers',
     'django_pbs.servers',
     'django_pbs.jobs',
     'django.contrib.comments',
