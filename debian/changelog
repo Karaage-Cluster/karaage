@@ -1,3 +1,9 @@
+karaage (2.6.8-1) stable; urgency=low
+
+  * Fix error in template. Requires permissions to see </ul> end tag.
+
+ -- Brian May <bam@debian.org>  Mon, 19 Nov 2012 14:13:52 +1100
+
 karaage (2.6.7-1) stable; urgency=low
 
   * Fix placard templates, accidentally broken in last release.
