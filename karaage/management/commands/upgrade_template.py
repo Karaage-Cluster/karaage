@@ -197,11 +197,19 @@ class Command(BaseCommand):
                 kwargs = { 'class': 'object-tools' }
                 ot_ul = soup.find('ul', **kwargs)
                 if cre is not None:
-                    self.object_tools = cre.div
+                    kwargs = { 'class': 'module' }
+                    div = cre.find('div', **kwargs)
+                    div['class'] = 'module object-tools'
+                    ul = div.ul
+                    if 'class' in ul.attrs:
+                        del ul['class']
+                    self.object_tools = div
                     cre.extract()
 
                 elif ot_ul is not None:
-                    kwargs = { 'class': 'module' }
+                    if 'class' in ot_ul.attrs:
+                        del ot_ul['class']
+                    kwargs = { 'class': 'module object-tools' }
                     module = soup.new_tag("div", **kwargs)
                     title = soup.new_tag("h2")
                     title.string="Object links"
@@ -248,6 +256,10 @@ class Command(BaseCommand):
                 module = soup.find('div', **kwargs)
 
                 if module is None:
+                    ul = soup.ul
+                    if 'class' in ul.attrs:
+                        del ul['class']
+                    kwargs = { "class": "module object-tools" }
                     module = soup.new_tag("div", **kwargs)
                     title = soup.new_tag("h2")
                     title.string="Object links"
@@ -256,6 +268,11 @@ class Command(BaseCommand):
                     for child in list(body.contents):
                         module.append(child.extract())
                     body.append(module)
+                else:
+                    module['class'] = 'module object-tools'
+                    ul = module.ul
+                    if 'class' in ul.attrs:
+                        del ul['class']
 
                 text.append("{%% %s %%}" % " ".join(split))
                 text.extend(self.soup_to_text(soup.body.children))
@@ -308,7 +325,8 @@ class Command(BaseCommand):
                     i.decompose()
 
             ul = ot.find("ul")
-            ul['class'] = "object-tools"
+            if 'class' in ul.attrs:
+                del ul['class']
 
             text.append("\n{% block object-tools %}\n")
             text.extend(self.soup_to_text([ ot ]))
