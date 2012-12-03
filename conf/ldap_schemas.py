@@ -29,38 +29,18 @@ import placard.ldap_passwd
 # person #
 ##########
 
-class person(rfc.person, rfc.organizationalPerson, rfc.inetOrgPerson, rfc.pwdPolicy, common.personMixin, pwdPolicyMixin):
+class kPersonMixin(object):
+    def prepare_for_save(self, *args, **kwargs):
+        self.displayName = '%s %s (%s)' % (self.givenName, self.sn, self.o)
+
+class person(rfc.person, rfc.organizationalPerson, rfc.inetOrgPerson, rfc.pwdPolicy, common.baseMixin):
+    mixin_list = [ common.personMixin, pwdPolicyMixin, kPersonMixin ]
 
     class Meta:
         base_dn_setting = "LDAP_ACCOUNT_BASE"
         object_classes = set([ 'top' ])
         search_classes = set([ 'person' ])
         pk = 'uid'
-
-    def change_password(self, password):
-        self.account_change_password(password)
-
-    def set_defaults(self):
-        self.set_inet_org_person_defaults()
-        self.account_set_defaults()
-
-    def save(self, *args, **kwargs):
-        self.save_inet_org_person_defaults()
-        self.account_save_defaults()
-        self.cn = '%s %s' % (self.givenName, self.sn)
-        self.displayName = '%s %s (%s)' % (self.givenName, self.sn, self.o)
-        super(person, self).save(*args, **kwargs)
-
-    def is_locked(self):
-        return self.account_is_locked()
-
-    def lock(self):
-        # self.lock_shell()
-        self.account_lock()
-
-    def unlock(self):
-        # self.unlock_shell()
-        self.account_unlock()
 
     managed_by = tldap.manager.ManyToOneDescriptor('manager', 'karaage.datastores.ldap_models.person', 'dn')
     manager_of = tldap.manager.OneToManyDescriptor('dn', 'karaage.datastores.ldap_models.person', 'manager')
@@ -70,7 +50,8 @@ class person(rfc.person, rfc.organizationalPerson, rfc.inetOrgPerson, rfc.pwdPol
 # account #
 ###########
 
-class account(person, rfc.posixAccount, rfc.shadowAccount, common.accountMixin):
+class account(person, rfc.posixAccount, rfc.shadowAccount):
+    mixin_list = person.mixin_list + [ common.accountMixin ]
 
     class Meta:
         base_dn_setting = "LDAP_ACCOUNT_BASE"
@@ -82,26 +63,13 @@ class account(person, rfc.posixAccount, rfc.shadowAccount, common.accountMixin):
     manager_of = tldap.manager.OneToManyDescriptor('dn', 'karaage.datastores.ldap_models.account', 'manager')
     unixHomeDirectory = tldap.manager.AliasDescriptor("homeDirectory")
 
-    def set_defaults(self):
-        super(account, self).set_defaults()
-        self.set_posix_account_defaults()
-        self.set_shadow_account_defaults()
-
-    def delete(self, using=None):
-        self.prepare_for_delete()
-        super(account, self).delete(using)
-
-    def save(self, *args, **kwargs):
-        self.save_posix_account_defaults()
-        self.save_shadow_account_defaults()
-        super(account, self).save(*args, **kwargs)
-
-
 #########
 # group #
 #########
 
-class group(rfc.posixGroup, common.groupMixin):
+class group(rfc.posixGroup, common.baseMixin):
+    mixin_list = [ common.groupMixin ]
+
     class Meta:
         base_dn_setting = "LDAP_GROUP_BASE"
         object_classes = set([ 'top' ])
@@ -111,10 +79,3 @@ class group(rfc.posixGroup, common.groupMixin):
     # accounts
     primary_accounts = tldap.manager.OneToManyDescriptor('gidNumber', account, 'gidNumber', "primary_group")
     secondary_accounts = tldap.manager.ManyToManyDescriptor('memberUid', account, 'uid', False, "secondary_groups")
-
-    def set_defaults(self):
-        self.set_posix_group_defaults()
-
-    def save(self, *args, **kwargs):
-        self.save_posix_group_defaults()
-        super(group, self).save(*args, **kwargs)

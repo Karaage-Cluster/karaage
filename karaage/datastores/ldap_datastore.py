@@ -18,7 +18,7 @@
 from django.conf import settings
 
 from karaage.datastores import base
-from karaage.datastores import ldap_models
+from karaage.datastores import ldap_schemas
 
 def str_or_none(string):
     if string is None or string == "":
@@ -33,7 +33,7 @@ class PersonalDataStore(base.PersonalDataStore):
     def activate_user(self, person):
         person = super(PersonalDataStore, self).activate_user(person)
 
-        p = ldap_models.person()
+        p = ldap_schemas.person()
         p.set_defaults()
         p.uid = person.username
         p.givenName = person.first_name
@@ -50,14 +50,14 @@ class PersonalDataStore(base.PersonalDataStore):
     def delete_user(self, person):
         super(PersonalDataStore, self).delete_user(person)
         try:
-            p = ldap_models.person.objects.get(uid=person.username)
+            p = ldap_schemas.person.objects.get(uid=person.username)
             p.delete()
-        except ldap_models.person.DoesNotExist:
+        except ldap_schemas.person.DoesNotExist:
             pass
 
     def update_user(self, person):
         super(PersonalDataStore, self).update_user(person)
-        p = ldap_models.person.objects.get(uid=person.username)
+        p = ldap_schemas.person.objects.get(uid=person.username)
         p.givenName = person.first_name
         p.sn = person.last_name
         p.telephoneNumber = str_or_none(person.telephone) or None
@@ -67,32 +67,32 @@ class PersonalDataStore(base.PersonalDataStore):
         p.save()
 
     def is_locked(self, person):
-        p = ldap_models.person.objects.get(uid=person.username)
+        p = ldap_schemas.person.objects.get(uid=person.username)
         return p.is_locked()
 
     def lock_user(self, person):
         super(PersonalDataStore, self).lock_user(person)
-        p = ldap_models.person.objects.get(uid=person.username)
+        p = ldap_schemas.person.objects.get(uid=person.username)
         p.lock()
         p.save()
 
     def unlock_user(self, person):
         super(PersonalDataStore, self).unlock_user(person)
-        p = ldap_models.person.objects.get(uid=person.username)
+        p = ldap_schemas.person.objects.get(uid=person.username)
         p.unlock()
         p.save()
 
     def set_password(self, person, raw_password):
         super(PersonalDataStore, self).set_password(person, raw_password)
-        p = ldap_models.person.objects.get(uid=person.username)
+        p = ldap_schemas.person.objects.get(uid=person.username)
         p.change_password(raw_password)
         p.save()
 
     def user_exists(self, username):
         try:
-            p = ldap_models.person.objects.get(uid=username)
+            p = ldap_schemas.person.objects.get(uid=username)
             return True
-        except ldap_models.person.DoesNotExist:
+        except ldap_schemas.person.DoesNotExist:
             return False
 
     def create_password_hash(self, raw_password):
@@ -100,14 +100,14 @@ class PersonalDataStore(base.PersonalDataStore):
         return '{crypt}%s' % md5crypt(raw_password)
 
     def change_username(self, person, new_username):
-        p = ldap_models.person.objects.get(uid=person.username)
+        p = ldap_schemas.person.objects.get(uid=person.username)
         p.rename(uid=new_username)
 
 
 class AccountDataStore(base.AccountDataStore):
 
     def create_account(self, person, default_project):
-        luser = ldap_models.account.objects.convert(ldap_models.person).get(uid=person.username)
+        luser = ldap_schemas.account.objects.convert(ldap_schemas.person).get(uid=person.username)
         luser.set_defaults()
         luser.gidNumber = person.institute.gid
         luser.save()
@@ -117,12 +117,12 @@ class AccountDataStore(base.AccountDataStore):
 
     def delete_account(self, ua):
         super(AccountDataStore, self).delete_account(ua)
-        luser = ldap_models.account.objects.get(uid=ua.username)
+        luser = ldap_schemas.account.objects.get(uid=ua.username)
         luser.delete()
 
     def update_account(self, ua):
         super(AccountDataStore, self).update_account(ua)
-        luser = ldap_models.account.objects.get(uid=ua.username)
+        luser = ldap_schemas.account.objects.get(uid=ua.username)
         luser.gidNumber = ua.user.institute.gid
         luser.save()
 
@@ -133,11 +133,11 @@ class AccountDataStore(base.AccountDataStore):
         super(AccountDataStore, self).unlock_account(ua)
 
     def get_shell(self, ua):
-        luser = ldap_models.account.objects.get(uid=ua.username)
+        luser = ldap_schemas.account.objects.get(uid=ua.username)
         return luser.loginShell
 
     def change_shell(self, ua, shell):
         super(AccountDataStore, self).change_shell(ua, shell)
-        luser = ldap_models.account.objects.get(uid=ua.username)
+        luser = ldap_schemas.account.objects.get(uid=ua.username)
         luser.loginShell = shell
         luser.save()

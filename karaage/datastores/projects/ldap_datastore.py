@@ -16,22 +16,22 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from karaage.datastores.projects import base
-from karaage.datastores import ldap_models
+from karaage.datastores import ldap_schemas
 
 class ProjectDataStore(base.ProjectDataStore):
 
     def create_or_update_project(self, project):
         try:
-            group = ldap_models.group.objects.get(cn=project.pid)
-        except ldap_models.group.DoesNotExist:
-            group = ldap_models.group(cn=project.pid)
+            group = ldap_schemas.group.objects.get(cn=project.pid)
+        except ldap_schemas.group.DoesNotExist:
+            group = ldap_schemas.group(cn=project.pid)
             group.set_defaults()
         group.secondary_accounts.clear(commit=False)
         for person in project.users.all():
-            luser = ldap_models.account.objects.get(uid=person.user.username)
+            luser = ldap_schemas.account.objects.get(uid=person.user.username)
             group.secondary_accounts.add(luser, commit=False)
         group.save()
 
     def delete_project(self, project):
-        group = ldap_models.group.objects.get(cn=project.pid)
+        group = ldap_schemas.group.objects.get(cn=project.pid)
         group.delete()
