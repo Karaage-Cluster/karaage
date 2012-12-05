@@ -30,7 +30,7 @@ import placard.ldap_passwd
 ##########
 
 class kPersonMixin(object):
-    def prepare_for_save(self, *args, **kwargs):
+    def pre_save(self, created, using):
         self.displayName = '%s %s (%s)' % (self.givenName, self.sn, self.o)
 
 class person(rfc.person, rfc.organizationalPerson, rfc.inetOrgPerson, rfc.pwdPolicy, common.baseMixin):
@@ -42,8 +42,8 @@ class person(rfc.person, rfc.organizationalPerson, rfc.inetOrgPerson, rfc.pwdPol
         search_classes = set([ 'person' ])
         pk = 'uid'
 
-    managed_by = tldap.manager.ManyToOneDescriptor('manager', 'karaage.datastores.ldap_models.person', 'dn')
-    manager_of = tldap.manager.OneToManyDescriptor('dn', 'karaage.datastores.ldap_models.person', 'manager')
+    managed_by = tldap.manager.ManyToOneDescriptor(this_key='manager', linked_cls='karaage.datastores.ldap_models.person', linked_key='dn')
+    manager_of = tldap.manager.OneToManyDescriptor(this_key='dn', linked_cls='karaage.datastores.ldap_models.person', linked_key='manager')
 
 
 ###########
@@ -59,8 +59,8 @@ class account(person, rfc.posixAccount, rfc.shadowAccount):
         search_classes = set([ 'posixAccount' ])
         pk = 'uid'
 
-    managed_by = tldap.manager.ManyToOneDescriptor('manager', 'karaage.datastores.ldap_models.account', 'dn')
-    manager_of = tldap.manager.OneToManyDescriptor('dn', 'karaage.datastores.ldap_models.account', 'manager')
+    managed_by = tldap.manager.ManyToOneDescriptor(this_key='manager', linked_cls='karaage.datastores.ldap_models.account', linked_key='dn')
+    manager_of = tldap.manager.OneToManyDescriptor(this_key='dn', linked_cls='karaage.datastores.ldap_models.account', linked_key='manager')
     unixHomeDirectory = tldap.manager.AliasDescriptor("homeDirectory")
 
 #########
@@ -77,5 +77,5 @@ class group(rfc.posixGroup, common.baseMixin):
         pk = 'cn'
 
     # accounts
-    primary_accounts = tldap.manager.OneToManyDescriptor('gidNumber', account, 'gidNumber', "primary_group")
-    secondary_accounts = tldap.manager.ManyToManyDescriptor('memberUid', account, 'uid', False, "secondary_groups")
+    primary_accounts = tldap.manager.OneToManyDescriptor(this_key='gidNumber', linked_cls=account, linked_key='gidNumber', related_name="primary_group")
+    secondary_accounts = tldap.manager.ManyToManyDescriptor(this_key='memberUid', linked_cls=account, linked_key='uid', linked_has_foreign_key=False, related_name="secondary_groups")
