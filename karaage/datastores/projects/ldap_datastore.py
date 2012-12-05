@@ -30,8 +30,10 @@ class ProjectDataStore(base.ProjectDataStore):
         for person in project.users.all():
             luser = ldap_schemas.account.objects.get(uid=person.user.username)
             group.secondary_accounts.add(luser, commit=False)
+        group.pre_save(created=False)
         group.save()
 
     def delete_project(self, project):
         group = ldap_schemas.group.objects.get(cn=project.pid)
+        group.pre_delete()
         group.delete()

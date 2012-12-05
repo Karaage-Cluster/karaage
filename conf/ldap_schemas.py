@@ -33,6 +33,7 @@ class kPersonMixin(object):
     def pre_save(self, created, using):
         self.displayName = '%s %s (%s)' % (self.givenName, self.sn, self.o)
 
+
 class person(rfc.person, rfc.organizationalPerson, rfc.inetOrgPerson, rfc.pwdPolicy, common.baseMixin):
     mixin_list = [ common.personMixin, pwdPolicyMixin, kPersonMixin ]
 
@@ -50,8 +51,14 @@ class person(rfc.person, rfc.organizationalPerson, rfc.inetOrgPerson, rfc.pwdPol
 # account #
 ###########
 
+class kAccountMixin(object):
+    @classmethod
+    def pre_save(self, created, using):
+        self.gecos = '%s %s (%s)' % (self.givenName, self.sn, self.o)
+
+
 class account(person, rfc.posixAccount, rfc.shadowAccount):
-    mixin_list = person.mixin_list + [ common.accountMixin ]
+    mixin_list = person.mixin_list + [ common.accountMixin, kAccountMixin ]
 
     class Meta:
         base_dn_setting = "LDAP_ACCOUNT_BASE"
