@@ -43,8 +43,8 @@ class person(rfc.person, rfc.organizationalPerson, rfc.inetOrgPerson, rfc.pwdPol
         search_classes = set([ 'person' ])
         pk = 'uid'
 
-    managed_by = tldap.manager.ManyToOneDescriptor(this_key='manager', linked_cls='karaage.datastores.ldap_models.person', linked_key='dn')
-    manager_of = tldap.manager.OneToManyDescriptor(this_key='dn', linked_cls='karaage.datastores.ldap_models.person', linked_key='manager')
+    managed_by = tldap.manager.ManyToOneDescriptor(this_key='manager', linked_cls='karaage.datastores.ldap_schemas.person', linked_key='dn')
+    manager_of = tldap.manager.OneToManyDescriptor(this_key='dn', linked_cls='karaage.datastores.ldap_schemas.person', linked_key='manager')
 
 
 ###########
@@ -66,8 +66,8 @@ class account(person, rfc.posixAccount, rfc.shadowAccount):
         search_classes = set([ 'posixAccount' ])
         pk = 'uid'
 
-    managed_by = tldap.manager.ManyToOneDescriptor(this_key='manager', linked_cls='karaage.datastores.ldap_models.account', linked_key='dn')
-    manager_of = tldap.manager.OneToManyDescriptor(this_key='dn', linked_cls='karaage.datastores.ldap_models.account', linked_key='manager')
+    managed_by = tldap.manager.ManyToOneDescriptor(this_key='manager', linked_cls='karaage.datastores.ldap_schemas.account', linked_key='dn')
+    manager_of = tldap.manager.OneToManyDescriptor(this_key='dn', linked_cls='karaage.datastores.ldap_schemas.account', linked_key='manager')
     unixHomeDirectory = tldap.manager.AliasDescriptor("homeDirectory")
 
 #########

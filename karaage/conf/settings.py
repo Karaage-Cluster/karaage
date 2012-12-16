@@ -1,6 +1,10 @@
 # Package defined Karaage Settings
-PLACARD_SCHEMA_ACCOUNT = 'karaage.datastores.ldap_schemas.account'
-PLACARD_SCHEMA_GROUP = 'karaage.datastores.ldap_schemas.group'
+PLACARD_MASTER = {
+    'NAME': 'OpenLDAP',
+    'LDAP': 'default',
+    'ACCOUNT': 'karaage.datastores.ldap_schemas.account',
+    'GROUP': 'karaage.datastores.ldap_schemas.group',
+}
 
 AJAX_LOOKUP_CHANNELS = {
     'account'  : ( 'placard.lookups', 'AccountLookup' ),
