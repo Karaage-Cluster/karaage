@@ -19,11 +19,6 @@ from tldap.schemas import rfc
 from placard.schemas import common
 from placard.schemas.pwdpolicy import pwdPolicyMixin
 import tldap.manager
-import django.conf
-import time
-import datetime
-
-import placard.ldap_passwd
 
 ##########
 # person #
