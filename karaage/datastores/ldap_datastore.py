@@ -43,7 +43,8 @@ class PersonalDataStore(base.PersonalDataStore):
         p.title = str_or_none(person.title) or None
         p.o = person.institute.name
         p.userPassword = person.user.password
-        p.pre_save(created=True)
+        p.pre_create()
+        p.pre_save()
         p.save()
 
         return person
@@ -66,7 +67,7 @@ class PersonalDataStore(base.PersonalDataStore):
         p.mail = str_or_none(person.email) or None
         p.title = str_or_none(person.title) or None
         p.o = person.institute.name
-        p.pre_save(created=False)
+        p.pre_save()
         p.save()
 
     def is_locked(self, person):
@@ -77,21 +78,21 @@ class PersonalDataStore(base.PersonalDataStore):
         super(PersonalDataStore, self).lock_user(person)
         p = ldap_schemas.person.objects.get(uid=person.username)
         p.lock()
-        p.pre_save(created=False)
+        p.pre_save()
         p.save()
 
     def unlock_user(self, person):
         super(PersonalDataStore, self).unlock_user(person)
         p = ldap_schemas.person.objects.get(uid=person.username)
         p.unlock()
-        p.pre_save(created=False)
+        p.pre_save()
         p.save()
 
     def set_password(self, person, raw_password):
         super(PersonalDataStore, self).set_password(person, raw_password)
         p = ldap_schemas.person.objects.get(uid=person.username)
         p.change_password(raw_password)
-        p.pre_save(created=False)
+        p.pre_save()
         p.save()
 
     def user_exists(self, username):
@@ -116,7 +117,7 @@ class AccountDataStore(base.AccountDataStore):
         luser = ldap_schemas.account.objects.convert(ldap_schemas.person).get(uid=person.username)
         luser.set_defaults()
         luser.gidNumber = person.institute.gid
-        luser.pre_save(created=False)
+        luser.pre_save()
         luser.save()
 
         ua = super(AccountDataStore, self).create_account(person, default_project)
@@ -132,7 +133,7 @@ class AccountDataStore(base.AccountDataStore):
         super(AccountDataStore, self).update_account(ua)
         luser = ldap_schemas.account.objects.get(uid=ua.username)
         luser.gidNumber = ua.user.institute.gid
-        luser.pre_save(created=False)
+        luser.pre_save()
         luser.save()
 
     def lock_account(self, ua):
@@ -149,5 +150,5 @@ class AccountDataStore(base.AccountDataStore):
         super(AccountDataStore, self).change_shell(ua, shell)
         luser = ldap_schemas.account.objects.get(uid=ua.username)
         luser.loginShell = shell
-        luser.pre_save(created=False)
+        luser.pre_save()
         luser.save()

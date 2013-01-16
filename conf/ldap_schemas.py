@@ -30,7 +30,8 @@ import placard.ldap_passwd
 ##########
 
 class kPersonMixin(object):
-    def pre_save(self, created, using):
+    @classmethod
+    def pre_save(cls, self):
         self.displayName = '%s %s (%s)' % (self.givenName, self.sn, self.o)
 
 
@@ -53,7 +54,7 @@ class person(rfc.person, rfc.organizationalPerson, rfc.inetOrgPerson, rfc.pwdPol
 
 class kAccountMixin(object):
     @classmethod
-    def pre_save(self, created, using):
+    def pre_save(cls, self):
         self.gecos = '%s %s (%s)' % (self.givenName, self.sn, self.o)
 
 
