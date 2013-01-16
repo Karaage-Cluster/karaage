@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 from django.contrib.auth.decorators import permission_required
 from django.views.generic.create_update import update_object, create_object
 from models import Machine, MachineCategory
