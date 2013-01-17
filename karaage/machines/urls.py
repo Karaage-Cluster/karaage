@@ -17,11 +17,11 @@
 
 from django.conf.urls import *
 from django.contrib.auth.decorators import permission_required
-from django.views.generic.create_update import update_object, create_object
+from karaage.legacy.create_update import update_object, create_object
 from models import Machine, MachineCategory
 
 
-urlpatterns = patterns('django.views.generic.create_update',
+urlpatterns = patterns('karaage.legacy.create_update',
     url(r'^add/$', permission_required('machines.add_machine')(create_object), {'model': Machine}),
     url(r'^(?P<object_id>\d+)/edit/$', permission_required('machines.change_machine')(update_object), {'model': Machine}),
     url(r'^categories/add/$', permission_required('machines.add_machinecategory')(create_object), {'model': MachineCategory}, name='kg_machinecategory_add'),

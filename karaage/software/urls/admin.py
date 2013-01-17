@@ -35,7 +35,7 @@ c_info_dict = {
     }
 
 
-urlpatterns = patterns('django.views.generic.create_update',                        
+urlpatterns = patterns('karaage.legacy.create_update',                        
     url(r'^(?P<object_id>\d+)/edit/$', 'update_object', info_dict, name='kg_softwarepackage_edit'),
     url(r'^(?P<object_id>\d+)/delete/$', 'delete_object', d_info_dict, name='kg_softwarepackage_delete'),
     url(r'^categories/add/$', 'create_object', c_info_dict),    

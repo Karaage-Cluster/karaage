@@ -25,7 +25,7 @@ urlpatterns = patterns('',
     url(r'^pbs/', include('django_pbs.servers.urls')),                  
     url(r'^lusers/', include('placard.lusers.urls')),                  
     url(r'^lgroups/', include('placard.lgroups.urls')),
-    url(r'^misc/$', 'django.views.generic.simple.direct_to_template', {'template': 'misc/index.html'}),
+    url(r'^misc/$', 'karaage.legacy.simple.direct_to_template', {'template': 'misc/index.html'}),
 
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),                   
@@ -42,7 +42,7 @@ log_dict = {
     'template_object_name': 'log',
 }
 
-urlpatterns += patterns('django.views.generic.list_detail',
+urlpatterns += patterns('karaage.legacy.list_detail',
     url(r'^logs/$', 'object_list', log_dict, name='kg_log_list'),
 )
 

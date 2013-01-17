@@ -26,7 +26,7 @@ iq_info_dict = {
 
 
 
-urlpatterns = patterns('django.views.generic.create_update', 
+urlpatterns = patterns('karaage.legacy.create_update', 
     url(r'^institutechunk/(?P<object_id>\d+)/$', 'update_object', iq_info_dict, name='kg_institute_quota_edit'),
                  
 )

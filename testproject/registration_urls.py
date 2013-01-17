@@ -16,7 +16,7 @@ urlpatterns = patterns('karaage.people.views.user',
 )
 
 urlpatterns += patterns('',
-    url(r'^$', 'django.views.generic.simple.redirect_to', {'url': '/users/apply/'}),
+    url(r'^$', 'karaage.legacy.simple.redirect_to', {'url': '/users/apply/'}),
     (r'^users/', include('karaage.people.urls.user')),
     (r'^institutes/', include('karaage.institutes.urls.user')),
     (r'^projects/', include('karaage.projects.urls.user')),
