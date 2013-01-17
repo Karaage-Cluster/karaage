@@ -21,7 +21,7 @@
 {% if project.is_active and user.get_profile in project.leaders.all %}
 <div class="module">
   <h2>Management tasks</h2>
-  <p><a href="{% url "kg_userapplication_invite" project.pid %}" class="addlink">Invite a new user</a></p>
+  <p><a href="{% url 'kg_userapplication_invite' project.pid %}" class="addlink">Invite a new user</a></p>
   <p><a href="{{ project.get_usage_url }}">View Usage</a>
 </div>
 {% endif %}
@@ -56,7 +56,7 @@
 	<td>{% yes_no_img person.is_active %}</td>
 	{% endif %}
 	{% if request.user.get_profile in project.leaders.all %}
-	<td><a href="{% url "kg_remove_project_member" project.pid person.username%}" class="deletelink">Remove</a></td>
+	<td><a href="{% url 'kg_remove_project_member' project.pid person.username%}" class="deletelink">Remove</a></td>
 	{% endif %}
       </tr>
       {% endfor %}

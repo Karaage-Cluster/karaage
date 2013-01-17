@@ -25,7 +25,7 @@
 					<td>{% for m in version.machines.all %}<a href="{{ m.get_absolute_url }}">{{ m }}, </a>{% endfor %}</td>
 					<td>{{ version.module }}</td>
 					{% if version.last_used %}
-					<td><a href="{% url "kg_software_stats" package.id %}">{{ version.last_used }}</a></td>
+					<td><a href="{% url 'kg_software_stats' package.id %}">{{ version.last_used }}</a></td>
 					{% else %}
 					<td>Unknown</td>
 					{% endif %}

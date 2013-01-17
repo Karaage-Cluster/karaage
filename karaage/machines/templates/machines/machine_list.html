@@ -10,7 +10,7 @@
 <div id="content-main">
   <ul class="object-tools">
 {% if perms.machines.add_machinecategory %}
-  <li><a href="{% url "kg_machinecategory_add" %}" class="addlink">Add machine category</a></li>  
+  <li><a href="{% url 'kg_machinecategory_add' %}" class="addlink">Add machine category</a></li>  
 {% endif %}
   {% if perms.machines.add_machine %}
   <li><a href="add/" class="addlink">Add machine</a></li>
@@ -22,9 +22,9 @@
       {% for c in category_list %}
       <li><h3>{{ c.name }}</h3>
       - {% if perms.machines.change_machinecategory %} 
-        <a href="{% url "kg_machinecategory_edit" c.id %}" class="changelink">Edit category</a> | 
+        <a href="{% url 'kg_machinecategory_edit' c.id %}" class="changelink">Edit category</a> | 
         {% endif %}
-        <a href="{% url "kg_mc_usage" c.id %}">Usage</a>
+        <a href="{% url 'kg_mc_usage' c.id %}">Usage</a>
       	
     	<ul>
     	  {% for m in c.machine_set.all %}

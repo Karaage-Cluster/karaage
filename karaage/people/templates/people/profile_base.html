@@ -10,9 +10,9 @@
     	{% if user.is_authenticated %}
     	Logged in as {{ user }}&nbsp;&nbsp;
     	My Account&nbsp;&nbsp;|&nbsp;&nbsp;  
-    	<a href="{% url "logout" %}">Logout</a>	
+    	<a href="{% url 'logout' %}">Logout</a>	
     	{% else %}
-   	<a href="{% url "login" %}">Login</a>
+   	<a href="{% url 'login' %}">Login</a>
     	{% endif %}
     </p>
 {% endblock %}
@@ -20,10 +20,10 @@
 {% block content %}
 <h1>Welcome {{ person.first_name }}</h1>
 <p>
-<a href="{% url "kg_user_profile" %}">Personal Details</a>&nbsp;|&nbsp;
-<a href="{% url "kg_user_profile_accounts" %}">Cluster Account</a>&nbsp;|&nbsp;
-<a href="{% url "kg_user_profile_projects" %}">Projects</a>&nbsp;|&nbsp;
-<a href="{% url "kg_user_profile_software" %}">Restricted Software</a>
+<a href="{% url 'kg_user_profile' %}">Personal Details</a>&nbsp;|&nbsp;
+<a href="{% url 'kg_user_profile_accounts' %}">Cluster Account</a>&nbsp;|&nbsp;
+<a href="{% url 'kg_user_profile_projects' %}">Projects</a>&nbsp;|&nbsp;
+<a href="{% url 'kg_user_profile_software' %}">Restricted Software</a>
 </p>
 
 {% block profile_content %}{% endblock %}

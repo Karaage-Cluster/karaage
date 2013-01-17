@@ -39,7 +39,7 @@
         {% if perms.people.delete_person and person.is_active %}
         <li class="deletelink"><a href="delete/">Delete</a><br /><br /></li>
 	{% endif %}
-	<li><a href="{% url "kg_userlogs" person.id %}">Logs</a><br /><br /></li>
+	<li><a href="{% url 'kg_userlogs' person.id %}">Logs</a><br /><br /></li>
 	<li class="addlink"><a href="add_comment/">Add comment</a><br /><br /></li>
 	<li><a href="comments/">Comments</a>&nbsp;({{ comment_count }})<br /><br /></li>
 	{% if person.is_active %}
@@ -53,8 +53,8 @@
 	{% endif %}
 	<li><a href="bounced_email/">Bounced Email</a><br /><br /></li>
 	{% endif %}
-	<li><a href="{% url "kg_job_list" %}?user={{ person.username }}">Display all jobs</a><br /><br /></li>
-	<li><a href="{% url "pbs_user_detail" person.username %}">Submitted jobs</a><br /><br /></li>
+	<li><a href="{% url 'kg_job_list' %}?user={{ person.username }}">Display all jobs</a><br /><br /></li>
+	<li><a href="{% url 'pbs_user_detail' person.username %}">Submitted jobs</a><br /><br /></li>
 	{% endif %}
       </ul>
     </div>
@@ -144,7 +144,7 @@
 	  <td>{{ ua.date_deleted|date }}</td>
 	  {% endif %}
 	  {% ifequal ua.machine_category.id 1 %}
-	  <td>{% if not ua.date_deleted and perms.machines.change_useraccount %}<form action="{% url "kg_change_shell" ua.id %}" method="post">{% csrf_token %}
+	  <td>{% if not ua.date_deleted and perms.machines.change_useraccount %}<form action="{% url 'kg_change_shell' ua.id %}" method="post">{% csrf_token %}
 	  	<div>
 	      {% shell_field ua %}
 	      <input type="submit" value="Change" />
@@ -152,7 +152,7 @@
 	    </form>{% else %}&nbsp;{% endif %}</td>
 	  {% endifequal %}
 	  {% if not ua.date_deleted and perms.machines.delete_useraccount %}
-	  <td><a href="{% url "admin_delete_account" ua.id %}" class="deletelink">Delete</a></td>
+	  <td><a href="{% url 'admin_delete_account' ua.id %}" class="deletelink">Delete</a></td>
 	  {% endif %}
 	</tr>
       </tbody>  	
@@ -179,10 +179,10 @@
 	  <td>{% ifequal p ua.default_project %}
 	    <img src="{{ STATIC_URL }}admin/img/icon-yes.gif" alt="1" />{% else %}
 	    {% if perms.machines.change_useraccount %}
-	    <a href="{% url "admin_make_default" ua.id p.pid %}">Make default</a>
+	    <a href="{% url 'admin_make_default' ua.id p.pid %}">Make default</a>
 	    {% endif %}{% endifequal %}</td>
 	  {% if perms.projects.change_project %}{% ifnotequal p ua.default_project %}
-	  <td><a href="{% url "kg_remove_project_member" p.pid person.username %}" class="deletelink">Remove</a>
+	  <td><a href="{% url 'kg_remove_project_member' p.pid person.username %}" class="deletelink">Remove</a>
 	    {% endifnotequal %}{% endif %}
 	</tr>
 	{% endfor %}
