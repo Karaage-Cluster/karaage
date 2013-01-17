@@ -3,21 +3,18 @@
 
 {% block title %}Software{% endblock %}
 
-{% block content_title %}{% endblock %}
-    
-{% block bread_crumbs_1 %}
- &rsaquo; <a href="{% url 'kg_software_list' %}">Software</a>
- &rsaquo; <a href="{{ l.package.get_absolute_url }}">{{ l.package }}</a>
- &rsaquo; {{ l }}
-{% endblock %}    
 
-{% block content %}
-<div id="content-main">
-	<div class="module">
-		<h2>Licenses</h2>
-		<p>Version: {{ l.version }}</p>
-		<p>Date: {{ l.date|date }}</p>
+    
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="{% url 'kg_software_list' %}">Software</a>
+ › <a href="{{ l.package.get_absolute_url }}">{{ l.package }}</a>
+ › {{ l }}
+</div>{% endblock %}    
+
+{% block content %}<div id="content-main">
+<div class="module">
+<h2>Licenses</h2>
+<p>Version: {{ l.version }}</p>
+<p>Date: {{ l.date|date }}</p>
 		{{ l.text|safe|linebreaks }}
-	</div>	
-</div>
-{% endblock %}
+	</div>
+</div>{% endblock %}

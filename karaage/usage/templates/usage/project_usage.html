@@ -2,64 +2,58 @@
 
 {% block title %}Usage{% endblock %}
 
-{% block content_title %}{% endblock %}
 
-{% block bread_crumbs_1 %}
- &rsaquo; <a href="../../../?{{ querystring }}">Usage</a>
- &rsaquo; <a href="../?{{ querystring }}">{{ project.institute }}</a>
- &rsaquo; {{ project.pid }}
-{% endblock %}
+
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="../../../?{{ querystring }}">Usage</a>
+ › <a href="../?{{ querystring }}">{{ project.institute }}</a>
+ › {{ project.pid }}
+</div>{% endblock %}
      
 {% load humanize %}
 {% load filters %}
-{% block content %}
-<div id="content-main">
+{% block content %}<div id="content-main">
 <h2>Usage {{ start|date }} - {{ end|date }}</h2>
 <h3><a href="{{ project.get_absolute_url }}">{{ project }}</a></h3>
 <p>{% date_filter start end %}</p>
-
-	<p>Leader{{ project.leaders.all|pluralize }}: 
+<p>Leader{{ project.leaders.all|pluralize }}: 
 	{% for leader in project.leaders.all %}<a href="{{ leader.get_absolute_url }}">{{ leader }}</a> {% endfor %}</p>
-	<div class="module">
-   	<h2>Users</h2>
-   	
-   	<table>
-			<thead>
-			<tr>
-				<th>User</th>
-				<th>CPU Time</th>
-				<th>No. Jobs</th>
-				<th>% of project</th>
-				<th>Colour</th>
-			</tr>   	
-   	</thead>
-   	<tbody>
+<div class="module">
+<h2>Users</h2>
+<table>
+<thead>
+<tr>
+<th>User</th>
+<th>CPU Time</th>
+<th>No. Jobs</th>
+<th>% of project</th>
+<th>Colour</th>
+</tr>
+</thead>
+<tbody>
    	{% if usage_list %}
    	{% for u in usage_list %}
 			<tr class="{% cycle row1,row2 %}">
-				<td><a href="{{ u.user.get_absolute_url }}">{{ u.user }}</a></td>
-				<td class="right">{{ u.usage|timeformat}}</td>	
-				<td class="right">{{ u.jobs|intcomma }}</td>
-				<td class="right">{{ u.percent|floatformat:"2" }}%</td>
-				<td class="graph_key_{{ u.colour }}"></td>
-			</tr> 
+<td><a href="{{ u.user.get_absolute_url }}">{{ u.user }}</a></td>
+<td class="right">{{ u.usage|timeformat }}</td>
+<td class="right">{{ u.jobs|intcomma }}</td>
+<td class="right">{{ u.percent|floatformat:"2" }}%</td>
+<td class="graph_key_{{ u.colour }}"></td>
+</tr> 
 		{% endfor %}
-		<tfoot>
-			<tr>
-				<td>Total</td>
-				<td class="right">{{ total|timeformat }}</td>	
-				<td class="right">{{ total_jobs|intcomma }}</td>	
-			</tr>		
-		</tfoot> 
+		</tbody><tfoot>
+<tr>
+<td>Total</td>
+<td class="right">{{ total|timeformat }}</td>
+<td class="right">{{ total_jobs|intcomma }}</td>
+</tr>
+</tfoot> 
 		{% else %}
 			<tr class="{% cycle row1,row2 %}">
-				<td colspan="4">No usage for that time period</td>
-			</tr> 
+<td colspan="4">No usage for that time period</td>
+</tr> 
 		{% endif %}	
-   	</tbody>
+   	
    	</table>
-	</div>
-	<img src="{{ GRAPH_URL }}projects/{{ graph }}" />
-
 </div>
-{% endblock %}
+<img src="{{ GRAPH_URL }}projects/{{ graph }}"/>
+</div>{% endblock %}

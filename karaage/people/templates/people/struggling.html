@@ -4,20 +4,16 @@
 
 {% block title %}Users{% endblock %}
 
-{% block breadcrumbs %}
-{{ block.super }} 
- &rsaquo; <a href="../">Users</a> 
- &rsaquo; Struggling
-{% endblock %}   
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="../">Users</a> 
+ › Struggling
+</div>{% endblock %}   
 
 
-{% block content %}
-<div class="module filtered" id="changelist">
-		<div id="changelist-filter">
-   				<h2>Filter</h2> 					
+{% block content %}<div id="content-main"><div class="module filtered" id="changelist">
+<div id="changelist-filter">
+<h2>Filter</h2> 					
 					{{ filter_bar|safe }}	
    	</div>
    	{% gen_table page.object_list people/struggling_table.html %}
    	{% pagination page request %}
-</div>
-{% endblock %}
+</div></div>{% endblock %}

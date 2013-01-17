@@ -2,15 +2,14 @@
 
 {% block title %}Applications{% endblock %}
 {% block style %}<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/forms_custom.css"/>{% endblock %}
-{% block content_title %}New {{ org_name }} Project Application{% endblock %}
 
-{% block bread_crumbs_1 %}
- &rsaquo; Project Application
-{% endblock %}   
+
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Project Application
+</div>{% endblock %}   
 
 {% block content %}
 {% if saml %}
-<p>Hi {{ saml_user.first_name}}, we have received needed personal information from your identity provider.</p>
+<p>Hi {{ saml_user.first_name }}, we have received needed personal information from your identity provider.</p>
 {% endif %}
 <form method="post" action=".">{% csrf_token %}
 <div>

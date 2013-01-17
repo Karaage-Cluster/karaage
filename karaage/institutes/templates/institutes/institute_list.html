@@ -2,13 +2,12 @@
 
 {% block title %}Institutes{% endblock %}
 
-{% block breadcrumbs %}{{ block.super }} &rsaquo; Institutes{% endblock %}
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Institutes</div>{% endblock %}
 
-{% block content_title %}&nbsp;{% endblock %}
 
-{% block objecttools %}
-{% if perms.institutes.add_institute %}
-<ul class="object-tools"><li><a href="add/" class="addlink">Add institute</a></li></ul>
+
+{% block object-tools %}<div class="module object-tools"><h2>Object links</h2><p>{% if perms.institutes.add_institute %}
+</p><ul><li><a class="addlink" href="add/">Add institute</a></li></ul>
 {% endif %}
-{% endblock %}
+</div>{% endblock %}
 

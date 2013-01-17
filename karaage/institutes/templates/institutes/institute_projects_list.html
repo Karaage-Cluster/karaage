@@ -1,11 +1,8 @@
 {% extends "main.html" %}
 {% load common %}
 
-{% block content %}
-
-<h1>{{ institute }}</h1>
-
+{% block content %}<div id="content-main"><h1>{{ institute }}</h1>
 <h3>Projects</h3>
 {% gen_table project_list %}
 
-{% endblock %}
+</div>{% endblock %}

@@ -1,11 +1,7 @@
 {% extends "main.html" %}
 
 {% block title %}Applications{% endblock %}
-{% block content %}
-
-<p>Thanks {{ user.first_name }}. The application is now pending approval of {{ org_name }}'s admins.</p>
-<p>An email will be sent to {{ application.applicant }} once they have approved their account.</p>
-
-{% endblock %}
+{% block content %}<div id="content-main"><p>Thanks {{ user.first_name }}. The application is now pending approval of {{ org_name }}'s admins.</p>
+<p>An email will be sent to {{ application.applicant }} once they have approved their account.</p></div>{% endblock %}
 
 

@@ -2,26 +2,22 @@
 {% load url from future %}
 
 {% block title %}Applications{% endblock %}
-{% block content %}
-
-<h1>{{ application.applicant }}'s Request</h1>
-
+{% block content %}<div id="content-main"><h1>{{ application.applicant }}'s Request</h1>
 <p>{{ application.applicant }} has requested to join the project <b>{{ application.project }}</b></p>
-
 <p>Please 
-<a href="{% url 'kg_userapplication_approve' application.id %}" class="yeslink">&nbsp;Accept</a> or
-<a href="{% url 'kg_userapplication_decline' application.id %}" class="nolink">&nbsp;Decline</a> this request</p>
+<a class="yeslink" href="{% url 'kg_userapplication_approve' application.id %}"> Accept</a> or
+<a class="nolink" href="{% url 'kg_userapplication_decline' application.id %}"> Decline</a> this request</p>
 
 {% if application.needs_account %}
 <p>A computer account on the {{ org_name }} clusters will be made for {{ application.applicant }} if they does not already have one.</p>
 {% endif %}
 <h1>{{ person }} Details</h1>
-   	<table>
-   		<tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
-   		<tr><td>First name:</td><td>{{ application.applicant.first_name }}</td></tr>
-   		<tr><td>Last name:</td><td>{{ application.applicant.last_name }}</td></tr>
-   		<tr><td>Email:</td><td>{{ application.applicant.email|urlize }}</td></tr>	
-   		<tr><td>Institute:</td><td><a href="{{ application.applicant.institute.get_absolute_url }}">{{ application.applicant.institute }}</a></td></tr>		
+<table>
+<tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
+<tr><td>First name:</td><td>{{ application.applicant.first_name }}</td></tr>
+<tr><td>Last name:</td><td>{{ application.applicant.last_name }}</td></tr>
+<tr><td>Email:</td><td>{{ application.applicant.email|urlize }}</td></tr>
+<tr><td>Institute:</td><td><a href="{{ application.applicant.institute.get_absolute_url }}">{{ application.applicant.institute }}</a></td></tr>		
    		{% if application.applicant.position %}<tr><td>Position:</td><td>{{ application.applicant.position }}</td></tr>{% endif %}
    		{% if application.applicant.telephone %}<tr><td>Phone:</td><td>{{ application.applicant.telephone }}</td></tr>{% endif %}
    		{% if application.applicant.mobile %}<tr><td>Mobile:</td><td>{{ application.applicant.mobile }}</td></tr>{% endif %}
@@ -29,8 +25,6 @@
    		{% if application.applicant.supervisor %}<tr><td>Supervisor:</td><td>{{ application.applicant.supervisor }}</td></tr>{% endif %}
    		{% if application.applicant.fax %}<tr><td>Fax:</td><td>{{ application.applicant.fax }}</td></tr>{% endif %}
 		
-	</table>
-
-{% endblock %}
+	</table></div>{% endblock %}
 
 

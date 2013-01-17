@@ -2,43 +2,39 @@
 
 {% block title %}Machines{% endblock %}
 
-{% block bread_crumbs_1 %}
- &rsaquo; <a href="../../">Machines</a>
- &rsaquo; <a href="../">{{ machine }}</a>
- &rsaquo; User Accounts
-{% endblock %} 
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="../../">Machines</a>
+ › <a href="../">{{ machine }}</a>
+ › User Accounts
+</div>{% endblock %} 
 
 
-{% block content %}
-<div id="content-main">
-
-	<div class="module">
-   	<h2>Users Accounts</h2>
-   	<h4>Total user accounts: {{ user_accounts|length }}</h4>
-   	<table cellspacing="0">
-	<thead>
-		<tr>
-			<th></th>
-			<th>User</th>
-			<th>Username</th>
-			<th>Default Project</th>
-			<th>Date Created</th>
-			<th>Date Deleted</th>
-		</tr>
-	</thead>   	
-   <tbody>
+{% block content %}<div id="content-main">
+<div class="module">
+<h2>Users Accounts</h2>
+<h4>Total user accounts: {{ user_accounts|length }}</h4>
+<table cellspacing="0">
+<thead>
+<tr>
+<th></th>
+<th>User</th>
+<th>Username</th>
+<th>Default Project</th>
+<th>Date Created</th>
+<th>Date Deleted</th>
+</tr>
+</thead>
+<tbody>
    	{% for ua in user_accounts %}
 	   	<tr class="{% cycle row1,row2 %}">
-	   		<td>{% yes_no_img ua.date_deleted "reversed" %}</td>
-	   		<td><a href="{{ ua.get_absolute_url }}">{{ ua.user }}</a></td>
-	   		<td>{{ ua.username }}</td>
-	   		<td><a href="{{ ua.default_project.get_absolute_url}}">{{ ua.default_project }}</a></td>
-	   		<td>{{ ua.date_created }}</td>
-	   		<td>{{ ua.date_deleted }}</td>
-	   	</tr>
+<td>{% yes_no_img ua.date_deleted "reversed" %}</td>
+<td><a href="{{ ua.get_absolute_url }}">{{ ua.user }}</a></td>
+<td>{{ ua.username }}</td>
+<td><a href="{{ ua.default_project.get_absolute_url }}">{{ ua.default_project }}</a></td>
+<td>{{ ua.date_created }}</td>
+<td>{{ ua.date_deleted }}</td>
+</tr>
 	   {% endfor %}
-   </tbody>  	
+   </tbody>
 </table>
-	</div>
 </div>
-{% endblock %}
+</div>{% endblock %}

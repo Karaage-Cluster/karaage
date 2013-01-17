@@ -1,10 +1,9 @@
 {% extends "main.html" %}
 
-{% block breadcrumbs %}{{ block.super }} &rsaquo; Software {% endblock %}  
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Software </div>{% endblock %}  
 
-{% block content %}
-{% if software_list %}
-	<h1>Restricted Software</h1>
+{% block content %}<div id="content-main"><p>{% if software_list %}
+	</p><h1>Restricted Software</h1>
 	{% for s in software_list %}
 		{% if s.accepted or s.pending_request %}
  			<h2>{{ s.package }}<span class="small green">
@@ -13,10 +12,10 @@
  			<h2><a href="{{ s.package.id }}/">{{ s.package }}</a></h2>
  		{% endif %}
  		<p>{{ s.package.description|truncatewords:"20" }}</p>
- 		<hr />
+<hr/>
 	{% endfor %}
 {% else %}
 	<p>No restricted software currently available.</p>
 {% endif %}
 
-{% endblock %}
+</div>{% endblock %}

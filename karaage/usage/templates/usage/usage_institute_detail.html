@@ -2,17 +2,15 @@
 
 {% block title %}Usage{% endblock %}
 
-{% block content_title %}{% endblock %}
-    
-{% block bread_crumbs_1 %}
- &rsaquo; <a href="../../?{{ querystring }}">Usage</a>
- &rsaquo; {{ institute }}
-{% endblock %}    
 
-{% block content %}
-{% load humanize %}
+    
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="../../?{{ querystring }}">Usage</a>
+ › {{ institute }}
+</div>{% endblock %}    
+
+{% block content %}<p>{% load humanize %}
 {% load filters %}
-<div id="content-main">
+</p><div id="content-main">
 <h2>Usage {{ start|date }} - {{ end|date }}</h2>
 <h3>{{ institute }}</h3>
 <p>{% date_filter start end %}</p>
@@ -20,92 +18,85 @@
 {% if user_list %}
 
 <div class="module">
-   	<h2>Top 5 users&nbsp;&nbsp;<a href="users/?{{ querystring }}">Show all</a></h2>
-   	<a href="#graph">
-   		<img src="{{ GRAPH_URL }}institutes/{{ graph }}"  class="float-right" width="300" height="150"/>
-   	</a>
-   	<table>
-			<thead>
-			<tr>
-				<th>User</th>
-				<th>Project</th>
-				<th>CPU Time</th>
-				<th>No. Jobs</th>
-				<th>% of {{ institute }}'s usage</th>
-				<th>% of quota</th>
-			</tr>   	
-   	</thead>
-   	<tbody>
+<h2>Top 5 users  <a href="users/?{{ querystring }}">Show all</a></h2>
+<a href="#graph">
+<img class="float-right" height="150" src="{{ GRAPH_URL }}institutes/{{ graph }}" width="300"/>
+</a>
+<table>
+<thead>
+<tr>
+<th>User</th>
+<th>Project</th>
+<th>CPU Time</th>
+<th>No. Jobs</th>
+<th>% of {{ institute }}'s usage</th>
+<th>% of quota</th>
+</tr>
+</thead>
+<tbody>
    	{% for u in user_list|dictsortreversed:"usage" %}
    		{% ifnotequal u.usage 0 %}
 			<tr class="{% cycle row1,row2 %}">
-				<td><a href="{{ u.user.get_absolute_url }}">{{ u.user }}</a></td>
-				<td><a href="{{ u.project.get_usage_url }}?{{ querystring }}">{{ u.project.pid }}</a></td>
-				<td class="right">{{ u.usage|timeformat }}</td>	
-				<td class="right">{{ u.jobs|intcomma }}</td>
-				<td class="right">{{ u.percent|floatformat:"2" }}%</td>
-				<td class="right">{{ u.quota_percent|floatformat:"2" }}%</td>
-			</tr>
+<td><a href="{{ u.user.get_absolute_url }}">{{ u.user }}</a></td>
+<td><a href="{{ u.project.get_usage_url }}?{{ querystring }}">{{ u.project.pid }}</a></td>
+<td class="right">{{ u.usage|timeformat }}</td>
+<td class="right">{{ u.jobs|intcomma }}</td>
+<td class="right">{{ u.percent|floatformat:"2" }}%</td>
+<td class="right">{{ u.quota_percent|floatformat:"2" }}%</td>
+</tr>
 			{% endifnotequal %}
 		{% endfor %}
-		<tfoot>
-			<tr>
-				<td>Total</td>
-				<td></td>
-				<td class="right">{{ user_total|timeformat }}</td>	
-				<td class="right">{{ user_total_jobs|intcomma }}</td>	
-				<td class="right">{{ user_percent|floatformat:"2" }}%</td>
-				<td></td>
-			</tr>		
-		</tfoot>  	
-   	</tbody>
-   	
-   	</table>
-   	
-	</div>
+		</tbody><tfoot>
+<tr>
+<td>Total</td>
+<td></td>
+<td class="right">{{ user_total|timeformat }}</td>
+<td class="right">{{ user_total_jobs|intcomma }}</td>
+<td class="right">{{ user_percent|floatformat:"2" }}%</td>
+<td></td>
+</tr>
+</tfoot>
+</table>
+</div>
 	{% endif %}
 	{% if project_list %}
 	<div class="module">
-   	<h2>Projects</h2>
-   	<table>
-			<thead>
-			<tr>
-				<th>Project</th>
-				<th>CPU Time</th>
-				<th>No. Jobs</th>
-				<th>% of cap</th>
-				<th>% of quota</th>
-			</tr>   	
-   	</thead>
-   	<tbody>
+<h2>Projects</h2>
+<table>
+<thead>
+<tr>
+<th>Project</th>
+<th>CPU Time</th>
+<th>No. Jobs</th>
+<th>% of cap</th>
+<th>% of quota</th>
+</tr>
+</thead>
+<tbody>
    	{% for p in project_list|dictsortreversed:"usage" %}
 			<tr class="{% cycle row1,row2 %}">
-				<td><a href="{{ p.project.get_usage_url }}?{{ querystring }}">{{ p.project }}</a></td>
-				<td class="right">{{ p.usage|timeformat }}</td>	
-				<td class="right">{{ p.jobs|intcomma }}</td>
-				<td class="right">{{ p.percent|floatformat:"2" }}%</td>
-				<td class="right">{{ p.quota_percent|floatformat:"2" }}%</td>
-			</tr> 
+<td><a href="{{ p.project.get_usage_url }}?{{ querystring }}">{{ p.project }}</a></td>
+<td class="right">{{ p.usage|timeformat }}</td>
+<td class="right">{{ p.jobs|intcomma }}</td>
+<td class="right">{{ p.percent|floatformat:"2" }}%</td>
+<td class="right">{{ p.quota_percent|floatformat:"2" }}%</td>
+</tr> 
 		{% endfor %}
-		<tfoot>
-			<tr>
-				<td>Total</td>
-				<td class="right">{{ i_usage|timeformat }}</td>	
-				<td class="right">{{ i_jobs|intcomma }}</td>	
-				<td></td>
-			</tr>		
-		</tfoot>  	
-   	</tbody>
-   	</table>
-   	
-	</div>
+		</tbody><tfoot>
+<tr>
+<td>Total</td>
+<td class="right">{{ i_usage|timeformat }}</td>
+<td class="right">{{ i_jobs|intcomma }}</td>
+<td></td>
+</tr>
+</tfoot>
+</table>
+</div>
 	{% else %}
 		<p>No usage for this time period</p>
 	{% endif %}
 	{% if gen %}
 		gen
 	{% endif %}
-	<img id="graph" src="{{ GRAPH_URL }}institutes/{{ graph }}" /> 
-	
-</div>
-{% endblock %}
+	<img id="graph" src="{{ GRAPH_URL }}institutes/{{ graph }}"/>
+</div>{% endblock %}

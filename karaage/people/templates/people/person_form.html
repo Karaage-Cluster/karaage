@@ -3,16 +3,15 @@
 
 {% block title %}Users{% endblock %}
 
-{% block content_title %}{% if person %}Edit{% else %}Create{% endif %} User{% endblock %}
+
 
 {% block extrahead %}
 {{ form.media }}
 {% endblock %}
 
-{% block bread_crumbs_1 %}
- &rsaquo; <a href="{% url 'kg_user_list' %}">Users</a>
- &rsaquo; {% if person %}Edit{% else %}Create{% endif %} User
-{% endblock %}   
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="{% url 'kg_user_list' %}">Users</a>
+ › {% if person %}Edit{% else %}Create{% endif %} User
+</div>{% endblock %}   
 
 {% block content %}
 <form method="post" action=".">{% csrf_token %}

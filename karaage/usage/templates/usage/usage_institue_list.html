@@ -4,110 +4,100 @@
 
 {% block title %}Usage{% endblock %}
 
-{% block content_title %}&nbsp;{% endblock %}
 
-{% block bread_crumbs_1 %}
- &rsaquo; Usage
-{% endblock %}
 
-{% block objecttools %}
-<ul class="object-tools">
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Usage
+</div>{% endblock %}
+
+{% block object-tools %}<div class="module object-tools"><h2>Object links</h2><ul>
 <li><a href="{% url 'kg_core_report' %}">Core Report</a></li>
 <li><a href="{% url 'kg_mem_report' %}">Memory Report</a></li>
 <li><a href="{% url 'kg_job_list' %}">All Jobs</a></li>
 <li><a href="institute/trends/?{{ querystring }}">Trends</a></li>
 <li><a href="top_users/?{{ querystring }}">Top Users</a></li>
-<li><a href="{% url 'kg_usage_search' %}" class="viewsitelink">Advanced Search</a></li>
-</ul>
-{% endblock %}
+<li><a class="viewsitelink" href="{% url 'kg_usage_search' %}">Advanced Search</a></li>
+</ul></div>{% endblock %}
 
-{% block content %}
-<div id="content-main">
+{% block content %}<div id="content-main">
 <h2>{{ machine_category }} Usage {{ start|date }} - {{ end|date }}</h2>
-
 <p>
 {% date_filter start end %}
 </p>
-<p>No. CPU's: (average) {{ avg_cpus|floatformat:"1"  }}  Utilization: {{ utilization|floatformat:"2" }}%</p>
+<p>No. CPU's: (average) {{ avg_cpus|floatformat:"1" }}  Utilization: {{ utilization|floatformat:"2" }}%</p>
 <p>Total time {{ total|timeformat }} ({{ total_jobs|intcomma }} jobs) of available {{ available_time|timeformat }} </p>
-	<div class="module">
-		<h2>Trend</h2>
-		<img src="{{ trend_graph }}" />
-	</div>
-	<div class="module">	
-	
-   	<h2>Institutes</h2>
-   	<img src="{{ graph }}" / class="float-right middle">
-   	<table>
-			<thead>
-			<tr>
-				<th>Institute</th>
-				<th>CPU Time</th>
-				<th>No. Jobs</th>
-				<th>Actual</th>
-				<th>Quota</th>
-				<th>Difference</th>
-				<th>% quota used</th>
-			</tr>   	
-   	</thead>
-   	<tfoot>
-			<tr>
-				<td>Total</td>
-				<td>{{ total|timeformat }}</td>
-				<td>{{ total_jobs|intcomma }}</td>	
-			</tr>   	
-   	</tfoot>
-   	<tbody>
+<div class="module">
+<h2>Trend</h2>
+<img src="{{ trend_graph }}"/>
+</div>
+<div class="module">
+<h2>Institutes</h2>
+<img class="float-right middle" src="{{ graph }}"/>
+<table>
+<thead>
+<tr>
+<th>Institute</th>
+<th>CPU Time</th>
+<th>No. Jobs</th>
+<th>Actual</th>
+<th>Quota</th>
+<th>Difference</th>
+<th>% quota used</th>
+</tr>
+</thead>
+<tfoot>
+<tr>
+<td>Total</td>
+<td>{{ total|timeformat }}</td>
+<td>{{ total_jobs|intcomma }}</td>
+</tr>
+</tfoot>
+<tbody>
    	
    	{% for i in i_list|dictsortreversed:"usage" %}
 			<tr class="{% cycle row1,row2 as rowcolours %}">
-				<td><a href="institute/{{ i.institute.id }}/?{{ querystring }}">{{ i.institute.name }}</a> </td>
-				<td class="right">{{ i.usage|timeformat }}</td>	
-				<td class="right">{{ i.jobs|intcomma }}</td>	
-				<td class="right">{{ i.percent|floatformat:"2" }}</td>
-				<td class="right">{{ i.quota }}</td>
-				<td class="right {{ i.class }}">{{ i.diff|floatformat:"2" }}</td>
-				<td class="right {{ i.class }}">{{ i.p_used|floatformat:"2" }}</td>
-			</tr> 
+<td><a href="institute/{{ i.institute.id }}/?{{ querystring }}">{{ i.institute.name }}</a> </td>
+<td class="right">{{ i.usage|timeformat }}</td>
+<td class="right">{{ i.jobs|intcomma }}</td>
+<td class="right">{{ i.percent|floatformat:"2" }}</td>
+<td class="right">{{ i.quota }}</td>
+<td class="right {{ i.class }}">{{ i.diff|floatformat:"2" }}</td>
+<td class="right {{ i.class }}">{{ i.p_used|floatformat:"2" }}</td>
+</tr> 
 		{% endfor %}
 			<tr class="{% cycle rowcolours %}">
-				<td>Unused</td>
-				<td class="right">{{ unused.usage|timeformat }}</td>	
-				<td class="right">&nbsp;</td>	
-				<td class="right">{{ unused.percent|floatformat:"2" }}</td>
-				<td class="right">&nbsp;</td>
-				<td class="right {{ unused.class }}">{{ unused.diff|floatformat:"2" }}</td>
-				<td>&nbsp;</td>
-			</tr>
-   	</tbody>
-   	</table>
-   	<br class="clear" />
-	</div>
-	<div class="module">
-		<h2>Machines</h2>
-		<img src="{% mc_pie_chart machine_category start end %}" class="float-right"/>
-			<table>
-			<thead>
-			<tr>
-				<th>Name</th>
-				<th>CPU Time</th>
-				<th>No. Jobs</th>
-			</tr>   	
-   	</thead>
-   	<tbody>  	
+<td>Unused</td>
+<td class="right">{{ unused.usage|timeformat }}</td>
+<td class="right"> </td>
+<td class="right">{{ unused.percent|floatformat:"2" }}</td>
+<td class="right"> </td>
+<td class="right {{ unused.class }}">{{ unused.diff|floatformat:"2" }}</td>
+<td> </td>
+</tr>
+</tbody>
+</table>
+<br class="clear"/>
+</div>
+<div class="module">
+<h2>Machines</h2>
+<img class="float-right" src="{% mc_pie_chart machine_category start end %}"/>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>CPU Time</th>
+<th>No. Jobs</th>
+</tr>
+</thead>
+<tbody>  	
    	{% for m in m_list %}
 			<tr class="{% cycle row1,row2 as rowcolours %}">
-				<td>{{ m.machine }}</td>
-				<td class="right">{{ m.usage|timeformat }}</td>	
-				<td class="right">{{ m.jobs|intcomma }}</td>
-			</tr> 
+<td>{{ m.machine }}</td>
+<td class="right">{{ m.usage|timeformat }}</td>
+<td class="right">{{ m.jobs|intcomma }}</td>
+</tr> 
 		{% endfor %}		
    	</tbody>
-   	</table>
-   	<br class="clear" />
-   	
-	</div>
-	
-
+</table>
+<br class="clear"/>
 </div>
-{% endblock %}
+</div>{% endblock %}

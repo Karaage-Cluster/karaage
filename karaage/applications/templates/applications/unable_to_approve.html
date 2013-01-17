@@ -2,17 +2,13 @@
 {% load url from future %}
 {% load common %}
 
-{% block content_title %}Applications{% endblock %}
-    
-{% block content %}
-<div id="content-main">
 
+    
+{% block content %}<div id="content-main">
 <p>This application is no longer viewable. This could be due to:</p>
 <ul>
-	<li>The application has already been approved by another leader of the project.</li>
-	<li>The application has been modified by an administrator.</li>
+<li>The application has already been approved by another leader of the project.</li>
+<li>The application has been modified by an administrator.</li>
 </ul>
-
 <p>You can see the state of your applications <a href="{% url 'kg_application_pendinglist' %}">here</a>.</p>
-</div>
-{% endblock %}
+</div>{% endblock %}

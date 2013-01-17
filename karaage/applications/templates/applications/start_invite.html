@@ -2,13 +2,11 @@
 {% load common forms %}
 {% block title %}Home{% endblock %}
 
-{% block content_title %}Start application{% endblock %}
 
-{% block breadcrumbs %}Home{% endblock %}
+
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;Home</div>{% endblock %}
     
-{% block content %}
-<div id="content-main">
-
+{% block content %}<div id="content-main">
 <p class="errornote">This is an example template. You should create your own in /etc/karaage/templates/applications/index.html</p>
 
 
@@ -17,15 +15,12 @@
 <p>You already have an account! Why do you want another one?</p>
 {% else %}
 <p>Please choose your institute below to kick off the application process</p>
-<form method="post" action=".">{% csrf_token %}
+<form action="." method="post">{% csrf_token %}
 {% form_as_div form %}
-<input type="submit" value="Start Application" class="default" />
+<input class="default" type="submit" value="Start Application"/>
 </form>
-
 <h3>Contact</h3>
-
 <p>Please contact {{ accounts_email }} for further information.</p>
 {% endif %}
 	
-</div>
-{% endblock %}
+</div>{% endblock %}

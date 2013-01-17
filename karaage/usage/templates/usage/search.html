@@ -3,12 +3,11 @@
 
 {% block title %}Usage{% endblock %}
 
-{% block content_title %}Usage Search{% endblock %}
 
-{% block bread_crumbs_1 %}
- &rsaquo; <a href="../">Usage</a>
- &rsaquo; Usage Search
-{% endblock %}   
+
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="../">Usage</a>
+ › Usage Search
+</div>{% endblock %}   
 
 {% block content %}
 {% load forms %}

@@ -2,11 +2,10 @@
 
 {% block title %}Applications{% endblock %}
 {% block style %}<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/forms_custom.css"/>{% endblock %}
-{% block content_title %}New {{ org_name }} Project Application{% endblock %}
 
-{% block bread_crumbs_1 %}
- &rsaquo; Project Application
-{% endblock %}   
+
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Project Application
+</div>{% endblock %}   
 
 {% block content %}
 <form method="post" action=".">{% csrf_token %}

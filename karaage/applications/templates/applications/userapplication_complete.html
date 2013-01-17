@@ -1,10 +1,7 @@
 {% extends "main.html" %}
 
 {% block title %}Applications{% endblock %}
-{% block content %}
-<p>Thanks {{ user.first_name }}, the application has been approved.</p>
-<p>An email will be sent to {{ application.applicant }} informing them.</p>
-
-{% endblock %}
+{% block content %}<div id="content-main"><p>Thanks {{ user.first_name }}, the application has been approved.</p>
+<p>An email will be sent to {{ application.applicant }} informing them.</p></div>{% endblock %}
 
 

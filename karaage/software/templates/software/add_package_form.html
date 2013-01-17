@@ -3,12 +3,11 @@
 
 {% block title %}Software{% endblock %}
 
-{% block content_title %}{% if m %}Edit{% else %}Create{% endif %} Software Package{% endblock %}
 
-{% block bread_crumbs_1 %}
- &rsaquo; <a href="{% url 'kg_software_list' %}">Software</a>
- &rsaquo; {% if m %}Edit{% else %}Create{% endif %} Software Package
-{% endblock %}   
+
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="{% url 'kg_software_list' %}">Software</a>
+ › {% if m %}Edit{% else %}Create{% endif %} Software Package
+</div>{% endblock %}   
 
 {% block content %}
 <form method="post" action=".">{% csrf_token %}
@@ -29,7 +28,7 @@
 <fieldset class="module aligned ()">
 <h2>License Info</h2>
 {% inlineformfield form.license_version form.license_date %}
-{% formfield form.license_text  %}
+{% formfield form.license_text %}
 </fieldset>
 
 <div class="submit-row">

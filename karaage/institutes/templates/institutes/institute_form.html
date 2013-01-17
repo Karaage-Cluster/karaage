@@ -4,20 +4,19 @@
 
 {% block title %}Institutes{% endblock %}
 
-{% block content_title %}{% if institute %}Edit{% else %}Create{% endif %} Institute{% endblock %}
+
 
 {% block extrahead %}
 <script type="text/javascript" src="{% url 'admin':jsi18n %}"></script> 
 {{ form.media }}
 {% endblock %}
 
-{% block bread_crumbs_1 %}
- &rsaquo; <a href="{% url 'kg_institute_list' %}">Institutes</a>
- &rsaquo; {% if institute %}Edit{% else %}Create{% endif %} Institute
-{% endblock %}   
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="{% url 'kg_institute_list' %}">Institutes</a>
+ › {% if institute %}Edit{% else %}Create{% endif %} Institute
+</div>{% endblock %}   
 
 {% block content %}
-    {% if form.errors or delegate_formset.errors  %}
+    {% if form.errors or delegate_formset.errors %}
     <p class="errornote">
       Please correct the error{{ form.errors|pluralize }} below.
     </p>

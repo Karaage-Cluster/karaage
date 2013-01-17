@@ -13,7 +13,7 @@
 	   	    <td><a href="{{ app.get_absolute_url }}">{{ app.id }}</a></td>
 	   	    <td>{{ app.get_type }}</td>
 	   	    {% if app.applicant.user %}
-	   	    <td><a href="{{ app.applicant.get_absolute_url }}">{{ app.applicant}}</a></td>
+	   	    <td><a href="{{ app.applicant.get_absolute_url }}">{{ app.applicant }}</a></td>
 	   	    {% else %}
 	   	    <td>{{ app.applicant.email }}</td>
 	   	    {% endif %}

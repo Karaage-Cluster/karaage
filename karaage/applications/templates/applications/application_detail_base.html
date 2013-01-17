@@ -1,42 +1,26 @@
-{% extends "threecol.html" %}
+{% extends "main.html" %}
 {% load url from future %}
 {% load comments %}
 
 {% block title %}Applications{% endblock %}
 
-{% block bread_crumbs_1 %}
-&rsaquo; <a href="{% url 'kg_application_list' %}">Applications</a>
-&rsaquo; {{ application }}
-{% endblock %}
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="{% url 'kg_application_list' %}">Applications</a>
+› {{ application }}
+</div>{% endblock %}
 
-{% block content %}
-<div id="content-related-extra">
-	<div class="module">
-	<h2>Tasks</h2>
-      
-	<ul class="plainlist">
-		<li>&nbsp;</li>
-		<li><a href="{% url 'kg_application_logs' application.id %}">Logs</a><br /><br /></li>
-		{% if application.state == 'C' %}
-		<li><a href="{% url 'kg_application_archive' application.id %}" class="changelink">Archive application</a><br /><br /></li>
-		{% endif %}
-		<li><a href="{% url 'kg_application_delete' application.id %}" class="deletelink">Delete application</a><br /><br /></li>
-			
-	</ul>
-	</div>
-</div>
+{% block content %}<div id="content-main">
 <div>
 <h1>Application Details</h1>
-    <table>
-    <tr><td>Application State:</td><td>{{ application.get_state_display }}</td></tr>
-    <tr><td>Created by:</td><td>{{ application.created_by|default:"Applicant" }}</td></tr>
-    <tr><td>Secret token:</td><td>{{ application.secret_token }}</td></tr>
-    <tr><td>Expires:</td><td>{{ application.expires }}</td></tr>
-    <tr><td>Submitted on:</td><td>{{ application.submitted_date }}</td></tr>
+<table>
+<tr><td>Application State:</td><td>{{ application.get_state_display }}</td></tr>
+<tr><td>Created by:</td><td>{{ application.created_by|default:"Applicant" }}</td></tr>
+<tr><td>Secret token:</td><td>{{ application.secret_token }}</td></tr>
+<tr><td>Expires:</td><td>{{ application.expires }}</td></tr>
+<tr><td>Submitted on:</td><td>{{ application.submitted_date }}</td></tr>
     {% if application.complete_date %}<tr><td>Completed on:</td><td>{{ application.complete_date }}</td></tr>{% endif %}
     {% if application.message %}<tr><td>Message:</td><td>{{ application.message }}</td></tr>{% endif %}
     </table>
-<br />
+<br/>
 </div>
 <div>
 {% block application_detail %}{% endblock %}
@@ -54,12 +38,23 @@
   {{ form.timestamp }}
   {{ form.security_hash }}
   {{ form.comment }}
-  <input type="hidden" name="next" value="{% url 'kg_application_detail' application.id %}" />
-  <p style="display:none;">{{ form.honeypot }}</p>
-  <p class="submit">
-    <input type="submit" name="post" class="submit-post" value="Post" />
-  </p>
-
+  <input name="next" type="hidden" value="{% url 'kg_application_detail' application.id %}"/>
+<p style="display:none;">{{ form.honeypot }}</p>
+<p class="submit">
+<input class="submit-post" name="post" type="submit" value="Post"/>
+</p>
 </form>
-</div>
-{% endblock %}
+</div></div>{% endblock %}
+
+{% block object-tools %}
+<div class="module object-tools">
+<h2>Tasks</h2>
+<ul>
+
+<li><a href="{% url 'kg_application_logs' application.id %}">Logs</a></li>
+		{% if application.state == 'C' %}
+		<li><a class="changelink" href="{% url 'kg_application_archive' application.id %}">Archive application</a></li>
+		{% endif %}
+		<li><a class="deletelink" href="{% url 'kg_application_delete' application.id %}">Delete application</a></li>
+</ul>
+</div>{% endblock %}

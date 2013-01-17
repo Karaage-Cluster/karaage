@@ -2,16 +2,15 @@
 {% load forms %}
 {% block title %}Applications{% endblock %}
 
-{% block content_title %}New User Application{% endblock %}
 
-{% block bread_crumbs_1 %}
- &rsaquo; User Application
 
-{% endblock %}   
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› User Application
+
+</div>{% endblock %}   
 
 {% block content %}
 {% if saml %}
-<p>Hi {{ saml_user.first_name}}</p>
+<p>Hi {{ saml_user.first_name }}</p>
 {% endif %}
 {% if application.project %}
 <p>{{ application.created_by }} has invited you to join the following {{ org_name }} project:</p>

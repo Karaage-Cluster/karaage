@@ -3,12 +3,11 @@
 {% load forms %}
 {% block title %}Projects{% endblock %}
 
-{% block content_title %}{% if project %}Edit{% else %}Create{% endif %} Project{% endblock %}
 
-{% block bread_crumbs_1 %}
- &rsaquo; <a href="{% url 'kg_project_list' %}">Projects</a>
- &rsaquo; {% if project %}Edit{% else %}Create{% endif %} Project
-{% endblock %}
+
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="{% url 'kg_project_list' %}">Projects</a>
+ › {% if project %}Edit{% else %}Create{% endif %} Project
+</div>{% endblock %}
  
 {% block extrahead %}
 {{ form.media }}

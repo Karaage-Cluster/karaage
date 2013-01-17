@@ -1,13 +1,10 @@
 {% extends "main.html" %}
 
-{% block content %}
-
-<h1>{{ person }}</h1>
-
+{% block content %}<div id="content-main"><h1>{{ person }}</h1>
 <table>
-   		<tr><td>Email:</td><td>{{ person.email|urlize }}</td></tr>
-   		<tr><td>Position:</td><td>{{ person.position|default:"" }}</td></tr>
-   		<tr><td>Institute:</td><td>{{ person.institute }}</td></tr>
+<tr><td>Email:</td><td>{{ person.email|urlize }}</td></tr>
+<tr><td>Position:</td><td>{{ person.position|default:"" }}</td></tr>
+<tr><td>Institute:</td><td>{{ person.institute }}</td></tr>
    		{% if person.supervisor %}<tr><td>Supervisor:</td><td>{{ person.supervisor|default:"" }}</td></tr>{% endif %}
    		{% if person.telephone %}<tr><td>Phone:</td><td>{{ person.telephone|default:"" }}</td></tr>{% endif %}
    		{% if person.mobile %}<tr><td>Mobile:</td><td>{{ person.mobile|default:"" }}</td></tr>{% endif %}
@@ -23,7 +20,7 @@
 		
 {% if person.leader.all %}
 	<div class="module">
-	<h2>Projects I lead</h2>
+<h2>Projects I lead</h2>
 	{% gen_table person.leader.all %}
 	</div>
 	{% endif %}	
@@ -31,53 +28,52 @@
 	
 	{% for ua in person.useraccount_set.all %}
 	<div class="module">
-	<h2>{{ ua.machine_category }} Account</h2>
+<h2>{{ ua.machine_category }} Account</h2>
 <h3>Account</h3>
-		<table cellspacing="0">
-	<thead>
-		<tr>
-			<th>Active</th>
-			<th>Username</th>
-			<th>Date Created</th>
-			<th>Date Deleted</th>
-		</tr>
-	</thead>   	
-   <tbody>
-	   	<tr class="row1">
-	   		<td>{% yes_no_img ua.date_deleted "reversed" %}</td>
-	   		<td><a href="{{ ua.get_absolute_url }}">{{ ua.username }}</a></td>
-	   		<td>{{ ua.date_created|date }}</td>
-	   		<td>{{ ua.date_deleted|date|default:"" }}</td>
-	   	</tr>
-   </tbody>  	
+<table cellspacing="0">
+<thead>
+<tr>
+<th>Active</th>
+<th>Username</th>
+<th>Date Created</th>
+<th>Date Deleted</th>
+</tr>
+</thead>
+<tbody>
+<tr class="row1">
+<td>{% yes_no_img ua.date_deleted "reversed" %}</td>
+<td><a href="{{ ua.get_absolute_url }}">{{ ua.username }}</a></td>
+<td>{{ ua.date_created|date }}</td>
+<td>{{ ua.date_deleted|date|default:"" }}</td>
+</tr>
+</tbody>
 </table>
 {% if ua.project_list %}
 <h3>Projects</h3>
-		<table cellspacing="0">
-		<thead>
-		<tr>
-			<th>Project</th>
-			<th>Name</th>
-			<th>Institute</th>
-			<th>Leaders</th>
-			<th>Default</th>
-		</tr>
-		</thead>   	
-   	<tbody>
+<table cellspacing="0">
+<thead>
+<tr>
+<th>Project</th>
+<th>Name</th>
+<th>Institute</th>
+<th>Leaders</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
    	{% for p in ua.project_list %}
 	   	<tr class="{% cycle row1,row2 %}">
-	   		<td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
-	   		<td>{{ p.name|truncatewords:"10" }}</td>
-	   		<td>{{ p.institute }}</td>
-	   		<td>{% for l in p.leaders.all %}<a href="{{ l.get_absolute_url }}">{{ l }}</a> {% endfor %}</td>
-	   		<td>{% ifequal p ua.default_project %}
-	   		<img src="{{ STATIC_URL }}admin/img/icon-yes.gif" alt="1" />{% else %}
+<td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
+<td>{{ p.name|truncatewords:"10" }}</td>
+<td>{{ p.institute }}</td>
+<td>{% for l in p.leaders.all %}<a href="{{ l.get_absolute_url }}">{{ l }}</a> {% endfor %}</td>
+<td>{% ifequal p ua.default_project %}
+	   		<img alt="1" src="{{ STATIC_URL }}admin/img/icon-yes.gif"/>{% else %}
 	   		{% endifequal %}</td>
-	   		
-	   	</tr>
+</tr>
 	   {% endfor %}
-   	</tbody>  	
-		</table>	
+   	</tbody>
+</table>	
 		{% endif %}
 		{% if ua.get_latest_usage %}
 		<h3>Latest Usage</h3>
@@ -85,4 +81,4 @@
 		{% endif %}
 	</div>
 	{% endfor %}
-{% endblock %}
+</div>{% endblock %}

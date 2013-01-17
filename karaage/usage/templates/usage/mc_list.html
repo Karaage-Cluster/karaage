@@ -3,95 +3,89 @@
 
 {% block title %}Usage{% endblock %}
 
-{% block content_title %}{% endblock %}
 
-{% block bread_crumbs_1 %}
- &rsaquo; Usage
-{% endblock %}
 
-{% block content %}
-<div id="content-main">
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Usage
+</div>{% endblock %}
+
+{% block content %}<div id="content-main">
 <h2>Usage {{ start|date }} - {{ end|date }}</h2>
-
 <p>
 {% date_filter start end %}
 </p>
-<p>No. CPU's: (average) {{ avg_cpus|floatformat:"1"  }}  Utilization: {{ utilization|floatformat:"2" }}%</p>
+<p>No. CPU's: (average) {{ avg_cpus|floatformat:"1" }}  Utilization: {{ utilization|floatformat:"2" }}%</p>
 <p>Total time {{ total|timeformat }} ({{ total_jobs|intcomma }} jobs) of available {{ available_time|timeformat }} </p>
-	<div class="module">
-		<h2>Trend</h2>
-		<img src="{{ trend_graph }}" />
-	</div>
-	<div class="module">	
-	
-   	<h2>Machines</h2>
-   	<img src="{{ graph }}" / class="float-right middle">
-   	<table>
-			<thead>
-			<tr>
-				<th>Institute</th>
-				<th>CPU Time</th>
-				<th>No. Jobs</th>
-				<th>Actual</th>
-				<th>Quota</th>
-				<th>Difference</th>
-				<th>% quota used</th>
-			</tr>   	
-   	</thead>
-   	<tbody>
+<div class="module">
+<h2>Trend</h2>
+<img src="{{ trend_graph }}"/>
+</div>
+<div class="module">
+<h2>Machines</h2>
+<img class="float-right middle" src="{{ graph }}"/>
+<table>
+<thead>
+<tr>
+<th>Institute</th>
+<th>CPU Time</th>
+<th>No. Jobs</th>
+<th>Actual</th>
+<th>Quota</th>
+<th>Difference</th>
+<th>% quota used</th>
+</tr>
+</thead>
+<tbody>
    	
    	{% for i in mc_list %}
 			<tr class="{% cycle row1,row2 as rowcolours %}">
-				<td><a href="institute/{{ i.institute.id }}/?{{ querystring }}">{{ i.institute.name }}</a> </td>
-				<td class="right">{{ i.usage|timeformat }}</td>	
-				<td class="right">{{ i.jobs|intcomma }}</td>	
-				<td class="right">{{ i.percent|floatformat:"2" }}</td>
-				<td class="right">{{ i.quota }}</td>
-				<td class="right {{ i.class }}">{{ i.diff|floatformat:"2" }}</td>
-				<td class="right {{ i.class }}">{{ i.p_used|floatformat:"2" }}</td>
-			</tr> 
+<td><a href="institute/{{ i.institute.id }}/?{{ querystring }}">{{ i.institute.name }}</a> </td>
+<td class="right">{{ i.usage|timeformat }}</td>
+<td class="right">{{ i.jobs|intcomma }}</td>
+<td class="right">{{ i.percent|floatformat:"2" }}</td>
+<td class="right">{{ i.quota }}</td>
+<td class="right {{ i.class }}">{{ i.diff|floatformat:"2" }}</td>
+<td class="right {{ i.class }}">{{ i.p_used|floatformat:"2" }}</td>
+</tr> 
 		{% endfor %}
 			<tr class="{% cycle rowcolours %}">
-				<td>Unused</td>
-				<td class="right">{{ unused.usage|timeformat }}</td>	
-				<td class="right">&nbsp;</td>	
-				<td class="right">{{ unused.percent|floatformat:"2" }}</td>
-				<td class="right">&nbsp;</td>
-				<td class="right {{ unused.class }}">{{ unused.diff|floatformat:"2" }}</td>
-				<td>&nbsp;</td>
-			</tr> 
-   	</tbody>
-   	</table>
-	</div>
+<td>Unused</td>
+<td class="right">{{ unused.usage|timeformat }}</td>
+<td class="right"> </td>
+<td class="right">{{ unused.percent|floatformat:"2" }}</td>
+<td class="right"> </td>
+<td class="right {{ unused.class }}">{{ unused.diff|floatformat:"2" }}</td>
+<td> </td>
+</tr>
+</tbody>
+</table>
+</div>
 	
 	{% for mc in mc_list %}
 	<div class="module">
-		<h2>{{ mc }}</h2>
-		<img src="{% mc_pie_chart mc start end %}" class="float-right"/>
-			<table>
-			<thead>
-			<tr>
-				<th>Name</th>
-				<th>CPU Time</th>
-				<th>No. Jobs</th>
-			</tr>   	
-   	</thead>
-   	<tbody>  	
+<h2>{{ mc }}</h2>
+<img class="float-right" src="{% mc_pie_chart mc start end %}"/>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>CPU Time</th>
+<th>No. Jobs</th>
+</tr>
+</thead>
+<tbody>  	
    	{% for m in mc.machine_set.all %}
 			<tr class="{% cycle row1,row2 as rowcolours %}">
-				<td>{{ m.name }}</td>
-				<td class="right">{{ m.get_usage.0|timeformat }}</td>	
-				<td class="right">{{ m.get_usage.1|intcomma }}</td>
-			</tr> 
+<td>{{ m.name }}</td>
+<td class="right">{{ m.get_usage.0|timeformat }}</td>
+<td class="right">{{ m.get_usage.1|intcomma }}</td>
+</tr> 
 		{% endfor %}		
    	</tbody>
-   	</table>
-   	
-   	<br clear="all" />
-   		</div>
+</table>
+<br clear="all"/>
+</div>
 	{% endfor %}
 
 	
 
-</div>
-{% endblock %}
+</div>{% endblock %}

@@ -1,20 +1,16 @@
 {% extends "main.html" %}
 {% load common %}
 
-{% block content_title %}Applications{% endblock %}
-    
-{% block content %}
-<div id="content-main">
 
-  <p>This application is no longer viewable. This could be due to:</p>
-  <ul>
-    <li>You entered an incorrect token.</li>
-    <li>You have already submitted the application.</li>
-    <li>The application has expired.</li>
-    <li>There is an error in the provided link (the link may be broken across two lines).</li>
-    <li>The application has been modified by an administrator.</li>
-  </ul>
-  
-  <p>If you have any comments or enquiries, please contact {{ help_email|urlize }}</p>
-</div>
-{% endblock %}
+    
+{% block content %}<div id="content-main">
+<p>This application is no longer viewable. This could be due to:</p>
+<ul>
+<li>You entered an incorrect token.</li>
+<li>You have already submitted the application.</li>
+<li>The application has expired.</li>
+<li>There is an error in the provided link (the link may be broken across two lines).</li>
+<li>The application has been modified by an administrator.</li>
+</ul>
+<p>If you have any comments or enquiries, please contact {{ help_email|urlize }}</p>
+</div>{% endblock %}

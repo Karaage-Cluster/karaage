@@ -2,25 +2,20 @@
 
 {% block title %}Bounced Email{% endblock %}
 
-{% block bread_crumbs_1 %}
- &rsaquo; <a href="../../">Users</a>
- &rsaquo; <a href="../">{{ person }}</a>
- &rsaquo; Bounced Email
-{% endblock %}   
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="../../">Users</a>
+ › <a href="../">{{ person }}</a>
+ › Bounced Email
+</div>{% endblock %}   
 
-{% block content %}
-<div id="content-main">
-	<p>Submitting this form will send an email to all the <b>active</b> project leaders below and also lock the account</p>
+{% block content %}<div id="content-main">
+<p>Submitting this form will send an email to all the <b>active</b> project leaders below and also lock the account</p>
    	
    	{% gen_table person.project_set.all %} 	
    	
-   	<form method="post" action=".">{% csrf_token %}
+   	<form action="." method="post">{% csrf_token %}
     	<div>
-    		<input type="hidden" name="post" value="yes" />
-    		<input type="submit" value="Yes, I'm sure" />
-    	</div>
-    	</form>
-
-
+<input name="post" type="hidden" value="yes"/>
+<input type="submit" value="Yes, I'm sure"/>
 </div>
-{% endblock %}
+</form>
+</div>{% endblock %}

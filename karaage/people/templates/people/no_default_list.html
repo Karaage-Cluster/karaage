@@ -2,13 +2,11 @@
 
 {% block title %}Users{% endblock %}
 
-{% block content_title %}&nbsp;{% endblock %}
 
-{% block breadcrumbs %}{{ block.super }} &rsaquo; Users {% endblock %}   
 
- {% block content %}
-<div class="module" id="changelist">
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Users </div>{% endblock %}   
+
+ {% block content %}<div id="content-main"><div class="module" id="changelist">
 
    	{% gen_table useraccount_list %}
-</div>
-{% endblock %}
+</div></div>{% endblock %}

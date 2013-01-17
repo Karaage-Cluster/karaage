@@ -3,42 +3,38 @@
 {% block title %}Machines{% endblock %}
 
 
-{% block content_title %}{% endblock %}
 
-{% block bread_crumbs_1 %}
-&rsaquo; <a href="../">Machines</a>
-&rsaquo; {{ machine }}
-{% endblock %} 
 
-{% block content %}
-<div id="content-main">
-  
-  <div class="module">
-    <h2>Machines</h2>
-    <h3>{{ machine }}</h3>
-    <table>
-      <tr><td>No. CPUs:</td><td>{{ machine.no_cpus }}</td></tr>
-      <tr><td>No. Nodes:</td><td>{{ machine.no_nodes }}</td></tr>
-      <tr><td>Type: </td><td>{{ machine.type }}</td></tr>
-      <tr><td>Category:</td><td>{{ machine.category }}</td></tr>
-      <tr><td>Start Date:</td><td>{{ machine.start_date }}</td></tr>
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="../">Machines</a>
+› {{ machine }}
+</div>{% endblock %} 
+
+{% block content %}<div id="content-main">
+<div class="module">
+<h2>Machines</h2>
+<h3>{{ machine }}</h3>
+<table>
+<tr><td>No. CPUs:</td><td>{{ machine.no_cpus }}</td></tr>
+<tr><td>No. Nodes:</td><td>{{ machine.no_nodes }}</td></tr>
+<tr><td>Type: </td><td>{{ machine.type }}</td></tr>
+<tr><td>Category:</td><td>{{ machine.category }}</td></tr>
+<tr><td>Start Date:</td><td>{{ machine.start_date }}</td></tr>
       {% if machine.end_date %}
       <tr><td>End Date:</td><td>{{ machine.end_date }}</td></tr>
       {% endif %}
       <tr><td>PBS server host:</td><td>{{ machine.pbs_server_host }}</td></tr>
-      <tr><td>Memory per core:</td><td>{{ machine.mem_per_core }}</td></tr>
-      <tr><td>Scaling factor:</td><td>{{ machine.scaling_factor }}</td></tr>
-      <tr><td colspan="2"><a href="user_accounts/">User Accounts</a></td></tr>
-      <tr><td colspan="2"><a href="projects/">Projects</a></td></tr>
+<tr><td>Memory per core:</td><td>{{ machine.mem_per_core }}</td></tr>
+<tr><td>Scaling factor:</td><td>{{ machine.scaling_factor }}</td></tr>
+<tr><td colspan="2"><a href="user_accounts/">User Accounts</a></td></tr>
+<tr><td colspan="2"><a href="projects/">Projects</a></td></tr>
       {% if perms.machines.edit_machine %}
-      <tr><td colspan="2"><a href="edit/" class="changelink">Edit</a></td></tr>
+      <tr><td colspan="2"><a class="changelink" href="edit/">Edit</a></td></tr>
       {% endif %}	
     </table>
-  </div>
-  <div class="module">
-    <h2>Last 5 jobs</h2>
+</div>
+<div class="module">
+<h2>Last 5 jobs</h2>
     {% gen_table usage_list %}
   </div>
-</div>
-{% endblock %}
+</div>{% endblock %}
 

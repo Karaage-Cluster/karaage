@@ -2,12 +2,11 @@
 
 {% block title %}Projects{% endblock %}
 
-{% block content_title %}&nbsp;{% endblock %}
 
-{% block breadcrumbs %}{{ block.super }} &rsaquo; Projects{% endblock %}   
 
-{% block objecttools %}
-{% if perms.projects.add_project %}
-<ul class="object-tools"><li><a href="add/" class="addlink">Add project</a></li></ul>
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Projects</div>{% endblock %}   
+
+{% block object-tools %}<div class="module object-tools"><h2>Object links</h2><p>{% if perms.projects.add_project %}
+</p><ul><li><a class="addlink" href="add/">Add project</a></li></ul>
 {% endif %}
-{% endblock %}
+</div>{% endblock %}

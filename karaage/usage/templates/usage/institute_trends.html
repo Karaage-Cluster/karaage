@@ -3,24 +3,21 @@
 
 {% block title %}Usage{% endblock %}
 
-{% block content_title %}{% endblock %}
 
-{% block bread_crumbs_1 %}
- &rsaquo; <a href="{% url 'kg_usage_list' %}">Usage</a>
- &rsaquo; Top Users
-{% endblock %}
 
-{% block content %}
-{% load filters %}
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="{% url 'kg_usage_list' %}">Usage</a>
+ › Top Users
+</div>{% endblock %}
+
+{% block content %}<p>{% load filters %}
 {% load humanize %}
-<div id="content-main">
+</p><div id="content-main">
 <p>{% date_filter start end %}</p>
 <div class="module">
 
 {% for g in graph_list %}
-	<img id="graph" src="{{ GRAPH_URL }}i_trends/{{ g }}" /><br/>
+	<img id="graph" src="{{ GRAPH_URL }}i_trends/{{ g }}"/><br/>
 {% endfor %}
 
 	</div>
-</div>
-{% endblock %}
+</div>{% endblock %}

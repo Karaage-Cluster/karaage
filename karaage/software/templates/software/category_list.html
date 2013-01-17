@@ -2,39 +2,36 @@
 
 {% block title %}Software{% endblock %}
 
-{% block content_title %}{% endblock %}
 
-{% block bread_crumbs_1 %}
- &rsaquo; <a href="../">Software</a>
- &rsaquo; Categories
-{% endblock %}   
 
-{% block content %}
-<div id="content-main">
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="../">Software</a>
+ › Categories
+</div>{% endblock %}   
+
+{% block content %}<div id="content-main">
 
 {% if perms.software.add_softwarecategory %}
-<br /><br />
-<ul class="object-tools"><li><a href="add/" class="addlink">Add category</a></li></ul>
+<br/><br/>
+
 {% endif %}
 
 	<div class="module">
-   	<h2>Software categories</h2>
-   	
+<h2>Software categories</h2>
 <table cellspacing="0">
-	<thead>
-		<tr>
-			<th>Name</th>
-		</tr>
-	</thead>   	
-   <tbody>
+<thead>
+<tr>
+<th>Name</th>
+</tr>
+</thead>
+<tbody>
    	{% for c in category_list %}
 	   	<tr class="{% cycle row1,row2 %}">
-	   		<td><a href="{{ c.id }}/edit/">{{ c.name }}</a></td>
-			</tr>
+<td><a href="{{ c.id }}/edit/">{{ c.name }}</a></td>
+</tr>
 		{% endfor %}
-   </tbody>  	
+   </tbody>
 </table>
-
-	</div>
 </div>
-{% endblock %}
+</div>{% endblock %}
+{% block object-tools %}
+<div class="module object-tools"><h2>Object links</h2><ul><li><a class="addlink" href="add/">Add category</a></li></ul></div>{% endblock %}

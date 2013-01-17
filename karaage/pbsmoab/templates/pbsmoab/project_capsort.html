@@ -2,54 +2,51 @@
 {% load paginator common %}
 {% block title %}Projects{% endblock %}
 
-{% block content_title %}&nbsp;{% endblock %}
 
-{% block breadcrumbs %}{{ block.super }} &rsaquo; Projects{% endblock %}   
 
-{% block objecttools %}
-{% if perms.projects.add_project %}
-<ul class="object-tools"><li><a href="add/" class="addlink">Add project</a></li></ul>
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Projects</div>{% endblock %}   
+
+{% block object-tools %}<div class="module object-tools"><h2>Object links</h2><p>{% if perms.projects.add_project %}
+</p><ul><li><a class="addlink" href="add/">Add project</a></li></ul>
 {% endif %}
-{% endblock %}
+</div>{% endblock %}
 
-{% block content %}
-<div class="module  {% if filter_bar %}filtered{% endif %}" id="changelist">
+{% block content %}<div id="content-main"><div class="module {% if filter_bar %}filtered{% endif %}" id="changelist">
   {% searchform %}
   
   {% if filter_bar %}
   <div id="changelist-filter">
-    <h2>Filter</h2> 					
+<h2>Filter</h2> 					
     {{ filter_bar|safe }}	
   </div>
   {% endif %}
   <table cellspacing="0">
-	<thead>
-		<tr>
-			<th>Project</th>
-			<th>Name</th>
-			<th>Institute</th>
-			<th>Leader</th>
-			<th>Active</th>
-			<th>Cap</th>
-			<th>% Cap used</th>
-			<th>Last Usage</th>
-		</tr>
-	</thead>   	
-   <tbody>
+<thead>
+<tr>
+<th>Project</th>
+<th>Name</th>
+<th>Institute</th>
+<th>Leader</th>
+<th>Active</th>
+<th>Cap</th>
+<th>% Cap used</th>
+<th>Last Usage</th>
+</tr>
+</thead>
+<tbody>
    	{% for p in page.object_list|dictsort:"get_cap_percent" reversed %}
 	   	<tr class="{% cycle row1,row2 %}">
-	   		<td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
-	   		<td>{{ p.name|truncatewords:"10" }}</td>
-	   		<td><a href="{{ p.institute.get_absolute_url }}">{{ p.institute }}</a></td>
-	   		<td><a href="{{ p.leader.get_absolute_url }}">{{ p.leader }}</a></td>
-	   		<td>{% yes_no_img p.is_active %}</td>
-	   		<td>{{ p.get_cap }}</td>
-	   		<td>{{ p.get_cap_percent|floatformat:"2" }}%</td>
-				<td>{{ p.last_usage }}</td>
-	   	</tr>
+<td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
+<td>{{ p.name|truncatewords:"10" }}</td>
+<td><a href="{{ p.institute.get_absolute_url }}">{{ p.institute }}</a></td>
+<td><a href="{{ p.leader.get_absolute_url }}">{{ p.leader }}</a></td>
+<td>{% yes_no_img p.is_active %}</td>
+<td>{{ p.get_cap }}</td>
+<td>{{ p.get_cap_percent|floatformat:"2" }}%</td>
+<td>{{ p.last_usage }}</td>
+</tr>
 	   {% endfor %}
-   </tbody>  	
+   </tbody>
 </table>
   {% pagination page request %}
-</div>
-{% endblock %}
+</div></div>{% endblock %}

@@ -17,16 +17,15 @@
     </p>
 {% endblock %}
 
-{% block content %}
-<h1>Welcome {{ person.first_name }}</h1>
+{% block content %}<div id="content-main"><h1>Welcome {{ person.first_name }}</h1>
 <p>
-<a href="{% url 'kg_user_profile' %}">Personal Details</a>&nbsp;|&nbsp;
-<a href="{% url 'kg_user_profile_accounts' %}">Cluster Account</a>&nbsp;|&nbsp;
-<a href="{% url 'kg_user_profile_projects' %}">Projects</a>&nbsp;|&nbsp;
+<a href="{% url 'kg_user_profile' %}">Personal Details</a> | 
+<a href="{% url 'kg_user_profile_accounts' %}">Cluster Account</a> | 
+<a href="{% url 'kg_user_profile_projects' %}">Projects</a> | 
 <a href="{% url 'kg_user_profile_software' %}">Restricted Software</a>
 </p>
 
 {% block profile_content %}{% endblock %}
 
 
-{% endblock %}
+</div>{% endblock %}

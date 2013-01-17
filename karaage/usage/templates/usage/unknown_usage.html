@@ -3,82 +3,74 @@
 
 {% block title %}Usage{% endblock %}
 
-{% block content_title %}{% endblock %}
 
-{% block bread_crumbs_1 %}
- &rsaquo; <a href="{% url 'kg_usage_list' %}">Usage</a>
- &rsaquo; Unknown Usage
-{% endblock %}
 
-{% block content %}
-<div id="content-main">
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="{% url 'kg_usage_list' %}">Usage</a>
+ › Unknown Usage
+</div>{% endblock %}
 
-	<div class="module">
-   	<h2>Unknown Usage {% if not showall %} ( in the past 365 days ) <a href="?showall=true" />Show all</a>{% endif %}</h2>
+{% block content %}<div id="content-main">
+<div class="module">
+<h2>Unknown Usage {% if not showall %} ( in the past 365 days ) <a href="?showall=true"></a>Show all{% endif %}</h2>
    	{% load filters %}
-<form method="post" action=".">{% csrf_token %}
+<form action="." method="post">{% csrf_token %}
 <table cellspacing="0">
-	<thead>
-		<tr>
-			<th></th>
-			<th>User</th>
-			<th>Username</th>
-			<th>Project</th>
-			<th>Machine</th>
-			<th>date</th>
-			<th>queue</th>
-			<th>cpu_usage</th>
-			<th>mem</th>
-			<th>vmem</th>
-			<th>Time in Queue</th>
-			<th>Estimated wall time</th>
-			<th>Actual wall time</th>
-			
-		</tr>
-	</thead>   	
-   <tbody>
+<thead>
+<tr>
+<th></th>
+<th>User</th>
+<th>Username</th>
+<th>Project</th>
+<th>Machine</th>
+<th>date</th>
+<th>queue</th>
+<th>cpu_usage</th>
+<th>mem</th>
+<th>vmem</th>
+<th>Time in Queue</th>
+<th>Estimated wall time</th>
+<th>Actual wall time</th>
+</tr>
+</thead>
+<tbody>
    	{% for u in usage_list %}
 	   	<tr class="{% cycle row1,row2 %}">
-	   	<td><input type="checkbox" name="uid" value="{{ u.id }}" /></td>
-	   		<td><a href="{{ u.user.get_absolute_url }}">{{ u.user }}</a></td>
-	   		<td>{{ u.username }}</td>
-	   		<td><a href="{{ u.project.get_absolute_url }}">{{ u.project }}</a></td>
-	   		<td><a href="{{ u.machine.get_absolute_url }}">{{ u.machine }}</a></td>
-	   		<td>{{ u.date }}</td>
-	   		<td>{{ u.queue }}</td>
-	   		<td>{{ u.cpu_usage|timeformat }}</td>
-	   		<td>{{ u.mem }}</td>
-	   		<td>{{ u.vmem }}</td>
-	   		<td>{{ u.wait_time|timeformat }}</td>
-	   		<td>{{ u.est_wall_time|timeformat }}</td>
-				<td>{{ u.act_wall_time|timeformat }}</td>
-	   	</tr>
+<td><input name="uid" type="checkbox" value="{{ u.id }}"/></td>
+<td><a href="{{ u.user.get_absolute_url }}">{{ u.user }}</a></td>
+<td>{{ u.username }}</td>
+<td><a href="{{ u.project.get_absolute_url }}">{{ u.project }}</a></td>
+<td><a href="{{ u.machine.get_absolute_url }}">{{ u.machine }}</a></td>
+<td>{{ u.date }}</td>
+<td>{{ u.queue }}</td>
+<td>{{ u.cpu_usage|timeformat }}</td>
+<td>{{ u.mem }}</td>
+<td>{{ u.vmem }}</td>
+<td>{{ u.wait_time|timeformat }}</td>
+<td>{{ u.est_wall_time|timeformat }}</td>
+<td>{{ u.act_wall_time|timeformat }}</td>
+</tr>
 	   {% endfor %}
-   </tbody>  	
+   </tbody>
 </table>
-
-<div class="form-row" >
-  <label for="id_project">Project:</label> 
-	<select id="id_project" class="vNullSelectField" name="project" size="1">
-    <option value="" selected="selected">---------</option>
+<div class="form-row">
+<label for="id_project">Project:</label>
+<select class="vNullSelectField" id="id_project" name="project" size="1">
+<option selected="selected" value="">---------</option>
     {% for p in project_list %}
     <option value="{{ p.pid }}">{{ p.pid }} | {{ p.name }}</option>
     {% endfor %}
     </select>
-    <label for="id_user inline">User:</label> 
-	<select id="id_user" class="vNullSelectField" name="user" size="1">
-    <option value="" selected="selected">---------</option>
+<label for="id_user inline">User:</label>
+<select class="vNullSelectField" id="id_user" name="user" size="1">
+<option selected="selected" value="">---------</option>
     {% for u in user_list %}
     <option value="{{ u.id }}">{{ u }}</option>
     {% endfor %}
     </select>
-    </div>
-	<div class="submit-row">
-		
-		<input type="submit" value="Save" class="default" />
-	</div>
-	</form>
-	</div>
-	
 </div>
-{% endblock %}
+<div class="submit-row">
+<input class="default" type="submit" value="Save"/>
+</div>
+</form>
+</div>
+</div>{% endblock %}

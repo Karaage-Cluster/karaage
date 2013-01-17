@@ -3,7 +3,7 @@
 
 {% load forms %}{% load filters %}
 
-{% block breadcrumbs %}{{ block.super }} &rsaquo; Profile {% endblock %}   
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Profile </div>{% endblock %}   
 
 {% block profile_content %}
 <h2>Personal Details</h2>

@@ -1,13 +1,11 @@
 {% extends "main.html" %}
 {% load url from future %}
 
-{% block bread_crumbs_1 %}
- &rsaquo; <a href="{% url 'kg_software_list' %}">Software</a>
- &rsaquo; {{ package }}
-{% endblock %}   
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="{% url 'kg_software_list' %}">Software</a>
+ › {{ package }}
+</div>{% endblock %}   
 
-{% block content %}
-<h1>{{ package.name }}</h1>
+{% block content %}<div id="content-main"><h1>{{ package.name }}</h1>
 {% if package.restricted %}
 <p class="errornote">NOTE: This software is restricted and requires admin approval. You will receive notification via email once your request has been processed</p>
 {% endif %}
@@ -26,12 +24,10 @@
 </div>
 {% endif %}
 
-<form method="post" action=".">{% csrf_token %}
+<form action="." method="post">{% csrf_token %}
 
 <p>By clicking on 'I accept' you are agreeing to the conditions above.</p>
-<div class="submit-row">	
-<input type="submit" value="I accept" />
+<div class="submit-row">
+<input type="submit" value="I accept"/>
 </div>
-
-</form>
-{% endblock %}
+</form></div>{% endblock %}

@@ -2,26 +2,21 @@
 {% load surveys %}
 {% block title %}Project Reports{% endblock %}
 
-{% block content_title %}{% endblock %}
+
     
-{% block bread_crumbs_1 %}
- &rsaquo; <a href="../">Project Reports</a>
- &rsaquo; {{ report.project.pid }}
-{% endblock %}    
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="../">Project Reports</a>
+ › {{ report.project.pid }}
+</div>{% endblock %}    
 
-{% block content %}
-<div id="content-main">
-
-	<div class="module">
-		<h2>{{ report.survey_group }}</h2>
-			<h3><a href="{{ report.project.get_absolute_url }}">{{ report.project.pid }}</a>: {{ report.project.name }}</h3>
-			<p>Leader: <a href="{{ report.project.leader.get_absolute_url }}">{{ report.project.leader }}</a><p>
-			<dl>
+{% block content %}<div id="content-main">
+<div class="module">
+<h2>{{ report.survey_group }}</h2>
+<h3><a href="{{ report.project.get_absolute_url }}">{{ report.project.pid }}</a>: {{ report.project.name }}</h3>
+<p>Leader: <a href="{{ report.project.leader.get_absolute_url }}">{{ report.project.leader }}</a></p><p>
+</p><dl>
 			{% for q in report.survey_group.question_set.all %}
 				{% qa_row report q %}
 			{% endfor %}
 			</dl>
-	</div>	
-	
 </div>
-{% endblock %}
+</div>{% endblock %}

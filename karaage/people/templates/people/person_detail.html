@@ -1,105 +1,62 @@
-{% extends "threecol.html" %}
+{% extends "main.html" %}
 {% load url from future %}
 {% load comments %}
 {% load machines %}
 {% block title %}Users{% endblock %}
 
-{% block content_title %}{% endblock %}
+
 
 {% block extrahead %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script> 
 <script type="text/javascript" src="{{ STATIC_URL }}js/karaage.js"></script> 
 {% endblock %}
 
-{% block bread_crumbs_1 %}
-&rsaquo; <a href="../">Users</a>
-&rsaquo; {{ person }}
-{% endblock %}   
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="../">Users</a>
+› {{ person }}
+</div>{% endblock %}   
 
-{% block content %}
-{% get_comment_count for person as comment_count %}
+{% block content %}<div id="content-main"><p>{% get_comment_count for person as comment_count %}
 
-  <div id="content-related-extra">
-    <div class="module">
-      <h2>Tasks</h2>
-      
-      <ul class="plainlist">
-        <li>&nbsp;</li>
-        {% if not person.is_active %}
-        {% if not requestor %}
-        <li><a href="activate/">Activate</a></li>
-        {% endif %}
-        {% endif %}
-        {% if perms.people.change_person and person.is_active %}
-        <li class="changelink"><a href="edit/">Edit details</a><br /><br /></li>
-        {% endif %}
-        {% if perms.machines.add_useraccount and person.is_active %}
-        <li class="addlink"><a href="add_useraccount/">Add user account</a><br /><br /></li>
-        {% endif %}
-        {% if perms.people.delete_person and person.is_active %}
-        <li class="deletelink"><a href="delete/">Delete</a><br /><br /></li>
-	{% endif %}
-	<li><a href="{% url 'kg_userlogs' person.id %}">Logs</a><br /><br /></li>
-	<li class="addlink"><a href="add_comment/">Add comment</a><br /><br /></li>
-	<li><a href="comments/">Comments</a>&nbsp;({{ comment_count }})<br /><br /></li>
-	{% if person.is_active %}
-	<li><a href="ldap/">LDAP</a><br /><br /></li>
-	{% if perms.people.change_person and person.is_active %}
-	{% if person.is_locked %}
-	<li><a href="unlock/"><img src="{{ STATIC_URL }}img/lock.png" alt="Lock"/>&nbsp;Unlock</a></li>
-	{% else %}
-	<li class="changelink"><a href="password_change/">Change Password</a><br /><br /></li>
-	<li><a href="lock/"><img src="{{ STATIC_URL }}img/unlock.png" alt="Unlock"/>&nbsp;Lock</a><br /><br /></li>
-	{% endif %}
-	<li><a href="bounced_email/">Bounced Email</a><br /><br /></li>
-	{% endif %}
-	<li><a href="{% url 'kg_job_list' %}?user={{ person.username }}">Display all jobs</a><br /><br /></li>
-	<li><a href="{% url 'pbs_user_detail' person.username %}">Submitted jobs</a><br /><br /></li>
-	{% endif %}
-      </ul>
-    </div>
-  </div>
-  
-  <div class="module">
-    <h2>Users</h2>
-    <h3>{% if person.title %}{{ person.title }}{% endif %} {{ person }}
+  </p>
+<div class="module">
+<h2>Users</h2>
+<h3>{% if person.title %}{{ person.title }}{% endif %} {{ person }}
       {% if not person.is_active %}
-      <img src="{{ STATIC_URL }}admin/img/icon_error.gif" alt="Not Active" title="Not Active" />  
+      <img alt="Not Active" src="{{ STATIC_URL }}admin/img/icon_error.gif" title="Not Active"/>  
       {% else %}
       {% if person.is_locked %}
-      <img src="{{ STATIC_URL }}img/lock.png" alt="locked" />
+      <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
       {% else %}
-      <img src="{{ STATIC_URL }}admin/img/icon_success.gif" alt="Active" title="Active" />
+      <img alt="Active" src="{{ STATIC_URL }}admin/img/icon_success.gif" title="Active"/>
       {% endif %}
       {% endif %}		
       
     </h3>
-    <table>
+<table>
       {% if person.deleted_by %}
       <tr><td colspan="2">Deleted by {{ person.deleted_by }} on {{ person.date_deleted }}</td></tr>
       {% endif %}
       <tr><td>Email:</td><td>{{ person.email|urlize }}</td></tr>
-      <tr><td>Position:</td><td>{{ person.position|default:"" }}</td></tr>
-      <tr><td>Department:</td><td>{{ person.department|default:"" }}</td></tr>
-      <tr><td>Supervisor:</td><td>{{ person.supervisor|default:"" }}</td></tr>
-      <tr><td>Institute:</td><td><a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a></td></tr>
-      
-      <tr><td>Phone:</td><td>{{ person.telephone|default:"" }}</td></tr>
+<tr><td>Position:</td><td>{{ person.position|default:"" }}</td></tr>
+<tr><td>Department:</td><td>{{ person.department|default:"" }}</td></tr>
+<tr><td>Supervisor:</td><td>{{ person.supervisor|default:"" }}</td></tr>
+<tr><td>Institute:</td><td><a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a></td></tr>
+<tr><td>Phone:</td><td>{{ person.telephone|default:"" }}</td></tr>
       {% if person.mobile %}
       <tr><td>Mobile:</td><td>{{ person.mobile|default:"" }}</td></tr>
       {% endif %}
       <tr id="hidden-link"><td colspan="2"><a href="#" onclick="showHidden()">More....</a></td></tr>
-      </table>
-      <table id="hidden" style="display: none">
-      <tr><td>Fax:</td><td>{{ person.fax }}</td></tr>
-      <tr><td>Address:</td><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>
-      <tr><td>Country:</td><td>{{ person.get_country_display|default:"" }}</td></tr>
-      <tr><td>Comment:</td><td>{{ person.comment|default:"" }}</td></tr>
-      <tr><td>Approved by:</td><td>{{ person.approved_by }}</td></tr>
-      <tr><td>Date Approved:</td><td>{{ person.date_approved|date }}</td></tr>
+</table>
+<table id="hidden" style="display: none">
+<tr><td>Fax:</td><td>{{ person.fax }}</td></tr>
+<tr><td>Address:</td><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>
+<tr><td>Country:</td><td>{{ person.get_country_display|default:"" }}</td></tr>
+<tr><td>Comment:</td><td>{{ person.comment|default:"" }}</td></tr>
+<tr><td>Approved by:</td><td>{{ person.approved_by }}</td></tr>
+<tr><td>Date Approved:</td><td>{{ person.date_approved|date }}</td></tr>
       {% if person.deleted_by %}
       <tr><td>Deleted by:</td><td>{{ person.deleted_by }}</td></tr>
-      <tr><td>Date Deleted:</td><td>{{ person.date_deleted|date }}</td></tr>
+<tr><td>Date Deleted:</td><td>{{ person.date_deleted|date }}</td></tr>
       {% endif %}
       {#<tr><td>Last Login:</td><td>{{ person.user.last_login }}</td></tr>#}
       <tr><td>Accounts username:</td><td>{{ person.username }}</td></tr>
@@ -108,25 +65,24 @@
       {% endif %}
       
     </table>
-    
-  </div>
+</div>
   {% if person.leaders.all %}
   <div class="module">
-    <h2>Projects I lead</h2>
+<h2>Projects I lead</h2>
     {% gen_table person.leaders.all %}
   </div>
   {% endif %}	
   
   {% for ua in person.useraccount_set.all %}
   <div class="module">
-    <h2>{{ ua.machine_category }} Account</h2>
-    <h5>Account</h5>
-    <table cellspacing="0">
-      <thead>
-	<tr>
-	  <th>Active</th>
-	  <th>Username</th>
-	  <th>Date Created</th>
+<h2>{{ ua.machine_category }} Account</h2>
+<h5>Account</h5>
+<table cellspacing="0">
+<thead>
+<tr>
+<th>Active</th>
+<th>Username</th>
+<th>Date Created</th>
 	  {% if ua.date_deleted %}
 	  <th>Date Deleted</th>
 	  {% endif %}
@@ -134,12 +90,12 @@
 	  <th>Shell</th>
 	  {% endifequal %}
 	</tr>
-      </thead>   	
-      <tbody>
-	<tr class="row1">
-	  <td>{% yes_no_img ua.date_deleted "reversed" %}</td>
-	  <td>{{ ua.username }}</td>
-	  <td>{{ ua.date_created|date }}</td>
+</thead>
+<tbody>
+<tr class="row1">
+<td>{% yes_no_img ua.date_deleted "reversed" %}</td>
+<td>{{ ua.username }}</td>
+<td>{{ ua.date_created|date }}</td>
 	  {% if ua.date_deleted %}
 	  <td>{{ ua.date_deleted|date }}</td>
 	  {% endif %}
@@ -147,47 +103,47 @@
 	  <td>{% if not ua.date_deleted and perms.machines.change_useraccount %}<form action="{% url 'kg_change_shell' ua.id %}" method="post">{% csrf_token %}
 	  	<div>
 	      {% shell_field ua %}
-	      <input type="submit" value="Change" />
-	      </div>
-	    </form>{% else %}&nbsp;{% endif %}</td>
+	      <input type="submit" value="Change"/>
+</div>
+</form>{% else %} {% endif %}</td>
 	  {% endifequal %}
 	  {% if not ua.date_deleted and perms.machines.delete_useraccount %}
-	  <td><a href="{% url 'admin_delete_account' ua.id %}" class="deletelink">Delete</a></td>
+	  <td><a class="deletelink" href="{% url 'admin_delete_account' ua.id %}">Delete</a></td>
 	  {% endif %}
 	</tr>
-      </tbody>  	
-    </table>
+</tbody>
+</table>
     {% if ua.project_list and not ua.date_deleted %}
     <h5>Projects</h5>
-    <table cellspacing="0">
-      <thead>
-	<tr>
-	  <th>Project</th>
-	  <th>Name</th>
-	  <th>Institute</th>
-	  <th>Leaders</th>
-	  <th>Default</th>
-	</tr>
-      </thead>   	
-      <tbody>
+<table cellspacing="0">
+<thead>
+<tr>
+<th>Project</th>
+<th>Name</th>
+<th>Institute</th>
+<th>Leaders</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
    	{% for p in ua.project_list %}
 	<tr class="row1">
-	  <td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
-	  <td>{{ p.name|truncatewords:"10" }}</td>
-	  <td><a href="{{ p.institute.get_absolute_url }}">{{ p.institute }}</a></td>
-	  <td>{% for leader in p.leaders.all %}<a href="{{ leader.get_absolute_url }}">{{ leader }}, </a>{% endfor %}</td>
-	  <td>{% ifequal p ua.default_project %}
-	    <img src="{{ STATIC_URL }}admin/img/icon-yes.gif" alt="1" />{% else %}
+<td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
+<td>{{ p.name|truncatewords:"10" }}</td>
+<td><a href="{{ p.institute.get_absolute_url }}">{{ p.institute }}</a></td>
+<td>{% for leader in p.leaders.all %}<a href="{{ leader.get_absolute_url }}">{{ leader }}, </a>{% endfor %}</td>
+<td>{% ifequal p ua.default_project %}
+	    <img alt="1" src="{{ STATIC_URL }}admin/img/icon-yes.gif"/>{% else %}
 	    {% if perms.machines.change_useraccount %}
 	    <a href="{% url 'admin_make_default' ua.id p.pid %}">Make default</a>
 	    {% endif %}{% endifequal %}</td>
 	  {% if perms.projects.change_project %}{% ifnotequal p ua.default_project %}
-	  <td><a href="{% url 'kg_remove_project_member' p.pid person.username %}" class="deletelink">Remove</a>
+	  <td><a class="deletelink" href="{% url 'kg_remove_project_member' p.pid person.username %}">Remove</a>
 	    {% endifnotequal %}{% endif %}
-	</tr>
+	</td></tr>
 	{% endfor %}
-      </tbody>  	
-    </table>	
+      </tbody>
+</table>	
     {% endif %}
     {% if ua.get_latest_usage %}
     <h5>Latest Usage</h5>
@@ -196,29 +152,67 @@
   </div>
   {% endfor %}
   {% if person.useraccount_set.all and person.is_active and perms.projects.change_project %}
-  <form action="" method="post" id="joinproject_form">{% csrf_token %}
-    <div class="form-row" >
+  <form action="" id="joinproject_form" method="post">{% csrf_token %}
+    <div class="form-row">
       {% if no_account_error %}<p class="error">{{ no_account_error }}</p>{% endif %}
-      <label for="id_project">Add to existing project:</label> 
-      <select id="id_project" class="vNullSelectField" name="project" size="1">
-	<option value="" selected="selected">---------</option>
+      <label for="id_project">Add to existing project:</label>
+<select class="vNullSelectField" id="id_project" name="project" size="1">
+<option selected="selected" value="">---------</option>
 	{% for p in not_project_list %}
 	<option value="{{ p.pid }}">{{ p.pid }} | {{ p.name|truncatewords:4 }}</option>
 	{% endfor %}
     </select>
-      <input type="submit" value="Add" name="project-add" />
-    </div>
-    
-  </form>
+<input name="project-add" type="submit" value="Add"/>
+</div>
+</form>
   {% endif %}
   
   {% if person.softwarelicenseagreement_set.all %}
   	<div class="module">
-		<h2>Software</h2>
+<h2>Software</h2>
 			{% gen_table person.softwarelicenseagreement_set.all %}  	
   	</div>
   	{% endif %}
 
 
-{% endblock %}
+</div>{% endblock %}
  
+
+{% block object-tools %}
+<div class="module object-tools">
+<h2>Tasks</h2>
+<ul>
+
+        {% if not person.is_active %}
+        {% if not requestor %}
+        <li><a href="activate/">Activate</a></li>
+        {% endif %}
+        {% endif %}
+        {% if perms.people.change_person and person.is_active %}
+        <li class="changelink"><a href="edit/">Edit details</a></li>
+        {% endif %}
+        {% if perms.machines.add_useraccount and person.is_active %}
+        <li class="addlink"><a href="add_useraccount/">Add user account</a></li>
+        {% endif %}
+        {% if perms.people.delete_person and person.is_active %}
+        <li class="deletelink"><a href="delete/">Delete</a></li>
+	{% endif %}
+	<li><a href="{% url 'kg_userlogs' person.id %}">Logs</a></li>
+<li class="addlink"><a href="add_comment/">Add comment</a></li>
+<li><a href="comments/">Comments</a> ({{ comment_count }})</li>
+	{% if person.is_active %}
+	<li><a href="ldap/">LDAP</a></li>
+	{% if perms.people.change_person and person.is_active %}
+	{% if person.is_locked %}
+	<li><a href="unlock/"><img alt="Lock" src="{{ STATIC_URL }}img/lock.png"/> Unlock</a></li>
+	{% else %}
+	<li class="changelink"><a href="password_change/">Change Password</a></li>
+<li><a href="lock/"><img alt="Unlock" src="{{ STATIC_URL }}img/unlock.png"/> Lock</a></li>
+	{% endif %}
+	<li><a href="bounced_email/">Bounced Email</a></li>
+	{% endif %}
+	<li><a href="{% url 'kg_job_list' %}?user={{ person.username }}">Display all jobs</a></li>
+<li><a href="{% url 'pbs_user_detail' person.username %}">Submitted jobs</a></li>
+	{% endif %}
+      </ul>
+</div>{% endblock %}

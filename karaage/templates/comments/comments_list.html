@@ -2,19 +2,17 @@
 {% load comments %}
 {% block title %}Comments{% endblock %}
 
-{% block content %}
-
-{% get_comment_count for obj as comment_count %}
+{% block content %}<p>{% get_comment_count for obj as comment_count %}
 {% get_comment_list for obj as comment_list %}
 
-<div id="content-main">
-	<div class="module">
-   	<h2>Comments</h2>
+</p><div id="content-main">
+<div class="module">
+<h2>Comments</h2>
    	{% if comment_list %}
     	{% for comment in comment_list %}
 			<div class="comment_{% cycle odd,even %}" id="c{{ comment.id }}">
-				<span class="comnum"><a id="c{{ comment.id }}" href="#c{{ comment.id }}">#{{ forloop.counter }}</a></span>
-				<p><b>{{ comment.user.get_full_name }}</b> commented, on {{ comment.submit_date|date:"F j, Y" }} at {{ comment.submit_date|date:"P" }}:</p>
+<span class="comnum"><a href="#c{{ comment.id }}" id="c{{ comment.id }}">#{{ forloop.counter }}</a></span>
+<p><b>{{ comment.user.get_full_name }}</b> commented, on {{ comment.submit_date|date:"F j, Y" }} at {{ comment.submit_date|date:"P" }}:</p>
 				{{ comment.comment|escape|urlizetrunc:40|linebreaks }}
 			</div>
 		{% endfor %}
@@ -22,6 +20,5 @@
 		<p>No Comments</p>
 		{% endif %}
 	</div>
-</div>
-{% endblock %}
+</div>{% endblock %}
  

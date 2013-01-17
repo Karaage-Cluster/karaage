@@ -2,12 +2,11 @@
 
 {% block title %}Users{% endblock %}
 
-{% block content_title %}&nbsp;{% endblock %}
 
-{% block breadcrumbs %}{{ block.super }} &rsaquo; Users {% endblock %}   
 
-{% block objecttools %}
-{% if perms.people.add_person %}
-<ul class="object-tools"><li><a href="add/" class="addlink">Add user</a></li></ul>
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Users </div>{% endblock %}   
+
+{% block object-tools %}<div class="module object-tools"><h2>Object links</h2><p>{% if perms.people.add_person %}
+</p><ul><li><a class="addlink" href="add/">Add user</a></li></ul>
 {% endif %}
-{% endblock %}
+</div>{% endblock %}

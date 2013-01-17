@@ -1,64 +1,60 @@
 {% extends "institutes/institute_base.html" %}
 {% load url from future %}
 
-{% block breadcrumbs %}{{ block.super }} &rsaquo; {{ institute }}{% endblock %}    
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› {{ institute }}</div>{% endblock %}    
 
-{% block content %}
-<div id="content-main">
-  
-  <div class="module">
-    <h2>Institutes</h2>
+{% block content %}<div id="content-main">
+<div class="module">
+<h2>Institutes</h2>
     {% if graph %}
     <a href="{{ institute.get_usage_url }}">
-      <img src="{{ GRAPH_URL }}institutes/{{ graph }}"  class="float-right" width="300" height="150"/>
-    </a>
+<img class="float-right" height="150" src="{{ GRAPH_URL }}institutes/{{ graph }}" width="300"/>
+</a>
     {% endif %}
     <h3>{{ institute }}</h3>
-    
-    <table>
-      <tr><td colspan="2"><a href="{{ institute.get_usage_url }}">View Usage</a></td></tr>
-      <tr><td>Active:</td><td>{% yes_no_img institute.is_active %}</td></tr>
-      <tr><td>Delegate(s):</td><td>{% for delegate in institute.delegates.all %}<a href="{{ delegate.get_absolute_url }}">{{ delegate }}</a>, {% endfor %}</td></tr>
-      <tr><td>Gid:</td><td>{{ institute.gid }}</td></tr>
+<table>
+<tr><td colspan="2"><a href="{{ institute.get_usage_url }}">View Usage</a></td></tr>
+<tr><td>Active:</td><td>{% yes_no_img institute.is_active %}</td></tr>
+<tr><td>Delegate(s):</td><td>{% for delegate in institute.delegates.all %}<a href="{{ delegate.get_absolute_url }}">{{ delegate }}</a>, {% endfor %}</td></tr>
+<tr><td>Gid:</td><td>{{ institute.gid }}</td></tr>
       {% if institute.saml_entityid %}
       <tr><td>SAML entityID:</td><td>{{ institute.saml_entityid }}</td></tr>
       {% endif %}
       {% if perms.people.change_institute %}
-      <tr><td colspan="2"><a href="edit/" class="changelink">Edit</a></td></tr>
+      <tr><td colspan="2"><a class="changelink" href="edit/">Edit</a></td></tr>
       {% endif %} 
     </table>
-  </div>
-  <div class="module">
-    <h2>Caps and quotas</h2>
-    <table>
-      <thead>
-	<tr>
-	  <th>Machine Category</th>
-	  <th>Quota</th>
-	  <th>Cap (mPoTS)</th>				
-	</tr>			
-      </thead>
-      <tbody>
+</div>
+<div class="module">
+<h2>Caps and quotas</h2>
+<table>
+<thead>
+<tr>
+<th>Machine Category</th>
+<th>Quota</th>
+<th>Cap (mPoTS)</th>
+</tr>
+</thead>
+<tbody>
 	{% for iq in institute.institutechunk_set.all %}
    	<tr class="{% cycle row1,row2 %}">
-   	  <td>{{ iq.machine_category }}</td>
-	  <td>{{ iq.quota }}</td>
-	  <td>{{ iq.get_cap }}</td>
-	  {% if perms.pbsmoab.change_institutechunk %}<td><a href="{% url 'kg_institute_quota_edit' iq.id %}" class="changelink">edit</a></td>{% endif %}
+<td>{{ iq.machine_category }}</td>
+<td>{{ iq.quota }}</td>
+<td>{{ iq.get_cap }}</td>
+	  {% if perms.pbsmoab.change_institutechunk %}<td><a class="changelink" href="{% url 'kg_institute_quota_edit' iq.id %}">edit</a></td>{% endif %}
 	</tr>
 	{% endfor %}
       </tbody>
-    </table>
-  </div>
+</table>
+</div>
   {% if institute.project_set.select_related %}
   <div class="module">
-    <h2>Projects</h2>
+<h2>Projects</h2>
     {% gen_table institute.project_set.select_related %}
   </div>
   {% endif %}
   <div class="module">
-    <h2>Users</h2>
+<h2>Users</h2>
     {% gen_table institute.person_set.select_related %}
   </div>
-</div>
-{% endblock %}
+</div>{% endblock %}

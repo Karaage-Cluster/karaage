@@ -3,12 +3,11 @@
 
 {% block title %}Applications{% endblock %}
 
-{% block content_title %}Send User Application Invite{% endblock %}
 
-{% block bread_crumbs_1 %}
- &rsaquo; <a href="{% url 'kg_application_list' %}">Applications</a>
- &rsaquo; Send User Application Invite
-{% endblock %}   
+
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="{% url 'kg_application_list' %}">Applications</a>
+ › Send User Application Invite
+</div>{% endblock %}   
 
 {% block content %}
 <p>NOTE: If the email exists in our system the user will be added directly to the project.</p>

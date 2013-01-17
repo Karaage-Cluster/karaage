@@ -3,12 +3,11 @@
 
 {% block title %}Applications{% endblock %}
 
-{% block breadcrumbs %}{{ block.super }} &rsaquo; Applications{% endblock %}
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Applications</div>{% endblock %}
 
-{% block content_title %}&nbsp;{% endblock %}
 
-{% block objecttools %}
-{% if perms.applications.add_application %}
-<ul class="object-tools"><li><a href="{% url 'kg_userapplication_invite' %}" class="addlink">Send invitation</a></li></ul>
+
+{% block object-tools %}<div class="module object-tools"><h2>Object links</h2><p>{% if perms.applications.add_application %}
+</p><ul><li><a class="addlink" href="{% url 'kg_userapplication_invite' %}">Send invitation</a></li></ul>
 {% endif %}
-{% endblock %}
+</div>{% endblock %}
