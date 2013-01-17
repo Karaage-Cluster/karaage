@@ -1,10 +1,11 @@
 {% extends "applications/application_detail_base.html" %}
+{% load url from future %}
 
 {% block application_detail %}
 {% if application.state == 'K' %}
 <h1>Approval options:</h1>
-<p><a href="{% url kg_projectapplication_approve application.id %}" class="yeslink">&nbsp;Accept</a></p>
-<p><a href="{% url kg_projectapplication_decline application.id %}" class="nolink">&nbsp;Decline</a></p>
+<p><a href="{% url "kg_projectapplication_approve" application.id %}" class="yeslink">&nbsp;Accept</a></p>
+<p><a href="{% url "kg_projectapplication_decline" application.id %}" class="nolink">&nbsp;Decline</a></p>
 <br />
 {% endif %}
 <h1>{{ application.applicant }}'s Details</h1>
@@ -27,7 +28,7 @@
 		
 	</table>
 		{% if perms.applications.change_applicant %}
-	<p><a href="{% url kg_applicant_edit application.applicant.id %}" class="changelink">Edit Applicant details</a></p>
+	<p><a href="{% url "kg_applicant_edit" application.applicant.id %}" class="changelink">Edit Applicant details</a></p>
 	{% endif %}
 {% endif %}
 <br />

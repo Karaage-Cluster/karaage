@@ -1,4 +1,5 @@
 {% extends "forms.html" %}
+{% load url from future %}
 
 {% block title %}Usage{% endblock %}
 
@@ -62,7 +63,7 @@
 		{% for i in institute_list|dictsortreversed:"time" %}
 		<tr class="{% cycle row1,row2 %}">
 			{% ifnotequal i.jobs 0 %}
-				<td><a href="{% url kg_institute_usage i.id %}?start={{ start_str }}&end={{ end_str }}">{{ i }}</a></td>
+				<td><a href="{% url "kg_institute_usage" i.id %}?start={{ start_str }}&end={{ end_str }}">{{ i }}</a></td>
 				<td class="right">{{ i.time|timeformat }}</td>
 				<td class="right">{{ i.jobs }}</td>
 			{% endifnotequal %}

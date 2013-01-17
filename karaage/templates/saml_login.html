@@ -1,4 +1,5 @@
 {% extends "base_site.html" %}
+{% load url from future %}
 
 {% block content %}
 
@@ -7,7 +8,7 @@
 {% endif %}
 
 <div id="saml_login_fields">	
-  <form method="post" action="{% url kg_saml_login %}">{% csrf_token %}
+  <form method="post" action="{% url "kg_saml_login" %}">{% csrf_token %}
     <table>
       <tr><td><label for="id_institute">Institute:</label></td><td>{{ samlform.institute }}</td></tr>
     </table>

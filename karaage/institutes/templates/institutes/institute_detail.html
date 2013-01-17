@@ -1,4 +1,5 @@
 {% extends "institutes/institute_base.html" %}
+{% load url from future %}
 
 {% block breadcrumbs %}{{ block.super }} &rsaquo; {{ institute }}{% endblock %}    
 
@@ -43,7 +44,7 @@
    	  <td>{{ iq.machine_category }}</td>
 	  <td>{{ iq.quota }}</td>
 	  <td>{{ iq.get_cap }}</td>
-	  {% if perms.pbsmoab.change_institutechunk %}<td><a href="{% url kg_institute_quota_edit iq.id %}" class="changelink">edit</a></td>{% endif %}
+	  {% if perms.pbsmoab.change_institutechunk %}<td><a href="{% url "kg_institute_quota_edit" iq.id %}" class="changelink">edit</a></td>{% endif %}
 	</tr>
 	{% endfor %}
       </tbody>

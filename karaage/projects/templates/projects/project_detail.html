@@ -1,4 +1,5 @@
 {% extends "threecol.html" %}
+{% load url from future %}
 {% load forms %}
 
 {% block title %}Projects{% endblock %}
@@ -25,7 +26,7 @@
       <ul class="plainlist"><br />
         <li><a href="{{ project.get_usage_url }}">View Usage</a><br /><br /></li>
         <li><a href="logs/">View logs</a><br /><br /></li>
-        	<li><a href="{% url kg_job_list %}?project={{ project.pid }}">Display all jobs</a><br /><br /></li>
+        	<li><a href="{% url "kg_job_list" %}?project={{ project.pid }}">Display all jobs</a><br /><br /></li>
         {% if perms.projects.change_project %}<li><a href="edit/" class="changelink">Edit project details</a><br /><br /></li>{% endif %}
         {% if perms.projects.delete_project and project.is_active%}<li><a href="delete/" class="deletelink">Delete project</a></li>{% endif %}
       </ul>
@@ -75,7 +76,7 @@
   </div>
    <div class="module">
     <h2>Project Caps/quota {% if perms.pbsmoab.add_projectchunk %}
-      <a href="{% url kg_projectchunk_add project.pid %}" 
+      <a href="{% url "kg_projectchunk_add" project.pid %}" 
          class="addlink">Add</a>
     {% endif %}</h2>
     <table>
@@ -93,10 +94,10 @@
 	  <td>{{ pc.get_mpots|floatformat:"2" }}</td>
 	  <td>{{ pc.get_cap }}</td>
 	  {% if perms.pbsmoab.add_projectchunk %}
-	  <td><a href="{% url kg_projectchunk_edit pc.id %}" class="changelink">edit</a></td>
+	  <td><a href="{% url "kg_projectchunk_edit" pc.id %}" class="changelink">edit</a></td>
 	  {% endif %}
 	  {% if perms.projects.delete_project %}
-	  <td><a href="{% url kg_projectchunk_delete pc.id %}" class="deletelink">Remove</a>
+	  <td><a href="{% url "kg_projectchunk_delete" pc.id %}" class="deletelink">Remove</a>
 	  {% endif %}
 	</tr>
 	{% endfor %}
@@ -135,7 +136,7 @@
 	  </td>
 	  <td>{{ user.last_usage }}</td>
 	  {% if perms.projects.change_project %}
-	  <td><a href="{% url kg_remove_project_member project.pid,user.username %}" class="deletelink">Remove</a>
+	  <td><a href="{% url "kg_remove_project_member" project.pid user.username %}" class="deletelink">Remove</a>
 	    {% endif %}
 	</tr>
 	{% endfor %}

@@ -1,11 +1,12 @@
 {% extends "forms.html" %}
+{% load url from future %}
 {% load forms %}
 {% block title %}Applications{% endblock %}
 
 {% block content_title %}Send User Application Invite to join {{ project.pid }}{% endblock %}
 
 {% block bread_crumbs_1 %}
- {#&rsaquo; <a href="{% url kg_application_list %}">Applications</a>#}
+ {#&rsaquo; <a href="{% url "kg_application_list" %}">Applications</a>#}
  &rsaquo; Send User Application Invite
 {% endblock %}   
 

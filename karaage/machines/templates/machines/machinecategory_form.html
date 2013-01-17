@@ -1,11 +1,12 @@
 {% extends "forms.html" %}
+{% load url from future %}
 
 {% block title %}Machines{% endblock %}
 
 {% block content_title %}{% if object %}Edit{% else %}Create{% endif %} Machine Category{% endblock %}
 
 {% block bread_crumbs_1 %}
- &rsaquo; <a href="{% url kg_machine_list %}">Machines</a>
+ &rsaquo; <a href="{% url "kg_machine_list" %}">Machines</a>
  &rsaquo; {% if object %}Edit{% else %}Create{% endif %} Machine Category
 {% endblock %}   
 

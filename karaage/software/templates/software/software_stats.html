@@ -1,11 +1,12 @@
 {% extends "main.html" %}
+{% load url from future %}
 {% load humanize filters %}
 {% block title %}Software{% endblock %}
 
 {% block content_title %}Usage statistics for period {{ start }} - {{ end }}{% endblock %}
     
 {% block bread_crumbs_1 %}
- &rsaquo; <a href="{% url kg_software_list %}">Software</a>
+ &rsaquo; <a href="{% url "kg_software_list" %}">Software</a>
  &rsaquo; <a href="{{ package.get_absolute_url }}">{{ package }}</a>
  &rsaquo; Statistics
 {% endblock %}    
@@ -37,7 +38,7 @@
    	
    	{% for version in version_stats|dictsortreversed:"usage" %}
 			<tr class="{% cycle row1,row2 as rowcolours %}">
-				<td><a href="{% url kg_softwareversion_stats version.package.id version.id %}?{{ querystring }}">{{ version }}</a></td>
+				<td><a href="{% url "kg_softwareversion_stats" version.package.id version.id %}?{{ querystring }}">{{ version }}</a></td>
 				<td class="right">{{ version.usage|timeformat }}</td>	
 				<td class="right">{{ version.jobs|intcomma }}</td>
 			</tr> 

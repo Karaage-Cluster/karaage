@@ -1,4 +1,5 @@
 {% extends "changelist.html" %}
+{% load url from future %}
 
 {% block title %}Software{% endblock %}
 
@@ -10,13 +11,13 @@
 {% if perms.software.add_softwarepackage %}
 <ul class="object-tools">
 {% if perms.software.change_softwareaccessrequest %}
-<li><a href="{% url kg_softwarerequest_list %}">Requests</a></li>
+<li><a href="{% url "kg_softwarerequest_list" %}">Requests</a></li>
 {% endif %}
 {% if perms.software.add_softwarecategory %}
-<li><a href="{% url kg_software_category_list %}">Categories</a></li>
+<li><a href="{% url "kg_software_category_list" %}">Categories</a></li>
 {% endif %}
 {% if perms.software.add_softwarepackage %}
-<li><a href="{% url kg_software_add %}" class="addlink">Add software</a></li>
+<li><a href="{% url "kg_software_add" %}" class="addlink">Add software</a></li>
 {% endif %}
 </ul>
 {% endif %}

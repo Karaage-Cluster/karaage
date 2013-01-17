@@ -1,11 +1,12 @@
 {% extends "main.html" %}
+{% load url from future %}
 {% load humanize filters %}
 {% block title %}Software{% endblock %}
 
 {% block content_title %}Usage statistics for period {{ start }} - {{ end }}{% endblock %}
     
 {% block bread_crumbs_1 %}
- &rsaquo; <a href="{% url kg_software_list %}">Software</a>
+ &rsaquo; <a href="{% url "kg_software_list" %}">Software</a>
  &rsaquo; <a href="{{ version.package.get_absolute_url }}">{{ version.package }}</a>
  &rsaquo; {{ version }} Statistics
 {% endblock %}    

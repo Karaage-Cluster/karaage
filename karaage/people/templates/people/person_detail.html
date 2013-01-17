@@ -179,10 +179,10 @@
 	  <td>{% ifequal p ua.default_project %}
 	    <img src="{{ STATIC_URL }}admin/img/icon-yes.gif" alt="1" />{% else %}
 	    {% if perms.machines.change_useraccount %}
-	    <a href="{% url admin_make_default ua.id p.pid %}">Make default</a>
+	    <a href="{% url "admin_make_default" ua.id p.pid %}">Make default</a>
 	    {% endif %}{% endifequal %}</td>
 	  {% if perms.projects.change_project %}{% ifnotequal p ua.default_project %}
-	  <td><a href="{% url kg_remove_project_member p.pid person.username %}" class="deletelink">Remove</a>
+	  <td><a href="{% url "kg_remove_project_member" p.pid person.username %}" class="deletelink">Remove</a>
 	    {% endifnotequal %}{% endif %}
 	</tr>
 	{% endfor %}

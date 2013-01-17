@@ -1,9 +1,10 @@
 {% extends "people/profile_base.html" %}
+{% load url from future %}
 
 {% block profile_content %}
 <div class="module">
 	<h2>Restricted Software</h2><br />
-	<h3><a href="{% url kg_software_list %}" class="addlink">Add software</a></h3>
+	<h3><a href="{% url "kg_software_list" %}" class="addlink">Add software</a></h3>
 	<br />
 	{% if software_list %}
 	

@@ -1,4 +1,5 @@
 {% extends "forms.html" %}
+{% load url from future %}
 
 {% block title %}Users{% endblock %}
 
@@ -9,7 +10,7 @@
 {% endblock %}
 
 {% block bread_crumbs_1 %}
- &rsaquo; <a href="{% url kg_user_list %}">Users</a>
+ &rsaquo; <a href="{% url "kg_user_list" %}">Users</a>
  &rsaquo; {% if person %}Edit{% else %}Create{% endif %} User
 {% endblock %}   
 

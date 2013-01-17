@@ -1,4 +1,5 @@
 {% extends "forms.html" %}
+{% load url from future %}
 {% load forms %}
 
 {% block title %}Institutes{% endblock %}
@@ -6,12 +7,12 @@
 {% block content_title %}{% if institute %}Edit{% else %}Create{% endif %} Institute{% endblock %}
 
 {% block extrahead %}
-<script type="text/javascript" src="{% url admin:jsi18n %}"></script> 
+<script type="text/javascript" src="{% url "admin":jsi18n %}"></script> 
 {{ form.media }}
 {% endblock %}
 
 {% block bread_crumbs_1 %}
- &rsaquo; <a href="{% url kg_institute_list %}">Institutes</a>
+ &rsaquo; <a href="{% url "kg_institute_list" %}">Institutes</a>
  &rsaquo; {% if institute %}Edit{% else %}Create{% endif %} Institute
 {% endblock %}   
 

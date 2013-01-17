@@ -1,11 +1,12 @@
 {% extends "forms.html" %}
+{% load url from future %}
 
 {% block title %}Applications{% endblock %}
 
 {% block content_title %}Send User Application Invite{% endblock %}
 
 {% block bread_crumbs_1 %}
- &rsaquo; <a href="{% url kg_application_list %}">Applications</a>
+ &rsaquo; <a href="{% url "kg_application_list" %}">Applications</a>
  &rsaquo; Send User Application Invite
 {% endblock %}   
 

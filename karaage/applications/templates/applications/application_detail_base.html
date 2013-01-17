@@ -1,10 +1,11 @@
 {% extends "threecol.html" %}
+{% load url from future %}
 {% load comments %}
 
 {% block title %}Applications{% endblock %}
 
 {% block bread_crumbs_1 %}
-&rsaquo; <a href="{% url kg_application_list %}">Applications</a>
+&rsaquo; <a href="{% url "kg_application_list" %}">Applications</a>
 &rsaquo; {{ application }}
 {% endblock %}
 
@@ -15,11 +16,11 @@
       
 	<ul class="plainlist">
 		<li>&nbsp;</li>
-		<li><a href="{% url kg_application_logs application.id %}">Logs</a><br /><br /></li>
+		<li><a href="{% url "kg_application_logs" application.id %}">Logs</a><br /><br /></li>
 		{% if application.state == 'C' %}
-		<li><a href="{% url kg_application_archive application.id %}" class="changelink">Archive application</a><br /><br /></li>
+		<li><a href="{% url "kg_application_archive" application.id %}" class="changelink">Archive application</a><br /><br /></li>
 		{% endif %}
-		<li><a href="{% url kg_application_delete application.id %}" class="deletelink">Delete application</a><br /><br /></li>
+		<li><a href="{% url "kg_application_delete" application.id %}" class="deletelink">Delete application</a><br /><br /></li>
 			
 	</ul>
 	</div>
@@ -53,7 +54,7 @@
   {{ form.timestamp }}
   {{ form.security_hash }}
   {{ form.comment }}
-  <input type="hidden" name="next" value="{% url kg_application_detail application.id %}" />
+  <input type="hidden" name="next" value="{% url "kg_application_detail" application.id %}" />
   <p style="display:none;">{{ form.honeypot }}</p>
   <p class="submit">
     <input type="submit" name="post" class="submit-post" value="Post" />
