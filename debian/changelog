@@ -1,3 +1,12 @@
+karaage (2.7.0-1) stable; urgency=low
+
+  * New version.
+  * Based on latest django-placard.
+  * Lots of changes to templates. Existing templates might not display
+    correctly.
+
+ -- Brian May <bam@debian.org>  Mon, 11 Feb 2013 12:39:03 +1100
+
 karaage (2.6.8-1) stable; urgency=low
 
   * Fix error in template. Requires permissions to see </ul> end tag.
