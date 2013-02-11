@@ -1,3 +1,9 @@
+karaage (2.7.1-1) stable; urgency=low
+
+  * Increase the version number in __init__.py.
+
+ -- Brian May <bam@debian.org>  Mon, 11 Feb 2013 13:10:22 +1100
+
 karaage (2.7.0-1) stable; urgency=low
 
   * New version.
