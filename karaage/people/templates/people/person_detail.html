@@ -189,27 +189,27 @@
         {% endif %}
         {% endif %}
         {% if perms.people.change_person and person.is_active %}
-        <li class="changelink"><a href="edit/">Edit details</a></li>
+        <li class="changelink"><a href="{% url 'kg_user_edit' person.username %}">Edit details</a></li>
         {% endif %}
         {% if perms.machines.add_useraccount and person.is_active %}
-        <li class="addlink"><a href="add_useraccount/">Add user account</a></li>
+        <li class="addlink"><a href="{% url 'kg_add_useraccount' person.username %}">Add user account</a></li>
         {% endif %}
         {% if perms.people.delete_person and person.is_active %}
-        <li class="deletelink"><a href="delete/">Delete</a></li>
+        <li class="deletelink"><a href="{%url 'admin_delete_user' person.username %}">Delete</a></li>
 	{% endif %}
 	<li><a href="{% url 'kg_userlogs' person.id %}">Logs</a></li>
 <li class="addlink"><a href="add_comment/">Add comment</a></li>
 <li><a href="comments/">Comments</a> ({{ comment_count }})</li>
 	{% if person.is_active %}
-	<li><a href="ldap/">LDAP</a></li>
+        <li><a href="{% url 'kg_user_verbose' person.username %}">LDAP</a></li>
 	{% if perms.people.change_person and person.is_active %}
 	{% if person.is_locked %}
-	<li><a href="unlock/"><img alt="Lock" src="{{ STATIC_URL }}img/lock.png"/> Unlock</a></li>
+        <li><a href="{% url 'kg_lock_user' person.username %}"><img alt="Lock" src="{{ STATIC_URL }}img/lock.png"/> Unlock</a></li>
 	{% else %}
-	<li class="changelink"><a href="password_change/">Change Password</a></li>
-<li><a href="lock/"><img alt="Unlock" src="{{ STATIC_URL }}img/unlock.png"/> Lock</a></li>
+        <li class="changelink"><a href="{% url 'kg_password_change' person.username %}">Change Password</a></li>
+        <li><a href="{% url 'kg_unlock_user' person.username %}"><img alt="Unlock" src="{{ STATIC_URL }}img/unlock.png"/> Lock</a></li>
 	{% endif %}
-	<li><a href="bounced_email/">Bounced Email</a></li>
+        <li><a href="{% url 'kg_user_bounce' person.username %}">Bounced Email</a></li>
 	{% endif %}
 	<li><a href="{% url 'kg_job_list' %}?user={{ person.username }}">Display all jobs</a></li>
 <li><a href="{% url 'pbs_user_detail' person.username %}">Submitted jobs</a></li>
