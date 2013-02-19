@@ -85,9 +85,18 @@ def get_trend_graph_url(start, end, machine_category):
 
 
 def get_institute_trend_graph_url(institute,
-                                  start=datetime.date.today() - datetime.timedelta(days=90),
-                                  end=datetime.date.today(),
-                                  machine_category=MachineCategory.objects.get_default()):
+                                  start=None,
+                                  end=None,
+                                  machine_category=None):
+
+    if start is None:
+        start=datetime.date.today() - datetime.timedelta(days=90)
+
+    if end is None:
+        end=datetime.date.today()
+
+    if machine_category is None:
+        machine_category=MachineCategory.objects.get_default()
 
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
@@ -104,9 +113,18 @@ def get_institute_trend_graph_url(institute,
 
 
 def get_project_trend_graph_url(project,
-                                start=datetime.date.today() - datetime.timedelta(days=90),
-                                end=datetime.date.today(),
-                                machine_category=MachineCategory.objects.get_default()):
+                                start=None,
+                                end=None,
+                                machine_category=None):
+
+    if start is None:
+        start=datetime.date.today() - datetime.timedelta(days=90)
+
+    if end is None:
+        end=datetime.date.today()
+
+    if machine_category is None:
+        machine_category=MachineCategory.objects.get_default()
 
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
@@ -125,7 +143,10 @@ def get_project_trend_graph_url(project,
     return "%s_%s-%s_%i.png" % (project.pid, start_str, end_str, machine_category.id)
 
 
-def get_institutes_trend_graph_urls(start, end, machine_category=MachineCategory.objects.get_default()):
+def get_institutes_trend_graph_urls(start, end, machine_category=None):
+
+    if machine_category is None:
+        machine_category=MachineCategory.objects.get_default()
 
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')

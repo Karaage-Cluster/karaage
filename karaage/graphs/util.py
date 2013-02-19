@@ -84,7 +84,10 @@ def smooth_data(rows, start, end):
     return data, colours
 
 
-def get_insitutes_trend(institute, start, end, machine_category=MachineCategory.objects.get(pk=settings.DEFAULT_MC)):
+def get_insitutes_trend(institute, start, end, machine_category=None):
+    if machine_category is None:
+        machine_category=MachineCategory.objects.get(pk=settings.DEFAULT_MC)
+
     if institute.project_set.count() == 0 or machine_category.machine_set.count() == 0:
         return []
     project_ids = tuple([str((p.pid)) for p in institute.project_set.all()])

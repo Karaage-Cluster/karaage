@@ -46,11 +46,20 @@ def check_username(username, machine_category):
     return False
 
 
-def get_available_time(start=datetime.date.today()-datetime.timedelta(days=90), end=datetime.date.today(), machine_category=MachineCategory.objects.get_default()):
+def get_available_time(start=None, end=None, machine_category=None):
     """
     Calculates the total available time on a machine category for a given period
     Takes into account machines being commissioned and decommisioned
     """
+    if start is None:
+        start = datetime.date.today()-datetime.timedelta(days=90)
+
+    if end is None:
+        end=datetime.date.today()
+
+    if machine_category is None:
+        machine_category=MachineCategory.objects.get_default()
+
     machines = machine_category.machine_set.all()
     total = 0
     
