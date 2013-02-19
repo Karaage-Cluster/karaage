@@ -1,3 +1,9 @@
+karaage (2.7.2-1) stable; urgency=low
+
+  * Tests all work now.
+
+ -- Brian May <bam@debian.org>  Tue, 19 Feb 2013 13:32:03 +1100
+
 karaage (2.7.1-1) stable; urgency=low
 
   * Increase the version number in __init__.py.
