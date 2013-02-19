@@ -59,6 +59,8 @@ PLACARD_MASTER = {
     'GROUP': 'placard.test.schemas.rfc_group',
 }
 
+LDAP_SCHEMA_FILE = "../conf/ldap_schemas.py"
+
 HOME_DIRECTORY = "/vpac/%(default_project)s/%(uid)s"
 
 SERVER_EMAIL = 'django@' + uname()[1]

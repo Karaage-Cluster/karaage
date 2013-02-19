@@ -6,6 +6,8 @@ PLACARD_MASTER = {
     'GROUP': 'karaage.datastores.ldap_schemas.group',
 }
 
+LDAP_SCHEMA_FILE = "/etc/karaage/ldap_schemas.py"
+
 HOME_DIRECTORY = "/home/%(uid)s"
 
 AJAX_LOOKUP_CHANNELS = {
