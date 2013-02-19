@@ -55,8 +55,8 @@ LDAP = {
 PLACARD_MASTER = {
     'NAME': 'OpenLDAP',
     'LDAP': 'default',
-    'ACCOUNT': 'placard.test.schemas.rfc_account',
-    'GROUP': 'placard.test.schemas.rfc_group',
+    'ACCOUNT': 'karaage.datastores.ldap_schemas.account',
+    'GROUP': 'karaage.datastores.ldap_schemas.group',
 }
 
 LDAP_SCHEMA_FILE = "../conf/ldap_schemas.py"
