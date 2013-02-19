@@ -16,32 +16,24 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.test import TestCase
-from django.test.client import Client
-from django.core import mail
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
-from django.contrib.auth.models import User
 from django.conf import settings
 
 import datetime
-from time import sleep
-from placard.server import slapd
-from placard.client import LDAPClient
-from placard import exceptions as placard_exceptions
+from tldap.test import slapd
 
-from karaage.people.models import Person, Institute
-from karaage.projects.models import Project
-from karaage.machines.models import UserAccount, MachineCategory, Machine
+from karaage.people.models import Person
+from karaage.machines.models import Machine, MachineCategory
 from karaage.test_data.initial_ldap_data import test_ldif
+from karaage.datastores import ldap_schemas
 
 class UserAccountTestCase(TestCase):
 
     def setUp(self):
-        global server
         server = slapd.Slapd()
         server.set_port(38911)
         server.start()
-        base = server.get_dn_suffix()
         server.ldapadd("\n".join(test_ldif)+"\n")
         call_command('loaddata', 'karaage_data', **{'verbosity': 0})
         self.server = server
@@ -81,9 +73,7 @@ class UserAccountTestCase(TestCase):
         response = self.client.post(reverse('kg_add_useraccount', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
         person = Person.objects.get(user__username="samtest2")
-        lcon = LDAPClient()
-        luser = lcon.get_user('uid=samtest2')
-        self.assertEqual(luser.objectClass, settings.ACCOUNT_OBJECTCLASS)
+        ldap_schemas.account.objects.get(uid='samtest2')
         self.assertTrue(person.has_account(MachineCategory.objects.get(pk=1)))
 
     def test_fail_add_useraccounts_username(self):
@@ -149,7 +139,6 @@ class MachineTestCase(TestCase):
         server = slapd.Slapd()
         server.set_port(38911)
         server.start()
-        base = server.get_dn_suffix()
         server.ldapadd("\n".join(test_ldif)+"\n")
         call_command('loaddata', 'karaage_data', **{'verbosity': 0})
 
@@ -179,7 +168,6 @@ class MachineTestCase(TestCase):
         self.failUnlessEqual(available_time, expected_time)
         
     def test_available_time(self):
-        from karaage.util.helpers import get_available_time
         mc1 = MachineCategory.objects.get(pk=1)
         mc2 = MachineCategory.objects.get(pk=2)
         for machine in Machine.objects.all():

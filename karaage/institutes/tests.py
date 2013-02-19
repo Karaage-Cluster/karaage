@@ -16,32 +16,21 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.test import TestCase
-from django.test.client import Client
-from django.core import mail
-from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
-from django.conf import settings
 from django.core.management import call_command
 
-import datetime
-from time import sleep
-from placard.server import slapd
-from placard.client import LDAPClient
-from placard import exceptions as placard_exceptions
+from tldap.test import slapd
 
-from karaage.people.models import Person, Institute
-from karaage.projects.models import Project
-from karaage.machines.models import UserAccount
+from karaage.people.models import Institute
 from karaage.test_data.initial_ldap_data import test_ldif
+
+from karaage.datastores import ldap_schemas
 
 class InstituteTestCase(TestCase):
 
     def setUp(self):
-        global server
         server = slapd.Slapd()
         server.set_port(38911)
         server.start()
-        base = server.get_dn_suffix()
         server.ldapadd("\n".join(test_ldif)+"\n")
         call_command('loaddata', 'karaage_data', **{'verbosity': 0})
 
@@ -54,36 +43,43 @@ class InstituteTestCase(TestCase):
     def test_add(self):
         institute = Institute.objects.create(name='TestInstitute54')
         
-        lcon = LDAPClient()
-        lgroup = lcon.get_group('gidNumber=%s' % institute.gid)
+        lgroup = ldap_schemas.group.objects.get(gidNumber=institute.gid)
         self.assertEqual(institute.name.lower().replace(' ' , ''), lgroup.cn)
 
 
     def test_add_spaces(self):
         institute = Institute.objects.create(name='Test Institute 60')
         
-        lcon = LDAPClient()
-        lgroup = lcon.get_group('gidNumber=%s' % institute.gid)
+        lgroup = ldap_schemas.group.objects.get(gidNumber=institute.gid)
         self.assertEqual(institute.name.lower().replace(' ' , ''), lgroup.cn)
 
     def test_add_existing_name(self):
         
-        lcon = LDAPClient()
-        gid = lcon.add_group(cn='testinstitute27')
+        lgroup = ldap_schemas.group()
+        lgroup.set_defaults()
+        lgroup.cn = 'testinstitute27'
+        lgroup.pre_create(master=None)
+        lgroup.pre_save()
+        lgroup.save()
 
         institute = Institute.objects.create(name='Test Institute 27')
 
-        lgroup = lcon.get_group('gidNumber=%s' % institute.gid)
-        self.assertEqual(gid, institute.gid) 
+        lgroup = ldap_schemas.group.objects.get(gidNumber=institute.gid)
+        self.assertEqual(lgroup.gidNumber, institute.gid) 
         self.assertEqual(institute.name.lower().replace(' ' , ''), lgroup.cn) 
 
     def test_add_existing_gid(self):
         
-        lcon = LDAPClient()
-        gid = lcon.add_group(cn='testinstituteother', gidNumber=['700'])
+        lgroup = ldap_schemas.group()
+        lgroup.set_defaults()
+        lgroup.cn = 'testinstituteother'
+        lgroup.pre_create(master=None)
+        lgroup.gidNumber = 700
+        lgroup.pre_save()
+        lgroup.save()
 
         institute = Institute.objects.create(name='Test Institute 26', gid=700)
 
-        lgroup = lcon.get_group('gidNumber=%s' % institute.gid)
-        self.assertEqual(gid, institute.gid) 
-        self.assertEqual(gid, 700) 
+        ldap_schemas.group.objects.get(gidNumber=institute.gid)
+        self.assertEqual(lgroup.gidNumber, institute.gid) 
+        self.assertEqual(lgroup.gidNumber, 700) 

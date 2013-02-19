@@ -1,7 +1,5 @@
 # Django settings for grunt project.
-from os import uname, path as os_path
-
-TEST_RUNNER='andsome.test_utils.xmlrunner.run_tests'
+from os import uname
 
 GRAPH_DEBUG = True
 
@@ -30,14 +28,38 @@ ACCOUNT_OBJECTCLASS = ['top','person','organizationalPerson','inetOrgPerson', 's
 DEFAULT_MC = 1
 AUTH_PROFILE_MODULE = 'people.Person'
 
-LDAP_URL = 'ldap://localhost:38911'
-LDAP_USE_TLS=False
-LDAP_ADMIN_PASSWORD="password"
-LDAP_BASE="dc=python-ldap,dc=org"
-LDAP_ADMIN_USER="cn=Manager,dc=python-ldap,dc=org"
-LDAP_USER_BASE='ou=People, %s' % LDAP_BASE
-LDAP_GROUP_BASE='ou=Groups, %s' % LDAP_BASE
-LDAP_ATTRS = 'testproject.ldap_attrs'
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'placard.db',            # Or path to database file if using sqlite3.
+        'USER': '',                      # Not used with sqlite3
+        'PASSWORD': '',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+    }
+}
+
+LDAP = {
+    'default': {
+        'ENGINE': 'tldap.backend.transaction',
+        'URI': 'ldap://localhost:38911/',
+        'USER': 'cn=Manager,dc=python-ldap,dc=org',
+        'PASSWORD': 'password',
+        'USE_TLS': False,
+        'TLS_CA' : None,
+        'LDAP_ACCOUNT_BASE': 'ou=People, dc=python-ldap,dc=org',
+        'LDAP_GROUP_BASE': 'ou=Group, dc=python-ldap,dc=org'
+    }
+}
+
+PLACARD_MASTER = {
+    'NAME': 'OpenLDAP',
+    'LDAP': 'default',
+    'ACCOUNT': 'placard.test.schemas.rfc_account',
+    'GROUP': 'placard.test.schemas.rfc_group',
+}
+
+HOME_DIRECTORY = "/vpac/%(default_project)s/%(uid)s"
 
 SERVER_EMAIL = 'django@' + uname()[1]
 ACCOUNTS_EMAIL = 'accounts@vpac.org'
@@ -60,8 +82,6 @@ MANAGERS = ADMINS
 TIME_ZONE = 'Australia/Melbourne'
 LANGUAGE_CODE = 'en-au'
 
-DATABASE_ENGINE = 'sqlite3'
-
 MEDIA_ROOT = '/tmp'
 MEDIA_URL = '/media/'
 GRAPH_ROOT = MEDIA_ROOT + '/graphs/'
@@ -71,7 +91,7 @@ SITE_ID = 1
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
-    'django.core.context_processors.auth',
+    'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',
     'django.core.context_processors.media',
     'django.contrib.messages.context_processors.messages',
@@ -118,12 +138,11 @@ INSTALLED_APPS = (
     'karaage.projectreports',
     'karaage.emails',
     'karaage.applications',
-    'placard.lgroups',
-    'placard.lusers',
+    'placard',
     'django_pbs.servers',
     'django_pbs.jobs',
     'karaage.test_data',
-
+    'django_surveys',
 )
 
 
@@ -142,3 +161,5 @@ ALLOW_REGISTRATIONS = True
 REGISTRATION_BASE_URL = 'https://example.com/users'
 
 DEFAULT_SHELL = '/bin/bash'
+
+SECRET_KEY = '5hvhpe6gv2t5x4$3dtq(w2v#vg@)sx4p3r_@wv%l41g!stslc*'

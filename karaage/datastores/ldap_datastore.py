@@ -18,6 +18,8 @@
 from karaage.datastores import base
 from karaage.datastores import ldap_schemas
 
+from django.conf import settings
+
 def str_or_none(string):
     if string is None or string == "":
         return None
@@ -40,8 +42,8 @@ class PersonalDataStore(base.PersonalDataStore):
         p.mail = str_or_none(person.email) or None
         p.title = str_or_none(person.title) or None
         p.o = person.institute.name
-        p.userPassword = person.user.password
-        p.pre_create()
+        p.userPassword = str(person.user.password)
+        p.pre_create(master=None)
         p.pre_save()
         p.save()
 
@@ -58,7 +60,10 @@ class PersonalDataStore(base.PersonalDataStore):
 
     def update_user(self, person):
         super(PersonalDataStore, self).update_user(person)
-        p = ldap_schemas.person.objects.get(uid=person.username)
+        try:
+            p = ldap_schemas.account.objects.get(uid=person.username)
+        except ldap_schemas.account.DoesNotExist:
+            p = ldap_schemas.person.objects.get(uid=person.username)
         p.givenName = person.first_name
         p.sn = person.last_name
         p.telephoneNumber = str_or_none(person.telephone) or None
@@ -95,7 +100,7 @@ class PersonalDataStore(base.PersonalDataStore):
 
     def user_exists(self, username):
         try:
-            p = ldap_schemas.person.objects.get(uid=username)
+            ldap_schemas.person.objects.get(uid=username)
             return True
         except ldap_schemas.person.DoesNotExist:
             return False
@@ -115,6 +120,8 @@ class AccountDataStore(base.AccountDataStore):
         luser = ldap_schemas.account.objects.convert(ldap_schemas.person).get(uid=person.username)
         luser.set_defaults()
         luser.gidNumber = person.institute.gid
+        luser.homeDirectory = settings.HOME_DIRECTORY % { 'default_project': default_project.pid, 'uid': luser.uid }
+        luser.pre_create(master=None)
         luser.pre_save()
         luser.save()
 

@@ -16,27 +16,24 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.test import TestCase
-from django.core import mail
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
 
-from placard.server import slapd
-from placard.client import LDAPClient
+from tldap.test import slapd
 import datetime
 
 from karaage.people.models import Person
 from karaage.test_data.initial_ldap_data import test_ldif
 from karaage.projects.models import Project
+from karaage.datastores import ldap_schemas
 
 
 class ProjectTestCase(TestCase):
 
     def setUp(self):
-        global server
         server = slapd.Slapd()
         server.set_port(38911)
         server.start()
-        base = server.get_dn_suffix()
         server.ldapadd("\n".join(test_ldif)+"\n")
         call_command('loaddata', 'karaage_data', **{'verbosity': 0})
         self.server = server
@@ -46,7 +43,7 @@ class ProjectTestCase(TestCase):
 
     def test_admin_add_project(self):
 
-        projects = Project.objects.count()
+        Project.objects.count()
         
         self.client.login(username='kgsuper', password='aq12ws')
         response = self.client.get(reverse('kg_add_project'))
@@ -73,12 +70,11 @@ class ProjectTestCase(TestCase):
         self.assertEqual(project.pid, 'pExam0001')
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
         self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())    
-        lcon = LDAPClient()
-        lgroup = lcon.get_group('cn=%s' % project.pid)
+        lgroup = ldap_schemas.group.objects.get(cn=project.pid)
         self.assertEqual(lgroup.cn, project.pid)
 
     def test_admin_add_project_pid(self):
-        projects = Project.objects.count()
+        Project.objects.count()
         
         self.client.login(username='kgsuper', password='aq12ws')
         response = self.client.get(reverse('kg_add_project'))
@@ -106,13 +102,11 @@ class ProjectTestCase(TestCase):
         self.assertEqual(project.pid, 'Enrico')
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
         self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())
-        lcon = LDAPClient()
-        lgroup = lcon.get_group('cn=%s' % project.pid)
+        lgroup = ldap_schemas.group.objects.get(cn=project.pid)
         self.assertEqual(lgroup.cn, project.pid)
 
     def test_add_remove_user_to_project(self):
-        lcon = LDAPClient()
-        luser = lcon.get_user('uid=kgtestuser2')
+        luser = ldap_schemas.person.objects.get(uid='kgtestuser2')
 
         self.client.login(username='kgsuper', password='aq12ws')
         project = Project.objects.get(pk='TestProject1')
@@ -120,8 +114,8 @@ class ProjectTestCase(TestCase):
         response = self.client.get(reverse('kg_project_detail', args=[project.pid]))
         self.failUnlessEqual(response.status_code, 200)
 
-        ldap_members = LDAPClient().get_group_members('cn=%s' % project.pid)
-        self.assertFalse(luser in ldap_members)
+        lgroup = ldap_schemas.group.objects.get(cn=project.pid)
+        self.assertRaises(ldap_schemas.account.DoesNotExist, lgroup.secondary_accounts.get, pk=luser.pk)
 
         new_user = Person.objects.get(user__username='kgtestuser2')
         response = self.client.post(reverse('kg_project_detail', args=[project.pid]), { 'person': new_user.id} )
@@ -129,8 +123,8 @@ class ProjectTestCase(TestCase):
         project = Project.objects.get(pk='TestProject1')
         self.assertEqual(project.users.count(), 2)
 
-        ldap_members = LDAPClient().get_group_members('cn=%s' % project.pid)
-        self.assertTrue(luser in ldap_members)
+        lgroup = ldap_schemas.group.objects.get(cn=project.pid)
+        lgroup.secondary_accounts.get(pk=luser.pk)
 
         # remove user
         response = self.client.post(reverse('kg_remove_project_member', args=[project.pid, new_user.username]))
@@ -138,7 +132,8 @@ class ProjectTestCase(TestCase):
         project = Project.objects.get(pk='TestProject1')
         self.assertEqual(project.users.count(), 1)
 
-        ldap_members = LDAPClient().get_group_members('cn=%s' % project.pid)
+        lgroup = ldap_schemas.group.objects.get(cn=project.pid)
+        ldap_members = lgroup.secondary_accounts.all()
         self.assertFalse(luser in ldap_members)
         
     def test_delete_project(self):
@@ -190,8 +185,7 @@ class ProjectTestCase(TestCase):
         self.assertEqual(project.is_active, True)
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
         self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())    
-        lcon = LDAPClient()
-        lgroup = lcon.get_group('cn=%s' % project.pid)
+        lgroup = ldap_schemas.group.objects.get(cn=project.pid)
         self.assertEqual(lgroup.cn, project.pid)
 
 

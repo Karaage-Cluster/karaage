@@ -6,6 +6,8 @@ PLACARD_MASTER = {
     'GROUP': 'karaage.datastores.ldap_schemas.group',
 }
 
+HOME_DIRECTORY = "/home/%(uid)s"
+
 AJAX_LOOKUP_CHANNELS = {
     'account'  : ( 'placard.lookups', 'AccountLookup' ),
     'group'  : ( 'placard.lookups', 'GroupLookup' )

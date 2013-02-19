@@ -16,23 +16,16 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.test import TestCase
-from django.test.client import Client
 from django.core import mail
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.management import call_command
 
-import datetime
-from time import sleep
-from placard.server import slapd
-from placard.client import LDAPClient
-from placard import exceptions as placard_exceptions
+from tldap.test import slapd
 from captcha.models import CaptchaStore
-from karaage.applications.models import UserApplication, Application, Applicant
+from karaage.applications.models import Application, Applicant
 from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
-from karaage.machines.models import UserAccount
 from karaage.test_data.initial_ldap_data import test_ldif
 
 
@@ -40,11 +33,9 @@ class UserApplicationTestCase(TestCase):
     urls = 'testproject.registration_urls'
 
     def setUp(self):
-        global server
         server = slapd.Slapd()
         server.set_port(38911)
         server.start()
-        base = server.get_dn_suffix()
         server.ldapadd("\n".join(test_ldif)+"\n")
         call_command('loaddata', 'karaage_data', **{'verbosity': 0})
 
@@ -127,7 +118,6 @@ class AdminRegistrationTestCase(TestCase):
         server = slapd.Slapd()
         server.set_port(38911)
         server.start()
-        base = server.get_dn_suffix()
         server.ldapadd("\n".join(test_ldif)+"\n")
         call_command('loaddata', 'karaage_data', **{'verbosity': 0})
 
@@ -142,7 +132,7 @@ class AdminRegistrationTestCase(TestCase):
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         project = Project.objects.get(pid='TestProject1')
-        p_users = project.users.count()
+        project.users.count()
         
         institute = Institute.objects.get(pk=1)
         
@@ -198,7 +188,6 @@ class ProjectRegistrationTestCase(TestCase):
         server = slapd.Slapd()
         server.set_port(38911)
         server.start()
-        base = server.get_dn_suffix()
         server.ldapadd("\n".join(test_ldif)+"\n")
         call_command('loaddata', 'karaage_data', **{'verbosity': 0})
 

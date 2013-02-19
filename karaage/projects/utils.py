@@ -20,11 +20,11 @@ from karaage.projects.models import Project
 
 
 def add_user_to_project(person, project):
-    project.users.add(person)
-    project.save()
     for mc in project.machine_categories.all():
         if not person.has_account(mc):
             create_account(person, project, mc)
+    project.users.add(person)
+    project.save()
 
 
 def remove_user_from_project(person, project):

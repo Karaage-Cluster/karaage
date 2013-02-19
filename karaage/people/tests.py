@@ -16,33 +16,27 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.test import TestCase
-from django.test.client import Client
-from django.core import mail
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.management import call_command
 
 import datetime
-from time import sleep
-from placard.server import slapd
-from placard.client import LDAPClient
-from placard import exceptions as placard_exceptions
+from tldap.test import slapd
 
 from karaage.people.models import Person, Institute, InstituteDelegate
 from karaage.projects.models import Project
-from karaage.machines.models import UserAccount
+from karaage.machines.models import UserAccount, MachineCategory
 from karaage.test_data.initial_ldap_data import test_ldif
-#from karaage.datastores import exceptions as kg_exceptions
+
+from karaage.datastores import ldap_schemas
 
 class UserTestCase(TestCase):
 
     def setUp(self):
-        global server
         server = slapd.Slapd()
         server.set_port(38911)
         server.start()
-        base = server.get_dn_suffix()
         server.ldapadd("\n".join(test_ldif)+"\n")
         call_command('loaddata', 'karaage_data', **{'verbosity': 0})
 
@@ -54,13 +48,13 @@ class UserTestCase(TestCase):
 
     def do_permission_tests(self, test_object, users):
         for user_id in users:
-            print "can user '%d' access '%s'?"%(user_id, test_object)
+#            print "can user '%d' access '%s'?"%(user_id, test_object)
             user = User.objects.get(id=user_id)
             result = test_object.can_view(user)
             expected_result = users[user_id]
-            print "---> got:'%s' expected:'%s'"%(result, expected_result)
+#            print "---> got:'%s' expected:'%s'"%(result, expected_result)
             self.failUnlessEqual(result, expected_result)
-            print
+#            print
 
     def test_permissions(self):
         test_object = Project.objects.get(pid="TestProject1")
@@ -105,7 +99,7 @@ class UserTestCase(TestCase):
 
         # add user 2 to project
         # test that members can see other people in own project
-        print "-------------------------------------------------------------------"
+#        print "-------------------------------------------------------------------"
         project = Project.objects.get(pid="TestProject1")
         project.users=[2,3]
 
@@ -152,7 +146,7 @@ class UserTestCase(TestCase):
         # change institute of all people
         # Test institute leader can access people in project despite not being
         # institute leader for these people.
-        print "-------------------------------------------------------------------"
+#        print "-------------------------------------------------------------------"
         Person.objects.all().update(institute=2)
         #Institute.objects.filter(pk=2).update(delegate=2,active_delegate=2)
         InstituteDelegate.objects.get_or_create(institute=Institute.objects.get(id=2), person=Person.objects.get(id=2))
@@ -238,17 +232,15 @@ class UserTestCase(TestCase):
         self.assertEqual(person.user.username, 'samtest')
         self.assertEqual(UserAccount.objects.count(), 2)
         self.assertEqual(project.users.count(), p_users+1)
-        lcon = LDAPClient()
-        luser = lcon.get_user('uid=samtest')
+        luser = ldap_schemas.account.objects.get(uid='samtest')
         self.assertEqual(luser.givenName, 'Sam')
-        self.assertEqual(luser.objectClass, settings.ACCOUNT_OBJECTCLASS)
-        self.assertEqual(luser.homeDirectory, '/vpac/TestProject1/samtest/')
+        self.assertEqual(luser.homeDirectory, '/vpac/TestProject1/samtest')
         
      
     def test_admin_create_user(self):
         users = Person.objects.count()
         project = Project.objects.get(pid='TestProject1')
-        p_users = project.users.count()
+        project.users.count()
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         response = self.client.get(reverse('kg_add_user'))
@@ -279,10 +271,8 @@ class UserTestCase(TestCase):
         person = Person.objects.get(pk=users)
         self.assertEqual(person.is_active, True)
         self.assertEqual(person.user.username, 'samtest2')
-        lcon = LDAPClient()
-        luser = lcon.get_user('uid=samtest2')
+        luser = ldap_schemas.person.objects.get(uid='samtest2')
         self.assertEqual(luser.givenName, 'Sam')
-        self.assertEqual(luser.objectClass, settings.USER_OBJECTCLASS)
         # Try adding it again - Should fail
         response = self.client.post(reverse('kg_add_user'), form_data)
         self.failUnlessEqual(response.status_code, 200)
@@ -293,10 +283,9 @@ class UserTestCase(TestCase):
         self.failUnlessEqual(logged_in, True)
 
         person = Person.objects.get(user__username='kgtestuser3')
-        lcon = LDAPClient()
-        luser = lcon.get_user('uid=kgtestuser3')
+        luser = ldap_schemas.account.objects.get(uid='kgtestuser3')
         self.failUnlessEqual(person.mobile, '')
-        self.failUnlessEqual(luser.gidNumber, '500')
+        self.failUnlessEqual(luser.gidNumber, 500)
         self.failUnlessEqual(luser.o, 'Example')
         self.failUnlessEqual(luser.gecos, 'Test User3 (Example)')
         response = self.client.get(reverse('kg_user_edit', args=['kgtestuser3']))
@@ -318,22 +307,20 @@ class UserTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 302)
 
         person = Person.objects.get(user__username='kgtestuser3')
-        lcon = LDAPClient()
-        luser = lcon.get_user('uid=kgtestuser3')
+        luser = ldap_schemas.account.objects.get(uid='kgtestuser3')
         self.failUnlessEqual(person.mobile, '555666')
-        self.failUnlessEqual(luser.gidNumber, '501')
+        self.failUnlessEqual(luser.gidNumber, 501)
         self.failUnlessEqual(luser.o, 'OtherInst')
         self.failUnlessEqual(luser.gecos, 'Test User3 (OtherInst)')
 
     def test_delete_activate_user(self):
-        logged_in = self.client.login(username='kgsuper', password='aq12ws')
+        self.client.login(username='kgsuper', password='aq12ws')
         user = Person.objects.get(user__username='kgtestuser3')
         self.assertEqual(user.is_active, True)
         self.assertEqual(user.project_set.count(), 1)
         self.assertEqual(user.useraccount_set.count(), 1)
         self.assertEqual(user.useraccount_set.all()[0].date_deleted, None)
-        lcon = LDAPClient()
-        luser = lcon.get_user('uid=kgtestuser3')
+        luser = ldap_schemas.person.objects.get(uid='kgtestuser3')
         self.assertEqual(luser.givenName, 'Test')
 
         response = self.client.get(reverse('admin_delete_user', args=[user.username]))
@@ -348,14 +335,14 @@ class UserTestCase(TestCase):
         self.assertEqual(user.project_set.count(), 0)
         self.assertEqual(user.useraccount_set.count(), 1)
         self.assertEqual(user.useraccount_set.all()[0].date_deleted, datetime.date.today())
-        self.failUnlessRaises(placard_exceptions.DoesNotExistException, lcon.get_user, 'uid=kgtestuser3')
+        self.failUnlessRaises(ldap_schemas.person.DoesNotExist, ldap_schemas.person.objects.get, uid='kgtestuser3')
 
         # Test activating
         response = self.client.post(reverse('admin_activate_user', args=[user.username]))
         self.failUnlessEqual(response.status_code, 302)
         user = Person.objects.get(user__username='kgtestuser3')
         self.assertEqual(user.is_active, True)
-        luser = lcon.get_user('uid=kgtestuser3')
+        luser = ldap_schemas.person.objects.get(uid='kgtestuser3')
         self.assertEqual(luser.givenName, 'Test')
 
 
@@ -409,11 +396,11 @@ class UserTestCase(TestCase):
     def stest_add_user_to_project(self):
 
         user = Person.objects.get(pk=Person.objects.count())
-        ua = user.useraccount_set.all()[0]
+        user.useraccount_set.all()[0]
 
         self.assertEqual(user.project_set.count(), 1)
 
-        project = Project.objects.create(
+        Project.objects.create(
             pid='test2',
             name='test project 5',
             leader=Person.objects.get(user__username='leader'),
