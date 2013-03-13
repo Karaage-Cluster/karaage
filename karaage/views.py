@@ -49,17 +49,13 @@ def admin_index(request):
 @login_required
 def search(request):
 
-    if request.method == 'POST':
-
+    if 'sitesearch' in request.GET and request.GET['sitesearch'].strip() != "":
         user_list = Person.objects.all()
         project_list = Project.objects.all()
 
-        new_data = request.POST.copy()
+        new_data = request.GET.copy()
         siteterms = new_data['sitesearch'].lower()
         term_list = siteterms.split(' ')
-
-        if term_list[0] == "":
-            return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
         # users
         query = Q()
