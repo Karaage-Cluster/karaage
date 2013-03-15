@@ -1,3 +1,9 @@
+karaage (2.7.3-2) stable; urgency=low
+
+  * Don't support Python 2.5
+
+ -- Brian May <bam@debian.org>  Fri, 15 Mar 2013 15:56:55 +1100
+
 karaage (2.7.3-1) stable; urgency=low
 
   * Simplify default arguments.
@@ -6,8 +12,9 @@ karaage (2.7.3-1) stable; urgency=low
   * Update wiki link.
   * Use GET for search, not POST.
   * Fix confusion between person and accounts.
+  * debian
 
- -- Brian May <bam@debian.org>  Fri, 15 Mar 2013 14:53:30 +1100
+ -- Brian May <bam@debian.org>  Fri, 15 Mar 2013 15:56:50 +1100
 
 karaage (2.7.2-1) stable; urgency=low
 
