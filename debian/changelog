@@ -1,3 +1,14 @@
+karaage (2.7.3-1) stable; urgency=low
+
+  * Simplify default arguments.
+  * Remove duplicate initialization of machinecategory.
+  * Fix broken link in institute_form.html
+  * Update wiki link.
+  * Use GET for search, not POST.
+  * Fix confusion between person and accounts.
+
+ -- Brian May <bam@debian.org>  Fri, 15 Mar 2013 14:53:30 +1100
+
 karaage (2.7.2-1) stable; urgency=low
 
   * Tests all work now.
