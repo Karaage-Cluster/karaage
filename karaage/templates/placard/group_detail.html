@@ -1,0 +1,110 @@
+{% extends "main.html" %}
+{% load url from future %}
+
+
+{% block title %}{{ group }} detail | Groups{% endblock %}
+
+
+{% block extrastyle %}
+{% load admin_static %}
+<link rel="stylesheet" type="text/css" href="{% static "css/forms.css" %}" />
+{% endblock %}
+
+
+{% block breadcrumbs %}
+{% load placard_tags %}
+<div class="breadcrumbs">
+<a href='{{ base_url|default:"/" }}'>Home</a>
+ &rsaquo; <a href="{% url "plac_group_list" %}">Groups</a>
+{% if is_slave %}
+ &rsaquo; <a href="{% bond_url 'plac_group_detail' group.pk group_bond %}">{{ group }} detail</a>
+ &rsaquo; {{ group_bond }}
+{% else %}
+ &rsaquo; {{ group }} detail
+{% endif %}
+</div>
+{% endblock %}
+
+
+{% block object-tools %}
+<div class="module object-tools">
+    <h2>Group links</h2>
+    <ul>
+        <li><a href="{% bond_url 'plac_group_detail_verbose' group.pk group_bond %}">Verbose output</a></li>
+        {% block object-tools-view %}{% endblock %}
+        {% if not is_slave %}
+            {% if perms.placard.change_group %}
+            <li><a href="{% url "plac_group_edit" group.pk %}">Edit details</a></li>
+            {% endif %}
+            {% if perms.placard.rename_group %}
+            <li><a href="{% url "plac_group_rename" group.pk %}">Rename Group</a></li>
+            {% endif %}
+            {% if perms.placard.email_group %}
+            <li><a href="{% url "plac_group_email" group.pk %}">Sends members an Email</a></li>
+            {% endif %}
+        {% endif %}
+        {% if slave_objs %}
+        <li>source:
+        <a href="{% bond_url 'plac_group_detail' group.pk master_bond %}">{{ master_bond }}</a>, {% for bond, slave_obj in slave_objs %}<a href="{% bond_url 'plac_group_detail' group.pk bond %}">{{ bond }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+        </li>
+        {% endif %}
+    </ul>
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+
+    <div class="module">
+        <h2>Group {{ group }} detail</h2>
+
+        <h3>{{ group }}</h3>
+        <table>
+            <tr>
+            <td>cn</td><td>{{ group.cn }}</td>
+            </tr>
+            <tr>
+            <td>description</td><td>{{ group.description }}</td>
+            </tr>
+            <tr>
+            <td>displayName</td><td>{{ group.displayName }}</td>
+            </tr>
+            <tr>
+            <td>gidNumber</td><td>{{ group.gidNumber }}</td>
+            </tr>
+            <tr>
+            <td>objectClass</td><td>{{ group.objectClass }}</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <th>Primary Accounts</th>
+            </tr>
+            {% for m in group.primary_accounts.all|dictsort:"cn" %}
+                <tr class="{% cycle row1,row2 %} {% if m.is_locked %}locked{% endif %}">
+                    <td><a href="{% bond_url 'kg_user_detail' m.pk group_bond %}" >{{ m }}</a></td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <th>Secondary People</th>
+            </tr>
+            {% for m in group.secondary_persons.all|dictsort:"cn" %}
+                <tr class="{% cycle row1,row2 %}">
+                    <td class="{% if m.is_locked %}locked{% endif %}"><a href="{% bond_url 'kg_user_detail' m.pk group_bond %}" >{{ m }}</a></td>
+                    {% if perms.placard.change_group and not is_slave %}
+                    <td><a href="{% url "plac_group_rm_member" group.pk m.pk %}" class="deletelink">Remove</a></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+        {% if perms.placard.change_group and not is_slave %}
+            <form method="post" action="{% url "plac_group_add_member" group.pk %}" class="simple">{% csrf_token %}
+                <fieldset>
+                    {{ form }}<input type="submit" value="Add" class="default" />
+                </fieldset>
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
