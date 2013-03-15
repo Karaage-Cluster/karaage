@@ -115,7 +115,7 @@ class ProjectTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 200)
 
         lgroup = ldap_schemas.group.objects.get(cn=project.pid)
-        self.assertRaises(ldap_schemas.account.DoesNotExist, lgroup.secondary_accounts.get, pk=luser.pk)
+        self.assertRaises(ldap_schemas.person.DoesNotExist, lgroup.secondary_persons.get, pk=luser.pk)
 
         new_user = Person.objects.get(user__username='kgtestuser2')
         response = self.client.post(reverse('kg_project_detail', args=[project.pid]), { 'person': new_user.id} )
@@ -124,7 +124,7 @@ class ProjectTestCase(TestCase):
         self.assertEqual(project.users.count(), 2)
 
         lgroup = ldap_schemas.group.objects.get(cn=project.pid)
-        lgroup.secondary_accounts.get(pk=luser.pk)
+        lgroup.secondary_persons.get(pk=luser.pk)
 
         # remove user
         response = self.client.post(reverse('kg_remove_project_member', args=[project.pid, new_user.username]))
@@ -133,7 +133,7 @@ class ProjectTestCase(TestCase):
         self.assertEqual(project.users.count(), 1)
 
         lgroup = ldap_schemas.group.objects.get(cn=project.pid)
-        ldap_members = lgroup.secondary_accounts.all()
+        ldap_members = lgroup.secondary_persons.all()
         self.assertFalse(luser in ldap_members)
         
     def test_delete_project(self):

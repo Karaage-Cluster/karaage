@@ -201,7 +201,7 @@
 <li class="addlink"><a href="add_comment/">Add comment</a></li>
 <li><a href="comments/">Comments</a> ({{ comment_count }})</li>
 	{% if person.is_active %}
-        <li><a href="{% url 'kg_user_verbose' person.username %}">LDAP</a></li>
+        <li><a href="{% url 'kg_user_verbose' person.username %}">Verbose</a></li>
 	{% if perms.people.change_person and person.is_active %}
 	{% if person.is_locked %}
         <li><a href="{% url 'kg_lock_user' person.username %}"><img alt="Lock" src="{{ STATIC_URL }}img/lock.png"/> Unlock</a></li>

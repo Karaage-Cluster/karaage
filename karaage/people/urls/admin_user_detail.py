@@ -21,6 +21,7 @@ from karaage.people.forms import AdminPersonForm
 urlpatterns = patterns('karaage.people.views.admin_user_detail',
 
     url(r'^$', 'user_detail', name='kg_user_detail'),
+    url(r'^verbose/$', 'user_verbose', name='kg_user_verbose'),
     url(r'^activate/$', 'activate', name='admin_activate_user'),
     url(r'^jobs/$', 'user_job_list'), 
     url(r'^delete/$', 'delete_user', name='admin_delete_user'),

@@ -79,6 +79,9 @@ class group(rfc.posixGroup, common.baseMixin):
         search_classes = set([ 'posixGroup' ])
         pk = 'cn'
 
+    # persons
+    secondary_persons = tldap.manager.ManyToManyDescriptor(this_key='memberUid', linked_cls=person, linked_key='uid', linked_is_p=False, related_name="secondary_groups")
+
     # accounts
     primary_accounts = tldap.manager.OneToManyDescriptor(this_key='gidNumber', linked_cls=account, linked_key='gidNumber', related_name="primary_group")
-    secondary_accounts = tldap.manager.ManyToManyDescriptor(this_key='memberUid', linked_cls=account, linked_key='uid', linked_is_p=False, related_name="secondary_groups")
+#    secondary_accounts = tldap.manager.ManyToManyDescriptor(this_key='memberUid', linked_cls=account, linked_key='uid', linked_is_p=False, related_name="secondary_groups")

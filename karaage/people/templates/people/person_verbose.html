@@ -1,0 +1,51 @@
+{% extends "main.html" %}
+{% load url from future %}
+
+
+{% block title %}Users{% endblock %}
+
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="../../">Users</a>
+    › <a href="../">{{ person }}</a> &nbsp;› Verbose
+</div>{% endblock %}   
+
+
+{% block content %}
+<div id="content-main">
+
+    <div class="module">
+        <h2>Account {{ person }} LDAP</h2>
+        <h3>{{ person_ldap.dn }}</h3>
+        <table>
+            {% with person_ldap.primary_group.get_obj as primary_group %}
+            {% if primary_group %}
+            <tr>
+                <th>Primary Group:</th>
+            </tr>
+            <tr>
+                <td><a href="{% url 'plac_group_detail' primary_group.pk %}">{{ primary_group }}</a></td>
+            </tr>
+            {% endif %}
+            {% endwith %}
+            <tr>
+                <th>Secondary Groups:</th>
+            </tr>
+            {% for g in person_ldap.secondary_groups.all|dictsort:"cn" %}
+                <tr class="{% cycle row1,row2 %}">
+                    <td><a href="{% url 'plac_group_detail' g.pk %}">{{ g }}</a></td>
+                </tr>
+            {% endfor %}
+
+            <tr>
+                <th>All fields</th>
+            </tr>
+            {% for i,j in person_ldap.get_fields %}
+                <tr>
+                    {% if i != 'userPassword' and j %}
+                    <td>{{ i }}</td><td>{{ j }}</td>
+                    {% endif %}
+               </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}

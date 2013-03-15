@@ -25,6 +25,7 @@ from django.conf import settings
 
 import datetime
 
+from karaage.datastores import ldap_schemas
 from karaage.people.models import Person
 from karaage.people.forms import AdminPasswordChangeForm
 from karaage.projects.models import Project
@@ -73,6 +74,14 @@ def user_detail(request, username):
 
     return render_to_response('people/person_detail.html', locals(), context_instance=RequestContext(request))
 
+@login_required
+def user_verbose(request, username):
+    person = get_object_or_404(Person, user__username=username)
+    try:
+        person_ldap = ldap_schemas.account.objects.get(pk=username)
+    except ldap_schemas.account.DoesNotExist:
+        person_ldap = ldap_schemas.person.objects.get(pk=username)
+    return render_to_response('people/person_verbose.html', locals(), context_instance=RequestContext(request))
 
 @permission_required('machines.add_useraccount')
 def activate(request, username):
