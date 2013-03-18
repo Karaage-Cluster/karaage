@@ -23,7 +23,7 @@ from django.conf import settings
 def str_or_none(string):
     if string is None or string == "":
         return None
-    return ""
+    return string
 
 class PersonalDataStore(base.PersonalDataStore):
     
