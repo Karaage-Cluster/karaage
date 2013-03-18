@@ -38,9 +38,9 @@ class PersonalDataStore(base.PersonalDataStore):
         p.uid = person.username
         p.givenName = person.first_name
         p.sn = person.last_name
-        p.telephoneNumber = str_or_none(person.telephone) or None
-        p.mail = str_or_none(person.email) or None
-        p.title = str_or_none(person.title) or None
+        p.telephoneNumber = str_or_none(person.telephone)
+        p.mail = str_or_none(person.email)
+        p.title = str_or_none(person.title)
         p.o = person.institute.name
         p.userPassword = str(person.user.password)
         p.pre_create(master=None)
@@ -66,9 +66,9 @@ class PersonalDataStore(base.PersonalDataStore):
             p = ldap_schemas.person.objects.get(uid=person.username)
         p.givenName = person.first_name
         p.sn = person.last_name
-        p.telephoneNumber = str_or_none(person.telephone) or None
-        p.mail = str_or_none(person.email) or None
-        p.title = str_or_none(person.title) or None
+        p.telephoneNumber = str_or_none(person.telephone)
+        p.mail = str_or_none(person.email)
+        p.title = str_or_none(person.title)
         p.o = person.institute.name
         p.pre_save()
         p.save()
