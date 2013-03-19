@@ -91,7 +91,7 @@ def parse_logs(log_list, date, machine_name, log_type):
                 project = None
                 fail +=  1
                 
-        if project is not None:
+        if project is not None and user_account is not None:
         
             if user_account.user not in project.users.all():
                 output.append("%s is not in project %s, cpu usage: %s" % (user_account.user, project, data['cpu_usage']))
