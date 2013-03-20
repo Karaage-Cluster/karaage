@@ -15,8 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from placard.client import LDAPClient
-from placard.exceptions import DoesNotExistException
+from karaage.datastores import ldap_schemas
 
 from karaage.datastores.software import base
 
@@ -24,55 +23,60 @@ from karaage.datastores.software import base
 class SoftwareDataStore(base.SoftwareDataStore):
     
     def create_software(self, software):
-        conn = LDAPClient()
         if software.gid:
             try:
-                lgroup = conn.get_group("gidNumber=%s" % software.gid)
-                gid = int(lgroup.gidNumber)
+                lgroup = ldap_schemas.group.objects.get(gidNumber=software.gid)
             except DoesNotExistException:
-                gid = conn.add_group(cn=str(software.name.lower().replace(' ', '')), gidNumber=str(software.gid))
+                lgroup = ldap_schemas.group(cn=str(software.name.lower().replace(' ', '')), gidNumber=str(software.gid))
+                lgroup.set_defaults()
+                lgroup.pre_create(master=None)
+                lgroup.pre_save()
+                lgroup.save()
         else:
             if not software.restricted and software.softwarelicense_set.count() == 0:
                 return None
             try:
-                lgroup = conn.get_group("cn=%s" % str(software.name.lower().replace(' ', '')))
-                gid = int(lgroup.gidNumber)
-            except DoesNotExistException:
-                gid = conn.add_group(cn=str(software.name.lower().replace(' ', '')))
+                lgroup = ldap_schemas.group.objects.get(cn=str(software.name.lower().replace(' ', '')))
+            except ldap_schemas.group.DoesNotExist:
+                lgroup = ldap_schemas.group(cn=str(software.name.lower().replace(' ', '')))
+                lgroup.set_defaults()
+                lgroup.pre_create(master=None)
+                lgroup.pre_save()
+                lgroup.save()
 
-        del(conn)
-        return gid
+        assert lgroup.gidNumber is not None
+        return lgroup.gidNumber
 
     def delete_software(self, software):
-        conn = LDAPClient()
+        if software.gid is None:
+            return
+
         try:
-            conn.delete_group('cn=%s' % software.pid)
-        except DoesNotExistException:
-            pass
-        del(conn)
+            lgroup = ldap_schemas.group.objects.get(gidNumber=software.gid)
+            lgroup.delete()
+        except ldap_schemas.group.DoesNotExist:
+            return
 
     def add_member(self, software, person):
-        conn = LDAPClient()
-        conn.add_group_member('gidNumber=%s' % software.gid, str(person.username))
-        del(conn)
+        lgroup = ldap_schemas.group.objects.get(gidNumber=software.gid)
+        person = ldap_schemas.person.objects.get(uid=person.username)
+        lgroup.secondary_persons.add(person)
 
     def remove_member(self, software, person):
-        conn = LDAPClient()
-        conn.remove_group_member('gidNumber=%s' % software.gid, str(person.username))
-        del(conn)
+        lgroup = ldap_schemas.group.objects.get(gidNumber=software.gid)
+        person = ldap_schemas.person.objects.get(uid=person.username)
+        lgroup.secondary_persons.remove(person)
 
     def get_members(self, software):
-        conn = LDAPClient()
-        try:
-            return conn.get_group_members('gidNumber=%s' % software.gid)
-        except:
+        if software.gid is not None:
+            lgroup = ldap_schemas.group.objects.get(gidNumber=software.gid)
+            return lgroup.secondary_persons.all()
+        else:
             return []
-        del(conn)
 
     def get_name(self, software):
-        conn = LDAPClient()
-        try:
-            ldap_group = conn.get_group('gidNumber=%s' % software.gid)
-            return ldap_group.cn
-        except DoesNotExistException:
+        if software.gid is not None:
+            lgroup = ldap_schemas.group.objects.get(gidNumber=software.gid)
+            return lgroup.cn
+        else:
             return 'No LDAP Group'
