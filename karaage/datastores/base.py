@@ -121,6 +121,7 @@ class PersonalDataStore(object):
         person.date_deleted = None
         person.user.is_active = True
         person.user.save()
+        person.save()
 
         log(current_user, person, 1, 'Activated')
 
