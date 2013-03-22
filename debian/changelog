@@ -1,3 +1,11 @@
+karaage (2.7.4-1) stable; urgency=low
+
+  * Fix software data stores.
+  * Fix various errors initializing data for new users.
+  * Fix error in pbsmoab if user could not be found.
+
+ -- Brian May <bam@debian.org>  Fri, 22 Mar 2013 15:40:14 +1100
+
 karaage (2.7.3-2) stable; urgency=low
 
   * Don't support Python 2.5
