@@ -204,10 +204,10 @@
         <li><a href="{% url 'kg_user_verbose' person.username %}">Verbose</a></li>
 	{% if perms.people.change_person and person.is_active %}
 	{% if person.is_locked %}
-        <li><a href="{% url 'kg_lock_user' person.username %}"><img alt="Lock" src="{{ STATIC_URL }}img/lock.png"/> Unlock</a></li>
+        <li><a href="{% url 'kg_unlock_user' person.username %}"><img alt="Unlock" src="{{ STATIC_URL }}img/unlock.png"/> Unlock</a></li>
 	{% else %}
         <li class="changelink"><a href="{% url 'kg_password_change' person.username %}">Change Password</a></li>
-        <li><a href="{% url 'kg_unlock_user' person.username %}"><img alt="Unlock" src="{{ STATIC_URL }}img/unlock.png"/> Lock</a></li>
+        <li><a href="{% url 'kg_lock_user' person.username %}"><img alt="Lock" src="{{ STATIC_URL }}img/lock.png"/> Lock</a></li>
 	{% endif %}
         <li><a href="{% url 'kg_user_bounce' person.username %}">Bounced Email</a></li>
 	{% endif %}
