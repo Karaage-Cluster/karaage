@@ -1,3 +1,10 @@
+karaage (2.7.6-1) stable; urgency=low
+
+  * Fix authentication for user's without a cluster account.
+  * Fix account expiry process.
+
+ -- Brian May <bam@debian.org>  Wed, 27 Mar 2013 15:24:04 +1100
+
 karaage (2.7.5-1) stable; urgency=low
 
   * Fix error creating new accounts.
