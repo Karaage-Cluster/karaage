@@ -51,3 +51,44 @@ class SamlUserBackend(ModelBackend):
         By default, returns the user unmodified.
         """
         return user
+
+
+from django.contrib.auth.models import User
+from django.contrib.auth.backends import ModelBackend
+
+from karaage.datastores import ldap_schemas
+
+
+class LDAPBackend(ModelBackend):
+    def authenticate(self, username=None, password=None):
+        try:
+            ldap_user = ldap_schemas.person.objects.get(pk=username)
+        except ldap_schemas.person.AccountDoesNotExist:
+            return None
+
+        if ldap_user.check_password(password):
+
+            # The user existed and authenticated. Get the user
+            # record or create one with no privileges.
+            try:
+                user = User.objects.get(username__exact=username)
+            except User.DoesNotExist:
+                # Theoretical backdoor could be input right here. We don't
+                # want that, so input an unused random password here.
+                # The reason this is a backdoor is because we create a
+                # User object for LDAP users so we can get permissions,
+                # however we -don't- want them able to login without
+                # going through LDAP with this user. So we effectively
+                # disable their non-LDAP login ability by setting it to a
+                # random password that is not given to them. In this way,
+                # static users that don't go through ldap can still login
+                # properly, and LDAP users still have a User object.
+                user = User.objects.create_user(username, '')
+                user.set_unusable_password()
+                user.is_staff = False
+                user.save()
+            # Success.
+            return user
+
+        else:
+            return None

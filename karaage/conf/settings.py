@@ -126,7 +126,7 @@ MIDDLEWARE_CLASSES = (
 
 AUTHENTICATION_BACKENDS = (
     'karaage.backends.SamlUserBackend',
-    'placard.backends.LDAPBackend',
+    'karaage.backends.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
