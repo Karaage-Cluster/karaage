@@ -31,6 +31,8 @@ from karaage.datastores import create_new_user
 from karaage.people.models import Institute
 from karaage.people.utils import validate_username, UsernameException
 
+import django.db.transaction
+import tldap.transaction
 
 EMAIL_RE = re.compile(
     r"(^[-!#$%&'*+/=?^_`{}|~0-9A-Z]+(\.[-!#$%&'*+/=?^_`{}|~0-9A-Z]+)*"  # dot-atom
@@ -46,6 +48,8 @@ def is_valid_email(value):
 class Command(BaseCommand):
     help = 'Used to create a karaage superuser.'
 
+    @django.db.transaction.commit_on_success
+    @tldap.transaction.commit_on_success
     def handle(self, *args, **options):
  
         password = ''

@@ -20,10 +20,14 @@ from django.conf import settings
 
 from karaage.people.models import Person
 
+import django.db.transaction
+import tldap.transaction
 
 class Command(BaseCommand):
     help = "Unlock all training accounts"
     
+    @django.db.transaction.commit_on_success
+    @tldap.transaction.commit_on_success
     def handle(self, **options):
         
         verbose = int(options.get('verbosity'))

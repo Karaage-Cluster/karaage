@@ -19,11 +19,15 @@ from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
 from karaage.people.utils import validate_username, UsernameInvalid, UsernameTaken
 import sys
+import django.db.transaction
+import tldap.transaction
 
 class Command(BaseCommand):
     help = 'Change a users username'
     args = '<old username> <new username>'
 
+    @django.db.transaction.commit_on_success
+    @tldap.transaction.commit_on_success
     def handle(self, *args, **options):
         if len(args) != 2:
             raise CommandError('Usage: change_username <old username> <new username>')

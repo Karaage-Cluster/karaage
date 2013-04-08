@@ -16,6 +16,8 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.core.management.base import BaseCommand
+import django.db.transaction
+import tldap.transaction
 
 PERIODS = [ 7, 90, 365 ]
 
@@ -36,6 +38,8 @@ def gen_all_project_graphs(period):
 class Command(BaseCommand):
     help = "Generates usage graphs"
     
+    @django.db.transaction.commit_on_success
+    @tldap.transaction.commit_on_success
     def handle(self, **options):
         verbose = int(options.get('verbosity'))
 

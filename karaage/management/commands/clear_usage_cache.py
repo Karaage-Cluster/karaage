@@ -16,10 +16,14 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.core.management.base import BaseCommand
+import django.db.transaction
+import tldap.transaction
 
 class Command(BaseCommand):
     help = "Cleans up usage cache"
     
+    @django.db.transaction.commit_on_success
+    @tldap.transaction.commit_on_success
     def handle(self, **options):
         verbose = int(options.get('verbosity'))
         from karaage.cache.models import ProjectCache, InstituteCache, UserCache, MachineCache

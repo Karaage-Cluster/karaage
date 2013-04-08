@@ -40,6 +40,8 @@ from karaage.people.models import Institute
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
 
+import django.db.transaction
+import tldap.transaction
 
 RE_VALID_USERNAME = re.compile('[\w.@+-]+$')
 
@@ -57,6 +59,8 @@ class Command(BaseCommand):
 username,password,first_name,last_name,email,institute,project"""
     args = "csvfile"
 
+    @django.db.transaction.commit_on_success
+    @tldap.transaction.commit_on_success
     def handle(self, csvfile, **options):
  
         verbosity = int(options.get('verbosity', 1))

@@ -22,6 +22,8 @@ import datetime
 
 from karaage.projects.models import Project
 from karaage.people.models import Institute, Person
+import django.db.transaction
+import tldap.transaction
 
 
 PERIODS = [ 7, 90, 365 ]
@@ -84,6 +86,8 @@ def gen_last_usage_user():
 class Command(BaseCommand):
     help = "Populate usage cache"
     
+    @django.db.transaction.commit_on_success
+    @tldap.transaction.commit_on_success
     def handle(self, **options):
         verbose = int(options.get('verbosity'))
 

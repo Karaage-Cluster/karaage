@@ -16,11 +16,15 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.core.management.base import BaseCommand
+import django.db.transaction
+import tldap.transaction
 
 
 class Command(BaseCommand):
     help = "Deletes expired applications in the NEW state and applications that have been complete for a month"
     
+    @django.db.transaction.commit_on_success
+    @tldap.transaction.commit_on_success
     def handle(self, **options):
         from karaage.applications.models import Application, UserApplication, ProjectApplication
         import datetime
