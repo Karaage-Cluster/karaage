@@ -63,7 +63,7 @@ class LDAPBackend(ModelBackend):
     def authenticate(self, username=None, password=None):
         try:
             ldap_user = ldap_schemas.person.objects.get(pk=username)
-        except ldap_schemas.person.AccountDoesNotExist:
+        except ldap_schemas.person.DoesNotExist:
             return None
 
         if ldap_user.check_password(password):
