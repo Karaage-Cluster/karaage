@@ -44,7 +44,7 @@
   </thead>
   <tbody>
     {% for ua in person.useraccount_set.all %}
-    {% if ua.project_list and person.useraccount_set.count > 1 %}
+    {% if ua.project_list %}
     <tr>
 		<td colspan="6">{{ ua.machine_category }}</td>    
     </tr>
