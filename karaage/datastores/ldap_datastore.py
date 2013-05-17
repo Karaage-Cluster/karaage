@@ -78,10 +78,6 @@ class PersonalDataStore(base.PersonalDataStore):
         p.pre_save()
         p.save()
 
-    def is_locked(self, person):
-        p = ldap_schemas.person.objects.get(uid=person.username)
-        return p.is_locked()
-
     def lock_user(self, person):
         super(PersonalDataStore, self).lock_user(person)
         p = ldap_schemas.person.objects.get(uid=person.username)

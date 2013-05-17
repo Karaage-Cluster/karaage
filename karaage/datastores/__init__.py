@@ -42,10 +42,6 @@ def update_user(person):
     pds.update_user(person)
 
 
-def is_locked(person):
-    return pds.is_locked(person)
-
-
 def lock_user(person):
     pds.lock_user(person)
 

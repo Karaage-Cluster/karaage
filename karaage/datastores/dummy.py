@@ -34,9 +34,6 @@ class PersonalDataStore(base.PersonalDataStore):
     def update_user(self, person):
         super(PersonalDataStore, self).update_user(person)
 
-    def is_locked(self, person):
-        super(PersonalDataStore, self).is_locked(person)
-
     def lock_user(self, person):
         super(PersonalDataStore, self).lock_user(person)
 
