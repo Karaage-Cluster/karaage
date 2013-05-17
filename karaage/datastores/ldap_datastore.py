@@ -148,10 +148,6 @@ class AccountDataStore(base.AccountDataStore):
     def unlock_account(self, ua):
         super(AccountDataStore, self).unlock_account(ua)
 
-    def get_shell(self, ua):
-        luser = ldap_schemas.account.objects.get(uid=ua.username)
-        return luser.loginShell
-
     def change_shell(self, ua, shell):
         super(AccountDataStore, self).change_shell(ua, shell)
         luser = ldap_schemas.account.objects.get(uid=ua.username)
