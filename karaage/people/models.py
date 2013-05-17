@@ -110,6 +110,7 @@ class Person(models.Model):
     last_usage = models.DateField(null=True, blank=True)
     expires = models.DateField(null=True, blank=True)
     is_systemuser = models.BooleanField(default=False)
+    login_enabled = models.BooleanField(default=True)
     objects = PersonManager()
     active = ActiveUserManager()
     deleted = DeletedUserManager()
@@ -269,17 +270,18 @@ class Person(models.Model):
             return
         from karaage.datastores import lock_user
         lock_user(self)
+        self.login_enabled = False
+        self.save()
 
     def unlock(self):
         if not self.is_locked():
             return
         from karaage.datastores import unlock_user
-        unlock_user(self)
+        self.login_enabled = True
+        self.save()
 
     def is_locked(self):
-        from karaage.datastores import is_locked
-        return is_locked(self)
-
+        return not self.login_enabled
 
 class InstituteDelegate(models.Model):
     person = models.ForeignKey(Person)

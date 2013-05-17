@@ -152,9 +152,6 @@ class PersonalDataStore(object):
         for ua in person.useraccount_set.filter(date_deleted__isnull=True):
             update_account(ua)
         
-    def is_locked(self, person):
-        pass
-
     def lock_user(self, person):
         from karaage.datastores import lock_account
 
