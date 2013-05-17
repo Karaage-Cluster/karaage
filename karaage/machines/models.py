@@ -103,7 +103,7 @@ class UserAccount(models.Model):
     date_created = models.DateField()
     date_deleted = models.DateField(null=True, blank=True)
     disk_quota = models.IntegerField(null=True, blank=True, help_text="In GB")
-    previous_shell = models.CharField(max_length=50, null=True, blank=True)
+    shell = models.CharField(max_length=50)
 
     class Meta:
         ordering = ['user', ]
@@ -131,6 +131,8 @@ class UserAccount(models.Model):
     def change_shell(self, shell):
         from karaage.datastores import change_shell
         change_shell(self, shell)
+        self.shell = shell
+        self.save()
 
     def get_disk_quota(self):
         if self.disk_quota:
@@ -140,5 +142,4 @@ class UserAccount(models.Model):
         return iq.disk_quota
     
     def loginShell(self):
-        from karaage.datastores import get_shell
-        return get_shell(self)
+        return self.shell
