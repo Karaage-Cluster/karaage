@@ -192,6 +192,7 @@ class AccountDataStore(object):
         """
         ua = UserAccount.objects.create(
             user=person, username=person.username,
+            shell=settings.DEFAULT_SHELL,
             machine_category=self.machine_category,
             default_project=default_project,
             date_created=datetime.datetime.today())
@@ -218,22 +219,12 @@ class AccountDataStore(object):
         pass
 
     def lock_account(self, ua):
-        ua.previous_shell = ua.loginShell()
-        ua.save()
         from karaage.datastores import change_shell
         change_shell(ua, settings.LOCKED_SHELL)
 
     def unlock_account(self, ua):
-        shell = getattr(ua, 'previous_shell', settings.DEFAULT_SHELL)
-        if not shell or shell.strip() == '':
-            shell = settings.DEFAULT_SHELL
         from karaage.datastores import change_shell
-        change_shell(ua, shell)
-
-    def get_shell(self, ua):
-        pass
+        change_shell(ua, ua.shell)
 
     def change_shell(self, ua, shell):
-        from karaage.datastores import get_shell
-        ua.previous_shell = get_shell(ua)
-        ua.save()
+        pass
