@@ -44,7 +44,7 @@ class PersonalDataStore(base.PersonalDataStore):
         p.pre_save()
         p.save()
 
-        # super.activate_user(person) sets user.password to LDAP password that
+        # Person.create_new_user sets user.password to LDAP password that
         # django doesn't understand. Need to reset it.
         person.user.set_unusable_password()
         person.user.save()
