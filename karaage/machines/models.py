@@ -16,11 +16,15 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.db import models
+from django.conf import settings
 
 import datetime
 
+from andsome.middleware.threadlocals import get_current_user
+
 from karaage.people.models import Person
 from karaage.machines.managers import MachineCategoryManager, ActiveMachineManager, MC_CACHE
+from karaage.util import log_object as log
 
 
 class MachineCategory(models.Model):
@@ -115,6 +119,33 @@ class UserAccount(models.Model):
     def get_absolute_url(self):
         return self.user.get_absolute_url()
     
+    @classmethod
+    def create(cls, person, default_project, machine_category):
+        """Creates a UserAccount (if needed) and activates user.
+
+        Keyword arguments:
+        person_id -- Person id
+        project_id -- Project id
+        """
+        ua = UserAccount.objects.create(
+            user=person, username=person.username,
+            shell=settings.DEFAULT_SHELL,
+            machine_category=machine_category,
+            default_project=default_project,
+            date_created=datetime.datetime.today())
+
+        if default_project is not None:
+            from karaage.projects.utils import add_user_to_project
+            add_user_to_project(person, default_project)
+
+        from karaage.datastores import create_account
+        create_account(ua, person)
+
+        log(get_current_user(), ua.user, 1,
+            'Created account on %s' % ua.machine_category)
+
+        return ua
+
     def project_list(self):
         return self.user.project_set.filter(machine_categories=self.machine_category)
     
@@ -125,8 +156,19 @@ class UserAccount(models.Model):
             return None
 
     def deactivate(self):
+        if not self.date_deleted:
+            self.date_deleted = datetime.datetime.now()
+            self.save()
+
+        from karaage.projects.utils import remove_user_from_project
+        for project in self.project_list():
+            remove_user_from_project(self.user, project)
+
         from karaage.datastores import delete_account
         delete_account(self)
+
+        log(get_current_user(), self.user, 3,
+            'Deleted account on %s' % self.machine_category)
 
     def change_shell(self, shell):
         from karaage.datastores import change_shell

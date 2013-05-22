@@ -31,7 +31,6 @@ from karaage.people.models import Person, Institute
 from karaage.machines.models import UserAccount, MachineCategory
 from karaage.machines.forms import UserAccountForm, ShellForm
 from karaage.util import log_object as log
-from karaage.datastores import create_account
 
 
 @login_required
@@ -159,7 +158,7 @@ def add_edit_useraccount(request, username=None, useraccount_id=None):
                     UserAccount.objects.get(
                         username__exact=user.username, machine_category=machine_category, date_deleted__isnull=True)
                 except UserAccount.DoesNotExist:
-                    user_account = create_account(user, project, machine_category)
+                    user_account = UserAccount.create(user, project, machine_category)
                     messages.success(request, "User account for '%s' created succesfully" % user_account.user)
                     
                     return HttpResponseRedirect(user.get_absolute_url())

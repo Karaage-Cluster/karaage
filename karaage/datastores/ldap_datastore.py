@@ -114,19 +114,17 @@ class PersonalDataStore(base.PersonalDataStore):
 
 class AccountDataStore(base.AccountDataStore):
 
-    def create_account(self, person, default_project):
-        ua = super(AccountDataStore, self).create_account(person, default_project)
+    def create_account(self, ua, person):
+        super(AccountDataStore, self).create_account(ua, person)
 
-        luser = ldap_schemas.account.objects.convert(ldap_schemas.person).get(uid=person.username)
+        luser = ldap_schemas.account.objects.convert(ldap_schemas.person).get(uid=ua.username)
         luser.set_defaults()
         luser.gidNumber = person.institute.gid
-        luser.homeDirectory = settings.HOME_DIRECTORY % { 'default_project': default_project.pid, 'uid': luser.uid }
+        luser.homeDirectory = settings.HOME_DIRECTORY % { 'default_project': ua.default_project.pid, 'uid': luser.uid }
         luser.loginShell = ua.shell
         luser.pre_create(master=None)
         luser.pre_save()
         luser.save()
-
-        return ua
 
     def delete_account(self, ua):
         super(AccountDataStore, self).delete_account(ua)
