@@ -143,3 +143,11 @@ class UserAccount(models.Model):
     
     def loginShell(self):
         return self.shell
+
+    def lock(self):
+        from karaage.datastores import lock_account
+        lock_account(self)
+
+    def unlock(self):
+        from karaage.datastores import unlock_account
+        unlock_account(self)

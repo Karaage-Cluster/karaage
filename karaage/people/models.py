@@ -268,6 +268,8 @@ class Person(models.Model):
     def lock(self):
         if self.is_locked():
             return
+        for ua in self.useraccount_set.filter(date_deleted__isnull=True):
+            ua.lock()
         from karaage.datastores import lock_user
         lock_user(self)
         self.login_enabled = False
@@ -276,6 +278,8 @@ class Person(models.Model):
     def unlock(self):
         if not self.is_locked():
             return
+        for ua in self.useraccount_set.filter(date_deleted__isnull=True):
+            ua.lock()
         from karaage.datastores import unlock_user
         unlock_user(self)
         self.login_enabled = True
