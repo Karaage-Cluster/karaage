@@ -55,18 +55,18 @@ def create_password_hash(raw_password):
 
 
 def change_username(person, new_username):
-    return pds.change_username(person, new_username)
+    pds.change_username(person, new_username)
 
 
-def create_account(person, default_project, machine_category):
-    ads_module = __import__(machine_category.datastore, {}, {}, [''])
-    ads = ads_module.AccountDataStore(machine_category)
-    return ads.create_account(person, default_project)
+def create_account(ua, person):
+    ads_module = __import__(ua.machine_category.datastore, {}, {}, [''])
+    ads = ads_module.AccountDataStore()
+    ads.create_account(ua, person)
 
 
 def delete_account(ua):
     ads_module = __import__(ua.machine_category.datastore, {}, {}, [''])
-    ads = ads_module.AccountDataStore(ua.machine_category)
+    ads = ads_module.AccountDataStore()
     ads.delete_account(ua)
 
 

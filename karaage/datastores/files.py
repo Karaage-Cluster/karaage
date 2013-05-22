@@ -42,20 +42,18 @@ class AccountDataStore(base.AccountDataStore):
     
     passwd_files = settings.PASSWD_FILES
 
-    def create_account(self, person, default_project):
-        ua = super(AccountDataStore, self).create_account(person, default_project)
-        
-        home_dir = '/home/%s' % person.username
+    def create_account(self, ua, person):
+        super(AccountDataStore, self).create_account(ua, person)
+
+        home_dir = '/home/%s' % ua.username
         userid = self.get_next_uid()
 
-        line = "%s:x:%s:%s:%s:%s:%s\n" % (person.username, userid, person.institute.gid, person.get_full_name(), home_dir, settings.DEFAULT_SHELL)
+        line = "%s:x:%s:%s:%s:%s:%s\n" % (ua.username, userid, person.institute.gid, person.get_full_name(), home_dir, settings.DEFAULT_SHELL)
 
         for pwfile in self.passwd_files:
             f = open(pwfile, 'a')
             f.write(line)
             f.close()
-
-        return ua
 
     def delete_account(self, ua):
         super(AccountDataStore, self).delete_account(ua)

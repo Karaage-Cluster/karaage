@@ -15,14 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from karaage.datastores import create_account
 from karaage.projects.models import Project
+from karaage.machines.models import UserAccount
 
 
 def add_user_to_project(person, project):
     for mc in project.machine_categories.all():
         if not person.has_account(mc):
-            create_account(person, project, mc)
+            UserAccount.create(person, project, mc)
     project.users.add(person)
     project.save()
 
