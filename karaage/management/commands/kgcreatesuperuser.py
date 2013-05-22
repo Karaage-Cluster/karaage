@@ -27,8 +27,7 @@ from django.contrib.auth.models import User
 from django.core import exceptions
 from django.core.management.base import BaseCommand
 from django.utils.translation import ugettext as _
-from karaage.datastores import create_new_user
-from karaage.people.models import Institute
+from karaage.people.models import Institute, Person
 from karaage.people.utils import validate_username, UsernameException
 
 import django.db.transaction
@@ -174,7 +173,7 @@ class Command(BaseCommand):
             'last_name': last_name,
             'institute': institute,
             }
-        person = create_new_user(data)
+        person = Person.create(data)
         person.activate()
         person.user.is_superuser = True
         person.user.is_staff = True

@@ -35,8 +35,7 @@ from django.core import exceptions
 from django.core.management.base import BaseCommand
 from django.utils.translation import ugettext as _
 
-from karaage.datastores import create_new_user
-from karaage.people.models import Institute
+from karaage.people.models import Institute, Person
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
 
@@ -157,7 +156,7 @@ username,password,first_name,last_name,email,institute,project"""
                     continue
 
             user['password1'] = user['password']
-            person = create_new_user(user)
+            person = Person.create(user)
             person.activate()
             print "Successfully added user '%s'" % person
             if project:
