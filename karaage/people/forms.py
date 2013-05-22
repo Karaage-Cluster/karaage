@@ -29,7 +29,6 @@ from karaage.people.utils import validate_username, UsernameException
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
 from karaage.constants import TITLES, COUNTRIES
-from karaage.datastores import create_new_user
 
 
 class PersonForm(forms.Form):
@@ -137,7 +136,7 @@ class AddPersonForm(AdminPersonForm, UsernamePasswordForm):
         data = self.cleaned_data
                 
         if person is None:
-            person = create_new_user(data)
+            person = Person.create_new_user(data)
             
             # Since adding with this method is only done with admin
             person.activate()

@@ -24,6 +24,7 @@ from karaage.institutes.managers import ActiveInstituteManager
 from karaage.constants import TITLES, STATES, COUNTRIES
 from karaage.people.managers import ActiveUserManager, DeletedUserManager, LeaderManager, PersonManager
 
+from karaage.util import log_object as log
 
 class Institute(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -135,6 +136,82 @@ class Person(models.Model):
             except:
                 pass
         return reverse('kg_user_detail', kwargs={'username': self.user.username})
+
+    @classmethod
+    def create_new_user(cls, data, hashed_password=None):
+        """Creates a new user (not active)
+
+        Keyword arguments:
+        data -- a dictonary of user data
+        hashed_password --
+        """
+
+        # Make sure username isn't taken in Datastore
+        random_passwd = User.objects.make_random_password()
+        user = User.objects.create_user(data['username'], data['email'], random_passwd)
+
+        if hashed_password:
+            user.password = hashed_password
+        else:
+            from karaage.datastores import create_password_hash
+            user.password = create_password_hash(data['password1'])
+
+        user.is_active = False
+        user.save()
+
+        #Create Person
+        person = Person.objects.create(
+            user=user,
+            first_name=data['first_name'],
+            last_name=data['last_name'],
+            institute=data['institute'],
+            position=data.get('position', ''),
+            department=data.get('department', ''),
+            title=data.get('title', ''),
+            address=data.get('address', ''),
+            country=data.get('country', ''),
+            website=data.get('website', ''),
+            fax=data.get('fax', ''),
+            comment=data.get('comment', ''),
+            telephone=data.get('telephone', ''),
+            mobile=data.get('mobile', ''),
+            supervisor=data.get('supervisor', ''),
+            is_systemuser=data.get('is_systemuser', ''),
+            saml_id=data.get('saml_id', None),
+            )
+
+        try:
+            current_user = get_current_user()
+            if current_user.is_anonymous():
+                current_user = person.user
+        except:
+            current_user = person.user
+
+        log(current_user, person, 1, 'Created')
+        return person
+
+    @classmethod
+    def create_new_person_from_applicant(cls, applicant):
+        data = {
+            'email': applicant.email,
+            'username': applicant.username,
+            'title': applicant.title,
+            'first_name': applicant.first_name,
+            'last_name': applicant.last_name,
+            'institute': applicant.institute,
+            'department': applicant.department,
+            'position': applicant.position,
+            'telephone': applicant.telephone,
+            'mobile': applicant.mobile,
+            'supervisor': applicant.supervisor,
+            'address': applicant.address,
+            'city': applicant.city,
+            'postcode': applicant.postcode,
+            'country': applicant.country,
+            'fax': applicant.fax,
+            'saml_id': applicant.saml_id,
+            }
+        return cls.create_new_user(data, hashed_password=applicant.password)
 
     def save(self, update_datastore=True, *args, **kwargs):
         update = False

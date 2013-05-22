@@ -27,9 +27,6 @@ def str_or_none(string):
 
 class PersonalDataStore(base.PersonalDataStore):
     
-    def create_new_user(self, data, hashed_password):
-        return super(PersonalDataStore, self).create_new_user(data, hashed_password)
-
     def activate_user(self, person):
         person = super(PersonalDataStore, self).activate_user(person)
 

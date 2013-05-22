@@ -127,8 +127,6 @@ class AdminRegistrationTestCase(TestCase):
         self.server.stop()
 
     def stest_admin_approve_account(self):
-        from karaage.datastores import create_new_user
-
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         project = Project.objects.get(pid='TestProject1')
@@ -150,7 +148,7 @@ class AdminRegistrationTestCase(TestCase):
             'password1': 'Exaiquouxei0',
             'password2': 'Exaiquouxei0',
         }
-        person = create_new_user(person_data)
+        person = Person.create_new_user(person_data)
         
         join_request = ProjectJoinRequest.objects.create(
             person=person,

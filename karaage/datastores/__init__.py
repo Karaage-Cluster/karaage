@@ -22,14 +22,6 @@ module = __import__(settings.PERSONAL_DATASTORE, {}, {}, [''])
 pds = module.PersonalDataStore()
 
 
-def create_new_user(data, hashed_password=None):
-    return pds.create_new_user(data, hashed_password)
-
-
-def create_new_person_from_applicant(applicant):
-    return pds.create_new_person_from_applicant(applicant)
-
-
 def activate_user(person):
     pds.activate_user(person)
 
