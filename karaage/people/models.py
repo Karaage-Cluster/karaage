@@ -26,6 +26,8 @@ from karaage.people.managers import ActiveUserManager, DeletedUserManager, Leade
 
 from karaage.util import log_object as log
 
+import datetime
+
 class Institute(models.Model):
     name = models.CharField(max_length=100, unique=True)
     delegates = models.ManyToManyField('Person', related_name='delegate', blank=True, null=True, through='InstituteDelegate')
@@ -219,8 +221,12 @@ class Person(models.Model):
             update = True
 
         super(self.__class__, self).save(*args, **kwargs)
- 
+
         if update and update_datastore:
+            from karaage.datastores import update_account
+            for ua in self.useraccount_set.filter(date_deleted__isnull=True):
+                update_account(ua)
+
             from karaage.datastores import update_user
             update_user(self)
 
@@ -331,12 +337,48 @@ class Person(models.Model):
 
     def activate(self):
         if not self.is_active:
+            try:
+                current_user = get_current_user()
+                if current_user.is_anonymous():
+                    current_user = self.user
+            except:
+                current_user = self.user
+
+            self.date_approved = datetime.datetime.today()
+
+            self.approved_by = current_user.get_profile()
+            self.deleted_by = None
+            self.date_deleted = None
+            self.user.is_active = True
+            self.user.save()
+            self.save(update_datastore=False)
+
             from karaage.datastores import activate_user
             activate_user(self)
 
+            log(current_user, self, 1, 'Activated')
+
     def deactivate(self):
+        """ Sets Person not active and deletes all UserAccounts"""
+        self.user.is_active = False
+        self.expires = None
+        self.user.save()
+
+        deletor = get_current_user()
+
+        self.date_deleted = datetime.datetime.today()
+        self.deleted_by = deletor.get_profile()
+        self.save(update_datastore=False)
+
+        from karaage.datastores import delete_account
+
+        for ua in self.useraccount_set.filter(date_deleted__isnull=True):
+            delete_account(ua)
+
         from karaage.datastores import delete_user
         delete_user(self)
+
+        log(deletor, self, 3, 'Deleted')
 
     def set_password(self, password):
         from karaage.datastores import set_password

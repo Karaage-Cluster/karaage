@@ -23,8 +23,7 @@ from karaage.datastores import base
 class PersonalDataStore(base.PersonalDataStore):
     
     def activate_user(self, person):
-        person = super(PersonalDataStore, self).activate_user(person)
-        return person
+        super(PersonalDataStore, self).activate_user(person)
 
     def delete_user(self, person):
         super(PersonalDataStore, self).delete_user(person)

@@ -28,7 +28,7 @@ def str_or_none(string):
 class PersonalDataStore(base.PersonalDataStore):
     
     def activate_user(self, person):
-        person = super(PersonalDataStore, self).activate_user(person)
+        super(PersonalDataStore, self).activate_user(person)
 
         p = ldap_schemas.person()
         p.set_defaults()

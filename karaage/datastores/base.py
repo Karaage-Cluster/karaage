@@ -29,52 +29,14 @@ from karaage.util import log_object as log
 class PersonalDataStore(object):
 
     def activate_user(self, person):
-        """ Activates a user """
-        try:
-            current_user = get_current_user()
-            if current_user.is_anonymous():
-                current_user = person.user
-        except:
-            current_user = person.user
+        pass
 
-        person.date_approved = datetime.datetime.today()
-
-        person.approved_by = current_user.get_profile()
-        person.deleted_by = None
-        person.date_deleted = None
-        person.user.is_active = True
-        person.user.save()
-        person.save(update_datastore=False)
-
-        log(current_user, person, 1, 'Activated')
-
-        return person
-        
     def delete_user(self, person):
-        """ Sets Person not active and deletes all UserAccounts"""
-        person.user.is_active = False
-        person.expires = None
-        person.user.save()
-    
-        deletor = get_current_user()
-    
-        person.date_deleted = datetime.datetime.today()
-        person.deleted_by = deletor.get_profile()
-        person.save(update_datastore=False)
-
-        from karaage.datastores import delete_account
-
-        for ua in person.useraccount_set.filter(date_deleted__isnull=True):
-            delete_account(ua)
-
-        log(deletor, person, 3, 'Deleted')
+        pass
 
     def update_user(self, person):
-        from karaage.datastores import update_account
+        pass
 
-        for ua in person.useraccount_set.filter(date_deleted__isnull=True):
-            update_account(ua)
-        
     def lock_user(self, person):
         pass
 
