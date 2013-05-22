@@ -148,7 +148,7 @@ class AdminRegistrationTestCase(TestCase):
             'password1': 'Exaiquouxei0',
             'password2': 'Exaiquouxei0',
         }
-        person = Person.create_new_user(person_data)
+        person = Person.create(person_data)
         
         join_request = ProjectJoinRequest.objects.create(
             person=person,

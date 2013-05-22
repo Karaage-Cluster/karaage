@@ -136,7 +136,7 @@ class AddPersonForm(AdminPersonForm, UsernamePasswordForm):
         data = self.cleaned_data
                 
         if person is None:
-            person = Person.create_new_user(data)
+            person = Person.create(data)
             
             # Since adding with this method is only done with admin
             person.activate()

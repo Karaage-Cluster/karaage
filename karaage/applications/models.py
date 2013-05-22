@@ -207,7 +207,7 @@ class Applicant(models.Model):
         return "%s %s" % (self.first_name, self.last_name)
 
     def approve(self):
-        person = Person.create_new_person_from_applicant(self)
+        person = Person.create_from_applicant(self)
         person.activate()
         for application in self.applications.all():
             application.applicant = person

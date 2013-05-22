@@ -140,7 +140,7 @@ class Person(models.Model):
         return reverse('kg_user_detail', kwargs={'username': self.user.username})
 
     @classmethod
-    def create_new_user(cls, data, hashed_password=None):
+    def create(cls, data, hashed_password=None):
         """Creates a new user (not active)
 
         Keyword arguments:
@@ -193,7 +193,7 @@ class Person(models.Model):
         return person
 
     @classmethod
-    def create_new_person_from_applicant(cls, applicant):
+    def create_from_applicant(cls, applicant):
         data = {
             'email': applicant.email,
             'username': applicant.username,
@@ -213,7 +213,7 @@ class Person(models.Model):
             'fax': applicant.fax,
             'saml_id': applicant.saml_id,
             }
-        return cls.create_new_user(data, hashed_password=applicant.password)
+        return cls.create(data, hashed_password=applicant.password)
 
     def save(self, update_datastore=True, *args, **kwargs):
         update = False
