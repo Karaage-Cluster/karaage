@@ -277,6 +277,7 @@ class Person(models.Model):
         if not self.is_locked():
             return
         from karaage.datastores import unlock_user
+        unlock_user(self)
         self.login_enabled = True
         self.save()
 
