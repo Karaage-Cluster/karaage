@@ -64,6 +64,8 @@ class EmailForm(EmailForm):
         elif group == 'cluster_users':
             person_list = Person.active.filter(useraccount__isnull=False)
                 
+        person_list = person_list.filter(login_enabled=True)
+
         if person_list:
             for person in person_list:
                 if person.email not in email_list:
