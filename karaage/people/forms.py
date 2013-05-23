@@ -39,8 +39,16 @@ class PersonForm(forms.Form):
     email = forms.EmailField()
     department = forms.CharField(required=False)
     supervisor = forms.CharField(required=False)
-    telephone = forms.CharField(label=u"Office Telephone", required=False)
-    mobile = forms.CharField(required=False, help_text=u"Used for emergency contact and password reset service.")
+    telephone = forms.RegexField(
+            "^[0-9a-zA-Z\.( )+-]+$", required=False, label=u"Office Telephone",
+            error_messages={'invalid':
+            'Telephone number may only contain digits, letter, hyphens, spaces, braces,  and the plus sign.'})
+    mobile = forms.RegexField(
+            "^[0-9a-zA-Z( )+-]+$",
+            help_text=u"Used for emergency contact and password reset service.",
+            required=False,
+            error_messages={'invalid':
+            'Telephone number may only contain digits, letter, hyphens, spaces, braces,  and the plus sign.'})
     fax = forms.CharField(required=False)
     address = forms.CharField(label=u"Mailing Address", required=False, widget=forms.Textarea())
     country = forms.ChoiceField(choices=COUNTRIES, initial='AU', required=False)
