@@ -16,34 +16,11 @@ fi
 
 update-python-modules -p karaage.public
 
-if [ -x /usr/sbin/kg-manage ]
-then
-    if /usr/sbin/kg-manage migrate --list | grep -q "( )"
-    then
-        db_input high karaage/run_migrations || true
-        db_go
-        
-        db_get karaage/run_migrations
-        if [ "$RET" = "false" ]; then
-            db_input high karaage/no_migrations || true
-            db_go
-        fi
-    fi
+db_get karaage/run_migrations
+if [ "$RET" = "true" ]; then
+    dpkg-trigger karaage-migrations
 fi
-
-
-if [ -x /usr/sbin/kg-manage ]
-then
-    if /usr/sbin/kg-manage migrate --list | grep -q "( )"
-    then     
-        db_get karaage/run_migrations
-        if [ "$RET" = "true" ]; then
-            echo "Running migrations"
-            /usr/sbin/kg-manage migrate
-        fi
-    fi
-fi
-db_fset karaage/run_migrations seen "false"
+db_reset karaage/run_migrations
 
 
 exit 0

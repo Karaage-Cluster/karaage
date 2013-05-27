@@ -2,20 +2,17 @@
 
 . /usr/share/debconf/confmodule
 
-if [ -x /usr/sbin/kg-manage ]
+if [ -n "$2" ] && dpkg --compare-versions "$2" lt 2.7.8-1
 then
-    if /usr/sbin/kg-manage migrate --list | grep -q "( )"
-    then
-        db_input high karaage/run_migrations || true
+    db_input high karaage/run_migrations || true
+    db_go
+
+    db_get karaage/run_migrations
+    if [ "$RET" = "false" ]; then
+        db_input high karaage/no_migrations || true
         db_go
-        
-        db_get karaage/run_migrations
-        if [ "$RET" = "false" ]; then
-            db_input high karaage/no_migrations || true
-            db_go
-        fi
     fi
+else
+    db_fset karaage/run_migrations seen "true"
+    db_set karaage/run_migrations "false"
 fi
-
-
-
