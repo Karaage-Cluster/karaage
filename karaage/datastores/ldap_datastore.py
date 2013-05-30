@@ -49,8 +49,6 @@ class PersonalDataStore(base.PersonalDataStore):
         person.user.set_unusable_password()
         person.user.save()
 
-        return person
-
     def delete_user(self, person):
         super(PersonalDataStore, self).delete_user(person)
         try:
