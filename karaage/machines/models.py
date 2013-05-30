@@ -139,7 +139,7 @@ class UserAccount(models.Model):
             add_user_to_project(person, default_project)
 
         from karaage.datastores import create_account
-        create_account(ua, person)
+        create_account(ua)
 
         log(get_current_user(), ua.user, 1,
             'Created account on %s' % ua.machine_category)

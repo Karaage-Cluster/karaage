@@ -114,8 +114,10 @@ class PersonalDataStore(base.PersonalDataStore):
 
 class AccountDataStore(base.AccountDataStore):
 
-    def create_account(self, ua, person):
-        super(AccountDataStore, self).create_account(ua, person)
+    def create_account(self, ua):
+        super(AccountDataStore, self).create_account(ua)
+
+        person = ua.user
 
         luser = ldap_schemas.account.objects.convert(ldap_schemas.person).get(uid=ua.username)
         luser.set_defaults()

@@ -44,8 +44,8 @@ class PersonalDataStore(base.PersonalDataStore):
 
 class AccountDataStore(base.AccountDataStore):
 
-    def create_account(self, ua, person):
-        return super(AccountDataStore, self).create_account(ua, person)
+    def create_account(self, ua):
+        return super(AccountDataStore, self).create_account(ua)
 
     def delete_account(self, ua):
         super(AccountDataStore, self).delete_account(ua)

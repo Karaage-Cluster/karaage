@@ -58,10 +58,10 @@ def change_username(person, new_username):
     pds.change_username(person, new_username)
 
 
-def create_account(ua, person):
+def create_account(ua):
     ads_module = __import__(ua.machine_category.datastore, {}, {}, [''])
     ads = ads_module.AccountDataStore()
-    ads.create_account(ua, person)
+    ads.create_account(ua)
 
 
 def delete_account(ua):

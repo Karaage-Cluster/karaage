@@ -58,7 +58,7 @@ class PersonalDataStore(object):
 
 class AccountDataStore(object):
 
-    def create_account(self, ua, person):
+    def create_account(self, ua):
         pass
 
     def delete_account(self, ua):

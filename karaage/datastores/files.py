@@ -42,8 +42,10 @@ class AccountDataStore(base.AccountDataStore):
     
     passwd_files = settings.PASSWD_FILES
 
-    def create_account(self, ua, person):
-        super(AccountDataStore, self).create_account(ua, person)
+    def create_account(self, ua):
+        super(AccountDataStore, self).create_account(ua)
+
+        person = ua.user
 
         home_dir = '/home/%s' % ua.username
         userid = self.get_next_uid()
