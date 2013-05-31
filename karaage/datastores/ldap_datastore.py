@@ -26,88 +26,7 @@ def str_or_none(string):
     return string
 
 class PersonalDataStore(base.PersonalDataStore):
-    
-    def activate_user(self, person):
-        super(PersonalDataStore, self).activate_user(person)
-
-        p = ldap_schemas.person()
-        p.set_defaults()
-        p.uid = person.username
-        p.givenName = person.first_name
-        p.sn = person.last_name
-        p.telephoneNumber = str_or_none(person.telephone)
-        p.mail = str_or_none(person.email)
-        p.title = str_or_none(person.title)
-        p.o = person.institute.name
-        p.userPassword = str(person.user.password)
-        p.pre_create(master=None)
-        p.pre_save()
-        p.save()
-
-        # Person.create sets user.password to LDAP password that
-        # django doesn't understand. Need to reset it.
-        person.user.set_unusable_password()
-        person.user.save()
-
-    def delete_user(self, person):
-        super(PersonalDataStore, self).delete_user(person)
-        try:
-            p = ldap_schemas.person.objects.get(uid=person.username)
-            p.pre_delete()
-            p.delete()
-        except ldap_schemas.person.DoesNotExist:
-            pass
-
-    def update_user(self, person):
-        super(PersonalDataStore, self).update_user(person)
-        try:
-            p = ldap_schemas.account.objects.get(uid=person.username)
-        except ldap_schemas.account.DoesNotExist:
-            p = ldap_schemas.person.objects.get(uid=person.username)
-        p.givenName = person.first_name
-        p.sn = person.last_name
-        p.telephoneNumber = str_or_none(person.telephone)
-        p.mail = str_or_none(person.email)
-        p.title = str_or_none(person.title)
-        p.o = person.institute.name
-        p.pre_save()
-        p.save()
-
-    def lock_user(self, person):
-        super(PersonalDataStore, self).lock_user(person)
-        p = ldap_schemas.person.objects.get(uid=person.username)
-        p.lock()
-        p.pre_save()
-        p.save()
-
-    def unlock_user(self, person):
-        super(PersonalDataStore, self).unlock_user(person)
-        p = ldap_schemas.person.objects.get(uid=person.username)
-        p.unlock()
-        p.pre_save()
-        p.save()
-
-    def set_password(self, person, raw_password):
-        super(PersonalDataStore, self).set_password(person, raw_password)
-        p = ldap_schemas.person.objects.get(uid=person.username)
-        p.change_password(raw_password)
-        p.pre_save()
-        p.save()
-
-    def user_exists(self, username):
-        try:
-            ldap_schemas.person.objects.get(uid=username)
-            return True
-        except ldap_schemas.person.DoesNotExist:
-            return False
-
-    def create_password_hash(self, raw_password):
-        from placard.ldap_passwd import md5crypt
-        return '{crypt}%s' % md5crypt(raw_password)
-
-    def change_username(self, person, new_username):
-        p = ldap_schemas.person.objects.get(uid=person.username)
-        p.rename(uid=new_username)
+    pass
 
 
 class AccountDataStore(base.AccountDataStore):
@@ -117,8 +36,17 @@ class AccountDataStore(base.AccountDataStore):
 
         person = ua.user
 
-        luser = ldap_schemas.account.objects.convert(ldap_schemas.person).get(uid=ua.username)
+        luser = ldap_schemas.account()
         luser.set_defaults()
+        luser.uid = person.username
+        luser.givenName = person.first_name
+        luser.sn = person.last_name
+        luser.telephoneNumber = str_or_none(person.telephone)
+        luser.mail = str_or_none(person.email)
+        luser.title = str_or_none(person.title)
+        luser.o = person.institute.name
+        luser.userPassword = "" # FIXME
+
         luser.gidNumber = person.institute.gid
         luser.homeDirectory = settings.HOME_DIRECTORY % { 'default_project': ua.default_project.pid, 'uid': luser.uid }
         luser.loginShell = ua.shell
@@ -134,8 +62,17 @@ class AccountDataStore(base.AccountDataStore):
 
     def update_account(self, ua):
         super(AccountDataStore, self).update_account(ua)
+
+        person = ua.user
+
         luser = ldap_schemas.account.objects.get(uid=ua.username)
         luser.gidNumber = ua.user.institute.gid
+        luser.givenName = person.first_name
+        luser.sn = person.last_name
+        luser.telephoneNumber = str_or_none(person.telephone)
+        luser.mail = str_or_none(person.email)
+        luser.title = str_or_none(person.title)
+        luser.o = person.institute.name
         luser.pre_save()
         luser.save()
 
@@ -151,3 +88,22 @@ class AccountDataStore(base.AccountDataStore):
         luser.loginShell = shell
         luser.pre_save()
         luser.save()
+
+    def set_password(self, ua, raw_password):
+        super(AccountDataStore, self).set_password(ua, raw_password)
+        p = ldap_schemas.account.objects.get(uid=ua.username)
+        p.change_password(raw_password)
+        p.pre_save()
+        p.save()
+
+    def account_exists(self, username):
+        try:
+            ldap_schemas.account.objects.get(uid=username)
+            return True
+        except ldap_schemas.account.DoesNotExist:
+            return False
+
+    def change_username(self, ua, new_username):
+        super(AccountDataStore, self).change_username(ua, new_username)
+        p = ldap_schemas.account.objects.get(uid=ua.username)
+        p.rename(uid=new_username)

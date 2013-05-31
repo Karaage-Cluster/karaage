@@ -47,11 +47,7 @@ def set_password(person, raw_password):
 
 
 def user_exists(username):
-    pds.user_exists(username)
-
-
-def create_password_hash(raw_password):
-    return pds.create_password_hash(raw_password)
+    return pds.user_exists(username)
 
 
 def change_username(person, new_username):
@@ -92,3 +88,21 @@ def change_shell(ua, shell):
     ads_module = __import__(ua.machine_category.datastore, {}, {}, [''])
     ads = ads_module.AccountDataStore()
     ads.change_shell(ua, shell)
+
+
+def set_account_password(ua, raw_password):
+    ads_module = __import__(ua.machine_category.datastore, {}, {}, [''])
+    ads = ads_module.AccountDataStore()
+    ads.set_password(ua, raw_password)
+
+
+def account_exists(username, machine_category):
+    ads_module = __import__(machine_category.datastore, {}, {}, [''])
+    ads = ads_module.AccountDataStore()
+    return ads.account_exists(username)
+
+
+def change_account_username(ua, new_username):
+    ads_module = __import__(ua.machine_category.datastore, {}, {}, [''])
+    ads = ads_module.AccountDataStore()
+    ads.change_username(ua, new_username)

@@ -47,10 +47,7 @@ class PersonalDataStore(object):
         pass
 
     def user_exists(self, username):
-        pass
-
-    def create_password_hash(self, raw_password):
-        return None
+        return False
 
     def change_username(self, person, new_username):
         pass
@@ -74,4 +71,13 @@ class AccountDataStore(object):
         self.change_shell(ua, ua.shell)
 
     def change_shell(self, ua, shell):
+        pass
+
+    def account_exists(self, username):
+        return False
+
+    def set_password(self, ua, raw_password):
+        pass
+
+    def change_username(self, ua, new_username):
         pass

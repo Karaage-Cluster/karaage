@@ -28,10 +28,8 @@
 {{ form.non_field_errors }}
 {% if applicant_form.errors.email and saml %}{{ applicant_form.errors.email }}{% endif %}
 <h2>Account Details</h2>
-<p>This usename and password will be used for your computer account as well as access to this website.</p>
+<p>This usename will be used for your computer account as well as access to this website.</p>
 {% formfield applicant_form.username %}
-{% formfield applicant_form.password1 %}
-{% formfield applicant_form.password2 %}
 {% if application.project %}
 {% formfield form.needs_account %}
 {% endif %}
