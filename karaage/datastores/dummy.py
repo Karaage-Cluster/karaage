@@ -19,42 +19,8 @@ from karaage.datastores import base
 
 
 class PersonalDataStore(base.PersonalDataStore):
-    
-    def activate_user(self, person):
-        super(PersonalDataStore, self).activate_user(person)
-
-    def delete_user(self, person):
-        super(PersonalDataStore, self).delete_user(person)
-        
-    def update_user(self, person):
-        super(PersonalDataStore, self).update_user(person)
-
-    def lock_user(self, person):
-        super(PersonalDataStore, self).lock_user(person)
-
-    def unlock_user(self, person):
-        super(PersonalDataStore, self).unlock_user(person)
-
-    def set_password(self, person, raw_password):
-        super(PersonalDataStore, self).set_password(person, raw_password)
-
-    def user_exists(self, username):
-        super(PersonalDataStore, self).user_exists(username)
+    pass
 
 
 class AccountDataStore(base.AccountDataStore):
-
-    def create_account(self, ua):
-        return super(AccountDataStore, self).create_account(ua)
-
-    def delete_account(self, ua):
-        super(AccountDataStore, self).delete_account(ua)
-
-    def update_account(self, ua):
-        super(AccountDataStore, self).update_account(ua)
-  
-    def lock_account(self, ua):
-        super(AccountDataStore, self).lock_account(ua)
-
-    def unlock_account(self, ua):
-        super(AccountDataStore, self).unlock_account(ua)
+    pass

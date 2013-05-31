@@ -22,6 +22,7 @@ urlpatterns = patterns('karaage.people.views.user',
 
     url(r'^(?P<username>[-.\w]+)/$', 'user_detail', name='kg_user_detail'),
     url(r'^(?P<username>[-.\w]+)/flag_left/$', 'flag_left'),
+    url(r'^(?P<username>[-.\w]+)/login/$', 'login'),
                        
 )
 

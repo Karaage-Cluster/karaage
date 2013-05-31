@@ -27,6 +27,8 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.tokens import default_token_generator
 
+from andsome.middleware.threadlocals import get_current_user
+
 from karaage.util import get_date_range
 from karaage.people.models import Person, Institute
 from karaage.projects.models import Project
@@ -34,7 +36,7 @@ from karaage.people.forms import PasswordChangeForm, PersonForm, LoginForm, Pass
 from karaage.machines.models import MachineCategory
 from karaage.machines.forms import ShellForm
 from karaage.applications.models import Application
-
+from karaage.util import log_object as log
 
 @login_required
 def profile(request):
@@ -176,7 +178,7 @@ def password_change_done(request):
     return render_to_response('people/password_change_done.html', context_instance=RequestContext(request))
 
 
-def login(request):
+def login(request, username=None):
 
     error = ''
     redirect_to = settings.LOGIN_REDIRECT_URL
@@ -195,13 +197,20 @@ def login(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
+                    person = user.get_profile()
+
+                    person.set_password(password)
+                    person.update_password = False
+                    person.save()
+                    messages.success(request, 'Password updated. New accounts activated.')
+                    log(get_current_user(), person, 2, 'Automatically updated passwords.')
                     return HttpResponseRedirect(redirect_to)
                 else:
                     error = 'User account is locked'
             else:
                 error = 'Username or passord was incorrect'
     else:
-        form = LoginForm()
+        form = LoginForm(initial = {'username': username})
 
     return render_to_response('registration/login.html', {
         'form': form,

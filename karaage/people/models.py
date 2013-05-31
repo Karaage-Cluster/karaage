@@ -23,8 +23,10 @@ from andsome.middleware.threadlocals import get_current_user
 from karaage.institutes.managers import ActiveInstituteManager
 from karaage.constants import TITLES, STATES, COUNTRIES
 from karaage.people.managers import ActiveUserManager, DeletedUserManager, LeaderManager, PersonManager
+from karaage.people.emails import send_reset_password_email
 
 from karaage.util import log_object as log
+from karaage.util import new_random_token
 
 import datetime
 
@@ -140,23 +142,21 @@ class Person(models.Model):
         return reverse('kg_user_detail', kwargs={'username': self.user.username})
 
     @classmethod
-    def create(cls, data, hashed_password=None):
+    def create(cls, data):
         """Creates a new user (not active)
 
         Keyword arguments:
         data -- a dictonary of user data
-        hashed_password --
         """
 
-        # Make sure username isn't taken in Datastore
-        random_passwd = User.objects.make_random_password()
-        user = User.objects.create_user(data['username'], data['email'], random_passwd)
-
-        if hashed_password:
-            user.password = hashed_password
+        # Generate random password if not given
+        if 'password1' in data:
+            password = data['password1']
         else:
-            from karaage.datastores import create_password_hash
-            user.password = create_password_hash(data['password1'])
+            password = User.objects.make_random_password()
+
+        # Make sure username isn't taken in Datastore
+        user = User.objects.create_user(data['username'], data['email'], password)
 
         user.is_active = False
         user.save()
@@ -189,6 +189,10 @@ class Person(models.Model):
         except:
             current_user = person.user
 
+        # if password not given allow user to set password
+        if 'password1' not in data:
+            send_reset_password_email(person)
+
         log(current_user, person, 1, 'Created')
         return person
 
@@ -213,7 +217,7 @@ class Person(models.Model):
             'fax': applicant.fax,
             'saml_id': applicant.saml_id,
             }
-        return cls.create(data, hashed_password=applicant.password)
+        return cls.create(data)
 
     def save(self, update_datastore=True, *args, **kwargs):
         update = False
@@ -381,8 +385,12 @@ class Person(models.Model):
         log(deletor, self, 3, 'Deleted')
 
     def set_password(self, password):
+        self.user.set_password(password)
+        self.user.save()
         from karaage.datastores import set_password
         set_password(self, password)
+        for ua in self.useraccount_set.filter(date_deleted__isnull=True):
+            ua.set_password(password)
 
     def lock(self):
         if self.is_locked():
