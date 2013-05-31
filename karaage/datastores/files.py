@@ -21,22 +21,8 @@ from karaage.datastores import base
 
 
 class PersonalDataStore(base.PersonalDataStore):
-    
-    def activate_user(self, person):
-        super(PersonalDataStore, self).activate_user(person)
+    pass
 
-    def delete_user(self, person):
-        super(PersonalDataStore, self).delete_user(person)
-        
-    def update_user(self, person):
-        super(PersonalDataStore, self).update_user(person)
-
-    def lock_user(self, person):
-        super(PersonalDataStore, self).lock_user(person)
-
-    def unlock_user(self, person):
-        super(PersonalDataStore, self).unlock_user(person)
-        
 
 class AccountDataStore(base.AccountDataStore):
     
@@ -119,3 +105,15 @@ class AccountDataStore(base.AccountDataStore):
             return settings.UID_START
         else:
             return id
+
+    def set_password(self, ua, raw_password):
+        # FIXME
+        super(AccountDataStore, self).set_password(ua, raw_password)
+
+    def acocunt_exists(self, username):
+        # FIXME
+        super(AccountDataStore, self).account_exists(username)
+
+    def change_username(self, ua, new_username):
+        # FIXME
+        super(AccountDataStore, self).change_username(ua, new_username)

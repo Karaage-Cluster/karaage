@@ -124,8 +124,8 @@ def approve_userapplication(request, application_id):
         form = LeaderApproveUserApplicationForm(request.POST, instance=application)
         if form.is_valid():
             application = form.save()
-            person = application.approve()
-            send_account_approved_email(application)
+            person, created_person = application.approve()
+            send_account_approved_email(application, created_person)
             messages.success(request, "Application approved successfully")
             log(request.user, application.application_ptr, 2, 'Application fully approved')
             return HttpResponseRedirect(person.get_absolute_url())
@@ -170,8 +170,8 @@ def approve_projectapplication(request, application_id):
         form = AdminApproveProjectApplicationForm(request.POST, instance=application)
         if form.is_valid():
             application = form.save()
-            project = application.approve(pid=form.cleaned_data['pid'])
-            send_project_approved_email(application)
+            project, created_person = application.approve(pid=form.cleaned_data['pid'])
+            send_project_approved_email(application, created_person)
             messages.success(request, "Application approved successfully.")
             log(request.user, application.application_ptr, 2, 'Application fully approved')
             return HttpResponseRedirect(project.get_absolute_url())

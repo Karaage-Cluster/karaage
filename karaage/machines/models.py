@@ -176,6 +176,10 @@ class UserAccount(models.Model):
         self.shell = shell
         self.save()
 
+    def set_password(self, password):
+        from karaage.datastores import set_account_password
+        set_account_password(self, password)
+
     def get_disk_quota(self):
         if self.disk_quota:
             return self.disk_quota

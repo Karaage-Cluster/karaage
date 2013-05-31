@@ -21,14 +21,12 @@ from django import forms
 from django.conf import settings
 from django.db.models import Q
 
-from andsome.util import is_password_strong
 from captcha.fields import CaptchaField
 
 from karaage.applications.models import UserApplication, ProjectApplication, Applicant
 from karaage.people.models import Person, Institute
 from karaage.people.utils import validate_username, UsernameException
 from karaage.projects.models import Project
-from karaage.datastores import create_password_hash
 
 APP_CHOICES = (
     ('U', 'Join an existing project'),
@@ -108,23 +106,8 @@ class UserApplicantForm(ApplicantForm):
         self.fields['institute'].required = True
         self.fields['telephone'].required = True
 
-    password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
-    password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)')
     institute = forms.ModelChoiceField(queryset=Institute.active.filter(Q(saml_entityid="") | Q(saml_entityid__isnull=True)))
     
-    def clean_password2(self):
-        data = self.cleaned_data
-
-        if data.get('password1') and data.get('password2'):
-        
-            if data['password1'] != data['password2']:
-                raise forms.ValidationError(u'You must type the same password each time')
-
-            if not is_password_strong(data['password1']):
-                raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (uppercase, lowercase), numbers and is at least 8 characters long.')
-
-            return data
-
     def clean_email(self):
         email = self.cleaned_data['email']
         users = Person.active.filter(user__email__exact=email)
@@ -135,7 +118,6 @@ class UserApplicantForm(ApplicantForm):
 
     def save(self, commit=True):
         applicant = super(UserApplicantForm, self).save(commit=commit)
-        applicant.password = create_password_hash(self.cleaned_data['password1'])
         if commit:
             applicant.save()
         return applicant
