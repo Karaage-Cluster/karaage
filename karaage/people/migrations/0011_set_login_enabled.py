@@ -88,6 +88,7 @@ class Migration(DataMigration):
             'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['people.Institute']"}),
             'is_systemuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'last_usage': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'login_enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'mobile': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'position': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'postcode': ('django.db.models.fields.CharField', [], {'max_length': '8', 'null': 'True', 'blank': 'True'}),
