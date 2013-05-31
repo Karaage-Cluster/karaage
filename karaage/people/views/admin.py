@@ -28,6 +28,7 @@ from andsome.util.filterspecs import Filter, FilterBar, DateFilter
 
 from karaage.projects.models import Project
 from karaage.people.models import Person, Institute
+from karaage.people.emails import send_confirm_password_email
 from karaage.machines.models import UserAccount, MachineCategory
 from karaage.machines.forms import UserAccountForm, ShellForm
 from karaage.util import log_object as log
@@ -159,6 +160,7 @@ def add_edit_useraccount(request, username=None, useraccount_id=None):
                         username__exact=user.username, machine_category=machine_category, date_deleted__isnull=True)
                 except UserAccount.DoesNotExist:
                     user_account = UserAccount.create(user, project, machine_category)
+                    send_confirm_password_email(user_account.user)
                     messages.success(request, "User account for '%s' created succesfully" % user_account.user)
                     
                     return HttpResponseRedirect(user.get_absolute_url())

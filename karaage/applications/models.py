@@ -105,13 +105,15 @@ class Application(models.Model):
     def approve(self):
         if self.content_type.model == 'applicant':
             person = self.applicant.approve()
+            created_person = True
         else:
             person = self.applicant
+            created_person = False
         self.applicant = person
         self.state = Application.COMPLETE
         self.complete_date = datetime.datetime.now()
         self.save()
-        return person
+        return person, created_person
 
     def decline(self):
         self.state = Application.DECLINED
@@ -126,7 +128,7 @@ class UserApplication(Application):
     make_leader = models.BooleanField(help_text="Make this person a project leader")
 
     def approve(self):
-        person = super(UserApplication, self).approve()
+        person, created_person = super(UserApplication, self).approve()
         if self.needs_account:
             from karaage.projects.utils import add_user_to_project
             add_user_to_project(person, self.project)
@@ -136,7 +138,7 @@ class UserApplication(Application):
         if self.make_leader:
             self.project.leaders.add(person)
         self.save()
-        return person
+        return person, created_person
 
 
 class ProjectApplication(Application):
@@ -149,7 +151,7 @@ class ProjectApplication(Application):
     project = models.ForeignKey(Project, null=True, blank=True)
 
     def approve(self, pid=None):
-        person = super(ProjectApplication, self).approve()
+        person, created_person = super(ProjectApplication, self).approve()
         from karaage.projects.utils import add_user_to_project, get_new_pid
         project = Project(
             pid=pid or get_new_pid(self.institute),
@@ -170,14 +172,13 @@ class ProjectApplication(Application):
             add_user_to_project(person, project)
         self.project = project
         self.save()
-        return project
+        return project, created_person
 
 
 class Applicant(models.Model):
     email = models.EmailField(unique=True)
     email_verified = models.BooleanField(editable=False)
     username = models.CharField(max_length=16, unique=True, help_text="Required. 16 characters or fewer. Letters, numbers and underscores only", null=True, blank=True)
-    password = models.CharField(max_length=128, null=True, blank=True, editable=False)
     title = models.CharField(choices=TITLES, max_length=10, null=True, blank=True)
     first_name = models.CharField(max_length=30, null=True, blank=True)
     last_name = models.CharField(max_length=30, null=True, blank=True)

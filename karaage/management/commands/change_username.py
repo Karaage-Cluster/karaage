@@ -16,7 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.core.management.base import BaseCommand, CommandError
-from django.contrib.auth.models import User
+from karaage.people.models import Person
 from karaage.people.utils import validate_username, UsernameInvalid, UsernameTaken
 import sys
 import django.db.transaction
@@ -35,8 +35,8 @@ class Command(BaseCommand):
         new = args[1]
 
         try:
-            user = User.objects.get(username=old)
-        except User.DoesNotExist:
+            person = Person.objects.get(user__username=old)
+        except Person.DoesNotExist:
             raise CommandError('user %s does not exist' % old)
         
         try:
@@ -54,22 +54,20 @@ class Command(BaseCommand):
                 return sys.exit(0)
             else:
                 print "Please enter yes or no"
-        
-        user = User.objects.get(username=old)
-        person = user.get_profile()
 
-        from karaage.datastores import change_username
-        change_username(person, new)
-        print "Changed datastore username (LDAP/AD etc.)"
+        from karaage.datastores import change_username, change_account_username
 
         for account in person.useraccount_set.all():
             if account.username == old:
+                change_account_username(account, new)
                 account.username = new
                 account.save()
                 print "Changed username on %s account" % account.machine_category
-        
-        user.username = new
-        user.save()
-        print "Changed Karaage username"
+
+        change_username(person, new)
+        person.user.username = new
+        person.user.save()
+        print "Changed username on person"
+
         print "Done"
 
