@@ -14,8 +14,6 @@ fi
 
 #DEBHELPER#
 
-update-python-modules -p karaage.public
-
 db_get karaage/run_migrations
 if [ "$RET" = "true" ]; then
     dpkg-trigger karaage-migrations
