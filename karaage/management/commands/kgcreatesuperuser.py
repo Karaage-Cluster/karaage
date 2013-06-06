@@ -23,6 +23,7 @@ import getpass
 import os
 import re
 import sys
+from optparse import make_option
 from django.contrib.auth.models import User
 from django.core import exceptions
 from django.core.management.base import BaseCommand
@@ -45,18 +46,27 @@ def is_valid_email(value):
 
 
 class Command(BaseCommand):
+    option_list = BaseCommand.option_list + (
+        make_option('--username', '-u', help='Username'),
+        make_option('--email', '-e', help='E-Mail'),
+        make_option('--first_name', '-f', help='First Name'),
+        make_option('--last_name', '-l', help='Last Name'),
+        make_option('--password', '-p', help='Password'),
+        make_option('--institute', '-i', help='Institute Name'),
+    )
     help = 'Used to create a karaage superuser.'
 
     @django.db.transaction.commit_on_success
     @tldap.transaction.commit_on_success
     def handle(self, *args, **options):
  
-        password = ''
-        username = ''
-        email = ''
-        institute_name = ''
-        first_name = ''
-        last_name = ''
+        username = options['username']
+        email = options['email']
+        first_name = options['first_name']
+        last_name = options['last_name']
+        password = options['password']
+        institute_name = options['institute']
+
         # Try to determine the current system user's username to use as a default.
         try:
             import pwd
@@ -89,8 +99,8 @@ class Command(BaseCommand):
                     if default_username:
                         input_msg += ' (Leave blank to use %r)' % default_username
                     username = raw_input(input_msg + ': ')
-                if default_username and username == '':
-                    username = default_username
+                    if default_username and username=='':
+                        username = default_username
                 try:
                     validate_username(username)
                     break
@@ -138,7 +148,8 @@ class Command(BaseCommand):
                     break
 
             if Institute.objects.count() == 0:
-                print "No Institutes in system will create one now"
+                if not institute_name:
+                    print "No Institutes in system will create one now"
                 while 1:
                     if not institute_name:
                         institute_name = raw_input('New Institute Name: ')
@@ -146,10 +157,11 @@ class Command(BaseCommand):
                         break
                 institute = Institute.objects.create(name=institute_name, is_active=True)
             else:
-                print "Choose an existing institute for new superuser:"
-                print "Valid choices are:"
-                for i in Institute.active.all():
-                    print i
+                if not institute_name:
+                    print "Choose an existing institute for new superuser:"
+                    print "Valid choices are:"
+                    for i in Institute.active.all():
+                        print i
                 while 1:
                     if not institute_name:
                         institute_name = raw_input('Institute Name: ')
