@@ -17,7 +17,7 @@
 
 from django import forms
 
-from karaage.people.models import Institute
+from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 
 

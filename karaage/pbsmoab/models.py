@@ -21,7 +21,7 @@ from django.db.models.signals import post_save, pre_delete
 from decimal import Decimal
 import datetime
 
-from karaage.people.models import Institute
+from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory
 

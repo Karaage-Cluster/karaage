@@ -20,7 +20,7 @@ from django.core.management import call_command
 
 from tldap.test import slapd
 
-from karaage.people.models import Institute
+from karaage.institutes.models import Institute
 from karaage.test_data.initial_ldap_data import test_ldif
 
 from karaage.datastores import ldap_schemas

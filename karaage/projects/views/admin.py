@@ -28,7 +28,8 @@ from django.contrib import messages
 from andsome.util.filterspecs import Filter, FilterBar
 from andsome.middleware.threadlocals import get_current_user
 
-from karaage.people.models import Person, Institute
+from karaage.people.models import Person
+from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.projects.forms import ProjectForm
 from karaage.projects.utils import get_new_pid, add_user_to_project, remove_user_from_project

@@ -30,7 +30,8 @@ from django.contrib.auth.tokens import default_token_generator
 from andsome.middleware.threadlocals import get_current_user
 
 from karaage.util import get_date_range
-from karaage.people.models import Person, Institute
+from karaage.people.models import Person
+from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.people.forms import PasswordChangeForm, PersonForm, LoginForm, PasswordResetForm
 from karaage.machines.models import MachineCategory

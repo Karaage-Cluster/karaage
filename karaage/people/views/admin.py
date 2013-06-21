@@ -27,8 +27,9 @@ import datetime
 from andsome.util.filterspecs import Filter, FilterBar, DateFilter
 
 from karaage.projects.models import Project
-from karaage.people.models import Person, Institute
+from karaage.people.models import Person
 from karaage.people.emails import send_confirm_password_email
+from karaage.institutes.models import Institute
 from karaage.machines.models import UserAccount, MachineCategory
 from karaage.machines.forms import UserAccountForm, ShellForm
 from karaage.util import log_object as log

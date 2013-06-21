@@ -21,7 +21,8 @@ from django.db.models.signals import post_save, pre_delete
 import datetime
 from andsome.middleware.threadlocals import get_current_user
 
-from karaage.people.models import Person, Institute
+from karaage.people.models import Person
+from karaage.institutes.models import Institute
 from karaage.machines.models import MachineCategory
 from karaage.projects.managers import ActiveProjectManager, DeletedProjectManager
 

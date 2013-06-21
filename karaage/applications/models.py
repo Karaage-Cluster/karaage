@@ -27,7 +27,8 @@ from andsome.middleware.threadlocals import get_current_user
 
 from karaage.constants import TITLES, COUNTRIES
 from karaage.util import new_random_token
-from karaage.people.models import Person, Institute
+from karaage.people.models import Person
+from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory
 

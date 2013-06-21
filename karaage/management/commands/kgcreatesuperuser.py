@@ -28,7 +28,8 @@ from django.contrib.auth.models import User
 from django.core import exceptions
 from django.core.management.base import BaseCommand
 from django.utils.translation import ugettext as _
-from karaage.people.models import Institute, Person
+from karaage.people.models import Person
+from karaage.institutes.models import Institute
 from karaage.people.utils import validate_username, UsernameException
 
 import django.db.transaction

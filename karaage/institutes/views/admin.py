@@ -25,7 +25,7 @@ from django.forms.models import inlineformset_factory
 from andsome.util.filterspecs import Filter, FilterBar
 
 from karaage.util.graphs import get_institute_trend_graph_url
-from karaage.people.models import Institute, InstituteDelegate
+from karaage.institutes.models import Institute, InstituteDelegate
 from karaage.institutes.forms import InstituteForm
 
 

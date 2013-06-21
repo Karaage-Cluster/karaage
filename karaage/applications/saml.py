@@ -19,7 +19,7 @@ from django import forms
 from django_shibboleth.utils import parse_attributes
 
 from karaage.applications.forms import UserApplicantForm
-from karaage.people.models import Institute
+from karaage.institutes.models import Institute
 
 
 def add_saml_data(applicant, request):

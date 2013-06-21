@@ -24,8 +24,9 @@ from django.db.models import Q
 from captcha.fields import CaptchaField
 
 from karaage.applications.models import UserApplication, ProjectApplication, Applicant
-from karaage.people.models import Person, Institute
+from karaage.people.models import Person
 from karaage.people.utils import validate_username, UsernameException
+from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 
 APP_CHOICES = (

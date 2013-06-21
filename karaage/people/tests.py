@@ -24,7 +24,8 @@ from django.core.management import call_command
 import datetime
 from tldap.test import slapd
 
-from karaage.people.models import Person, Institute, InstituteDelegate
+from karaage.people.models import Person
+from karaage.institutes.models import Institute, InstituteDelegate
 from karaage.projects.models import Project
 from karaage.machines.models import UserAccount, MachineCategory
 from karaage.test_data.initial_ldap_data import test_ldif

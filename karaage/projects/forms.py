@@ -19,7 +19,8 @@ from django import forms
 from django.contrib.admin.widgets import AdminDateWidget, FilteredSelectMultiple
 import datetime
 
-from karaage.people.models import Institute, Person
+from karaage.people.models import Person
+from karaage.institutes.models import Institute
 from karaage.machines.models import MachineCategory
 from karaage.projects.models import Project
 

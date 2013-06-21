@@ -24,8 +24,9 @@ from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
 from andsome.middleware.threadlocals import get_current_user
 from andsome.util import is_password_strong
 
-from karaage.people.models import Institute, Person
+from karaage.people.models import Person
 from karaage.people.utils import validate_username, UsernameException
+from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
 from karaage.constants import TITLES, COUNTRIES

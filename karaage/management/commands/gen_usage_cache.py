@@ -21,7 +21,8 @@ from django.core.management.base import BaseCommand
 import datetime
 
 from karaage.projects.models import Project
-from karaage.people.models import Institute, Person
+from karaage.people.models import Person
+from karaage.institutes.models import Institute
 import django.db.transaction
 import tldap.transaction
 

@@ -21,7 +21,8 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from karaage.people.models import Institute, Person
+from karaage.people.models import Person
+from karaage.institutes.models import Institute
 from karaage.projects.forms import UserProjectForm as ProjectForm
 from karaage.projects.models import Project
 from karaage.projects.utils import remove_user_from_project

@@ -25,7 +25,7 @@ from django.db import connection
 import gdchart
 import datetime
 
-from karaage.people.models import Institute
+from karaage.institutes.models import Institute
 from karaage.util.helpers import get_available_time
 from karaage.graphs import base
 from karaage.graphs.util import smooth_data, get_insitutes_trend

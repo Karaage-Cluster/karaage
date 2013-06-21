@@ -22,7 +22,7 @@ import datetime
 from andsome.graphs.googlechart import GraphGenerator
 
 from karaage.machines.models import MachineCategory
-from karaage.people.models import Institute
+from karaage.institutes.models import Institute
 from karaage.graphs import gen_project_graph, gen_institutes_trend
 from karaage.graphs.util import smooth_data
 from karaage.util.helpers import get_available_time

@@ -20,7 +20,7 @@ from django.template import RequestContext
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 
-from karaage.people.models import Institute
+from karaage.institutes.models import Institute
 
 
 @login_required

@@ -17,7 +17,8 @@
 
 from django.db import models
 
-from karaage.people.models import Institute, Person
+from karaage.people.models import Person
+from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory, Machine
 

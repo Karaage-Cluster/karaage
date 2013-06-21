@@ -24,7 +24,8 @@ from django.core.management import call_command
 from tldap.test import slapd
 from captcha.models import CaptchaStore
 from karaage.applications.models import Application, Applicant
-from karaage.people.models import Person, Institute
+from karaage.people.models import Person
+from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.test_data.initial_ldap_data import test_ldif
 
