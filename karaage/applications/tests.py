@@ -49,12 +49,11 @@ class UserApplicationTestCase(TestCase):
         self.assertEquals(len(mail.outbox), 0)
         response = self.client.get(reverse('kg_new_userapplication'))
         self.failUnlessEqual(response.status_code, 200)
-        hash_ = response.content[response.content.find('name="captcha_0" value="')+24:response.content.find('name="captcha_0" value="')+64]
+        a = response.content.find('name="captcha_0" type="hidden" value="')+38
+        b = a+40
+        hash_ = response.content[a:b]
 
-        try:
-            captcha_text = CaptchaStore.objects.get(hashkey=hash_).response
-        except:
-            self.fail()
+        captcha_text = CaptchaStore.objects.get(hashkey=hash_).response
 
         form_data = {
             'title' : 'Mr',

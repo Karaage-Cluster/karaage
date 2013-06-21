@@ -119,15 +119,18 @@ class UserAccountTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 302)
         person = Person.objects.get(user__username='samtest2')
         ua = person.get_user_account(MachineCategory.objects.get(pk=1))
-        
         self.failUnlessEqual(person.is_locked(), False)
         self.failUnlessEqual(ua.loginShell(), '/bin/bash')
 
         response = self.client.get(reverse('kg_lock_user', args=['samtest2']))
+        person = Person.objects.get(user__username='samtest2')
+        ua = person.get_user_account(MachineCategory.objects.get(pk=1))
         self.failUnlessEqual(person.is_locked(), True)
-        self.failUnlessEqual(ua.loginShell(), settings.LOCKED_SHELL)
+        self.failUnlessEqual(ua.loginShell(), '/bin/bash')
 
         response = self.client.get(reverse('kg_unlock_user', args=['samtest2']))
+        person = Person.objects.get(user__username='samtest2')
+        ua = person.get_user_account(MachineCategory.objects.get(pk=1))
         self.failUnlessEqual(person.is_locked(), False)
         self.failUnlessEqual(ua.loginShell(), '/bin/bash')
 

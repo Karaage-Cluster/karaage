@@ -382,7 +382,7 @@ class Person(models.Model):
         from karaage.datastores import delete_account
 
         for ua in self.useraccount_set.filter(date_deleted__isnull=True):
-            delete_account(ua)
+            ua.deactivate()
 
         from karaage.datastores import delete_user
         delete_user(self)

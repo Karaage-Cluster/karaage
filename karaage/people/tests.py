@@ -271,8 +271,6 @@ class UserTestCase(TestCase):
         person = Person.objects.get(pk=users)
         self.assertEqual(person.is_active, True)
         self.assertEqual(person.user.username, 'samtest2')
-        luser = ldap_schemas.person.objects.get(uid='samtest2')
-        self.assertEqual(luser.givenName, 'Sam')
         # Try adding it again - Should fail
         response = self.client.post(reverse('kg_add_user'), form_data)
         self.failUnlessEqual(response.status_code, 200)
@@ -342,9 +340,6 @@ class UserTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 302)
         user = Person.objects.get(user__username='kgtestuser3')
         self.assertEqual(user.is_active, True)
-        luser = ldap_schemas.person.objects.get(uid='kgtestuser3')
-        self.assertEqual(luser.givenName, 'Test')
-
 
     def stest_delete_user_account(self):
         user = Person.objects.get(pk=Person.objects.count())
