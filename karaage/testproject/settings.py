@@ -59,7 +59,7 @@ PLACARD_MASTER = {
     'GROUP': 'karaage.datastores.ldap_schemas.group',
 }
 
-LDAP_SCHEMA_FILE = "../conf/ldap_schemas.py"
+LDAP_SCHEMA_FILE = "conf/ldap_schemas.py"
 
 HOME_DIRECTORY = "/vpac/%(default_project)s/%(uid)s"
 
@@ -112,7 +112,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 
-ROOT_URLCONF = 'testproject.urls'
+ROOT_URLCONF = 'karaage.testproject.urls'
 
 
 INSTALLED_APPS = (

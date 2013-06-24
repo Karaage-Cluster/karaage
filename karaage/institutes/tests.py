@@ -32,7 +32,7 @@ class InstituteTestCase(TestCase):
         server.set_port(38911)
         server.start()
         server.ldapadd("\n".join(test_ldif)+"\n")
-        call_command('loaddata', 'karaage_data', **{'verbosity': 0})
+        call_command('loaddata', 'karaage/testproject/karaage_data', **{'verbosity': 0})
 
         self.server = server
 
