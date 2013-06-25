@@ -79,7 +79,10 @@ def add_edit_user(request, form_class, template_name='people/person_form.html', 
 
 
 @login_required
-def user_list(request, queryset=Person.objects.select_related()):
+def user_list(request, queryset=None):
+    if queryset is None:
+        queryset=Person.objects.select_related()
+
     page_no = int(request.GET.get('page', 1))
 
     user_list = queryset
