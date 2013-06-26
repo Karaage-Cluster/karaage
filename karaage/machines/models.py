@@ -137,6 +137,10 @@ class UserAccount(models.Model):
         from karaage.datastores import create_account
         create_account(ua)
 
+        from karaage.datastores import add_group
+        for group in person.groups.all():
+            add_group(ua, group)
+
         if default_project is not None:
             from karaage.projects.utils import add_user_to_project
             add_user_to_project(person, default_project)
@@ -147,7 +151,7 @@ class UserAccount(models.Model):
         return ua
 
     def project_list(self):
-        return self.user.project_set.filter(machine_categories=self.machine_category)
+        return self.user.projects.filter(machine_categories=self.machine_category)
     
     def get_latest_usage(self):
         try:

@@ -21,17 +21,8 @@ class SoftwareDataStore:
     def create_software(self, software):
         raise NotImplemented
 
+    def update_software(self, software):
+        raise NotImplemented
+
     def delete_software(self, software):
-        raise NotImplemented
-
-    def add_member(self, software, person):
-        raise NotImplemented
-
-    def remove_member(self, software, person):
-        raise NotImplemented
-
-    def get_members(self, software):
-        raise NotImplemented
-
-    def get_name(self, software):
         raise NotImplemented

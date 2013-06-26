@@ -23,17 +23,8 @@ class SoftwareDataStore(base.SoftwareDataStore):
     def create_software(self, software):
         pass
 
+    def update_software(self, software):
+        pass
+
     def delete_software(self, software):
-        pass
-
-    def add_member(self, software, person):
-        pass
-
-    def remove_member(self, software, person):
-        pass
-
-    def get_members(self, software):
-        pass
-
-    def get_name(self, software):
         pass

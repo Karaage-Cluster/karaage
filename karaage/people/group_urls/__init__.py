@@ -15,19 +15,3 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf import settings
-
-module = __import__(settings.INSTITUTE_DATASTORE, {}, {}, [''])
-pds = module.InstituteDataStore()
-
-
-def create_institute(institute):
-    pds.create_institute(institute)
-
-
-def update_institute(institute):
-    pds.update_institute(institute)
-
-
-def delete_institute(institute):
-    pds.delete_institute(institute)

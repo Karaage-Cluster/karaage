@@ -21,7 +21,7 @@ from karaage.institutes.models import Institute, InstituteDelegate
 
 
 class InstituteAdmin(admin.ModelAdmin):
-    list_display = ('name', 'gid')
+    list_display = ('name',)
     search_fields = ['name']
 
 

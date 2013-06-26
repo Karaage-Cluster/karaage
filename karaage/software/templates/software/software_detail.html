@@ -18,7 +18,7 @@
 			<tr><td>Description:</td><td>{{ package.description }}</td></tr>
 <tr><td>Homepage:</td><td>{{ package.homepage|urlize }}</td></tr>
 <tr><td>Tutorial:</td><td>{{ package.tutorial_url|urlize }}</td></tr>
-<tr><td>Group:</td><td>{{ package.group_name }} ({{ package.gid }})</td></tr>
+<tr><td>Group:</td><td><a href="{{ package.group.get_absolute_url }}">{{ package.group }}</a></td></tr>
 <tr><td>Restricted:</td><td>{% yes_no_img package.restricted %}</td></tr>
 </table>
 </div>

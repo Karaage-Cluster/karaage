@@ -52,7 +52,7 @@ def user_detail(request, username):
     
     person = get_object_or_404(Person, user__username=username)
 
-    my_projects = person.project_set.all()
+    my_projects = person.projects.all()
     my_pids = [p.pid for p in my_projects]
     
     not_project_list = Project.active.exclude(pid__in=my_pids)

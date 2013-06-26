@@ -23,12 +23,12 @@ def add_user_to_project(person, project):
     for mc in project.machine_categories.all():
         if not person.has_account(mc):
             UserAccount.create(person, project, mc)
-    project.users.add(person)
+    project.group.members.add(person)
     project.save()
 
 
 def remove_user_from_project(person, project):
-    project.users.remove(person)
+    project.group.members.remove(person)
     project.save()
 
 

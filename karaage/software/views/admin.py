@@ -81,22 +81,20 @@ def software_detail(request, package_id):
     if members:
         for member in members:
             try:
-                person = Person.objects.get(user__username=member.uid)
-                non_ids.append(person.id)
+                non_ids.append(member.id)
             except Person.DoesNotExist:
-                person = None
+                member = None
             
             member_list.append({
-                'username': member.uid,
-                'person': person,
+                'username': member.username,
+                'person': member,
                 })
 
     not_member_list = Person.objects.select_related().exclude(id__in=non_ids)
 
     if request.method == 'POST' and 'member-add' in request.POST:
         person = get_object_or_404(Person, pk=request.POST['member'])
-        from karaage.datastores.software import add_member
-        add_member(package, person)
+        person.add_group(package.group)
 
         messages.success(request, "User %s added to group" % person)
         log(request.user, package, 1, "User %s added to group manually" % person)
@@ -198,8 +196,7 @@ def remove_member(request, package_id, user_id):
     package = get_object_or_404(SoftwarePackage, pk=package_id)
     person = get_object_or_404(Person, pk=user_id)
 
-    from karaage.datastores.software import remove_member as ds_remove_member
-    ds_remove_member(package, person)
+    person.remove_group(package.group)
 
     log(request.user, package, 3, 'Removed %s from group' % person)
     log(request.user, person, 3, 'Removed from software group %s' % package)
@@ -229,8 +226,7 @@ def softwarerequest_approve(request, softwarerequest_id):
             license=softwarerequest.software_license,
             date=datetime.datetime.today(),
             )
-        from karaage.datastores.software import add_member
-        add_member(softwarerequest.software_license.package, softwarerequest.person)
+        softwarerequest.person.add_group(softwarerequest.software_license.package.group)
 
         messages.success(request, "Software request approved successfully")
         send_software_request_approved_email(softwarerequest)

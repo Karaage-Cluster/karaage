@@ -76,8 +76,7 @@ def add_package(request, package_id):
                 license=software_license,
                 date=datetime.datetime.today(),
                 )
-            from karaage.datastores.software import add_member
-            add_member(software_license.package, person)
+            person.add_group(package.group)
 
         return HttpResponseRedirect(reverse('kg_user_profile_software'))
 

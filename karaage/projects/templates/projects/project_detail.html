@@ -33,6 +33,7 @@
       {% endif %}
       <tr><td>Leaders:</td><td>{% for l in project.leaders.all %}<a href="{{ l.get_absolute_url }}">{{ l }}</a> {% endfor %}</td></tr>
 <tr><td>Institiute:</td><td><a href="{{ project.institute.get_absolute_url }}">{{ project.institute }}</a></td></tr>
+<tr><td>Group:</td><td><a href="{{ project.group.get_absolute_url }}">{{ project.group }}</a></td></tr>
 <tr><td>Description:</td><td>{{ project.description|linebreaks }}</td></tr>
 <tr><td>Last Usage:</td><td>{% if project.last_usage %}{{ project.last_usage|date }} ({{ project.last_usage|timesince }}){% else %}No usage{% endif %}</td></tr>
 <tr><td>Start Date:</td><td>{{ project.start_date|date }}</td></tr>

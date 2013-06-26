@@ -36,6 +36,8 @@ class AccountDataStore(base.AccountDataStore):
 
         person = ua.user
 
+        lgroup = ldap_schemas.group.objects.get(cn=person.institute.group.name)
+
         luser = ldap_schemas.account()
         luser.set_defaults()
         luser.uid = person.username
@@ -47,7 +49,7 @@ class AccountDataStore(base.AccountDataStore):
         luser.o = person.institute.name
         luser.userPassword = "" # FIXME
 
-        luser.gidNumber = person.institute.gid
+        luser.gidNumber = lgroup.gidNumber
         luser.homeDirectory = settings.HOME_DIRECTORY % { 'default_project': ua.default_project.pid, 'uid': luser.uid }
         luser.loginShell = ua.shell
         luser.pre_create(master=None)
@@ -65,8 +67,10 @@ class AccountDataStore(base.AccountDataStore):
 
         person = ua.user
 
+        lgroup = ldap_schemas.group.objects.get(cn=person.institute.group.name)
+
         luser = ldap_schemas.account.objects.get(uid=ua.username)
-        luser.gidNumber = ua.user.institute.gid
+        luser.gidNumber = lgroup.gidNumber
         luser.givenName = person.first_name
         luser.sn = person.last_name
         luser.telephoneNumber = str_or_none(person.telephone)
@@ -107,3 +111,36 @@ class AccountDataStore(base.AccountDataStore):
         super(AccountDataStore, self).change_username(ua, new_username)
         p = ldap_schemas.account.objects.get(uid=ua.username)
         p.rename(uid=new_username)
+
+    def add_group(self, ua, group):
+        lgroup = ldap_schemas.group.objects.get(cn=group.name)
+        person = ldap_schemas.account.objects.get(uid=ua.username)
+        lgroup.secondary_persons.add(person)
+        pass
+
+    def remove_group(self, ua, group):
+        lgroup = ldap_schemas.group.objects.get(cn=group.name)
+        person = ldap_schemas.account.objects.get(uid=ua.username)
+        lgroup.secondary_persons.remove(person)
+
+    def create_group(self, group):
+        # if group already exists, take over existing group rather then error.
+        try:
+            self.update_group(group)
+        except ldap_schemas.group.DoesNotExist:
+            lgroup = ldap_schemas.group(cn=group.name)
+            lgroup.set_defaults()
+            lgroup.description = group.description
+            lgroup.pre_create(master=None)
+            lgroup.pre_save()
+            lgroup.save()
+
+    def update_group(self, group):
+        lgroup = ldap_schemas.group.objects.get(cn=group.name)
+        lgroup.description = group.description
+        lgroup.pre_save()
+        lgroup.save()
+
+    def delete_group(self, group):
+        lgroup = ldap_schemas.group.objects.get(cn=group.name)
+        lgroup.delete()
