@@ -17,7 +17,7 @@
 
 from django.db import models
 
-from karaage.people.models import Person
+from karaage.people.models import Person, Group
 from karaage.machines.models import Machine
 
 
@@ -40,7 +40,7 @@ class SoftwarePackage(models.Model):
     category = models.ForeignKey(SoftwareCategory, blank=True, null=True)
     name = models.CharField(max_length=200, unique=True)
     description = models.TextField(blank=True, null=True)
-    gid = models.IntegerField(blank=True, null=True, editable=False)
+    group = models.ForeignKey(Group)
     homepage = models.URLField(blank=True, null=True)
     tutorial_url = models.URLField(blank=True, null=True)
     academic_only = models.BooleanField()
@@ -51,10 +51,21 @@ class SoftwarePackage(models.Model):
         db_table = 'software_package'
 
     def save(self, *args, **kwargs):
-        from karaage.datastores.software import create_software
-        self.gid = create_software(self)
+        if self.pk is None:
+            from karaage.datastores.software import create_software
+            create_software(self)
+            name = str(self.name.lower().replace(' ', ''))
+            self.group,_ = Group.objects.get_or_create(name=name)
+        else:
+            from karaage.datastores.software import update_software
+            update_software(self)
         super(SoftwarePackage, self).save(*args, **kwargs)
-        
+
+    def delete(self, *args, **kwargs):
+        from karaage.datastores.software import delete_software
+        delete_software(self)
+        super(SoftwarePackage, self).delete(*args, **kwargs)
+
     def __unicode__(self):
         return self.name
     
@@ -69,12 +80,10 @@ class SoftwarePackage(models.Model):
             return None
 
     def group_name(self):
-        from karaage.datastores.software import get_name as ds_get_name
-        return ds_get_name(self)
+        return self.group.name
 
     def get_group_members(self):
-        from karaage.datastores.software import get_members
-        return get_members(self)
+        return self.group.members.all()
 
 
 class SoftwareVersion(models.Model):

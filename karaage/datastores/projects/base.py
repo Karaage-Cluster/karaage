@@ -18,7 +18,10 @@
 
 class ProjectDataStore:
     
-    def create_or_update_project(self, project):
+    def create_project(self, project):
+        raise NotImplemented
+
+    def update_project(self, project):
         raise NotImplemented
 
     def delete_project(self, project):

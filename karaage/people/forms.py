@@ -24,7 +24,7 @@ from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
 from andsome.middleware.threadlocals import get_current_user
 from andsome.util import is_password_strong
 
-from karaage.people.models import Person
+from karaage.people.models import Person, Group
 from karaage.people.utils import validate_username, UsernameException
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
@@ -226,3 +226,30 @@ class PasswordResetForm(BasePasswordResetForm):
             raise forms.ValidationError("That e-mail address doesn't have an associated user account. Are you sure you've registered?")
         
         return email
+
+
+class AdminGroupForm(forms.Form):
+    name = forms.CharField()
+    description = forms.CharField()
+
+    def __init__(self, *args, **kwargs):
+        # Make PID field read only if we are editing a project
+        self.instance = kwargs.pop('instance', None)
+        super(AdminGroupForm, self).__init__(*args, **kwargs)
+        if self.instance is not None:
+            self.initial = self.instance.__dict__
+            self.fields['name'].widget.attrs['readonly'] = True
+            self.fields['name'].help_text = "You can't change the name of an existing group"
+
+    def save(self, group=None):
+        data = self.cleaned_data
+
+        if self.instance is None:
+            group = Group()
+            group.name = data['name']
+
+        group.description = data['description']
+        group.save()
+
+        return group
+

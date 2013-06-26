@@ -27,7 +27,7 @@ import datetime
 from andsome.util.filterspecs import Filter, FilterBar, DateFilter
 
 from karaage.projects.models import Project
-from karaage.people.models import Person
+from karaage.people.models import Person, Group
 from karaage.people.emails import send_confirm_password_email
 from karaage.institutes.models import Institute
 from karaage.machines.models import UserAccount, MachineCategory
@@ -327,3 +327,66 @@ def change_shell(request, useraccount_id):
     else:
         
         return HttpResponseRedirect('/')
+
+@login_required
+def group_list(request, queryset=None):
+    if queryset is None:
+        queryset=Group.objects.select_related()
+
+    page_no = int(request.GET.get('page', 1))
+
+    group_list = queryset
+
+    if 'search' in request.REQUEST:
+        terms = request.REQUEST['search'].lower()
+        query = Q()
+        for term in terms.split(' '):
+            q = Q(group__groupname__icontains=term) | Q(group__first_name__icontains=term) | Q(group__last_name__icontains=term) | Q(comment__icontains=term)
+            query = query & q
+
+        group_list = group_list.filter(query)
+        page_no = 1
+    else:
+        terms = ""
+
+    p = Paginator(group_list, 50)
+    page = p.page(page_no)
+
+    return render_to_response('people/group_list.html',
+        {'page': page, }, context_instance=RequestContext(request))
+
+
+@login_required
+def add_edit_group(request, form_class, template_name='people/group_form.html', redirect_url=None, group_name=None):
+    GroupForm = form_class
+
+    if request.user.has_perm('people.add_group'):
+        if group_name is None:
+            group = None
+        else:
+            group = get_object_or_404(Group, name=group_name)
+    else:
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
+
+    if request.method == 'POST':
+        form = GroupForm(request.POST, instance=group)
+        if form.is_valid():
+            if group:
+                # edit
+                group = form.save(group)
+                log(request.user, group, 2, "Changed details")
+                messages.success(request, "Group '%s' was edited succesfully" % group)
+            else:
+                #Add
+                group = form.save()
+                messages.success(request, "Group '%s' was created succesfully" % group)
+
+            if redirect_url is None:
+                return HttpResponseRedirect(group.get_absolute_url())
+            else:
+                return HttpResponseRedirect(redirect_url)
+    else:
+        form = GroupForm(instance=group)
+
+    return render_to_response(template_name, {'group': group, 'form': form}, context_instance=RequestContext(request))
+

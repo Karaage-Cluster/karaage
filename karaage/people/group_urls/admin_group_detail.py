@@ -15,19 +15,16 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf import settings
+from django.conf.urls import *
+from karaage.people.forms import AdminGroupForm
 
-module = __import__(settings.INSTITUTE_DATASTORE, {}, {}, [''])
-pds = module.InstituteDataStore()
+urlpatterns = patterns('karaage.people.views.admin_group_detail',
 
+    url(r'^$', 'group_detail', name='kg_group_detail'),
+    url(r'^delete/$', 'delete_group', name='admin_delete_group'),
 
-def create_institute(institute):
-    pds.create_institute(institute)
+)
 
-
-def update_institute(institute):
-    pds.update_institute(institute)
-
-
-def delete_institute(institute):
-    pds.delete_institute(institute)
+urlpatterns += patterns('karaage.people.views.admin',
+    url(r'^edit/$', 'add_edit_group', {'form_class': AdminGroupForm }, name='kg_group_edit'),
+)

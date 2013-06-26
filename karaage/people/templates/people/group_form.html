@@ -1,0 +1,35 @@
+{% extends "forms.html" %}
+{% load url from future %}
+
+{% block title %}Users{% endblock %}
+
+
+
+{% block extrahead %}
+{{ form.media }}
+{% endblock %}
+
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="{% url 'kg_user_list' %}">Users</a>
+ › {% if person %}Edit{% else %}Create{% endif %} Group
+</div>{% endblock %}   
+
+{% block content %}
+<form method="post" action=".">{% csrf_token %}
+<div>
+{% load forms %}
+{% if form.errors or form.non_field_errors %}
+	<p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
+{% endif %}
+<fieldset class="module aligned ()">
+{% formfield form.name %}
+{% formfield form.description %}
+</fieldset>
+{{ form.non_field_errors }}
+
+</div>
+<div class="submit-row">
+		
+		<input type="submit" value="Save" class="default" />
+	</div>
+</form>
+{% endblock %}

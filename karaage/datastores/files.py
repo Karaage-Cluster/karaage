@@ -117,3 +117,19 @@ class AccountDataStore(base.AccountDataStore):
     def change_username(self, ua, new_username):
         # FIXME
         super(AccountDataStore, self).change_username(ua, new_username)
+
+    def add_group(self, ua, group):
+        # FIXME
+        super(AccountDataStore, self).add_group(ua, group)
+
+    def remove_group(self, ua, group):
+        # FIXME
+        super(AccountDataStore, self).remove_group(ua, group)
+
+    def create_group(self, group):
+        # FIXME
+        super(AccountDataStore, self).create_group(group)
+
+    def delete_group(self, group):
+        # FIXME
+        super(AccountDataStore, self).delete_group(group)

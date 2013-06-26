@@ -81,3 +81,18 @@ class AccountDataStore(object):
 
     def change_username(self, ua, new_username):
         pass
+
+    def add_group(self, ua, group):
+        pass
+
+    def remove_group(self, ua, group):
+        pass
+
+    def create_group(self, group):
+        pass
+
+    def update_group(self, group):
+        pass
+
+    def delete_group(self, group):
+        pass
