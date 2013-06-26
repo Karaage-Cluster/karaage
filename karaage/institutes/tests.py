@@ -43,14 +43,14 @@ class InstituteTestCase(TestCase):
     def test_add(self):
         institute = Institute.objects.create(name='TestInstitute54')
         
-        lgroup = ldap_schemas.group.objects.get(gidNumber=institute.gid)
+        lgroup = ldap_schemas.group.objects.get(cn=institute.group.name)
         self.assertEqual(institute.name.lower().replace(' ' , ''), lgroup.cn)
 
 
     def test_add_spaces(self):
         institute = Institute.objects.create(name='Test Institute 60')
         
-        lgroup = ldap_schemas.group.objects.get(gidNumber=institute.gid)
+        lgroup = ldap_schemas.group.objects.get(cn=institute.group.name)
         self.assertEqual(institute.name.lower().replace(' ' , ''), lgroup.cn)
 
     def test_add_existing_name(self):
@@ -64,8 +64,7 @@ class InstituteTestCase(TestCase):
 
         institute = Institute.objects.create(name='Test Institute 27')
 
-        lgroup = ldap_schemas.group.objects.get(gidNumber=institute.gid)
-        self.assertEqual(lgroup.gidNumber, institute.gid) 
+        lgroup = ldap_schemas.group.objects.get(cn=institute.group.name)
         self.assertEqual(institute.name.lower().replace(' ' , ''), lgroup.cn) 
 
     def test_add_existing_gid(self):
@@ -78,8 +77,8 @@ class InstituteTestCase(TestCase):
         lgroup.pre_save()
         lgroup.save()
 
-        institute = Institute.objects.create(name='Test Institute 26', gid=700)
+        institute = Institute.objects.create(name='Test Institute Other')
+        self.assertEqual(institute.group.name, "testinstituteother")
 
-        ldap_schemas.group.objects.get(gidNumber=institute.gid)
-        self.assertEqual(lgroup.gidNumber, institute.gid) 
-        self.assertEqual(lgroup.gidNumber, 700) 
+        lgroup = ldap_schemas.group.objects.get(cn=institute.group.name)
+        self.assertEqual(lgroup.gidNumber, 700)

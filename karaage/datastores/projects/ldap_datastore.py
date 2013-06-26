@@ -20,21 +20,11 @@ from karaage.datastores import ldap_schemas
 
 class ProjectDataStore(base.ProjectDataStore):
 
-    def create_or_update_project(self, project):
-        try:
-            group = ldap_schemas.group.objects.get(cn=project.pid)
-        except ldap_schemas.group.DoesNotExist:
-            group = ldap_schemas.group(cn=project.pid)
-            group.set_defaults()
-            group.pre_create(master=None)
-        group.secondary_persons.clear(commit=False)
-        for person in project.users.all():
-            luser = ldap_schemas.person.objects.get(uid=person.user.username)
-            group.secondary_persons.add(luser, commit=False)
-        group.pre_save()
-        group.save()
+    def create_project(self, project):
+        pass
+
+    def update_project(self, project):
+        pass
 
     def delete_project(self, project):
-        group = ldap_schemas.group.objects.get(cn=project.pid)
-        group.pre_delete()
-        group.delete()
+        pass

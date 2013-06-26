@@ -19,37 +19,12 @@ from karaage.datastores.institutes import base
 from karaage.datastores import ldap_schemas
 
 class InstituteDataStore(base.InstituteDataStore):
-    
+
     def create_institute(self, institute):
-        cn = str(institute.name.lower().replace(' ', ''))
-        if institute.gid:
-            try:
-                lgroup = ldap_schemas.group.objects.get(gidNumber=institute.gid)
-            except ldap_schemas.group.DoesNotExist:
-                lgroup = ldap_schemas.group()
-                lgroup.set_defaults()
-                lgroup.cn = cn
-                lgroup.gidNumber = institute.gid
-                lgroup.pre_create(master=None)
-                lgroup.pre_save()
-                lgroup.save()
-        else:
-                 
-            try:
-                lgroup = ldap_schemas.group.objects.get(cn=cn)
-            except ldap_schemas.group.DoesNotExist:
-                lgroup = ldap_schemas.group()
-                lgroup.set_defaults()
-                lgroup.cn = cn
-                lgroup.pre_create(master=None)
-                lgroup.pre_save()
-                lgroup.save()
-        return lgroup.gidNumber
+        pass
+
+    def update_institute(self, institute):
+        pass
 
     def delete_institute(self, institute):
-        try:
-            lgroup = ldap_schemas.group.objects.get(gidNumber=institute.gid)
-        except ldap_schemas.group.DoesNotExist:
-            pass
-        else:
-            lgroup.delete()
+        pass

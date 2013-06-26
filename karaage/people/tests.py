@@ -102,7 +102,7 @@ class UserTestCase(TestCase):
         # test that members can see other people in own project
 #        print "-------------------------------------------------------------------"
         project = Project.objects.get(pid="TestProject1")
-        project.users=[2,3]
+        project.group.members=[2,3]
 
         test_object = Project.objects.get(pid="TestProject1")
         self.do_permission_tests(test_object, {
@@ -199,7 +199,7 @@ class UserTestCase(TestCase):
 
         users = Person.objects.count()
         project = Project.objects.get(pid='TestProject1')
-        p_users = project.users.count()
+        p_users = project.group.members.count()
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         response = self.client.get(reverse('kg_add_user'))
@@ -232,7 +232,7 @@ class UserTestCase(TestCase):
         self.assertEqual(person.is_active, True)
         self.assertEqual(person.user.username, 'samtest')
         self.assertEqual(UserAccount.objects.count(), 2)
-        self.assertEqual(project.users.count(), p_users+1)
+        self.assertEqual(project.group.members.count(), p_users+1)
         luser = ldap_schemas.account.objects.get(uid='samtest')
         self.assertEqual(luser.givenName, 'Sam')
         self.assertEqual(luser.homeDirectory, '/vpac/TestProject1/samtest')
@@ -241,7 +241,7 @@ class UserTestCase(TestCase):
     def test_admin_create_user(self):
         users = Person.objects.count()
         project = Project.objects.get(pid='TestProject1')
-        project.users.count()
+        project.group.members.count()
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         response = self.client.get(reverse('kg_add_user'))
@@ -316,7 +316,7 @@ class UserTestCase(TestCase):
         self.client.login(username='kgsuper', password='aq12ws')
         user = Person.objects.get(user__username='kgtestuser3')
         self.assertEqual(user.is_active, True)
-        self.assertEqual(user.project_set.count(), 1)
+        self.assertEqual(user.groups.filter(project__gt=2).count(), 1)
         self.assertEqual(user.useraccount_set.count(), 1)
         self.assertEqual(user.useraccount_set.all()[0].date_deleted, None)
         luser = ldap_schemas.person.objects.get(uid='kgtestuser3')
@@ -331,7 +331,7 @@ class UserTestCase(TestCase):
         user = Person.objects.get(user__username='kgtestuser3')
 
         self.assertEqual(user.is_active, False)
-        self.assertEqual(user.project_set.count(), 0)
+        self.assertEqual(user.projects.count(), 0)
         self.assertEqual(user.useraccount_set.count(), 1)
         self.assertEqual(user.useraccount_set.all()[0].date_deleted, datetime.date.today())
         self.failUnlessRaises(ldap_schemas.person.DoesNotExist, ldap_schemas.person.objects.get, uid='kgtestuser3')

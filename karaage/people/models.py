@@ -244,16 +244,16 @@ class Person(models.Model):
                 return True
 
         # Institute delegate==person can view people in projects that are a member of institute
-        if Project.objects.filter(users=self.id).filter(institute__delegates=person):
+        if Project.objects.filter(group__members=self.id).filter(institute__delegates=person):
             return True
 
         # person can view people in projects they belong to
-        tmp = Project.objects.filter(users=self.id).filter(users=person.id).filter(is_active=True)
+        tmp = Project.objects.filter(group__members=self.id).filter(group__members=person.id).filter(is_active=True)
         if tmp.count() > 0:
             return True
 
         # Leader==person can view people in projects they lead
-        tmp = Project.objects.filter(users=self.id).filter(leaders=person.id).filter(is_active=True)
+        tmp = Project.objects.filter(group__members=self.id).filter(leaders=person.id).filter(is_active=True)
         if tmp.count() > 0:
             return True
         return False
@@ -358,3 +358,91 @@ class Person(models.Model):
 
     def is_locked(self):
         return not self.login_enabled
+
+    def add_group(self, group):
+        group.members.add(self)
+
+    def remove_group(self, group):
+        group.members.remove(self)
+
+    @property
+    def projects(self):
+        from karaage.projects.models import Project
+        return Project.objects.filter(group__members=self)
+
+
+class Group(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    members = models.ManyToManyField(Person, related_name='groups')
+    description = models.TextField(null=True, blank=True)
+
+    def __unicode__(self):
+        return u"%s" % self.name
+
+    def get_absolute_url(self):
+        return reverse('kg_group_detail', kwargs={'group_name': self.name})
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            from karaage.datastores import create_group
+            create_group(self)
+        super(self.__class__, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        super(self.__class__, self).delete(*args, **kwargs)
+        from karaage.datastores import delete_group
+        delete_group(self)
+
+    def add_person(self, person):
+        self.members.add(person)
+
+    def remove_person(self, person):
+        self.members.remove(person)
+
+
+def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
+    """
+    Hook that executes whenever the group members are changed.
+    """
+    #print "'%s','%s','%s','%s','%s'"%(instance, action, reverse, model, pk_set)
+    if action == "post_add":
+        from karaage.datastores import add_group
+        if not reverse:
+            group = instance
+            for person in model.objects.filter(pk__in=pk_set):
+                for ua in person.useraccount_set.filter(date_deleted__isnull=True):
+                    add_group(ua, group)
+        else:
+            person = instance
+            for group in model.objects.filter(pk__in=pk_set):
+                for ua in person.useraccount_set.filter(date_deleted__isnull=True):
+                    add_group(ua, group)
+
+    elif action == "post_remove":
+        from karaage.datastores import remove_group
+        if not reverse:
+            group = instance
+            for person in model.objects.filter(pk__in=pk_set):
+                for ua in person.useraccount_set.filter(date_deleted__isnull=True):
+                    remove_group(ua, group)
+        else:
+            person = instance
+            for group in model.objects.filter(pk__in=pk_set):
+                for ua in person.useraccount_set.filter(date_deleted__isnull=True):
+                    remove_group(ua, group)
+
+    elif action == "post_clear":
+        from karaage.datastores import remove_group
+        if not reverse:
+            group = instance
+            for person in group.members.all():
+                for ua in person.useraccount_set.filter(date_deleted__isnull=True):
+                    remove_group(ua, group)
+        else:
+            person = instance
+            for group in person.groups.all():
+                for ua in person.useraccount_set.filter(date_deleted__isnull=True):
+                    remove_group(ua, group)
+
+
+models.signals.m2m_changed.connect(_members_changed, sender=Group.members.through)

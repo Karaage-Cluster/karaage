@@ -16,14 +16,14 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.db import models
-from karaage.people.models import Person
+from karaage.people.models import Person, Group
 from karaage.institutes.managers import ActiveInstituteManager
 
 
 class Institute(models.Model):
     name = models.CharField(max_length=100, unique=True)
     delegates = models.ManyToManyField(Person, related_name='delegate', blank=True, null=True, through='InstituteDelegate')
-    gid = models.IntegerField(editable=False)
+    group = models.ForeignKey(Group)
     saml_entityid = models.CharField(max_length=200, null=True, blank=True, unique=True)
     is_active = models.BooleanField(default=True)
     objects = models.Manager()
@@ -34,9 +34,20 @@ class Institute(models.Model):
         db_table = 'institute'
 
     def save(self, *args, **kwargs):
-        from karaage.datastores.institutes import create_institute
-        self.gid = create_institute(self)
+        if self.pk is None:
+            from karaage.datastores.institutes import create_institute
+            create_institute(self)
+            name = str(self.name.lower().replace(' ', ''))
+            self.group,_ = Group.objects.get_or_create(name=name)
+        else:
+            from karaage.datastores.institutes import update_institute
+            update_institute(self)
         super(Institute, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        from karaage.datastores.institutes import delete_institute
+        delete_institute(self)
+        super(Institute, self).delete(*args, **kwargs)
 
     def __unicode__(self):
         return self.name

@@ -21,7 +21,7 @@ from django.db.models.signals import post_save, pre_delete
 import datetime
 from andsome.middleware.threadlocals import get_current_user
 
-from karaage.people.models import Person
+from karaage.people.models import Person, Group
 from karaage.institutes.models import Institute
 from karaage.machines.models import MachineCategory
 from karaage.projects.managers import ActiveProjectManager, DeletedProjectManager
@@ -30,7 +30,7 @@ from karaage.projects.managers import ActiveProjectManager, DeletedProjectManage
 class Project(models.Model):
     pid = models.CharField(max_length=50, primary_key=True)
     name = models.CharField(max_length=200)
-    users = models.ManyToManyField(Person, blank=True, null=True)
+    group = models.ForeignKey(Group)
     institute = models.ForeignKey(Institute)
     leaders = models.ManyToManyField(Person, related_name='leaders')
     description = models.TextField(null=True, blank=True)
@@ -61,6 +61,42 @@ class Project(models.Model):
     def get_absolute_url(self):
         return ('kg_project_detail', [self.pid])
         
+    def save(self, *args, **kwargs):
+        # Try to work out if this is a create or update request
+        force_insert = kwargs.pop('force_insert', False)
+        force_update = kwargs.pop('force_update', False)
+
+        if force_insert and force_update:
+            raise RuntimeError("oops")
+
+        # neither force_insert or force_update specified, check if pk exists
+        if not force_insert and not force_update:
+            exists = False
+            if self.pk is not None:
+                exists = bool(Project.objects.filter(pk=self.pk).count() > 0)
+            force_update = exists
+            force_insert = not exists
+
+        kwargs['force_update'] = force_update
+        kwargs['force_insert'] = force_insert
+
+        # handle the create or update
+        if force_insert:
+            from karaage.datastores.projects import create_project
+            create_project(self)
+            name = self.pid
+            self.group,_ = Group.objects.get_or_create(name=name)
+        else:
+            from karaage.datastores.projects import update_project
+            update_project(self)
+
+        super(Project, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        from karaage.datastores.projects import delete_project
+        delete_project(self)
+        super(Project, self).delete(*args, **kwargs)
+
     @models.permalink
     def get_usage_url(self):
         return ('kg_usage_project', [self.pid])
@@ -89,7 +125,7 @@ class Project(models.Model):
             return True
 
         # person can view own projects
-        tmp = self.users.filter(pk=person.pk)
+        tmp = self.group.members.filter(pk=person.pk)
         if tmp.count() > 0:
             return True
 
@@ -114,7 +150,7 @@ class Project(models.Model):
         except:
             pass
         self.date_deleted = datetime.datetime.today()
-        self.users.clear()
+        self.group.members.clear()
         self.save()
 
     def get_usage(self,
@@ -146,17 +182,3 @@ class Project(models.Model):
         except:
             return 'NAN'
 
-
-def update_project_datastore(sender, **kwargs):
-    project = kwargs['instance']
-    from karaage.datastores.projects import create_or_update_project
-    create_or_update_project(project)
-
-
-def delete_project_datastore(sender, **kwargs):
-    project = kwargs['instance']
-    from karaage.datastores.projects import delete_project
-    delete_project(project)
-
-post_save.connect(update_project_datastore, sender=Project)
-pre_delete.connect(delete_project_datastore, sender=Project)

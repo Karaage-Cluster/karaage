@@ -23,5 +23,8 @@ class InstituteDataStore(base.InstituteDataStore):
     def create_institute(self, institute):
         pass
 
+    def update_institute(self, institute):
+        pass
+
     def delete_institute(self, institute):
         pass

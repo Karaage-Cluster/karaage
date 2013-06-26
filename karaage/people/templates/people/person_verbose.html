@@ -22,7 +22,7 @@
                 <th>Primary Group:</th>
             </tr>
             <tr>
-                <td><a href="{% url 'plac_group_detail' primary_group.pk %}">{{ primary_group }}</a></td>
+                <td><a href="{% url 'kg_group_detail' primary_group.pk %}">{{ primary_group }}</a></td>
             </tr>
             {% endif %}
             {% endwith %}
@@ -31,7 +31,7 @@
             </tr>
             {% for g in person_ldap.secondary_groups.all|dictsort:"cn" %}
                 <tr class="{% cycle row1,row2 %}">
-                    <td><a href="{% url 'plac_group_detail' g.pk %}">{{ g }}</a></td>
+                    <td><a href="{% url 'kg_group_detail' g.pk %}">{{ g }}</a></td>
                 </tr>
             {% endfor %}
 

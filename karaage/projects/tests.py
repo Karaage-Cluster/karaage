@@ -108,29 +108,31 @@ class ProjectTestCase(TestCase):
     def test_add_remove_user_to_project(self):
         self.assertRaises(ldap_schemas.person.DoesNotExist, ldap_schemas.person.objects.get, pk='kgtestuser2')
 
+        # login
         self.client.login(username='kgsuper', password='aq12ws')
+
+        # get project details
         project = Project.objects.get(pk='TestProject1')
-        self.assertEqual(project.users.count(), 1)
+        self.assertEqual(project.group.members.count(), 1)
         response = self.client.get(reverse('kg_project_detail', args=[project.pid]))
         self.failUnlessEqual(response.status_code, 200)
-
         self.assertRaises(ldap_schemas.person.DoesNotExist, ldap_schemas.person.objects.get, pk='kgtestuser2')
 
+        # add kgtestuser2 to project
         new_user = Person.objects.get(user__username='kgtestuser2')
         response = self.client.post(reverse('kg_project_detail', args=[project.pid]), { 'person': new_user.id} )
         self.failUnlessEqual(response.status_code, 302)
         project = Project.objects.get(pk='TestProject1')
-        self.assertEqual(project.users.count(), 2)
-
+        self.assertEqual(project.group.members.count(), 2)
         lgroup = ldap_schemas.group.objects.get(cn=project.pid)
+        ldap_schemas.person.objects.get(pk='kgtestuser2')
         lgroup.secondary_persons.get(pk='kgtestuser2')
 
         # remove user
         response = self.client.post(reverse('kg_remove_project_member', args=[project.pid, new_user.username]))
         self.failUnlessEqual(response.status_code, 302)
         project = Project.objects.get(pk='TestProject1')
-        self.assertEqual(project.users.count(), 1)
-
+        self.assertEqual(project.group.members.count(), 1)
         lgroup = ldap_schemas.group.objects.get(cn=project.pid)
         self.assertRaises(ldap_schemas.person.DoesNotExist, lgroup.secondary_persons.get, pk='kgtestuser2')
 
@@ -148,7 +150,7 @@ class ProjectTestCase(TestCase):
         project = Project.objects.get(pk='TestProject1')
 
         self.assertEqual(project.is_active, False)
-        self.assertEqual(project.users.count(), 0)
+        self.assertEqual(project.group.members.count(), 0)
         self.assertEqual(project.date_deleted, datetime.date.today())
         self.assertEqual(project.deleted_by, Person.objects.get(user__username='kgsuper'))
         
@@ -161,7 +163,7 @@ class ProjectTestCase(TestCase):
         self.assertEqual(project.is_active, True)
         self.assertEqual(project.name, 'Test Project 1')
         self.assertTrue(Person.objects.get(pk=1) in project.leaders.all())
-        self.assertTrue(Person.objects.get(pk=3) in project.users.all())   
+        self.assertTrue(Person.objects.get(pk=3) in project.group.members.all())
 
         self.client.login(username='kgsuper', password='aq12ws')
         response = self.client.get(reverse('kg_edit_project', args=['TestProject1']))
