@@ -8,10 +8,20 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        pass
+        db.rename_table('people_institutedelegate', 'institutedelegate')
+
+        if not db.dry_run:
+            # For permissions to work properly after migrating
+            orm['contenttypes.contenttype'].objects.filter(app_label='people', model='institute').update(app_label='institutes')
+            orm['contenttypes.contenttype'].objects.filter(app_label='people', model='institutedelegate').update(app_label='institutes')
 
     def backwards(self, orm):
-        pass
+        db.rename_table('institutedelegate', 'people_institutedelegate')
+
+        if not db.dry_run:
+            # For permissions to work properly after migrating
+            orm['contenttypes.contenttype'].objects.filter(app_label='institutes', model='institute').update(app_label='people')
+            orm['contenttypes.contenttype'].objects.filter(app_label='institutes', model='institutedelegate').update(app_label='people')
 
     models = {
         u'auth.group': {

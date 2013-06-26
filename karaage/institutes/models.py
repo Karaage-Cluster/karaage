@@ -84,3 +84,6 @@ class InstituteDelegate(models.Model):
     person = models.ForeignKey(Person)
     institute = models.ForeignKey(Institute)
     send_email = models.BooleanField()
+
+    class Meta:
+        db_table = 'institutedelegate'
