@@ -21,13 +21,8 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib import messages
 
-from karaage.datastores import ldap_schemas
 from karaage.people.models import Person, Group
-from karaage.people.forms import AdminPasswordChangeForm, AddGroupMemberForm
-from karaage.projects.models import Project
-from karaage.projects.utils import add_user_to_project
-from karaage.util.email_messages import send_bounced_warning
-from karaage.util import get_date_range, log_object as log
+from karaage.people.forms import AddGroupMemberForm
 
 
 @permission_required('people.delete_group')
