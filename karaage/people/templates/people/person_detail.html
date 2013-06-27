@@ -45,6 +45,10 @@
       {% if person.mobile %}
       <tr><td>Mobile:</td><td>{{ person.mobile|default:"" }}</td></tr>
       {% endif %}
+<tr><td>Groups:</td><td>
+  {% for group in person.groups.all %}
+    <a href="{{ group.get_absolute_url }}">{{ group }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+</td></tr>
       <tr id="hidden-link"><td colspan="2"><a href="#" onclick="showHidden()">More....</a></td></tr>
 </table>
 <table id="hidden" style="display: none">

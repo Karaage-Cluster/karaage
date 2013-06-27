@@ -12,7 +12,7 @@
 	   		<td><a href="{{ group.get_absolute_url }}">{{ group.name }}</a></td>
 	   		<td>{{ group.description }}</td>
                         <td>{% for member in group.members.all %}
-                            <a href="{{ member.get_absolute_url }}">{{ member }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
+                            <a href="{{ member.get_absolute_url }}">{{ member }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
                         </td>
 	   	</tr>
 	   {% endfor %}
