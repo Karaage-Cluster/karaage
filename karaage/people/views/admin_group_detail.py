@@ -23,7 +23,7 @@ from django.contrib import messages
 
 from karaage.datastores import ldap_schemas
 from karaage.people.models import Person, Group
-from karaage.people.forms import AdminPasswordChangeForm
+from karaage.people.forms import AdminPasswordChangeForm, AddGroupMemberForm
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
 from karaage.util.email_messages import send_bounced_warning
@@ -46,6 +46,10 @@ def delete_group(request, group_name):
 @login_required
 def group_detail(request, group_name):
     group = get_object_or_404(Group, name=group_name)
+
+    if request.user.has_perm('people.change_person'):
+        form = AddGroupMemberForm(instance=group)
+
     return render_to_response('people/group_detail.html', locals(), context_instance=RequestContext(request))
 
 
@@ -57,3 +61,34 @@ def group_verbose(request, group_name):
     group_details = get_group_details(group)
 
     return render_to_response('people/group_verbose.html', locals(), context_instance=RequestContext(request))
+
+
+@login_required
+def add_group_member(request, group_name):
+    if not request.user.has_perm('people.change_person'):
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
+
+    group = get_object_or_404(Group, name=group_name)
+    if request.method == 'POST':
+        form = AddGroupMemberForm(request.POST, instance=group)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(group.get_absolute_url())
+    else:
+        form = AddGroupMemberForm(instance=group)
+
+    return render_to_response('people/group_add_member.html', locals(), context_instance=RequestContext(request))
+
+
+@login_required
+def remove_group_member(request, group_name, username):
+    if not request.user.has_perm('people.change_person'):
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
+
+    group = get_object_or_404(Group, name=group_name)
+    person = get_object_or_404(Person, user__username=username)
+    if request.method == 'POST':
+        group.remove_person(person)
+        return HttpResponseRedirect(group.get_absolute_url())
+
+    return render_to_response('people/group_remove_member.html', locals(), context_instance=RequestContext(request))

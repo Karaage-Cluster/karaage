@@ -12,7 +12,8 @@ HOME_DIRECTORY = "/home/%(uid)s"
 
 AJAX_LOOKUP_CHANNELS = {
     'account'  : ( 'placard.lookups', 'AccountLookup' ),
-    'group'  : ( 'placard.lookups', 'GroupLookup' )
+    'group'  : ( 'placard.lookups', 'GroupLookup' ),
+    'person' : ( 'karaage.people.lookups', 'PersonLookup'),
 }
 
 AJAX_SELECT_BOOTSTRAP = True

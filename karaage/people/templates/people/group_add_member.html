@@ -1,0 +1,10 @@
+{% extends "forms.html" %}
+
+{% block content %}
+<div class="module">
+    <h2>Add Member</h2>
+    <form method="post" action="{% url "kg_group_add_member" group.name %}" class="simple">{% csrf_token %}
+        {{ form }}<input type="submit" value="Add" class="default" />
+    </form>
+</div>
+{% endblock %}

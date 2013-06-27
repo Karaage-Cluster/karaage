@@ -31,6 +31,8 @@ from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
 from karaage.constants import TITLES, COUNTRIES
 
+import ajax_select.fields
+
 
 class PersonForm(forms.Form):
     title = forms.ChoiceField(choices=TITLES, required=False)
@@ -253,3 +255,15 @@ class AdminGroupForm(forms.Form):
 
         return group
 
+class AddGroupMemberForm(forms.Form):
+    """ Add a user to a group form """
+    person = ajax_select.fields.AutoCompleteSelectField('person', required=True, label="Add person")
+
+    def __init__(self, *args, **kwargs):
+        self.instance = kwargs.pop('instance', None)
+        super(AddGroupMemberForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        person = self.cleaned_data['person']
+        self.instance.add_person(person)
+        return self.instance
