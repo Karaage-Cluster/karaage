@@ -45,7 +45,6 @@ class AccountDataStore(base.AccountDataStore):
         luser.mail = str_or_none(person.email)
         luser.title = str_or_none(person.title)
         luser.o = person.institute.name
-        luser.userPassword = "" # FIXME
 
         luser.gidNumber = person.institute.gid
         luser.homeDirectory = settings.HOME_DIRECTORY % { 'default_project': ua.default_project.pid, 'uid': luser.uid }
