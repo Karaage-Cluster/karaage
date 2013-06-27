@@ -54,6 +54,10 @@ def change_username(person, new_username):
     pds.change_username(person, new_username)
 
 
+def get_user_details(person):
+    return pds.get_user_details(person)
+
+
 def create_account(ua):
     ads_module = __import__(ua.machine_category.datastore, {}, {}, [''])
     ads = ads_module.AccountDataStore()
@@ -108,6 +112,12 @@ def change_account_username(ua, new_username):
     ads.change_username(ua, new_username)
 
 
+def get_account_details(ua):
+    ads_module = __import__(ua.machine_category.datastore, {}, {}, [''])
+    ads = ads_module.AccountDataStore()
+    return ads.get_account_details(ua)
+
+
 def add_group(ua, group):
     ads_module = __import__(ua.machine_category.datastore, {}, {}, [''])
     ads = ads_module.AccountDataStore()
@@ -141,3 +151,12 @@ def delete_group(group):
         ads = ads_module.AccountDataStore()
         ads.delete_group(group)
 
+
+def get_group_details(group):
+    result = {}
+    from karaage.machines.models import MachineCategory
+    for machine_category in MachineCategory.objects.all():
+        ads_module = __import__(machine_category.datastore, {}, {}, [''])
+        ads = ads_module.AccountDataStore()
+        result[machine_category] = ads.get_group_details(group)
+    return result

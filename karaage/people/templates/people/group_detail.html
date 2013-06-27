@@ -87,5 +87,6 @@
         <li class="deletelink"><a href="{% url 'admin_delete_group' group.name %}">Delete</a></li>
 	{% endif %}
 	<li><a href="{% url 'kg_grouplogs' group.id %}">Logs</a></li>
+        <li><a href="{% url 'kg_group_verbose' group.name %}">Verbose</a></li>
       </ul>
 </div>{% endblock %}

@@ -13,39 +13,27 @@
 <div id="content-main">
 
     <div class="module">
-        <h2>Account {{ person }} LDAP</h2>
-        <h3>{{ person_ldap.dn }}</h3>
+        <h2>Person details</h2>
         <table>
-            {% with person_ldap.primary_group.get_obj as primary_group %}
-            {% if primary_group %}
-            <tr>
-                <th>Primary Group:</th>
-            </tr>
-            <tr>
-                <td><a href="{% url 'kg_group_detail' primary_group.pk %}">{{ primary_group }}</a></td>
-            </tr>
-            {% endif %}
-            {% endwith %}
-            <tr>
-                <th>Secondary Groups:</th>
-            </tr>
-            {% for g in person_ldap.secondary_groups.all|dictsort:"cn" %}
-                <tr class="{% cycle row1,row2 %}">
-                    <td><a href="{% url 'kg_group_detail' g.pk %}">{{ g }}</a></td>
-                </tr>
-            {% endfor %}
-
-            <tr>
-                <th>All fields</th>
-            </tr>
-            {% for i,j in person_ldap.get_fields %}
+            {% for i,j in person_details.iteritems %}
                 <tr>
-                    {% if i != 'userPassword' and j %}
                     <td>{{ i }}</td><td>{{ j }}</td>
-                    {% endif %}
                </tr>
             {% endfor %}
         </table>
     </div>
+
+    {% for account in account_details %}
+    <div class="module">
+        <h2>Account details</h2>
+        <table>
+            {% for i,j in account.iteritems %}
+                <tr>
+                    <td>{{ i }}</td><td>{{ j }}</td>
+               </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endfor %}
 </div>
 {% endblock %}
