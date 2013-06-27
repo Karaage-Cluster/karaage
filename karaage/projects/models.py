@@ -62,39 +62,24 @@ class Project(models.Model):
         return ('kg_project_detail', [self.pid])
         
     def save(self, *args, **kwargs):
-        # Try to work out if this is a create or update request
-        force_insert = kwargs.pop('force_insert', False)
-        force_update = kwargs.pop('force_update', False)
-
-        if force_insert and force_update:
-            raise RuntimeError("oops")
-
-        # neither force_insert or force_update specified, check if pk exists
-        if not force_insert and not force_update:
-            exists = False
-            if self.pk is not None:
-                exists = bool(Project.objects.filter(pk=self.pk).count() > 0)
-            force_update = exists
-            force_insert = not exists
-
-        kwargs['force_update'] = force_update
-        kwargs['force_insert'] = force_insert
-
-        # handle the create or update
-        if force_insert:
-            from karaage.datastores.projects import create_project
-            create_project(self)
+        # set group if not already set
+        if self.group_id is None:
             name = self.pid
             self.group,_ = Group.objects.get_or_create(name=name)
-        else:
-            from karaage.datastores.projects import update_project
-            update_project(self)
 
+        # update the datastore
+        from karaage.datastores.projects import save_project
+        save_project(self)
+
+        # save the object
         super(Project, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
+        # update the datastore
         from karaage.datastores.projects import delete_project
         delete_project(self)
+
+        # delete the object
         super(Project, self).delete(*args, **kwargs)
 
     @models.permalink

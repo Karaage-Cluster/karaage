@@ -93,10 +93,7 @@ class AccountDataStore(object):
     def remove_group(self, ua, group):
         pass
 
-    def create_group(self, group):
-        pass
-
-    def update_group(self, group):
+    def save_group(self, group):
         pass
 
     def delete_group(self, group):

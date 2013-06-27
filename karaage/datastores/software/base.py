@@ -18,10 +18,7 @@
 
 class SoftwareDataStore:
     
-    def create_software(self, software):
-        raise NotImplemented
-
-    def update_software(self, software):
+    def save_software(self, software):
         raise NotImplemented
 
     def delete_software(self, software):

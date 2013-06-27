@@ -21,12 +21,8 @@ module = __import__(settings.INSTITUTE_DATASTORE, {}, {}, [''])
 pds = module.InstituteDataStore()
 
 
-def create_institute(institute):
-    pds.create_institute(institute)
-
-
-def update_institute(institute):
-    pds.update_institute(institute)
+def save_institute(institute):
+    pds.save_institute(institute)
 
 
 def delete_institute(institute):

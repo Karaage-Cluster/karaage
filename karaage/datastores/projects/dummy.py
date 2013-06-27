@@ -20,10 +20,7 @@ from karaage.datastores.projects import base
 
 class ProjectDataStore(base.ProjectDataStore):
 
-    def create_project(self, project):
-        pass
-
-    def update_project(self, project):
+    def save_project(self, project):
         pass
 
     def delete_project(self, project):

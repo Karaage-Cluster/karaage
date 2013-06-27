@@ -126,7 +126,7 @@ class AccountDataStore(base.AccountDataStore):
         # FIXME
         super(AccountDataStore, self).remove_group(ua, group)
 
-    def create_group(self, group):
+    def save_group(self, group):
         # FIXME
         super(AccountDataStore, self).create_group(group)
 

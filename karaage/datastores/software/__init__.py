@@ -21,12 +21,8 @@ module = __import__(settings.SOFTWARE_DATASTORE, {}, {}, [''])
 pds = module.SoftwareDataStore()
 
 
-def create_software(software):
-    pds.create_software(software)
-
-
-def update_software(software):
-    pds.update_software(software)
+def save_software(software):
+    pds.save_software(software)
 
 
 def delete_software(software):

@@ -135,10 +135,13 @@ class AccountDataStore(base.AccountDataStore):
         person = ldap_schemas.account.objects.get(uid=ua.username)
         lgroup.secondary_accounts.remove(person)
 
-    def create_group(self, group):
+    def save_group(self, group):
         # if group already exists, take over existing group rather then error.
         try:
-            self.update_group(group)
+            lgroup = ldap_schemas.group.objects.get(cn=group.name)
+            lgroup.description = group.description
+            lgroup.pre_save()
+            lgroup.save()
         except ldap_schemas.group.DoesNotExist:
             lgroup = ldap_schemas.group(cn=group.name)
             lgroup.set_defaults()
@@ -146,12 +149,6 @@ class AccountDataStore(base.AccountDataStore):
             lgroup.pre_create(master=None)
             lgroup.pre_save()
             lgroup.save()
-
-    def update_group(self, group):
-        lgroup = ldap_schemas.group.objects.get(cn=group.name)
-        lgroup.description = group.description
-        lgroup.pre_save()
-        lgroup.save()
 
     def delete_group(self, group):
         lgroup = ldap_schemas.group.objects.get(cn=group.name)

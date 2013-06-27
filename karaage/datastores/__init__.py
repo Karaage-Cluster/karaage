@@ -130,19 +130,13 @@ def remove_group(ua, group):
     ads.remove_group(ua, group)
 
 
-def create_group(group):
+def save_group(group):
     from karaage.machines.models import MachineCategory
     for machine_category in MachineCategory.objects.all():
         ads_module = __import__(machine_category.datastore, {}, {}, [''])
         ads = ads_module.AccountDataStore()
-        ads.create_group(group)
+        ads.save_group(group)
 
-def update_group(group):
-    from karaage.machines.models import MachineCategory
-    for machine_category in MachineCategory.objects.all():
-        ads_module = __import__(machine_category.datastore, {}, {}, [''])
-        ads = ads_module.AccountDataStore()
-        ads.update_group(group)
 
 def delete_group(group):
     from karaage.machines.models import MachineCategory

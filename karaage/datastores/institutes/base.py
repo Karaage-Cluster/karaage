@@ -18,10 +18,7 @@
 
 class InstituteDataStore:
     
-    def create_institute(self, institute):
-        raise NotImplemented
-
-    def update_institute(self, institute):
+    def save_institute(self, institute):
         raise NotImplemented
 
     def delete_institute(self, institute):

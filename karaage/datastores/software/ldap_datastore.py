@@ -22,10 +22,7 @@ from karaage.datastores.software import base
 
 class SoftwareDataStore(base.SoftwareDataStore):
     
-    def create_software(self, software):
-        pass
-
-    def update_software(self, software):
+    def save_software(self, software):
         pass
 
     def delete_software(self, software):

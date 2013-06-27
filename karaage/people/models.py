@@ -383,14 +383,19 @@ class Group(models.Model):
         return reverse('kg_group_detail', kwargs={'group_name': self.name})
 
     def save(self, *args, **kwargs):
-        if self.pk is None:
-            from karaage.datastores import create_group
-            create_group(self)
-        super(self.__class__, self).save(*args, **kwargs)
+        # update the datastore
+        from karaage.datastores import save_group
+        save_group(self)
+
+        # save the object
+        super(Group, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
+        # update the datastore
         super(self.__class__, self).delete(*args, **kwargs)
         from karaage.datastores import delete_group
+
+        # delete the object
         delete_group(self)
 
     def add_person(self, person):

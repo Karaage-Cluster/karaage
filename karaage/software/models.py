@@ -51,19 +51,24 @@ class SoftwarePackage(models.Model):
         db_table = 'software_package'
 
     def save(self, *args, **kwargs):
-        if self.pk is None:
-            from karaage.datastores.software import create_software
-            create_software(self)
+        # set group if not already set
+        if self.group_id is None:
             name = str(self.name.lower().replace(' ', ''))
             self.group,_ = Group.objects.get_or_create(name=name)
-        else:
-            from karaage.datastores.software import update_software
-            update_software(self)
+
+        # update the datastore
+        from karaage.datastores.software import save_software
+        save_software(self)
+
+        # save the object
         super(SoftwarePackage, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
+        # update the datastore
         from karaage.datastores.software import delete_software
         delete_software(self)
+
+        # delete the object
         super(SoftwarePackage, self).delete(*args, **kwargs)
 
     def __unicode__(self):

@@ -34,19 +34,24 @@ class Institute(models.Model):
         db_table = 'institute'
 
     def save(self, *args, **kwargs):
-        if self.pk is None:
-            from karaage.datastores.institutes import create_institute
-            create_institute(self)
+        # set group if not already set
+        if self.group_id is None:
             name = str(self.name.lower().replace(' ', ''))
             self.group,_ = Group.objects.get_or_create(name=name)
-        else:
-            from karaage.datastores.institutes import update_institute
-            update_institute(self)
+
+        # update the datastore
+        from karaage.datastores.institutes import save_institute
+        save_institute(self)
+
+        # save the object
         super(Institute, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
+        # update the datastore
         from karaage.datastores.institutes import delete_institute
         delete_institute(self)
+
+        # delete the object
         super(Institute, self).delete(*args, **kwargs)
 
     def __unicode__(self):
