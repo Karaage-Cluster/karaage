@@ -111,6 +111,15 @@ class AccountDataStore(base.AccountDataStore):
         p = ldap_schemas.account.objects.get(uid=ua.username)
         p.rename(uid=new_username)
 
+    def get_account_details(self, ua):
+        p = ldap_schemas.account.objects.get(uid=ua.username)
+        result = {}
+        for i, j in p.get_fields():
+            if i != 'userPassword' and j is not None:
+                result[i] = j
+        result['dn'] = p.dn
+        return result
+
     def add_group(self, ua, group):
         lgroup = ldap_schemas.group.objects.get(cn=group.name)
         person = ldap_schemas.account.objects.get(uid=ua.username)
@@ -143,3 +152,12 @@ class AccountDataStore(base.AccountDataStore):
     def delete_group(self, group):
         lgroup = ldap_schemas.group.objects.get(cn=group.name)
         lgroup.delete()
+
+    def get_group_details(self, group):
+        lgroup = ldap_schemas.group.objects.get(cn=group.name)
+        result = {}
+        for i, j in lgroup.get_fields():
+            if j is not None:
+                result[i] = j
+        result['dn'] = lgroup.dn
+        return result

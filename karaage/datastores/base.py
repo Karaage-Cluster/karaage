@@ -52,6 +52,8 @@ class PersonalDataStore(object):
     def change_username(self, person, new_username):
         pass
 
+    def get_user_details(self, person):
+        return { 'meow': 'moo' }
 
 class AccountDataStore(object):
 
@@ -82,6 +84,9 @@ class AccountDataStore(object):
     def change_username(self, ua, new_username):
         pass
 
+    def get_account_details(self, ua):
+        return {}
+
     def add_group(self, ua, group):
         pass
 
@@ -96,3 +101,7 @@ class AccountDataStore(object):
 
     def delete_group(self, group):
         pass
+
+    def get_group_details(self, group):
+        return {}
+
