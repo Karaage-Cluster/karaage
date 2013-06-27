@@ -319,7 +319,7 @@ class UserTestCase(TestCase):
         self.assertEqual(user.groups.filter(project__gt=2).count(), 1)
         self.assertEqual(user.useraccount_set.count(), 1)
         self.assertEqual(user.useraccount_set.all()[0].date_deleted, None)
-        luser = ldap_schemas.person.objects.get(uid='kgtestuser3')
+        luser = ldap_schemas.account.objects.get(uid='kgtestuser3')
         self.assertEqual(luser.givenName, 'Test')
 
         response = self.client.get(reverse('admin_delete_user', args=[user.username]))
@@ -334,7 +334,7 @@ class UserTestCase(TestCase):
         self.assertEqual(user.projects.count(), 0)
         self.assertEqual(user.useraccount_set.count(), 1)
         self.assertEqual(user.useraccount_set.all()[0].date_deleted, datetime.date.today())
-        self.failUnlessRaises(ldap_schemas.person.DoesNotExist, ldap_schemas.person.objects.get, uid='kgtestuser3')
+        self.failUnlessRaises(ldap_schemas.account.DoesNotExist, ldap_schemas.account.objects.get, uid='kgtestuser3')
 
         # Test activating
         response = self.client.post(reverse('admin_activate_user', args=[user.username]))

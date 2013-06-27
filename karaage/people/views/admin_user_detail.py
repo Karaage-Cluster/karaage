@@ -77,10 +77,7 @@ def user_detail(request, username):
 @login_required
 def user_verbose(request, username):
     person = get_object_or_404(Person, user__username=username)
-    try:
-        person_ldap = ldap_schemas.account.objects.get(pk=username)
-    except ldap_schemas.account.DoesNotExist:
-        person_ldap = ldap_schemas.person.objects.get(pk=username)
+    person_ldap = ldap_schemas.account.objects.get(pk=username)
     return render_to_response('people/person_verbose.html', locals(), context_instance=RequestContext(request))
 
 @permission_required('machines.add_useraccount')

@@ -62,8 +62,8 @@ from karaage.datastores import ldap_schemas
 class LDAPBackend(ModelBackend):
     def authenticate(self, username=None, password=None):
         try:
-            ldap_user = ldap_schemas.person.objects.get(pk=username)
-        except ldap_schemas.person.DoesNotExist:
+            ldap_user = ldap_schemas.account.objects.get(pk=username)
+        except ldap_schemas.account.DoesNotExist:
             return None
 
         if ldap_user.check_password(password):

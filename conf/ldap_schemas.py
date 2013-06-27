@@ -20,29 +20,6 @@ from placard.schemas import common
 from placard.schemas.pwdpolicy import pwdPolicyMixin
 import tldap.manager
 
-##########
-# person #
-##########
-
-class kPersonMixin(object):
-    @classmethod
-    def pre_save(cls, self):
-        self.displayName = '%s %s (%s)' % (self.givenName, self.sn, self.o)
-
-
-class person(rfc.person, rfc.organizationalPerson, rfc.inetOrgPerson, rfc.pwdPolicy, common.baseMixin):
-    mixin_list = [ common.personMixin, pwdPolicyMixin, kPersonMixin ]
-
-    class Meta:
-        base_dn_setting = "LDAP_ACCOUNT_BASE"
-        object_classes = set([ 'top' ])
-        search_classes = set([ 'person' ])
-        pk = 'uid'
-
-    managed_by = tldap.manager.ManyToOneDescriptor(this_key='manager', linked_cls='karaage.datastores.ldap_schemas.person', linked_key='dn')
-    manager_of = tldap.manager.OneToManyDescriptor(this_key='dn', linked_cls='karaage.datastores.ldap_schemas.person', linked_key='manager')
-
-
 ###########
 # account #
 ###########
@@ -50,11 +27,19 @@ class person(rfc.person, rfc.organizationalPerson, rfc.inetOrgPerson, rfc.pwdPol
 class kAccountMixin(object):
     @classmethod
     def pre_save(cls, self):
+        self.displayName = '%s %s (%s)' % (self.givenName, self.sn, self.o)
         self.gecos = '%s %s (%s)' % (self.givenName, self.sn, self.o)
 
 
-class account(person, rfc.posixAccount, rfc.shadowAccount):
-    mixin_list = person.mixin_list + [ common.accountMixin, kAccountMixin ]
+class account(
+        rfc.person, rfc.organizationalPerson, rfc.inetOrgPerson, rfc.pwdPolicy,
+        rfc.posixAccount, rfc.shadowAccount,
+        common.baseMixin):
+
+    mixin_list = [
+        common.personMixin, pwdPolicyMixin,
+        common.accountMixin, kAccountMixin
+    ]
 
     class Meta:
         base_dn_setting = "LDAP_ACCOUNT_BASE"
@@ -79,9 +64,6 @@ class group(rfc.posixGroup, common.baseMixin):
         search_classes = set([ 'posixGroup' ])
         pk = 'cn'
 
-    # persons
-    secondary_persons = tldap.manager.ManyToManyDescriptor(this_key='memberUid', linked_cls=person, linked_key='uid', linked_is_p=False, related_name="secondary_groups")
-
     # accounts
     primary_accounts = tldap.manager.OneToManyDescriptor(this_key='gidNumber', linked_cls=account, linked_key='gidNumber', related_name="primary_group")
-#    secondary_accounts = tldap.manager.ManyToManyDescriptor(this_key='memberUid', linked_cls=account, linked_key='uid', linked_is_p=False, related_name="secondary_groups")
+    secondary_accounts = tldap.manager.ManyToManyDescriptor(this_key='memberUid', linked_cls=account, linked_key='uid', linked_is_p=False, related_name="secondary_groups")

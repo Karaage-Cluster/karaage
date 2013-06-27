@@ -17,7 +17,7 @@ class Migration(DataMigration):
                 institute.group = group
                 institute.save()
 
-                for member in lgroup.secondary_persons.all():
+                for member in lgroup.secondary_accounts.all():
                     person = orm['people.person'].objects.get(user__username=member.uid)
                     person.add_group(group)
 

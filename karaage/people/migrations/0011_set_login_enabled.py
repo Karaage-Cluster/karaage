@@ -9,7 +9,7 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         for person in orm['people.person'].objects.all():
-            p = ldap_schemas.person.objects.get(uid=person.user.username)
+            p = ldap_schemas.account.objects.get(uid=person.user.username)
             person.login_enabled = not p.is_locked()
             person.save()
 

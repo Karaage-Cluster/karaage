@@ -106,7 +106,7 @@ class ProjectTestCase(TestCase):
         self.assertEqual(lgroup.cn, project.pid)
 
     def test_add_remove_user_to_project(self):
-        self.assertRaises(ldap_schemas.person.DoesNotExist, ldap_schemas.person.objects.get, pk='kgtestuser2')
+        self.assertRaises(ldap_schemas.account.DoesNotExist, ldap_schemas.account.objects.get, pk='kgtestuser2')
 
         # login
         self.client.login(username='kgsuper', password='aq12ws')
@@ -116,7 +116,7 @@ class ProjectTestCase(TestCase):
         self.assertEqual(project.group.members.count(), 1)
         response = self.client.get(reverse('kg_project_detail', args=[project.pid]))
         self.failUnlessEqual(response.status_code, 200)
-        self.assertRaises(ldap_schemas.person.DoesNotExist, ldap_schemas.person.objects.get, pk='kgtestuser2')
+        self.assertRaises(ldap_schemas.account.DoesNotExist, ldap_schemas.account.objects.get, pk='kgtestuser2')
 
         # add kgtestuser2 to project
         new_user = Person.objects.get(user__username='kgtestuser2')
@@ -125,8 +125,8 @@ class ProjectTestCase(TestCase):
         project = Project.objects.get(pk='TestProject1')
         self.assertEqual(project.group.members.count(), 2)
         lgroup = ldap_schemas.group.objects.get(cn=project.pid)
-        ldap_schemas.person.objects.get(pk='kgtestuser2')
-        lgroup.secondary_persons.get(pk='kgtestuser2')
+        ldap_schemas.account.objects.get(pk='kgtestuser2')
+        lgroup.secondary_accounts.get(pk='kgtestuser2')
 
         # remove user
         response = self.client.post(reverse('kg_remove_project_member', args=[project.pid, new_user.username]))
@@ -134,7 +134,7 @@ class ProjectTestCase(TestCase):
         project = Project.objects.get(pk='TestProject1')
         self.assertEqual(project.group.members.count(), 1)
         lgroup = ldap_schemas.group.objects.get(cn=project.pid)
-        self.assertRaises(ldap_schemas.person.DoesNotExist, lgroup.secondary_persons.get, pk='kgtestuser2')
+        self.assertRaises(ldap_schemas.account.DoesNotExist, lgroup.secondary_accounts.get, pk='kgtestuser2')
 
     def test_delete_project(self):
 

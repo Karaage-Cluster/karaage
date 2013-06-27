@@ -114,13 +114,13 @@ class AccountDataStore(base.AccountDataStore):
     def add_group(self, ua, group):
         lgroup = ldap_schemas.group.objects.get(cn=group.name)
         person = ldap_schemas.account.objects.get(uid=ua.username)
-        lgroup.secondary_persons.add(person)
+        lgroup.secondary_accounts.add(person)
         pass
 
     def remove_group(self, ua, group):
         lgroup = ldap_schemas.group.objects.get(cn=group.name)
         person = ldap_schemas.account.objects.get(uid=ua.username)
-        lgroup.secondary_persons.remove(person)
+        lgroup.secondary_accounts.remove(person)
 
     def create_group(self, group):
         # if group already exists, take over existing group rather then error.
