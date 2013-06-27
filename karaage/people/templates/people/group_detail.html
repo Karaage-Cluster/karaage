@@ -29,12 +29,14 @@
 <h2>Members</h2>
 <table cellspacing="0">
 <thead>
-    <tr><th>Username</th><th></th></tr>
+    <tr><th>Username</th><th>First Name</th><th>Last Name</th>{% if perms.people.change_person %}<th></th>{% endif %}</tr>
 </thead>
 <tbody>
 {% for member in group.members.all %}
 <tr class="row1">
     <td><a href="{{ member.get_absolute_url }}">{{ member.username }}</a></td>
+    <td>{{ member.user.first_name }}</td>
+    <td>{{ member.user.last_name }}</td>
     {% if perms.people.change_person %}
     <td>
         <div class="deletelink"><a href="{% url 'kg_group_remove_person' group.name member.username %}">Delete</a></li>
