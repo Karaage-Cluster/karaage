@@ -34,7 +34,26 @@ class Institute(models.Model):
         db_table = 'institute'
 
     def save(self, *args, **kwargs):
-        if self.pk is None:
+        # Try to work out if this is a create or update request
+        force_insert = kwargs.pop('force_insert', False)
+        force_update = kwargs.pop('force_update', False)
+
+        if force_insert and force_update:
+            raise RuntimeError("oops")
+
+        # neither force_insert or force_update specified, check if pk exists
+        if not force_insert and not force_update:
+            exists = False
+            if self.pk is not None:
+                exists = bool(Institute.objects.filter(pk=self.pk).count() > 0)
+            force_update = exists
+            force_insert = not exists
+
+        kwargs['force_update'] = force_update
+        kwargs['force_insert'] = force_insert
+
+        # handle the create or update
+        if force_insert:
             from karaage.datastores.institutes import create_institute
             create_institute(self)
             name = str(self.name.lower().replace(' ', ''))
@@ -42,7 +61,9 @@ class Institute(models.Model):
         else:
             from karaage.datastores.institutes import update_institute
             update_institute(self)
+
         super(Institute, self).save(*args, **kwargs)
+
 
     def delete(self, *args, **kwargs):
         from karaage.datastores.institutes import delete_institute

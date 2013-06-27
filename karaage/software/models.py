@@ -51,7 +51,26 @@ class SoftwarePackage(models.Model):
         db_table = 'software_package'
 
     def save(self, *args, **kwargs):
-        if self.pk is None:
+        # Try to work out if this is a create or update request
+        force_insert = kwargs.pop('force_insert', False)
+        force_update = kwargs.pop('force_update', False)
+
+        if force_insert and force_update:
+            raise RuntimeError("oops")
+
+        # neither force_insert or force_update specified, check if pk exists
+        if not force_insert and not force_update:
+            exists = False
+            if self.pk is not None:
+                exists = bool(SoftwarePackage.objects.filter(pk=self.pk).count() > 0)
+            force_update = exists
+            force_insert = not exists
+
+        kwargs['force_update'] = force_update
+        kwargs['force_insert'] = force_insert
+
+        # handle the create or update
+        if force_insert:
             from karaage.datastores.software import create_software
             create_software(self)
             name = str(self.name.lower().replace(' ', ''))
@@ -59,6 +78,7 @@ class SoftwarePackage(models.Model):
         else:
             from karaage.datastores.software import update_software
             update_software(self)
+
         super(SoftwarePackage, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):

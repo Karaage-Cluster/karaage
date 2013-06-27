@@ -383,10 +383,33 @@ class Group(models.Model):
         return reverse('kg_group_detail', kwargs={'group_name': self.name})
 
     def save(self, *args, **kwargs):
-        if self.pk is None:
+        # Try to work out if this is a create or update request
+        force_insert = kwargs.pop('force_insert', False)
+        force_update = kwargs.pop('force_update', False)
+
+        if force_insert and force_update:
+            raise RuntimeError("oops")
+
+        # neither force_insert or force_update specified, check if pk exists
+        if not force_insert and not force_update:
+            exists = False
+            if self.pk is not None:
+                exists = bool(Group.objects.filter(pk=self.pk).count() > 0)
+            force_update = exists
+            force_insert = not exists
+
+        kwargs['force_update'] = force_update
+        kwargs['force_insert'] = force_insert
+
+        # handle the create or update
+        if force_insert:
             from karaage.datastores import create_group
             create_group(self)
-        super(self.__class__, self).save(*args, **kwargs)
+        else:
+            from karaage.datastores import update_group
+            update_group(self)
+
+        super(Group, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         super(self.__class__, self).delete(*args, **kwargs)
