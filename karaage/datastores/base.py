@@ -28,13 +28,10 @@ from karaage.util import log_object as log
 
 class PersonalDataStore(object):
 
-    def activate_user(self, person):
+    def save_user(self, person):
         pass
 
     def delete_user(self, person):
-        pass
-
-    def update_user(self, person):
         pass
 
     def lock_user(self, person):
@@ -57,13 +54,10 @@ class PersonalDataStore(object):
 
 class AccountDataStore(object):
 
-    def create_account(self, ua):
+    def save_account(self, ua):
         pass
 
     def delete_account(self, ua):
-        pass
-
-    def update_account(self, ua):
         pass
 
     def lock_account(self, ua):

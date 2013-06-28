@@ -133,21 +133,6 @@ class UserAccount(models.Model):
             machine_category=machine_category,
             default_project=default_project,
             date_created=datetime.datetime.today())
-
-        from karaage.datastores import create_account
-        create_account(ua)
-
-        from karaage.datastores import add_group
-        for group in person.groups.all():
-            add_group(ua, group)
-
-        if default_project is not None:
-            from karaage.projects.utils import add_user_to_project
-            add_user_to_project(person, default_project)
-
-        log(get_current_user(), ua.user, 1,
-            'Created account on %s' % ua.machine_category)
-
         return ua
 
     def project_list(self):
@@ -158,6 +143,29 @@ class UserAccount(models.Model):
             return self.cpujob_set.all()[:5]
         except:
             return None
+
+    def save(self, *args, **kwargs):
+        # update the datastore
+        from karaage.datastores import save_account
+        save_account(self)
+
+        # save the object
+        super(UserAccount, self).save(*args, **kwargs)
+
+        # log message
+        log(get_current_user(), self.user, 1,
+            'Created account on %s' % self.machine_category)
+
+    def delete(self):
+        # update the datastore
+        from karaage.datastores import delete_account
+        delete_account(self)
+
+        # delete the object
+        super(UserAccount, self).delete(*args, **kwargs)
+
+        log(get_current_user(), self.user, 3,
+            'Deleted account on %s' % self.machine_category)
 
     def deactivate(self):
         if not self.date_deleted:
@@ -172,7 +180,7 @@ class UserAccount(models.Model):
         delete_account(self)
 
         log(get_current_user(), self.user, 3,
-            'Deleted account on %s' % self.machine_category)
+            'Deactivated account on %s' % self.machine_category)
 
     def change_shell(self, shell):
         from karaage.datastores import change_shell

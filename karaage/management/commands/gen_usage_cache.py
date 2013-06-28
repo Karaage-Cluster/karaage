@@ -81,7 +81,7 @@ def gen_last_usage_user():
                 if d is not None and d > date:
                     date = d
         user.last_usage = date
-        user.save(update_datastore=False)
+        user.save()
     
 
 class Command(BaseCommand):

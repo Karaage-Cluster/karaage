@@ -9,6 +9,7 @@ ADMIN_APPROVE_ACCOUNTS = True
 
 PROJECT_DATASTORE = 'karaage.datastores.projects.ldap_datastore'
 INSTITUTE_DATASTORE = 'karaage.datastores.institutes.ldap_datastore'
+SOFTWARE_DATASTORE = 'karaage.datastores.software.ldap_datastore'
 PERSONAL_DATASTORE = 'karaage.datastores.openldap_datastore'
 
 ACCOUNTS_ORG_NAME = 'TestOrg'

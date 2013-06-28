@@ -31,53 +31,53 @@ class PersonalDataStore(base.PersonalDataStore):
 
 class AccountDataStore(base.AccountDataStore):
 
-    def create_account(self, ua):
-        super(AccountDataStore, self).create_account(ua)
+    def save_account(self, ua):
+        super(AccountDataStore, self).save_account(ua)
 
         person = ua.user
-
         lgroup = ldap_schemas.group.objects.get(cn=person.institute.group.name)
 
-        luser = ldap_schemas.account()
-        luser.set_defaults()
-        luser.uid = person.username
-        luser.givenName = person.first_name
-        luser.sn = person.last_name
-        luser.telephoneNumber = str_or_none(person.telephone)
-        luser.mail = str_or_none(person.email)
-        luser.title = str_or_none(person.title)
-        luser.o = person.institute.name
+        try:
+            luser = ldap_schemas.account.objects.get(uid=ua.username)
+            luser.gidNumber = lgroup.gidNumber
+            luser.givenName = person.first_name
+            luser.sn = person.last_name
+            luser.telephoneNumber = str_or_none(person.telephone)
+            luser.mail = str_or_none(person.email)
+            luser.title = str_or_none(person.title)
+            luser.o = person.institute.name
+            luser.gidNumber = lgroup.gidNumber
+            luser.homeDirectory = settings.HOME_DIRECTORY % { 'default_project': ua.default_project.pid, 'uid': person.username }
+            luser.loginShell = ua.shell
+            luser.pre_save()
+            luser.save()
+        except ldap_schemas.account.DoesNotExist:
+            luser = ldap_schemas.account()
+            luser.set_defaults()
+            luser.uid = person.username
+            luser.givenName = person.first_name
+            luser.sn = person.last_name
+            luser.telephoneNumber = str_or_none(person.telephone)
+            luser.mail = str_or_none(person.email)
+            luser.title = str_or_none(person.title)
+            luser.o = person.institute.name
+            luser.gidNumber = lgroup.gidNumber
+            luser.homeDirectory = settings.HOME_DIRECTORY % { 'default_project': ua.default_project.pid, 'uid': person.username }
+            luser.loginShell = ua.shell
+            luser.pre_create(master=None)
+            luser.pre_save()
+            luser.save()
 
-        luser.gidNumber = lgroup.gidNumber
-        luser.homeDirectory = settings.HOME_DIRECTORY % { 'default_project': ua.default_project.pid, 'uid': luser.uid }
-        luser.loginShell = ua.shell
-        luser.pre_create(master=None)
-        luser.pre_save()
-        luser.save()
+            # add all groups
+            for group in ua.user.groups.all():
+                self.add_group(ua, group)
+
 
     def delete_account(self, ua):
         super(AccountDataStore, self).delete_account(ua)
         luser = ldap_schemas.account.objects.get(uid=ua.username)
         luser.pre_delete()
         luser.delete()
-
-    def update_account(self, ua):
-        super(AccountDataStore, self).update_account(ua)
-
-        person = ua.user
-
-        lgroup = ldap_schemas.group.objects.get(cn=person.institute.group.name)
-
-        luser = ldap_schemas.account.objects.get(uid=ua.username)
-        luser.gidNumber = lgroup.gidNumber
-        luser.givenName = person.first_name
-        luser.sn = person.last_name
-        luser.telephoneNumber = str_or_none(person.telephone)
-        luser.mail = str_or_none(person.email)
-        luser.title = str_or_none(person.title)
-        luser.o = person.institute.name
-        luser.pre_save()
-        luser.save()
 
     def lock_account(self, ua):
         super(AccountDataStore, self).lock_account(ua)

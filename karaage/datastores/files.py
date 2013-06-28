@@ -28,20 +28,39 @@ class AccountDataStore(base.AccountDataStore):
     
     passwd_files = settings.PASSWD_FILES
 
-    def create_account(self, ua):
+    def save_account(self, ua):
         super(AccountDataStore, self).create_account(ua)
 
-        person = ua.user
+        if self.account_exists():
+            super(AccountDataStore, self).update_account(ua)
 
-        home_dir = '/home/%s' % ua.username
-        userid = self.get_next_uid()
+            for pwfile in self.passwd_files:
+                f = open(pwfile)
+                data = f.readlines()
+                f.close()
+                new_data = []
+                for l in data:
+                    if l.find(ua.username) == 0:
+                        username, shad, uid, gid, name, homedir, shell = l.split(':')
+                        homedir = '/home/%s' % ua.username
+                        l = "%s:x:%s:%s:%s:%s:%s\n" % (ua.username, uid, ua.user.institute.gid, ua.user.get_full_name(), homedir, shell)
+                    new_data.append(l)
 
-        line = "%s:x:%s:%s:%s:%s:%s\n" % (ua.username, userid, person.institute.gid, person.get_full_name(), home_dir, settings.DEFAULT_SHELL)
+                f = open(pwfile, 'w')
+                f.writelines(new_data)
+                f.close()
+        else:
+            person = ua.user
 
-        for pwfile in self.passwd_files:
-            f = open(pwfile, 'a')
-            f.write(line)
-            f.close()
+            home_dir = '/home/%s' % ua.username
+            userid = self.get_next_uid()
+
+            line = "%s:x:%s:%s:%s:%s:%s\n" % (ua.username, userid, person.institute.gid, person.get_full_name(), home_dir, settings.DEFAULT_SHELL)
+
+            for pwfile in self.passwd_files:
+                f = open(pwfile, 'a')
+                f.write(line)
+                f.close()
 
     def delete_account(self, ua):
         super(AccountDataStore, self).delete_account(ua)
@@ -57,25 +76,6 @@ class AccountDataStore(base.AccountDataStore):
                     new_data.append(l)
 
             f = open(file, 'w')
-            f.writelines(new_data)
-            f.close()
-
-    def update_account(self, ua):
-        super(AccountDataStore, self).update_account(ua)
-
-        for pwfile in self.passwd_files:
-            f = open(pwfile)
-            data = f.readlines()
-            f.close()
-            new_data = []
-            for l in data:
-                if l.find(ua.username) == 0:
-                    username, shad, uid, gid, name, homedir, shell = l.split(':')
-                    homedir = '/home/%s' % ua.username
-                    l = "%s:x:%s:%s:%s:%s:%s\n" % (ua.username, uid, ua.user.institute.gid, ua.user.get_full_name(), homedir, shell)
-                new_data.append(l)
-
-            f = open(pwfile, 'w')
             f.writelines(new_data)
             f.close()
 
@@ -110,7 +110,7 @@ class AccountDataStore(base.AccountDataStore):
         # FIXME
         super(AccountDataStore, self).set_password(ua, raw_password)
 
-    def acocunt_exists(self, username):
+    def account_exists(self, username):
         # FIXME
         super(AccountDataStore, self).account_exists(username)
 

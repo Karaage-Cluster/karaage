@@ -22,16 +22,12 @@ module = __import__(settings.PERSONAL_DATASTORE, {}, {}, [''])
 pds = module.PersonalDataStore()
 
 
-def activate_user(person):
-    pds.activate_user(person)
+def save_user(person):
+    pds.save_user(person)
 
 
 def delete_user(person):
     pds.delete_user(person)
-
-
-def update_user(person):
-    pds.update_user(person)
 
 
 def lock_user(person):
@@ -58,22 +54,16 @@ def get_user_details(person):
     return pds.get_user_details(person)
 
 
-def create_account(ua):
+def save_account(ua):
     ads_module = __import__(ua.machine_category.datastore, {}, {}, [''])
     ads = ads_module.AccountDataStore()
-    ads.create_account(ua)
+    ads.save_account(ua)
 
 
 def delete_account(ua):
     ads_module = __import__(ua.machine_category.datastore, {}, {}, [''])
     ads = ads_module.AccountDataStore()
     ads.delete_account(ua)
-
-
-def update_account(ua):
-    ads_module = __import__(ua.machine_category.datastore, {}, {}, [''])
-    ads = ads_module.AccountDataStore()
-    ads.update_account(ua)
 
 
 def lock_account(ua):
