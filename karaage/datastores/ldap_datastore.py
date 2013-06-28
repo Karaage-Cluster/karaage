@@ -76,6 +76,7 @@ class AccountDataStore(base.AccountDataStore):
     def delete_account(self, ua):
         super(AccountDataStore, self).delete_account(ua)
         luser = ldap_schemas.account.objects.get(uid=ua.username)
+        luser.secondary_groups.clear()
         luser.pre_delete()
         luser.delete()
 
