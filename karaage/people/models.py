@@ -20,13 +20,12 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
-from andsome.middleware.threadlocals import get_current_user
 from karaage.constants import TITLES, STATES, COUNTRIES
 from karaage.people.managers import ActiveUserManager, DeletedUserManager, LeaderManager, PersonManager
 from karaage.people.emails import send_reset_password_email
 
 from karaage.util import log_object as log
-from karaage.util import new_random_token
+from karaage.util import new_random_token, get_current_person
 
 import datetime
 
@@ -73,7 +72,7 @@ class Person(models.Model):
         return self.user.get_full_name()
     
     def get_absolute_url(self):
-        person = get_current_user().get_profile()
+        person = get_current_person()
         if person == self:
             try:
                 return reverse('kg_user_profile')
@@ -292,7 +291,7 @@ class Person(models.Model):
         if not self.is_active:
             self.date_approved = datetime.datetime.today()
 
-            self.approved_by = get_current_user().get_profile()
+            self.approved_by = get_current_person()
             self.deleted_by = None
             self.date_deleted = None
             self.user.is_active = True
@@ -308,7 +307,7 @@ class Person(models.Model):
         self.user.save()
 
         self.date_deleted = datetime.datetime.today()
-        self.deleted_by = get_current_user().get_profile()
+        self.deleted_by = get_current_person()
         self.save()
 
         for ua in self.useraccount_set.filter(date_deleted__isnull=True):

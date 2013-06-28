@@ -47,6 +47,15 @@ def get_date_range(request, default_start=(datetime.date.today() - datetime.time
     return start, end
 
 
+def get_current_person():
+    user = get_current_user()
+    if user is None:
+        return None
+    if not user.is_authenticated():
+        return None
+    return user.get_profile()
+
+
 def log_object(user, object, flag, message):
     if user is None:
         user = get_current_user()

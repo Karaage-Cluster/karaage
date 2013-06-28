@@ -19,12 +19,12 @@ from django.db import models
 from django.db.models.signals import post_save, pre_delete
 
 import datetime
-from andsome.middleware.threadlocals import get_current_user
 
 from karaage.people.models import Person, Group
 from karaage.institutes.models import Institute
 from karaage.machines.models import MachineCategory
 from karaage.projects.managers import ActiveProjectManager, DeletedProjectManager
+from karaage.util import get_current_person
 
 
 class Project(models.Model):
@@ -122,18 +122,12 @@ class Project(models.Model):
         self.is_active = True
         self.is_approved = True
         self.date_approved = datetime.datetime.today()
-        try:
-            self.approved_by = get_current_user().get_profile()
-        except:
-            pass
+        self.approved_by = get_current_person()
         self.save()
 
     def deactivate(self):
         self.is_active = False
-        try:
-            self.deleted_by = get_current_user().get_profile()
-        except:
-            pass
+        self.deleted_by = get_current_person()
         self.date_deleted = datetime.datetime.today()
         self.group.members.clear()
         self.save()

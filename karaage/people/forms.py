@@ -21,7 +21,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
 
-from andsome.middleware.threadlocals import get_current_user
 from andsome.util import is_password_strong
 
 from karaage.people.models import Person, Group
@@ -30,6 +29,7 @@ from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
 from karaage.constants import TITLES, COUNTRIES
+from karaage.util import get_current_person
 
 import ajax_select.fields
 
@@ -183,7 +183,7 @@ class PasswordChangeForm(AdminPasswordChangeForm):
     old = forms.CharField(widget=forms.PasswordInput(), label='Old password')
 
     def clean_old(self):
-        person = get_current_user().get_profile()
+        person = get_current_person()
         
         from django.contrib.auth import authenticate
         user = authenticate(username=person.user.username, password=self.cleaned_data['old'])

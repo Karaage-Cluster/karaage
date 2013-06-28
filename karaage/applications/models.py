@@ -23,10 +23,9 @@ from django.contrib.contenttypes import generic
 from django.conf import settings
 
 import datetime
-from andsome.middleware.threadlocals import get_current_user
 
 from karaage.constants import TITLES, COUNTRIES
-from karaage.util import new_random_token
+from karaage.util import new_random_token, get_current_person
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
@@ -78,8 +77,7 @@ class Application(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            if get_current_user() and get_current_user().is_authenticated():
-                self.created_by = get_current_user().get_profile()
+            self.created_by = get_current_person()
             self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
             parent = self._meta.parents.keys()[0]
             subclasses = parent._meta.get_all_related_objects()
