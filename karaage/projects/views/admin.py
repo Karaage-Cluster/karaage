@@ -26,7 +26,6 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib import messages
 
 from andsome.util.filterspecs import Filter, FilterBar
-from andsome.middleware.threadlocals import get_current_user
 
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
@@ -66,10 +65,10 @@ def add_edit_project(request, project_id=None):
             form.save_m2m()
             if flag == 1:
                 messages.success(request, "Project '%s' created succesfully" % project)
-                log(get_current_user(), project, 1, 'Created')
+                log(None, project, 1, 'Created')
             else:
                 messages.success(request, "Project '%s' edited succesfully" % project)
-                log(get_current_user(), project, 2, 'Edited')
+                log(None, project, 2, 'Edited')
 
             return HttpResponseRedirect(project.get_absolute_url())
     else:

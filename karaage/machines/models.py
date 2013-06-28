@@ -20,8 +20,6 @@ from django.conf import settings
 
 import datetime
 
-from andsome.middleware.threadlocals import get_current_user
-
 from karaage.people.models import Person
 from karaage.machines.managers import MachineCategoryManager, ActiveMachineManager, MC_CACHE
 from karaage.util import log_object as log
@@ -153,7 +151,7 @@ class UserAccount(models.Model):
         super(UserAccount, self).save(*args, **kwargs)
 
         # log message
-        log(get_current_user(), self.user, 1,
+        log(None, self.user, 1,
             'Created account on %s' % self.machine_category)
 
     def delete(self):
@@ -164,7 +162,7 @@ class UserAccount(models.Model):
         # delete the object
         super(UserAccount, self).delete(*args, **kwargs)
 
-        log(get_current_user(), self.user, 3,
+        log(None, self.user, 3,
             'Deleted account on %s' % self.machine_category)
 
     def deactivate(self):
@@ -179,7 +177,7 @@ class UserAccount(models.Model):
         from karaage.datastores import delete_account
         delete_account(self)
 
-        log(get_current_user(), self.user, 3,
+        log(None, self.user, 3,
             'Deactivated account on %s' % self.machine_category)
 
     def change_shell(self, shell):

@@ -19,7 +19,6 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 import datetime
-from andsome.middleware.threadlocals import get_current_user
 
 from karaage.people.models import Person
 from karaage.machines.models import UserAccount

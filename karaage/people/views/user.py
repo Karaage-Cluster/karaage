@@ -27,8 +27,6 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.tokens import default_token_generator
 
-from andsome.middleware.threadlocals import get_current_user
-
 from karaage.util import get_date_range
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
@@ -204,7 +202,7 @@ def login(request, username=None):
                     person.update_password = False
                     person.save()
                     messages.success(request, 'Password updated. New accounts activated.')
-                    log(get_current_user(), person, 2, 'Automatically updated passwords.')
+                    log(None, person, 2, 'Automatically updated passwords.')
                     return HttpResponseRedirect(redirect_to)
                 else:
                     error = 'User account is locked'

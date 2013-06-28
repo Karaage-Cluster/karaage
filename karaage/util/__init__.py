@@ -17,6 +17,7 @@
 
 import datetime
 from django.contrib.contenttypes.models import ContentType
+from andsome.middleware.threadlocals import get_current_user
 
 
 def get_date_range(request, default_start=(datetime.date.today() - datetime.timedelta(days=90)), default_end=datetime.date.today()):
@@ -47,9 +48,9 @@ def get_date_range(request, default_start=(datetime.date.today() - datetime.time
 
 
 def log_object(user, object, flag, message):
-    if not user:
-        return
-    if user.is_authenticated():
+    if user is None:
+        user = get_current_user()
+    if user is not None and user.is_authenticated():
         user.logentry_set.create(
             content_type=ContentType.objects.get_for_model(object.__class__),
             object_id=object._get_pk_val(),

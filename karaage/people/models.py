@@ -130,14 +130,7 @@ class Person(models.Model):
             saml_id=data.get('saml_id', None),
             )
 
-        try:
-            current_user = get_current_user()
-            if current_user.is_anonymous():
-                current_user = person.user
-        except:
-            current_user = person.user
-
-        log(current_user, person, 1, 'Created')
+        log(None, person, 1, 'Created')
         return person
 
     @classmethod
@@ -291,23 +284,16 @@ class Person(models.Model):
 
     def activate(self):
         if not self.is_active:
-            try:
-                current_user = get_current_user()
-                if current_user.is_anonymous():
-                    current_user = self.user
-            except:
-                current_user = self.user
-
             self.date_approved = datetime.datetime.today()
 
-            self.approved_by = current_user.get_profile()
+            self.approved_by = get_current_user().get_profile()
             self.deleted_by = None
             self.date_deleted = None
             self.user.is_active = True
             self.user.save()
             self.save()
 
-            log(current_user, self, 1, 'Activated')
+            log(None, self, 1, 'Activated')
 
     def deactivate(self):
         """ Sets Person not active and deletes all UserAccounts"""
@@ -315,16 +301,14 @@ class Person(models.Model):
         self.expires = None
         self.user.save()
 
-        deletor = get_current_user()
-
         self.date_deleted = datetime.datetime.today()
-        self.deleted_by = deletor.get_profile()
+        self.deleted_by = get_current_user().get_profile()
         self.save()
 
         for ua in self.useraccount_set.filter(date_deleted__isnull=True):
             ua.deactivate()
 
-        log(deletor, self, 3, 'Deactivated')
+        log(None, self, 3, 'Deactivated')
 
     def set_password(self, password):
         self.user.set_password(password)
