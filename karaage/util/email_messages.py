@@ -25,8 +25,6 @@ from django.contrib.sites.models import Site
 from django.template.loader import render_to_string
 from django.conf import settings
 
-from andsome.middleware.threadlocals import get_current_user
-
 from karaage.util import log_object as log
 
 CONTEXT = {
@@ -62,8 +60,7 @@ def send_bounced_warning(person):
                 subject = render_to_string('requests/emails/bounced_email_subject.txt', context)
                 body = render_to_string('requests/emails/bounced_email_body.txt', context)
                 send_mail(subject.replace('\n', ''), body, settings.ACCOUNTS_EMAIL, [to_email])
-                active_user = get_current_user()
-                log(active_user, leader, 2, 'Sent email about bounced emails from %s' % person)
+                log(None, leader, 2, 'Sent email about bounced emails from %s' % person)
 
 
 def send_software_request_email(software_request):
