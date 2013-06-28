@@ -24,12 +24,10 @@ def add_user_to_project(person, project):
         if not person.has_account(mc):
             UserAccount.create(person, project, mc)
     project.group.members.add(person)
-    project.save()
 
 
 def remove_user_from_project(person, project):
     project.group.members.remove(person)
-    project.save()
 
 
 def get_new_pid(institute):

@@ -132,6 +132,9 @@ class UserAccount(models.Model):
             default_project=default_project,
             date_created=datetime.datetime.today())
 
+        if default_project is not None:
+            person.add_group(default_project.group)
+
         log(None, person, 1,
             'Created account on %s' % machine_category)
         return ua
@@ -172,10 +175,6 @@ class UserAccount(models.Model):
         if not self.date_deleted:
             self.date_deleted = datetime.datetime.now()
             self.save()
-
-        from karaage.projects.utils import remove_user_from_project
-        for project in self.project_list():
-            remove_user_from_project(self.user, project)
 
         from karaage.datastores import delete_account
         delete_account(self)

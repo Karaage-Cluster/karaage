@@ -308,6 +308,7 @@ class Person(models.Model):
 
         self.date_deleted = datetime.datetime.today()
         self.deleted_by = get_current_person()
+        self.groups.clear()
         self.save()
 
         for ua in self.useraccount_set.filter(date_deleted__isnull=True):

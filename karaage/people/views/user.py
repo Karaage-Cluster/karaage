@@ -41,7 +41,7 @@ from karaage.util import log_object as log
 def profile(request):
 
     person = request.user.get_profile()
-    project_list = person.project_set.all()
+    project_list = person.projects.all()
     project_requests = []
     user_applications = []
     start, end = get_date_range(request)
