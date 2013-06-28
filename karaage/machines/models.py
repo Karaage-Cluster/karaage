@@ -131,6 +131,9 @@ class UserAccount(models.Model):
             machine_category=machine_category,
             default_project=default_project,
             date_created=datetime.datetime.today())
+
+        log(None, person, 1,
+            'Created account on %s' % machine_category)
         return ua
 
     def project_list(self):
@@ -151,8 +154,8 @@ class UserAccount(models.Model):
         super(UserAccount, self).save(*args, **kwargs)
 
         # log message
-        log(None, self.user, 1,
-            'Created account on %s' % self.machine_category)
+        log(None, self.user, 2,
+            'Saved account on %s' % self.machine_category)
 
     def delete(self):
         # update the datastore

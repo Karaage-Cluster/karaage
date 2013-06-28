@@ -20,6 +20,7 @@ from django.db import models
 from karaage.people.models import Person, Group
 from karaage.machines.models import Machine
 
+from karaage.util import log_object as log
 
 class SoftwareCategory(models.Model):
     name = models.CharField(max_length=100)
@@ -63,6 +64,9 @@ class SoftwarePackage(models.Model):
         # save the object
         super(SoftwarePackage, self).save(*args, **kwargs)
 
+        # log message
+        log(None, self, 2, "Saved software package")
+
     def delete(self, *args, **kwargs):
         # update the datastore
         from karaage.datastores.software import delete_software
@@ -70,6 +74,9 @@ class SoftwarePackage(models.Model):
 
         # delete the object
         super(SoftwarePackage, self).delete(*args, **kwargs)
+
+        # log message
+        log(None, self, 2, "Deleted software package")
 
     def __unicode__(self):
         return self.name

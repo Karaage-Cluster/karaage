@@ -53,7 +53,6 @@ def add_edit_user(request, form_class, template_name='people/person_form.html', 
             if person:
                 # edit
                 person = form.save(person)
-                log(request.user, person, 2, "Changed details" % person)
                 messages.success(request, "User '%s' was edited succesfully" % person)
             else:
                 #Add
@@ -374,7 +373,6 @@ def add_edit_group(request, form_class, template_name='people/group_form.html', 
             if group:
                 # edit
                 group = form.save(group)
-                log(request.user, group, 2, "Changed details")
                 messages.success(request, "Group '%s' was edited succesfully" % group)
             else:
                 #Add
