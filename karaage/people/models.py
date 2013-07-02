@@ -409,16 +409,16 @@ def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs)
         if not reverse:
             group = instance
             for person in model.objects.filter(pk__in=pk_set):
+                log(None, person, 2, "Added person to group %s" % group)
+                log(None, group, 2, "Added person %s to group" % person)
                 for ua in person.useraccount_set.filter(date_deleted__isnull=True):
-                    log(None, person, 2, "Added person to group %s" % group)
-                    log(None, group, 2, "Added person %s to group" % person)
                     add_group(ua, group)
         else:
             person = instance
             for group in model.objects.filter(pk__in=pk_set):
+                log(None, person, 2, "Added person to group %s" % group)
+                log(None, group, 2, "Added person %s to group" % person)
                 for ua in person.useraccount_set.filter(date_deleted__isnull=True):
-                    log(None, person, 2, "Added person to group %s" % group)
-                    log(None, group, 2, "Added person %s to group" % person)
                     add_group(ua, group)
 
     elif action == "post_remove":
@@ -426,33 +426,33 @@ def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs)
         if not reverse:
             group = instance
             for person in model.objects.filter(pk__in=pk_set):
+                log(None, person, 2, "Removed person from group %s" % group)
+                log(None, group, 2, "Removed person %s from group" % person)
                 for ua in person.useraccount_set.filter(date_deleted__isnull=True):
-                    log(None, person, 2, "Removed person from group %s" % group)
-                    log(None, group, 2, "Removed person %s from group" % person)
                     remove_group(ua, group)
         else:
             person = instance
             for group in model.objects.filter(pk__in=pk_set):
+                log(None, person, 2, "Removed person from group %s" % group)
+                log(None, group, 2, "Removed person %s from group" % person)
                 for ua in person.useraccount_set.filter(date_deleted__isnull=True):
-                    log(None, person, 2, "Removed person from group %s" % group)
-                    log(None, group, 2, "Removed person %s from group" % person)
                     remove_group(ua, group)
 
-    elif action == "post_clear":
+    elif action == "pre_clear":
         from karaage.datastores import remove_group
         if not reverse:
             group = instance
             log(None, group, 2, "Removed all people from group")
             for person in group.members.all():
+                log(None, group, 2, "Removed person %s from group" % person)
                 for ua in person.useraccount_set.filter(date_deleted__isnull=True):
-                    log(None, group, 2, "Removed person %s from group" % person)
                     remove_group(ua, group)
         else:
             person = instance
             log(None, person, 2, "Removed person from all groups")
             for group in person.groups.all():
+                log(None, group, 2, "Removed person %s from group" % person)
                 for ua in person.useraccount_set.filter(date_deleted__isnull=True):
-                    log(None, group, 2, "Removed person %s from group" % person)
                     remove_group(ua, group)
 
 
