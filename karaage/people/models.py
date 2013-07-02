@@ -409,51 +409,39 @@ def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs)
         if not reverse:
             group = instance
             for person in model.objects.filter(pk__in=pk_set):
-                for ua in person.useraccount_set.filter(date_deleted__isnull=True):
-                    log(None, person, 2, "Added person to group %s" % group)
-                    log(None, group, 2, "Added person %s to group" % person)
-                    add_group(ua, group)
+                log(None, person, 2, "Added person to group %s" % group)
+                log(None, group, 2, "Added person %s to group" % person)
         else:
             person = instance
             for group in model.objects.filter(pk__in=pk_set):
-                for ua in person.useraccount_set.filter(date_deleted__isnull=True):
-                    log(None, person, 2, "Added person to group %s" % group)
-                    log(None, group, 2, "Added person %s to group" % person)
-                    add_group(ua, group)
+                log(None, person, 2, "Added person to group %s" % group)
+                log(None, group, 2, "Added person %s to group" % person)
 
     elif action == "post_remove":
         from karaage.datastores import remove_group
         if not reverse:
             group = instance
             for person in model.objects.filter(pk__in=pk_set):
-                for ua in person.useraccount_set.filter(date_deleted__isnull=True):
-                    log(None, person, 2, "Removed person from group %s" % group)
-                    log(None, group, 2, "Removed person %s from group" % person)
-                    remove_group(ua, group)
+                log(None, person, 2, "Removed person from group %s" % group)
+                log(None, group, 2, "Removed person %s from group" % person)
         else:
             person = instance
             for group in model.objects.filter(pk__in=pk_set):
-                for ua in person.useraccount_set.filter(date_deleted__isnull=True):
-                    log(None, person, 2, "Removed person from group %s" % group)
-                    log(None, group, 2, "Removed person %s from group" % person)
-                    remove_group(ua, group)
+                log(None, person, 2, "Removed person from group %s" % group)
+                log(None, group, 2, "Removed person %s from group" % person)
 
-    elif action == "post_clear":
+    elif action == "pre_clear":
         from karaage.datastores import remove_group
         if not reverse:
             group = instance
             log(None, group, 2, "Removed all people from group")
             for person in group.members.all():
-                for ua in person.useraccount_set.filter(date_deleted__isnull=True):
-                    log(None, group, 2, "Removed person %s from group" % person)
-                    remove_group(ua, group)
+                log(None, group, 2, "Removed person %s from group" % person)
         else:
             person = instance
             log(None, person, 2, "Removed person from all groups")
             for group in person.groups.all():
-                for ua in person.useraccount_set.filter(date_deleted__isnull=True):
-                    log(None, group, 2, "Removed person %s from group" % person)
-                    remove_group(ua, group)
+                log(None, group, 2, "Removed person %s from group" % person)
 
 
 models.signals.m2m_changed.connect(_members_changed, sender=Group.members.through)
