@@ -39,13 +39,13 @@ class PersonalDataStore(object):
     def unlock_user(self, person):
         pass
 
-    def set_password(self, person, raw_password):
+    def set_user_password(self, person, raw_password):
         pass
 
     def user_exists(self, username):
         return False
 
-    def change_username(self, person, new_username):
+    def change_user_username(self, person, new_username):
         pass
 
     def get_user_details(self, person):
@@ -60,21 +60,21 @@ class AccountDataStore(object):
         pass
 
     def lock_account(self, ua):
-        self.change_shell(ua, settings.LOCKED_SHELL)
+        self.change_account_shell(ua, settings.LOCKED_SHELL)
 
     def unlock_account(self, ua):
-        self.change_shell(ua, ua.shell)
+        self.change_account_shell(ua, ua.shell)
 
-    def change_shell(self, ua, shell):
+    def change_account_shell(self, ua, shell):
         pass
 
     def account_exists(self, username):
         return False
 
-    def set_password(self, ua, raw_password):
+    def set_user_password(self, ua, raw_password):
         pass
 
-    def change_username(self, ua, new_username):
+    def change_user_username(self, ua, new_username):
         pass
 
     def get_account_details(self, ua):

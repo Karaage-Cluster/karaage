@@ -106,17 +106,17 @@ class AccountDataStore(base.AccountDataStore):
         else:
             return id
 
-    def set_password(self, ua, raw_password):
+    def set_user_password(self, ua, raw_password):
         # FIXME
-        super(AccountDataStore, self).set_password(ua, raw_password)
+        super(AccountDataStore, self).set_user_password(ua, raw_password)
 
     def account_exists(self, username):
         # FIXME
         super(AccountDataStore, self).account_exists(username)
 
-    def change_username(self, ua, new_username):
+    def change_user_username(self, ua, new_username):
         # FIXME
-        super(AccountDataStore, self).change_username(ua, new_username)
+        super(AccountDataStore, self).change_user_username(ua, new_username)
 
     def add_group(self, ua, group):
         # FIXME

@@ -55,7 +55,7 @@ class Command(BaseCommand):
             else:
                 print "Please enter yes or no"
 
-        from karaage.datastores import change_username, change_account_username
+        from karaage.datastores import change_user_username, change_account_username
 
         for account in person.useraccount_set.all():
             if account.username == old:
@@ -64,7 +64,7 @@ class Command(BaseCommand):
                 account.save()
                 print "Changed username on %s account" % account.machine_category
 
-        change_username(person, new)
+        change_user_username(person, new)
         person.user.username = new
         person.user.save()
         print "Changed username on person"

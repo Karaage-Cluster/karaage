@@ -183,8 +183,8 @@ class UserAccount(models.Model):
             'Deactivated account on %s' % self.machine_category)
 
     def change_shell(self, shell):
-        from karaage.datastores import change_shell
-        change_shell(self, shell)
+        from karaage.datastores import change_account_shell
+        change_account_shell(self, shell)
         self.shell = shell
         self.save()
 

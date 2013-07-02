@@ -38,16 +38,16 @@ def unlock_user(person):
     pds.unlock_user(person)
 
 
-def set_password(person, raw_password):
-    pds.set_password(person, raw_password)
+def set_user_password(person, raw_password):
+    pds.set_user_password(person, raw_password)
 
 
 def user_exists(username):
     return pds.user_exists(username)
 
 
-def change_username(person, new_username):
-    pds.change_username(person, new_username)
+def change_user_username(person, new_username):
+    pds.change_user_username(person, new_username)
 
 
 def get_user_details(person):
@@ -78,16 +78,16 @@ def unlock_account(ua):
     ads.unlock_account(ua)
 
 
-def change_shell(ua, shell):
+def change_account_shell(ua, shell):
     ads_module = __import__(ua.machine_category.datastore, {}, {}, [''])
     ads = ads_module.AccountDataStore()
-    ads.change_shell(ua, shell)
+    ads.change_account_shell(ua, shell)
 
 
 def set_account_password(ua, raw_password):
     ads_module = __import__(ua.machine_category.datastore, {}, {}, [''])
     ads = ads_module.AccountDataStore()
-    ads.set_password(ua, raw_password)
+    ads.set_user_password(ua, raw_password)
 
 
 def account_exists(username, machine_category):
@@ -99,7 +99,7 @@ def account_exists(username, machine_category):
 def change_account_username(ua, new_username):
     ads_module = __import__(ua.machine_category.datastore, {}, {}, [''])
     ads = ads_module.AccountDataStore()
-    ads.change_username(ua, new_username)
+    ads.change_user_username(ua, new_username)
 
 
 def get_account_details(ua):

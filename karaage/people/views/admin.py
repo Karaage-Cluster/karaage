@@ -311,7 +311,7 @@ def struggling(request):
 
 
 @login_required
-def change_shell(request, useraccount_id):
+def change_account_shell(request, useraccount_id):
 
     if not request.user.has_perm('people.change_person'):
         return HttpResponseForbidden('<h1>Access Denied</h1>')

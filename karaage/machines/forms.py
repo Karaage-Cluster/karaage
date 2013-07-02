@@ -48,4 +48,4 @@ class ShellForm(forms.Form):
     shell = forms.ChoiceField(choices=settings.SHELLS)
 
     def save(self, user_account):
-        user_account.change_shell(self.cleaned_data['shell'])
+        user_account.change_account_shell(self.cleaned_data['shell'])

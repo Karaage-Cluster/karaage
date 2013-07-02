@@ -319,8 +319,8 @@ class Person(models.Model):
     def set_password(self, password):
         self.user.set_password(password)
         self.user.save()
-        from karaage.datastores import set_password
-        set_password(self, password)
+        from karaage.datastores import set_user_password
+        set_user_password(self, password)
         for ua in self.useraccount_set.filter(date_deleted__isnull=True):
             ua.set_password(password)
 

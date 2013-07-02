@@ -35,7 +35,7 @@ urlpatterns = patterns('karaage.people.views.admin',
     url(r'^no_account/$', 'no_account_list', name='kg_no_account_list'),
     url(r'^locked/$', 'locked_list', name='kg_locked_users_list'),
     url(r'^add/$', 'add_edit_user', {'form_class': AddPersonForm }, name='kg_add_user'),
-    url(r'^accounts/(?P<useraccount_id>\d+)/change_shell/$', 'change_shell', name='kg_change_shell'),
+    url(r'^accounts/(?P<useraccount_id>\d+)/change_shell/$', 'change_account_shell', name='kg_change_account_shell'),
     url(r'^accounts/(?P<useraccount_id>\d+)/edit/$', 'add_edit_useraccount'),
     url(r'^accounts/(?P<useraccount_id>\d+)/delete/$', 'delete_useraccount', name='admin_delete_account'),
                        

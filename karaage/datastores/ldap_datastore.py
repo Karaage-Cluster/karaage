@@ -86,15 +86,15 @@ class AccountDataStore(base.AccountDataStore):
     def unlock_account(self, ua):
         super(AccountDataStore, self).unlock_account(ua)
 
-    def change_shell(self, ua, shell):
-        super(AccountDataStore, self).change_shell(ua, shell)
+    def change_account_shell(self, ua, shell):
+        super(AccountDataStore, self).change_account_shell(ua, shell)
         luser = ldap_schemas.account.objects.get(uid=ua.username)
         luser.loginShell = shell
         luser.pre_save()
         luser.save()
 
-    def set_password(self, ua, raw_password):
-        super(AccountDataStore, self).set_password(ua, raw_password)
+    def set_user_password(self, ua, raw_password):
+        super(AccountDataStore, self).set_user_password(ua, raw_password)
         p = ldap_schemas.account.objects.get(uid=ua.username)
         p.change_password(raw_password)
         p.pre_save()
@@ -107,8 +107,8 @@ class AccountDataStore(base.AccountDataStore):
         except ldap_schemas.account.DoesNotExist:
             return False
 
-    def change_username(self, ua, new_username):
-        super(AccountDataStore, self).change_username(ua, new_username)
+    def change_user_username(self, ua, new_username):
+        super(AccountDataStore, self).change_user_username(ua, new_username)
         p = ldap_schemas.account.objects.get(uid=ua.username)
         p.rename(uid=new_username)
 
