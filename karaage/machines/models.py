@@ -20,7 +20,7 @@ from django.conf import settings
 
 import datetime
 
-from karaage.people.models import Person
+from karaage.people.models import Person, Group
 from karaage.machines.managers import MachineCategoryManager, ActiveMachineManager, MC_CACHE
 from karaage.util import log_object as log
 
@@ -209,3 +209,42 @@ class UserAccount(models.Model):
     def unlock(self):
         from karaage.datastores import unlock_account
         unlock_account(self)
+
+
+def _remove_group(group, person):
+    # if removing default project from person, then deactivate the account.
+    for ua in person.useraccount_set.filter(date_deleted__isnull=True):
+        # Does the default_project for ua belong to this group?
+        count = group.project_set.filter(pk=ua.default_project.pk).count()
+        # If yes, deactivate the ua
+        if count > 0:
+            ua.deactivate()
+
+
+def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
+    """
+    Hook that executes whenever the group members are changed.
+    """
+    #print "'%s','%s','%s','%s','%s'"%(instance, action, reverse, model, pk_set)
+    if action == "pre_remove":
+        if not reverse:
+            group = instance
+            for person in model.objects.filter(pk__in=pk_set):
+                _remove_group(group, person)
+        else:
+            person = instance
+            for group in model.objects.filter(pk__in=pk_set):
+                _remove_group(group, person)
+
+    elif action == "pre_clear":
+        if not reverse:
+            group = instance
+            for person in group.members.all():
+                _remove_group(group, person)
+        else:
+            person = instance
+            for group in person.groups.all():
+                _remove_group(group, person)
+
+
+models.signals.m2m_changed.connect(_members_changed, sender=Group.members.through)
