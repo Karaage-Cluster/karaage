@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="{% url 'kg_user_list' %}">Users</a>
- › {% if person %}Edit{% else %}Create{% endif %} Group
+ › {% if group %}Edit{% else %}Create{% endif %} Group
 </div>{% endblock %}   
 
 {% block content %}
