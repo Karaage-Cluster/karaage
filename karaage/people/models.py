@@ -364,6 +364,9 @@ class Group(models.Model):
     members = models.ManyToManyField(Person, related_name='groups')
     description = models.TextField(null=True, blank=True)
 
+    class Meta:
+        ordering = ['name']
+
     def __unicode__(self):
         return u"%s" % self.name
 
