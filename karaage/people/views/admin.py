@@ -340,7 +340,7 @@ def group_list(request, queryset=None):
         terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
-            q = Q(group__groupname__icontains=term) | Q(group__first_name__icontains=term) | Q(group__last_name__icontains=term) | Q(comment__icontains=term)
+            q = Q(name__icontains=term) | Q(description__icontains=term)
             query = query & q
 
         group_list = group_list.filter(query)

@@ -31,7 +31,7 @@ from django.conf import settings
 
 from django_shibboleth.utils import build_shib_url
 
-from karaage.people.models import Person
+from karaage.people.models import Person, Group
 from karaage.projects.models import Project
 from karaage.applications.saml import SAMLInstituteForm
 
@@ -51,6 +51,7 @@ def search(request):
 
     if 'sitesearch' in request.GET and request.GET['sitesearch'].strip() != "":
         user_list = Person.objects.all()
+        group_list = Group.objects.all()
         project_list = Project.objects.all()
 
         new_data = request.GET.copy()
@@ -65,6 +66,14 @@ def search(request):
 
         user_list = user_list.filter(query).distinct()
 
+        # groups
+        query = Q()
+        for term in term_list:
+            q = Q(name__icontains=term) | Q(description__icontains=term)
+            query = query & q
+
+        group_list = group_list.filter(query)
+
          # projects
         query = Q()
         for term in term_list:
@@ -75,7 +84,7 @@ def search(request):
 
         empty = False
 
-        if not (user_list or project_list):
+        if not (user_list or group_list or project_list):
             empty = True
         
         return render_to_response('site_search.html', locals(), context_instance=RequestContext(request))
