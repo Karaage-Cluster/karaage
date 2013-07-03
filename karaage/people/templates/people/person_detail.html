@@ -104,7 +104,7 @@
 	  <td>{{ ua.date_deleted|date }}</td>
 	  {% endif %}
 	  {% ifequal ua.machine_category.id 1 %}
-	  <td>{% if not ua.date_deleted and perms.machines.change_useraccount %}<form action="{% url 'kg_change_shell' ua.id %}" method="post">{% csrf_token %}
+	  <td>{% if not ua.date_deleted and perms.machines.change_useraccount %}<form action="{% url 'kg_change_account_shell' ua.id %}" method="post">{% csrf_token %}
 	  	<div>
 	      {% shell_field ua %}
 	      <input type="submit" value="Change"/>
