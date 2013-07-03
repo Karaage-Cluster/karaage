@@ -155,6 +155,12 @@ class AccountDataStore(base.AccountDataStore):
         lgroup = ldap_schemas.group.objects.get(cn=group.name)
         lgroup.delete()
 
+    def change_group_name(self, group, new_name):
+        super(AccountDataStore, self).change_group_name(group, new_name)
+        lgroup = ldap_schemas.group.objects.get(cn=group.name)
+        print group.name, new_name
+        lgroup.rename(cn=new_name)
+
     def get_group_details(self, group):
         lgroup = ldap_schemas.group.objects.get(cn=group.name)
         result = {}

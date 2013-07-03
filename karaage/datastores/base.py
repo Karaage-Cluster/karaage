@@ -92,6 +92,9 @@ class AccountDataStore(object):
     def delete_group(self, group):
         pass
 
+    def change_group_name(self, group, new_name):
+        pass
+
     def get_group_details(self, group):
         return {}
 

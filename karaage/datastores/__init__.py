@@ -136,6 +136,14 @@ def delete_group(group):
         ads.delete_group(group)
 
 
+def change_group_name(group, new_name):
+    from karaage.machines.models import MachineCategory
+    for machine_category in MachineCategory.objects.all():
+        ads_module = __import__(machine_category.datastore, {}, {}, [''])
+        ads = ads_module.AccountDataStore()
+        ads.change_group_name(group, new_name)
+
+
 def get_group_details(group):
     result = {}
     from karaage.machines.models import MachineCategory

@@ -130,6 +130,10 @@ class AccountDataStore(base.AccountDataStore):
         # FIXME
         super(AccountDataStore, self).create_group(group)
 
+    def change_group_name(self, group, new_name):
+        # FIXME
+        super(AccountDataStore, self).change_group_name(group, new_name)
+
     def delete_group(self, group):
         # FIXME
         super(AccountDataStore, self).delete_group(group)

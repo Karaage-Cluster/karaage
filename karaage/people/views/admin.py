@@ -372,7 +372,7 @@ def add_edit_group(request, form_class, template_name='people/group_form.html', 
         if form.is_valid():
             if group:
                 # edit
-                group = form.save(group)
+                group = form.save()
                 messages.success(request, "Group '%s' was edited succesfully" % group)
             else:
                 #Add

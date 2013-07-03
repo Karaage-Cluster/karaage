@@ -398,6 +398,13 @@ class Group(models.Model):
     def remove_person(self, person):
         self.members.remove(person)
 
+    def change_name(self, new_name):
+        from karaage.datastores import change_group_name
+        if self.name != new_name:
+            change_group_name(self, new_name)
+            self.name = new_name
+            self.save()
+
 
 def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
     """

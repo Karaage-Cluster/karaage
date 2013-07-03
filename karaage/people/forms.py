@@ -235,13 +235,10 @@ class AdminGroupForm(forms.Form):
     description = forms.CharField()
 
     def __init__(self, *args, **kwargs):
-        # Make PID field read only if we are editing a project
         self.instance = kwargs.pop('instance', None)
         super(AdminGroupForm, self).__init__(*args, **kwargs)
         if self.instance is not None:
             self.initial = self.instance.__dict__
-            self.fields['name'].widget.attrs['readonly'] = True
-            self.fields['name'].help_text = "You can't change the name of an existing group"
 
     def save(self, group=None):
         data = self.cleaned_data
@@ -249,6 +246,10 @@ class AdminGroupForm(forms.Form):
         if self.instance is None:
             group = Group()
             group.name = data['name']
+
+        else:
+            group = self.instance
+            group.change_name(data['name'])
 
         group.description = data['description']
         group.save()
