@@ -240,6 +240,15 @@ class AdminGroupForm(forms.Form):
         if self.instance is not None:
             self.initial = self.instance.__dict__
 
+    def clean_name(self):
+        name = self.cleaned_data["name"]
+        groups = Group.objects.filter(name=name)
+        if self.instance is not None:
+            groups = groups.exclude(pk=self.instance.pk)
+        if groups.count() > 0:
+            raise forms.ValidationError("That group name already exists.")
+        return name
+
     def save(self, group=None):
         data = self.cleaned_data
 
