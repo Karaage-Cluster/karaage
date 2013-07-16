@@ -150,8 +150,9 @@ class UserAccount(models.Model):
 
     def save(self, *args, **kwargs):
         # update the datastore
-        from karaage.datastores import save_account
-        save_account(self)
+        if self.date_deleted is None:
+            from karaage.datastores import save_account
+            save_account(self)
 
         # save the object
         super(UserAccount, self).save(*args, **kwargs)
@@ -161,44 +162,54 @@ class UserAccount(models.Model):
             'Saved account on %s' % self.machine_category)
 
     def delete(self):
-        # update the datastore
-        from karaage.datastores import delete_account
-        delete_account(self)
+        if self.date_deleted is None:
+            # update the datastore
+            from karaage.datastores import delete_account
+            delete_account(self)
 
-        # delete the object
-        super(UserAccount, self).delete(*args, **kwargs)
+            # delete the object
+            super(UserAccount, self).delete(*args, **kwargs)
 
-        log(None, self.user, 3,
-            'Deleted account on %s' % self.machine_category)
+            log(None, self.user, 3,
+                'Deleted account on %s' % self.machine_category)
+        else:
+            raise RuntimeError("Account is deactivated")
 
     def deactivate(self):
-        if not self.date_deleted:
+        if self.date_deleted is None:
             self.date_deleted = datetime.datetime.now()
             self.save()
 
-        from karaage.datastores import delete_account
-        delete_account(self)
+            from karaage.datastores import delete_account
+            delete_account(self)
 
-        log(None, self.user, 3,
-            'Deactivated account on %s' % self.machine_category)
+            log(None, self.user, 3,
+                'Deactivated account on %s' % self.machine_category)
+        else:
+            raise RuntimeError("Account is deactivated")
 
     def change_shell(self, shell):
-        from karaage.datastores import change_account_shell
-        change_account_shell(self, shell)
+        if self.date_deleted is None:
+            from karaage.datastores import change_account_shell
+            change_account_shell(self, shell)
         self.shell = shell
         self.save()
 
     def change_username(self, new_username):
-        from karaage.datastores import change_account_username
         if self.username != new_username:
-            change_account_username(self, new_username)
+            from karaage.datastores import change_account_username
+            if self.date_deleted is None:
+                change_account_username(self, new_username)
             self.username = new_username
             self.save()
     change_username.alters_data = True
 
     def set_password(self, password):
-        from karaage.datastores import set_account_password
-        set_account_password(self, password)
+        if self.date_deleted is not None:
+            from karaage.datastores import set_account_password
+            set_account_password(self, password)
+        else:
+            raise RuntimeError("Account is deactivated")
 
     def get_disk_quota(self):
         if self.disk_quota:
@@ -211,12 +222,18 @@ class UserAccount(models.Model):
         return self.shell
 
     def lock(self):
-        from karaage.datastores import lock_account
-        lock_account(self)
+        if self.date_deleted is None:
+            from karaage.datastores import lock_account
+            lock_account(self)
+        else:
+            raise RuntimeError("Account is deactivated")
 
     def unlock(self):
-        from karaage.datastores import unlock_account
-        unlock_account(self)
+        if self.date_deleted is None:
+            from karaage.datastores import unlock_account
+            unlock_account(self)
+        else:
+            raise RuntimeError("Account is deactivated")
 
 
 def _remove_group(group, person):

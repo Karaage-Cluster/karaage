@@ -55,7 +55,7 @@ class Command(BaseCommand):
             else:
                 print "Please enter yes or no"
 
-        for account in person.useraccount_set.all():
+        for account in person.useraccount_set.filter(date_deleted__isnull=True):
             account.change_username(new)
             print "Changed username on %s account" % account.machine_category
 
