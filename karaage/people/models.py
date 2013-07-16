@@ -344,6 +344,14 @@ class Person(models.Model):
         self.login_enabled = True
         self.save()
 
+    def change_username(self, new_username):
+        from karaage.datastores import change_user_username
+        if self.username != new_username:
+            change_user_username(person, new)
+            person.user.username = new
+            person.user.save()
+    change_username.alters_data = True
+
     def is_locked(self):
         return not self.login_enabled
 

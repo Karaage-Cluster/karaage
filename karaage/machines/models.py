@@ -188,6 +188,14 @@ class UserAccount(models.Model):
         self.shell = shell
         self.save()
 
+    def change_username(self, new_username):
+        from karaage.datastores import change_account_username
+        if account.username == old:
+            change_account_username(account, new)
+            account.username = new
+            account.save()
+    change_username.alters_data = True
+
     def set_password(self, password):
         from karaage.datastores import set_account_password
         set_account_password(self, password)
