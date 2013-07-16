@@ -67,7 +67,6 @@ LOCKED_SHELL = '/usr/local/sbin/insecure'
 
 ###
 ### Placard Settings
-### see - https://code.vpac.org/hudson/job/django-placard/javadoc/
 ###
 
 
