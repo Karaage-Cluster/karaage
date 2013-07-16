@@ -1,18 +1,9 @@
 # Package defined Karaage Settings
-PLACARD_MASTER = {
-    'NAME': 'OpenLDAP',
-    'LDAP': 'default',
-    'ACCOUNT': 'karaage.datastores.ldap_schemas.account',
-    'GROUP': 'karaage.datastores.ldap_schemas.group',
-}
-
 LDAP_SCHEMA_FILE = "/etc/karaage/ldap_schemas.py"
 
 HOME_DIRECTORY = "/home/%(uid)s"
 
 AJAX_LOOKUP_CHANNELS = {
-    'account'  : ( 'placard.lookups', 'AccountLookup' ),
-    'group'  : ( 'placard.lookups', 'GroupLookup' ),
     'person' : ( 'karaage.people.lookups', 'PersonLookup'),
 }
 

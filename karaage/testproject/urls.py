@@ -2,15 +2,11 @@ from django.conf.urls import *
 from django.contrib import admin
 from django.contrib.admin.models import LogEntry
 
-import placard.views as views
-
 admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', 'karaage.views.admin_index', name='kg_admin_index'),
     url(r'^search/$', 'karaage.views.search', name='kg_site_search'), 
-    url(r'^users/(?P<username>[-.\w]+)/ldap/$', views.AccountVerbose.as_view()),
-    url(r'^placard_change_password/$', views.ChangePassword.as_view(), name='plac_password'),
 
     url(r'^users/', include('karaage.people.urls.admin')),
     url(r'^institutes/', include('karaage.institutes.urls.admin')),
@@ -25,8 +21,6 @@ urlpatterns = patterns('',
 
     url(r'^comments/', include('django.contrib.comments.urls')),
     url(r'^pbs/', include('django_pbs.servers.urls')),                  
-    url(r'^lusers/', include('placard.account_urls')),
-    url(r'^lgroups/', include('placard.group_urls')),
     url(r'^misc/$', 'karaage.legacy.simple.direct_to_template', {'template': 'misc/index.html'}),
 
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
