@@ -107,9 +107,9 @@ class AccountDataStore(base.AccountDataStore):
         except ldap_schemas.account.DoesNotExist:
             return False
 
-    def change_user_username(self, ua, new_username):
-        super(AccountDataStore, self).change_user_username(ua, new_username)
-        p = ldap_schemas.account.objects.get(uid=ua.username)
+    def change_user_username(self, ua, old_username, new_username):
+        super(AccountDataStore, self).change_user_username(ua, old_username, new_username)
+        p = ldap_schemas.account.objects.get(uid=old_username)
         p.rename(uid=new_username)
 
     def get_account_details(self, ua):
@@ -155,10 +155,9 @@ class AccountDataStore(base.AccountDataStore):
         lgroup = ldap_schemas.group.objects.get(cn=group.name)
         lgroup.delete()
 
-    def change_group_name(self, group, new_name):
-        super(AccountDataStore, self).change_group_name(group, new_name)
-        lgroup = ldap_schemas.group.objects.get(cn=group.name)
-        print group.name, new_name
+    def change_group_name(self, group, old_name, new_name):
+        super(AccountDataStore, self).change_group_name(group, old_name, new_name)
+        lgroup = ldap_schemas.group.objects.get(cn=old_name)
         lgroup.rename(cn=new_name)
 
     def get_group_details(self, group):

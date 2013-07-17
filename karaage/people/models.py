@@ -156,6 +156,9 @@ class Person(models.Model):
         return cls.create(data)
 
     def save(self, *args, **kwargs):
+        # save the object
+        super(self.__class__, self).save(*args, **kwargs)
+
         # update the datastore
         from karaage.datastores import save_user
         save_user(self)
@@ -165,22 +168,16 @@ class Person(models.Model):
         for ua in self.useraccount_set.filter(date_deleted__isnull=True):
             save_account(ua)
 
-        # save the object
-        super(self.__class__, self).save(*args, **kwargs)
-
         # log message
         log(None, self, 2, 'Saved person')
 
     def delete(self, *args, **kwargs):
-        # update the datastore
-        super(self.__class__, self).delete(*args, **kwargs)
-        from karaage.datastores import delete_user
-
         # delete the object
         delete_user(self)
 
-        # log message
-        log(None, self, 1, 'Deleted person')
+        # update the datastore
+        super(self.__class__, self).delete(*args, **kwargs)
+        from karaage.datastores import delete_user
 
     def _set_username(self, value):
         self.user.username = value
@@ -327,29 +324,34 @@ class Person(models.Model):
     def lock(self):
         if self.is_locked():
             return
-        for ua in self.useraccount_set.filter(date_deleted__isnull=True):
-            ua.lock()
+        self.login_enabled = False
+        # we call super.save() to avoid calling datastore save needlessly
+        super(Person, self).save()
         from karaage.datastores import lock_user
         lock_user(self)
-        self.login_enabled = False
-        self.save()
+        for ua in self.useraccount_set.filter(date_deleted__isnull=True):
+            ua.lock()
+        log(None, self, 2, 'Locked person')
 
     def unlock(self):
         if not self.is_locked():
             return
-        for ua in self.useraccount_set.filter(date_deleted__isnull=True):
-            ua.lock()
+        self.login_enabled = True
+        # we call super.save() to avoid calling datastore save needlessly
+        super(Person, self).save()
         from karaage.datastores import unlock_user
         unlock_user(self)
-        self.login_enabled = True
-        self.save()
+        for ua in self.useraccount_set.filter(date_deleted__isnull=True):
+            ua.unlock()
+        log(None, self, 2, 'Unlocked person')
 
     def change_username(self, new_username):
-        from karaage.datastores import change_user_username
-        if self.username != new_username:
-            change_user_username(self, new_username)
+        old_username = self.username
+        if old_username != new_username:
             self.user.username = new_username
             self.user.save()
+            from karaage.datastores import change_user_username
+            change_user_username(self, old_username, new_username)
     change_username.alters_data = True
 
     def is_locked(self):
@@ -382,26 +384,23 @@ class Group(models.Model):
         return reverse('kg_group_detail', kwargs={'group_name': self.name})
 
     def save(self, *args, **kwargs):
+        # save the object
+        super(Group, self).save(*args, **kwargs)
+
         # update the datastore
         from karaage.datastores import save_group
         save_group(self)
-
-        # save the object
-        super(Group, self).save(*args, **kwargs)
 
         # log message
         log(None, self, 2, "Saved group")
 
     def delete(self, *args, **kwargs):
-        # update the datastore
-        super(self.__class__, self).delete(*args, **kwargs)
-        from karaage.datastores import delete_group
-
         # delete the object
-        delete_group(self)
+        super(self.__class__, self).delete(*args, **kwargs)
 
-        # log message
-        log(None, self, 3, "Deleted group")
+        # update the datastore
+        from karaage.datastores import delete_group
+        delete_group(self)
 
     def add_person(self, person):
         self.members.add(person)
@@ -410,11 +409,14 @@ class Group(models.Model):
         self.members.remove(person)
 
     def change_name(self, new_name):
-        from karaage.datastores import change_group_name
-        if self.name != new_name:
-            change_group_name(self, new_name)
+        old_name = self.name
+        if old_name != new_name:
             self.name = new_name
-            self.save()
+            # we call super.save() to avoid calling datastore save needlessly
+            super(Group, self).save()
+            from karaage.datastores import change_group_name
+            change_group_name(self, old_name, new_name)
+            log(None, self, 2, "Renamed group")
 
 
 def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
@@ -457,6 +459,8 @@ def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs)
                     remove_group(ua, group)
 
     elif action == "pre_clear":
+        # This has to occur in pre_clear, not post_clear, as otherwise
+        # we won't see what groups need to be removed.
         from karaage.datastores import remove_group
         if not reverse:
             group = instance

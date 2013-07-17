@@ -45,7 +45,7 @@ class PersonalDataStore(object):
     def user_exists(self, username):
         return False
 
-    def change_user_username(self, person, new_username):
+    def change_user_username(self, person, old_username, new_username):
         pass
 
     def get_user_details(self, person):
@@ -74,7 +74,7 @@ class AccountDataStore(object):
     def set_user_password(self, ua, raw_password):
         pass
 
-    def change_user_username(self, ua, new_username):
+    def change_user_username(self, ua, old_username, new_username):
         pass
 
     def get_account_details(self, ua):
@@ -92,7 +92,7 @@ class AccountDataStore(object):
     def delete_group(self, group):
         pass
 
-    def change_group_name(self, group, new_name):
+    def change_group_name(self, group, old_name, new_name):
         pass
 
     def get_group_details(self, group):

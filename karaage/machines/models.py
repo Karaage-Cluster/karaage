@@ -149,13 +149,13 @@ class UserAccount(models.Model):
             return None
 
     def save(self, *args, **kwargs):
+        # save the object
+        super(UserAccount, self).save(*args, **kwargs)
+
         # update the datastore
         if self.date_deleted is None:
             from karaage.datastores import save_account
             save_account(self)
-
-        # save the object
-        super(UserAccount, self).save(*args, **kwargs)
 
         # log message
         log(None, self.user, 2,
@@ -163,23 +163,22 @@ class UserAccount(models.Model):
 
     def delete(self):
         if self.date_deleted is None:
-            # update the datastore
-            from karaage.datastores import delete_account
-            delete_account(self)
-
             # delete the object
             super(UserAccount, self).delete(*args, **kwargs)
 
-            log(None, self.user, 3,
-                'Deleted account on %s' % self.machine_category)
+            # update the datastore
+            from karaage.datastores import delete_account
+            delete_account(self)
         else:
             raise RuntimeError("Account is deactivated")
 
     def deactivate(self):
         if self.date_deleted is None:
+            # save the object
             self.date_deleted = datetime.datetime.now()
             self.save()
 
+            # update the datastore
             from karaage.datastores import delete_account
             delete_account(self)
 
@@ -189,19 +188,26 @@ class UserAccount(models.Model):
             raise RuntimeError("Account is deactivated")
 
     def change_shell(self, shell):
+        self.shell = shell
+        # we call super.save() to avoid calling datastore save needlessly
+        super(UserAccount, self).save()
         if self.date_deleted is None:
             from karaage.datastores import change_account_shell
             change_account_shell(self, shell)
-        self.shell = shell
-        self.save()
+        log(None, self.user, 2,
+            'Changed shell on %s' % self.machine_category)
 
     def change_username(self, new_username):
-        if self.username != new_username:
-            from karaage.datastores import change_account_username
-            if self.date_deleted is None:
-                change_account_username(self, new_username)
+        old_username = self.username
+        if old_username != new_username:
             self.username = new_username
-            self.save()
+            # we call super.save() to avoid calling datastore save needlessly
+            super(UserAccount, self).save()
+            if self.date_deleted is None:
+                from karaage.datastores import change_account_username
+                change_account_username(self, old_username, new_username)
+            log(None, self.user, 2,
+                'Changed username on %s' % self.machine_category)
     change_username.alters_data = True
 
     def set_password(self, password):
@@ -251,7 +257,7 @@ def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs)
     Hook that executes whenever the group members are changed.
     """
     #print "'%s','%s','%s','%s','%s'"%(instance, action, reverse, model, pk_set)
-    if action == "pre_remove":
+    if action == "post_remove":
         if not reverse:
             group = instance
             for person in model.objects.filter(pk__in=pk_set):
@@ -262,6 +268,8 @@ def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs)
                 _remove_group(group, person)
 
     elif action == "pre_clear":
+        # This has to occur in pre_clear, not post_clear, as otherwise
+        # we won't see what groups need to be removed.
         if not reverse:
             group = instance
             for person in group.members.all():

@@ -57,26 +57,23 @@ class SoftwarePackage(models.Model):
             name = str(self.name.lower().replace(' ', ''))
             self.group,_ = Group.objects.get_or_create(name=name)
 
+        # save the object
+        super(SoftwarePackage, self).save(*args, **kwargs)
+
         # update the datastore
         from karaage.datastores.software import save_software
         save_software(self)
-
-        # save the object
-        super(SoftwarePackage, self).save(*args, **kwargs)
 
         # log message
         log(None, self, 2, "Saved software package")
 
     def delete(self, *args, **kwargs):
-        # update the datastore
-        from karaage.datastores.software import delete_software
-        delete_software(self)
-
         # delete the object
         super(SoftwarePackage, self).delete(*args, **kwargs)
 
-        # log message
-        log(None, self, 2, "Deleted software package")
+        # update the datastore
+        from karaage.datastores.software import delete_software
+        delete_software(self)
 
     def __unicode__(self):
         return self.name

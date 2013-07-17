@@ -46,8 +46,8 @@ def user_exists(username):
     return pds.user_exists(username)
 
 
-def change_user_username(person, new_username):
-    pds.change_user_username(person, new_username)
+def change_user_username(person, old_username, new_username):
+    pds.change_user_username(person, old_username, new_username)
 
 
 def get_user_details(person):
@@ -96,10 +96,10 @@ def account_exists(username, machine_category):
     return ads.account_exists(username)
 
 
-def change_account_username(ua, new_username):
+def change_account_username(ua, old_username, new_username):
     ads_module = __import__(ua.machine_category.datastore, {}, {}, [''])
     ads = ads_module.AccountDataStore()
-    ads.change_user_username(ua, new_username)
+    ads.change_user_username(ua, old_username, new_username)
 
 
 def get_account_details(ua):
@@ -136,12 +136,12 @@ def delete_group(group):
         ads.delete_group(group)
 
 
-def change_group_name(group, new_name):
+def change_group_name(group, old_name, new_name):
     from karaage.machines.models import MachineCategory
     for machine_category in MachineCategory.objects.all():
         ads_module = __import__(machine_category.datastore, {}, {}, [''])
         ads = ads_module.AccountDataStore()
-        ads.change_group_name(group, new_name)
+        ads.change_group_name(group, old_name, new_name)
 
 
 def get_group_details(group):

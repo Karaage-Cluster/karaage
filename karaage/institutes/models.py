@@ -39,20 +39,20 @@ class Institute(models.Model):
             name = str(self.name.lower().replace(' ', ''))
             self.group,_ = Group.objects.get_or_create(name=name)
 
+        # save the object
+        super(Institute, self).save(*args, **kwargs)
+
         # update the datastore
         from karaage.datastores.institutes import save_institute
         save_institute(self)
 
-        # save the object
-        super(Institute, self).save(*args, **kwargs)
-
     def delete(self, *args, **kwargs):
+        # delete the object
+        super(Institute, self).delete(*args, **kwargs)
+
         # update the datastore
         from karaage.datastores.institutes import delete_institute
         delete_institute(self)
-
-        # delete the object
-        super(Institute, self).delete(*args, **kwargs)
 
     def __unicode__(self):
         return self.name

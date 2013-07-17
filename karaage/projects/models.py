@@ -67,20 +67,20 @@ class Project(models.Model):
             name = self.pid
             self.group,_ = Group.objects.get_or_create(name=name)
 
+        # save the object
+        super(Project, self).save(*args, **kwargs)
+
         # update the datastore
         from karaage.datastores.projects import save_project
         save_project(self)
 
-        # save the object
-        super(Project, self).save(*args, **kwargs)
-
     def delete(self, *args, **kwargs):
+        # delete the object
+        super(Project, self).delete(*args, **kwargs)
+
         # update the datastore
         from karaage.datastores.projects import delete_project
         delete_project(self)
-
-        # delete the object
-        super(Project, self).delete(*args, **kwargs)
 
     @models.permalink
     def get_usage_url(self):
