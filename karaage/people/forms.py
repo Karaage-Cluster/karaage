@@ -176,7 +176,7 @@ class AdminPasswordChangeForm(forms.Form):
 
     def save(self, person):
         data = self.cleaned_data
-        person.set_user_password(data['new1'])
+        person.set_password(data['new1'])
 
 
 class PasswordChangeForm(AdminPasswordChangeForm):
@@ -210,7 +210,7 @@ class SetPasswordForm(BaseSetPasswordForm):
 
     def save(self, commit=True):
         person = self.user.get_profile()
-        person.set_user_password(self.cleaned_data['new_password1'])
+        person.set_password(self.cleaned_data['new_password1'])
         return self.user
 
 
