@@ -45,6 +45,7 @@ class Institute(models.Model):
         # update the datastore
         from karaage.datastores.institutes import save_institute
         save_institute(self)
+    save.alters_data = True
 
     def delete(self, *args, **kwargs):
         # delete the object
@@ -53,6 +54,7 @@ class Institute(models.Model):
         # update the datastore
         from karaage.datastores.institutes import delete_institute
         delete_institute(self)
+    delete.alters_data = True
 
     def __unicode__(self):
         return self.name
@@ -75,6 +77,7 @@ class Institute(models.Model):
     def gen_usage_graph(self, start, end, machine_category):
         from karaage.graphs import gen_institute_bar
         gen_institute_bar(self, start, end, machine_category)
+    gen_usage_graph.alters_data = True
 
     def can_view(self, user):
         if not user.is_authenticated():

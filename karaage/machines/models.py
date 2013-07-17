@@ -54,6 +54,7 @@ class MachineCategory(models.Model):
         # Cached information will likely be incorrect now.
         if self.id in MC_CACHE:
             del MC_CACHE[self.id]
+    save.alters_data = True
 
     def delete(self):
         pk = self.pk
@@ -62,6 +63,7 @@ class MachineCategory(models.Model):
             del MC_CACHE[pk]
         except KeyError:
             pass
+    delete.alters_data = True
     
     @models.permalink
     def get_absolute_url(self):
@@ -160,6 +162,7 @@ class UserAccount(models.Model):
         # log message
         log(None, self.user, 2,
             'Saved account on %s' % self.machine_category)
+    save.alters_data = True
 
     def delete(self):
         if self.date_deleted is None:
@@ -171,6 +174,7 @@ class UserAccount(models.Model):
             delete_account(self)
         else:
             raise RuntimeError("Account is deactivated")
+    delete.alters_data = True
 
     def deactivate(self):
         if self.date_deleted is None:
@@ -186,6 +190,7 @@ class UserAccount(models.Model):
                 'Deactivated account on %s' % self.machine_category)
         else:
             raise RuntimeError("Account is deactivated")
+    deactivate.alters_data = True
 
     def change_shell(self, shell):
         self.shell = shell
@@ -196,6 +201,7 @@ class UserAccount(models.Model):
             change_account_shell(self, shell)
         log(None, self.user, 2,
             'Changed shell on %s' % self.machine_category)
+    change_shell.alters_data = True
 
     def change_username(self, new_username):
         old_username = self.username
@@ -216,6 +222,7 @@ class UserAccount(models.Model):
             set_account_password(self, password)
         else:
             raise RuntimeError("Account is deactivated")
+    set_password.alters_data = True
 
     def get_disk_quota(self):
         if self.disk_quota:
@@ -233,6 +240,7 @@ class UserAccount(models.Model):
             lock_account(self)
         else:
             raise RuntimeError("Account is deactivated")
+    lock.alters_data = True
 
     def unlock(self):
         if self.date_deleted is None:
@@ -240,6 +248,7 @@ class UserAccount(models.Model):
             unlock_account(self)
         else:
             raise RuntimeError("Account is deactivated")
+    unlock.alters_data = True
 
 
 def _remove_group(group, person):

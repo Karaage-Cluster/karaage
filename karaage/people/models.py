@@ -87,6 +87,7 @@ class Person(models.Model):
         token = default_token_generator.make_token(self.user)
         return '%s/accounts/reset/%s-%s/' % (
             settings.REGISTRATION_BASE_URL, uid, token)
+    get_password_reset_url.alters_data = True
 
     @classmethod
     def create(cls, data):
@@ -170,6 +171,7 @@ class Person(models.Model):
 
         # log message
         log(None, self, 2, 'Saved person')
+    save.alters_data = True
 
     def delete(self, *args, **kwargs):
         # delete the object
@@ -178,10 +180,12 @@ class Person(models.Model):
         # update the datastore
         super(Person, self).delete(*args, **kwargs)
         from karaage.datastores import delete_user
+    delete.alters_data = True
 
     def _set_username(self, value):
         self.user.username = value
         self.user.save()
+    _set_username.alters_data = True
 
     def _get_username(self):
         return self.user.username
@@ -190,6 +194,7 @@ class Person(models.Model):
     def _set_last_name(self, value):
         self.user.last_name = value
         self.user.save()
+    _set_last_name.alters_data = True
 
     def _get_last_name(self):
         return self.user.last_name
@@ -198,6 +203,7 @@ class Person(models.Model):
     def _set_first_name(self, value):
         self.user.first_name = value
         self.user.save()
+    _set_first_name.alters_data = True
 
     def _get_first_name(self):
         return self.user.first_name
@@ -206,6 +212,7 @@ class Person(models.Model):
     def _set_email(self, value):
         self.user.email = value
         self.user.save()
+    _set_email.alters_data = True
 
     def _get_email(self):
         return self.user.email
@@ -214,6 +221,7 @@ class Person(models.Model):
     def _set_is_active(self, value):
         self.user.is_active = value
         self.user.save()
+    _set_is_active.alters_data = True
 
     def _get_is_active(self):
         return self.user.is_active
@@ -296,6 +304,7 @@ class Person(models.Model):
             self.save()
 
             log(None, self, 2, 'Activated')
+    activate.alters_data = True
 
     def deactivate(self):
         """ Sets Person not active and deletes all UserAccounts"""
@@ -312,6 +321,7 @@ class Person(models.Model):
             ua.deactivate()
 
         log(None, self, 2, 'Deactivated')
+    deactivate.alters_data = True
 
     def set_password(self, password):
         self.user.set_password(password)
@@ -320,6 +330,7 @@ class Person(models.Model):
         set_user_password(self, password)
         for ua in self.useraccount_set.filter(date_deleted__isnull=True):
             ua.set_password(password)
+    set_password.alters_data = True
 
     def lock(self):
         if self.is_locked():
@@ -332,6 +343,7 @@ class Person(models.Model):
         for ua in self.useraccount_set.filter(date_deleted__isnull=True):
             ua.lock()
         log(None, self, 2, 'Locked person')
+    lock.alters_data = True
 
     def unlock(self):
         if not self.is_locked():
@@ -344,6 +356,7 @@ class Person(models.Model):
         for ua in self.useraccount_set.filter(date_deleted__isnull=True):
             ua.unlock()
         log(None, self, 2, 'Unlocked person')
+    unlock.alters_data = True
 
     def change_username(self, new_username):
         old_username = self.username
@@ -359,9 +372,11 @@ class Person(models.Model):
 
     def add_group(self, group):
         group.members.add(self)
+    add_group.alters_data = True
 
     def remove_group(self, group):
         group.members.remove(self)
+    remove_group.alters_data = True
 
     @property
     def projects(self):
@@ -393,6 +408,7 @@ class Group(models.Model):
 
         # log message
         log(None, self, 2, "Saved group")
+    save.alters_data = True
 
     def delete(self, *args, **kwargs):
         # delete the object
@@ -401,12 +417,15 @@ class Group(models.Model):
         # update the datastore
         from karaage.datastores import delete_group
         delete_group(self)
+    delete.alters_data = True
 
     def add_person(self, person):
         self.members.add(person)
+    add_person.alters_data = True
 
     def remove_person(self, person):
         self.members.remove(person)
+    remove_person.alters_data = True
 
     def change_name(self, new_name):
         old_name = self.name
@@ -417,6 +436,7 @@ class Group(models.Model):
             from karaage.datastores import change_group_name
             change_group_name(self, old_name, new_name)
             log(None, self, 2, "Renamed group")
+    change_name.alters_data = True
 
 
 def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs):

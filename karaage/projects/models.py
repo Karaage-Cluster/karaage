@@ -73,6 +73,7 @@ class Project(models.Model):
         # update the datastore
         from karaage.datastores.projects import save_project
         save_project(self)
+    save.alters_data = True
 
     def delete(self, *args, **kwargs):
         # delete the object
@@ -81,6 +82,7 @@ class Project(models.Model):
         # update the datastore
         from karaage.datastores.projects import delete_project
         delete_project(self)
+    delete.alters_data = True
 
     @models.permalink
     def get_usage_url(self):
@@ -124,6 +126,7 @@ class Project(models.Model):
         self.date_approved = datetime.datetime.today()
         self.approved_by = get_current_person()
         self.save()
+    activate.alters_data = True
 
     def deactivate(self):
         self.is_active = False
@@ -131,6 +134,7 @@ class Project(models.Model):
         self.date_deleted = datetime.datetime.today()
         self.group.members.clear()
         self.save()
+    deactivate.alters_data = True
 
     def get_usage(self,
                   start=datetime.date.today() - datetime.timedelta(days=90),
@@ -146,6 +150,7 @@ class Project(models.Model):
             machine_category = self.machine_category
         from karaage.graphs import gen_project_graph
         gen_project_graph(self, start, end, machine_category)
+    gen_usage_graph.alters_data = True
 
     def get_latest_usage(self):
         return self.cpujob_set.select_related()[:5]

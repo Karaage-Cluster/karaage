@@ -66,6 +66,7 @@ class SoftwarePackage(models.Model):
 
         # log message
         log(None, self, 2, "Saved software package")
+    save.alters_data = True
 
     def delete(self, *args, **kwargs):
         # delete the object
@@ -74,6 +75,7 @@ class SoftwarePackage(models.Model):
         # update the datastore
         from karaage.datastores.software import delete_software
         delete_software(self)
+    delete.alters_data = True
 
     def __unicode__(self):
         return self.name

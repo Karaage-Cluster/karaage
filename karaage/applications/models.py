@@ -86,12 +86,14 @@ class Application(models.Model):
                     self._class = klass.get_accessor_name()
                     break
         return super(Application, self).save(*args, **kwargs)
+    save.alters_data = True
 
     def delete(self):
         if self.content_type and self.content_type.model == 'applicant':
             if self.applicant.applications.count() <= 1:
                 self.applicant.delete()
         super(Application, self).delete()
+    delete.alters_data = True
 
     def get_object(self):
         try:
@@ -113,11 +115,13 @@ class Application(models.Model):
         self.complete_date = datetime.datetime.now()
         self.save()
         return person, created_person
+    approve.alters_data = True
 
     def decline(self):
         self.state = Application.DECLINED
         self.complete_date = datetime.datetime.now()
         self.save()
+    decline.alters_data = True
 
 
 class UserApplication(Application):
@@ -138,6 +142,7 @@ class UserApplication(Application):
             self.project.leaders.add(person)
         self.save()
         return person, created_person
+    approve.alters_data = True
 
 
 class ProjectApplication(Application):
@@ -172,6 +177,7 @@ class ProjectApplication(Application):
         self.project = project
         self.save()
         return project, created_person
+    approve.alters_data = True
 
 
 class Applicant(models.Model):
@@ -214,3 +220,4 @@ class Applicant(models.Model):
             application.save()
         self.delete()
         return person
+    approve.alters_data = True
