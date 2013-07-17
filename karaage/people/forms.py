@@ -155,7 +155,7 @@ class AddPersonForm(AdminPersonForm, UsernamePasswordForm):
             if data['needs_account'] and data['project']:
                 add_user_to_project(person, data['project'])
 
-        person = super(self.__class__, self).save(person)
+        person = super(AddPersonForm, self).save(person)
         return person
 
 

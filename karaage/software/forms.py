@@ -71,7 +71,7 @@ class AddPackageForm(SoftwarePackageForm):
     def save(self, package=None):
         data = self.cleaned_data
 
-        package = super(self.__class__, self).save()
+        package = super(AddPackageForm, self).save()
 
         version = SoftwareVersion(
             package=package,

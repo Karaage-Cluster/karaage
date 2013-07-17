@@ -157,7 +157,7 @@ class Person(models.Model):
 
     def save(self, *args, **kwargs):
         # save the object
-        super(self.__class__, self).save(*args, **kwargs)
+        super(Person, self).save(*args, **kwargs)
 
         # update the datastore
         from karaage.datastores import save_user
@@ -176,7 +176,7 @@ class Person(models.Model):
         delete_user(self)
 
         # update the datastore
-        super(self.__class__, self).delete(*args, **kwargs)
+        super(Person, self).delete(*args, **kwargs)
         from karaage.datastores import delete_user
 
     def _set_username(self, value):
@@ -396,7 +396,7 @@ class Group(models.Model):
 
     def delete(self, *args, **kwargs):
         # delete the object
-        super(self.__class__, self).delete(*args, **kwargs)
+        super(Group, self).delete(*args, **kwargs)
 
         # update the datastore
         from karaage.datastores import delete_group
