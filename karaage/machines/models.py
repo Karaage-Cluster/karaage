@@ -217,7 +217,7 @@ class UserAccount(models.Model):
     change_username.alters_data = True
 
     def set_password(self, password):
-        if self.date_deleted is not None:
+        if self.date_deleted is None:
             from karaage.datastores import set_account_password
             set_account_password(self, password)
         else:
