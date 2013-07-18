@@ -16,8 +16,9 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from tldap.schemas import rfc
-from placard.schemas import common
-from placard.schemas.pwdpolicy import pwdPolicyMixin
+import tldap.methods as base
+import tldap.methods.common as common
+import tldap.methods.pwdpolicy as pwdpolicy
 import tldap.manager
 
 ###########
@@ -34,10 +35,10 @@ class kAccountMixin(object):
 class account(
         rfc.person, rfc.organizationalPerson, rfc.inetOrgPerson, rfc.pwdPolicy,
         rfc.posixAccount, rfc.shadowAccount,
-        common.baseMixin):
+        base.baseMixin):
 
     mixin_list = [
-        common.personMixin, pwdPolicyMixin,
+        common.personMixin, pwdpolicy.pwdPolicyMixin,
         common.accountMixin, kAccountMixin
     ]
 
@@ -55,7 +56,7 @@ class account(
 # group #
 #########
 
-class group(rfc.posixGroup, common.baseMixin):
+class group(rfc.posixGroup, base.baseMixin):
     mixin_list = [ common.groupMixin ]
 
     class Meta:

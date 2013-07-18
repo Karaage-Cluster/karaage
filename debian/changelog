@@ -1,3 +1,11 @@
+karaage (2.7.6-1) UNRELEASED; urgency=low
+
+  * !!! add missing entries here !!!
+  * Use new methods stuff in tldap 0.2.7.
+  * We no longer require placard, change depends to depends on django-tldap.
+
+ -- Brian May <bam@debian.org>  Thu, 18 Jul 2013 14:07:58 +1000
+
 karaage (2.7.6-1) stable; urgency=low
 
   * Fix authentication for user's without a cluster account.
