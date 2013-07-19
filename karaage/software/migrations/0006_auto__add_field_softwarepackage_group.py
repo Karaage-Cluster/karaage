@@ -14,7 +14,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'SoftwarePackage.group'
         db.add_column('software_package', 'group',
-                      self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['people.Group']),
+                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.Group'], null=True, blank=True),
                       keep_default=False)
 
 
@@ -166,7 +166,7 @@ class Migration(SchemaMigration):
             'category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.SoftwareCategory']", 'null': 'True', 'blank': 'True'}),
             'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'gid': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Group']"}),
+            'group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Group']", 'null': 'True', 'blank': 'True'}),
             'homepage': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'}),

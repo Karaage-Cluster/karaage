@@ -41,7 +41,7 @@ class SoftwarePackage(models.Model):
     category = models.ForeignKey(SoftwareCategory, blank=True, null=True)
     name = models.CharField(max_length=200, unique=True)
     description = models.TextField(blank=True, null=True)
-    group = models.ForeignKey(Group)
+    group = models.ForeignKey(Group, blank=True, null=True)
     homepage = models.URLField(blank=True, null=True)
     tutorial_url = models.URLField(blank=True, null=True)
     academic_only = models.BooleanField()
@@ -94,7 +94,10 @@ class SoftwarePackage(models.Model):
         return self.group.name
 
     def get_group_members(self):
-        return self.group.members.all()
+        if self.group is None:
+            return Group.objects.none()
+        else:
+            return self.group.members.all()
 
 
 class SoftwareVersion(models.Model):
