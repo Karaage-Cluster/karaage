@@ -71,7 +71,6 @@ class Migration(DataMigration):
         u'institutes.institute': {
             'Meta': {'ordering': "['name']", 'object_name': 'Institute', 'db_table': "'institute'"},
             'delegates': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'delegate'", 'to': u"orm['people.Person']", 'through': u"orm['institutes.InstituteDelegate']", 'blank': 'True', 'symmetrical': 'False', 'null': 'True'}),
-            'gid': ('django.db.models.fields.IntegerField', [], {}),
             'group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Group']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
@@ -79,7 +78,7 @@ class Migration(DataMigration):
             'saml_entityid': ('django.db.models.fields.CharField', [], {'max_length': '200', 'unique': 'True', 'null': 'True', 'blank': 'True'})
         },
         u'institutes.institutedelegate': {
-            'Meta': {'object_name': 'InstituteDelegate'},
+            'Meta': {'object_name': 'InstituteDelegate', 'db_table': "'institutedelegate'"},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['institutes.Institute']"}),
             'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Person']"}),

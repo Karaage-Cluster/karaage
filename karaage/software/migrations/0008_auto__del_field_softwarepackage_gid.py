@@ -66,7 +66,7 @@ class Migration(SchemaMigration):
             'saml_entityid': ('django.db.models.fields.CharField', [], {'max_length': '200', 'unique': 'True', 'null': 'True', 'blank': 'True'})
         },
         u'institutes.institutedelegate': {
-            'Meta': {'object_name': 'InstituteDelegate'},
+            'Meta': {'object_name': 'InstituteDelegate', 'db_table': "'institutedelegate'"},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['institutes.Institute']"}),
             'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Person']"}),
