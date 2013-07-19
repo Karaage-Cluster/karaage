@@ -7,21 +7,17 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
-    def forwards(self, orm):
-        db.rename_table('people_institutedelegate', 'institutedelegate')
+    depends_on = (
+        ("people", "0012_move_instutute_models_to_institutes_app"),
+    )
 
-        if not db.dry_run:
-            # For permissions to work properly after migrating
-            orm['contenttypes.contenttype'].objects.filter(app_label='people', model='institute').update(app_label='institutes')
-            orm['contenttypes.contenttype'].objects.filter(app_label='people', model='institutedelegate').update(app_label='institutes')
+    def forwards(self, orm):
+        # moved logic to karaage.people.migrations.0012_move_instutute_models_to_institutes_app
+        pass
 
     def backwards(self, orm):
-        db.rename_table('institutedelegate', 'people_institutedelegate')
-
-        if not db.dry_run:
-            # For permissions to work properly after migrating
-            orm['contenttypes.contenttype'].objects.filter(app_label='institutes', model='institute').update(app_label='people')
-            orm['contenttypes.contenttype'].objects.filter(app_label='institutes', model='institutedelegate').update(app_label='people')
+        # moved logic to karaage.people.migrations.0012_move_instutute_models_to_institutes_app
+        pass
 
     models = {
         u'auth.group': {
