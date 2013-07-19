@@ -9,12 +9,16 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         for account in orm['machines.useraccount'].objects.filter(date_deleted__isnull=True):
-            p = ldap_schemas.account.objects.get(uid=account.username)
-            if p.is_locked():
-                account.shell = account.previous_shell
-            else:
-                account.shell = p.shell
-            account.save()
+            try:
+                p = ldap_schemas.account.objects.get(uid=account.username)
+                if p.is_locked():
+                    account.shell = account.previous_shell
+                else:
+                    account.shell = p.loginShell
+                account.save()
+            except ldap_schemas.account.DoesNotExist, e:
+                print "+++", account.username
+                pass
 
     def backwards(self, orm):
         for account in orm['machines.useraccount'].objects.all():

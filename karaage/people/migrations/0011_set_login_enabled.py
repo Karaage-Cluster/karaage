@@ -9,8 +9,28 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         for person in orm['people.person'].objects.all():
-            p = ldap_schemas.account.objects.get(uid=person.user.username)
-            person.login_enabled = not p.is_locked()
+            # check if the account is active or deleted
+            # note we don't check date_deleted as date_deleted not always set
+            if person.user.is_active:
+                # Yes - Account is active.
+                try:
+                    # Try to find LDAP entry with same name as person username. If
+                    # one exists, assume it is the same person.
+                    p = ldap_schemas.account.objects.get(uid=person.user.username)
+                    person.login_enabled = not p.is_locked()
+                except ldap_schemas.account.DoesNotExist, e:
+                    # If we cannot find LDAP entry, assume this is because person
+                    # has no access.
+                    print "+++", person.user.username
+                    person.login_enabled = False
+
+            else:
+                # No - Account is deleted, obviously logins should be disabled.
+                # In fact this should already be set anyway.
+                person.login_enabled = False
+
+
+            # Save the updates to the person
             person.save()
 
     def backwards(self, orm):
