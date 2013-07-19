@@ -10,16 +10,20 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         for software in orm.SoftwarePackage.objects.all():
-            lgroup = ldap_schemas.group.objects.get(gidNumber=software.gid)
-
-            if not db.dry_run:
-                group,c = orm['people.group'].objects.get_or_create(name=lgroup.cn)
-                software.group = group
+            if software.gid is None:
+                software.group = None
                 software.save()
+            else:
+                lgroup = ldap_schemas.group.objects.get(gidNumber=software.gid)
 
-                for member in lgroup.secondary_accounts.all():
-                    person = orm['people.person'].objects.get(user__username=member.uid)
-                    person.add_group(group)
+                if not db.dry_run:
+                    group,c = orm['people.group'].objects.get_or_create(name=lgroup.cn)
+                    software.group = group
+                    software.save()
+
+                    for member in lgroup.secondary_accounts.all():
+                        person = orm['people.person'].objects.get(user__username=member.uid)
+                        person.groups.add(group)
 
     def backwards(self, orm):
         for software in orm.SoftwarePackage.objects.all():
