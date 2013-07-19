@@ -45,7 +45,7 @@ class account(
     class Meta:
         base_dn_setting = "LDAP_ACCOUNT_BASE"
         object_classes = set([ 'top' ])
-        search_classes = set([ 'posixAccount' ])
+        search_classes = set([ 'person' ])
         pk = 'uid'
 
     managed_by = tldap.manager.ManyToOneDescriptor(this_key='manager', linked_cls='karaage.datastores.ldap_schemas.account', linked_key='dn')
