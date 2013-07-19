@@ -7,6 +7,10 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ("people", "0014_create_upgrade_group"),
+    )
+
     def forwards(self, orm):
         # Adding field 'Project.group'
         db.add_column('project', 'group',
