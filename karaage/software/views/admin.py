@@ -53,7 +53,7 @@ def software_list(request):
         terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
-            q = Q(name__icontains=term) | Q(description__icontains=term) | Q(gid__icontains=term) | Q(homepage__icontains=term)
+            q = Q(name__icontains=term) | Q(description__icontains=term) | Q(homepage__icontains=term)
             query = query & q
         
         software_list = software_list.filter(query)
