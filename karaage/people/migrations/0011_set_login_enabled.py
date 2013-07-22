@@ -8,7 +8,7 @@ from karaage.datastores import ldap_schemas
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        for person in orm['people.person'].objects.all():
+        for person in orm.person.objects.all():
             # check if the account is active or deleted
             # note we don't check date_deleted as date_deleted not always set
             if person.user.is_active:
@@ -26,7 +26,6 @@ class Migration(DataMigration):
 
             else:
                 # No - Account is deleted, obviously logins should be disabled.
-                # In fact this should already be set anyway.
                 person.login_enabled = False
 
 
