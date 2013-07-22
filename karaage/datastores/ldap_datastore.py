@@ -48,7 +48,10 @@ class AccountDataStore(base.AccountDataStore):
             luser.o = person.institute.name
             luser.gidNumber = lgroup.gidNumber
             luser.homeDirectory = settings.HOME_DIRECTORY % { 'default_project': ua.default_project.pid, 'uid': person.username }
-            luser.loginShell = ua.shell
+            if ua.is_locked():
+                luser.loginShell = settings.LOCKED_SHELL
+            else:
+                luser.loginShell = ua.shell
             luser.pre_save()
             luser.save()
         except ldap_schemas.account.DoesNotExist:
@@ -89,7 +92,10 @@ class AccountDataStore(base.AccountDataStore):
     def change_account_shell(self, ua, shell):
         super(AccountDataStore, self).change_account_shell(ua, shell)
         luser = ldap_schemas.account.objects.get(uid=ua.username)
-        luser.loginShell = shell
+        if ua.is_locked():
+            luser.loginShell = settings.LOCKED_SHELL
+        else:
+            luser.loginShell = shell
         luser.pre_save()
         luser.save()
 

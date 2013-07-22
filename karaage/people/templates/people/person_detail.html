@@ -97,7 +97,17 @@
 </thead>
 <tbody>
 <tr class="row1">
-<td>{% yes_no_img ua.date_deleted "reversed" %}</td>
+<td>
+    {% if ua.date_deleted %}
+    <img alt="Not Active" src="{{ STATIC_URL }}admin/img/icon-no.gif" title="Not Active""/>
+    {% else %}
+        {% if ua.is_locked %}
+        <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
+        {% else %}
+        <img alt="Active" src="{{ STATIC_URL }}admin/img/icon-yes.gif" title="Active"/>
+        {% endif %}
+    {% endif %}
+</td>
 <td>{{ ua.username }}</td>
 <td>{{ ua.date_created|date }}</td>
 	  {% if ua.date_deleted %}

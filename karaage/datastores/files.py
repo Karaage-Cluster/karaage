@@ -31,6 +31,11 @@ class AccountDataStore(base.AccountDataStore):
     def save_account(self, ua):
         super(AccountDataStore, self).create_account(ua)
 
+        if ua.is_locked():
+            loginShell = settings.LOCKED_SHELL
+        else:
+            loginShell = ua.shell
+
         if self.account_exists():
             super(AccountDataStore, self).update_account(ua)
 
@@ -43,7 +48,7 @@ class AccountDataStore(base.AccountDataStore):
                     if l.find(ua.username) == 0:
                         username, shad, uid, gid, name, homedir, shell = l.split(':')
                         homedir = '/home/%s' % ua.username
-                        l = "%s:x:%s:%s:%s:%s:%s\n" % (ua.username, uid, ua.user.institute.gid, ua.user.get_full_name(), homedir, shell)
+                        l = "%s:x:%s:%s:%s:%s:%s\n" % (ua.username, uid, ua.user.institute.gid, ua.user.get_full_name(), homedir, loginShell)
                     new_data.append(l)
 
                 f = open(pwfile, 'w')
@@ -55,7 +60,7 @@ class AccountDataStore(base.AccountDataStore):
             home_dir = '/home/%s' % ua.username
             userid = self.get_next_uid()
 
-            line = "%s:x:%s:%s:%s:%s:%s\n" % (ua.username, userid, person.institute.gid, person.get_full_name(), home_dir, settings.DEFAULT_SHELL)
+            line = "%s:x:%s:%s:%s:%s:%s\n" % (ua.username, userid, person.institute.gid, person.get_full_name(), home_dir, loginShell)
 
             for pwfile in self.passwd_files:
                 f = open(pwfile, 'a')
@@ -85,6 +90,12 @@ class AccountDataStore(base.AccountDataStore):
     def unlock_account(self, ua):
         super(AccountDataStore, self).unlock_account(ua)
  
+    def change_account_shell(self, ua, shell):
+        super(AccountDataStore, self).change_account_shell(ua, shell)
+        if ua.is_locked():
+            loginShell = settings.LOCKED_SHELL
+        # FIXME
+
     def get_next_uid(self):
         id_list = []
 

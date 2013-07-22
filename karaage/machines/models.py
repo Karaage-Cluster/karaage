@@ -108,6 +108,7 @@ class UserAccount(models.Model):
     date_deleted = models.DateField(null=True, blank=True)
     disk_quota = models.IntegerField(null=True, blank=True, help_text="In GB")
     shell = models.CharField(max_length=50)
+    login_enabled = models.BooleanField(default=True)
 
     class Meta:
         ordering = ['user', ]
@@ -180,6 +181,7 @@ class UserAccount(models.Model):
         if self.date_deleted is None:
             # save the object
             self.date_deleted = datetime.datetime.now()
+            self.login_enabled = False
             self.save()
 
             # update the datastore
@@ -235,6 +237,7 @@ class UserAccount(models.Model):
         return self.shell
 
     def lock(self):
+        self.login_enabled = False
         if self.date_deleted is None:
             from karaage.datastores import lock_account
             lock_account(self)
@@ -243,12 +246,16 @@ class UserAccount(models.Model):
     lock.alters_data = True
 
     def unlock(self):
+        self.login_enabled = True
         if self.date_deleted is None:
             from karaage.datastores import unlock_account
             unlock_account(self)
         else:
             raise RuntimeError("Account is deactivated")
     unlock.alters_data = True
+
+    def is_locked(self):
+        return not self.login_enabled
 
 
 def _remove_group(group, person):
