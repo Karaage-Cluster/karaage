@@ -118,8 +118,8 @@ MIDDLEWARE_CLASSES = (
 
 AUTHENTICATION_BACKENDS = (
     'karaage.backends.SamlUserBackend',
-    'karaage.backends.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
+    'karaage.backends.LDAPBackend',
 )
 
 PERSONAL_DATASTORE = 'karaage.datastores.openldap_datastore'

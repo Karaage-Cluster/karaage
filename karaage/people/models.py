@@ -55,6 +55,7 @@ class Person(models.Model):
     expires = models.DateField(null=True, blank=True)
     is_systemuser = models.BooleanField(default=False)
     login_enabled = models.BooleanField(default=True)
+    legacy_ldap_password = models.CharField(max_length=128, null=True, blank=True)
     objects = PersonManager()
     active = ActiveUserManager()
     deleted = DeletedUserManager()
@@ -326,6 +327,9 @@ class Person(models.Model):
     def set_password(self, password):
         self.user.set_password(password)
         self.user.save()
+        if self.legacy_ldap_password is not None:
+            self.legacy_ldap_password = None
+            super(Person, self).save()
         from karaage.datastores import set_user_password
         set_user_password(self, password)
         for ua in self.useraccount_set.filter(date_deleted__isnull=True):
