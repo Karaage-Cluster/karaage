@@ -5,6 +5,7 @@ from south.v2 import DataMigration
 from django.db import models
 
 from karaage.datastores import ldap_schemas
+from django.contrib.auth.hashers import UNUSABLE_PASSWORD
 
 class Migration(DataMigration):
 
@@ -18,7 +19,10 @@ class Migration(DataMigration):
                     # Try to find LDAP entry with same name as person username. If
                     # one exists, assume it is the same person.
                     p = ldap_schemas.account.objects.get(uid=person.user.username)
-                    person.legacy_ldap_password = p.userPassword
+                    if p.userPassword is not None:
+                        person.legacy_ldap_password = p.userPassword
+                        person.user.password = UNUSABLE_PASSWORD
+                        person.user.save()
 
                     # If there are no accounts for this person, then delete
                     # the LDAP entry.
