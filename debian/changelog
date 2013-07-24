@@ -1,8 +1,21 @@
-karaage (2.7.6-1) UNRELEASED; urgency=low
+karaage (2.8.0-1) UNRELEASED; urgency=low
 
-  * !!! add missing entries here !!!
+  * Improved support for transactions.
+  * Various bugs fixed.
+  * Make mysql database authoritive over LDAP.
+  * Add is_locked field to Person and UserAccount.
+  * Add shell attribute to UserAccount.
+  * Add group model.
+  * Clean up data stores.
+  * Validate telephone numbers.
+  * Use dpkg triggers to migrate db changes.
+  * Update packaging.
+  * People don't have a LDAP entry unless they have an account.
+  * User's set password after account is created via password reset email.
   * Use new methods stuff in tldap 0.2.7.
   * We no longer require placard, change depends to depends on django-tldap.
+  * Migrations for all of the above.
+  * Existing LDAP entries for non-accounts will get deleted in db migration.
 
  -- Brian May <bam@debian.org>  Thu, 18 Jul 2013 14:07:58 +1000
 
