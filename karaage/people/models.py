@@ -162,8 +162,8 @@ class Person(models.Model):
         super(Person, self).save(*args, **kwargs)
 
         # update the datastore
-        from karaage.datastores import save_user
-        save_user(self)
+        from karaage.datastores import save_person
+        save_person(self)
 
         # update account datastores
         from karaage.datastores import save_account
@@ -176,7 +176,7 @@ class Person(models.Model):
 
     def delete(self, *args, **kwargs):
         # delete the object
-        delete_user(self)
+        delete_person(self)
 
         # update the datastore
         super(Person, self).delete(*args, **kwargs)
@@ -330,8 +330,8 @@ class Person(models.Model):
         if self.legacy_ldap_password is not None:
             self.legacy_ldap_password = None
             super(Person, self).save()
-        from karaage.datastores import set_user_password
-        set_user_password(self, password)
+        from karaage.datastores import set_person_password
+        set_person_password(self, password)
         for ua in self.useraccount_set.filter(date_deleted__isnull=True):
             ua.set_password(password)
     set_password.alters_data = True
@@ -342,8 +342,8 @@ class Person(models.Model):
         self.login_enabled = False
         # we call super.save() to avoid calling datastore save needlessly
         super(Person, self).save()
-        from karaage.datastores import lock_user
-        lock_user(self)
+        from karaage.datastores import lock_person
+        lock_person(self)
         for ua in self.useraccount_set.filter(date_deleted__isnull=True):
             ua.lock()
         log(None, self, 2, 'Locked person')
@@ -355,8 +355,8 @@ class Person(models.Model):
         self.login_enabled = True
         # we call super.save() to avoid calling datastore save needlessly
         super(Person, self).save()
-        from karaage.datastores import unlock_user
-        unlock_user(self)
+        from karaage.datastores import unlock_person
+        unlock_person(self)
         for ua in self.useraccount_set.filter(date_deleted__isnull=True):
             ua.unlock()
         log(None, self, 2, 'Unlocked person')
@@ -367,8 +367,8 @@ class Person(models.Model):
         if old_username != new_username:
             self.user.username = new_username
             self.user.save()
-            from karaage.datastores import change_user_username
-            change_user_username(self, old_username, new_username)
+            from karaage.datastores import set_person_username
+            set_person_username(self, old_username, new_username)
     change_username.alters_data = True
 
     def is_locked(self):
@@ -437,8 +437,8 @@ class Group(models.Model):
             self.name = new_name
             # we call super.save() to avoid calling datastore save needlessly
             super(Group, self).save()
-            from karaage.datastores import change_group_name
-            change_group_name(self, old_name, new_name)
+            from karaage.datastores import set_group_name
+            set_group_name(self, old_name, new_name)
             log(None, self, 2, "Renamed group")
     change_name.alters_data = True
 

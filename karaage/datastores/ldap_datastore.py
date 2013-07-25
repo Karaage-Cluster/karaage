@@ -119,7 +119,7 @@ class AccountDataStore(base.AccountDataStore):
         luser.pre_delete()
         luser.delete()
 
-    def change_account_shell(self, account, shell):
+    def set_account_shell(self, account, shell):
         """ Account's shell was changed. """
         luser = self._accounts().get(uid=account.username)
         if account.is_locked():
@@ -136,7 +136,7 @@ class AccountDataStore(base.AccountDataStore):
         luser.pre_save()
         luser.save()
 
-    def change_account_username(self, account, old_username, new_username):
+    def set_account_username(self, account, old_username, new_username):
         """ Account's username was changed. """
         luser = self._accounts().get(uid=old_username)
         luser.rename(uid=new_username)
@@ -198,7 +198,7 @@ class AccountDataStore(base.AccountDataStore):
         lgroup = self._groups().get(cn=group.name)
         lgroup.delete()
 
-    def change_group_name(self, group, old_name, new_name):
+    def set_group_name(self, group, old_name, new_name):
         """ Group was renamed. """
         lgroup = self._groups().get(cn=old_name)
         lgroup.rename(cn=new_name)

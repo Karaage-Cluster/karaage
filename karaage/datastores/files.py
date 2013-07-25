@@ -79,9 +79,9 @@ class AccountDataStore(base.AccountDataStore):
         fobj.writelines(new_data)
         fobj.close()
 
-    def change_account_shell(self, account, shell):
+    def set_account_shell(self, account, shell):
         """ Account's shell was changed. """
-        super(AccountDataStore, self).change_account_shell(account, shell)
+        super(AccountDataStore, self).set_account_shell(account, shell)
         if account.is_locked():
             login_shell = settings.LOCKED_SHELL
         # FIXME
@@ -112,7 +112,7 @@ class AccountDataStore(base.AccountDataStore):
         # FIXME
         pass
 
-    def change_account_username(self, account, old_username, new_username):
+    def set_account_username(self, account, old_username, new_username):
         """ Account's username was changed. """
         # FIXME
         pass
@@ -147,7 +147,7 @@ class AccountDataStore(base.AccountDataStore):
         # FIXME
         pass
 
-    def change_group_name(self, group, old_name, new_name):
+    def set_group_name(self, group, old_name, new_name):
         """ Group was renamed. """
         # FIXME
         pass

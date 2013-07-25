@@ -19,16 +19,16 @@
 
 from django.conf import settings
 
-_PERSONAL_DATASTORES = {}
+_PERSON_DATASTORES = {}
 _ACCOUNT_DATASTORES = {}
 
 def _init_datastores():
     """ Initialize all datastores. """
-    for name, array in settings.PERSONAL_DATASTORES.iteritems():
-        _PERSONAL_DATASTORES[name] = []
+    for name, array in settings.PERSON_DATASTORES.iteritems():
+        _PERSON_DATASTORES[name] = []
         for config in array:
             module = __import__(config['ENGINE'], {}, {}, [''])
-            _PERSONAL_DATASTORES[name].append(module.PersonalDataStore(config))
+            _PERSON_DATASTORES[name].append(module.PersonDataStore(config))
     for name, array in settings.ACCOUNT_DATASTORES.iteritems():
         _ACCOUNT_DATASTORES[name] = []
         for config in array:
@@ -37,56 +37,56 @@ def _init_datastores():
 
 def _get_personal_datastores():
     """ Get the default personal datastores. """
-    name = settings.PERSONAL_DATASTORE
-    return _PERSONAL_DATASTORES[name]
+    name = settings.PERSON_DATASTORE
+    return _PERSON_DATASTORES[name]
 
 def _get_account_datastores(name):
     """ Get the account datastores. """
     return _ACCOUNT_DATASTORES[name]
 
 
-def save_user(person):
+def save_person(person):
     """ Person was saved. """
     for datastore in _get_personal_datastores():
-        datastore.save_user(person)
+        datastore.save_person(person)
 
-def delete_user(person):
+def delete_person(person):
     """ Person was deleted. """
     for datastore in _get_personal_datastores():
-        datastore.delete_user(person)
+        datastore.delete_person(person)
 
-def lock_user(person):
+def lock_person(person):
     """ Person was locked. """
     for datastore in _get_personal_datastores():
-        datastore.lock_user(person)
+        datastore.lock_person(person)
 
-def unlock_user(person):
+def unlock_person(person):
     """ Person was unlocked. """
     for datastore in _get_personal_datastores():
-        datastore.unlock_user(person)
+        datastore.unlock_person(person)
 
-def set_user_password(person, raw_password):
+def set_person_password(person, raw_password):
     """ Person's password was changed. """
     for datastore in _get_personal_datastores():
-        datastore.set_user_password(person, raw_password)
+        datastore.set_person_password(person, raw_password)
 
-def change_user_username(person, old_username, new_username):
+def set_person_username(person, old_username, new_username):
     """ Person's username was changed. """
     for datastore in _get_personal_datastores():
-        datastore.change_user_username(person, old_username, new_username)
+        datastore.set_person_username(person, old_username, new_username)
 
-def user_exists(username):
+def person_exists(username):
     """ Does this person exist??? """
     for datastore in _get_personal_datastores():
-        if datastore.user_exists(username):
+        if datastore.person_exists(username):
             return True
     return False
 
-def get_user_details(person):
+def get_person_details(person):
     """ Get details for this user. """
     result = []
     for datastore in _get_personal_datastores():
-        value = datastore.get_user_details(person)
+        value = datastore.get_person_details(person)
         value['datastore'] = datastore.config['DESCRIPTION']
         result.append(value)
     return result
@@ -116,23 +116,23 @@ def unlock_account(account):
     for datastore in _get_account_datastores(name):
         datastore.unlock_account(account)
 
-def change_account_shell(account, shell):
+def set_account_shell(account, shell):
     """ Account's shell was changed. """
     name = account.machine_category.datastore
     for datastore in _get_account_datastores(name):
-        datastore.change_account_shell(account, shell)
+        datastore.set_account_shell(account, shell)
 
 def set_account_password(account, raw_password):
     """ Account's password was changed. """
     name = account.machine_category.datastore
     for datastore in _get_account_datastores(name):
-        datastore.set_user_password(account, raw_password)
+        datastore.set_person_password(account, raw_password)
 
-def change_account_username(account, old_username, new_username):
+def set_account_username(account, old_username, new_username):
     """ Account's username was changed. """
     name = account.machine_category.datastore
     for datastore in _get_account_datastores(name):
-        datastore.change_user_username(account, old_username, new_username)
+        datastore.set_person_username(account, old_username, new_username)
 
 def account_exists(username, machine_category):
     """ Does the account exist??? """
@@ -185,14 +185,13 @@ def delete_group(group):
         for datastore in _get_account_datastores(name):
             datastore.delete_group(group)
 
-def change_group_name(group, old_name, new_name):
+def set_group_name(group, old_name, new_name):
     """ Group was renamed. """
     from karaage.machines.models import MachineCategory
     for machine_category in MachineCategory.objects.all():
         name = machine_category.datastore
         for datastore in _get_account_datastores(name):
-            datastore.change_group_name(group, old_name, new_name)
-
+            datastore.set_group_name(group, old_name, new_name)
 
 def get_group_details(group):
     """ Get group details. """

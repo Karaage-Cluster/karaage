@@ -77,8 +77,8 @@ def user_detail(request, username):
 def user_verbose(request, username):
     person = get_object_or_404(Person, user__username=username)
 
-    from karaage.datastores import get_user_details
-    person_details = get_user_details(person)
+    from karaage.datastores import get_person_details
+    person_details = get_person_details(person)
 
     from karaage.datastores import get_account_details
     account_details = []

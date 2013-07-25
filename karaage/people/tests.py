@@ -277,7 +277,7 @@ class UserTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 200)
 
 
-    def test_admin_update_user(self):
+    def test_admin_update_person(self):
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
 
@@ -312,7 +312,7 @@ class UserTestCase(TestCase):
         self.failUnlessEqual(luser.o, 'OtherInst')
         self.failUnlessEqual(luser.gecos, 'Test User3 (OtherInst)')
 
-    def test_delete_activate_user(self):
+    def test_delete_activate_person(self):
         self.client.login(username='kgsuper', password='aq12ws')
         user = Person.objects.get(user__username='kgtestuser3')
         self.assertEqual(user.is_active, True)

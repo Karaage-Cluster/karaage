@@ -19,41 +19,41 @@
 
 from django.conf import settings
 
-class PersonalDataStore(object):
+class PersonDataStore(object):
     """ Base class used for all personal datastores. """
 
     def __init__(self, config):
         self.config = config
 
-    def save_user(self, person):
+    def save_person(self, person):
         """ Person was saved. """
         raise NotImplementedError
 
-    def delete_user(self, person):
+    def delete_person(self, person):
         """ Person was deleted. """
         raise NotImplementedError
 
-    def lock_user(self, person):
+    def lock_person(self, person):
         """ Person was locked. """
         raise NotImplementedError
 
-    def unlock_user(self, person):
+    def unlock_person(self, person):
         """ Person was unlocked. """
         raise NotImplementedError
 
-    def set_user_password(self, person, raw_password):
+    def set_person_password(self, person, raw_password):
         """ Person's password was changed. """
         raise NotImplementedError
 
-    def change_user_username(self, person, old_username, new_username):
+    def set_person_username(self, person, old_username, new_username):
         """ Person's username was changed. """
         raise NotImplementedError
 
-    def get_user_details(self, person):
+    def get_person_details(self, person):
         """ Get person's details. """
         raise NotImplementedError
 
-    def user_exists(self, username):
+    def person_exists(self, username):
         """ Does the person exist? """
         raise NotImplementedError
 
@@ -74,13 +74,13 @@ class AccountDataStore(object):
 
     def lock_account(self, account):
         """ Account was locked. """
-        self.change_account_shell(account, settings.LOCKED_SHELL)
+        self.set_account_shell(account, settings.LOCKED_SHELL)
 
     def unlock_account(self, account):
         """ Account was unlocked. """
-        self.change_account_shell(account, account.shell)
+        self.set_account_shell(account, account.shell)
 
-    def change_account_shell(self, account, shell):
+    def set_account_shell(self, account, shell):
         """ Account's shell was changed. """
         raise NotImplementedError
 
@@ -88,7 +88,7 @@ class AccountDataStore(object):
         """ Account's password was changed. """
         raise NotImplementedError
 
-    def change_account_username(self, account, old_username, new_username):
+    def set_account_username(self, account, old_username, new_username):
         """ Account's username was changed. """
         raise NotImplementedError
 
@@ -116,7 +116,7 @@ class AccountDataStore(object):
         """ Group was deleted. """
         raise NotImplementedError
 
-    def change_group_name(self, group, old_name, new_name):
+    def set_group_name(self, group, old_name, new_name):
         """ Group was renamed. """
         raise NotImplementedError
 

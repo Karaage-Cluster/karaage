@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.conf import settings
 
-from karaage.datastores import user_exists, account_exists
+from karaage.datastores import person_exists, account_exists
 from karaage.validators import username_re
 from karaage.machines.models import MachineCategory
 
@@ -36,7 +36,7 @@ def validate_username(username):
             if user is not None:
                 raise UsernameTaken(u'The username is already taken. Please choose another. If this was the name of your old account please email %s' % settings.ACCOUNTS_EMAIL)
 
-            if user_exists(username):
+            if person_exists(username):
                 raise UsernameTaken(u'Username is already in external personal datastore.')
 
             for mc in MachineCategory.objects.all():

@@ -115,7 +115,7 @@ class UserAccount(models.Model):
         """Creates a UserAccount (if needed) and activates user.
 
         Keyword arguments:
-        person_id -- Person id
+        user_id -- Person id
         project_id -- Project id
         """
         ua = UserAccount.objects.create(
@@ -189,8 +189,8 @@ class UserAccount(models.Model):
         # we call super.save() to avoid calling datastore save needlessly
         super(UserAccount, self).save()
         if self.date_deleted is None:
-            from karaage.datastores import change_account_shell
-            change_account_shell(self, shell)
+            from karaage.datastores import set_account_shell
+            set_account_shell(self, shell)
         log(None, self.user, 2,
             'Changed shell on %s' % self.machine_category)
     change_shell.alters_data = True
@@ -202,8 +202,8 @@ class UserAccount(models.Model):
             # we call super.save() to avoid calling datastore save needlessly
             super(UserAccount, self).save()
             if self.date_deleted is None:
-                from karaage.datastores import change_account_username
-                change_account_username(self, old_username, new_username)
+                from karaage.datastores import set_account_username
+                set_account_username(self, old_username, new_username)
             log(None, self.user, 2,
                 'Changed username on %s' % self.machine_category)
     change_username.alters_data = True
