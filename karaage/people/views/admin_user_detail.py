@@ -81,9 +81,12 @@ def user_verbose(request, username):
     person_details = get_person_details(person)
 
     from karaage.datastores import get_account_details
-    account_details = []
+    account_details = {}
     for ua in person.useraccount_set.filter(date_deleted__isnull=True):
-        account_details.append(get_account_details(ua))
+        details = get_account_details(ua)
+        if ua.machine_category not in account_details:
+            account_details[ua.machine_category] = []
+        account_details[ua.machine_category].append(details)
 
     return render_to_response('people/person_verbose.html', locals(), context_instance=RequestContext(request))
 

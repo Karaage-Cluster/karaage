@@ -25,10 +25,12 @@
     </div>
     {% endfor %}
 
-    {% for account in account_details %}
-    {% for a in account %}
+    {% for mc, array in account_details.iteritems %}
+    {% for account in array %}
     <div class="module">
-        <h2>Account details - {{ a.datastore }}</h2>
+        <h2>Account details - {{ mc }}</h2>
+        {% for a in account %}
+        <h3>{{ a.datastore }}</h3>
         <table>
             {% for i,j in a.iteritems %}
                 <tr>
@@ -36,6 +38,7 @@
                </tr>
             {% endfor %}
         </table>
+        {% endfor %}
     </div>
     {% endfor %}
     {% endfor %}

@@ -13,9 +13,10 @@
 <div id="content-main">
 
     {% for mc, group in group_details.iteritems %}
-    {% for a in group %}
     <div class="module">
-        <h2>Group details machine category {{mc}} - {{a.datastore}}</h2>
+        <h2>Group details - {{mc}}</h2>
+        {% for a in group %}
+        <h3>{{a.datastore}}</h3>
         <table>
             {% for i,j in a.iteritems %}
                 <tr>
@@ -23,8 +24,8 @@
                </tr>
             {% endfor %}
         </table>
+        {% endfor %}
     </div>
-    {% endfor %}
     {% endfor %}
 </div>
 {% endblock %}
