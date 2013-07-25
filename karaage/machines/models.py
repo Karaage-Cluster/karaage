@@ -25,21 +25,11 @@ from karaage.machines.managers import MachineCategoryManager, ActiveMachineManag
 from karaage.util import log_object as log
 
 
+
 class MachineCategory(models.Model):
-    OPENLDAP = 'karaage.datastores.openldap_datastore'
-    DS_LDAP = 'karaage.datastores.ldap_datastore'
-    AD = 'karaage.datastores.ad_datastore'
-    FILES = 'karaage.datastores.files'
-    DUMMY = 'karaage.datastores.dummy'
-    ACCOUNT_DATASTORES = (
-        (OPENLDAP, 'OpenLDAP'),
-        (DS_LDAP, 'Netsacape LDAP'),
-        (AD, 'Active Directory'),
-        (FILES, 'Files'),
-        (DUMMY, 'Dummy'),
-        )
+    ACCOUNT_DATASTORES = [ (i,i) for i in settings.ACCOUNT_DATASTORES.keys() ]
     name = models.CharField(max_length=100)
-    datastore = models.CharField(max_length=255, choices=ACCOUNT_DATASTORES, default=OPENLDAP, help_text="Modifying this value on existing categories will affect accounts created under the old datastore")
+    datastore = models.CharField(max_length=255, choices=ACCOUNT_DATASTORES, help_text="Modifying this value on existing categories will affect accounts created under the old datastore")
     objects = MachineCategoryManager()
 
     class Meta:

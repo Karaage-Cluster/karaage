@@ -1,4 +1,4 @@
-# Copyright 2007-2010 VPAC
+# Copyright 2007-2013 VPAC
 #
 # This file is part of Karaage.
 #
@@ -15,11 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+""" Base functionality used by all institute datastores. """
 
 class InstituteDataStore:
-    
+    """ Base clase for institute datastores. """
+
+    def __init__(self, config):
+        pass
+
     def save_institute(self, institute):
-        raise NotImplemented
+        """ Institute was saved. """
+        raise NotImplementedError
 
     def delete_institute(self, institute):
-        raise NotImplemented
+        """ Institute was deleted. """
+        raise NotImplementedError

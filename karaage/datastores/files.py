@@ -1,4 +1,4 @@
-# Copyright 2007-2010 VPAC
+# Copyright 2007-2013 VPAC
 #
 # This file is part of Karaage.
 #
@@ -15,136 +15,144 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf import settings
+""" Save account information in /etc/passwd and /etc/group files. """
 
+from django.conf import settings
 from karaage.datastores import base
 
 
-class PersonalDataStore(base.PersonalDataStore):
-    pass
-
-
 class AccountDataStore(base.AccountDataStore):
-    
-    passwd_files = settings.PASSWD_FILES
+    """ File account datastore. """
 
-    def save_account(self, ua):
-        super(AccountDataStore, self).create_account(ua)
+    def __init__(self, config):
+        super(AccountDataStore, self).__init__(config)
+        self.passwd_file = config['PASSWD_FILE']
+        self.group_file = config['GROUP_FILE']
 
-        if ua.is_locked():
-            loginShell = settings.LOCKED_SHELL
+    def save_account(self, account):
+        """ Account was saved. """
+        if account.is_locked():
+            login_shell = settings.LOCKED_SHELL
         else:
-            loginShell = ua.shell
+            login_shell = account.shell
 
         if self.account_exists():
-            super(AccountDataStore, self).update_account(ua)
+            super(AccountDataStore, self).update_account(account)
 
-            for pwfile in self.passwd_files:
-                f = open(pwfile)
-                data = f.readlines()
-                f.close()
-                new_data = []
-                for l in data:
-                    if l.find(ua.username) == 0:
-                        username, shad, uid, gid, name, homedir, shell = l.split(':')
-                        homedir = '/home/%s' % ua.username
-                        l = "%s:x:%s:%s:%s:%s:%s\n" % (ua.username, uid, ua.user.institute.gid, ua.user.get_full_name(), homedir, loginShell)
-                    new_data.append(l)
+            fobj = open(self.passwd_file)
+            data = fobj.readlines()
+            fobj.close()
+            new_data = []
+            for line in data:
+                if line.find(account.username) == 0:
+                    username, shad, uid, gid, name, homedir, shell = line.split(':')
+                    homedir = '/home/%s' % account.username
+                    line = "%s:x:%s:%s:%s:%s:%s\n" % (account.username, uid, account.user.institute.gid, account.user.get_full_name(), homedir, login_shell)
+                new_data.append(line)
 
-                f = open(pwfile, 'w')
-                f.writelines(new_data)
-                f.close()
+            fobj = open(self.passwd_file, 'w')
+            fobj.writelines(new_data)
+            fobj.close()
         else:
-            person = ua.user
+            person = account.user
 
-            home_dir = '/home/%s' % ua.username
+            home_dir = '/home/%s' % account.username
             userid = self.get_next_uid()
 
-            line = "%s:x:%s:%s:%s:%s:%s\n" % (ua.username, userid, person.institute.gid, person.get_full_name(), home_dir, loginShell)
+            line = "%s:x:%s:%s:%s:%s:%s\n" % (account.username, userid, person.institute.gid, person.get_full_name(), home_dir, login_shell)
 
-            for pwfile in self.passwd_files:
-                f = open(pwfile, 'a')
-                f.write(line)
-                f.close()
+            fobj = open(self.passwd_file, 'a')
+            fobj.write(line)
+            fobj.close()
 
-    def delete_account(self, ua):
-        super(AccountDataStore, self).delete_account(ua)
+    def delete_account(self, account):
+        """ Account was deleted. """
+        fobj = open(self.passwd_file)
+        data = fobj.readlines()
+        fobj.close()
+        new_data = []
+        for line in data:
+            if line.find(account.username) != 0:
+                new_data.append(line)
 
-        for pwfile in self.passwd_files:
+        fobj = open(file, 'w')
+        fobj.writelines(new_data)
+        fobj.close()
 
-            f = open(pwfile)
-            data = f.readlines()
-            f.close()
-            new_data = []
-            for l in data:
-                if l.find(ua.username) != 0:
-                    new_data.append(l)
-
-            f = open(file, 'w')
-            f.writelines(new_data)
-            f.close()
-
-    def lock_account(self, ua):
-        super(AccountDataStore, self).lock_account(ua)
-
-    def unlock_account(self, ua):
-        super(AccountDataStore, self).unlock_account(ua)
- 
-    def change_account_shell(self, ua, shell):
-        super(AccountDataStore, self).change_account_shell(ua, shell)
-        if ua.is_locked():
-            loginShell = settings.LOCKED_SHELL
+    def change_account_shell(self, account, shell):
+        """ Account's shell was changed. """
+        super(AccountDataStore, self).change_account_shell(account, shell)
+        if account.is_locked():
+            login_shell = settings.LOCKED_SHELL
         # FIXME
 
     def get_next_uid(self):
+        """ Pick the next uid to use. """
         id_list = []
 
-        for pwfile in self.passwd_files:
-            f = open(pwfile)
-            data = f.readlines()
-            f.close()
-            for l in data:
-                try:
-                    id_list.append(int(l.split(':')[2]))
-                except:
-                    pass
+        fobj = open(self.passwd_file)
+        data = fobj.readlines()
+        fobj.close()
+        for line in data:
+            try:
+                id_list.append(int(line.split(':')[2]))
+            except:
+                pass
 
         id_list.sort()
-        id = id_list[-1] + 1
+        account_id = id_list[-1] + 1
 
-        if id < settings.UID_START:
+        if account_id < settings.UID_START:
             return settings.UID_START
         else:
-            return id
+            return account_id
 
-    def set_user_password(self, ua, raw_password):
+    def set_account_password(self, account, raw_password):
+        """ Account's password was changed. """
         # FIXME
-        super(AccountDataStore, self).set_user_password(ua, raw_password)
+        pass
+
+    def change_account_username(self, account, old_username, new_username):
+        """ Account's username was changed. """
+        # FIXME
+        pass
 
     def account_exists(self, username):
+        """ Does the account exist? """
         # FIXME
-        super(AccountDataStore, self).account_exists(username)
+        pass
 
-    def change_user_username(self, ua, old_username, new_username):
+    def get_account_details(self, account):
+        """ Get account details. """
         # FIXME
-        super(AccountDataStore, self).change_user_username(ua, old_username, new_username)
+        pass
 
-    def add_group(self, ua, group):
+    def add_group(self, account, group):
+        """ Add account to group. """
         # FIXME
-        super(AccountDataStore, self).add_group(ua, group)
+        pass
 
-    def remove_group(self, ua, group):
+    def remove_group(self, account, group):
+        """ Remove account from group. """
         # FIXME
-        super(AccountDataStore, self).remove_group(ua, group)
+        pass
 
     def save_group(self, group):
+        """ Group was saved. """
         # FIXME
-        super(AccountDataStore, self).create_group(group)
-
-    def change_group_name(self, group, old_name, new_name):
-        # FIXME
-        super(AccountDataStore, self).change_group_name(group, old_name, new_name)
+        pass
 
     def delete_group(self, group):
+        """ Group was deleted. """
         # FIXME
-        super(AccountDataStore, self).delete_group(group)
+        pass
+
+    def change_group_name(self, group, old_name, new_name):
+        """ Group was renamed. """
+        # FIXME
+        pass
+
+    def get_group_details(self, group):
+        """ Get the group details. """
+        # FIXME
+        pass

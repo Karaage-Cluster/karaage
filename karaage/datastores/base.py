@@ -15,86 +15,111 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.contrib.auth.models import User
+""" Base file used for all personal/account datastores. """
+
 from django.conf import settings
 
-import datetime
-
-from karaage.people.models import Person
-from karaage.machines.models import UserAccount
-from karaage.util import log_object as log
-
-
 class PersonalDataStore(object):
+    """ Base class used for all personal datastores. """
+
+    def __init__(self, config):
+        self.config = config
 
     def save_user(self, person):
-        pass
+        """ Person was saved. """
+        raise NotImplementedError
 
     def delete_user(self, person):
-        pass
+        """ Person was deleted. """
+        raise NotImplementedError
 
     def lock_user(self, person):
-        pass
+        """ Person was locked. """
+        raise NotImplementedError
 
     def unlock_user(self, person):
-        pass
+        """ Person was unlocked. """
+        raise NotImplementedError
 
     def set_user_password(self, person, raw_password):
-        pass
-
-    def user_exists(self, username):
-        return False
+        """ Person's password was changed. """
+        raise NotImplementedError
 
     def change_user_username(self, person, old_username, new_username):
-        pass
+        """ Person's username was changed. """
+        raise NotImplementedError
 
     def get_user_details(self, person):
-        return { }
+        """ Get person's details. """
+        raise NotImplementedError
+
+    def user_exists(self, username):
+        """ Does the person exist? """
+        raise NotImplementedError
+
 
 class AccountDataStore(object):
+    """ Base class used for all account datastores. """
 
-    def save_account(self, ua):
-        pass
+    def __init__(self, config):
+        self.config = config
 
-    def delete_account(self, ua):
-        pass
+    def save_account(self, account):
+        """ Account was saved. """
+        raise NotImplementedError
 
-    def lock_account(self, ua):
-        self.change_account_shell(ua, settings.LOCKED_SHELL)
+    def delete_account(self, account):
+        """ Account was deleted. """
+        raise NotImplementedError
 
-    def unlock_account(self, ua):
-        self.change_account_shell(ua, ua.shell)
+    def lock_account(self, account):
+        """ Account was locked. """
+        self.change_account_shell(account, settings.LOCKED_SHELL)
 
-    def change_account_shell(self, ua, shell):
-        pass
+    def unlock_account(self, account):
+        """ Account was unlocked. """
+        self.change_account_shell(account, account.shell)
+
+    def change_account_shell(self, account, shell):
+        """ Account's shell was changed. """
+        raise NotImplementedError
+
+    def set_account_password(self, account, raw_password):
+        """ Account's password was changed. """
+        raise NotImplementedError
+
+    def change_account_username(self, account, old_username, new_username):
+        """ Account's username was changed. """
+        raise NotImplementedError
 
     def account_exists(self, username):
-        return False
+        """ Does the account exist? """
+        raise NotImplementedError
 
-    def set_user_password(self, ua, raw_password):
-        pass
+    def get_account_details(self, account):
+        """ Get the account details """
+        raise NotImplementedError
 
-    def change_user_username(self, ua, old_username, new_username):
-        pass
+    def add_group(self, account, group):
+        """ Add account to group. """
+        raise NotImplementedError
 
-    def get_account_details(self, ua):
-        return {}
-
-    def add_group(self, ua, group):
-        pass
-
-    def remove_group(self, ua, group):
-        pass
+    def remove_group(self, account, group):
+        """ Remove account from group. """
+        raise NotImplementedError
 
     def save_group(self, group):
-        pass
+        """ Group was saved. """
+        raise NotImplementedError
 
     def delete_group(self, group):
-        pass
+        """ Group was deleted. """
+        raise NotImplementedError
 
     def change_group_name(self, group, old_name, new_name):
-        pass
+        """ Group was renamed. """
+        raise NotImplementedError
 
     def get_group_details(self, group):
-        return {}
-
+        """ Get the group details. """
+        raise NotImplementedError

@@ -1,4 +1,4 @@
-# Copyright 2007-2010 VPAC
+# Copyright 2007-2013 VPAC
 #
 # This file is part of Karaage.
 #
@@ -15,11 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+""" Base functionality used by all software datastores. """
 
 class SoftwareDataStore:
-    
+    """ Base clase for software datastores. """
+
+    def __init__(self, config):
+        pass
+
     def save_software(self, software):
-        raise NotImplemented
+        """ Software was saved. """
+        raise NotImplementedError
 
     def delete_software(self, software):
-        raise NotImplemented
+        """ Software was deleted. """
+        raise NotImplementedError

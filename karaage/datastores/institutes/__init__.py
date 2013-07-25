@@ -1,4 +1,4 @@
-# Copyright 2007-2010 VPAC
+# Copyright 2007-2013 VPAC
 #
 # This file is part of Karaage.
 #
@@ -15,15 +15,34 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+""" Common hooks for institute datastores. """
+
 from django.conf import settings
 
-module = __import__(settings.INSTITUTE_DATASTORE, {}, {}, [''])
-pds = module.InstituteDataStore()
+_DATASTORES = {}
 
+def _init_datastores():
+    """ Initialize all datastores. """
+    for name, array in settings.INSTITUTE_DATASTORES.iteritems():
+        _DATASTORES[name] = []
+        for config in array:
+            module = __import__(config['ENGINE'], {}, {}, [''])
+            _DATASTORES[name].append(module.InstituteDataStore(config))
+
+def _get_datastores():
+    """ Get the default datastores. """
+    name = settings.INSTITUTE_DATASTORE
+    return _DATASTORES[name]
 
 def save_institute(institute):
-    pds.save_institute(institute)
-
+    """ An institute has been saved. """
+    for datastore in _get_datastores():
+        datastore.save_institute(institute)
 
 def delete_institute(institute):
-    pds.delete_institute(institute)
+    """ An institute has been deleted. """
+    for datastore in _get_datastores():
+        datastore.delete_institute(institute)
+
+# Initialize data stores
+_init_datastores()

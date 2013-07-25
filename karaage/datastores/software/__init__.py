@@ -1,4 +1,4 @@
-# Copyright 2007-2010 VPAC
+# Copyright 2007-2013 VPAC
 #
 # This file is part of Karaage.
 #
@@ -15,15 +15,34 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+""" Common hooks for software datastores. """
+
 from django.conf import settings
 
-module = __import__(settings.SOFTWARE_DATASTORE, {}, {}, [''])
-pds = module.SoftwareDataStore()
+_DATASTORES = {}
 
+def _init_datastores():
+    """ Initialize all datastores. """
+    for name, array in settings.SOFTWARE_DATASTORES.iteritems():
+        _DATASTORES[name] = []
+        for config in array:
+            module = __import__(config['ENGINE'], {}, {}, [''])
+            _DATASTORES[name].append(module.SoftwareDataStore(config))
 
-def save_software(software):
-    pds.save_software(software)
+def _get_datastores():
+    """ Get the default datastores. """
+    name = settings.SOFTWARE_DATASTORE
+    return _DATASTORES[name]
 
+def save_software(institute):
+    """ An institute has been saved. """
+    for datastore in _get_datastores():
+        datastore.save_software(institute)
 
-def delete_software(software):
-    pds.delete_software(software)
+def delete_software(institute):
+    """ An institute has been deleted. """
+    for datastore in _get_datastores():
+        datastore.delete_software(institute)
+
+# Initialize data stores
+_init_datastores()

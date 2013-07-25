@@ -7,17 +7,52 @@ GRAPH_LIB = 'karaage.graphs.matplotlib9'
 
 ADMIN_APPROVE_ACCOUNTS = True
 
-PROJECT_DATASTORE = 'karaage.datastores.projects.ldap_datastore'
-INSTITUTE_DATASTORE = 'karaage.datastores.institutes.ldap_datastore'
-SOFTWARE_DATASTORE = 'karaage.datastores.software.ldap_datastore'
-PERSONAL_DATASTORE = 'karaage.datastores.openldap_datastore'
+# DATASTORES
 
-ACCOUNTS_ORG_NAME = 'TestOrg'
+PERSONAL_DATASTORES = {
+    'dummy' : [
+    ],
+}
 
 ACCOUNT_DATASTORES = {
-    1: 'karaage.datastores.openldap_datastore',
-    2: 'karaage.datastores.dummy',
+    'ldap' : [
+        {
+            'DESCRIPTION': 'Default LDAP datastore',
+            'ENGINE': 'karaage.datastores.ldap_datastore',
+            'LDAP': 'default',
+            'ACCOUNT': 'karaage.datastores.ldap_schemas.account',
+            'GROUP': 'karaage.datastores.ldap_schemas.group',
+        },
+    ],
+    'dummy' : [
+    ],
 }
+
+PROJECT_DATASTORES = {
+    'dummy' : [
+    ],
+}
+
+INSTITUTE_DATASTORES = {
+    'dummy' : [
+    ],
+}
+
+SOFTWARE_DATASTORES = {
+    'dummy' : [
+    ],
+}
+
+# DEFAULT DATA STORES
+
+PERSONAL_DATASTORE = 'dummy'
+PROJECT_DATASTORE = 'dummy'
+INSTITUTE_DATASTORE = 'dummy'
+SOFTWARE_DATASTORE = 'dummy'
+
+# OTHER
+
+ACCOUNTS_ORG_NAME = 'TestOrg'
 
 LOCKED_SHELL = '/usr/local/sbin/insecure'
 BOUNCED_SHELL = '/usr/local/sbin/bouncedemail'

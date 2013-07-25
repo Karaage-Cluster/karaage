@@ -15,164 +15,204 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+""" LDAP datastore. """
+
 from karaage.datastores import base
-from karaage.datastores import ldap_schemas
 
 from django.conf import settings
+import django.utils
 
-def str_or_none(string):
+def _str_or_none(string):
+    """ Return a string of None if string is empty. """
     if string is None or string == "":
         return None
     return string
 
-class PersonalDataStore(base.PersonalDataStore):
-    pass
+def _lookup(cls):
+    """ Lookup module.class. """
+    if isinstance(cls, str):
+        module_name, _, name = cls.rpartition(".")
+        module = django.utils.importlib.import_module(module_name)
+        try:
+            cls = getattr(module, name)
+        except AttributeError:
+            raise AttributeError("%s reference cannot be found" % cls)
+    return(cls)
 
 
 class AccountDataStore(base.AccountDataStore):
+    """ LDAP Account datastore. """
 
-    def save_account(self, ua):
-        super(AccountDataStore, self).save_account(ua)
+    def __init__(self, config):
+        super(AccountDataStore, self).__init__(config)
+        self._using = config['LDAP']
+        self._account = _lookup(config['ACCOUNT'])
+        self._group = _lookup(config['GROUP'])
 
-        person = ua.user
-        lgroup = ldap_schemas.group.objects.get(cn=person.institute.group.name)
+    def _accounts(self):
+        """ Return accounts query. """
+        return self._account.objects.using(self._using)
+
+    def _groups(self):
+        """ Return groups query. """
+        return self._group.objects.using(self._using)
+
+    def _create_account(self):
+        """ Create a new account. """
+        return self._account(using=self._using)
+
+    def _create_group(self):
+        """ Create a new group. """
+        return self._group(using=self._using)
+
+    def save_account(self, account):
+        """ Account was saved. """
+        person = account.user
+        lgroup = self._groups().get(cn=person.institute.group.name)
 
         try:
-            luser = ldap_schemas.account.objects.get(uid=ua.username)
+            luser = self._accounts().get(uid=account.username)
             luser.gidNumber = lgroup.gidNumber
             luser.givenName = person.first_name
             luser.sn = person.last_name
-            luser.telephoneNumber = str_or_none(person.telephone)
-            luser.mail = str_or_none(person.email)
-            luser.title = str_or_none(person.title)
+            luser.telephoneNumber = _str_or_none(person.telephone)
+            luser.mail = _str_or_none(person.email)
+            luser.title = _str_or_none(person.title)
             luser.o = person.institute.name
             luser.gidNumber = lgroup.gidNumber
-            luser.homeDirectory = settings.HOME_DIRECTORY % { 'default_project': ua.default_project.pid, 'uid': person.username }
-            if ua.is_locked():
+            luser.homeDirectory = settings.HOME_DIRECTORY % {
+                'default_project': account.default_project.pid,
+                'uid': person.username }
+            if account.is_locked():
                 luser.loginShell = settings.LOCKED_SHELL
             else:
-                luser.loginShell = ua.shell
+                luser.loginShell = account.shell
             luser.pre_save()
             luser.save()
-        except ldap_schemas.account.DoesNotExist:
-            luser = ldap_schemas.account()
+        except self._account.DoesNotExist:
+            luser = self._create_account()
             luser.set_defaults()
             luser.uid = person.username
             luser.givenName = person.first_name
             luser.sn = person.last_name
-            luser.telephoneNumber = str_or_none(person.telephone)
-            luser.mail = str_or_none(person.email)
-            luser.title = str_or_none(person.title)
+            luser.telephoneNumber = _str_or_none(person.telephone)
+            luser.mail = _str_or_none(person.email)
+            luser.title = _str_or_none(person.title)
             luser.o = person.institute.name
             luser.gidNumber = lgroup.gidNumber
-            luser.homeDirectory = settings.HOME_DIRECTORY % { 'default_project': ua.default_project.pid, 'uid': person.username }
-            luser.loginShell = ua.shell
+            luser.homeDirectory = settings.HOME_DIRECTORY % {
+                'default_project': account.default_project.pid,
+                'uid': person.username }
+            luser.loginShell = account.shell
             luser.pre_create(master=None)
             luser.pre_save()
             luser.save()
 
             # add all groups
-            for group in ua.user.groups.all():
-                self.add_group(ua, group)
+            for group in account.user.groups.all():
+                self.add_group(account, group)
 
-
-    def delete_account(self, ua):
-        super(AccountDataStore, self).delete_account(ua)
-        luser = ldap_schemas.account.objects.get(uid=ua.username)
+    def delete_account(self, account):
+        """ Account was deleted. """
+        luser = self._accounts().get(uid=account.username)
         luser.secondary_groups.clear()
         luser.pre_delete()
         luser.delete()
 
-    def lock_account(self, ua):
-        super(AccountDataStore, self).lock_account(ua)
-
-    def unlock_account(self, ua):
-        super(AccountDataStore, self).unlock_account(ua)
-
-    def change_account_shell(self, ua, shell):
-        super(AccountDataStore, self).change_account_shell(ua, shell)
-        luser = ldap_schemas.account.objects.get(uid=ua.username)
-        if ua.is_locked():
+    def change_account_shell(self, account, shell):
+        """ Account's shell was changed. """
+        luser = self._accounts().get(uid=account.username)
+        if account.is_locked():
             luser.loginShell = settings.LOCKED_SHELL
         else:
             luser.loginShell = shell
         luser.pre_save()
         luser.save()
 
-    def set_user_password(self, ua, raw_password):
-        super(AccountDataStore, self).set_user_password(ua, raw_password)
-        p = ldap_schemas.account.objects.get(uid=ua.username)
-        p.change_password(raw_password)
-        p.pre_save()
-        p.save()
+    def set_account_password(self, account, raw_password):
+        """ Account's password was changed. """
+        luser = self._accounts().get(uid=account.username)
+        luser.change_password(raw_password)
+        luser.pre_save()
+        luser.save()
 
-    def account_exists(self, username):
-        try:
-            ldap_schemas.account.objects.get(uid=username)
-            return True
-        except ldap_schemas.account.DoesNotExist:
-            return False
+    def change_account_username(self, account, old_username, new_username):
+        """ Account's username was changed. """
+        luser = self._accounts().get(uid=old_username)
+        luser.rename(uid=new_username)
 
-    def change_user_username(self, ua, old_username, new_username):
-        super(AccountDataStore, self).change_user_username(ua, old_username, new_username)
-        p = ldap_schemas.account.objects.get(uid=old_username)
-        p.rename(uid=new_username)
-
-    def get_account_details(self, ua):
-        p = ldap_schemas.account.objects.get(uid=ua.username)
+    def get_account_details(self, account):
+        """ Account's details were changed. """
+        luser = self._accounts().get(uid=account.username)
         result = {}
-        for i, j in p.get_fields():
+        for i, j in luser.get_fields():
             if i != 'userPassword' and j is not None:
                 result[i] = j
-        result['dn'] = p.dn
-        group = p.primary_group.get_obj()
+        result['dn'] = luser.dn
+        group = luser.primary_group.get_obj()
         if group is not None:
             result['primary_group'] = group.dn
-        result['secondary_groups'] = [ g.dn for g in p.secondary_groups.all() ]
+        result['secondary_groups'] = [
+                g.dn for g in luser.secondary_groups.all() ]
         return result
 
-    def add_group(self, ua, group):
-        lgroup = ldap_schemas.group.objects.get(cn=group.name)
-        person = ldap_schemas.account.objects.get(uid=ua.username)
-        lgroup.secondary_accounts.add(person)
-        pass
+    def account_exists(self, username):
+        """ Account's details were changed. """
+        try:
+            self._accounts().get(uid=username)
+            return True
+        except self._account.DoesNotExist:
+            return False
 
-    def remove_group(self, ua, group):
-        lgroup = ldap_schemas.group.objects.get(cn=group.name)
-        person = ldap_schemas.account.objects.get(uid=ua.username)
+    def add_group(self, account, group):
+        """ Add account to group. """
+        lgroup = self._groups().get(cn=group.name)
+        person = self._accounts().get(uid=account.username)
+        lgroup.secondary_accounts.add(person)
+
+    def remove_group(self, account, group):
+        """ Remove account from group. """
+        lgroup = self._groups().get(cn=group.name)
+        person = self._accounts().get(uid=account.username)
         lgroup.secondary_accounts.remove(person)
 
     def save_group(self, group):
+        """ Group was saved. """
         # if group already exists, take over existing group rather then error.
         try:
-            lgroup = ldap_schemas.group.objects.get(cn=group.name)
+            lgroup = self._groups().get(cn=group.name)
             lgroup.description = group.description
             lgroup.pre_save()
             lgroup.save()
-        except ldap_schemas.group.DoesNotExist:
-            lgroup = ldap_schemas.group(cn=group.name)
+        except self._group.DoesNotExist:
+            lgroup = self._create_group()
             lgroup.set_defaults()
+            lgroup.cn = group.name
             lgroup.description = group.description
             lgroup.pre_create(master=None)
             lgroup.pre_save()
             lgroup.save()
 
     def delete_group(self, group):
-        lgroup = ldap_schemas.group.objects.get(cn=group.name)
+        """ Group was deleted. """
+        lgroup = self._groups().get(cn=group.name)
         lgroup.delete()
 
     def change_group_name(self, group, old_name, new_name):
-        super(AccountDataStore, self).change_group_name(group, old_name, new_name)
-        lgroup = ldap_schemas.group.objects.get(cn=old_name)
+        """ Group was renamed. """
+        lgroup = self._groups().get(cn=old_name)
         lgroup.rename(cn=new_name)
 
     def get_group_details(self, group):
-        lgroup = ldap_schemas.group.objects.get(cn=group.name)
+        """ Get the group details. """
+        lgroup = self._groups().get(cn=group.name)
         result = {}
         for i, j in lgroup.get_fields():
             if j is not None:
                 result[i] = j
         result['dn'] = lgroup.dn
-        result['primary_accounts'] = [ a.dn for a in lgroup.primary_accounts.all() ]
-        result['secondary_accounts'] = [ a.dn for a in lgroup.secondary_accounts.all() ]
+        result['primary_accounts'] = [
+                a.dn for a in lgroup.primary_accounts.all() ]
+        result['secondary_accounts'] = [
+                a.dn for a in lgroup.secondary_accounts.all() ]
         return result

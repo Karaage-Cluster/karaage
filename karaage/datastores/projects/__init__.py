@@ -1,4 +1,4 @@
-# Copyright 2007-2010 VPAC
+# Copyright 2007-2013 VPAC
 #
 # This file is part of Karaage.
 #
@@ -15,15 +15,34 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+""" Common hooks for project datastores. """
+
 from django.conf import settings
 
-module = __import__(settings.PROJECT_DATASTORE, {}, {}, [''])
-pds = module.ProjectDataStore()
+_DATASTORES = {}
 
+def _init_datastores():
+    """ Initialize all datastores. """
+    for name, array in settings.PROJECT_DATASTORES.iteritems():
+        _DATASTORES[name] = []
+        for config in array:
+            module = __import__(config['ENGINE'], {}, {}, [''])
+            _DATASTORES[name].append(module.ProjectDataStore(config))
 
-def save_project(project):
-    pds.save_project(project)
+def _get_datastores():
+    """ Get the default datastores. """
+    name = settings.PROJECT_DATASTORE
+    return _DATASTORES[name]
 
+def save_project(institute):
+    """ An institute has been saved. """
+    for datastore in _get_datastores():
+        datastore.save_project(institute)
 
-def delete_project(project):
-    pds.delete_project(project)
+def delete_project(institute):
+    """ An institute has been deleted. """
+    for datastore in _get_datastores():
+        datastore.delete_project(institute)
+
+# Initialize data stores
+_init_datastores()

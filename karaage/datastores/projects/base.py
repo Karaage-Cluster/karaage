@@ -1,4 +1,4 @@
-# Copyright 2007-2010 VPAC
+# Copyright 2007-2013 VPAC
 #
 # This file is part of Karaage.
 #
@@ -15,11 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+""" Base functionality used by all project datastores. """
 
 class ProjectDataStore:
-    
+    """ Base clase for project datastores. """
+
+    def __init__(self, config):
+        pass
+
     def save_project(self, project):
-        raise NotImplemented
+        """ Project was saved. """
+        raise NotImplementedError
 
     def delete_project(self, project):
-        raise NotImplemented
+        """ Project was deleted. """
+        raise NotImplementedError

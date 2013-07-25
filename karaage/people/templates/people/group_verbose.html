@@ -13,16 +13,18 @@
 <div id="content-main">
 
     {% for mc, group in group_details.iteritems %}
+    {% for a in group %}
     <div class="module">
-        <h2>Group details machine category {{mc}}</h2>
+        <h2>Group details machine category {{mc}} - {{a.datastore}}</h2>
         <table>
-            {% for i,j in group.iteritems %}
+            {% for i,j in a.iteritems %}
                 <tr>
                     <td>{{ i }}</td><td>{{ j }}</td>
                </tr>
             {% endfor %}
         </table>
     </div>
+    {% endfor %}
     {% endfor %}
 </div>
 {% endblock %}

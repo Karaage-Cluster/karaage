@@ -98,10 +98,6 @@ USE_I18N = False
 
 SEND_BROKEN_LINK_EMAILS = True
 
-USER_OBJECTCLASS = ['top', 'person', 'organizationalPerson', 'inetOrgPerson', 'shadowAccount']
-ACCOUNT_OBJECTCLASS = ['top', 'person', 'organizationalPerson', 'inetOrgPerson', 'shadowAccount', 'posixAccount']
-
-
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -122,16 +118,50 @@ AUTHENTICATION_BACKENDS = (
     'karaage.backends.LDAPBackend',
 )
 
-PERSONAL_DATASTORE = 'karaage.datastores.openldap_datastore'
+# DATA STORES
 
-# Dictionary of MachineCategory.id and python module to use for storing accounts
-ACCOUNT_DATASTORES = {
-    1: 'karaage.datastores.openldap_datastore',
+PERSONAL_DATASTORES = {
+    'dummy' : [
+    ],
 }
 
-PROJECT_DATASTORE = 'karaage.datastores.projects.ldap_datastore'
-INSTITUTE_DATASTORE = 'karaage.datastores.institutes.ldap_datastore'
-SOFTWARE_DATASTORE = 'karaage.datastores.software.ldap_datastore'
+ACCOUNT_DATASTORES = {
+    'ldap' : [
+        {
+            'DESCRIPTION': 'Default LDAP datastore',
+            'ENGINE': 'karaage.datastores.ldap_datastore',
+            'LDAP': 'default',
+            'ACCOUNT': 'karaage.datastores.ldap_schemas.account',
+            'GROUP': 'karaage.datastores.ldap_schemas.group',
+        },
+    ],
+    'dummy' : [
+    ],
+}
+
+PROJECT_DATASTORES = {
+    'dummy' : [
+    ],
+}
+
+INSTITUTE_DATASTORES = {
+    'dummy' : [
+    ],
+}
+
+SOFTWARE_DATASTORES = {
+    'dummy' : [
+    ],
+}
+
+# DEFAULT DATA STORES
+
+PERSONAL_DATASTORE = 'dummy'
+PROJECT_DATASTORE = 'dummy'
+INSTITUTE_DATASTORE = 'dummy'
+SOFTWARE_DATASTORE = 'dummy'
+
+# OTHER
 
 AUP_URL = ''
 
