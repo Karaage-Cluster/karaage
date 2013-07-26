@@ -23,6 +23,7 @@ import datetime
 from karaage.projects.models import Project
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
+from karaage.machines.models import MachineCategory
 import django.db.transaction
 import tldap.transaction
 
@@ -34,7 +35,8 @@ def pop_project_cache(period):
     start = end - datetime.timedelta(days=period)
 
     for p in Project.active.all():
-        p.get_usage(start, end)
+        for machine_category in MachineCategory.objects.all():
+            p.get_usage(start, end, machine_category)
 
 
 def pop_institute_cache(period):
@@ -42,7 +44,8 @@ def pop_institute_cache(period):
     start = end - datetime.timedelta(days=period)
     
     for i in Institute.active.all():
-        i.get_usage(start, end)
+        for machine_category in MachineCategory.objects.all():
+            i.get_usage(start, end, machine_category)
 
 
 def pop_user_cache(period):

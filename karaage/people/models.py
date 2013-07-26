@@ -288,9 +288,9 @@ class Person(models.Model):
         except:
             return None
 
-    def get_usage(self, project, start, end):
+    def get_usage(self, project, start, end, machine_category):
         from karaage.util.usage import get_user_usage
-        return get_user_usage(self, project, start, end)
+        return get_user_usage(self, project, start, end, machine_category)
     
     def is_leader(self):
         if self.leaders.count() > 0:

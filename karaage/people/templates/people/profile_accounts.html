@@ -1,10 +1,11 @@
 {% extends "people/profile_base.html" %}
 {% load filters %}
+{% load machines %}
 
 
 {% block profile_content %}
 
-{% for ua in person.useraccount_set.all %}
+{% for ua in accounts %}
 	<div class="module">
 	<h2>{{ ua.machine_category }} Account</h2>
 		<table cellspacing="0">
@@ -13,8 +14,8 @@
 			<th>Active</th>
 			<th>Username</th>
 			<th>Date Created</th>
-			{% if date_deleted %}<th>Date Deleted</th>{% endif %}
-			{% ifequal ua.machine_category.id 1 %}<th>Shell</th>{% endifequal %}
+			<th>Date Deleted</th>
+			<th>Shell</th>
 		</tr>
 	</thead>   	
    <tbody>
@@ -32,20 +33,18 @@
 	   		</td>
 	   		<td>{{ ua.username }}</td>
 	   		<td>{{ ua.date_created|date }}</td>
-	   		{% if date_deleted %}<td>{{ ua.date_deleted|date }}</td>{% endif %}
-	   		{% ifequal ua.machine_category.id 1 %}
-	   		{% if not ua.user.is_locked %}
-	   		<td><form method="post" action=".">{% csrf_token %}
+	   		<td>{{ ua.date_deleted|date }}</td>
+			<td>{% if not ua.is_locked %}
+			{{ ua.loginShell }}
+			<form method="post" action="{% url 'kg_change_account_shell' ua.pk %}">{% csrf_token %}
 	   			<div>
-					{{ shell_form.shell }}
+					{% shell_field ua %}
 					<input type="submit" value="Change" name="shell-form" />
-					</div>
-						
-						</form> </td>
-						{% else %}
-						{{ ua.loginShell }}
-						{% endif %}
-						{% endifequal %}
+				</div>
+			</form>
+			{% else %}
+			{{ ua.loginShell }}
+			{% endif %}</td>
 	   	</tr>
    </tbody>  	
 </table>

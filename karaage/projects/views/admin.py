@@ -29,6 +29,7 @@ from andsome.util.filterspecs import Filter, FilterBar
 
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
+from karaage.machines.models import MachineCategory
 from karaage.projects.models import Project
 from karaage.projects.forms import ProjectForm
 from karaage.projects.utils import get_new_pid, add_user_to_project, remove_user_from_project
@@ -187,7 +188,7 @@ def no_users(request):
 
     project_ids = []
     for p in Project.active.all():
-        if p.users.count() == 0:
+        if p.group.members.count() == 0:
             project_ids.append(p.pid)
 
     return project_list(request, Project.objects.filter(pid__in=project_ids))
@@ -199,8 +200,8 @@ def over_quota(request):
     project_ids = []
 
     for p in Project.active.all():
-        for mc in p.machine_categories.all():
-            if p.projectchunk_set.get(machine_category=mc).is_over_quota():
+        for pc in p.projectchunk_set.all():
+            if pc.is_over_quota():
                 project_ids.append(p.pid)
 
     return project_list(request, Project.objects.filter(pid__in=project_ids))

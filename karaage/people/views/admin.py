@@ -174,7 +174,7 @@ def add_edit_useraccount(request, username=None, useraccount_id=None):
         form.initial['username'] = user.username
         if user_account:
             # Fill form with initial
-            form.fields['default_project'] = forms.ModelChoiceField(queryset=user.project_set.all())
+            form.fields['default_project'] = forms.ModelChoiceField(queryset=user.projects.all())
             form.initial = user_account.__dict__
             form.initial['default_project'] = form.initial['default_project_id']
             form.initial['machine_category'] = form.initial['machine_category_id']
@@ -211,7 +211,7 @@ def no_account_list(request):
     user_id_list = []
     
     for u in users:
-        for p in u.project_set.all():
+        for p in u.projects.all():
             for mc in p.machine_categories.all():
                 if not u.has_account(mc):
                     user_id_list.append(u.id)
@@ -272,8 +272,7 @@ def struggling(request):
     today = datetime.date.today()
     days30 = today - datetime.timedelta(days=30)
     
-    machine_category = MachineCategory.objects.get_default()
-    user_accounts = machine_category.useraccount_set.select_related().filter(date_deleted__isnull=True).filter(date_created__lt=days30).filter(user__last_usage__isnull=True).order_by('-date_created')
+    user_accounts = UserAccount.objects.select_related().filter(date_deleted__isnull=True).filter(date_created__lt=days30).filter(user__last_usage__isnull=True).order_by('-date_created')
 
     if 'institute' in request.REQUEST:
         institute_id = int(request.GET['institute'])
@@ -300,20 +299,19 @@ def struggling(request):
 
 @login_required
 def change_account_shell(request, useraccount_id):
-
     if not request.user.has_perm('people.change_person'):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
-    ua = get_object_or_404(UserAccount, pk=useraccount_id)
-    
-    if request.method == 'POST':
-        shell_form = ShellForm(request.POST)
-        if shell_form.is_valid():
-            shell_form.save(user_account=ua)
-            messages.success(request, 'Shell changed successfully')
-            return HttpResponseRedirect(ua.get_absolute_url())
-    else:
-        
-        return HttpResponseRedirect('/')
+
+    user_account = get_object_or_404(UserAccount, pk=useraccount_id)
+    if request.method != 'POST':
+        return HttpResponseRedirect(user_account.get_absolute_url())
+
+    shell_form = ShellForm(request.POST)
+    if shell_form.is_valid():
+        shell_form.save(user_account=user_account)
+        messages.success(request, 'Shell changed successfully')
+        return HttpResponseRedirect(user_account.get_absolute_url())
+
 
 @login_required
 def group_list(request, queryset=None):

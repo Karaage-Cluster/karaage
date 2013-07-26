@@ -83,10 +83,7 @@ class GraphGenerator(base.GraphGenerator):
 
         x.ext_color = colours
         x.setData(data)
-        try:
-            x.draw("%s/projects/%s_%s-%s_%i.png" % (settings.GRAPH_ROOT, project.pid, start_str, end_str, machine_category.id))
-        except:
-            pass
+        x.draw("%s/projects/%s_%s-%s_%i.png" % (settings.GRAPH_ROOT, project.pid, start_str, end_str, machine_category.id))
 
 
 
@@ -136,10 +133,7 @@ class GraphGenerator(base.GraphGenerator):
 
         myPie.color = ["red", "green", "yellow", "orange", "blue", "red", "green", "yellow", "orange", "blue"]
 
-        try:
-            myPie.draw("%s/institutes/%s-%s_%i.png" % (settings.GRAPH_ROOT, start_str, end_str, machine_category.id))
-        except:
-            pass
+        myPie.draw("%s/institutes/%s-%s_%i.png" % (settings.GRAPH_ROOT, start_str, end_str, machine_category.id))
     
 
     def gen_quota_graph(self):
@@ -209,10 +203,7 @@ class GraphGenerator(base.GraphGenerator):
         
         x.ext_color = colours
         x.setData(data)
-        try:
-            x.draw("%s/trends/trend_%i_%s-%s.png" % (settings.GRAPH_ROOT, machine_category.id, start_str, end_str))
-        except:
-            pass
+        x.draw("%s/trends/trend_%i_%s-%s.png" % (settings.GRAPH_ROOT, machine_category.id, start_str, end_str))
 
 
     def gen_institute_bar(self, institute, start, end, machine_category): 
@@ -244,10 +235,7 @@ class GraphGenerator(base.GraphGenerator):
         x.ext_color = colours
         x.setData(data)
         #x.setComboData(data)
-        try:
-            x.draw("%s/institutes/bar_%s_%s-%s_%i.png" % (settings.GRAPH_ROOT, institute.id, start_str, end_str, machine_category.id))
-        except:
-            pass
+        x.draw("%s/institutes/bar_%s_%s-%s_%i.png" % (settings.GRAPH_ROOT, institute.id, start_str, end_str, machine_category.id))
 
 
 
@@ -276,5 +264,5 @@ class GraphGenerator(base.GraphGenerator):
             x.grid = "NONE"
 
             x.setData(i_data)
-            x.draw("%s/i_trends/%s_%s_%s-trend.png" % (settings.GRAPH_ROOT, i.name.replace(' ', '').lower(), start_str, end_str))
+            x.draw("%s/i_trends/%s_%s_%s_%i-trend.png" % (settings.GRAPH_ROOT, i.name.replace(' ', '').lower(), start_str, end_str, machine_category.pk))
             

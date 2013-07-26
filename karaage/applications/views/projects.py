@@ -37,7 +37,10 @@ from karaage.util import log_object as log
 
 
 def do_projectapplication(request, token=None, application_form=ProjectApplicationForm,
-                          mc=MachineCategory.objects.get_default(), saml=False):
+                          mc=None, saml=False):
+
+    if mc is None:
+        mc=MachineCategory.objects.get_default()
 
     if request.user.is_authenticated():
         messages.warning(request, "You are already logged in")
@@ -156,7 +159,10 @@ def projectapplication_complete(request, application_id):
 
 
 @login_required
-def projectapplication_existing(request, application_form=ProjectApplicationForm, mc=MachineCategory.objects.get_default()):
+def projectapplication_existing(request, application_form=ProjectApplicationForm, mc=None):
+
+    if mc is None:
+        mc=MachineCategory.objects.get_default()
 
     application = ProjectApplication()
     applicant = request.user.get_profile()

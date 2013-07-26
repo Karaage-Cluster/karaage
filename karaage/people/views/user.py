@@ -32,7 +32,7 @@ from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.people.forms import PasswordChangeForm, PersonForm, LoginForm, PasswordResetForm
-from karaage.machines.models import MachineCategory
+from karaage.machines.models import MachineCategory, UserAccount
 from karaage.machines.forms import ShellForm
 from karaage.applications.models import Application
 from karaage.util import log_object as log
@@ -74,21 +74,7 @@ def edit_profile(request):
 def profile_accounts(request):
 
     person = request.user.get_profile()
-    user_account = person.get_user_account(MachineCategory.objects.get_default())
-
-    if request.method == 'POST' and 'shell-form' in request.POST:
-        shell_form = ShellForm(request.POST)
-        if shell_form.is_valid():
-            shell_form.save(user_account)
-            messages.success(request, 'Shell changed successfully')
-            return HttpResponseRedirect(reverse('kg_user_profile'))
-
-    else:
-        shell_form = ShellForm()
-        try:
-            shell_form.initial = {'shell': person.loginShell}
-        except:
-            pass
+    accounts = person.useraccount_set.filter(date_deleted__isnull=True)
 
     return render_to_response('people/profile_accounts.html', locals(), context_instance=RequestContext(request))
 
@@ -107,7 +93,7 @@ def profile_software(request):
 def profile_projects(request):
 
     person = request.user.get_profile()
-    project_list = person.project_set.all()
+    project_list = person.projects.all()
     leader_project_list = []
 
     if person.is_leader():
@@ -250,6 +236,20 @@ def password_reset(request):
         {'form': form},
         context_instance=RequestContext(request))
 
+
+@login_required
+def change_account_shell(request, useraccount_id):
+    person = request.user.get_profile()
+    user_account = get_object_or_404(UserAccount, pk=useraccount_id, user=person)
+
+    if request.method != 'POST':
+        return HttpResponseRedirect(reverse('kg_user_profile_accounts'))
+
+    shell_form = ShellForm(request.POST)
+    if shell_form.is_valid():
+        shell_form.save(user_account=user_account)
+        messages.success(request, 'Shell changed successfully')
+        return HttpResponseRedirect(reverse('kg_user_profile_accounts'))
 
 @login_required
 def make_default(request, useraccount_id, project_id):
