@@ -32,7 +32,7 @@ from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.people.forms import PasswordChangeForm, PersonForm, LoginForm, PasswordResetForm
-from karaage.machines.models import MachineCategory
+from karaage.machines.models import MachineCategory, UserAccount
 from karaage.machines.forms import ShellForm
 from karaage.applications.models import Application
 from karaage.util import log_object as log
@@ -74,20 +74,22 @@ def edit_profile(request):
 def profile_accounts(request):
 
     person = request.user.get_profile()
-    user_account = person.get_user_account(MachineCategory.objects.get_default())
+
+    # FIXME should be able to get/set shell for individual accounts
 
     if request.method == 'POST' and 'shell-form' in request.POST:
         shell_form = ShellForm(request.POST)
         if shell_form.is_valid():
-            shell_form.save(user_account)
+            for user_account in person.useraccount_set.all():
+                shell_form.save(user_account)
             messages.success(request, 'Shell changed successfully')
             return HttpResponseRedirect(reverse('kg_user_profile'))
 
     else:
         shell_form = ShellForm()
         try:
-            shell_form.initial = {'shell': person.loginShell}
-        except:
+            shell_form.initial = {'shell': person.useraccount_set.filter()[0].loginShell}
+        except RuntimeError:
             pass
 
     return render_to_response('people/profile_accounts.html', locals(), context_instance=RequestContext(request))
@@ -107,7 +109,7 @@ def profile_software(request):
 def profile_projects(request):
 
     person = request.user.get_profile()
-    project_list = person.project_set.all()
+    project_list = person.projects.all()
     leader_project_list = []
 
     if person.is_leader():

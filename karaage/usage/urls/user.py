@@ -18,18 +18,9 @@
 from django.conf.urls import *
 
 urlpatterns = patterns('karaage.usage.views',
-    url(r'^$', 'index', name='kg_usage_list'),                   
-    url(r'^index/$', 'usage_index', name='kg_usage_index'),                   
-    # Defaults to settings.DEFAULT_MC
-    url(r'^institute/trends/$', 'institute_trends'),
-    url(r'^institute/(?P<institute_id>\d+)/users/$', 'institute_users'),
-    url(r'^(?P<machine_category_id>\d+)/institute/(?P<institute_id>\d+)/users/$', 'institute_users'),        
-    url(r'^institute/(?P<institute_id>\d+)/$', 'institute_usage', name='kg_institute_usage'),
-
-    url(r'^institute/(?P<institute_id>\d+)/$', 'institute_usage', name='kg_usage_institute'),
-    url(r'^projects/(?P<project_id>[-.\w]+)/$', 'project_usage', name='kg_usage_project'),
-                           
+    url(r'^$', 'usage_index', name='kg_usage_list'),
     url(r'^(?P<machine_category_id>\d+)/$', 'index', name='kg_mc_usage'),
     url(r'^(?P<machine_category_id>\d+)/institute/(?P<institute_id>\d+)/$', 'institute_usage', name='kg_usage_institute'),
-    url(r'^(?P<machine_category_id>\d+)/institute/(?P<institute_id>\d+)/(?P<project_id>[-.\w]+)/$', 'project_usage'),
+    url(r'^(?P<machine_category_id>\d+)/institute/(?P<institute_id>\d+)/users/$', 'institute_users'),        
+    url(r'^(?P<machine_category_id>\d+)/projects/(?P<project_id>[-.\w]+)/$', 'project_usage', name='kg_usage_project'),
 )

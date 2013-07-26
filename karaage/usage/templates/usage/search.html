@@ -36,11 +36,9 @@
 	<tbody>
 		{% for p in project_list|dictsortreversed:"time" %}
 		<tr class="{% cycle row1,row2 %}">
-			{% ifnotequal p.jobs 0 %}
-				<td><a href="{{ p.get_usage_url }}?start={{ start_str }}&end={{ end_str }}">{{ p }}</a></td>
-				<td class="right">{{ p.time|timeformat }}</td>
-				<td class="right">{{ p.jobs }}</td>
-			{% endifnotequal %}
+			<td><a href="{{ p.obj.get_usage_url }}?start={{ start_str }}&end={{ end_str }}">{{ p.obj }}</a></td>
+			<td class="right">{{ p.time|timeformat }}</td>
+			<td class="right">{{ p.jobs }}</td>
 		</tr>
 		{% endfor %}	
 	</tbody>
@@ -61,11 +59,9 @@
 	<tbody>
 		{% for i in institute_list|dictsortreversed:"time" %}
 		<tr class="{% cycle row1,row2 %}">
-			{% ifnotequal i.jobs 0 %}
-				<td><a href="{% url 'kg_institute_usage' i.id %}?start={{ start_str }}&end={{ end_str }}">{{ i }}</a></td>
-				<td class="right">{{ i.time|timeformat }}</td>
-				<td class="right">{{ i.jobs }}</td>
-			{% endifnotequal %}
+			<td><a href="{% url 'kg_institute_usage' i.obj.id %}?start={{ start_str }}&end={{ end_str }}">{{ i.obj }}</a></td>
+			<td class="right">{{ i.time|timeformat }}</td>
+			<td class="right">{{ i.jobs }}</td>
 		</tr>
 		{% endfor %}	
 	</tbody>

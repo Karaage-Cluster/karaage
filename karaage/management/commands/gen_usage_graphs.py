@@ -15,6 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+Non-interactive command that generates all project graphs for last 7, 90,
+and 365 days.
+"""
+
 from django.core.management.base import BaseCommand
 import django.db.transaction
 import tldap.transaction
@@ -22,6 +27,8 @@ import tldap.transaction
 PERIODS = [ 7, 90, 365 ]
 
 def gen_all_project_graphs(period):
+    """ Generate all project graph for list period days. """
+    from karaage.machines.models import MachineCategory
     from karaage.projects.models import Project
     from karaage.graphs import gen_project_graph
     import datetime
@@ -30,14 +37,18 @@ def gen_all_project_graphs(period):
     end = datetime.date.today()
     start = end - datetime.timedelta(days=period)
 
-    for p in project_list:
-        for mc in p.machine_categories.all():
-            gen_project_graph(p, start, end, mc)
+    for project in project_list:
+        for machine_category in MachineCategory.objects.all():
+            gen_project_graph(project, start, end, machine_category)
 
 
 class Command(BaseCommand):
+    """
+    Non-interactive command that generates all project graphs for last 7, 90,
+    and 365 days.
+    """
     help = "Generates usage graphs"
-    
+
     @django.db.transaction.commit_on_success
     @tldap.transaction.commit_on_success
     def handle(self, **options):

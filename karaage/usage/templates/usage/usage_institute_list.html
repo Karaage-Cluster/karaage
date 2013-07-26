@@ -6,17 +6,27 @@
 
 
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Usage
-</div>{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href='{% url 'kg_usage_list' %}?{{ querystring }}'>Usage</a>&nbsp;›
+    {{ machine_category }}
+</div>
+{% endblock %}
 
-{% block object-tools %}<div class="module object-tools"><h2>Object links</h2><ul>
-<li><a href="{% url 'kg_core_report' %}">Core Report</a></li>
-<li><a href="{% url 'kg_mem_report' %}">Memory Report</a></li>
-<li><a href="{% url 'kg_job_list' %}">All Jobs</a></li>
-<li><a href="institute/trends/?{{ querystring }}">Trends</a></li>
-<li><a href="top_users/?{{ querystring }}">Top Users</a></li>
-<li><a class="viewsitelink" href="{% url 'kg_usage_search' %}">Advanced Search</a></li>
-</ul></div>{% endblock %}
+{% block object-tools %}
+<div class="module object-tools">
+    <h2>Object links</h2>
+    <ul>
+        <li><a href="{% url 'kg_core_report' machine_category.pk %}?{{ querystring }}">Core Report</a></li>
+        <li><a href="{% url 'kg_mem_report' machine_category.pk %}?{{ querystring }}">Memory Report</a></li>
+        <li><a href="{% url 'kg_institute_trends' machine_category.pk %}?{{ querystring }}">Trends</a></li>
+        <li><a href="{% url 'kg_top_users' machine_category.pk %}?{{ querystring }}">Top Users</a></li>
+        <li><a href="{% url 'kg_job_list' %}">All Jobs</a></li>
+        <li><a class="viewsitelink" href="{% url 'kg_usage_search' %}">Advanced Search</a></li>
+    </ul>
+</div>
+{% endblock %}
 
 {% block content %}<div id="content-main">
 <h2>{{ machine_category }} Usage {{ start|date }} - {{ end|date }}</h2>

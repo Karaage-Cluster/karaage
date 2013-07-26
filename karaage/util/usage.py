@@ -81,7 +81,7 @@ def get_project_usage(project, start, end, machine_category):
     return cache.cpu_hours, cache.no_jobs
 
 
-def get_user_usage(user, project, start, end):
+def get_user_usage(user, project, start, end, machine_category):
     """Return a tuple of cpu hours and number of jobs for a user in a specific project
 
     Keyword arguments:
@@ -91,13 +91,15 @@ def get_user_usage(user, project, start, end):
     end -- end date
     """
     try:
-        cache = UserCache.objects.get(user=user, project=project, date=datetime.date.today(), start=start, end=end)
+        cache = UserCache.objects.get(user=user, project=project, machine_category=machine_category, date=datetime.date.today(), start=start, end=end)
     except UserCache.DoesNotExist:
         data = CPUJob.objects.filter(date__range=(start, end),
                                       project=project,
+                                      machine__category=machine_category,
                                       user__user=user).aggregate(usage=Sum('cpu_usage'), jobs=Count('id'))
 
         cache = UserCache.objects.create(user=user, project=project,
+                                         machine_category=machine_category,
                                          start=start, end=end,
                                          cpu_hours=data['usage'], no_jobs=data['jobs'])
 

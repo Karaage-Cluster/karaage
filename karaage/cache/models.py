@@ -47,6 +47,7 @@ class ProjectCache(UsageCache):
 class UserCache(UsageCache):
     user = models.ForeignKey(Person)
     project = models.ForeignKey(Project)
+    machine_category = models.ForeignKey(MachineCategory)
 
 
 class MachineCache(UsageCache):

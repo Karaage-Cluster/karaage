@@ -3,10 +3,14 @@
 {% block title %}Usage{% endblock %}
 
 
-    
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="../../?{{ querystring }}">Usage</a>
- › {{ institute }}
-</div>{% endblock %}    
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› 
+    <a href="{% url 'kg_usage_list' %}">Usage</a>&nbsp;› 
+    <a href="{% url 'kg_mc_usage' machine_category.pk %}">{{ machine_category }}</a>&nbsp;› 
+    {{ institute }}
+</div>
+{% endblock %}
 
 {% block content %}<p>{% load humanize %}
 {% load filters %}
@@ -98,5 +102,7 @@
 	{% if gen %}
 		gen
 	{% endif %}
+	{% if graph %}
 	<img id="graph" src="{{ GRAPH_URL }}institutes/{{ graph }}"/>
+	{% endif %}
 </div>{% endblock %}

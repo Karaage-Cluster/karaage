@@ -21,7 +21,7 @@ from django.conf import settings
 import datetime
 
 from karaage.people.models import Person, Group
-from karaage.machines.managers import MachineCategoryManager, ActiveMachineManager, MC_CACHE
+from karaage.machines.managers import MachineCategoryManager, ActiveMachineManager
 from karaage.util import log_object as log
 
 
@@ -39,22 +39,6 @@ class MachineCategory(models.Model):
     def __unicode__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
-        super(MachineCategory, self).save(*args, **kwargs)
-        # Cached information will likely be incorrect now.
-        if self.id in MC_CACHE:
-            del MC_CACHE[self.id]
-    save.alters_data = True
-
-    def delete(self):
-        pk = self.pk
-        super(MachineCategory, self).delete()
-        try:
-            del MC_CACHE[pk]
-        except KeyError:
-            pass
-    delete.alters_data = True
-    
     @models.permalink
     def get_absolute_url(self):
         return ('kg_machine_list',)
@@ -84,7 +68,7 @@ class Machine(models.Model):
     def get_absolute_url(self):
         return ('kg_machine_detail', [self.id])
 
-    def get_usage(self, start=datetime.date.today() - datetime.timedelta(days=90), end=datetime.date.today()):
+    def get_usage(self, start, end):
         from karaage.util.usage import get_machine_usage
         return get_machine_usage(self, start, end)
 
@@ -103,6 +87,7 @@ class UserAccount(models.Model):
     def __init__(self, *args, **kwargs):
         super(UserAccount, self).__init__(*args, **kwargs)
         self._username = self.username
+        self._machine_category = self.machine_category
 
     class Meta:
         ordering = ['user', ]
@@ -149,11 +134,23 @@ class UserAccount(models.Model):
         # save the object
         super(UserAccount, self).save(*args, **kwargs)
 
+        # check if machine_category changed
+        moved = False
+        old_machine_category = self._machine_category
+        new_machine_category = self.machine_category
+        if old_machine_category != new_machine_category:
+            # update the datastore
+            from karaage.datastores import delete_account
+            self.machine_category = old_machine_category
+            delete_account(self)
+            self.machine_category = new_machine_category
+            moved = True
+
         # check if it was renamed
         old_username = self._username
         new_username = self.username
         if old_username != self.username:
-            if self.date_deleted is None:
+            if self.date_deleted is None and not moved:
                 from karaage.datastores import set_account_username
                 set_account_username(self, old_username, new_username)
             log(None, self.user, 2,
@@ -170,6 +167,7 @@ class UserAccount(models.Model):
 
         # save current state
         self._username = self.username
+        self._machine_category = self.machine_category
     save.alters_data = True
 
     def delete(self):

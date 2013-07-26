@@ -22,7 +22,7 @@
       <td>{{ p.name|truncatewords:"8" }}</td>
       <td>{{ p.start_date|date }}</td>
       <td>{{ p.end_date|date }}</td>
-      <td><a href="{{ p.get_usage_url }}">Usage</a></td>
+      <td>Usage: {% for pc in p.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk p.pk %}">{{ pc.machine_category }}</a> {% endfor %}</td>
     </tr>
     {% endfor %}
   </tbody>
@@ -56,9 +56,9 @@
       <td>{{ p.end_date|date }}</td>
       <td>{% ifequal p ua.default_project %}
 	    <img src="{{ STATIC_URL }}admin/img/icon-yes.gif" alt="1" />{% else %}
-	    <a href="{% url 'kg_user_make_default' ua.id p.pid %}?next={% url kg_user_profile_projects %}">Make default</a>
+	    <a href="{% url 'kg_user_make_default' ua.id p.pid %}?next={% url 'kg_user_profile_projects' %}">Make default</a>
 		{% endifequal %}</td>
-      <td><a href="{{ p.get_usage_url }}">Usage</a></td>
+      <td>Usage: {% for pc in p.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk p.pk %}">{{ pc.machine_category }}</a> {% endfor %}</td>
     </tr>
     {% endfor %}
     {% endif %}

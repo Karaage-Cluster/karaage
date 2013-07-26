@@ -5,9 +5,15 @@
 
 
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="{% url 'kg_usage_list' %}">Usage</a>
- › Top Users
-</div>{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› 
+    <a href="{% url 'kg_usage_list' %}">Usage</a>&nbsp;› 
+    <a href="{% url 'kg_mc_usage' machine_category.pk %}">{{ machine_category }}</a>&nbsp;› 
+    Top Users
+</div>
+{% endblock %}
+
 
 {% block content %}<p>{% load filters %}
 {% load humanize %}

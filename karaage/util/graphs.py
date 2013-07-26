@@ -85,18 +85,9 @@ def get_trend_graph_url(start, end, machine_category):
 
 
 def get_institute_trend_graph_url(institute,
-                                  start=None,
-                                  end=None,
-                                  machine_category=None):
-
-    if start is None:
-        start=datetime.date.today() - datetime.timedelta(days=90)
-
-    if end is None:
-        end=datetime.date.today()
-
-    if machine_category is None:
-        machine_category=MachineCategory.objects.get_default()
+                                  start,
+                                  end,
+                                  machine_category):
 
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
@@ -113,18 +104,9 @@ def get_institute_trend_graph_url(institute,
 
 
 def get_project_trend_graph_url(project,
-                                start=None,
-                                end=None,
-                                machine_category=None):
-
-    if start is None:
-        start=datetime.date.today() - datetime.timedelta(days=90)
-
-    if end is None:
-        end=datetime.date.today()
-
-    if machine_category is None:
-        machine_category=MachineCategory.objects.get_default()
+                                start,
+                                end,
+                                machine_category):
 
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
@@ -143,10 +125,7 @@ def get_project_trend_graph_url(project,
     return "%s_%s-%s_%i.png" % (project.pid, start_str, end_str, machine_category.id)
 
 
-def get_institutes_trend_graph_urls(start, end, machine_category=None):
-
-    if machine_category is None:
-        machine_category=MachineCategory.objects.get_default()
+def get_institutes_trend_graph_urls(start, end, machine_category):
 
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
@@ -156,12 +135,12 @@ def get_institutes_trend_graph_urls(start, end, machine_category=None):
 
     try:
         for i in Institute.active.all():
-            open("%s/i_trends/%s_%s_%s-trend.png" % (settings.GRAPH_ROOT, i.name.replace(' ', '').replace('/', '-').lower(), start_str, end_str))
+            open("%s/i_trends/%s_%s_%s_%i-trend.png" % (settings.GRAPH_ROOT, i.name.replace(' ', '').replace('/', '-').lower(), start_str, end_str, machine_category.pk))
     except IOError:
         gen_institutes_trend(start, end, machine_category)
 
     graph_list = []
     for i in Institute.active.all():
-        graph_list.append("%s_%s_%s-trend.png" % (i.name.replace(' ', '').replace('/', '-').lower(), start_str, end_str))
+        graph_list.append("%s_%s_%s_%i-trend.png" % (i.name.replace(' ', '').replace('/', '-').lower(), start_str, end_str, machine_category.pk))
 
     return graph_list
