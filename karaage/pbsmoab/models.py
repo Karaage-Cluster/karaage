@@ -61,7 +61,7 @@ class ProjectChunk(models.Model):
         from karaage.util.helpers import get_available_time
 
         TWOPLACES = Decimal(10) ** -2
-        usage, jobs = self.project.get_usage(start, end)
+        usage, jobs = self.project.get_usage(start, end, self.machine_category)
         if usage is None:
             usage = Decimal('0')
         total_time, ave_cpus = get_available_time()
@@ -85,6 +85,13 @@ class ProjectChunk(models.Model):
         if iq.cap is not None:
             return iq.cap
         return iq.quota * 1000
+
+    def get_cap_percent(self):
+        cap = self.get_cap()
+        if cap == 0:
+            return 'NaN'
+        else:
+            return (self.get_mpots() / cap) * 100
 
 
 def create_institute_chunk(sender, **kwargs):

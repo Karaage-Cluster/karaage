@@ -284,8 +284,7 @@ def struggling(request):
     today = datetime.date.today()
     days30 = today - datetime.timedelta(days=30)
     
-    machine_category = MachineCategory.objects.get_default()
-    user_accounts = machine_category.useraccount_set.select_related().filter(date_deleted__isnull=True).filter(date_created__lt=days30).filter(user__last_usage__isnull=True).order_by('-date_created')
+    user_accounts = UserAccount.objects.select_related().filter(date_deleted__isnull=True).filter(date_created__lt=days30).filter(user__last_usage__isnull=True).order_by('-date_created')
 
     if 'institute' in request.REQUEST:
         institute_id = int(request.GET['institute'])

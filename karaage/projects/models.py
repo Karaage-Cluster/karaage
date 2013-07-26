@@ -38,7 +38,6 @@ class Project(models.Model):
     start_date = models.DateField(default=datetime.datetime.today)
     end_date = models.DateField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
-    machine_category = models.ForeignKey(MachineCategory)
     machine_categories = models.ManyToManyField(MachineCategory, null=True, blank=True, related_name='projects')
     is_active = models.BooleanField()
     approved_by = models.ForeignKey(Person, related_name='project_approver', null=True, blank=True, editable=False)
@@ -136,12 +135,7 @@ class Project(models.Model):
         self.save()
     deactivate.alters_data = True
 
-    def get_usage(self,
-                  start=datetime.date.today() - datetime.timedelta(days=90),
-                  end=datetime.date.today(),
-                  machine_category=None):
-        if machine_category is None:
-            machine_category = MachineCategory.objects.get_default()
+    def get_usage(self, start, end, machine_category):
         from karaage.util.usage import get_project_usage
         return get_project_usage(self, start, end, machine_category)
 
@@ -155,14 +149,10 @@ class Project(models.Model):
     def get_latest_usage(self):
         return self.cpujob_set.select_related()[:5]
 
-    def get_cap(self):
-        pc = self.projectchunk_set.get(machine_category=self.machine_category)
+    def get_cap(self, machine_category):
+        pc = self.projectchunk_set.get(machine_category=machine_category)
         return pc.get_cap()
 
-    def get_cap_percent(self):
-        pc = self.projectchunk_set.get(machine_category=self.machine_category)
-        try:
-            return (pc.get_mpots() / self.get_cap()) * 100
-        except:
-            return 'NAN'
-
+    def get_cap_percent(self, machine_category):
+        pc = self.projectchunk_set.get(machine_category=machine_category)
+        return pc.get_cap_percent(self)

@@ -64,13 +64,10 @@ class Institute(models.Model):
         return ('kg_institute_detail', [self.id])
 
     @models.permalink
-    def get_usage_url(self):
-        return ('kg_usage_institute', [1, self.id])
+    def get_usage_url(self, machine_category):
+        return ('kg_usage_institute', [machine_category.pk, self.id])
 
-    def get_usage(self, start, end, machine_category=None):
-        from karaage.machines.models import MachineCategory
-        if machine_category is None:
-            machine_category = MachineCategory.objects.get_default()
+    def get_usage(self, start, end, machine_category):
         from karaage.util.usage import get_institute_usage
         return get_institute_usage(self, start, end, machine_category)
 

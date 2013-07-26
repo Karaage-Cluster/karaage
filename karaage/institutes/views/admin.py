@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import datetime
+
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
@@ -27,14 +29,20 @@ from andsome.util.filterspecs import Filter, FilterBar
 from karaage.util.graphs import get_institute_trend_graph_url
 from karaage.institutes.models import Institute, InstituteDelegate
 from karaage.institutes.forms import InstituteForm
+from karaage.machines.models import MachineCategory
 
 
 def institute_detail(request, institute_id):
     
     institute = get_object_or_404(Institute, pk=institute_id)
 
+    start=datetime.date.today() - datetime.timedelta(days=90)
+    end=datetime.date.today()
+
     if institute.is_active:
-        graph = get_institute_trend_graph_url(institute)
+        graph = {}
+        for ic in institute.institutechunk_set.all():
+            graph[ic.machine_category] = get_institute_trend_graph_url(institute, start, end, ic.machine_category)
     
     return render_to_response('institutes/institute_detail.html', locals(), context_instance=RequestContext(request))
     

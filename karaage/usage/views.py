@@ -45,22 +45,35 @@ from karaage.graphs.util import get_colour
 
 
 def usage_index(request):
-    
-    mc_list = MachineCategory.objects.all()
     start, end = get_date_range(request)
 
     querystring = request.META.get('QUERY_STRING', '')
 
+    mc_list = []
+    for machine_category in MachineCategory.objects.all():
+        m_list = []
+        for machine in machine_category.machine_set.all():
+            print "++++++", machine
+            time, jobs = machine.get_usage(start, end)
+            if time is None:
+                time = 0
+            m_list.append({'obj': machine, 'usage': time, 'jobs': jobs})
+        mc_list.append({
+            'obj': machine_category,
+            'machines': m_list,
+        })
+        del m_list
+
     return render_to_response('usage/mc_list.html', locals(), context_instance=RequestContext(request))
 
 
-def index(request, machine_category_id=settings.DEFAULT_MC):
+def index(request, machine_category_id):
 
     if not getattr(settings, 'USAGE_IS_PUBLIC', False):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
     
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
-    mc_list = MachineCategory.objects.exclude(id__exact=settings.DEFAULT_MC)
+    mc_list = MachineCategory.objects.exclude(id__exact=machine_category_id)
     
     show_zeros = True
 
@@ -78,8 +91,7 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
         time, jobs = m.get_usage(start, end)
         if time is None:
             time = 0
-        if jobs > 0:
-            m_list.append({'machine': m, 'usage': time, 'jobs': jobs})
+        m_list.append({'machine': m, 'usage': time, 'jobs': jobs})
             
     for i in institute_list:
         time, jobs = i.get_usage(start, end, machine_category)
@@ -93,8 +105,9 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
             display_quota = quota.quota
         except InstituteChunk.DoesNotExist:
             display_quota = None
+
+        data_row = {'institute': i, 'usage': time, 'jobs': jobs, 'quota': display_quota}
         if display_quota or jobs > 0:
-            data_row = {'institute': i, 'usage': time, 'jobs': jobs, 'quota': display_quota}
             try:
                 data_row['percent'] = Decimal(time) / Decimal(available_time) * 100
             except ZeroDivisionError:
@@ -112,7 +125,7 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
             else:
                 data_row['class'] = 'green'
 
-            i_list.append(data_row)
+        i_list.append(data_row)
 
     # Unused Entry
     unused = {'usage': available_time - total, 'quota': 0}
@@ -139,10 +152,10 @@ def index(request, machine_category_id=settings.DEFAULT_MC):
     except:
         pass
 
-    return render_to_response('usage/usage_institue_list.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('usage/usage_institute_list.html', locals(), context_instance=RequestContext(request))
 
 
-def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_MC):
+def institute_usage(request, institute_id, machine_category_id):
 
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
     institute = get_object_or_404(Institute, pk=institute_id)
@@ -160,6 +173,8 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
     quota = get_object_or_404(InstituteChunk, institute=institute, machine_category=machine_category)
 
     i_usage, i_jobs = institute.get_usage(start, end, machine_category)
+
+    graph = None
 
     if i_jobs > 0:
 
@@ -215,7 +230,7 @@ def institute_usage(request, institute_id, machine_category_id=settings.DEFAULT_
     return render_to_response('usage/usage_institute_detail.html', locals(), context_instance=RequestContext(request))
 
 
-def project_usage(request, project_id, machine_category_id=settings.DEFAULT_MC):
+def project_usage(request, project_id, machine_category_id):
     
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
     project = get_object_or_404(Project, pk=project_id)
@@ -322,14 +337,15 @@ def search(request):
 
             data = form.cleaned_data
 
-            project_list = Project.objects.all()
-            institute_list = Institute.objects.all()
+            project_query = Project.objects.all()
+            institute_query = Institute.objects.all()
             #user_list = Person.objects.all()
             
             terms = data['terms'].lower()
 
             start = data['start_date']
             end = data['end_date']
+            machine_category = data['machine_category']
             start_str = start.strftime('%Y-%m-%d')
             end_str = end.strftime('%Y-%m-%d')
             if terms:
@@ -340,26 +356,34 @@ def search(request):
                     q = Q(pid__icontains=term) | Q(name__icontains=term)
                     query = query & q
         
-                project_list = project_list.filter(query)
+                project_query = project_query.filter(query)
             
             # search for institutes
                 query = Q()
                 for term in terms.split(' '):
                     q = Q(name__icontains=term)
                     query = query & q
-                institute_list = institute_list.filter(query)
+                institute_query = institute_query.filter(query)
     
-                for p in project_list:
-                    time, jobs = p.get_usage(start, end)
-                    p = p.__dict__
-                    p['time'] = time
-                    p['jobs'] = jobs
+                project_list = []
+                for p in project_query:
+                    time, jobs = p.get_usage(start, end, machine_category)
+                    project_list.append({
+                        'obj': p,
+                        'time': time,
+                        'jobs': jobs,
+                    })
+                del project_query
 
-                for i in institute_list:
-                    time, jobs = i.get_usage(start, end)
-                    i = i.__dict__
-                    i['time'] = time
-                    i['jobs'] = jobs
+                institute_list = []
+                for i in institute_query:
+                    time, jobs = i.get_usage(start, end, machine_category)
+                    institute_list.append({
+                        'obj': i,
+                        'time': time,
+                        'jobs': jobs,
+                    })
+                del institute_query
 
             else:
                 return HttpResponseRedirect('%s?start=%s&end=%s' % (reverse('kg_usage_list'), start_str, end_str))
@@ -385,7 +409,7 @@ def project_search(request):
         return HttpResponseRedirect(reverse('kg_admin_index'))
         
 
-def top_users(request, machine_category_id=settings.DEFAULT_MC, count=20):
+def top_users(request, machine_category_id, count=20):
 
     machine_category = MachineCategory.objects.get(pk=machine_category_id)
     start, end = get_date_range(request)
@@ -405,17 +429,19 @@ def top_users(request, machine_category_id=settings.DEFAULT_MC, count=20):
     return render_to_response('usage/top_users.html', locals(), context_instance=RequestContext(request))
 
 
-def institute_trends(request):
+def institute_trends(request, machine_category_id):
+
+    machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
 
     start, end = get_date_range(request)
-    graph_list = get_institutes_trend_graph_urls(start, end)
+    graph_list = get_institutes_trend_graph_urls(start, end, machine_category)
     
     return render_to_response('usage/institute_trends.html', locals(), context_instance=RequestContext(request))
 
 
-def institute_users(request, institute_id, machine_category_id=1):
+def institute_users(request, machine_category_id, institute_id):
 
-    machine_category = MachineCategory.objects.get(pk=machine_category_id)
+    machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
     institute = get_object_or_404(Institute, pk=institute_id)
     
     if not institute.can_view(request.user) and not getattr(settings, 'USAGE_IS_PUBLIC', False):
@@ -443,7 +469,7 @@ def institute_users(request, institute_id, machine_category_id=1):
     return render_to_response('usage/institute_users.html', locals(), context_instance=RequestContext(request))
 
 
-def core_report(request, machine_category_id=settings.DEFAULT_MC):
+def core_report(request, machine_category_id):
 
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
     
@@ -470,7 +496,7 @@ def core_report(request, machine_category_id=settings.DEFAULT_MC):
     return render_to_response('usage/core_report.html', locals(), context_instance=RequestContext(request))
 
 
-def mem_report(request, machine_category_id=settings.DEFAULT_MC):
+def mem_report(request, machine_category_id):
 
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
     

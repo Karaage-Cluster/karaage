@@ -21,7 +21,7 @@ from django.conf import settings
 import datetime
 
 from karaage.people.models import Person, Group
-from karaage.machines.managers import MachineCategoryManager, ActiveMachineManager, MC_CACHE
+from karaage.machines.managers import MachineCategoryManager, ActiveMachineManager
 from karaage.util import log_object as log
 
 
@@ -39,22 +39,6 @@ class MachineCategory(models.Model):
     def __unicode__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
-        super(MachineCategory, self).save(*args, **kwargs)
-        # Cached information will likely be incorrect now.
-        if self.id in MC_CACHE:
-            del MC_CACHE[self.id]
-    save.alters_data = True
-
-    def delete(self):
-        pk = self.pk
-        super(MachineCategory, self).delete()
-        try:
-            del MC_CACHE[pk]
-        except KeyError:
-            pass
-    delete.alters_data = True
-    
     @models.permalink
     def get_absolute_url(self):
         return ('kg_machine_list',)
@@ -84,7 +68,7 @@ class Machine(models.Model):
     def get_absolute_url(self):
         return ('kg_machine_detail', [self.id])
 
-    def get_usage(self, start=datetime.date.today() - datetime.timedelta(days=90), end=datetime.date.today()):
+    def get_usage(self, start, end):
         from karaage.util.usage import get_machine_usage
         return get_machine_usage(self, start, end)
 

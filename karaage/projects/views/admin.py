@@ -187,7 +187,7 @@ def no_users(request):
 
     project_ids = []
     for p in Project.active.all():
-        if p.users.count() == 0:
+        if p.group.members.count() == 0:
             project_ids.append(p.pid)
 
     return project_list(request, Project.objects.filter(pid__in=project_ids))

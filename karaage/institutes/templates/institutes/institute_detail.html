@@ -7,9 +7,11 @@
 <div class="module">
 <h2>Institutes</h2>
     {% if graph %}
-    <a href="{{ institute.get_usage_url }}">
-<img class="float-right" height="150" src="{{ GRAPH_URL }}institutes/{{ graph }}" width="300"/>
+{% for mc, graph_url in graph.iteritems %}
+    <a href="{% url 'kg_usage_institute' mc.pk institute.pk %}">
+<img class="float-right" height="150" src="{{ GRAPH_URL }}institutes/{{ graph_url }}" width="300"/>
 </a>
+{% endfor %}
     {% endif %}
     <h3>{{ institute }}</h3>
 <table>
