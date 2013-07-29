@@ -237,32 +237,20 @@ def wrong_default_list(request):
     
 @login_required
 def make_default(request, useraccount_id, project_id):
-
     user_account = get_object_or_404(UserAccount, pk=useraccount_id)
     project = get_object_or_404(Project, pk=project_id)
 
-    access = False
-    if request.user.has_perm('machines.change_useraccount'):
-        access = True
-
-    if request.user == user_account.user.user:
-        access = True
-
-    if not access:
+    if not request.user.has_perm('machines.change_useraccount'):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
-    user_account = get_object_or_404(UserAccount, pk=useraccount_id)
-    project = get_object_or_404(Project, pk=project_id)
+    if request.method != 'POST':
+        return HttpResponseRedirect(user_account.get_absolute_url())
 
     user_account.default_project = project
     user_account.save()
     user_account.user.save()
-    
     messages.success(request, "Default project changed succesfully")
     log(request.user, user_account.user, 2, 'Changed default project to %s' % project.pid)
-
-    if 'next' in request.REQUEST:
-        return HttpResponseRedirect(request.GET['next'])
     return HttpResponseRedirect(user_account.get_absolute_url())
 
     

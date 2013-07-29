@@ -149,7 +149,10 @@
 <td>{% ifequal p ua.default_project %}
 	    <img alt="1" src="{{ STATIC_URL }}admin/img/icon-yes.gif"/>{% else %}
 	    {% if perms.machines.change_useraccount %}
-	    <a href="{% url 'admin_make_default' ua.id p.pid %}">Make default</a>
+            <form action="{% url 'admin_make_default' ua.id p.pid %}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="Make Default"/></input>
+            </form>
 	    {% endif %}{% endifequal %}</td>
 	  {% if perms.projects.change_project %}{% ifnotequal p ua.default_project %}
 	  <td><a class="deletelink" href="{% url 'kg_remove_project_member' p.pid person.username %}">Remove</a>
@@ -218,10 +221,22 @@
         <li><a href="{% url 'kg_user_verbose' person.username %}">Verbose</a></li>
 	{% if perms.people.change_person and person.is_active %}
 	{% if person.is_locked %}
-        <li><a href="{% url 'kg_unlock_user' person.username %}"><img alt="Unlock" src="{{ STATIC_URL }}img/unlock.png"/> Unlock</a></li>
+        <li>
+            <form action="{% url 'kg_unlock_user' person.username %}" method="post">
+                {% csrf_token %}
+                <img alt="Lock" src="{{ STATIC_URL }}img/unlock.png"/>
+                <input type="submit" value="Unlock"/></input>
+            </form>
+        </li>
 	{% else %}
         <li class="changelink"><a href="{% url 'kg_password_change' person.username %}">Change Password</a></li>
-        <li><a href="{% url 'kg_lock_user' person.username %}"><img alt="Lock" src="{{ STATIC_URL }}img/lock.png"/> Lock</a></li>
+        <li>
+            <form action="{% url 'kg_lock_user' person.username %}" method="post">
+                {% csrf_token %}
+                <img alt="Lock" src="{{ STATIC_URL }}img/lock.png"/>
+                <input type="submit" value="Lock"/></input>
+            </form>
+        </li>
 	{% endif %}
         <li><a href="{% url 'kg_user_bounce' person.username %}">Bounced Email</a></li>
 	{% endif %}

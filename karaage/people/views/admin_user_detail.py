@@ -125,27 +125,26 @@ def password_change(request, username):
 @permission_required('people.change_person')
 def lock_person(request, username):
     person = get_object_or_404(Person, user__username=username)
-    person.lock()
-    messages.success(request, "%s's account has been locked" % person)
-    log(request.user, person, 2, 'Account locked')
-    
+    if request.method == 'POST':
+        person.lock()
+        messages.success(request, "%s's account has been locked" % person)
+        log(request.user, person, 2, 'Account locked')
     return HttpResponseRedirect(person.get_absolute_url())
 
 
 @permission_required('people.change_person')
 def unlock_person(request, username):
     person = get_object_or_404(Person, user__username=username)
-    person.unlock()
-    messages.success(request, "%s's account has been unlocked" % person)
-    log(request.user, person, 2, 'Account unlocked')
-    
+    if request.method == 'POST':
+        person.unlock()
+        messages.success(request, "%s's account has been unlocked" % person)
+        log(request.user, person, 2, 'Account unlocked')
     return HttpResponseRedirect(person.get_absolute_url())
 
 
 @permission_required('people.change_person')
 def bounced_email(request, username):
     person = get_object_or_404(Person, user__username=username)
-
     if request.method == 'POST':
         person.lock()
         send_bounced_warning(person)

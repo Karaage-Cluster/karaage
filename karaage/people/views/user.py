@@ -249,3 +249,20 @@ def password_reset(request):
         'registration/password_reset_form.html',
         {'form': form},
         context_instance=RequestContext(request))
+
+
+@login_required
+def make_default(request, useraccount_id, project_id):
+    person = request.user.get_profile()
+    user_account = get_object_or_404(UserAccount, pk=useraccount_id, user=person)
+    project = get_object_or_404(Project, pk=project_id)
+
+    if request.method != 'POST':
+        return HttpResponseRedirect(user_account.get_absolute_url())
+
+    user_account.default_project = project
+    user_account.save()
+    user_account.user.save()
+    messages.success(request, "Default project changed succesfully")
+    log(request.user, user_account.user, 2, 'Changed default project to %s' % project.pid)
+    return HttpResponseRedirect(user_account.get_absolute_url())
