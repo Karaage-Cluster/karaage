@@ -126,13 +126,13 @@ def set_account_password(account, raw_password):
     """ Account's password was changed. """
     name = account.machine_category.datastore
     for datastore in _get_account_datastores(name):
-        datastore.set_person_password(account, raw_password)
+        datastore.set_account_password(account, raw_password)
 
 def set_account_username(account, old_username, new_username):
     """ Account's username was changed. """
     name = account.machine_category.datastore
     for datastore in _get_account_datastores(name):
-        datastore.set_person_username(account, old_username, new_username)
+        datastore.set_account_username(account, old_username, new_username)
 
 def account_exists(username, machine_category):
     """ Does the account exist??? """
