@@ -20,11 +20,15 @@
    <tbody>
 	   	<tr class="{% cycle row1,row2 %}">
 	   		<td>
-					{% if ua.date_deleted %}
-					<img src="{{ STATIC_URL }}admin/img/icon-no.gif" alt="Not Active" />
-	   			{% else %}
-	   			<img src="{{ STATIC_URL }}admin/img/icon-yes.gif" alt="Active"/>
-					{% endif %}	   	   		
+    {% if ua.date_deleted %}
+    <img alt="Not Active" src="{{ STATIC_URL }}admin/img/icon-no.gif" title="Not Active""/>
+    {% else %}
+        {% if ua.is_locked %}
+        <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
+        {% else %}
+        <img alt="Active" src="{{ STATIC_URL }}admin/img/icon-yes.gif" title="Active"/>
+        {% endif %}
+    {% endif %}
 	   		</td>
 	   		<td>{{ ua.username }}</td>
 	   		<td>{{ ua.date_created|date }}</td>
