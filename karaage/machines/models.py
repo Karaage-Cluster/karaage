@@ -100,6 +100,10 @@ class UserAccount(models.Model):
     shell = models.CharField(max_length=50)
     login_enabled = models.BooleanField(default=True)
 
+    def __init__(self, *args, **kwargs):
+        super(UserAccount, self).__init__(*args, **kwargs)
+        self._username = self.username
+
     class Meta:
         ordering = ['user', ]
         db_table = 'user_account'
@@ -145,6 +149,16 @@ class UserAccount(models.Model):
         # save the object
         super(UserAccount, self).save(*args, **kwargs)
 
+        # check if it was renamed
+        old_username = self._username
+        new_username = self.username
+        if old_username != self.username:
+            if self.date_deleted is None:
+                from karaage.datastores import set_account_username
+                set_account_username(self, old_username, new_username)
+            log(None, self.user, 2,
+                'Changed username on %s' % self.machine_category)
+
         # update the datastore
         if self.date_deleted is None:
             from karaage.datastores import save_account
@@ -153,6 +167,9 @@ class UserAccount(models.Model):
         # log message
         log(None, self.user, 2,
             'Saved account on %s' % self.machine_category)
+
+        # save current state
+        self._username = self.username
     save.alters_data = True
 
     def delete(self):
@@ -194,19 +211,6 @@ class UserAccount(models.Model):
         log(None, self.user, 2,
             'Changed shell on %s' % self.machine_category)
     change_shell.alters_data = True
-
-    def change_username(self, new_username):
-        old_username = self.username
-        if old_username != new_username:
-            self.username = new_username
-            # we call super.save() to avoid calling datastore save needlessly
-            super(UserAccount, self).save()
-            if self.date_deleted is None:
-                from karaage.datastores import set_account_username
-                set_account_username(self, old_username, new_username)
-            log(None, self.user, 2,
-                'Changed username on %s' % self.machine_category)
-    change_username.alters_data = True
 
     def set_password(self, password):
         if self.date_deleted is None:

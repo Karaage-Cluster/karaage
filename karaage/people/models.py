@@ -183,9 +183,13 @@ class Person(models.Model):
         from karaage.datastores import delete_user
     delete.alters_data = True
 
-    def _set_username(self, value):
-        self.user.username = value
-        self.user.save()
+    def _set_username(self, new_username):
+        old_username = self.username
+        if old_username != new_username:
+            self.user.username = new_username
+            self.user.save()
+            from karaage.datastores import set_person_username
+            set_person_username(self, old_username, new_username)
     _set_username.alters_data = True
 
     def _get_username(self):
@@ -361,15 +365,6 @@ class Person(models.Model):
             ua.unlock()
         log(None, self, 2, 'Unlocked person')
     unlock.alters_data = True
-
-    def change_username(self, new_username):
-        old_username = self.username
-        if old_username != new_username:
-            self.user.username = new_username
-            self.user.save()
-            from karaage.datastores import set_person_username
-            set_person_username(self, old_username, new_username)
-    change_username.alters_data = True
 
     def is_locked(self):
         return not self.login_enabled
