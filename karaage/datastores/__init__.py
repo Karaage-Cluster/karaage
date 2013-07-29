@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-""" Common hooks for personal and account datastores. """
+""" Common hooks for person and account datastores. """
 
 from django.conf import settings
 
@@ -35,8 +35,8 @@ def _init_datastores():
             module = __import__(config['ENGINE'], {}, {}, [''])
             _ACCOUNT_DATASTORES[name].append(module.AccountDataStore(config))
 
-def _get_personal_datastores():
-    """ Get the default personal datastores. """
+def _get_person_datastores():
+    """ Get the default person datastores. """
     name = settings.PERSON_DATASTORE
     return _PERSON_DATASTORES[name]
 
@@ -47,37 +47,37 @@ def _get_account_datastores(name):
 
 def save_person(person):
     """ Person was saved. """
-    for datastore in _get_personal_datastores():
+    for datastore in _get_person_datastores():
         datastore.save_person(person)
 
 def delete_person(person):
     """ Person was deleted. """
-    for datastore in _get_personal_datastores():
+    for datastore in _get_person_datastores():
         datastore.delete_person(person)
 
 def lock_person(person):
     """ Person was locked. """
-    for datastore in _get_personal_datastores():
+    for datastore in _get_person_datastores():
         datastore.lock_person(person)
 
 def unlock_person(person):
     """ Person was unlocked. """
-    for datastore in _get_personal_datastores():
+    for datastore in _get_person_datastores():
         datastore.unlock_person(person)
 
 def set_person_password(person, raw_password):
     """ Person's password was changed. """
-    for datastore in _get_personal_datastores():
+    for datastore in _get_person_datastores():
         datastore.set_person_password(person, raw_password)
 
 def set_person_username(person, old_username, new_username):
     """ Person's username was changed. """
-    for datastore in _get_personal_datastores():
+    for datastore in _get_person_datastores():
         datastore.set_person_username(person, old_username, new_username)
 
 def person_exists(username):
     """ Does this person exist??? """
-    for datastore in _get_personal_datastores():
+    for datastore in _get_person_datastores():
         if datastore.person_exists(username):
             return True
     return False
@@ -85,7 +85,7 @@ def person_exists(username):
 def get_person_details(person):
     """ Get details for this user. """
     result = []
-    for datastore in _get_personal_datastores():
+    for datastore in _get_person_datastores():
         value = datastore.get_person_details(person)
         value['datastore'] = datastore.config['DESCRIPTION']
         result.append(value)
