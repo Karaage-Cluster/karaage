@@ -232,6 +232,7 @@ class UserAccount(models.Model):
 
     def lock(self):
         self.login_enabled = False
+        self.save()
         if self.date_deleted is None:
             from karaage.datastores import lock_account
             lock_account(self)
@@ -241,6 +242,7 @@ class UserAccount(models.Model):
 
     def unlock(self):
         self.login_enabled = True
+        self.save()
         if self.date_deleted is None:
             from karaage.datastores import unlock_account
             unlock_account(self)
