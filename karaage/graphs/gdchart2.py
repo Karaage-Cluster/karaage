@@ -264,5 +264,5 @@ class GraphGenerator(base.GraphGenerator):
             x.grid = "NONE"
 
             x.setData(i_data)
-            x.draw("%s/i_trends/%s_%s_%s_%i-trend.png" % (settings.GRAPH_ROOT, i.name.replace(' ', '').lower(), start_str, end_str, machine_category.pk))
+            x.draw("%s/i_trends/%s_%s_%s_%i-trend.png" % (settings.GRAPH_ROOT, i.name.replace(' ', '').replace('/', '-').lower(), start_str, end_str, machine_category.pk))
             
