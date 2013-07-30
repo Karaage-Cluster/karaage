@@ -12,13 +12,6 @@
 {% block content %}<div id="content-main">
 <div class="module">
 <h2>Institutes</h2>
-    {% if graph %}
-{% for mc, graph_url in graph.iteritems %}
-    <a href="{% url 'kg_usage_institute' mc.pk institute.pk %}">
-<img class="float-right" height="150" src="{{ GRAPH_URL }}institutes/{{ graph_url }}" width="300"/>
-</a>
-{% endfor %}
-    {% endif %}
     <h3>{{ institute }}</h3>
 <table>
     <tr><td colspan="2">Usage: {% for mc, graph_url in graph.iteritems %}<a href="{% url 'kg_usage_institute' mc.pk institute.pk %}">{{ mc }}</a>{% endfor %}</td></tr>
@@ -65,4 +58,13 @@
 <h2>Users</h2>
     {% gen_table institute.person_set.select_related %}
   </div>
-</div>{% endblock %}
+{% for mc, graph_url in graph.iteritems %}
+<div class="module">
+    <h2>Usage - {{ mc }}</h2>
+    <a href="{% url 'kg_usage_institute' mc.pk institute.pk %}">
+    <img src="{{ GRAPH_URL }}institutes/{{ graph_url }}"/>
+</div>
+</a>
+{% endfor %}
+</div>
+{% endblock %}
