@@ -111,26 +111,6 @@ def user_detail(request, username):
 
 
 @login_required
-def flag_left(request, username):
-
-    person = get_object_or_404(Person, user__username=username)
-
-    Comment.objects.create(
-        user=request.user,
-        content_type=ContentType.objects.get_for_model(person.__class__),
-        object_id=person.id,
-        comment='This user has left the institution',
-        site=Site.objects.get(pk=1),
-        valid_rating=True,
-        is_public=False,
-        is_removed=False,
-    )
-
-    messages.success(request, 'User flagged as left institution')
-    return HttpResponseRedirect(person.get_absolute_url())
-
-
-@login_required
 def institute_users_list(request, institute_id):
 
     institute = get_object_or_404(Institute, pk=institute_id)
