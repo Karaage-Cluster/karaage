@@ -259,7 +259,8 @@ def _remove_group(group, person):
         count = group.project_set.filter(pk=ua.default_project.pk).count()
         # If yes, deactivate the ua
         if count > 0:
-            ua.deactivate()
+            ua.default_project = None
+            ua.save()
 
 
 def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
