@@ -20,7 +20,7 @@
 <p><a href="{{ project.get_usage_url }}">View Usage</a>
 </p></div>
 {% endif %}
-{% if project.users.all %}
+{% if project.group.members.all %}
 <div class="module">
 <h2>Users</h2>
 <table cellspacing="0">
@@ -40,7 +40,7 @@
       </tr>
 </thead>
 <tbody>
-      {% for person in project.users.all %}
+      {% for person in project.group.members.all %}
       <tr class="{% cycle row1,row2 %}">
 	{% if user.is_authenticated %}
 	<td><a href="{{ person.get_absolute_url }}">{{ person.username }}</a></td>

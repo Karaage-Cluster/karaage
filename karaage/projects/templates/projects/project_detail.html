@@ -84,7 +84,7 @@
 	</tbody>
 </table>
 </div> 
-  {% if project.users.all %}
+  {% if project.group.members.all %}
   <div class="module">
 <h2>Users</h2>
 <table cellspacing="0">
@@ -98,7 +98,7 @@
 </tr>
 </thead>
 <tbody>
-   	{% for user in project.users.select_related %}
+   	{% for user in project.group.members.select_related %}
 	<tr class="{% cycle row1,row2 %}">
 <td><a href="{{ user.get_absolute_url }}">{{ user.username }}</a></td>
 <td>{{ user.get_full_name }}</td>
