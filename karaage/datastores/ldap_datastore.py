@@ -70,6 +70,11 @@ class AccountDataStore(base.AccountDataStore):
         person = account.user
         lgroup = self._groups().get(cn=person.institute.group.name)
 
+        if account.default_project is None:
+            default_project = "none"
+        else:
+            default_project = account.default_project.pid
+
         try:
             luser = self._accounts().get(uid=account.username)
             luser.gidNumber = lgroup.gidNumber
@@ -81,7 +86,7 @@ class AccountDataStore(base.AccountDataStore):
             luser.o = person.institute.name
             luser.gidNumber = lgroup.gidNumber
             luser.homeDirectory = settings.HOME_DIRECTORY % {
-                'default_project': account.default_project.pid,
+                'default_project': default_project,
                 'uid': person.username }
             if account.is_locked():
                 luser.loginShell = settings.LOCKED_SHELL
@@ -101,7 +106,7 @@ class AccountDataStore(base.AccountDataStore):
             luser.o = person.institute.name
             luser.gidNumber = lgroup.gidNumber
             luser.homeDirectory = settings.HOME_DIRECTORY % {
-                'default_project': account.default_project.pid,
+                'default_project': default_project,
                 'uid': person.username }
             luser.loginShell = account.shell
             luser.pre_create(master=None)
