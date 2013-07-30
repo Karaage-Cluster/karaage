@@ -53,8 +53,9 @@ def pop_user_cache(period):
     start = end - datetime.timedelta(days=period)
 
     for u in Person.active.all():
-        for p in u.project_set.all():
-            u.get_usage(p, start,end)
+        for p in u.projects.all():
+            for machine_category in MachineCategory.objects.all():
+                u.get_usage(p, start, end, machine_category)
 
 def gen_last_usage_project():
     for p in Project.objects.all():
