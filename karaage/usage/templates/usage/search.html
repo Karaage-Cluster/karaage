@@ -1,13 +1,18 @@
 {% extends "forms.html" %}
 {% load url from future %}
 
+
 {% block title %}Usage{% endblock %}
 
 
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_usage_list' %}">Usage</a>&nbsp;›
+    Usage Search
+</div>
+{% endblock %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="../">Usage</a>
- › Usage Search
-</div>{% endblock %}   
 
 {% block content %}
 {% load forms %}

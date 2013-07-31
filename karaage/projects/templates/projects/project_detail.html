@@ -2,8 +2,8 @@
 {% load url from future %}
 {% load forms %}
 
-{% block title %}Projects{% endblock %}
 
+{% block title %}Projects{% endblock %}
 
 
 {% block extrahead %}
@@ -11,9 +11,14 @@
 <script type="text/javascript" src="{{ STATIC_URL }}js/karaage.js"></script> 
 {% endblock %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="../">Projects</a>
-› {{ project.pid }}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_project_list' %}">Projects</a>&nbsp;›
+    {{ project.pid }}
 </div>{% endblock %}
+
 
 {% block content %}<div id="content-main">
 

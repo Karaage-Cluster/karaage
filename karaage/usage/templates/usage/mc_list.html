@@ -1,12 +1,17 @@
 {% extends "main.html" %}
 {% load humanize %}{% load filters usage_graphs %}
 
+
 {% block title %}Usage{% endblock %}
 
 
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    Usage
+</div>
+{% endblock %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Usage
-</div>{% endblock %}
 
 {% block object-tools %}
 <div class="module object-tools">
