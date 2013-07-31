@@ -90,7 +90,16 @@ def remove_group_member(request, group_name, username):
 
     group = get_object_or_404(Group, name=group_name)
     person = get_object_or_404(Person, user__username=username)
-    if request.method == 'POST':
+
+    error = None
+    for user_account in person.useraccount_set.filter(date_deleted__isnull=True):
+        # Does the default_project for ua belong to this group?
+        count = group.project_set.filter(pk=user_account.default_project.pk).count()
+        # If yes, error
+        if count > 0:
+            error = "The person has accounts that use this group as the default_project."
+
+    if error is None and request.method == 'POST':
         group.remove_person(person)
         return HttpResponseRedirect(group.get_absolute_url())
 

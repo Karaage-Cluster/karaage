@@ -29,7 +29,7 @@ from andsome.util.filterspecs import Filter, FilterBar
 
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
-from karaage.machines.models import MachineCategory
+from karaage.machines.models import MachineCategory, UserAccount
 from karaage.projects.models import Project
 from karaage.projects.forms import ProjectForm
 from karaage.projects.utils import get_new_pid, add_user_to_project, remove_user_from_project
@@ -83,13 +83,23 @@ def delete_project(request, project_id):
 
     project = get_object_or_404(Project, pk=project_id)
 
-    if request.method == 'POST':
+    query = UserAccount.objects.filter(date_deleted__isnull=True, default_project=project)
+
+    error = None
+    if query.count() > 0:
+        error = "There are accounts that use this project as the default_project."
+
+    elif request.method == 'POST':
         project.deactivate()
         log(request.user, project, 3, 'Deleted')
         messages.success(request, "Project '%s' deleted succesfully" % project)
         return HttpResponseRedirect(project.get_absolute_url())
 
-    return render_to_response('projects/project_confirm_delete.html', {'project': project}, context_instance=RequestContext(request))
+    del query
+
+    return render_to_response('projects/project_confirm_delete.html',
+            { 'project': project, 'error': error },
+            context_instance=RequestContext(request))
 
     
 @login_required
@@ -171,17 +181,27 @@ def remove_user(request, project_id, username):
     project = get_object_or_404(Project, pk=project_id)
     person = get_object_or_404(Person, user__username=username)
 
-    if request.method == 'POST':
+    query = person.useraccount_set.filter(date_deleted__isnull=True, default_project=project)
+
+    error = None
+    if query.count() > 0:
+        error = "The person has accounts that use this project as the default_project."
+
+    elif request.method == 'POST':
         remove_user_from_project(person, project)
         messages.success(request, "User '%s' removed succesfully from project %s" % (person, project.pid))
-    
+
         log(request.user, project, 3, 'Removed %s from project' % person)
         log(request.user, person, 3, 'Removed from project %s' % project)
 
         return HttpResponseRedirect(project.get_absolute_url())
-    
-    return render_to_response('projects/remove_user_confirm.html', {'project': project, 'person': person}, context_instance=RequestContext(request))
-  
+
+    del query
+
+    return render_to_response('projects/remove_user_confirm.html',
+        { 'project': project, 'person': person, 'error': error, },
+        context_instance=RequestContext(request))
+
 
 @login_required
 def no_users(request):

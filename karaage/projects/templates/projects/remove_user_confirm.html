@@ -1,7 +1,11 @@
 {% extends "forms.html" %}
 
 {% block content %}
-    <h1>Are you sure?</h1>    
+{% if error %}
+    <h1>Cannot remove project from person</h1>
+    <p>{{ error }}</p>
+{% else %}
+    <h1>Are you sure?</h1>
     <p>Are you sure you want to remove {{ person }} from the project "{{ project }}"? </p>
     <form method="post" action=".">{% csrf_token %}
     <div>
@@ -9,4 +13,5 @@
     <input type="submit" value="Yes, I'm sure" />
     </div>
     </form>
+{% endif %}
 {% endblock %}

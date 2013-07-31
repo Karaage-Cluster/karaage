@@ -1,6 +1,10 @@
 {% extends "forms.html" %}
 
 {% block content %}
+{% if error %}
+    <h1>Cannot remove group from person</h1>
+    <p>{{ error }}</p>
+{% else %}
     <h1>Are you sure?</h1>    
     <p>Are you sure you want to remove the person "{{ person }}" from the group "{{ group }}"? </p>
     <form method="post" action=".">{% csrf_token %}
@@ -9,4 +13,5 @@
     <input type="submit" value="Yes, I'm sure" />
     </div>
     </form>
+{% endif %}
 {% endblock %}
