@@ -2,8 +2,9 @@
 {% load url from future %}
 {% load comments %}
 {% load machines %}
-{% block title %}Groups{% endblock %}
 
+
+{% block title %}Groups{% endblock %}
 
 
 {% block extrahead %}
@@ -11,9 +12,15 @@
 <script type="text/javascript" src="{{ STATIC_URL }}js/karaage.js"></script> 
 {% endblock %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="../">Groups</a>
-› {{ group }}
-</div>{% endblock %}   
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_group_list' %}">Groups</a>&nbsp;›
+    {{ group }}
+</div>
+{% endblock %}
+
 
 {% block content %}<div id="content-main">
 

@@ -1,13 +1,18 @@
 {% extends "main.html" %}
 {% load url from future %}
 
+
 {% block title %}Usage{% endblock %}
 
 
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_usage_list' %}">Usage</a>&nbsp;›
+    Unknown Usage
+</div>
+{% endblock %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="{% url 'kg_usage_list' %}">Usage</a>
- › Unknown Usage
-</div>{% endblock %}
 
 {% block content %}<div id="content-main">
 <div class="module">

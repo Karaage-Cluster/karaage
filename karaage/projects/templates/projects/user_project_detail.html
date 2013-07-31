@@ -1,6 +1,14 @@
 {% extends "main.html" %}
 {% load url from future %}
 
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    {{ project.pid }}
+</div>
+{% endblock %}
+
+
 {% block content %}<div id="content-main"><h1>{{ project }}</h1>
 <table>
 <tr><td colspan="2">

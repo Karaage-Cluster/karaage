@@ -1,9 +1,14 @@
 {% extends "people/profile_base.html" %}
 {% load url from future %}
-
 {% load forms %}{% load filters %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Profile </div>{% endblock %}   
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    Profile </div>
+{% endblock %}
+
 
 {% block profile_content %}
 <h2>Personal Details</h2>

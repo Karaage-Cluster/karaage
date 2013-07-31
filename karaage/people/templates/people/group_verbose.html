@@ -4,9 +4,15 @@
 
 {% block title %}Groups{% endblock %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="../../">Groups</a>
-    › <a href="../">{{ group }}</a> &nbsp;› Verbose
-</div>{% endblock %}   
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_group_list' %}">Groups</a>&nbsp;›
+    <a href="{% url 'kg_group_detail' group.name %}">{{ group }}</a>&nbsp;›
+    Verbose
+</div>
+{% endblock %}
 
 
 {% block content %}
