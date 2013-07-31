@@ -253,7 +253,7 @@ class UserAccount(models.Model):
 
 
 def _remove_group(group, person):
-    # if removing default project from person, then deactivate the account.
+    # if removing default project from person, then break link first
     for ua in person.useraccount_set.filter(date_deleted__isnull=True):
         # Does the default_project for ua belong to this group?
         count = group.project_set.filter(pk=ua.default_project.pk).count()
