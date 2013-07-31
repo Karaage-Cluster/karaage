@@ -1,6 +1,8 @@
 # Package defined Karaage Settings
 LDAP_SCHEMA_FILE = "/etc/karaage/ldap_schemas.py"
 
+PRIMARY_GROUP = "institute"
+DEFAULT_PRIMARY_GROUP = "dummy"
 HOME_DIRECTORY = "/home/%(uid)s"
 
 AJAX_LOOKUP_CHANNELS = {

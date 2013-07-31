@@ -68,7 +68,16 @@ class AccountDataStore(base.AccountDataStore):
     def save_account(self, account):
         """ Account was saved. """
         person = account.user
-        lgroup = self._groups().get(cn=person.institute.group.name)
+        if settings.PRIMARY_GROUP == 'institute':
+            lgroup = self._groups().get(cn=person.institute.group.name)
+        elif settings.PRIMARY_GROUP == 'default_project':
+            if account.default_project is None:
+                lgroup = self._groups().get(cn=settings.DEFAULT_PRIMARY_GROUP)
+            else:
+                lgroup = self._groups().get(
+                    cn=account.default_project.group.name)
+        else:
+            raise RuntimeError("Unknown value of settings.PRIMARY_GROUP.")
 
         if account.default_project is None:
             default_project = "none"
