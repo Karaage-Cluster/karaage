@@ -787,3 +787,13 @@ table#change-history tbody th {
     padding: 0;
 }
 
+.graph_key_red { background-color: red; }
+.graph_key_blue { background-color: blue; }
+.graph_key_green { background-color: green; }
+.graph_key_yellow { background-color: yellow; }
+.graph_key_orange { background-color: orange; }
+.graph_key_cyan { background-color: cyan; }
+.graph_key_magenta { background-color: magenta; }
+.graph_key_purple { background-color: purple; }
+.graph_key_grey { background-color: grey; }
+.graph_key_pink { background-color: pink; }

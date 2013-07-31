@@ -37,7 +37,7 @@
 <td class="right">{{ u.usage|timeformat }}</td>
 <td class="right">{{ u.jobs|intcomma }}</td>
 <td class="right">{{ u.percent|floatformat:"2" }}%</td>
-<td class="graph_key_{{ u.colour }}"></td>
+<td class="graph_key_{{ u.colour }}">{{ u.colour }}</td>
 </tr> 
 		{% endfor %}
 		</tbody><tfoot>
