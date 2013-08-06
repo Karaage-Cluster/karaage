@@ -382,22 +382,6 @@ def search(request):
     return render_to_response('usage/search.html', locals(), context_instance=RequestContext(request))
     
 
-def project_search(request):
-
-    if request.method == 'POST':
-        form = UsageSearchForm(request.POST)
-
-        if form.is_valid():
-            data = form.cleaned_data
-            project = get_object_or_404(Project, pk=data['terms'])
-            start = data['start_date'].strftime('%Y-%m-%d')
-            end = data['end_date'].strftime('%Y-%m-%d')
-            
-            return HttpResponseRedirect('%s?start=%s&end=%s' % (project.get_usage_url(), start, end))
-    else:
-        return HttpResponseRedirect(reverse('kg_admin_index'))
-        
-
 def top_users(request, machine_category_id, count=20):
 
     machine_category = MachineCategory.objects.get(pk=machine_category_id)
