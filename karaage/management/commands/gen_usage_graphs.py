@@ -30,16 +30,18 @@ def gen_all_project_graphs(period):
     """ Generate all project graph for list period days. """
     from karaage.machines.models import MachineCategory
     from karaage.projects.models import Project
-    from karaage.graphs import gen_project_graph
+    from karaage.util.graphs import get_project_trend_graph_url
     import datetime
     project_list = Project.objects.all()
 
     end = datetime.date.today()
     start = end - datetime.timedelta(days=period)
 
-    for project in project_list:
+    for project in project_list.all():
         for machine_category in MachineCategory.objects.all():
-            gen_project_graph(project, start, end, machine_category)
+            get_project_trend_graph_url(
+                project, start, end,
+                machine_category, force_overwrite=True)
 
 
 class Command(BaseCommand):

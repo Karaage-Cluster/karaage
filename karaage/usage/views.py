@@ -27,11 +27,10 @@ from django.core.paginator import Paginator
 
 import datetime
 from decimal import Decimal
-from andsome.graphs.googlechart import GraphGenerator
 from andsome.util.filterspecs import Filter, FilterBar, DateFilter
 
 from karaage.util.helpers import get_available_time
-from karaage.util.graphs import get_institute_graph_url, get_trend_graph_url, get_institute_trend_graph_url, get_project_trend_graph_url, get_institutes_trend_graph_urls
+from karaage.util.graphs import get_institute_graph_url, get_machine_graph_url, get_trend_graph_url, get_institute_trend_graph_url, get_project_trend_graph_url, get_institutes_trend_graph_urls
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
@@ -41,7 +40,7 @@ from karaage.usage.models import CPUJob, Queue
 from karaage.usage.forms import UsageSearchForm
 from karaage.cache.models import UserCache
 from karaage.util import get_date_range
-from karaage.graphs.util import get_colour
+from karaage.util.graphs import get_colour
 
 
 def usage_index(request):
@@ -138,18 +137,14 @@ def index(request, machine_category_id):
     else:
         unused['class'] = 'red'
 
-    try:
+    if available_time != 0:
         utilization = (Decimal(total) / available_time) * 100
-    except ZeroDivisionError:
+    else:
         utilization = 0
-    except:
-        utilization = 0
-        
-    try:
-        graph = get_institute_graph_url(start, end, machine_category)
-        trend_graph = get_trend_graph_url(start, end, machine_category)
-    except:
-        pass
+
+    institutes_graph = get_institute_graph_url(start, end, machine_category)
+    machines_graph = get_machine_graph_url(start, end, machine_category)
+    trend_graph = get_trend_graph_url(start, end, machine_category)
 
     return render_to_response('usage/usage_institute_list.html', locals(), context_instance=RequestContext(request))
 
@@ -484,11 +479,11 @@ def core_report(request, machine_category_id):
     data = [core_1, core_2_4, core_5_8, core_9_16, core_17_32, core_33_64, core_65_128, core_128]
     total = sum(data)
 
-    x_labels = ['1', '2-4', '5-8', '9-16', '17-32', '33-64', '65-128', '128+']
-    max_y = max(data)
-    data = {'Total jobs': data}
-    g = GraphGenerator()
-    graph = g.bar_chart(data, x_labels, max_y, bar_width=50).get_url()
+#    x_labels = ['1', '2-4', '5-8', '9-16', '17-32', '33-64', '65-128', '128+']
+#    max_y = max(data)
+#    data = {'Total jobs': data}
+#    g = GraphGenerator()
+#    graph = g.bar_chart(data, x_labels, max_y, bar_width=50).get_url()
 
     return render_to_response('usage/core_report.html', locals(), context_instance=RequestContext(request))
 
@@ -507,15 +502,15 @@ def mem_report(request, machine_category_id):
     mem_32_64 = job_list.filter(mem__gt=32 * 1024 * 1024, mem__lte=64 * 1024 * 1024).count()
     mem_64_128 = job_list.filter(mem__gt=64 * 1024 * 1024, mem__lte=128 * 1024 * 1024).count()
     mem_128 = job_list.filter(mem__gt=128 * 1024 * 1024).count()
-
     data = [mem_0_4, mem_4_8, mem_8_16, mem_16_32, mem_32_64, mem_64_128, mem_128]
     total = sum(data)
-    x_labels = ['0-4', '4-8', '8-16', '16-32', '32-64', '64-128', '128+']
-    labels = []
-    max_y = max(data)
-    data = {'Total jobs': data}
-    g = GraphGenerator()
-    graph = g.bar_chart(data, x_labels, max_y, bar_width=50).get_url()
+
+#    x_labels = ['0-4', '4-8', '8-16', '16-32', '32-64', '64-128', '128+']
+#    labels = []
+#    max_y = max(data)
+#    data = {'Total jobs': data}
+#    g = GraphGenerator()
+#    graph = g.bar_chart(data, x_labels, max_y, bar_width=50).get_url()
 
     return render_to_response('usage/mem_report.html', locals(), context_instance=RequestContext(request))
 

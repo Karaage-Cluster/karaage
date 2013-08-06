@@ -18,13 +18,14 @@
 <h2>Usage {{ start|date }} - {{ end|date }}</h2>
 <h3>{{ institute }}</h3>
 <p>{% date_filter start end %}</p>
+<p><a href="{{ graph.data_url }}">data</a></p>
 
 {% if user_list %}
 
 <div class="module">
 <h2>Top 5 users  <a href="users/?{{ querystring }}">Show all</a></h2>
 <a href="#graph">
-<img class="float-right" height="150" src="{{ GRAPH_URL }}institutes/{{ graph }}" width="300"/>
+<img class="float-right" height="150" src="{{ graph.graph_url }}" width="300"/>
 </a>
 <table>
 <thead>
@@ -103,6 +104,6 @@
 		gen
 	{% endif %}
 	{% if graph %}
-	<img id="graph" src="{{ GRAPH_URL }}institutes/{{ graph }}"/>
+	<img id="graph" src="{{ graph.graph_url }}"/>
 	{% endif %}
 </div>{% endblock %}
