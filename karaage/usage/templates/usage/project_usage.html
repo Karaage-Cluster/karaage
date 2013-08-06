@@ -17,6 +17,7 @@
 <p>{% date_filter start end %}</p>
 <p>Leader{{ project.leaders.all|pluralize }}: 
 	{% for leader in project.leaders.all %}<a href="{{ leader.get_absolute_url }}">{{ leader }}</a> {% endfor %}</p>
+<p><a href="{{ graph.data_url }}">data</a></p>
 <div class="module">
 <h2>Users</h2>
 <table>
@@ -55,5 +56,5 @@
    	
    	</table>
 </div>
-<img src="{{ GRAPH_URL }}projects/{{ graph }}"/>
+<img src="{{ graph.graph_url }}"/>
 </div>{% endblock %}

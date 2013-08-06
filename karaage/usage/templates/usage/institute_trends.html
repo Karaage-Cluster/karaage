@@ -22,7 +22,8 @@
 <div class="module">
 
 {% for g in graph_list %}
-	<img id="graph" src="{{ GRAPH_URL }}i_trends/{{ g }}"/><br/>
+    <img id="graph" src="{{ g.graph_url }}"/><br/>
+    <p><a href="{{ g.data_url }}">data</a></p>
 {% endfor %}
 
 	</div>

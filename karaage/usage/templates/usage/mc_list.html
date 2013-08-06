@@ -27,7 +27,7 @@
 	{% for mc in mc_list %}
 	<div class="module">
             <h2><a href='{% url 'kg_mc_usage' mc.obj.pk %}?{{ querystring }}'>{{ mc.obj }}</a></h2>
-<img class="float-right" src="{% mc_pie_chart mc.obj start end %}"/>
+<img class="float-right" src="{{ mc.graph.graph_url }}"/>
 <table>
 <thead>
 <tr>
@@ -46,6 +46,7 @@
 		{% endfor %}		
    	</tbody>
 </table>
+<p><a href="{{ mc.graph.data_url }}">data</a></p>
 <br clear="all"/>
 </div>
 	{% endfor %}

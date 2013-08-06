@@ -71,11 +71,6 @@ class Institute(models.Model):
         from karaage.util.usage import get_institute_usage
         return get_institute_usage(self, start, end, machine_category)
 
-    def gen_usage_graph(self, start, end, machine_category):
-        from karaage.graphs import gen_institute_bar
-        gen_institute_bar(self, start, end, machine_category)
-    gen_usage_graph.alters_data = True
-
     def can_view(self, user):
         if not user.is_authenticated():
             return False
