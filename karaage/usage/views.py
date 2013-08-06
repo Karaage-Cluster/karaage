@@ -550,7 +550,9 @@ def job_list(request):
         terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
-            q = Q(user__user__user__username__icontains=term) | Q(project__pid__icontains=term)
+            q = Q(jobid=term)
+            q = q | Q(user__user__user__username__icontains=term)
+            q = q | Q(project__pid__icontains=term)
             query = query & q
         
         job_list = job_list.filter(query)
