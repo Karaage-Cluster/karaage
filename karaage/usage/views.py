@@ -556,7 +556,6 @@ def job_list(request):
             query = query & q
         
         job_list = job_list.filter(query)
-        page_no = 1
     else:
         terms = ""
 
