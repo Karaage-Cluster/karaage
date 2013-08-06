@@ -226,7 +226,7 @@ def institute_usage(request, institute_id, machine_category_id):
 
 
 def project_usage(request, project_id, machine_category_id):
-    
+
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
     project = get_object_or_404(Project, pk=project_id)
 
@@ -262,7 +262,7 @@ def project_usage(request, project_id, machine_category_id):
             u['percent'] = 0
         else:
             u['percent'] = (u['usage'] / total) * 100
-    
+
     usage_list = dictsortreversed(usage_list, 'usage')
 
     count = 0
