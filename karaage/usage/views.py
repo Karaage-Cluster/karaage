@@ -241,19 +241,15 @@ def project_usage(request, project_id, machine_category_id):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
 
-    mc_ids = tuple([(int(m.id)) for m in machine_category.machine_set.all()])
-    if len(mc_ids) == 1:
-        mc_ids = "(%i)" % mc_ids[0]
-
     # Custom SQL as need to get users that were removed from project too
-    cursor = connection.cursor()
-    sql = "SELECT user_id from cpu_job where project_id = '%s' and `machine_id` IN %s AND `date` >= '%s' AND `date` <= '%s' GROUP BY user_id" % (str(project.pid), mc_ids, start_str, end_str)
-    cursor.execute(sql)
-    rows = list(cursor.fetchall())
-    cursor.close()
+    rows = CPUJob.objects.filter(
+            project=project,
+            machine__category=machine_category,
+            date__range=(start_str, end_str)
+            ).values('user').annotate().order_by('user')
 
-    for uid in rows:
-        u = UserAccount.objects.get(id=uid[0]).user
+    for row in rows:
+        u = UserAccount.objects.get(id=row['user']).user
         time, jobs = u.get_usage(project, start, end, machine_category)
         if time:
             total += time
