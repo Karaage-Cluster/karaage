@@ -55,6 +55,11 @@ def institute_list(request):
     if 'active' in request.REQUEST:
         institute_list = institute_list.filter(is_active=int(request.GET['active']))
 
+    terms = ""
+    if 'search' in request.REQUEST:
+        institute_list = institute_list.filter(name__icontains=request.GET['search'])
+        terms = request.GET['search']
+
     filter_list = []
     filter_list.append(Filter(request, 'active', {1: 'Yes', 0: 'No'}))
     filter_bar = FilterBar(request, filter_list)
