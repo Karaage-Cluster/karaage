@@ -87,10 +87,6 @@ class Project(models.Model):
         delete_project(self)
     delete.alters_data = True
 
-    @models.permalink
-    def get_usage_url(self, machine_category):
-        return ('kg_usage_project', [machine_category.pk, self.pk])
-
     # Can user view this self record?
     def can_view(self, user):
         if not user.is_authenticated():
