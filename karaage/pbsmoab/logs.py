@@ -17,7 +17,7 @@
 
 from math import ceil
 
-from karaage.machines.models import Machine, UserAccount
+from karaage.machines.models import Machine, Account
 from karaage.usage.models import CPUJob, Queue
 from karaage.projects.models import Project
 
@@ -58,14 +58,14 @@ def parse_logs(log_list, date, machine_name, log_type):
             continue
 
         try:
-            user_account = UserAccount.objects.get(username=data['user'], machine_category=machine.category, date_deleted__isnull=True)
-        except UserAccount.DoesNotExist:
+            account = Account.objects.get(username=data['user'], machine_category=machine.category, date_deleted__isnull=True)
+        except Account.DoesNotExist:
             # Couldn't find user account - Assign to user None
-            user_account = None
+            account = None
             output.append("Couldn't find user account for username=%s and machine category=%s. Assigned to None" % (data['user'], machine.category.name))
             fail = fail + 1
-        except UserAccount.MultipleObjectsReturned:
-            user_account = None
+        except Account.MultipleObjectsReturned:
+            account = None
             output.append("Username %s has multiple active accounts on machine category %s. Assigned to None" % (data['user'], machine.category.name))
             fail = fail + 1
 
@@ -77,24 +77,24 @@ def parse_logs(log_list, date, machine_name, log_type):
                 fail = fail + 1
 
                 try:
-                    project = user_account.default_project
+                    project = account.default_project
                 except:
-                    output.append("Couldn't find default project %s, using None" % user_account.default_project)
+                    output.append("Couldn't find default project %s, using None" % account.default_project)
                     project = None
 
         else:
             try:
-                project = user_account.default_project
+                project = account.default_project
             except:
                 # Couldn't find project - Assign to None
                 output.append("Couldn't find default project for username=%s and machine category=%s" % (data['user'], machine.category.name))
                 project = None
                 fail +=  1
                 
-        if project is not None and user_account is not None:
+        if project is not None and account is not None:
         
-            if user_account.user not in project.users.all():
-                output.append("%s is not in project %s, cpu usage: %s" % (user_account.user, project, data['cpu_usage']))
+            if account.user not in project.users.all():
+                output.append("%s is not in project %s, cpu usage: %s" % (account.user, project, data['cpu_usage']))
                 fail += 1
 
         # Everything is good so add entry
@@ -118,7 +118,7 @@ def parse_logs(log_list, date, machine_name, log_type):
 
         try:
             cpujob, created = CPUJob.objects.get_or_create(jobid=data['jobid'])
-            cpujob.user=user_account
+            cpujob.user=account
             cpujob.username=data['user']
             cpujob.project=project
             cpujob.machine=machine

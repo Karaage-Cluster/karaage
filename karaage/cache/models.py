@@ -40,12 +40,12 @@ class InstituteCache(UsageCache):
     
 
 class ProjectCache(UsageCache):
-    pid = models.ForeignKey(Project)
+    project = models.ForeignKey(Project)
     machine_category = models.ForeignKey(MachineCategory)
 
 
-class UserCache(UsageCache):
-    user = models.ForeignKey(Person)
+class PersonCache(UsageCache):
+    person = models.ForeignKey(Person)
     project = models.ForeignKey(Project)
     machine_category = models.ForeignKey(MachineCategory)
 

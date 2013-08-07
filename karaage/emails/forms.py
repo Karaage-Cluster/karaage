@@ -62,7 +62,7 @@ class EmailForm(EmailForm):
             person_list = Person.active.all()
 
         elif group == 'cluster_users':
-            person_list = Person.active.filter(useraccount__isnull=False)
+            person_list = Person.active.filter(account__isnull=False)
                 
         if person_list:
             for person in person_list:

@@ -24,7 +24,7 @@ from karaage.people.models import Person, Group
 from karaage.machines.managers import MachineCategoryManager, ActiveMachineManager
 from karaage.util import log_object as log
 
-
+import warnings
 
 class MachineCategory(models.Model):
     ACCOUNT_DATASTORES = [ (i,i) for i in settings.ACCOUNT_DATASTORES.keys() ]
@@ -73,8 +73,8 @@ class Machine(models.Model):
         return get_machine_usage(self, start, end)
 
 
-class UserAccount(models.Model):
-    user = models.ForeignKey(Person)
+class Account(models.Model):
+    person = models.ForeignKey(Person)
     username = models.CharField(max_length=100)
     machine_category = models.ForeignKey(MachineCategory)
     default_project = models.ForeignKey('projects.Project', null=True, blank=True)
@@ -85,30 +85,26 @@ class UserAccount(models.Model):
     login_enabled = models.BooleanField(default=True)
 
     def __init__(self, *args, **kwargs):
-        super(UserAccount, self).__init__(*args, **kwargs)
+        super(Account, self).__init__(*args, **kwargs)
         self._username = self.username
         self._machine_category = self.machine_category
 
     class Meta:
-        ordering = ['user', ]
-        db_table = 'user_account'
+        ordering = ['person', ]
+        db_table = 'account'
 
     def __unicode__(self):
-        return '%s %s' % (self.user.get_full_name(), self.machine_category.name)
+        return '%s %s' % (self.person.get_full_name(), self.machine_category.name)
     
     def get_absolute_url(self):
-        return self.user.get_absolute_url()
+        return self.person.get_absolute_url()
     
     @classmethod
     def create(cls, person, default_project, machine_category):
-        """Creates a UserAccount (if needed) and activates user.
-
-        Keyword arguments:
-        user_id -- Person id
-        project_id -- Project id
+        """Creates a Account (if needed) and activates person.
         """
-        ua = UserAccount.objects.create(
-            user=person, username=person.username,
+        ua = Account.objects.create(
+            person=person, username=person.username,
             shell=settings.DEFAULT_SHELL,
             machine_category=machine_category,
             default_project=default_project,
@@ -122,7 +118,7 @@ class UserAccount(models.Model):
         return ua
 
     def project_list(self):
-        return self.user.projects.filter(machine_categories=self.machine_category)
+        return self.person.projects.filter(machine_categories=self.machine_category)
     
     def get_latest_usage(self):
         try:
@@ -132,7 +128,7 @@ class UserAccount(models.Model):
 
     def save(self, *args, **kwargs):
         # save the object
-        super(UserAccount, self).save(*args, **kwargs)
+        super(Account, self).save(*args, **kwargs)
 
         # check if machine_category changed
         moved = False
@@ -153,7 +149,7 @@ class UserAccount(models.Model):
             if self.date_deleted is None and not moved:
                 from karaage.datastores import set_account_username
                 set_account_username(self, old_username, new_username)
-            log(None, self.user, 2,
+            log(None, self.person, 2,
                 'Changed username on %s' % self.machine_category)
 
         # update the datastore
@@ -162,7 +158,7 @@ class UserAccount(models.Model):
             save_account(self)
 
         # log message
-        log(None, self.user, 2,
+        log(None, self.person, 2,
             'Saved account on %s' % self.machine_category)
 
         # save current state
@@ -173,7 +169,7 @@ class UserAccount(models.Model):
     def delete(self):
         if self.date_deleted is None:
             # delete the object
-            super(UserAccount, self).delete(*args, **kwargs)
+            super(Account, self).delete(*args, **kwargs)
 
             # update the datastore
             from karaage.datastores import delete_account
@@ -193,7 +189,7 @@ class UserAccount(models.Model):
             from karaage.datastores import delete_account
             delete_account(self)
 
-            log(None, self.user, 3,
+            log(None, self.person, 3,
                 'Deactivated account on %s' % self.machine_category)
         else:
             raise RuntimeError("Account is deactivated")
@@ -202,11 +198,11 @@ class UserAccount(models.Model):
     def change_shell(self, shell):
         self.shell = shell
         # we call super.save() to avoid calling datastore save needlessly
-        super(UserAccount, self).save()
+        super(Account, self).save()
         if self.date_deleted is None:
             from karaage.datastores import set_account_shell
             set_account_shell(self, shell)
-        log(None, self.user, 2,
+        log(None, self.person, 2,
             'Changed shell on %s' % self.machine_category)
     change_shell.alters_data = True
 
@@ -222,7 +218,7 @@ class UserAccount(models.Model):
         if self.disk_quota:
             return self.disk_quota
 
-        iq = self.user.institute.institutechunk_set.get(machine_category=self.machine_category)
+        iq = self.person.institute.institutechunk_set.get(machine_category=self.machine_category)
         return iq.disk_quota
     
     def loginShell(self):
@@ -254,7 +250,7 @@ class UserAccount(models.Model):
 
 def _remove_group(group, person):
     # if removing default project from person, then break link first
-    for ua in person.useraccount_set.filter(date_deleted__isnull=True):
+    for ua in person.account_set.filter(date_deleted__isnull=True, default_project__isnull=False):
         # Does the default_project for ua belong to this group?
         count = group.project_set.filter(pk=ua.default_project.pk).count()
         # If yes, deactivate the ua

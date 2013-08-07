@@ -23,7 +23,7 @@
 <p>{% date_filter start end %}</p>
 <p><a href="{{ graph.data_url }}">data</a></p>
 
-{% if user_list %}
+{% if account_list %}
 
 <div class="module">
     <h2>Top 5 users  <a href="{% url 'kg_usage_users' machine_category.pk institute.pk %}{% url_with_param start=start end=end %}">Show all</a></h2>
@@ -42,10 +42,10 @@
 </tr>
 </thead>
 <tbody>
-   	{% for u in user_list|dictsortreversed:"usage" %}
+   	{% for u in account_list|dictsortreversed:"usage" %}
    		{% ifnotequal u.usage 0 %}
 			<tr class="{% cycle row1,row2 %}">
-<td><a href="{{ u.user.get_absolute_url }}">{{ u.user }}</a></td>
+<td><a href="{{ u.person.get_absolute_url }}">{{ u.person }}</a></td>
 <td><a href="{% url 'kg_usage_project' machine_category.pk u.project.pk %}{% url_with_param start=start end=end %}">{{ u.project }}</a></td>
 <td class="right">{{ u.usage|timeformat }}</td>
 <td class="right">{{ u.jobs|intcomma }}</td>
@@ -58,9 +58,9 @@
 <tr>
 <td>Total</td>
 <td></td>
-<td class="right">{{ user_total|timeformat }}</td>
-<td class="right">{{ user_total_jobs|intcomma }}</td>
-<td class="right">{{ user_percent|floatformat:"2" }}%</td>
+<td class="right">{{ account_total|timeformat }}</td>
+<td class="right">{{ account_total_jobs|intcomma }}</td>
+<td class="right">{{ account_percent|floatformat:"2" }}%</td>
 <td></td>
 </tr>
 </tfoot>

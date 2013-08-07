@@ -22,7 +22,7 @@ import datetime
 
 from karaage.people.models import Person, Group
 from karaage.institutes.models import Institute
-from karaage.machines.models import MachineCategory, UserAccount
+from karaage.machines.models import MachineCategory, Account
 from karaage.projects.managers import ActiveProjectManager, DeletedProjectManager
 from karaage.util import get_current_person
 
@@ -76,7 +76,7 @@ class Project(models.Model):
 
     def delete(self, *args, **kwargs):
         # ensure nothing connects to this project
-        query = UserAccount.objects.filter(default_project=self)
+        query = Account.objects.filter(default_project=self)
         query.update(default_project=None)
 
         # delete the object

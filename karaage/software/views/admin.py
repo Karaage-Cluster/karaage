@@ -259,7 +259,7 @@ def software_stats(request, package_id):
     version_stats = SoftwareVersion.objects.filter(package=package, cpujob__date__range=(start, end)).annotate(jobs=Count('cpujob'), usage=Sum('cpujob__cpu_usage')).filter(usage__isnull=False)
     version_totaljobs = version_stats.aggregate(Sum('jobs'))['jobs__sum']
     #version_totalusage = version_stats.aggregate(Sum('usage'))
-    person_stats = Person.objects.filter(useraccount__cpujob__software__package=package, useraccount__cpujob__date__range=(start, end)).annotate(jobs=Count('useraccount__cpujob'), usage=Sum('useraccount__cpujob__cpu_usage'))
+    person_stats = Person.objects.filter(account__cpujob__software__package=package, account__cpujob__date__range=(start, end)).annotate(jobs=Count('account__cpujob'), usage=Sum('account__cpujob__cpu_usage'))
 
     context = {
         'package': package,
@@ -278,7 +278,7 @@ def version_stats(request, package_id, version_id):
     start, end = get_date_range(request)
     querystring = request.META.get('QUERY_STRING', '')
 
-    person_stats = Person.objects.filter(useraccount__cpujob__software=version, useraccount__cpujob__date__range=(start, end)).annotate(jobs=Count('useraccount__cpujob'), usage=Sum('useraccount__cpujob__cpu_usage'))
+    person_stats = Person.objects.filter(account__cpujob__software=version, account__cpujob__date__range=(start, end)).annotate(jobs=Count('account__cpujob'), usage=Sum('account__cpujob__cpu_usage'))
 
     context = {
         'version': version,

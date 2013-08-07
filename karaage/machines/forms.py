@@ -32,7 +32,7 @@ class MachineCategoryForm(forms.ModelForm):
         model = MachineCategory
 
 
-class UserAccountForm(forms.Form):
+class AccountForm(forms.Form):
     machine_category = forms.ModelChoiceField(queryset=MachineCategory.objects.all(), initial=1)
     default_project = forms.ModelChoiceField(queryset=Project.active.all())
 
@@ -46,5 +46,5 @@ class UserAccountForm(forms.Form):
 class ShellForm(forms.Form):
     shell = forms.ChoiceField(choices=settings.SHELLS)
 
-    def save(self, user_account):
-        user_account.change_shell(self.cleaned_data['shell'])
+    def save(self, account):
+        account.change_shell(self.cleaned_data['shell'])

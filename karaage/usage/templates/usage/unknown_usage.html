@@ -41,7 +41,7 @@
    	{% for u in usage_list %}
 	   	<tr class="{% cycle row1,row2 %}">
 <td><input name="uid" type="checkbox" value="{{ u.id }}"/></td>
-<td><a href="{{ u.user.get_absolute_url }}">{{ u.user }}</a></td>
+<td><a href="{{ u.account.person.get_absolute_url }}">{{ u.account.person }}</a></td>
 <td>{{ u.username }}</td>
 <td><a href="{{ u.project.get_absolute_url }}">{{ u.project }}</a></td>
 <td><a href="{{ u.machine.get_absolute_url }}">{{ u.machine }}</a></td>
@@ -65,11 +65,11 @@
     <option value="{{ p.pid }}">{{ p.pid }} | {{ p.name }}</option>
     {% endfor %}
     </select>
-<label for="id_user inline">User:</label>
-<select class="vNullSelectField" id="id_user" name="user" size="1">
+<label for="id_person inline">User:</label>
+<select class="vNullSelectField" id="id_person" name="person" size="1">
 <option selected="selected" value="">---------</option>
-    {% for u in user_list %}
-    <option value="{{ u.id }}">{{ u }}</option>
+    {% for p in person_list %}
+    <option value="{{ p.id }}">{{ p }}</option>
     {% endfor %}
     </select>
 </div>

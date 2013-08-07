@@ -84,7 +84,7 @@
   </div>
   {% endif %}	
   
-  {% for ua in person.useraccount_set.all %}
+  {% for ua in person.account_set.all %}
   <div class="module">
 <h2>{{ ua.machine_category }} Account</h2>
 <h5>Account</h5>
@@ -118,13 +118,13 @@
 	  {% if ua.date_deleted %}
 	  <td>{{ ua.date_deleted|date }}</td>
 	  {% endif %}
-          <td>{{ ua.shell }}{% if not ua.date_deleted and perms.machines.change_useraccount %}<form action="{% url 'kg_change_account_shell' ua.pk %}" method="post">{% csrf_token %}
+          <td>{{ ua.shell }}{% if not ua.date_deleted and perms.machines.change_account %}<form action="{% url 'kg_change_account_shell' ua.pk %}" method="post">{% csrf_token %}
 	  	<div>
 	      {% shell_field ua %}
 	      <input type="submit" value="Change"/>
 </div>
 </form>{% else %} {% endif %}</td>
-	  {% if not ua.date_deleted and perms.machines.delete_useraccount %}
+	  {% if not ua.date_deleted and perms.machines.delete_account %}
 	  <td><a class="deletelink" href="{% url 'admin_delete_account' ua.id %}">Delete</a></td>
 	  {% endif %}
 	</tr>
@@ -151,7 +151,7 @@
 <td>{% for leader in p.leaders.all %}<a href="{{ leader.get_absolute_url }}">{{ leader }}, </a>{% endfor %}</td>
 <td>{% ifequal p ua.default_project %}
 	    <img alt="1" src="{{ STATIC_URL }}admin/img/icon-yes.gif"/>{% else %}
-	    {% if perms.machines.change_useraccount %}
+	    {% if perms.machines.change_account %}
             <form action="{% url 'admin_make_default' ua.id p.pid %}" method="post">
                 {% csrf_token %}
                 <input type="submit" value="Make Default"/></input>
@@ -171,7 +171,7 @@
     {% endif %}
   </div>
   {% endfor %}
-  {% if person.useraccount_set.all and person.is_active and perms.projects.change_project %}
+  {% if person.account_set.all and person.is_active and perms.projects.change_project %}
   <form action="" id="joinproject_form" method="post">{% csrf_token %}
     <div class="form-row">
       {% if no_account_error %}<p class="error">{{ no_account_error }}</p>{% endif %}

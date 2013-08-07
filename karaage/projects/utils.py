@@ -16,13 +16,13 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from karaage.projects.models import Project
-from karaage.machines.models import UserAccount
+from karaage.machines.models import Account
 
 
 def add_user_to_project(person, project):
     for mc in project.machine_categories.all():
         if not person.has_account(mc):
-            UserAccount.create(person, project, mc)
+            Account.create(person, project, mc)
     project.group.members.add(person)
 
 

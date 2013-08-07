@@ -81,7 +81,7 @@ def get_project_trend_graph_url(project,
             project=project,
             machine__category=machine_category,
             date__range=(start_str, end_str)
-            ).values('user', 'user__username', 'date').annotate(Sum('cpu_usage')).order_by('user', 'date')
+            ).values('account', 'account__username', 'date').annotate(Sum('cpu_usage')).order_by('account', 'date')
 
     t_start = start
     t_end = end
@@ -105,29 +105,29 @@ def get_project_trend_graph_url(project,
         csv_writer = csv.writer(csv_file)
         for row in rows:
             csv_writer.writerow([
-                row['user__username'],
+                row['account__username'],
                 row['date'], row['cpu_usage__sum']/3600.00
             ])
 
-            user = row['user']
+            account = row['account']
             date = row['date']
 
-            if user not in data:
-                data[user] = {}
-                x_data[user] = []
-                y_data[user] = []
+            if account not in data:
+                data[account] = {}
+                x_data[account] = []
+                y_data[account] = []
 
-            data[user][date] = row['cpu_usage__sum']
+            data[account][date] = row['cpu_usage__sum']
 
-    for user, dates in data.iteritems():
+    for account, dates in data.iteritems():
         start = t_start
         end = t_end
         while start <= end:
             total = 0
             if start in dates:
                 total = dates[start]
-            x_data[user].append(start)
-            y_data[user].append(total / 3600.00)
+            x_data[account].append(start)
+            y_data[account].append(total / 3600.00)
             start = start + datetime.timedelta(days=1)
 
     del data
@@ -140,9 +140,9 @@ def get_project_trend_graph_url(project,
         start = start + datetime.timedelta(days=1)
 
     count = 0
-    for user in x_data.keys():
+    for account in x_data.keys():
         ax.bar(
-            x_data[user], y_data[user],
+            x_data[account], y_data[account],
             bottom=totals,
             color=get_colour(count),
             edgecolor=get_colour(count),
@@ -153,7 +153,7 @@ def get_project_trend_graph_url(project,
         start = t_start
         end = t_end
         while start <= end:
-            totals[i] += y_data[user][i]
+            totals[i] += y_data[account][i]
             i = i + 1
             start = start + datetime.timedelta(days=1)
 
