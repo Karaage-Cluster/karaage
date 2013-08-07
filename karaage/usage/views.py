@@ -548,4 +548,7 @@ def job_list(request):
     p = Paginator(job_list, 50)
     page = p.page(page_no)
     
-    return render_to_response('usage/job_list.html', {'page': page, 'filter_bar': filter_bar}, context_instance=RequestContext(request))
+    return render_to_response(
+            'usage/job_list.html',
+            {'page': page, 'filter_bar': filter_bar, 'terms': terms},
+            context_instance=RequestContext(request))
