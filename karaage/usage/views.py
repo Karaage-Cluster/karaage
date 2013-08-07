@@ -214,7 +214,7 @@ def institute_usage(request, institute_id, machine_category_id):
                 
             user_percent = (user_total / i_usage) * 100
 
-        graph = get_institute_trend_graph_url(institute, start, end, machine_category)
+    graph = get_institute_trend_graph_url(institute, start, end, machine_category)
 
     return render_to_response('usage/usage_institute_detail.html', locals(), context_instance=RequestContext(request))
 
