@@ -92,9 +92,9 @@ def remove_group_member(request, group_name, username):
     person = get_object_or_404(Person, user__username=username)
 
     error = None
-    for user_account in person.useraccount_set.filter(date_deleted__isnull=True):
+    for account in person.account_set.filter(date_deleted__isnull=True):
         # Does the default_project for ua belong to this group?
-        count = group.project_set.filter(pk=user_account.default_project.pk).count()
+        count = group.project_set.filter(pk=account.default_project.pk).count()
         # If yes, error
         if count > 0:
             error = "The person has accounts that use this group as the default_project."

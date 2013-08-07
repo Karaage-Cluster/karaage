@@ -26,7 +26,7 @@ class Command(BaseCommand):
     @tldap.transaction.commit_on_success
     def handle(self, **options):
         verbose = int(options.get('verbosity'))
-        from karaage.cache.models import ProjectCache, InstituteCache, UserCache, MachineCache
+        from karaage.cache.models import ProjectCache, InstituteCache, PersonCache, MachineCache
         if verbose > 1:
             print "Clearing project cache"
         ProjectCache.objects.all().delete()
@@ -35,7 +35,7 @@ class Command(BaseCommand):
         InstituteCache.objects.all().delete()
         if verbose > 1:
             print "Clearing user cache"
-        UserCache.objects.all().delete()
+        PersonCache.objects.all().delete()
         if verbose > 1:
             print "Clearing machine cache"
         MachineCache.objects.all().delete()

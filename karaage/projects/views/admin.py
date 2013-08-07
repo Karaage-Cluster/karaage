@@ -29,7 +29,7 @@ from andsome.util.filterspecs import Filter, FilterBar
 
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
-from karaage.machines.models import MachineCategory, UserAccount
+from karaage.machines.models import MachineCategory, Account
 from karaage.projects.models import Project
 from karaage.projects.forms import ProjectForm
 from karaage.projects.utils import get_new_pid, add_user_to_project, remove_user_from_project
@@ -83,7 +83,7 @@ def delete_project(request, project_id):
 
     project = get_object_or_404(Project, pk=project_id)
 
-    query = UserAccount.objects.filter(date_deleted__isnull=True, default_project=project)
+    query = Account.objects.filter(date_deleted__isnull=True, default_project=project)
 
     error = None
     if query.count() > 0:
@@ -181,7 +181,7 @@ def remove_user(request, project_id, username):
     project = get_object_or_404(Project, pk=project_id)
     person = get_object_or_404(Person, user__username=username)
 
-    query = person.useraccount_set.filter(date_deleted__isnull=True, default_project=project)
+    query = person.account_set.filter(date_deleted__isnull=True, default_project=project)
 
     error = None
     if query.count() > 0:

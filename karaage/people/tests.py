@@ -27,7 +27,7 @@ from tldap.test import slapd
 from karaage.people.models import Person
 from karaage.institutes.models import Institute, InstituteDelegate
 from karaage.projects.models import Project
-from karaage.machines.models import UserAccount, MachineCategory
+from karaage.machines.models import Account, MachineCategory
 from karaage.test_data.initial_ldap_data import test_ldif
 
 from karaage.datastores import ldap_schemas
@@ -231,7 +231,7 @@ class UserTestCase(TestCase):
         person = Person.objects.get(pk=users)
         self.assertEqual(person.is_active, True)
         self.assertEqual(person.user.username, 'samtest')
-        self.assertEqual(UserAccount.objects.count(), 2)
+        self.assertEqual(Account.objects.count(), 2)
         self.assertEqual(project.group.members.count(), p_users+1)
         luser = ldap_schemas.account.objects.get(uid='samtest')
         self.assertEqual(luser.givenName, 'Sam')
@@ -317,8 +317,8 @@ class UserTestCase(TestCase):
         user = Person.objects.get(user__username='kgtestuser3')
         self.assertEqual(user.is_active, True)
         self.assertEqual(user.groups.filter(project__gt=2).count(), 1)
-        self.assertEqual(user.useraccount_set.count(), 1)
-        self.assertEqual(user.useraccount_set.all()[0].date_deleted, None)
+        self.assertEqual(user.account_set.count(), 1)
+        self.assertEqual(user.account_set.all()[0].date_deleted, None)
         luser = ldap_schemas.account.objects.get(uid='kgtestuser3')
         self.assertEqual(luser.givenName, 'Test')
 
@@ -332,8 +332,8 @@ class UserTestCase(TestCase):
 
         self.assertEqual(user.is_active, False)
         self.assertEqual(user.projects.count(), 0)
-        self.assertEqual(user.useraccount_set.count(), 1)
-        self.assertEqual(user.useraccount_set.all()[0].date_deleted, datetime.date.today())
+        self.assertEqual(user.account_set.count(), 1)
+        self.assertEqual(user.account_set.all()[0].date_deleted, datetime.date.today())
         self.failUnlessRaises(ldap_schemas.account.DoesNotExist, ldap_schemas.account.objects.get, uid='kgtestuser3')
 
         # Test activating
@@ -342,25 +342,25 @@ class UserTestCase(TestCase):
         user = Person.objects.get(user__username='kgtestuser3')
         self.assertEqual(user.is_active, True)
 
-    def stest_delete_user_account(self):
+    def stest_delete_account(self):
         user = Person.objects.get(pk=Person.objects.count())
-        ua = user.useraccount_set.all()[0]
+        ua = user.account_set.all()[0]
         self.assertEqual(user.is_active, True)
-        self.assertEqual(user.useraccount_set.count(), 1)
+        self.assertEqual(user.account_set.count(), 1)
         self.assertEqual(ua.date_deleted, None)
 
         response = self.client.post('/%susers/accounts/delete/%i/' % (settings.BASE_URL, ua.id))
         self.failUnlessEqual(response.status_code, 302)
         
         user = Person.objects.get(pk=Person.objects.count())
-        ua = user.useraccount_set.all()[0]
+        ua = user.account_set.all()[0]
         self.assertEqual(ua.date_deleted, datetime.date.today())
         self.assertEqual(user.project_set.count(), 0)
 
     def stest_default_projects(self):
 
         user = Person.objects.get(pk=Person.objects.count())
-        ua = user.useraccount_set.all()[0]
+        ua = user.account_set.all()[0]
 
         self.assertEqual(user.project_set.count(), 1)
         self.assertEqual(user.project_set.all()[0], ua.default_project)
@@ -382,7 +382,7 @@ class UserTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 302)
 
         user = Person.objects.get(pk=Person.objects.count())
-        ua = user.useraccount_set.all()[0]
+        ua = user.account_set.all()[0]
         project = Project.objects.get(pk='test2')
        
         self.assertEqual(user.project_set.count(), 2)
@@ -392,7 +392,7 @@ class UserTestCase(TestCase):
     def stest_add_user_to_project(self):
 
         user = Person.objects.get(pk=Person.objects.count())
-        user.useraccount_set.all()[0]
+        user.account_set.all()[0]
 
         self.assertEqual(user.project_set.count(), 1)
 

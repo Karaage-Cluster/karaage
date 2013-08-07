@@ -29,7 +29,7 @@
 	   	<tr class="{% cycle row1,row2 %}">
 	   		<td><a href="{{ u.get_absolute_url }}">{{ u.jobid }}</a></td>
 	   	{% ifnotequal type "user" %}
-	   		<td><a href="{{ u.user.get_absolute_url }}">{{ u.user.user }}</a></td>
+	   		<td><a href="{{ u.account.person.get_absolute_url }}">{{ u.account.person }}</a></td>
 	   		{% if user.is_authenticated %}
 	   		<td>{{ u.username }}</td>
 	   		{% endif %}

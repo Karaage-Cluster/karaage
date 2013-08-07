@@ -16,12 +16,12 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib import admin
-from models import MachineCategory, Machine, UserAccount
+from models import MachineCategory, Machine, Account
 
 
-class UserAccountAdmin(admin.ModelAdmin):
+class AccountAdmin(admin.ModelAdmin):
     search_fields = ['username']
 
 admin.site.register(MachineCategory)
 admin.site.register(Machine)
-admin.site.register(UserAccount, UserAccountAdmin)
+admin.site.register(Account, AccountAdmin)

@@ -67,7 +67,7 @@ class AccountDataStore(base.AccountDataStore):
 
     def save_account(self, account):
         """ Account was saved. """
-        person = account.user
+        person = account.person
         if settings.PRIMARY_GROUP == 'institute':
             lgroup = self._groups().get(cn=person.institute.group.name)
         elif settings.PRIMARY_GROUP == 'default_project':
@@ -123,7 +123,7 @@ class AccountDataStore(base.AccountDataStore):
             luser.save()
 
             # add all groups
-            for group in account.user.groups.all():
+            for group in account.person.groups.all():
                 self.add_group(account, group)
 
     def delete_account(self, account):

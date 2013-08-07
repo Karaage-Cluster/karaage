@@ -71,7 +71,7 @@ def gen_last_usage_user():
     for user in Person.active.all():
         date = None
         
-        for ua in user.useraccount_set.all():
+        for ua in user.account_set.all():
 
             try:
                 d = ua.cpujob_set.all()[:1][0].date

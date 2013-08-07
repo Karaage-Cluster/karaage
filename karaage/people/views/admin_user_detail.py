@@ -82,7 +82,7 @@ def user_verbose(request, username):
 
     from karaage.datastores import get_account_details
     account_details = {}
-    for ua in person.useraccount_set.filter(date_deleted__isnull=True):
+    for ua in person.account_set.filter(date_deleted__isnull=True):
         details = get_account_details(ua)
         if ua.machine_category not in account_details:
             account_details[ua.machine_category] = []
@@ -90,7 +90,7 @@ def user_verbose(request, username):
 
     return render_to_response('people/person_verbose.html', locals(), context_instance=RequestContext(request))
 
-@permission_required('machines.add_useraccount')
+@permission_required('machines.add_account')
 def activate(request, username):
     person = get_object_or_404(Person, user__username=username, user__is_active=False)
 
@@ -150,7 +150,7 @@ def bounced_email(request, username):
         send_bounced_warning(person)
         messages.success(request, "%s's account has been locked and emails have been sent" % person)
         log(request.user, person, 2, 'Emails sent to project leaders and account locked')
-        for ua in person.useraccount_set.all():
+        for ua in person.account_set.all():
             ua.change_shell(ua.previous_shell)
             ua.change_shell(settings.BOUNCED_SHELL)
         return HttpResponseRedirect(person.get_absolute_url())
@@ -165,7 +165,7 @@ def user_job_list(request, username):
     start, end = get_date_range(request, start, today)
 
     job_list = []
-    for ua in person.useraccount_set.all():
+    for ua in person.account_set.all():
         job_list.extend(ua.cpujob_set.filter(date__range=(start, end)))
 
     return render_to_response('users/job_list.html', locals(), context_instance=RequestContext(request))

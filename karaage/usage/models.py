@@ -15,9 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import warnings
+
 from django.db import models
 
-from karaage.machines.models import UserAccount, Machine
+from karaage.machines.models import Account, Machine
 from karaage.projects.models import Project
 from karaage.software.models import SoftwareVersion
 
@@ -34,7 +36,7 @@ class Queue(models.Model):
     
 
 class CPUJob(models.Model):
-    user = models.ForeignKey(UserAccount, blank=True, null=True)
+    account = models.ForeignKey(Account, blank=True, null=True)
     username = models.CharField(max_length=50, blank=True, null=True)
     project = models.ForeignKey(Project, blank=True, null=True)
     machine = models.ForeignKey(Machine, blank=True, null=True)

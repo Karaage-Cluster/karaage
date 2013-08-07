@@ -19,7 +19,7 @@ from django_xmlrpc.decorators import xmlrpc_func, permission_required
 import datetime
 
 from karaage.people.models import Person
-from karaage.machines.models import MachineCategory, UserAccount
+from karaage.machines.models import MachineCategory, Account
 from karaage.projects.models import Project
 from karaage.pbsmoab.models import ProjectChunk
 from karaage.pbsmoab.logs import parse_logs
@@ -66,8 +66,8 @@ def get_disk_quota(username):
 
     machine_category = MachineCategory.objects.get_default()
     try:
-        ua = UserAccount.objects.get(user__user__username=username, machine_category=machine_category, date_deleted__isnull=True)
-    except UserAccount.DoesNotExist:
+        ua = Account.objects.get(user__user__username=username, machine_category=machine_category, date_deleted__isnull=True)
+    except Account.DoesNotExist:
         return 'User account not found'
         
     return ua.get_disk_quota() * 1048576
@@ -86,7 +86,7 @@ def showquota(username):
         return -1, 'User not found'
         
     try:
-        u_a = person.get_user_account(machine_category)
+        u_a = person.get_account(machine_category)
         d_p = u_a.default_project
     except:
         return -1, 'Default Project not found'

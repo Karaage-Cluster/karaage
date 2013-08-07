@@ -34,11 +34,11 @@ from karaage.util.graphs import get_institute_graph_url, get_machine_graph_url, 
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
-from karaage.machines.models import UserAccount, MachineCategory, Machine
+from karaage.machines.models import Account, MachineCategory, Machine
 from karaage.pbsmoab.models import InstituteChunk
 from karaage.usage.models import CPUJob, Queue
 from karaage.usage.forms import UsageSearchForm
-from karaage.cache.models import UserCache
+from karaage.cache.models import PersonCache
 from karaage.util import get_date_range
 from karaage.util.graphs import get_colour
 
@@ -191,20 +191,20 @@ def institute_usage(request, institute_id, machine_category_id):
                      'quota_percent': quota_percent,
                      })
 
-        user_list = []
-        user_total, user_total_jobs = 0, 0
+        account_list = []
+        account_total, account_total_jobs = 0, 0
         if i_usage:
-            for u in UserCache.objects.order_by('-cpu_hours').filter(start=start, end=end).filter(project__institute=institute).filter(machine_category=machine_category)[:5]:
+            for u in PersonCache.objects.order_by('-cpu_hours').filter(start=start, end=end).filter(project__institute=institute).filter(machine_category=machine_category)[:5]:
                 if not u.cpu_hours:
                     continue
-                user_total += u.cpu_hours
-                user_total_jobs += u.no_jobs
+                account_total += u.cpu_hours
+                account_total_jobs += u.no_jobs
                 try:
                     quota_percent = u.cpu_hours / (available_usage * quota.quota) * 10000
                 except ZeroDivisionError:
                     quota_percent = 0
-                user_list.append(
-                    {'user': u.user,
+                account_list.append(
+                    {'person': u.person,
                      'project': u.project,
                      'usage': u.cpu_hours,
                      'jobs': u.no_jobs,
@@ -212,7 +212,7 @@ def institute_usage(request, institute_id, machine_category_id):
                      'quota_percent': quota_percent,
                      })
                 
-            user_percent = (user_total / i_usage) * 100
+            account_percent = (account_total / i_usage) * 100
 
     graph = get_institute_trend_graph_url(institute, start, end, machine_category)
 
@@ -239,16 +239,16 @@ def project_usage(request, project_id, machine_category_id):
             project=project,
             machine__category=machine_category,
             date__range=(start_str, end_str)
-            ).values('user').annotate().order_by('user')
+            ).values('account').annotate().order_by('account')
 
     for row in rows:
-        u = UserAccount.objects.get(id=row['user']).user
+        u = Account.objects.get(id=row['account']).person
         time, jobs = u.get_usage(project, start, end, machine_category)
         if time:
             total += time
             total_jobs += jobs
             if jobs > 0:
-                usage_list.append({'user': u, 'usage': time, 'jobs': jobs})
+                usage_list.append({'person': u, 'usage': time, 'jobs': jobs})
 
     for u in usage_list:
         if total == 0:
@@ -271,7 +271,7 @@ def project_usage(request, project_id, machine_category_id):
 def unknown_usage(request):
     showall = request.REQUEST.get('showall', False)
     project_list = Project.objects.all()
-    user_list = Person.objects.all()
+    person_list = Person.objects.all()
 
     if request.method == 'POST':
 
@@ -280,7 +280,7 @@ def unknown_usage(request):
         except Project.DoesNotExist:
             project_s = False
         try:
-            person = Person.objects.get(pk=request.POST['user'])
+            person = Person.objects.get(pk=request.POST['person'])
         except Person.DoesNotExist:
             person = False
         
@@ -296,11 +296,11 @@ def unknown_usage(request):
         if person:
             for job in jobs:
                 machine_category = job.machine.category
-                ua = person.get_user_account(machine_category)
+                ua = person.get_account(machine_category)
                 if ua:
-                    job.user = ua
+                    job.account = ua
                     job.save()
-    usage_list = CPUJob.objects.filter(Q(project__isnull=True) | Q(user__isnull=True))
+    usage_list = CPUJob.objects.filter(Q(project__isnull=True) | Q(account__isnull=True))
 
     if not showall:
         year_ago = datetime.date.today() - datetime.timedelta(days=365)
@@ -321,7 +321,7 @@ def search(request):
 
             project_query = Project.objects.all()
             institute_query = Institute.objects.all()
-            #user_list = Person.objects.all()
+            #person_list = Person.objects.all()
             
             terms = data['terms'].lower()
 
@@ -386,16 +386,16 @@ def top_users(request, machine_category_id, count=20):
     machine_category = MachineCategory.objects.get(pk=machine_category_id)
     start, end = get_date_range(request)
     available_time, cpus = get_available_time(start, end, machine_category)
-    user_list = []
+    account_list = []
 
-    user_total, user_total_jobs = 0, 0
-    for u in UserCache.objects.order_by('-cpu_hours').filter(start=start, end=end).filter(machine_category=machine_category)[:count]:
+    account_total, account_total_jobs = 0, 0
+    for u in PersonCache.objects.order_by('-cpu_hours').filter(start=start, end=end).filter(machine_category=machine_category)[:count]:
         if u.cpu_hours:
-            user_total += u.cpu_hours
-            user_total_jobs += u.no_jobs
-            user_list.append({'user': u.user, 'project': u.project, 'usage': u.cpu_hours, 'jobs': u.no_jobs, 'percent': ((u.cpu_hours / available_time) * 100)})
+            account_total += u.cpu_hours
+            account_total_jobs += u.no_jobs
+            account_list.append({'account': u.account, 'project': u.project, 'usage': u.cpu_hours, 'jobs': u.no_jobs, 'percent': ((u.cpu_hours / available_time) * 100)})
         
-    user_percent = (user_total / available_time) * 100
+    account_percent = (account_total / available_time) * 100
     
     return render_to_response('usage/top_users.html', locals(), context_instance=RequestContext(request))
 
@@ -422,18 +422,18 @@ def institute_users(request, machine_category_id, institute_id):
 
     available_time, cpus = get_available_time(start, end, machine_category)
 
-    user_list = []
+    account_list = []
 
-    user_total, user_total_jobs = 0, 0
-    for u in UserCache.objects.order_by('-cpu_hours').filter(start=start, end=end).filter(machine_category=machine_category).filter(user__institute=institute).filter(no_jobs__gt=0):
-        user_total = user_total + u.cpu_hours
-        user_total_jobs = user_total_jobs + u.no_jobs
-        user_list.append({'user': u.user, 'project': u.project, 'usage': u.cpu_hours, 'jobs': u.no_jobs, 'percent': ((u.cpu_hours / available_time) * 100)})
+    account_total, account_total_jobs = 0, 0
+    for u in PersonCache.objects.order_by('-cpu_hours').filter(start=start, end=end).filter(machine_category=machine_category).filter(account__institute=institute).filter(no_jobs__gt=0):
+        account_total = account_total + u.cpu_hours
+        account_total_jobs = account_total_jobs + u.no_jobs
+        account_list.append({'account': u.account, 'project': u.project, 'usage': u.cpu_hours, 'jobs': u.no_jobs, 'percent': ((u.cpu_hours / available_time) * 100)})
         
     try:
-        user_percent = (user_total / available_time) * 100
+        account_percent = (account_total / available_time) * 100
     except:
-        user_percent = 0
+        account_percent = 0
     
     return render_to_response('usage/institute_users.html', locals(), context_instance=RequestContext(request))
 
@@ -516,8 +516,8 @@ def job_list(request):
     if 'software' in request.REQUEST:
         job_list = job_list.filter(software__package__id=int(request.GET['software']))
 
-    if 'user' in request.REQUEST:
-        job_list = job_list.filter(user__user__user__username=request.GET['user'])
+    if 'account' in request.REQUEST:
+        job_list = job_list.filter(account__person__user__username=request.GET['account'])
 
     if 'project' in request.REQUEST:
         job_list = job_list.filter(project__pid=request.GET['project'])
@@ -531,7 +531,7 @@ def job_list(request):
         query = Q()
         for term in terms.split(' '):
             q = Q(jobid=term)
-            q = q | Q(user__user__user__username__icontains=term)
+            q = q | Q(account__person__user__username__icontains=term)
             q = q | Q(project__pid__icontains=term)
             query = query & q
         

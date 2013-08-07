@@ -19,7 +19,7 @@
 from django_xmlrpc.decorators import xmlrpc_func, permission_required
 
 from karaage.projects.models import Project
-from karaage.machines.models import MachineCategory, UserAccount
+from karaage.machines.models import MachineCategory, Account
 from karaage.util import log_object as log
 
 
@@ -54,22 +54,22 @@ def get_project(username, proj=None):
     """
     
     try:
-        user_account = UserAccount.objects.get(username=username, machine_category=MachineCategory.objects.get_default())
-    except UserAccount.DoesNotExist:
+        account = Account.objects.get(username=username, machine_category=MachineCategory.objects.get_default())
+    except Account.DoesNotExist:
         return "User '%s' not found" % username
     if proj is None:
-        project = user_account.default_project
+        project = account.default_project
     else:
         try:
             project = Project.objects.get(pid=proj)
         except Project.DoesNotExist:
-            project = user_account.default_project
+            project = account.default_project
     if project:
-        if user_account.user in project.users.all():
+        if account.user in project.users.all():
             return project.pid
         else:
-            if user_account.user in user_account.default_project.users.all():
-                return user_account.default_project.pid
+            if account.user in account.default_project.users.all():
+                return account.default_project.pid
             
     return "None"
 
@@ -91,11 +91,11 @@ def change_default_project(user, project):
     
     mc = MachineCategory.objects.get_default()
     
-    user_account = user.get_user_account(mc)
+    account = user.get_account(mc)
     
-    user_account.default_project = project
-    user_account.save()
-    user_account.user.save()
+    account.default_project = project
+    account.save()
+    account.user.save()
     
     log(user.user, user, 2, 'Changed default project to %s' % project.pid)
     

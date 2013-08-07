@@ -40,10 +40,10 @@ def machine_detail(request, machine_id):
 
 def machine_accounts(request, machine_id):
     machine = get_object_or_404(Machine, pk=machine_id)
-    user_accounts = machine.category.useraccount_set.filter(date_deleted__isnull=True)
+    accounts = machine.category.account_set.filter(date_deleted__isnull=True)
     return render_to_response(
         'machines/machine_accounts.html',
-        {'machine': machine, 'user_accounts': user_accounts},
+        {'machine': machine, 'accounts': accounts},
         context_instance=RequestContext(request))
 
 

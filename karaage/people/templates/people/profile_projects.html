@@ -43,7 +43,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for ua in person.useraccount_set.all %}
+    {% for ua in person.account_set.all %}
     {% if ua.project_list %}
     <tr>
 		<td colspan="6">{{ ua.machine_category }}</td>    

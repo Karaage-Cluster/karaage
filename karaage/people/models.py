@@ -167,7 +167,7 @@ class Person(models.Model):
 
         # update account datastores
         from karaage.datastores import save_account
-        for ua in self.useraccount_set.filter(date_deleted__isnull=True):
+        for ua in self.account_set.filter(date_deleted__isnull=True):
             save_account(ua)
 
         # log message
@@ -276,15 +276,15 @@ class Person(models.Model):
         return self.user.get_full_name()
     
     def has_account(self, machine_category):
-        ua = self.useraccount_set.all()
+        ua = self.account_set.all()
         ua = ua.filter(machine_category=machine_category, date_deleted__isnull=True)
         if ua.count() != 0:
             return True
         return False
 
-    def get_user_account(self, machine_category):
+    def get_account(self, machine_category):
         try:
-            return self.useraccount_set.get(machine_category=machine_category, date_deleted__isnull=True)
+            return self.account_set.get(machine_category=machine_category, date_deleted__isnull=True)
         except:
             return None
 
@@ -312,7 +312,7 @@ class Person(models.Model):
     activate.alters_data = True
 
     def deactivate(self):
-        """ Sets Person not active and deletes all UserAccounts"""
+        """ Sets Person not active and deletes all Accounts"""
         self.user.is_active = False
         self.expires = None
         self.user.save()
@@ -322,7 +322,7 @@ class Person(models.Model):
         self.groups.clear()
         self.save()
 
-        for ua in self.useraccount_set.filter(date_deleted__isnull=True):
+        for ua in self.account_set.filter(date_deleted__isnull=True):
             ua.deactivate()
 
         log(None, self, 2, 'Deactivated')
@@ -336,7 +336,7 @@ class Person(models.Model):
             super(Person, self).save()
         from karaage.datastores import set_person_password
         set_person_password(self, password)
-        for ua in self.useraccount_set.filter(date_deleted__isnull=True):
+        for ua in self.account_set.filter(date_deleted__isnull=True):
             ua.set_password(password)
     set_password.alters_data = True
 
@@ -348,7 +348,7 @@ class Person(models.Model):
         super(Person, self).save()
         from karaage.datastores import lock_person
         lock_person(self)
-        for ua in self.useraccount_set.filter(date_deleted__isnull=True):
+        for ua in self.account_set.filter(date_deleted__isnull=True):
             ua.lock()
         log(None, self, 2, 'Locked person')
     lock.alters_data = True
@@ -361,7 +361,7 @@ class Person(models.Model):
         super(Person, self).save()
         from karaage.datastores import unlock_person
         unlock_person(self)
-        for ua in self.useraccount_set.filter(date_deleted__isnull=True):
+        for ua in self.account_set.filter(date_deleted__isnull=True):
             ua.unlock()
         log(None, self, 2, 'Unlocked person')
     unlock.alters_data = True
@@ -450,14 +450,14 @@ def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs)
             for person in model.objects.filter(pk__in=pk_set):
                 log(None, person, 2, "Added person to group %s" % group)
                 log(None, group, 2, "Added person %s to group" % person)
-                for ua in person.useraccount_set.filter(date_deleted__isnull=True):
+                for ua in person.account_set.filter(date_deleted__isnull=True):
                     add_group(ua, group)
         else:
             person = instance
             for group in model.objects.filter(pk__in=pk_set):
                 log(None, person, 2, "Added person to group %s" % group)
                 log(None, group, 2, "Added person %s to group" % person)
-                for ua in person.useraccount_set.filter(date_deleted__isnull=True):
+                for ua in person.account_set.filter(date_deleted__isnull=True):
                     add_group(ua, group)
 
     elif action == "post_remove":
@@ -467,14 +467,14 @@ def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs)
             for person in model.objects.filter(pk__in=pk_set):
                 log(None, person, 2, "Removed person from group %s" % group)
                 log(None, group, 2, "Removed person %s from group" % person)
-                for ua in person.useraccount_set.filter(date_deleted__isnull=True):
+                for ua in person.account_set.filter(date_deleted__isnull=True):
                     remove_group(ua, group)
         else:
             person = instance
             for group in model.objects.filter(pk__in=pk_set):
                 log(None, person, 2, "Removed person from group %s" % group)
                 log(None, group, 2, "Removed person %s from group" % person)
-                for ua in person.useraccount_set.filter(date_deleted__isnull=True):
+                for ua in person.account_set.filter(date_deleted__isnull=True):
                     remove_group(ua, group)
 
     elif action == "pre_clear":
@@ -486,14 +486,14 @@ def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs)
             log(None, group, 2, "Removed all people from group")
             for person in group.members.all():
                 log(None, group, 2, "Removed person %s from group" % person)
-                for ua in person.useraccount_set.filter(date_deleted__isnull=True):
+                for ua in person.account_set.filter(date_deleted__isnull=True):
                     remove_group(ua, group)
         else:
             person = instance
             log(None, person, 2, "Removed person from all groups")
             for group in person.groups.all():
                 log(None, group, 2, "Removed person %s from group" % person)
-                for ua in person.useraccount_set.filter(date_deleted__isnull=True):
+                for ua in person.account_set.filter(date_deleted__isnull=True):
                     remove_group(ua, group)
 
 

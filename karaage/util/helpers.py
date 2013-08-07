@@ -24,7 +24,7 @@ from django.contrib.auth.models import User
 
 import datetime
 
-from karaage.machines.models import MachineCategory, UserAccount
+from karaage.machines.models import MachineCategory, Account
 
 
 def check_username(username, machine_category):
@@ -39,7 +39,7 @@ def check_username(username, machine_category):
         user = User.objects.get(username__exact=username)
     except:
         try:
-            user_account = UserAccount.objects.get(username__exact=username, machine_category=machine_category, date_deleted__isnull=True)
+            account = Account.objects.get(username__exact=username, machine_category=machine_category, date_deleted__isnull=True)
         except:
             return True
         

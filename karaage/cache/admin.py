@@ -16,7 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib import admin
-from karaage.cache.models import InstituteCache, ProjectCache, UserCache, MachineCache
+from karaage.cache.models import InstituteCache, ProjectCache, PersonCache, MachineCache
 
 
 class InstituteCacheAdmin(admin.ModelAdmin):
@@ -31,5 +31,5 @@ class ProjectCacheAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ProjectCache, ProjectCacheAdmin)
-admin.site.register(UserCache)
+admin.site.register(PersonCache)
 admin.site.register(MachineCache)

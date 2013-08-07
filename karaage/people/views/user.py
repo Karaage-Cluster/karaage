@@ -32,7 +32,7 @@ from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.people.forms import PasswordChangeForm, PersonForm, LoginForm, PasswordResetForm
-from karaage.machines.models import MachineCategory, UserAccount
+from karaage.machines.models import MachineCategory, Account
 from karaage.machines.forms import ShellForm
 from karaage.applications.models import Application
 from karaage.util import log_object as log
@@ -74,7 +74,7 @@ def edit_profile(request):
 def profile_accounts(request):
 
     person = request.user.get_profile()
-    accounts = person.useraccount_set.filter(date_deleted__isnull=True)
+    accounts = person.account_set.filter(date_deleted__isnull=True)
 
     return render_to_response('people/profile_accounts.html', locals(), context_instance=RequestContext(request))
 
@@ -218,31 +218,31 @@ def password_reset(request):
 
 
 @login_required
-def change_account_shell(request, useraccount_id):
+def change_account_shell(request, account_id):
     person = request.user.get_profile()
-    user_account = get_object_or_404(UserAccount, pk=useraccount_id, user=person)
+    account = get_object_or_404(Account, pk=account_id, user=person)
 
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('kg_user_profile_accounts'))
 
     shell_form = ShellForm(request.POST)
     if shell_form.is_valid():
-        shell_form.save(user_account=user_account)
+        shell_form.save(account=account)
         messages.success(request, 'Shell changed successfully')
         return HttpResponseRedirect(reverse('kg_user_profile_accounts'))
 
 @login_required
-def make_default(request, useraccount_id, project_id):
+def make_default(request, account_id, project_id):
     person = request.user.get_profile()
-    user_account = get_object_or_404(UserAccount, pk=useraccount_id, user=person)
+    account = get_object_or_404(Account, pk=account_id, user=person)
     project = get_object_or_404(Project, pk=project_id)
 
     if request.method != 'POST':
-        return HttpResponseRedirect(user_account.get_absolute_url())
+        return HttpResponseRedirect(account.get_absolute_url())
 
-    user_account.default_project = project
-    user_account.save()
-    user_account.user.save()
+    account.default_project = project
+    account.save()
+    account.user.save()
     messages.success(request, "Default project changed succesfully")
-    log(request.user, user_account.user, 2, 'Changed default project to %s' % project.pid)
-    return HttpResponseRedirect(user_account.get_absolute_url())
+    log(request.user, account.user, 2, 'Changed default project to %s' % project.pid)
+    return HttpResponseRedirect(account.get_absolute_url())
