@@ -117,8 +117,10 @@ def user_list(request, queryset=None):
     p = Paginator(user_list, 50)
     page = p.page(page_no)
     
-    return render_to_response('people/person_list.html',
-        {'page': page, 'filter_bar': filter_bar}, context_instance=RequestContext(request))
+    return render_to_response(
+        'people/person_list.html',
+        {'page': page, 'filter_bar': filter_bar, 'terms': terms},
+        context_instance=RequestContext(request))
 
 
 @permission_required('machines.add_useraccount')
