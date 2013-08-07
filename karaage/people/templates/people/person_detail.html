@@ -22,7 +22,7 @@
 {% endblock %}
 
 
-{% block content %}<div id="content-main"><p>{% get_comment_count for person as comment_count %}
+{% block content %}<div id="content-main"><p>
 
   </p>
 <div class="module">
@@ -199,6 +199,7 @@
  
 
 {% block object-tools %}
+{% get_comment_count for person as comment_count %}
 <div class="module object-tools">
 <h2>Tasks</h2>
 <ul>
