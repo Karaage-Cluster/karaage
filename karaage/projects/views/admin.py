@@ -170,9 +170,10 @@ def project_list(request, queryset=Project.objects.select_related(), template_na
     except (EmptyPage, InvalidPage):
         page = p.page(p.num_pages)
 
-    return render_to_response(template_name,
-                              {'page': page, 'filter_bar': filter_bar, 'project_list': project_list},
-                              context_instance=RequestContext(request))
+    return render_to_response(
+            template_name,
+            {'page': page, 'filter_bar': filter_bar, 'project_list': project_list, 'terms': terms},
+            context_instance=RequestContext(request))
 
 
 @permission_required('projects.change_project')
