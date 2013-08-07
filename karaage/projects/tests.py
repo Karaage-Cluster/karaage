@@ -25,6 +25,7 @@ import datetime
 from karaage.people.models import Person
 from karaage.test_data.initial_ldap_data import test_ldif
 from karaage.projects.models import Project
+from karaage.machines.models import Account
 from karaage.datastores import ldap_schemas
 
 
@@ -129,6 +130,9 @@ class ProjectTestCase(TestCase):
         lgroup.secondary_accounts.get(pk='kgtestuser2')
 
         # remove user
+        for account in new_user.account_set.all():
+            account.default_project=None
+            account.save()
         response = self.client.post(reverse('kg_remove_project_member', args=[project.pid, new_user.username]))
         self.failUnlessEqual(response.status_code, 302)
         project = Project.objects.get(pk='TestProject1')
@@ -141,6 +145,9 @@ class ProjectTestCase(TestCase):
         self.client.login(username='kgsuper', password='aq12ws')
 
         project = Project.objects.get(pk='TestProject1')
+        for account in Account.objects.filter(default_project=project):
+            account.default_project=None
+            account.save()
 
         self.assertEqual(project.is_active, True)
         
