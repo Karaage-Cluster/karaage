@@ -3,7 +3,7 @@
 	<thead>
 		<tr>
 			<th>Name</th>
-			<th>GID</th>
+			<th>Group</th>
 			<th>Version</th>
 			<th>Machines</th>
 			<th>Module</td>
@@ -14,7 +14,7 @@
    	{% for package in object_list %}
 	   	<tr class="{% cycle "row1" "row2" as rowcolour %}">
 	   		<td><a href="{{ package.get_absolute_url }}">{{ package.name }}</a></td>
-	   		<td>{{ package.gid }}</td>
+                        <td>{% if package.group %}<a href='{% url 'kg_group_detail' package.group.name %}'>{{ package.group }}</a>{% endif %}</td>
 	   		{% for version in package.softwareversion_set.all %}
 					{% if not forloop.first %}
 						<tr class="{{ rowcolour }}">	   		
