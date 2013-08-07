@@ -337,8 +337,10 @@ def group_list(request, queryset=None):
     p = Paginator(group_list, 50)
     page = p.page(page_no)
 
-    return render_to_response('people/group_list.html',
-        {'page': page, }, context_instance=RequestContext(request))
+    return render_to_response(
+            'people/group_list.html',
+            {'page': page, 'terms': terms},
+            context_instance=RequestContext(request))
 
 
 @login_required
