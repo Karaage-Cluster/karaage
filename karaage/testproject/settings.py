@@ -97,6 +97,8 @@ PLACARD_MASTER = {
 
 LDAP_SCHEMA_FILE = "conf/ldap_schemas.py"
 
+PRIMARY_GROUP = "institute"
+DEFAULT_PRIMARY_GROUP = "dummy"
 HOME_DIRECTORY = "/vpac/%(default_project)s/%(uid)s"
 
 SERVER_EMAIL = 'django@' + uname()[1]
