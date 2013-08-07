@@ -370,7 +370,13 @@ def search(request):
             else:
                 return HttpResponseRedirect('%s?start=%s&end=%s' % (reverse('kg_usage_list'), start_str, end_str))
     else:
-        form = UsageSearchForm()
+        start, end = get_date_range(request)
+        initial = {
+            'start_date': start,
+            'end_date': end,
+            'machine_category': request.GET.get('machine_category', None)
+        }
+        form = UsageSearchForm(initial=initial)
 
     return render_to_response('usage/search.html', locals(), context_instance=RequestContext(request))
     
