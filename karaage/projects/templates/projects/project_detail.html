@@ -157,7 +157,7 @@
 <div class="module object-tools">
 <h2>Tasks</h2>
 <ul>
-<li><a href="{{ project.get_usage_url }}">View Usage</a></li>
+<li>Usage: {% for pc in project.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk project.pk %}">{{ pc.machine_category }}</a> {% endfor %}</li>
 <li><a href="logs/">View logs</a></li>
 <li><a href="{% url 'kg_job_list' %}?project={{ project.pid }}">Display all jobs</a></li>
         {% if perms.projects.change_project %}<li><a class="changelink" href="edit/">Edit project details</a></li>{% endif %}

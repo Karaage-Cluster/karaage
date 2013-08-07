@@ -1,5 +1,6 @@
 {% extends "forms.html" %}
 {% load url from future %}
+{% load karaage_tags %}
 
 
 {% block title %}Usage{% endblock %}
@@ -41,7 +42,7 @@
 	<tbody>
 		{% for p in project_list|dictsortreversed:"time" %}
 		<tr class="{% cycle row1,row2 %}">
-			<td><a href="{{ p.obj.get_usage_url }}?start={{ start_str }}&end={{ end_str }}">{{ p.obj }}</a></td>
+                    <td><a href="{% url 'kg_usage_project' machine_category.pk p.obj.pk %}{% url_with_param start=start end=end %}">{{ p.obj }}</a></td>
 			<td class="right">{{ p.time|timeformat }}</td>
 			<td class="right">{{ p.jobs }}</td>
 		</tr>
@@ -64,7 +65,7 @@
 	<tbody>
 		{% for i in institute_list|dictsortreversed:"time" %}
 		<tr class="{% cycle row1,row2 %}">
-			<td><a href="{% url 'kg_institute_usage' i.obj.id %}?start={{ start_str }}&end={{ end_str }}">{{ i.obj }}</a></td>
+                    <td><a href="{% url 'kg_usage_institute' machine_category.pk i.obj.pk %}{% url_with_param start=start end=end %}">{{ i.obj }}</a></td>
 			<td class="right">{{ i.time|timeformat }}</td>
 			<td class="right">{{ i.jobs }}</td>
 		</tr>

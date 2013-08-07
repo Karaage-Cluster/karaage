@@ -1,5 +1,6 @@
 {% extends "main.html" %}
 {% load url from future %}
+{% load karaage_tags %}
 
 
 {% block title %}Usage{% endblock %}
@@ -37,7 +38,7 @@
 			<tr class="{% cycle row1,row2 %}">
 <td>{{ forloop.counter }}</td>
 <td><a href="{{ u.user.get_absolute_url }}">{{ u.user }}</a></td>
-<td><a href="{{ u.project.get_usage_url }}?{{ querystring }}">{{ u.project|truncatewords:"6" }}</a></td>
+<td><a href="{% url 'kg_usage_project' machine_category.pk u.project.pk %}{% url_with_param start=start end=end %}">{{ u.project|truncatewords:"6" }}</a></td>
 <td class="right">{{ u.usage|timeformat }}</td>
 <td class="right">{{ u.jobs|intcomma }}</td>
 <td class="right">{{ u.percent|floatformat:"2" }}%</td>

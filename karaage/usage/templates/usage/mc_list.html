@@ -1,6 +1,7 @@
 {% extends "main.html" %}
-{% load humanize %}{% load filters usage_graphs %}
-
+{% load humanize %}
+{% load filters usage_graphs %}
+{% load karaage_tags %}
 
 {% block title %}Usage{% endblock %}
 
@@ -17,8 +18,8 @@
 <div class="module object-tools">
     <h2>Object links</h2>
     <ul>
-        <li><a href="{% url 'kg_job_list' %}">All Jobs</a></li>
-        <li><a class="viewsitelink" href="{% url 'kg_usage_search' %}">Advanced Search</a></li>
+        <li><a href="{% url 'kg_job_list' %}{% url_with_param date__gte=start date__lte=end %}">All Jobs</a></li>
+        <li><a class="viewsitelink" href="{% url 'kg_usage_search' %}{% url_with_param start=start end=end %}">Advanced Search</a></li>
     </ul>
 </div>
 {% endblock %}
@@ -31,7 +32,7 @@
 	
 	{% for mc in mc_list %}
 	<div class="module">
-            <h2><a href='{% url 'kg_mc_usage' mc.obj.pk %}?{{ querystring }}'>{{ mc.obj }}</a></h2>
+            <h2><a href='{% url 'kg_mc_usage' mc.obj.pk %}{% url_with_param start=start end=end %}'>{{ mc.obj }}</a></h2>
 <img class="float-right" src="{{ mc.graph.graph_url }}"/>
 <table>
 <thead>

@@ -1,4 +1,5 @@
 {% extends "main.html" %}
+{% load karaage_tags %}
 
 
 {% block title %}Usage{% endblock %}
@@ -25,7 +26,7 @@
 {% if user_list %}
 
 <div class="module">
-<h2>Top 5 users  <a href="users/?{{ querystring }}">Show all</a></h2>
+    <h2>Top 5 users  <a href="{% url 'kg_usage_users' machine_category.pk institute.pk %}{% url_with_param start=start end=end %}">Show all</a></h2>
 <a href="#graph">
 <img class="float-right" height="150" src="{{ graph.graph_url }}" width="300"/>
 </a>
@@ -45,7 +46,7 @@
    		{% ifnotequal u.usage 0 %}
 			<tr class="{% cycle row1,row2 %}">
 <td><a href="{{ u.user.get_absolute_url }}">{{ u.user }}</a></td>
-<td><a href="{% url 'kg_usage_project' machine_category.pk u.project.pk %}?{{ querystring }}">{{ u.project }}</a></td>
+<td><a href="{% url 'kg_usage_project' machine_category.pk u.project.pk %}{% url_with_param start=start end=end %}">{{ u.project }}</a></td>
 <td class="right">{{ u.usage|timeformat }}</td>
 <td class="right">{{ u.jobs|intcomma }}</td>
 <td class="right">{{ u.percent|floatformat:"2" }}%</td>
@@ -82,7 +83,7 @@
 <tbody>
    	{% for p in project_list|dictsortreversed:"usage" %}
 			<tr class="{% cycle row1,row2 %}">
-<td><a href="{% url 'kg_usage_project' machine_category.pk p.project.pk %}?{{ querystring }}">{{ p.project }}</a></td>
+                            <td><a href="{% url 'kg_usage_project' machine_category.pk p.project.pk %}{% url_with_param start=start end=end %}">{{ p.project }}</a></td>
 <td class="right">{{ p.usage|timeformat }}</td>
 <td class="right">{{ p.jobs|intcomma }}</td>
 <td class="right">{{ p.percent|floatformat:"2" }}%</td>

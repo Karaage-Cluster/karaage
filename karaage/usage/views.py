@@ -46,8 +46,6 @@ from karaage.util.graphs import get_colour
 def usage_index(request):
     start, end = get_date_range(request)
 
-    querystring = request.META.get('QUERY_STRING', '')
-
     mc_list = []
     for machine_category in MachineCategory.objects.all():
         m_list = []
@@ -81,8 +79,6 @@ def index(request, machine_category_id):
     i_list = []
     m_list = []
     start, end = get_date_range(request)
-
-    querystring = request.META.get('QUERY_STRING', '')
 
     available_time, avg_cpus = get_available_time(start, end, machine_category)
     
@@ -163,8 +159,6 @@ def institute_usage(request, institute_id, machine_category_id):
 
     available_usage, ave_cpus = get_available_time(start, end, machine_category)
 
-    querystring = request.META.get('QUERY_STRING', '')
-
     quota = get_object_or_404(InstituteChunk, institute=institute, machine_category=machine_category)
 
     i_usage, i_jobs = institute.get_usage(start, end, machine_category)
@@ -236,7 +230,6 @@ def project_usage(request, project_id, machine_category_id):
     usage_list = []
     total, total_jobs = 0, 0
 
-    querystring = request.META.get('QUERY_STRING', '')
     start, end = get_date_range(request)
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
@@ -397,7 +390,6 @@ def top_users(request, machine_category_id, count=20):
             user_list.append({'user': u.user, 'project': u.project, 'usage': u.cpu_hours, 'jobs': u.no_jobs, 'percent': ((u.cpu_hours / available_time) * 100)})
         
     user_percent = (user_total / available_time) * 100
-    querystring = request.META.get('QUERY_STRING', '')
     
     return render_to_response('usage/top_users.html', locals(), context_instance=RequestContext(request))
 
@@ -436,8 +428,6 @@ def institute_users(request, machine_category_id, institute_id):
         user_percent = (user_total / available_time) * 100
     except:
         user_percent = 0
-    
-    querystring = request.META.get('QUERY_STRING', '')
     
     return render_to_response('usage/institute_users.html', locals(), context_instance=RequestContext(request))
 

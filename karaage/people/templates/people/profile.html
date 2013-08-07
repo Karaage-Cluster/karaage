@@ -51,7 +51,6 @@
   <tbody>
     {% for u in usage_list|dictsortreversed:"cpu_hours" %}
     <tr class="{% cycle row1,row2 %}">
-      {#<td><a href="{{ u.project.get_usage_url }}">{{ u.project.pid }}</a></td>#}
       <td>{{ u.project.pid }}</td>
       <td>{{ u.cpu_hours|timeformat }}</td>
       <td>{{ u.no_jobs }}</td>
