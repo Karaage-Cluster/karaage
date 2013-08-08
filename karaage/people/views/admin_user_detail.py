@@ -96,7 +96,6 @@ def activate(request, username):
 
     if request.method == 'POST':
         person.activate()
-        messages.success(request, "User '%s' activated succesfully" % person)
         return HttpResponseRedirect(reverse('kg_password_change', args=[person.username]))
     
     return render_to_response('people/reactivate_confirm.html', {'person': person}, context_instance=RequestContext(request))
@@ -112,7 +111,6 @@ def password_change(request, username):
         if form.is_valid():
             form.save(person)
             messages.success(request, "Password changed successfully")
-            log(request.user, person, 2, 'Changed password')
             if person.is_locked():
                 person.unlock()
             return HttpResponseRedirect(person.get_absolute_url())
@@ -128,7 +126,6 @@ def lock_person(request, username):
     if request.method == 'POST':
         person.lock()
         messages.success(request, "%s's account has been locked" % person)
-        log(request.user, person, 2, 'Account locked')
     return HttpResponseRedirect(person.get_absolute_url())
 
 
@@ -138,7 +135,6 @@ def unlock_person(request, username):
     if request.method == 'POST':
         person.unlock()
         messages.success(request, "%s's account has been unlocked" % person)
-        log(request.user, person, 2, 'Account unlocked')
     return HttpResponseRedirect(person.get_absolute_url())
 
 
