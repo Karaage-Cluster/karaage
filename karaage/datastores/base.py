@@ -26,27 +26,27 @@ class PersonDataStore(object):
 
     def save_person(self, person):
         """ Person was saved. """
-        raise NotImplementedError
+        return
 
     def delete_person(self, person):
         """ Person was deleted. """
-        raise NotImplementedError
+        return
 
     def set_person_password(self, person, raw_password):
         """ Person's password was changed. """
-        raise NotImplementedError
+        return
 
     def set_person_username(self, person, old_username, new_username):
         """ Person's username was changed. """
-        raise NotImplementedError
+        return
 
     def get_person_details(self, person):
         """ Get person's details. """
-        raise NotImplementedError
+        return {}
 
     def person_exists(self, username):
         """ Does the person exist? """
-        raise NotImplementedError
+        return False
 
 
 class AccountDataStore(object):
@@ -57,93 +57,93 @@ class AccountDataStore(object):
 
     def save_account(self, account):
         """ Account was saved. """
-        raise NotImplementedError
+        return
 
     def delete_account(self, account):
         """ Account was deleted. """
-        raise NotImplementedError
+        return
 
     def set_account_password(self, account, raw_password):
         """ Account's password was changed. """
-        raise NotImplementedError
+        return
 
     def set_account_username(self, account, old_username, new_username):
         """ Account's username was changed. """
-        raise NotImplementedError
+        return
 
     def account_exists(self, username):
         """ Does the account exist? """
-        raise NotImplementedError
+        return False
 
     def get_account_details(self, account):
         """ Get the account details """
-        raise NotImplementedError
+        return {}
 
     def add_group(self, account, group):
         """ Add account to group. """
-        raise NotImplementedError
+        return
 
     def remove_group(self, account, group):
         """ Remove account from group. """
-        raise NotImplementedError
+        return
 
     def save_group(self, group):
         """ Group was saved. """
-        raise NotImplementedError
+        return
 
     def delete_group(self, group):
         """ Group was deleted. """
-        raise NotImplementedError
+        return
 
     def set_group_name(self, group, old_name, new_name):
         """ Group was renamed. """
-        raise NotImplementedError
+        return
 
     def get_group_details(self, group):
         """ Get the group details. """
-        raise NotImplementedError
+        return {}
 
 
 class ProjectDataStore:
     """ Base clase for project datastores. """
 
     def __init__(self, config):
-        pass
+        self.config = config
 
     def save_project(self, project):
         """ Project was saved. """
-        raise NotImplementedError
+        return
 
     def delete_project(self, project):
         """ Project was deleted. """
-        raise NotImplementedError
+        return
 
 
 class InstituteDataStore:
     """ Base clase for institute datastores. """
 
     def __init__(self, config):
-        pass
+        self.config = config
 
     def save_institute(self, institute):
         """ Institute was saved. """
-        raise NotImplementedError
+        return
 
     def delete_institute(self, institute):
         """ Institute was deleted. """
-        raise NotImplementedError
+        return
 
 
 class SoftwareDataStore:
     """ Base clase for software datastores. """
 
     def __init__(self, config):
-        pass
+        self.config = config
 
     def save_software(self, software):
         """ Software was saved. """
-        raise NotImplementedError
+        return
 
     def delete_software(self, software):
         """ Software was deleted. """
-        raise NotImplementedError
+        return
