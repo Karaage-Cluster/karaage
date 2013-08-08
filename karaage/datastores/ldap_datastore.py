@@ -124,7 +124,7 @@ class AccountDataStore(base.AccountDataStore):
 
             # add all groups
             for group in account.person.groups.all():
-                self.add_group(account, group)
+                self.add_account_to_group(account, group)
 
     def delete_account(self, account):
         """ Account was deleted. """
@@ -168,13 +168,13 @@ class AccountDataStore(base.AccountDataStore):
         except self._account.DoesNotExist:
             return False
 
-    def add_group(self, account, group):
+    def add_account_to_group(self, account, group):
         """ Add account to group. """
         lgroup = self._groups().get(cn=group.name)
         person = self._accounts().get(uid=account.username)
         lgroup.secondary_accounts.add(person)
 
-    def remove_group(self, account, group):
+    def remove_account_from_group(self, account, group):
         """ Remove account from group. """
         lgroup = self._groups().get(cn=group.name)
         person = self._accounts().get(uid=account.username)

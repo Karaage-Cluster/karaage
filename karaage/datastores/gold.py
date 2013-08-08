@@ -357,7 +357,7 @@ class GoldDataStore(
             result = {}
         return result
 
-    def add_group(self, account, group):
+    def add_account_to_group(self, account, group):
         """ Add account to group. """
         username = account.username
         for project in group.project_set.all():
@@ -370,7 +370,7 @@ class GoldDataStore(
                 "-p", projectname],
                 ignore_errors=[74])
 
-    def remove_group(self, account, group):
+    def remove_account_from_group(self, account, group):
         """ Remove account from group. """
         username = account.username
         for project in group.project_set.all():

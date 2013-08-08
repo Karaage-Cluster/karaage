@@ -137,21 +137,21 @@ def get_account_details(account):
     return result
 
 
-def add_group(account, group):
+def add_account_to_group(account, group):
     """ Add account to group. """
     from karaage.machines.models import MachineCategory
     for machine_category in MachineCategory.objects.all():
         name = machine_category.datastore
         for datastore in _get_account_datastores(name):
-            datastore.add_group(account, group)
+            datastore.add_account_to_group(account, group)
 
-def remove_group(account, group):
+def remove_account_from_group(account, group):
     """ Remove account from group. """
     from karaage.machines.models import MachineCategory
     for machine_category in MachineCategory.objects.all():
         name = machine_category.datastore
         for datastore in _get_account_datastores(name):
-            datastore.remove_group(account, group)
+            datastore.remove_account_from_group(account, group)
 
 def save_group(group):
     """ Group was saved. """

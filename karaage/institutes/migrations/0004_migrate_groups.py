@@ -28,7 +28,7 @@ class Migration(DataMigration):
 
                 for member in lgroup.secondary_accounts.all():
                     person = orm['people.person'].objects.get(user__username=member.uid)
-                    person.add_group(group)
+                    person.add_account_to_group(group)
 
     def backwards(self, orm):
         for institute in orm.Institute.objects.all():

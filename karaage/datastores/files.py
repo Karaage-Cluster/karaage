@@ -120,12 +120,12 @@ class AccountDataStore(base.AccountDataStore):
         # FIXME
         pass
 
-    def add_group(self, account, group):
+    def add_account_to_group(self, account, group):
         """ Add account to group. """
         # FIXME
         pass
 
-    def remove_group(self, account, group):
+    def remove_account_from_group(self, account, group):
         """ Remove account from group. """
         # FIXME
         pass
