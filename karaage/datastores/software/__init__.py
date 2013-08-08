@@ -18,16 +18,28 @@
 """ Common hooks for software datastores. """
 
 from django.conf import settings
+import django.utils
 
 _DATASTORES = {}
+
+def _lookup(cls):
+    """ Lookup module.class. """
+    if isinstance(cls, str):
+        module_name, _, name = cls.rpartition(".")
+        module = django.utils.importlib.import_module(module_name)
+        try:
+            cls = getattr(module, name)
+        except AttributeError:
+            raise AttributeError("%s reference cannot be found" % cls)
+    return(cls)
 
 def _init_datastores():
     """ Initialize all datastores. """
     for name, array in settings.SOFTWARE_DATASTORES.iteritems():
         _DATASTORES[name] = []
         for config in array:
-            module = __import__(config['ENGINE'], {}, {}, [''])
-            _DATASTORES[name].append(module.SoftwareDataStore(config))
+            cls = _lookup(config['ENGINE'])
+            _DATASTORES[name].append(cls(config))
 
 def _get_datastores():
     """ Get the default datastores. """

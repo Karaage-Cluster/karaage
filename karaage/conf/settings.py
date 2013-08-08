@@ -131,7 +131,7 @@ ACCOUNT_DATASTORES = {
     'ldap' : [
         {
             'DESCRIPTION': 'Default LDAP datastore',
-            'ENGINE': 'karaage.datastores.ldap_datastore',
+            'ENGINE': 'karaage.datastores.ldap_datastore.AccountDataStore',
             'LDAP': 'default',
             'ACCOUNT': 'karaage.datastores.ldap_schemas.account',
             'GROUP': 'karaage.datastores.ldap_schemas.group',

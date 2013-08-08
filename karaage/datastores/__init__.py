@@ -18,22 +18,34 @@
 """ Common hooks for person and account datastores. """
 
 from django.conf import settings
+import django.utils
 
 _PERSON_DATASTORES = {}
 _ACCOUNT_DATASTORES = {}
+
+def _lookup(cls):
+    """ Lookup module.class. """
+    if isinstance(cls, str):
+        module_name, _, name = cls.rpartition(".")
+        module = django.utils.importlib.import_module(module_name)
+        try:
+            cls = getattr(module, name)
+        except AttributeError:
+            raise AttributeError("%s reference cannot be found" % cls)
+    return(cls)
 
 def _init_datastores():
     """ Initialize all datastores. """
     for name, array in settings.PERSON_DATASTORES.iteritems():
         _PERSON_DATASTORES[name] = []
         for config in array:
-            module = __import__(config['ENGINE'], {}, {}, [''])
-            _PERSON_DATASTORES[name].append(module.PersonDataStore(config))
+            cls = _lookup(config['ENGINE'])
+            _PERSON_DATASTORES[name].append(cls(config))
     for name, array in settings.ACCOUNT_DATASTORES.iteritems():
         _ACCOUNT_DATASTORES[name] = []
         for config in array:
-            module = __import__(config['ENGINE'], {}, {}, [''])
-            _ACCOUNT_DATASTORES[name].append(module.AccountDataStore(config))
+            cls = _lookup(config['ENGINE'])
+            _ACCOUNT_DATASTORES[name].append(cls(config))
 
 def _get_person_datastores():
     """ Get the default person datastores. """
