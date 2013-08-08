@@ -54,7 +54,7 @@ def profile(request):
             for user_application in project.userapplication_set.filter(state=Application.WAITING_FOR_LEADER):
                 user_applications.append(user_application)
 
-    usage_list = person.usercache_set.filter(start=start, end=end)
+    usage_list = person.personcache_set.filter(start=start, end=end)
 
     return render_to_response('people/profile.html', locals(), context_instance=RequestContext(request))
 
