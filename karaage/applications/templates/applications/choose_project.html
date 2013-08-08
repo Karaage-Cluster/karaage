@@ -1,7 +1,6 @@
 {% extends "forms.html" %}
 {% load url from future %}
 
-{% block style %}<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/forms_custom.css"/>{% endblock %}
 
 {% block content %}
 <h1>{% if user.is_anonymous %}Step 2 - {% endif %}Choose Project</h1>
