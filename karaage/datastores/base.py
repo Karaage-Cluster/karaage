@@ -15,9 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-""" Base file used for all personal/account datastores. """
+""" Base file used for all datastores. """
 
-from django.conf import settings
 
 class PersonDataStore(object):
     """ Base class used for all personal datastores. """
@@ -102,4 +101,49 @@ class AccountDataStore(object):
 
     def get_group_details(self, group):
         """ Get the group details. """
+        raise NotImplementedError
+
+
+class ProjectDataStore:
+    """ Base clase for project datastores. """
+
+    def __init__(self, config):
+        pass
+
+    def save_project(self, project):
+        """ Project was saved. """
+        raise NotImplementedError
+
+    def delete_project(self, project):
+        """ Project was deleted. """
+        raise NotImplementedError
+
+
+class InstituteDataStore:
+    """ Base clase for institute datastores. """
+
+    def __init__(self, config):
+        pass
+
+    def save_institute(self, institute):
+        """ Institute was saved. """
+        raise NotImplementedError
+
+    def delete_institute(self, institute):
+        """ Institute was deleted. """
+        raise NotImplementedError
+
+
+class SoftwareDataStore:
+    """ Base clase for software datastores. """
+
+    def __init__(self, config):
+        pass
+
+    def save_software(self, software):
+        """ Software was saved. """
+        raise NotImplementedError
+
+    def delete_software(self, software):
+        """ Software was deleted. """
         raise NotImplementedError
