@@ -55,16 +55,6 @@ def delete_person(person):
     for datastore in _get_person_datastores():
         datastore.delete_person(person)
 
-def lock_person(person):
-    """ Person was locked. """
-    for datastore in _get_person_datastores():
-        datastore.lock_person(person)
-
-def unlock_person(person):
-    """ Person was unlocked. """
-    for datastore in _get_person_datastores():
-        datastore.unlock_person(person)
-
 def set_person_password(person, raw_password):
     """ Person's password was changed. """
     for datastore in _get_person_datastores():
@@ -103,24 +93,6 @@ def delete_account(account):
     name = account.machine_category.datastore
     for datastore in _get_account_datastores(name):
         datastore.delete_account(account)
-
-def lock_account(account):
-    """ Account was locked. """
-    name = account.machine_category.datastore
-    for datastore in _get_account_datastores(name):
-        datastore.lock_account(account)
-
-def unlock_account(account):
-    """ Account was unlocked. """
-    name = account.machine_category.datastore
-    for datastore in _get_account_datastores(name):
-        datastore.unlock_account(account)
-
-def set_account_shell(account, shell):
-    """ Account's shell was changed. """
-    name = account.machine_category.datastore
-    for datastore in _get_account_datastores(name):
-        datastore.set_account_shell(account, shell)
 
 def set_account_password(account, raw_password):
     """ Account's password was changed. """

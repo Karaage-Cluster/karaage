@@ -79,13 +79,6 @@ class AccountDataStore(base.AccountDataStore):
         fobj.writelines(new_data)
         fobj.close()
 
-    def set_account_shell(self, account, shell):
-        """ Account's shell was changed. """
-        super(AccountDataStore, self).set_account_shell(account, shell)
-        if account.is_locked():
-            login_shell = settings.LOCKED_SHELL
-        # FIXME
-
     def get_next_uid(self):
         """ Pick the next uid to use. """
         id_list = []

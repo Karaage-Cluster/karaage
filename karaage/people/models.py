@@ -61,6 +61,10 @@ class Person(models.Model):
     deleted = DeletedUserManager()
     projectleaders = LeaderManager()
     
+    def __init__(self, *args, **kwargs):
+        super(Person, self).__init__(*args, **kwargs)
+        self._login_enabled = self.login_enabled
+
     class Meta:
         verbose_name_plural = 'people'
         ordering = ['user__first_name', 'user__last_name']
@@ -165,6 +169,19 @@ class Person(models.Model):
         from karaage.datastores import save_person
         save_person(self)
 
+        # has locked status changed?
+        old_login_enabled = self._login_enabled
+        new_login_enabled = self.login_enabled
+        if old_login_enabled != new_login_enabled:
+            if new_login_enabled:
+                for ua in self.account_set.filter(date_deleted__isnull=True):
+                    ua.unlock()
+                log(None, self, 2, 'Unlocked person')
+            else:
+                for ua in self.account_set.filter(date_deleted__isnull=True):
+                    ua.lock()
+                log(None, self, 2, 'Locked person')
+
         # update account datastores
         from karaage.datastores import save_account
         for ua in self.account_set.filter(date_deleted__isnull=True):
@@ -172,6 +189,9 @@ class Person(models.Model):
 
         # log message
         log(None, self, 2, 'Saved person')
+
+        # save current state
+        self._login_enabled = self.login_enabled
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
@@ -344,26 +364,14 @@ class Person(models.Model):
         if self.is_locked():
             return
         self.login_enabled = False
-        # we call super.save() to avoid calling datastore save needlessly
-        super(Person, self).save()
-        from karaage.datastores import lock_person
-        lock_person(self)
-        for ua in self.account_set.filter(date_deleted__isnull=True):
-            ua.lock()
-        log(None, self, 2, 'Locked person')
+        self.save()
     lock.alters_data = True
 
     def unlock(self):
         if not self.is_locked():
             return
         self.login_enabled = True
-        # we call super.save() to avoid calling datastore save needlessly
-        super(Person, self).save()
-        from karaage.datastores import unlock_person
-        unlock_person(self)
-        for ua in self.account_set.filter(date_deleted__isnull=True):
-            ua.unlock()
-        log(None, self, 2, 'Unlocked person')
+        self.save()
     unlock.alters_data = True
 
     def is_locked(self):

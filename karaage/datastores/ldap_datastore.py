@@ -133,16 +133,6 @@ class AccountDataStore(base.AccountDataStore):
         luser.pre_delete()
         luser.delete()
 
-    def set_account_shell(self, account, shell):
-        """ Account's shell was changed. """
-        luser = self._accounts().get(uid=account.username)
-        if account.is_locked():
-            luser.loginShell = settings.LOCKED_SHELL
-        else:
-            luser.loginShell = shell
-        luser.pre_save()
-        luser.save()
-
     def set_account_password(self, account, raw_password):
         """ Account's password was changed. """
         luser = self._accounts().get(uid=account.username)

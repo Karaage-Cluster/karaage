@@ -33,14 +33,6 @@ class PersonDataStore(object):
         """ Person was deleted. """
         raise NotImplementedError
 
-    def lock_person(self, person):
-        """ Person was locked. """
-        raise NotImplementedError
-
-    def unlock_person(self, person):
-        """ Person was unlocked. """
-        raise NotImplementedError
-
     def set_person_password(self, person, raw_password):
         """ Person's password was changed. """
         raise NotImplementedError
@@ -70,18 +62,6 @@ class AccountDataStore(object):
 
     def delete_account(self, account):
         """ Account was deleted. """
-        raise NotImplementedError
-
-    def lock_account(self, account):
-        """ Account was locked. """
-        self.set_account_shell(account, settings.LOCKED_SHELL)
-
-    def unlock_account(self, account):
-        """ Account was unlocked. """
-        self.set_account_shell(account, account.shell)
-
-    def set_account_shell(self, account, shell):
-        """ Account's shell was changed. """
         raise NotImplementedError
 
     def set_account_password(self, account, raw_password):
