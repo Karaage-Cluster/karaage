@@ -48,8 +48,9 @@ def _get_datastores_for_name(name):
 def _get_all_names():
     """ Get all datstores that are in use. """
     from karaage.machines.models import MachineCategory
-    for machine_category in MachineCategory.objects.all():
-        yield machine_category.datastore
+    mc_query = MachineCategory.objects.all().values('datastore').distinct()
+    for machine_category in mc_query:
+        yield machine_category['datastore']
 
 # Initialize data stores
 _init_datastores()
