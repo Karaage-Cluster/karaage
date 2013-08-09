@@ -19,10 +19,22 @@ from django_xmlrpc.decorators import xmlrpc_func, permission_required
 import datetime
 
 from karaage.people.models import Person
-from karaage.machines.models import MachineCategory, Account
+from karaage.machines.models import MachineCategory, Machine, Account
 from karaage.projects.models import Project
 from karaage.pbsmoab.models import ProjectChunk
 from karaage.pbsmoab.logs import parse_logs
+
+
+def _get_machine_category(machine_name):
+    """ Helper to make machine_name optional for backwards compatability. """
+    if machine_name is None:
+        # depreciated use
+        machine_category = MachineCategory.objects.get_default()
+    else:
+        machine = Machine.objects.get(name=machine_name)
+        machine_category = MachineCategory.objects.get(machine=machine)
+    return machine_category
+
 
 @xmlrpc_func(returns='string', args=['string', 'date'])
 @permission_required(perm='projects.change_project')
@@ -37,14 +49,13 @@ def parse_usage(user, usage, date, machine_name, log_type):
     return parse_logs(usage, date, machine_name, log_type)
 
 
-
-@xmlrpc_func(returns='boolean', args=['string'])
-def project_under_quota(project_id):
+@xmlrpc_func(returns='boolean', args=['string', 'string'])
+def project_under_quota(project_id, machine_name=None):
     """
     Returns True if project is under quota
     """
     
-    machine_category = MachineCategory.objects.get_default()
+    machine_category = _get_machine_category(machine_name)
     try:
         project = Project.objects.get(pid=project_id)
     except Project.DoesNotExist:
@@ -58,41 +69,48 @@ def project_under_quota(project_id):
     return True
 
 
-@xmlrpc_func(returns='int', args=['string'])
-def get_disk_quota(username):
+@xmlrpc_func(returns='int', args=['string', 'string'])
+def get_disk_quota(username, machine_name=None):
     """
     Returns disk quota for username in KB
     """
 
-    machine_category = MachineCategory.objects.get_default()
+    machine_category = _get_machine_category(machine_name)
     try:
-        ua = Account.objects.get(user__user__username=username, machine_category=machine_category, date_deleted__isnull=True)
+        ua = Account.objects.get(
+                username=username,
+                machine_category=machine_category,
+                date_deleted__isnull=True)
     except Account.DoesNotExist:
         return 'User account not found'
         
     return ua.get_disk_quota() * 1048576
 
 
-@xmlrpc_func(returns='int, list', args=['string'])
-def showquota(username):
+@xmlrpc_func(returns='int, list', args=['string', 'string'])
+def showquota(username, machine_name=None):
     """
     returns a list a tuples
     (project_id, actual_mpots, quota_mpots)
     """
-    machine_category = MachineCategory.objects.get_default()
+
+    machine_category = _get_machine_category(machine_name)
+
     try:
-        person = Person.active.get(user__username=username)
-    except Person.DoesNotExist:
-        return -1, 'User not found'
-        
+        u_a = Account.objects.get(
+                username=username,
+                machine_category=machine_category,
+                date_deleted__isnull=True)
+    except:
+        return -1, 'Account not found'
+
     try:
-        u_a = person.get_account(machine_category)
         d_p = u_a.default_project
     except:
         return -1, 'Default Project not found'
 
     p_l = []
-    for project in person.project_set.filter(is_active=True, machine_categories=machine_category):
+    for project in u_a.person.projects.filter(is_active=True, machine_categories=machine_category):
         project_chunk, created = ProjectChunk.objects.get_or_create(project=project, machine_category=machine_category)
         is_default = False
         if project == d_p:
