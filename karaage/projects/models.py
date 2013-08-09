@@ -49,6 +49,13 @@ class Project(models.Model):
     active = ActiveProjectManager()
     deleted = DeletedProjectManager()
 
+    def __init__(self, *args, **kwargs):
+        super(Project, self).__init__(*args, **kwargs)
+        if self.group_id is None:
+            self._group = None
+        else:
+            self._group = self.group
+
     class Meta:
         ordering = ['pid']
         db_table = 'project'
@@ -66,12 +73,28 @@ class Project(models.Model):
             name = self.pid
             self.group,_ = Group.objects.get_or_create(name=name)
 
+        # has group changed?
+        old_group = self._group
+        new_group = self.group
+        if old_group != new_group:
+            if old_group is not None:
+                from karaage.datastores import remove_account_from_project
+                for account in Account.objects.filter(person__groups=old_group):
+                    remove_account_from_project(account, self)
+            if new_group is not None:
+                from karaage.datastores import add_account_to_project
+                for account in Account.objects.filter(person__groups=new_group):
+                    add_account_to_project(account, self)
+
         # save the object
         super(Project, self).save(*args, **kwargs)
 
         # update the datastore
         from karaage.datastores import save_project
         save_project(self)
+
+        # save the current state
+        self._group = self.group
     save.alters_data = True
 
     def delete(self, *args, **kwargs):

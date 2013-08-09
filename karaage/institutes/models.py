@@ -17,6 +17,7 @@
 
 from django.db import models
 from karaage.people.models import Person, Group
+from karaage.machines.models import Account
 from karaage.institutes.managers import ActiveInstituteManager
 
 
@@ -29,6 +30,13 @@ class Institute(models.Model):
     objects = models.Manager()
     active = ActiveInstituteManager()
 
+    def __init__(self, *args, **kwargs):
+        super(Institute, self).__init__(*args, **kwargs)
+        if self.group_id is None:
+            self._group = None
+        else:
+            self._group = self.group
+
     class Meta:
         ordering = ['name']
         db_table = 'institute'
@@ -39,12 +47,28 @@ class Institute(models.Model):
             name = str(self.name.lower().replace(' ', ''))
             self.group,_ = Group.objects.get_or_create(name=name)
 
+        # has group changed?
+        old_group = self._group
+        new_group = self.group
+        if old_group != new_group:
+            if old_group is not None:
+                from karaage.datastores import remove_account_from_institute
+                for account in Account.objects.filter(person__groups=old_group):
+                    remove_account_from_institute(account, self)
+            if new_group is not None:
+                from karaage.datastores import add_account_to_institute
+                for account in Account.objects.filter(person__groups=new_group):
+                    add_account_to_institute(account, self)
+
         # save the object
         super(Institute, self).save(*args, **kwargs)
 
         # update the datastore
         from karaage.datastores import save_institute
         save_institute(self)
+
+        # save the current state
+        self._group = self.group
     save.alters_data = True
 
     def delete(self, *args, **kwargs):

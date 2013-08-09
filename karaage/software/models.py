@@ -18,7 +18,7 @@
 from django.db import models
 
 from karaage.people.models import Person, Group
-from karaage.machines.models import Machine
+from karaage.machines.models import Machine, Account
 
 from karaage.util import log_object as log
 
@@ -47,6 +47,13 @@ class SoftwarePackage(models.Model):
     academic_only = models.BooleanField()
     restricted = models.BooleanField(help_text="Will require admin approval")
 
+    def __init__(self, *args, **kwargs):
+        super(SoftwarePackage, self).__init__(*args, **kwargs)
+        if self.group_id is None:
+            self._group = None
+        else:
+            self._group = self.group
+
     class Meta:
         ordering = ['name']
         db_table = 'software_package'
@@ -57,6 +64,19 @@ class SoftwarePackage(models.Model):
             name = str(self.name.lower().replace(' ', ''))
             self.group,_ = Group.objects.get_or_create(name=name)
 
+        # has group changed?
+        old_group = self._group
+        new_group = self.group
+        if old_group != new_group:
+            if old_group is not None:
+                from karaage.datastores import remove_account_from_software
+                for account in Account.objects.filter(person__groups=old_group):
+                    remove_account_from_software(account, self)
+            if new_group is not None:
+                from karaage.datastores import add_account_to_software
+                for account in Account.objects.filter(person__groups=new_group):
+                    add_account_to_software(account, self)
+
         # save the object
         super(SoftwarePackage, self).save(*args, **kwargs)
 
@@ -66,6 +86,9 @@ class SoftwarePackage(models.Model):
 
         # log message
         log(None, self, 2, "Saved software package")
+
+        # save the current state
+        self._group = self.group
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
