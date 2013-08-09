@@ -19,7 +19,7 @@
 from django_xmlrpc.decorators import xmlrpc_func, permission_required
 
 from karaage.projects.models import Project
-from karaage.machines.models import MachineCategory, Account
+from karaage.machines.models import MachineCategory, Machine, Account
 from karaage.util import log_object as log
 
 
@@ -34,7 +34,7 @@ def get_project_members(user, project_id):
     except Project.DoesNotExist:
         return 'Project not found'
         
-    return [x.user.username for x in project.users.all()]
+    return [x.user.username for x in project.group.members.all()]
 
 
 @xmlrpc_func(returns='list')
@@ -47,14 +47,16 @@ def get_projects(user):
     return [x.pid for x in Project.active.all()]
 
 
-@xmlrpc_func(returns='string', args=['string', 'string'])
-def get_project(username, proj=None):
+@xmlrpc_func(returns='string', args=['string', 'string', 'string'])
+def get_project(username, proj, machine_name):
     """
     Used in the submit filter to make sure user is in project
     """
     
+    machine = Machine.objects.get(name=machine_name)
+    machine_category = MachineCategory.objects.get(machine=machine)
     try:
-        account = Account.objects.get(username=username, machine_category=MachineCategory.objects.get_default())
+        account = Account.objects.get(username=username, machine_category=machine_category)
     except Account.DoesNotExist:
         return "User '%s' not found" % username
     if proj is None:
@@ -65,37 +67,36 @@ def get_project(username, proj=None):
         except Project.DoesNotExist:
             project = account.default_project
     if project:
-        if account.user in project.users.all():
+        if account.person in project.group.members.all():
             return project.pid
         else:
-            if account.user in account.default_project.users.all():
+            if account.person in account.default_project.group.members.all():
                 return account.default_project.pid
             
     return "None"
 
 
-@xmlrpc_func(returns='int', args=['string'])
+@xmlrpc_func(returns='int', args=['string', 'string'])
 @permission_required()
-def change_default_project(user, project):
+def change_default_project(user, project, machine_name):
     """
     Change default project
     """
-    user = user.get_profile()
+    person = user.get_profile()
     try:
         project = Project.objects.get(pid=project)
     except Project.DoesNotExist:
         return -1, "Project %s does not exist" % project
     
-    if not user in project.users.all():
+    if not person in project.group.members.all():
         return -2, "User %s not a member of project %s" % (user, project.pid)
     
-    mc = MachineCategory.objects.get_default()
-    
-    account = user.get_account(mc)
+    machine = Machine.objects.get(name=machine_name)
+    machine_category = MachineCategory.objects.get(machine=machine)
+    account = person.get_account(machine_category)
     
     account.default_project = project
     account.save()
-    account.user.save()
     
     log(user.user, user, 2, 'Changed default project to %s' % project.pid)
     
@@ -108,6 +109,6 @@ def get_users_projects(user):
     """
     List projects a user is part of
     """
-    user = user.get_profile()
-    projects = user.project_set.filter(is_active=True)
+    person = user.get_profile()
+    projects = person.projects.filter(is_active=True)
     return 0, [x.pid for x in projects]
