@@ -17,6 +17,10 @@ DATASTORES = {
             'LDAP': 'default',
             'ACCOUNT': 'karaage.datastores.ldap_schemas.account',
             'GROUP': 'karaage.datastores.ldap_schemas.group',
+            'PRIMARY_GROUP': "institute",
+            'DEFAULT_PRIMARY_GROUP': "dummy",
+            'HOME_DIRECTORY': "/vpac/%(default_project)s/%(uid)s",
+            'LOCKED_SHELL': '/usr/local/sbin/insecure',
         },
     ],
     'dummy' : [
@@ -27,7 +31,6 @@ DATASTORES = {
 
 ACCOUNTS_ORG_NAME = 'TestOrg'
 
-LOCKED_SHELL = '/usr/local/sbin/insecure'
 BOUNCED_SHELL = '/usr/local/sbin/bouncedemail'
 
 USER_OBJECTCLASS = ['top','person','organizationalPerson','inetOrgPerson', 'shadowAccount',]
@@ -69,10 +72,6 @@ PLACARD_MASTER = {
 }
 
 LDAP_SCHEMA_FILE = "conf/ldap_schemas.py"
-
-PRIMARY_GROUP = "institute"
-DEFAULT_PRIMARY_GROUP = "dummy"
-HOME_DIRECTORY = "/vpac/%(default_project)s/%(uid)s"
 
 SERVER_EMAIL = 'django@' + uname()[1]
 ACCOUNTS_EMAIL = 'accounts@vpac.org'

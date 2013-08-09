@@ -48,6 +48,14 @@ class AccountDataStore(base.BaseDataStore):
         self._using = config['LDAP']
         self._account = _lookup(config['ACCOUNT'])
         self._group = _lookup(config['GROUP'])
+        self._primary_group = config.get('PRIMARY_GROUP',
+                'institute')
+        self._default_primary_group = config.get('DEFAULT_PRIMARY_GROUP',
+                'dummy')
+        self._home_directory = config.get('HOME_DIRECTORY',
+                "/home/%(uid)s")
+        self._locked_shell = config.get('LOCKED_SHELL',
+                "/usr/local/sbin/locked")
 
     def _accounts(self):
         """ Return accounts query. """
@@ -68,16 +76,16 @@ class AccountDataStore(base.BaseDataStore):
     def save_account(self, account):
         """ Account was saved. """
         person = account.person
-        if settings.PRIMARY_GROUP == 'institute':
+        if self._primary_group == 'institute':
             lgroup = self._groups().get(cn=person.institute.group.name)
-        elif settings.PRIMARY_GROUP == 'default_project':
+        elif self._primary_group == 'default_project':
             if account.default_project is None:
-                lgroup = self._groups().get(cn=settings.DEFAULT_PRIMARY_GROUP)
+                lgroup = self._groups().get(cn=self._default_primary_group)
             else:
                 lgroup = self._groups().get(
                     cn=account.default_project.group.name)
         else:
-            raise RuntimeError("Unknown value of settings.PRIMARY_GROUP.")
+            raise RuntimeError("Unknown value of PRIMARY_GROUP.")
 
         if account.default_project is None:
             default_project = "none"
@@ -94,11 +102,11 @@ class AccountDataStore(base.BaseDataStore):
             luser.title = _str_or_none(person.title)
             luser.o = person.institute.name
             luser.gidNumber = lgroup.gidNumber
-            luser.homeDirectory = settings.HOME_DIRECTORY % {
+            luser.homeDirectory = self._home_directory % {
                 'default_project': default_project,
                 'uid': person.username }
             if account.is_locked():
-                luser.loginShell = settings.LOCKED_SHELL
+                luser.loginShell = self._locked_shell
             else:
                 luser.loginShell = account.shell
             luser.pre_save()
@@ -114,7 +122,7 @@ class AccountDataStore(base.BaseDataStore):
             luser.title = _str_or_none(person.title)
             luser.o = person.institute.name
             luser.gidNumber = lgroup.gidNumber
-            luser.homeDirectory = settings.HOME_DIRECTORY % {
+            luser.homeDirectory = self._home_directory % {
                 'default_project': default_project,
                 'uid': person.username }
             luser.loginShell = account.shell
