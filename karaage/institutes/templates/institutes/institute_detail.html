@@ -58,11 +58,12 @@
 <h2>Users</h2>
     {% gen_table institute.person_set.select_related %}
   </div>
-{% for mc, graph_url in graph.iteritems %}
+{% for mc, graph in graph.iteritems %}
 <div class="module">
     <h2>Usage - {{ mc }}</h2>
+    <p><a href="{{ graph.data_url }}">data</a></p>
     <a href="{% url 'kg_usage_institute' mc.pk institute.pk %}">
-    <img src="{{ GRAPH_URL }}institutes/{{ graph_url }}"/>
+    <img src="{{ graph.graph_url }}"/>
 </div>
 </a>
 {% endfor %}
