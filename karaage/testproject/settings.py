@@ -33,10 +33,6 @@ ACCOUNTS_ORG_NAME = 'TestOrg'
 
 BOUNCED_SHELL = '/usr/local/sbin/bouncedemail'
 
-USER_OBJECTCLASS = ['top','person','organizationalPerson','inetOrgPerson', 'shadowAccount',]
-ACCOUNT_OBJECTCLASS = ['top','person','organizationalPerson','inetOrgPerson', 'shadowAccount','posixAccount']
-
-
 DEFAULT_MC = 1
 AUTH_PROFILE_MODULE = 'people.Person'
 
@@ -53,7 +49,7 @@ DATABASES = {
 
 LDAP = {
     'default': {
-        'ENGINE': 'tldap.backend.transaction',
+        'ENGINE': 'tldap.backend.fake_transactions',
         'URI': 'ldap://localhost:38911/',
         'USER': 'cn=Manager,dc=python-ldap,dc=org',
         'PASSWORD': 'password',
@@ -62,13 +58,6 @@ LDAP = {
         'LDAP_ACCOUNT_BASE': 'ou=People, dc=python-ldap,dc=org',
         'LDAP_GROUP_BASE': 'ou=Group, dc=python-ldap,dc=org'
     }
-}
-
-PLACARD_MASTER = {
-    'NAME': 'OpenLDAP',
-    'LDAP': 'default',
-    'ACCOUNT': 'karaage.datastores.ldap_schemas.account',
-    'GROUP': 'karaage.datastores.ldap_schemas.group',
 }
 
 LDAP_SCHEMA_FILE = "conf/ldap_schemas.py"
