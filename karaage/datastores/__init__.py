@@ -83,6 +83,18 @@ def set_person_username(person, old_username, new_username):
         for datastore in _get_datastores_for_name(name):
             datastore.set_person_username(person, old_username, new_username)
 
+def add_person_to_group(person, group):
+    """ Add person to group. """
+    for name in _get_all_names():
+        for datastore in _get_datastores_for_name(name):
+            datastore.add_person_to_group(person, group)
+
+def remove_person_from_group(person, group):
+    """ Remove person from group. """
+    for name in _get_all_names():
+        for datastore in _get_datastores_for_name(name):
+            datastore.remove_person_from_group(person, group)
+
 def person_exists(username):
     """ Does this person exist??? """
     for name in _get_all_names():
@@ -142,6 +154,42 @@ def remove_account_from_group(account, group):
     name = account.machine_category.datastore
     for datastore in _get_datastores_for_name(name):
         datastore.remove_account_from_group(account, group)
+
+def add_account_to_project(account, project):
+    """ Add project to group. """
+    name = account.machine_category.datastore
+    for datastore in _get_datastores_for_name(name):
+        datastore.add_account_to_project(account, project)
+
+def remove_account_from_project(account, project):
+    """ Remove project from group. """
+    name = account.machine_category.datastore
+    for datastore in _get_datastores_for_name(name):
+        datastore.remove_account_from_project(account, project)
+
+def add_account_to_institute(account, institute):
+    """ Add institute to group. """
+    name = account.machine_category.datastore
+    for datastore in _get_datastores_for_name(name):
+        datastore.add_account_to_institute(account, institute)
+
+def remove_account_from_institute(account, institute):
+    """ Remove institute from group. """
+    name = account.machine_category.datastore
+    for datastore in _get_datastores_for_name(name):
+        datastore.remove_account_from_institute(account, institute)
+
+def add_account_to_software(account, software):
+    """ Add software to group. """
+    name = account.machine_category.datastore
+    for datastore in _get_datastores_for_name(name):
+        datastore.add_account_to_software(account, software)
+
+def remove_account_from_software(account, software):
+    """ Remove software from group. """
+    name = account.machine_category.datastore
+    for datastore in _get_datastores_for_name(name):
+        datastore.remove_account_from_software(account, software)
 
 def account_exists(username, machine_category):
     """ Does the account exist??? """
@@ -213,6 +261,17 @@ def delete_project(institute):
         for datastore in _get_datastores_for_name(name):
             datastore.delete_project(institute)
 
+def get_project_details(project):
+    """ Get details for this user. """
+    result = {}
+    for name in _get_all_names():
+        result[name] = []
+        for datastore in _get_datastores_for_name(name):
+            value = datastore.get_project_details(project)
+            value['datastore'] = datastore.config['DESCRIPTION']
+            result[name].append(value)
+    return result
+
 
 #############
 # Institute #
@@ -230,6 +289,17 @@ def delete_institute(institute):
         for datastore in _get_datastores_for_name(name):
             datastore.delete_institute(institute)
 
+def get_institute_details(institute):
+    """ Get details for this user. """
+    result = {}
+    for name in _get_all_names():
+        result[name] = []
+        for datastore in _get_datastores_for_name(name):
+            value = datastore.get_institute_details(institute)
+            value['datastore'] = datastore.config['DESCRIPTION']
+            result[name].append(value)
+    return result
+
 
 ############
 # Software #
@@ -246,3 +316,15 @@ def delete_software(institute):
     for name in _get_all_names():
         for datastore in _get_datastores_for_name(name):
             datastore.delete_software(institute)
+
+def get_software_details(software):
+    """ Get details for this user. """
+    result = {}
+    for name in _get_all_names():
+        result[name] = []
+        for datastore in _get_datastores_for_name(name):
+            value = datastore.get_software_details(software)
+            value['datastore'] = datastore.config['DESCRIPTION']
+            result[name].append(value)
+    return result
+

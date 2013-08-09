@@ -446,63 +446,84 @@ class Group(models.Model):
     change_name.alters_data = True
 
 
+def _add_person_to_group(person, group):
+    """ Call datastores after adding a person to a group. """
+    from karaage.datastores import add_person_to_group
+    from karaage.datastores import add_account_to_group
+    from karaage.datastores import add_account_to_project
+    from karaage.datastores import add_account_to_institute
+    from karaage.datastores import add_account_to_software
+
+    add_person_to_group(person, group)
+    for account in person.account_set.filter(date_deleted__isnull=True):
+        add_account_to_group(account, group)
+        add_account_to_project(account, group)
+        add_account_to_institute(account, group)
+        add_account_to_software(account, group)
+
+def _remove_person_from_group(person, group):
+    """ Call datastores after removing a person from a group. """
+    from karaage.datastores import remove_person_from_group
+    from karaage.datastores import remove_account_from_group
+    from karaage.datastores import remove_account_from_project
+    from karaage.datastores import remove_account_from_institute
+    from karaage.datastores import remove_account_from_software
+
+    remove_person_from_group(person, group)
+    for account in person.account_set.filter(date_deleted__isnull=True):
+        remove_account_from_group(account, group)
+        remove_account_from_project(account, group)
+        remove_account_from_institute(account, group)
+        remove_account_from_software(account, group)
+
 def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
     """
     Hook that executes whenever the group members are changed.
     """
     #print "'%s','%s','%s','%s','%s'"%(instance, action, reverse, model, pk_set)
+
     if action == "post_add":
-        from karaage.datastores import add_account_to_group
         if not reverse:
             group = instance
             for person in model.objects.filter(pk__in=pk_set):
                 log(None, person, 2, "Added person to group %s" % group)
                 log(None, group, 2, "Added person %s to group" % person)
-                for ua in person.account_set.filter(date_deleted__isnull=True):
-                    add_account_to_group(ua, group)
+                _add_person_to_group(person, group)
         else:
             person = instance
             for group in model.objects.filter(pk__in=pk_set):
                 log(None, person, 2, "Added person to group %s" % group)
                 log(None, group, 2, "Added person %s to group" % person)
-                for ua in person.account_set.filter(date_deleted__isnull=True):
-                    add_account_to_group(ua, group)
+                _add_person_to_group(person, group)
 
     elif action == "post_remove":
-        from karaage.datastores import remove_account_from_group
         if not reverse:
             group = instance
             for person in model.objects.filter(pk__in=pk_set):
                 log(None, person, 2, "Removed person from group %s" % group)
                 log(None, group, 2, "Removed person %s from group" % person)
-                for ua in person.account_set.filter(date_deleted__isnull=True):
-                    remove_account_from_group(ua, group)
+                _remove_person_from_group(person, group)
         else:
             person = instance
             for group in model.objects.filter(pk__in=pk_set):
                 log(None, person, 2, "Removed person from group %s" % group)
                 log(None, group, 2, "Removed person %s from group" % person)
-                for ua in person.account_set.filter(date_deleted__isnull=True):
-                    remove_account_from_group(ua, group)
+                _remove_person_from_group(person, group)
 
     elif action == "pre_clear":
         # This has to occur in pre_clear, not post_clear, as otherwise
         # we won't see what groups need to be removed.
-        from karaage.datastores import remove_account_from_group
         if not reverse:
             group = instance
             log(None, group, 2, "Removed all people from group")
             for person in group.members.all():
                 log(None, group, 2, "Removed person %s from group" % person)
-                for ua in person.account_set.filter(date_deleted__isnull=True):
-                    remove_account_from_group(ua, group)
+                _remove_person_from_group(person, group)
         else:
             person = instance
             log(None, person, 2, "Removed person from all groups")
             for group in person.groups.all():
                 log(None, group, 2, "Removed person %s from group" % person)
-                for ua in person.account_set.filter(date_deleted__isnull=True):
-                    remove_account_from_group(ua, group)
-
+                _remove_person_from_group(person, group)
 
 models.signals.m2m_changed.connect(_members_changed, sender=Group.members.through)

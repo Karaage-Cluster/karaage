@@ -47,6 +47,15 @@ def institute_detail(request, institute_id):
     return render_to_response('institutes/institute_detail.html', locals(), context_instance=RequestContext(request))
     
 
+def institute_verbose(request, institute_id):
+    institute = get_object_or_404(Institute, pk=institute_id)
+
+    from karaage.datastores import get_institute_details
+    institute_details = get_institute_details(institute)
+
+    return render_to_response('institutes/institute_verbose.html', locals(), context_instance=RequestContext(request))
+
+
 def institute_list(request):
 
     institute_list = Institute.objects.all()

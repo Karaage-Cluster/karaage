@@ -68,3 +68,12 @@
 {% endfor %}
 </div>
 {% endblock %}
+
+{% block object-tools %}
+<div class="module object-tools">
+    <h2>Tasks</h2>
+    <ul>
+        <li><a href="{% url 'kg_institute_verbose' institute.pk %}">Verbose</a></li>
+    </ul>
+</div>
+{% endblock %}

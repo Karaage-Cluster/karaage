@@ -55,6 +55,7 @@ urlpatterns += patterns('karaage.software.views.admin',
     url(r'^requests/(?P<softwarerequest_id>\d+)/decline/$', 'softwarerequest_delete', name='kg_softwarerequest_delete'),
                         
     url(r'^(?P<package_id>\d+)/$', 'software_detail', name='kg_software_detail'),
+    url(r'^(?P<package_id>\d+)/verbose/$', 'software_verbose', name='kg_software_verbose'),
     url(r'^(?P<package_id>\d+)/stats/$', 'software_stats', name='kg_software_stats'),
     url(r'^(?P<package_id>\d+)/remove/(?P<user_id>\d+)/$', 'remove_member', name='kg_software_removeuser'),
     url(r'^(?P<package_id>\d+)/license/add/$', 'add_edit_license', name='kg_softwarelicense_add'),

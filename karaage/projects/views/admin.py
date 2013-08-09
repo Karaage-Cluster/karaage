@@ -127,6 +127,16 @@ def project_detail(request, project_id):
 
 
 @login_required
+def project_verbose(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+
+    from karaage.datastores import get_project_details
+    project_details = get_project_details(project)
+
+    return render_to_response('projects/project_verbose.html', locals(), context_instance=RequestContext(request))
+
+
+@login_required
 def project_list(request, queryset=Project.objects.select_related(), template_name='projects/project_list.html', paginate=True):
 
     project_list = queryset

@@ -45,6 +45,14 @@ class BaseDataStore(object):
         """ Person's username was changed. """
         return
 
+    def add_person_to_group(self, person, group):
+        """ Add person to group. """
+        return
+
+    def remove_person_from_group(self, person, group):
+        """ Remove person from group. """
+        return
+
     def get_person_details(self, person):
         """ Get person's details. """
         return {}
@@ -80,6 +88,30 @@ class BaseDataStore(object):
 
     def remove_account_from_group(self, account, group):
         """ Remove account from group. """
+        return
+
+    def add_account_to_project(self, account, project):
+        """ Add project to group. """
+        return
+
+    def remove_account_from_project(self, account, project):
+        """ Remove project from group. """
+        return
+
+    def add_account_to_institute(self, account, institute):
+        """ Add institute to group. """
+        return
+
+    def remove_account_from_institute(self, account, institute):
+        """ Remove institute from group. """
+        return
+
+    def add_account_to_software(self, account, software):
+        """ Add software to group. """
+        return
+
+    def remove_account_from_software(self, account, software):
+        """ Remove software from group. """
         return
 
     def account_exists(self, username):
@@ -124,6 +156,10 @@ class BaseDataStore(object):
         """ Project was deleted. """
         return
 
+    def get_project_details(self, project):
+        """ Get project's details. """
+        return {}
+
 
     #############
     # INSTITUTE #
@@ -137,6 +173,10 @@ class BaseDataStore(object):
         """ Institute was deleted. """
         return
 
+    def get_institute_details(self, institute):
+        """ Get institute's details. """
+        return {}
+
 
     ############
     # SOFTWARE #
@@ -149,3 +189,7 @@ class BaseDataStore(object):
     def delete_software(self, software):
         """ Software was deleted. """
         return
+
+    def get_software_details(self, software):
+        """ Get software's details. """
+        return {}

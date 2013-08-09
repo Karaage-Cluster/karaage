@@ -29,6 +29,7 @@ urlpatterns = patterns('karaage.projects.views.admin',
     url(r'^custom_cap/$', 'project_list', {'queryset': Project.active.filter(projectchunk__cap__isnull=False)}, name='kg_project_custom_cap_list'),
                    
     url(r'^(?P<project_id>[-.\w]+)/$', 'project_detail', name='kg_project_detail'),
+    url(r'^(?P<project_id>[-.\w]+)/verbose/$', 'project_verbose', name='kg_project_verbose'),
     url(r'^(?P<project_id>[-.\w]+)/edit/$', 'add_edit_project', name='kg_edit_project'),
     url(r'^(?P<project_id>[-.\w]+)/delete/$', 'delete_project', name='kg_delete_project'),  
                        

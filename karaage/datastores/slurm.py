@@ -293,29 +293,27 @@ class SlurmDataStore(base.BaseDataStore):
         # FIXME
         pass
 
-    def add_account_to_group(self, account, group):
-        """ Add account to group. """
+    def add_account_to_project(self, account, project):
+        """ Add project to group. """
         username = account.username
-        for project in group.project_set.all():
-            projectname = project.pid
-            logger.debug("add user '%s' to project '%s'"%
-                    (username, projectname))
-            self._call([
-                "add", "user",
-                "accounts=%s"%projectname,
-                "name=%s"%username])
+        projectname = project.pid
+        logger.debug("add user '%s' to project '%s'"%
+                (username, projectname))
+        self._call([
+            "add", "user",
+            "accounts=%s"%projectname,
+            "name=%s"%username])
 
-    def remove_account_from_group(self, account, group):
-        """ Remove account from group. """
+    def remove_account_from_project(self, account, project):
+        """ Remove project from group. """
         username = account.username
-        for project in group.project_set.all():
-            projectname = project.pid
-            logger.debug("delete user '%s' to project '%s'"%
-                    (username,projectname))
-            self._call([
-                "delete", "user",
-                "name=%s"%username,
-                "account=%s"%projectname])
+        projectname = project.pid
+        logger.debug("delete user '%s' to project '%s'"%
+                (username,projectname))
+        self._call([
+            "delete", "user",
+            "name=%s"%username,
+            "account=%s"%projectname])
 
     def account_exists(self, username):
         """ Does the account exist? """
@@ -340,17 +338,6 @@ class SlurmDataStore(base.BaseDataStore):
     def set_group_name(self, group, old_name, new_name):
         """ Group was renamed. """
         pass
-
-    def get_group_details(self, group):
-        """ Get the group details. """
-        combined = {}
-        for project in group.project_set.all():
-            result = self.get_slurm_project(project.pid)
-            if result is None:
-                result = {}
-            for i, j in result.iteritems():
-                combined[project.pid + "_" + i] = j
-        return combined
 
     def save_project(self, project):
         """ Called when project is saved/updated. """
@@ -400,3 +387,11 @@ class SlurmDataStore(base.BaseDataStore):
 
         logger.debug("returning")
         return
+
+    def get_project_details(self, project):
+        """ Get the group details. """
+        result = self.get_slurm_project(project.pid)
+        if result is None:
+            result = {}
+        return result
+

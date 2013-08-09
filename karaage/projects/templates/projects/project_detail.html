@@ -166,5 +166,6 @@
 <li><a href="{% url 'kg_job_list' %}?project={{ project.pid }}">Display all jobs</a></li>
         {% if perms.projects.change_project %}<li><a class="changelink" href="edit/">Edit project details</a></li>{% endif %}
         {% if perms.projects.delete_project and project.is_active %}<li><a class="deletelink" href="delete/">Delete project</a></li>{% endif %}
+      <li><a href="{% url 'kg_project_verbose' project.pid %}">Verbose</a></li>
       </ul>
 </div>{% endblock %}

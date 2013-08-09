@@ -103,6 +103,15 @@ def software_detail(request, package_id):
     return render_to_response('software/software_detail.html', locals(), context_instance=RequestContext(request))
 
 
+def software_verbose(request, package_id):
+    package = get_object_or_404(SoftwarePackage, pk=package_id)
+
+    from karaage.datastores import get_software_details
+    package_details = get_software_details(package)
+
+    return render_to_response('software/software_verbose.html', locals(), context_instance=RequestContext(request))
+
+
 @permission_required('software.add_softwarepackage')
 def add_package(request):
 
