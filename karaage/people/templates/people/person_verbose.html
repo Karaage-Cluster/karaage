@@ -18,9 +18,11 @@
 {% block content %}
 <div id="content-main">
 
-    {% for a in person_details %}
+    {% for name, details in person_details.iteritems %}
     <div class="module">
-        <h2>Person details - {{ a.datastore }}</h2>
+        <h2>Person details - {{name}}</h2>
+        {% for a in details %}
+        <h3>{{a.datastore}}</h3>
         <table>
             {% for i,j in a.iteritems %}
                 <tr>
@@ -28,14 +30,15 @@
                </tr>
             {% endfor %}
         </table>
+        {% endfor %}
     </div>
     {% endfor %}
 
-    {% for mc, array in account_details.iteritems %}
-    {% for account in array %}
+    {% for account in account_details %}
+    {% for name, details in account.iteritems %}
     <div class="module">
-        <h2>Account details - {{ mc }}</h2>
-        {% for a in account %}
+        <h2>Account details - {{ name }}</h2>
+        {% for a in details %}
         <h3>{{ a.datastore }}</h3>
         <table>
             {% for i,j in a.iteritems %}

@@ -40,7 +40,7 @@ def _lookup(cls):
     return(cls)
 
 
-class AccountDataStore(base.AccountDataStore):
+class AccountDataStore(base.BaseDataStore):
     """ LDAP Account datastore. """
 
     def __init__(self, config):

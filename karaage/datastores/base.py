@@ -18,11 +18,16 @@
 """ Base file used for all datastores. """
 
 
-class PersonDataStore(object):
+class BaseDataStore(object):
     """ Base class used for all personal datastores. """
 
     def __init__(self, config):
         self.config = config
+
+
+    ##########
+    # PERSON #
+    ##########
 
     def save_person(self, person):
         """ Person was saved. """
@@ -48,13 +53,6 @@ class PersonDataStore(object):
         """ Does the person exist? """
         return False
 
-
-class AccountDataStore(object):
-    """ Base class used for all account datastores. """
-
-    def __init__(self, config):
-        self.config = config
-
     def save_account(self, account):
         """ Account was saved. """
         return
@@ -71,6 +69,11 @@ class AccountDataStore(object):
         """ Account's username was changed. """
         return
 
+
+    ###########
+    # ACCOUNT #
+    ###########
+
     def account_exists(self, username):
         """ Does the account exist? """
         return False
@@ -86,6 +89,10 @@ class AccountDataStore(object):
     def remove_account_from_group(self, account, group):
         """ Remove account from group. """
         return
+
+    #########
+    # GROUP #
+    #########
 
     def save_group(self, group):
         """ Group was saved. """
@@ -104,11 +111,9 @@ class AccountDataStore(object):
         return {}
 
 
-class ProjectDataStore:
-    """ Base clase for project datastores. """
-
-    def __init__(self, config):
-        self.config = config
+    ###########
+    # PROJECT #
+    ###########
 
     def save_project(self, project):
         """ Project was saved. """
@@ -119,11 +124,9 @@ class ProjectDataStore:
         return
 
 
-class InstituteDataStore:
-    """ Base clase for institute datastores. """
-
-    def __init__(self, config):
-        self.config = config
+    #############
+    # INSTITUTE #
+    #############
 
     def save_institute(self, institute):
         """ Institute was saved. """
@@ -134,11 +137,9 @@ class InstituteDataStore:
         return
 
 
-class SoftwareDataStore:
-    """ Base clase for software datastores. """
-
-    def __init__(self, config):
-        self.config = config
+    ############
+    # SOFTWARE #
+    ############
 
     def save_software(self, software):
         """ Software was saved. """

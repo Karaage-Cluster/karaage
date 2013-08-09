@@ -70,7 +70,7 @@ class Project(models.Model):
         super(Project, self).save(*args, **kwargs)
 
         # update the datastore
-        from karaage.datastores.projects import save_project
+        from karaage.datastores import save_project
         save_project(self)
     save.alters_data = True
 
@@ -83,7 +83,7 @@ class Project(models.Model):
         super(Project, self).delete(*args, **kwargs)
 
         # update the datastore
-        from karaage.datastores.projects import delete_project
+        from karaage.datastores import delete_project
         delete_project(self)
     delete.alters_data = True
 

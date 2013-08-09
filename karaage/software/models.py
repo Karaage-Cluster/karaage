@@ -61,7 +61,7 @@ class SoftwarePackage(models.Model):
         super(SoftwarePackage, self).save(*args, **kwargs)
 
         # update the datastore
-        from karaage.datastores.software import save_software
+        from karaage.datastores import save_software
         save_software(self)
 
         # log message
@@ -73,7 +73,7 @@ class SoftwarePackage(models.Model):
         super(SoftwarePackage, self).delete(*args, **kwargs)
 
         # update the datastore
-        from karaage.datastores.software import delete_software
+        from karaage.datastores import delete_software
         delete_software(self)
     delete.alters_data = True
 

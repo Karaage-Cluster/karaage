@@ -25,11 +25,7 @@ logger = logging.getLogger(__name__)
 from karaage.datastores import base
 
 
-class GoldDataStore(
-        base.AccountDataStore,
-        base.ProjectDataStore,
-        base.InstituteDataStore):
-
+class GoldDataStore(base.BaseDataStore):
     """ Gold datastore. """
 
     def __init__(self, config):

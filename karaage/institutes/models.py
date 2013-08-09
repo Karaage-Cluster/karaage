@@ -43,7 +43,7 @@ class Institute(models.Model):
         super(Institute, self).save(*args, **kwargs)
 
         # update the datastore
-        from karaage.datastores.institutes import save_institute
+        from karaage.datastores import save_institute
         save_institute(self)
     save.alters_data = True
 
@@ -52,7 +52,7 @@ class Institute(models.Model):
         super(Institute, self).delete(*args, **kwargs)
 
         # update the datastore
-        from karaage.datastores.institutes import delete_institute
+        from karaage.datastores import delete_institute
         delete_institute(self)
     delete.alters_data = True
 

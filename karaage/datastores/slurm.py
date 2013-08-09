@@ -24,11 +24,7 @@ logger = logging.getLogger(__name__)
 
 from karaage.datastores import base
 
-class SlurmDataStore(
-        base.AccountDataStore,
-        base.ProjectDataStore,
-        base.InstituteDataStore):
-
+class SlurmDataStore(base.BaseDataStore):
     """ Slurm datastore. """
 
     def __init__(self, config):

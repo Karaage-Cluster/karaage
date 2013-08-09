@@ -27,9 +27,9 @@ from karaage.util import log_object as log
 import warnings
 
 class MachineCategory(models.Model):
-    ACCOUNT_DATASTORES = [ (i,i) for i in settings.ACCOUNT_DATASTORES.keys() ]
+    DATASTORES = [ (i,i) for i in settings.DATASTORES.keys() ]
     name = models.CharField(max_length=100)
-    datastore = models.CharField(max_length=255, choices=ACCOUNT_DATASTORES, help_text="Modifying this value on existing categories will affect accounts created under the old datastore")
+    datastore = models.CharField(max_length=255, choices=DATASTORES, help_text="Modifying this value on existing categories will affect accounts created under the old datastore")
     objects = MachineCategoryManager()
 
     class Meta:

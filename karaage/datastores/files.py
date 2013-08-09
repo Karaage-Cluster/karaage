@@ -21,7 +21,7 @@ from django.conf import settings
 from karaage.datastores import base
 
 
-class AccountDataStore(base.AccountDataStore):
+class AccountDataStore(base.BaseDataStore):
     """ File account datastore. """
 
     def __init__(self, config):

@@ -122,12 +122,7 @@ AUTHENTICATION_BACKENDS = (
 
 # DATA STORES
 
-PERSON_DATASTORES = {
-    'dummy' : [
-    ],
-}
-
-ACCOUNT_DATASTORES = {
+DATASTORES = {
     'ldap' : [
         {
             'DESCRIPTION': 'Default LDAP datastore',
@@ -140,28 +135,6 @@ ACCOUNT_DATASTORES = {
     'dummy' : [
     ],
 }
-
-PROJECT_DATASTORES = {
-    'dummy' : [
-    ],
-}
-
-INSTITUTE_DATASTORES = {
-    'dummy' : [
-    ],
-}
-
-SOFTWARE_DATASTORES = {
-    'dummy' : [
-    ],
-}
-
-# DEFAULT DATA STORES
-
-PERSON_DATASTORE = 'dummy'
-PROJECT_DATASTORE = 'dummy'
-INSTITUTE_DATASTORE = 'dummy'
-SOFTWARE_DATASTORE = 'dummy'
 
 # OTHER
 

@@ -9,16 +9,11 @@ ADMIN_APPROVE_ACCOUNTS = True
 
 # DATASTORES
 
-PERSON_DATASTORES = {
-    'dummy' : [
-    ],
-}
-
-ACCOUNT_DATASTORES = {
+DATASTORES = {
     'ldap' : [
         {
             'DESCRIPTION': 'Default LDAP datastore',
-            'ENGINE': 'karaage.datastores.ldap_datastore',
+            'ENGINE': 'karaage.datastores.ldap_datastore.AccountDataStore',
             'LDAP': 'default',
             'ACCOUNT': 'karaage.datastores.ldap_schemas.account',
             'GROUP': 'karaage.datastores.ldap_schemas.group',
@@ -27,28 +22,6 @@ ACCOUNT_DATASTORES = {
     'dummy' : [
     ],
 }
-
-PROJECT_DATASTORES = {
-    'dummy' : [
-    ],
-}
-
-INSTITUTE_DATASTORES = {
-    'dummy' : [
-    ],
-}
-
-SOFTWARE_DATASTORES = {
-    'dummy' : [
-    ],
-}
-
-# DEFAULT DATA STORES
-
-PERSON_DATASTORE = 'dummy'
-PROJECT_DATASTORE = 'dummy'
-INSTITUTE_DATASTORE = 'dummy'
-SOFTWARE_DATASTORE = 'dummy'
 
 # OTHER
 
