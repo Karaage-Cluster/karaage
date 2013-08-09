@@ -341,18 +341,6 @@ class GoldDataStore(base.BaseDataStore):
         # FIXME
         pass
 
-    def account_exists(self, username):
-        """ Does the account exist? """
-        gold_user = self.get_gold_user(username)
-        return gold_user is not None
-
-    def get_account_details(self, account):
-        """ Get the account details """
-        result = self.get_gold_user(account.username)
-        if result is None:
-            result = {}
-        return result
-
     def add_account_to_group(self, account, group):
         """ Add account to group. """
         username = account.username
@@ -377,6 +365,18 @@ class GoldDataStore(base.BaseDataStore):
                 "gchproject",
                 "--del-users", username,
                 "-p", projectname])
+
+    def account_exists(self, username):
+        """ Does the account exist? """
+        gold_user = self.get_gold_user(username)
+        return gold_user is not None
+
+    def get_account_details(self, account):
+        """ Get the account details """
+        result = self.get_gold_user(account.username)
+        if result is None:
+            result = {}
+        return result
 
     def save_group(self, group):
         """ Group was saved. """

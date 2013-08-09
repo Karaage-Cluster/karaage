@@ -131,6 +131,18 @@ def set_account_username(account, old_username, new_username):
     for datastore in _get_datastores_for_name(name):
         datastore.set_account_username(account, old_username, new_username)
 
+def add_account_to_group(account, group):
+    """ Add account to group. """
+    name = account.machine_category.datastore
+    for datastore in _get_datastores_for_name(name):
+        datastore.add_account_to_group(account, group)
+
+def remove_account_from_group(account, group):
+    """ Remove account from group. """
+    name = account.machine_category.datastore
+    for datastore in _get_datastores_for_name(name):
+        datastore.remove_account_from_group(account, group)
+
 def account_exists(username, machine_category):
     """ Does the account exist??? """
     name = machine_category.datastore
@@ -149,18 +161,6 @@ def get_account_details(account):
         value['datastore'] = datastore.config['DESCRIPTION']
         result[name].append(value)
     return result
-
-def add_account_to_group(account, group):
-    """ Add account to group. """
-    name = account.machine_category.datastore
-    for datastore in _get_datastores_for_name(name):
-        datastore.add_account_to_group(account, group)
-
-def remove_account_from_group(account, group):
-    """ Remove account from group. """
-    name = account.machine_category.datastore
-    for datastore in _get_datastores_for_name(name):
-        datastore.remove_account_from_group(account, group)
 
 
 #########

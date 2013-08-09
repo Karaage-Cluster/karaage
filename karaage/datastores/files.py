@@ -110,16 +110,6 @@ class AccountDataStore(base.BaseDataStore):
         # FIXME
         pass
 
-    def account_exists(self, username):
-        """ Does the account exist? """
-        # FIXME
-        pass
-
-    def get_account_details(self, account):
-        """ Get account details. """
-        # FIXME
-        pass
-
     def add_account_to_group(self, account, group):
         """ Add account to group. """
         # FIXME
@@ -127,6 +117,16 @@ class AccountDataStore(base.BaseDataStore):
 
     def remove_account_from_group(self, account, group):
         """ Remove account from group. """
+        # FIXME
+        pass
+
+    def account_exists(self, username):
+        """ Does the account exist? """
+        # FIXME
+        pass
+
+    def get_account_details(self, account):
+        """ Get account details. """
         # FIXME
         pass
 

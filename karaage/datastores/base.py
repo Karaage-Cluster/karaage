@@ -53,6 +53,11 @@ class BaseDataStore(object):
         """ Does the person exist? """
         return False
 
+
+    ###########
+    # ACCOUNT #
+    ###########
+
     def save_account(self, account):
         """ Account was saved. """
         return
@@ -69,10 +74,13 @@ class BaseDataStore(object):
         """ Account's username was changed. """
         return
 
+    def add_account_to_group(self, account, group):
+        """ Add account to group. """
+        return
 
-    ###########
-    # ACCOUNT #
-    ###########
+    def remove_account_from_group(self, account, group):
+        """ Remove account from group. """
+        return
 
     def account_exists(self, username):
         """ Does the account exist? """
@@ -82,13 +90,6 @@ class BaseDataStore(object):
         """ Get the account details """
         return {}
 
-    def add_account_to_group(self, account, group):
-        """ Add account to group. """
-        return
-
-    def remove_account_from_group(self, account, group):
-        """ Remove account from group. """
-        return
 
     #########
     # GROUP #

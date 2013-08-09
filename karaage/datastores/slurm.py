@@ -293,18 +293,6 @@ class SlurmDataStore(base.BaseDataStore):
         # FIXME
         pass
 
-    def account_exists(self, username):
-        """ Does the account exist? """
-        slurm_user = self.get_slurm_user(username)
-        return slurm_user is not None
-
-    def get_account_details(self, account):
-        """ Get the account details """
-        result = self.get_slurm_user(account.username)
-        if result is None:
-            result = {}
-        return result
-
     def add_account_to_group(self, account, group):
         """ Add account to group. """
         username = account.username
@@ -328,6 +316,18 @@ class SlurmDataStore(base.BaseDataStore):
                 "delete", "user",
                 "name=%s"%username,
                 "account=%s"%projectname])
+
+    def account_exists(self, username):
+        """ Does the account exist? """
+        slurm_user = self.get_slurm_user(username)
+        return slurm_user is not None
+
+    def get_account_details(self, account):
+        """ Get the account details """
+        result = self.get_slurm_user(account.username)
+        if result is None:
+            result = {}
+        return result
 
     def save_group(self, group):
         """ Group was saved. """

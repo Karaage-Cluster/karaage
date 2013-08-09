@@ -145,6 +145,18 @@ class AccountDataStore(base.BaseDataStore):
         luser = self._accounts().get(uid=old_username)
         luser.rename(uid=new_username)
 
+    def add_account_to_group(self, account, group):
+        """ Add account to group. """
+        lgroup = self._groups().get(cn=group.name)
+        person = self._accounts().get(uid=account.username)
+        lgroup.secondary_accounts.add(person)
+
+    def remove_account_from_group(self, account, group):
+        """ Remove account from group. """
+        lgroup = self._groups().get(cn=group.name)
+        person = self._accounts().get(uid=account.username)
+        lgroup.secondary_accounts.remove(person)
+
     def get_account_details(self, account):
         """ Account's details were changed. """
         luser = self._accounts().get(uid=account.username)
@@ -167,18 +179,6 @@ class AccountDataStore(base.BaseDataStore):
             return True
         except self._account.DoesNotExist:
             return False
-
-    def add_account_to_group(self, account, group):
-        """ Add account to group. """
-        lgroup = self._groups().get(cn=group.name)
-        person = self._accounts().get(uid=account.username)
-        lgroup.secondary_accounts.add(person)
-
-    def remove_account_from_group(self, account, group):
-        """ Remove account from group. """
-        lgroup = self._groups().get(cn=group.name)
-        person = self._accounts().get(uid=account.username)
-        lgroup.secondary_accounts.remove(person)
 
     def save_group(self, group):
         """ Group was saved. """
