@@ -201,15 +201,12 @@ class Account(models.Model):
     save.alters_data = True
 
     def delete(self):
+        # delete the object
+        super(Account, self).delete()
         if self.date_deleted is None:
-            # delete the object
-            super(Account, self).delete(*args, **kwargs)
-
-            # update the datastore
+            # delete the datastore
             from karaage.datastores import delete_account
             delete_account(self)
-        else:
-            raise RuntimeError("Account is deactivated")
     delete.alters_data = True
 
     def deactivate(self):
@@ -219,12 +216,13 @@ class Account(models.Model):
         self.date_deleted = datetime.datetime.now()
         self.login_enabled = False
         self.save()
-
+        # self.save() will delete the datastore for us.
     deactivate.alters_data = True
 
     def change_shell(self, shell):
         self.shell = shell
         self.save()
+        # self.save() will update the datastore for us.
         log(None, self.person, 2,
             'Changed shell on %s' % self.machine_category)
     change_shell.alters_data = True

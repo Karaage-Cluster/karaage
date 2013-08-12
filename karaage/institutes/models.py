@@ -52,12 +52,18 @@ class Institute(models.Model):
         new_group = self.group
         if old_group != new_group:
             if old_group is not None:
+                from karaage.datastores import remove_person_from_institute
+                for person in Person.objects.filter(groups=old_group):
+                    remove_person_from_institute(person, self)
                 from karaage.datastores import remove_account_from_institute
-                for account in Account.objects.filter(person__groups=old_group):
+                for account in Account.objects.filter(person__groups=old_group, date_deleted__isnull=True):
                     remove_account_from_institute(account, self)
             if new_group is not None:
+                from karaage.datastores import add_person_to_institute
+                for person in Person.objects.filter(groups=new_group):
+                    add_person_to_institute(person, self)
                 from karaage.datastores import add_account_to_institute
-                for account in Account.objects.filter(person__groups=new_group):
+                for account in Account.objects.filter(person__groups=new_group, date_deleted__isnull=True):
                     add_account_to_institute(account, self)
 
         # save the object

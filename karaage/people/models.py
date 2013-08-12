@@ -64,6 +64,10 @@ class Person(models.Model):
     def __init__(self, *args, **kwargs):
         super(Person, self).__init__(*args, **kwargs)
         self._login_enabled = self.login_enabled
+        if self.institute_id is None:
+            self._institute = None
+        else:
+            self._institute = self.institute
 
     class Meta:
         verbose_name_plural = 'people'
@@ -182,6 +186,23 @@ class Person(models.Model):
                     ua.lock()
                 log(None, self, 2, 'Locked person')
 
+        # has the institute changed?
+        old_institute = self._institute
+        new_institute = self.institute
+        if old_institute != new_institute:
+            if old_institute is not None:
+                from karaage.datastores import remove_person_from_institute
+                remove_person_from_institute(self, old_institute)
+                from karaage.datastores import remove_account_from_institute
+                for account in self.account_set.filter(date_deleted__isnull=True):
+                    remove_account_from_institute(account, old_institute)
+            if new_institute is not None:
+                from karaage.datastores import add_person_to_institute
+                add_person_to_institute(self, new_institute)
+                from karaage.datastores import add_account_to_institute
+                for account in self.account_set.filter(date_deleted__isnull=True):
+                    add_account_to_institute(account, new_institute)
+
         # update account datastores
         from karaage.datastores import save_account
         for ua in self.account_set.filter(date_deleted__isnull=True):
@@ -192,6 +213,7 @@ class Person(models.Model):
 
         # save current state
         self._login_enabled = self.login_enabled
+        self._institute = self.institute
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
