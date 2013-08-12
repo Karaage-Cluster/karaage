@@ -53,6 +53,30 @@ class BaseDataStore(object):
         """ Remove person from group. """
         return
 
+    def add_person_to_project(self, person, project):
+        """ Add person to project. """
+        return
+
+    def remove_person_from_project(self, person, project):
+        """ Remove person from project. """
+        return
+
+    def add_person_to_institute(self, person, institute):
+        """ Add person to institute. """
+        return
+
+    def remove_person_from_institute(self, person, institute):
+        """ Remove person from institute. """
+        return
+
+    def add_person_to_software(self, person, software):
+        """ Add person to software. """
+        return
+
+    def remove_person_from_software(self, person, software):
+        """ Remove person from software. """
+        return
+
     def get_person_details(self, person):
         """ Get person's details. """
         return {}
@@ -91,27 +115,27 @@ class BaseDataStore(object):
         return
 
     def add_account_to_project(self, account, project):
-        """ Add project to group. """
+        """ Add account to project. """
         return
 
     def remove_account_from_project(self, account, project):
-        """ Remove project from group. """
+        """ Remove account from project. """
         return
 
     def add_account_to_institute(self, account, institute):
-        """ Add institute to group. """
+        """ Add account to institute. """
         return
 
     def remove_account_from_institute(self, account, institute):
-        """ Remove institute from group. """
+        """ Remove account from institute. """
         return
 
     def add_account_to_software(self, account, software):
-        """ Add software to group. """
+        """ Add account to software. """
         return
 
     def remove_account_from_software(self, account, software):
-        """ Remove software from group. """
+        """ Remove account from software. """
         return
 
     def account_exists(self, username):

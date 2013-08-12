@@ -449,32 +449,60 @@ class Group(models.Model):
 def _add_person_to_group(person, group):
     """ Call datastores after adding a person to a group. """
     from karaage.datastores import add_person_to_group
+    from karaage.datastores import add_person_to_project
+    from karaage.datastores import add_person_to_institute
+    from karaage.datastores import add_person_to_software
     from karaage.datastores import add_account_to_group
     from karaage.datastores import add_account_to_project
     from karaage.datastores import add_account_to_institute
     from karaage.datastores import add_account_to_software
 
-    add_person_to_group(person, group)
-    for account in person.account_set.filter(date_deleted__isnull=True):
-        add_account_to_group(account, group)
-        add_account_to_project(account, group)
-        add_account_to_institute(account, group)
-        add_account_to_software(account, group)
+    a_list = list(person.account_set.filter(date_deleted__isnull=True))
+    if True:
+        add_person_to_group(person, group)
+        for account in a_list:
+            add_account_to_group(account, group)
+    for project in group.project_set.all():
+        add_person_to_project(person, project)
+        for account in a_list:
+            add_account_to_project(account, project)
+    for institute in group.institute_set.all():
+        add_person_to_institute(person, institute)
+        for account in a_list:
+            add_account_to_institute(account, institute)
+    for software in group.softwarepackage_set.all():
+        add_person_to_software(person, software)
+        for account in a_list:
+            add_account_to_software(account, software)
 
 def _remove_person_from_group(person, group):
     """ Call datastores after removing a person from a group. """
     from karaage.datastores import remove_person_from_group
+    from karaage.datastores import remove_person_from_project
+    from karaage.datastores import remove_person_from_institute
+    from karaage.datastores import remove_person_from_software
     from karaage.datastores import remove_account_from_group
     from karaage.datastores import remove_account_from_project
     from karaage.datastores import remove_account_from_institute
     from karaage.datastores import remove_account_from_software
 
-    remove_person_from_group(person, group)
-    for account in person.account_set.filter(date_deleted__isnull=True):
-        remove_account_from_group(account, group)
-        remove_account_from_project(account, group)
-        remove_account_from_institute(account, group)
-        remove_account_from_software(account, group)
+    a_list = list(person.account_set.filter(date_deleted__isnull=True))
+    if True:
+        remove_person_from_group(person, group)
+        for account in a_list:
+            remove_account_from_group(account, group)
+    for project in group.project_set.all():
+        remove_person_from_project(person, project)
+        for account in a_list:
+            remove_account_from_project(account, project)
+    for institute in group.institute_set.all():
+        remove_person_from_institute(person, institute)
+        for account in a_list:
+            remove_account_from_institute(account, institute)
+    for software in group.softwarepackage_set.all():
+        remove_person_from_software(person, software)
+        for account in a_list:
+            remove_account_from_software(account, software)
 
 def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
     """

@@ -96,6 +96,42 @@ def remove_person_from_group(person, group):
         for datastore in _get_datastores_for_name(name):
             datastore.remove_person_from_group(person, group)
 
+def add_person_to_project(person, project):
+    """ Add person to project. """
+    for name in _get_all_names():
+        for datastore in _get_datastores_for_name(name):
+            datastore.add_person_to_project(person, project)
+
+def remove_person_from_project(person, project):
+    """ Remove person from project. """
+    for name in _get_all_names():
+        for datastore in _get_datastores_for_name(name):
+            datastore.remove_person_from_project(person, project)
+
+def add_person_to_institute(person, institute):
+    """ Add person to institute. """
+    for name in _get_all_names():
+        for datastore in _get_datastores_for_name(name):
+            datastore.add_person_to_institute(person, institute)
+
+def remove_person_from_institute(person, institute):
+    """ Remove person from institute. """
+    for name in _get_all_names():
+        for datastore in _get_datastores_for_name(name):
+            datastore.remove_person_from_institute(person, institute)
+
+def add_person_to_software(person, software):
+    """ Add person to software. """
+    for name in _get_all_names():
+        for datastore in _get_datastores_for_name(name):
+            datastore.add_person_to_software(person, software)
+
+def remove_person_from_software(person, software):
+    """ Remove person from software. """
+    for name in _get_all_names():
+        for datastore in _get_datastores_for_name(name):
+            datastore.remove_person_from_software(person, software)
+
 def person_exists(username):
     """ Does this person exist??? """
     for name in _get_all_names():
@@ -157,37 +193,37 @@ def remove_account_from_group(account, group):
         datastore.remove_account_from_group(account, group)
 
 def add_account_to_project(account, project):
-    """ Add project to group. """
+    """ Add account to project. """
     name = account.machine_category.datastore
     for datastore in _get_datastores_for_name(name):
         datastore.add_account_to_project(account, project)
 
 def remove_account_from_project(account, project):
-    """ Remove project from group. """
+    """ Remove account from project. """
     name = account.machine_category.datastore
     for datastore in _get_datastores_for_name(name):
         datastore.remove_account_from_project(account, project)
 
 def add_account_to_institute(account, institute):
-    """ Add institute to group. """
+    """ Add account to institute. """
     name = account.machine_category.datastore
     for datastore in _get_datastores_for_name(name):
         datastore.add_account_to_institute(account, institute)
 
 def remove_account_from_institute(account, institute):
-    """ Remove institute from group. """
+    """ Remove account from institute. """
     name = account.machine_category.datastore
     for datastore in _get_datastores_for_name(name):
         datastore.remove_account_from_institute(account, institute)
 
 def add_account_to_software(account, software):
-    """ Add software to group. """
+    """ Add account to software. """
     name = account.machine_category.datastore
     for datastore in _get_datastores_for_name(name):
         datastore.add_account_to_software(account, software)
 
 def remove_account_from_software(account, software):
-    """ Remove software from group. """
+    """ Remove account from software. """
     name = account.machine_category.datastore
     for datastore in _get_datastores_for_name(name):
         datastore.remove_account_from_software(account, software)

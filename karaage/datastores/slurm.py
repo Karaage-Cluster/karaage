@@ -294,7 +294,7 @@ class SlurmDataStore(base.BaseDataStore):
         pass
 
     def add_account_to_project(self, account, project):
-        """ Add project to group. """
+        """ Add account to project. """
         username = account.username
         projectname = project.pid
         logger.debug("add user '%s' to project '%s'"%
@@ -305,7 +305,7 @@ class SlurmDataStore(base.BaseDataStore):
             "name=%s"%username])
 
     def remove_account_from_project(self, account, project):
-        """ Remove project from group. """
+        """ Remove account from project. """
         username = account.username
         projectname = project.pid
         logger.debug("delete user '%s' to project '%s'"%
