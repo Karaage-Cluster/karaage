@@ -412,6 +412,16 @@ class Person(models.Model):
         from karaage.projects.models import Project
         return Project.objects.filter(group__members=self)
 
+    @property
+    def institutes(self):
+        from karaage.institutes.models import Institute
+        return Institute.objects.filter(group__members=self)
+
+    @property
+    def software(self):
+        from karaage.software.models import SoftwarePackage
+        return SoftwarePackage.objects.filter(group__members=self)
+
 
 class Group(models.Model):
     name = models.CharField(max_length=100, unique=True)

@@ -48,6 +48,9 @@
 <tr><td>Department:</td><td>{{ person.department|default:"" }}</td></tr>
 <tr><td>Supervisor:</td><td>{{ person.supervisor|default:"" }}</td></tr>
 <tr><td>Institute:</td><td><a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a></td></tr>
+<tr><td>Insitutes (extra):</td><td>
+  {% for institute in person.institutes.all %}
+    <a href="{{ institute.get_absolute_url }}">{{ institute }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
 <tr><td>Phone:</td><td>{{ person.telephone|default:"" }}</td></tr>
       {% if person.mobile %}
       <tr><td>Mobile:</td><td>{{ person.mobile|default:"" }}</td></tr>
@@ -55,6 +58,12 @@
 <tr><td>Groups:</td><td>
   {% for group in person.groups.all %}
     <a href="{{ group.get_absolute_url }}">{{ group }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+<tr><td>Projects:</td><td>
+  {% for project in person.projects.all %}
+    <a href="{{ project.get_absolute_url }}">{{ project }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+<tr><td>Software:</td><td>
+  {% for software in person.software.all %}
+    <a href="{{ software.get_absolute_url }}">{{ software }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
 </td></tr>
       <tr id="hidden-link"><td colspan="2"><a href="#" onclick="showHidden()">More....</a></td></tr>
 </table>
