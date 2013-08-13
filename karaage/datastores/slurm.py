@@ -216,10 +216,9 @@ class SlurmDataStore(base.BaseDataStore):
         name = institute.name
         # FIXME: Is this needed?
 
-    def save_account(self, account):
-        """ Called when account is created/updated. """
-        username = account.username
-        logger.debug("account_saved '%s','%s'"%username)
+    def _save_account(self, account, username):
+        """ Called when account is created/updated. With username override. """
+        logger.debug("account_saved '%s'"%username)
 
         # retrieve default project, or use null project if none
         default_project_name = self._null_project
@@ -266,9 +265,12 @@ class SlurmDataStore(base.BaseDataStore):
         logger.debug("returning")
         return
 
-    def delete_account(self, account):
-        """ Called when account is deleted. """
-        username = account.username
+    def save_account(self, account):
+        """ Called when account is created/updated. """
+        self._save_account(account, account.username)
+
+    def _delete_account(self, account, username):
+        """ Called when account is deleted. With username override. """
         logger.debug("account_deleted '%s'"%username)
 
         # account deleted
@@ -280,14 +282,18 @@ class SlurmDataStore(base.BaseDataStore):
         logger.debug("returning")
         return
 
+    def delete_account(self, account):
+        """ Called when account is deleted. """
+        self._delete_account(account, account.username)
+
     def set_account_password(self, account, raw_password):
         """ Account's password was changed. """
         pass
 
     def set_account_username(self, account, old_username, new_username):
         """ Account's username was changed. """
-        # FIXME
-        pass
+        self._delete_account(account, old_username)
+        self._save_account(account, new_username)
 
     def add_account_to_project(self, account, project):
         """ Add account to project. """
