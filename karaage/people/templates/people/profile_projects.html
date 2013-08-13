@@ -22,7 +22,7 @@
       <td>{{ p.name|truncatewords:"8" }}</td>
       <td>{{ p.start_date|date }}</td>
       <td>{{ p.end_date|date }}</td>
-      <td>Usage: {% for pc in p.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk p.pk %}">{{ pc.machine_category }}</a> {% endfor %}</td>
+      <td>Usage: {% for pc in p.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk p.pk %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
     </tr>
     {% endfor %}
   </tbody>
@@ -58,7 +58,7 @@
 	    <img src="{{ STATIC_URL }}admin/img/icon-yes.gif" alt="1" />{% else %}
 	    <a href="{% url 'kg_user_make_default' ua.id p.pid %}?next={% url 'kg_user_profile_projects' %}">Make default</a>
 		{% endifequal %}</td>
-      <td>Usage: {% for pc in p.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk p.pk %}">{{ pc.machine_category }}</a> {% endfor %}</td>
+            <td>Usage: {% for pc in p.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk p.pk %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
     </tr>
     {% endfor %}
     {% endif %}

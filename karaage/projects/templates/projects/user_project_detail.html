@@ -25,7 +25,7 @@
 <div class="module">
 <h2>Management tasks</h2>
 <p><a class="addlink" href="{% url 'kg_userapplication_invite' project.pid %}">Invite a new user</a></p>
-<p>Usage: {% for pc in project.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk project.pk %}">{{ pc.machine_category }}</a> {% endfor %}</p>
+<p>Usage: {% for pc in project.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk project.pk %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
 </p></div>
 {% endif %}
 {% if project.group.members.all %}

@@ -37,7 +37,7 @@
       {% if not project.is_active and not requestor %}
       <tr><td colspan="2">Deleted by {{ project.deleted_by }} on {{ project.date_deleted }}</td></tr>
       {% endif %}
-      <tr><td>Leaders:</td><td>{% for l in project.leaders.all %}<a href="{{ l.get_absolute_url }}">{{ l }}</a> {% endfor %}</td></tr>
+      <tr><td>Leaders:</td><td>{% for l in project.leaders.all %}<a href="{{ l.get_absolute_url }}">{{ l }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
 <tr><td>Institiute:</td><td><a href="{{ project.institute.get_absolute_url }}">{{ project.institute }}</a></td></tr>
 <tr><td>Group:</td><td><a href="{{ project.group.get_absolute_url }}">{{ project.group }}</a></td></tr>
 <tr><td>Description:</td><td>{{ project.description|linebreaks }}</td></tr>
@@ -154,7 +154,7 @@
 <div class="module object-tools">
 <h2>Tasks</h2>
 <ul>
-<li>Usage: {% for pc in project.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk project.pk %}">{{ pc.machine_category }}</a> {% endfor %}</li>
+    <li>Usage: {% for pc in project.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk project.pk %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
 <li><a href="logs/">View logs</a></li>
 <li><a href="{% url 'kg_job_list' %}?project={{ project.pid }}">Display all jobs</a></li>
         {% if perms.projects.change_project %}<li><a class="changelink" href="edit/">Edit project details</a></li>{% endif %}
