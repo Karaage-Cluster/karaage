@@ -30,7 +30,7 @@ from karaage.projects.models import Project
 from karaage.people.models import Person, Group
 from karaage.people.emails import send_confirm_password_email
 from karaage.institutes.models import Institute
-from karaage.machines.models import Account, MachineCategory
+from karaage.machines.models import Account
 from karaage.machines.forms import AccountForm, ShellForm
 from karaage.util import log_object as log
 
