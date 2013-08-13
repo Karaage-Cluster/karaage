@@ -71,7 +71,7 @@ def log_object(user, object, flag, message):
 
 def new_random_token():
     import random
-    from django.utils.hashcompat import sha_constructor
+    from hashlib import sha1
     from django.conf import settings
     # Use the system (hardware-based) random number generator if it exists.
     if hasattr(random, 'SystemRandom'):
@@ -79,4 +79,4 @@ def new_random_token():
     else:
         randrange = random.randrange
     MAX_KEY = 18446744073709551616L     # 2 << 63
-    return sha_constructor("%s%s" % (randrange(0, MAX_KEY), settings.SECRET_KEY)).hexdigest()
+    return sha1("%s%s" % (randrange(0, MAX_KEY), settings.SECRET_KEY)).hexdigest()
