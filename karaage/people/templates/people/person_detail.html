@@ -174,13 +174,7 @@
   {% if person.account_set.all and person.is_active and perms.projects.change_project %}
   <form action="" id="joinproject_form" method="post">{% csrf_token %}
     <div class="form-row">
-      {% if no_account_error %}<p class="error">{{ no_account_error }}</p>{% endif %}
-      <label for="id_project">Add to existing project:</label>
-<select class="vNullSelectField" id="id_project" name="project" size="1">
-<option selected="selected" value="">---------</option>
-	{% for p in not_project_list %}
-	<option value="{{ p.pid }}">{{ p.pid }} | {{ p.name|truncatewords:4 }}</option>
-	{% endfor %}
+        {{ form }}
     </select>
 <input name="project-add" type="submit" value="Add"/>
 </div>

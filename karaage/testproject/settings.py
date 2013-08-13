@@ -1,6 +1,15 @@
 # Django settings for grunt project.
 from os import uname
 
+AJAX_LOOKUP_CHANNELS = {
+    'person' : ( 'karaage.people.lookups', 'PersonLookup'),
+    'group' : ( 'karaage.people.lookups', 'GroupLookup'),
+    'project' : ( 'karaage.projects.lookups', 'ProjectLookup'),
+}
+
+AJAX_SELECT_BOOTSTRAP = True
+AJAX_SELECT_INLINES = "staticfiles"
+
 GRAPH_DEBUG = True
 
 GRAPH_LIB = 'karaage.graphs.matplotlib9'

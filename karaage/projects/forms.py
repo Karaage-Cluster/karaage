@@ -19,6 +19,8 @@ from django import forms
 from django.contrib.admin.widgets import AdminDateWidget, FilteredSelectMultiple
 import datetime
 
+import ajax_select
+
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.machines.models import MachineCategory
@@ -31,7 +33,7 @@ class ProjectForm(forms.ModelForm):
     description = forms.CharField(widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), required=False)
     institute = forms.ModelChoiceField(queryset=Institute.active.all())
     additional_req = forms.CharField(widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), required=False)
-    leaders = forms.ModelMultipleChoiceField(queryset=Person.active.select_related(), widget=FilteredSelectMultiple('Leaders', False))
+    leaders = ajax_select.fields.AutoCompleteSelectMultipleField('person', required=False)
     start_date = forms.DateField(widget=AdminDateWidget, initial=datetime.datetime.today)
     end_date = forms.DateField(widget=AdminDateWidget, required=False)
     machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all(), widget=forms.CheckboxSelectMultiple())
@@ -65,3 +67,7 @@ class UserProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = ('name', 'description', 'additional_req')
+
+
+class AddPersonForm(forms.Form):
+    person = ajax_select.fields.AutoCompleteSelectField('person', required=True, label='Add user to project')

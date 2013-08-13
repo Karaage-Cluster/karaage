@@ -28,7 +28,7 @@ from andsome.util.filterspecs import Filter, FilterBar
 
 from karaage.util.graphs import get_institute_trend_graph_url
 from karaage.institutes.models import Institute, InstituteDelegate
-from karaage.institutes.forms import InstituteForm
+from karaage.institutes.forms import InstituteForm, DelegateForm
 from karaage.machines.models import MachineCategory
 
 
@@ -89,7 +89,7 @@ def add_edit_institute(request, institute_id=None):
         institute = None
         flag = 1
 
-    DelegateFormSet = inlineformset_factory(Institute, InstituteDelegate, extra=3)
+    DelegateFormSet = inlineformset_factory(Institute, InstituteDelegate, form=DelegateForm, extra=3)
 
     if request.method == 'POST':
         form = InstituteForm(request.POST, instance=institute)

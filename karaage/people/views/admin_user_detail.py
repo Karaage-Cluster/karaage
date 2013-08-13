@@ -26,7 +26,7 @@ from django.conf import settings
 import datetime
 
 from karaage.people.models import Person
-from karaage.people.forms import AdminPasswordChangeForm
+from karaage.people.forms import AdminPasswordChangeForm, AddProjectForm
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
 from karaage.util.email_messages import send_bounced_warning
@@ -54,22 +54,20 @@ def user_detail(request, username):
     my_projects = person.projects.all()
     my_pids = [p.pid for p in my_projects]
     
-    not_project_list = Project.active.exclude(pid__in=my_pids)
-
     #Add to project form
-    if request.method == 'POST' and 'project-add' in request.POST:
+    form = AddProjectForm(request.POST or None)
+    if request.method == 'POST':
         # Post means adding this user to a project
-        data = request.POST.copy()
-        project = Project.objects.get(pk=data['project'])
-        no_account_error = ''
-        for mc in project.machine_categories.all():
-            if not person.has_account(mc):
-                no_account_error = "%s has no account on %s. Please create one first" % (person, mc)
-                break
-        if not no_account_error:
+        if not request.user.has_perm('projects.change_project'):
+            return HttpResponseForbidden('<h1>Access Denied</h1>')
+
+        if form.is_valid():
+            project = form.cleaned_data['project']
             add_user_to_project(person, project)
             messages.success(request, "User '%s' was added to %s succesfully" % (person, project))
             log(request.user, project, 2, '%s added to project' % person)
+
+            return HttpResponseRedirect(person.get_absolute_url())
 
     return render_to_response('people/person_detail.html', locals(), context_instance=RequestContext(request))
 

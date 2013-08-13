@@ -277,3 +277,6 @@ class AddGroupMemberForm(forms.Form):
         person = self.cleaned_data['person']
         self.instance.add_person(person)
         return self.instance
+
+class AddProjectForm(forms.Form):
+    project = ajax_select.fields.AutoCompleteSelectField('project', required=True, label='Add to existing project')

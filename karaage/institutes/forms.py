@@ -17,11 +17,13 @@
 
 from django import forms
 
-from karaage.institutes.models import Institute
+from karaage.institutes.models import Institute, InstituteDelegate
 from karaage.projects.models import Project
+import ajax_select.fields
 
 
 class InstituteForm(forms.ModelForm):
+    group = ajax_select.fields.AutoCompleteSelectField('group', required=True)
 
     def clean_saml_entityid(self):
         if self.cleaned_data['saml_entityid'] == "":
@@ -39,3 +41,10 @@ class InstituteForm(forms.ModelForm):
             raise forms.ValidationError(u'Institute name already in system')
         except Project.DoesNotExist:
             return name
+
+class DelegateForm(forms.ModelForm):
+    person = ajax_select.fields.AutoCompleteSelectField('person', required=True)
+
+    class Meta:
+        model = InstituteDelegate
+        include = ('person', 'send_email')

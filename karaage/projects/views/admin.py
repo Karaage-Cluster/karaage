@@ -31,10 +31,9 @@ from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.machines.models import MachineCategory, Account
 from karaage.projects.models import Project
-from karaage.projects.forms import ProjectForm
+from karaage.projects.forms import ProjectForm, AddPersonForm
 from karaage.projects.utils import get_new_pid, add_user_to_project, remove_user_from_project
 from karaage.util import log_object as log
-from karaage.usage.forms import UsageSearchForm
 
 
 @permission_required('projects.add_project')
@@ -106,23 +105,21 @@ def delete_project(request, project_id):
 def project_detail(request, project_id):
 
     project = get_object_or_404(Project, pk=project_id)
-    user_list = Person.active.select_related()
 
-    form = UsageSearchForm()
-    
+    form = AddPersonForm(request.POST or None)
     if request.method == 'POST':
         # Post means adding a user to this project
         if not request.user.has_perm('projects.change_project'):
             return HttpResponseForbidden('<h1>Access Denied</h1>')
         
-        data = request.POST.copy()
-        if data['person']:
-            person = Person.objects.get(pk=data['person'])
+        if form.is_valid():
+            person = form.cleaned_data['person']
             add_user_to_project(person, project)
-        return HttpResponseRedirect(project.get_absolute_url())
+            messages.success(request, "User '%s' was added to %s succesfully" % (person, project))
+            return HttpResponseRedirect(project.get_absolute_url())
 
     return render_to_response('projects/project_detail.html',
-                              {'project': project, 'user_list': user_list, 'form': form},
+                              {'project': project, 'form': form},
                               context_instance=RequestContext(request))
 
 

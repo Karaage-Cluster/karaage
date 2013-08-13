@@ -137,14 +137,7 @@
   {% if perms.projects.change_project and project.is_active %}
   <form action="" id="joinproject_form" method="post">{% csrf_token %}
     <div class="form-row">
-      {% if no_account_error %}<p class="error">{{ no_account_error }}</p>{% endif %}
-      <label for="id_person">Add user to project:</label>
-<select class="vNullSelectField" id="id_person" name="person" size="1">
-<option selected="selected" value="">---------</option>
-	{% for u in user_list %}
-	<option value="{{ u.id }}">{{ u }}</option>
-	{% endfor %}
-      </select>
+      {{ form }}
 <input type="submit" value="Add"/>
 </div>
 </form>

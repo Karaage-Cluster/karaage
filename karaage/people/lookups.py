@@ -16,22 +16,25 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.utils.html import escape
-from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 
 import ajax_select
 
-from karaage.people.models import Person
+from karaage.people.models import Person, Group
 
 
 class LookupChannel(ajax_select.LookupChannel):
-    def check_auth(self,request):
-        """ to ensure that nobody can get your data via json simply by knowing the URL.
-            public facing forms should write a custom LookupChannel to implement as you wish.
-            also you could choose to return HttpResponseForbidden("who are you?")
-            instead of raising PermissionDenied (401 response)
-         """
+    """ Base clase for lookups. """
+
+    def check_auth(self, request):
+        """
+        to ensure that nobody can get your data via json simply by knowing the
+        URL.  public facing forms should write a custom LookupChannel to
+        implement as you wish.  also you could choose to return
+        HttpResponseForbidden("who are you?") instead of raising
+        PermissionDenied (401 response)
+        """
         if not request.user.is_authenticated():
             raise PermissionDenied
 
@@ -39,15 +42,16 @@ class LookupChannel(ajax_select.LookupChannel):
 class PersonLookup(LookupChannel):
     model = Person
 
-
     def get_query(self, q, request):
         """ return a query set searching for the query string q
             either implement this method yourself or set the search_field
             in the LookupChannel class definition
         """
-        return Person.objects.filter(Q(user__username__icontains=q) |
+        return Person.objects.filter(
+                Q(user__username__icontains=q) |
                 Q(user__first_name__icontains=q) |
-                Q(user__last_name__icontains=q))
+                Q(user__last_name__icontains=q)
+        )
 
     def get_result(self, obj):
         """
@@ -60,10 +64,58 @@ class PersonLookup(LookupChannel):
         """
         (HTML) formatted item for display in the dropdown
         """
-        return "%s %s (%s)"%(escape(obj.first_name), escape(obj.last_name), escape(obj.username))
+        return "%s %s (%s)" % (
+                escape(obj.first_name),
+                escape(obj.last_name),
+                escape(obj.username)
+        )
 
     def format_item_display(self, obj):
         """
         (HTML) formatted item for displaying item in the selected deck area
         """
-        return "%s %s"%(escape(obj.first_name), escape(obj.last_name))
+        return "%s %s" % (
+                escape(obj.first_name),
+                escape(obj.last_name)
+        )
+
+
+class GroupLookup(LookupChannel):
+    model = Group
+
+    def get_query(self, q, request):
+        """ return a query set searching for the query string q
+            either implement this method yourself or set the search_field
+            in the LookupChannel class definition
+        """
+        return Group.objects.filter(
+                Q(name__icontains=q) |
+                Q(description__icontains=q)
+        )
+
+    def get_result(self, obj):
+        """
+        result is the simple text that is the completion of what the person
+        typed
+        """
+        return obj.name
+
+    def format_match(self, obj):
+        """
+        (HTML) formatted item for display in the dropdown
+        """
+        result = []
+        result.append(escape(obj.name))
+
+        if obj.description:
+            result.append(escape(obj.description))
+
+        return " ".join(result)
+
+    def format_item_display(self, obj):
+        """
+        (HTML) formatted item for displaying item in the selected deck area
+        """
+        return "%s" % (
+                escape(obj.name)
+        )

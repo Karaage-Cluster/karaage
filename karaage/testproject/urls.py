@@ -2,6 +2,8 @@ from django.conf.urls import *
 from django.contrib import admin
 from django.contrib.admin.models import LogEntry
 
+import ajax_select.urls
+
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -29,6 +31,7 @@ urlpatterns = patterns('',
     url(r'^accounts/login/$', 'django.contrib.auth.views.login', name='login'),
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', name='logout'),
 
+    url(r'^lookup/', include(ajax_select.urls)),
 )
 
 log_dict = {
