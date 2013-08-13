@@ -90,7 +90,7 @@ class ApplicantForm(forms.ModelForm):
             try:
                 validate_username(username)
             except UsernameException, e:
-                raise forms.ValidationError(e.message)
+                raise forms.ValidationError(e.args[0])
         
             return username
 

@@ -42,7 +42,7 @@ class Command(BaseCommand):
         try:
             validate_username(new)
         except UsernameInvalid, e:
-            raise CommandError(e.message)
+            raise CommandError(e.args[0])
         except UsernameTaken:
             raise CommandError('Username %s already exists' % new)
 
