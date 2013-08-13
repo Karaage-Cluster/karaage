@@ -30,9 +30,9 @@ class GoldDataStore(base.BaseDataStore):
 
     def __init__(self, config):
         super(GoldDataStore, self).__init__(config)
-        self.gold_prefix = config.get('GOLD_PREFIX', [])
-        self.gold_path = config.get('GOLD_PATH', "/usr/local/gold/bin")
-        self.gold_null_project = config.get('GOLD_NULL_PROJECT', "default")
+        self._prefix = config.get('PREFIX', [])
+        self._path = config.get('PATH', "/usr/local/gold/bin")
+        self._null_project = config.get('NULL_PROJECT', "default")
 
     @staticmethod
     def _filter_string(value):
@@ -77,8 +77,8 @@ class GoldDataStore(base.BaseDataStore):
         if ignore_errors is None:
             ignore_errors = []
         cmd = []
-        cmd.extend(self.gold_prefix)
-        cmd.append("%s/%s"%(self.gold_path, command[0]))
+        cmd.extend(self._prefix)
+        cmd.append("%s/%s"%(self._path, command[0]))
         cmd.extend(command[1:])
         command = cmd
 
@@ -98,11 +98,11 @@ class GoldDataStore(base.BaseDataStore):
         logger.debug("<-- Returned %d (good)"%(retcode))
         return
 
-    def _read_gold_output(self, command):
+    def _read_output(self, command):
         """ Read CSV delimited input from Gold. """
         cmd = []
-        cmd.extend(self.gold_prefix)
-        cmd.append("%s/%s"%(self.gold_path, command[0]))
+        cmd.extend(self._prefix)
+        cmd.append("%s/%s"%(self._path, command[0]))
         cmd.extend(command[1:])
         command = cmd
 
@@ -144,10 +144,10 @@ class GoldDataStore(base.BaseDataStore):
         logger.debug("<-- Returned: %d (good)"%(retcode))
         return results
 
-    def get_gold_user(self, username):
+    def get_user(self, username):
         """ Get the user details from Gold. """
         cmd = [ "glsuser", "-u", username, "--raw" ]
-        results = self._read_gold_output(cmd)
+        results = self._read_output(cmd)
 
         if len(results) == 0:
             return None
@@ -166,10 +166,10 @@ class GoldDataStore(base.BaseDataStore):
 
         return the_result
 
-    def get_gold_user_balance(self, username):
+    def get_user_balance(self, username):
         """ Get the user balance details from Gold. """
         cmd = [ "gbalance", "-u", username, "--raw" ]
-        results = self._read_gold_output(cmd)
+        results = self._read_output(cmd)
 
         if len(results) == 0:
             return None
@@ -177,10 +177,10 @@ class GoldDataStore(base.BaseDataStore):
         return results
 
     # AAAAA
-    def get_gold_project(self, projectname):
+    def get_project(self, projectname):
         """ Get the project details from Gold. """
         cmd = [ "glsproject", "-p", projectname, "--raw" ]
-        results = self._read_gold_output(cmd)
+        results = self._read_output(cmd)
 
         if len(results) == 0:
             return None
@@ -200,32 +200,32 @@ class GoldDataStore(base.BaseDataStore):
 
         return the_result
 
-    def get_gold_users_in_project(self, projectname):
+    def get_users_in_project(self, projectname):
         """ Get list of users in project from Gold. """
-        gold_project = self.get_gold_project(projectname)
-        if gold_project is None:
+        ds_project = self.get_project(projectname)
+        if ds_project is None:
             logger.error("Project '%s' does not exist in Gold"
                     %(projectname))
             raise RuntimeError("Project '%s' does not exist in Gold"
                     %(projectname))
 
-        if gold_project["Users"] == "":
-            return []
-        else:
-            return gold_project["Users"].lower().split(",")
+        user_list = []
+        if ds_project["Users"] != "":
+            user_list =  ds_project["Users"].lower().split(",")
+        return user_list
 
     # BBBBBBB
-    def get_gold_projects_in_user(self, username):
+    def get_projects_in_user(self, username):
         """ Get list of projects in user from Gold. """
-        gold_balance = self.get_gold_user_balance(username)
-        if gold_balance is None:
+        ds_balance = self.get_user_balance(username)
+        if ds_balance is None:
             logger.error("User '%s' does not exist in Gold"%(username))
             raise RuntimeError("User '%s' does not exist in Gold"%(username))
 
-        projects = []
-        for bal in gold_balance:
-            projects.append(bal["Name"])
-        return projects
+        project_list = []
+        for bal in ds_balance:
+            project_list.append(bal["Name"])
+        return project_list
 
     # CCCCCCCCC
     def save_institute(self, institute):
@@ -268,19 +268,19 @@ class GoldDataStore(base.BaseDataStore):
         logger.debug("account_saved '%s'"%username)
 
         # retrieve default project, or use null project if none
-        default_project_name = self.gold_null_project
+        default_project_name = self._null_project
         if account.default_project is not None:
             default_project_name = account.default_project.pid
 
         # account created
         # account updated
 
-        gold_user = self.get_gold_user(username)
+        ds_user = self.get_user(username)
         if account.date_deleted is None:
             # date_deleted is not set, user should exist
             logger.debug("account is active")
 
-            if gold_user is None:
+            if ds_user is None:
                 # create user if doesn't exist
                 self._call([
                     "gmkuser", "-A",
@@ -311,7 +311,7 @@ class GoldDataStore(base.BaseDataStore):
         else:
             # date_deleted is not set, user should not exist
             logger.debug("account is not active")
-            if gold_user is not None:
+            if ds_user is not None:
                 # delete Gold user if account marked as deleted
                 self._call(["grmuser", "-u", username], ignore_errors=[8])
 
@@ -325,8 +325,8 @@ class GoldDataStore(base.BaseDataStore):
 
         # account deleted
 
-        gold_user = self.get_gold_user(username)
-        if gold_user is not None:
+        ds_user = self.get_user(username)
+        if ds_user is not None:
             self._call(["grmuser", "-u", username], ignore_errors=[8])
 
         logger.debug("returning")
@@ -366,12 +366,12 @@ class GoldDataStore(base.BaseDataStore):
 
     def account_exists(self, username):
         """ Does the account exist? """
-        gold_user = self.get_gold_user(username)
-        return gold_user is not None
+        ds_user = self.get_user(username)
+        return ds_user is not None
 
     def get_account_details(self, account):
         """ Get the account details """
-        result = self.get_gold_user(account.username)
+        result = self.get_user(account.username)
         if result is None:
             result = {}
         return result
@@ -399,8 +399,8 @@ class GoldDataStore(base.BaseDataStore):
         if project.is_active:
             # project is not deleted
             logger.debug("project is active")
-            gold_project = self.get_gold_project(pid)
-            if gold_project is None:
+            ds_project = self.get_project(pid)
+            if ds_project is None:
                 self._call(["gmkproject", "-p", pid, "-u", "MEMBERS"])
 
             # update project meta information
@@ -417,8 +417,8 @@ class GoldDataStore(base.BaseDataStore):
         else:
             # project is deleted
             logger.debug("project is not active")
-            gold_project = self.get_gold_project(pid)
-            if gold_project is not None:
+            ds_project = self.get_project(pid)
+            if ds_project is not None:
                 self._call(["grmproject", "-p", pid])
 
         logger.debug("returning")
@@ -431,8 +431,8 @@ class GoldDataStore(base.BaseDataStore):
 
         # project deleted
 
-        gold_project = self.get_gold_project(pid)
-        if gold_project is not None:
+        ds_project = self.get_project(pid)
+        if ds_project is not None:
             self._call(["grmproject", "-p", pid])
 
         logger.debug("returning")
@@ -440,7 +440,7 @@ class GoldDataStore(base.BaseDataStore):
 
     def get_project_details(self, project):
         """ Get the project details. """
-        result = self.get_gold_project(project.pid)
+        result = self.get_project(project.pid)
         if result is None:
             result = {}
         return result

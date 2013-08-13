@@ -29,10 +29,9 @@ class SlurmDataStore(base.BaseDataStore):
 
     def __init__(self, config):
         super(SlurmDataStore, self).__init__(config)
-        self.slurm_prefix = config.get('SLURM_PREFIX', [ "sudo", "-uslurm" ])
-        self.slurm_path = config.get('SLURM_PATH',
-                "/usr/local/slurm/latest/bin/sacctmgr")
-        self.slurm_null_project = config.get('SLURM_NULL_PROJECT', "default")
+        self._prefix = config.get('PREFIX', [ "sudo", "-uslurm" ])
+        self._path = config.get('PATH', "/usr/local/slurm/latest/bin/sacctmgr")
+        self._null_project = config.get('NULL_PROJECT', "default")
 
     @staticmethod
     def _filter_string(value):
@@ -74,8 +73,8 @@ class SlurmDataStore(base.BaseDataStore):
         if ignore_errors is None:
             ignore_errors = []
         cmd = []
-        cmd.extend(self.slurm_prefix)
-        cmd.extend([ self.slurm_path, "-ip" ])
+        cmd.extend(self._prefix)
+        cmd.extend([ self._path, "-ip" ])
         cmd.extend(command)
         command = cmd
 
@@ -95,11 +94,11 @@ class SlurmDataStore(base.BaseDataStore):
         logger.debug("<-- Returned %d (good)"%(retcode))
         return
 
-    def _read_slurm_output(self, command):
+    def _read_output(self, command):
         """ Read CSV delimited input from Slurm. """
         cmd = []
-        cmd.extend(self.slurm_prefix)
-        cmd.extend([ self.slurm_path, "-ip" ])
+        cmd.extend(self._prefix)
+        cmd.extend([ self._path, "-ip" ])
         cmd.extend(command)
         command = cmd
 
@@ -142,10 +141,10 @@ class SlurmDataStore(base.BaseDataStore):
         logger.debug("<-- Returned: %d (good)"%(retcode))
         return results
 
-    def get_slurm_user(self, username):
+    def get_user(self, username):
         """ Get the user details from Slurm. """
         cmd = [ "list", "user", "where", "name=%s"%username ]
-        results = self._read_slurm_output(cmd)
+        results = self._read_output(cmd)
 
         if len(results) == 0:
             return None
@@ -164,10 +163,10 @@ class SlurmDataStore(base.BaseDataStore):
         return the_result
 
     # AAAAA
-    def get_slurm_project(self, projectname):
+    def get_project(self, projectname):
         """ Get the project details from Slurm. """
         cmd = [ "list", "accounts", "where", "name=%s" % projectname ]
-        results = self._read_slurm_output(cmd)
+        results = self._read_output(cmd)
 
         if len(results) == 0:
             return None
@@ -187,10 +186,10 @@ class SlurmDataStore(base.BaseDataStore):
 
         return the_result
 
-    def get_slurm_users_in_project(self, projectname):
+    def get_users_in_project(self, projectname):
         """ Get list of users in project from Slurm. """
         cmd = [ "list", "assoc", "where", "account=%s" % projectname ]
-        results = self._read_slurm_output(cmd)
+        results = self._read_output(cmd)
 
         user_list = []
         for result in results:
@@ -199,10 +198,10 @@ class SlurmDataStore(base.BaseDataStore):
         return user_list
 
     # BBBBBBB
-    def get_slurm_projects_in_user(self, username):
+    def get_projects_in_user(self, username):
         """ Get list of projects in user from Slurm. """
         cmd = [ "list", "assoc", "where", "user=%s" % username ]
-        results = self._read_slurm_output(cmd)
+        results = self._read_output(cmd)
 
         project_list = []
         for result in results:
@@ -226,19 +225,19 @@ class SlurmDataStore(base.BaseDataStore):
         logger.debug("account_saved '%s','%s'"%username)
 
         # retrieve default project, or use null project if none
-        default_project_name = self.slurm_null_project
+        default_project_name = self._null_project
         if account.default_project is not None:
             default_project_name = account.default_project.pid
 
         # account created
         # account updated
 
-        slurm_user = self.get_slurm_user(username)
+        ds_user = self.get_user(username)
         if account.date_deleted is None:
             # date_deleted is not set, user should exist
             logger.debug("account is active")
 
-            if slurm_user is None:
+            if ds_user is None:
                 # create user if doesn't exist
                 self._call([
                     "add", "user",
@@ -263,7 +262,7 @@ class SlurmDataStore(base.BaseDataStore):
         else:
             # date_deleted is not set, user should not exist
             logger.debug("account is not active")
-            if slurm_user is not None:
+            if ds_user is not None:
                 # delete Slurm user if account marked as deleted
                 self._call(["delete", "user", "name=%s"%username])
 
@@ -277,8 +276,8 @@ class SlurmDataStore(base.BaseDataStore):
 
         # account deleted
 
-        slurm_user = self.get_slurm_user(username)
-        if slurm_user is not None:
+        ds_user = self.get_user(username)
+        if ds_user is not None:
             self._call(["delete", "user", "name=%s"%username])
 
         logger.debug("returning")
@@ -317,12 +316,12 @@ class SlurmDataStore(base.BaseDataStore):
 
     def account_exists(self, username):
         """ Does the account exist? """
-        slurm_user = self.get_slurm_user(username)
-        return slurm_user is not None
+        ds_user = self.get_user(username)
+        return ds_user is not None
 
     def get_account_details(self, account):
         """ Get the account details """
-        result = self.get_slurm_user(account.username)
+        result = self.get_user(account.username)
         if result is None:
             result = {}
         return result
@@ -350,8 +349,8 @@ class SlurmDataStore(base.BaseDataStore):
         if project.is_active:
             # project is not deleted
             logger.debug("project is active")
-            slurm_project = self.get_slurm_project(pid)
-            if slurm_project is None:
+            ds_project = self.get_project(pid)
+            if ds_project is None:
                 self._call(["add", "account", "name=%s"%pid, "grpcpumins=0"])
 
             # update project meta information
@@ -367,8 +366,8 @@ class SlurmDataStore(base.BaseDataStore):
         else:
             # project is deleted
             logger.debug("project is not active")
-            slurm_project = self.get_slurm_project(pid)
-            if slurm_project is not None:
+            ds_project = self.get_project(pid)
+            if ds_project is not None:
                 self._call(["delete", "account", "name=%s"%pid])
 
         logger.debug("returning")
@@ -381,16 +380,16 @@ class SlurmDataStore(base.BaseDataStore):
 
         # project deleted
 
-        slurm_project = self.get_slurm_project(pid)
-        if slurm_project is not None:
+        ds_project = self.get_project(pid)
+        if ds_project is not None:
             self._call(["delete", "account", "name=%s"%pid])
 
         logger.debug("returning")
         return
 
     def get_project_details(self, project):
-        """ Get the group details. """
-        result = self.get_slurm_project(project.pid)
+        """ Get the project details. """
+        result = self.get_project(project.pid)
         if result is None:
             result = {}
         return result
