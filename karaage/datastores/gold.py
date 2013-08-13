@@ -176,7 +176,6 @@ class GoldDataStore(base.BaseDataStore):
 
         return results
 
-    # AAAAA
     def get_project(self, projectname):
         """ Get the project details from Gold. """
         cmd = [ "glsproject", "-p", projectname, "--raw" ]
@@ -214,7 +213,6 @@ class GoldDataStore(base.BaseDataStore):
             user_list =  ds_project["Users"].lower().split(",")
         return user_list
 
-    # BBBBBBB
     def get_projects_in_user(self, username):
         """ Get list of projects in user from Gold. """
         ds_balance = self.get_user_balance(username)
@@ -227,7 +225,6 @@ class GoldDataStore(base.BaseDataStore):
             project_list.append(bal["Name"])
         return project_list
 
-    # CCCCCCCCC
     def save_institute(self, institute):
         """ Called when institute is created/updated. """
         name = institute.name

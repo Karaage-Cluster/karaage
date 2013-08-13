@@ -162,7 +162,6 @@ class SlurmDataStore(base.BaseDataStore):
 
         return the_result
 
-    # AAAAA
     def get_project(self, projectname):
         """ Get the project details from Slurm. """
         cmd = [ "list", "accounts", "where", "name=%s" % projectname ]
@@ -197,7 +196,6 @@ class SlurmDataStore(base.BaseDataStore):
                 user_list.append(result["User"])
         return user_list
 
-    # BBBBBBB
     def get_projects_in_user(self, username):
         """ Get list of projects in user from Slurm. """
         cmd = [ "list", "assoc", "where", "user=%s" % username ]
@@ -208,7 +206,6 @@ class SlurmDataStore(base.BaseDataStore):
             project_list.append(result["Account"])
         return project_list
 
-    # CCCCCCCCC
     def save_institute(self, institute):
         """ Called when institute is created/updated. """
         name = institute.name
