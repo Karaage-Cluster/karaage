@@ -78,11 +78,15 @@ form ul.inline li {
     width: 8em;
 }
 
-.aligned select + label {
+.aligned .ajaxselect + label {
     padding: 3px 10px 0 50px;
 }
 
 .aligned input + label {
+    padding: 3px 10px 0 50px;
+}
+
+.aligned .ajax-select + label {
     padding: 3px 10px 0 50px;
 }
 
@@ -96,18 +100,9 @@ form ul.inline li {
     width: 350px;
 }
 
-form .aligned p, form .aligned ul {
-    margin-left: 7em;
-    padding-left: 30px;
-}
-
 form .aligned table p {
     margin-left: 0;
     padding-left: 0;
-}
-
-form .aligned p.help {
-    padding-left: 38px;
 }
 
 .aligned .vCheckboxLabel {
