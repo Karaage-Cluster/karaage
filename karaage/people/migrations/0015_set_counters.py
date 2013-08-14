@@ -11,6 +11,11 @@ class Migration(DataMigration):
         ("methods", "0001_initial"),
     )
 
+    # the following update changes the schema and breaks this update
+    needed_by = (
+        ("methods", "auto__add_field_counters_scheme"),
+    )
+
     def forwards(self, orm):
         "Write your forwards methods here."
         # Note: Remember to use orm['appname.ModelName'] rather than "from appname.models..."
