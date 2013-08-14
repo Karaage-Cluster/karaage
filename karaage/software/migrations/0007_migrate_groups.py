@@ -4,17 +4,18 @@ from south.db import db
 from south.v2 import DataMigration
 from django.db import models
 
-from karaage.datastores import ldap_schemas
+from karaage.datastores import get_test_datastore, ldap_schemas
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
+        datastore = get_test_datastore("ldap", 0)
         for software in orm.SoftwarePackage.objects.all():
             if software.gid is None:
                 software.group = None
                 software.save()
             else:
-                lgroup = ldap_schemas.group.objects.get(gidNumber=software.gid)
+                lgroup = datastore._groups().get(gidNumber=software.gid)
 
                 if not db.dry_run:
                     group,c = orm['people.group'].objects.get_or_create(name=lgroup.cn)
@@ -26,8 +27,9 @@ class Migration(DataMigration):
                         person.groups.add(group)
 
     def backwards(self, orm):
+        datastore = get_test_datastore("ldap", 0)
         for software in orm.SoftwarePackage.objects.all():
-            lgroup = ldap_schemas.group.objects.get(cn=software.group.name)
+            lgroup = datastore._groups().get(cn=software.group.name)
             software.gid = lgroup.gidNumber
             software.save()
 

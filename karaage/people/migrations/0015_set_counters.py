@@ -3,12 +3,17 @@ import datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
-from karaage.datastores import ldap_schemas
+from karaage.datastores import get_test_datastore, ldap_schemas
 
 class Migration(DataMigration):
 
     depends_on = (
         ("methods", "0001_initial"),
+    )
+
+    # the following update changes the schema and breaks this update
+    needed_by = (
+        ("methods", "auto__add_field_counters_scheme"),
     )
 
     def forwards(self, orm):
@@ -17,8 +22,10 @@ class Migration(DataMigration):
         if db.dry_run:
             return
 
+        datastore = get_test_datastore("ldap", 0)
+
         last_uid = None
-        for obj in ldap_schemas.account.objects.all():
+        for obj in datastore._accounts().all():
             if last_uid is None or obj.uidNumber > last_uid:
                 last_uid = obj.uidNumber
         if last_uid is not None:
@@ -28,7 +35,7 @@ class Migration(DataMigration):
                 entry.save()
 
         last_gid = None
-        for obj in ldap_schemas.group.objects.all():
+        for obj in datastore._groups().all():
             if last_gid is None or obj.gidNumber > last_gid:
                 last_gid = obj.gidNumber
         if last_gid is not None:

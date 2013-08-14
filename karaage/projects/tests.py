@@ -26,12 +26,14 @@ from karaage.people.models import Person
 from karaage.test_data.initial_ldap_data import test_ldif
 from karaage.projects.models import Project
 from karaage.machines.models import Account
-from karaage.datastores import ldap_schemas
+from karaage.datastores import get_test_datastore, ldap_schemas
 
 
 class ProjectTestCase(TestCase):
 
     def setUp(self):
+        self._datastore = get_test_datastore()
+
         server = slapd.Slapd()
         server.set_port(38911)
         server.start()
@@ -71,7 +73,7 @@ class ProjectTestCase(TestCase):
         self.assertEqual(project.pid, 'pExam0001')
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
         self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())    
-        lgroup = ldap_schemas.group.objects.get(cn=project.pid)
+        lgroup = self._datastore._groups().get(cn=project.pid)
         self.assertEqual(lgroup.cn, project.pid)
 
     def test_admin_add_project_pid(self):
@@ -103,7 +105,7 @@ class ProjectTestCase(TestCase):
         self.assertEqual(project.pid, 'Enrico')
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
         self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())
-        lgroup = ldap_schemas.group.objects.get(cn=project.pid)
+        lgroup = self._datastore._groups().get(cn=project.pid)
         self.assertEqual(lgroup.cn, project.pid)
 
     def test_add_remove_user_to_project(self):
@@ -125,8 +127,8 @@ class ProjectTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 302)
         project = Project.objects.get(pk='TestProject1')
         self.assertEqual(project.group.members.count(), 2)
-        lgroup = ldap_schemas.group.objects.get(cn=project.pid)
-        ldap_schemas.account.objects.get(pk='kgtestuser2')
+        lgroup = self._datastore._groups().get(cn=project.pid)
+        self._datastore._accounts().get(pk='kgtestuser2')
         lgroup.secondary_accounts.get(pk='kgtestuser2')
 
         # remove user
@@ -137,7 +139,7 @@ class ProjectTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 302)
         project = Project.objects.get(pk='TestProject1')
         self.assertEqual(project.group.members.count(), 1)
-        lgroup = ldap_schemas.group.objects.get(cn=project.pid)
+        lgroup = self._datastore._groups().get(cn=project.pid)
         self.assertRaises(ldap_schemas.account.DoesNotExist, lgroup.secondary_accounts.get, pk='kgtestuser2')
 
     def test_delete_project(self):
@@ -192,7 +194,7 @@ class ProjectTestCase(TestCase):
         self.assertEqual(project.is_active, True)
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
         self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())    
-        lgroup = ldap_schemas.group.objects.get(cn=project.pid)
+        lgroup = self._datastore._groups().get(cn=project.pid)
         self.assertEqual(lgroup.cn, project.pid)
 
 

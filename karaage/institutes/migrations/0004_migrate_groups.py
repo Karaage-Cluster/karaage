@@ -4,22 +4,23 @@ from south.db import db
 from south.v2 import DataMigration
 from django.db import models
 
-from karaage.datastores import ldap_schemas
+from karaage.datastores import get_test_datastore, ldap_schemas
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
+        datastore = get_test_datastore("ldap", 0)
         for institute in orm.Institute.objects.all():
             name = str(institute.name.lower().replace(' ', ''))
             try:
-                lgroup = ldap_schemas.group.objects.get(gidNumber=institute.gid)
+                lgroup = datastore._groups().get(gidNumber=institute.gid)
             except ldap_schemas.group.DoesNotExist:
                 try:
                     print "+++ get by name", institute.name, institute.gid
-                    lgroup = ldap_schemas.group.objects.get(cn=name)
+                    lgroup = datastore._groups().get(cn=name)
                 except ldap_schemas.group.DoesNotExist:
                     print "+++ create", institute.name, institute.gid
-                    lgroup = ldap_schemas.group.objects.create(gidNumber=institute.gid, cn=name)
+                    lgroup = datastore._groups().create(gidNumber=institute.gid, cn=name)
 
             if not db.dry_run:
                 group,c = orm['people.group'].objects.get_or_create(name=lgroup.cn)
@@ -31,8 +32,9 @@ class Migration(DataMigration):
                     person.add_account_to_group(group)
 
     def backwards(self, orm):
+        datastore = get_test_datastore("ldap", 0)
         for institute in orm.Institute.objects.all():
-            lgroup = ldap_schemas.group.objects.get(cn=institute.group.name)
+            lgroup = datastore._groups().get(cn=institute.group.name)
             institute.gid = lgroup.gidNumber
             institute.save()
 

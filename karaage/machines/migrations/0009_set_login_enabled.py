@@ -4,19 +4,20 @@ from south.db import db
 from south.v2 import DataMigration
 from django.db import models
 from django.conf import settings
-from karaage.datastores import ldap_schemas
+from karaage.datastores import get_test_datastore, ldap_schemas
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
+        datastore = get_test_datastore("ldap", 0)
         for ua in orm.useraccount.objects.all():
             if ua.date_deleted is None:
                 # Yes - Account is active.
                 try:
                     # Try to find LDAP entry with same name as person username. If
                     # one exists, assume it is the same person.
-                    p = ldap_schemas.account.objects.get(uid=ua.username)
+                    p = datastore._accounts().get(uid=ua.username)
                     ua.login_enabled = not p.is_locked()
                 except ldap_schemas.account.DoesNotExist, e:
                     # If we cannot find LDAP entry, assume this is because account
@@ -33,6 +34,7 @@ class Migration(DataMigration):
 
     def backwards(self, orm):
         "Write your backwards methods here."
+        # nothing to do
 
     models = {
         u'auth.group': {

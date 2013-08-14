@@ -20,10 +20,10 @@ from django.core.management import call_command
 
 from tldap.test import slapd
 
+from karaage.people.models import Group
 from karaage.institutes.models import Institute
 from karaage.test_data.initial_ldap_data import test_ldif
 
-from karaage.datastores import ldap_schemas
 
 class InstituteTestCase(TestCase):
 
@@ -42,43 +42,35 @@ class InstituteTestCase(TestCase):
 
     def test_add(self):
         institute = Institute.objects.create(name='TestInstitute54')
-        
-        lgroup = ldap_schemas.group.objects.get(cn=institute.group.name)
-        self.assertEqual(institute.name.lower().replace(' ' , ''), lgroup.cn)
+        self.assertEqual(
+                institute.group.name,
+                'testinstitute54',
+        )
+        self.assertEqual(
+                institute.group.name,
+                institute.name.lower().replace(' ' , '')
+        )
 
 
     def test_add_spaces(self):
         institute = Institute.objects.create(name='Test Institute 60')
-        
-        lgroup = ldap_schemas.group.objects.get(cn=institute.group.name)
-        self.assertEqual(institute.name.lower().replace(' ' , ''), lgroup.cn)
+        self.assertEqual(
+                institute.group.name,
+                'testinstitute60',
+        )
+        self.assertEqual(
+                institute.group.name,
+                institute.name.lower().replace(' ' , '')
+        )
 
     def test_add_existing_name(self):
-        
-        lgroup = ldap_schemas.group()
-        lgroup.set_defaults()
-        lgroup.cn = 'testinstitute27'
-        lgroup.pre_create(master=None)
-        lgroup.pre_save()
-        lgroup.save()
-
+        Group.objects.get_or_create(name='testinstitute27')
         institute = Institute.objects.create(name='Test Institute 27')
-
-        lgroup = ldap_schemas.group.objects.get(cn=institute.group.name)
-        self.assertEqual(institute.name.lower().replace(' ' , ''), lgroup.cn) 
-
-    def test_add_existing_gid(self):
-        
-        lgroup = ldap_schemas.group()
-        lgroup.set_defaults()
-        lgroup.cn = 'testinstituteother'
-        lgroup.pre_create(master=None)
-        lgroup.gidNumber = 700
-        lgroup.pre_save()
-        lgroup.save()
-
-        institute = Institute.objects.create(name='Test Institute Other')
-        self.assertEqual(institute.group.name, "testinstituteother")
-
-        lgroup = ldap_schemas.group.objects.get(cn=institute.group.name)
-        self.assertEqual(lgroup.gidNumber, 700)
+        self.assertEqual(
+                institute.group.name,
+                'testinstitute27',
+        )
+        self.assertEqual(
+                institute.group.name,
+                institute.name.lower().replace(' ' , '')
+        )

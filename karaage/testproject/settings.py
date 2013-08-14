@@ -69,6 +69,9 @@ LDAP = {
     }
 }
 
+LDAP_TEST_DATASTORE = 'ldap'
+LDAP_TEST_DATASTORE_N = 0
+
 LDAP_SCHEMA_FILE = "conf/ldap_schemas.py"
 
 SERVER_EMAIL = 'django@' + uname()[1]

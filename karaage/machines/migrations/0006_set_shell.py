@@ -3,14 +3,15 @@ import datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
-from karaage.datastores import ldap_schemas
+from karaage.datastores import get_test_datastore, ldap_schemas
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
+        datastore = get_test_datastore("ldap", 0)
         for account in orm['machines.useraccount'].objects.filter(date_deleted__isnull=True):
             try:
-                p = ldap_schemas.account.objects.get(uid=account.username)
+                p = datastore._accounts().get(uid=account.username)
                 if p.is_locked():
                     account.shell = account.previous_shell
                 else:

@@ -73,7 +73,6 @@ class AccountTestCase(TestCase):
         response = self.client.post(reverse('kg_add_account', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
         person = Person.objects.get(user__username="samtest2")
-        ldap_schemas.account.objects.get(uid='samtest2')
         self.assertTrue(person.has_account(MachineCategory.objects.get(pk=1)))
 
     def test_fail_add_accounts_username(self):

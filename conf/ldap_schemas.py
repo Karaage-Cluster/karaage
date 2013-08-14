@@ -27,15 +27,17 @@ import tldap.manager
 
 class kAccountMixin(object):
     @classmethod
-    def pre_save(cls, self):
+    def pre_save(cls, self, using):
         self.displayName = '%s %s (%s)' % (self.givenName, self.sn, self.o)
         self.gecos = '%s %s (%s)' % (self.givenName, self.sn, self.o)
 
 
-class account(
+class account(base.baseMixin):
+
+    schema_list = [
         rfc.person, rfc.organizationalPerson, rfc.inetOrgPerson, rfc.pwdPolicy,
-        rfc.posixAccount, rfc.shadowAccount,
-        base.baseMixin):
+        rfc.posixAccount, rfc.shadowAccount
+    ]
 
     mixin_list = [
         common.personMixin, pwdpolicy.pwdPolicyMixin,
@@ -56,7 +58,9 @@ class account(
 # group #
 #########
 
-class group(rfc.posixGroup, base.baseMixin):
+class group(base.baseMixin):
+
+    schema_list = [ rfc.posixGroup ]
     mixin_list = [ common.groupMixin ]
 
     class Meta:

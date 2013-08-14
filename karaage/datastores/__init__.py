@@ -52,6 +52,15 @@ def _get_all_names():
     for machine_category in mc_query:
         yield machine_category['datastore']
 
+def get_test_datastore(name=None, number=None):
+    """ For testing only. Do not use. """
+    if name is None:
+        name = settings.LDAP_TEST_DATASTORE
+    if number is None:
+        number = settings.LDAP_TEST_DATASTORE_N
+    datastores = _get_datastores_for_name(name)
+    return datastores[number]
+
 # Initialize data stores
 _init_datastores()
 

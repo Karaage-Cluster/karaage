@@ -30,11 +30,13 @@ from karaage.projects.models import Project
 from karaage.machines.models import Account, MachineCategory
 from karaage.test_data.initial_ldap_data import test_ldif
 
-from karaage.datastores import ldap_schemas
+from karaage.datastores import get_test_datastore, ldap_schemas
 
 class UserTestCase(TestCase):
 
     def setUp(self):
+        self._datastore = get_test_datastore()
+
         server = slapd.Slapd()
         server.set_port(38911)
         server.start()
@@ -45,7 +47,6 @@ class UserTestCase(TestCase):
 
     def tearDown(self):
         self.server.stop()
-
 
     def do_permission_tests(self, test_object, users):
         for user_id in users:
@@ -233,7 +234,7 @@ class UserTestCase(TestCase):
         self.assertEqual(person.user.username, 'samtest')
         self.assertEqual(Account.objects.count(), 2)
         self.assertEqual(project.group.members.count(), p_users+1)
-        luser = ldap_schemas.account.objects.get(uid='samtest')
+        luser = self._datastore._accounts().get(uid='samtest')
         self.assertEqual(luser.givenName, 'Sam')
         self.assertEqual(luser.homeDirectory, '/vpac/TestProject1/samtest')
         
@@ -282,7 +283,7 @@ class UserTestCase(TestCase):
         self.failUnlessEqual(logged_in, True)
 
         person = Person.objects.get(user__username='kgtestuser3')
-        luser = ldap_schemas.account.objects.get(uid='kgtestuser3')
+        luser = self._datastore._accounts().get(uid='kgtestuser3')
         self.failUnlessEqual(person.mobile, '')
         self.failUnlessEqual(luser.gidNumber, 500)
         self.failUnlessEqual(luser.o, 'Example')
@@ -306,7 +307,7 @@ class UserTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 302)
 
         person = Person.objects.get(user__username='kgtestuser3')
-        luser = ldap_schemas.account.objects.get(uid='kgtestuser3')
+        luser = self._datastore._accounts().get(uid='kgtestuser3')
         self.failUnlessEqual(person.mobile, '555666')
         self.failUnlessEqual(luser.gidNumber, 501)
         self.failUnlessEqual(luser.o, 'OtherInst')
@@ -319,7 +320,7 @@ class UserTestCase(TestCase):
         self.assertEqual(user.groups.filter(project__gt=2).count(), 1)
         self.assertEqual(user.account_set.count(), 1)
         self.assertEqual(user.account_set.all()[0].date_deleted, None)
-        luser = ldap_schemas.account.objects.get(uid='kgtestuser3')
+        luser = self._datastore._accounts().get(uid='kgtestuser3')
         self.assertEqual(luser.givenName, 'Test')
 
         response = self.client.get(reverse('admin_delete_user', args=[user.username]))
@@ -334,7 +335,7 @@ class UserTestCase(TestCase):
         self.assertEqual(user.projects.count(), 0)
         self.assertEqual(user.account_set.count(), 1)
         self.assertEqual(user.account_set.all()[0].date_deleted, datetime.date.today())
-        self.failUnlessRaises(ldap_schemas.account.DoesNotExist, ldap_schemas.account.objects.get, uid='kgtestuser3')
+        self.failUnlessRaises(ldap_schemas.account.DoesNotExist, self._datastore._accounts().get, uid='kgtestuser3')
 
         # Test activating
         response = self.client.post(reverse('admin_activate_user', args=[user.username]))

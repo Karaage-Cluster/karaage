@@ -56,22 +56,27 @@ class AccountDataStore(base.BaseDataStore):
                 "/home/%(uid)s")
         self._locked_shell = config.get('LOCKED_SHELL',
                 "/usr/local/sbin/locked")
+        self._settings = config
 
     def _accounts(self):
         """ Return accounts query. """
-        return self._account.objects.using(self._using)
+        return self._account.objects.using(
+                using=self._using, settings=self._settings)
 
     def _groups(self):
         """ Return groups query. """
-        return self._group.objects.using(self._using)
+        return self._group.objects.using(
+                using=self._using, settings=self._settings)
 
     def _create_account(self):
         """ Create a new account. """
-        return self._account(using=self._using)
+        return self._account(
+                using=self._using, settings=self._settings)
 
     def _create_group(self):
         """ Create a new group. """
-        return self._group(using=self._using)
+        return self._group(
+                using=self._using, settings=self._settings)
 
     def save_account(self, account):
         """ Account was saved. """
@@ -109,11 +114,9 @@ class AccountDataStore(base.BaseDataStore):
                 luser.loginShell = self._locked_shell
             else:
                 luser.loginShell = account.shell
-            luser.pre_save()
             luser.save()
         except self._account.DoesNotExist:
             luser = self._create_account()
-            luser.set_defaults()
             luser.uid = person.username
             luser.givenName = person.first_name
             luser.sn = person.last_name
@@ -126,8 +129,6 @@ class AccountDataStore(base.BaseDataStore):
                 'default_project': default_project,
                 'uid': person.username }
             luser.loginShell = account.shell
-            luser.pre_create(master=None)
-            luser.pre_save()
             luser.save()
 
             # add all groups
@@ -145,7 +146,6 @@ class AccountDataStore(base.BaseDataStore):
         """ Account's password was changed. """
         luser = self._accounts().get(uid=account.username)
         luser.change_password(raw_password)
-        luser.pre_save()
         luser.save()
 
     def set_account_username(self, account, old_username, new_username):
@@ -194,15 +194,11 @@ class AccountDataStore(base.BaseDataStore):
         try:
             lgroup = self._groups().get(cn=group.name)
             lgroup.description = group.description
-            lgroup.pre_save()
             lgroup.save()
         except self._group.DoesNotExist:
             lgroup = self._create_group()
-            lgroup.set_defaults()
             lgroup.cn = group.name
             lgroup.description = group.description
-            lgroup.pre_create(master=None)
-            lgroup.pre_save()
             lgroup.save()
 
     def delete_group(self, group):
