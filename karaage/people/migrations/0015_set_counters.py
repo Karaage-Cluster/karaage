@@ -13,7 +13,7 @@ class Migration(DataMigration):
 
     # the following update changes the schema and breaks this update
     needed_by = (
-        ("methods", "auto__add_field_counters_scheme"),
+        ("methods", "0002_auto__add_field_counters_scheme"),
     )
 
     def forwards(self, orm):
@@ -25,7 +25,7 @@ class Migration(DataMigration):
         datastore = get_test_datastore("ldap", 0)
 
         last_uid = None
-        for obj in datastore._accounts().all():
+        for obj in datastore._accounts():
             if last_uid is None or obj.uidNumber > last_uid:
                 last_uid = obj.uidNumber
         if last_uid is not None:
@@ -35,7 +35,7 @@ class Migration(DataMigration):
                 entry.save()
 
         last_gid = None
-        for obj in datastore._groups().all():
+        for obj in datastore._groups():
             if last_gid is None or obj.gidNumber > last_gid:
                 last_gid = obj.gidNumber
         if last_gid is not None:

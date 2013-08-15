@@ -19,7 +19,7 @@ class Migration(DataMigration):
                 try:
                     # Try to find LDAP entry with same name as person username. If
                     # one exists, assume it is the same person.
-                    p = datastore._account().get(uid=person.user.username)
+                    p = datastore._accounts().get(uid=person.user.username)
                     if p.userPassword is not None:
                         person.legacy_ldap_password = p.userPassword
                         person.user.password = UNUSABLE_PASSWORD

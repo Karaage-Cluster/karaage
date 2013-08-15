@@ -17,7 +17,7 @@ class Migration(DataMigration):
                 try:
                     # Try to find LDAP entry with same name as person username. If
                     # one exists, assume it is the same person.
-                    p = datastore._account().get(uid=person.user.username)
+                    p = datastore._accounts().get(uid=person.user.username)
                     person.login_enabled = not p.is_locked()
                 except ldap_schemas.account.DoesNotExist, e:
                     # If we cannot find LDAP entry, assume this is because person
