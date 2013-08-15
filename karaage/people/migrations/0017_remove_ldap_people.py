@@ -4,7 +4,7 @@ from south.db import db
 from south.v2 import DataMigration
 from django.db import models
 
-from karaage.datastores import get_test_datastore, ldap_schemas
+from karaage.datastores import get_test_datastore
 from django.contrib.auth.hashers import UNUSABLE_PASSWORD
 
 class Migration(DataMigration):
@@ -31,7 +31,7 @@ class Migration(DataMigration):
                     ua = ua.filter(date_deleted__isnull=True)
                     if ua.count() == 0 and 'posixAccount' not in p.objectClass:
                         p.delete()
-                except ldap_schemas.account.DoesNotExist, e:
+                except datastore._account.DoesNotExist:
                     # If we cannot find LDAP entry, assume this is because person
                     # has no access.
                     print "+++", person.user.username

@@ -4,7 +4,7 @@ from south.db import db
 from south.v2 import DataMigration
 from django.db import models
 
-from karaage.datastores import get_test_datastore, ldap_schemas
+from karaage.datastores import get_test_datastore
 
 class Migration(DataMigration):
 
@@ -14,11 +14,11 @@ class Migration(DataMigration):
             name = str(institute.name.lower().replace(' ', ''))
             try:
                 lgroup = datastore._groups().get(gidNumber=institute.gid)
-            except ldap_schemas.group.DoesNotExist:
+            except datastore._group.DoesNotExist:
                 try:
                     print "+++ get by name", institute.name, institute.gid
                     lgroup = datastore._groups().get(cn=name)
-                except ldap_schemas.group.DoesNotExist:
+                except datastore._group.DoesNotExist:
                     print "+++ create", institute.name, institute.gid
                     lgroup = datastore._groups().create(gidNumber=institute.gid, cn=name)
 

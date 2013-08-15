@@ -3,7 +3,7 @@ import datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
-from karaage.datastores import get_test_datastore, ldap_schemas
+from karaage.datastores import get_test_datastore
 
 class Migration(DataMigration):
 
@@ -17,7 +17,7 @@ class Migration(DataMigration):
                 else:
                     account.shell = p.loginShell
                 account.save()
-            except ldap_schemas.account.DoesNotExist, e:
+            except datastore._account.DoesNotExist, e:
                 print "+++", account.username
                 pass
 

@@ -4,7 +4,7 @@ from south.db import db
 from south.v2 import DataMigration
 from django.db import models
 from django.conf import settings
-from karaage.datastores import get_test_datastore, ldap_schemas
+from karaage.datastores import get_test_datastore
 
 class Migration(DataMigration):
 
@@ -19,7 +19,7 @@ class Migration(DataMigration):
                     # one exists, assume it is the same person.
                     p = datastore._accounts().get(uid=ua.username)
                     ua.login_enabled = not p.is_locked()
-                except ldap_schemas.account.DoesNotExist, e:
+                except datastore._account.DoesNotExist, e:
                     # If we cannot find LDAP entry, assume this is because account
                     # has no access.
                     print "+++", ua.username
