@@ -22,6 +22,8 @@ import os.path
 from django.conf import settings
 from django.db.models import Sum
 
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
