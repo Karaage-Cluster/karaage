@@ -112,8 +112,10 @@ class AccountDataStore(base.BaseDataStore):
                 'uid': person.username }
             if account.is_locked():
                 luser.loginShell = self._locked_shell
+                luser.lock()
             else:
                 luser.loginShell = account.shell
+                luser.unlock()
             luser.save()
         except self._account.DoesNotExist:
             luser = self._create_account()
@@ -128,7 +130,12 @@ class AccountDataStore(base.BaseDataStore):
             luser.homeDirectory = self._home_directory % {
                 'default_project': default_project,
                 'uid': person.username }
-            luser.loginShell = account.shell
+            if account.is_locked():
+                luser.loginShell = self._locked_shell
+                luser.lock()
+            else:
+                luser.loginShell = account.shell
+                luser.unlock()
             luser.save()
 
             # add all groups
