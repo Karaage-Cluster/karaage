@@ -101,6 +101,16 @@ class SoftwarePackage(models.Model):
         # delete the object
         super(SoftwarePackage, self).delete(*args, **kwargs)
 
+        # update datastore associations
+        old_group = self._group
+        if old_group is not None:
+            from karaage.datastores import remove_person_from_software
+            for person in Person.objects.filter(groups=old_group):
+                remove_person_from_software(person, self)
+            from karaage.datastores import remove_account_from_software
+            for account in Account.objects.filter(person__groups=old_group, date_deleted__isnull=True):
+                remove_account_from_software(account, self)
+
         # update the datastore
         from karaage.datastores import delete_software
         delete_software(self)

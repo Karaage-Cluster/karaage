@@ -32,6 +32,10 @@ class MachineCategory(models.Model):
     datastore = models.CharField(max_length=255, choices=DATASTORES, help_text="Modifying this value on existing categories will affect accounts created under the old datastore")
     objects = MachineCategoryManager()
 
+    def __init__(self, *args, **kwargs):
+        super(MachineCategory, self).__init__(*args, **kwargs)
+        self._datastore = self.datastore
+
     class Meta:
         verbose_name_plural = 'machine categories'
         db_table = 'machine_category'
@@ -43,6 +47,28 @@ class MachineCategory(models.Model):
     def get_absolute_url(self):
         return ('kg_machine_list',)
 
+    def save(self, *args, **kwargs):
+        # save the object
+        super(MachineCategory, self).save(*args, **kwargs)
+
+        # check if datastore changed
+        moved = False
+        old_datastore = self._datastore
+        new_datastore = self.datastore
+        if old_datastore != new_datastore:
+            from karaage.datastores import set_mc_datastore
+            set_mc_datastore(self, old_datastore, new_datastore)
+
+        self._datastore = self.datastore
+    save.alters_data = True
+
+    def delete(self):
+        # delete the object
+        super(Account, self).delete()
+        from karaage.datastores import set_mc_datastore
+        old_datastore = self._datastore
+        set_mc_datastore(self, old_datastore, None)
+    delete.alters_data = True
 
 class Machine(models.Model):
     name = models.CharField(max_length=50)

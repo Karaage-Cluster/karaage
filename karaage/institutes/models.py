@@ -81,6 +81,16 @@ class Institute(models.Model):
         # delete the object
         super(Institute, self).delete(*args, **kwargs)
 
+        # update datastore associations
+        old_group = self._group
+        if old_group is not None:
+            from karaage.datastores import remove_person_from_institute
+            for person in Person.objects.filter(groups=old_group):
+                remove_person_from_institute(person, self)
+            from karaage.datastores import remove_account_from_institute
+            for account in Account.objects.filter(person__groups=old_group, date_deleted__isnull=True):
+                remove_account_from_institute(account, self)
+
         # update the datastore
         from karaage.datastores import delete_institute
         delete_institute(self)

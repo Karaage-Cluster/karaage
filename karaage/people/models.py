@@ -450,6 +450,9 @@ class Group(models.Model):
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
+        for person in self.members.all():
+            _remove_person_from_group(person, self)
+
         # delete the object
         super(Group, self).delete(*args, **kwargs)
 
