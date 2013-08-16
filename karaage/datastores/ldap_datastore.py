@@ -144,10 +144,13 @@ class AccountDataStore(base.BaseDataStore):
 
     def delete_account(self, account):
         """ Account was deleted. """
-        luser = self._accounts().get(uid=account.username)
-        luser.secondary_groups.clear()
-        luser.pre_delete()
-        luser.delete()
+        try:
+            luser = self._accounts().get(uid=account.username)
+            luser.secondary_groups.clear()
+            luser.delete()
+        except self._account.DoesNotExist:
+            # it doesn't matter if it doesn't exist
+            pass
 
     def set_account_password(self, account, raw_password):
         """ Account's password was changed. """
@@ -210,8 +213,12 @@ class AccountDataStore(base.BaseDataStore):
 
     def delete_group(self, group):
         """ Group was deleted. """
-        lgroup = self._groups().get(cn=group.name)
-        lgroup.delete()
+        try:
+            lgroup = self._groups().get(cn=group.name)
+            lgroup.delete()
+        except self._group.DoesNotExist:
+            # it doesn't matter if it doesn't exist
+            pass
 
     def set_group_name(self, group, old_name, new_name):
         """ Group was renamed. """
