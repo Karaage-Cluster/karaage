@@ -34,7 +34,9 @@ class MachineCategory(models.Model):
 
     def __init__(self, *args, **kwargs):
         super(MachineCategory, self).__init__(*args, **kwargs)
-        self._datastore = self.datastore
+        self._datastore = None
+        if self.datastore:
+            self._datastore = self.datastore
 
     class Meta:
         verbose_name_plural = 'machine categories'
