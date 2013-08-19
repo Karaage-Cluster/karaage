@@ -30,7 +30,7 @@ from karaage.projects.models import Project
 from karaage.machines.models import Account, MachineCategory
 from karaage.test_data.initial_ldap_data import test_ldif
 
-from karaage.datastores import get_test_datastore, ldap_schemas
+from karaage.datastores import get_test_datastore
 
 class UserTestCase(TestCase):
 
@@ -335,7 +335,7 @@ class UserTestCase(TestCase):
         self.assertEqual(user.projects.count(), 0)
         self.assertEqual(user.account_set.count(), 1)
         self.assertEqual(user.account_set.all()[0].date_deleted, datetime.date.today())
-        self.failUnlessRaises(ldap_schemas.account.DoesNotExist, self._datastore._accounts().get, uid='kgtestuser3')
+        self.failUnlessRaises(self._datastore._account.DoesNotExist, self._datastore._accounts().get, uid='kgtestuser3')
 
         # Test activating
         response = self.client.post(reverse('admin_activate_user', args=[user.username]))

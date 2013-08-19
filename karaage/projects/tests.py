@@ -26,7 +26,7 @@ from karaage.people.models import Person
 from karaage.test_data.initial_ldap_data import test_ldif
 from karaage.projects.models import Project
 from karaage.machines.models import Account
-from karaage.datastores import get_test_datastore, ldap_schemas
+from karaage.datastores import get_test_datastore
 
 
 class ProjectTestCase(TestCase):
@@ -109,7 +109,7 @@ class ProjectTestCase(TestCase):
         self.assertEqual(lgroup.cn, project.pid)
 
     def test_add_remove_user_to_project(self):
-        self.assertRaises(ldap_schemas.account.DoesNotExist, ldap_schemas.account.objects.get, pk='kgtestuser2')
+        self.assertRaises(self._datastore._account.DoesNotExist, self._datastore._accounts().get, pk='kgtestuser2')
 
         # login
         self.client.login(username='kgsuper', password='aq12ws')
@@ -119,7 +119,7 @@ class ProjectTestCase(TestCase):
         self.assertEqual(project.group.members.count(), 1)
         response = self.client.get(reverse('kg_project_detail', args=[project.pid]))
         self.failUnlessEqual(response.status_code, 200)
-        self.assertRaises(ldap_schemas.account.DoesNotExist, ldap_schemas.account.objects.get, pk='kgtestuser2')
+        self.assertRaises(self._datastore._account.DoesNotExist, self._datastore._accounts().get, pk='kgtestuser2')
 
         # add kgtestuser2 to project
         new_user = Person.objects.get(user__username='kgtestuser2')
@@ -140,7 +140,7 @@ class ProjectTestCase(TestCase):
         project = Project.objects.get(pk='TestProject1')
         self.assertEqual(project.group.members.count(), 1)
         lgroup = self._datastore._groups().get(cn=project.pid)
-        self.assertRaises(ldap_schemas.account.DoesNotExist, lgroup.secondary_accounts.get, pk='kgtestuser2')
+        self.assertRaises(self._datastore._account.DoesNotExist, lgroup.secondary_accounts.get, pk='kgtestuser2')
 
     def test_delete_project(self):
 
