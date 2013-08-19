@@ -388,28 +388,30 @@ def set_mc_datastore(machine_category, old_datastore, new_datastore):
         mc_query = MachineCategory.objects
         mc_query = mc_query.filter(datastore=old_datastore)
         mc_query = mc_query.exclude(pk=machine_category.pk)
-    if mc_query is not None and mc_query.count() == 0:
+        other_mc_refer_datastore = (mc_query.count() > 0)
         for datastore in _get_datastores_for_name(old_datastore):
             for account in Account.objects.filter(
                     date_deleted__isnull=True, machine_category=machine_category):
                 datastore.delete_account(account)
-            for person in Person.objects.all():
-                datastore.delete_person(person)
-            for group in Group.objects.all():
-                datastore.delete_group(group)
+            if not other_mc_refer_datastore:
+                for person in Person.objects.all():
+                    datastore.delete_person(person)
+                for group in Group.objects.all():
+                    datastore.delete_group(group)
 
     # if other machine_categories reference data store, don't do anything.
     mc_query = None
-    if old_datastore is not None:
+    if new_datastore is not None:
         mc_query = MachineCategory.objects
         mc_query = mc_query.filter(datastore=new_datastore)
         mc_query = mc_query.exclude(pk=machine_category.pk)
-    if mc_query is not None and mc_query.count() == 0:
+        other_mc_refer_datastore = (mc_query.count() > 0)
         for datastore in _get_datastores_for_name(new_datastore):
-            for group in Group.objects.all():
-                datastore.save_group(group)
-            for person in Person.objects.all():
-                datastore.save_person(person)
+            if not other_mc_refer_datastore:
+                for group in Group.objects.all():
+                    datastore.save_group(group)
+                for person in Person.objects.all():
+                    datastore.save_person(person)
             for account in Account.objects.filter(
                     date_deleted__isnull=True, machine_category=machine_category):
                 datastore.save_account(account)
