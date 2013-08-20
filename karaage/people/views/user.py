@@ -220,7 +220,7 @@ def password_reset(request):
 @login_required
 def change_account_shell(request, account_id):
     person = request.user.get_profile()
-    account = get_object_or_404(Account, pk=account_id, user=person)
+    account = get_object_or_404(Account, pk=account_id, person=person)
 
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('kg_user_profile_accounts'))
@@ -234,7 +234,7 @@ def change_account_shell(request, account_id):
 @login_required
 def make_default(request, account_id, project_id):
     person = request.user.get_profile()
-    account = get_object_or_404(Account, pk=account_id, user=person)
+    account = get_object_or_404(Account, pk=account_id, person=person)
     project = get_object_or_404(Project, pk=project_id)
 
     if request.method != 'POST':
@@ -242,7 +242,6 @@ def make_default(request, account_id, project_id):
 
     account.default_project = project
     account.save()
-    account.user.save()
     messages.success(request, "Default project changed succesfully")
     log(request.user, account.user, 2, 'Changed default project to %s' % project.pid)
     return HttpResponseRedirect(account.get_absolute_url())
