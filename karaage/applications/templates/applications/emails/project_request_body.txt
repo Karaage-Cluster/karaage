@@ -1,13 +1,3 @@
-=============================
-THIS IS AN EXAMPLE EMAIL ONLY
-========================================================================================================================
-To create your own email copy this example 
-From:
-/etc/karaage/templates/emails/project_request_body.txt.template
-To:
-/etc/karaage/templates/emails/project_request_body.txt
-=========================================================================================================================
-
 Hello {{ receiver }},
 
 {{ requester }} is requesting to start a new project titled: {{ application.name }}.

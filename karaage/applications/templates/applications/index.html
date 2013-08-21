@@ -7,10 +7,6 @@
 {% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;Home</div>{% endblock %}
     
 {% block content %}<div id="content-main">
-<p class="errornote">This is an example template. You should create your own in /etc/karaage/templates/applications/index.html</p>
-
-
-
 {% if user.is_authenticated %}
 <p>You already have an account! Why do you want another one?</p>
 {% else %}

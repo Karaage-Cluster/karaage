@@ -1,13 +1,3 @@
-=============================
-THIS IS AN EXAMPLE EMAIL ONLY
-========================================================================================================================
-To create your own email copy this example 
-From:
-/etc/karaage/templates/emails/user_invite_body.txt.template
-To:
-/etc/karaage/templates/emails/user_invite_body.txt
-=========================================================================================================================
-
 Hi,
 
 {{ sender }} has invited you to join the {{ org_name }} project {{ project }}

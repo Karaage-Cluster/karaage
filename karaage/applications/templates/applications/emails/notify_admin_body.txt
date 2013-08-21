@@ -1,12 +1,3 @@
-=============================
-THIS IS AN EXAMPLE EMAIL ONLY
-========================================================================================================================
-To create your own email copy this example 
-From:
-/etc/karaage/templates/emails/join_project_request_body.txt.template
-To:
-/etc/karaage/templates/emails/join_project_request_body.txt
-=========================================================================================================================
 
 {{ requester }}'s application {{ application }} has been approved by {{ approved_by }}.
 
