@@ -159,7 +159,7 @@ def choose_project(request, token=None):
         if 'project' in request.REQUEST:
             project = Project.objects.get(pk=request.POST['project'])
             if request.user.is_authenticated():
-                if request.user.get_profile() in project.users.all():
+                if request.user.get_profile() in project.group.members.all():
                     messages.info(request, "You are already a member of the project %s" % project.pid)
                     return HttpResponseRedirect(reverse('kg_user_profile'))
             application.project = project
