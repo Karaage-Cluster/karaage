@@ -29,7 +29,7 @@ from karaage.util import new_random_token, get_current_person
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
-from karaage.machines.models import MachineCategory
+from karaage.machines.models import MachineCategory, Account
 
 
 class Application(models.Model):
@@ -134,16 +134,17 @@ class UserApplication(Application):
 
     def approve(self):
         person, created_person = super(UserApplication, self).approve()
-        if self.needs_account:
-            from karaage.projects.utils import add_user_to_project
-            add_user_to_project(person, self.project)
-        else:
-            self.project.users.add(person)
-            self.project.save()
         if self.make_leader:
             self.project.leaders.add(person)
         self.save()
-        return person, created_person
+        created_account = False
+        if self.needs_account:
+            for mc in self.project.machine_categories.all():
+                if not person.has_account(mc):
+                    Account.create(person, project, mc)
+                    created_account = True
+        self.project.group.members.add(person)
+        return person, created_person, created_account
     approve.alters_data = True
 
 
@@ -174,11 +175,16 @@ class ProjectApplication(Application):
         for mc in self.machine_categories.all():
             project.machine_categories.add(mc)
         project.activate()
-        if self.needs_account:
-            add_user_to_project(person, project)
         self.project = project
         self.save()
-        return project, created_person
+        created_account = False
+        if self.needs_account:
+            for mc in self.project.machine_categories.all():
+                if not person.has_account(mc):
+                    Account.create(person, project, mc)
+                    created_account = True
+        self.project.group.members.add(person)
+        return project, person, created_person, created_account
     approve.alters_data = True
 
 

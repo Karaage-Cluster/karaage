@@ -87,7 +87,7 @@ def send_user_invite_email(userapplication):
     send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
 
 
-def send_account_approved_email(userapplication, created_person):
+def send_account_approved_email(userapplication, created_person, created_account):
     """Sends an email informing person account is ready"""
     context = CONTEXT.copy()
     context['receiver'] = userapplication.applicant
@@ -95,6 +95,8 @@ def send_account_approved_email(userapplication, created_person):
     context['site'] = '%s/profile/' % settings.REGISTRATION_BASE_URL
     if created_person:
         context['reset_url'] = userapplication.applicant.get_password_reset_url()
+    context['created_person'] = created_person
+    context['created_account'] = created_account
     subject, body = render_email('account_approved', context)
     to_email = userapplication.applicant.email
     
@@ -127,7 +129,7 @@ def send_project_request_email(application):
         send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
 
 
-def send_project_approved_email(application, created_person):
+def send_project_approved_email(application, created_person, created_account):
     """Sends an email to the projects leaders once approved"""
     context = CONTEXT.copy()
     context['site'] = '%s/projects/%s/' % (settings.REGISTRATION_BASE_URL, application.project.pid)
@@ -136,6 +138,8 @@ def send_project_approved_email(application, created_person):
     context['receiver'] = application.applicant
     if created_person:
         context['reset_url'] = application.applicant.get_password_reset_url()
+    context['created_person'] = created_person
+    context['created_account'] = created_account
     subject, body = render_email('project_approved', context)
     to_email = application.applicant.email
     send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)

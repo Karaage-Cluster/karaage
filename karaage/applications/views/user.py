@@ -224,7 +224,11 @@ def application_done(request, token):
     application = application.get_object()
     if application.state in (Application.NEW, Application.OPEN):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
-    return render_to_response('%s/%s_done.html' % (application._meta.app_label, application._meta.object_name.lower()), {'application': application}, context_instance=RequestContext(request))
+    is_existing_person = application.content_type and application.content_type.model == 'person'
+    return render_to_response(
+        '%s/%s_done.html' % (application._meta.app_label, application._meta.object_name.lower()),
+        {'application': application, 'is_existing_person': is_existing_person},
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -248,8 +252,8 @@ def approve_userapplication(request, application_id):
                 log(request.user, application.application_ptr, 2, 'Leader approved application')
                 return HttpResponseRedirect(reverse('kg_userapplication_pending', args=[application.id]))
 
-            application.approve()
-            send_account_approved_email(application)
+            person, created_person, created_account = application.approve()
+            send_account_approved_email(application, created_person, created_account)
             log(request.user, application.application_ptr, 2, 'Application fully approved')
             return HttpResponseRedirect(reverse('kg_userapplication_complete', args=[application.id]))
     else:
@@ -391,8 +395,8 @@ def send_invitation(request, project_id):
             application.project = project
             application.save()
             if application.content_type.model == 'person':
-                application.approve()
-                send_account_approved_email(application)
+                person, created_person, created_account = application.approve()
+                send_account_approved_email(application, created_person, created_account)
                 messages.warning(request, "%s was added to project %s directly since they have an existing account." %
                               (application.applicant, application.project))
                 log(request.user, application.application_ptr, 1, "%s added directly to %s" % (applicant, project))
