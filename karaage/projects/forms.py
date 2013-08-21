@@ -19,7 +19,7 @@ from django import forms
 from django.contrib.admin.widgets import AdminDateWidget, FilteredSelectMultiple
 import datetime
 
-import ajax_select
+import ajax_select.fields
 
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
