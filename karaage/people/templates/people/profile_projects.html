@@ -44,10 +44,7 @@
   </thead>
   <tbody>
     {% for ua in person.account_set.all %}
-    {% if ua.project_list %}
-    <tr>
-		<td colspan="6">{{ ua.machine_category }}</td>    
-    </tr>
+        <td colspan="6">{{ ua }}</td>    
     {% for p in ua.project_list %}
     <tr class="{% cycle row1,row2 %}">
       <td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
@@ -61,7 +58,6 @@
             <td>Usage: {% for pc in p.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk p.pk %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
     </tr>
     {% endfor %}
-    {% endif %}
     {% endfor %}
   </tbody>
 </table>

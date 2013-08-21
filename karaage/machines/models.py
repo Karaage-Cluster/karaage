@@ -124,7 +124,7 @@ class Account(models.Model):
         db_table = 'account'
 
     def __unicode__(self):
-        return '%s %s' % (self.person.get_full_name(), self.machine_category.name)
+        return '%s on %s' % (self.username, self.machine_category.name)
     
     def get_absolute_url(self):
         return self.person.get_absolute_url()
@@ -170,6 +170,8 @@ class Account(models.Model):
             delete_account(self)
             self.machine_category = new_machine_category
             moved = True
+            log(None, self.person, 2,
+                'Changed machine_category of %s' % self)
 
         # check if it was renamed
         old_username = self._username
@@ -179,7 +181,7 @@ class Account(models.Model):
                 from karaage.datastores import set_account_username
                 set_account_username(self, old_username, new_username)
             log(None, self.person, 2,
-                'Changed username on %s' % self.machine_category)
+                'Changed username of %s' % self)
 
         # check if deleted status changed
         old_date_deleted = self._date_deleted
@@ -190,12 +192,12 @@ class Account(models.Model):
                 from karaage.datastores import delete_account
                 delete_account(self)
                 log(None, self.person, 3,
-                    'Deactivated account on %s' % self.machine_category)
+                    'Deactivated account of %s' % self)
                 # deleted
             else:
                 # account is reactivated
                 log(None, self.person, 3,
-                    'Reactivated account on %s' % self.machine_category)
+                    'Reactivated account of %s' % self)
 
         # has locked status changed?
         old_login_enabled = self._login_enabled
@@ -203,10 +205,10 @@ class Account(models.Model):
         if old_login_enabled != new_login_enabled:
             if self.login_enabled:
                 log(None, self.person, 2,
-                    'Unlocked account %s' % self.machine_category)
+                    'Unlocked account %s' % self)
             else:
                 log(None, self.person, 2,
-                    'Locked account %s' % self.machine_category)
+                    'Locked account %s' % self)
 
         # makes sense to lock non-existant account
         if new_date_deleted is not None:
@@ -219,7 +221,7 @@ class Account(models.Model):
 
         # log message
         log(None, self.person, 2,
-            'Saved account on %s' % self.machine_category)
+            'Saved account %s' % self)
 
         # save current state
         self._username = self.username
@@ -252,7 +254,7 @@ class Account(models.Model):
         self.save()
         # self.save() will update the datastore for us.
         log(None, self.person, 2,
-            'Changed shell on %s' % self.machine_category)
+            'Changed shell of %s' % self)
     change_shell.alters_data = True
 
     def set_password(self, password):
@@ -260,6 +262,8 @@ class Account(models.Model):
             raise RuntimeError("Account is deactivated")
         from karaage.datastores import set_account_password
         set_account_password(self, password)
+        log(None, self.person, 2,
+            'Changed Password of %s' % self)
     set_password.alters_data = True
 
     def get_disk_quota(self):
