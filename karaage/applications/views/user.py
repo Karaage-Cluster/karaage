@@ -396,6 +396,13 @@ def send_invitation(request, project_id):
             application.project = project
             application.save()
             if application.content_type.model == 'person':
+                if settings.ADMIN_APPROVE_ACCOUNTS:
+                    application.state = Application.WAITING_FOR_ADMIN
+                    application.save()
+                    send_notify_admin(application, request.user.get_full_name())
+                    log(request.user, application.application_ptr, 2, 'Leader approved application')
+                    return HttpResponseRedirect(reverse('kg_userapplication_pending', args=[application.id]))
+
                 person, created_person, created_account = application.approve()
                 send_account_approved_email(application, created_person, created_account)
                 messages.warning(request, "%s was added to project %s directly since they have an existing account." %
