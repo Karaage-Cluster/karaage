@@ -128,8 +128,8 @@ def approve_projectapplication(request, application_id):
                 log(request.user, application.application_ptr, 2, 'Delegate approved application')
                 return HttpResponseRedirect(reverse('kg_projectapplication_pending', args=[application.id]))
 
-            application.approve()
-            send_project_approved_email(application)
+            project, person, created_person, created_account = application.approve()
+            send_project_approved_email(application, created_person, created_account)
             log(request.user, application.application_ptr, 2, 'Delegate fully approved')
             return HttpResponseRedirect(reverse('kg_projectapplication_complete', args=[application.id]))
     else:

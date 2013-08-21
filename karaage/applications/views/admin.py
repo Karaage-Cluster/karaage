@@ -59,10 +59,10 @@ def send_invitation(request):
             application.save()
             
             if application.content_type.model == 'person':
-                application.approve()
+                person, created_person, created_account = application.approve()
                 messages.warning(request, "%s was added to project %s directly since they have an existing account." % (application.applicant, application.project))
                 log(request.user, application.application_ptr, 1, "%s added directly to %s" % (application.applicant, application.project))
-                send_account_approved_email(application)
+                send_account_approved_email(application, created_person, created_account)
                 return HttpResponseRedirect(application.applicant.get_absolute_url())
             send_user_invite_email(application)
             messages.success(request, "Invitation sent to %s." % email)
@@ -124,8 +124,8 @@ def approve_userapplication(request, application_id):
         form = LeaderApproveUserApplicationForm(request.POST, instance=application)
         if form.is_valid():
             application = form.save()
-            person, created_person = application.approve()
-            send_account_approved_email(application, created_person)
+            person, created_person, created_account = application.approve()
+            send_account_approved_email(application, created_person, created_account)
             messages.success(request, "Application approved successfully")
             log(request.user, application.application_ptr, 2, 'Application fully approved')
             return HttpResponseRedirect(person.get_absolute_url())
@@ -170,8 +170,8 @@ def approve_projectapplication(request, application_id):
         form = AdminApproveProjectApplicationForm(request.POST, instance=application)
         if form.is_valid():
             application = form.save()
-            project, created_person = application.approve(pid=form.cleaned_data['pid'])
-            send_project_approved_email(application, created_person)
+            project, person, created_person, created_account = application.approve(pid=form.cleaned_data['pid'])
+            send_project_approved_email(application, created_person, created_account)
             messages.success(request, "Application approved successfully.")
             log(request.user, application.application_ptr, 2, 'Application fully approved')
             return HttpResponseRedirect(project.get_absolute_url())
