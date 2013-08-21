@@ -380,6 +380,7 @@ class Person(models.Model):
         set_person_password(self, password)
         for ua in self.account_set.filter(date_deleted__isnull=True):
             ua.set_password(password)
+        log(None, self, 2, 'Changed Password')
     set_password.alters_data = True
 
     def lock(self):
