@@ -33,6 +33,8 @@ from karaage.machines.models import MachineCategory
 
 
 class Application(models.Model):
+    """ Generic application for anything. """
+
     NEW = 'N'
     OPEN = 'O'
     WAITING_FOR_LEADER = 'L'
@@ -125,7 +127,7 @@ class Application(models.Model):
 
 
 class UserApplication(Application):
-    """ Associated with an Applicant or a Person"""
+    """ Application for an Applicant or a Person to join an existing project. """
     project = models.ForeignKey(Project, null=True, blank=True, limit_choices_to={'is_active': True})
     needs_account = models.BooleanField(u"Do you need a personal cluster account?", help_text=u"Required if you will be working on the project yourself.")
     make_leader = models.BooleanField(help_text="Make this person a project leader")
@@ -146,6 +148,7 @@ class UserApplication(Application):
 
 
 class ProjectApplication(Application):
+    """ Application for an Applicant or a Person to create a new project. """
     name = models.CharField('Title', max_length=200)
     institute = models.ForeignKey(Institute, limit_choices_to={'is_active': True})
     description = models.TextField(null=True, blank=True)
@@ -180,6 +183,8 @@ class ProjectApplication(Application):
 
 
 class Applicant(models.Model):
+    """ A person who has completed an application however is not yet officially
+    registered on the system yet. """
     email = models.EmailField(unique=True)
     email_verified = models.BooleanField(editable=False)
     username = models.CharField(max_length=16, unique=True, help_text="Required. 16 characters or fewer. Letters, numbers and underscores only", null=True, blank=True)

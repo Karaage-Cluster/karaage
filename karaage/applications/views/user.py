@@ -40,6 +40,7 @@ from karaage.util import log_object as log
 
 def do_userapplication(request, token=None, saml=False,
                        application_form=UserApplicationForm):
+    """ An anonymous user has requested an application with a existing project. """
     if request.user.is_authenticated():
         messages.warning(request, "You are already logged in")
         return HttpResponseRedirect(reverse('kg_user_profile'))
@@ -75,8 +76,11 @@ def do_userapplication(request, token=None, saml=False,
     else:
         saml_user = None
 
+    # Is this an application for an existing person?
     if application.content_type and application.content_type.model == 'person':
         return existing_user_application(request, token)
+
+    # If we get to this point it means that this is an application for a new person.
     init_institute = request.GET.get('institute', '')
 
     if request.method == 'POST':
@@ -116,7 +120,8 @@ def do_userapplication(request, token=None, saml=False,
 
 
 def existing_user_application(request, token):
-    
+    """ An anonymous user has an existing application for an existing project
+    that references an existing person. """
     application = get_object_or_404(UserApplication,
                                     secret_token=token,
                                     state__in=[Application.NEW, Application.OPEN],
@@ -133,6 +138,8 @@ def existing_user_application(request, token):
 
 
 def choose_project(request, token=None):
+    """ An anonymous user with an application or an authenticated user wants
+    extra projects that already exist. """
     if request.user.is_authenticated():
         application = UserApplication()
         application.applicant = request.user.get_profile()
@@ -211,6 +218,8 @@ def choose_project(request, token=None):
 
 
 def application_done(request, token):
+    """ The application is complete and was automatically approved or is now
+    waiting for approval. """
     application = get_object_or_404(Application, secret_token=token)
     application = application.get_object()
     if application.state in (Application.NEW, Application.OPEN):
@@ -220,6 +229,7 @@ def application_done(request, token):
 
 @login_required
 def approve_userapplication(request, application_id):
+    """ The logged in project leader wants to approve an application for a new account. """
     application = get_object_or_404(UserApplication, pk=application_id)
     if not request.user.get_profile() in application.project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
@@ -250,6 +260,7 @@ def approve_userapplication(request, application_id):
 
 @login_required
 def decline_userapplication(request, application_id):
+    """ The logged in project leader wants to decline an application for a new account. """
     application = get_object_or_404(UserApplication, pk=application_id)
     if not request.user.get_profile() in application.project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
@@ -275,6 +286,8 @@ def decline_userapplication(request, application_id):
 
 @login_required
 def userapplication_detail(request, application_id):
+    """ The logged in user wants to view an application for a new account and
+    is giving us the application_id. """
     application = get_object_or_404(UserApplication, pk=application_id)
 
     if not request.user.get_profile() in application.project.leaders.all():
@@ -290,6 +303,8 @@ def userapplication_detail(request, application_id):
 
 @login_required
 def userapplication_complete(request, application_id):
+    """ The logged in project leader's approve/decline action complete and
+    account is now approved or declined. No further approval required. """
     application = get_object_or_404(UserApplication, pk=application_id)
     if application.state != Application.COMPLETE:
         return HttpResponseForbidden('<h1>Access Denied</h1>')
@@ -301,6 +316,8 @@ def userapplication_complete(request, application_id):
 
 @login_required
 def userapplication_pending(request, application_id):
+    """ The logged in project leader's approve/decline action complete and
+    now needs an administrator to approve the account.  """
     application = get_object_or_404(UserApplication, pk=application_id)
     if application.state != Application.WAITING_FOR_ADMIN:
         return HttpResponseForbidden('<h1>Access Denied</h1>')
@@ -311,6 +328,9 @@ def userapplication_pending(request, application_id):
 
 
 def application_index(request):
+    """ An anonymous or authenticated user has applied for an application for a
+    new account or a new project. """
+    # Note default applications/index.html will display error if user logged in.
     if not settings.ALLOW_REGISTRATIONS:
         return render_to_response('applications/registrations_disabled.html', {}, context_instance=RequestContext(request))
 
@@ -340,6 +360,8 @@ def application_index(request):
 
 @login_required
 def send_invitation(request, project_id):
+    """ The logged in project leader wants to invite somebody to their project.
+    """
     project = get_object_or_404(Project, pk=project_id)
     if not request.user.get_profile() in project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
@@ -376,6 +398,9 @@ def send_invitation(request, project_id):
                 log(request.user, application.application_ptr, 1, "%s added directly to %s" % (applicant, project))
                 return HttpResponseRedirect(application.applicant.get_absolute_url())
 
+            # send email to user telling them to log into
+            # '%s/applications/%s/do/' % (settings.REGISTRATION_BASE_URL, userapplication.secret_token)
+            # kg_new_userapplication which calls do_userapplication above.
             send_user_invite_email(application)
             messages.success(request, "Invitation sent to %s." % email)
             log(request.user, application.application_ptr, 1, 'Invitation sent')
@@ -391,6 +416,8 @@ def send_invitation(request, project_id):
 
 @login_required
 def pending_applications(request):
+    """ A logged in project leader or institute delegate wants to see all his
+    pending applications. """
     person = request.user.get_profile()
     user_applications = UserApplication.objects.filter(project__in=person.leaders.all())
     project_applications = ProjectApplication.objects.filter(institute__in=person.delegate.all())
@@ -431,7 +458,8 @@ def start_invite_application(request, token):
 
 
 def cancel(request, token):
-    
+    """ An anonymous user with an application wishes to cancel the application.
+    """
     application = get_object_or_404(
         Application,
         secret_token=token,
