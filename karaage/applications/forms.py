@@ -20,6 +20,8 @@ import re
 from django import forms
 from django.conf import settings
 from django.db.models import Q
+from django.core.urlresolvers import reverse
+from django.utils.safestring import mark_safe
 
 from captcha.fields import CaptchaField
 
@@ -125,14 +127,17 @@ class UserApplicantForm(ApplicantForm):
 
 
 class UserApplicationForm(forms.ModelForm):
-    aup = forms.BooleanField(label=u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>' % settings.AUP_URL,
-                             error_messages={'required': 'You must accept to proceed.'})
+    aup = forms.BooleanField(error_messages={'required': 'You must accept to proceed.'})
 
     def __init__(self, *args, **kwargs):
         captcha = kwargs.pop('captcha', False)
         super(UserApplicationForm, self).__init__(*args, **kwargs)
         if captcha:
-            self.fields['captcha'] = CaptchaField(label=u'CAPTCHA', help_text=u"Please enter the text displayed in the imge above.")
+            self.fields['captcha'] = CaptchaField(label=u'CAPTCHA', help_text=u"Please enter the text displayed in the image above.")
+        aup_url = getattr(settings, 'AUP_URL', None)
+        if aup_url is None:
+            aup_url = reverse('aup')
+        self.fields['aup'].label = mark_safe(u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>' % aup_url)
 
     class Meta:
         model = UserApplication
@@ -143,14 +148,17 @@ class ProjectApplicationForm(forms.ModelForm):
     name = forms.CharField(label="Project Title", widget=forms.TextInput(attrs={'size': 60}))
     description = forms.CharField(max_length=1000, widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}))
     additional_req = forms.CharField(label="Additional requirements", widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), help_text=u"Do you have any special requirements?", required=False)
-    aup = forms.BooleanField(label=u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>' % settings.AUP_URL,
-                             error_messages={'required': 'You must accept to proceed.'})
+    aup = forms.BooleanField(error_messages={'required': 'You must accept to proceed.'})
 
     def __init__(self, *args, **kwargs):
         captcha = kwargs.pop('captcha', False)
         super(ProjectApplicationForm, self).__init__(*args, **kwargs)
         if captcha:
-            self.fields['captcha'] = CaptchaField(label=u'CAPTCHA', help_text=u"Please enter the text displayed in the imge above.")
+            self.fields['captcha'] = CaptchaField(label=u'CAPTCHA', help_text=u"Please enter the text displayed in the image above.")
+        aup_url = getattr(settings, 'AUP_URL', None)
+        if aup_url is None:
+            aup_url = reverse('aup')
+        self.fields['aup'].label = mark_safe(u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>' % aup_url)
 
     class Meta:
         model = ProjectApplication
