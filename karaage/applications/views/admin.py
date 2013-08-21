@@ -110,7 +110,10 @@ def application_list(request):
     except (EmptyPage, InvalidPage):
         page = p.page(p.num_pages)
 
-    return render_to_response('applications/application_list.html', {'page': page, 'filter_bar': filter_bar}, context_instance=RequestContext(request))
+    return render_to_response(
+            'applications/application_list.html',
+            {'page': page, 'filter_bar': filter_bar, 'terms': terms},
+            context_instance=RequestContext(request))
 
 
 @permission_required('applications.change_application')

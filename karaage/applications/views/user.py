@@ -213,6 +213,7 @@ def choose_project(request, token=None):
         {'term_error': term_error, 'terms': terms,
          'leader_list': leader_list, 'project_error': project_error,
          'project_list': project_list, 'project': project, 'q_project': q_project,
+         'qs': qs,
          'leader': leader, 'application': application},
         context_instance=RequestContext(request))
 
