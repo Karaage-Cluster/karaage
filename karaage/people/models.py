@@ -173,6 +173,11 @@ class Person(models.Model):
         from karaage.datastores import save_person
         save_person(self)
 
+        # update account datastores
+        from karaage.datastores import save_account
+        for ua in self.account_set.filter(date_deleted__isnull=True):
+            save_account(ua)
+
         # has locked status changed?
         old_login_enabled = self._login_enabled
         new_login_enabled = self.login_enabled
@@ -202,11 +207,6 @@ class Person(models.Model):
                 from karaage.datastores import add_account_to_institute
                 for account in self.account_set.filter(date_deleted__isnull=True):
                     add_account_to_institute(account, new_institute)
-
-        # update account datastores
-        from karaage.datastores import save_account
-        for ua in self.account_set.filter(date_deleted__isnull=True):
-            save_account(ua)
 
         # log message
         log(None, self, 2, 'Saved person')

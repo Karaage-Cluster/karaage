@@ -47,6 +47,13 @@ class Institute(models.Model):
             name = str(self.name.lower().replace(' ', ''))
             self.group,_ = Group.objects.get_or_create(name=name)
 
+        # save the object
+        super(Institute, self).save(*args, **kwargs)
+
+        # update the datastore
+        from karaage.datastores import save_institute
+        save_institute(self)
+
         # has group changed?
         old_group = self._group
         new_group = self.group
@@ -65,13 +72,6 @@ class Institute(models.Model):
                 from karaage.datastores import add_account_to_institute
                 for account in Account.objects.filter(person__groups=new_group, date_deleted__isnull=True):
                     add_account_to_institute(account, self)
-
-        # save the object
-        super(Institute, self).save(*args, **kwargs)
-
-        # update the datastore
-        from karaage.datastores import save_institute
-        save_institute(self)
 
         # save the current state
         self._group = self.group

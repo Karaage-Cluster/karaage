@@ -73,6 +73,13 @@ class Project(models.Model):
             name = self.pid
             self.group,_ = Group.objects.get_or_create(name=name)
 
+        # save the object
+        super(Project, self).save(*args, **kwargs)
+
+        # update the datastore
+        from karaage.datastores import save_project
+        save_project(self)
+
         # has group changed?
         old_group = self._group
         new_group = self.group
@@ -91,13 +98,6 @@ class Project(models.Model):
                 from karaage.datastores import add_account_to_project
                 for account in Account.objects.filter(person__groups=new_group, date_deleted__isnull=True):
                     add_account_to_project(account, self)
-
-        # save the object
-        super(Project, self).save(*args, **kwargs)
-
-        # update the datastore
-        from karaage.datastores import save_project
-        save_project(self)
 
         # save the current state
         self._group = self.group

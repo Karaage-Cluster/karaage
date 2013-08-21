@@ -64,6 +64,13 @@ class SoftwarePackage(models.Model):
             name = str(self.name.lower().replace(' ', ''))
             self.group,_ = Group.objects.get_or_create(name=name)
 
+        # save the object
+        super(SoftwarePackage, self).save(*args, **kwargs)
+
+        # update the datastore
+        from karaage.datastores import save_software
+        save_software(self)
+
         # has group changed?
         old_group = self._group
         new_group = self.group
@@ -83,18 +90,12 @@ class SoftwarePackage(models.Model):
                 for account in Account.objects.filter(person__groups=new_group, date_deleted__isnull=True):
                     add_account_to_software(account, self)
 
-        # save the object
-        super(SoftwarePackage, self).save(*args, **kwargs)
-
-        # update the datastore
-        from karaage.datastores import save_software
-        save_software(self)
-
         # log message
         log(None, self, 2, "Saved software package")
 
         # save the current state
         self._group = self.group
+
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
