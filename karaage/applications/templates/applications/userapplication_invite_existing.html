@@ -10,7 +10,7 @@
       <tr><td>Institute:</td><td><a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a></td></tr>
 	</table>
     
-    <p>Do you want to add them directly to the project and send an email informing them.</p>
+    <p>Do you want to add them directly to the project and send an email informing them?</p>
     <form method="post" action=".">{% csrf_token %}
     	{% for field in form %}{{ field.as_hidden }}
     	{% endfor %}
