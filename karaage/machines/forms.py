@@ -21,6 +21,7 @@ from django.conf import settings
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory, Machine
 
+import ajax_select.fields
 
 class MachineForm(forms.ModelForm):
     class Meta:
@@ -34,10 +35,14 @@ class MachineCategoryForm(forms.ModelForm):
 
 class AccountForm(forms.Form):
     machine_category = forms.ModelChoiceField(queryset=MachineCategory.objects.all(), initial=1)
-    default_project = forms.ModelChoiceField(queryset=Project.active.all())
+    default_project = ajax_select.fields.AutoCompleteSelectField('project', required=True)
 
     def clean(self):
         data = self.cleaned_data
+        if 'machine_category' not in data:
+            return data
+        if 'default_project' not in data:
+            return data
         if not data['machine_category'] in data['default_project'].machine_categories.all():
             raise forms.ValidationError(u'Default project not in machine category')
         return data
