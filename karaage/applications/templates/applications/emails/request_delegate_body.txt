@@ -1,0 +1,9 @@
+{% autoescape off %}Hello {{ receiver.first_name }},
+
+
+{{ application.applicant }} is requesting {{ application.info }}.
+
+Please visit the {{ org_name }} account management site at {{ site }} for more information and to accept or decline this request.
+
+
+{% include "emails/email_footer.txt" %}{% endautoescape %}

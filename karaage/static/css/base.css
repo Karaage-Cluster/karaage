@@ -797,3 +797,10 @@ table#change-history tbody th {
 .graph_key_purple { background-color: purple; }
 .graph_key_grey { background-color: grey; }
 .graph_key_pink { background-color: pink; }
+
+.selected {
+    color: #000;
+    font-weight: bold;
+}
+
+.hidden { display: none !important; }

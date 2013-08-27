@@ -1,16 +1,8 @@
-Hello {{ receiver }},
-
-Your {{ org_name }} project {{ project.name }} has been approved and has been assigned the project ID {{ project.pid }}
-
-{% if created_person %}You can set your initial password by clicking on the following link:
-
-{{ reset_url }}
-
-Once you have a password, you can log into the {{ org_name }} account management tool to see the status of your account by going to {{ site }}.
-{% elif created_account %}One/more accounts were created. Please activate these accounts by logging in to {{ site }}.
-{% else %}You can log into the {{ org_name }} account management tool to see the status of your account by going to {{ site }}.
-{% endif %}
-For your records, your username is: {{ receiver.username }}
+{% autoescape off %}Hello {{ receiver.first_name }},
 
 
-{% include "emails/email_footer.txt" %}
+Your {{ org_name }} project {{ application.project.name }} has been approved
+and has been assigned the project ID {{ application.project.pid }}
+
+
+{% include "emails/email_footer.txt" %}{% endautoescape %}

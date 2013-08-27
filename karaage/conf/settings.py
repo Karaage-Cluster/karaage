@@ -142,6 +142,8 @@ DATASTORES = {
 
 USAGE_IS_PUBLIC = False
 
+SHIB_SUPPORTED = False
+
 SHIB_ATTRIBUTE_MAP = {
     "HTTP_SHIB_IDENTITY_PROVIDER": (True, "idp"),
     "HTTP_PERSISTENT_ID": (True, "persistent_id"),

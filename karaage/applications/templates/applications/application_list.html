@@ -1,13 +1,116 @@
-{% extends "changelist.html" %}
+{% extends "main.html" %}
 {% load url from future %}
-
+{% load paginator %}
 {% block title %}Applications{% endblock %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Applications</div>{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    Applications</div>
+{% endblock %}
 
 
+{% block content %}
+<div id="content-main">
 
-{% block object-tools %}<div class="module object-tools"><h2>Object links</h2><p>{% if perms.applications.add_application %}
-</p><ul><li><a class="addlink" href="{% url 'kg_userapplication_invite' %}">Send invitation</a></li></ul>
-{% endif %}
-</div>{% endblock %}
+    {% if my_applications %}
+    <div class="module">
+        <h2>My applications</h2>
+        <table cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Applicant</th>
+                    <th>Project</th>
+                    <th>State</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in my_applications %}
+                <tr class="{% cycle row1,row2 %}">
+                    <td><a href="{% url 'kg_application_detail' app.id %}">{{ app.applicant }}</a></td>
+                    <td>{% if app.project %}{{ app.project.pid }}{% else %}None{% endif %}</td>
+                    <td>{{ app.get_state_display }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    {% if user_applications %}
+    <div class="module">
+        <h2>User applications</h2>
+        <table cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Applicant</th>
+                    <th>Project</th>
+                    <th>Leader</th>
+                    <th>Cluster Account</th>
+                    <th>State</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in user_applications %}
+                <tr class="{% cycle row1,row2 %}">
+                    <td><a href="{% url 'kg_application_detail' app.id %}">{{ app.applicant }}</a></td>
+                    <td>{% if app.project %}{{ app.project.pid }}{% else %}None{% endif %}</td>
+                    <td>{% yes_no_img app.make_leader %}</td>
+                    <td>{% yes_no_img app.needs_account %}</td>
+                    <td>{{ app.get_state_display }}</td>
+                    {% if app.state == "L" %}
+                    <td><a class="yeslink" href="{% url 'kg_application_detail' app.id 'approve' %}">Review/Accept</a></td>
+                    <td><a class="nolink" href="{% url 'kg_application_detail' app.id 'decline' %}">Decline</a></td>
+                    {% else %}
+                    <td></td>
+                    <td></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    {% if project_applications %}
+    <div class="module">
+        <h2>Project applications</h2>
+        <table cellspacing="0">
+            <thead>
+                <tr>
+                <th>Applicant</th>
+                <th>Cluster Account</th>
+                <th>State</th>
+                <th></th>
+                <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in project_applications %}
+                <tr class="{% cycle row1,row2 %}">
+                    <td><a href="{% url 'kg_application_detail' app.id %}">{{ app.applicant }}</a></td>
+                    <td>{% yes_no_img app.needs_account %}</td>
+                    <td>{{ app.get_state_display }}</td>
+                    {% if app.state == "L" %}
+                    <td><a class="yeslink" href="{% url 'kg_application_detail' app.id 'approve' %}">Review/Accept</a></td>
+                    <td><a class="nolink" href="{% url 'kg_application_detail' app.id 'decline' %}">Decline</a></td>
+                    {% else %}
+                    <td></td>
+                    <td></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    {% if not my_applications and not project_applications and not user_applications %}
+    <h3>You currently have no pending applications.</h3>
+    {% endif %}
+
+</div>
+{% endblock %}
