@@ -1,0 +1,56 @@
+{% extends "forms.html" %}
+{% load forms %}
+{% load applications %}
+
+
+{% block title %}Application{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    Application
+</div>
+{% endblock %}
+
+
+{% block content %}
+<h1>1. Application Introduction</h1>
+
+<form method="post" action=".">{% csrf_token %}
+    {% if application.applicant.first_name %}
+    <p>Hi {{ application.applicant.first_name }},</p>
+    {% endif %}
+
+    {% if application.project %}
+    {% if application.created_by == application.applicant %}
+    <p>You have opened an application to join the following {{ org_name }} project:</p>
+    {% else %}
+    <p>{{ application.created_by }} has invited you to join the following {{ org_name }} project:</p>
+    {% endif %}
+    <blockquote>
+        <p>Project ID: {{ application.project.pid }}<br/>Title: {{ application.project.name }}</p>
+    </blockquote>
+    {% else %}
+        <p>You have started a new application. This will proceed with the following steps.</p>
+    {% endif %}
+
+    <p>An application at {{ org_name }} requires completing the following steps:</p>
+
+    {% application_state application %}
+
+    <p>You may return to this application at any time to check on its status.
+    Please save the following URL for future use.</p>
+
+    <p class="strong">{{ link }}</p>
+
+    <p class="strong">This URL must remain secret, do not give it to anybody else.</p>
+
+    <p>Thank you</p>
+
+    {% application_actions %}
+</form>
+{% endblock %}
+
+
+

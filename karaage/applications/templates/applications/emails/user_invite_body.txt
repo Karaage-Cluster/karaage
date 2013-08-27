@@ -1,13 +1,15 @@
-Hi,
+{% if receiver.first_name %}Hello {{ receiver.first_name }},
+{% else %}Hello,
+{% endif %}
 
-{{ sender }} has invited you to join the {{ org_name }} project {{ project }}
+{% if project %}{{ sender }} has invited you to join the {{ org_name }} project {{ project }}
+{% else %}{{ sender }} has invited you to join the {{ org_name }} cluster.
+{% endif %}
+{% if message %}{{ message }}
 
-{{ message }}
-
-{% if make_leader %}They have also asked you to become a project leader.{% endif %}
-
-To create your account and also an account on the cluster if you choose please visit {{ site }}
+{% endif %}To create your account and also an account on the cluster if you choose please visit {{ site }}
 
 This link will expire in 7 days.
+
 
 {% include "emails/email_footer.txt" %}

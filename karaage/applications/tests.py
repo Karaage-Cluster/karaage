@@ -48,7 +48,7 @@ class UserApplicationTestCase(TestCase):
 
     def test_register_account(self):
         self.assertEquals(len(mail.outbox), 0)
-        response = self.client.get(reverse('kg_new_userapplication'))
+        response = self.client.get(reverse('kg_application_new_user'))
         self.failUnlessEqual(response.status_code, 200)
         a = response.content.find('name="captcha_0" type="hidden" value="')+38
         b = a+40
@@ -73,7 +73,7 @@ class UserApplicationTestCase(TestCase):
             'captcha_1': captcha_text,
         }
 
-        response = self.client.post(reverse('kg_new_userapplication'), form_data, follow=True)
+        response = self.client.post(reverse('kg_application_new_user'), form_data, follow=True)
         token = Application.objects.all()[0].secret_token
         self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_choose_project', args=[token,]))
         self.failUnlessEqual(response.status_code, 200)
@@ -98,10 +98,10 @@ class UserApplicationTestCase(TestCase):
         logged_in = self.client.login(username='kgtestuser1', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         
-        response = self.client.get(reverse('kg_userapplication_detail', args=[application.id]))
+        response = self.client.get(reverse('kg_application_detail', args=[application.id]))
         self.failUnlessEqual(response.status_code, 200)
 
-        response = self.client.post(reverse('kg_userapplication_detail', args=[application.id]))
+        response = self.client.post(reverse('kg_application_detail', args=[application.id]))
         self.failUnlessEqual(response.status_code, 302)
 
         application = Application.objects.get(pk=application.id)

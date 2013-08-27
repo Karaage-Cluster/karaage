@@ -1,16 +1,11 @@
-Hello {{ receiver }},
+Hello {{ receiver.first_name }},
 
-Your {{ org_name }} computer account has been approved and you are now a member of the project "{{ project }}".
 
-{% if created_person %}You can set your initial password by clicking on the following link:
+Your application {{ application.info }} has been approved.
 
-{{ reset_url }}
+{% if created_person or created_account %}Please setup your password by visiting {{ link }}.
 
-Once you have a password, you can log into the {{ org_name }} account management tool to see the status of your account by going to {{ site }}.
-{% elif created_account %}One/more accounts were created. Please activate these accounts by logging in to {{ site }}.
-{% else %}You can log into the {{ org_name }} account management tool to see the status of your account by going to {{ site }}.
-{% endif %}
-For your records, your username is: {{ receiver.username }}
+{% endif %}For your records, your username is: {{ receiver.username }}
 
 
 {% include "emails/email_footer.txt" %}

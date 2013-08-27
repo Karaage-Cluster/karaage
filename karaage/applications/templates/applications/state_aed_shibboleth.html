@@ -1,0 +1,38 @@
+{% extends "forms.html" %}
+{% load common forms %}
+{% load applications %}
+
+
+{% block title %}Home{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    Application
+</div>
+{% endblock %}
+
+
+{% block content %}
+<h1>2. Shibboleth Setup</h1>
+
+<form action="." method="post">{% csrf_token %}
+    {% if done %}
+        <p>There is no need to register for shibboleth. {{ status }}</p>
+    {% else %}
+        <p>Please choose your institute below to register your shibboleth identity:</p>
+        {% if status %}
+        <ul class="errorlist">
+            <li>{{ status }}</li>
+        </ul>
+        {% endif %}
+        {% form_as_div form %}
+        <input type="submit" name="shibboleth" value="Register" class="button" />
+        <h3>Contact</h3>
+        <p>Please contact {{ accounts_email }} for further information.</p>
+    {% endif %}
+
+    {% application_actions %}
+</form>
+{% endblock %}

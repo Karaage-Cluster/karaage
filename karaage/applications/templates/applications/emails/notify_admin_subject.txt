@@ -1,1 +1,1 @@
-New Karaage application waiting for admin processing
+{{ org_name }} Project join request waiting for admin processing

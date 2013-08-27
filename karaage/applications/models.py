@@ -38,28 +38,29 @@ class Application(models.Model):
     NEW = 'N'
     OPEN = 'O'
     WAITING_FOR_LEADER = 'L'
-    WAITING_FOR_DELEGATE = 'D'
     WAITING_FOR_ADMIN = 'K'
-    COMPLETE = 'C'
+    PASSWORD = 'P'
+    COMPLETED = 'C'
     ARCHIVED = 'A'
     DECLINED = 'R'
+
     APPLICATION_STATES = (
         (NEW, 'Invitiation Sent'),
         (OPEN, 'Open'),
         (WAITING_FOR_LEADER, 'Waiting for project leader approval'),
-        (WAITING_FOR_DELEGATE, 'Waiting for institute delegate approval'),
         (WAITING_FOR_ADMIN, 'Waiting for Karaage admin approval'),
-        (COMPLETE, 'Complete'),
+        (PASSWORD, 'Applicant needs to set password'),
+        (COMPLETED, 'Complete'),
         (ARCHIVED, 'Archived'),
         (DECLINED, 'Declined'),
         )
-    
+
     secret_token = models.CharField(max_length=64, default=new_random_token, editable=False, unique=True)
     expires = models.DateTimeField(editable=False)
     created_by = models.ForeignKey(Person, editable=False, null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True, editable=False)
     submitted_date = models.DateTimeField(null=True, blank=True)
-    state = models.CharField(max_length=1, choices=APPLICATION_STATES, default=NEW)
+    state = models.CharField(max_length=1, choices=APPLICATION_STATES)
     complete_date = models.DateTimeField(null=True, blank=True, editable=False)
     content_type = models.ForeignKey(ContentType, limit_choices_to={'model__in': ['person', 'applicant']}, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
@@ -69,6 +70,9 @@ class Application(models.Model):
 
     def __unicode__(self):
         return "Application #%s" % self.id
+
+    def info(self):
+        return unicode(self)
 
     def get_type(self):
         return self._class
@@ -105,35 +109,57 @@ class Application(models.Model):
             pass
         return self
 
+    def reopen(self):
+        self.created_by = get_current_person()
+        self.submitted_date = None
+        self.complete_date = None
+        self.save()
+
+    def submit(self):
+        self.submited_date = datetime.datetime.now()
+        self.save()
+
     def approve(self):
+        assert self.applicant is not None
         if self.content_type.model == 'applicant':
             person = self.applicant.approve()
             created_person = True
-        else:
+        elif self.content_type.model == 'person' :
             person = self.applicant
             created_person = False
+        else:
+            assert False
         self.applicant = person
-        self.state = Application.COMPLETE
         self.complete_date = datetime.datetime.now()
         self.save()
-        return person, created_person
+        return created_person
     approve.alters_data = True
 
     def decline(self):
-        self.state = Application.DECLINED
         self.complete_date = datetime.datetime.now()
         self.save()
     decline.alters_data = True
 
-
 class UserApplication(Application):
     """ Application for an Applicant or a Person to join an existing project. """
     project = models.ForeignKey(Project, null=True, blank=True, limit_choices_to={'is_active': True})
-    needs_account = models.BooleanField(u"Do you need a personal cluster account?", help_text=u"Required if you will be working on the project yourself.")
+    needs_account = models.BooleanField(u"Do you need a personal cluster account?", help_text=u"Required if you will be working on the project yourself.", default=True)
     make_leader = models.BooleanField(help_text="Make this person a project leader")
 
+    def info(self):
+        if self.project is None:
+            return "to join unspecified project"
+        else:
+            return "to join project %s" % self.project
+
+    def submit(self):
+        super(UserApplication, self).submit()
+
     def approve(self):
-        person, created_person = super(UserApplication, self).approve()
+        created_person = super(UserApplication, self).approve()
+        assert self.applicant is not None
+        assert self.content_type.model == "person"
+        person = self.applicant
         if self.make_leader:
             self.project.leaders.add(person)
         self.save()
@@ -144,25 +170,53 @@ class UserApplication(Application):
                     Account.create(person, project, mc)
                     created_account = True
         self.project.group.members.add(person)
-        return person, created_person, created_account
+        return created_person, created_account
     approve.alters_data = True
+
+    def authenticate(self, person):
+        auth = {}
+
+        auth['is_applicant'] = False
+        if person == self.applicant:
+            auth['is_applicant'] = True
+
+        auth['is_leader'] = False
+        if self.project is not None:
+            if person in self.project.leaders.all():
+                auth['is_leader'] = True
+        return auth
 
 
 class ProjectApplication(Application):
     """ Application for an Applicant or a Person to create a new project. """
     name = models.CharField('Title', max_length=200)
-    institute = models.ForeignKey(Institute, limit_choices_to={'is_active': True})
+    institute = models.ForeignKey(Institute, limit_choices_to={'is_active': True}, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
-    needs_account = models.BooleanField(u"Do you need a personal cluster account?", help_text=u"Required if you will be working on the project yourself.")
+    needs_account = models.BooleanField(u"Do you need a personal cluster account?", help_text=u"Required if you will be working on the project yourself.", default=True)
     machine_categories = models.ManyToManyField(MachineCategory, null=True, blank=True)
     project = models.ForeignKey(Project, null=True, blank=True)
+    pid = models.CharField(max_length=50, null=True, blank=True)
+
+    def info(self):
+        if self.name is None:
+            return "to create unspecified project"
+        else:
+            return "to create project %s" % self.name
+
+    def submit(self):
+        self.institute = self.applicant.institute
+        super(ProjectApplication, self).submit()
 
     def approve(self, pid=None):
-        person, created_person = super(ProjectApplication, self).approve()
+        created_person = super(ProjectApplication, self).approve()
+        assert self.applicant is not None
+        assert self.institute is not None
+        assert self.content_type.model == "person"
+        person = self.applicant
         from karaage.projects.utils import add_user_to_project, get_new_pid
         project = Project(
-            pid=pid or get_new_pid(self.institute),
+            pid=self.pid or get_new_pid(self.institute),
             name=self.name,
             description=self.description,
             institute=self.institute,
@@ -184,8 +238,22 @@ class ProjectApplication(Application):
                     Account.create(person, project, mc)
                     created_account = True
         self.project.group.members.add(person)
-        return project, person, created_person, created_account
+        return created_person, created_account
     approve.alters_data = True
+
+    def authenticate(self, person):
+        auth = {}
+
+        auth['is_applicant'] = False
+        if person == self.applicant:
+            auth['is_applicant'] = True
+
+        auth['is_leader'] = False
+        if self.institute is not None:
+            if person in self.institute.delegates.all():
+                auth['is_leader'] = True
+
+        return auth
 
 
 class Applicant(models.Model):
