@@ -30,6 +30,7 @@ def add_saml_data(applicant, request):
     applicant.saml_id = attrs['persistent_id']
     applicant.telephone = attrs.get('telephone', None)
     applicant.institute = Institute.objects.get(saml_entityid=attrs['idp'])
+    applicant.email_verified = True
     applicant.save()
     return applicant
 

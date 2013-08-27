@@ -1,8 +1,11 @@
-Hello {{ receiver }},
+{% autoescape off %}Hello {{ receiver.first_name }},
 
-Your {{ org_name }} application to join the project "{{ project }}" has been declined.
+
+Your {{ org_name }} application {{ application.info }} has been declined.
 
 If you think this is an error please email {{ org_email }}
 
+The link to the declined application is {{ link }}.
 
-{% include "emails/email_footer.txt" %}
+
+{% include "emails/email_footer.txt" %}{% endautoescape %}

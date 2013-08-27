@@ -22,18 +22,19 @@ from karaage.applications.models import Application
 urlpatterns = patterns('karaage.applications.views.admin',
 
     url(r'^$', 'application_list', name='kg_application_list'),
-    url(r'^invite/$', 'send_invitation', name='kg_userapplication_invite'),
-    url(r'^projects/(?P<application_id>\d+)/approve/$', 'approve_projectapplication', name='kg_projectapplication_approve'),
-    url(r'^projects/(?P<application_id>\d+)/decline/$', 'decline_projectapplication', name='kg_projectapplication_decline'),
     url(r'^applicants/(?P<applicant_id>\d+)/$', 'applicant_edit', name='kg_applicant_edit'),
-    url(r'^(?P<application_id>\d+)/$', 'application_detail', name='kg_application_detail'),
-    url(r'^(?P<application_id>\d+)/approve/$', 'approve_userapplication', name='kg_userapplication_approve'),
-    url(r'^(?P<application_id>\d+)/decline/$', 'decline_userapplication', name='kg_userapplication_decline'),
-    url(r'^(?P<application_id>\d+)/delete/$', 'delete_application', name='kg_application_delete'),
-    url(r'^(?P<application_id>\d+)/archive/$', 'archive_application', name='kg_application_archive'),
-
 )
 
-urlpatterns += patterns('karaage.views',                   
+urlpatterns += patterns('karaage.views',
     url(r'^(?P<object_id>\d+)/logs/$', 'log_detail', {'model': Application }, name='kg_application_logs'),
 )
+
+urlpatterns += patterns('karaage.applications.views.user',
+    url(r'^invite/$', 'admin_send_invitation', name='kg_application_invite'),
+    url(r'^invite/(?P<project_id>[-.\w]+)/$', 'admin_send_invitation', name='kg_application_invite'),
+
+    url(r'^(?P<application_id>\d+)/$', 'application_detail_admin', name='kg_application_detail'),
+    url(r'^(?P<application_id>\d+)/(?P<state>[-.\w]+)/$', 'application_detail_admin', name='kg_application_detail'),
+    url(r'^(?P<application_id>\d+)/(?P<state>[-.\w]+)/(?P<label>[-.\w]+)/$', 'application_detail_admin', name='kg_application_detail'),
+)
+

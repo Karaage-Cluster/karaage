@@ -1,9 +1,0 @@
-
-{{ requester }}'s application {{ application }} has been approved by {{ approved_by }}.
-
-They are now waiting for a {{ org_name }} administrator to process the application.
-
-Please visit the {{ org_name }} Account Management site at {{ site }} for more information and to accept or decline this request.
-
-
-{% include "emails/email_footer.txt" %}

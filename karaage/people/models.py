@@ -89,15 +89,6 @@ class Person(models.Model):
                 pass
         return reverse('kg_user_detail', kwargs={'username': self.user.username})
 
-    def get_password_reset_url(self):
-        from django.utils.http import int_to_base36
-        from django.contrib.auth.tokens import default_token_generator
-        uid = int_to_base36(self.user.pk)
-        token = default_token_generator.make_token(self.user)
-        return '%s/accounts/reset/%s-%s/' % (
-            settings.REGISTRATION_BASE_URL, uid, token)
-    get_password_reset_url.alters_data = True
-
     @classmethod
     def create(cls, data):
         """Creates a new user (not active)
@@ -106,15 +97,10 @@ class Person(models.Model):
         data -- a dictonary of user data
         """
 
-        # Generate random password if not given
-        if 'password1' in data:
-            password = data['password1']
-        else:
-            password = User.objects.make_random_password()
-
         # Make sure username isn't taken in Datastore
-        user = User.objects.create_user(data['username'], data['email'], password)
+        user = User.objects.create_user(data['username'], data['email'])
 
+        user.set_unusable_password()
         user.is_active = False
         user.save()
 

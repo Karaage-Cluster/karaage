@@ -16,6 +16,8 @@ GRAPH_LIB = 'karaage.graphs.matplotlib9'
 
 ADMIN_APPROVE_ACCOUNTS = True
 
+SHIB_SUPPORTED = False
+
 # DATASTORES
 
 DATASTORES = {

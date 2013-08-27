@@ -1,0 +1,44 @@
+{% extends "forms.html" %}
+{% load forms %}
+{% load applications %}
+
+{% block extrahead %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js" ></script> 
+<script type="text/javascript">
+function showForm() {
+  $("#show-email").hide("fast");
+  $("#form-body").show("slow");
+}
+</script> 
+{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href='{% url 'kg_application_detail' application.pk %}'>Application</a>&nbsp;›
+    Decline
+</div>
+{% endblock %}
+
+
+{% block content %}
+<h1>Are you sure?</h1>
+<p>Are you sure you want to decline {{ application.applicant }}'s application {{ application.info }}? </p>
+<p>An email will be sent to {{ application.applicant }}. <a id="show-email" href="#" onclick="showForm()">Customise email</a></p>
+
+<form method="post" action=".">{% csrf_token %}
+    <div id="form-body" style="display: none">
+        {% if form.errors or form.non_field_errors %}
+                <p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
+        {% endif %}
+        <fieldset class="module aligned ()">
+        {{ form.non_field_errors }}
+        <h2>Send email</h2>
+        {% form_as_div form %}
+        </fieldset>
+    </div>
+
+    {% application_actions %}
+</form>
+{% endblock %}
