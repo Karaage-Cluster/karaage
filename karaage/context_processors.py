@@ -17,10 +17,11 @@
 
 from django.conf import settings
 
-from karaage.applications.models import Application
+from karaage.applications.models import Application, UserApplication, ProjectApplication
 
 
 def common(request):
+    """ Set context with common variables. """
     ctx = {}
     ctx['GRAPH_URL'] = settings.GRAPH_URL
     ctx['org_name'] = settings.ACCOUNTS_ORG_NAME
@@ -29,16 +30,26 @@ def common(request):
 
 
 def registration(request):
+    """ Set context for registration menu. """
     ctx = {}
     if request.user.is_authenticated():
-        user_apps = request.user.get_profile().leaders.filter(userapplication__state=Application.WAITING_FOR_LEADER)
-        project_apps = request.user.get_profile().delegate.filter(projectapplication__state=Application.WAITING_FOR_DELEGATE)
-        if user_apps or project_apps:
-            ctx['pending_applications'] = True
+        person = request.user.get_profile()
+        my_applications = Application.objects.filter(
+            applicant=person).exclude(
+            state__in=[Application.COMPLETED, Application.ARCHIVED, Application.DECLINED]).count()
+        user_applications = UserApplication.objects.filter(
+                project__in=person.leaders.all(),
+                state=Application.WAITING_FOR_LEADER).count()
+        project_applications = ProjectApplication.objects.filter(
+                institute__in=person.delegate.all(),
+                state=Application.WAITING_FOR_LEADER).count()
+        ctx['pending_applications'] = my_applications + user_applications + project_applications
     return ctx
 
 
 def admin(request):
+    """ Set context for admin menu. """
     ctx = {}
-    ctx['pending_apps'] = Application.objects.filter(state=Application.WAITING_FOR_ADMIN)
+    ctx['pending_applications'] = Application.objects.filter(
+            state=Application.WAITING_FOR_ADMIN).count()
     return ctx

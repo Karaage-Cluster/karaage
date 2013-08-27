@@ -1,0 +1,104 @@
+{% extends "forms.html" %}
+{% load forms %}
+{% load applications %}
+
+
+{% block title %}Application{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    Application
+</div>
+{% endblock %}
+
+
+{% block content %}
+<h1>4. Project details</h1>
+
+{% if choose_project %}
+{% if sel_project and sel_project == project %}
+<p>You already have a project selected. Check the settings under "Project details" and click submit to submit your application.</p>
+{% endif %}
+<form method="get" action="." class="module">
+    <h2>Search</h2>
+    {% if term_error %}
+    <ul class="errorlist">
+        <li>{{ term_error }}</li>
+    </ul>
+    {% endif %}
+    <label for="id_name" class="required">Project Leader/Project ID:</label> <input type="text" name="leader_q" id="id_name" value="{{ terms }}" />
+
+    {% if leader_list %}
+    <p>Please select your project leader from the list below:</p>
+    <table cellspacing="0">
+        {% for u in leader_list %}
+        <tr>
+            <td><input type="radio" id="id_leader" name="leader" {% if leader == u %}checked='checked'{% endif %} value="{{ u.pk }}"/></td>
+            <td>{{ u }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <input type="submit" value="Search" />
+    {% endif %}
+</form>
+{% endif %}
+
+<form method="post" action="." class="module">{% csrf_token %}
+    <h2>Project details</h2>
+
+    {% if choose_project %}
+    <input type="hidden" name="leader_q" value="{{ terms }}">
+    {% if leader %}
+    <input type="hidden" name="leader" value="{{ leader.pk }}">
+    {% endif %}
+    {% if project_error %}
+    <ul class="errorlist">
+        <li>{{ project_error }}</li>
+    </ul>
+    {% endif %}
+
+    {% if project_list %}
+    <p>{{ project_list.count }} projects led by <b>{{ leader }}</b>. Please select one from the list below:</p>
+    <table cellspacing="0">
+        {% for p in project_list %}
+        <tr>
+            <td><input type="radio" id="id_project" name="project" value="{{ p.pid }}" {% if sel_project == p %}checked='checked'{% endif %}/></td>
+            <td>{{ p.pid }}</td>
+            <td>{{ p.name }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if q_project %}
+    <p>Found one project by ID</p>
+    <table cellspacing="0">
+        <tr>
+            <td><input type="radio" id="id_project" name="project" value="{{ q_project.pid }}" {% if sel_project == q_project %}checked='checked'{% endif %} /></td>
+            <td>{{ q_project.pid }}</td>
+            <td>{{ q_project.name }}</td>
+        </tr>
+    </table>
+    {% endif %}
+
+    {% if project %}
+    <p>One project led by <b>{% for l in project.leaders.all %}{{ l }}{% if not forloop.last %}, {% endif %}{% endfor %}</b></p>
+    <table cellspacing="0">
+        <tr>
+            <td><input type="radio" id="id_project" name="project" value="{{ project.pid }}"  {% if sel_project == project %}checked='checked'{% endif %} /></td>
+            <td>{{ project.pid }}</td>
+            <td>{{ project.name }}</td>
+        </tr>
+    </table>
+    {% endif %}
+    {% endif %}
+
+    {% if form %}
+    {% form_as_div form %}
+    {% endif %}
+
+    {% application_actions %}
+</form>
+{% endblock %}

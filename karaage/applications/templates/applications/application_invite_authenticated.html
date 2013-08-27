@@ -1,5 +1,7 @@
 {% extends "forms.html" %}
 {% load url from future %}
+{% load forms %}
+
 
 {% block title %}Applications{% endblock %}
 
@@ -7,21 +9,15 @@
 {% block breadcrumbs %}
 <div class="breadcrumbs">
     <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
-    <a href="{% url 'kg_application_list' %}">Applications</a>&nbsp;›
-    Edit Applicant
+    Start application
 </div>
 {% endblock %}
 
-
 {% block content %}
 <form method="post" action=".">{% csrf_token %}
-    {% load forms %}
-    <fieldset class="module aligned ()">
-        {% form_as_div form %}
-    </fieldset>
-
+    <p>Please confirm you want to start a new {{ type }} application.</p>
     <div class="submit-row">
-        <input type="submit" value="Save" class="default" />
+        <input type="submit" value="Go" class="default" />
     </div>
 </form>
 {% endblock %}

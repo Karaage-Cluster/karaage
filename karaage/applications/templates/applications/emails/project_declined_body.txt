@@ -1,4 +1,4 @@
-Hello {{ receiver }},
+Hello {{ receiver.first_name }},
 
 Your {{ org_name }} project has been declined.
 

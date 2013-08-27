@@ -1,0 +1,79 @@
+{% extends "forms.html" %}
+{% load forms %}
+{% load applications %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href='{% url 'kg_application_detail' application.pk %}'>Application</a>&nbsp;›
+    Approve
+</div>
+{% endblock %}
+
+
+{% block content %}
+<p>The following request is awaiting your approval</p>
+<div class="module">
+    <h2>Applicant Details</h2>
+    <table>
+        <tr><td>Name:</td><td>{{ application.applicant }}</td></tr>
+        <tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
+        <tr><td>Email:</td><td>{{ application.applicant.email|urlize }}</td></tr>
+    </table>
+</div>
+{% if application|is_userapplication %}
+<div class="module">
+    <h2>Existing Project Details</h2>
+    <table>
+        <tr><td>Project:</td><td>{{ application.project }}</td></tr>
+        <tr><td>Description:</td><td>{{ application.project.description|linebreaks }}</td></tr>
+        <tr><td>Additional requirements:</td><td>{{ application.project.additional_req|linebreaks }}</td></tr>
+    </table>
+</div>
+{% endif %}
+{% if application|is_projectapplication %}
+<div class="module">
+    <h2>New Project Details</h2>
+    <table>
+        <tr><td>Name:</td><td>{{ application.name }}</td></tr>
+        <tr><td>Description:</td><td>{{ application.description|linebreaks }}</td></tr>
+        <tr><td>Additional requirements:</td><td>{{ application.additional_req|linebreaks }}</td></tr>	
+    </table>
+</div>
+{% endif %}
+{% if similar_people %}
+<div class="module">
+    <h2>Similar People</h2>
+    <p>Please check that this isn't an existing user before approving.</p>
+    {% gen_table similar_people %}
+</div>
+{% endif %}
+
+<div class="module">
+    <h2>Confirm</h2>
+    <p>{{ application.applicant }} will receive an email once their account has been confirmed.</p>
+    <br />
+    {% if form %}
+    <p>Please amend the following to suit.</p>
+    {% endif %}
+
+    <form method="post" action=".">{% csrf_token %}
+        <div>
+            {% load forms %}
+            {% if form.errors or form.non_field_errors %}
+            <p class="errornote">Please correct the error(s) below.</p>
+            {% endif %}
+
+            <fieldset class="module aligned ()">
+                {{ form.non_field_errors }}
+                {% form_as_div form %}
+            </fieldset>
+        </div>
+
+        <p><a href="{% url 'kg_application_detail' application.id application.state 'decline' %}" class="deletelink">Decline</a></p>
+
+        {% application_actions %}
+    </form>
+</div>
+{% endblock %}

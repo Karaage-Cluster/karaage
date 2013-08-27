@@ -1,30 +1,124 @@
 {% extends "main.html" %}
 {% load url from future %}
+{% load applications %}
+
 
 {% block title %}Applications{% endblock %}
-{% block content %}<div id="content-main"><h1>{{ application.applicant }}'s Request</h1>
-<p>{{ application.applicant }} has requested to join the project <b>{{ application.project }}</b></p>
-<p>Please 
-<a class="yeslink" href="{% url 'kg_userapplication_approve' application.id %}"> Accept</a> or
-<a class="nolink" href="{% url 'kg_userapplication_decline' application.id %}"> Decline</a> this request</p>
 
-{% if application.needs_account %}
-<p>A computer account on the {{ org_name }} clusters will be made for {{ application.applicant }} if they does not already have one.</p>
-{% endif %}
-<h1>{{ person }} Details</h1>
-<table>
-<tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
-<tr><td>First name:</td><td>{{ application.applicant.first_name }}</td></tr>
-<tr><td>Last name:</td><td>{{ application.applicant.last_name }}</td></tr>
-<tr><td>Email:</td><td>{{ application.applicant.email|urlize }}</td></tr>
-<tr><td>Institute:</td><td><a href="{{ application.applicant.institute.get_absolute_url }}">{{ application.applicant.institute }}</a></td></tr>		
-   		{% if application.applicant.position %}<tr><td>Position:</td><td>{{ application.applicant.position }}</td></tr>{% endif %}
-   		{% if application.applicant.telephone %}<tr><td>Phone:</td><td>{{ application.applicant.telephone }}</td></tr>{% endif %}
-   		{% if application.applicant.mobile %}<tr><td>Mobile:</td><td>{{ application.applicant.mobile }}</td></tr>{% endif %}
-   		{% if application.applicant.department %}<tr><td>Department:</td><td>{{ application.applicant.department }}</td></tr>{% endif %}
-   		{% if application.applicant.supervisor %}<tr><td>Supervisor:</td><td>{{ application.applicant.supervisor }}</td></tr>{% endif %}
-   		{% if application.applicant.fax %}<tr><td>Fax:</td><td>{{ application.applicant.fax }}</td></tr>{% endif %}
-		
-	</table></div>{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <h1>{{ application.applicant }}'s Request</h1>
+    {% if application|is_userapplication %}
+    <p>{{ application.applicant }} has requested to join the project <b>{{ application.project }}</b></p>
+    {% endif %}
+
+    {% if application|is_projectapplication %}
+    <p>{{ application.applicant }} has requested to create the project <b>{{ application.name }}</b></p>
+    {% endif %}
+
+    <div class="module">
+        <h2>Current Status</h2>
+
+        <p>Application process:</p>
+        {% application_state application %}
+
+        {% if application.state == 'L' and auth.is_leader %}
+        <p>As you are the project leader or institute delegate, please
+        <a class="yeslink" href="{% url 'kg_application_detail' application.id application.state 'approve' %}">Approve</a> or
+        <a class="nolink" href="{% url 'kg_application_detail' application.id application.state 'decline' %}">Decline</a> this request</p>
+        {% elif application.state == 'K' and auth.is_admin %}
+        <p>As you are the administrator, please
+        <a class="yeslink" href="{% url 'kg_application_detail' application.id application.state 'approve' %}">Approve</a> or
+        <a class="nolink" href="{% url 'kg_application_detail' application.id application.state 'decline' %}">Decline</a> this request</p>
+        {% endif %}
+
+        {% if application.state = 'C' %}
+        {% elif application.state = 'A' %}
+        {% elif application.state = 'R' %}
+        {% else %}
+        {% if application.needs_account %}
+        <p>A computer account on the {{ org_name }} clusters will be made for {{ application.applicant }} if they does not already have one.</p>
+        {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="module">
+        <h2>Application Details</h2>
+        <table>
+            {% if auth.is_admin %}
+            <tr><td>Secret Token:</td><td>{{ application.secret_token }}</td></tr>
+            {% endif %}
+            <tr><td>Expires:</td><td>{{ application.expires }}</td></tr>
+            <tr><td>Created by:</td><td>{{ application.created_by }}</td></tr>
+            <tr><td>Created date:</td><td>{{ application.created_date }}</td></tr>
+            <tr><td>Submitted date:</td><td>{{ application.submitted_date }}</td></tr>
+            <tr><td>Complete date:</td><td>{{ application.complete_date }}</td></tr>
+        </table>
+    </div>
+
+    <div class="module">
+        <h2>Applicant Details</h2>
+        <table>
+            {% if application.content_type.model == 'applicant' %}
+            <tr><td>Applicant type</td><td>New applicant {% if auth.is_admin %}<a href="{% url 'kg_applicant_edit' application.applicant.pk %}">[edit]</a>{% endif %}</td>
+            <tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
+            {% elif application.content_type.model == 'person' %}
+            <tr><td>Applicant type</td><td>Existing person</td>
+            <tr><td>Username:</td><td><a href="{% url 'kg_user_detail' application.applicant.username %}">{{ application.applicant.username }}</a></td></tr>
+            {% else %}
+            <tr><td>Applicant type</td><td>Unknown {{ application.content_type.model }}</td>
+            <tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
+            {% endif %}
+
+            <tr><td>First name:</td><td>{{ application.applicant.first_name }}</td></tr>
+            <tr><td>Last name:</td><td>{{ application.applicant.last_name }}</td></tr>
+            <tr><td>Email:</td><td>{{ application.applicant.email|urlize }}</td></tr>
+            <tr><td>Institute:</td><td>{% if application.applicant.institute %}<a href="{{ application.applicant.institute.get_absolute_url }}">{{ application.applicant.institute }}</a>{% else %}None{% endif %}</td></tr>
+            {% if application.applicant.position %}<tr><td>Position:</td><td>{{ application.applicant.position }}</td></tr>{% endif %}
+            {% if application.applicant.telephone %}<tr><td>Phone:</td><td>{{ application.applicant.telephone }}</td></tr>{% endif %}
+            {% if application.applicant.mobile %}<tr><td>Mobile:</td><td>{{ application.applicant.mobile }}</td></tr>{% endif %}
+            {% if application.applicant.department %}<tr><td>Department:</td><td>{{ application.applicant.department }}</td></tr>{% endif %}
+            {% if application.applicant.supervisor %}<tr><td>Supervisor:</td><td>{{ application.applicant.supervisor }}</td></tr>{% endif %}
+            {% if application.applicant.fax %}<tr><td>Fax:</td><td>{{ application.applicant.fax }}</td></tr>{% endif %}
+        </table>
+    </div>
+
+    {% if application|is_userapplication %}
+    <div class="module">
+        <h2>Existing Project Details</h2>
+        <table>
+            <tr><td>Needs Account:</td><td>{{ application.needs_account }}</td></tr>
+            <tr><td>Make Leader:</td><td>{{ application.make_leader }}</td></tr>
+            <tr><td>Project:</td><td>{{ application.project }}</td></tr>
+            {% if application.project %}
+            <tr><td>Description:</td><td>{{ application.project.description|linebreaks }}</td></tr>
+            <tr><td>Additional requirements:</td><td>{{ application.project.additional_req|linebreaks }}</td></tr>
+            {% endif %}
+        </table>
+    </div>
+    {% endif %}
+
+    {% if application|is_projectapplication %}
+    <div class="module">
+        <h2>New Project Details</h2>
+        <table>
+            <tr><td>Name:</td><td>{{ application.name }}</td></tr>
+            <tr><td>Institute:</td><td>{{ application.institute }}</td></tr>
+            <tr><td>Description:</td><td>{{ application.description|linebreaks }}</td></tr>
+            <tr><td>Additional Requirements:</td><td>{{ application.additional_req|linebreaks }}</td></tr>
+            <tr><td>Needs Account:</td><td>{{ application.needs_account }}</td></tr>
+            <tr><td>Machine Categories:</td><td>{% for mc in application.machine_categories.all %}{{ mc }}{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
+            <tr><td>Project ID:</td><td>{{ application.pid }}</td></tr>
+            <tr><td>Project:</td><td>{{ application.project }}</td></tr>
+        </table>
+    </div>
+    {% endif %}
+
+    <form method="post" action=".">{% csrf_token %}
+        {% application_actions %}
+    </form>
+</div>
+{% endblock %}
 
 

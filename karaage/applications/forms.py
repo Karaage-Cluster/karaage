@@ -16,6 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import re
+import ajax_select.fields
 
 from django import forms
 from django.conf import settings
@@ -25,11 +26,14 @@ from django.utils.safestring import mark_safe
 
 from captcha.fields import CaptchaField
 
-from karaage.applications.models import UserApplication, ProjectApplication, Applicant
+from karaage.applications.models import Application, UserApplication, ProjectApplication, Applicant
 from karaage.people.models import Person
 from karaage.people.utils import validate_username, UsernameException
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
+from karaage.util import get_current_person
+
+from andsome.util import is_password_strong
 
 APP_CHOICES = (
     ('U', 'Join an existing project'),
@@ -63,11 +67,10 @@ def _clean_email(email):
         raise forms.ValidationError("Oops. Nothing is valid. Sorry.")
 
 
-class StartInviteApplicationForm(forms.Form):
+class InstituteForm(forms.Form):
     institute = forms.ModelChoiceField(queryset=Institute.active.all())
 
-
-class StartApplicationForm(StartInviteApplicationForm):
+class StartApplicationForm(forms.Form):
     application_type = forms.ChoiceField(choices=APP_CHOICES, widget=forms.RadioSelect())
 
 
@@ -96,6 +99,14 @@ class ApplicantForm(forms.ModelForm):
         
             return username
 
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        users = Person.active.filter(user__email__exact=email)
+        if users:
+            raise forms.ValidationError(u'An account with this email already exists. Please email %s' % settings.ACCOUNTS_EMAIL)
+        _clean_email(email)
+        return email
+
 
 class UserApplicantForm(ApplicantForm):
 
@@ -111,29 +122,23 @@ class UserApplicantForm(ApplicantForm):
 
     institute = forms.ModelChoiceField(queryset=Institute.active.filter(Q(saml_entityid="") | Q(saml_entityid__isnull=True)))
     
-    def clean_email(self):
-        email = self.cleaned_data['email']
-        users = Person.active.filter(user__email__exact=email)
-        if users:
-            raise forms.ValidationError(u'An account with this email already exists. Please email %s' % settings.ACCOUNTS_EMAIL)
-        _clean_email(email)
-        return email
-
     def save(self, commit=True):
         applicant = super(UserApplicantForm, self).save(commit=commit)
         if commit:
             applicant.save()
         return applicant
 
+    class Meta:
+        model = Applicant
+        exclude = ['email']
+
+
 
 class UserApplicationForm(forms.ModelForm):
     aup = forms.BooleanField(error_messages={'required': 'You must accept to proceed.'})
 
     def __init__(self, *args, **kwargs):
-        captcha = kwargs.pop('captcha', False)
         super(UserApplicationForm, self).__init__(*args, **kwargs)
-        if captcha:
-            self.fields['captcha'] = CaptchaField(label=u'CAPTCHA', help_text=u"Please enter the text displayed in the image above.")
         aup_url = getattr(settings, 'AUP_URL', None)
         if aup_url is None:
             aup_url = reverse('aup')
@@ -159,17 +164,58 @@ class ProjectApplicationForm(forms.ModelForm):
         if aup_url is None:
             aup_url = reverse('aup')
         self.fields['aup'].label = mark_safe(u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>' % aup_url)
+        self.fields['machine_categories'].required = True
 
     class Meta:
         model = ProjectApplication
-        exclude = ['submitted_date', 'state', 'content_type', 'object_id']
+        exclude = ['submitted_date', 'state', 'content_type', 'object_id', 'project', 'pid', 'header_message', 'institute']
 
 
 class LeaderInviteUserApplicationForm(forms.ModelForm):
     email = forms.EmailField()
-    
+
     def __init__(self, *args, **kwargs):
+        self.cleaned_data = None
+        self.fields = None
         super(LeaderInviteUserApplicationForm, self).__init__(*args, **kwargs)
+        self.fields['email'].required = True
+        self.fields['header_message'].required = True
+
+    class Meta:
+        model = UserApplication
+        fields = ['email', 'make_leader', 'header_message']
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+
+        query = Person.active.filter(user__email=email)
+        if query.count() > 0:
+            raise forms.ValidationError(u'E-Mail address is already in use.')
+
+        query = Application.objects.filter(applicant__email=email).exclude(state__in=[Application.COMPLETED, Application.ARCHIVED, Application.DECLINED])
+        if query.count() > 0:
+            raise forms.ValidationError(u'Applicantion with email %s already exists' % email)
+
+        _clean_email(email)
+        return email
+
+    def clean_project(self):
+        project = self.cleaned_data['project']
+        person = get_current_person()
+        if project is not None:
+            if not person in project.leaders.all():
+                raise forms.ValidationError(u'You must be the project leader.')
+        return project
+
+
+class AdminInviteUserApplicationForm(forms.ModelForm):
+    email = forms.EmailField()
+
+    def __init__(self, *args, **kwargs):
+        self.cleaned_data = None
+        self.fields = None
+        super(AdminInviteUserApplicationForm, self).__init__(*args, **kwargs)
+        self.fields['email'].required = True
         self.fields['header_message'].required = True
 
     class Meta:
@@ -178,58 +224,56 @@ class LeaderInviteUserApplicationForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data['email']
-        try:
-            Person.active.get(user__email=email)
-        except Person.MultipleObjectsReturned:
-            raise forms.ValidationError(u'Multiple users with this email exist. Please add manually as no way to invite.')
-        except Person.DoesNotExist:
-            pass
-
-        try:
-            applicant = Applicant.objects.get(email=email)
-        except Applicant.DoesNotExist:
-            applicant = None
-
-        if applicant:
-            raise forms.ValidationError(u'Applicant with email %s already exists' % email)
+        _clean_email(email)
         return email
 
+
+class UnauthenticatedInviteUserApplicationForm(forms.Form):
+    email = forms.EmailField()
+    captcha = CaptchaField(label=u'CAPTCHA', help_text=u"Please enter the text displayed in the image above.")
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+
+        query = Person.active.filter(user__email=email)
+        if query.count() > 0:
+            raise forms.ValidationError(u'E-Mail address is already in use. Do you already have an account?')
+
+        query = Application.objects.filter(applicant__email=email).exclude(state__in=[Application.COMPLETED, Application.ARCHIVED, Application.DECLINED])
+        if query.count() > 0:
+            raise forms.ValidationError(u'Applicantion with email %s already exists' % email)
+
         _clean_email(email)
+        return email
 
 
-class AdminInviteUserApplicationForm(LeaderInviteUserApplicationForm):
-
-    def __init__(self, *args, **kwargs):
-        super(AdminInviteUserApplicationForm, self).__init__(*args, **kwargs)
-        self.fields['project'].required = True
-
-
-class LeaderApproveUserApplicationForm(forms.ModelForm):
+class ApproveUserApplicationForm(forms.ModelForm):
 
     class Meta:
         model = UserApplication
         fields = ['make_leader', 'needs_account']
 
     def __init__(self, *args, **kwargs):
-        super(LeaderApproveUserApplicationForm, self).__init__(*args, **kwargs)
+        super(ApproveUserApplicationForm, self).__init__(*args, **kwargs)
         self.fields['needs_account'].label = u"Does this person require a cluster account?"
         self.fields['needs_account'].help_text = u"Will this person be working on the project?"
 
 
-class ApproveProjectApplicationForm(forms.ModelForm):
+class LeaderApproveProjectApplicationForm(forms.ModelForm):
 
     class Meta:
         model = ProjectApplication
-        fields = ['needs_account']
+        fields = ['needs_account', 'machine_categories']
 
     def __init__(self, *args, **kwargs):
-        super(ApproveProjectApplicationForm, self).__init__(*args, **kwargs)
+        super(LeaderApproveProjectApplicationForm, self).__init__(*args, **kwargs)
         self.fields['needs_account'].label = u"Does this person require a cluster account?"
         self.fields['needs_account'].help_text = u"Will this person be working on the project?"
 
 
-class AdminApproveProjectApplicationForm(ApproveProjectApplicationForm):
+class AdminApproveProjectApplicationForm(LeaderApproveProjectApplicationForm):
     pid = forms.CharField(label="Project ID", help_text="Leave blank for auto generation", required=False)
+    replace_applicant = ajax_select.fields.AutoCompleteSelectMultipleField('person', required=False, help_text="Do not set unless absolutely positive sure.")
    
     def clean_pid(self):
         pid = self.cleaned_data['pid']
@@ -244,3 +288,76 @@ class AdminApproveProjectApplicationForm(ApproveProjectApplicationForm):
         except Project.DoesNotExist:
             pass
         return pid
+
+    class Meta:
+        model = ProjectApplication
+        fields = ['needs_account', 'pid', 'machine_categories']
+
+    def save(self, *args, **kwargs):
+        replace_applicant = self.cleaned_data['replace_applicant']
+        if replace_applicant is not None:
+            self.applicant = replace_applicant
+        return super(AdminApproveProjectApplicationForm, self).save(*args, **kwargs)
+
+
+class PersonSetPassword(forms.Form):
+    """
+    A form that lets a user change set his/her password without entering the
+    old password
+    """
+    new_password1 = forms.CharField(label=u"New password",
+                                    widget=forms.PasswordInput)
+    new_password2 = forms.CharField(label=u"New password confirmation",
+                                    widget=forms.PasswordInput)
+
+    def __init__(self, person, *args, **kwargs):
+        self.person = person
+        super(PersonSetPassword, self).__init__(*args, **kwargs)
+
+    def clean_new_password2(self):
+        password1 = self.cleaned_data.get('new_password1')
+        password2 = self.cleaned_data.get('new_password2')
+        if not is_password_strong(password1):
+            raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (uppercase, lowercase), numbers and is at least 8 characters long.')
+        if password1 and password2:
+            if password1 != password2:
+                raise forms.ValidationError(u"The two password fields didn't match.")
+        return password2
+
+    def save(self, commit=True):
+        self.person.set_password(self.cleaned_data['new_password1'])
+        return self.person
+
+
+class PersonVerifyPassword(forms.Form):
+    """
+    A form that lets a user verify his old password and updates it on all datastores.
+    """
+    password = forms.CharField(label="Existing password",
+                                    widget=forms.PasswordInput)
+
+    def __init__(self, person, *args, **kwargs):
+        self.person = person
+        super(PersonVerifyPassword, self).__init__(*args, **kwargs)
+
+    def clean_password(self):
+        password = self.cleaned_data['password']
+        from django.contrib.auth import login, authenticate
+        user = authenticate(username=self.person.user.username, password=password)
+
+        if user is None:
+            raise forms.ValidationError(u"Password is incorrect.")
+
+        assert user == self.person.user
+
+        if not user.is_active or self.person.is_locked():
+            raise forms.ValidationError(u"Person is locked.")
+
+        return password
+
+    def save(self, commit=True):
+        password = self.cleaned_data['password']
+        self.person.set_password(password)
+        self.person.update_password = False
+        self.person.save()
+        return self.person
