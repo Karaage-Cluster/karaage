@@ -64,6 +64,7 @@ LOCKED_SHELL = '/usr/local/sbin/insecure'
 # Uncomment to override default
 # REGISTRATION_BASE_URL = 'https://<hostname>/users'
 
+# SHIB_SUPPORTED = False
 
 ###
 ### Placard Settings

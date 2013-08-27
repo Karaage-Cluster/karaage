@@ -11,12 +11,12 @@ urlpatterns = patterns('karaage.people.views.user',
     url(r'^profile/edit/$', 'edit_profile', name='kg_profile_edit'),
     url(r'^login/$', 'login', name='login'),
     url(r'^change_password/$', 'password_change', name='kg_user_change_password'),
-    url(r'^change_password/done/$', 'password_change_done', name='kg_user_password_done'),               
+    url(r'^change_password/done/$', 'password_change_done', name='kg_user_password_done'),
 
 )
 
 urlpatterns += patterns('',
-    url(r'^$', 'karaage.legacy.simple.redirect_to', {'url': '/users/apply/'}),
+    url(r'^$', 'karaage.legacy.simple.direct_to_template', {'template': 'site_search.html'}, name='index'),
     (r'^users/', include('karaage.people.urls.user')),
     (r'^institutes/', include('karaage.institutes.urls.user')),
     (r'^projects/', include('karaage.projects.urls.user')),

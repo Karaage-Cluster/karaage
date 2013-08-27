@@ -1,25 +1,25 @@
 <table cellspacing="0">
-	<thead>
-		<tr>
-		   <th>Details</th>
-		   <th>Type</th>
-			<th>User</th>
-			<th>State</th>
-		</tr>
-	</thead>
+    <thead>
+        <tr>
+            <th>Details</th>
+            <th>Type</th>
+            <th>User</th>
+            <th>State</th>
+        </tr>
+    </thead>
     <tbody>
-    {% for app in object_list %}
-	   	<tr class="{% cycle row1,row2 %}">
-	   	    <td><a href="{{ app.get_absolute_url }}">{{ app.id }}</a></td>
-	   	    <td>{{ app.get_type }}</td>
-	   	    {% if app.applicant.user %}
-	   	    <td><a href="{{ app.applicant.get_absolute_url }}">{{ app.applicant }}</a></td>
-	   	    {% else %}
-	   	    <td>{{ app.applicant.email }}</td>
-	   	    {% endif %}
-	   	    <td>{{ app.get_state_display }}</td>
-	   	</tr>
-	{% endfor %}
-    </tbody>  	
+        {% for app in object_list %}
+        <tr class="{% cycle row1,row2 %}">
+            <td><a href="{{ app.get_absolute_url }}">{{ app.id }}</a></td>
+            <td>{{ app.get_type }}</td>
+            {% if app.applicant.user %}
+            <td><a href="{{ app.applicant.get_absolute_url }}">{{ app.applicant }}</a></td>
+            {% else %}
+            <td>{{ app.applicant.email }}</td>
+            {% endif %}
+            <td>{{ app.get_state_display }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 
