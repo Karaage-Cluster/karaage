@@ -173,7 +173,7 @@ def login(request, username=None):
                 else:
                     error = 'User account is locked'
             else:
-                error = 'Username or passord was incorrect'
+                error = 'Username or password was incorrect'
     else:
         form = LoginForm(initial = {'username': username})
 
