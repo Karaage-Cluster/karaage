@@ -8,12 +8,6 @@ from django.contrib.auth.views import redirect_to_login
 from django.views.generic import GenericViewError
 from django.contrib import messages
 
-import warnings
-warnings.warn(
-    'Function-based generic views have been deprecated; use class-based views instead.',
-    DeprecationWarning
-)
-
 
 def apply_extra_context(extra_context, context):
     """

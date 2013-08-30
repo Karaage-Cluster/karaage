@@ -4,12 +4,6 @@ from django.core.xheaders import populate_xheaders
 from django.core.paginator import Paginator, InvalidPage
 from django.core.exceptions import ObjectDoesNotExist
 
-import warnings
-warnings.warn(
-    'Function-based generic views have been deprecated; use class-based views instead.',
-    DeprecationWarning
-)
-
 
 def object_list(request, queryset, paginate_by=None, page=None,
         allow_empty=True, template_name=None, template_loader=loader,
