@@ -35,12 +35,6 @@ def render_email(name, context):
     return subject, body
 
 
-def remove_url_prefix(url):
-    if get_script_prefix() != '/':
-        return url.replace(get_script_prefix(), '/', 1)
-    return url
-
-
 def send_admin_request_email(application):
     """Sends an email to admin asking to approve user application"""
     context = CONTEXT.copy()
