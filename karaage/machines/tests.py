@@ -53,7 +53,7 @@ class AccountTestCase(TestCase):
             'needs_account': False,
             }
         self.client.login(username='kgsuper', password='aq12ws')
-        response = self.client.post(reverse('kg_add_user'), form_data)
+        response = self.client.post(reverse('kg_person_add'), form_data)
         self.failUnlessEqual(response.status_code, 302)
 
 
@@ -62,7 +62,7 @@ class AccountTestCase(TestCase):
 
     def test_add_account(self):
 
-        response = self.client.get(reverse('kg_add_account', args=['samtest2']))
+        response = self.client.get(reverse('kg_person_add_account', args=['samtest2']))
         self.failUnlessEqual(response.status_code, 200)
         
         form_data = {
@@ -70,7 +70,7 @@ class AccountTestCase(TestCase):
             'default_project': 'TestProject1',
             }
             
-        response = self.client.post(reverse('kg_add_account', args=['samtest2']), form_data)
+        response = self.client.post(reverse('kg_person_add_account', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
         person = Person.objects.get(user__username="samtest2")
         self.assertTrue(person.has_account(MachineCategory.objects.get(pk=1)))
@@ -80,10 +80,10 @@ class AccountTestCase(TestCase):
             'machine_category': 1,
             'default_project': 'TestProject1',
             }          
-        response = self.client.post(reverse('kg_add_account', args=['samtest2']), form_data)
+        response = self.client.post(reverse('kg_person_add_account', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
         
-        response = self.client.post(reverse('kg_add_account', args=['samtest2']), form_data)
+        response = self.client.post(reverse('kg_person_add_account', args=['samtest2']), form_data)
         self.assertContains(response, "Username already in use")
 
 
@@ -92,7 +92,7 @@ class AccountTestCase(TestCase):
             'machine_category': 1,
             'default_project': 'TestProject1',
             }          
-        response = self.client.post(reverse('kg_add_account', args=['samtest2']), form_data)
+        response = self.client.post(reverse('kg_person_add_account', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
 
         form_data = {
@@ -100,12 +100,12 @@ class AccountTestCase(TestCase):
             'default_project': 'TestProject1',
             }
 
-        response = self.client.post(reverse('kg_add_account', args=['samtest2']), form_data)
+        response = self.client.post(reverse('kg_person_add_account', args=['samtest2']), form_data)
         self.assertContains(response, "Default project not in machine category")
 
 
     def test_lock_unlock_account(self):
-        response = self.client.get(reverse('kg_add_account', args=['samtest2']))
+        response = self.client.get(reverse('kg_person_add_account', args=['samtest2']))
         self.failUnlessEqual(response.status_code, 200)
         
         form_data = {
@@ -114,20 +114,20 @@ class AccountTestCase(TestCase):
             'default_project': 'TestProject1',
             }
             
-        response = self.client.post(reverse('kg_add_account', args=['samtest2']), form_data)
+        response = self.client.post(reverse('kg_person_add_account', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
         person = Person.objects.get(user__username='samtest2')
         ua = person.get_account(MachineCategory.objects.get(pk=1))
         self.failUnlessEqual(person.is_locked(), False)
         self.failUnlessEqual(ua.loginShell(), '/bin/bash')
 
-        response = self.client.post(reverse('kg_lock_user', args=['samtest2']))
+        response = self.client.post(reverse('kg_person_lock', args=['samtest2']))
         person = Person.objects.get(user__username='samtest2')
         ua = person.get_account(MachineCategory.objects.get(pk=1))
         self.failUnlessEqual(person.is_locked(), True)
         self.failUnlessEqual(ua.loginShell(), '/bin/bash')
 
-        response = self.client.post(reverse('kg_unlock_user', args=['samtest2']))
+        response = self.client.post(reverse('kg_person_unlock', args=['samtest2']))
         person = Person.objects.get(user__username='samtest2')
         ua = person.get_account(MachineCategory.objects.get(pk=1))
         self.failUnlessEqual(person.is_locked(), False)

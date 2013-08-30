@@ -20,8 +20,8 @@ from django.conf.urls import *
 
 urlpatterns = patterns('karaage.people.views.user',
 
-    url(r'^(?P<username>[-.\w]+)/$', 'user_detail', name='kg_user_detail'),
-    url(r'^(?P<username>[-.\w]+)/login/$', 'login'),
-    url(r'^accounts/(?P<account_id>\d+)/change_shell/$', 'change_account_shell', name='kg_change_account_shell'),
-    url(r'^accounts/(?P<account_id>\d+)/makedefault/(?P<project_id>[-.\w]+)/$', 'make_default', name='kg_user_make_default'),
+    url(r'^(?P<username>[-.\w]+)/$', 'user_detail', name='kg_person_detail'),
+    url(r'^(?P<username>[-.\w]+)/login/$', 'login', name="login"),
+    url(r'^accounts/(?P<account_id>\d+)/change_shell/$', 'change_account_shell', name='kg_account_shell'),
+    url(r'^accounts/(?P<account_id>\d+)/makedefault/(?P<project_id>[-.\w]+)/$', 'make_default', name='kg_account_set_default'),
 )

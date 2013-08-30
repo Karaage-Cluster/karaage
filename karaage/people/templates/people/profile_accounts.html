@@ -36,7 +36,7 @@
 	   		<td>{{ ua.date_deleted|date }}</td>
 			<td>{% if not ua.is_locked %}
 			{{ ua.loginShell }}
-			<form method="post" action="{% url 'kg_change_account_shell' ua.pk %}">{% csrf_token %}
+			<form method="post" action="{% url 'kg_account_shell' ua.pk %}">{% csrf_token %}
 	   			<div>
 					{% shell_field ua %}
 					<input type="submit" value="Change" name="shell-form" />

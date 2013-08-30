@@ -87,7 +87,7 @@ class Person(models.Model):
                 return reverse('kg_user_profile')
             except:
                 pass
-        return reverse('kg_user_detail', kwargs={'username': self.user.username})
+        return reverse('kg_person_detail', kwargs={'username': self.user.username})
 
     @classmethod
     def create(cls, data):

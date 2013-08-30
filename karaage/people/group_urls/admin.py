@@ -22,10 +22,10 @@ from karaage.people.forms import AdminGroupForm
 
 urlpatterns = patterns('karaage.people.views.admin',
     url(r'^$', 'group_list', name='kg_group_list'),
-    url(r'^add/$', 'add_edit_group', {'form_class': AdminGroupForm }, name='kg_add_group'),
+    url(r'^add/$', 'add_edit_group', {'form_class': AdminGroupForm }, name='kg_group_add'),
     (r'^(?P<group_name>[-.\w]+)/', include('karaage.people.group_urls.admin_group_detail')),
 )
 
 urlpatterns += patterns('karaage.views',                   
-    url(r'^(?P<object_id>\d+)/logs/$', 'log_detail', {'model': Group }, name='kg_grouplogs'),
+    url(r'^(?P<object_id>\d+)/logs/$', 'log_detail', {'model': Group }, name='kg_group_logs'),
 )

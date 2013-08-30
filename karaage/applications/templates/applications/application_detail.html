@@ -75,7 +75,7 @@
             <tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
             {% elif application.content_type.model == 'person' %}
             <tr><td>Applicant type</td><td>Existing person</td>
-            <tr><td>Username:</td><td><a href="{% url 'kg_user_detail' application.applicant.username %}">{{ application.applicant.username }}</a></td></tr>
+            <tr><td>Username:</td><td><a href="{% url 'kg_person_detail' application.applicant.username %}">{{ application.applicant.username }}</a></td></tr>
             {% else %}
             <tr><td>Applicant type</td><td>Unknown {{ application.content_type.model }}</td>
             <tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>

@@ -127,14 +127,14 @@
 	  {% if ua.date_deleted %}
 	  <td>{{ ua.date_deleted|date }}</td>
 	  {% endif %}
-          <td>{{ ua.shell }}{% if not ua.date_deleted and perms.machines.change_account %}<form action="{% url 'kg_change_account_shell' ua.pk %}" method="post">{% csrf_token %}
+          <td>{{ ua.shell }}{% if not ua.date_deleted and perms.machines.change_account %}<form action="{% url 'kg_account_shell' ua.pk %}" method="post">{% csrf_token %}
 	  	<div>
 	      {% shell_field ua %}
 	      <input type="submit" value="Change"/>
 </div>
 </form>{% else %} {% endif %}</td>
 	  {% if not ua.date_deleted and perms.machines.delete_account %}
-	  <td><a class="deletelink" href="{% url 'admin_delete_account' ua.id %}">Delete</a></td>
+	  <td><a class="deletelink" href="{% url 'kg_account_delete' ua.id %}">Delete</a></td>
 	  {% endif %}
 	</tr>
 </tbody>
@@ -161,7 +161,7 @@
 <td>{% ifequal p ua.default_project %}
 	    <img alt="1" src="{{ STATIC_URL }}admin/img/icon-yes.gif"/>{% else %}
 	    {% if perms.machines.change_account %}
-            <form action="{% url 'admin_make_default' ua.id p.pid %}" method="post">
+            <form action="{% url 'kg_account_set_default' ua.id p.pid %}" method="post">
                 {% csrf_token %}
                 <input type="submit" value="Make Default"/></input>
             </form>
@@ -213,39 +213,39 @@
         {% endif %}
         {% endif %}
         {% if perms.people.change_person and person.is_active %}
-        <li class="changelink"><a href="{% url 'kg_user_edit' person.username %}">Edit details</a></li>
+        <li class="changelink"><a href="{% url 'kg_person_edit' person.username %}">Edit details</a></li>
         {% endif %}
         {% if perms.machines.add_account and person.is_active %}
-        <li class="addlink"><a href="{% url 'kg_add_account' person.username %}">Add user account</a></li>
+        <li class="addlink"><a href="{% url 'kg_person_add_account' person.username %}">Add user account</a></li>
         {% endif %}
         {% if perms.people.delete_person and person.is_active %}
-        <li class="deletelink"><a href="{%url 'admin_delete_user' person.username %}">Delete</a></li>
+        <li class="deletelink"><a href="{%url 'kg_person_delete' person.username %}">Delete</a></li>
 	{% endif %}
-	<li><a href="{% url 'kg_userlogs' person.id %}">Logs</a></li>
+	<li><a href="{% url 'kg_person_logs' person.id %}">Logs</a></li>
 <li class="addlink"><a href="add_comment/">Add comment</a></li>
 <li><a href="comments/">Comments</a> ({{ comment_count }})</li>
 	{% if person.is_active %}
-        <li><a href="{% url 'kg_user_verbose' person.username %}">Verbose</a></li>
+        <li><a href="{% url 'kg_person_verbose' person.username %}">Verbose</a></li>
 	{% if perms.people.change_person and person.is_active %}
 	{% if person.is_locked %}
         <li>
-            <form action="{% url 'kg_unlock_user' person.username %}" method="post">
+            <form action="{% url 'kg_person_unlock' person.username %}" method="post">
                 {% csrf_token %}
                 <img alt="Lock" src="{{ STATIC_URL }}img/unlock.png"/>
                 <input type="submit" value="Unlock"/></input>
             </form>
         </li>
 	{% else %}
-        <li class="changelink"><a href="{% url 'kg_password_change' person.username %}">Change Password</a></li>
+        <li class="changelink"><a href="{% url 'kg_person_password_change' person.username %}">Change Password</a></li>
         <li>
-            <form action="{% url 'kg_lock_user' person.username %}" method="post">
+            <form action="{% url 'kg_person_lock' person.username %}" method="post">
                 {% csrf_token %}
                 <img alt="Lock" src="{{ STATIC_URL }}img/lock.png"/>
                 <input type="submit" value="Lock"/></input>
             </form>
         </li>
 	{% endif %}
-        <li><a href="{% url 'kg_user_bounce' person.username %}">Bounced Email</a></li>
+        <li><a href="{% url 'kg_person_bounce' person.username %}">Bounced Email</a></li>
 	{% endif %}
 	<li><a href="{% url 'kg_job_list' %}?user={{ person.username }}">Display all jobs</a></li>
 <li><a href="{% url 'pbs_user_detail' person.username %}">Submitted jobs</a></li>

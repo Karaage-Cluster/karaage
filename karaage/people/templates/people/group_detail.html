@@ -106,9 +106,9 @@
         <li class="changelink"><a href="{% url 'kg_group_edit' group.name %}">Edit details</a></li>
         {% endif %}
         {% if perms.people.delete_group %}
-        <li class="deletelink"><a href="{% url 'admin_delete_group' group.name %}">Delete</a></li>
+        <li class="deletelink"><a href="{% url 'kg_group_delete' group.name %}">Delete</a></li>
 	{% endif %}
-	<li><a href="{% url 'kg_grouplogs' group.id %}">Logs</a></li>
+	<li><a href="{% url 'kg_group_logs' group.id %}">Logs</a></li>
         <li><a href="{% url 'kg_group_verbose' group.name %}">Verbose</a></li>
       </ul>
 </div>{% endblock %}

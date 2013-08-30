@@ -92,7 +92,7 @@ def activate(request, username):
 
     if request.method == 'POST':
         person.activate()
-        return HttpResponseRedirect(reverse('kg_password_change', args=[person.username]))
+        return HttpResponseRedirect(reverse('kg_person_password_change', args=[person.username]))
     
     return render_to_response('people/reactivate_confirm.html', {'person': person}, context_instance=RequestContext(request))
 

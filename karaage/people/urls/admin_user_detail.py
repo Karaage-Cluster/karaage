@@ -20,22 +20,22 @@ from karaage.people.forms import AdminPersonForm
 
 urlpatterns = patterns('karaage.people.views.admin_user_detail',
 
-    url(r'^$', 'user_detail', name='kg_user_detail'),
-    url(r'^verbose/$', 'user_verbose', name='kg_user_verbose'),
-    url(r'^activate/$', 'activate', name='admin_activate_user'),
-    url(r'^jobs/$', 'user_job_list'), 
-    url(r'^delete/$', 'delete_user', name='admin_delete_user'),
-    url(r'^password_change/$', 'password_change', name='kg_password_change'),
-    url(r'^lock/$', 'lock_person', name='kg_lock_user'),
-    url(r'^unlock/$', 'unlock_person', name='kg_unlock_user'),
-    url(r'^bounced_email/$', 'bounced_email', name='kg_user_bounce'),
-    url(r'^comments/$', 'user_comments', name='kg_user_comments'),
-    url(r'^add_comment/$', 'add_comment', name='kg_user_add_comment'),
+    url(r'^$', 'user_detail', name='kg_person_detail'),
+    url(r'^verbose/$', 'user_verbose', name='kg_person_verbose'),
+    url(r'^activate/$', 'activate', name='kg_person_activate'),
+    url(r'^jobs/$', 'user_job_list', name='kg_person_job_list'), 
+    url(r'^delete/$', 'delete_user', name='kg_person_delete'),
+    url(r'^password_change/$', 'password_change', name='kg_person_password_change'),
+    url(r'^lock/$', 'lock_person', name='kg_person_lock'),
+    url(r'^unlock/$', 'unlock_person', name='kg_person_unlock'),
+    url(r'^bounced_email/$', 'bounced_email', name='kg_person_bounce'),
+    url(r'^comments/$', 'user_comments', name='kg_person_comments'),
+    url(r'^add_comment/$', 'add_comment', name='kg_person_add_comment'),
 
 )
 
 urlpatterns += patterns('karaage.people.views.admin',
     
-    url(r'^add_account/$', 'add_edit_account', name='kg_add_account'),
-    url(r'^edit/$', 'add_edit_user', {'form_class': AdminPersonForm }, name='kg_user_edit'),
+    url(r'^add_account/$', 'add_edit_account', name='kg_person_add_account'),
+    url(r'^edit/$', 'add_edit_user', {'form_class': AdminPersonForm }, name='kg_person_edit'),
 )
