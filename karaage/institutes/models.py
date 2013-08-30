@@ -120,6 +120,12 @@ class Institute(models.Model):
         if not self.is_active:
             return False
 
+        if not person.is_active:
+            return False
+
+        if person.is_locked():
+            return False
+
         # Institute delegates==person can view institute
         if person in self.delegates.all():
             return True

@@ -139,6 +139,12 @@ class Project(models.Model):
         if not self.is_active:
             return False
 
+        if not person.is_active:
+            return False
+
+        if person.is_locked():
+            return False
+
         # Institute delegate==person can view any member of institute
         if self.institute.is_active:
             if person in self.institute.delegates.all():

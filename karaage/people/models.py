@@ -276,6 +276,9 @@ class Person(models.Model):
         if not self.is_active:
             return False
 
+        if self.is_locked():
+            return False
+
         # person can view own self
         if self.id == person.id:
             return True
