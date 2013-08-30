@@ -382,24 +382,6 @@ def set_mc_datastore(machine_category, old_datastore, new_datastore):
     from karaage.people.models import Person, Group
     from karaage.machines.models import Account, MachineCategory
 
-    # if other machine_categories reference data store, don't do anything.
-    mc_query = None
-    if old_datastore is not None:
-        mc_query = MachineCategory.objects
-        mc_query = mc_query.filter(datastore=old_datastore)
-        mc_query = mc_query.exclude(pk=machine_category.pk)
-        other_mc_refer_datastore = (mc_query.count() > 0)
-        for datastore in _get_datastores_for_name(old_datastore):
-            for account in Account.objects.filter(
-                    date_deleted__isnull=True, machine_category=machine_category):
-                datastore.delete_account(account)
-            if not other_mc_refer_datastore:
-                for person in Person.objects.all():
-                    datastore.delete_person(person)
-                for group in Group.objects.all():
-                    datastore.delete_group(group)
-
-    # if other machine_categories reference data store, don't do anything.
     mc_query = None
     if new_datastore is not None:
         mc_query = MachineCategory.objects
