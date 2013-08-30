@@ -273,10 +273,15 @@ class Person(models.Model):
         if person.user.is_staff:
             return True
 
-        if not self.is_active:
+        # ensure person making request isn't locked.
+        if not person.is_active:
             return False
 
-        if self.is_locked():
+        if person.is_locked():
+            return False
+
+        # we don't allow people to see inactive accounts.
+        if not self.is_active:
             return False
 
         # person can view own self
