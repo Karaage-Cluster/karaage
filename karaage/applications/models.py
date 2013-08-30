@@ -142,54 +142,10 @@ class Application(models.Model):
         self.save()
     decline.alters_data = True
 
-class UserApplication(Application):
-    """ Application for an Applicant or a Person to join an existing project. """
-    project = models.ForeignKey(Project, null=True, blank=True, limit_choices_to={'is_active': True})
-    needs_account = models.BooleanField(u"Do you need a personal cluster account?", help_text=u"Required if you will be working on the project yourself.", default=True)
-    make_leader = models.BooleanField(help_text="Make this person a project leader")
-
-    def info(self):
-        if self.project is None:
-            return u"to join unspecified project"
-        else:
-            return u"to join project '%s'" % self.project
-
-    def approve(self):
-        created_person, created_account, created_project = super(UserApplication, self).approve()
-        assert self.applicant is not None
-        assert self.project is not None
-        assert self.content_type.model == "person"
-        person = self.applicant
-        if self.make_leader:
-            self.project.leaders.add(person)
-        self.save()
-        if self.needs_account:
-            for mc in self.project.machine_categories.all():
-                if not person.has_account(mc):
-                    Account.create(person, project, mc)
-                    created_account = True
-        self.project.group.members.add(person)
-        return created_person, created_account, created_project
-    approve.alters_data = True
-
-    def authenticate(self, person):
-        auth = {}
-
-        auth['is_applicant'] = False
-        if person == self.applicant:
-            auth['is_applicant'] = True
-
-        auth['is_leader'] = False
-        if self.project is not None:
-            if person in self.project.leaders.all():
-                auth['is_leader'] = True
-
-        auth['is_delegate'] = False
-        return auth
-
 
 class ProjectApplication(Application):
-    """ Application for an Applicant or a Person to create a new project. """
+    """ Application for an Applicant or a Person to create a new project or
+    join an existing project. """
     # common properties
     needs_account = models.BooleanField(u"Do you need a personal cluster account?", help_text=u"Required if you will be working on the project yourself.", default=True)
 

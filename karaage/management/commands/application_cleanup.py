@@ -26,7 +26,7 @@ class Command(BaseCommand):
     @django.db.transaction.commit_on_success
     @tldap.transaction.commit_on_success
     def handle(self, **options):
-        from karaage.applications.models import Application, UserApplication, ProjectApplication
+        from karaage.applications.models import Application, ProjectApplication
         import datetime
         now = datetime.datetime.now()
         
@@ -37,17 +37,9 @@ class Command(BaseCommand):
                 print "Deleted expired application #%s" % application.id
             application.delete()
  
-        month_ago = now - datetime.timedelta(days=30)
-        # Delete all User applications that have been complete for 1 month
-        for application in UserApplication.objects.filter(state__in=[Application.COMPLETE, Application.DECLINED], complete_date__lte=month_ago):
-            if verbose >= 1:
-                print "Deleted completed user application #%s" % application.id
-
-            application.delete()
-
         # Delete all project applications that have been complete for 1 month
+        month_ago = now - datetime.timedelta(days=30)
         for application in ProjectApplication.objects.filter(state__in=[Application.COMPLETE, Application.DECLINED], complete_date__lte=month_ago):
             if verbose >= 1:
                 print "Deleted completed project application #%s" % application.id
-
             application.delete()

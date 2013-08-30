@@ -26,7 +26,7 @@ from django.utils.safestring import mark_safe
 
 from captcha.fields import CaptchaField
 
-from karaage.applications.models import Application, UserApplication, ProjectApplication, Applicant
+from karaage.applications.models import Application, ProjectApplication, Applicant
 from karaage.people.models import Person
 from karaage.people.utils import validate_username, UsernameException
 from karaage.institutes.models import Institute
