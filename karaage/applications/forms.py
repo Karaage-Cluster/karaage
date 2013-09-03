@@ -73,12 +73,12 @@ class StartApplicationForm(forms.Form):
 
 class ApplicantForm(forms.ModelForm):
     telephone = forms.RegexField(
-            "^[0-9a-zA-Z\.( )+-]+$", required=False, label=u"Office Telephone",
+            "^[0-9a-zA-Z\.( )+-]+$", required=True, label=u"Office Telephone",
+            help_text=u"Used for emergency contact and password reset service.",
             error_messages={'invalid':
             'Telephone number may only contain digits, letter, hyphens, spaces, braces,  and the plus sign.'})
     mobile = forms.RegexField(
             "^[0-9a-zA-Z( )+-]+$",
-            help_text=u"Used for emergency contact and password reset service.",
             required=False,
             error_messages={'invalid':
             'Telephone number may only contain digits, letter, hyphens, spaces, braces,  and the plus sign.'})
@@ -115,7 +115,6 @@ class UserApplicantForm(ApplicantForm):
         self.fields['username'].label = 'Requested username'
         self.fields['username'].required = True
         self.fields['institute'].required = True
-        self.fields['telephone'].required = True
 
     institute = forms.ModelChoiceField(queryset=Institute.active.filter(Q(saml_entityid="") | Q(saml_entityid__isnull=True)))
     

@@ -43,12 +43,12 @@ class PersonForm(forms.Form):
     department = forms.CharField(required=False)
     supervisor = forms.CharField(required=False)
     telephone = forms.RegexField(
-            "^[0-9a-zA-Z\.( )+-]+$", required=False, label=u"Office Telephone",
+            "^[0-9a-zA-Z\.( )+-]+$", required=True, label=u"Office Telephone",
+            help_text=u"Used for emergency contact and password reset service.",
             error_messages={'invalid':
             'Telephone number may only contain digits, letter, hyphens, spaces, braces,  and the plus sign.'})
     mobile = forms.RegexField(
             "^[0-9a-zA-Z( )+-]+$",
-            help_text=u"Used for emergency contact and password reset service.",
             required=False,
             error_messages={'invalid':
             'Telephone number may only contain digits, letter, hyphens, spaces, braces,  and the plus sign.'})
