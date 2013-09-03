@@ -29,6 +29,14 @@ from karaage.util import new_random_token, get_current_person
 
 import datetime
 
+# Note on terminology:
+#
+# A inactive person is a person who has been deleted. We keep there entry
+# around and don't actually delete it.
+#
+# A locked person is a person who has not been deleted but is not allowed
+# access for some reason.
+
 class Person(models.Model):
     user = models.ForeignKey(User, unique=True)
     saml_id = models.CharField(max_length=200, null=True, blank=True, unique=True, editable=False)
