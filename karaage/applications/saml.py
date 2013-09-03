@@ -16,14 +16,14 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django import forms
-from django_shibboleth.utils import parse_attributes
+import karaage.util.saml as saml
 
 from karaage.applications.forms import UserApplicantForm
 from karaage.institutes.models import Institute
 
 
 def add_saml_data(applicant, request):
-    attrs, error = parse_attributes(request.META)
+    attrs, error = saml.parse_attributes(request)
     applicant.first_name = attrs['first_name']
     applicant.last_name = attrs['last_name']
     applicant.email = attrs['email']
@@ -33,17 +33,6 @@ def add_saml_data(applicant, request):
     applicant.email_verified = True
     applicant.save()
     return applicant
-
-
-class SAMLUser:
-    def __init__(self, **kwargs):
-        for k, v in kwargs.items():
-            setattr(self, k, v)
-
-
-def get_saml_user(request):
-    attrs, error = parse_attributes(request.META)
-    return SAMLUser(**attrs)
 
 
 class SAMLApplicantForm(UserApplicantForm):

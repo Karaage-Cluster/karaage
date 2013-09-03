@@ -29,13 +29,12 @@ from django.conf import settings
 from django.core.mail import send_mail
 
 import datetime
-import django_shibboleth.utils as saml
 from andsome.forms import EmailForm
 
 from karaage.applications.models import ProjectApplication, Applicant, Application
 import karaage.applications.forms as forms
 import karaage.applications.emails as emails
-import karaage.util.saml as ksaml
+import karaage.util.saml as saml
 from karaage.people.models import Person
 from karaage.projects.models import Project
 from karaage.util import log_object as log
@@ -95,7 +94,7 @@ def _get_email_link(application):
 
 
 def _get_applicant_from_saml(request):
-    attrs, _ = saml.parse_attributes(request.META)
+    attrs, _ = saml.parse_attributes(request)
     saml_id = attrs['persistent_id']
     try:
         return Person.objects.get(saml_id=saml_id)
@@ -445,8 +444,7 @@ class StateStepShibboleth(Step):
         applicant = application.applicant
         attrs = []
 
-        saml_session = ('HTTP_SHIB_SESSION_ID' in request.META and
-                    request.META['HTTP_SHIB_SESSION_ID'])
+        saml_session = saml.is_saml_session(request)
 
         # certain actions are supported regardless of what else happens
         if 'cancel' in request.POST:
@@ -473,7 +471,7 @@ class StateStepShibboleth(Step):
             # shibboleth registration is required
 
             # Do construct the form
-            form = ksaml.SAMLInstituteForm(request.POST or None,
+            form = saml.SAMLInstituteForm(request.POST or None,
                     initial = {'institute': applicant.institute})
             done = False
             status = None
@@ -508,7 +506,7 @@ class StateStepShibboleth(Step):
                         else:
                             applicant = application.applicant
 
-                        applicant = ksaml.add_saml_data(
+                        applicant = saml.add_saml_data(
                                 applicant, request)
                         applicant.save()
 
@@ -527,7 +525,7 @@ class StateStepShibboleth(Step):
 
             # did we get a shib session yet?
             if saml_session:
-                attrs, _ = ksaml.parse_attributes(request.META)
+                attrs, _ = saml.parse_attributes(request)
                 saml_session = True
 
 
@@ -782,7 +780,7 @@ class StateApplicantEnteringDetails(StateWithSteps):
 
             new_person = None
 
-            attrs, _ = saml.parse_attributes(request.META)
+            attrs, _ = saml.parse_attributes(request)
             saml_id = attrs['persistent_id']
             try:
                 if saml_id is not None:

@@ -43,7 +43,6 @@ INSTALLED_APPS = (
     'andsome',
     'captcha',
     'django_surveys',
-    'django_shibboleth',
     'karaage',
     'karaage.people',
     'karaage.machines',

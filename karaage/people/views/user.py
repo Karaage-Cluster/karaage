@@ -37,8 +37,7 @@ from karaage.machines.forms import ShellForm
 from karaage.applications.models import Application
 from karaage.util import log_object as log
 
-import django_shibboleth.utils as saml
-import karaage.util.saml as ksaml
+import karaage.util.saml as saml
 
 @login_required
 def profile(request):
@@ -177,10 +176,9 @@ def saml_login(request):
     if 'next' in request.REQUEST:
         redirect_to = request.REQUEST['next']
     error = None
-    saml_session = ('HTTP_SHIB_SESSION_ID' in request.META and
-                    request.META['HTTP_SHIB_SESSION_ID'])
+    saml_session = saml.is_saml_session(request)
 
-    form = ksaml.SAMLInstituteForm(request.POST or None)
+    form = saml.SAMLInstituteForm(request.POST or None)
     if request.method == 'POST':
         if 'login' in request.POST and form.is_valid():
             institute = form.cleaned_data['institute']
@@ -198,7 +196,7 @@ def saml_login(request):
     elif request.user.is_authenticated():
         error = "You are already logged in."
     elif saml_session:
-        attrs, error = ksaml.parse_attributes(request.META)
+        attrs, error = saml.parse_attributes(request)
         saml_id = attrs['persistent_id']
         try:
             person = Person.objects.get(saml_id = saml_id)
@@ -213,10 +211,7 @@ def saml_login(request):
 
 def saml_details(request):
     redirect_to = reverse('saml_details')
-
-
-    saml_session = ('HTTP_SHIB_SESSION_ID' in request.META and
-                    request.META['HTTP_SHIB_SESSION_ID'])
+    saml_session = saml.is_saml_session(request)
 
     if request.method == 'POST':
         if 'login' in request.POST:
@@ -236,7 +231,7 @@ def saml_details(request):
         elif 'register' in request.POST:
             if request.user.is_authenticated() and saml_session:
                 person = request.user.get_profile()
-                person = ksaml.add_saml_data(
+                person = saml.add_saml_data(
                         person, request)
                 person.save()
                 redirect_to = reverse("saml_details")
@@ -257,7 +252,7 @@ def saml_details(request):
 
     attrs = {}
     if saml_session:
-        attrs, _ = ksaml.parse_attributes(request.META)
+        attrs, _ = saml.parse_attributes(request)
         saml_session = True
 
     person = None

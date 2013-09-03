@@ -1,9 +1,10 @@
 from django.contrib import auth
 from django.core.exceptions import ImproperlyConfigured
-from django_shibboleth.utils import parse_attributes
 from karaage.people.models import Person
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+
+import karaage.util.saml as saml
 
 
 class SamlUserMiddleware(object):
@@ -19,11 +20,6 @@ class SamlUserMiddleware(object):
     this class and change the ``header`` attribute if you need to use a
     different header.
     """
-
-    # Name of request header to grab username from.  This will be the key as
-    # used in the request.META dictionary, i.e. the normalization of headers to
-    # all uppercase and the addition of "HTTP_" prefix apply.
-    header = "HTTP_PERSISTENT_ID"
 
     def process_request(self, request):
         # AuthenticationMiddleware is required so that request.user exists.
@@ -42,15 +38,13 @@ class SamlUserMiddleware(object):
             return
 
         # Is this a shib session?
-        if 'HTTP_SHIB_SESSION_ID' not in request.META:
-            return
-        if not request.META['HTTP_SHIB_SESSION_ID']:
+        if not saml.is_saml_session(request):
             return
 
         # Can we get the shib attributes we need?
-        attrs, error = parse_attributes(request.META)
+        attrs, error = saml.parse_attributes(request)
         if error:
-            return render_to_response('shibboleth/attribute_error.html',
+            return render_to_response('saml_error.html',
                                       {'shib_attrs': attrs},
                                       context_instance=RequestContext(request))
 
