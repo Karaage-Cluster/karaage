@@ -5,6 +5,10 @@ Your application {{ application.info }} to join the {{ application.project }} ha
 
 {% if created_person or created_account %}Please setup your password by visiting {{ link }}.
 
+{% if is_secret %}This URL must remain secret, do not give it to anybody else. Please
+make sure nobody is already logged into Karaage from your computer before using it.
+{% else %}If you are not already logged in you will be required to log in before using this link.
+{% endif %}
 {% endif %}For your records, your username is: {{ receiver.username }}
 
 

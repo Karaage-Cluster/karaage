@@ -67,9 +67,6 @@ def _clean_email(email):
         raise forms.ValidationError("Oops. Nothing is valid. Sorry.")
 
 
-class InstituteForm(forms.Form):
-    institute = forms.ModelChoiceField(queryset=Institute.active.all())
-
 class StartApplicationForm(forms.Form):
     application_type = forms.ChoiceField(choices=APP_CHOICES, widget=forms.RadioSelect())
 
@@ -131,6 +128,17 @@ class UserApplicantForm(ApplicantForm):
     class Meta:
         model = Applicant
         exclude = ['email']
+
+
+class SAMLApplicantForm(UserApplicantForm):
+
+    def __init__(self, *args, **kwargs):
+        super(SAMLApplicantForm, self).__init__(*args, **kwargs)
+        del self.fields['institute']
+
+    class Meta:
+        model = Applicant
+        exclude = ['email', 'institute']
 
 
 class CommonApplicationForm(forms.ModelForm):
@@ -375,6 +383,5 @@ class PersonVerifyPassword(forms.Form):
     def save(self, commit=True):
         password = self.cleaned_data['password']
         self.person.set_password(password)
-        self.person.update_password = False
         self.person.save()
         return self.person

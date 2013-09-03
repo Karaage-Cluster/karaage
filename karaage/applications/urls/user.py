@@ -20,7 +20,7 @@ from django.conf.urls import *
 
 urlpatterns = patterns('karaage.applications.views.user',
 
-    url(r'^pending/$', 'pending_applications', name='kg_application_pendinglist'),
+    url(r'^$', 'pending_applications', name='kg_application_pendinglist'),
 
     url(r'^new/$', 'new_application', name='kg_application_new'),
 

@@ -7,8 +7,12 @@
 {% endif %}
 {% if message %}{{ application.header_message }}
 
-{% endif %}To create your account and also an account on the cluster if you choose please visit {{ site }}
+{% endif %}To create your account and also an account on the cluster if you choose please visit {{ link }}
 
+{% if is_secret %}This URL must remain secret, do not give it to anybody else. Please
+make sure nobody is already logged into Karaage from your computer before using it.
+{% else %}If you are not already logged in you will be required to log in before using this link.
+{% endif %}
 This link will expire in 7 days.
 
 

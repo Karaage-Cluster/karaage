@@ -27,13 +27,10 @@ from django.contrib.sites.models import Site
 from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.conf import settings
 
-from django_shibboleth.utils import build_shib_url
 
 from karaage.people.models import Person, Group
 from karaage.projects.models import Project
-from karaage.applications.saml import SAMLInstituteForm
 
 
 @login_required
@@ -89,7 +86,7 @@ def search(request):
         
         return render_to_response('site_search.html', locals(), context_instance=RequestContext(request))
     else:
-        return HttpResponseRedirect(reverse('kg_admin_index'))
+        return HttpResponseRedirect(reverse('index'))
 
 
 def log_detail(request, object_id, model):
@@ -141,20 +138,4 @@ def add_comment(request, object_id, model):
         field = forms.CharField(widget=forms.Textarea(), label='Comment').widget.render('comment', '')
 
     return render_to_response('comments/add_comment.html', locals(), context_instance=RequestContext(request))
-    
 
-def saml_login(request):
-
-    redirect_to = request.REQUEST.get('next', '')
-    if not redirect_to or ' ' in redirect_to:
-        redirect_to = settings.LOGIN_REDIRECT_URL
-    redirect_to = redirect_to
-    if request.method == 'POST':
-        form = SAMLInstituteForm(request.POST)
-        if form.is_valid():
-            institute = form.cleaned_data['institute']
-            return HttpResponseRedirect(build_shib_url(request, redirect_to, institute.saml_entityid))
-    else:
-        form = SAMLInstituteForm()
-
-    return render_to_response('saml_login.html', {'samlform': form}, context_instance=RequestContext(request))

@@ -39,7 +39,7 @@ def send_admin_request_email(application):
     """Sends an email to admin asking to approve user application"""
     context = CONTEXT.copy()
     context['requester'] = application.applicant
-    context['site'] = '%s/applications/%d/' % (settings.REGISTRATION_BASE_URL, application.pk)
+    context['link'] = '%s/applications/%d/' % (settings.REGISTRATION_BASE_URL, application.pk)
     context['application'] = application
 
     to_email = settings.APPROVE_ACCOUNTS_EMAIL
@@ -51,7 +51,7 @@ def send_admin_request_email(application):
 def send_leader_request_email(application):
     """Sends an email to each project leader asking to approve user application"""
     context = CONTEXT.copy()
-    context['site'] = '%s/applications/%d/' % (settings.REGISTRATION_BASE_URL, application.pk)
+    context['link'] = '%s/applications/%d/' % (settings.REGISTRATION_BASE_URL, application.pk)
     context['application'] = application
 
     for leader in application.project.leaders.filter(user__is_active=True):
@@ -66,7 +66,7 @@ def send_leader_request_email(application):
 def send_delegate_request_email(application):
     """Sends an email to the projects institutes active delegate for approval"""
     context = CONTEXT.copy()
-    context['site'] = '%s/applications/%d/' % (settings.REGISTRATION_BASE_URL, application.pk)
+    context['link'] = '%s/applications/%d/' % (settings.REGISTRATION_BASE_URL, application.pk)
     context['application'] = application
 
     for delegate in application.institute.delegates.filter(institutedelegate__send_email=True):
@@ -77,43 +77,32 @@ def send_delegate_request_email(application):
 
 
 
-def send_user_invite_email(application):
+def send_applicant_invite_email(application, link, is_secret):
     """ Sends an email inviting someone to create an account"""
 
     context = CONTEXT.copy()
     context['receiver'] = application.applicant
-    context['site'] = '%s/applications/%s/' % (settings.REGISTRATION_BASE_URL, application.secret_token)
     context['application'] = application
+    context['link'] = link
+    context['is_secret'] = is_secret
 
     to_email = application.applicant.email
-    subject, body = render_email('user_invite', context)
+    subject, body = render_email('applicant_invite', context)
 
     send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
 
 
-def send_account_approved_email(application, created_person, created_account, link):
+def send_applicant_approved_email(application, created_person, created_account, link, is_secret):
     """Sends an email informing person account is ready"""
     context = CONTEXT.copy()
     context['receiver'] = application.applicant
     context['application'] = application
-    context['site'] = '%s/profile/' % settings.REGISTRATION_BASE_URL
     context['created_person'] = created_person
     context['created_account'] = created_account
     context['link'] = link
-    subject, body = render_email('account_approved', context)
+    context['is_secret'] = is_secret
+    subject, body = render_email('applicant_approved', context)
     to_email = application.applicant.email
-
-    send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
-
-
-def send_account_declined_email(userapplication):
-    """Sends an email informing person account is declined"""
-    context = CONTEXT.copy()
-    context['receiver'] = userapplication.applicant
-    context['project'] = userapplication.project
-    context['site'] = '%s/profile/' % settings.REGISTRATION_BASE_URL
-    subject, body = render_email('account_declined', context)
-    to_email = userapplication.applicant.email
 
     send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
 
@@ -121,7 +110,7 @@ def send_account_declined_email(userapplication):
 def send_project_approved_email(application):
     """Sends an email to the projects leaders once approved"""
     context = CONTEXT.copy()
-    context['site'] = '%s/projects/%s/' % (settings.REGISTRATION_BASE_URL, application.project.pid)
+    context['project_link'] = '%s/projects/%s/' % (settings.REGISTRATION_BASE_URL, application.project.pid)
     context['application'] = application
 
     for leader in application.project.leaders.all():

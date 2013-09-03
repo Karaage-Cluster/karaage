@@ -7,7 +7,7 @@ import ajax_select.urls
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^$', 'karaage.views.admin_index', name='kg_admin_index'),
+    url(r'^$', 'karaage.views.admin_index', name='index'),
     url(r'^search/$', 'karaage.views.search', name='kg_site_search'), 
 
     url(r'^users/', include('karaage.people.urls.admin')),

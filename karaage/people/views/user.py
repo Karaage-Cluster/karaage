@@ -17,7 +17,7 @@
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.comments.models import Comment
@@ -37,6 +37,9 @@ from karaage.machines.forms import ShellForm
 from karaage.applications.models import Application
 from karaage.util import log_object as log
 
+import django_shibboleth.utils as saml
+import karaage.util.saml as ksaml
+
 @login_required
 def profile(request):
 
@@ -45,14 +48,6 @@ def profile(request):
     project_requests = []
     user_applications = []
     start, end = get_date_range(request)
-
-    if person.is_leader():
-        leader = True
-        leader_project_list = Project.objects.filter(leaders=person, is_active=True)
-
-        for project in leader_project_list:
-            for user_application in project.userapplication_set.filter(state=Application.WAITING_FOR_LEADER):
-                user_applications.append(user_application)
 
     usage_list = person.personcache_set.filter(start=start, end=end)
 
@@ -144,9 +139,8 @@ def password_change_done(request):
 
 
 def login(request, username=None):
-
     error = ''
-    redirect_to = settings.LOGIN_REDIRECT_URL
+    redirect_to = reverse('index')
     if 'next' in request.REQUEST:
         redirect_to = request.REQUEST['next']
 
@@ -160,32 +154,131 @@ def login(request, username=None):
             from django.contrib.auth import login, authenticate
             user = authenticate(username=username, password=password)
             if user is not None:
-                if user.is_active:
+                person = user.get_profile()
+                if user.is_active and not person.is_locked():
                     login(request, user)
-                    person = user.get_profile()
-
-                    person.set_password(password)
-                    person.update_password = False
-                    person.save()
-                    messages.success(request, 'Password updated. New accounts activated.')
-                    log(None, person, 2, 'Automatically updated passwords.')
                     return HttpResponseRedirect(redirect_to)
                 else:
-                    error = 'User account is locked'
+                    error = 'User account is inactive or locked'
             else:
                 error = 'Username or password was incorrect'
     else:
         form = LoginForm(initial = {'username': username})
 
-    return render_to_response('registration/login.html', {
+    return render_to_response('people/login.html', {
         'form': form,
         'next': redirect_to,
         'error': error,
         }, context_instance=RequestContext(request))
 
 
+def saml_login(request):
+    redirect_to = reverse('login_saml')
+    if 'next' in request.REQUEST:
+        redirect_to = request.REQUEST['next']
+    error = None
+    saml_session = ('HTTP_SHIB_SESSION_ID' in request.META and
+                    request.META['HTTP_SHIB_SESSION_ID'])
+
+    form = ksaml.SAMLInstituteForm(request.POST or None)
+    if request.method == 'POST':
+        if 'login' in request.POST and form.is_valid():
+            institute = form.cleaned_data['institute']
+            url = saml.build_shib_url(request, redirect_to,
+                    institute.saml_entityid)
+            return HttpResponseRedirect(url)
+        elif 'logout' in request.POST:
+            if saml_session:
+                url = saml.logout_url(request)
+                return HttpResponseRedirect(url)
+            else:
+                return HttpResponseBadRequest("<h1>Bad Request</h1>")
+        else:
+            return HttpResponseBadRequest("<h1>Bad Request</h1>")
+    elif request.user.is_authenticated():
+        error = "You are already logged in."
+    elif saml_session:
+        attrs, error = ksaml.parse_attributes(request.META)
+        saml_id = attrs['persistent_id']
+        try:
+            person = Person.objects.get(saml_id = saml_id)
+            error = "Shibboleth session established but you did not get logged in."
+        except Person.DoesNotExist:
+            error = "Cannot log in with shibboleth as we do not know your shibboleth id."
+
+    return render_to_response('people/login_saml.html',
+            {'form': form, 'error': error, 'saml_session': saml_session, },
+            context_instance=RequestContext(request))
+
+
+def saml_details(request):
+    redirect_to = reverse('saml_details')
+
+
+    saml_session = ('HTTP_SHIB_SESSION_ID' in request.META and
+                    request.META['HTTP_SHIB_SESSION_ID'])
+
+    if request.method == 'POST':
+        if 'login' in request.POST:
+            if request.user.is_authenticated():
+                person = request.user.get_profile()
+                institute = person.institute
+                if institute.saml_entityid:
+                    redirect_to = reverse("saml_details")
+                    url = saml.build_shib_url(request, redirect_to,
+                            institute.saml_entityid)
+                    return HttpResponseRedirect(url)
+                else:
+                    return HttpResponseBadRequest("<h1>Bad Request</h1>")
+            else:
+                return HttpResponseBadRequest("<h1>Bad Request</h1>")
+
+        elif 'register' in request.POST:
+            if request.user.is_authenticated() and saml_session:
+                person = request.user.get_profile()
+                person = ksaml.add_saml_data(
+                        person, request)
+                person.save()
+                redirect_to = reverse("saml_details")
+                return HttpResponseRedirect(url)
+            else:
+                return HttpResponseBadRequest("<h1>Bad Request</h1>")
+
+        elif 'logout' in request.POST:
+            if saml_session:
+                url = saml.logout_url(request)
+                return HttpResponseRedirect(url)
+            else:
+                return HttpResponseBadRequest("<h1>Bad Request</h1>")
+
+        else:
+            return HttpResponseBadRequest("<h1>Bad Request</h1>")
+
+
+    attrs = {}
+    if saml_session:
+        attrs, _ = ksaml.parse_attributes(request.META)
+        saml_session = True
+
+    person = None
+    if request.user.is_authenticated():
+        person = request.user.get_profile()
+
+    return render_to_response('people/saml_detail.html',
+            {'attrs': attrs, 'saml_session': saml_session,
+                'person': person, },
+            context_instance=RequestContext(request))
+
+def logout(request, username=None):
+    url = reverse("index")
+    from django.contrib.auth import logout
+    logout(request)
+    messages.success(request, 'Logout was successful.')
+    return HttpResponseRedirect(url)
+
+
 @login_required
-def password_reset(request):
+def password_reset_request(request):
     post_reset_redirect = reverse('password_reset_done')
 
     if request.user.has_perm('people.change_person'):

@@ -44,7 +44,12 @@
 
     <p>{{ link }}</p>
 
-    <p><b>This URL must remain secret, do not give it to anybody else.</b></p>
+    {% if is_secret %}
+    <p><b>This URL must remain secret, do not give it to anybody else. Please
+    make sure nobody is already logged into Karaage from your computer before using it.</b></p>
+    {% else %}
+    <p><b>If you are not already logged in you will be required to log in before using this link.</b></p>
+    {% endif %}
 
     <p>Thank you</p>
 

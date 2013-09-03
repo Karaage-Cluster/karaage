@@ -94,13 +94,6 @@ class Application(models.Model):
         return super(Application, self).save(*args, **kwargs)
     save.alters_data = True
 
-    def delete(self):
-        if self.content_type and self.content_type.model == 'applicant':
-            if self.applicant.applications.count() <= 1:
-                self.applicant.delete()
-        super(Application, self).delete()
-    delete.alters_data = True
-
     def get_object(self):
         try:
             if self._class and self._meta.get_field_by_name(self._class)[0].opts != self._meta:

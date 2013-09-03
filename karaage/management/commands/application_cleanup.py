@@ -21,18 +21,18 @@ import tldap.transaction
 
 
 class Command(BaseCommand):
-    help = "Deletes expired applications in the NEW state and applications that have been complete for a month"
+    help = "Regular cleanup of application db models."
     
     @django.db.transaction.commit_on_success
     @tldap.transaction.commit_on_success
     def handle(self, **options):
-        from karaage.applications.models import Application, ProjectApplication
+        from karaage.applications.models import Application, ProjectApplication, Applicant
         import datetime
         now = datetime.datetime.now()
         
         verbose = int(options.get('verbosity'))
         # Delete all expired applications
-        for application in Application.objects.filter(expires__lte=now, state=Application.NEW):
+        for application in Application.objects.filter(expires__lte=now, state=Application.OPEN):
             if verbose >= 1:
                 print "Deleted expired application #%s" % application.id
             application.delete()
@@ -42,4 +42,10 @@ class Command(BaseCommand):
         for application in ProjectApplication.objects.filter(state__in=[Application.COMPLETE, Application.DECLINED], complete_date__lte=month_ago):
             if verbose >= 1:
                 print "Deleted completed project application #%s" % application.id
+            application.delete()
+
+        # Delete all orphaned applicants
+        for applicant in Applicant.objects.filter(applications__isnull=True):
+            if verbose >= 1:
+                print "Deleted orphaned applicant #%s" % applicant.id
             application.delete()
