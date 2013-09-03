@@ -1,0 +1,24 @@
+Hello {{ receiver.first_name }},
+
+This is in reference to your {{ org_name }} project:
+
+-------------------------------------------------------------
+  {{ project }}.
+-------------------------------------------------------------
+
+{{ org_name }} has tried to contact the project member {{ person }}
+but we have found that their email address no longer works.
+
+The address we tried was <{{person.email}}>.
+
+Please could you contact the {{ org_name }} help desk by replying to
+this email to confirm their status in your project and passing
+on any new contact details that you may have for them ?
+
+Also, if they are no longer in the project can you please tell us
+whether you wish to sort through their data or can it be
+disposed of ?
+
+Thank you,
+
+{% include "emails/email_footer.txt" %}
