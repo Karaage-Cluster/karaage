@@ -39,13 +39,9 @@ urlpatterns = patterns('karaage.people.views.admin',
     url(r'^accounts/(?P<account_id>\d+)/delete/$', 'delete_account', name='kg_account_delete'),
     url(r'^accounts/(?P<account_id>\d+)/makedefault/(?P<project_id>[-.\w]+)/$', 'make_default', name='kg_account_set_default'),
 
-
     (r'^(?P<username>[-.\w]+)/', include('karaage.people.urls.admin_user_detail')),
 )
 
-                        
-
-urlpatterns += patterns('karaage.views',                   
-
+urlpatterns += patterns('karaage.views',
     url(r'^(?P<object_id>\d+)/logs/$', 'log_detail', {'model': Person }, name='kg_person_logs'),
 )

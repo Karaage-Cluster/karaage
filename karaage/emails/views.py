@@ -42,7 +42,7 @@ def send_email(request):
                 send_mass_mail(form.get_emails())
                 messages.success(request, "Emails sent successfully")
                     
-                return HttpResponseRedirect(reverse('kg_admin_index'))
+                return HttpResponseRedirect(reverse('index'))
     else:        
         form = EmailForm()
         
