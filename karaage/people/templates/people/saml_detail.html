@@ -1,0 +1,58 @@
+{% extends "main.html" %}
+{% load forms %}
+{% load applications %}
+
+
+{% block title %}SAML{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    SAML details
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+    <h1>SAML Details</h1>
+
+    {% if saml_session %}
+        <p>You have an established SAML session.</p>
+        <table>
+            {% for key,value in attrs.iteritems %}
+            <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
+            {% endfor %}
+        </table>
+        <div id="saml_login_fields">
+            <form method="post" action=".">{% csrf_token %}
+                <input type="submit" name="logout" value="SAML Logout" />
+            </form>
+        </div>
+    {% else %}
+        <p>You do not have an established SAML session.</p>
+    {% endif %}
+
+    {% if person %}
+        <p>You are logged in to Karaage as {{ person }}.</p>
+    {% else %}
+        <p>You are not logged in to Karaage.</p>
+    {% endif %}
+
+    {% if not saml_session and person %}
+        <form method="post" action=".">{% csrf_token %}
+            <input type="submit" name="login" value="SAML Login" class="button" />
+        </form>
+    {% endif %}
+
+    {% if saml_session and person %}
+        <p>If you continue and click Register, then your details, including
+        your email address, will be replaced by those above and you will be
+        able to log in using SAML.</p>
+        <form method="post" action=".">{% csrf_token %}
+            <input type="submit" name="register" value="Register" class="button" />
+        </form>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "forms.html" %}
+
+{% block content %}
+<h1>Steal Application from {{ application.applicant }}?</h1>
+<p>Your are about to give {{ person }} this application. {{ reason }} The
+application currently belongs to:</p>
+
+<table>
+    <tr><td>Name:</td><td>{{ application.applicant }}</td></tr>
+    <tr><td>E-Mail:</td><td>{{ application.applicant.email }}</td></tr>
+    <tr><td>Position:</td><td>{{ application.applicant.position|default:"" }}</td></tr>
+    <tr><td>Department:</td><td>{{ application.applicant.department|default:"" }}</td></tr>
+    <tr><td>Institute:</td><td><a href="{{ application.applicant.institute.get_absolute_url }}">{{ application.applicant.institute }}</a></td></tr>
+</table>
+
+<p><b>{{ details }}</b></p>
+
+<p>If you continue, the application will get the following details.</p>
+
+<table>
+    <tr><td>Name:</td><td>{{ person }}</td></tr>
+    <tr><td>E-Mail:</td><td>{{ person.email }}</td></tr>
+    <tr><td>Position:</td><td>{{ person.position|default:"" }}</td></tr>
+    <tr><td>Department:</td><td>{{ person.department|default:"" }}</td></tr>
+    <tr><td>Institute:</td><td><a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a></td></tr>
+</table>
+
+<p>Are you sure you want to continue???</p>
+
+<form method="post" action=".">{% csrf_token %}
+    {% for field in form %}{{ field.as_hidden }}
+    {% endfor %}
+    <div>
+        <input type="hidden" name="steal" value="yes" />
+        <input type="submit" value="Yes, I'm sure" />
+    </div>
+</form>
+{% endblock %}

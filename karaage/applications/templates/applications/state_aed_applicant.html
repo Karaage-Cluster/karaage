@@ -52,21 +52,9 @@
             {% endif %}
             {% if application.header_message %}{{ application.header_message|linebreaks }}{% endif %}
             <fieldset class="module aligned ()">
-            {% if form.errors.email and saml %}{{ form.errors.email }}{% endif %}
             <h2>Account Details</h2>
             <p>This username will be used for your computer account as well as access to this website.</p>
-            {% formfield form.username %}
-            </fieldset>
-            {% if not saml %}
-                <fieldset class="module aligned ()">
-                <h2>Personal Details</h2>
-                {% formfield form.email %}
-                {% formfield form.title %}
-                {% inlineformfield form.first_name form.last_name %}
-                {% inlineformfield form.institute form.department %}
-                {% inlineformfield form.telephone form.mobile %}
-                </fieldset>
-            {% endif %}
+            {% form_as_div form %}
         </div>
     {% endif %}
 

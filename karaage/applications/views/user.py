@@ -29,27 +29,47 @@ from django.conf import settings
 from django.core.mail import send_mail
 
 import datetime
-from django_shibboleth.utils import ensure_shib_session, build_shib_url
+import django_shibboleth.utils as saml
 from andsome.forms import EmailForm
 
 from karaage.applications.models import ProjectApplication, Applicant, Application
 import karaage.applications.forms as forms
 import karaage.applications.emails as emails
-import karaage.applications.saml as saml
+import karaage.util.saml as ksaml
 from karaage.people.models import Person
 from karaage.projects.models import Project
 from karaage.util import log_object as log
 
 import json
 
-def _get_url(request, application, label=None):
+def _get_url(request, application, auth, label=None):
     """ Retrieve a link that will work for the current user. """
     args = []
     if label is not None:
         args.append(label)
 
     # don't use secret_token unless we have to
-    if request.user.is_authenticated():
+    if auth['is_admin']:
+        # Administrators can access anything without secrets
+        require_secret = False
+    elif not auth['is_applicant']:
+        # we never give secrets to anybody but the applicant
+        require_secret = False
+    elif not request.user.is_authenticated():
+        # If applicant is not logged in, we redirect them to secret URL
+        require_secret = True
+    elif request.user.get_profile() != application.applicant:
+        # If logged in as different person, we redirect them to secret
+        # URL. This could happen if the application was open with a different
+        # email address, and the applicant is logged in when accessing it.
+        require_secret = True
+    else:
+        # otherwise redirect them to URL that requires correct login.
+        require_secret = False
+
+    # return required url
+    if not require_secret:
+        person = request.user.get_profile()
         url = reverse(
                 'kg_application_detail',
                 args=[application.pk, application.state] + args)
@@ -66,10 +86,28 @@ def _get_email_link(application):
     if application.content_type.model != 'applicant':
         url = '%s/applications/%d/' % (
                 settings.REGISTRATION_BASE_URL, application.pk)
+        is_secret = False
     else:
         url = '%s/applications/%s/' % (
                 settings.REGISTRATION_BASE_URL, application.secret_token)
-    return url
+        is_secret = True
+    return url, is_secret
+
+
+def _get_applicant_from_saml(request):
+    attrs, _ = saml.parse_attributes(request.META)
+    saml_id = attrs['persistent_id']
+    try:
+        return Person.objects.get(saml_id=saml_id)
+    except Person.DoesNotExist:
+        pass
+
+    try:
+        return Applicant.objects.get(saml_id=saml_id)
+    except Applicant.DoesNotExist:
+        pass
+
+    return None
 
 class StateMachine(object):
     """ State machine, for processing states. """
@@ -91,11 +129,27 @@ class StateMachine(object):
             self._first_state = state_id
         self._states[state_id] = state, actions
 
-    def start(self, request, application):
+    def start(self, request, application, auth_override):
         """ Continue the state machine at first state. """
+        # Get the authentication of the current user
+        auth = self._authenticate(request, application)
+        if auth_override is not None:
+            auth.update(auth_override)
+
+        # Ensure current user is authenticated. If user isn't applicant,
+        # leader, delegate or admin, they probably shouldn't be here.
+        if (not auth['is_applicant'] and
+                not auth['is_leader'] and
+                not auth['is_delegate'] and
+                not auth['is_admin']):
+            return HttpResponseForbidden('<h1>Access Denied</h1>')
+
+        # Sanity check
         if self._first_state is None:
             raise RuntimeError("First state not set.")
-        return self._next(request, application, self._first_state)
+
+        # Go to first state.
+        return self._next(request, application, auth, self._first_state)
 
     def process(self, request, application, expected_state, label, auth_override):
         """ Process the view request at the current state. """
@@ -115,7 +169,7 @@ class StateMachine(object):
 
         # If user didn't supply state on URL, redirect to full URL.
         if expected_state is None:
-            url = _get_url(request, application, label)
+            url = _get_url(request, application, auth, label)
             return HttpResponseRedirect(url)
 
         # Check that the current state is valid.
@@ -130,7 +184,7 @@ class StateMachine(object):
                 messages.warning(request, "Discarding request and jumping to current state.")
             # note we discard the label, it probably isn't relevant for new
             # state
-            url = _get_url(request, application)
+            url = _get_url(request, application, auth)
             return HttpResponseRedirect(url)
 
         # Get the current state for this application
@@ -164,7 +218,7 @@ class StateMachine(object):
                     next_state_key = next_state_key.get_next_state(
                             request, application, auth)
                 # Go to the next state
-                return self._next(request, application, next_state_key)
+                return self._next(request, application, auth, next_state_key)
 
         else:
             # Shouldn't happen, user did something weird
@@ -177,7 +231,7 @@ class StateMachine(object):
     @staticmethod
     def _log(request, application, flag, message):
         """ Log a message for this application. """
-        log(request.user, application.application_ptr, flag, message)
+        log(request.user, application, flag, message)
 
     @staticmethod
     def _authenticate(request, application):
@@ -189,7 +243,7 @@ class StateMachine(object):
         auth["is_admin"] = False
         return auth
 
-    def _next(self, request, application, state_key):
+    def _next(self, request, application, auth, state_key):
         """ Continue the state machine at given state. """
         # we only support state changes for POST requests
         if request.method == "POST":
@@ -207,7 +261,7 @@ class StateMachine(object):
             self._log(request, application, 2, "state: %s" % state.name)
 
             # redirect to this new state
-            url = _get_url(request, application)
+            url = _get_url(request, application, auth)
             return HttpResponseRedirect(url)
         else:
             return HttpResponseBadRequest("<h1>Bad Request</h1>")
@@ -295,7 +349,7 @@ class StateWithSteps(State):
         if label is None:
             # no label given, find first step and redirect to it.
             this_id = self._order[0]
-            url = _get_url(request, application, this_id)
+            url = _get_url(request, application, auth, this_id)
             return HttpResponseRedirect(url)
         else:
             # label was given, get the step position and id for it
@@ -346,7 +400,7 @@ class StateWithSteps(State):
                 if action.startswith("state:"):
                     return action[6:]
                 else:
-                    url = _get_url(request, application, action)
+                    url = _get_url(request, application, auth, action)
                     return HttpResponseRedirect(url)
 
         # We only understand GET or POST requests
@@ -374,9 +428,10 @@ class StateStepIntroduction(Step):
         for action in actions:
             if action in request.POST:
                 return action
-        link = _get_email_link(application)
+        link, is_secret = _get_email_link(application)
         return render_to_response('applications/state_aed_introduction.html',
-                {'actions': actions, 'application': application, 'auth': auth, 'link': link },
+                {'actions': actions, 'application': application, 'auth': auth,
+                'link': link, 'is_secret': is_secret },
                 context_instance=RequestContext(request))
 
 
@@ -388,6 +443,10 @@ class StateStepShibboleth(Step):
         """ Django view method. """
         status = None
         applicant = application.applicant
+        attrs = []
+
+        saml_session = ('HTTP_SHIB_SESSION_ID' in request.META and
+                    request.META['HTTP_SHIB_SESSION_ID'])
 
         # certain actions are supported regardless of what else happens
         if 'cancel' in request.POST:
@@ -414,28 +473,16 @@ class StateStepShibboleth(Step):
             # shibboleth registration is required
 
             # Do construct the form
-            form = forms.InstituteForm(request.POST or None)
+            form = ksaml.SAMLInstituteForm(request.POST or None,
+                    initial = {'institute': applicant.institute})
             done = False
             status = None
 
-            # Was it a GET request?
-            if request.method == 'GET':
-                # did we get a shib session yet?
-                response = ensure_shib_session(request)
-                if response is None:
-                    applicant = saml.add_saml_data(
-                            applicant, request)
-                    applicant.save()
-                    messages.success(
-                            request,
-                            "Shibboleth has been registered.")
-                    done = True
-
             # Was it a POST request?
-            elif request.method == 'POST':
+            if request.method == 'POST':
 
-                # Did the form get posted?
-                if 'shibboleth' in request.POST and form.is_valid():
+                # Did the login form get posted?
+                if 'login' in request.POST and form.is_valid():
                     institute = form.cleaned_data['institute']
                     applicant.institute = institute
                     applicant.save()
@@ -445,14 +492,47 @@ class StateStepShibboleth(Step):
 
                     # if institute supports shibboleth, redirect back here via
                     # shibboleth, otherwise redirect directly back he.
-                    url = _get_url(request, application)
+                    url = _get_url(request, application, auth, label)
                     if institute.saml_entityid is not None:
-                        url = build_shib_url(
+                        url = saml.build_shib_url(
                                 request, url, institute.saml_entityid)
                     return HttpResponseRedirect(url)
 
+                # Did we get a register request?
+                elif 'register' in request.POST:
+                    if saml_session:
+                        applicant = _get_applicant_from_saml(request)
+                        if applicant is not None:
+                            application.applicant = applicant
+                            application.save()
+                        else:
+                            applicant = application.applicant
+
+                        applicant = ksaml.add_saml_data(
+                                applicant, request)
+                        applicant.save()
+
+                        url = _get_url(request, application, auth, label)
+                        return HttpResponseRedirect(url)
+                    else:
+                        return HttpResponseBadRequest("<h1>Bad Request</h1>")
+
+                # Did we get a logout request?
+                elif 'logout' in request.POST:
+                    if saml_session:
+                        url = saml.logout_url(request)
+                        return HttpResponseRedirect(url)
+                    else:
+                        return HttpResponseBadRequest("<h1>Bad Request</h1>")
+
+            # did we get a shib session yet?
+            if saml_session:
+                attrs, _ = ksaml.parse_attributes(request.META)
+                saml_session = True
+
+
         # if we are done, we can proceed to next state
-        if request.method == 'POST' and 'shibboleth' not in request.POST:
+        if request.method == 'POST':
             if done:
                 for action in actions:
                     if action in request.POST:
@@ -465,7 +545,8 @@ class StateStepShibboleth(Step):
         return render_to_response(
                 'applications/state_aed_shibboleth.html',
                 {'form': form, 'done': done, 'status': status,
-                'actions': actions, 'auth': auth},
+                    'actions': actions, 'auth': auth, 'application': application,
+                    'attrs': attrs, 'saml_session': saml_session,},
                 context_instance=RequestContext(request))
 
 
@@ -482,7 +563,7 @@ class StateStepApplicant(Step):
             form = None
         elif application.content_type.model == 'applicant':
             if application.applicant.saml_id is not None:
-                form = saml.SAMLApplicantForm(
+                form = forms.SAMLApplicantForm(
                         request.POST or None,
                         instance=application.applicant)
             else:
@@ -518,7 +599,6 @@ class StateStepApplicant(Step):
                 'applications/state_aed_applicant.html', {
                 'form': form,
                 'application': application,
-                'saml': application.applicant.saml_id is not None,
                 'status': status, 'actions': actions, 'auth': auth },
                 context_instance=RequestContext(request))
 
@@ -684,7 +764,8 @@ class StateApplicantEnteringDetails(StateWithSteps):
     def enter_state(self, request, application):
         """ This is becoming the new current state. """
         application.reopen()
-        emails.send_user_invite_email(application)
+        link, is_secret = _get_email_link(application)
+        emails.send_applicant_invite_email(application, link, is_secret)
         messages.success(
                 request,
                 "Sent an invitation to %s." %
@@ -692,6 +773,56 @@ class StateApplicantEnteringDetails(StateWithSteps):
 
     def view(self, request, application, label, auth, actions):
         """ Process the view request at the current step. """
+
+        # if user is logged and and not applicant, steal the
+        # application
+        if auth['is_applicant']:
+            # if we got this far, then we either we are logged in as applicant, or
+            # we know the secret for this application.
+
+            new_person = None
+
+            attrs, _ = saml.parse_attributes(request.META)
+            saml_id = attrs['persistent_id']
+            try:
+                if saml_id is not None:
+                    new_person = Person.objects.get(saml_id=saml_id)
+                    reason = "SAML id is already in use by existing person."
+                    details = ("It is not possible to continue this application " +
+                        "as is because the saml identity already exists " +
+                        "as a registered user.")
+            except Person.DoesNotExist:
+                pass
+
+            if request.user.is_authenticated():
+                new_person = request.user.get_profile()
+                reason = "%s was logged in and accessed secret URL." % new_person
+                details = ("If you want to access this application "+
+                    "as %s " % application.applicant +
+                    "without %s stealing it, " % new_person +
+                    "you will have to ensure %s is " % new_person +
+                    "logged out first.")
+
+            if new_person is not None:
+                if application.applicant != new_person:
+                    if 'steal' in request.POST:
+                        old_applicant = application.applicant
+                        application.applicant = new_person
+                        application.save()
+                        log(request.user, application,
+                                1, "Stolen application from %s", application.applicant)
+                        messages.success(
+                                request,
+                                "Stolen application from %s", application.applicant)
+                        url = _get_url(request, application, auth, label)
+                        return HttpResponseRedirect(url)
+                    else:
+                        return render_to_response(
+                                'applications/application_steal.html',
+                                {'application': application, 'person': new_person,
+                                    'reason': reason, 'details': details, },
+                                context_instance=RequestContext(request))
+
         # if the user is the leader, show him the leader specific page.
         if (auth['is_leader'] or auth['is_delegate']) and not auth['is_admin'] and not auth['is_applicant']:
             actions = ['reinvite']
@@ -699,7 +830,7 @@ class StateApplicantEnteringDetails(StateWithSteps):
                 return 'reinvite'
             return render_to_response(
                     'applications/state_aed_for_leader.html',
-                    {'application': application, 'actions': actions, 'auth': auth},
+                    {'application': application, 'actions': actions, 'auth': auth, },
                     context_instance=RequestContext(request))
 
         # otherwise do the default behaviour for StateWithSteps
@@ -744,12 +875,12 @@ class StateWaitingForApproval(State):
                             fail_silently=False)
                     return "decline"
             else:
-                link = _get_email_link(application)
+                link, is_secret = _get_email_link(application)
                 subject, body = emails.render_email(
-                        'account_declined',
+                        'applicant_declined',
                         {'receiver': application.applicant,
                         'application': application,
-                        'link': link})
+                        'link': link, 'is_secret': is_secret })
                 initial_data = {'body': body, 'subject': subject}
                 form = EmailForm(initial=initial_data)
             return render_to_response(
@@ -839,12 +970,12 @@ class StateWaitingForAdmin(State):
                             fail_silently=False)
                     return "decline"
             else:
-                link = _get_email_link(application)
+                link, is_secret = _get_email_link(application)
                 subject, body = emails.render_email(
-                        'account_declined',
+                        'applicant_declined',
                         {'receiver': application.applicant,
                         'application': application,
-                        'link': link})
+                        'link': link, 'is_secret': is_secret})
                 initial_data = {'body': body, 'subject': subject}
                 form = EmailForm(initial=initial_data)
             return render_to_response(
@@ -986,9 +1117,9 @@ class TransitionApprove(Transition):
             emails.send_project_approved_email(application)
 
         if created_person or created_account:
-            link = _get_email_link(application)
-            emails.send_account_approved_email(
-                    application, created_person, created_account, link)
+            link, is_secret = _get_email_link(application)
+            emails.send_applicant_approved_email(
+                    application, created_person, created_account, link, is_secret)
             return self._on_password_needed
         else:
             return self._on_password_ok
@@ -1034,13 +1165,9 @@ def get_applicant_from_email(email):
         existing_person = False
     return applicant, existing_person
 
-def _send_invitation(request, project_id, invite_form):
-    """ The logged in project leader wants to invite somebody to their project.
+def _send_invitation(request, project, invite_form, override_auth):
+    """ The logged in project leader OR administrator wants to invite somebody.
     """
-    project = None
-    if project_id is not None:
-        project = get_object_or_404(Project, pk=project_id)
-
     form = invite_form(request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
@@ -1060,7 +1187,7 @@ def _send_invitation(request, project_id, invite_form):
                 application.project = project
             application.save()
             state_machine = get_application_state_machine()
-            response = state_machine.start(request, application)
+            response = state_machine.start(request, application, override_auth)
             return response
 
     return render_to_response(
@@ -1071,12 +1198,31 @@ def _send_invitation(request, project_id, invite_form):
 
 @login_required
 def send_invitation(request, project_id):
-    return _send_invitation(request, project_id, forms.InviteUserApplicationForm)
+    """ The logged in project leader wants to invite somebody to their project.
+    """
+
+    person = request.user.get_profile()
+    project = get_object_or_404(Project, pk=project_id)
+
+    if person not in project.leaders.all():
+        return HttpResponseBadRequest("<h1>Bad Request</h1>")
+
+    override_auth = { 'is_leader': True }
+    return _send_invitation(request, project,
+            forms.InviteUserApplicationForm, override_auth)
 
 
 @login_required
 def admin_send_invitation(request, project_id=None):
-    return _send_invitation(request, project_id, forms.AdminInviteUserApplicationForm)
+    """ The logged in administrator wants to invite somebody to their project.
+    """
+    project_id = None
+    if project_id is not None:
+        project = get_object_or_404(Project, pk=project_id)
+
+    override_auth = { 'is_admin': True }
+    return _send_invitation(request, project_id,
+            forms.AdminInviteUserApplicationForm, override_auth)
 
 
 def new_application(request):
@@ -1098,7 +1244,7 @@ def new_application(request):
                 application.save()
 
                 state_machine = get_application_state_machine()
-                state_machine.start(request, application)
+                state_machine.start(request, application, { 'is_applicant': True })
                 # we do not show unauthenticated users the application at this stage.
                 url = reverse('index')
                 return HttpResponseRedirect(url)
@@ -1115,7 +1261,7 @@ def new_application(request):
                 application.save()
 
                 state_machine = get_application_state_machine()
-                response = state_machine.start(request, application)
+                response = state_machine.start(request, application, { 'is_applicant': True })
                 return response
         return render_to_response(
                 'applications/application_invite_authenticated.html',
@@ -1186,13 +1332,11 @@ def application_unauthenticated(request, token, state=None, label=None):
     application = _get_application(
                 secret_token=token, expires__gt=datetime.datetime.now())
 
-    # an authenticated user shouldn't be here, but ok if they are the
-    # applicant.
+    # redirect user to real url if possible.
     if request.user.is_authenticated():
-        if request.user.get_profile() != application.applicant:
-            return HttpResponseBadRequest("<h1>Bad Request</h1>")
-        url = _get_url(request, application, label)
-        return HttpResponseRedirect(url)
+        if request.user.get_profile() == application.applicant:
+            url = _get_url(request, application, {'is_applicant': True}, label)
+            return HttpResponseRedirect(url)
 
     state_machine = get_application_state_machine()
     return state_machine.process(request, application, state, label,
