@@ -35,7 +35,6 @@ from karaage.machines.models import MachineCategory, Account
 class Application(models.Model):
     """ Generic application for anything. """
 
-    NEW = 'N'
     OPEN = 'O'
     WAITING_FOR_LEADER = 'L'
     WAITING_FOR_DELEGATE = 'D'
@@ -46,7 +45,6 @@ class Application(models.Model):
     DECLINED = 'R'
 
     APPLICATION_STATES = (
-        (NEW, 'Invitiation Sent'),
         (OPEN, 'Open'),
         (WAITING_FOR_LEADER, 'Waiting for project leader approval'),
         (WAITING_FOR_DELEGATE, 'Waiting for institute delegate approval'),
