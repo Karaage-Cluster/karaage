@@ -1,5 +1,9 @@
 from django.contrib import auth
 from django.core.exceptions import ImproperlyConfigured
+from django_shibboleth.utils import parse_attributes
+from karaage.people.models import Person
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 
 class SamlUserMiddleware(object):
@@ -30,47 +34,38 @@ class SamlUserMiddleware(object):
                 " MIDDLEWARE_CLASSES setting to insert"
                 " 'django.contrib.auth.middleware.AuthenticationMiddleware'"
                 " before the SamlUserMiddleware class.")
-        try:
-            username = request.META[self.header]
-        except KeyError:
-            # If specified header doesn't exist then return (leaving
-            # request.user set to AnonymousUser by the
-            # AuthenticationMiddleware).
-            return
-
-        if not request.META[self.header]:
-            return
 
         # If the user is already authenticated and that user is the user we are
         # getting passed in the headers, then the correct user is already
         # persisted in the session and we don't need to continue.
         if request.user.is_authenticated():
-            if request.user.get_profile().saml_id == self.clean_username(username, request):
-                return
-            else:
-                person = request.user.get_profile()
-                person.saml_id = self.clean_username(username, request)
-                person.save()
-                return
+            return
+
+        # Is this a shib session?
+        if 'HTTP_SHIB_SESSION_ID' not in request.META:
+            return
+        if not request.META['HTTP_SHIB_SESSION_ID']:
+            return
+
+        # Can we get the shib attributes we need?
+        attrs, error = parse_attributes(request.META)
+        if error:
+            return render_to_response('shibboleth/attribute_error.html',
+                                      {'shib_attrs': attrs},
+                                      context_instance=RequestContext(request))
+
+        # What is our persistent_id?
+        saml_id = attrs['persistent_id']
+        assert saml_id
 
         # We are seeing this user for the first time in this session, attempt
         # to authenticate the user.
-        user = auth.authenticate(saml_user=username)
-        if user:
-            # User is valid.  Set request.user and persist user in the session
-            # by logging the user in.
-            request.user = user
-            auth.login(request, user)
-
-    def clean_username(self, username, request):
-        """
-        Allows the backend to clean the username, if the backend defines a
-        clean_username method.
-        """
-        backend_str = request.session[auth.BACKEND_SESSION_KEY]
-        backend = auth.load_backend(backend_str)
         try:
-            username = backend.clean_username(username)
-        except AttributeError:  # Backend has no clean_username method.
-            pass
-        return username
+            person = Person.objects.get(saml_id = saml_id)
+        except Person.DoesNotExist:
+            return
+
+        # User is valid.  Set request.user and persist user in the session
+        # by logging the user in.
+        request.user = person.user
+        auth.login(request, person.user)
