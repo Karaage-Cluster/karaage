@@ -1,3 +1,9 @@
+karaage (2.7.7-1) stable; urgency=low
+
+  * Fix assortment of bugs.
+
+ -- Brian May <bam@debian.org>  Tue, 03 Sep 2013 15:42:19 +1000
+
 karaage (2.7.6-1) stable; urgency=low
 
   * Fix authentication for user's without a cluster account.
