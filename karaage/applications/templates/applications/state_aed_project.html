@@ -220,19 +220,6 @@ $(document).ready(function(){
     t1 = $("#id_application_type_1").prop('checked')
     {% if project %}
     select_project("{{project.pk}}", "{{project}}")
-    if (!t0) {
-        if (!t1) {
-            $("#id_application_type_0").prop('checked', true); t0=true;
-            $("#id_application_type_1").prop('checked', false); t1=false;
-        }
-    }
-    {% else %}
-    if (!t0) {
-        if (!t1) {
-            $("#id_application_type_0").prop('checked', false); t0=false;
-            $("#id_application_type_1").prop('checked', true); t1=true;
-        }
-    }
     {% endif %}
     if (t0) {
         setup_existing()

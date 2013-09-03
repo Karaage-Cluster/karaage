@@ -658,6 +658,11 @@ class StateStepProject(State):
             project_forms[key] = form(
                     request.POST or None, instance=application)
 
+        if application.project is not None:
+            project_forms["common"].initial = { 'application_type': 'U' }
+        elif application.name != "":
+            project_forms["common"].initial = { 'application_type': 'P' }
+
         if 'application_type' in request.POST:
             at = request.POST['application_type']
             valid = True
@@ -744,7 +749,7 @@ class StateStepProject(State):
         return render_to_response(
                 'applications/state_aed_project.html',
                 {'forms': project_forms, 'project': project,
-                'actions': actions, 'auth': auth},
+                    'actions': actions, 'auth': auth, },
                 context_instance=RequestContext(request))
 
 
