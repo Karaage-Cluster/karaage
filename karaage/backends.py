@@ -18,11 +18,6 @@
 from django.contrib.auth.backends import ModelBackend
 
 from karaage.people.models import Person
-
-from django.contrib.auth.models import User
-from django.contrib.auth.backends import ModelBackend
-
-from karaage.people.models import Person
 import tldap.methods.ldap_passwd
 
 
@@ -41,9 +36,7 @@ class LDAPBackend(ModelBackend):
             return None
 
         # Success.
-        person.user.set_password(password)
-        person.user.save()
-        person.legacy_ldap_password = None
+        person.set_password(password)
         person.save()
 
         return person.user
