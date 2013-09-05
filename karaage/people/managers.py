@@ -23,7 +23,7 @@ class PersonManager(models.Manager):
     def get_query_set(self):
         return super(PersonManager, self).get_query_set().select_related()
 
-    def _create_user(self, username, email, password, is_staff, is_superuser, **extra_fields):
+    def _create_user(self, username, email, institute, password, is_staff, is_superuser, **extra_fields):
         """Creates a new active person. """
 
         # Create the Django user
@@ -36,6 +36,7 @@ class PersonManager(models.Manager):
         #Create Person
         person = self.model(
             user=user,
+            institute=institute,
             **extra_fields
             )
         person.save(self._db)
@@ -43,16 +44,18 @@ class PersonManager(models.Manager):
         log(None, person, 1, 'Created person')
         return person
 
-    def create_user(self, username, email, password=None, **extra_fields):
+    def create_user(self, username, email, institute, password=None, **extra_fields):
         """ Creates a new ordinary person. """
         return self._create_user(username=username, email=email,
-                password=password, is_staff=False, is_superuser=False,
+                institute=institute, password=password,
+                is_staff=False, is_superuser=False,
                 **extra_fields)
 
-    def create_superuser(self, username, email, password, **extra_fields):
+    def create_superuser(self, username, email, institute, password, **extra_fields):
         """ Creates a new person with super powers. """
         return self._create_user(username=username, email=email,
-                password=password, is_staff=True, is_superuser=True,
+                institute=institute, password=password,
+                is_staff=True, is_superuser=True,
                 **extra_fields)
 
 
