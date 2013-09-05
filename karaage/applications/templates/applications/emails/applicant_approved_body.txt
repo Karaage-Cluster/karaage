@@ -1,4 +1,4 @@
-{% autoescape off %}Hello {{ receiver.first_name }},
+{% autoescape off %}Hello {{ receiver.get_short_name }},
 
 
 Your application {{ application.info }} to join the {{ application.project }} has been approved.

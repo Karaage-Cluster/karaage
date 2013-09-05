@@ -181,7 +181,7 @@ class Command(BaseCommand):
         data = {
             'username': username,
             'email': email,
-            'password1': password,
+            'password': password,
             'first_name': first_name,
             'last_name': last_name,
             'institute': institute,

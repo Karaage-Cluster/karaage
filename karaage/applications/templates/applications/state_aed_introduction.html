@@ -18,8 +18,8 @@
 <h1>1. Application Introduction</h1>
 
 <form method="post" action=".">{% csrf_token %}
-    {% if application.applicant.first_name %}
-    <p>Hi {{ application.applicant.first_name }},</p>
+    {% if application.applicant.get_short_name %}
+    <p>Hi {{ application.applicant.get_short_name }},</p>
     {% endif %}
 
     {% if application.project %}

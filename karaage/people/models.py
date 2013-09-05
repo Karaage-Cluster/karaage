@@ -86,7 +86,7 @@ class Person(models.Model):
             )
     
     def __unicode__(self):
-        return self.user.get_full_name()
+        return self.get_full_name()
     
     def get_absolute_url(self):
         person = get_current_person()
@@ -96,6 +96,7 @@ class Person(models.Model):
             except:
                 pass
         return reverse('kg_person_detail', kwargs={'username': self.user.username})
+
 
     def save(self, *args, **kwargs):
         # save the object
@@ -255,8 +256,13 @@ class Person(models.Model):
         return False
 
     def get_full_name(self):
-        return self.user.get_full_name()
-    
+        """ Get the full name of the person. """
+        return u"%s %s" % (self.first_name, self.last_name)
+
+    def get_short_name(self):
+        """ Get the abbreviated name of the person. """
+        return u"%s" % (self.first_name)
+
     def has_account(self, machine_category):
         ua = self.account_set.all()
         ua = ua.filter(machine_category=machine_category, date_deleted__isnull=True)

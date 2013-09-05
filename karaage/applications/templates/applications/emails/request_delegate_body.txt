@@ -1,4 +1,4 @@
-{% autoescape off %}Hello {{ receiver.first_name }},
+{% autoescape off %}Hello {{ receiver.get_short_name }},
 
 
 {{ application.applicant }} is requesting {{ application.info }}.

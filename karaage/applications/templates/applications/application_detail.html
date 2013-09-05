@@ -81,8 +81,8 @@
             <tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
             {% endif %}
 
-            <tr><td>First name:</td><td>{{ application.applicant.first_name }}</td></tr>
-            <tr><td>Last name:</td><td>{{ application.applicant.last_name }}</td></tr>
+            <tr><td>Short name:</td><td>{{ application.applicant.get_short_name }}</td></tr>
+            <tr><td>Full name:</td><td>{{ application.applicant.get_full_name }}</td></tr>
             <tr><td>Email:</td><td>{{ application.applicant.email|urlize }}</td></tr>
             <tr><td>Institute:</td><td>{% if application.applicant.institute %}<a href="{{ application.applicant.institute.get_absolute_url }}">{{ application.applicant.institute }}</a>{% else %}None{% endif %}</td></tr>
             {% if application.applicant.position %}<tr><td>Position:</td><td>{{ application.applicant.position }}</td></tr>{% endif %}

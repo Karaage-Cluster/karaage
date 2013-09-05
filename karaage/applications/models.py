@@ -238,15 +238,32 @@ class Applicant(models.Model):
     applications = generic.GenericRelation(Application)
 
     def __unicode__(self):
-        if self.first_name:
-            return self.get_full_name()
+        full_name = self.get_full_name()
+        if full_name:
+            return full_name
         return self.email
 
     def has_account(self, mc):
         return False
 
     def get_full_name(self):
-        return "%s %s" % (self.first_name, self.last_name)
+        """ Get the full name of the person. """
+        names = []
+        if self.first_name:
+            names.append(self.first_name)
+        if self.last_name:
+            names.append(self.last_name)
+        if len(names) > 0:
+            return " ".join(names)
+        else:
+            return None
+
+    def get_short_name(self):
+        """ Get the abbreviated name of the person. """
+        if self.first_name:
+            return self.first_name
+        else:
+            return None
 
     def approve(self, approved_by):
         """ Create a new user from an applicant. """
