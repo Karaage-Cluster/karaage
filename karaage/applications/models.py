@@ -112,10 +112,10 @@ class Application(models.Model):
         self.submited_date = datetime.datetime.now()
         self.save()
 
-    def approve(self):
+    def approve(self, approved_by):
         assert self.applicant is not None
         if self.content_type.model == 'applicant':
-            person = self.applicant.approve()
+            person = self.applicant.approve(approved_by)
             created_person = True
         elif self.content_type.model == 'person' :
             person = self.applicant
@@ -160,8 +160,8 @@ class ProjectApplication(Application):
         else:
             return u"to create unspecified project"
 
-    def approve(self, pid=None):
-        created_person, created_account, created_project = super(ProjectApplication, self).approve()
+    def approve(self, approved_by):
+        created_person, created_account, created_project = super(ProjectApplication, self).approve(approved_by)
         assert self.applicant is not None
         assert self.content_type.model == "person"
         person = self.applicant
@@ -181,7 +181,7 @@ class ProjectApplication(Application):
             project.leaders.add(person)
             for mc in self.machine_categories.all():
                 project.machine_categories.add(mc)
-            project.activate()
+            project.activate(approved_by)
             self.project = project
             self.save()
             created_project = True
@@ -248,9 +248,30 @@ class Applicant(models.Model):
     def get_full_name(self):
         return "%s %s" % (self.first_name, self.last_name)
 
-    def approve(self):
-        person = Person.create_from_applicant(self)
-        person.activate()
+    def approve(self, approved_by):
+        """ Create a new user from an applicant. """
+        data = {
+            'email': self.email,
+            'username': self.username,
+            'title': self.title,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'institute': self.institute,
+            'department': self.department,
+            'position': self.position,
+            'telephone': self.telephone,
+            'mobile': self.mobile,
+            'supervisor': self.supervisor,
+            'address': self.address,
+            'city': self.city,
+            'postcode': self.postcode,
+            'country': self.country,
+            'fax': self.fax,
+            'saml_id': self.saml_id,
+            'approved_by': approved_by,
+            }
+        person = Person.objects.create_user(**data)
+
         for application in self.applications.all():
             application.applicant = person
             application.save()

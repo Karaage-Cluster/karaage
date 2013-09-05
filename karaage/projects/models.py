@@ -24,7 +24,6 @@ from karaage.people.models import Person, Group
 from karaage.institutes.models import Institute
 from karaage.machines.models import MachineCategory, Account
 from karaage.projects.managers import ActiveProjectManager, DeletedProjectManager
-from karaage.util import get_current_person
 
 
 class Project(models.Model):
@@ -162,19 +161,19 @@ class Project(models.Model):
 
         return False
 
-    def activate(self):
+    def activate(self, approved_by):
         if self.is_active == True:
             return
         self.is_active = True
         self.is_approved = True
         self.date_approved = datetime.datetime.today()
-        self.approved_by = get_current_person()
+        self.approved_by = approved_by
         self.save()
     activate.alters_data = True
 
-    def deactivate(self):
+    def deactivate(self, deleted_by):
         self.is_active = False
-        self.deleted_by = get_current_person()
+        self.deleted_by = deleted_by
         self.date_deleted = datetime.datetime.today()
         self.group.members.clear()
         self.save()

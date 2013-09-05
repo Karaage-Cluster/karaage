@@ -21,7 +21,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 
 from karaage.constants import TITLES, STATES, COUNTRIES
-from karaage.people.managers import ActiveUserManager, DeletedUserManager, LeaderManager, PersonManager
+from karaage.people.managers import ActivePersonManager, DeletedPersonManager, LeaderManager, PersonManager
 from karaage.people.emails import send_reset_password_email
 
 from karaage.util import log_object as log
@@ -65,8 +65,8 @@ class Person(models.Model):
     login_enabled = models.BooleanField(default=True)
     legacy_ldap_password = models.CharField(max_length=128, null=True, blank=True)
     objects = PersonManager()
-    active = ActiveUserManager()
-    deleted = DeletedUserManager()
+    active = ActivePersonManager()
+    deleted = DeletedPersonManager()
     projectleaders = LeaderManager()
     
     def __init__(self, *args, **kwargs):
@@ -96,68 +96,6 @@ class Person(models.Model):
             except:
                 pass
         return reverse('kg_person_detail', kwargs={'username': self.user.username})
-
-    @classmethod
-    def create(cls, data):
-        """Creates a new user (not active)
-
-        Keyword arguments:
-        data -- a dictonary of user data
-        """
-
-        # Make sure username isn't taken in Datastore
-        user = User.objects.create_user(data['username'], data['email'])
-
-        user.set_unusable_password()
-        user.is_active = False
-        user.save()
-
-        #Create Person
-        person = Person.objects.create(
-            user=user,
-            first_name=data['first_name'],
-            last_name=data['last_name'],
-            institute=data['institute'],
-            position=data.get('position', ''),
-            department=data.get('department', ''),
-            title=data.get('title', ''),
-            address=data.get('address', ''),
-            country=data.get('country', ''),
-            website=data.get('website', ''),
-            fax=data.get('fax', ''),
-            comment=data.get('comment', ''),
-            telephone=data.get('telephone', ''),
-            mobile=data.get('mobile', ''),
-            supervisor=data.get('supervisor', ''),
-            is_systemuser=data.get('is_systemuser', ''),
-            saml_id=data.get('saml_id', None),
-            )
-
-        log(None, person, 1, 'Created person')
-        return person
-
-    @classmethod
-    def create_from_applicant(cls, applicant):
-        data = {
-            'email': applicant.email,
-            'username': applicant.username,
-            'title': applicant.title,
-            'first_name': applicant.first_name,
-            'last_name': applicant.last_name,
-            'institute': applicant.institute,
-            'department': applicant.department,
-            'position': applicant.position,
-            'telephone': applicant.telephone,
-            'mobile': applicant.mobile,
-            'supervisor': applicant.supervisor,
-            'address': applicant.address,
-            'city': applicant.city,
-            'postcode': applicant.postcode,
-            'country': applicant.country,
-            'fax': applicant.fax,
-            'saml_id': applicant.saml_id,
-            }
-        return cls.create(data)
 
     def save(self, *args, **kwargs):
         # save the object
@@ -341,11 +279,11 @@ class Person(models.Model):
             return True
         return False
 
-    def activate(self):
+    def activate(self, approved_by):
         if not self.is_active:
             self.date_approved = datetime.datetime.today()
 
-            self.approved_by = get_current_person()
+            self.approved_by = approved_by
             self.deleted_by = None
             self.date_deleted = None
             self.user.is_active = True
@@ -355,14 +293,14 @@ class Person(models.Model):
             log(None, self, 2, 'Activated')
     activate.alters_data = True
 
-    def deactivate(self):
+    def deactivate(self, deleted_by):
         """ Sets Person not active and deletes all Accounts"""
         self.user.is_active = False
         self.expires = None
         self.user.save()
 
         self.date_deleted = datetime.datetime.today()
-        self.deleted_by = get_current_person()
+        self.deleted_by = deleted_by
         self.groups.clear()
         self.save()
 

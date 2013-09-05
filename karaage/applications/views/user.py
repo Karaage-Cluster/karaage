@@ -1114,7 +1114,8 @@ class TransitionApprove(Transition):
 
     def get_next_state(self, request, application, auth):
         """ Retrieve the next state. """
-        created_person, created_account, created_project = application.approve()
+        approved_by = request.user.get_profile()
+        created_person, created_account, created_project = application.approve(approved_by)
 
         if created_project:
             emails.send_project_approved_email(application)

@@ -86,7 +86,6 @@ class AdminPersonForm(PersonForm):
 
     def save(self, person):
         data = self.cleaned_data
-
         person.first_name = data['first_name']
         person.last_name = data['last_name']
         person.email = data['email']
@@ -110,7 +109,9 @@ class AdminPersonForm(PersonForm):
         return person
 
 
-class UsernamePasswordForm(forms.Form):
+class AddPersonForm(AdminPersonForm):
+    project = forms.ModelChoiceField(queryset=Project.objects.all(), label=u"Default Project", required=False)
+    needs_account = forms.BooleanField(required=False, label=u"Do you require a cluster account", help_text=u"eg. Will you be working on the project yourself")
     username = forms.CharField(label=u"Requested username", max_length=16, help_text=u"16 characters or fewer. Alphanumeric characters only (letters, digits and underscores).")
     password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
     password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)')
@@ -121,14 +122,12 @@ class UsernamePasswordForm(forms.Form):
             validate_username(username)
         except UsernameException, e:
             raise forms.ValidationError(e.args[0])
-            
         return username
-    
+
     def clean_password2(self):
         data = self.cleaned_data
 
         if data.get('password1') and data.get('password2'):
-        
             if data['password1'] != data['password2']:
                 raise forms.ValidationError(u'You must type the same password each time')
 
@@ -137,25 +136,19 @@ class UsernamePasswordForm(forms.Form):
 
             return data
 
-
-class AddPersonForm(AdminPersonForm, UsernamePasswordForm):
-    project = forms.ModelChoiceField(queryset=Project.objects.all(), label=u"Default Project", required=False)
-    needs_account = forms.BooleanField(required=False, label=u"Do you require a cluster account", help_text=u"eg. Will you be working on the project yourself")
-
     def save(self, person=None):
-    
         data = self.cleaned_data
-                
+
         if person is None:
-            person = Person.create(data)
-            
-            # Since adding with this method is only done with admin
-            person.activate()
+            person = Person()
+            person.user = User.objects.create_user(data['username'])
+            person.approved_by = get_current_person()
 
-            if data['needs_account'] and data['project']:
-                add_user_to_project(person, data['project'])
+        super(AddPersonForm, self).save(person)
+        person.set_password(data['password2'])
 
-        person = super(AddPersonForm, self).save(person)
+        if data['needs_account'] and data['project']:
+            add_user_to_project(person, data['project'])
         return person
 
 

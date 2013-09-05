@@ -157,8 +157,7 @@ username,password,first_name,last_name,email,institute,project"""
                     continue
 
             user['password1'] = user['password']
-            person = Person.create(user)
-            person.activate()
+            person = Person.objects.create_user(**user)
             print "Successfully added user '%s'" % person
             if project:
                 add_user_to_project(person, project)

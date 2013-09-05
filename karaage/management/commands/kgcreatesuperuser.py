@@ -186,10 +186,5 @@ class Command(BaseCommand):
             'last_name': last_name,
             'institute': institute,
             }
-        person = Person.create(data)
-        person.activate()
-        person.user.is_superuser = True
-        person.user.is_staff = True
-        person.user.save()
-        
+        person = Person.objects.create_superuser(**data)
         print "Karaage Superuser created successfully."
