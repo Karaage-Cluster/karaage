@@ -107,6 +107,10 @@ class Person(models.Model):
                 pass
         return reverse('kg_person_detail', kwargs={'username': self.user.username})
 
+    @staticmethod
+    def is_authenticated():
+        """ Return yes, this person is not anonymous. """
+        return True
 
     def save(self, *args, **kwargs):
         # Hack to ensure user is set
@@ -259,6 +263,9 @@ class Person(models.Model):
     def _get_is_admin(self):
         return self.user.is_staff
     is_admin = property(_get_is_admin, _set_is_admin)
+
+    def has_usable_password(self):
+        return self.user.has_usable_password()
 
     # Can person view this self record?
     def can_view(self, user):
