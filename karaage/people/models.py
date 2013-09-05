@@ -109,6 +109,22 @@ class Person(models.Model):
 
 
     def save(self, *args, **kwargs):
+        # Hack to ensure user is set
+        if self.user_id is None:
+            assert self._new_username
+            assert self._new_first_name
+            assert self._new_last_name
+            assert self._new_email
+            user = User()
+            user.username = self._new_username
+            user.first_name = self._new_first_name
+            user.last_name = self._new_last_name
+            user.last_email = self._new_email
+            user.last_is_active = self._new_is_active
+            user.last_is_staff = self._new_is_staff
+            user.save()
+            self.user = user
+
         # save the object
         super(Person, self).save(*args, **kwargs)
 
@@ -169,6 +185,9 @@ class Person(models.Model):
     delete.alters_data = True
 
     def _set_username(self, new_username):
+        if self.user_id is None:
+            self._new_username = new_username
+            return
         old_username = self.username
         if old_username != new_username:
             self.user.username = new_username
@@ -182,6 +201,9 @@ class Person(models.Model):
     username = property(_get_username, _set_username)
     
     def _set_last_name(self, value):
+        if self.user_id is None:
+            self._new_last_name = value
+            return
         self.user.last_name = value
         self.user.save()
     _set_last_name.alters_data = True
@@ -191,6 +213,9 @@ class Person(models.Model):
     last_name = property(_get_last_name, _set_last_name)
     
     def _set_first_name(self, value):
+        if self.user_id is None:
+            self._new_first_name = value
+            return
         self.user.first_name = value
         self.user.save()
     _set_first_name.alters_data = True
@@ -200,6 +225,9 @@ class Person(models.Model):
     first_name = property(_get_first_name, _set_first_name)
     
     def _set_email(self, value):
+        if self.user_id is None:
+            self._new_email = value
+            return
         self.user.email = value
         self.user.save()
     _set_email.alters_data = True
@@ -209,6 +237,9 @@ class Person(models.Model):
     email = property(_get_email, _set_email)
     
     def _set_is_active(self, value):
+        if self.user_id is None:
+            self._new_is_active = value
+            return
         self.user.is_active = value
         self.user.save()
     _set_is_active.alters_data = True
@@ -216,6 +247,18 @@ class Person(models.Model):
     def _get_is_active(self):
         return self.user.is_active
     is_active = property(_get_is_active, _set_is_active)
+
+    def _set_is_admin(self, value):
+        if self.user_id is None:
+            self._new_is_staff = value
+            return
+        self.user.is_staff = value
+        self.user.save()
+    _set_is_admin.alters_data = True
+
+    def _get_is_admin(self):
+        return self.user.is_staff
+    is_admin = property(_get_is_admin, _set_is_admin)
 
     # Can person view this self record?
     def can_view(self, user):

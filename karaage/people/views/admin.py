@@ -41,39 +41,31 @@ def add_edit_user(request, form_class, template_name='people/person_form.html', 
 
     if request.user.has_perm('people.add_person'):
         if username is None:
-            person = False
+            person = None
         else:
             person = get_object_or_404(Person, user__username=username)
     else:
         person = request.user.get_profile()
-    
+
+    form = PersonForm(request.POST or None, instance=person)
     if request.method == 'POST':
-        form = PersonForm(request.POST)
         if form.is_valid():
             if person:
                 # edit
-                person = form.save(person)
+                person = form.save()
                 messages.success(request, "User '%s' was edited succesfully" % person)
+                assert person is not None
             else:
                 #Add
                 person = form.save()
                 messages.success(request, "User '%s' was created succesfully" % person)
-                
+                assert person is not None
+
             if redirect_url is None:
                 return HttpResponseRedirect(person.get_absolute_url())
             else:
                 return HttpResponseRedirect(redirect_url)
-    else:
-        form = PersonForm()
-        if person:
-            # Fill form with initial
-            initial = person.__dict__
-            for i in person.user.__dict__:
-                initial[i] = person.user.__dict__[i]
-            initial['institute'] = initial['institute_id']
-            
-            form.initial = initial
-            
+
     return render_to_response(template_name, {'person': person, 'form': form}, context_instance=RequestContext(request))
 
 
@@ -177,7 +169,7 @@ def add_edit_account(request, username=None, account_id=None):
         form.initial['username'] = username
         if account:
             # Fill form with initial
-            form.fields['default_project'] = forms.ModelChoiceField(queryset=user.projects.all())
+            form.fields['default_project'] = forms.ModelChoiceField(queryset=person.projects.all())
             form.initial = account.__dict__
             form.initial['default_project'] = form.initial['default_project_id']
             form.initial['machine_category'] = form.initial['machine_category_id']

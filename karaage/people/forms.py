@@ -34,7 +34,7 @@ from karaage.util import get_current_person
 import ajax_select.fields
 
 
-class PersonForm(forms.Form):
+class PersonForm(forms.ModelForm):
     title = forms.ChoiceField(choices=TITLES, required=False)
     first_name = forms.CharField()
     last_name = forms.CharField()
@@ -56,57 +56,30 @@ class PersonForm(forms.Form):
     address = forms.CharField(label=u"Mailing Address", required=False, widget=forms.Textarea())
     country = forms.ChoiceField(choices=COUNTRIES, initial='AU', required=False)
 
-    def save(self, person):
-        data = self.cleaned_data
-    
-        person.first_name = data['first_name']
-        person.last_name = data['last_name']
-        person.email = data['email']
-        person.title = data['title']
-        person.position = data['position']
-        person.supervisor = data['supervisor']
-        person.department = data['department']
-        person.telephone = data['telephone']
-        person.mobile = data['mobile']
-        person.fax = data['fax']
-        person.address = data['address']
-        person.country = data['country']
-        person.user.save()
-        person.save()
-        return person
+    class Meta:
+        model = Person
+        fields = ['first_name', 'last_name', 'email', 'title', 'position', 'supervisor',
+                'department', 'telephone', 'mobile', 'fax', 'address', 'country' ]
 
+    def save(self):
+        data = self.cleaned_data
+        self.instance.first_name = data['first_name']
+        self.instance.last_name = data['last_name']
+        self.instance.email = data['email']
+        return super(PersonForm, self).save()
 
 class AdminPersonForm(PersonForm):
     institute = forms.ModelChoiceField(queryset=Institute.active.all())
     comment = forms.CharField(widget=forms.Textarea(), required=False)
     expires = forms.DateField(widget=AdminDateWidget, required=False)
-    is_staff = forms.BooleanField(help_text="Designates whether the user can log into this admin site.", required=False)
-    is_superuser = forms.BooleanField(help_text="Designates that this user has all permissions without explicitly assigning them.", required=False)
+    is_admin = forms.BooleanField(help_text="Designates whether the user can log into this admin site.", required=False)
     is_systemuser = forms.BooleanField(help_text="Designates that this user is a sytem user only.", required=False)
 
-    def save(self, person):
-        data = self.cleaned_data
-        person.first_name = data['first_name']
-        person.last_name = data['last_name']
-        person.email = data['email']
-        person.title = data['title']
-        person.position = data['position']
-        person.supervisor = data['supervisor']
-        person.department = data['department']
-        person.institute = data['institute']
-        person.telephone = data['telephone']
-        person.mobile = data['mobile']
-        person.fax = data['fax']
-        person.address = data['address']
-        person.country = data['country']
-        person.expires = data['expires']
-        person.comment = data['comment']
-        person.is_systemuser = data['is_systemuser']
-        person.user.is_staff = data['is_staff']
-        person.user.is_superuser = data['is_superuser']
-        person.user.save()
-        person.save()
-        return person
+    class Meta:
+        model = Person
+        fields = ['first_name', 'last_name', 'email', 'title', 'position', 'supervisor',
+                'department', 'institute', 'telephone', 'mobile', 'fax', 'address', 'country',
+                'expires', 'comment', 'is_systemuser', 'is_admin', ]
 
 
 class AddPersonForm(AdminPersonForm):
@@ -136,19 +109,20 @@ class AddPersonForm(AdminPersonForm):
 
             return data
 
-    def save(self, person=None):
+    def save(self):
         data = self.cleaned_data
 
-        if person is None:
-            person = Person()
-            person.user = User.objects.create_user(data['username'])
-            person.approved_by = get_current_person()
+        person = self.instance
+        person.username = data['username']
+        person.is_admin = data['is_admin']
+        person.is_active = True
+        person.approved_by = get_current_person()
+        super(AddPersonForm, self).save()
 
-        super(AddPersonForm, self).save(person)
         person.set_password(data['password2'])
-
         if data['needs_account'] and data['project']:
             add_user_to_project(person, data['project'])
+
         return person
 
 
