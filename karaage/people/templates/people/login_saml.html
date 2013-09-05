@@ -17,7 +17,9 @@
 
 {% block content %}
 {% if error %}
-<p>{{ error }}</p>
+<p class="errornote">
+    {{ error }}
+</p>
 
 {% if saml_session %}
     <form method="post" action=".">{% csrf_token %}

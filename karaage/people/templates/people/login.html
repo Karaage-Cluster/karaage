@@ -29,6 +29,12 @@
 {% endfor %}
 {% endif %}
 
+{% if error %}
+<p class="errornote">
+    {{ error }}
+</p>
+{% endif %}
+
 <div id="content-main">
 <form action="" method="post" id="login-form">{% csrf_token %}
   <div class="form-row">
