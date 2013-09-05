@@ -17,11 +17,9 @@
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseBadRequest
+from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.comments.models import Comment
-from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib import messages
@@ -31,10 +29,10 @@ from karaage.util import get_date_range
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
-from karaage.people.forms import PasswordChangeForm, PersonForm, LoginForm, PasswordResetForm
-from karaage.machines.models import MachineCategory, Account
+from karaage.people.forms import PasswordChangeForm, PersonForm
+from karaage.people.forms import LoginForm, PasswordResetForm
+from karaage.machines.models import Account
 from karaage.machines.forms import ShellForm
-from karaage.applications.models import Application
 from karaage.util import log_object as log
 
 import karaage.util.saml as saml
