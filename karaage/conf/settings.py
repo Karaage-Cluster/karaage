@@ -100,6 +100,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'andsome.middleware.threadlocals.ThreadLocals',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -161,6 +162,8 @@ XMLRPC_METHODS = (
     ('karaage.projects.xmlrpc.get_projects', 'get_projects',),
     ('karaage.projects.xmlrpc.get_users_projects', 'get_users_projects',),
 )
+
+X_FRAME_OPTIONS = 'DENY'
 
 from socket import getfqdn
 REGISTRATION_BASE_URL = 'https://%s/users' % getfqdn()
