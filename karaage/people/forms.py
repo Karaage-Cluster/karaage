@@ -152,7 +152,7 @@ class PasswordChangeForm(AdminPasswordChangeForm):
     def clean_old(self):
         person = get_current_person()
         
-        person = authenticate(username=person.user.username, password=self.cleaned_data['old'])
+        person = authenticate(username=person.username, password=self.cleaned_data['old'])
         if person is None:
             raise forms.ValidationError(u'Your old password was incorrect')
 

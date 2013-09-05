@@ -999,7 +999,8 @@ class StatePassword(State):
     def view(self, request, application, label, auth, actions):
         """ Django view method. """
         if label is None and auth['is_applicant']:
-            if application.applicant.user.has_usable_password():
+            assert application.content_type.model == 'person'
+            if application.applicant.has_usable_password():
                 form = forms.PersonVerifyPassword(data=request.POST or None, person=application.applicant)
                 form_type = "verify"
             else:

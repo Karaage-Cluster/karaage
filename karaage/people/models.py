@@ -105,7 +105,7 @@ class Person(models.Model):
                 return reverse('kg_user_profile')
             except:
                 pass
-        return reverse('kg_person_detail', kwargs={'username': self.user.username})
+        return reverse('kg_person_detail', kwargs={'username': self.username})
 
     @staticmethod
     def is_authenticated():
@@ -277,7 +277,7 @@ class Person(models.Model):
         person = user.get_profile()
 
         # staff members can view everything
-        if person.user.is_staff:
+        if person.is_admin:
             return True
 
         # ensure person making request isn't locked.
@@ -352,8 +352,7 @@ class Person(models.Model):
             self.approved_by = approved_by
             self.deleted_by = None
             self.date_deleted = None
-            self.user.is_active = True
-            self.user.save()
+            self.is_active = True
             self.save()
 
             log(None, self, 2, 'Activated')
@@ -361,9 +360,8 @@ class Person(models.Model):
 
     def deactivate(self, deleted_by):
         """ Sets Person not active and deletes all Accounts"""
-        self.user.is_active = False
+        self.is_active = False
         self.expires = None
-        self.user.save()
 
         self.date_deleted = datetime.datetime.today()
         self.deleted_by = deleted_by

@@ -231,7 +231,7 @@ class UserTestCase(TestCase):
         users = users + 1
         person = Person.objects.get(pk=users)
         self.assertEqual(person.is_active, True)
-        self.assertEqual(person.user.username, 'samtest')
+        self.assertEqual(person.username, 'samtest')
         self.assertEqual(Account.objects.count(), 2)
         self.assertEqual(project.group.members.count(), p_users+1)
         luser = self._datastore._accounts().get(uid='samtest')
@@ -272,7 +272,7 @@ class UserTestCase(TestCase):
         users = users + 1
         person = Person.objects.get(pk=users)
         self.assertEqual(person.is_active, True)
-        self.assertEqual(person.user.username, 'samtest2')
+        self.assertEqual(person.username, 'samtest2')
         # Try adding it again - Should fail
         response = self.client.post(reverse('kg_person_add'), form_data)
         self.failUnlessEqual(response.status_code, 200)

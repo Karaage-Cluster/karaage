@@ -14,16 +14,14 @@ class Migration(DataMigration):
         for person in orm.person.objects.all():
             # check if the account is active or deleted
             # note we don't check date_deleted as date_deleted not always set
-            if person.user.is_active:
+            if person.is_active:
                 # Yes - Account is active.
                 try:
                     # Try to find LDAP entry with same name as person username. If
                     # one exists, assume it is the same person.
-                    p = datastore._accounts().get(uid=person.user.username)
+                    p = datastore._accounts().get(uid=person.username)
                     if p.userPassword is not None:
                         person.legacy_ldap_password = p.userPassword
-                        person.user.password = UNUSABLE_PASSWORD
-                        person.user.save()
 
                     # If there are no accounts for this person, then delete
                     # the LDAP entry.
@@ -34,7 +32,7 @@ class Migration(DataMigration):
                 except datastore._account.DoesNotExist:
                     # If we cannot find LDAP entry, assume this is because person
                     # has no access.
-                    print "+++", person.user.username
+                    print "+++", person.username
                     person.legacy_ldap_password = None
 
             else:

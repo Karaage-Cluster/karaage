@@ -114,7 +114,7 @@ class Institute(models.Model):
         person = user.get_profile()
 
         # staff members can view everything
-        if person.user.is_staff:
+        if person.is_admin:
             return True
 
         if not self.is_active:
