@@ -129,7 +129,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'andsome.middleware.threadlocals.ThreadLocals',  
 )
 
@@ -145,7 +144,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.humanize',
-    'django.contrib.flatpages',
     'andsome.layout',
     'andsome',
     'captcha',
