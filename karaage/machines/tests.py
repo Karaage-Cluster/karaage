@@ -56,6 +56,10 @@ class AccountTestCase(TestCase):
         response = self.client.post(reverse('kg_person_add'), form_data)
         self.failUnlessEqual(response.status_code, 302)
 
+        person = Person.objects.get(user__username='kgsuper')
+        self.failUnlessEqual(person.first_name, 'Super')
+        self.failUnlessEqual(person.last_name, 'User')
+
 
     def tearDown(self):
         self.server.stop()
