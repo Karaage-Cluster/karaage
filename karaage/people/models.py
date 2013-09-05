@@ -29,6 +29,16 @@ from karaage.util import new_random_token, get_current_person
 
 import datetime
 
+def authenticate(username, password):
+    from django.contrib.auth import login, authenticate
+    user = authenticate(username=username, password=password)
+    if user is None:
+        return None
+    person = Person.objects.get_from_user(user)
+    assert person.is_authenticated()
+    return person
+
+
 # Note on terminology:
 #
 # A inactive person is a person who has been deleted. We keep there entry

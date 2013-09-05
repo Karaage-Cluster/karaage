@@ -27,7 +27,7 @@ from django.utils.safestring import mark_safe
 from captcha.fields import CaptchaField
 
 from karaage.applications.models import Application, ProjectApplication, Applicant
-from karaage.people.models import Person
+from karaage.people.models import Person, authenticate
 from karaage.people.utils import validate_username, UsernameException
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
@@ -366,15 +366,14 @@ class PersonVerifyPassword(forms.Form):
 
     def clean_password(self):
         password = self.cleaned_data['password']
-        from django.contrib.auth import login, authenticate
-        user = authenticate(username=self.person.user.username, password=password)
+        person = authenticate(username=self.person.username, password=password)
 
-        if user is None:
+        if person is None:
             raise forms.ValidationError(u"Password is incorrect.")
 
-        assert user == self.person.user
+        assert person == self.person
 
-        if not user.is_active or self.person.is_locked():
+        if not person.is_active or person.is_locked():
             raise forms.ValidationError(u"Person is locked.")
 
         return password

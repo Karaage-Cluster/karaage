@@ -23,7 +23,7 @@ from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
 
 from andsome.util import is_password_strong
 
-from karaage.people.models import Person, Group
+from karaage.people.models import authenticate, Person, Group
 from karaage.people.utils import validate_username, UsernameException
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
@@ -178,9 +178,8 @@ class PasswordChangeForm(AdminPasswordChangeForm):
     def clean_old(self):
         person = get_current_person()
         
-        from django.contrib.auth import authenticate
-        user = authenticate(username=person.user.username, password=self.cleaned_data['old'])
-        if user is None:
+        person = authenticate(username=person.user.username, password=self.cleaned_data['old'])
+        if person is None:
             raise forms.ValidationError(u'Your old password was incorrect')
 
         return self.cleaned_data['old']
