@@ -68,10 +68,10 @@ def gen_last_usage_project():
 
 
 def gen_last_usage_user():
-    for user in Person.active.all():
+    for person in Person.active.all():
         date = None
         
-        for ua in user.account_set.all():
+        for ua in person.account_set.all():
 
             try:
                 d = ua.cpujob_set.all()[:1][0].date
@@ -84,8 +84,8 @@ def gen_last_usage_user():
             else:
                 if d is not None and d > date:
                     date = d
-        user.last_usage = date
-        user.save()
+        person.last_usage = date
+        person.save()
     
 
 class Command(BaseCommand):
