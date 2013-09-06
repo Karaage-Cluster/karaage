@@ -315,87 +315,87 @@ class UserTestCase(TestCase):
 
     def test_delete_activate_person(self):
         self.client.login(username='kgsuper', password='aq12ws')
-        user = Person.objects.get(user__username='kgtestuser3')
-        self.assertEqual(user.is_active, True)
-        self.assertEqual(user.groups.filter(project__gt=2).count(), 1)
-        self.assertEqual(user.account_set.count(), 1)
-        self.assertEqual(user.account_set.all()[0].date_deleted, None)
+        person = Person.objects.get(user__username='kgtestuser3')
+        self.assertEqual(person.is_active, True)
+        self.assertEqual(person.groups.filter(project__gt=2).count(), 1)
+        self.assertEqual(person.account_set.count(), 1)
+        self.assertEqual(person.account_set.all()[0].date_deleted, None)
         luser = self._datastore._accounts().get(uid='kgtestuser3')
         self.assertEqual(luser.givenName, 'Test')
 
-        response = self.client.get(reverse('kg_person_delete', args=[user.username]))
+        response = self.client.get(reverse('kg_person_delete', args=[person.username]))
         self.failUnlessEqual(response.status_code, 200)
         # Test deleting
-        response = self.client.post(reverse('kg_person_delete', args=[user.username]))
+        response = self.client.post(reverse('kg_person_delete', args=[person.username]))
         self.failUnlessEqual(response.status_code, 302)
         
-        user = Person.objects.get(user__username='kgtestuser3')
+        person = Person.objects.get(user__username='kgtestuser3')
 
-        self.assertEqual(user.is_active, False)
-        self.assertEqual(user.projects.count(), 0)
-        self.assertEqual(user.account_set.count(), 1)
-        self.assertEqual(user.account_set.all()[0].date_deleted, datetime.date.today())
+        self.assertEqual(person.is_active, False)
+        self.assertEqual(person.projects.count(), 0)
+        self.assertEqual(person.account_set.count(), 1)
+        self.assertEqual(person.account_set.all()[0].date_deleted, datetime.date.today())
         self.failUnlessRaises(self._datastore._account.DoesNotExist, self._datastore._accounts().get, uid='kgtestuser3')
 
         # Test activating
-        response = self.client.post(reverse('kg_person_activate', args=[user.username]))
+        response = self.client.post(reverse('kg_person_activate', args=[person.username]))
         self.failUnlessEqual(response.status_code, 302)
-        user = Person.objects.get(user__username='kgtestuser3')
-        self.assertEqual(user.is_active, True)
+        person = Person.objects.get(user__username='kgtestuser3')
+        self.assertEqual(person.is_active, True)
 
     def stest_delete_account(self):
-        user = Person.objects.get(pk=Person.objects.count())
-        ua = user.account_set.all()[0]
-        self.assertEqual(user.is_active, True)
-        self.assertEqual(user.account_set.count(), 1)
+        person = Person.objects.get(pk=Person.objects.count())
+        ua = person.account_set.all()[0]
+        self.assertEqual(person.is_active, True)
+        self.assertEqual(person.account_set.count(), 1)
         self.assertEqual(ua.date_deleted, None)
 
         response = self.client.post('/%susers/accounts/delete/%i/' % (settings.BASE_URL, ua.id))
         self.failUnlessEqual(response.status_code, 302)
         
-        user = Person.objects.get(pk=Person.objects.count())
-        ua = user.account_set.all()[0]
+        person = Person.objects.get(pk=Person.objects.count())
+        ua = person.account_set.all()[0]
         self.assertEqual(ua.date_deleted, datetime.date.today())
-        self.assertEqual(user.project_set.count(), 0)
+        self.assertEqual(person.project_set.count(), 0)
 
     def stest_default_projects(self):
 
-        user = Person.objects.get(pk=Person.objects.count())
-        ua = user.account_set.all()[0]
+        person = Person.objects.get(pk=Person.objects.count())
+        ua = person.account_set.all()[0]
 
-        self.assertEqual(user.project_set.count(), 1)
-        self.assertEqual(user.project_set.all()[0], ua.default_project)
+        self.assertEqual(person.project_set.count(), 1)
+        self.assertEqual(person.project_set.all()[0], ua.default_project)
         project = Project.objects.create(
             pid='test2',
             name='test project',
-            leader=user,
+            leader=person,
             start_date = datetime.date.today(),
             machine_category=MachineCategory.objects.get(name='VPAC'),
             institute=Institute.objects.get(name='VPAC'),
             is_active=True,
             is_approved=True,
         )
-        project.users.add(user)
-        self.assertEqual(user.project_set.count(), 2)
+        project.users.add(person)
+        self.assertEqual(person.project_set.count(), 2)
         # change default
         response = self.client.post(reverse('kg_account_set_default', args=[ua.id, project.pid]))
         
         self.failUnlessEqual(response.status_code, 302)
 
-        user = Person.objects.get(pk=Person.objects.count())
-        ua = user.account_set.all()[0]
+        person = Person.objects.get(pk=Person.objects.count())
+        ua = person.account_set.all()[0]
         project = Project.objects.get(pk='test2')
        
-        self.assertEqual(user.project_set.count(), 2)
+        self.assertEqual(person.project_set.count(), 2)
         self.assertEqual(project, ua.default_project)
 
        
     def stest_add_user_to_project(self):
 
-        user = Person.objects.get(pk=Person.objects.count())
-        user.account_set.all()[0]
+        person = Person.objects.get(pk=Person.objects.count())
+        person.account_set.all()[0]
 
-        self.assertEqual(user.project_set.count(), 1)
+        self.assertEqual(person.project_set.count(), 1)
 
         Project.objects.create(
             pid='test2',
@@ -408,6 +408,6 @@ class UserTestCase(TestCase):
             is_approved=True,
         )
 
-        response = self.client.post(reverse('kg_person_detail', args=[user.username]), { 'project': 'test2', 'project-add': 'true' })
+        response = self.client.post(reverse('kg_person_detail', args=[person.username]), { 'project': 'test2', 'project-add': 'true' })
         self.failUnlessEqual(response.status_code, 200)
-        self.assertEqual(user.project_set.count(), 2)
+        self.assertEqual(person.project_set.count(), 2)

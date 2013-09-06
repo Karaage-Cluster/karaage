@@ -36,13 +36,13 @@ from karaage.util import get_date_range, log_object as log
 @permission_required('people.delete_person')
 def delete_user(request, username):
 
-    user = get_object_or_404(Person, user__username=username)
+    person = get_object_or_404(Person, user__username=username)
 
     if request.method == 'POST':
         deleted_by = request.user.get_profile()
-        user.deactivate(deleted_by)
-        messages.success(request, "User '%s' was deleted succesfully" % user)
-        return HttpResponseRedirect(user.get_absolute_url())
+        person.deactivate(deleted_by)
+        messages.success(request, "User '%s' was deleted succesfully" % person)
+        return HttpResponseRedirect(person.get_absolute_url())
         
     return render_to_response('people/person_confirm_delete.html', locals(), context_instance=RequestContext(request))
 
