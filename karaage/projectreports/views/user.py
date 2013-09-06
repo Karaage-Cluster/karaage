@@ -38,9 +38,9 @@ def survey(request, project_id):
     if not person in project.leaders.all():
         if not request.user.has_perm('projectreports.add_projectsurvey'):
             return HttpResponseForbidden("Access Denied - must be project leader.")
-    
+
     today = datetime.date.today()
-    
+
     survey_group = get_object_or_404(SurveyGroup, start_date__year=today.year)
     survey, created = ProjectSurvey.objects.get_or_create(project=project, survey_group=survey_group)
     survey.submitter = project.pid
@@ -59,7 +59,7 @@ def thanks(request, project_id):
     if not person in project.leaders.all():
         if not request.user.has_perm('projectreports.add_projectsurvey'):
             return HttpResponseForbidden("Access Denied - must be project leader.")
-    
+
     today = datetime.date.today()
     survey_group = get_object_or_404(SurveyGroup, start_date__year=today.year)
 

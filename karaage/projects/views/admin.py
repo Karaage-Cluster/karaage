@@ -48,7 +48,7 @@ def add_edit_project(request, project_id=None):
 
     if request.method == 'POST':
         form = ProjectForm(request.POST, instance=project)
-        
+
         if form.is_valid():
             project = form.save(commit=False)
             if project_id is not None:
