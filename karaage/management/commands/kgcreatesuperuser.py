@@ -24,7 +24,6 @@ import os
 import re
 import sys
 from optparse import make_option
-from django.contrib.auth.models import User
 from django.core import exceptions
 from django.core.management.base import BaseCommand
 from django.utils.translation import ugettext as _
@@ -84,8 +83,8 @@ class Command(BaseCommand):
         # it as an option.
         if default_username:
             try:
-                User.objects.get(username=default_username)
-            except User.DoesNotExist:
+                Person.objects.get(user__username=default_username)
+            except Person.DoesNotExist:
                 pass
             else:
                 default_username = ''

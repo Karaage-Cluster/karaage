@@ -30,7 +30,6 @@ bob,secret2,Bob,Smith,bob@example.com,Example University,pEx0032
 import re
 import sys
 from csv import DictReader
-from django.contrib.auth.models import User
 from django.core import exceptions
 from django.core.management.base import BaseCommand
 from django.utils.translation import ugettext as _
@@ -132,11 +131,11 @@ username,password,first_name,last_name,email,institute,project"""
                 continue
 
             try:
-                User.objects.get(username=user['username'])
+                Person.objects.get(user__username=user['username'])
                 sys.stderr.write("Error: Username '%s' exists. Skipping\n" % user['username'])
                 skip += 1
                 continue
-            except User.DoesNotExist:
+            except Person.DoesNotExist:
                 pass
     
             try:

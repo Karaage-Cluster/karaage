@@ -17,9 +17,9 @@
 
 import re
 
-from django.contrib.auth.models import User
 from django.conf import settings
 
+from karaage.people.models import Person
 from karaage.datastores import person_exists, account_exists
 from karaage.machines.models import MachineCategory
 
@@ -48,8 +48,8 @@ def validate_username(username):
                 raise UsernameInvalid(u'Usernames can only contain letters, numbers and underscores')
 
             try:
-                user = User.objects.get(username__exact=username)
-            except User.DoesNotExist:
+                user = Person.objects.get(user__username__exact=username)
+            except Person.DoesNotExist:
                 user = None
 
             if user is not None:

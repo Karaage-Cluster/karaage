@@ -20,8 +20,6 @@ Holds various helper methods
 """
 __author__ = 'Sam Morrison'
 
-from django.contrib.auth.models import User
-
 import datetime
 
 from karaage.machines.models import MachineCategory, Account
@@ -36,7 +34,7 @@ def check_username(username, machine_category):
     
     """
     try:
-        user = User.objects.get(username__exact=username)
+        Person.objects.get(user__username__exact=username)
     except:
         try:
             account = Account.objects.get(username__exact=username, machine_category=machine_category, date_deleted__isnull=True)
