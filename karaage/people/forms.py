@@ -35,13 +35,11 @@ import ajax_select.fields
 
 
 class PersonForm(forms.ModelForm):
-    title = forms.ChoiceField(choices=TITLES, required=False)
-    first_name = forms.CharField()
-    last_name = forms.CharField()
-    position = forms.CharField(required=False)
-    email = forms.EmailField()
-    department = forms.CharField(required=False)
-    supervisor = forms.CharField(required=False)
+#    title = forms.ChoiceField(choices=TITLES, required=False)
+#    position = forms.CharField(required=False)
+#    email = forms.EmailField()
+#    department = forms.CharField(required=False)
+#    supervisor = forms.CharField(required=False)
     telephone = forms.RegexField(
             "^[0-9a-zA-Z\.( )+-]+$", required=True, label=u"Office Telephone",
             help_text=u"Used for emergency contact and password reset service.",
@@ -58,15 +56,9 @@ class PersonForm(forms.ModelForm):
 
     class Meta:
         model = Person
-        fields = ['first_name', 'last_name', 'email', 'title', 'position', 'supervisor',
+        fields = ['short_name', 'full_name', 'email', 'title', 'position', 'supervisor',
                 'department', 'telephone', 'mobile', 'fax', 'address', 'country' ]
 
-    def save(self):
-        data = self.cleaned_data
-        self.instance.first_name = data['first_name']
-        self.instance.last_name = data['last_name']
-        self.instance.email = data['email']
-        return super(PersonForm, self).save()
 
 class AdminPersonForm(PersonForm):
     institute = forms.ModelChoiceField(queryset=Institute.active.all())
@@ -77,7 +69,7 @@ class AdminPersonForm(PersonForm):
 
     class Meta:
         model = Person
-        fields = ['first_name', 'last_name', 'email', 'title', 'position', 'supervisor',
+        fields = ['short_name', 'full_name', 'email', 'title', 'position', 'supervisor',
                 'department', 'institute', 'telephone', 'mobile', 'fax', 'address', 'country',
                 'expires', 'comment', 'is_systemuser', 'is_admin', ]
 

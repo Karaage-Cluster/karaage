@@ -33,7 +33,7 @@ class Command(BaseCommand):
         verbose = int(options.get('verbosity'))
         training_prefix = getattr(settings, 'TRAINING_ACCOUNT_PREFIX', 'train')
 
-        for person in Person.active.filter(user__username__startswith=training_prefix):
+        for person in Person.active.filter(username__startswith=training_prefix):
             try:
                 person.unlock()
                 if verbose > 1:

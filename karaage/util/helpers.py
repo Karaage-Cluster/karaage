@@ -34,7 +34,7 @@ def check_username(username, machine_category):
     
     """
     try:
-        Person.objects.get(user__username__exact=username)
+        Person.objects.get(username__exact=username)
     except:
         try:
             account = Account.objects.get(username__exact=username, machine_category=machine_category, date_deleted__isnull=True)

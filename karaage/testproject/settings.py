@@ -1,6 +1,8 @@
 # Django settings for grunt project.
 from os import uname
 
+AUTH_USER_MODEL = 'people.Person'
+
 AJAX_LOOKUP_CHANNELS = {
     'person' : ( 'karaage.people.lookups', 'PersonLookup'),
     'group' : ( 'karaage.people.lookups', 'GroupLookup'),

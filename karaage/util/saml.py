@@ -69,8 +69,8 @@ def logout_url(request):
 
 def add_saml_data(person, request):
     attrs, error = parse_attributes(request)
-    person.first_name = attrs['first_name']
-    person.last_name = attrs['last_name']
+    person.short_name = attrs['first_name']
+    person.full_name = u"%s %s" % (attrs['first_name'], attrs['last_name'])
     person.email = attrs['email']
     person.saml_id = attrs['persistent_id']
     person.telephone = attrs.get('telephone', None)

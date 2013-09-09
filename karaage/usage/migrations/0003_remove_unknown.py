@@ -16,7 +16,7 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         try:
-            unknown_user = orm['people.Person'].objects.get(user__username='unknown_user')
+            unknown_user = orm['people.Person'].objects.get(username='unknown_user')
         except orm['people.Person'].DoesNotExist:
             unknown_user = None
         try:
@@ -28,7 +28,7 @@ class Migration(DataMigration):
                 usage.project = None
                 usage.save()
         if unknown_user:
-            for usage in orm.CPUJob.objects.filter(user__user=unknown_user):
+            for usage in orm.CPUJob.objects.filter(user=unknown_user):
                 usage.user = None
                 usage.save()
 

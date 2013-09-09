@@ -96,7 +96,7 @@ def profile_projects(request):
 
 @login_required
 def user_detail(request, username):
-    person = get_object_or_404(Person, user__username=username)
+    person = get_object_or_404(Person, username=username)
     if not person.can_view(request.user):
         return HttpResponseForbidden('<h1>Access Denied</h1><p>You do not have permission to view details about this user.</p>')
     return render_to_response('people/user_person_detail.html', locals(), context_instance=RequestContext(request))

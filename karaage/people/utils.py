@@ -48,7 +48,7 @@ def validate_username(username):
                 raise UsernameInvalid(u'Usernames can only contain letters, numbers and underscores')
 
             try:
-                user = Person.objects.get(user__username__exact=username)
+                user = Person.objects.get(username__exact=username)
             except Person.DoesNotExist:
                 user = None
 

@@ -1,13 +1,13 @@
 # Package defined Karaage Settings
 LDAP_SCHEMA_FILE = "/etc/karaage/ldap_schemas.py"
 
+AUTH_USER_MODEL = 'people.Person'
+
 AJAX_LOOKUP_CHANNELS = {
 }
 
 AJAX_SELECT_BOOTSTRAP = True
 AJAX_SELECT_INLINES = "staticfiles"
-
-AUTH_PROFILE_MODULE = 'people.Person'
 
 GRAPH_DEBUG = False
 GRAPH_ROOT = '/var/cache/karaage/graphs'

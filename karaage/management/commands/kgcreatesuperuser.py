@@ -49,8 +49,8 @@ class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('--username', '-u', help='Username'),
         make_option('--email', '-e', help='E-Mail'),
-        make_option('--first_name', '-f', help='First Name'),
-        make_option('--last_name', '-l', help='Last Name'),
+        make_option('--short_name', '-f', help='Short Name'),
+        make_option('--full_name', '-l', help='Full Name'),
         make_option('--password', '-p', help='Password'),
         make_option('--institute', '-i', help='Institute Name'),
     )
@@ -62,8 +62,8 @@ class Command(BaseCommand):
  
         username = options['username']
         email = options['email']
-        first_name = options['first_name']
-        last_name = options['last_name']
+        short_name = options['short_name']
+        long_name = options['long_name']
         password = options['password']
         institute_name = options['institute']
 
@@ -83,7 +83,7 @@ class Command(BaseCommand):
         # it as an option.
         if default_username:
             try:
-                Person.objects.get(user__username=default_username)
+                Person.objects.get(username=default_username)
             except Person.DoesNotExist:
                 pass
             else:
@@ -137,13 +137,13 @@ class Command(BaseCommand):
                 break
 
             while 1:
-                if not first_name:
-                    first_name = raw_input('First Name: ')
+                if not short_name:
+                    short_name = raw_input('Short Name: ')
                 else:
                     break
             while 1:
-                if not last_name:
-                    last_name = raw_input('Last Name: ')
+                if not full_name:
+                    full_name = raw_input('Full Name: ')
                 else:
                     break
 
@@ -181,8 +181,8 @@ class Command(BaseCommand):
             'username': username,
             'email': email,
             'password': password,
-            'first_name': first_name,
-            'last_name': last_name,
+            'short_name': short_name,
+            'full_name': full_name,
             'institute': institute,
             }
         person = Person.objects.create_superuser(**data)

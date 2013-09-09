@@ -35,7 +35,7 @@ class Command(BaseCommand):
         new = args[1]
 
         try:
-            person = Person.objects.get(user__username=old)
+            person = Person.objects.get(username=old)
         except Person.DoesNotExist:
             raise CommandError('user %s does not exist' % old)
         

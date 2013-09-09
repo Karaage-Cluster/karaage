@@ -1,25 +1,85 @@
 # -*- coding: utf-8 -*-
 import datetime
 from south.db import db
-from south.v2 import SchemaMigration
+from south.v2 import DataMigration
 from django.db import models
 
-
-class Migration(SchemaMigration):
+class Migration(DataMigration):
 
     def forwards(self, orm):
-        # Deleting field 'SoftwarePackage.gid'
-        db.delete_column('software_package', 'gid')
+        "Write your forwards methods here."
+        for person in orm.person.objects.all():
+            assert person.user.username
+            person.username = person.user.username
+            if not person.user.email:
+                person.email = None
+            else:
+                person.email = person.user.email
+            person.password = person.user.password
+            person.short_name = person.user.first_name
+            person.full_name = u"%s %s" % (
+                    person.user.first_name, person.user.last_name)
+            person.is_active = person.user.is_active
+            person.is_admin = person.user.is_staff
+            person.save()
 
+            print [person.username, person.short_name, person.full_name]
+
+        for obj in orm['admin.logentry'].objects.all():
+            obj.person = obj.user.person_set.get()
+            obj.save()
+        for obj in orm['comments.comment'].objects.all():
+            obj.person = obj.user.person_set.get()
+            obj.save()
+        for obj in orm['comments.commentflag'].objects.all():
+            obj.person = obj.user.person_set.get()
+            obj.save()
 
     def backwards(self, orm):
-        # Adding field 'SoftwarePackage.gid'
-        db.add_column('software_package', 'gid',
-                      self.gf('django.db.models.fields.IntegerField')(null=True, blank=True),
-                      keep_default=False)
+        "Write your backwards methods here."
+        for person in orm.person.objects.filter(user__isnull=True):
+            assert person.username
+            person.user, _ = orm['auth.user'].objects.get_or_create(
+                    username=person.username)
+            if person.email is None:
+                person.user.email = ""
+            else:
+                person.user.email = person.email
+            person.user.password = person.password
+            first_name, _, last_name = person.full_name.rpartition(" ")
+            person.user.first_name = first_name
+            person.user.last_name = last_name
+            person.user.is_active = person.is_active
+            person.user.is_staff = person.is_admin
+            person.user.save()
+            person.save()
+
+            print [person.username, first_name, last_name]
+
+        for obj in orm['admin.logentry'].objects.all():
+            obj.user = obj.person.user
+            obj.save()
+        for obj in orm['comments.comment'].objects.all():
+            obj.user = obj.person.user
+            obj.save()
+        for obj in orm['comments.commentflag'].objects.all():
+            obj.user = obj.person.user
+            obj.save()
 
 
     models = {
+        u'admin.logentry': {
+            'Meta': {'ordering': "(u'-action_time',)", 'object_name': 'LogEntry', 'db_table': "u'django_admin_log'"},
+            'action_flag': ('django.db.models.fields.PositiveSmallIntegerField', [], {}),
+            'action_time': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'change_message': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']", 'null': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'object_id': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'object_repr': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
+            'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Person']", 'null': True}),
+        },
         u'auth.group': {
             'Meta': {'object_name': 'Group'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -49,6 +109,32 @@ class Migration(SchemaMigration):
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
+        u'comments.comment': {
+            'Meta': {'ordering': "('submit_date',)", 'object_name': 'Comment', 'db_table': "'django_comments'"},
+            'comment': ('django.db.models.fields.TextField', [], {'max_length': '3000'}),
+            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'content_type_set_for_comment'", 'to': u"orm['contenttypes.ContentType']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'ip_address': ('django.db.models.fields.IPAddressField', [], {'max_length': '15', 'null': 'True', 'blank': 'True'}),
+            'is_public': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'is_removed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'object_pk': ('django.db.models.fields.TextField', [], {}),
+            'site': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['sites.Site']"}),
+            'submit_date': ('django.db.models.fields.DateTimeField', [], {'default': 'None'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'comment_comments'", 'null': 'True', 'to': u"orm['auth.User']"}),
+            'user_email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
+            'user_name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
+            'user_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
+            'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Person']", 'null': True}),
+        },
+        u'comments.commentflag': {
+            'Meta': {'unique_together': "[('user', 'comment', 'flag')]", 'object_name': 'CommentFlag', 'db_table': "'django_comment_flags'"},
+            'comment': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'flags'", 'to': u"orm['comments.Comment']"}),
+            'flag': ('django.db.models.fields.CharField', [], {'max_length': '30', 'db_index': 'True'}),
+            'flag_date': ('django.db.models.fields.DateTimeField', [], {'default': 'None'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'comment_flags'", 'to': u"orm['auth.User']"}),
+            'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Person']", 'null': True}),
+        },
         u'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
             'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
@@ -72,35 +158,15 @@ class Migration(SchemaMigration):
             'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Person']"}),
             'send_email': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
         },
-        u'machines.machine': {
-            'Meta': {'object_name': 'Machine', 'db_table': "'machine'"},
-            'category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['machines.MachineCategory']"}),
-            'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'mem_per_core': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'no_cpus': ('django.db.models.fields.IntegerField', [], {}),
-            'no_nodes': ('django.db.models.fields.IntegerField', [], {}),
-            'pbs_server_host': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
-            'scaling_factor': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
-            'start_date': ('django.db.models.fields.DateField', [], {}),
-            'type': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'machines.machinecategory': {
-            'Meta': {'object_name': 'MachineCategory', 'db_table': "'machine_category'"},
-            'datastore': ('django.db.models.fields.CharField', [], {'default': "'karaage.datastores.openldap_datastore'", 'max_length': '255'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
         u'people.group': {
-            'Meta': {'object_name': 'Group'},
+            'Meta': {'ordering': "['name']", 'object_name': 'Group'},
             'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'members': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'groups'", 'symmetrical': 'False', 'to': u"orm['people.Person']"}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})
         },
         u'people.person': {
-            'Meta': {'ordering': "['first_name', 'last_name']", 'object_name': 'Person', 'db_table': "'person'"},
+            'Meta': {'ordering': "['full_name', 'short_name']", 'object_name': 'Person', 'db_table': "'person'"},
             'address': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'approved_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'user_approver'", 'null': 'True', 'to': u"orm['people.Person']"}),
             'city': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
@@ -110,72 +176,40 @@ class Migration(SchemaMigration):
             'date_deleted': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'deleted_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'user_deletor'", 'null': 'True', 'to': u"orm['people.Person']"}),
             'department': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
+            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'null': 'True', 'db_index': 'True'}),
             'expires': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'fax': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'full_name': ('django.db.models.fields.CharField', [], {'max_length': '60', 'null': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['institutes.Institute']"}),
+            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'is_admin': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_systemuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'last_usage': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'legacy_ldap_password': ('django.db.models.fields.CharField', [], {'max_length': '128', 'null': 'True', 'blank': 'True'}),
             'login_enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'mobile': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
+            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'position': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'postcode': ('django.db.models.fields.CharField', [], {'max_length': '8', 'null': 'True', 'blank': 'True'}),
             'saml_id': ('django.db.models.fields.CharField', [], {'max_length': '200', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
+            'short_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'null': 'True'}),
             'state': ('django.db.models.fields.CharField', [], {'max_length': '4', 'null': 'True', 'blank': 'True'}),
             'supervisor': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'telephone': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']", 'unique': 'True'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']", 'unique': 'True', 'null': 'True'}),
+            'username': ('django.db.models.fields.CharField', [], {'max_length': '30', 'unique': 'True', 'null': 'True'}),
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
         },
-        u'software.softwareaccessrequest': {
-            'Meta': {'object_name': 'SoftwareAccessRequest', 'db_table': "'software_access_request'"},
+        u'sites.site': {
+            'Meta': {'ordering': "('domain',)", 'object_name': 'Site', 'db_table': "'django_site'"},
+            'domain': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Person']"}),
-            'request_date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'software_license': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.SoftwareLicense']"})
-        },
-        u'software.softwarecategory': {
-            'Meta': {'ordering': "['name']", 'object_name': 'SoftwareCategory', 'db_table': "'software_category'"},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'software.softwarelicense': {
-            'Meta': {'ordering': "['-version']", 'object_name': 'SoftwareLicense', 'db_table': "'software_license'"},
-            'date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'package': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.SoftwarePackage']"}),
-            'text': ('django.db.models.fields.TextField', [], {}),
-            'version': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'})
-        },
-        u'software.softwarelicenseagreement': {
-            'Meta': {'object_name': 'SoftwareLicenseAgreement', 'db_table': "'software_license_agreement'"},
-            'date': ('django.db.models.fields.DateField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'license': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.SoftwareLicense']"}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Person']"})
-        },
-        u'software.softwarepackage': {
-            'Meta': {'ordering': "['name']", 'object_name': 'SoftwarePackage', 'db_table': "'software_package'"},
-            'academic_only': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.SoftwareCategory']", 'null': 'True', 'blank': 'True'}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Group']", 'null': 'True', 'blank': 'True'}),
-            'homepage': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'}),
-            'restricted': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'tutorial_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
-        },
-        u'software.softwareversion': {
-            'Meta': {'ordering': "['-version']", 'object_name': 'SoftwareVersion', 'db_table': "'software_version'"},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'last_used': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'machines': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['machines.Machine']", 'symmetrical': 'False'}),
-            'module': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'package': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.SoftwarePackage']"}),
-            'version': ('django.db.models.fields.CharField', [], {'max_length': '100'})
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         }
     }
 
-    complete_apps = ['software']
+    complete_apps = ['people', 'admin', 'comments']
+    symmetrical = True

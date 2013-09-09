@@ -20,9 +20,9 @@ Management utility to import user from a CSV file.
 
 CSV format should be:
 
-username,password,first_name,last_name,email,institute,project
-sam,secret,Joe,Bloggs,joe@example.com,Test,TestProject2
-bob,secret2,Bob,Smith,bob@example.com,Example University,pEx0032
+username,password,short_name,full_name,email,institute,project
+sam,secret,Joe,Joe Bloggs,joe@example.com,Test,TestProject2
+bob,secret2,Bob,Bob Smith,bob@example.com,Example University,pEx0032
 
 
 """
@@ -55,7 +55,7 @@ def is_valid_email(value):
 
 class Command(BaseCommand):
     help = """Import users from a CSV file with the following format.
-username,password,first_name,last_name,email,institute,project"""
+username,password,short_name,full_name,email,institute,project"""
     args = "csvfile"
 
     @django.db.transaction.commit_on_success
@@ -90,14 +90,14 @@ username,password,first_name,last_name,email,institute,project"""
                 sys.stderr.write("Error: Failed to find password column.\n")
                 fail = True
             try:
-                username = user['first_name']
+                username = user['short_name']
             except KeyError:
-                sys.stderr.write("Error: Failed to find first_name column.\n")
+                sys.stderr.write("Error: Failed to find short_name column.\n")
                 fail = True
             try:
-                username = user['last_name']
+                username = user['full_name']
             except KeyError:
-                sys.stderr.write("Error: Failed to find last_name column.\n")
+                sys.stderr.write("Error: Failed to find full_name column.\n")
                 fail = True
             try:
                 username = user['email']
@@ -131,7 +131,7 @@ username,password,first_name,last_name,email,institute,project"""
                 continue
 
             try:
-                Person.objects.get(user__username=user['username'])
+                Person.objects.get(username=user['username'])
                 sys.stderr.write("Error: Username '%s' exists. Skipping\n" % user['username'])
                 skip += 1
                 continue
