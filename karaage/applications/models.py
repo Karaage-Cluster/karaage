@@ -134,6 +134,16 @@ class Application(models.Model):
         self.save()
     decline.alters_data = True
 
+    def check(self):
+        errors = []
+
+        if self.applicant is None:
+            errors.append("Applicant not set.")
+        elif self.content_type.model == 'applicant':
+            errors.extend(self.applicant.check())
+
+        return errors
+
 
 class ProjectApplication(Application):
     """ Application for an Applicant or a Person to create a new project or
@@ -213,6 +223,20 @@ class ProjectApplication(Application):
                 auth['is_delegate'] = True
 
         return auth
+
+    def check(self):
+        errors = super(ProjectApplication, self).check()
+
+        if self.project is None:
+            if not self.name:
+                errors.extend(
+                "New project application with no name")
+            if self.institute is None:
+                errors.extend(
+                "New project application with no institute")
+
+        return errors
+
 
 
 class Applicant(models.Model):
@@ -295,6 +319,41 @@ class Applicant(models.Model):
         else:
             return self.full_name
     first_name = property(_get_first_name, _set_first_name)
+
+    def check(self):
+        errors = []
+
+        if not self.username:
+            errors.append("Username not completed")
+        if not self.short_name:
+            errors.append("Short name not completed")
+        if not self.full_name:
+            errors.append("Full name not completed")
+        if not self.email:
+            errors.append("EMail not completed")
+
+        # check for username conflict
+        query = Person.objects.filter(username=self.username)
+        if self.username and query.count() > 0:
+            errors.append(
+                    "Application username address conflicts "
+                    "with existing person.")
+
+        # check for saml_id conflict
+        query = Person.objects.filter(saml_id=self.saml_id)
+        if self.saml_id and query.count() > 0:
+            errors.append(
+                    "Application saml_id address conflicts "
+                    "with existing person.")
+
+        # check for email conflict
+        query = Person.objects.filter(email=self.email)
+        if self.email and query.count() > 0:
+            errors.append(
+                    "Application email address conflicts "
+                    "with existing person.")
+
+        return errors
 
     def approve(self, approved_by):
         """ Create a new user from an applicant. """

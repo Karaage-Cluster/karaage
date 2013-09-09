@@ -1093,43 +1093,14 @@ class TransitionSubmit(Transition):
 
     def get_next_state(self, request, application, auth):
         """ Retrieve the next state. """
+
         # Check for serious errors in submission.
-        # Should never happen unless user skips steps.
-        if application.applicant is None:
-            messages.error(request, "Applicant not completed")
+        # Should only happen in rare circumstances.
+        errors = application.check()
+        if len(errors) > 0:
+            for error in errors:
+                messages.error(request, error)
             return self._on_error
-        if not application.applicant.username:
-            messages.error(request, "Username not completed")
-            return self._on_error
-        if not application.applicant.short_name:
-            messages.error(request, "Short name not completed")
-            return self._on_error
-        if not application.applicant.full_name:
-            messages.error(request, "Full name not completed")
-            return self._on_error
-
-        # check for username conflict
-        query = Person.objects.filter(username=application.applicant.username)
-        if application.content_type.model == 'person':
-            query=query.exclude(pk=application.applicant.pk)
-        if query.count() > 0:
-            messages.error(request, "Application username address conflicts with existing person.")
-            return self._on_error
-
-        # check for email conflict
-        query = Person.objects.filter(email=application.applicant.email)
-        if application.content_type.model == 'person':
-            query=query.exclude(pk=application.applicant.pk)
-        if query.count() > 0:
-            messages.error(request, "Application email address conflicts with existing person.")
-            return self._on_error
-
-        if application.project is None:
-            if not application.name:
-                return self._on_error
-            if application.institute is None:
-                return self._on_error
-        application.submit()
 
         # Do we need to wait for leader or delegate approval?
         if application.project is None:
@@ -1150,20 +1121,12 @@ class TransitionApprove(Transition):
         approved_by = request.user
         created_person, created_account, created_project = application.approve(approved_by)
 
-        # check for username conflict
-        query = Person.objects.filter(username=application.applicant.username)
-        if application.content_type.model == 'person':
-            query=query.exclude(pk=application.applicant.pk)
-        if query.count() > 0:
-            messages.error(request, "Application username address conflicts with existing person.")
-            return self._on_error
-
-        # check for email conflict
-        query = Person.objects.filter(email=application.applicant.email)
-        if application.content_type.model == 'person':
-            query=query.exclude(pk=application.applicant.pk)
-        if query.count() > 0:
-            messages.error(request, "Application email address conflicts with existing person.")
+        # Check for serious errors in submission.
+        # Should only happen in rare circumstances.
+        errors = application.check()
+        if len(errors) > 0:
+            for error in errors:
+                messages.error(request, error)
             return self._on_error
 
         if created_project:
