@@ -16,16 +16,16 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf.urls import *
-from django.contrib.auth.decorators import permission_required
 from karaage.legacy.create_update import update_object, create_object
 from models import Machine, MachineCategory
+from karaage.util.decorators import admin_required
 
 
 urlpatterns = patterns('karaage.legacy.create_update',
-    url(r'^add/$', permission_required('machines.add_machine')(create_object), {'model': Machine}),
-    url(r'^(?P<object_id>\d+)/edit/$', permission_required('machines.change_machine')(update_object), {'model': Machine}),
-    url(r'^categories/add/$', permission_required('machines.add_machinecategory')(create_object), {'model': MachineCategory}, name='kg_machinecategory_add'),
-    url(r'^categories/(?P<object_id>\d+)/edit/$', permission_required('machines.change_machinecategory')(update_object), {'model': MachineCategory}, name='kg_machinecategory_edit'),
+    url(r'^add/$', admin_required(create_object), {'model': Machine}),
+    url(r'^(?P<object_id>\d+)/edit/$', admin_required(update_object), {'model': Machine}),
+    url(r'^categories/add/$', admin_required(create_object), {'model': MachineCategory}, name='kg_machinecategory_add'),
+    url(r'^categories/(?P<object_id>\d+)/edit/$', admin_required(update_object), {'model': MachineCategory}, name='kg_machinecategory_edit'),
 )
 
 urlpatterns += patterns('karaage.machines.views',

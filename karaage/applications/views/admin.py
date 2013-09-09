@@ -17,8 +17,6 @@
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
-from django.contrib.auth.decorators import permission_required, login_required
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.db.models import Q
@@ -26,12 +24,13 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
 from andsome.util.filterspecs import Filter, FilterBar
 
+from karaage.util.decorators import admin_required
 from karaage.applications.models import Applicant, Application
 from karaage.applications.forms import ApplicantForm
 from karaage.util import log_object as log
 
 
-@login_required
+@admin_required
 def application_list(request):
 
     apps = Application.objects.select_related().order_by('-id')
@@ -72,7 +71,7 @@ def application_list(request):
             context_instance=RequestContext(request))
 
 
-@permission_required('applications.change_applicant')
+@admin_required
 def applicant_edit(request, applicant_id):
     
     applicant = get_object_or_404(Applicant, id=applicant_id)

@@ -126,13 +126,13 @@
 	  {% if ua.date_deleted %}
 	  <td>{{ ua.date_deleted|date }}</td>
 	  {% endif %}
-          <td>{{ ua.shell }}{% if not ua.date_deleted and perms.machines.change_account %}<form action="{% url 'kg_account_shell' ua.pk %}" method="post">{% csrf_token %}
+          <td>{{ ua.shell }}{% if not ua.date_deleted and request.user.is_admin %}<form action="{% url 'kg_account_shell' ua.pk %}" method="post">{% csrf_token %}
 	  	<div>
 	      {% shell_field ua %}
 	      <input type="submit" value="Change"/>
 </div>
 </form>{% else %} {% endif %}</td>
-	  {% if not ua.date_deleted and perms.machines.delete_account %}
+	  {% if not ua.date_deleted and request.user.is_admin %}
 	  <td><a class="deletelink" href="{% url 'kg_account_delete' ua.id %}">Delete</a></td>
 	  {% endif %}
 	</tr>
@@ -159,13 +159,13 @@
 <td>{% for leader in p.leaders.all %}<a href="{{ leader.get_absolute_url }}">{{ leader }}, </a>{% endfor %}</td>
 <td>{% ifequal p ua.default_project %}
 	    <img alt="1" src="{{ STATIC_URL }}admin/img/icon-yes.gif"/>{% else %}
-	    {% if perms.machines.change_account %}
+	    {% if request.user.is_admin %}
             <form action="{% url 'kg_account_set_default' ua.id p.pid %}" method="post">
                 {% csrf_token %}
                 <input type="submit" value="Make Default"/></input>
             </form>
 	    {% endif %}{% endifequal %}</td>
-	  {% if perms.projects.change_project %}{% ifnotequal p ua.default_project %}
+	  {% if request.user.is_admin %}{% ifnotequal p ua.default_project %}
 	  <td><a class="deletelink" href="{% url 'kg_remove_project_member' p.pid person.username %}">Remove</a>
 	    {% endifnotequal %}{% endif %}
 	</td></tr>
@@ -179,7 +179,7 @@
     {% endif %}
   </div>
   {% endfor %}
-  {% if person.account_set.all and person.is_active and perms.projects.change_project %}
+  {% if person.account_set.all and person.is_active and request.user.is_admin %}
   <form action="" id="joinproject_form" method="post">{% csrf_token %}
     <div class="form-row">
         {{ form }}
@@ -211,13 +211,9 @@
         <li><a href="activate/">Activate</a></li>
         {% endif %}
         {% endif %}
-        {% if perms.people.change_person and person.is_active %}
+        {% if request.user.is_admin and person.is_active %}
         <li class="changelink"><a href="{% url 'kg_person_edit' person.username %}">Edit details</a></li>
-        {% endif %}
-        {% if perms.machines.add_account and person.is_active %}
         <li class="addlink"><a href="{% url 'kg_person_add_account' person.username %}">Add user account</a></li>
-        {% endif %}
-        {% if perms.people.delete_person and person.is_active %}
         <li class="deletelink"><a href="{%url 'kg_person_delete' person.username %}">Delete</a></li>
 	{% endif %}
 	<li><a href="{% url 'kg_person_logs' person.id %}">Logs</a></li>
@@ -225,7 +221,7 @@
 <li><a href="comments/">Comments</a> ({{ comment_count }})</li>
 	{% if person.is_active %}
         <li><a href="{% url 'kg_person_verbose' person.username %}">Verbose</a></li>
-	{% if perms.people.change_person and person.is_active %}
+	{% if request.user.is_admin and person.is_active %}
 	{% if person.is_locked %}
         <li>
             <form action="{% url 'kg_person_unlock' person.username %}" method="post">

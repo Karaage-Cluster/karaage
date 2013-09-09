@@ -18,16 +18,16 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
-from django.contrib.auth.decorators import permission_required
 from django.forms import util
 
+from karaage.util.decorators import admin_required
 from karaage.projects.models import Project
 from karaage.util import log_object as log
 from karaage.pbsmoab.models import ProjectChunk
 from karaage.pbsmoab.forms import ProjectChunkForm
 
 
-@permission_required('pbsmoab.add_projectchunk')
+@admin_required
 def projectchunk_add(request, project_id):
 
     project = get_object_or_404(Project, pk=project_id)
@@ -55,7 +55,7 @@ def projectchunk_add(request, project_id):
     return render_to_response('pbsmoab/projectchunk_form.html', locals(), context_instance=RequestContext(request))
 
 
-@permission_required('pbsmoab.change_projectchunk')
+@admin_required
 def projectchunk_edit(request, projectchunk_id):
 
     project_chunk = get_object_or_404(ProjectChunk, pk=projectchunk_id)
@@ -80,7 +80,8 @@ def projectchunk_edit(request, projectchunk_id):
 
     return render_to_response('pbsmoab/projectchunk_form.html', locals(), context_instance=RequestContext(request))
 
-@permission_required('pbsmoab.delete_projectchunk')
+
+@admin_required
 def projectchunk_delete(request, projectchunk_id):
 
     project_chunk = get_object_or_404(ProjectChunk, pk=projectchunk_id)
@@ -91,6 +92,8 @@ def projectchunk_delete(request, projectchunk_id):
 
     return render_to_response('pbsmoab/projectchunk_delete_form.html', locals(), context_instance=RequestContext(request))
 
+
+@admin_required
 def projects_by_cap_used(request):
     from karaage.projects.views.admin import project_list
     return project_list(request, queryset=Project.active.all(), paginate=False, template_name='pbsmoab/project_capsort.html')

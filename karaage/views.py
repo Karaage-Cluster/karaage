@@ -19,7 +19,6 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django import forms
 from django.core.paginator import Paginator
-from django.contrib.auth.decorators import login_required
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.comments.models import Comment
@@ -29,11 +28,12 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
 
+from karaage.util.decorators import admin_required
 from karaage.people.models import Person, Group
 from karaage.projects.models import Project
 
 
-@login_required
+@admin_required
 def admin_index(request):
     newest_users = Person.objects.order_by('-date_approved', '-id').filter(date_approved__isnull=False).select_related()[:5]
     newest_projects = Project.objects.order_by('-date_approved').filter(date_approved__isnull=False).filter(is_active=True).select_related()[:5]
@@ -43,7 +43,7 @@ def admin_index(request):
     return render_to_response('index.html', locals(), context_instance=RequestContext(request))
 
 
-@login_required
+@admin_required
 def search(request):
 
     if 'sitesearch' in request.GET and request.GET['sitesearch'].strip() != "":
@@ -89,6 +89,7 @@ def search(request):
         return HttpResponseRedirect(reverse('index'))
 
 
+@admin_required
 def log_detail(request, object_id, model):
 
     obj = get_object_or_404(model, pk=object_id)
@@ -106,14 +107,14 @@ def log_detail(request, object_id, model):
     return render_to_response(['%s/log_list.html' % content_type.app_label, 'log_list.html'], locals(), context_instance=RequestContext(request))
 
 
-@login_required
+@admin_required
 def comments_detail(request, object_id, model):
     obj = get_object_or_404(model, pk=object_id)
     content_type = ContentType.objects.get_for_model(obj.__class__)
     return render_to_response('comments/%s_detail.html' % content_type.model, locals(), context_instance=RequestContext(request))
 
 
-@login_required
+@admin_required
 def add_comment(request, object_id, model):
 
     obj = get_object_or_404(model, pk=object_id)

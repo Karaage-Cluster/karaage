@@ -1,17 +1,32 @@
 {% extends "changelist.html" %}
 {% load paginator common %}
+
+
 {% block title %}Projects{% endblock %}
 
 
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    Projects
+</div>
+{% endblock %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Projects</div>{% endblock %}   
 
-{% block object-tools %}<div class="module object-tools"><h2>Object links</h2><p>{% if perms.projects.add_project %}
-</p><ul><li><a class="addlink" href="add/">Add project</a></li></ul>
+{% block object-tools %}
+{% if request.user.is_admin %}
+<div class="module object-tools">
+    <h2>Object links</h2>
+    <ul>
+        <li><a class="addlink" href="add/">Add project</a></li>
+    </ul>
+</div>
 {% endif %}
-</div>{% endblock %}
+{% endblock %}
 
-{% block content %}<div id="content-main"><div class="module {% if filter_bar %}filtered{% endif %}" id="changelist">
+
+{% block content %}
+<div id="content-main"><div class="module {% if filter_bar %}filtered{% endif %}" id="changelist">
   {% searchform %}
   
   {% if filter_bar %}
@@ -49,4 +64,5 @@
    </tbody>
 </table>
   {% pagination page request %}
-</div></div>{% endblock %}
+</div></div>
+{% endblock %}

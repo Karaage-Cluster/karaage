@@ -18,7 +18,6 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
-from django.contrib.auth.decorators import permission_required, login_required
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.contrib import messages
@@ -28,6 +27,7 @@ from django.db.models import Count, Sum
 import datetime
 from andsome.util.filterspecs import Filter, FilterBar, DateFilter
 
+from karaage.util.decorators import admin_required
 from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense, SoftwareAccessRequest, SoftwareLicenseAgreement
 from karaage.software.forms import AddPackageForm, LicenseForm, SoftwareVersionForm
 from karaage.people.models import Person
@@ -36,6 +36,7 @@ from karaage.util import get_date_range, log_object as log
 from karaage.util.email_messages import send_software_request_approved_email
 
 
+@admin_required
 def software_list(request):
     software_list = SoftwarePackage.objects.all()
     page_no = int(request.GET.get('page', 1))
@@ -72,6 +73,7 @@ def software_list(request):
     return render_to_response('software/software_list.html', locals(), context_instance=RequestContext(request))
 
 
+@admin_required
 def software_detail(request, package_id):
     package = get_object_or_404(SoftwarePackage, pk=package_id)
 
@@ -103,6 +105,7 @@ def software_detail(request, package_id):
     return render_to_response('software/software_detail.html', locals(), context_instance=RequestContext(request))
 
 
+@admin_required
 def software_verbose(request, package_id):
     package = get_object_or_404(SoftwarePackage, pk=package_id)
 
@@ -112,7 +115,7 @@ def software_verbose(request, package_id):
     return render_to_response('software/software_verbose.html', locals(), context_instance=RequestContext(request))
 
 
-@permission_required('software.add_softwarepackage')
+@admin_required
 def add_package(request):
 
     if request.method == 'POST':
@@ -128,13 +131,13 @@ def add_package(request):
     return render_to_response('software/add_package_form.html', locals(), context_instance=RequestContext(request))
 
 
-@login_required
+@admin_required
 def license_detail(request, license_id):
     l = get_object_or_404(SoftwareLicense, pk=license_id)
     return render_to_response('software/license_detail.html', locals(), context_instance=RequestContext(request))
 
 
-@permission_required('software.delete_softwarelicense')
+@admin_required
 def add_edit_license(request, package_id, license_id=None):
 
     package = get_object_or_404(SoftwarePackage, pk=package_id)
@@ -158,7 +161,7 @@ def add_edit_license(request, package_id, license_id=None):
     return render_to_response('software/license_form.html', locals(), context_instance=RequestContext(request))
 
 
-@permission_required('software.delete_softwareversion')
+@admin_required
 def delete_version(request, package_id, version_id):
     
     version = get_object_or_404(SoftwareVersion, pk=version_id)
@@ -173,7 +176,7 @@ def delete_version(request, package_id, version_id):
     return render_to_response('software/version_confirm_delete.html', locals(), context_instance=RequestContext(request))
 
 
-@permission_required('software.change_softwareversion')
+@admin_required
 def add_edit_version(request, package_id, version_id=None):
 
     package = get_object_or_404(SoftwarePackage, pk=package_id)
@@ -194,12 +197,13 @@ def add_edit_version(request, package_id, version_id=None):
     return render_to_response('software/version_form.html', locals(), context_instance=RequestContext(request))
 
 
+@admin_required
 def category_list(request):
     category_list = SoftwareCategory.objects.all()
     return render_to_response('software/category_list.html', {'category_list': category_list}, context_instance=RequestContext(request))
     
 
-@permission_required('software.change_softwarepackage')
+@admin_required
 def remove_member(request, package_id, user_id):
 
     package = get_object_or_404(SoftwarePackage, pk=package_id)
@@ -215,7 +219,7 @@ def remove_member(request, package_id, user_id):
     return HttpResponseRedirect(package.get_absolute_url())
 
 
-@permission_required('software.change_softwareaccessrequest')
+@admin_required
 def softwarerequest_list(request):
     page_no = int(request.GET.get('page', 1))
     softwarerequest_list = SoftwareAccessRequest.objects.all()
@@ -224,7 +228,7 @@ def softwarerequest_list(request):
     return render_to_response('software/request_list.html', {'softwarerequest_list': softwarerequest_list, 'page': page}, context_instance=RequestContext(request))
     
 
-@permission_required('software.change_softwareaccessrequest')
+@admin_required
 def softwarerequest_approve(request, softwarerequest_id):
     softwarerequest = get_object_or_404(SoftwareAccessRequest, pk=softwarerequest_id)
 
@@ -246,7 +250,7 @@ def softwarerequest_approve(request, softwarerequest_id):
     return render_to_response('software/request_approve.html', {'softwarerequest': softwarerequest}, context_instance=RequestContext(request))
 
 
-@permission_required('software.change_softwareaccessrequest')
+@admin_required
 def softwarerequest_delete(request, softwarerequest_id):
     softwarerequest = get_object_or_404(SoftwareAccessRequest, pk=softwarerequest_id)
     
@@ -259,6 +263,7 @@ def softwarerequest_delete(request, softwarerequest_id):
     return render_to_response('software/request_delete.html', {'softwarerequest': softwarerequest}, context_instance=RequestContext(request))
 
 
+@admin_required
 def software_stats(request, package_id):
     package = get_object_or_404(SoftwarePackage, pk=package_id)
     start, end = get_date_range(request)
@@ -282,6 +287,7 @@ def software_stats(request, package_id):
     return render_to_response('software/software_stats.html', context, context_instance=RequestContext(request))
 
 
+@admin_required
 def version_stats(request, package_id, version_id):
     version = get_object_or_404(SoftwareVersion, pk=version_id)
     start, end = get_date_range(request)

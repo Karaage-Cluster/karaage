@@ -1,24 +1,28 @@
 {% extends "changelist.html" %}
 {% load url from future %}
 
+
 {% block title %}Software{% endblock %}
 
 
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    Software
+</div>
+{% endblock %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Software</div>{% endblock %}   
 
-{% block object-tools %}<div class="module object-tools"><h2>Object links</h2><p>{% if perms.software.add_softwarepackage %}
-</p><ul>
-{% if perms.software.change_softwareaccessrequest %}
-<li><a href="{% url 'kg_softwarerequest_list' %}">Requests</a></li>
+{% block object-tools %}
+{% if request.user.is_admin %}
+<div class="module object-tools">
+    <h2>Object links</h2>
+    <ul>
+        <li><a href="{% url 'kg_softwarerequest_list' %}">Requests</a></li>
+        <li><a href="{% url 'kg_software_category_list' %}">Categories</a></li>
+        <li><a class="addlink" href="{% url 'kg_software_add' %}">Add software</a></li>
+    </ul>
+</div>
 {% endif %}
-{% if perms.software.add_softwarecategory %}
-<li><a href="{% url 'kg_software_category_list' %}">Categories</a></li>
-{% endif %}
-{% if perms.software.add_softwarepackage %}
-<li><a class="addlink" href="{% url 'kg_software_add' %}">Add software</a></li>
-{% endif %}
-</ul>
-{% endif %}
-</div>{% endblock %}
+{% endblock %}
 

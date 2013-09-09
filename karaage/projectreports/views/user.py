@@ -19,12 +19,12 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.contrib.auth.decorators import login_required
 
 import datetime
 from django_surveys.models import SurveyGroup
 from django_surveys.views import do_survey
 
+from karaage.util.decorators import login_required
 from karaage.projects.models import Project
 from karaage.projectreports.models import ProjectSurvey
 
@@ -36,7 +36,7 @@ def survey(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
 
     if not person in project.leaders.all():
-        if not request.user.has_perm('projectreports.add_projectsurvey'):
+        if not request.user.is_admin:
             return HttpResponseForbidden("Access Denied - must be project leader.")
 
     today = datetime.date.today()
@@ -57,7 +57,7 @@ def thanks(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
 
     if not person in project.leaders.all():
-        if not request.user.has_perm('projectreports.add_projectsurvey'):
+        if not request.user.is_admin:
             return HttpResponseForbidden("Access Denied - must be project leader.")
 
     today = datetime.date.today()

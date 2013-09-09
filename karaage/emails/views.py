@@ -18,14 +18,14 @@
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
-from django.contrib.auth.decorators import permission_required
 from django.core.mail import send_mass_mail
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 
+from karaage.util.decorators import admin_required
 from karaage.emails.forms import EmailForm
 
-@permission_required('emails.send_email')
+@admin_required
 def send_email(request):
 
     if request.method == 'POST':        

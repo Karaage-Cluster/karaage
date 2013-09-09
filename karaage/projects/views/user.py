@@ -18,9 +18,9 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
+from karaage.util.decorators import login_required
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.forms import UserProjectForm as ProjectForm

@@ -18,7 +18,6 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.models import LogEntry
 from django.db.models import Q
@@ -27,6 +26,7 @@ from django.contrib import messages
 
 from andsome.util.filterspecs import Filter, FilterBar
 
+from karaage.util.decorators import admin_required
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.machines.models import MachineCategory, Account
@@ -36,7 +36,7 @@ from karaage.projects.utils import get_new_pid, add_user_to_project, remove_user
 from karaage.util import log_object as log
 
 
-@permission_required('projects.add_project')
+@admin_required
 def add_edit_project(request, project_id=None):
 
     if project_id is None:
@@ -78,7 +78,7 @@ def add_edit_project(request, project_id=None):
     return render_to_response('projects/project_form.html', locals(), context_instance=RequestContext(request))
 
 
-@permission_required('projects.delete_project')
+@admin_required
 def delete_project(request, project_id):
 
     project = get_object_or_404(Project, pk=project_id)
@@ -103,7 +103,7 @@ def delete_project(request, project_id):
             context_instance=RequestContext(request))
 
     
-@login_required
+@admin_required
 def project_detail(request, project_id):
 
     project = get_object_or_404(Project, pk=project_id)
@@ -111,9 +111,6 @@ def project_detail(request, project_id):
     form = AddPersonForm(request.POST or None)
     if request.method == 'POST':
         # Post means adding a user to this project
-        if not request.user.has_perm('projects.change_project'):
-            return HttpResponseForbidden('<h1>Access Denied</h1>')
-        
         if form.is_valid():
             person = form.cleaned_data['person']
             add_user_to_project(person, project)
@@ -125,7 +122,7 @@ def project_detail(request, project_id):
                               context_instance=RequestContext(request))
 
 
-@login_required
+@admin_required
 def project_verbose(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
 
@@ -135,7 +132,7 @@ def project_verbose(request, project_id):
     return render_to_response('projects/project_verbose.html', locals(), context_instance=RequestContext(request))
 
 
-@login_required
+@admin_required
 def project_list(request, queryset=Project.objects.select_related(), template_name='projects/project_list.html', paginate=True):
 
     project_list = queryset
@@ -185,7 +182,7 @@ def project_list(request, queryset=Project.objects.select_related(), template_na
             context_instance=RequestContext(request))
 
 
-@permission_required('projects.change_project')
+@admin_required
 def remove_user(request, project_id, username):
 
     project = get_object_or_404(Project, pk=project_id)
@@ -213,7 +210,7 @@ def remove_user(request, project_id, username):
         context_instance=RequestContext(request))
 
 
-@login_required
+@admin_required
 def no_users(request):
 
     project_ids = []
@@ -224,7 +221,7 @@ def no_users(request):
     return project_list(request, Project.objects.filter(pid__in=project_ids))
 
 
-@login_required
+@admin_required
 def over_quota(request):
 
     project_ids = []
@@ -237,7 +234,7 @@ def over_quota(request):
     return project_list(request, Project.objects.filter(pid__in=project_ids))
 
 
-@login_required
+@admin_required
 def project_logs(request, project_id):
 
     project = get_object_or_404(Project, pk=project_id)

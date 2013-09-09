@@ -1,13 +1,24 @@
 {% extends "changelist.html" %}
 
+
 {% block title %}Institutes{% endblock %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Institutes</div>{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    Institutes</div>
+{% endblock %}
 
 
-
-{% block object-tools %}<div class="module object-tools"><h2>Object links</h2><p>{% if perms.institutes.add_institute %}
-</p><ul><li><a class="addlink" href="add/">Add institute</a></li></ul>
+{% block object-tools %}
+{% if request.user.is_admin %}
+<div class="module object-tools">
+    <h2>Object links</h2>
+    <ul>
+        <li><a class="addlink" href="add/">Add institute</a></li>
+    </ul>
+</div>
 {% endif %}
-</div>{% endblock %}
+{% endblock %}
 
