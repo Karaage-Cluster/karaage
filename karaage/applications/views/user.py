@@ -37,6 +37,7 @@ import karaage.applications.emails as emails
 import karaage.util.saml as saml
 from karaage.people.models import Person
 from karaage.projects.models import Project
+from karaage.institutes.models import Institute
 from karaage.util import log_object as log
 
 import json
@@ -464,6 +465,11 @@ class StateStepShibboleth(Step):
         elif (applicant.institute is not None and
                 applicant.institute.saml_entityid is None):
             status = "Your institute does not have shibboleth registered."
+            form = None
+            done = True
+
+        elif Institute.objects.filter(saml_entityid__isnull=False).count() == 0:
+            status = "No institutes support shibboleth here."
             form = None
             done = True
 
