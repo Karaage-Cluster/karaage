@@ -98,9 +98,12 @@ class ApplicantForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data['email']
-        users = Person.active.filter(email__exact=email)
-        if users:
+        users = Person.objects.filter(email__exact=email)
+        if users.count() > 0:
             raise forms.ValidationError(u'An account with this email already exists. Please email %s' % settings.ACCOUNTS_EMAIL)
+        users = Applicant.objects.filter(email__exact=email).exclude(pk=self.instance.pk)
+        if users.count() > 0:
+            raise forms.ValidationError(u'An application with this email already exists. Please email %s' % settings.ACCOUNTS_EMAIL)
         _clean_email(email)
         return email
 
