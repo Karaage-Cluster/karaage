@@ -26,7 +26,7 @@ class ApacheSiteLogin:
 
         if request.user.is_anonymous():
             try:
-                person = Person.objects.get(user__username__exact=request.META['REMOTE_USER'])
+                person = Person.objects.get(username__exact=request.META['REMOTE_USER'])
                 login(request, person.user)
             except:
                 return HttpResponseForbidden("<h1>Failed log in.</h1><p>Try to refresh page</p>")

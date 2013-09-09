@@ -36,7 +36,7 @@ from karaage.util import get_date_range, log_object as log
 @permission_required('people.delete_person')
 def delete_user(request, username):
 
-    person = get_object_or_404(Person, user__username=username)
+    person = get_object_or_404(Person, username=username)
 
     if request.method == 'POST':
         deleted_by = request.user.get_profile()
@@ -50,7 +50,7 @@ def delete_user(request, username):
 @login_required
 def user_detail(request, username):
     
-    person = get_object_or_404(Person, user__username=username)
+    person = get_object_or_404(Person, username=username)
 
     my_projects = person.projects.all()
     my_pids = [p.pid for p in my_projects]
@@ -74,7 +74,7 @@ def user_detail(request, username):
 
 @login_required
 def user_verbose(request, username):
-    person = get_object_or_404(Person, user__username=username)
+    person = get_object_or_404(Person, username=username)
 
     from karaage.datastores import get_person_details
     person_details = get_person_details(person)
@@ -89,7 +89,7 @@ def user_verbose(request, username):
 
 @permission_required('machines.add_account')
 def activate(request, username):
-    person = get_object_or_404(Person, user__username=username, user__is_active=False)
+    person = get_object_or_404(Person, username=username, is_active=False)
 
     if request.method == 'POST':
         approved_by = request.user.get_profile()
@@ -101,7 +101,7 @@ def activate(request, username):
 
 @permission_required('people.change_person')
 def password_change(request, username):
-    person = get_object_or_404(Person, user__username=username)
+    person = get_object_or_404(Person, username=username)
     
     if request.POST:
         form = AdminPasswordChangeForm(request.POST)
@@ -120,7 +120,7 @@ def password_change(request, username):
 
 @permission_required('people.change_person')
 def lock_person(request, username):
-    person = get_object_or_404(Person, user__username=username)
+    person = get_object_or_404(Person, username=username)
     if request.method == 'POST':
         person.lock()
         messages.success(request, "%s's account has been locked" % person)
@@ -129,7 +129,7 @@ def lock_person(request, username):
 
 @permission_required('people.change_person')
 def unlock_person(request, username):
-    person = get_object_or_404(Person, user__username=username)
+    person = get_object_or_404(Person, username=username)
     if request.method == 'POST':
         person.unlock()
         messages.success(request, "%s's account has been unlocked" % person)
@@ -138,7 +138,7 @@ def unlock_person(request, username):
 
 @permission_required('people.change_person')
 def bounced_email(request, username):
-    person = get_object_or_404(Person, user__username=username)
+    person = get_object_or_404(Person, username=username)
     if request.method == 'POST':
         person.lock()
         send_bounced_warning(person)
@@ -155,7 +155,7 @@ def bounced_email(request, username):
 def user_job_list(request, username):
     today = datetime.date.today()
     start = today - datetime.timedelta(days=7)
-    person = get_object_or_404(Person, user__username=username)
+    person = get_object_or_404(Person, username=username)
     start, end = get_date_range(request, start, today)
 
     job_list = []
@@ -166,10 +166,10 @@ def user_job_list(request, username):
 
 
 def user_comments(request, username):
-    obj = get_object_or_404(Person, user__username=username)
+    obj = get_object_or_404(Person, username=username)
     return render_to_response('comments/comments_list.html', {'obj': obj}, context_instance=RequestContext(request))
 
 
 def add_comment(request, username):
-    obj = get_object_or_404(Person, user__username=username)
+    obj = get_object_or_404(Person, username=username)
     return render_to_response('comments/add_comment.html', {'obj': obj}, context_instance=RequestContext(request))

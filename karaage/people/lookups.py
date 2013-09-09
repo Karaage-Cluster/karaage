@@ -48,9 +48,9 @@ class PersonLookup(LookupChannel):
             in the LookupChannel class definition
         """
         return Person.objects.filter(
-                Q(user__username__icontains=q) |
-                Q(user__first_name__icontains=q) |
-                Q(user__last_name__icontains=q)
+                Q(username__icontains=q) |
+                Q(short_name__icontains=q) |
+                Q(full_name__icontains=q)
         )
 
     def get_result(self, obj):
@@ -64,9 +64,8 @@ class PersonLookup(LookupChannel):
         """
         (HTML) formatted item for display in the dropdown
         """
-        return "%s %s (%s)" % (
-                escape(obj.first_name),
-                escape(obj.last_name),
+        return "%s (%s)" % (
+                escape(obj.full_name),
                 escape(obj.username)
         )
 
@@ -74,9 +73,8 @@ class PersonLookup(LookupChannel):
         """
         (HTML) formatted item for displaying item in the selected deck area
         """
-        return "%s %s" % (
-                escape(obj.first_name),
-                escape(obj.last_name)
+        return "%s" % (
+                escape(obj.full_name)
         )
 
 

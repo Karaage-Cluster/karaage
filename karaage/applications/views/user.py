@@ -627,9 +627,9 @@ class StateStepProject(State):
             if len(terms) >= 3:
                 query = Q()
                 for term in terms.split(' '):
-                    q =     Q(user__username__icontains=term)
-                    q = q | Q(user__first_name__icontains=term)
-                    q = q | Q(user__last_name__icontains=term)
+                    q =     Q(username__icontains=term)
+                    q = q | Q(first_name__icontains=term)
+                    q = q | Q(last_name__icontains=term)
                     query = query & q
                 leader_list = leader_list.filter(query)
                 resp['leader_list'] = [(p.pk, "%s (%s)"%(p,p.username)) for p in leader_list]
@@ -940,10 +940,10 @@ class StateWaitingForAdmin(State):
             similar_people = []
             if application.content_type.model == 'applicant':
                 similar_people = Person.objects.filter(
-                        Q(user__email=application.applicant.email) |
-                        Q(user__username=application.applicant.username) |
-                        (Q(user__first_name=application.applicant.first_name) &
-                        Q(user__last_name=application.applicant.last_name))
+                        Q(email=application.applicant.email) |
+                        Q(username=application.applicant.username) |
+                        (Q(full_name__icontains=application.applicant.first_name) &
+                        Q(full_name__icontains=application.applicant.last_name))
                 )
             actions = [ 'approve' ]
             application_form = forms.AdminApproveApplicationFormGenerator(
@@ -1163,7 +1163,7 @@ def get_application_state_machine():
 
 def get_applicant_from_email(email):
     try:
-        applicant = Person.active.get(user__email=email)
+        applicant = Person.active.get(email=email)
         existing_person = True
     except Person.DoesNotExist:
         applicant, _ = Applicant.objects.get_or_create(email=email)

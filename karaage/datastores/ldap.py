@@ -102,6 +102,7 @@ class AccountDataStore(base.BaseDataStore):
             luser.gidNumber = lgroup.gidNumber
             luser.givenName = person.first_name
             luser.sn = person.last_name
+            luser.fullName = person.full_name
             luser.telephoneNumber = _str_or_none(person.telephone)
             luser.mail = _str_or_none(person.email)
             luser.title = _str_or_none(person.title)
@@ -122,6 +123,7 @@ class AccountDataStore(base.BaseDataStore):
             luser.uid = person.username
             luser.givenName = person.first_name
             luser.sn = person.last_name
+            luser.fullName = person.full_name
             luser.telephoneNumber = _str_or_none(person.telephone)
             luser.mail = _str_or_none(person.email)
             luser.title = _str_or_none(person.title)

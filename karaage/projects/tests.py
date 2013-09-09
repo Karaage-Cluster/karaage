@@ -69,7 +69,7 @@ class ProjectTestCase(TestCase):
         
         self.assertEqual(project.is_active, True)
         self.assertEqual(project.date_approved, datetime.date.today())
-        self.assertEqual(project.approved_by, Person.objects.get(user__username='kgsuper'))
+        self.assertEqual(project.approved_by, Person.objects.get(username='kgsuper'))
         self.assertEqual(project.pid, 'pExam0001')
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
         self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())    
@@ -101,7 +101,7 @@ class ProjectTestCase(TestCase):
         
         self.assertEqual(project.is_active, True)
         self.assertEqual(project.date_approved, datetime.date.today())
-        self.assertEqual(project.approved_by, Person.objects.get(user__username='kgsuper'))
+        self.assertEqual(project.approved_by, Person.objects.get(username='kgsuper'))
         self.assertEqual(project.pid, 'Enrico')
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
         self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())
@@ -122,7 +122,7 @@ class ProjectTestCase(TestCase):
         self.assertRaises(self._datastore._account.DoesNotExist, self._datastore._accounts().get, pk='kgtestuser2')
 
         # add kgtestuser2 to project
-        new_user = Person.objects.get(user__username='kgtestuser2')
+        new_user = Person.objects.get(username='kgtestuser2')
         response = self.client.post(reverse('kg_project_detail', args=[project.pid]), { 'person': new_user.id} )
         self.failUnlessEqual(response.status_code, 302)
         project = Project.objects.get(pk='TestProject1')
@@ -161,7 +161,7 @@ class ProjectTestCase(TestCase):
         self.assertEqual(project.is_active, False)
         self.assertEqual(project.group.members.count(), 0)
         self.assertEqual(project.date_deleted, datetime.date.today())
-        self.assertEqual(project.deleted_by, Person.objects.get(user__username='kgsuper'))
+        self.assertEqual(project.deleted_by, Person.objects.get(username='kgsuper'))
         
 
     def test_change_deafult(self):

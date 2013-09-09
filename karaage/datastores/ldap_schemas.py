@@ -27,8 +27,8 @@ import tldap.manager
 class kAccountMixin(object):
     @classmethod
     def pre_save(cls, self, using):
-        self.displayName = '%s %s (%s)' % (self.givenName, self.sn, self.o)
-        self.gecos = '%s %s (%s)' % (self.givenName, self.sn, self.o)
+        self.displayName = u'%s (%s)' % (self.fullName, self.o)
+        self.gecos = u'%s (%s)' % (self.fullName, self.o)
 
 
 ############

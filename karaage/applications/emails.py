@@ -54,7 +54,7 @@ def send_leader_request_email(application):
     context['link'] = '%s/applications/%d/' % (settings.REGISTRATION_BASE_URL, application.pk)
     context['application'] = application
 
-    for leader in application.project.leaders.filter(user__is_active=True):
+    for leader in application.project.leaders.filter(is_active=True):
         context['receiver'] = leader
 
         to_email = leader.email

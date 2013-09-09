@@ -22,7 +22,7 @@ from karaage.people.models import Person
 
 class PersonAdmin(admin.ModelAdmin):
     list_display = ('username', 'get_full_name', 'email', 'is_active', 'last_usage')
-    search_fields = ['user__first_name', 'user__last_name', 'comment', 'user__username', 'user__email', 'mobile', 'position']
+    search_fields = ['short_name', 'full_name', 'comment', 'username', 'email', 'mobile', 'position']
     list_filter = ['institute']
 
 

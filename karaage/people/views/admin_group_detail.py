@@ -89,7 +89,7 @@ def remove_group_member(request, group_name, username):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     group = get_object_or_404(Group, name=group_name)
-    person = get_object_or_404(Person, user__username=username)
+    person = get_object_or_404(Person, username=username)
 
     error = None
     for account in person.account_set.filter(date_deleted__isnull=True):

@@ -24,7 +24,7 @@ import tldap.methods.ldap_passwd
 class LDAPBackend(ModelBackend):
     def authenticate(self, username=None, password=None):
         try:
-            person = Person.objects.get(user__username__exact=username)
+            person = Person.objects.get(username__exact=username)
         except Person.DoesNotExist:
             return None
 
@@ -39,4 +39,4 @@ class LDAPBackend(ModelBackend):
         person.set_password(password)
         person.save()
 
-        return person.user
+        return person

@@ -15,7 +15,7 @@
 <h2>Personal Details</h2>
 {{ form.non_field_errors }}
 {% formfield form.title %}
-{% inlineformfield form.first_name form.last_name %}
+{% inlineformfield form.short_name form.full_name %}
 {% inlineformfield form.department form.position %}
 {% formfield form.supervisor %}
 {% formfield form.email %}

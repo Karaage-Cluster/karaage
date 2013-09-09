@@ -43,7 +43,7 @@ def add_edit_user(request, form_class, template_name='people/person_form.html', 
         if username is None:
             person = None
         else:
-            person = get_object_or_404(Person, user__username=username)
+            person = get_object_or_404(Person, username=username)
     else:
         person = request.user.get_profile()
 
@@ -82,7 +82,7 @@ def user_list(request, queryset=None):
         user_list = user_list.filter(institute=int(request.GET['institute']))
 
     if 'status' in request.REQUEST:
-        user_list = user_list.filter(user__is_active=int(request.GET['status']))
+        user_list = user_list.filter(is_active=int(request.GET['status']))
 
     params = dict(request.GET.items())
     m_params = dict([(str(k), str(v)) for k, v in params.items() if k.startswith('date_approved__')])
@@ -92,7 +92,7 @@ def user_list(request, queryset=None):
         terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
-            q = Q(user__username__icontains=term) | Q(user__first_name__icontains=term) | Q(user__last_name__icontains=term) | Q(comment__icontains=term)
+            q = Q(username__icontains=term) | Q(short_name__icontains=term) | Q(full_name__icontains=term) | Q(comment__icontains=term)
             query = query & q
 
         user_list = user_list.filter(query)
@@ -126,7 +126,7 @@ def add_edit_account(request, username=None, account_id=None):
         username = account.username
     else:
         #Add
-        person = get_object_or_404(Person, user__username=username)
+        person = get_object_or_404(Person, username=username)
         account = None
 
     if request.method == 'POST':
@@ -264,11 +264,11 @@ def struggling(request):
     today = datetime.date.today()
     days30 = today - datetime.timedelta(days=30)
     
-    accounts = Account.objects.select_related().filter(date_deleted__isnull=True).filter(date_created__lt=days30).filter(user__last_usage__isnull=True).order_by('-date_created')
+    accounts = Account.objects.select_related().filter(date_deleted__isnull=True).filter(date_created__lt=days30).filter(last_usage__isnull=True).order_by('-date_created')
 
     if 'institute' in request.REQUEST:
         institute_id = int(request.GET['institute'])
-        accounts = accounts.filter(user__institute=institute_id)
+        accounts = accounts.filter(institute=institute_id)
 
     params = dict(request.GET.items())
     m_params = dict([(str(k), str(v)) for k, v in params.items() if k.startswith('date_created__')])

@@ -81,7 +81,7 @@ def institute_projects_list(request, institute_id):
 def remove_user(request, project_id, username):
 
     project = get_object_or_404(Project, pk=project_id)
-    person = get_object_or_404(Person, user__username=username)
+    person = get_object_or_404(Person, username=username)
 
     if not request.user.get_profile() in project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')

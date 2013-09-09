@@ -48,7 +48,7 @@ def application_list(request):
         terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
-            q = Q(created_by__user__first_name__icontains=term) | Q(created_by__user__last_name__icontains=term)
+            q = Q(created_by__first_name__icontains=term) | Q(created_by__last_name__icontains=term)
             query = query & q
 
         apps = apps.filter(query)
