@@ -458,10 +458,12 @@ class StateStepShibboleth(Step):
             status = "You have already registered a shibboleth id."
             form = None
             done = True
-#        elif application.content_type.model != 'applicant':
-#            status = "You are already registered in the system."
-#            form = None
-#            done = True
+
+        elif application.content_type.model != 'applicant':
+            status = "You are already registered in the system."
+            form = None
+            done = True
+
         elif (applicant.institute is not None and
                 applicant.institute.saml_entityid is None):
             status = "Your institute does not have shibboleth registered."
