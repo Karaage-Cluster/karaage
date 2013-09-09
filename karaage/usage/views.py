@@ -517,7 +517,7 @@ def job_list(request):
         job_list = job_list.filter(software__package__id=int(request.GET['software']))
 
     if 'account' in request.REQUEST:
-        job_list = job_list.filter(account__person__user__username=request.GET['account'])
+        job_list = job_list.filter(account__person__username=request.GET['account'])
 
     if 'project' in request.REQUEST:
         job_list = job_list.filter(project__pid=request.GET['project'])
@@ -531,7 +531,7 @@ def job_list(request):
         query = Q()
         for term in terms.split(' '):
             q = Q(jobid=term)
-            q = q | Q(account__person__user__username__icontains=term)
+            q = q | Q(account__person__username__icontains=term)
             q = q | Q(project__pid__icontains=term)
             query = query & q
         

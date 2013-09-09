@@ -17,7 +17,6 @@
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.management import call_command
 
@@ -51,7 +50,7 @@ class UserTestCase(TestCase):
     def do_permission_tests(self, test_object, users):
         for user_id in users:
 #            print "can user '%d' access '%s'?"%(user_id, test_object)
-            user = User.objects.get(id=user_id)
+            user = Person.objects.get(id=user_id)
             result = test_object.can_view(user)
             expected_result = users[user_id]
 #            print "---> got:'%s' expected:'%s'"%(result, expected_result)
@@ -208,8 +207,8 @@ class UserTestCase(TestCase):
         
         form_data = {
             'title' : 'Mr',
-            'first_name': 'Sam',
-            'last_name': 'Morrison',
+            'short_name': 'Sam',
+            'full_name': 'Sam Morrison',
             'position': 'Sys Admin',
             'institute': 1,
             'department': 'eddf',
@@ -251,8 +250,8 @@ class UserTestCase(TestCase):
 
         form_data = {
             'title' : 'Mr',
-            'first_name': 'Sam',
-            'last_name': 'Morrison2',
+            'short_name': 'Sam',
+            'full_name': 'Sam Morrison2',
             'position': 'Sys Admin',
             'institute': 1,
             'department': 'eddf',
@@ -282,7 +281,7 @@ class UserTestCase(TestCase):
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
 
-        person = Person.objects.get(user__username='kgtestuser3')
+        person = Person.objects.get(username='kgtestuser3')
         luser = self._datastore._accounts().get(uid='kgtestuser3')
         self.failUnlessEqual(person.mobile, '')
         self.failUnlessEqual(luser.gidNumber, 500)
@@ -293,8 +292,8 @@ class UserTestCase(TestCase):
         
         form_data = {
             'title' : 'Mr',
-            'first_name': 'Test',
-            'last_name': 'User3',
+            'short_name': 'Test',
+            'full_name': 'Test User3',
             'position': 'Sys Admin',
             'institute': 2,
             'department': 'eddf',
@@ -306,7 +305,7 @@ class UserTestCase(TestCase):
         response = self.client.post(reverse('kg_person_edit', args=['kgtestuser3']), form_data)
         self.failUnlessEqual(response.status_code, 302)
 
-        person = Person.objects.get(user__username='kgtestuser3')
+        person = Person.objects.get(username='kgtestuser3')
         luser = self._datastore._accounts().get(uid='kgtestuser3')
         self.failUnlessEqual(person.mobile, '555666')
         self.failUnlessEqual(luser.gidNumber, 501)
@@ -315,7 +314,7 @@ class UserTestCase(TestCase):
 
     def test_delete_activate_person(self):
         self.client.login(username='kgsuper', password='aq12ws')
-        person = Person.objects.get(user__username='kgtestuser3')
+        person = Person.objects.get(username='kgtestuser3')
         self.assertEqual(person.is_active, True)
         self.assertEqual(person.groups.filter(project__gt=2).count(), 1)
         self.assertEqual(person.account_set.count(), 1)
@@ -329,7 +328,7 @@ class UserTestCase(TestCase):
         response = self.client.post(reverse('kg_person_delete', args=[person.username]))
         self.failUnlessEqual(response.status_code, 302)
         
-        person = Person.objects.get(user__username='kgtestuser3')
+        person = Person.objects.get(username='kgtestuser3')
 
         self.assertEqual(person.is_active, False)
         self.assertEqual(person.projects.count(), 0)
@@ -340,7 +339,7 @@ class UserTestCase(TestCase):
         # Test activating
         response = self.client.post(reverse('kg_person_activate', args=[person.username]))
         self.failUnlessEqual(response.status_code, 302)
-        person = Person.objects.get(user__username='kgtestuser3')
+        person = Person.objects.get(username='kgtestuser3')
         self.assertEqual(person.is_active, True)
 
     def stest_delete_account(self):
@@ -400,7 +399,7 @@ class UserTestCase(TestCase):
         Project.objects.create(
             pid='test2',
             name='test project 5',
-            leader=Person.objects.get(user__username='leader'),
+            leader=Person.objects.get(username='leader'),
             start_date = datetime.date.today(),
             machine_category=MachineCategory.objects.get(name='VPAC'),
             institute=Institute.objects.get(name='VPAC'),

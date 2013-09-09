@@ -104,7 +104,7 @@ class Migration(SchemaMigration):
             'send_email': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
         },
         'people.person': {
-            'Meta': {'ordering': "['user__first_name', 'user__last_name']", 'object_name': 'Person', 'db_table': "'person'"},
+            'Meta': {'ordering': "['first_name', 'last_name']", 'object_name': 'Person', 'db_table': "'person'"},
             'address': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'approved_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'user_approver'", 'null': 'True', 'to': "orm['people.Person']"}),
             'city': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),

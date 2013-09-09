@@ -39,8 +39,8 @@ class AccountTestCase(TestCase):
         self.server = server
         form_data = {
             'title' : 'Mr',
-            'first_name': 'Sam',
-            'last_name': 'Morrison2',
+            'short_name': 'Sam',
+            'full_name': 'Sam Morrison2',
             'position': 'Sys Admin',
             'institute': 1,
             'department': 'eddf',
@@ -56,9 +56,9 @@ class AccountTestCase(TestCase):
         response = self.client.post(reverse('kg_person_add'), form_data)
         self.failUnlessEqual(response.status_code, 302)
 
-        person = Person.objects.get(user__username='kgsuper')
-        self.failUnlessEqual(person.first_name, 'Super')
-        self.failUnlessEqual(person.last_name, 'User')
+        person = Person.objects.get(username='kgsuper')
+        self.failUnlessEqual(person.short_name, 'Super')
+        self.failUnlessEqual(person.full_name, 'Super User')
 
 
     def tearDown(self):
@@ -76,7 +76,7 @@ class AccountTestCase(TestCase):
             
         response = self.client.post(reverse('kg_person_add_account', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
-        person = Person.objects.get(user__username="samtest2")
+        person = Person.objects.get(username="samtest2")
         self.assertTrue(person.has_account(MachineCategory.objects.get(pk=1)))
 
     def test_fail_add_accounts_username(self):
@@ -120,19 +120,19 @@ class AccountTestCase(TestCase):
             
         response = self.client.post(reverse('kg_person_add_account', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
-        person = Person.objects.get(user__username='samtest2')
+        person = Person.objects.get(username='samtest2')
         ua = person.get_account(MachineCategory.objects.get(pk=1))
         self.failUnlessEqual(person.is_locked(), False)
         self.failUnlessEqual(ua.loginShell(), '/bin/bash')
 
         response = self.client.post(reverse('kg_person_lock', args=['samtest2']))
-        person = Person.objects.get(user__username='samtest2')
+        person = Person.objects.get(username='samtest2')
         ua = person.get_account(MachineCategory.objects.get(pk=1))
         self.failUnlessEqual(person.is_locked(), True)
         self.failUnlessEqual(ua.loginShell(), '/bin/bash')
 
         response = self.client.post(reverse('kg_person_unlock', args=['samtest2']))
-        person = Person.objects.get(user__username='samtest2')
+        person = Person.objects.get(username='samtest2')
         ua = person.get_account(MachineCategory.objects.get(pk=1))
         self.failUnlessEqual(person.is_locked(), False)
         self.failUnlessEqual(ua.loginShell(), '/bin/bash')

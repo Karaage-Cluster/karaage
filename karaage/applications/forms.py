@@ -98,7 +98,7 @@ class ApplicantForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data['email']
-        users = Person.active.filter(user__email__exact=email)
+        users = Person.active.filter(email__exact=email)
         if users:
             raise forms.ValidationError(u'An account with this email already exists. Please email %s' % settings.ACCOUNTS_EMAIL)
         _clean_email(email)
@@ -195,7 +195,7 @@ class InviteUserApplicationForm(forms.ModelForm):
     def clean_email(self):
         email = self.cleaned_data['email']
 
-        query = Person.active.filter(user__email=email)
+        query = Person.active.filter(email=email)
         if query.count() > 0:
             raise forms.ValidationError(u'E-Mail address is already in use.')
 
@@ -242,7 +242,7 @@ class UnauthenticatedInviteUserApplicationForm(forms.Form):
     def clean_email(self):
         email = self.cleaned_data['email']
 
-        query = Person.active.filter(user__email=email)
+        query = Person.active.filter(email=email)
         if query.count() > 0:
             raise forms.ValidationError(u'E-Mail address is already in use. Do you already have an account?')
 

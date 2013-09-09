@@ -156,7 +156,7 @@ def project_list(request, queryset=Project.objects.select_related(), template_na
         terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
-            q = Q(pid__icontains=term) | Q(name__icontains=term) | Q(description__icontains=term) | Q(leaders__user__first_name__icontains=term) | Q(leaders__user__last_name__icontains=term) | Q(institute__name__icontains=term)
+            q = Q(pid__icontains=term) | Q(name__icontains=term) | Q(description__icontains=term) | Q(leaders__first_name__icontains=term) | Q(leaders__last_name__icontains=term) | Q(institute__name__icontains=term)
             query = query & q
         
         project_list = project_list.filter(query)
@@ -189,7 +189,7 @@ def project_list(request, queryset=Project.objects.select_related(), template_na
 def remove_user(request, project_id, username):
 
     project = get_object_or_404(Project, pk=project_id)
-    person = get_object_or_404(Person, user__username=username)
+    person = get_object_or_404(Person, username=username)
 
     query = person.account_set.filter(date_deleted__isnull=True, default_project=project)
 

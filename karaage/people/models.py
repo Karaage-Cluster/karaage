@@ -16,6 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -28,13 +29,13 @@ from karaage.util import log_object as log
 from karaage.util import new_random_token, get_current_person
 
 import datetime
+import warnings
 
 def authenticate(username, password):
-    from django.contrib.auth import login, authenticate
-    user = authenticate(username=username, password=password)
-    if user is None:
+    from django.contrib.auth import authenticate
+    person = authenticate(username=username, password=password)
+    if person is None:
         return None
-    person = Person.objects.get_from_user(user)
     assert person.is_authenticated()
     return person
 
@@ -47,8 +48,14 @@ def authenticate(username, password):
 # A locked person is a person who has not been deleted but is not allowed
 # access for some reason.
 
-class Person(models.Model):
-    user = models.ForeignKey(User, unique=True)
+class Person(AbstractBaseUser):
+    username = models.CharField(max_length=30, unique=True, help_text="Required. 16 characters or fewer. Letters, numbers and underscores only")
+    email = models.EmailField(null=True, db_index=True)
+    short_name = models.CharField(max_length=30)
+    full_name = models.CharField(max_length=60)
+    is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
+
     saml_id = models.CharField(max_length=200, null=True, blank=True, unique=True, editable=False)
     position = models.CharField(max_length=200, null=True, blank=True)
     telephone = models.CharField(max_length=200, null=True, blank=True)
@@ -78,7 +85,10 @@ class Person(models.Model):
     active = ActivePersonManager()
     deleted = DeletedPersonManager()
     projectleaders = LeaderManager()
-    
+
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email', 'short_name', 'full_name', 'institute']
+
     def __init__(self, *args, **kwargs):
         super(Person, self).__init__(*args, **kwargs)
         self._login_enabled = self.login_enabled
@@ -86,17 +96,21 @@ class Person(models.Model):
             self._institute = None
         else:
             self._institute = self.institute
+        self._username = self.username
 
     class Meta:
         verbose_name_plural = 'people'
-        ordering = ['user__first_name', 'user__last_name']
+        ordering = ['full_name', 'short_name']
         db_table = 'person'
         permissions = (
             ("lock_person", "Can lock/unlock a person"),
             )
     
     def __unicode__(self):
-        return self.get_full_name()
+        name = self.get_full_name()
+        if not name:
+            name = "No Name"
+        return name
     
     def get_absolute_url(self):
         person = get_current_person()
@@ -113,22 +127,6 @@ class Person(models.Model):
         return True
 
     def save(self, *args, **kwargs):
-        # Hack to ensure user is set
-        if self.user_id is None:
-            assert self._new_username
-            assert self._new_first_name
-            assert self._new_last_name
-            assert self._new_email
-            user = User()
-            user.username = self._new_username
-            user.first_name = self._new_first_name
-            user.last_name = self._new_last_name
-            user.last_email = self._new_email
-            user.last_is_active = self._new_is_active
-            user.last_is_staff = self._new_is_staff
-            user.save()
-            self.user = user
-
         # save the object
         super(Person, self).save(*args, **kwargs)
 
@@ -140,6 +138,13 @@ class Person(models.Model):
         from karaage.datastores import save_account
         for ua in self.account_set.filter(date_deleted__isnull=True):
             save_account(ua)
+
+        # has username changed?
+        old_username = self._username
+        new_username = self.username
+        if old_username != new_username:
+            from karaage.datastores import set_person_username
+            set_person_username(self, old_username, new_username)
 
         # has locked status changed?
         old_login_enabled = self._login_enabled
@@ -175,6 +180,7 @@ class Person(models.Model):
         log(None, self, 2, 'Saved person')
 
         # save current state
+        self._username = self.username
         self._login_enabled = self.login_enabled
         self._institute = self.institute
     save.alters_data = True
@@ -188,84 +194,70 @@ class Person(models.Model):
         from karaage.datastores import delete_user
     delete.alters_data = True
 
-    def _set_username(self, new_username):
-        if self.user_id is None:
-            self._new_username = new_username
-            return
-        old_username = self.username
-        if old_username != new_username:
-            self.user.username = new_username
-            self.user.save()
-            from karaage.datastores import set_person_username
-            set_person_username(self, old_username, new_username)
-    _set_username.alters_data = True
-
-    def _get_username(self):
-        return self.user.username
-    username = property(_get_username, _set_username)
-    
     def _set_last_name(self, value):
-        if self.user_id is None:
-            self._new_last_name = value
-            return
-        self.user.last_name = value
-        self.user.save()
+        warnings.warn('Person.last_name obsolete (set)', DeprecationWarning)
+        first_name = self.first_name
+        if self.first_name:
+            self.full_name = "%s %s" % (first_name, value)
+        else:
+            self.full_name = "first_name %s" % (value)
     _set_last_name.alters_data = True
 
     def _get_last_name(self):
-        return self.user.last_name
+        warnings.warn('Person.last_name obsolete (get)', DeprecationWarning)
+        if not self.full_name:
+            return None
+        elif self.full_name.find(" ") != -1:
+            _, _, last_name = self.full_name.rpartition(" ")
+            return last_name.strip()
+        else:
+            return None
     last_name = property(_get_last_name, _set_last_name)
-    
+
     def _set_first_name(self, value):
-        if self.user_id is None:
-            self._new_first_name = value
-            return
-        self.user.first_name = value
-        self.user.save()
+        warnings.warn('Person.first_name obsolete (set)', DeprecationWarning)
+        self.short_name = value
+        if self.last_name:
+            self.full_name = "%s %s" % (value, self.last_name)
+        else:
+            self.full_name = value
+        self.last_name = self.last_name
     _set_first_name.alters_data = True
 
     def _get_first_name(self):
-        return self.user.first_name
+        warnings.warn('Person.first_name obsolete (get)', DeprecationWarning)
+        if not self.full_name:
+            return None
+        elif self.full_name.find(" ") != -1:
+            first_name, _, _ = self.full_name.rpartition(" ")
+            return first_name.strip()
+        else:
+            return self.full_name
     first_name = property(_get_first_name, _set_first_name)
-    
-    def _set_email(self, value):
-        if self.user_id is None:
-            self._new_email = value
-            return
-        self.user.email = value
-        self.user.save()
-    _set_email.alters_data = True
 
-    def _get_email(self):
-        return self.user.email
-    email = property(_get_email, _set_email)
-    
-    def _set_is_active(self, value):
-        if self.user_id is None:
-            self._new_is_active = value
-            return
-        self.user.is_active = value
-        self.user.save()
-    _set_is_active.alters_data = True
+    def has_perm(self, perm, obj=None):
+        "Does the user have a specific permission?"
+        warnings.warn('Person.has_perm obsolete (get)', DeprecationWarning)
+        return True
 
-    def _get_is_active(self):
-        return self.user.is_active
-    is_active = property(_get_is_active, _set_is_active)
+    def has_module_perms(self, app_label):
+        "Does the user have permissions to view the app `app_label`?"
+        warnings.warn('Person.has_module_perms obsolete (get)', DeprecationWarning)
+        return True
 
-    def _set_is_admin(self, value):
-        if self.user_id is None:
-            self._new_is_staff = value
-            return
-        self.user.is_staff = value
-        self.user.save()
-    _set_is_admin.alters_data = True
+    @property
+    def user(self):
+        warnings.warn('Person.user obsolete (get)', DeprecationWarning)
+        return self
 
-    def _get_is_admin(self):
-        return self.user.is_staff
-    is_admin = property(_get_is_admin, _set_is_admin)
+    def get_profile(self):
+        warnings.warn('Person.get_profile() obsolete (get)', DeprecationWarning)
+        return self
 
-    def has_usable_password(self):
-        return self.user.has_usable_password()
+    @property
+    def is_staff(self):
+        "Is the user a member of staff?"
+        return self.is_admin
 
     # Can person view this self record?
     def can_view(self, user):
@@ -317,11 +309,11 @@ class Person(models.Model):
 
     def get_full_name(self):
         """ Get the full name of the person. """
-        return u"%s %s" % (self.first_name, self.last_name)
+        return self.full_name
 
     def get_short_name(self):
         """ Get the abbreviated name of the person. """
-        return u"%s" % (self.first_name)
+        return self.short_name
 
     def has_account(self, machine_category):
         ua = self.account_set.all()
@@ -375,11 +367,10 @@ class Person(models.Model):
     deactivate.alters_data = True
 
     def set_password(self, password):
-        self.user.set_password(password)
-        self.user.save()
+        super(Person, self).set_password(password)
         if self.legacy_ldap_password is not None:
             self.legacy_ldap_password = None
-            super(Person, self).save()
+        super(Person, self).save()
         from karaage.datastores import set_person_password
         set_person_password(self, password)
         for ua in self.account_set.filter(date_deleted__isnull=True):
