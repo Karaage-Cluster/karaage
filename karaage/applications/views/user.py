@@ -1106,6 +1106,14 @@ class TransitionSubmit(Transition):
             messages.error(request, "Full name not completed")
             return self._on_error
 
+        # check for username conflict
+        query = Person.objects.filter(username=application.applicant.username)
+        if application.content_type.model == 'person':
+            query=query.exclude(pk=application.applicant.pk)
+        if query.count() > 0:
+            messages.error(request, "Application username address conflicts with existing person.")
+            return self._on_error
+
         # check for email conflict
         query = Person.objects.filter(email=application.applicant.email)
         if application.content_type.model == 'person':
@@ -1139,6 +1147,14 @@ class TransitionApprove(Transition):
         """ Retrieve the next state. """
         approved_by = request.user
         created_person, created_account, created_project = application.approve(approved_by)
+
+        # check for username conflict
+        query = Person.objects.filter(username=application.applicant.username)
+        if application.content_type.model == 'person':
+            query=query.exclude(pk=application.applicant.pk)
+        if query.count() > 0:
+            messages.error(request, "Application username address conflicts with existing person.")
+            return self._on_error
 
         # check for email conflict
         query = Person.objects.filter(email=application.applicant.email)
