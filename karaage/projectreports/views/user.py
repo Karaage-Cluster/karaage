@@ -31,7 +31,7 @@ from karaage.projectreports.models import ProjectSurvey
 @login_required
 def survey(request, project_id):
     
-    person = request.user.get_profile()
+    person = request.user
     
     project = get_object_or_404(Project, pk=project_id)
 
@@ -52,7 +52,7 @@ def survey(request, project_id):
 @login_required
 def thanks(request, project_id):
     
-    person = request.user.get_profile()
+    person = request.user
     
     project = get_object_or_404(Project, pk=project_id)
 

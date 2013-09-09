@@ -57,7 +57,7 @@ def _get_url(request, application, auth, label=None):
     elif not request.user.is_authenticated():
         # If applicant is not logged in, we redirect them to secret URL
         require_secret = True
-    elif request.user.get_profile() != application.applicant:
+    elif request.user != application.applicant:
         # If logged in as different person, we redirect them to secret
         # URL. This could happen if the application was open with a different
         # email address, and the applicant is logged in when accessing it.
@@ -68,7 +68,7 @@ def _get_url(request, application, auth, label=None):
 
     # return required url
     if not require_secret:
-        person = request.user.get_profile()
+        person = request.user
         url = reverse(
                 'kg_application_detail',
                 args=[application.pk, application.state] + args)
@@ -237,7 +237,7 @@ class StateMachine(object):
         """ Check the authentication of the current user. """
         if not request.user.is_authenticated():
             return { 'is_applicant': False, 'is_leader': False, 'is_delegate': False, 'is_admin': False, }
-        person = request.user.get_profile()
+        person = request.user
         auth = application.authenticate(person)
         auth["is_admin"] = False
         return auth
@@ -798,7 +798,7 @@ class StateApplicantEnteringDetails(StateWithSteps):
                 pass
 
             if request.user.is_authenticated():
-                new_person = request.user.get_profile()
+                new_person = request.user
                 reason = "%s was logged in and accessed secret URL." % new_person
                 details = ("If you want to access this application "+
                     "as %s " % application.applicant +
@@ -1115,7 +1115,7 @@ class TransitionApprove(Transition):
 
     def get_next_state(self, request, application, auth):
         """ Retrieve the next state. """
-        approved_by = request.user.get_profile()
+        approved_by = request.user
         created_person, created_account, created_project = application.approve(approved_by)
 
         if created_project:
@@ -1206,7 +1206,7 @@ def send_invitation(request, project_id):
     """ The logged in project leader wants to invite somebody to their project.
     """
 
-    person = request.user.get_profile()
+    person = request.user
     project = get_object_or_404(Project, pk=project_id)
 
     if person not in project.leaders.all():
@@ -1259,7 +1259,7 @@ def new_application(request):
                 context_instance=RequestContext(request))
     else:
         if request.method == 'POST':
-                person = request.user.get_profile()
+                person = request.user
 
                 application = ProjectApplication()
                 application.applicant = person
@@ -1287,7 +1287,7 @@ def index(request):
 def pending_applications(request):
     """ A logged in project leader or institute delegate wants to see all his
     pending applications. """
-    person = request.user.get_profile()
+    person = request.user
     my_applications = ProjectApplication.objects.filter(
             applicant=person).exclude(
             state__in=[Application.COMPLETED, Application.ARCHIVED, Application.DECLINED])
@@ -1339,7 +1339,7 @@ def application_unauthenticated(request, token, state=None, label=None):
 
     # redirect user to real url if possible.
     if request.user.is_authenticated():
-        if request.user.get_profile() == application.applicant:
+        if request.user == application.applicant:
             url = _get_url(request, application, {'is_applicant': True}, label)
             return HttpResponseRedirect(url)
 

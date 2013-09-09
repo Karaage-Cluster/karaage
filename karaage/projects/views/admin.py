@@ -61,7 +61,7 @@ def add_edit_project(request, project_id=None):
                 # ourselves.
                 project.pid = get_new_pid(project.institute)
             project.save()
-            approved_by = request.user.get_profile()
+            approved_by = request.user
             project.activate(approved_by)
             form.save_m2m()
             if flag == 1:
@@ -90,7 +90,7 @@ def delete_project(request, project_id):
         error = "There are accounts that use this project as the default_project."
 
     elif request.method == 'POST':
-        deleted_by = request.user.get_profile()
+        deleted_by = request.user
         project.deactivate(deleted_by)
         log(request.user, project, 3, 'Deleted')
         messages.success(request, "Project '%s' deleted succesfully" % project)

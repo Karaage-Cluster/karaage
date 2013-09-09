@@ -111,7 +111,7 @@ class Institute(models.Model):
         if not user.is_authenticated():
             return False
 
-        person = user.get_profile()
+        person = user
 
         # staff members can view everything
         if person.is_admin:

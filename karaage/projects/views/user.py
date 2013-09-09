@@ -33,7 +33,7 @@ from karaage.util import log_object as log
 def add_edit_project(request, project_id):
 
     project = get_object_or_404(Project, pk=project_id)
-    if not request.user.get_profile() in project.leaders.all():
+    if not request.user in project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     if request.method == 'POST':
@@ -83,7 +83,7 @@ def remove_user(request, project_id, username):
     project = get_object_or_404(Project, pk=project_id)
     person = get_object_or_404(Person, username=username)
 
-    if not request.user.get_profile() in project.leaders.all():
+    if not request.user in project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     if request.method == 'POST':

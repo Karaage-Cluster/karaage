@@ -40,7 +40,7 @@ import karaage.util.saml as saml
 @login_required
 def profile(request):
 
-    person = request.user.get_profile()
+    person = request.user
     project_list = person.projects.all()
     project_requests = []
     user_applications = []
@@ -59,13 +59,13 @@ def edit_profile(request):
         form_class=PersonForm,
         template_name='people/edit_profile.html',
         redirect_url=reverse('kg_user_profile'),
-        username=request.user.get_profile().username)
+        username=request.user.username)
 
 
 @login_required
 def profile_accounts(request):
 
-    person = request.user.get_profile()
+    person = request.user
     accounts = person.account_set.filter(date_deleted__isnull=True)
 
     return render_to_response('people/profile_accounts.html', locals(), context_instance=RequestContext(request))
@@ -73,7 +73,7 @@ def profile_accounts(request):
 
 @login_required
 def profile_software(request):
-    person = request.user.get_profile()
+    person = request.user
     software_list = person.softwarelicenseagreement_set.all()
     return render_to_response(
         'people/profile_software.html',
@@ -84,7 +84,7 @@ def profile_software(request):
 @login_required
 def profile_projects(request):
 
-    person = request.user.get_profile()
+    person = request.user
     project_list = person.projects.all()
     leader_project_list = []
 
@@ -116,7 +116,7 @@ def institute_users_list(request, institute_id):
 @login_required
 def password_change(request):
 
-    person = request.user.get_profile()
+    person = request.user
 
     if request.POST:
         form = PasswordChangeForm(request.POST)
@@ -213,7 +213,7 @@ def saml_details(request):
     if request.method == 'POST':
         if 'login' in request.POST:
             if request.user.is_authenticated():
-                person = request.user.get_profile()
+                person = request.user
                 institute = person.institute
                 if institute.saml_entityid:
                     redirect_to = reverse("saml_details")
@@ -227,7 +227,7 @@ def saml_details(request):
 
         elif 'register' in request.POST:
             if request.user.is_authenticated() and saml_session:
-                person = request.user.get_profile()
+                person = request.user
                 person = saml.add_saml_data(
                         person, request)
                 person.save()
@@ -254,7 +254,7 @@ def saml_details(request):
 
     person = None
     if request.user.is_authenticated():
-        person = request.user.get_profile()
+        person = request.user
 
     return render_to_response('people/saml_detail.html',
             {'attrs': attrs, 'saml_session': saml_session,
@@ -275,8 +275,8 @@ def password_reset_request(request):
 
     if request.user.has_perm('people.change_person'):
         person_list = Person.active.all()
-    if request.user.get_profile().is_leader():
-        person_list = Person.active.filter(project__leaders=request.user.get_profile()).distinct()
+    if request.user.is_leader():
+        person_list = Person.active.filter(project__leaders=request.user).distinct()
     else:
         person_list = Person.objects.none()
 
@@ -304,7 +304,7 @@ def password_reset_request(request):
 
 @login_required
 def change_account_shell(request, account_id):
-    person = request.user.get_profile()
+    person = request.user
     account = get_object_or_404(Account, pk=account_id, person=person)
 
     if request.method != 'POST':
@@ -318,7 +318,7 @@ def change_account_shell(request, account_id):
 
 @login_required
 def make_default(request, account_id, project_id):
-    person = request.user.get_profile()
+    person = request.user
     account = get_object_or_404(Account, pk=account_id, person=person)
     project = get_object_or_404(Project, pk=project_id)
 

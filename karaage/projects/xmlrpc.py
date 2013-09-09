@@ -95,7 +95,7 @@ def change_default_project(user, project, machine_name=None):
     """
     Change default project
     """
-    person = user.get_profile()
+    person = user
     try:
         project = Project.objects.get(pid=project)
     except Project.DoesNotExist:
@@ -124,6 +124,6 @@ def get_users_projects(user):
     """
     List projects a user is part of
     """
-    person = user.get_profile()
+    person = user
     projects = person.projects.filter(is_active=True)
     return 0, [x.pid for x in projects]

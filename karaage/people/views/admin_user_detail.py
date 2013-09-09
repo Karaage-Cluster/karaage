@@ -39,7 +39,7 @@ def delete_user(request, username):
     person = get_object_or_404(Person, username=username)
 
     if request.method == 'POST':
-        deleted_by = request.user.get_profile()
+        deleted_by = request.user
         person.deactivate(deleted_by)
         messages.success(request, "User '%s' was deleted succesfully" % person)
         return HttpResponseRedirect(person.get_absolute_url())
@@ -92,7 +92,7 @@ def activate(request, username):
     person = get_object_or_404(Person, username=username, is_active=False)
 
     if request.method == 'POST':
-        approved_by = request.user.get_profile()
+        approved_by = request.user
         person.activate(approved_by)
         return HttpResponseRedirect(reverse('kg_person_password_change', args=[person.username]))
     

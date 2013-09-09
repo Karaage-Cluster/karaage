@@ -52,7 +52,7 @@ def get_current_person():
         return None
     if not user.is_authenticated():
         return None
-    return user.get_profile()
+    return user
 
 
 def log_object(user, object, flag, message):

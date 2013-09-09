@@ -34,7 +34,7 @@ def registration(request):
     """ Set context for registration menu. """
     ctx = {}
     if request.user.is_authenticated():
-        person = request.user.get_profile()
+        person = request.user
         my_applications = ProjectApplication.objects.filter(
             applicant=person).exclude(
             state__in=[Application.COMPLETED, Application.ARCHIVED, Application.DECLINED]).count()

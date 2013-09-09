@@ -28,7 +28,7 @@ def institute_users_list(request, institute_id):
 
     institute = get_object_or_404(Institute, pk=institute_id)
 
-    if not request.user.get_profile() in institute.delegates.all():
+    if not request.user in institute.delegates.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     user_list = institute.person_set.select_related()
@@ -41,7 +41,7 @@ def institute_projects_list(request, institute_id):
 
     institute = get_object_or_404(Institute, pk=institute_id)
 
-    if not request.user.get_profile() in institute.delegates.all():
+    if not request.user in institute.delegates.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     project_list = institute.project_set.select_related()

@@ -130,7 +130,7 @@ class Project(models.Model):
         if not user.is_authenticated():
             return False
 
-        person = user.get_profile()
+        person = user
 
         if person.is_admin:
             return True

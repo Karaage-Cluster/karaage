@@ -45,7 +45,7 @@ def add_edit_user(request, form_class, template_name='people/person_form.html', 
         else:
             person = get_object_or_404(Person, username=username)
     else:
-        person = request.user.get_profile()
+        person = request.user
 
     form = PersonForm(request.POST or None, instance=person)
     if request.method == 'POST':

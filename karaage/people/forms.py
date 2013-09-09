@@ -166,7 +166,7 @@ class SetPasswordForm(BaseSetPasswordForm):
         return password1
 
     def save(self, commit=True):
-        person = self.user.get_profile()
+        person = self.user
         person.set_password(self.cleaned_data['new_password1'])
         return self.user
 

@@ -32,7 +32,7 @@ from karaage.util.email_messages import send_software_request_email
 @login_required
 def add_package_list(request):
     
-    person = request.user.get_profile()
+    person = request.user
 
     software_list = []
     for s in SoftwarePackage.objects.filter(softwarelicense__isnull=False).distinct():
@@ -55,7 +55,7 @@ def add_package(request, package_id):
 
     package = get_object_or_404(SoftwarePackage, pk=package_id)
     software_license = package.get_current_license()
-    person = request.user.get_profile()
+    person = request.user
 
     if software_license is None:
         raise Http404("Package '%s' has no software license." % (package))
