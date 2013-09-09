@@ -1072,7 +1072,7 @@ class StateDeclined(State):
         if label is None and auth['is_applicant']:
             # applicant, admin, leader can reopen an application
             if 'reopen' in request.POST:
-                return 'open'
+                return 'reopen'
             return render_to_response(
                     'applications/state_declined_for_applicant.html',
                     {'application': application,
