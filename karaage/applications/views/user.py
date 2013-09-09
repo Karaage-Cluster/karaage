@@ -1094,11 +1094,23 @@ class TransitionSubmit(Transition):
         # Check for serious errors in submission.
         # Should never happen unless user skips steps.
         if application.applicant is None:
+            messages.error(request, "Applicant not completed")
             return self._on_error
         if not application.applicant.username:
+            messages.error(request, "Username not completed")
             return self._on_error
         if not application.applicant.first_name:
+            messages.error(request, "First name not completed")
             return self._on_error
+
+        # check for email conflict
+        query = Person.objects.filter(email=application.applicant.email)
+        if application.content_type.model == 'person':
+            query=query.exclude(pk=application.applicant.pk)
+        if query.count() > 0:
+            messages.error(request, "Application email address conflicts with existing person.")
+            return self._on_error
+
         if application.project is None:
             if not application.name:
                 return self._on_error
@@ -1115,14 +1127,23 @@ class TransitionSubmit(Transition):
 
 class TransitionApprove(Transition):
     """ A transition after application fully approved. """
-    def __init__(self, on_password_needed, on_password_ok):
+    def __init__(self, on_password_needed, on_password_ok, on_error):
         self._on_password_needed = on_password_needed
         self._on_password_ok = on_password_ok
+        self._on_error = on_error
 
     def get_next_state(self, request, application, auth):
         """ Retrieve the next state. """
         approved_by = request.user
         created_person, created_account, created_project = application.approve(approved_by)
+
+        # check for email conflict
+        query = Person.objects.filter(email=application.applicant.email)
+        if application.content_type.model == 'person':
+            query=query.exclude(pk=application.applicant.pk)
+        if query.count() > 0:
+            messages.error(request, "Application email address conflicts with existing person.")
+            return self._on_error
 
         if created_project:
             emails.send_project_approved_email(application)
@@ -1146,7 +1167,7 @@ def get_application_state_machine():
     state_machine.add_state(StateWaitingForDelegate(), 'D',
             { 'decline': 'R', 'approve': 'K', })
     state_machine.add_state(StateWaitingForAdmin(), 'K',
-            { 'decline': 'R', 'approve': TransitionApprove(on_password_needed='P', on_password_ok='C')})
+            { 'decline': 'R', 'approve': TransitionApprove(on_password_needed='P', on_password_ok='C', on_error="R")})
     state_machine.add_state(StatePassword(), 'P',
             { 'submit': 'C', })
     state_machine.add_state(StateCompleted(), 'C',
