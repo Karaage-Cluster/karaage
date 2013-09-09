@@ -21,7 +21,6 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotFound
 from django.http import HttpResponseBadRequest, HttpResponse, Http404
-from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.db.models import Q
@@ -31,6 +30,7 @@ from django.core.mail import send_mail
 import datetime
 from andsome.forms import EmailForm
 
+from karaage.util.decorators import login_required
 from karaage.applications.models import ProjectApplication, Applicant, Application
 import karaage.applications.forms as forms
 import karaage.applications.emails as emails

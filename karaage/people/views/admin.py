@@ -18,7 +18,6 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -26,26 +25,25 @@ from django.db.models import Q
 import datetime
 from andsome.util.filterspecs import Filter, FilterBar, DateFilter
 
+from karaage.util.decorators import admin_required
 from karaage.projects.models import Project
 from karaage.people.models import Person, Group
 from karaage.people.emails import send_confirm_password_email
+from karaage.people.forms import AddPersonForm, AdminPersonForm, AdminGroupForm
 from karaage.institutes.models import Institute
 from karaage.machines.models import Account
 from karaage.machines.forms import AccountForm, ShellForm
 from karaage.util import log_object as log
 
 
-@login_required
-def add_edit_user(request, form_class, template_name='people/person_form.html', redirect_url=None, username=None):
+@admin_required
+def _add_edit_user(request, form_class, username):
     PersonForm = form_class
 
-    if request.user.has_perm('people.add_person'):
-        if username is None:
-            person = None
-        else:
-            person = get_object_or_404(Person, username=username)
+    if username is None:
+        person = None
     else:
-        person = request.user
+        person = get_object_or_404(Person, username=username)
 
     form = PersonForm(request.POST or None, instance=person)
     if request.method == 'POST':
@@ -61,15 +59,20 @@ def add_edit_user(request, form_class, template_name='people/person_form.html', 
                 messages.success(request, "User '%s' was created succesfully" % person)
                 assert person is not None
 
-            if redirect_url is None:
-                return HttpResponseRedirect(person.get_absolute_url())
-            else:
-                return HttpResponseRedirect(redirect_url)
+            return HttpResponseRedirect(person.get_absolute_url())
 
-    return render_to_response(template_name, {'person': person, 'form': form}, context_instance=RequestContext(request))
+    return render_to_response('people/person_form.html',
+            {'person': person, 'form': form},
+            context_instance=RequestContext(request))
 
 
-@login_required
+def add_user(request):
+    return _add_edit_user(request, AddPersonForm, None)
+
+def edit_user(request, username):
+    return _add_edit_user(request, AdminPersonForm, username)
+
+@admin_required
 def user_list(request, queryset=None):
     if queryset is None:
         queryset=Person.objects.select_related()
@@ -115,7 +118,7 @@ def user_list(request, queryset=None):
         context_instance=RequestContext(request))
 
 
-@permission_required('machines.add_account')
+@admin_required
 def add_edit_account(request, username=None, account_id=None):
     username_error = False
 
@@ -180,7 +183,7 @@ def add_edit_account(request, username=None, account_id=None):
         context_instance=RequestContext(request))
 
 
-@permission_required('machines.delete_account')
+@admin_required
 def delete_account(request, account_id):
 
     account = get_object_or_404(Account, pk=account_id)
@@ -194,13 +197,13 @@ def delete_account(request, account_id):
         return render_to_response('machines/account_confirm_delete.html', locals(), context_instance=RequestContext(request))
 
 
-@login_required
+@admin_required
 def no_default_list(request):
     account_list = Account.objects.filter(default_project__isnull=True).filter(date_deleted__isnull=True)
     return render_to_response('people/no_default_list.html', {'account_list': account_list}, context_instance=RequestContext(request))
 
 
-@login_required
+@admin_required
 def no_account_list(request):
     person_id_list = []
     
@@ -213,7 +216,7 @@ def no_account_list(request):
     return user_list(request, Person.objects.filter(id__in=person_id_list))
 
     
-@login_required
+@admin_required
 def wrong_default_list(request):
     wrong = []
     for u in Person.active.all():
@@ -228,13 +231,10 @@ def wrong_default_list(request):
     return user_list(request, Person.objects.filter(id__in=wrong))
 
     
-@login_required
+@admin_required
 def make_default(request, account_id, project_id):
     account = get_object_or_404(Account, pk=account_id)
     project = get_object_or_404(Project, pk=project_id)
-
-    if not request.user.has_perm('machines.change_account'):
-        return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     if request.method != 'POST':
         return HttpResponseRedirect(account.get_absolute_url())
@@ -246,7 +246,7 @@ def make_default(request, account_id, project_id):
     return HttpResponseRedirect(account.get_absolute_url())
 
     
-@login_required
+@admin_required
 def locked_list(request):
 
     person_list = Person.active.all()
@@ -258,7 +258,7 @@ def locked_list(request):
     return user_list(request, Person.objects.filter(id__in=ids))
 
 
-@login_required
+@admin_required
 def struggling(request):
 
     today = datetime.date.today()
@@ -289,11 +289,8 @@ def struggling(request):
         context_instance=RequestContext(request))
 
 
-@login_required
+@admin_required
 def change_account_shell(request, account_id):
-    if not request.user.has_perm('people.change_person'):
-        return HttpResponseForbidden('<h1>Access Denied</h1>')
-
     account = get_object_or_404(Account, pk=account_id)
     if request.method != 'POST':
         return HttpResponseRedirect(account.get_absolute_url())
@@ -305,7 +302,7 @@ def change_account_shell(request, account_id):
         return HttpResponseRedirect(account.get_absolute_url())
 
 
-@login_required
+@admin_required
 def group_list(request, queryset=None):
     if queryset is None:
         queryset=Group.objects.select_related()
@@ -335,17 +332,14 @@ def group_list(request, queryset=None):
             context_instance=RequestContext(request))
 
 
-@login_required
-def add_edit_group(request, form_class, template_name='people/group_form.html', redirect_url=None, group_name=None):
+@admin_required
+def _add_edit_group(request, form_class, group_name):
     GroupForm = form_class
 
-    if request.user.has_perm('people.add_group'):
-        if group_name is None:
-            group = None
-        else:
-            group = get_object_or_404(Group, name=group_name)
+    if group_name is None:
+        group = None
     else:
-        return HttpResponseForbidden('<h1>Access Denied</h1>')
+        group = get_object_or_404(Group, name=group_name)
 
     if request.method == 'POST':
         form = GroupForm(request.POST, instance=group)
@@ -359,12 +353,16 @@ def add_edit_group(request, form_class, template_name='people/group_form.html', 
                 group = form.save()
                 messages.success(request, "Group '%s' was created succesfully" % group)
 
-            if redirect_url is None:
-                return HttpResponseRedirect(group.get_absolute_url())
-            else:
-                return HttpResponseRedirect(redirect_url)
+            return HttpResponseRedirect(group.get_absolute_url())
     else:
         form = GroupForm(instance=group)
 
-    return render_to_response(template_name, {'group': group, 'form': form}, context_instance=RequestContext(request))
+    return render_to_response('people/group_form.html',
+            {'group': group, 'form': form},
+            context_instance=RequestContext(request))
 
+def add_group(request):
+    return _add_edit_group(request, AdminGroupForm, None)
+
+def edit_group(request, group_name):
+    return _add_edit_group(request, AdminGroupForm, group_name)

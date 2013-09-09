@@ -4,12 +4,17 @@
 {% block title %}Software{% endblock %}
 
 
-    
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="../">Software</a>
- › {{ package }}
-</div>{% endblock %}    
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="../">Software</a>&nbsp;›
+    {{ package }}
+</div>
+{% endblock %}
 
-{% block content %}<div id="content-main">
+
+{% block content %}
+<div id="content-main">
 <div class="module">
 <h2>Details</h2>
 <h3>{{ package }}</h3>
@@ -75,8 +80,8 @@
 <td>{{ license.version }}</td>
 <td>{{ license.date|date }}</td>
 <td><a href="{% url 'kg_softwarelicense_detail' license.id %}">view</a></td>
-<td>{% if perms.software.change_softwarelicense %}<a class="changelink" href="{% url 'kg_softwarelicense_edit' package.id license.id %}">Edit</a>{% endif %}</td>
-<td>{% if perms.software.delete_softwarelicense %}<a class="deletelink" href="{% url 'kg_softwarelicense_delete' license.id %}">Delete</a>{% endif %}</td>
+<td>{% if request.user.is_admin %}<a class="changelink" href="{% url 'kg_softwarelicense_edit' package.id license.id %}">Edit</a>{% endif %}</td>
+<td>{% if request.user.is_admin %}<a class="deletelink" href="{% url 'kg_softwarelicense_delete' license.id %}">Delete</a>{% endif %}</td>
 <td>
 <table cellspacing="0">
 <thead>
@@ -104,7 +109,7 @@
 	{% if package.gid %}
 	<div class="module">
 <h2>LDAP Group members</h2>
-		{% if perms.software.change_softwarepackage %}
+		{% if request.user.is_admin %}
 	<form action="" id="add_member_form" method="post">{% csrf_token %}
 	<div class="form-row">
 <label for="id_member">Add member:</label>
@@ -130,7 +135,7 @@
 	   	<tr class="{% cycle row1,row2 %}">
 <td>{{ m.username }}</td>
 <td><a href="{{ m.person.get_absolute_url }}">{{ m.person }}</a></td>
-				{% if perms.software.change_softwarepackage %}
+				{% if request.user.is_admin %}
 				<td><a class="deletelink" href="{% url 'kg_software_removeuser' package.id m.person.id %}">Remove</a></td>
 				{% endif %}
 			</tr>
@@ -144,24 +149,18 @@
 
 {% block object-tools %}
 <div class="module object-tools">
-<h2>Tasks</h2>
-<ul>
-
-<li><a href="{% url 'kg_software_stats' package.id %}">Statistics</a></li>
-      {% if perms.software.change_softwarepackage %}
-      <li><a class="changelink" href="{% url 'kg_softwarepackage_edit' package.id %}">Edit</a></li>
-      {% endif %}
-      {% if perms.software.delete_softwarepackage %}
-      <li><a class="deletelink" href="{% url 'kg_softwarepackage_delete' package.id %}">Delete</a></li>
-      {% endif %}
-      <li><a href="{% url 'kg_software_logs' package.id %}">Logs</a></li>
-      {% if perms.software.add_softwareversion %}
-      <li><a class="addlink" href="{% url 'kg_softwareversion_add' package.id %}">Add Version</a></li>
-      {% endif %}
-      {% if perms.software.add_softwarelicense %}
-      <li><a class="addlink" href="{% url 'kg_softwarelicense_add' package.id %}">Add License</a></li>
-      {% endif %}
-		<li><a href="{% url 'kg_job_list' %}?software={{ package.id }}">Display all jobs</a></li>
-      <li><a href="{% url 'kg_software_verbose' package.id %}">Verbose</a></li>
-</ul>
-</div>{% endblock %}
+    <h2>Tasks</h2>
+    <ul>
+        {% if request.user.is_admin %}
+        <li><a class="changelink" href="{% url 'kg_softwarepackage_edit' package.id %}">Edit</a></li>
+        <li><a class="deletelink" href="{% url 'kg_softwarepackage_delete' package.id %}">Delete</a></li>
+        <li><a class="addlink" href="{% url 'kg_softwareversion_add' package.id %}">Add Version</a></li>
+        <li><a class="addlink" href="{% url 'kg_softwarelicense_add' package.id %}">Add License</a></li>
+        {% endif %}
+        <li><a href="{% url 'kg_software_stats' package.id %}">Statistics</a></li>
+        <li><a href="{% url 'kg_software_logs' package.id %}">Logs</a></li>
+        <li><a href="{% url 'kg_job_list' %}?software={{ package.id }}">Display all jobs</a></li>
+        <li><a href="{% url 'kg_software_verbose' package.id %}">Verbose</a></li>
+    </ul>
+</div>
+{% endblock %}

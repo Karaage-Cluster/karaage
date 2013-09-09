@@ -19,14 +19,14 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
-from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib import messages
 
+from karaage.util.decorators import admin_required
 from karaage.people.models import Person, Group
 from karaage.people.forms import AddGroupMemberForm
 
 
-@permission_required('people.delete_group')
+@admin_required
 def delete_group(request, group_name):
 
     group = get_object_or_404(Group, name=group_name)
@@ -46,17 +46,15 @@ def delete_group(request, group_name):
     return render_to_response('people/group_confirm_delete.html', locals(), context_instance=RequestContext(request))
 
 
-@login_required
+@admin_required
 def group_detail(request, group_name):
     group = get_object_or_404(Group, name=group_name)
-
-    if request.user.has_perm('people.change_person'):
-        form = AddGroupMemberForm(instance=group)
+    form = AddGroupMemberForm(instance=group)
 
     return render_to_response('people/group_detail.html', locals(), context_instance=RequestContext(request))
 
 
-@login_required
+@admin_required
 def group_verbose(request, group_name):
     group = get_object_or_404(Group, name=group_name)
 
@@ -66,11 +64,8 @@ def group_verbose(request, group_name):
     return render_to_response('people/group_verbose.html', locals(), context_instance=RequestContext(request))
 
 
-@login_required
+@admin_required
 def add_group_member(request, group_name):
-    if not request.user.has_perm('people.change_person'):
-        return HttpResponseForbidden('<h1>Access Denied</h1>')
-
     group = get_object_or_404(Group, name=group_name)
     if request.method == 'POST':
         form = AddGroupMemberForm(request.POST, instance=group)
@@ -83,11 +78,8 @@ def add_group_member(request, group_name):
     return render_to_response('people/group_add_member.html', locals(), context_instance=RequestContext(request))
 
 
-@login_required
+@admin_required
 def remove_group_member(request, group_name, username):
-    if not request.user.has_perm('people.change_person'):
-        return HttpResponseForbidden('<h1>Access Denied</h1>')
-
     group = get_object_or_404(Group, name=group_name)
     person = get_object_or_404(Person, username=username)
 

@@ -21,7 +21,7 @@
       {% if institute.saml_entityid %}
       <tr><td>SAML entityID:</td><td>{{ institute.saml_entityid }}</td></tr>
       {% endif %}
-      {% if perms.people.change_institute %}
+      {% if request.user.is_admin %}
       <tr><td colspan="2"><a class="changelink" href="edit/">Edit</a></td></tr>
       {% endif %} 
     </table>
@@ -42,7 +42,7 @@
 <td>{{ iq.machine_category }}</td>
 <td>{{ iq.quota }}</td>
 <td>{{ iq.get_cap }}</td>
-	  {% if perms.pbsmoab.change_institutechunk %}<td><a class="changelink" href="{% url 'kg_institute_quota_edit' iq.id %}">edit</a></td>{% endif %}
+	  {% if request.user.is_admin %}<td><a class="changelink" href="{% url 'kg_institute_quota_edit' iq.id %}">edit</a></td>{% endif %}
 	</tr>
 	{% endfor %}
       </tbody>
@@ -71,10 +71,12 @@
 {% endblock %}
 
 {% block object-tools %}
+{% if request.user.is_admin %}
 <div class="module object-tools">
     <h2>Tasks</h2>
     <ul>
         <li><a href="{% url 'kg_institute_verbose' institute.pk %}">Verbose</a></li>
     </ul>
 </div>
+{% endif %}
 {% endblock %}

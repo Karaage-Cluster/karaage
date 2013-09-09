@@ -21,17 +21,18 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator
-from django.contrib.auth.decorators import permission_required
 from django.forms.models import inlineformset_factory
 
 from andsome.util.filterspecs import Filter, FilterBar
 
+from karaage.util.decorators import admin_required
 from karaage.util.graphs import get_institute_trend_graph_url
 from karaage.institutes.models import Institute, InstituteDelegate
 from karaage.institutes.forms import InstituteForm, DelegateForm
 from karaage.machines.models import MachineCategory
 
 
+@admin_required
 def institute_detail(request, institute_id):
     
     institute = get_object_or_404(Institute, pk=institute_id)
@@ -47,6 +48,7 @@ def institute_detail(request, institute_id):
     return render_to_response('institutes/institute_detail.html', locals(), context_instance=RequestContext(request))
     
 
+@admin_required
 def institute_verbose(request, institute_id):
     institute = get_object_or_404(Institute, pk=institute_id)
 
@@ -56,6 +58,7 @@ def institute_verbose(request, institute_id):
     return render_to_response('institutes/institute_verbose.html', locals(), context_instance=RequestContext(request))
 
 
+@admin_required
 def institute_list(request):
 
     institute_list = Institute.objects.all()
@@ -79,7 +82,7 @@ def institute_list(request):
     return render_to_response('institutes/institute_list.html', locals(), context_instance=RequestContext(request))
 
 
-@permission_required('people.add_institute')
+@admin_required
 def add_edit_institute(request, institute_id=None):
 
     if institute_id:

@@ -18,13 +18,13 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
-from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
 import datetime
 
+from karaage.util.decorators import admin_required
 from karaage.people.models import Person
 from karaage.people.forms import AdminPasswordChangeForm, AddProjectForm
 from karaage.projects.models import Project
@@ -33,7 +33,7 @@ from karaage.util.email_messages import send_bounced_warning
 from karaage.util import get_date_range, log_object as log
 
 
-@permission_required('people.delete_person')
+@admin_required
 def delete_user(request, username):
 
     person = get_object_or_404(Person, username=username)
@@ -47,7 +47,7 @@ def delete_user(request, username):
     return render_to_response('people/person_confirm_delete.html', locals(), context_instance=RequestContext(request))
 
 
-@login_required
+@admin_required
 def user_detail(request, username):
     
     person = get_object_or_404(Person, username=username)
@@ -59,9 +59,6 @@ def user_detail(request, username):
     form = AddProjectForm(request.POST or None)
     if request.method == 'POST':
         # Post means adding this user to a project
-        if not request.user.has_perm('projects.change_project'):
-            return HttpResponseForbidden('<h1>Access Denied</h1>')
-
         if form.is_valid():
             project = form.cleaned_data['project']
             add_user_to_project(person, project)
@@ -72,7 +69,7 @@ def user_detail(request, username):
 
     return render_to_response('people/person_detail.html', locals(), context_instance=RequestContext(request))
 
-@login_required
+@admin_required
 def user_verbose(request, username):
     person = get_object_or_404(Person, username=username)
 
@@ -87,7 +84,7 @@ def user_verbose(request, username):
 
     return render_to_response('people/person_verbose.html', locals(), context_instance=RequestContext(request))
 
-@permission_required('machines.add_account')
+@admin_required
 def activate(request, username):
     person = get_object_or_404(Person, username=username, is_active=False)
 
@@ -99,7 +96,7 @@ def activate(request, username):
     return render_to_response('people/reactivate_confirm.html', {'person': person}, context_instance=RequestContext(request))
 
 
-@permission_required('people.change_person')
+@admin_required
 def password_change(request, username):
     person = get_object_or_404(Person, username=username)
     
@@ -118,7 +115,7 @@ def password_change(request, username):
     return render_to_response('people/password_change_form.html', {'person': person, 'form': form}, context_instance=RequestContext(request))
 
 
-@permission_required('people.change_person')
+@admin_required
 def lock_person(request, username):
     person = get_object_or_404(Person, username=username)
     if request.method == 'POST':
@@ -127,7 +124,7 @@ def lock_person(request, username):
     return HttpResponseRedirect(person.get_absolute_url())
 
 
-@permission_required('people.change_person')
+@admin_required
 def unlock_person(request, username):
     person = get_object_or_404(Person, username=username)
     if request.method == 'POST':
@@ -136,7 +133,7 @@ def unlock_person(request, username):
     return HttpResponseRedirect(person.get_absolute_url())
 
 
-@permission_required('people.change_person')
+@admin_required
 def bounced_email(request, username):
     person = get_object_or_404(Person, username=username)
     if request.method == 'POST':
@@ -152,6 +149,7 @@ def bounced_email(request, username):
     return render_to_response('people/bounced_email.html', locals(), context_instance=RequestContext(request))
 
 
+@admin_required
 def user_job_list(request, username):
     today = datetime.date.today()
     start = today - datetime.timedelta(days=7)
@@ -165,11 +163,13 @@ def user_job_list(request, username):
     return render_to_response('users/job_list.html', locals(), context_instance=RequestContext(request))
 
 
+@admin_required
 def user_comments(request, username):
     obj = get_object_or_404(Person, username=username)
     return render_to_response('comments/comments_list.html', {'obj': obj}, context_instance=RequestContext(request))
 
 
+@admin_required
 def add_comment(request, username):
     obj = get_object_or_404(Person, username=username)
     return render_to_response('comments/add_comment.html', {'obj': obj}, context_instance=RequestContext(request))

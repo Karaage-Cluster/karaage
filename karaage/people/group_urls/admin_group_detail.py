@@ -16,7 +16,6 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf.urls import *
-from karaage.people.forms import AdminGroupForm
 
 urlpatterns = patterns('karaage.people.views.admin_group_detail',
 
@@ -28,5 +27,5 @@ urlpatterns = patterns('karaage.people.views.admin_group_detail',
 )
 
 urlpatterns += patterns('karaage.people.views.admin',
-    url(r'^edit/$', 'add_edit_group', {'form_class': AdminGroupForm }, name='kg_group_edit'),
+    url(r'^edit/$', 'edit_group', name='kg_group_edit'),
 )

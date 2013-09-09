@@ -20,11 +20,11 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.template.defaultfilters import wordwrap
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 import datetime
 
+from karaage.util.decorators import login_required
 from karaage.software.models import SoftwarePackage, SoftwareLicenseAgreement, SoftwareAccessRequest
 from karaage.util.email_messages import send_software_request_email
 

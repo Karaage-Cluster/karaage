@@ -36,14 +36,14 @@
 <h2>Members</h2>
 <table cellspacing="0">
 <thead>
-    <tr><th>Username</th><th>Full Name</th>{% if perms.people.change_person %}<th></th>{% endif %}</tr>
+    <tr><th>Username</th><th>Full Name</th>{% if request.user.is_admin %}<th></th>{% endif %}</tr>
 </thead>
 <tbody>
 {% for member in group.members.all %}
 <tr class="row1">
     <td><a href="{{ member.get_absolute_url }}">{{ member.username }}</a></td>
     <td>{{ member.user.get_full_name }}</td>
-    {% if perms.people.change_person %}
+    {% if request.user.is_admin %}
     <td>
         <div class="deletelink"><a href="{% url 'kg_group_remove_person' group.name member.username %}">Delete</a></li>
     </td>
@@ -93,21 +93,19 @@
 {% endif %}
 
 </div>
-
 {% endblock %}
 
+
 {% block object-tools %}
+{% if request.user.is_admin %}
 <div class="module object-tools">
 <h2>Tasks</h2>
-<ul>
-
-        {% if perms.people.change_group %}
+    <ul>
         <li class="changelink"><a href="{% url 'kg_group_edit' group.name %}">Edit details</a></li>
-        {% endif %}
-        {% if perms.people.delete_group %}
         <li class="deletelink"><a href="{% url 'kg_group_delete' group.name %}">Delete</a></li>
-	{% endif %}
-	<li><a href="{% url 'kg_group_logs' group.id %}">Logs</a></li>
+        <li><a href="{% url 'kg_group_logs' group.id %}">Logs</a></li>
         <li><a href="{% url 'kg_group_verbose' group.name %}">Verbose</a></li>
-      </ul>
-</div>{% endblock %}
+    </ul>
+</div>
+{% endif %}
+{% endblock %}

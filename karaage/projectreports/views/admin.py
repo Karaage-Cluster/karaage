@@ -17,17 +17,17 @@
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from andsome.util.filterspecs import Filter, FilterBar
 
 import datetime
 from django_surveys.models import SurveyGroup
 
+from karaage.util.decorators import admin_required
 from karaage.projectreports.models import ProjectSurvey
 from karaage.projects.models import Project
 
-@login_required
+@admin_required
 def report_list(request):
 
     report_list = ProjectSurvey.objects.filter(date_submitted__isnull=False)
@@ -47,7 +47,7 @@ def report_list(request):
     return render_to_response('projectreports/report_list.html', locals(), context_instance=RequestContext(request))
 
 
-
+@admin_required
 def report_detail(request, report_id):
     
     report = get_object_or_404(ProjectSurvey, pk=report_id)
@@ -56,6 +56,7 @@ def report_detail(request, report_id):
     return render_to_response('projectreports/report_detail.html', locals(), context_instance=RequestContext(request))
 
 
+@admin_required
 def still_to_complete_list(request):
 
     today = datetime.date.today()

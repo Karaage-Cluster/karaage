@@ -19,7 +19,6 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.http import HttpResponseBadRequest
-from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib import messages
@@ -35,6 +34,7 @@ from karaage.machines.models import Account
 from karaage.machines.forms import ShellForm
 from karaage.util import log_object as log
 
+from karaage.util.decorators import login_required
 import karaage.util.saml as saml
 
 @login_required
@@ -53,13 +53,18 @@ def profile(request):
 
 @login_required
 def edit_profile(request):
-    from admin import add_edit_user
-    return add_edit_user(
-        request,
-        form_class=PersonForm,
-        template_name='people/edit_profile.html',
-        redirect_url=reverse('kg_user_profile'),
-        username=request.user.username)
+    person = request.user
+    form = PersonForm(request.POST or None, instance=person)
+    if request.method == 'POST':
+        if form.is_valid():
+            person = form.save()
+            assert person is not None
+            messages.success(request, "User '%s' was edited succesfully" % person)
+            return HttpResponseRedirect(person.get_absolute_url())
+
+    return render_to_response('people/edit_profile.html',
+            {'person': person, 'form': form},
+            context_instance=RequestContext(request))
 
 
 @login_required
@@ -273,7 +278,7 @@ def logout(request, username=None):
 def password_reset_request(request):
     post_reset_redirect = reverse('password_reset_done')
 
-    if request.user.has_perm('people.change_person'):
+    if request.user.is_admin:
         person_list = Person.active.all()
     if request.user.is_leader():
         person_list = Person.active.filter(project__leaders=request.user).distinct()

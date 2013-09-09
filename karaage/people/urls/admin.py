@@ -17,7 +17,6 @@
 
 from django.conf.urls import *
 from karaage.people.models import Person
-from karaage.people.forms import AddPersonForm
 
 
 urlpatterns = patterns('karaage.people.views.admin',
@@ -32,7 +31,7 @@ urlpatterns = patterns('karaage.people.views.admin',
     url(r'^no_account/$', 'no_account_list', name='kg_person_no_account'),
     url(r'^locked/$', 'locked_list', name='kg_person_locked'),
 
-    url(r'^add/$', 'add_edit_user', {'form_class': AddPersonForm }, name='kg_person_add'),
+    url(r'^add/$', 'add_user', name='kg_person_add'),
 
     url(r'^accounts/(?P<account_id>\d+)/change_shell/$', 'change_account_shell', name='kg_account_shell'),
     url(r'^accounts/(?P<account_id>\d+)/edit/$', 'add_edit_account', name='kg_account_edit'),

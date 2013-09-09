@@ -64,7 +64,7 @@
     </table>
 </div>
 <div class="module">
-<h2>Project Caps/quota {% if perms.pbsmoab.add_projectchunk %}
+<h2>Project Caps/quota {% if request.user.is_admin %}
       <a class="addlink" href="{% url 'kg_projectchunk_add' project.pid %}">Add</a>
     {% endif %}</h2>
 <table>
@@ -83,10 +83,8 @@
 <td>{{ pc.get_mpots|floatformat:"2" }}</td>
 <td>{{ pc.get_cap }}</td>
 <td>{{ pc.get_cap_percent|floatformat:"2" }}%</td>
-	  {% if perms.pbsmoab.add_projectchunk %}
+	  {% if request.user_is_admin %}
 	  <td><a class="changelink" href="{% url 'kg_projectchunk_edit' pc.id %}">edit</a></td>
-	  {% endif %}
-	  {% if perms.projects.delete_project %}
 	  <td><a class="deletelink" href="{% url 'kg_projectchunk_delete' pc.id %}">Remove</a>
 	  {% endif %}
 	</td></tr>
@@ -125,7 +123,7 @@
 	    {% endif %}		  		
 	  </td>
 <td>{{ user.last_usage }}</td>
-	  {% if perms.projects.change_project %}
+	  {% if request.user.is_admin %}
 	  <td><a class="deletelink" href="{% url 'kg_remove_project_member' project.pid user.username %}">Remove</a>
 	    {% endif %}
 	</td></tr>
@@ -134,7 +132,7 @@
 </table>
 </div>
   {% endif %}
-  {% if perms.projects.change_project and project.is_active %}
+  {% if request.user.is_admin and project.is_active %}
   <form action="" id="joinproject_form" method="post">{% csrf_token %}
     <div class="form-row">
       {{ form }}
@@ -157,8 +155,8 @@
     <li>Usage: {% for pc in project.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk project.pk %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
 <li><a href="logs/">View logs</a></li>
 <li><a href="{% url 'kg_job_list' %}?project={{ project.pid }}">Display all jobs</a></li>
-        {% if perms.projects.change_project %}<li><a class="changelink" href="edit/">Edit project details</a></li>{% endif %}
-        {% if perms.projects.delete_project and project.is_active %}<li><a class="deletelink" href="delete/">Delete project</a></li>{% endif %}
+        {% if request.user.is_admin %}<li><a class="changelink" href="edit/">Edit project details</a></li>{% endif %}
+        {% if request.user.is_admin and project.is_active %}<li><a class="deletelink" href="delete/">Delete project</a></li>{% endif %}
       <li><a href="{% url 'kg_project_verbose' project.pid %}">Verbose</a></li>
       </ul>
 </div>{% endblock %}
