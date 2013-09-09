@@ -795,15 +795,17 @@ class StateApplicantEnteringDetails(StateWithSteps):
 
             attrs, _ = saml.parse_attributes(request)
             saml_id = attrs['persistent_id']
-            try:
-                if saml_id is not None:
+            if saml_id is not None:
+                query = Person.objects.filter(saml_id=saml_id)
+                if query.content_type.model == "person":
+                    query = query.exclude(pk=application.applicant.pk)
+                if query.count() > 0:
                     new_person = Person.objects.get(saml_id=saml_id)
                     reason = "SAML id is already in use by existing person."
                     details = ("It is not possible to continue this application " +
                         "as is because the saml identity already exists " +
                         "as a registered user.")
-            except Person.DoesNotExist:
-                pass
+                del query
 
             if request.user.is_authenticated():
                 new_person = request.user
