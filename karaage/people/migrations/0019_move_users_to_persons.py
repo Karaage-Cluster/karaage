@@ -46,7 +46,7 @@ class Migration(DataMigration):
             else:
                 person.user.email = person.email
             person.user.password = person.password
-            if full_name.find(" ") != -1:
+            if person.full_name.find(" ") != -1:
                 first_name, _, last_name = person.full_name.rpartition(" ")
             else:
                 first_name = person.full_name
