@@ -23,6 +23,7 @@ from django.contrib.contenttypes import generic
 from django.conf import settings
 
 import datetime
+import warnings
 
 from karaage.constants import TITLES, COUNTRIES
 from karaage.util import new_random_token, get_current_person
@@ -221,8 +222,8 @@ class Applicant(models.Model):
     email_verified = models.BooleanField(editable=False)
     username = models.CharField(max_length=16, unique=True, help_text="Required. 16 characters or fewer. Letters, numbers and underscores only", null=True, blank=True)
     title = models.CharField(choices=TITLES, max_length=10, null=True, blank=True)
-    first_name = models.CharField(max_length=30, null=True, blank=True)
-    last_name = models.CharField(max_length=30, null=True, blank=True)
+    short_name = models.CharField(max_length=30)
+    full_name = models.CharField(max_length=60)
     institute = models.ForeignKey(Institute, help_text="If your institute is not listed please contact %s" % settings.ACCOUNTS_EMAIL, limit_choices_to={'is_active': True}, null=True, blank=True)
     department = models.CharField(max_length=200, null=True, blank=True)
     position = models.CharField(max_length=200, null=True, blank=True)
@@ -248,22 +249,52 @@ class Applicant(models.Model):
 
     def get_full_name(self):
         """ Get the full name of the person. """
-        names = []
-        if self.first_name:
-            names.append(self.first_name)
-        if self.last_name:
-            names.append(self.last_name)
-        if len(names) > 0:
-            return " ".join(names)
-        else:
-            return None
+        return self.full_name
 
     def get_short_name(self):
         """ Get the abbreviated name of the person. """
+        return self.short_name
+
+    def _set_last_name(self, value):
+        warnings.warn('Applicant.last_name obsolete (set)', DeprecationWarning)
+        first_name = self.first_name
         if self.first_name:
-            return self.first_name
+            self.full_name = "%s %s" % (first_name, value)
+        else:
+            self.full_name = "first_name %s" % (value)
+    _set_last_name.alters_data = True
+
+    def _get_last_name(self):
+        warnings.warn('Applicant.last_name obsolete (get)', DeprecationWarning)
+        if not self.full_name:
+            return None
+        elif self.full_name.find(" ") != -1:
+            _, _, last_name = self.full_name.rpartition(" ")
+            return last_name.strip()
         else:
             return None
+    last_name = property(_get_last_name, _set_last_name)
+
+    def _set_first_name(self, value):
+        warnings.warn('Applicant.first_name obsolete (set)', DeprecationWarning)
+        self.short_name = value
+        if self.last_name:
+            self.full_name = "%s %s" % (value, self.last_name)
+        else:
+            self.full_name = value
+        self.last_name = self.last_name
+    _set_first_name.alters_data = True
+
+    def _get_first_name(self):
+        warnings.warn('Applicant.first_name obsolete (get)', DeprecationWarning)
+        if not self.full_name:
+            return None
+        elif self.full_name.find(" ") != -1:
+            first_name, _, _ = self.full_name.rpartition(" ")
+            return first_name.strip()
+        else:
+            return self.full_name
+    first_name = property(_get_first_name, _set_first_name)
 
     def approve(self, approved_by):
         """ Create a new user from an applicant. """
@@ -271,8 +302,8 @@ class Applicant(models.Model):
             'email': self.email,
             'username': self.username,
             'title': self.title,
-            'short_name': self.first_name,
-            'full_name': "%s %s" % (self.first_name, self.last_name),
+            'short_name': self.short_name,
+            'full_name': self.full_name,
             'institute': self.institute,
             'department': self.department,
             'position': self.position,

@@ -86,6 +86,14 @@ class ApplicantForm(forms.ModelForm):
     class Meta:
         model = Applicant
 
+    def __init__(self, *args, **kwargs):
+        super(ApplicantForm, self).__init__(*args, **kwargs)
+        self.fields['title'].required = True
+        self.fields['short_name'].required = True
+        self.fields['full_name'].required = True
+        self.fields['username'].label = 'Requested username'
+        self.fields['username'].required = True
+
     def clean_username(self):
         username = self.cleaned_data['username']
         if username:
@@ -109,17 +117,9 @@ class ApplicantForm(forms.ModelForm):
 
 
 class UserApplicantForm(ApplicantForm):
-
-    def __init__(self, *args, **kwargs):
-        super(UserApplicantForm, self).__init__(*args, **kwargs)
-        self.fields['title'].required = True
-        self.fields['first_name'].required = True
-        self.fields['last_name'].required = True
-        self.fields['username'].label = 'Requested username'
-        self.fields['username'].required = True
-        self.fields['institute'].required = True
-
-    institute = forms.ModelChoiceField(queryset=Institute.active.filter(Q(saml_entityid="") | Q(saml_entityid__isnull=True)))
+    institute = forms.ModelChoiceField(
+            queryset=Institute.active.filter(Q(saml_entityid="") | Q(saml_entityid__isnull=True)),
+            required = True)
     
     def save(self, commit=True):
         applicant = super(UserApplicantForm, self).save(commit=commit)

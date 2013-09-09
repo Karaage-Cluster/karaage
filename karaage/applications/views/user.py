@@ -634,8 +634,8 @@ class StateStepProject(State):
                 query = Q()
                 for term in terms.split(' '):
                     q =     Q(username__icontains=term)
-                    q = q | Q(first_name__icontains=term)
-                    q = q | Q(last_name__icontains=term)
+                    q = q | Q(short_name__icontains=term)
+                    q = q | Q(full_name__icontains=term)
                     query = query & q
                 leader_list = leader_list.filter(query)
                 resp['leader_list'] = [(p.pk, "%s (%s)"%(p,p.username)) for p in leader_list]
@@ -948,8 +948,8 @@ class StateWaitingForAdmin(State):
                 similar_people = Person.objects.filter(
                         Q(email=application.applicant.email) |
                         Q(username=application.applicant.username) |
-                        (Q(full_name__icontains=application.applicant.first_name) &
-                        Q(full_name__icontains=application.applicant.last_name))
+                        Q(full_name__icontains=application.applicant.short_name) |
+                        Q(full_name__icontains=application.applicant.full_name)
                 )
             actions = [ 'approve' ]
             application_form = forms.AdminApproveApplicationFormGenerator(
@@ -1099,8 +1099,11 @@ class TransitionSubmit(Transition):
         if not application.applicant.username:
             messages.error(request, "Username not completed")
             return self._on_error
-        if not application.applicant.first_name:
-            messages.error(request, "First name not completed")
+        if not application.applicant.short_name:
+            messages.error(request, "Short name not completed")
+            return self._on_error
+        if not application.applicant.full_name:
+            messages.error(request, "Full name not completed")
             return self._on_error
 
         # check for email conflict

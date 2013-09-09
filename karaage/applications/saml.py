@@ -24,8 +24,8 @@ from karaage.institutes.models import Institute
 
 def add_saml_data(applicant, request):
     attrs, error = saml.parse_attributes(request)
-    applicant.first_name = attrs['first_name']
-    applicant.last_name = attrs['last_name']
+    applicant.short_name = attrs['first_name']
+    applicant.full_name = u"%s %s" % (attrs['first_name'], attrs['last_name'])
     applicant.email = attrs['email']
     applicant.saml_id = attrs['persistent_id']
     applicant.telephone = attrs.get('telephone', None)
@@ -39,10 +39,6 @@ class SAMLApplicantForm(UserApplicantForm):
 
     def __init__(self, *args, **kwargs):
         super(SAMLApplicantForm, self).__init__(*args, **kwargs)
-        self.fields['title'].required = False
-        self.fields['first_name'].required = False
-        self.fields['last_name'].required = False
-        self.fields['email'].required = False
         del self.fields['institute']
 
 

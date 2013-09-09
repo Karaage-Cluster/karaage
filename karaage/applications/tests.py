@@ -75,8 +75,8 @@ class UserApplicationTestCase(TestCase):
         # SUBMIT APPLICANT DETAILS
         form_data = {
             'title' : 'Mr',
-            'first_name': 'Jim',
-            'last_name': 'Bob',
+            'short_name': 'Jim',
+            'full_name': 'Jim Bob',
             'position': 'Researcher',
             'institute': 1,
             'department': 'Maths',
@@ -259,8 +259,8 @@ class ProjectApplicationTestCase(TestCase):
         # SUBMIT APPLICANT DETAILS
         form_data = {
             'title' : 'Mr',
-            'first_name': 'Jim',
-            'last_name': 'Bob',
+            'short_name': 'Jim',
+            'full_name': 'Jim Bob',
             'position': 'Researcher',
             'institute': 1,
             'department': 'Maths',
