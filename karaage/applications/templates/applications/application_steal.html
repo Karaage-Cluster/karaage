@@ -10,7 +10,9 @@ application currently belongs to:</p>
     <tr><td>E-Mail:</td><td>{{ application.applicant.email }}</td></tr>
     <tr><td>Position:</td><td>{{ application.applicant.position|default:"" }}</td></tr>
     <tr><td>Department:</td><td>{{ application.applicant.department|default:"" }}</td></tr>
+    {% if application.institute %}
     <tr><td>Institute:</td><td><a href="{{ application.applicant.institute.get_absolute_url }}">{{ application.applicant.institute }}</a></td></tr>
+    {% endif %}
 </table>
 
 <p><b>{{ details }}</b></p>
