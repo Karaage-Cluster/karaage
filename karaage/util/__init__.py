@@ -19,6 +19,8 @@ import datetime
 from django.contrib.contenttypes.models import ContentType
 from andsome.middleware.threadlocals import get_current_user
 
+from karaage.admin.models import LogEntry
+
 def get_date_range(request, default_start=(datetime.date.today() - datetime.timedelta(days=90)), default_end=datetime.date.today()):
 
     today = datetime.date.today()
@@ -58,15 +60,18 @@ def get_current_person():
 def log_object(user, object, flag, message):
     if user is None:
         user = get_current_user()
-    if user is not None and user.is_authenticated():
-        user.logentry_set.create(
-            content_type=ContentType.objects.get_for_model(object.__class__),
-            object_id=object._get_pk_val(),
-            object_repr=object.__unicode__(),
-            action_flag=flag,
-            change_message=message
-            )
-    
+    if user is None:
+        user_id = None
+    else:
+        user_id = user.pk
+    LogEntry.objects.log_action(
+        user_id         = user_id,
+        content_type_id = ContentType.objects.get_for_model(object).pk,
+        object_id       = object.pk,
+        object_repr     = unicode(object),
+        action_flag=flag,
+        change_message=message)
+
 
 def new_random_token():
     import random

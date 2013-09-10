@@ -27,22 +27,19 @@ DEFAULT_SHELL = '/bin/bash'
 BOUNCED_SHELL = '/usr/local/sbin/bouncedemail'
 
 INSTALLED_APPS = (
-    'andsome.layout',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'django.contrib.admin',
-    'django.contrib.admindocs',
     'django.contrib.humanize',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_xmlrpc',
     'south',
-    'andsome',
     'captcha',
     'django_surveys',
-    'karaage',
+    'karaage.util',
+    'karaage.admin',
     'karaage.people',
     'karaage.machines',
     'karaage.institutes',
@@ -60,6 +57,8 @@ INSTALLED_APPS = (
     'django_pbs.servers',
     'django_pbs.jobs',
     'django.contrib.comments',
+    'andsome.layout',
+    'andsome',
 )
 
 TEMPLATE_DIRS = (
