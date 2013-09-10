@@ -41,6 +41,6 @@ urlpatterns = patterns('karaage.people.views.admin',
     (r'^(?P<username>[-.\w]+)/', include('karaage.people.urls.admin_user_detail')),
 )
 
-urlpatterns += patterns('karaage.views',
+urlpatterns += patterns('karaage.admin.views',
     url(r'^(?P<object_id>\d+)/logs/$', 'log_detail', {'model': Person }, name='kg_person_logs'),
 )

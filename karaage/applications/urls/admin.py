@@ -25,7 +25,7 @@ urlpatterns = patterns('karaage.applications.views.admin',
     url(r'^applicants/(?P<applicant_id>\d+)/$', 'applicant_edit', name='kg_applicant_edit'),
 )
 
-urlpatterns += patterns('karaage.views',
+urlpatterns += patterns('karaage.admin.views',
     url(r'^(?P<object_id>\d+)/logs/$', 'log_detail', {'model': Application }, name='kg_application_logs'),
 )
 

@@ -231,7 +231,7 @@ class StateMachine(object):
     @staticmethod
     def _log(request, application, flag, message):
         """ Log a message for this application. """
-        log(request.user, application, flag, message)
+        log(request.user, application.application_ptr, flag, message)
 
     @staticmethod
     def _authenticate(request, application):
@@ -826,7 +826,7 @@ class StateApplicantEnteringDetails(StateWithSteps):
                         old_applicant = application.applicant
                         application.applicant = new_person
                         application.save()
-                        log(request.user, application,
+                        log(request.user, application.application_ptr,
                                 1, "Stolen application from %s", application.applicant)
                         messages.success(
                                 request,
