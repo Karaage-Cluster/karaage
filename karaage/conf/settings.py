@@ -44,7 +44,6 @@ INSTALLED_APPS = (
     'karaage.machines',
     'karaage.institutes',
     'karaage.projects',
-    'karaage.requests',
     'karaage.usage',
     'karaage.cache',
     'karaage.software',
