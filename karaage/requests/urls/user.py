@@ -19,7 +19,6 @@ from django.conf.urls import *
 from django.core.urlresolvers import get_script_prefix
 
 urlpatterns = patterns('karaage.legacy.simple',
-
     url(r'^$', 'redirect_to', {'url': '%sapplications/new-user/' % get_script_prefix()}, name='user_registration'),
     url(r'^choose_project/$', 'redirect_to', {'url': '%sapplications/choose-project/' % get_script_prefix()}, name='user_choose_project'),
     url(r'^(?P<user_request_id>\d+)/$', 'redirect_to', {'url': '%sapplications/pending/' % get_script_prefix()}, name='account_request_detail'),
