@@ -425,8 +425,10 @@ class StateStepIntroduction(Step):
 
     def view(self, request, application, label, auth, actions):
         """ Django view method. """
-        application.applicant.email_verified = True
-        application.applicant.save()
+        if application.content_type.model == 'applicant':
+            if not application.applicant.email_verified:
+                application.applicant.email_verified = True
+                application.applicant.save()
         for action in actions:
             if action in request.POST:
                 return action
