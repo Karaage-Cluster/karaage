@@ -93,6 +93,7 @@ class ApplicantForm(forms.ModelForm):
         self.fields['full_name'].required = True
         self.fields['username'].label = 'Requested username'
         self.fields['username'].required = True
+        self.fields['institute'].required = True
 
     def clean_username(self):
         username = self.cleaned_data['username']
@@ -283,8 +284,6 @@ def AdminApproveApplicationFormGenerator(application, auth):
     class AdminApproveApplicationForm(parent):
         if application.project is None:
             pid = forms.CharField(label="Project ID", help_text="Leave blank for auto generation", required=False)
-        if application.content_type.model == 'applicant':
-            replace_applicant = ajax_select.fields.AutoCompleteSelectField('person', required=False, help_text="Do not set unless absolutely positive sure.")
 
         class Meta:
             model = ProjectApplication
@@ -305,13 +304,6 @@ def AdminApproveApplicationFormGenerator(application, auth):
             except Project.DoesNotExist:
                 pass
             return pid
-
-        def save(self, *args, **kwargs):
-            if application.content_type.model == 'applicant':
-                replace_applicant = self.cleaned_data['replace_applicant']
-                if replace_applicant is not None:
-                    self.instance.applicant = replace_applicant
-            return super(AdminApproveApplicationForm, self).save(*args, **kwargs)
 
     return AdminApproveApplicationForm
 
@@ -375,3 +367,17 @@ class PersonVerifyPassword(forms.Form):
         self.person.set_password(password)
         self.person.save()
         return self.person
+
+class ApplicantReplace(forms.Form):
+    replace_applicant = ajax_select.fields.AutoCompleteSelectField('person',
+            required=True, help_text="Do not set unless absolutely positive sure.")
+
+    def __init__(self, application, *args, **kwargs):
+        self.application = application
+        super(ApplicantReplace, self).__init__(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        replace_applicant = self.cleaned_data['replace_applicant']
+        if replace_applicant is not None:
+            self.application.applicant = replace_applicant
+            self.application.save()

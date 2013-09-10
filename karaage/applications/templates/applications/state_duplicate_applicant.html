@@ -1,0 +1,62 @@
+{% extends "forms.html" %}
+{% load forms %}
+{% load applications %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href='{% url 'kg_application_detail' application.pk %}'>Application</a>&nbsp;›
+    Approve
+</div>
+{% endblock %}
+
+
+{% block content %}
+<p>The following applicant in this application has been declared a duplicate:</p>
+<div class="module">
+    <h2>Applicant Details</h2>
+    <table>
+        <tr><td>Name:</td><td>{{ application.applicant }}</td></tr>
+        <tr><td>Institute:</td><td>{{ application.applicant.institute }}</td></tr>
+        <tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
+        <tr><td>Email:</td><td>{{ application.applicant.email|urlize }}</td></tr>
+    </table>
+</div>
+
+{% if application.content_type.model == 'applicant' %}
+{% if application.applicant.similar_people %}
+<div class="module">
+    <form method="post" action=".">{% csrf_token %}
+        <h2>Similar People</h2>
+        <p>Please check that the applicant isn't an existing user.</p>
+        {% gen_table application.applicant.similar_people %}
+    </form>
+</div>
+{% endif %}
+{% endif %}
+
+<div class="module">
+    <h2>Confirm</h2>
+    <p>Please replace the applicant with an existing person, reopen the
+    application, or cancel it.</p>
+
+
+    <form method="post" action=".">{% csrf_token %}
+        <div>
+            {% load forms %}
+            {% if form.errors or form.non_field_errors %}
+            <div class="errornote">Please correct the error(s) below.</div>
+            {% endif %}
+
+            <fieldset class="module aligned ()">
+                {{ form.non_field_errors }}
+                {% form_as_div form %}
+                <input type="submit" name="replace" value="Replace applicant" class="button" />
+            </fieldset>
+        </div>
+
+        {% application_actions %}
+    </form>
+</div>
+{% endblock %}

@@ -6,6 +6,14 @@
 {% block title %}Applications{% endblock %}
 
 
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    Application
+</div>
+{% endblock %}
+
+
 {% block object-tools %}
 {% if auth.is_admin %}
 <div class="module object-tools">
@@ -93,6 +101,19 @@
             {% if application.applicant.fax %}<tr><td>Fax:</td><td>{{ application.applicant.fax }}</td></tr>{% endif %}
         </table>
     </div>
+
+    {% if application.content_type.model == 'applicant' %}
+    <div class="module">
+        <form method="post" action=".">{% csrf_token %}
+            <h2>Similar People</h2>
+            <p>Please check that the applicant isn't an existing user.</p>
+            {% gen_table application.applicant.similar_people %}
+            {% if 'duplicate' in actions %}
+            <input type="submit" name="duplicate" value="Is existing user" class="button" />
+            {% endif %}
+        </form>
+    </div>
+    {% endif %}
 
     {% if application.project %}
     <div class="module">

@@ -21,6 +21,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.db.models import Q
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.http import HttpResponseRedirect
 
 from andsome.util.filterspecs import Filter, FilterBar
 
@@ -76,17 +77,13 @@ def applicant_edit(request, applicant_id):
     
     applicant = get_object_or_404(Applicant, id=applicant_id)
 
+    form = ApplicantForm(request.POST or None, instance=applicant)
     if request.method == 'POST':
-        form = ApplicantForm(request.POST, instance=applicant)
         if form.is_valid():
             applicant = form.save()
             log(request.user, applicant, 2, 'Edited')
             messages.success(request, "%s modified successfully." % applicant)
-            try:
-                return HttpResponseRedirect(applicant.applications.all()[0].get_absolute_url())
-            except IndexError:
-                return HttpResponseRedirect(reverse('kg_application_list'))
-    else:
-        form = ApplicantForm(instance=applicant)
-    
-    return render_to_response('applications/applicant_form.html', {'applicant': applicant, 'form': form}, context_instance=RequestContext(request))
+            return HttpResponseRedirect(reverse('kg_application_list'))
+
+    return render_to_response('applications/applicant_form.html',
+            {'form': form}, context_instance=RequestContext(request))

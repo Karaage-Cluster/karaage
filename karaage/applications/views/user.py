@@ -283,12 +283,14 @@ class State(object):
         if label is not None:
             return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
-        # only reopen/reinvite actions make sense for default view
+        # only certain actions make sense for default view
         tmp_actions = []
         if 'reopen' in actions:
             tmp_actions.append("reopen")
-        if 'reinvite' in actions:
-            tmp_actions.append("reinvite")
+        if 'cancel' in actions:
+            tmp_actions.append("cancel")
+        if 'duplicate' in actions:
+            tmp_actions.append("duplicate")
         if 'archive' in actions and auth['is_admin']:
             tmp_actions.append("archive")
         actions = tmp_actions
@@ -838,9 +840,9 @@ class StateApplicantEnteringDetails(StateWithSteps):
 
         # if the user is the leader, show him the leader specific page.
         if (auth['is_leader'] or auth['is_delegate']) and not auth['is_admin'] and not auth['is_applicant']:
-            actions = ['reinvite']
-            if 'reinvite' in request.POST:
-                return 'reinvite'
+            actions = ['reopen']
+            if 'reopen' in request.POST:
+                return 'reopen'
             return render_to_response(
                     'applications/state_aed_for_leader.html',
                     {'application': application, 'actions': actions, 'auth': auth, },
@@ -861,7 +863,12 @@ class StateWaitingForApproval(State):
     def view(self, request, application, label, auth, actions):
         """ Django view method. """
         if label == "approve" and self.check_auth(auth):
-            actions = [ 'approve' ]
+            tmp_actions = []
+            if 'approve' in actions:
+                tmp_actions.append("approve")
+            if 'duplicate' in actions:
+                tmp_actions.append("duplicate")
+            actions = tmp_actions
             application_form = forms.ApproveApplicationFormGenerator(
                     application, auth)
             form = application_form(
@@ -876,7 +883,7 @@ class StateWaitingForApproval(State):
                     'actions': actions, 'auth': auth},
                     context_instance=RequestContext(request))
         elif label == "decline" and self.check_auth(auth):
-            actions = [ 'decline' ]
+            actions = [ 'cancel' ]
             if request.method == 'POST':
                 form = EmailForm(request.POST)
                 if form.is_valid():
@@ -886,7 +893,7 @@ class StateWaitingForApproval(State):
                             subject, body,
                             settings.ACCOUNTS_EMAIL, [to_email],
                             fail_silently=False)
-                    return "decline"
+                    return "cancel"
             else:
                 link, is_secret = _get_email_link(application)
                 subject, body = emails.render_email(
@@ -947,15 +954,12 @@ class StateWaitingForAdmin(State):
     def view(self, request, application, label, auth, actions):
         """ Django view method. """
         if label == "approve" and auth['is_admin']:
-            similar_people = []
-            if application.content_type.model == 'applicant':
-                similar_people = Person.objects.filter(
-                        Q(email=application.applicant.email) |
-                        Q(username=application.applicant.username) |
-                        Q(full_name__icontains=application.applicant.short_name) |
-                        Q(full_name__icontains=application.applicant.full_name)
-                )
-            actions = [ 'approve' ]
+            tmp_actions = []
+            if 'approve' in actions:
+                tmp_actions.append("approve")
+            if 'duplicate' in actions:
+                tmp_actions.append("approve")
+            actions = tmp_actions
             application_form = forms.AdminApproveApplicationFormGenerator(
                     application, auth)
             form = application_form(
@@ -967,11 +971,10 @@ class StateWaitingForAdmin(State):
             return render_to_response(
                     'applications/state_admin_approve_for_admin.html',
                     {'application': application, 'form': form,
-                        'actions': actions, 'auth': auth,
-                        'similar_people': similar_people, },
+                        'actions': actions, 'auth': auth},
                     context_instance=RequestContext(request))
         elif label == "decline" and auth['is_admin']:
-            actions = [ 'decline' ]
+            actions = [ 'cancel' ]
             if request.method == 'POST':
                 form = EmailForm(request.POST)
                 if form.is_valid():
@@ -981,7 +984,7 @@ class StateWaitingForAdmin(State):
                             subject, body,
                             settings.ACCOUNTS_EMAIL, [to_email],
                             fail_silently=False)
-                    return "decline"
+                    return "cancel"
             else:
                 link, is_secret = _get_email_link(application)
                 subject, body = emails.render_email(
@@ -1017,9 +1020,8 @@ class StatePassword(State):
                 form = forms.PersonSetPassword(data=request.POST or None, person=application.applicant)
                 form_type = "set"
             if request.method == 'POST':
-                for action in actions:
-                    if 'cancel' in request.POST:
-                        return action
+                if 'cancel' in request.POST:
+                    return action
                 if form.is_valid():
                     form.save()
                     messages.success(request, 'Password updated. New accounts activated.')
@@ -1041,6 +1043,41 @@ class StateCompleted(State):
     """ This application is completed and processed. """
     name = "Completed"
 
+
+class StateDuplicateApplicant(State):
+    """ Somebody has declared application is existing user. """
+    name = "Replace Applicant"
+
+    def enter_state(self, request, application):
+        emails.send_admin_request_email(application)
+
+    def view(self, request, application, label, auth, actions):
+        # if not admin, don't allow reopen
+        if not auth['is_admin']:
+            if 'reopen' in actions:
+                actions.remove('reopen')
+        if label is None and auth['is_admin']:
+            form = forms.ApplicantReplace(data=request.POST or None,
+                    application=application)
+
+            if request.method == 'POST':
+                if 'replace' in request.POST:
+                    if form.is_valid():
+                        form.save()
+                        return "reopen"
+                else:
+                    for action in actions:
+                        if action in request.POST:
+                            return action
+                    return HttpResponseBadRequest("<h1>Bad Request</h1>")
+
+            return render_to_response(
+                    'applications/state_duplicate_applicant.html',
+                    {'application': application, 'form': form,
+                    'actions': actions, 'auth': auth, },
+                    context_instance=RequestContext(request))
+        return super(StateDuplicateApplicant, self).view(
+                request, application, label, auth, actions)
 
 class StateArchived(State):
     """ This application is archived. """
@@ -1147,13 +1184,15 @@ def get_application_state_machine():
     """ Get the default state machine for applications. """
     state_machine = StateMachine()
     state_machine.add_state(StateApplicantEnteringDetails(), 'O',
-            { 'cancel': 'R', 'submit': TransitionSubmit(on_existing_project='L', on_new_project='D', on_error="R"), 'reinvite': 'O', })
+            { 'cancel': 'R', 'reopen': 'O', 'duplicate': 'DUP',
+            'submit': TransitionSubmit(on_existing_project='L', on_new_project='D', on_error="R"), })
     state_machine.add_state(StateWaitingForLeader(), 'L',
-            { 'decline': 'R', 'approve': 'K', })
+            { 'cancel': 'R', 'approve': 'K', 'duplicate': 'DUP', })
     state_machine.add_state(StateWaitingForDelegate(), 'D',
-            { 'decline': 'R', 'approve': 'K', })
+            { 'cancel': 'R', 'approve': 'K', 'duplicate': 'DUP', })
     state_machine.add_state(StateWaitingForAdmin(), 'K',
-            { 'decline': 'R', 'approve': TransitionApprove(on_password_needed='P', on_password_ok='C', on_error="R")})
+            { 'cancel': 'R', 'duplicate': 'DUP',
+            'approve': TransitionApprove(on_password_needed='P', on_password_ok='C', on_error="R")})
     state_machine.add_state(StatePassword(), 'P',
             { 'submit': 'C', })
     state_machine.add_state(StateCompleted(), 'C',
@@ -1162,6 +1201,8 @@ def get_application_state_machine():
             {})
     state_machine.add_state(StateDeclined(), 'R',
             { 'reopen': 'O',  })
+    state_machine.add_state(StateDuplicateApplicant(), 'DUP',
+            { 'reopen': 'O', 'cancel': 'R', })
 #    NEW = 'N'
 #    OPEN = 'O'
 #    WAITING_FOR_LEADER = 'L'

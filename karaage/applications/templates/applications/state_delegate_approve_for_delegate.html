@@ -23,6 +23,18 @@
         <tr><td>Email:</td><td>{{ application.applicant.email|urlize }}</td></tr>
     </table>
 </div>
+
+{% if application.content_type.model == 'applicant' %}
+<div class="module">
+    <h2>Similar People</h2>
+    <p>Please check that this isn't an existing user before approving.</p>
+    {% gen_table application.applicant.similar_people %}
+    {% if 'duplicate' in actions %}
+    <input type="submit" name="duplicate" value="Is existing user" class="button" />
+    {% endif %}
+</div>
+{% endif %}
+
 {% if application.project %}
 <div class="module">
     <h2>Existing Project Details</h2>
@@ -44,6 +56,7 @@
     </table>
 </div>
 {% endif %}
+
 <div class="module">
     <h2>Confirm</h2>
     <p>{{ application.applicant }} will receive an email once their account has been confirmed.</p>

@@ -16,6 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.db import models
+from django.db.models import Q
 from django.db.models.fields import FieldDoesNotExist
 from django.db.models.related import RelatedObject
 from django.contrib.contenttypes.models import ContentType
@@ -44,6 +45,7 @@ class Application(models.Model):
     COMPLETED = 'C'
     ARCHIVED = 'A'
     DECLINED = 'R'
+    DUPLICATE = 'DUP'
 
     APPLICATION_STATES = (
         (OPEN, 'Open'),
@@ -54,6 +56,7 @@ class Application(models.Model):
         (COMPLETED, 'Complete'),
         (ARCHIVED, 'Archived'),
         (DECLINED, 'Declined'),
+        (DUPLICATE, 'Duplicate Applicant'),
         )
 
     secret_token = models.CharField(max_length=64, default=new_random_token, editable=False, unique=True)
@@ -385,3 +388,25 @@ class Applicant(models.Model):
         self.delete()
         return person
     approve.alters_data = True
+
+    def similar_people(self):
+        term = False
+        query = Q()
+        if self.username:
+            query = query | Q(username__iexact=self.username)
+            term = True
+        if self.saml_id:
+            query = query | Q(saml_id=self.saml_id)
+            term = True
+        if self.email:
+            query = query | Q(email__iexact=self.email)
+            term = True
+        if self.short_name:
+            query = query | Q(full_name__iexact=self.short_name)
+            term = True
+        if self.full_name:
+            query = query | Q(full_name__iexact=self.full_name)
+            term = True
+        if not term:
+            return Person.objects.none()
+        return Person.objects.filter(query)
