@@ -18,8 +18,7 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django import forms
-from django.core.paginator import Paginator
-from django.contrib.admin.models import LogEntry
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.comments.models import Comment
 from django.contrib.sites.models import Site
@@ -28,6 +27,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
 
+from karaage.admin.models import LogEntry
 from karaage.util.decorators import admin_required
 from karaage.people.models import Person, Group
 from karaage.projects.models import Project
@@ -90,8 +90,28 @@ def search(request):
 
 
 @admin_required
-def log_detail(request, object_id, model):
+def log_list(request):
+    log_list = LogEntry.objects.all()
+    paginator = Paginator(log_list, 50)
 
+    page = request.GET.get('page')
+    try:
+        page_obj = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        page_obj = paginator.page(paginator.num_pages)
+
+    return render_to_response(
+                ['%s/log_list.html' % "admin", 'log_list.html'],
+                {'page_obj': page_obj, 'short': True},
+                context_instance=RequestContext(request))
+
+
+@admin_required
+def log_detail(request, object_id, model):
     obj = get_object_or_404(model, pk=object_id)
     content_type = ContentType.objects.get_for_model(model)
 
@@ -99,12 +119,21 @@ def log_detail(request, object_id, model):
         content_type=content_type,
         object_id=object_id
     )
-    page_no = 1
-    p = Paginator(log_list, 50)
-    page_obj = p.page(page_no)
-    
-    short = True
-    return render_to_response(['%s/log_list.html' % content_type.app_label, 'log_list.html'], locals(), context_instance=RequestContext(request))
+    paginator = Paginator(log_list, 50)
+
+    page = request.GET.get('page')
+    try:
+        page_obj = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        page_obj = paginator.page(paginator.num_pages)
+
+    return render_to_response(['%s/log_list.html' % "admin", 'log_list.html'],
+                {'page_obj': page_obj, 'short': True},
+                context_instance=RequestContext(request))
 
 
 @admin_required

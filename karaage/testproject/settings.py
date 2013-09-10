@@ -146,10 +146,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.humanize',
-    'andsome.layout',
-    'andsome',
+    'django.contrib.staticfiles',
     'captcha',
-    'karaage',
+    'karaage.util',
+    'karaage.admin',
     'karaage.people',
     'karaage.machines',
     'karaage.institutes',
@@ -167,6 +167,8 @@ INSTALLED_APPS = (
     'django_pbs.jobs',
     'karaage.test_data',
     'django_surveys',
+    'andsome.layout',
+    'andsome',
 )
 
 
@@ -187,3 +189,5 @@ REGISTRATION_BASE_URL = 'https://example.com/users'
 DEFAULT_SHELL = '/bin/bash'
 
 SECRET_KEY = '5hvhpe6gv2t5x4$3dtq(w2v#vg@)sx4p3r_@wv%l41g!stslc*'
+
+STATIC_URL = "/static/"
