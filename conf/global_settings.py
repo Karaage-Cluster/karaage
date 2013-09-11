@@ -49,9 +49,6 @@ SECRET_KEY = ''
 ### Karaage settings
 ###
 
-# Do new cluster accounts need a 2nd stage of approval
-ADMIN_APPROVE_ACCOUNTS = True
-
 # Used in various places
 ACCOUNTS_EMAIL = 'accounts@example.com'
 ACCOUNTS_ORG_NAME = 'Example'
