@@ -169,3 +169,8 @@ def add_comment(request, object_id, model):
 
     return render_to_response('comments/add_comment.html', locals(), context_instance=RequestContext(request))
 
+@admin_required
+def misc(request):
+    from karaage.legacy.simple import direct_to_template
+    return direct_to_template(request,
+            template='misc/index.html')

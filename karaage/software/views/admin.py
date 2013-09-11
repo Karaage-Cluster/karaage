@@ -130,6 +130,19 @@ def add_package(request):
 
     return render_to_response('software/add_package_form.html', locals(), context_instance=RequestContext(request))
 
+@admin_required
+def software_edit(request, package_id):
+    from karaage.legacy.create_update import update_object
+    return update_object(request,
+            object_id=package_id, model=SoftwarePackage)
+
+@admin_required
+def software_delete(request, package_id):
+    from karaage.legacy.create_update import delete_object
+    return delete_object(request,
+            post_delete_redirect=reverse('software_list'),
+            object_id=package_id, model=SoftwarePackage)
+
 
 @admin_required
 def license_detail(request, license_id):
@@ -159,6 +172,13 @@ def add_edit_license(request, package_id, license_id=None):
         form = LicenseForm(instance=l)
         
     return render_to_response('software/license_form.html', locals(), context_instance=RequestContext(request))
+
+@admin_required
+def license_delete(request, license_id):
+    from karaage.legacy.create_update import delete_object
+    return delete_object(request,
+            post_delete_redirect=reverse('software_list'),
+            object_id=license_id, model=SoftwareLicense)
 
 
 @admin_required
@@ -201,7 +221,19 @@ def add_edit_version(request, package_id, version_id=None):
 def category_list(request):
     category_list = SoftwareCategory.objects.all()
     return render_to_response('software/category_list.html', {'category_list': category_list}, context_instance=RequestContext(request))
-    
+
+@admin_required
+def category_create(request):
+    from karaage.legacy.create_update import create_object
+    return create_object(request,
+            model=SoftwareCategory)
+
+@admin_required
+def category_edit(request, category_id):
+    from karaage.legacy.create_update import update_object
+    return update_object(request,
+            object_id=category_id, model=SoftwareCategory)
+
 
 @admin_required
 def remove_member(request, package_id, user_id):

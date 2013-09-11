@@ -5,6 +5,7 @@ import ajax_select.urls
 urlpatterns = patterns('',
     url(r'^$', 'karaage.admin.views.admin_index', name='index'),
     url(r'^search/$', 'karaage.admin.views.search', name='kg_site_search'),
+    url(r'^misc/$', 'karaage.admin.views.misc', name='kg_misc'),
 
     url(r'^people/', include('karaage.people.urls.admin')),
     url(r'^profile/', include('karaage.people.urls.profile')),
@@ -21,7 +22,6 @@ urlpatterns = patterns('',
 
     url(r'^comments/', include('django.contrib.comments.urls')),
     url(r'^pbs/', include('django_pbs.servers.urls')),
-    url(r'^misc/$', 'karaage.legacy.simple.direct_to_template', {'template': 'misc/index.html'}),
 
     url(r'^accounts/login/$', 'django.contrib.auth.views.login', name='login'),
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', name='logout'),

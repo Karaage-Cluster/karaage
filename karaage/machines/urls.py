@@ -16,22 +16,14 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf.urls import *
-from karaage.legacy.create_update import update_object, create_object
-from models import Machine, MachineCategory
-from karaage.util.decorators import admin_required
 
-
-urlpatterns = patterns('karaage.legacy.create_update',
-    url(r'^add/$', admin_required(create_object), {'model': Machine}),
-    url(r'^(?P<object_id>\d+)/edit/$', admin_required(update_object), {'model': Machine}),
-    url(r'^categories/add/$', admin_required(create_object), {'model': MachineCategory}, name='kg_machinecategory_add'),
-    url(r'^categories/(?P<object_id>\d+)/edit/$', admin_required(update_object), {'model': MachineCategory}, name='kg_machinecategory_edit'),
-)
-
-urlpatterns += patterns('karaage.machines.views',
-
+urlpatterns = patterns('karaage.machines.views',
     url(r'^$', 'index', name='kg_machine_list'),
+    url(r'^add/$', 'machine_create', name='kg_machine_create'),
     url(r'^(?P<machine_id>\d+)/$', 'machine_detail', name='kg_machine_detail'),
-    url(r'^(?P<machine_id>\d+)/accounts/$', 'machine_accounts'),
-    url(r'^(?P<machine_id>\d+)/projects/$', 'machine_projects'),
+    url(r'^(?P<machine_id>\d+)/edit/$', 'machine_edit', name='kg_machine_edit'),
+    url(r'^(?P<machine_id>\d+)/accounts/$', 'machine_accounts', name='kg_machine_accounts'),
+    url(r'^(?P<machine_id>\d+)/projects/$', 'machine_projects', name='kg_machine_projects'),
+    url(r'^categories/add/$', 'category_create', name='kg_machinecategory_add'),
+    url(r'^categories/(?P<category_id>\d+)/edit/$', 'category_edit', name='kg_machinecategory_edit'),
 )

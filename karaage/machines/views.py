@@ -19,8 +19,9 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 
 from karaage.machines.models import Machine, MachineCategory
+from karaage.util.decorators import admin_required
 
-
+@admin_required
 def index(request):
     category_list = MachineCategory.objects.all()
     return render_to_response(
@@ -29,6 +30,7 @@ def index(request):
         context_instance=RequestContext(request))
 
 
+@admin_required
 def machine_detail(request, machine_id):
     machine = get_object_or_404(Machine, pk=machine_id)
     usage_list = machine.cpujob_set.all()[:5]
@@ -37,7 +39,19 @@ def machine_detail(request, machine_id):
         {'machine': machine, 'usage_list': usage_list},
         context_instance=RequestContext(request))
 
+@admin_required
+def machine_create(request):
+    from karaage.legacy.create_update import create_object
+    return create_object(request,
+            model=Machine)
 
+@admin_required
+def machine_edit(request, machine_id):
+    from karaage.legacy.create_update import update_object
+    return update_object(request,
+            object_id=machine_id, model=Machine)
+
+@admin_required
 def machine_accounts(request, machine_id):
     machine = get_object_or_404(Machine, pk=machine_id)
     accounts = machine.category.account_set.filter(date_deleted__isnull=True)
@@ -46,7 +60,7 @@ def machine_accounts(request, machine_id):
         {'machine': machine, 'accounts': accounts},
         context_instance=RequestContext(request))
 
-
+@admin_required
 def machine_projects(request, machine_id):
     machine = get_object_or_404(Machine, pk=machine_id)
     project_list = machine.category.project_set.all()
@@ -54,3 +68,17 @@ def machine_projects(request, machine_id):
         'machines/machine_projects.html',
         {'machine': machine, 'project_list': project_list},
         context_instance=RequestContext(request))
+
+
+@admin_required
+def category_create(request):
+    from karaage.legacy.create_update import create_object
+    return create_object(request,
+            model=MachineCategory)
+
+@admin_required
+def category_edit(request, category_id):
+    from karaage.legacy.create_update import update_object
+    return update_object(request,
+            object_id=category_id, model=MachineCategory)
+

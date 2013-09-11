@@ -17,40 +17,23 @@
 
 from django.conf.urls import *
 
-from karaage.software.models import SoftwarePackage, SoftwareCategory, SoftwareLicense
+from karaage.software.models import SoftwarePackage
 
-info_dict = {
-    'model': SoftwarePackage,
-    }
-d_info_dict = {
-    'model': SoftwarePackage,
-    'post_delete_redirect':  '/',
-    }
-d_license_dict = {
-    'model': SoftwareLicense,
-    'post_delete_redirect': '/',
-    }
-c_info_dict = {
-    'model': SoftwareCategory,
-    }
-
-urlpatterns = patterns('karaage.legacy.create_update',
-    url(r'^(?P<object_id>\d+)/edit/$', 'update_object', info_dict, name='kg_softwarepackage_edit'),
-    url(r'^(?P<object_id>\d+)/delete/$', 'delete_object', d_info_dict, name='kg_softwarepackage_delete'),
-    url(r'^categories/add/$', 'create_object', c_info_dict),
-    url(r'^categories/(?P<object_id>\d+)/edit/$', 'update_object', c_info_dict),
-    url(r'^license/(?P<object_id>\d+)/delete/$', 'delete_object', d_license_dict, name='kg_softwarelicense_delete'),
-)
-
-urlpatterns += patterns('karaage.software.views.admin',
+urlpatterns = patterns('karaage.software.views.admin',
     url(r'^$', 'software_list', name='kg_software_list'),
     url(r'^add/$', 'add_package', name='kg_software_add'),
+
     url(r'^categories/$', 'category_list', name='kg_software_category_list'),
+    url(r'^categories/add/$', 'category_create', name='kg_software_category_create'),
+    url(r'^categories/(?P<category_id>\d+)/edit/$', 'category_edit', name='kg_software_category_edit'),
+
     url(r'^requests/$', 'softwarerequest_list', name='kg_softwarerequest_list'),
     url(r'^requests/(?P<softwarerequest_id>\d+)/approve/$', 'softwarerequest_approve', name='kg_softwarerequest_approve'),
     url(r'^requests/(?P<softwarerequest_id>\d+)/decline/$', 'softwarerequest_delete', name='kg_softwarerequest_delete'),
 
     url(r'^(?P<package_id>\d+)/$', 'software_detail', name='kg_software_detail'),
+    url(r'^(?P<package_id>\d+)/edit/$', 'software_edit', name='kg_softwarepackage_edit'),
+    url(r'^(?P<package_id>\d+)/delete/$', 'software_delete', name='kg_softwarepackage_delete'),
     url(r'^(?P<package_id>\d+)/verbose/$', 'software_verbose', name='kg_software_verbose'),
     url(r'^(?P<package_id>\d+)/stats/$', 'software_stats', name='kg_software_stats'),
     url(r'^(?P<package_id>\d+)/remove/(?P<user_id>\d+)/$', 'remove_member', name='kg_software_removeuser'),
@@ -62,6 +45,7 @@ urlpatterns += patterns('karaage.software.views.admin',
     url(r'^(?P<package_id>\d+)/version/delete/(?P<version_id>\d+)/$', 'delete_version', name='kg_softwareversion_delete'),
 
     url(r'^license/(?P<license_id>\d+)/$', 'license_detail', name='kg_softwarelicense_detail'),
+    url(r'^license/(?P<license_id>\d+)/delete/$', 'license_delete', name='kg_softwarelicense_delete'),
 )
 
 urlpatterns += patterns('karaage.admin.views',

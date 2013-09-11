@@ -30,6 +30,7 @@ from karaage.util.graphs import get_institute_trend_graph_url
 from karaage.institutes.models import Institute, InstituteDelegate
 from karaage.institutes.forms import InstituteForm, DelegateForm
 from karaage.machines.models import MachineCategory
+from karaage.pbsmoab.models import InstituteChunk
 
 
 @admin_required
@@ -113,3 +114,9 @@ def add_edit_institute(request, institute_id=None):
         'institutes/institute_form.html',
         {'institute': institute, 'form': form, 'delegate_formset': delegate_formset},
         context_instance=RequestContext(request))
+
+@admin_required
+def institute_quota_edit(request, institutechunk_id):
+    from karaage.legacy.create_update import update_object
+    return update_object(request,
+            object_id=institutechunk_id, model=InstituteChunk)

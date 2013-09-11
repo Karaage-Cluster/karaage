@@ -17,22 +17,7 @@
 
 from django.conf.urls import *
 
-from karaage.pbsmoab.models import InstituteChunk
-
-
-iq_info_dict = {
-    'model': InstituteChunk,
-    }
-
-
-
-urlpatterns = patterns('karaage.legacy.create_update', 
-    url(r'^institutechunk/(?P<object_id>\d+)/$', 'update_object', iq_info_dict, name='kg_institute_quota_edit'),
-                 
-)
-
-urlpatterns += patterns('karaage.institutes.views.admin',
-
+urlpatterns = patterns('karaage.institutes.views.admin',
     url(r'^$', 'institute_list', name='kg_institute_list'),
     url(r'^add/$', 'add_edit_institute', name='kg_institute_add'),
     url(r'^(?P<institute_id>\d+)/$', 'institute_detail', name='kg_institute_detail'),
@@ -40,5 +25,5 @@ urlpatterns += patterns('karaage.institutes.views.admin',
     url(r'^(?P<institute_id>\d+)/edit/$', 'add_edit_institute', name='kg_institute_edit'),
     url(r'^(?P<institute_id>\d+)/$', 'institute_detail', name='kg_institute_users'),
     url(r'^(?P<institute_id>\d+)/$', 'institute_detail', name='kg_institute_projects'),
+    url(r'^institutechunk/(?P<institutechunk_id>\d+)/$', 'institute_quota_edit', name='kg_institute_quota_edit'),
 )
-                  
