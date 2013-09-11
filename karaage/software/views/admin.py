@@ -253,12 +253,30 @@ def remove_member(request, package_id, user_id):
 
 @admin_required
 def softwarerequest_list(request):
-    page_no = int(request.GET.get('page', 1))
     softwarerequest_list = SoftwareAccessRequest.objects.all()
+
+    if 'search' in request.REQUEST:
+        terms = request.REQUEST['search']
+        query = Q()
+        for term in terms.split(' '):
+            q = Q(person__short_name__icontains=term)
+            q = q | Q(person__full_name__icontains=term)
+            q = q | Q(software_license__package__name__icontains=term)
+            query = query & q
+
+        softwarerequest_list = softwarerequest_list.filter(query)
+    else:
+        terms = ""
+
+    page_no = int(request.GET.get('page', 1))
     p = Paginator(softwarerequest_list, 50)
     page = p.page(page_no)
-    return render_to_response('software/request_list.html', {'softwarerequest_list': softwarerequest_list, 'page': page}, context_instance=RequestContext(request))
-    
+
+
+    return render_to_response('software/request_list.html',
+            {'softwarerequest_list': softwarerequest_list,
+                'page': page, 'terms': terms},
+            context_instance=RequestContext(request))
 
 @admin_required
 def softwarerequest_approve(request, softwarerequest_id):
