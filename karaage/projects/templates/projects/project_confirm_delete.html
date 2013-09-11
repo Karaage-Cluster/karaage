@@ -8,10 +8,10 @@
     <h1>Are you sure?</h1>    
     <p>Are you sure you want to delete the project "{{ project }}"? </p>
     <form method="post" action=".">{% csrf_token %}
-    <div>
-    <input type="hidden" name="post" value="yes" />
-    <input type="submit" value="Yes, I'm sure" />
-    </div>
+        <div>
+            <input type="hidden" name="post" value="yes" />
+            <input type="submit" value="Yes, I'm sure" />
+        </div>
     </form>
 {% endif %}
 {% endblock %}

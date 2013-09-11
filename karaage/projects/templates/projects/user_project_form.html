@@ -3,22 +3,31 @@
 
 {% block title %}Projects{% endblock %}
 
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    Projects&nbsp;›
+    <a href='{% url 'kg_project_detail' project.pk %}'>{{ project.pid }}</a>&nbsp;›
+    Edit
+</div>
+{% endblock %}
+
 
 {% block content %}
 <form method="post" action=".">{% csrf_token %}
-{{ form.errors }}
-{% load forms %}
-{% if form.errors  or form.non_field_errors %}
-	<p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
-{% endif %}
-<fieldset class="module aligned ()">
-{{ form.non_field_errors }}
-{% formfield form.name %}
-{% formfield form.description %}
-{% formfield form.additional_req %}
-</fieldset>
-<div class="submit-row">
-  <input type="submit" value="Proceed" class="default" />
-</div>
+    {{ form.errors }}
+    {% load forms %}
+    {% if form.errors  or form.non_field_errors %}
+            <p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
+    {% endif %}
+    <fieldset class="module aligned ()">
+        {{ form.non_field_errors }}
+        {% formfield form.name %}
+        {% formfield form.description %}
+        {% formfield form.additional_req %}
+    </fieldset>
+    <div class="submit-row">
+        <input type="submit" value="Proceed" class="default" />
+    </div>
 </form>
 {% endblock %}

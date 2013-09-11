@@ -7,8 +7,8 @@
 
 
 {% block extrahead %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script> 
-<script type="text/javascript" src="{{ STATIC_URL }}js/karaage.js"></script> 
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/karaage.js"></script>
 {% endblock %}
 
 
@@ -62,7 +62,7 @@
         {% if project.deleted_by %}
         <tr><td>Deleted by:</td><td><a href="{{ project.deleted_by.get_absolute_url }}">{{ project.deleted_by }}</a></td></tr>
         <tr><td>Date Deleted:</td><td>{{ project.date_deleted|date }}</td></tr>
-        {% endif %}    
+        {% endif %}
         </table>
     </div>
 
@@ -94,7 +94,7 @@
                 {% endfor %}
             </tbody>
         </table>
-    </div> 
+    </div>
 
     {% if project.group.members.all %}
     <div class="module">

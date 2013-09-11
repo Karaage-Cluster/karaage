@@ -16,27 +16,30 @@
     {% else %}
         Create Project
     {% endif %}
-</div>{% endblock %}
- 
+</div>
+{% endblock %}
+
+
 {% block extrahead %}
 {{ form.media }}
 {% endblock %}
 
+
 {% block content %}
 <form method="post" action=".">{% csrf_token %}
-<fieldset class="module aligned ()">
-{% formfield form.pid %}
-{% formfield form.name %}
-{% formfield form.institute %}
-{% formfield form.leaders %}
-{% formfield form.description %}
-{% formfield form.additional_req %}
-{% formfield form.start_date %}
-{% formfield form.end_date %}
-{% formfield form.machine_categories %}
-</fieldset>
-<div class="submit-row">
-		<input type="submit" value="Save" class="default" />
-	</div>
+    <fieldset class="module aligned ()">
+    {% formfield form.pid %}
+    {% formfield form.name %}
+    {% formfield form.institute %}
+    {% formfield form.leaders %}
+    {% formfield form.description %}
+    {% formfield form.additional_req %}
+    {% formfield form.start_date %}
+    {% formfield form.end_date %}
+    {% formfield form.machine_categories %}
+    </fieldset>
+    <div class="submit-row">
+        <input type="submit" value="Save" class="default" />
+    </div>
 </form>
 {% endblock %}
