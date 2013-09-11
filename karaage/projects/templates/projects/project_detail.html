@@ -21,142 +21,151 @@
 {% endblock %}
 
 
-{% block content %}<div id="content-main">
+{% block content %}
+<div id="content-main">
 
-<div class="module">
-<h2>Project Details</h2>
-<h3>{{ project }}
-      {% if project.is_active and project.is_approved %}
-      <img alt="Active" src="{{ STATIC_URL }}admin/img/icon_success.gif"/>
-      {% else %}
-      <img alt="Not Active" src="{{ STATIC_URL }}admin/img/icon_error.gif"/>
-      {% endif %}		
-      
-    </h3>
-<table>
-      {% if not project.is_active and not requestor %}
-      <tr><td colspan="2">Deleted by {{ project.deleted_by }} on {{ project.date_deleted }}</td></tr>
-      {% endif %}
-      <tr><td>Leaders:</td><td>{% for l in project.leaders.all %}<a href="{{ l.get_absolute_url }}">{{ l }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
-<tr><td>Institiute:</td><td><a href="{{ project.institute.get_absolute_url }}">{{ project.institute }}</a></td></tr>
-<tr><td>Group:</td><td><a href="{{ project.group.get_absolute_url }}">{{ project.group }}</a></td></tr>
-<tr><td>Description:</td><td>{{ project.description|linebreaks }}</td></tr>
-<tr><td>Last Usage:</td><td>{% if project.last_usage %}{{ project.last_usage|date }} ({{ project.last_usage|timesince }}){% else %}No usage{% endif %}</td></tr>
-<tr><td>Start Date:</td><td>{{ project.start_date|date }}</td></tr>
-<tr><td>End Date:</td><td>{{ project.end_date|date }}</td></tr>
-<tr><td>Approved:</td><td>{% yes_no_img project.is_approved %}</td></tr>
-<tr><td>Active:</td><td>{% yes_no_img project.is_active %}</td></tr>
-<tr id="hidden-link"><td colspan="2"><a href="#" onclick="showHidden()">More....</a></td></tr>
-</table>
-<table id="hidden" style="display: none">
-<tr><td>Additional Req:</td><td>{{ project.additional_req|linebreaks }}</td></tr>
-<tr><td>Machine Cat:</td><td>{% for mc in project.machine_categories.all %}{{mc}}{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
-{% if project.approved_by %}
-<tr><td>Approved by:</td><td><a href="{{ project.approved_by.get_absolute_url }}">{{ project.approved_by }}</a></td></tr>
-{% endif %}
-{% if project.date_approved %}
-<tr><td>Date Approved:</td><td>{{ project.date_approved|date }}</td></tr>
-{% endif %}
-      {% if project.deleted_by %}
-      <tr><td>Deleted by:</td><td><a href="{{ project.deleted_by.get_absolute_url }}">{{ project.deleted_by }}</a></td></tr>
-<tr><td>Date Deleted:</td><td>{{ project.date_deleted|date }}</td></tr>
-      {% endif %}    
-    </table>
+    <div class="module">
+        <h2>Project Details</h2>
+
+        <h3>{{ project }}
+            {% if project.is_active and project.is_approved %}
+            <img alt="Active" src="{{ STATIC_URL }}admin/img/icon_success.gif"/>
+            {% else %}
+            <img alt="Not Active" src="{{ STATIC_URL }}admin/img/icon_error.gif"/>
+            {% endif %}
+        </h3>
+
+        <table>
+            {% if not project.is_active and not requestor %}
+            <tr><td colspan="2">Deleted by {{ project.deleted_by }} on {{ project.date_deleted }}</td></tr>
+            {% endif %}
+            <tr><td>Leaders:</td><td>{% for l in project.leaders.all %}<a href="{{ l.get_absolute_url }}">{{ l }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
+            <tr><td>Institiute:</td><td><a href="{{ project.institute.get_absolute_url }}">{{ project.institute }}</a></td></tr>
+            <tr><td>Group:</td><td><a href="{{ project.group.get_absolute_url }}">{{ project.group }}</a></td></tr>
+            <tr><td>Description:</td><td>{{ project.description|linebreaks }}</td></tr>
+            <tr><td>Last Usage:</td><td>{% if project.last_usage %}{{ project.last_usage|date }} ({{ project.last_usage|timesince }}){% else %}No usage{% endif %}</td></tr>
+            <tr><td>Start Date:</td><td>{{ project.start_date|date }}</td></tr>
+            <tr><td>End Date:</td><td>{{ project.end_date|date }}</td></tr>
+            <tr><td>Approved:</td><td>{% yes_no_img project.is_approved %}</td></tr>
+            <tr><td>Active:</td><td>{% yes_no_img project.is_active %}</td></tr>
+            <tr id="hidden-link"><td colspan="2"><a href="#" onclick="showHidden()">More....</a></td></tr>
+        </table>
+        <table id="hidden" style="display: none">
+        <tr><td>Additional Req:</td><td>{{ project.additional_req|linebreaks }}</td></tr>
+        <tr><td>Machine Cat:</td><td>{% for mc in project.machine_categories.all %}{{mc}}{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
+        {% if project.approved_by %}
+        <tr><td>Approved by:</td><td><a href="{{ project.approved_by.get_absolute_url }}">{{ project.approved_by }}</a></td></tr>
+        {% endif %}
+        {% if project.date_approved %}
+        <tr><td>Date Approved:</td><td>{{ project.date_approved|date }}</td></tr>
+        {% endif %}
+        {% if project.deleted_by %}
+        <tr><td>Deleted by:</td><td><a href="{{ project.deleted_by.get_absolute_url }}">{{ project.deleted_by }}</a></td></tr>
+        <tr><td>Date Deleted:</td><td>{{ project.date_deleted|date }}</td></tr>
+        {% endif %}    
+        </table>
+    </div>
+
+    <div class="module">
+        <h2>Project Caps/quota {% if request.user.is_admin %}
+        <a class="addlink" href="{% url 'kg_projectchunk_add' project.pid %}">Add</a>
+        {% endif %}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Machine Category</th>
+                    <th>Actual</th>
+                    <th>Quota</th>
+                    <th>% Cap used</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pc in project.projectchunk_set.all %}
+                <tr class="{% cycle row1,row2 %}">
+                    <td>{{ pc.machine_category }}</td>
+                    <td>{{ pc.get_mpots|floatformat:"2" }}</td>
+                    <td>{{ pc.get_cap }}</td>
+                    <td>{{ pc.get_cap_percent|floatformat:"2" }}%</td>
+                    {% if request.user.is_admin %}
+                    <td><a class="changelink" href="{% url 'kg_projectchunk_edit' pc.id %}">edit</a></td>
+                    <td><a class="deletelink" href="{% url 'kg_projectchunk_delete' pc.id %}">Remove</a></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div> 
+
+    {% if project.group.members.all %}
+    <div class="module">
+        <h2>Users</h2>
+        <table cellspacing="0">
+            <thead>
+                <tr>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Active</th>
+                <th>Last Usage</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in project.group.members.select_related %}
+                <tr class="{% cycle row1,row2 %}">
+                    <td><a href="{{ user.get_absolute_url }}">{{ user.username }}</a></td>
+                    <td>{{ user.get_full_name }}</td>
+                    <td>{{ user.email|urlize }}</td>
+                    <td>
+                        {% if not user.is_active %}
+                        <img alt="inactive" src="{{ STATIC_URL }}admin/img/icon-no.gif"/>
+                        {% else %}
+                        {% if user.is_locked %}
+                        <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
+                        {% else %}
+                        <img alt="active" src="{{ STATIC_URL }}admin/img/icon-yes.gif"/>
+                        {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>{{ user.last_usage }}</td>
+                    {% if request.user.is_admin %}
+                    <td><a class="deletelink" href="{% url 'kg_remove_project_member' project.pid user.username %}">Remove</a></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    {% if request.user.is_admin and project.is_active %}
+    <form action="" id="joinproject_form" method="post">{% csrf_token %}
+        <div class="form-row">
+        {{ form }}
+        <input type="submit" value="Add"/>
+        </div>
+    </form>
+    {% endif %}
+
+    {% if project.get_latest_usage %}
+    <div class="module">
+    <h2>Last 5 cpu jobs</h2>
+        {% gen_table project.get_latest_usage %}
+    </div>
+    {% endif %}
+
 </div>
-<div class="module">
-<h2>Project Caps/quota {% if request.user.is_admin %}
-      <a class="addlink" href="{% url 'kg_projectchunk_add' project.pid %}">Add</a>
-    {% endif %}</h2>
-<table>
-<thead>
-<tr>
-<th>Machine Category</th>
-<th>Actual</th>
-<th>Quota</th>
-<th>% Cap used</th>
-</tr>
-</thead>
-<tbody>
-	{% for pc in project.projectchunk_set.all %}
-	<tr class="{% cycle row1,row2 %}">
-<td>{{ pc.machine_category }}</td>
-<td>{{ pc.get_mpots|floatformat:"2" }}</td>
-<td>{{ pc.get_cap }}</td>
-<td>{{ pc.get_cap_percent|floatformat:"2" }}%</td>
-	  {% if request.user_is_admin %}
-	  <td><a class="changelink" href="{% url 'kg_projectchunk_edit' pc.id %}">edit</a></td>
-	  <td><a class="deletelink" href="{% url 'kg_projectchunk_delete' pc.id %}">Remove</a>
-	  {% endif %}
-	</td></tr>
-	{% endfor %}
-	</tbody>
-</table>
-</div> 
-  {% if project.group.members.all %}
-  <div class="module">
-<h2>Users</h2>
-<table cellspacing="0">
-<thead>
-<tr>
-<th>Username</th>
-<th>Name</th>
-<th>Email</th>
-<th>Active</th>
-<th>Last Usage</th>
-</tr>
-</thead>
-<tbody>
-   	{% for user in project.group.members.select_related %}
-	<tr class="{% cycle row1,row2 %}">
-<td><a href="{{ user.get_absolute_url }}">{{ user.username }}</a></td>
-<td>{{ user.get_full_name }}</td>
-<td>{{ user.email|urlize }}</td>
-<td>
-	    {% if not user.is_active %}
-	    <img alt="inactive" src="{{ STATIC_URL }}admin/img/icon-no.gif"/>
-	    {% else %}
-	    {% if user.is_locked %}
-	    <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
-	    {% else %}
-	    <img alt="active" src="{{ STATIC_URL }}admin/img/icon-yes.gif"/>
-	    {% endif %}
-	    {% endif %}		  		
-	  </td>
-<td>{{ user.last_usage }}</td>
-	  {% if request.user.is_admin %}
-	  <td><a class="deletelink" href="{% url 'kg_remove_project_member' project.pid user.username %}">Remove</a>
-	    {% endif %}
-	</td></tr>
-	{% endfor %}
-      </tbody>
-</table>
-</div>
-  {% endif %}
-  {% if request.user.is_admin and project.is_active %}
-  <form action="" id="joinproject_form" method="post">{% csrf_token %}
-    <div class="form-row">
-      {{ form }}
-<input type="submit" value="Add"/>
-</div>
-</form>
-  {% endif %}
-  {% if project.get_latest_usage %}
-  <div class="module">
-<h2>Last 5 cpu jobs</h2>
-    {% gen_table project.get_latest_usage %}
-  </div>
-  {% endif %}
-</div>{% endblock %}
+{% endblock %}
 
 {% block object-tools %}
 <div class="module object-tools">
-<h2>Tasks</h2>
-<ul>
-    <li>Usage: {% for pc in project.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk project.pk %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
-<li><a href="logs/">View logs</a></li>
-<li><a href="{% url 'kg_job_list' %}?project={{ project.pid }}">Display all jobs</a></li>
+    <h2>Tasks</h2>
+    <ul>
+        <li>Usage: {% for pc in project.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk project.pk %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
+        <li><a href="logs/">View logs</a></li>
+        <li><a href="{% url 'kg_job_list' %}?project={{ project.pid }}">Display all jobs</a></li>
         {% if request.user.is_admin %}<li><a class="changelink" href="edit/">Edit project details</a></li>{% endif %}
         {% if request.user.is_admin and project.is_active %}<li><a class="deletelink" href="delete/">Delete project</a></li>{% endif %}
-      <li><a href="{% url 'kg_project_verbose' project.pid %}">Verbose</a></li>
-      </ul>
-</div>{% endblock %}
+        <li><a href="{% url 'kg_project_verbose' project.pid %}">Verbose</a></li>
+    </ul>
+</div>
+{% endblock %}
