@@ -4,12 +4,12 @@
       <th>Name</th>
       <th>Delegate(s)</th>
     </tr>
-  </thead>   	
+  </thead>
   <tbody>
     {% for i in object_list %}
     <tr class="{% cycle row1,row2 %}">
       <td><a href="{{ i.get_absolute_url }}">{{ i.name }}</a></td>
       <td>{% for delegate in i.delegates.all %}<a href="{{ delegate.get_absolute_url }}">{{ delegate }}</a>, {% endfor %}</td>
       {% endfor %}
-  </tbody>  	
+  </tbody>
 </table>
