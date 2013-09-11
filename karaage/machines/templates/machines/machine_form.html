@@ -4,20 +4,29 @@
 {% block title %}Machines{% endblock %}
 
 
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_machine_list' %}">Machines</a>&nbsp;›
+    {% if object %}
+        <a href="{% url 'kg_machine_detail' object.pk %}">{{ object }}</a>&nbsp;›
+        Edit
+    {% else %}
+        Create Machine
+    {% endif %}
+</div>
+{% endblock %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="{% url 'kg_machine_list' %}">Machines</a>
- › {% if obj %}Edit{% else %}Create{% endif %} Machine
-</div>{% endblock %}   
 
 {% block content %}
 <form method="post" action=".">{% csrf_token %}
-{% load forms %}
-<fieldset class="module aligned ()">
-{% form_as_div form %}
-</fieldset>
+    {% load forms %}
+    <fieldset class="module aligned ()">
+        {% form_as_div form %}
+    </fieldset>
 
-<div class="submit-row">
-		<input type="submit" value="Save" class="default" />
-	</div>
+    <div class="submit-row">
+        <input type="submit" value="Save" class="default" />
+    </div>
 </form>
 {% endblock %}

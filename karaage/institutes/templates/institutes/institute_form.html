@@ -2,42 +2,46 @@
 {% load url from future %}
 {% load forms %}
 
+
 {% block title %}Institutes{% endblock %}
 
 
-
-{% block extrahead %}
-<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script> 
-{{ form.media }}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_institute_list' %}">Institutes</a>&nbsp;›
+    {% if institute %}
+        <a href="{% url 'kg_institute_detail' institute.pk %}">{{ institute }}</a>&nbsp;›
+        Edit
+    {% else %}
+        Create Institute
+    {% endif %}
+</div>
 {% endblock %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="{% url 'kg_institute_list' %}">Institutes</a>
- › {% if institute %}Edit{% else %}Create{% endif %} Institute
-</div>{% endblock %}   
 
 {% block content %}
-    {% if form.errors or delegate_formset.errors %}
-    <p class="errornote">
-      Please correct the error{{ form.errors|pluralize }} below.
-    </p>
-    {% endif %}
-<form method="post" action=".">{% csrf_token %}
-{{ delegate_formset.management_form }}
+{% if form.errors or delegate_formset.errors %}
+<p class="errornote">
+    Please correct the error{{ form.errors|pluralize }} below.
+</p>
+{% endif %}
 
-<fieldset class="module aligned ()">
-{% form_as_div form %}
-</fieldset>
-<fieldset class="module aligned ()">
-<h2>Delegates</h2>
-    {% for dform in delegate_formset.forms %}
-    
-    	{{ dform.id }}
-      {% inlineformfield dform.person dform.send_email dform.DELETE %}
-    
-    {% endfor %}
-</fieldset>
-<div class="submit-row">
-		<input type="submit" value="Save" class="default" />
-	</div>
+<form method="post" action=".">{% csrf_token %}
+    {{ delegate_formset.management_form }}
+    <fieldset class="module aligned ()">
+        {% form_as_div form %}
+    </fieldset>
+    <fieldset class="module aligned ()">
+        <h2>Delegates</h2>
+        {% for dform in delegate_formset.forms %}
+        {{ dform.id }}
+        {% inlineformfield dform.person dform.send_email dform.DELETE %}
+        {% endfor %}
+    </fieldset>
+
+    <div class="submit-row">
+        <input type="submit" value="Save" class="default" />
+    </div>
 </form>
 {% endblock %}

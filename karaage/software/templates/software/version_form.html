@@ -1,26 +1,36 @@
 {% extends "forms.html" %}
 {% load url from future %}
 
+
 {% block title %}Software{% endblock %}
 
 
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_software_list' %}">Software</a>&nbsp;›
+    <a href="{% url 'kg_software_detail' package.pk %}">{{ package }}</a>&nbsp;›
+    {% if version %}
+        Edit Software Version
+    {% else %}
+        Create Software Version
+    {% endif %}
+</div>
+{% endblock %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="{% url 'kg_software_list' %}">Software</a>
- › {% if version %}Edit{% else %}Create{% endif %} Software Version
-</div>{% endblock %}   
 
 {% block content %}
 <form method="post" action=".">{% csrf_token %}
-{% load forms %}
-<fieldset class="module aligned ()">
-<input type="hidden" name="package" value="{{ package.id }}" />
-{% formfield form.version %}
-{% formfield form.module %}
-{% formfield form.machines %}
-</fieldset>
+    {% load forms %}
+    <fieldset class="module aligned ()">
+        <input type="hidden" name="package" value="{{ package.id }}" />
+        {% formfield form.version %}
+        {% formfield form.module %}
+        {% formfield form.machines %}
+    </fieldset>
 
-<div class="submit-row">
-		<input type="submit" value="Save" class="default" />
-	</div>
+    <div class="submit-row">
+        <input type="submit" value="Save" class="default" />
+    </div>
 </form>
 {% endblock %}

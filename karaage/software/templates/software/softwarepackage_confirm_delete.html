@@ -1,5 +1,15 @@
 {% extends "forms.html" %}
 
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_software_list' %}">Software</a>&nbsp;›
+    <a href="{% url 'kg_software_detail' object.pk %}">{{ object }}</a>&nbsp;›
+    Delete
+</div>
+{% endblock %}
+
+
 {% block content %}
     <h1>Are you sure?</h1>    
     <p>Are you sure you want to delete the software package "{{ object }}"? </p>

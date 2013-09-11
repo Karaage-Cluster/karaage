@@ -1,23 +1,33 @@
 {% extends "forms.html" %}
 {% load url from future %}
 
+
 {% block title %}Institutes{% endblock %}
 
 
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_institute_list' %}">Institutes</a>&nbsp;›
+    <a href="{% url 'kg_institute_detail' object.institute.pk %}">{{ object.institute }}</a>&nbsp;›
+    {% if object %}
+        Edit Institute Quota/Cap
+    {% else %}
+        Create Institute Quota/Cap
+    {% endif %}
+</div>
+{% endblock %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="{% url 'kg_institute_list' %}">Institutes</a>
- › {% if obj %}Edit{% else %}Create{% endif %} Institute Quota/Cap
-</div>{% endblock %}   
 
 {% block content %}
 <form method="post" action=".">{% csrf_token %}
-{% load forms %}
-<fieldset class="module aligned ()">
-{% form_as_div form %}
-</fieldset>
+    {% load forms %}
+    <fieldset class="module aligned ()">
+        {% form_as_div form %}
+    </fieldset>
 
-<div class="submit-row">
-		<input type="submit" value="Save" class="default" />
-	</div>
+    <div class="submit-row">
+        <input type="submit" value="Save" class="default" />
+    </div>
 </form>
 {% endblock %}
