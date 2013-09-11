@@ -99,7 +99,6 @@ def user_list(request, queryset=None):
             query = query & q
 
         user_list = user_list.filter(query)
-        page_no = 1
     else:
         terms = ""
 
@@ -319,7 +318,6 @@ def group_list(request, queryset=None):
             query = query & q
 
         group_list = group_list.filter(query)
-        page_no = 1
     else:
         terms = ""
 
