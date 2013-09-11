@@ -1,5 +1,7 @@
 {% extends "main.html" %}
 {% load url from future %}
+{% load humanize %}
+{% load filters %}
 
 
 {% block title %}Usage{% endblock %}
@@ -15,45 +17,47 @@
 {% endblock %}
 
 
-{% load humanize %}
-{% load filters %}
-{% block content %}<div id="content-main"><h2>{{ start|date }} - {{ end|date }}</h2>
-<p>{% date_filter start end %}</p>
-<div class="module">
-<table summary="">
-<thead>
-<tr>
-<th>Memory (GB)</th>
-<th>0-4</th>
-<th>4-8</th>
-<th>8-16</th>
-<th>16-32</th>
-<th>32-64</th>
-<th>64-128</th>
-<th>128+</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Total</td>
-<td>{{ mem_0_4|intcomma }}</td>
-<td>{{ mem_4_8|intcomma }}</td>
-<td>{{ mem_8_16|intcomma }}</td>
-<td>{{ mem_16_32|intcomma }}</td>
-<td>{{ mem_32_64|intcomma }}</td>
-<td>{{ mem_64_128|intcomma }}</td>
-<td>{{ mem_128|intcomma }}</td>
-</tr>
-<tr>
-<td>Percent</td>
-<td>{% divide mem_0_4 total %}%</td>
-<td>{% divide mem_4_8 total %}%</td>
-<td>{% divide mem_8_16 total %}%</td>
-<td>{% divide mem_16_32 total %}%</td>
-<td>{% divide mem_32_64 total %}%</td>
-<td>{% divide mem_64_128 total %}%</td>
-<td>{% divide mem_128 total %}%</td>
-</tr>
-</tbody>
-</table>
-</div></div>{% endblock %}
+{% block content %}
+<div id="content-main">
+    <h2>{{ start|date }} - {{ end|date }}</h2>
+    <p>{% date_filter start end %}</p>
+    <div class="module">
+        <table summary="">
+            <thead>
+                <tr>
+                    <th>Memory (GB)</th>
+                    <th>0-4</th>
+                    <th>4-8</th>
+                    <th>8-16</th>
+                    <th>16-32</th>
+                    <th>32-64</th>
+                    <th>64-128</th>
+                    <th>128+</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Total</td>
+                    <td>{{ mem_0_4|intcomma }}</td>
+                    <td>{{ mem_4_8|intcomma }}</td>
+                    <td>{{ mem_8_16|intcomma }}</td>
+                    <td>{{ mem_16_32|intcomma }}</td>
+                    <td>{{ mem_32_64|intcomma }}</td>
+                    <td>{{ mem_64_128|intcomma }}</td>
+                    <td>{{ mem_128|intcomma }}</td>
+                </tr>
+                <tr>
+                    <td>Percent</td>
+                    <td>{% divide mem_0_4 total %}%</td>
+                    <td>{% divide mem_4_8 total %}%</td>
+                    <td>{% divide mem_8_16 total %}%</td>
+                    <td>{% divide mem_16_32 total %}%</td>
+                    <td>{% divide mem_32_64 total %}%</td>
+                    <td>{% divide mem_64_128 total %}%</td>
+                    <td>{% divide mem_128 total %}%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

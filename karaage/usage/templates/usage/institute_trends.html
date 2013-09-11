@@ -1,5 +1,7 @@
 {% extends "main.html" %}
 {% load url from future %}
+{% load filters %}
+{% load humanize %}
 
 
 {% block title %}Usage{% endblock %}
@@ -15,16 +17,16 @@
 {% endblock %}
 
 
-{% block content %}<p>{% load filters %}
-{% load humanize %}
-</p><div id="content-main">
-<p>{% date_filter start end %}</p>
-<div class="module">
+{% block content %}
+<div id="content-main">
+    <p>{% date_filter start end %}</p>
+    <div class="module">
 
-{% for g in graph_list %}
-    <img id="graph" src="{{ g.graph_url }}"/><br/>
-    <p><a href="{{ g.data_url }}">data</a></p>
-{% endfor %}
+        {% for g in graph_list %}
+        <img id="graph" src="{{ g.graph_url }}"/><br/>
+        <p><a href="{{ g.data_url }}">data</a></p>
+        {% endfor %}
 
-	</div>
-</div>{% endblock %}
+    </div>
+</div>
+{% endblock %}

@@ -1,6 +1,8 @@
 {% extends "main.html" %}
 {% load url from future %}
 {% load karaage_tags %}
+{% load filters %}
+{% load humanize %}
 
 
 {% block title %}Usage{% endblock %}
@@ -8,52 +10,53 @@
 
 {% block breadcrumbs %}
 <div class="breadcrumbs">
-    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› 
-    <a href="{% url 'kg_usage_list' %}">Usage</a>&nbsp;› 
-    <a href="{% url 'kg_mc_usage' machine_category.pk %}">{{ machine_category }}</a>&nbsp;› 
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_usage_list' %}">Usage</a>&nbsp;›
+    <a href="{% url 'kg_mc_usage' machine_category.pk %}">{{ machine_category }}</a>&nbsp;›
     Top Users
 </div>
 {% endblock %}
 
 
-{% block content %}<p>{% load filters %}
-{% load humanize %}
-</p><div id="content-main">
-<p>{% date_filter start end %}</p>
-<div class="module">
-<h2>Top {{ count }} users</h2>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>User</th>
-<th>Project</th>
-<th>CPU Time</th>
-<th>No. Jobs</th>
-<th>% of total</th>
-</tr>
-</thead>
-<tbody>
-   	{% for u in account_list|dictsortreversed:"usage" %}
-			<tr class="{% cycle row1,row2 %}">
-<td>{{ forloop.counter }}</td>
-<td><a href="{{ u.person.get_absolute_url }}">{{ u.person }}</a></td>
-<td><a href="{% url 'kg_usage_project' machine_category.pk u.project.pk %}{% url_with_param start=start end=end %}">{{ u.project|truncatewords:"6" }}</a></td>
-<td class="right">{{ u.usage|timeformat }}</td>
-<td class="right">{{ u.jobs|intcomma }}</td>
-<td class="right">{{ u.percent|floatformat:"2" }}%</td>
-</tr> 
-		{% endfor %}
-		</tbody><tfoot>
-<tr>
-<td>Total</td>
-<td></td>
-<td></td>
-<td class="right">{{ account_total|timeformat }}</td>
-<td class="right">{{ account_total_jobs|intcomma }}</td>
-<td class="right">{{ account_percent|floatformat:"2" }}%</td>
-</tr>
-</tfoot>
-</table>
+{% block content %}
+<div id="content-main">
+    <p>{% date_filter start end %}</p>
+    <div class="module">
+        <h2>Top {{ count }} users</h2>
+        <table>
+            <thead>
+                <tr>
+                <th></th>
+                <th>User</th>
+                <th>Project</th>
+                <th>CPU Time</th>
+                <th>No. Jobs</th>
+                <th>% of total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in account_list|dictsortreversed:"usage" %}
+                <tr class="{% cycle row1,row2 %}">
+                    <td>{{ forloop.counter }}</td>
+                    <td><a href="{{ u.person.get_absolute_url }}">{{ u.person }}</a></td>
+                    <td><a href="{% url 'kg_usage_project' machine_category.pk u.project.pk %}{% url_with_param start=start end=end %}">{{ u.project|truncatewords:"6" }}</a></td>
+                    <td class="right">{{ u.usage|timeformat }}</td>
+                    <td class="right">{{ u.jobs|intcomma }}</td>
+                    <td class="right">{{ u.percent|floatformat:"2" }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>Total</td>
+                    <td></td>
+                    <td></td>
+                    <td class="right">{{ account_total|timeformat }}</td>
+                    <td class="right">{{ account_total_jobs|intcomma }}</td>
+                    <td class="right">{{ account_percent|floatformat:"2" }}%</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 </div>
-</div>{% endblock %}
+{% endblock %}
