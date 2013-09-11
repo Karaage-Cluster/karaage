@@ -8,8 +8,8 @@
 
 
 {% block extrahead %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script> 
-<script type="text/javascript" src="{{ STATIC_URL }}js/karaage.js"></script> 
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/karaage.js"></script>
 {% endblock %}
 
 
@@ -22,207 +22,224 @@
 {% endblock %}
 
 
-{% block content %}<div id="content-main"><p>
+{% block content %}
+<div id="content-main">
 
-  </p>
-<div class="module">
-<h2>Users</h2>
-<h3>{% if person.title %}{{ person.title }}{% endif %} {{ person }}
-      {% if not person.is_active %}
-      <img alt="Not Active" src="{{ STATIC_URL }}admin/img/icon_error.gif" title="Not Active"/>  
-      {% else %}
-      {% if person.is_locked %}
-      <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
-      {% else %}
-      <img alt="Active" src="{{ STATIC_URL }}admin/img/icon_success.gif" title="Active"/>
-      {% endif %}
-      {% endif %}		
-      
-    </h3>
-<table>
-      {% if person.deleted_by %}
-      <tr><td colspan="2">Deleted by {{ person.deleted_by }} on {{ person.date_deleted }}</td></tr>
-      {% endif %}
-      <tr><td>Email:</td><td>{{ person.email|urlize }}</td></tr>
-<tr><td>Position:</td><td>{{ person.position|default:"" }}</td></tr>
-<tr><td>Department:</td><td>{{ person.department|default:"" }}</td></tr>
-<tr><td>Supervisor:</td><td>{{ person.supervisor|default:"" }}</td></tr>
-<tr><td>Institute:</td><td><a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a></td></tr>
-<tr><td>Insitutes (extra):</td><td>
-  {% for institute in person.institutes.all %}
-    <a href="{{ institute.get_absolute_url }}">{{ institute }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
-<tr><td>Phone:</td><td>{{ person.telephone|default:"" }}</td></tr>
-      {% if person.mobile %}
-      <tr><td>Mobile:</td><td>{{ person.mobile|default:"" }}</td></tr>
-      {% endif %}
-<tr><td>Groups:</td><td>
-  {% for group in person.groups.all %}
-    <a href="{{ group.get_absolute_url }}">{{ group }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
-<tr><td>Projects:</td><td>
-  {% for project in person.projects.all %}
-    <a href="{{ project.get_absolute_url }}">{{ project }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
-<tr><td>Software:</td><td>
-  {% for software in person.software.all %}
-    <a href="{{ software.get_absolute_url }}">{{ software }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
-</td></tr>
-      <tr id="hidden-link"><td colspan="2"><a href="#" onclick="showHidden()">More....</a></td></tr>
-</table>
-<table id="hidden" style="display: none">
-<tr><td>Fax:</td><td>{{ person.fax }}</td></tr>
-<tr><td>Address:</td><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>
-<tr><td>Country:</td><td>{{ person.get_country_display|default:"" }}</td></tr>
-<tr><td>Comment:</td><td>{{ person.comment|default:"" }}</td></tr>
-<tr><td>Approved by:</td><td>{{ person.approved_by }}</td></tr>
-<tr><td>Date Approved:</td><td>{{ person.date_approved|date }}</td></tr>
-      {% if person.deleted_by %}
-      <tr><td>Deleted by:</td><td>{{ person.deleted_by }}</td></tr>
-<tr><td>Date Deleted:</td><td>{{ person.date_deleted|date }}</td></tr>
-      {% endif %}
-      <tr><td>Accounts username:</td><td>{{ person.username }}</td></tr>
-      {% if person.saml_id %}
-      <tr><td>SAML ID:</td><td>{{ person.saml_id }}</td></tr>
-      {% endif %}
-      
-    </table>
-</div>
-  {% if person.leaders.all %}
-  <div class="module">
-<h2>Projects I lead</h2>
-    {% gen_table person.leaders.all %}
-  </div>
-  {% endif %}	
-  
-  {% for ua in person.account_set.all %}
-  <div class="module">
-<h2>{{ ua.machine_category }} Account</h2>
-<h5>Account</h5>
-<table cellspacing="0">
-<thead>
-<tr>
-<th>Active</th>
-<th>Username</th>
-<th>Date Created</th>
-	  {% if ua.date_deleted %}
-	  <th>Date Deleted</th>
-	  {% endif %}
-	  <th>Shell</th>
-	</tr>
-</thead>
-<tbody>
-<tr class="row1">
-<td>
-    {% if ua.date_deleted %}
-    <img alt="Not Active" src="{{ STATIC_URL }}admin/img/icon-no.gif" title="Not Active""/>
-    {% else %}
-        {% if ua.is_locked %}
-        <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
-        {% else %}
-        <img alt="Active" src="{{ STATIC_URL }}admin/img/icon-yes.gif" title="Active"/>
+    <div class="module">
+        <h2>Users</h2>
+
+        <h3>
+            {% if person.title %}{{ person.title }}{% endif %} {{ person }}
+            {% if not person.is_active %}
+            <img alt="Not Active" src="{{ STATIC_URL }}admin/img/icon_error.gif" title="Not Active"/>
+            {% else %}
+            {% if person.is_locked %}
+            <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
+            {% else %}
+            <img alt="Active" src="{{ STATIC_URL }}admin/img/icon_success.gif" title="Active"/>
+            {% endif %}
+            {% endif %}
+        </h3>
+
+        <table>
+            {% if person.deleted_by %}
+            <tr><td colspan="2">Deleted by {{ person.deleted_by }} on {{ person.date_deleted }}</td></tr>
+            {% endif %}
+            <tr><td>Email:</td><td>{{ person.email|urlize }}</td></tr>
+            <tr><td>Position:</td><td>{{ person.position|default:"" }}</td></tr>
+            <tr><td>Department:</td><td>{{ person.department|default:"" }}</td></tr>
+            <tr><td>Supervisor:</td><td>{{ person.supervisor|default:"" }}</td></tr>
+            <tr><td>Institute:</td><td><a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a></td></tr>
+            <tr><td>Insitutes (extra):</td><td>
+            {% for institute in person.institutes.all %}
+            <a href="{{ institute.get_absolute_url }}">{{ institute }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+            <tr><td>Phone:</td><td>{{ person.telephone|default:"" }}</td></tr>
+            {% if person.mobile %}
+            <tr><td>Mobile:</td><td>{{ person.mobile|default:"" }}</td></tr>
+            {% endif %}
+            <tr><td>Groups:</td><td>
+            {% for group in person.groups.all %}
+            <a href="{{ group.get_absolute_url }}">{{ group }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+            <tr><td>Projects:</td><td>
+            {% for project in person.projects.all %}
+            <a href="{{ project.get_absolute_url }}">{{ project }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+            <tr><td>Software:</td><td>
+            {% for software in person.software.all %}
+            <a href="{{ software.get_absolute_url }}">{{ software }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+            </td></tr>
+            <tr id="hidden-link"><td colspan="2"><a href="#" onclick="showHidden()">More....</a></td></tr>
+        </table>
+
+        <table id="hidden" style="display: none">
+            <tr><td>Fax:</td><td>{{ person.fax }}</td></tr>
+            <tr><td>Address:</td><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>
+            <tr><td>Country:</td><td>{{ person.get_country_display|default:"" }}</td></tr>
+            <tr><td>Comment:</td><td>{{ person.comment|default:"" }}</td></tr>
+            <tr><td>Approved by:</td><td>{{ person.approved_by }}</td></tr>
+            <tr><td>Date Approved:</td><td>{{ person.date_approved|date }}</td></tr>
+            {% if person.deleted_by %}
+            <tr><td>Deleted by:</td><td>{{ person.deleted_by }}</td></tr>
+            <tr><td>Date Deleted:</td><td>{{ person.date_deleted|date }}</td></tr>
+            {% endif %}
+            <tr><td>Accounts username:</td><td>{{ person.username }}</td></tr>
+            {% if person.saml_id %}
+            <tr><td>SAML ID:</td><td>{{ person.saml_id }}</td></tr>
+            {% endif %}
+        </table>
+    </div>
+
+
+    {% if person.leaders.all %}
+    <div class="module">
+        <h2>Projects I lead</h2>
+        {% gen_table person.leaders.all %}
+    </div>
+    {% endif %}
+
+    {% for ua in person.account_set.all %}
+    <div class="module">
+        <h2>{{ ua.machine_category }} Account</h2>
+        <h5>Account</h5>
+        <table cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Active</th>
+                    <th>Username</th>
+                    <th>Date Created</th>
+                    {% if ua.date_deleted %}
+                    <th>Date Deleted</th>
+                    {% endif %}
+                    <th>Shell</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="row1">
+                    <td>
+                        {% if ua.date_deleted %}
+                        <img alt="Not Active" src="{{ STATIC_URL }}admin/img/icon-no.gif" title="Not Active"/>
+                        {% else %}
+                        {% if ua.is_locked %}
+                        <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
+                        {% else %}
+                        <img alt="Active" src="{{ STATIC_URL }}admin/img/icon-yes.gif" title="Active"/>
+                        {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>{{ ua.username }}</td>
+                    <td>{{ ua.date_created|date }}</td>
+                    {% if ua.date_deleted %}
+                    <td>{{ ua.date_deleted|date }}</td>
+                    {% endif %}
+                    <td>
+                        {{ ua.shell }}
+                        {% if not ua.date_deleted and request.user.is_admin %}
+                        <form action="{% url 'kg_account_shell' ua.pk %}" method="post">{% csrf_token %}
+                            <div>
+                                {% shell_field ua %}
+                                <input type="submit" value="Change"/>
+                            </div>
+                        </form>
+                        {% endif %}
+                    </td>
+                    {% if not ua.date_deleted and request.user.is_admin %}
+                        <td><a class="deletelink" href="{% url 'kg_account_delete' ua.id %}">Delete</a></td>
+                    {% endif %}
+                </tr>
+            </tbody>
+        </table>
+
+        {% if ua.project_list and not ua.date_deleted %}
+        <h5>Projects</h5>
+        <table cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>Name</th>
+                    <th>Institute</th>
+                    <th>Leaders</th>
+                    <th>Default</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for p in ua.project_list %}
+            <tr class="row1">
+                <td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
+                <td>{{ p.name|truncatewords:"10" }}</td>
+                <td><a href="{{ p.institute.get_absolute_url }}">{{ p.institute }}</a></td>
+                <td>{% for leader in p.leaders.all %}<a href="{{ leader.get_absolute_url }}">{{ leader }}, </a>{% endfor %}</td>
+                <td>
+                    {% ifequal p ua.default_project %}
+                    <img alt="1" src="{{ STATIC_URL }}admin/img/icon-yes.gif"/>{% else %}
+                    {% if request.user.is_admin %}
+                    <form action="{% url 'kg_account_set_default' ua.id p.pid %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" value="Make Default"/></input>
+                    </form>
+                    {% endif %}{% endifequal %}
+                </td>
+                <td>
+                    {% if request.user.is_admin %}{% ifnotequal p ua.default_project %}
+                    <a class="deletelink" href="{% url 'kg_remove_project_member' p.pid person.username %}">Remove</a>
+                    {% endifnotequal %}{% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
         {% endif %}
-    {% endif %}
-</td>
-<td>{{ ua.username }}</td>
-<td>{{ ua.date_created|date }}</td>
-	  {% if ua.date_deleted %}
-	  <td>{{ ua.date_deleted|date }}</td>
-	  {% endif %}
-          <td>{{ ua.shell }}{% if not ua.date_deleted and request.user.is_admin %}<form action="{% url 'kg_account_shell' ua.pk %}" method="post">{% csrf_token %}
-	  	<div>
-	      {% shell_field ua %}
-	      <input type="submit" value="Change"/>
-</div>
-</form>{% else %} {% endif %}</td>
-	  {% if not ua.date_deleted and request.user.is_admin %}
-	  <td><a class="deletelink" href="{% url 'kg_account_delete' ua.id %}">Delete</a></td>
-	  {% endif %}
-	</tr>
-</tbody>
-</table>
-    {% if ua.project_list and not ua.date_deleted %}
-    <h5>Projects</h5>
-<table cellspacing="0">
-<thead>
-<tr>
-<th>Project</th>
-<th>Name</th>
-<th>Institute</th>
-<th>Leaders</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-   	{% for p in ua.project_list %}
-	<tr class="row1">
-<td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
-<td>{{ p.name|truncatewords:"10" }}</td>
-<td><a href="{{ p.institute.get_absolute_url }}">{{ p.institute }}</a></td>
-<td>{% for leader in p.leaders.all %}<a href="{{ leader.get_absolute_url }}">{{ leader }}, </a>{% endfor %}</td>
-<td>{% ifequal p ua.default_project %}
-	    <img alt="1" src="{{ STATIC_URL }}admin/img/icon-yes.gif"/>{% else %}
-	    {% if request.user.is_admin %}
-            <form action="{% url 'kg_account_set_default' ua.id p.pid %}" method="post">
-                {% csrf_token %}
-                <input type="submit" value="Make Default"/></input>
-            </form>
-	    {% endif %}{% endifequal %}</td>
-	  {% if request.user.is_admin %}{% ifnotequal p ua.default_project %}
-	  <td><a class="deletelink" href="{% url 'kg_remove_project_member' p.pid person.username %}">Remove</a>
-	    {% endifnotequal %}{% endif %}
-	</td></tr>
-	{% endfor %}
-      </tbody>
-</table>	
-    {% endif %}
-    {% if ua.get_latest_usage %}
-    <h5>Latest Usage</h5>
-    {% gen_table ua.get_latest_usage usage/user_table.html %}
-    {% endif %}
-  </div>
-  {% endfor %}
-  {% if person.account_set.all and person.is_active and request.user.is_admin %}
-  <form action="" id="joinproject_form" method="post">{% csrf_token %}
-    <div class="form-row">
-        {{ form }}
-    </select>
-<input name="project-add" type="submit" value="Add"/>
-</div>
-</form>
-  {% endif %}
-  
-  {% if person.softwarelicenseagreement_set.all %}
-  	<div class="module">
-<h2>Software</h2>
-			{% gen_table person.softwarelicenseagreement_set.all %}  	
-  	</div>
-  	{% endif %}
 
+        {% if ua.get_latest_usage %}
+        <h5>Latest Usage</h5>
+        {% gen_table ua.get_latest_usage usage/user_table.html %}
+        {% endif %}
+    </div>
+    {% endfor %}
 
-</div>{% endblock %}
- 
+    {% if person.account_set.all and person.is_active and request.user.is_admin %}
+    <form action="" id="joinproject_form" method="post">{% csrf_token %}
+        <div class="form-row">
+            {{ form }}
+            <input name="project-add" type="submit" value="Add"/>
+        </div>
+    </form>
+    {% endif %}
+
+    {% if person.softwarelicenseagreement_set.all %}
+    <div class="module">
+        <h2>Software</h2>
+        {% gen_table person.softwarelicenseagreement_set.all %}
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
 
 {% block object-tools %}
 {% get_comment_count for person as comment_count %}
 <div class="module object-tools">
-<h2>Tasks</h2>
-<ul>
-
+    <h2>Tasks</h2>
+    <ul>
         {% if not person.is_active %}
         {% if not requestor %}
         <li><a href="activate/">Activate</a></li>
         {% endif %}
         {% endif %}
+
         {% if request.user.is_admin and person.is_active %}
         <li class="changelink"><a href="{% url 'kg_person_edit' person.username %}">Edit details</a></li>
         <li class="addlink"><a href="{% url 'kg_person_add_account' person.username %}">Add user account</a></li>
         <li class="deletelink"><a href="{%url 'kg_person_delete' person.username %}">Delete</a></li>
-	{% endif %}
-	<li><a href="{% url 'kg_person_logs' person.id %}">Logs</a></li>
-<li class="addlink"><a href="add_comment/">Add comment</a></li>
-<li><a href="comments/">Comments</a> ({{ comment_count }})</li>
-	{% if person.is_active %}
+        {% endif %}
+
+        <li><a href="{% url 'kg_person_logs' person.id %}">Logs</a></li>
+        <li class="addlink"><a href="add_comment/">Add comment</a></li>
+        <li><a href="comments/">Comments</a> ({{ comment_count }})</li>
+
+        {% if person.is_active %}
         <li><a href="{% url 'kg_person_verbose' person.username %}">Verbose</a></li>
-	{% if request.user.is_admin and person.is_active %}
-	{% if person.is_locked %}
+        {% if request.user.is_admin and person.is_active %}
+        {% if person.is_locked %}
         <li>
             <form action="{% url 'kg_person_unlock' person.username %}" method="post">
                 {% csrf_token %}
@@ -230,7 +247,7 @@
                 <input type="submit" value="Unlock"/></input>
             </form>
         </li>
-	{% else %}
+        {% else %}
         <li class="changelink"><a href="{% url 'kg_person_password_change' person.username %}">Change Password</a></li>
         <li>
             <form action="{% url 'kg_person_lock' person.username %}" method="post">
@@ -239,11 +256,12 @@
                 <input type="submit" value="Lock"/></input>
             </form>
         </li>
-	{% endif %}
+        {% endif %}
         <li><a href="{% url 'kg_person_bounce' person.username %}">Bounced Email</a></li>
-	{% endif %}
-	<li><a href="{% url 'kg_job_list' %}?user={{ person.username }}">Display all jobs</a></li>
-<li><a href="{% url 'pbs_user_detail' person.username %}">Submitted jobs</a></li>
-	{% endif %}
-      </ul>
-</div>{% endblock %}
+        {% endif %}
+        <li><a href="{% url 'kg_job_list' %}?user={{ person.username }}">Display all jobs</a></li>
+        <li><a href="{% url 'pbs_user_detail' person.username %}">Submitted jobs</a></li>
+        {% endif %}
+    </ul>
+</div>
+{% endblock %}

@@ -1,31 +1,30 @@
 {% extends "main.html" %}
 {% load url from future %}
-
-{% block title %}My Account{% endblock %}
-
 {% load forms %}
 
-{% block login_bar %}
-	 <p class="float-right">
-    	{% if user.is_authenticated %}
-    	Logged in as {{ user }}&nbsp;&nbsp;
-    	My Account&nbsp;&nbsp;|&nbsp;&nbsp;  
-    	<a href="{% url 'logout' %}">Logout</a>	
-    	{% else %}
-   	<a href="{#% url 'login' %#}">Login</a>
-    	{% endif %}
-    </p>
+
+{% block title %}My Profile{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href='{% url "kg_user_profile" %}'>Profile</a>&nbsp;›
+    {% block profile_title %}My Profile{% endblock %}
+</div>
 {% endblock %}
 
-{% block content %}<div id="content-main"><h1>Welcome {{ person.get_short_name }}</h1>
-<p>
-<a href="{% url 'kg_user_profile' %}">Personal Details</a> | 
-<a href="{% url 'kg_user_profile_accounts' %}">Cluster Account</a> | 
-<a href="{% url 'kg_user_profile_projects' %}">Projects</a> | 
-<a href="{% url 'kg_user_profile_software' %}">Restricted Software</a>
-</p>
 
-{% block profile_content %}{% endblock %}
-
-
-</div>{% endblock %}
+{% block content %}
+<div id="content-main">
+    <h1>Welcome {{ person.get_short_name }}</h1>
+    <p>
+        <a href="{% url 'kg_user_profile' %}">Personal Details</a> | 
+        <a href="{% url 'kg_user_profile_accounts' %}">Cluster Account</a> | 
+        <a href="{% url 'kg_user_profile_projects' %}">Projects</a> | 
+        <a href="{% url 'kg_user_profile_software' %}">Restricted Software</a> |
+        <a href="{% url 'saml_details' %}">SAML</a>
+    </p>
+    {% block profile_content %}{% endblock %}
+</div>
+{% endblock %}

@@ -26,34 +26,35 @@
 
 {% block content %}
 <form method="post" action=".">{% csrf_token %}
-<div>
-{% load forms %}
-{% if form.errors or form.non_field_errors %}
-	<p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
-{% endif %}
-<fieldset class="module aligned ()">
-<h2>Personal Details</h2>
-{% inlineformfield form.title form.short_name form.full_name %}
-{% inlineformfield form.institute form.department %}
-{% formfield form.position %}
-{% formfield form.supervisor %}
-{% formfield form.email %}
-{% inlineformfield form.telephone form.mobile %}
-{% formfield form.fax %}
-{% formfield form.address %}
-{% formfield form.country %}
-{% formfield form.institute %}
-{% formfield form.comment %}
-{% formfield form.expires %}
-{% formfield form.is_admin %}
-{% formfield form.is_systemuser %}
-</fieldset>
-{{ form.non_field_errors }}
+    <div>
+        {% load forms %}
+        {% if form.errors or form.non_field_errors %}
+            <p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
+        {% endif %}
 
-</div>
-<div class="submit-row">
-		
-		<input type="submit" value="Save" class="default" />
-	</div>
+        <fieldset class="module aligned ()">
+            <h2>Personal Details</h2>
+            {% inlineformfield form.title form.short_name form.full_name %}
+            {% inlineformfield form.institute form.department %}
+            {% formfield form.position %}
+            {% formfield form.supervisor %}
+            {% formfield form.email %}
+            {% inlineformfield form.telephone form.mobile %}
+            {% formfield form.fax %}
+            {% formfield form.address %}
+            {% formfield form.country %}
+            {% formfield form.institute %}
+            {% formfield form.comment %}
+            {% formfield form.expires %}
+            {% formfield form.is_admin %}
+            {% formfield form.is_systemuser %}
+        </fieldset>
+
+        {{ form.non_field_errors }}
+    </div>
+
+    <div class="submit-row">
+        <input type="submit" value="Save" class="default" />
+    </div>
 </form>
 {% endblock %}

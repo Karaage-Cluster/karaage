@@ -1,65 +1,77 @@
 {% extends "people/profile_base.html" %}
 {% load url from future %}
 
-{% block profile_content %}
 
+{% block title %}Projects - My profile{% endblock %}
+{% block profile_title %}Projects{% endblock %}
+
+
+{% block profile_content %}
 {% if leader_project_list %}
 <h2>Projects I lead or manage</h2>
 <table>
-  <thead>
-    <tr>
-      <th>Project ID</th>
-      <th>Title</th>
-      <th>Start Date</th>
-      <th>End Date</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for p in leader_project_list %}
-    <tr class="{% cycle row1,row2 %}">
-      <td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
-      <td>{{ p.name|truncatewords:"8" }}</td>
-      <td>{{ p.start_date|date }}</td>
-      <td>{{ p.end_date|date }}</td>
-      <td>Usage: {% for pc in p.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk p.pk %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
+    <thead>
+        <tr>
+            <th>Project ID</th>
+            <th>Title</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in leader_project_list %}
+        <tr class="{% cycle row1,row2 %}">
+            <td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
+            <td>{{ p.name|truncatewords:"8" }}</td>
+            <td>{{ p.start_date|date }}</td>
+            <td>{{ p.end_date|date }}</td>
+            <td>Usage: {% for pc in p.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk p.pk %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endif %}
 
 {% if project_list %}
 <h2>Projects I am a member of</h2>
 <table>
-  <thead>
-    <tr>
-      <th>Project ID</th>
-      <th>Title</th>
-      <th>Start Date</th>
-      <th>End Date</th>
-      <th>Default</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for ua in person.account_set.all %}
-        <td colspan="6">{{ ua }}</td>    
-    {% for p in ua.project_list %}
-    <tr class="{% cycle row1,row2 %}">
-      <td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
-      <td>{{ p.name|truncatewords:"8" }}</td>
-      <td>{{ p.start_date|date }}</td>
-      <td>{{ p.end_date|date }}</td>
-      <td>{% ifequal p ua.default_project %}
-	    <img src="{{ STATIC_URL }}admin/img/icon-yes.gif" alt="1" />{% else %}
-	    <a href="{% url 'kg_account_set_default' ua.id p.pid %}?next={% url 'kg_user_profile_projects' %}">Make default</a>
-		{% endifequal %}</td>
-            <td>Usage: {% for pc in p.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk p.pk %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
-    </tr>
-    {% endfor %}
-    {% endfor %}
-  </tbody>
+    <thead>
+        <tr>
+            <th>Project ID</th>
+            <th>Title</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Default</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ua in person.account_set.all %}
+        <tr>
+            <td colspan="6">{{ ua }}</td>
+        </tr>
+        {% for p in ua.project_list %}
+        <tr class="{% cycle row1,row2 %}">
+            <td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
+            <td>{{ p.name|truncatewords:"8" }}</td>
+            <td>{{ p.start_date|date }}</td>
+            <td>{{ p.end_date|date }}</td>
+            <td>{% ifequal p ua.default_project %}
+                <img src="{{ STATIC_URL }}admin/img/icon-yes.gif" alt="1" />{% else %}
+                <a href="{% url 'kg_account_set_default' ua.id p.pid %}?next={% url 'kg_user_profile_projects' %}">Make default</a>
+                {% endifequal %}
+            </td>
+            <td>
+                Usage:
+                {% for pc in p.projectchunk_set.all %}
+                <a href="{% url 'kg_usage_project' pc.machine_category.pk p.pk %}">{{ pc.machine_category }}</a>
+                {% if not forloop.last %}, {% endif %}{% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+        {% endfor %}
+    </tbody>
 </table>
 {% endif %}
 {% endblock %}

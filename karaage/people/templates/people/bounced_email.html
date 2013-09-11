@@ -14,15 +14,17 @@
 {% endblock %}
 
 
-{% block content %}<div id="content-main">
-<p>Submitting this form will send an email to all the <b>active</b> project leaders below and also lock the account</p>
-   	
-   	{% gen_table person.project_set.all %} 	
-   	
-   	<form action="." method="post">{% csrf_token %}
-    	<div>
-<input name="post" type="hidden" value="yes"/>
-<input type="submit" value="Yes, I'm sure"/>
+{% block content %}
+<div id="content-main">
+    <p>Submitting this form will send an email to all the <b>active</b> project leaders below and also lock the account</p>
+
+    {% gen_table person.project_set.all %}
+
+    <form action="." method="post">{% csrf_token %}
+        <div>
+            <input name="post" type="hidden" value="yes"/>
+            <input type="submit" value="Yes, I'm sure"/>
+        </div>
+    </form>
 </div>
-</form>
-</div>{% endblock %}
+{% endblock %}

@@ -22,75 +22,77 @@
 {% endblock %}
 
 
-{% block content %}<div id="content-main">
+{% block content %}
+<div id="content-main">
 
-<div class="module">
-<h2>Details</h2>
-<table>
-<tr><td>Name:</td><td>{{ group.name }}</td></tr>
-<tr><td>Description:</td><td>{{ group.description }}</td></tr>
-</table>
-</div>
+    <div class="module">
+        <h2>Details</h2>
+        <table>
+            <tr><td>Name:</td><td>{{ group.name }}</td></tr>
+            <tr><td>Description:</td><td>{{ group.description }}</td></tr>
+        </table>
+    </div>
 
-<div class="module">
-<h2>Members</h2>
-<table cellspacing="0">
-<thead>
-    <tr><th>Username</th><th>Full Name</th>{% if request.user.is_admin %}<th></th>{% endif %}</tr>
-</thead>
-<tbody>
-{% for member in group.members.all %}
-<tr class="row1">
-    <td><a href="{{ member.get_absolute_url }}">{{ member.username }}</a></td>
-    <td>{{ member.user.get_full_name }}</td>
-    {% if request.user.is_admin %}
-    <td>
-        <div class="deletelink"><a href="{% url 'kg_group_remove_person' group.name member.username %}">Delete</a></li>
-    </td>
+    <div class="module">
+        <h2>Members</h2>
+        <table cellspacing="0">
+            <thead>
+                <tr><th>Username</th><th>Full Name</th>{% if request.user.is_admin %}<th></th>{% endif %}</tr>
+            </thead>
+            <tbody>
+            {% for member in group.members.all %}
+            <tr class="row1">
+                <td><a href="{{ member.get_absolute_url }}">{{ member.username }}</a></td>
+                <td>{{ member.user.get_full_name }}</td>
+                {% if request.user.is_admin %}
+                <td>
+                    <div class="deletelink"><a href="{% url 'kg_group_remove_person' group.name member.username %}">Delete</a></li>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="module">
+        <h2>Links</h2>
+        <table cellspacing="0">
+        <thead>
+            <tr><th>Type</th><th>Link</th></tr>
+        </thead>
+        <tbody>
+        {% for software in group.softwarepackage_set.all %}
+        <tr class="row1">
+            <td>Software</td>
+            <td><a href="{{ software.get_absolute_url }}">{{ software }}</td></a>
+        </tr>
+        {% endfor %}
+        {% for institute in group.institute_set.all %}
+        <tr class="row1">
+            <td>Institute</td>
+            <td><a href="{{ institute.get_absolute_url }}">{{ institute }}</a></td>
+        </tr>
+        {% endfor %}
+        {% for project in group.project_set.all %}
+        <tr class="row1">
+            <td>Project</td>
+            <td><a href="{{ project.get_absolute_url }}">{{ project }}</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+    </div>
+
+    {% if form %}
+    <div class="module">
+        <h2>Add Member</h2>
+        <form method="post" action="{% url "kg_group_add_person" group.name %}" class="simple">{% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Add" class="default" />
+        </form>
+    </div>
     {% endif %}
-</tr>
-{% endfor %}
-</tbody>
-</table>
-</div>
-
-<div class="module">
-<h2>Links</h2>
-<table cellspacing="0">
-<thead>
-    <tr><th>Type</th><th>Link</th></tr>
-</thead>
-<tbody>
-{% for software in group.softwarepackage_set.all %}
-<tr class="row1">
-<td>Software</td>
-<td><a href="{{ software.get_absolute_url }}">{{ software }}</td></a>
-</tr>
-{% endfor %}
-{% for institute in group.institute_set.all %}
-<tr class="row1">
-<td>Institute</td>
-<td><a href="{{ institute.get_absolute_url }}">{{ institute }}</a></td>
-</tr>
-{% endfor %}
-{% for project in group.project_set.all %}
-<tr class="row1">
-<td>Project</td>
-<td><a href="{{ project.get_absolute_url }}">{{ project }}</a></td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
-</div>
-
-{% if form %}
-<div class="module">
-    <h2>Add Member</h2>
-    <form method="post" action="{% url "kg_group_add_person" group.name %}" class="simple">{% csrf_token %}
-        {{ form }}<input type="submit" value="Add" class="default" />
-    </form>
-</div>
-{% endif %}
 
 </div>
 {% endblock %}

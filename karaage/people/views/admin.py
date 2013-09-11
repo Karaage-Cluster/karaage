@@ -262,24 +262,27 @@ def struggling(request):
 
     today = datetime.date.today()
     days30 = today - datetime.timedelta(days=30)
-    
-    accounts = Account.objects.select_related().filter(date_deleted__isnull=True).filter(date_created__lt=days30).filter(last_usage__isnull=True).order_by('-date_created')
+
+    persons = Person.objects.select_related()
+    persons = persons.filter(date_deleted__isnull=True)
+    persons = persons.filter(date_approved__lt=days30)
+    persons = persons.order_by('-date_approved')
 
     if 'institute' in request.REQUEST:
         institute_id = int(request.GET['institute'])
-        accounts = accounts.filter(institute=institute_id)
+        persons = persons.filter(institute=institute_id)
 
     params = dict(request.GET.items())
-    m_params = dict([(str(k), str(v)) for k, v in params.items() if k.startswith('date_created__')])
-    accounts = accounts.filter(**m_params)
+    m_params = dict([(str(k), str(v)) for k, v in params.items() if k.startswith('date_approved__')])
+    persons = persons.filter(**m_params)
     page_no = int(request.GET.get('page', 1))
 
     filter_list = []
     filter_list.append(Filter(request, 'institute', Institute.active.all()))
-    filter_list.append(DateFilter(request, 'date_created'))
+    filter_list.append(DateFilter(request, 'date_approved'))
     filter_bar = FilterBar(request, filter_list)
 
-    p = Paginator(accounts, 50)
+    p = Paginator(persons, 50)
     page = p.page(page_no)
 
     return render_to_response(

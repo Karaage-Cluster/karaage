@@ -1,19 +1,21 @@
 {% extends "people/profile_base.html" %}
 {% load url from future %}
 
+
+{% block title %}Restricted Software - My profile{% endblock %}
+{% block profile_title %}Restricted Software{% endblock %}
+
 {% block profile_content %}
 <div class="module">
-	<h2>Restricted Software</h2><br />
-	<h3><a href="{% url 'kg_software_list' %}" class="addlink">Add software</a></h3>
-	<br />
-	{% if software_list %}
-	
-	{% gen_table software_list %}
+    <h2>Restricted Software</h2><br />
+    <h3><a href="{% url 'kg_software_list' %}" class="addlink">Add software</a></h3>
 
-	</table>
-	{% else %}
-	<p>No restricted software</p>
-	{% endif %}		
+    {% if software_list %}
+    {% gen_table software_list %}
+    </table>
+    {% else %}
+    <p>No restricted software</p>
+    {% endif %}
 </div>
 
 {% endblock %}

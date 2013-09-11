@@ -26,21 +26,20 @@
 
 {% block content %}
 <form method="post" action=".">{% csrf_token %}
-<div>
-{% load forms %}
-{% if form.errors or form.non_field_errors %}
-	<p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
-{% endif %}
-<fieldset class="module aligned ()">
-{% formfield form.name %}
-{% formfield form.description %}
-</fieldset>
-{{ form.non_field_errors }}
+    <div>
+        {% load forms %}
+        {% if form.errors or form.non_field_errors %}
+        <p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
+        {% endif %}
+        <fieldset class="module aligned ()">
+            {% formfield form.name %}
+            {% formfield form.description %}
+        </fieldset>
+        {{ form.non_field_errors }}
+    </div>
 
-</div>
-<div class="submit-row">
-		
-		<input type="submit" value="Save" class="default" />
-	</div>
+    <div class="submit-row">
+        <input type="submit" value="Save" class="default" />
+    </div>
 </form>
 {% endblock %}

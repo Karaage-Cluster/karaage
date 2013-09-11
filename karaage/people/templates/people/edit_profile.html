@@ -4,30 +4,38 @@
 {% block title %}Users{% endblock %}
 
 
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href='{% url "kg_user_profile" %}'>Profile</a>&nbsp;›
+    Edit
+</div>
+{% endblock %}
+
+
 {% block content %}
 <form method="post" action=".">{% csrf_token %}
-<div>
-{% load forms %}
-{% if form.errors  or form.non_field_errors %}
-	<p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
-{% endif %}
-<fieldset class="module aligned ()">
-<h2>Personal Details</h2>
-{{ form.non_field_errors }}
-{% formfield form.title %}
-{% inlineformfield form.short_name form.full_name %}
-{% inlineformfield form.department form.position %}
-{% formfield form.supervisor %}
-{% formfield form.email %}
-{% inlineformfield form.telephone form.mobile %}
-{% formfield form.fax %}
-{% formfield form.address %}
-</fieldset>
+    <div>
+        {% load forms %}
+        {% if form.errors  or form.non_field_errors %}
+        <p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
+        {% endif %}
+        <fieldset class="module aligned ()">
+            <h2>Personal Details</h2>
+            {{ form.non_field_errors }}
+            {% formfield form.title %}
+            {% inlineformfield form.short_name form.full_name %}
+            {% inlineformfield form.department form.position %}
+            {% formfield form.supervisor %}
+            {% formfield form.email %}
+            {% inlineformfield form.telephone form.mobile %}
+            {% formfield form.fax %}
+            {% formfield form.address %}
+        </fieldset>
+    </div>
 
-</div>
-<div class="submit-row">
-		
-		<input type="submit" value="Save" class="default" />
-	</div>
+    <div class="submit-row">
+        <input type="submit" value="Save" class="default" />
+    </div>
 </form>
 {% endblock %}

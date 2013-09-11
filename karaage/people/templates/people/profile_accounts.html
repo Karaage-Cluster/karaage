@@ -3,90 +3,93 @@
 {% load machines %}
 
 
+{% block title %}Cluster Account - My profile{% endblock %}
+{% block profile_title %}Cluster Account{% endblock %}
+
+
 {% block profile_content %}
-
 {% for ua in accounts %}
-	<div class="module">
-	<h2>{{ ua.machine_category }} Account</h2>
-		<table cellspacing="0">
-	<thead>
-		<tr>
-			<th>Active</th>
-			<th>Username</th>
-			<th>Date Created</th>
-			<th>Date Deleted</th>
-			<th>Shell</th>
-		</tr>
-	</thead>   	
-   <tbody>
-	   	<tr class="{% cycle row1,row2 %}">
-	   		<td>
-    {% if ua.date_deleted %}
-    <img alt="Not Active" src="{{ STATIC_URL }}admin/img/icon-no.gif" title="Not Active""/>
-    {% else %}
-        {% if ua.is_locked %}
-        <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
-        {% else %}
-        <img alt="Active" src="{{ STATIC_URL }}admin/img/icon-yes.gif" title="Active"/>
-        {% endif %}
+<div class="module">
+
+    <h2>{{ ua.machine_category }} Account</h2>
+    <table cellspacing="0">
+        <thead>
+            <tr>
+                <th>Active</th>
+                <th>Username</th>
+                <th>Date Created</th>
+                <th>Date Deleted</th>
+                <th>Shell</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="{% cycle row1,row2 %}">
+                <td>
+                    {% if ua.date_deleted %}
+                    <img alt="Not Active" src="{{ STATIC_URL }}admin/img/icon-no.gif" title="Not Active"/>
+                    {% else %}
+                    {% if ua.is_locked %}
+                    <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
+                    {% else %}
+                    <img alt="Active" src="{{ STATIC_URL }}admin/img/icon-yes.gif" title="Active"/>
+                    {% endif %}
+                    {% endif %}
+                </td>
+                <td>{{ ua.username }}</td>
+                <td>{{ ua.date_created|date }}</td>
+                <td>{{ ua.date_deleted|date }}</td>
+                <td>
+                    {{ ua.loginShell }}
+                    {% if not ua.is_locked %}
+                    <form method="post" action="{% url 'kg_account_shell' ua.pk %}">{% csrf_token %}
+                        <div>
+                            {% shell_field ua %}
+                            <input type="submit" value="Change" name="shell-form" />
+                        </div>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% if ua.get_latest_usage %}
+    <h2>Latest Usage</h2>
+    <table cellspacing="0">
+        <thead>
+            <tr>
+                <th>Project</th>
+                <th>Machine</th>
+                <th>date</th>
+                <th>queue</th>
+                <th>cpu usage</th>
+                <th>mem</th>
+                <th>vmem</th>
+                <th>Time in Queue</th>
+                <th>Estimated wall time</th>
+                <th>Actual wall time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in ua.get_latest_usage %}
+            <tr class="{% cycle row1,row2 %}">
+                <td><a href="{{ u.project.get_absolute_url }}">{{ u.project.pid }}</a></td>
+                {#<td><a href="{{ u.machine.get_absolute_url }}">{{ u.machine }}</a></td>#}
+                <td>{{ u.machine }}</td>
+                <td>{{ u.date }}</td>
+                <td>{{ u.queue }}</td>
+                <td class="right">{{ u.cpu_usage|timeformat }}</td>
+                <td class="right">{{ u.mem|fileformat }}</td>
+                <td class="right">{{ u.vmem|fileformat }}</td>
+                <td class="right">{{ u.wait_time|timeformat }}</td>
+                <td class="right">{{ u.est_wall_time|timeformat }}</td>
+                <td class="right">{{ u.act_wall_time|timeformat }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     {% endif %}
-	   		</td>
-	   		<td>{{ ua.username }}</td>
-	   		<td>{{ ua.date_created|date }}</td>
-	   		<td>{{ ua.date_deleted|date }}</td>
-			<td>{% if not ua.is_locked %}
-			{{ ua.loginShell }}
-			<form method="post" action="{% url 'kg_account_shell' ua.pk %}">{% csrf_token %}
-	   			<div>
-					{% shell_field ua %}
-					<input type="submit" value="Change" name="shell-form" />
-				</div>
-			</form>
-			{% else %}
-			{{ ua.loginShell }}
-			{% endif %}</td>
-	   	</tr>
-   </tbody>  	
-</table>
 
-		{% if ua.get_latest_usage %}
-		<h2>Latest Usage</h2>
-		<table cellspacing="0">
-			<thead>
-			<tr>
-			<th>Project</th>
-			<th>Machine</th>
-			<th>date</th>
-			<th>queue</th>
-			<th>cpu usage</th>
-			<th>mem</th>
-			<th>vmem</th>
-			<th>Time in Queue</th>
-			<th>Estimated wall time</th>
-			<th>Actual wall time</th>
-			
-		</tr>
-	</thead>
-	<tbody>
-   	{% for u in ua.get_latest_usage %}
-	   	<tr class="{% cycle row1,row2 %}">   	
-	   		<td><a href="{{ u.project.get_absolute_url }}">{{ u.project.pid }}</a></td>
-	   		{#<td><a href="{{ u.machine.get_absolute_url }}">{{ u.machine }}</a></td>#}
-	   		<td>{{ u.machine }}</td>
-	   		<td>{{ u.date }}</td>
-	   		<td>{{ u.queue }}</td>
-	   		<td class="right">{{ u.cpu_usage|timeformat }}</td>
-	   		<td class="right">{{ u.mem|fileformat }}</td>
-	   		<td class="right">{{ u.vmem|fileformat }}</td>
-	   		<td class="right">{{ u.wait_time|timeformat }}</td>
-	   		<td class="right">{{ u.est_wall_time|timeformat }}</td>
-				<td class="right">{{ u.act_wall_time|timeformat }}</td>
-	   	</tr>
-	   {% endfor %}
-   </tbody>  	
-</table>
-		{% endif %}
-	</div>
-	{% endfor %}
-
+</div>
+{% endfor %}
 {% endblock %}

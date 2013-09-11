@@ -14,11 +14,15 @@
 {% endblock %}
 
 
-{% block content %}<div id="content-main"><div class="module filtered" id="changelist">
-<div id="changelist-filter">
-<h2>Filter</h2> 					
-					{{ filter_bar|safe }}	
-   	</div>
-   	{% gen_table page.object_list people/struggling_table.html %}
-   	{% pagination page request %}
-</div></div>{% endblock %}
+{% block content %}
+<div id="content-main">
+    <div class="module filtered" id="changelist">
+        <div id="changelist-filter">
+        <h2>Filter</h2>
+        {{ filter_bar|safe }}
+        </div>
+        {% gen_table page.object_list people/struggling_table.html %}
+        {% pagination page request %}
+    </div>
+</div>
+{% endblock %}
