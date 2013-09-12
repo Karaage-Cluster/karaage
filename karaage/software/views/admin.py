@@ -245,7 +245,7 @@ def remove_member(request, package_id, user_id):
 
     log(request.user, package, 3, 'Removed %s from group' % person)
     log(request.user, person, 3, 'Removed from software group %s' % package)
-        
+
     messages.success(request, "User '%s' removed successfuly" % person)
 
     return HttpResponseRedirect(package.get_absolute_url())
