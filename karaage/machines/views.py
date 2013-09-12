@@ -63,7 +63,7 @@ def machine_accounts(request, machine_id):
 @admin_required
 def machine_projects(request, machine_id):
     machine = get_object_or_404(Machine, pk=machine_id)
-    project_list = machine.category.project_set.all()
+    project_list = machine.category.projects.all()
     return render_to_response(
         'machines/machine_projects.html',
         {'machine': machine, 'project_list': project_list},
