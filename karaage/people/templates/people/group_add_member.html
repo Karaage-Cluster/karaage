@@ -1,10 +1,23 @@
 {% extends "forms.html" %}
 
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_group_list' %}">Groups</a>&nbsp;›
+    <a href="{% url 'kg_group_detail' group.name %}">{{ group }}</a>&nbsp;›
+    Add person
+</div>
+{% endblock %}
+
+
+
 {% block content %}
 <div class="module">
-    <h2>Add Member</h2>
-    <form method="post" action="{% url "kg_group_add_member" group.name %}" class="simple">{% csrf_token %}
-        {{ form }}<input type="submit" value="Add" class="default" />
+    <h2>Add Person</h2>
+    <form method="post" action="." class="simple">{% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Add" class="default" />
     </form>
 </div>
 {% endblock %}

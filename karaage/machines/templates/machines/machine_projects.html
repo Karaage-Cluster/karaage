@@ -3,14 +3,22 @@
 
 {% block title %}Machines{% endblock %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="../../">Machines</a>
- › <a href="../">{{ machine }}</a>
- ›  Projects
-</div>{% endblock %} 
 
-{% block content %}<div id="content-main">
-<div class="module">
-<h2>Projects</h2>
-   	{% gen_table project_list %}
-	</div>
-</div>{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_machine_list' %}">Machines</a>&nbsp;›
+    <a href="{% url 'kg_machine_detail' machine.pk %}">{{ machine }}</a>&nbsp;›
+    Projects
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+    <div class="module">
+        <h2>Projects</h2>
+        {% gen_table project_list %}
+    </div>
+</div>
+{% endblock %}

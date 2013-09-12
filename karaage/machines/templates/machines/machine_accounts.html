@@ -1,40 +1,48 @@
 {% extends "main.html" %}
 
+
 {% block title %}Machines{% endblock %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› <a href="../../">Machines</a>
- › <a href="../">{{ machine }}</a>
- › User Accounts
-</div>{% endblock %} 
 
-
-{% block content %}<div id="content-main">
-<div class="module">
-<h2>Users Accounts</h2>
-<h4>Total user accounts: {{ user_accounts|length }}</h4>
-<table cellspacing="0">
-<thead>
-<tr>
-<th></th>
-<th>User</th>
-<th>Username</th>
-<th>Default Project</th>
-<th>Date Created</th>
-<th>Date Deleted</th>
-</tr>
-</thead>
-<tbody>
-   	{% for ua in user_accounts %}
-	   	<tr class="{% cycle row1,row2 %}">
-<td>{% yes_no_img ua.date_deleted "reversed" %}</td>
-<td><a href="{{ ua.get_absolute_url }}">{{ ua.user }}</a></td>
-<td>{{ ua.username }}</td>
-<td><a href="{{ ua.default_project.get_absolute_url }}">{{ ua.default_project }}</a></td>
-<td>{{ ua.date_created }}</td>
-<td>{{ ua.date_deleted }}</td>
-</tr>
-	   {% endfor %}
-   </tbody>
-</table>
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_machine_list' %}">Machines</a>&nbsp;›
+    <a href="{% url 'kg_machine_detail' machine.pk %}">{{ machine }}</a>&nbsp;›
+    Accounts
 </div>
-</div>{% endblock %}
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+    <div class="module">
+        <h2>Users Accounts</h2>
+        <h4>Total user accounts: {{ accounts|length }}</h4>
+        <table cellspacing="0">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Person</th>
+                    <th>Username</th>
+                    <th>Default Project</th>
+                    <th>Date Created</th>
+                    <th>Date Deleted</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ua in accounts %}
+                <tr class="{% cycle row1,row2 %}">
+                    <td>{% yes_no_img ua.date_deleted "reversed" %}</td>
+                    <td><a href="{{ ua.person.get_absolute_url }}">{{ ua.person }}</a></td>
+                    <td>{{ ua.username }}</td>
+                    <td>{% if ua.default_project %}<a href="{{ ua.default_project.get_absolute_url }}">{{ ua.default_project }}</a>{% else %}No project{% endif %}</td>
+                    <td>{{ ua.date_created }}</td>
+                    <td>{{ ua.date_deleted }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

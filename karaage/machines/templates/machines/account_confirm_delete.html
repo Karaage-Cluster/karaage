@@ -1,12 +1,24 @@
 {% extends "forms.html" %}
 
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_user_list' %}">People</a>&nbsp;›
+    <a href="{% url 'kg_person_detail' account.person.username %}">{{ account.person }}</a>&nbsp;›
+    {{ account.username }}&nbsp;›
+    Delete
+</div>
+{% endblock %}
+
+
 {% block content %}
-    <h1>Are you sure?</h1>    
-    <p>Are you sure you want to delete {{ user_account.user }}'s user account on {{ user_account.machine_category }}? </p>
+    <h1>Are you sure?</h1>
+    <p>Are you sure you want to delete {{ account.person }}'s user account on {{ account.machine_category }}? </p>
     <form method="post" action=".">{% csrf_token %}
-    <div>
-    <input type="hidden" name="post" value="yes" />
-    <input type="submit" value="Yes, I'm sure" />
-    </div>
+        <div>
+            <input type="hidden" name="post" value="yes" />
+            <input type="submit" value="Yes, I'm sure" />
+        </div>
     </form>
 {% endblock %}
