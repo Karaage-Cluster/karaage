@@ -1081,25 +1081,10 @@ class StateDuplicateApplicant(State):
         return super(StateDuplicateApplicant, self).view(
                 request, application, label, auth, actions)
 
-class StateArchived(State):
+
+class StateArchived(StateCompleted):
     """ This application is archived. """
     name = "Archived"
-
-    def enter_state(self, request, application):
-        """ This is becoming the new current state. """
-        pass
-
-    def view(self, request, application, label, auth, actions):
-        """ Django view method. """
-        if label is None and auth['is_applicant']:
-            return render_to_response(
-                    'applications/state_archived.html',
-                    {'help_email': settings.ACCOUNTS_EMAIL,
-                    'application': application,
-                    'actions': actions, 'auth': auth, },
-                    context_instance=RequestContext(request))
-        return super(StateArchived, self).view(
-                request, application, label, auth, actions)
 
 
 class StateDeclined(State):
