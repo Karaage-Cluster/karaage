@@ -1,8 +1,21 @@
 {% extends "forms.html" %}
 
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_software_list' %}">Software</a>&nbsp;›
+    <a href="{% url 'kg_software_detail' softwarerequest.software_license.package.pk %}">{{ softwarerequest.software_license.package }}</a>&nbsp;›
+    <a href="{% url 'kg_softwarelicense_detail' softwarerequest.software_license.pk %}">{{ softwarerequest.software_license }}</a>&nbsp;›
+    Decline
+</div>
+{% endblock %}
+
+
 {% block content %}
     <h1>Are you sure?</h1>    
-    <p>Are you sure you want to decline {{ softwarerequest.person }} access to software package "{{ softwarerequest.software_license.package }}"? </p>
+    <p>Are you sure you want to decline {{ softwarerequest.person }} access to
+    software package "{{ softwarerequest.software_license.package }}"?</p>
     <p>NOTE: no notification is sent to the user.</p>
     <form method="post" action=".">{% csrf_token %}
     <div>

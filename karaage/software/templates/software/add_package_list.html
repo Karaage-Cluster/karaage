@@ -1,21 +1,30 @@
 {% extends "main.html" %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Software </div>{% endblock %}  
 
-{% block content %}<div id="content-main"><p>{% if software_list %}
-	</p><h1>Restricted Software</h1>
-	{% for s in software_list %}
-		{% if s.accepted or s.pending_request %}
- 			<h2>{{ s.package }}<span class="small green">
- 			{% if s.accepted %}- accepted {{ s.accepted_date|date }}{% endif %}{% if s.pending_request %}- Request pending{% endif %}</span></h2>
- 		{% else %}
- 			<h2><a href="{{ s.package.id }}/">{{ s.package }}</a></h2>
- 		{% endif %}
- 		<p>{{ s.package.description|truncatewords:"20" }}</p>
-<hr/>
-	{% endfor %}
-{% else %}
-	<p>No restricted software currently available.</p>
-{% endif %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    Software
+</div>
+{% endblock %}
 
-</div>{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    {% if software_list %}
+    <h1>Restricted Software</h1>
+    {% for s in software_list %}
+    {% if s.accepted or s.pending_request %}
+    <h2>{{ s.package }}<span class="small green">
+    {% if s.accepted %}- accepted {{ s.accepted_date|date }}{% endif %}{% if s.pending_request %}- Request pending{% endif %}</span></h2>
+    {% else %}
+    <h2><a href="{{ s.package.id }}/">{{ s.package }}</a></h2>
+    {% endif %}
+    <p>{{ s.package.description|truncatewords:"20" }}</p>
+    <hr/>
+    {% endfor %}
+    {% else %}
+    <p>No restricted software currently available.</p>
+    {% endif %}
+</div>
+{% endblock %}

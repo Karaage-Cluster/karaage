@@ -1,36 +1,36 @@
 {% load url from future %}
 <table cellspacing="0">
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Group</th>
-			<th>Version</th>
-			<th>Machines</th>
-			<th>Module</td>
-			<th>Last Used</th>
-		</tr>
-	</thead>   	
-   <tbody>
-   	{% for package in object_list %}
-	   	<tr class="{% cycle "row1" "row2" as rowcolour %}">
-	   		<td><a href="{{ package.get_absolute_url }}">{{ package.name }}</a></td>
-                        <td>{% if package.group %}<a href='{% url 'kg_group_detail' package.group.name %}'>{{ package.group }}</a>{% endif %}</td>
-	   		{% for version in package.softwareversion_set.all %}
-					{% if not forloop.first %}
-						<tr class="{{ rowcolour }}">	   		
-	   					<td>&nbsp;</td>
-							<td>&nbsp;</td>
-					{% endif %}
-					<td>{{ version.version }}</td>
-					<td>{% for m in version.machines.all %}<a href="{{ m.get_absolute_url }}">{{ m }}, </a>{% endfor %}</td>
-					<td>{{ version.module }}</td>
-					{% if version.last_used %}
-					<td><a href="{% url 'kg_software_stats' package.id %}">{{ version.last_used }}</a></td>
-					{% else %}
-					<td>Unknown</td>
-					{% endif %}
-					</tr>
-				{% endfor %}
-		{% endfor %}
-   </tbody>  	
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Group</th>
+            <th>Version</th>
+            <th>Machines</th>
+            <th>Module</td>
+            <th>Last Used</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for package in object_list %}
+        <tr class="{% cycle "row1" "row2" as rowcolour %}">
+            <td><a href="{{ package.get_absolute_url }}">{{ package.name }}</a></td>
+            <td>{% if package.group %}<a href='{% url 'kg_group_detail' package.group.name %}'>{{ package.group }}</a>{% endif %}</td>
+        {% for version in package.softwareversion_set.all %}
+        {% if not forloop.first %}
+        <tr class="{{ rowcolour }}">
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        {% endif %}
+            <td>{{ version.version }}</td>
+            <td>{% for m in version.machines.all %}<a href="{{ m.get_absolute_url }}">{{ m }}, </a>{% endfor %}</td>
+            <td>{{ version.module }}</td>
+            {% if version.last_used %}
+            <td><a href="{% url 'kg_software_stats' package.id %}">{{ version.last_used }}</a></td>
+            {% else %}
+            <td>Unknown</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        {% endfor %}
+    </tbody>
 </table>

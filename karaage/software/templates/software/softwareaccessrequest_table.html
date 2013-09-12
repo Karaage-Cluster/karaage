@@ -1,24 +1,24 @@
 {% load url from future %}
 <table cellspacing="0">
-	<thead>
-		<tr>
-			<th>User</p>
-			<th>Software</th>
-			<th>License</th>
-			<th>Date Requested</th>
-			<th></th>
-			<th></th>
-		</tr>
-	</thead>   	
-   <tbody>
-	{% for sr in object_list %}
-		<tr class="{% cycle row1,row2 %}">
-			<td><a href="{{ sr.person.get_absolute_url }}">{{ sr.person }}</a></td>
-			<td><a href="{{ sr.software_license.package.get_absolute_url }}">{{ sr.software_license.package }}</a></td>
-			<td><a href="{{ sr.software_license.get_absolute_url }}">{{ sr.software_license }}</a></td>
-			<td>{{ sr.request_date }}</td>
-			<td><a class="addlink" href="{% url 'kg_softwarerequest_approve' sr.id %}">Approve</a></td>
-			<td><a class="deletelink" href="{% url 'kg_softwarerequest_delete' sr.id %}">Delete</a></td>
-		</tr>
-	{% endfor %}
-</table>	
+    <thead>
+        <tr>
+            <th>User</p>
+            <th>Software</th>
+            <th>License</th>
+            <th>Date Requested</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sr in object_list %}
+        <tr class="{% cycle row1,row2 %}">
+            <td><a href="{{ sr.person.get_absolute_url }}">{{ sr.person }}</a></td>
+            <td><a href="{{ sr.software_license.package.get_absolute_url }}">{{ sr.software_license.package }}</a></td>
+            <td><a href="{{ sr.software_license.get_absolute_url }}">{{ sr.software_license }}</a></td>
+            <td>{{ sr.request_date }}</td>
+            <td><a class="addlink" href="{% url 'kg_softwarerequest_approve' sr.id %}">Approve</a></td>
+            <td><a class="deletelink" href="{% url 'kg_softwarerequest_delete' sr.id %}">Delete</a></td>
+        </tr>
+        {% endfor %}
+</table>
