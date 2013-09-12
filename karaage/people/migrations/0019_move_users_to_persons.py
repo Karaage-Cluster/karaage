@@ -19,6 +19,7 @@ class Migration(DataMigration):
             person.short_name = person.user.first_name
             person.full_name = u"%s %s" % (
                     person.user.first_name, person.user.last_name)
+            person.last_login = person.user.last_login
             person.is_active = person.user.is_active
             person.is_admin = person.user.is_staff
             person.save()
@@ -53,6 +54,7 @@ class Migration(DataMigration):
                 last_name = person.full_name
             person.user.first_name = first_name
             person.user.last_name = last_name
+            person.user.last_login = person.last_login
             person.user.is_active = person.is_active
             person.user.is_staff = person.is_admin
             person.user.save()
