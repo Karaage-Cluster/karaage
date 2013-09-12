@@ -195,11 +195,6 @@ class InviteUserApplicationForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data['email']
-
-        query = Person.active.filter(email=email)
-        if query.count() > 0:
-            raise forms.ValidationError(u'E-Mail address is already in use.')
-
         _clean_email(email)
         return email
 
