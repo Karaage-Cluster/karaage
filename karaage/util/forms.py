@@ -18,10 +18,10 @@
 """ Forms for Karaage use. """
 
 from django import forms
-from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 
+from karaage.util.models import Comment
 
 class CommentForm(forms.ModelForm):
     """ Comment form. """

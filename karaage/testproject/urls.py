@@ -20,7 +20,6 @@ urlpatterns = patterns('',
     url(r'^emails/', include('karaage.emails.urls')),
     url(r'^applications/', include('karaage.applications.urls.admin')),
 
-    url(r'^comments/', include('django.contrib.comments.urls')),
     url(r'^pbs/', include('django_pbs.servers.urls')),
 
     url(r'^accounts/login/$', 'django.contrib.auth.views.login', name='login'),

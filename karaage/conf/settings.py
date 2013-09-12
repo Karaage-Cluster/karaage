@@ -33,7 +33,6 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.comments',
     'django_xmlrpc',
     'south',
     'captcha',
