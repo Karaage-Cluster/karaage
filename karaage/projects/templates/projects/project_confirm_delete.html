@@ -1,5 +1,19 @@
 {% extends "forms.html" %}
 
+
+{% block title %}Delete Project{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_project_list' %}">Projects</a>&nbsp;›
+    <a href="{% url 'kg_project_detail' project.pid %}">{{ project.pid }}</a>&nbsp;›
+    Delete
+</div>
+{% endblock %}
+
+
 {% block content %}
 {% if error %}
     <h1>Cannot delete project</h1>

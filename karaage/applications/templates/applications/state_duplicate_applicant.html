@@ -3,11 +3,14 @@
 {% load applications %}
 
 
+{% block title %}Duplicate Applicant{% endblock %}
+
+
 {% block breadcrumbs %}
 <div class="breadcrumbs">
     <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
     <a href='{% url 'kg_application_detail' application.pk %}'>Application</a>&nbsp;›
-    Approve
+    Duplicate Applicant
 </div>
 {% endblock %}
 

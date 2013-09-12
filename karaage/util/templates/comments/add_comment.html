@@ -1,36 +1,31 @@
 {% extends "forms.html" %}
 {% load comments forms %}
 
+
 {% block title %}Comment{% endblock %}
 
-
-
-   
 
 {% block content %}
 {% get_comment_form for obj as form %}
 
 <form method="post" action="{% comment_form_target %}?next=/">
-<div>
+    <div>
+        <fieldset class="module aligned ()">
+            {% formfield form.comment %}
 
-<fieldset class="module aligned ()">
-
-{% formfield form.comment %}
-
-<p style="display:none;">
-<label for="id_honeypot">If you enter anything in this field your comment will be treated as spam</label> 
-<input type="text" name="honeypot" id="id_honeypot" />
-</p>
-{% csrf_token %}
-{{ form.content_type }}
-{{ form.object_pk }}
-{{ form.timestamp }}
-{{ form.security_hash }}
-
-</div>
-<div class="submit-row">
-		
-		<input type="submit" value="Save" class="default" />
-	</div>
+            <p style="display:none;">
+            <label for="id_honeypot">If you enter anything in this field your comment will be treated as spam</label> 
+            <input type="text" name="honeypot" id="id_honeypot" />
+            </p>
+            {% csrf_token %}
+            {{ form.content_type }}
+            {{ form.object_pk }}
+            {{ form.timestamp }}
+            {{ form.security_hash }}
+        </fieldset>
+    </div>
+    <div class="submit-row">
+        <input type="submit" value="Save" class="default" />
+    </div>
 </form>
 {% endblock %}

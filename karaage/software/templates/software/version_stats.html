@@ -3,7 +3,7 @@
 {% load humanize filters %}
 
 
-{% block title %}Software{% endblock %}
+{% block title %}Software Version (stats){% endblock %}
 
 
 {% block breadcrumbs %}
@@ -11,7 +11,8 @@
     <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
     <a href="{% url 'kg_software_list' %}">Software</a>&nbsp;›
     <a href="{% url 'software_detail' version.package.pk %}">{{ version.package }}</a>&nbsp;›
-    {{ version }} Statistics
+    {{ version }}&nbsp;›
+    Statistics
 </div>
 {% endblock %}
 

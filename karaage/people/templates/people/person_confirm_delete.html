@@ -1,6 +1,9 @@
 {% extends "forms.html" %}
 
 
+{% block title %}Delete person{% endblock %}
+
+
 {% block breadcrumbs %}
 <div class="breadcrumbs">
     <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
@@ -13,7 +16,7 @@
 
 {% block content %}
 <h1>Are you sure?</h1>
-<p>Are you sure you want to delete the user "{{ user }}"? </p>
+<p>Are you sure you want to delete the person "{{ user }}"? </p>
 <form method="post" action=".">{% csrf_token %}
 <div>
     <input type="hidden" name="post" value="yes" />

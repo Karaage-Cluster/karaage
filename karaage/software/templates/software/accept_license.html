@@ -2,11 +2,14 @@
 {% load url from future %}
 
 
+{% block title %}Accept License{% endblock %}
+
+
 {% block breadcrumbs %}
 <div class="breadcrumbs">
     <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
     <a href="{% url 'kg_software_list' %}">Software</a>&nbsp;›
-    {{ package }}
+    Accept License
 </div>
 {% endblock %}
 

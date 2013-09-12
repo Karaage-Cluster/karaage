@@ -3,19 +3,20 @@
 {% load applications %}
 
 
-{% block title %}Home{% endblock %}
+{% block title %}Step 2: Shibboleth{% endblock %}
 
 
 {% block breadcrumbs %}
 <div class="breadcrumbs">
     <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
-    Application
+    Application&nbsp;›
+    Step 2: Shibboleth
 </div>
 {% endblock %}
 
 
 {% block content %}
-<h1>2. Shibboleth Setup</h1>
+<h1>2. Shibboleth</h1>
 
 <form action="." method="post">{% csrf_token %}
     {% if done %}

@@ -1,7 +1,19 @@
 {% extends "forms.html" %}
 
+
+{% block title %}Start Application{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    Start application
+</div>
+{% endblock %}
+
+
 {% block content %}
-<h1>User already in system</h1>    
+<h1>User already in system</h1>
 <p>A user with this email address ({{ person.email }}) already exists in the system.</p>
 <table>
     <tr><td>Name:</td><td>{{ person }}</td></tr>

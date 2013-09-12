@@ -1,5 +1,17 @@
 {% extends "forms.html" %}
 
+
+{% block title %}Application{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    Application
+</div>
+{% endblock %}
+
+
 {% block content %}
 <h1>Steal Application from {{ application.applicant }}?</h1>
 <p>Your are about to give {{ person }} this application. {{ reason }} The
