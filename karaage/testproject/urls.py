@@ -22,9 +22,6 @@ urlpatterns = patterns('',
 
     url(r'^pbs/', include('django_pbs.servers.urls')),
 
-    url(r'^accounts/login/$', 'django.contrib.auth.views.login', name='login'),
-    url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', name='logout'),
-
     url(r'^lookup/', include(ajax_select.urls)),
 
     url(r'^logs/$', 'karaage.admin.views.log_list', name='kg_log_list'),
