@@ -17,11 +17,8 @@
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django import forms
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.comments.models import Comment
-from django.contrib.sites.models import Site
 from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -135,39 +132,6 @@ def log_detail(request, object_id, model):
                 {'page_obj': page_obj, 'short': True},
                 context_instance=RequestContext(request))
 
-
-@admin_required
-def comments_detail(request, object_id, model):
-    obj = get_object_or_404(model, pk=object_id)
-    content_type = ContentType.objects.get_for_model(obj.__class__)
-    return render_to_response('comments/%s_detail.html' % content_type.model, locals(), context_instance=RequestContext(request))
-
-
-@admin_required
-def add_comment(request, object_id, model):
-
-    obj = get_object_or_404(model, pk=object_id)
-
-    if request.method == 'POST':
-
-        content_type = ContentType.objects.get_for_model(obj.__class__)
-        comment = request.POST['comment']
-        
-        Comment.objects.create(
-            user=request.user,
-            content_type=content_type,
-            comment=comment,
-            object_id=object_id,
-            site=Site.objects.get_current(),
-            valid_rating=0,
-            is_public=True,
-            is_removed=False)
-
-        return HttpResponseRedirect(obj.get_absolute_url())
-    else:
-        field = forms.CharField(widget=forms.Textarea(), label='Comment').widget.render('comment', '')
-
-    return render_to_response('comments/add_comment.html', locals(), context_instance=RequestContext(request))
 
 @admin_required
 def misc(request):

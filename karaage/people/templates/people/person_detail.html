@@ -1,7 +1,7 @@
 {% extends "main.html" %}
 {% load url from future %}
-{% load comments %}
 {% load machines %}
+{% load karaage_tags %}
 
 
 {% block title %}Person{% endblock %}
@@ -196,12 +196,15 @@
     {% endfor %}
 
     {% if person.account_set.all and person.is_active and request.user.is_admin %}
-    <form action="" id="joinproject_form" method="post">{% csrf_token %}
-        <div class="form-row">
-            {{ form }}
-            <input name="project-add" type="submit" value="Add"/>
-        </div>
-    </form>
+    <div class="module">
+        <h2>Add to Project</h2>
+        <form action="" id="joinproject_form" method="post">{% csrf_token %}
+            <div class="form-row">
+                {{ form }}
+                <input name="project-add" type="submit" value="Add"/>
+            </div>
+        </form>
+    </div>
     {% endif %}
 
     {% if person.softwarelicenseagreement_set.all %}
@@ -211,12 +214,12 @@
     </div>
     {% endif %}
 
+    {% comments person %}
 </div>
 {% endblock %}
 
 
 {% block object-tools %}
-{% get_comment_count for person as comment_count %}
 <div class="module object-tools">
     <h2>Tasks</h2>
     <ul>
@@ -233,8 +236,7 @@
         {% endif %}
 
         <li><a href="{% url 'kg_person_logs' person.id %}">Logs</a></li>
-        <li class="addlink"><a href="add_comment/">Add comment</a></li>
-        <li><a href="comments/">Comments</a> ({{ comment_count }})</li>
+        <li class="addlink"><a href="{% url 'kg_person_add_comment' person.username %}">Add comment</a></li>
 
         {% if person.is_active %}
         <li><a href="{% url 'kg_person_verbose' person.username %}">Verbose</a></li>

@@ -1,6 +1,7 @@
 {% extends "main.html" %}
 {% load url from future %}
 {% load forms %}
+{% load karaage_tags %}
 
 
 {% block title %}Projects{% endblock %}
@@ -138,21 +139,25 @@
     {% endif %}
 
     {% if request.user.is_admin and project.is_active %}
-    <form action="" id="joinproject_form" method="post">{% csrf_token %}
-        <div class="form-row">
-        {{ form }}
-        <input type="submit" value="Add"/>
-        </div>
-    </form>
+    <div class="module">
+        <h2>Add person</h2>
+        <form action="" id="joinproject_form" method="post">{% csrf_token %}
+            <div class="form-row">
+            {{ form }}
+            <input type="submit" value="Add"/>
+            </div>
+        </form>
+    </div>
     {% endif %}
 
     {% if project.get_latest_usage %}
     <div class="module">
-    <h2>Last 5 cpu jobs</h2>
+        <h2>Last 5 cpu jobs</h2>
         {% gen_table project.get_latest_usage %}
     </div>
     {% endif %}
 
+    {% comments project %}
 </div>
 {% endblock %}
 
@@ -162,6 +167,7 @@
     <ul>
         <li>Usage: {% for pc in project.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk project.pk %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
         <li><a href="logs/">View logs</a></li>
+        <li class="addlink"><a href="{% url 'kg_project_add_comment' project.pk %}">Add comment</a></li>
         <li><a href="{% url 'kg_job_list' %}?project={{ project.pid }}">Display all jobs</a></li>
         {% if request.user.is_admin %}<li><a class="changelink" href="edit/">Edit project details</a></li>{% endif %}
         {% if request.user.is_admin and project.is_active %}<li><a class="deletelink" href="delete/">Delete project</a></li>{% endif %}

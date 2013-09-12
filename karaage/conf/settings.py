@@ -33,6 +33,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.comments',
     'django_xmlrpc',
     'south',
     'captcha',
@@ -54,7 +55,6 @@ INSTALLED_APPS = (
     'tldap.methods',
     'django_pbs.servers',
     'django_pbs.jobs',
-    'django.contrib.comments',
     'andsome.layout',
     'andsome',
 )

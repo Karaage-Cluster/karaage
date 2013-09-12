@@ -31,6 +31,7 @@ from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
 from karaage.util.email_messages import send_bounced_warning
 from karaage.util import get_date_range, log_object as log
+import karaage.util as util
 
 
 @admin_required
@@ -164,12 +165,6 @@ def user_job_list(request, username):
 
 
 @admin_required
-def user_comments(request, username):
-    obj = get_object_or_404(Person, username=username)
-    return render_to_response('comments/comments_list.html', {'obj': obj}, context_instance=RequestContext(request))
-
-
-@admin_required
 def add_comment(request, username):
     obj = get_object_or_404(Person, username=username)
-    return render_to_response('comments/add_comment.html', {'obj': obj}, context_instance=RequestContext(request))
+    return util.add_comment(request, "People", reverse("kg_person_list"), unicode(obj), obj)

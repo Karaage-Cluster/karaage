@@ -1,0 +1,29 @@
+{% extends "forms.html" %}
+{% load forms %}
+
+
+{% block title %}Add Comment{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href='{{ content_url }}'>{{ content_type }}</a>&nbsp;›
+    <a href='{{ obj.get_absolute_url }}'>{{ short_title }}</a>&nbsp;›
+    Add Comment
+</div>
+{% endblock %}
+
+
+{% block content %}
+<form method="post" action=".">{% csrf_token %}
+    <div>
+        <fieldset class="module aligned ()">
+            {% form_as_div form %}
+        </fieldset>
+    </div>
+    <div class="submit-row">
+        <input type="submit" value="Save" class="default" />
+    </div>
+</form>
+{% endblock %}

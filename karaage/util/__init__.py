@@ -16,9 +16,14 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
+
+from django.template import RequestContext
+from django.shortcuts import render_to_response
+from django.http import HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
 from andsome.middleware.threadlocals import get_current_user
 
+from karaage.util.forms import CommentForm
 from karaage.admin.models import LogEntry
 
 def get_date_range(request, default_start=(datetime.date.today() - datetime.timedelta(days=90)), default_end=datetime.date.today()):
@@ -84,3 +89,18 @@ def new_random_token():
         randrange = random.randrange
     MAX_KEY = 18446744073709551616L     # 2 << 63
     return sha1("%s%s" % (randrange(0, MAX_KEY), settings.SECRET_KEY)).hexdigest()
+
+
+def add_comment(request, content_type, content_url, short_title, obj):
+    form = CommentForm(data=request.POST or None, obj=obj, instance=None)
+    if request.method == 'POST':
+        form.save(request=request)
+        return HttpResponseRedirect(obj.get_absolute_url())
+
+    return render_to_response(
+            'add_comment.html',
+            { 'form': form, 'obj': obj,
+                'content_type': content_type,
+                'content_url': content_url,
+                'short_title': short_title },
+            context_instance=RequestContext(request))

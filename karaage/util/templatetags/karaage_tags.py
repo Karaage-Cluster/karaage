@@ -18,6 +18,8 @@
 
 from django.http import QueryDict
 from django import template
+from django.contrib.comments.models import Comment
+from django.contrib.contenttypes.models import ContentType
 
 register = template.Library()
 
@@ -77,3 +79,17 @@ def url_with_param(parser, token):
         except ValueError:
             raise template.TemplateSyntaxError, "Argument syntax wrong: should be key=value"
     return url_with_param_node(copy, nopage, qschanges)
+
+@register.inclusion_tag('comments.html')
+def comments(obj):
+    """ Render comments for obj. """
+    content_type = ContentType.objects.get_for_model(obj.__class__)
+    comment_list = Comment.objects.filter(
+            content_type=content_type,
+            object_pk=obj.pk
+    )
+    return {
+        'obj': obj,
+        'comment_list': comment_list,
+    }
+

@@ -23,6 +23,7 @@ from django.contrib.admin.models import LogEntry
 from django.db.models import Q
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib import messages
+from django.core.urlresolvers import reverse
 
 from andsome.util.filterspecs import Filter, FilterBar
 
@@ -34,6 +35,7 @@ from karaage.projects.models import Project
 from karaage.projects.forms import ProjectForm, AddPersonForm
 from karaage.projects.utils import get_new_pid, add_user_to_project, remove_user_from_project
 from karaage.util import log_object as log
+import karaage.util as util
 
 
 @admin_required
@@ -248,3 +250,8 @@ def project_logs(request, project_id):
     return render_to_response('log_list.html',
                               {'log_list': log_list, 'short': short, 'project': project},
                               context_instance=RequestContext(request))
+
+@admin_required
+def add_comment(request, project_id):
+    obj = get_object_or_404(Project, pk=project_id)
+    return util.add_comment(request, "Projects", reverse("kg_project_list"), obj.pid, obj)
