@@ -14,29 +14,33 @@
 
 {% block content %}
 <div id="content-main">
-<div class="module">
-<h2>Machines</h2>
-<ul>
-      {% for c in category_list %}
-      <li><h3>{{ c.name }}</h3>
-      - {% if perms.machines.change_machinecategory %} 
-        <a class="changelink" href="{% url 'kg_machinecategory_edit' c.id %}">Edit category</a> | 
-        {% endif %}
-        <a href="{% url 'kg_mc_usage' c.id %}">Usage</a>
-<ul>
-    	  {% for m in c.machine_set.all %}
-    	  <li><a href="{{ m.get_absolute_url }}">{{ m.name }}</a> 
-	    {% if m.end_date %}
-	    <span class="red">*Decommissioned</span>
-	    {% endif %}
-    	  </li>
-    	  {% endfor %}
-    	</ul>
-</li>
-      {% endfor %}
-    </ul>
+    <div class="module">
+        <h2>Machines</h2>
+        <ul>
+        {% for c in category_list %}
+        <li>
+            <h3>{{ c.name }}</h3>
+            - {% if perms.machines.change_machinecategory %}
+            <a class="changelink" href="{% url 'kg_machinecategory_edit' c.id %}">Edit category</a> |
+            {% endif %}
+            <a href="{% url 'kg_mc_usage' c.id %}">Usage</a>
+            <ul>
+                {% for m in c.machine_set.all %}
+                <li>
+                    <a href="{{ m.get_absolute_url }}">{{ m.name }}</a> 
+                    {% if m.end_date %}
+                    <span class="red">*Decommissioned</span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% endfor %}
+        </ul>
+    </div>
 </div>
-</div>{% endblock %}
+{% endblock %}
+
 
 {% block object-tools %}
 {% if request.user.is_admin %}

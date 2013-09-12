@@ -1,5 +1,16 @@
 {% extends "forms.html" %}
 
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_user_list' %}">People</a>&nbsp;›
+    <a href="{% url 'kg_person_detail' person.username %}">{{ person }}</a>&nbsp;›
+    Reactivate
+</div>
+{% endblock %}
+
+
 {% block content %}
     <h1>Are you sure?</h1>
     <p>Are you sure you want to re activate the user "{{ person }}"? </p>
