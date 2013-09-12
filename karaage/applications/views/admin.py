@@ -87,3 +87,10 @@ def applicant_edit(request, applicant_id):
 
     return render_to_response('applications/applicant_form.html',
             {'form': form}, context_instance=RequestContext(request))
+
+
+@admin_required
+def new_application(request):
+    return render_to_response('applications/application_invite_admin.html',
+            {},
+            context_instance=RequestContext(request))

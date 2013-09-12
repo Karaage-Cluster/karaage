@@ -23,6 +23,7 @@ urlpatterns = patterns('karaage.applications.views.admin',
 
     url(r'^$', 'application_list', name='kg_application_list'),
     url(r'^applicants/(?P<applicant_id>\d+)/$', 'applicant_edit', name='kg_applicant_edit'),
+    url(r'^new/$', 'new_application', name='kg_application_new'),
 )
 
 urlpatterns += patterns('karaage.admin.views',
