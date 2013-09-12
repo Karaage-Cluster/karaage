@@ -96,7 +96,10 @@ def profile_projects(request):
     if person.is_leader():
         leader_project_list = Project.objects.filter(leaders=person, is_active=True)
 
-    return render_to_response('people/profile_projects.html', {'person': person, 'project_list': project_list, 'leader_project_list': leader_project_list}, context_instance=RequestContext(request))
+    return render_to_response('people/profile_projects.html',
+            {'person': person, 'project_list': project_list,
+                'leader_project_list': leader_project_list},
+            context_instance=RequestContext(request))
 
 
 @login_required

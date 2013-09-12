@@ -178,7 +178,7 @@ def add_edit_account(request, username=None, account_id=None):
             
     return render_to_response(
         'machines/account_form.html',
-        {'form': form, 'account': account, 'username_error': username_error},
+        {'form': form, 'person': person, 'account': account, 'username_error': username_error},
         context_instance=RequestContext(request))
 
 
