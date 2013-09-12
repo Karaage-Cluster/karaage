@@ -1,38 +1,45 @@
 {% extends "main.html" %}
 {% load common %}
 
+
 {% block title %}Search{% endblock %}
 
-{% block content_title %}{% endblock %}
 
-{% block bread_crumbs_1 %}
- &rsaquo; Search
-{% endblock %}   
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    Search
+</div>
+{% endblock %}
+
 
 {% block content %}
 <div id="content-main">
 
-{% if empty %}
-	<p>Search returned no results</p>
-{% endif %}
-	{% if user_list %}
-	<div class="module">
-   	<h2>Users</h2>
-   	{% gen_table user_list %}
-	</div>
-	{% endif %}
-	{% if group_list %}
-	<div class="module">
-   	<h2>Groups</h2>
-   	{% gen_table group_list %}
-	</div>
-	{% endif %}
-	{% if project_list %}
-	<div class="module">
-   	<h2>Projects</h2>
-   	{% gen_table project_list %}
-	</div>
-	{% endif %}
+    {% if empty %}
+    <p>Search returned no results</p>
+    {% endif %}
+
+    {% if user_list %}
+    <div class="module">
+    <h2>Users</h2>
+    {% gen_table user_list %}
+    </div>
+    {% endif %}
+
+    {% if group_list %}
+    <div class="module">
+    <h2>Groups</h2>
+    {% gen_table group_list %}
+    </div>
+    {% endif %}
+
+    {% if project_list %}
+    <div class="module">
+    <h2>Projects</h2>
+    {% gen_table project_list %}
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
  
