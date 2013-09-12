@@ -266,6 +266,7 @@ def struggling(request):
     persons = Person.objects.select_related()
     persons = persons.filter(date_deleted__isnull=True)
     persons = persons.filter(date_approved__lt=days30)
+    persons = persons.filter(last_usage__isnull=True)
     persons = persons.order_by('-date_approved')
 
     if 'institute' in request.REQUEST:
