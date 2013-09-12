@@ -30,7 +30,7 @@ from django.core.mail import send_mail
 import datetime
 from andsome.forms import EmailForm
 
-from karaage.util.decorators import login_required
+from karaage.util.decorators import login_required, admin_required
 from karaage.applications.models import ProjectApplication, Applicant, Application
 import karaage.applications.forms as forms
 import karaage.applications.emails as emails
@@ -1273,7 +1273,7 @@ def send_invitation(request, project_id):
             forms.InviteUserApplicationForm, override_auth)
 
 
-@login_required
+@admin_required
 def admin_send_invitation(request, project_id=None):
     """ The logged in administrator wants to invite somebody to their project.
     """
@@ -1381,8 +1381,9 @@ def application_detail(request, application_id, state=None, label=None):
     state_machine = get_application_state_machine()
     return state_machine.process(request, application, state, label, {})
 
+@admin_required
 def application_detail_admin(request, application_id, state=None, label=None):
-    """ An authenticated user is trying to access an application. """
+    """ An authenticated admin is trying to access an application. """
     application = _get_application(pk=application_id)
     state_machine = get_application_state_machine()
     return state_machine.process(request, application, state, label, { 'is_admin': True })

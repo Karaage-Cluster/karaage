@@ -139,10 +139,11 @@ class UserApplicationTestCase(TestCase):
         application = Application.objects.get(pk=application.id)
         self.failUnlessEqual(application.state, Application.WAITING_FOR_ADMIN)
         self.assertEquals(len(mail.outbox), 3)
+        self.client.logout()
 
         # ADMIN LOGS IN TO APPROVE
         settings.ROOT_URLCONF = "karaage.testproject.urls"
-        logged_in = self.client.login(username='kgtestuser1', password='aq12ws')
+        logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
 
         # ADMIN GET DETAILS
@@ -198,10 +199,11 @@ class UserApplicationTestCase(TestCase):
         response = self.client.post(reverse('kg_application_unauthenticated', args=[token,'C']), form_data, follow=False)
         # applicant not allowed to do this
         self.failUnlessEqual(response.status_code, 400)
+        self.client.logout()
 
         # ADMIN ARCHIVE
         settings.ROOT_URLCONF = "karaage.testproject.urls"
-        logged_in = self.client.login(username='kgtestuser1', password='aq12ws')
+        logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         response = self.client.post(reverse('kg_application_detail', args=[application.pk,'C']), form_data, follow=True)
         self.failUnlessEqual(response.status_code, 200)
@@ -324,10 +326,11 @@ class ProjectApplicationTestCase(TestCase):
         application = Application.objects.get(pk=application.id)
         self.failUnlessEqual(application.state, Application.WAITING_FOR_ADMIN)
         self.assertEquals(len(mail.outbox), 3)
+        self.client.logout()
 
         # ADMIN LOGS IN TO APPROVE
         settings.ROOT_URLCONF = "karaage.testproject.urls"
-        logged_in = self.client.login(username='kgtestuser1', password='aq12ws')
+        logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
 
         # ADMIN GET DETAILS
@@ -383,10 +386,11 @@ class ProjectApplicationTestCase(TestCase):
         response = self.client.post(reverse('kg_application_unauthenticated', args=[token,'C']), form_data, follow=False)
         # applicant not allowed to do this
         self.failUnlessEqual(response.status_code, 400)
+        self.client.logout()
 
         # ADMIN ARCHIVE
         settings.ROOT_URLCONF = "karaage.testproject.urls"
-        logged_in = self.client.login(username='kgtestuser1', password='aq12ws')
+        logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         response = self.client.post(reverse('kg_application_detail', args=[application.pk,'C']), form_data, follow=True)
         self.failUnlessEqual(response.status_code, 200)
