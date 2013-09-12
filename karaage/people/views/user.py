@@ -128,16 +128,14 @@ def password_change(request):
 
         if form.is_valid():
             form.save(person)
-            return HttpResponseRedirect(reverse('kg_user_password_done'))
+            messages.success(request, "Password changed successfully")
+            return HttpResponseRedirect(reverse('kg_user_profile'))
     else:
         form = PasswordChangeForm()
 
-    return render_to_response('people/user_password_form.html', {'form': form}, context_instance=RequestContext(request))
-
-
-@login_required
-def password_change_done(request):
-    return render_to_response('people/password_change_done.html', context_instance=RequestContext(request))
+    return render_to_response('people/user_password_form.html',
+            {'person': person, 'form': form},
+            context_instance=RequestContext(request))
 
 
 def login(request, username=None):
