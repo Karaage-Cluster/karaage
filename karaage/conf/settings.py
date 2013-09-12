@@ -27,7 +27,6 @@ DEFAULT_SHELL = '/bin/bash'
 BOUNCED_SHELL = '/usr/local/sbin/bouncedemail'
 
 INSTALLED_APPS = (
-    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
