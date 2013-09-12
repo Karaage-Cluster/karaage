@@ -1,11 +1,16 @@
 {% extends "forms.html" %}
 
+
 {% block title %}Emails{% endblock %}
 
 
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    Send Email
+</div>
+{% endblock %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Send Email
-</div>{% endblock %}   
 
 {% block content %}
 {% if emails %}
@@ -13,39 +18,34 @@
 
 {% if preview %}
 <div class="module">
-<h2>Preview of 1st email</h2>
-<p>To: {{ preview.3.0 }}</p>
-<hr />
-<p>From: {{ preview.2 }}</p>
-<hr />
-<p>Subject: {{ preview.0 }}</p>
-<hr />
-{{ preview.1|linebreaks }}
-{% endif %}
+    <h2>Preview of 1st email</h2>
+    <p>To: {{ preview.3.0 }}</p>
+    <hr />
+    <p>From: {{ preview.2 }}</p>
+    <hr />
+    <p>Subject: {{ preview.0 }}</p>
+    <hr />
+    {{ preview.1|linebreaks }}
+    {% endif %}
 </div>
 {% endif %}
 
-{% comment %}
-{% for e in emails %}
-<p>{{ e }}</p>
-{% endfor %}
-{% endcomment %}
 <form method="post" action=".">{% csrf_token %}
-{% load forms %}
-<fieldset class="module aligned ()">
-{% form_as_div form %}
-</fieldset>
-<p>All Project Leaders Context:
-	<ul><li>{% templatetag openvariable %} project {% templatetag closevariable %} </li><li>{% templatetag openvariable %} receiver {% templatetag closevariable %}</li></ul>
-</p>
-<p>All Users Context:
-	<ul><li>{% templatetag openvariable %} receiver {% templatetag closevariable %}</li></ul>
-</p>
-<div class="submit-row">
-		<input type="submit" name="preview" value="Preview" />
-		{% if preview %}	
-		<input type="submit" value="Send" class="default" />
-		{% endif %}
-	</div>
+    {% load forms %}
+    <fieldset class="module aligned ()">
+        {% form_as_div form %}
+    </fieldset>
+    <p>All Project Leaders Context:
+        <ul><li>{% templatetag openvariable %} project {% templatetag closevariable %} </li><li>{% templatetag openvariable %} receiver {% templatetag closevariable %}</li></ul>
+    </p>
+    <p>All Users Context:
+        <ul><li>{% templatetag openvariable %} receiver {% templatetag closevariable %}</li></ul>
+    </p>
+    <div class="submit-row">
+        <input type="submit" name="preview" value="Preview" />
+        {% if preview %}
+        <input type="submit" value="Send" class="default" />
+        {% endif %}
+    </div>
 </form>
 {% endblock %}
