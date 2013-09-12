@@ -57,8 +57,6 @@ class ProjectTestCase(TestCase):
             'description': 'Test',
             'institute': 1,
             'leaders': "|2|3|",
-            'machine_category': 1,
-            'machine_categories': [1,],
             'start_date': datetime.date.today(),
         }
 
@@ -89,8 +87,6 @@ class ProjectTestCase(TestCase):
             'description': 'Test',
             'institute': 1,
             'leaders': "|2|3|",
-            'machine_category': 1,
-            'machine_categories': [1,],
             'start_date': datetime.date.today(),
         }
 
@@ -183,8 +179,6 @@ class ProjectTestCase(TestCase):
             'description': 'Test',
             'institute': 1,
             'leaders': "|2|3|",
-            'machine_category': 1,
-            'machine_categories': [1,],
             'start_date': project.start_date,
         }
 

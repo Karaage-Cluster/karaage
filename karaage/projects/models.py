@@ -37,7 +37,6 @@ class Project(models.Model):
     start_date = models.DateField(default=datetime.datetime.today)
     end_date = models.DateField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
-    machine_categories = models.ManyToManyField(MachineCategory, null=True, blank=True, related_name='projects')
     is_active = models.BooleanField()
     approved_by = models.ForeignKey(Person, related_name='project_approver', null=True, blank=True, editable=False)
     date_approved = models.DateField(null=True, blank=True, editable=False)
@@ -183,9 +182,7 @@ class Project(models.Model):
         from karaage.util.usage import get_project_usage
         return get_project_usage(self, start, end, machine_category)
 
-    def gen_usage_graph(self, start, end, machine_category=None):
-        if machine_category is None:
-            machine_category = self.machine_category
+    def gen_usage_graph(self, start, end, machine_category):
         from karaage.graphs import gen_project_graph
         gen_project_graph(self, start, end, machine_category)
     gen_usage_graph.alters_data = True

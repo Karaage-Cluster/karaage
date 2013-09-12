@@ -105,19 +105,3 @@ def delete_institute_chunk(sender, **kwargs):
 
 post_save.connect(create_institute_chunk, sender=Institute)
 pre_delete.connect(delete_institute_chunk, sender=Institute)
-
-
-
-
-def create_project_chunk(sender, **kwargs):
-    project = kwargs['instance']
-    for mc in project.machine_categories.all():
-        ProjectChunk.objects.get_or_create(project=project, machine_category=mc)
-
-def delete_project_chunk(sender, **kwargs):
-    ProjectChunk.objects.filter(project=kwargs['instance']).delete()
-
-
-
-post_save.connect(create_project_chunk, sender=Project)
-pre_delete.connect(delete_project_chunk, sender=Project)

@@ -205,11 +205,11 @@ def no_default_list(request):
 @admin_required
 def no_account_list(request):
     person_id_list = []
-    
+
     for u in Person.objects.all():
         for p in u.projects.all():
-            for mc in p.machine_categories.all():
-                if not u.has_account(mc):
+            for pc in project.projectchunk_set.all():
+                if not u.has_account(pc.machine_category):
                     person_id_list.append(u.id)
 
     return user_list(request, Person.objects.filter(id__in=person_id_list))

@@ -36,11 +36,10 @@ class ProjectForm(forms.ModelForm):
     leaders = ajax_select.fields.AutoCompleteSelectMultipleField('person', required=False)
     start_date = forms.DateField(widget=AdminDateWidget, initial=datetime.datetime.today)
     end_date = forms.DateField(widget=AdminDateWidget, required=False)
-    machine_categories = forms.ModelMultipleChoiceField(queryset=MachineCategory.objects.all(), widget=forms.CheckboxSelectMultiple())
 
     class Meta:
         model = Project
-        fields = ('pid', 'name', 'institute', 'leaders', 'description', 'start_date', 'end_date', 'additional_req', 'machine_categories')
+        fields = ('pid', 'name', 'institute', 'leaders', 'description', 'start_date', 'end_date', 'additional_req')
 
     def __init__(self, *args, **kwargs):
         # Make PID field read only if we are editing a project
@@ -57,7 +56,7 @@ class ProjectForm(forms.ModelForm):
             raise forms.ValidationError(u'Project ID not available')
         except Institute.DoesNotExist:
             return pid
- 
+
 
 class UserProjectForm(forms.ModelForm):
     name = forms.CharField(label='Project Title', widget=forms.TextInput(attrs={'size': 60}))
