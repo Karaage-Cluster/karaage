@@ -1372,7 +1372,7 @@ def _get_application(**kwargs):
     if application is not None:
         return application
 
-    raise Http404()
+    raise Http404("The application does not exist.")
 
 @login_required
 def application_detail(request, application_id, state=None, label=None):
