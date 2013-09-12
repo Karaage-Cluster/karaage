@@ -21,7 +21,7 @@ from karaage.people.models import Person
 
 urlpatterns = patterns('karaage.people.views.admin',
 
-    url(r'^$', 'user_list', name='kg_user_list'),
+    url(r'^$', 'user_list', name='kg_person_list'),
     url(r'^deleted/$', 'user_list', { 'queryset': Person.deleted.all(),}),
     url(r'^last_used/$', 'user_list', { 'queryset': Person.active.order_by('last_usage'),}),
     url(r'^no_project/$', 'user_list', { 'queryset': Person.active.filter(groups__project__isnull=True, account__isnull=False),}, name='kg_person_no_project'),
