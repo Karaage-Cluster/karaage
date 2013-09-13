@@ -170,7 +170,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        u'software.softwarepackage': {
+        u'software.software': {
             'Meta': {'ordering': "['name']", 'object_name': 'SoftwarePackage', 'db_table': "'software_package'"},
             'academic_only': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.SoftwareCategory']", 'null': 'True', 'blank': 'True'}),

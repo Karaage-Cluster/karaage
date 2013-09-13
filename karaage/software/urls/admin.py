@@ -17,7 +17,7 @@
 
 from django.conf.urls import *
 
-from karaage.software.models import SoftwarePackage
+from karaage.software.models import Software
 
 urlpatterns = patterns('karaage.software.views.admin',
     url(r'^$', 'software_list', name='kg_software_list'),
@@ -32,8 +32,8 @@ urlpatterns = patterns('karaage.software.views.admin',
     url(r'^requests/(?P<softwarerequest_id>\d+)/decline/$', 'softwarerequest_delete', name='kg_softwarerequest_delete'),
 
     url(r'^(?P<package_id>\d+)/$', 'software_detail', name='kg_software_detail'),
-    url(r'^(?P<package_id>\d+)/edit/$', 'software_edit', name='kg_softwarepackage_edit'),
-    url(r'^(?P<package_id>\d+)/delete/$', 'software_delete', name='kg_softwarepackage_delete'),
+    url(r'^(?P<package_id>\d+)/edit/$', 'software_edit', name='kg_software_edit'),
+    url(r'^(?P<package_id>\d+)/delete/$', 'software_delete', name='kg_software_delete'),
     url(r'^(?P<package_id>\d+)/verbose/$', 'software_verbose', name='kg_software_verbose'),
     url(r'^(?P<package_id>\d+)/stats/$', 'software_stats', name='kg_software_stats'),
     url(r'^(?P<package_id>\d+)/remove/(?P<user_id>\d+)/$', 'remove_member', name='kg_software_removeuser'),
@@ -49,5 +49,5 @@ urlpatterns = patterns('karaage.software.views.admin',
 )
 
 urlpatterns += patterns('karaage.admin.views',
-    url(r'^(?P<object_id>\d+)/logs/$', 'log_detail', {'model': SoftwarePackage }, name='kg_software_logs'),
+    url(r'^(?P<object_id>\d+)/logs/$', 'log_detail', {'model': Software }, name='kg_software_logs'),
 )

@@ -25,7 +25,7 @@ from django.contrib import messages
 import datetime
 
 from karaage.util.decorators import login_required
-from karaage.software.models import SoftwarePackage, SoftwareLicenseAgreement, SoftwareAccessRequest
+from karaage.software.models import Software, SoftwareLicenseAgreement, SoftwareAccessRequest
 from karaage.util.email_messages import send_software_request_email
 
 
@@ -35,7 +35,7 @@ def add_package_list(request):
     person = request.user
 
     software_list = []
-    for s in SoftwarePackage.objects.filter(softwarelicense__isnull=False).distinct():
+    for s in Software.objects.filter(softwarelicense__isnull=False).distinct():
         data = {'package': s}
         license_agreements = SoftwareLicenseAgreement.objects.filter(user=person, license__package=s)
         if license_agreements.count() > 0:
@@ -53,7 +53,7 @@ def add_package_list(request):
 @login_required
 def add_package(request, package_id):
 
-    package = get_object_or_404(SoftwarePackage, pk=package_id)
+    package = get_object_or_404(Software, pk=package_id)
     software_license = package.get_current_license()
     person = request.user
 
@@ -86,7 +86,7 @@ def add_package(request, package_id):
 @login_required
 def license_txt(request, package_id):
     
-    package = get_object_or_404(SoftwarePackage, pk=package_id)
+    package = get_object_or_404(Software, pk=package_id)
     software_license = package.get_current_license()
 
     return HttpResponse(wordwrap(software_license.text, 80), mimetype="text/plain")

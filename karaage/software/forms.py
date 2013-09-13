@@ -18,10 +18,10 @@
 from django import forms
 
 from karaage.machines.models import Machine
-from karaage.software.models import SoftwareCategory, SoftwarePackage, SoftwareVersion, SoftwareLicense
+from karaage.software.models import SoftwareCategory, Software, SoftwareVersion, SoftwareLicense
 
 
-class SoftwarePackageForm(forms.Form):
+class SoftwareForm(forms.Form):
     
     category = forms.ModelChoiceField(queryset=SoftwareCategory.objects.all())
     name = forms.CharField()
@@ -35,7 +35,7 @@ class SoftwarePackageForm(forms.Form):
         data = self.cleaned_data
 
         if package is None:
-            package = SoftwarePackage()
+            package = Software()
 
         package.category = data['category']
         package.name = data['name']
@@ -49,7 +49,7 @@ class SoftwarePackageForm(forms.Form):
         return package
 
 
-class AddPackageForm(SoftwarePackageForm):
+class AddPackageForm(SoftwareForm):
     
     version = forms.CharField()
     module = forms.CharField(required=False)

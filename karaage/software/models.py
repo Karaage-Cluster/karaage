@@ -37,7 +37,7 @@ class SoftwareCategory(models.Model):
         return ('kg_software_category_list', [])
 
 
-class SoftwarePackage(models.Model):
+class Software(models.Model):
     category = models.ForeignKey(SoftwareCategory, blank=True, null=True)
     name = models.CharField(max_length=200, unique=True)
     description = models.TextField(blank=True, null=True)
@@ -48,7 +48,7 @@ class SoftwarePackage(models.Model):
     restricted = models.BooleanField(help_text="Will require admin approval")
 
     def __init__(self, *args, **kwargs):
-        super(SoftwarePackage, self).__init__(*args, **kwargs)
+        super(Software, self).__init__(*args, **kwargs)
         if self.group_id is None:
             self._group = None
         else:
@@ -56,7 +56,7 @@ class SoftwarePackage(models.Model):
 
     class Meta:
         ordering = ['name']
-        db_table = 'software_package'
+        db_table = 'software'
 
     def save(self, *args, **kwargs):
         # set group if not already set
@@ -65,7 +65,7 @@ class SoftwarePackage(models.Model):
             self.group,_ = Group.objects.get_or_create(name=name)
 
         # save the object
-        super(SoftwarePackage, self).save(*args, **kwargs)
+        super(Software, self).save(*args, **kwargs)
 
         # update the datastore
         from karaage.datastores import save_software
@@ -100,7 +100,7 @@ class SoftwarePackage(models.Model):
 
     def delete(self, *args, **kwargs):
         # delete the object
-        super(SoftwarePackage, self).delete(*args, **kwargs)
+        super(Software, self).delete(*args, **kwargs)
 
         # update datastore associations
         old_group = self._group
@@ -141,7 +141,7 @@ class SoftwarePackage(models.Model):
 
 
 class SoftwareVersion(models.Model):
-    package = models.ForeignKey(SoftwarePackage)
+    package = models.ForeignKey(Software)
     version = models.CharField(max_length=100)
     machines = models.ManyToManyField(Machine)
     module = models.CharField(max_length=100, blank=True, null=True)
@@ -166,7 +166,7 @@ class SoftwareVersion(models.Model):
 
         
 class SoftwareLicense(models.Model):
-    package = models.ForeignKey(SoftwarePackage)
+    package = models.ForeignKey(Software)
     version = models.CharField(max_length=100, blank=True, null=True)
     date = models.DateField(blank=True, null=True)
     text = models.TextField()

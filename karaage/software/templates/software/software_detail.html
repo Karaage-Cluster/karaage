@@ -156,8 +156,8 @@
     <h2>Tasks</h2>
     <ul>
         {% if request.user.is_admin %}
-        <li><a class="changelink" href="{% url 'kg_softwarepackage_edit' package.id %}">Edit</a></li>
-        <li><a class="deletelink" href="{% url 'kg_softwarepackage_delete' package.id %}">Delete</a></li>
+        <li><a class="changelink" href="{% url 'kg_software_edit' package.id %}">Edit</a></li>
+        <li><a class="deletelink" href="{% url 'kg_software_delete' package.id %}">Delete</a></li>
         <li><a class="addlink" href="{% url 'kg_softwareversion_add' package.id %}">Add Version</a></li>
         <li><a class="addlink" href="{% url 'kg_softwarelicense_add' package.id %}">Add License</a></li>
         {% endif %}

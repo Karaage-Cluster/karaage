@@ -414,8 +414,8 @@ class Person(AbstractBaseUser):
 
     @property
     def software(self):
-        from karaage.software.models import SoftwarePackage
-        return SoftwarePackage.objects.filter(group__members=self)
+        from karaage.software.models import Software
+        return Software.objects.filter(group__members=self)
 
 
 class Group(models.Model):
@@ -500,7 +500,7 @@ def _add_person_to_group(person, group):
         add_person_to_institute(person, institute)
         for account in a_list:
             add_account_to_institute(account, institute)
-    for software in group.softwarepackage_set.all():
+    for software in group.software_set.all():
         add_person_to_software(person, software)
         for account in a_list:
             add_account_to_software(account, software)
@@ -529,7 +529,7 @@ def _remove_person_from_group(person, group):
         remove_person_from_institute(person, institute)
         for account in a_list:
             remove_account_from_institute(account, institute)
-    for software in group.softwarepackage_set.all():
+    for software in group.software_set.all():
         remove_person_from_software(person, software)
         for account in a_list:
             remove_account_from_software(account, software)

@@ -62,7 +62,7 @@
             <tr><th>Type</th><th>Link</th></tr>
         </thead>
         <tbody>
-        {% for software in group.softwarepackage_set.all %}
+        {% for software in group.software_set.all %}
         <tr class="row1">
             <td>Software</td>
             <td><a href="{{ software.get_absolute_url }}">{{ software }}</td></a>

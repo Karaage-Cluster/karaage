@@ -8,12 +8,36 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        pass
+        db.rename_table('software_package', 'software')
+        if not db.dry_run:
+            orm['contenttypes.contenttype'].objects.filter(app_label='software', model='software').update(name='software', model='software')
+
+        # Changing field 'SoftwareLicense.package'
+        db.alter_column('software_license', 'package_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['software.Software']))
+
+        # Changing field 'SoftwareVersion.package'
+        db.alter_column('software_version', 'package_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['software.Software']))
 
     def backwards(self, orm):
-        pass
+        # Adding model 'SoftwarePackage'
+        db.rename_table('software', 'software_package')
+        if not db.dry_run:
+            orm['contenttypes.contenttype'].objects.filter(app_label='software', model='software').update(name='software package', model='software')
+
+        # Changing field 'SoftwareLicense.package'
+        db.alter_column('software_license', 'package_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['software.SoftwarePackage']))
+
+        # Changing field 'SoftwareVersion.package'
+        db.alter_column('software_version', 'package_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['software.SoftwarePackage']))
 
     models = {
+        u'contenttypes.contenttype': {
+            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
+            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
+        },
         u'institutes.institute': {
             'Meta': {'ordering': "['name']", 'object_name': 'Institute', 'db_table': "'institute'"},
             'delegates': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'delegate'", 'to': u"orm['people.Person']", 'through': u"orm['institutes.InstituteDelegate']", 'blank': 'True', 'symmetrical': 'False', 'null': 'True'}),
@@ -94,6 +118,18 @@ class Migration(SchemaMigration):
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'}),
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
         },
+        u'software.software': {
+            'Meta': {'ordering': "['name']", 'object_name': 'Software', 'db_table': "'software_package'"},
+            'academic_only': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.SoftwareCategory']", 'null': 'True', 'blank': 'True'}),
+            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Group']", 'null': 'True', 'blank': 'True'}),
+            'homepage': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'}),
+            'restricted': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'tutorial_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
+        },
         u'software.softwareaccessrequest': {
             'Meta': {'object_name': 'SoftwareAccessRequest', 'db_table': "'software_access_request'"},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -110,7 +146,7 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['-version']", 'object_name': 'SoftwareLicense', 'db_table': "'software_license'"},
             'date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'package': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.SoftwarePackage']"}),
+            'package': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.Software']"}),
             'text': ('django.db.models.fields.TextField', [], {}),
             'version': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'})
         },
@@ -121,27 +157,15 @@ class Migration(SchemaMigration):
             'license': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.SoftwareLicense']"}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Person']"})
         },
-        u'software.software': {
-            'Meta': {'ordering': "['name']", 'object_name': 'SoftwarePackage', 'db_table': "'software_package'"},
-            'academic_only': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.SoftwareCategory']", 'null': 'True', 'blank': 'True'}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Group']", 'null': 'True', 'blank': 'True'}),
-            'homepage': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'}),
-            'restricted': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'tutorial_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
-        },
         u'software.softwareversion': {
             'Meta': {'ordering': "['-version']", 'object_name': 'SoftwareVersion', 'db_table': "'software_version'"},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'last_used': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'machines': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['machines.Machine']", 'symmetrical': 'False'}),
             'module': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'package': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.SoftwarePackage']"}),
+            'package': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.Software']"}),
             'version': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         }
     }
 
-    complete_apps = ['software']
+    complete_apps = ['contenttypes', 'software']

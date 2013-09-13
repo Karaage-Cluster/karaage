@@ -197,7 +197,7 @@ class Migration(SchemaMigration):
             'license': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['software.SoftwareLicense']"}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['people.Person']"})
         },
-        'software.softwarepackage': {
+        'software.software': {
             'Meta': {'object_name': 'SoftwarePackage', 'db_table': "'software_package'"},
             'academic_only': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
             'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['software.SoftwareCategory']"}),

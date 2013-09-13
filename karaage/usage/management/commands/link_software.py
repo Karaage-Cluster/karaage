@@ -21,7 +21,7 @@ from optparse import make_option
 import datetime
 
 from karaage.usage.models import CPUJob, UsedModules
-from karaage.software.models import SoftwareVersion, SoftwarePackage
+from karaage.software.models import SoftwareVersion, Software
 
 
 class Command(BaseCommand):
@@ -79,7 +79,7 @@ class Command(BaseCommand):
                             except UnicodeEncodeError:
                                 pass
                             continue
-                    package, created = SoftwarePackage.objects.get_or_create(name=package_name)
+                    package, created = Software.objects.get_or_create(name=package_name)
                     if created and verbose > 0:
                         print "Created new Software package %s" % package
                     sv, created = SoftwareVersion.objects.get_or_create(package=package, version=version_name)
