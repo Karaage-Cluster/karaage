@@ -17,11 +17,11 @@
 
 from django import forms
 
-from models import ProjectChunk
+from models import ProjectQuota
 
 
-class ProjectChunkForm(forms.ModelForm):
+class ProjectQuotaForm(forms.ModelForm):
 
     class Meta:
-        model = ProjectChunk
+        model = ProjectQuota
         exclude = ('project',)

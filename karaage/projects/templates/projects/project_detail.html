@@ -69,7 +69,7 @@
 
     <div class="module">
         <h2>Project Caps/quota {% if request.user.is_admin %}
-        <a class="addlink" href="{% url 'kg_projectchunk_add' project.pid %}">Add</a>
+        <a class="addlink" href="{% url 'kg_projectquota_add' project.pid %}">Add</a>
         {% endif %}</h2>
         <table>
             <thead>
@@ -81,15 +81,15 @@
                 </tr>
             </thead>
             <tbody>
-                {% for pc in project.projectchunk_set.all %}
+                {% for pc in project.projectquota_set.all %}
                 <tr class="{% cycle row1,row2 %}">
                     <td>{{ pc.machine_category }}</td>
                     <td>{{ pc.get_mpots|floatformat:"2" }}</td>
                     <td>{{ pc.get_cap }}</td>
                     <td>{{ pc.get_cap_percent|floatformat:"2" }}%</td>
                     {% if request.user.is_admin %}
-                    <td><a class="changelink" href="{% url 'kg_projectchunk_edit' pc.id %}">edit</a></td>
-                    <td><a class="deletelink" href="{% url 'kg_projectchunk_delete' pc.id %}">Remove</a></td>
+                    <td><a class="changelink" href="{% url 'kg_projectquota_edit' pc.id %}">edit</a></td>
+                    <td><a class="deletelink" href="{% url 'kg_projectquota_delete' pc.id %}">Remove</a></td>
                     {% endif %}
                 </tr>
                 {% endfor %}
@@ -165,7 +165,7 @@
 <div class="module object-tools">
     <h2>Tasks</h2>
     <ul>
-        <li>Usage: {% for pc in project.projectchunk_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk project.pk %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
+        <li>Usage: {% for pc in project.projectquota_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk project.pk %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
         <li><a href="logs/">View logs</a></li>
         <li class="addlink"><a href="{% url 'kg_project_add_comment' project.pk %}">Add comment</a></li>
         <li><a href="{% url 'kg_job_list' %}?project={{ project.pid }}">Display all jobs</a></li>

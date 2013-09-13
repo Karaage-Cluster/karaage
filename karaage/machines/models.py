@@ -270,7 +270,7 @@ class Account(models.Model):
         if self.disk_quota:
             return self.disk_quota
 
-        iq = self.person.institute.institutechunk_set.get(machine_category=self.machine_category)
+        iq = self.person.institute.institutequota_set.get(machine_category=self.machine_category)
         return iq.disk_quota
     
     def loginShell(self):

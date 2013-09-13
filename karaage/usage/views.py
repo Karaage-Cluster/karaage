@@ -35,7 +35,7 @@ from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.machines.models import Account, MachineCategory, Machine
-from karaage.pbsmoab.models import InstituteChunk
+from karaage.pbsmoab.models import InstituteQuota
 from karaage.usage.models import CPUJob, Queue
 from karaage.usage.forms import UsageSearchForm
 from karaage.cache.models import PersonCache
@@ -96,9 +96,9 @@ def index(request, machine_category_id):
         total = total + time
         total_jobs = total_jobs + jobs
         try:
-            quota = InstituteChunk.objects.get(institute=i, machine_category=machine_category)
+            quota = InstituteQuota.objects.get(institute=i, machine_category=machine_category)
             display_quota = quota.quota
-        except InstituteChunk.DoesNotExist:
+        except InstituteQuota.DoesNotExist:
             display_quota = None
 
         else:
@@ -159,7 +159,7 @@ def institute_usage(request, institute_id, machine_category_id):
 
     available_usage, ave_cpus = get_available_time(start, end, machine_category)
 
-    quota = get_object_or_404(InstituteChunk, institute=institute, machine_category=machine_category)
+    quota = get_object_or_404(InstituteQuota, institute=institute, machine_category=machine_category)
 
     i_usage, i_jobs = institute.get_usage(start, end, machine_category)
 
@@ -169,7 +169,7 @@ def institute_usage(request, institute_id, machine_category_id):
 
         for p in institute.project_set.filter():
             p_usage, p_jobs = p.get_usage(start, end, machine_category)
-            chunk, created = p.projectchunk_set.get_or_create(machine_category=machine_category)
+            chunk, created = p.projectquota_set.get_or_create(machine_category=machine_category)
             if p_jobs > 0:
                 mpots = chunk.get_mpots()
                 if mpots:

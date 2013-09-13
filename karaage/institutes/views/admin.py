@@ -30,7 +30,7 @@ from karaage.util.graphs import get_institute_trend_graph_url
 from karaage.institutes.models import Institute, InstituteDelegate
 from karaage.institutes.forms import InstituteForm, DelegateForm
 from karaage.machines.models import MachineCategory
-from karaage.pbsmoab.models import InstituteChunk
+from karaage.pbsmoab.models import InstituteQuota
 
 
 @admin_required
@@ -43,7 +43,7 @@ def institute_detail(request, institute_id):
 
     if institute.is_active:
         graph = {}
-        for ic in institute.institutechunk_set.all():
+        for ic in institute.institutequota_set.all():
             graph[ic.machine_category] = get_institute_trend_graph_url(institute, start, end, ic.machine_category)
     
     return render_to_response('institutes/institute_detail.html', locals(), context_instance=RequestContext(request))
@@ -116,7 +116,7 @@ def add_edit_institute(request, institute_id=None):
         context_instance=RequestContext(request))
 
 @admin_required
-def institute_quota_edit(request, institutechunk_id):
+def institute_quota_edit(request, institutequota_id):
     from karaage.legacy.create_update import update_object
     return update_object(request,
-            object_id=institutechunk_id, model=InstituteChunk)
+            object_id=institutequota_id, model=InstituteQuota)

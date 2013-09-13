@@ -45,7 +45,7 @@ class AccountForm(forms.Form):
             return data
         default_project = data['default_project']
         machine_category = data['machine_category']
-        query = default_project.projectchunk_set.filter(machine_category=machine_category)
+        query = default_project.projectquota_set.filter(machine_category=machine_category)
         if query.count() == 0:
             raise forms.ValidationError(u'Default project not in machine category')
         return data

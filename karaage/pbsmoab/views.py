@@ -23,23 +23,23 @@ from django.forms import util
 from karaage.util.decorators import admin_required
 from karaage.projects.models import Project
 from karaage.util import log_object as log
-from karaage.pbsmoab.models import ProjectChunk
-from karaage.pbsmoab.forms import ProjectChunkForm
+from karaage.pbsmoab.models import ProjectQuota
+from karaage.pbsmoab.forms import ProjectQuotaForm
 
 
 @admin_required
-def projectchunk_add(request, project_id):
+def projectquota_add(request, project_id):
 
     project = get_object_or_404(Project, pk=project_id)
     
-    project_chunk = ProjectChunk()
+    project_chunk = ProjectQuota()
     project_chunk.project = project
 
     if request.method == 'POST':
-        form = ProjectChunkForm(request.POST, instance=project_chunk)
+        form = ProjectQuotaForm(request.POST, instance=project_chunk)
         if form.is_valid():
             mc = form.cleaned_data['machine_category']
-            conflicting = ProjectChunk.objects.filter(
+            conflicting = ProjectQuota.objects.filter(
                 project=project,machine_category=mc)
 
             if conflicting.count() >= 1:
@@ -50,20 +50,20 @@ def projectchunk_add(request, project_id):
                 log(request.user, project, 2, 'Added cap of %s' % (new_cap))
                 return HttpResponseRedirect(project.get_absolute_url())
     else:
-        form = ProjectChunkForm(instance=project_chunk)
+        form = ProjectQuotaForm(instance=project_chunk)
 
-    return render_to_response('pbsmoab/projectchunk_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('pbsmoab/projectquota_form.html', locals(), context_instance=RequestContext(request))
 
 
 @admin_required
-def projectchunk_edit(request, projectchunk_id):
+def projectquota_edit(request, projectquota_id):
 
-    project_chunk = get_object_or_404(ProjectChunk, pk=projectchunk_id)
+    project_chunk = get_object_or_404(ProjectQuota, pk=projectquota_id)
     old_cap = project_chunk.cap
     old_mc = project_chunk.machine_category
 
     if request.method == 'POST':
-        form = ProjectChunkForm(request.POST, instance=project_chunk)
+        form = ProjectQuotaForm(request.POST, instance=project_chunk)
         if form.is_valid():
             mc = form.cleaned_data['machine_category']
             if old_mc.pk != mc.pk:
@@ -76,21 +76,21 @@ def projectchunk_edit(request, projectchunk_id):
                 return HttpResponseRedirect(project_chunk.project.get_absolute_url())
 
     else:
-        form = ProjectChunkForm(instance=project_chunk)
+        form = ProjectQuotaForm(instance=project_chunk)
 
-    return render_to_response('pbsmoab/projectchunk_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('pbsmoab/projectquota_form.html', locals(), context_instance=RequestContext(request))
 
 
 @admin_required
-def projectchunk_delete(request, projectchunk_id):
+def projectquota_delete(request, projectquota_id):
 
-    project_chunk = get_object_or_404(ProjectChunk, pk=projectchunk_id)
+    project_chunk = get_object_or_404(ProjectQuota, pk=projectquota_id)
 
     if request.method == 'POST':
 	project_chunk.delete()
         return HttpResponseRedirect(project_chunk.project.get_absolute_url())
 
-    return render_to_response('pbsmoab/projectchunk_delete_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('pbsmoab/projectquota_delete_form.html', locals(), context_instance=RequestContext(request))
 
 
 @admin_required

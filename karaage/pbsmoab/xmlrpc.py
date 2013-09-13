@@ -21,7 +21,7 @@ import datetime
 from karaage.people.models import Person
 from karaage.machines.models import MachineCategory, Machine, Account
 from karaage.projects.models import Project
-from karaage.pbsmoab.models import ProjectChunk
+from karaage.pbsmoab.models import ProjectQuota
 from karaage.pbsmoab.logs import parse_logs
 
 
@@ -61,7 +61,7 @@ def project_under_quota(project_id, machine_name=None):
     except Project.DoesNotExist:
         return 'Project not found'
         
-    project_chunk, created = ProjectChunk.objects.get_or_create(project=project, machine_category=machine_category)
+    project_chunk, created = ProjectQuota.objects.get_or_create(project=project, machine_category=machine_category)
 
     if project_chunk.is_over_quota():
         return False
@@ -111,7 +111,7 @@ def showquota(username, machine_name=None):
 
     p_l = []
     for project in u_a.person.projects.filter(is_active=True, machine_categories=machine_category):
-        project_chunk, created = ProjectChunk.objects.get_or_create(project=project, machine_category=machine_category)
+        project_chunk, created = ProjectQuota.objects.get_or_create(project=project, machine_category=machine_category)
         is_default = False
         if project == d_p:
             is_default = True

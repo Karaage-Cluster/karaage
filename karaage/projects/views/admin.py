@@ -229,7 +229,7 @@ def over_quota(request):
     project_ids = []
 
     for p in Project.active.all():
-        for pc in p.projectchunk_set.all():
+        for pc in p.projectquota_set.all():
             if pc.is_over_quota():
                 project_ids.append(p.pid)
 

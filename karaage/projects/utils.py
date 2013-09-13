@@ -20,7 +20,7 @@ from karaage.machines.models import Account
 
 
 def add_user_to_project(person, project):
-    for pc in project.projectchunk_set.all():
+    for pc in project.projectquota_set.all():
         if not person.has_account(pc.machine_category):
             Account.create(person, project, pc.machine_category)
     project.group.members.add(person)

@@ -191,9 +191,9 @@ class Project(models.Model):
         return self.cpujob_set.select_related()[:5]
 
     def get_cap(self, machine_category):
-        pc = self.projectchunk_set.get(machine_category=machine_category)
+        pc = self.projectquota_set.get(machine_category=machine_category)
         return pc.get_cap()
 
     def get_cap_percent(self, machine_category):
-        pc = self.projectchunk_set.get(machine_category=machine_category)
+        pc = self.projectquota_set.get(machine_category=machine_category)
         return pc.get_cap_percent(self)

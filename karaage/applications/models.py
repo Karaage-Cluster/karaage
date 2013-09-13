@@ -195,13 +195,13 @@ class ProjectApplication(Application):
             project.save()
             project.leaders.add(person)
             for mc in self.machine_categories.all():
-                project.projectchunk_set.create(machine_category=mc)
+                project.projectquota_set.create(machine_category=mc)
             project.activate(approved_by)
             self.project = project
             self.save()
             created_project = True
         if self.needs_account:
-            for pc in project.projectchunk_set.all():
+            for pc in project.projectquota_set.all():
                 if not person.has_account(pc.machine_category):
                     Account.create(person, project, pc.machine_category)
                     created_account = True

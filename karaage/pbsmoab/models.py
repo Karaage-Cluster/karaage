@@ -16,7 +16,6 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.db import models
-from django.db.models.signals import post_save, pre_delete
 
 from decimal import Decimal
 import datetime
@@ -26,7 +25,7 @@ from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory
 
 
-class InstituteChunk(models.Model):
+class InstituteQuota(models.Model):
     institute = models.ForeignKey(Institute)
     machine_category = models.ForeignKey(MachineCategory)
     quota = models.DecimalField(max_digits=5, decimal_places=2)
@@ -52,10 +51,14 @@ class InstituteChunk(models.Model):
 
 
 
-class ProjectChunk(models.Model):
+class ProjectQuota(models.Model):
     project = models.ForeignKey(Project)
     cap = models.IntegerField(null=True, blank=True)
     machine_category = models.ForeignKey(MachineCategory)
+
+    class Meta:
+        db_table = 'project_quota'
+        unique_together = ('project', 'machine_category')
 
     def get_mpots(self, start=datetime.date.today()-datetime.timedelta(days=90), end=datetime.date.today()):
         from karaage.util.helpers import get_available_time
@@ -79,7 +82,7 @@ class ProjectChunk(models.Model):
             return self.cap
 
         try:
-            iq = self.project.institute.institutechunk_set.get(machine_category=self.machine_category)
+            iq = self.project.institute.institutequota_set.get(machine_category=self.machine_category)
         except:
             return None
         if iq.cap is not None:
@@ -92,16 +95,3 @@ class ProjectChunk(models.Model):
             return 'NaN'
         else:
             return (self.get_mpots() / cap) * 100
-
-
-def create_institute_chunk(sender, **kwargs):
-    institute = kwargs['instance']
-    for mc in MachineCategory.objects.all():
-        InstituteChunk.objects.get_or_create(institute=institute, machine_category=mc, defaults={'quota': 0 })
-
-def delete_institute_chunk(sender, **kwargs):
-    InstituteChunk.objects.filter(institute=kwargs['instance']).delete()
-
-
-post_save.connect(create_institute_chunk, sender=Institute)
-pre_delete.connect(delete_institute_chunk, sender=Institute)

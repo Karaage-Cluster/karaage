@@ -44,7 +44,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for iq in institute.institutechunk_set.all %}
+                {% for iq in institute.institutequota_set.all %}
                 <tr class="{% cycle row1,row2 %}">
                     <td>{{ iq.machine_category }}</td>
                     <td>{{ iq.quota }}</td>
