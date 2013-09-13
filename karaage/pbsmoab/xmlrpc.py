@@ -20,8 +20,7 @@ import datetime
 
 from karaage.people.models import Person
 from karaage.machines.models import MachineCategory, Machine, Account
-from karaage.projects.models import Project
-from karaage.pbsmoab.models import ProjectQuota
+from karaage.projects.models import Project, ProjectQuota
 from karaage.pbsmoab.logs import parse_logs
 
 
