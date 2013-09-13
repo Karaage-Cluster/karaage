@@ -27,10 +27,9 @@ from andsome.util.filterspecs import Filter, FilterBar
 
 from karaage.util.decorators import admin_required
 from karaage.util.graphs import get_institute_trend_graph_url
-from karaage.institutes.models import Institute, InstituteDelegate
-from karaage.institutes.forms import InstituteForm, DelegateForm
+from karaage.institutes.models import Institute, InstituteQuota, InstituteDelegate
+from karaage.institutes.forms import InstituteForm, InstituteQuotaForm, DelegateForm
 from karaage.machines.models import MachineCategory
-from karaage.pbsmoab.models import InstituteQuota
 
 
 @admin_required
@@ -120,3 +119,71 @@ def institute_quota_edit(request, institutequota_id):
     from karaage.legacy.create_update import update_object
     return update_object(request,
             object_id=institutequota_id, model=InstituteQuota)
+
+
+@admin_required
+def institutequota_add(request, institute_id):
+
+    institute = get_object_or_404(Institute, pk=institute_id)
+
+    institute_chunk = InstituteQuota()
+    institute_chunk.institute = institute
+
+    form = InstituteQuotaForm(request.POST or None, instance=institute_chunk)
+    if request.method == 'POST':
+        if form.is_valid():
+            mc = form.cleaned_data['machine_category']
+            conflicting = InstituteQuota.objects.filter(
+                institute=institute,machine_category=mc)
+
+            if conflicting.count() >= 1:
+                form._errors["machine_category"] = util.ErrorList(["Cap already exists with this machine category"])
+            else:
+                institute_chunk = form.save()
+                new_cap = institute_chunk.cap
+                log(request.user, institute, 2, 'Added cap of %s' % (new_cap))
+                return HttpResponseRedirect(institute.get_absolute_url())
+
+    return render_to_response('institutes/institutequota_form.html', locals(), context_instance=RequestContext(request))
+
+
+@admin_required
+def institutequota_edit(request, institutequota_id):
+
+    institute_chunk = get_object_or_404(InstituteQuota, pk=institutequota_id)
+    old_cap = institute_chunk.cap
+    old_mc = institute_chunk.machine_category
+
+    form = InstituteQuotaForm(request.POST or None, instance=institute_chunk)
+    if request.method == 'POST':
+        if form.is_valid():
+            mc = form.cleaned_data['machine_category']
+            if old_mc.pk != mc.pk:
+                form._errors["machine_category"] = util.ErrorList(["Please don't change the machine category; it confuses me"])
+            else:
+                institute_chunk = form.save()
+                new_cap = institute_chunk.cap
+                if old_cap != new_cap:
+                    log(request.user, institute_chunk.institute, 2, 'Changed cap from %s to %s' % (old_cap, new_cap))
+                return HttpResponseRedirect(institute_chunk.institute.get_absolute_url())
+
+    return render_to_response('institutes/institutequota_form.html', locals(), context_instance=RequestContext(request))
+
+
+@admin_required
+def institutequota_delete(request, institutequota_id):
+
+    institute_chunk = get_object_or_404(InstituteQuota, pk=institutequota_id)
+
+    if request.method == 'POST':
+        institute_chunk.delete()
+        return HttpResponseRedirect(institute_chunk.institute.get_absolute_url())
+
+    return render_to_response('institutes/institutequota_delete_form.html', locals(), context_instance=RequestContext(request))
+
+@admin_required
+def projects_by_cap_used(request):
+    from karaage.projects.views.admin import project_list
+    return project_list(request, queryset=Project.active.all(), paginate=False, template_name='pbsmoab/project_capsort.html')
+    
+    

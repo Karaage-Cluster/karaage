@@ -17,7 +17,8 @@
 
 from django import forms
 
-from karaage.institutes.models import Institute, InstituteDelegate
+from karaage.institutes.models import Institute, InstituteQuota
+from karaage.institutes.models import InstituteDelegate
 from karaage.projects.models import Project
 import ajax_select.fields
 
@@ -41,6 +42,14 @@ class InstituteForm(forms.ModelForm):
             raise forms.ValidationError(u'Institute name already in system')
         except Project.DoesNotExist:
             return name
+
+
+class InstituteQuotaForm(forms.ModelForm):
+
+    class Meta:
+        model = InstituteQuota
+        exclude = ('institute',)
+
 
 class DelegateForm(forms.ModelForm):
     person = ajax_select.fields.AutoCompleteSelectField('person', required=True)

@@ -68,9 +68,11 @@
     </div>
 
     <div class="module">
-        <h2>Project Caps/quota {% if request.user.is_admin %}
-        <a class="addlink" href="{% url 'kg_projectquota_add' project.pid %}">Add</a>
-        {% endif %}</h2>
+        <h2>Project Caps/quota
+            {% if request.user.is_admin %}
+            <a class="addlink" href="{% url 'kg_projectquota_add' project.pid %}">Add</a>
+            {% endif %}
+        </h2>
         <table>
             <thead>
                 <tr>
@@ -88,8 +90,8 @@
                     <td>{{ pc.get_cap }}</td>
                     <td>{{ pc.get_cap_percent|floatformat:"2" }}%</td>
                     {% if request.user.is_admin %}
-                    <td><a class="changelink" href="{% url 'kg_projectquota_edit' pc.id %}">edit</a></td>
-                    <td><a class="deletelink" href="{% url 'kg_projectquota_delete' pc.id %}">Remove</a></td>
+                    <td><a class="changelink" href="{% url 'kg_projectquota_edit' pc.pk %}">edit</a></td>
+                    <td><a class="deletelink" href="{% url 'kg_projectquota_delete' pc.pk %}">Remove</a></td>
                     {% endif %}
                 </tr>
                 {% endfor %}

@@ -32,10 +32,9 @@ from andsome.util.filterspecs import Filter, FilterBar, DateFilter
 from karaage.util.helpers import get_available_time
 from karaage.util.graphs import get_institute_graph_url, get_machine_graph_url, get_trend_graph_url, get_institute_trend_graph_url, get_project_trend_graph_url, get_institutes_trend_graph_urls
 from karaage.people.models import Person
-from karaage.institutes.models import Institute
+from karaage.institutes.models import Institute, InstituteQuota
 from karaage.projects.models import Project
 from karaage.machines.models import Account, MachineCategory, Machine
-from karaage.pbsmoab.models import InstituteQuota
 from karaage.usage.models import CPUJob, Queue
 from karaage.usage.forms import UsageSearchForm
 from karaage.cache.models import PersonCache

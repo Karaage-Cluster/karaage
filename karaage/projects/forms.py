@@ -24,7 +24,7 @@ import ajax_select.fields
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.machines.models import MachineCategory
-from karaage.projects.models import Project
+from karaage.projects.models import Project, ProjectQuota
 
 
 class ProjectForm(forms.ModelForm):
@@ -70,3 +70,12 @@ class UserProjectForm(forms.ModelForm):
 
 class AddPersonForm(forms.Form):
     person = ajax_select.fields.AutoCompleteSelectField('person', required=True, label='Add user to project')
+
+
+class ProjectQuotaForm(forms.ModelForm):
+
+    class Meta:
+        model = ProjectQuota
+        exclude = ('project',)
+
+

@@ -25,5 +25,9 @@ urlpatterns = patterns('karaage.institutes.views.admin',
     url(r'^(?P<institute_id>\d+)/edit/$', 'add_edit_institute', name='kg_institute_edit'),
     url(r'^(?P<institute_id>\d+)/$', 'institute_detail', name='kg_institute_users'),
     url(r'^(?P<institute_id>\d+)/$', 'institute_detail', name='kg_institute_projects'),
-    url(r'^institutequota/(?P<institutequota_id>\d+)/$', 'institute_quota_edit', name='kg_institute_quota_edit'),
+
+    url(r'^(?P<institute_id>\d+)/quota/add/$', 'institutequota_add', name='kg_institutequota_add'),
+    url(r'^(?P<institute_id>\d+)/quota/$', 'institutequota_edit', name='kg_institutequota_edit'),
+    url(r'^(?P<institute_id>\d+)/quota/delete/$', 'institutequota_delete', name='kg_institutequota_delete'),
+
 )

@@ -85,7 +85,7 @@ TEMPLATE_LOADERS = (
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
-USE_I18N = False
+USE_I18N = True
 
 SEND_BROKEN_LINK_EMAILS = True
 
@@ -121,6 +121,13 @@ DATASTORES = {
             'DEFAULT_PRIMARY_GROUP': "dummy",
             'HOME_DIRECTORY': "/home/%(uid)s",
             'LOCKED_SHELL': "/usr/local/sbin/locked",
+        },
+        {
+            'DESCRIPTION': 'Default Gold datastore',
+            'ENGINE': 'karaage.datastores.gold.GoldDataStore',
+            'PREFIX': ['/bin/true'],
+            'PATH': '/ohmygod',
+            'NULL_PROJECT': 'dummy',
         },
     ],
     'dummy' : [

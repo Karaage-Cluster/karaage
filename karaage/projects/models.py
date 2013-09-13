@@ -19,6 +19,7 @@ from django.db import models
 from django.db.models.signals import post_save, pre_delete
 
 import datetime
+import decimal
 
 from karaage.people.models import Person, Group
 from karaage.institutes.models import Institute
@@ -60,11 +61,11 @@ class Project(models.Model):
 
     def __unicode__(self):
         return '%s - %s' % (self.pid, self.name)
-    
+
     @models.permalink
     def get_absolute_url(self):
         return ('kg_project_detail', [self.pid])
-        
+
     def save(self, *args, **kwargs):
         # set group if not already set
         if self.group_id is None:
@@ -197,3 +198,49 @@ class Project(models.Model):
     def get_cap_percent(self, machine_category):
         pc = self.projectquota_set.get(machine_category=machine_category)
         return pc.get_cap_percent(self)
+
+
+class ProjectQuota(models.Model):
+    project = models.ForeignKey(Project)
+    cap = models.IntegerField(null=True, blank=True)
+    machine_category = models.ForeignKey(MachineCategory)
+
+    class Meta:
+        db_table = 'project_quota'
+        unique_together = ('project', 'machine_category')
+
+    def get_mpots(self, start=datetime.date.today()-datetime.timedelta(days=90), end=datetime.date.today()):
+        from karaage.util.helpers import get_available_time
+
+        TWOPLACES = decimal.Decimal(10) ** -2
+        usage, jobs = self.project.get_usage(start, end, self.machine_category)
+        if usage is None:
+            usage = decimal.Decimal('0')
+        total_time, ave_cpus = get_available_time(start, end, self.machine_category)
+        if total_time == 0:
+            return 0
+        return ((decimal.Decimal(usage) / total_time) * 100 * 1000).quantize(TWOPLACES)
+
+    def is_over_quota(self):
+        if self.get_mpots() > self.get_cap():
+            return True
+        return False
+
+    def get_cap(self):
+        if self.cap is not None:
+            return self.cap
+
+        try:
+            iq = self.project.institute.institutequota_set.get(machine_category=self.machine_category)
+        except:
+            return None
+        if iq.cap is not None:
+            return iq.cap
+        return iq.quota * 1000
+
+    def get_cap_percent(self):
+        cap = self.get_cap()
+        if cap == 0:
+            return 'NaN'
+        else:
+            return (self.get_mpots() / cap) * 100

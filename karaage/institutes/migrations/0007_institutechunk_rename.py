@@ -8,16 +8,12 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        db.rename_table('pbsmoab_projectchunk', 'project_quota')
         if not db.dry_run:
-            orm['contenttypes.contenttype'].objects.filter(app_label='pbsmoab', model='projectchunk').update(name='project quota', model='projectquota')
-            orm['contenttypes.contenttype'].objects.filter(app_label='pbsmoab', model='institutechunk').update(name='institute quota', model='institutequota')
+            orm['contenttypes.contenttype'].objects.filter(app_label='pbsmoab', model='institutechunk').update(app_label="institutes", name='institute quota', model='institutequota')
 
     def backwards(self, orm):
-        db.rename_table('project_quota', 'pbsmoab_projectchunk')
         if not db.dry_run:
-            orm['contenttypes.contenttype'].objects.filter(app_label='pbsmoab', model='projectquota').update(name='project chunk', model='projectchunk')
-            orm['contenttypes.contenttype'].objects.filter(app_label='pbsmoab', model='institutequota').update(name='institute chunk', model='institutechunk')
+            orm['contenttypes.contenttype'].objects.filter(app_label='institutes', model='institutequota').update(app_label="pbsmoab", name='institute chunk', model='institutechunk')
 
     models = {
         u'contenttypes.contenttype': {

@@ -813,7 +813,7 @@ class StateApplicantEnteringDetails(StateWithSteps):
 
             if request.user.is_authenticated():
                 new_person = request.user
-                reason = "%s was logged in and accessed secret URL." % new_person
+                reason = "%s was logged in and accessed the secret URL." % new_person
                 details = ("If you want to access this application "+
                     "as %s " % application.applicant +
                     "without %s stealing it, " % new_person +

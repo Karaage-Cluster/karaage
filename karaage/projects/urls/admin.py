@@ -36,6 +36,12 @@ urlpatterns = patterns('karaage.projects.views.admin',
     url(r'^(?P<project_id>[-.\w]+)/remove_user/(?P<username>[-.\w]+)/$', 'remove_user', name='kg_remove_project_member'),
 
     url(r'^(?P<project_id>[-.\w]+)/add_comment/$', 'add_comment', name='kg_project_add_comment'),
+
+    url(r'^(?P<project_id>[-.\w]+)/quota/add/$', 'projectquota_add', name='kg_projectquota_add'),
+    url(r'^(?P<project_id>[-.\w]+)/quota/$', 'projectquota_edit', name='kg_projectquota_edit'),
+    url(r'^(?P<project_id>[-.\w]+)/quota/delete/$', 'projectquota_delete', name='kg_projectquota_delete'),
+
+    url(r'^projects_by_cap_used/$', 'projects_by_cap_used', name='kg_projects_by_cap_used'),
 )
 
 urlpatterns += patterns('karaage.admin.views',

@@ -34,7 +34,11 @@
     </div>
 
     <div class="module">
-        <h2>Caps and quotas</h2>
+        <h2>Caps and quotas
+            {% if request.user.is_admin %}
+            <a class="addlink" href="{% url 'kg_institutequota_add' institute.pk %}">Add</a>
+            {% endif %}
+        </h2>
         <table>
             <thead>
                 <tr>
@@ -49,7 +53,8 @@
                     <td>{{ iq.machine_category }}</td>
                     <td>{{ iq.quota }}</td>
                     <td>{{ iq.get_cap }}</td>
-                    {% if request.user.is_admin %}<td><a class="changelink" href="{% url 'kg_institute_quota_edit' iq.id %}">edit</a></td>{% endif %}
+                    {% if request.user.is_admin %}<td><a class="changelink" href="{% url 'kg_institutequota_edit' iq.pk %}">edit</a></td>{% endif %}
+                    <td><a class="deletelink" href="{% url 'kg_institutequota_delete' iq.pk %}">Remove</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
