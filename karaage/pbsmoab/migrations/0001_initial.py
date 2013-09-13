@@ -1,32 +1,48 @@
-# -*- coding: utf-8 -*-
+# encoding: utf-8
 import datetime
 from south.db import db
-from south.v2 import DataMigration
+from south.v2 import SchemaMigration
 from django.db import models
-from karaage.datastores import get_test_datastore
 
-class Migration(DataMigration):
+class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        datastore = get_test_datastore("ldap", 0)
-        for account in orm['machines.useraccount'].objects.filter(date_deleted__isnull=True):
-            try:
-                p = datastore._accounts().get(uid=account.username)
-                if p.is_locked():
-                    account.shell = account.previous_shell
-                else:
-                    account.shell = p.loginShell
-                if not account.shell:
-                    account.shell = "/bin/bash"
-                account.save()
-            except datastore._account.DoesNotExist, e:
-                print "+++", account.username
-                pass
+        
+        # Adding model 'InstituteChunk'
+        db.create_table('institute_quota', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('institute', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.Institute'])),
+            ('machine_category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['machines.MachineCategory'])),
+            ('quota', self.gf('django.db.models.fields.DecimalField')(max_digits=5, decimal_places=2)),
+            ('cap', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
+            ('disk_quota', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
+        ))
+        db.send_create_signal('pbsmoab', ['InstituteChunk'])
+
+        # Adding unique constraint on 'InstituteChunk', fields ['institute', 'machine_category']
+        db.create_unique('institute_quota', ['institute_id', 'machine_category_id'])
+
+        # Adding model 'ProjectChunk'
+        db.create_table('pbsmoab_projectchunk', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.Project'])),
+            ('cap', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
+            ('machine_category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['machines.MachineCategory'])),
+        ))
+        db.send_create_signal('pbsmoab', ['ProjectChunk'])
+
 
     def backwards(self, orm):
-        for account in orm['machines.useraccount'].objects.all():
-            account.previous_shell = account.shell
-            account.save()
+        
+        # Deleting model 'InstituteChunk'
+        db.delete_table('institute_quota')
+
+        # Removing unique constraint on 'InstituteChunk', fields ['institute', 'machine_category']
+        db.delete_unique('institute_quota', ['institute_id', 'machine_category_id'])
+
+        # Deleting model 'ProjectChunk'
+        db.delete_table('pbsmoab_projectchunk')
+
 
     models = {
         'auth.group': {
@@ -36,7 +52,7 @@ class Migration(DataMigration):
             'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
         },
         'auth.permission': {
-            'Meta': {'ordering': "('content_type__app_label', 'content_type__model', 'codename')", 'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
+            'Meta': {'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
             'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -49,9 +65,9 @@ class Migration(DataMigration):
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'blank': 'True'}),
+            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
+            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
             'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
@@ -59,60 +75,42 @@ class Migration(DataMigration):
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
         'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
+            'Meta': {'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
             'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        'machines.machine': {
-            'Meta': {'object_name': 'Machine', 'db_table': "'machine'"},
-            'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['machines.MachineCategory']"}),
-            'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'mem_per_core': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'no_cpus': ('django.db.models.fields.IntegerField', [], {}),
-            'no_nodes': ('django.db.models.fields.IntegerField', [], {}),
-            'pbs_server_host': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
-            'scaling_factor': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
-            'start_date': ('django.db.models.fields.DateField', [], {}),
-            'type': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
         'machines.machinecategory': {
             'Meta': {'object_name': 'MachineCategory', 'db_table': "'machine_category'"},
-            'datastore': ('django.db.models.fields.CharField', [], {'default': "'karaage.datastores.openldap_datastore'", 'max_length': '255'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        'machines.useraccount': {
-            'Meta': {'ordering': "['user']", 'object_name': 'UserAccount', 'db_table': "'user_account'"},
-            'date_created': ('django.db.models.fields.DateField', [], {}),
-            'date_deleted': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'default_project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['projects.Project']", 'null': 'True', 'blank': 'True'}),
+        'pbsmoab.institutechunk': {
+            'Meta': {'unique_together': "(('institute', 'machine_category'),)", 'object_name': 'InstituteChunk', 'db_table': "'institute_quota'"},
+            'cap': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
             'disk_quota': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['people.Institute']"}),
             'machine_category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['machines.MachineCategory']"}),
-            'previous_shell': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
-            'shell': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['people.Person']"}),
-            'username': ('django.db.models.fields.CharField', [], {'max_length': '100'})
+            'quota': ('django.db.models.fields.DecimalField', [], {'max_digits': '5', 'decimal_places': '2'})
+        },
+        'pbsmoab.projectchunk': {
+            'Meta': {'object_name': 'ProjectChunk'},
+            'cap': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'machine_category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['machines.MachineCategory']"}),
+            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['projects.Project']"})
         },
         'people.institute': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Institute', 'db_table': "'institute'"},
-            'delegates': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'delegate'", 'to': "orm['people.Person']", 'through': "orm['people.InstituteDelegate']", 'blank': 'True', 'symmetrical': 'False', 'null': 'True'}),
+            'Meta': {'object_name': 'Institute', 'db_table': "'institute'"},
+            'active_delegate': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'active_delegate'", 'null': 'True', 'to': "orm['people.Person']"}),
+            'delegate': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'delegate'", 'null': 'True', 'to': "orm['people.Person']"}),
             'gid': ('django.db.models.fields.IntegerField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
-            'saml_entityid': ('django.db.models.fields.CharField', [], {'max_length': '200', 'unique': 'True', 'null': 'True', 'blank': 'True'})
-        },
-        'people.institutedelegate': {
-            'Meta': {'object_name': 'InstituteDelegate'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['people.Institute']"}),
-            'person': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['people.Person']"}),
-            'send_email': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
+            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'sub_delegates': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'sub_delegates'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['people.Person']"})
         },
         'people.person': {
             'Meta': {'object_name': 'Person', 'db_table': "'person'"},
@@ -120,7 +118,7 @@ class Migration(DataMigration):
             'approved_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'user_approver'", 'null': 'True', 'to': "orm['people.Person']"}),
             'city': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'comment': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'country': ('django.db.models.fields.CharField', [], {'max_length': '2', 'null': 'True', 'blank': 'True'}),
+            'country': ('django.db.models.fields.CharField', [], {'max_length': '2'}),
             'date_approved': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'date_deleted': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'deleted_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'user_deletor'", 'null': 'True', 'to': "orm['people.Person']"}),
@@ -129,13 +127,10 @@ class Migration(DataMigration):
             'fax': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['people.Institute']"}),
-            'is_systemuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'last_usage': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'login_enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'mobile': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'position': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'postcode': ('django.db.models.fields.CharField', [], {'max_length': '8', 'null': 'True', 'blank': 'True'}),
-            'saml_id': ('django.db.models.fields.CharField', [], {'max_length': '200', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'state': ('django.db.models.fields.CharField', [], {'max_length': '4', 'null': 'True', 'blank': 'True'}),
             'supervisor': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'telephone': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
@@ -144,7 +139,7 @@ class Migration(DataMigration):
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
         },
         'projects.project': {
-            'Meta': {'ordering': "['pid']", 'object_name': 'Project', 'db_table': "'project'"},
+            'Meta': {'object_name': 'Project', 'db_table': "'project'"},
             'additional_req': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'approved_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'project_approver'", 'null': 'True', 'to': "orm['people.Person']"}),
             'date_approved': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
@@ -153,18 +148,18 @@ class Migration(DataMigration):
             'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['people.Institute']"}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_approved': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
+            'is_approved': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
+            'is_expertise': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
             'last_usage': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'leaders': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'leaders'", 'symmetrical': 'False', 'to': "orm['people.Person']"}),
+            'leader': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'leader'", 'to': "orm['people.Person']"}),
             'machine_categories': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'projects'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['machines.MachineCategory']"}),
             'machine_category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['machines.MachineCategory']"}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'pid': ('django.db.models.fields.CharField', [], {'max_length': '50', 'primary_key': 'True'}),
-            'start_date': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2013, 5, 17, 0, 0)'}),
+            'start_date': ('django.db.models.fields.DateField', [], {}),
             'users': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['people.Person']", 'null': 'True', 'blank': 'True'})
         }
     }
 
-    complete_apps = ['machines']
-    symmetrical = True
+    complete_apps = ['pbsmoab']

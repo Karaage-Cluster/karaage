@@ -7,6 +7,17 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    # Migrations that must run *after* we update the person model and remove the
+    # user FK.
+    needed_by = (
+        ('machines', '0013_nop'),
+        ('projects', '0010_auto'),
+        ('institutes', '0006_auto__chg_field_institutechunk_institute'),
+        ('software', '0009_nop'),
+        ('util', '0002_move_comments'),
+        ('applications', '0019_auto__add_field_applicant_short_name__add_field_applicant_full_name'),
+    )
+
     def forwards(self, orm):
         db.alter_column('django_admin_log', 'person_id',
                       self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person']))

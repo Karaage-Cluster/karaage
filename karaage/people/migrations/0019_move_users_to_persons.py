@@ -24,8 +24,6 @@ class Migration(DataMigration):
             person.is_admin = person.user.is_staff
             person.save()
 
-            print [person.username, person.short_name, person.full_name]
-
         for obj in orm['admin.logentry'].objects.all():
             obj.person = obj.user.person_set.get()
             obj.save()
@@ -59,8 +57,6 @@ class Migration(DataMigration):
             person.user.is_staff = person.is_admin
             person.user.save()
             person.save()
-
-            print [person.username, first_name, last_name]
 
         for obj in orm['admin.logentry'].objects.all():
             obj.user = obj.person.user

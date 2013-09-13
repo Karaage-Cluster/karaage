@@ -7,6 +7,18 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    # Migrations that must run *before* we update the person model and remove the
+    # user FK.
+
+    depends_on = (
+        ('machines', '0012_rename_useraccount_to_account'),
+        ('projects', '0009_auto__del_field_project_machine_category'),
+        ('institutes', '0005_auto__del_field_institute_gid'),
+        ('software', '0008_auto__del_field_softwarepackage_gid'),
+        ('util', '0001_initial'),
+        ('applications', '0018_auto__add_unique_applicant_saml_id'),
+    )
+
     def forwards(self, orm):
         db.add_column('django_admin_log', 'person',
                       self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person'], null=True),
