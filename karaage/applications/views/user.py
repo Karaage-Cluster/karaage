@@ -1255,7 +1255,7 @@ def send_invitation(request, project_id):
 
     override_auth = { 'is_leader': True }
     return _send_invitation(request, project,
-            forms.InviteUserApplicationForm, override_auth)
+            forms.LeaderInviteUserApplicationForm, override_auth)
 
 
 @admin_required

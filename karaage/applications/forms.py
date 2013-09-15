@@ -179,13 +179,13 @@ class ExistingProjectApplicationForm(forms.ModelForm):
         fields = ['project', 'make_leader']
 
 
-class InviteUserApplicationForm(forms.ModelForm):
+class LeaderInviteUserApplicationForm(forms.ModelForm):
     email = forms.EmailField()
 
     def __init__(self, *args, **kwargs):
         self.cleaned_data = None
         self.fields = None
-        super(InviteUserApplicationForm, self).__init__(*args, **kwargs)
+        super(LeaderInviteUserApplicationForm, self).__init__(*args, **kwargs)
         self.fields['email'].required = True
         self.fields['header_message'].required = True
 
