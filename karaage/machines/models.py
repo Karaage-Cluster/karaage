@@ -97,7 +97,7 @@ class Machine(models.Model):
         return ('kg_machine_detail', [self.id])
 
     def get_usage(self, start, end):
-        from karaage.common.usage import get_machine_usage
+        from karaage.cache.usage import get_machine_usage
         return get_machine_usage(self, start, end)
 
 

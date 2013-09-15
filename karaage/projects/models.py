@@ -180,7 +180,7 @@ class Project(models.Model):
     deactivate.alters_data = True
 
     def get_usage(self, start, end, machine_category):
-        from karaage.common.usage import get_project_usage
+        from karaage.cache.usage import get_project_usage
         return get_project_usage(self, start, end, machine_category)
 
     def gen_usage_graph(self, start, end, machine_category):
