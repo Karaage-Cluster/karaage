@@ -24,8 +24,8 @@ from karaage.constants import TITLES, STATES, COUNTRIES
 from karaage.people.managers import ActivePersonManager, DeletedPersonManager, LeaderManager, PersonManager
 from karaage.people.emails import send_reset_password_email
 
-from karaage.util import log_object as log
-from karaage.util import new_random_token, get_current_person
+from karaage.common import log_object as log
+from karaage.common import new_random_token, get_current_person
 
 import datetime
 import warnings
@@ -328,7 +328,7 @@ class Person(AbstractBaseUser):
             return None
 
     def get_usage(self, project, start, end, machine_category):
-        from karaage.util.usage import get_user_usage
+        from karaage.common.usage import get_user_usage
         return get_user_usage(self, project, start, end, machine_category)
     
     def is_leader(self):

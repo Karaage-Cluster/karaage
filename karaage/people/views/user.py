@@ -24,7 +24,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.tokens import default_token_generator
 
-from karaage.util import get_date_range
+from karaage.common import get_date_range
 from karaage.people.models import Person, authenticate
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
@@ -32,10 +32,10 @@ from karaage.people.forms import PasswordChangeForm, PersonForm
 from karaage.people.forms import LoginForm, PasswordResetForm
 from karaage.machines.models import Account
 from karaage.machines.forms import ShellForm
-from karaage.util import log_object as log
+from karaage.common import log_object as log
 
-from karaage.util.decorators import login_required
-import karaage.util.saml as saml
+from karaage.common.decorators import login_required
+import karaage.common.saml as saml
 
 @login_required
 def profile(request):

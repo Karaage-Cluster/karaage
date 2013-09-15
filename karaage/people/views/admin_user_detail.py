@@ -24,14 +24,14 @@ from django.conf import settings
 
 import datetime
 
-from karaage.util.decorators import admin_required
+from karaage.common.decorators import admin_required
 from karaage.people.models import Person
 from karaage.people.forms import AdminPasswordChangeForm, AddProjectForm
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
-from karaage.util.email_messages import send_bounced_warning
-from karaage.util import get_date_range, log_object as log
-import karaage.util as util
+from karaage.common.email_messages import send_bounced_warning
+from karaage.common import get_date_range, log_object as log
+import karaage.common as util
 
 
 @admin_required

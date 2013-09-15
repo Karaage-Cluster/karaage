@@ -21,7 +21,7 @@ from django import forms
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 
-from karaage.util.models import Comment
+from karaage.common.models import Comment
 
 class CommentForm(forms.ModelForm):
     """ Comment form. """

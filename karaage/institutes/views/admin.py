@@ -25,7 +25,7 @@ from django.forms.models import inlineformset_factory
 
 from andsome.util.filterspecs import Filter, FilterBar
 
-from karaage.util.decorators import admin_required
+from karaage.common.decorators import admin_required
 from karaage.usage.graphs import get_institute_trend_graph_url
 from karaage.institutes.models import Institute, InstituteQuota, InstituteDelegate
 from karaage.institutes.forms import InstituteForm, InstituteQuotaForm, DelegateForm

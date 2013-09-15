@@ -20,7 +20,7 @@ from django.db import models
 from karaage.people.models import Person, Group
 from karaage.machines.models import Machine, Account
 
-from karaage.util import log_object as log
+from karaage.common import log_object as log
 
 class SoftwareCategory(models.Model):
     name = models.CharField(max_length=100)

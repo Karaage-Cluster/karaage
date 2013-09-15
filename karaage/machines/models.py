@@ -22,7 +22,7 @@ import datetime
 
 from karaage.people.models import Person, Group
 from karaage.machines.managers import MachineCategoryManager, ActiveMachineManager
-from karaage.util import log_object as log
+from karaage.common import log_object as log
 
 import warnings
 
@@ -97,7 +97,7 @@ class Machine(models.Model):
         return ('kg_machine_detail', [self.id])
 
     def get_usage(self, start, end):
-        from karaage.util.usage import get_machine_usage
+        from karaage.common.usage import get_machine_usage
         return get_machine_usage(self, start, end)
 
 

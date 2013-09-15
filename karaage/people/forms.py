@@ -28,7 +28,7 @@ from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
 from karaage.constants import TITLES, COUNTRIES
-from karaage.util import get_current_person
+from karaage.common import get_current_person
 
 import ajax_select.fields
 

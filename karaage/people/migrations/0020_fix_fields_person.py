@@ -14,7 +14,7 @@ class Migration(SchemaMigration):
         ('projects', '0010_auto'),
         ('institutes', '0006_auto__chg_field_institutechunk_institute'),
         ('software', '0009_nop'),
-        ('util', '0002_move_comments'),
+        ('common', '0002_move_comments'),
         ('applications', '0019_auto__add_field_applicant_short_name__add_field_applicant_full_name'),
     )
 

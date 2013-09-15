@@ -19,7 +19,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 
 from karaage.machines.models import Machine, MachineCategory
-from karaage.util.decorators import admin_required
+from karaage.common.decorators import admin_required
 
 @admin_required
 def index(request):

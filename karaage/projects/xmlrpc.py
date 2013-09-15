@@ -20,7 +20,7 @@ from django_xmlrpc.decorators import xmlrpc_func, permission_required
 
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory, Machine, Account
-from karaage.util import log_object as log
+from karaage.common import log_object as log
 
 
 def _get_machine_category(machine_name):

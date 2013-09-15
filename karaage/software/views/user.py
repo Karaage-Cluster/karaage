@@ -24,9 +24,9 @@ from django.contrib import messages
 
 import datetime
 
-from karaage.util.decorators import login_required
+from karaage.common.decorators import login_required
 from karaage.software.models import Software, SoftwareLicenseAgreement, SoftwareAccessRequest
-from karaage.util.email_messages import send_software_request_email
+from karaage.common.email_messages import send_software_request_email
 
 
 @login_required

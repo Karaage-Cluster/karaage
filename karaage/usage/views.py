@@ -29,7 +29,7 @@ import datetime
 from decimal import Decimal
 from andsome.util.filterspecs import Filter, FilterBar, DateFilter
 
-from karaage.util.helpers import get_available_time
+from karaage.common.helpers import get_available_time
 from karaage.usage.graphs import get_institute_graph_url, get_machine_graph_url, get_trend_graph_url, get_institute_trend_graph_url, get_project_trend_graph_url, get_institutes_trend_graph_urls
 from karaage.people.models import Person
 from karaage.institutes.models import Institute, InstituteQuota
@@ -38,7 +38,7 @@ from karaage.machines.models import Account, MachineCategory, Machine
 from karaage.usage.models import CPUJob, Queue
 from karaage.usage.forms import UsageSearchForm
 from karaage.cache.models import PersonCache
-from karaage.util import get_date_range
+from karaage.common import get_date_range
 from karaage.usage.graphs import get_colour
 
 

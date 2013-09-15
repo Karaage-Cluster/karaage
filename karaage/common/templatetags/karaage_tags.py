@@ -20,7 +20,7 @@ from django.http import QueryDict
 from django import template
 from django.contrib.contenttypes.models import ContentType
 
-from karaage.util.models import Comment
+from karaage.common.models import Comment
 
 register = template.Library()
 

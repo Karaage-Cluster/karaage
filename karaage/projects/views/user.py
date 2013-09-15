@@ -20,13 +20,13 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib import messages
 
-from karaage.util.decorators import login_required
+from karaage.common.decorators import login_required
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.forms import UserProjectForm as ProjectForm
 from karaage.projects.models import Project
 from karaage.projects.utils import remove_user_from_project
-from karaage.util import log_object as log
+from karaage.common import log_object as log
 
 
 @login_required

@@ -145,7 +145,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.staticfiles',
     'captcha',
-    'karaage.util',
+    'karaage.common',
     'karaage.admin',
     'karaage.people',
     'karaage.machines',

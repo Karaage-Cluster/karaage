@@ -21,7 +21,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 
-from karaage.util.decorators import admin_required
+from karaage.common.decorators import admin_required
 from karaage.people.models import Person, Group
 from karaage.people.forms import AddGroupMemberForm
 

@@ -1,31 +1,71 @@
 # -*- coding: utf-8 -*-
 import datetime
 from south.db import db
-from south.v2 import SchemaMigration
+from south.v2 import DataMigration
 from django.db import models
 
-
-class Migration(SchemaMigration):
+class Migration(DataMigration):
 
     def forwards(self, orm):
-        # Adding model 'Comment'
-        db.create_table('comments', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('content_type', self.gf('django.db.models.fields.related.ForeignKey')(related_name='content_type_set_for_comment_tmp', to=orm['contenttypes.ContentType'])),
-            ('object_pk', self.gf('django.db.models.fields.TextField')()),
-            ('comment', self.gf('django.db.models.fields.TextField')(max_length=3000)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='comment_comments_tmp', null=True, to=orm['people.Person'])),
-            ('submit_date', self.gf('django.db.models.fields.DateTimeField')(default=None)),
-        ))
-        db.send_create_signal(u'util', ['Comment'])
-
+        "Write your forwards methods here."
+        for comment in orm['comments.comment'].objects.all():
+            defaults = {
+                'submit_date': comment.submit_date,
+                'object_pk': comment.object_pk,
+                'content_type': comment.content_type,
+            }
+            new, _ = orm.comment.objects.get_or_create(pk=comment.pk, defaults=defaults)
+            new.object_pk = comment.object_pk
+            new.content_type = comment.content_type
+            new.comment = comment.comment
+            new.user = comment.user
+            new.submit_date = comment.submit_date
+            new.save()
 
     def backwards(self, orm):
-        # Deleting model 'Comment'
-        db.delete_table('comments')
-
+        "Write your backwards methods here."
+        for comment in orm.comment.objects.all():
+            defaults = {
+                'submit_date': comment.submit_date,
+                'object_pk': comment.object_pk,
+                'content_type': comment.content_type,
+            }
+            new, _ = orm['comments.comment'].objects.get_or_create(pk=comment.pk, defaults=defaults)
+            new.object_pk = comment.object_pk
+            new.content_type = comment.content_type
+            new.comment = comment.comment
+            new.user = comment.user
+            new.user_name = comment.user.username
+            new.user_email = comment.user.email
+            new.submit_date = comment.submit_date
+            new.site_id = 1
+            new.save()
 
     models = {
+        u'comments.comment': {
+            'Meta': {'ordering': "('submit_date',)", 'object_name': 'Comment', 'db_table': "'django_comments'"},
+            'comment': ('django.db.models.fields.TextField', [], {'max_length': '3000'}),
+            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'content_type_set_for_comment'", 'to': u"orm['contenttypes.ContentType']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'ip_address': ('django.db.models.fields.IPAddressField', [], {'max_length': '15', 'null': 'True', 'blank': 'True'}),
+            'is_public': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'is_removed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'object_pk': ('django.db.models.fields.TextField', [], {}),
+            'site': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['sites.Site']"}),
+            'submit_date': ('django.db.models.fields.DateTimeField', [], {'default': 'None'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'comment_comments'", 'null': 'True', 'to': u"orm['people.Person']"}),
+            'user_email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
+            'user_name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
+            'user_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'})
+        },
+        u'comments.commentflag': {
+            'Meta': {'unique_together': "[('user', 'comment', 'flag')]", 'object_name': 'CommentFlag', 'db_table': "'django_comment_flags'"},
+            'comment': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'flags'", 'to': u"orm['comments.Comment']"}),
+            'flag': ('django.db.models.fields.CharField', [], {'max_length': '30', 'db_index': 'True'}),
+            'flag_date': ('django.db.models.fields.DateTimeField', [], {'default': 'None'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'comment_flags'", 'to': u"orm['people.Person']"})
+        },
         u'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
             'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
@@ -93,7 +133,13 @@ class Migration(SchemaMigration):
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'}),
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
         },
-        u'util.comment': {
+        u'sites.site': {
+            'Meta': {'ordering': "('domain',)", 'object_name': 'Site', 'db_table': "'django_site'"},
+            'domain': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
+        },
+        u'common.comment': {
             'Meta': {'ordering': "('submit_date',)", 'object_name': 'Comment', 'db_table': "'comments'"},
             'comment': ('django.db.models.fields.TextField', [], {'max_length': '3000'}),
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'content_type_set_for_comment_tmp'", 'to': u"orm['contenttypes.ContentType']"}),
@@ -104,4 +150,5 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['util']
+    complete_apps = ['comments', 'common']
+    symmetrical = True

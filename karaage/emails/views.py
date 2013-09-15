@@ -22,7 +22,7 @@ from django.core.mail import send_mass_mail
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 
-from karaage.util.decorators import admin_required
+from karaage.common.decorators import admin_required
 from karaage.emails.forms import EmailForm
 
 @admin_required

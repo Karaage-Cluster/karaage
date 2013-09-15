@@ -23,7 +23,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
 from andsome.middleware.threadlocals import get_current_user
 
-from karaage.util.forms import CommentForm
+from karaage.common.forms import CommentForm
 from karaage.admin.models import LogEntry
 
 def get_date_range(request, default_start=(datetime.date.today() - datetime.timedelta(days=90)), default_end=datetime.date.today()):

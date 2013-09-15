@@ -24,7 +24,7 @@ import datetime
 from django_surveys.models import SurveyGroup
 from django_surveys.views import do_survey
 
-from karaage.util.decorators import login_required
+from karaage.common.decorators import login_required
 from karaage.projects.models import Project
 from karaage.projectreports.models import ProjectSurvey
 

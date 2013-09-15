@@ -31,7 +31,7 @@ from karaage.people.models import Person, authenticate
 from karaage.people.utils import validate_username, UsernameException
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
-from karaage.util import get_current_person
+from karaage.common import get_current_person
 
 from andsome.util import is_password_strong
 

@@ -37,7 +37,7 @@ INSTALLED_APPS = (
     'south',
     'captcha',
     'django_surveys',
-    'karaage.util',
+    'karaage.common',
     'karaage.admin',
     'karaage.people',
     'karaage.machines',

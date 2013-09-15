@@ -168,7 +168,7 @@ class MachineTestCase(TestCase):
         self.server.stop()
 
     def do_availablity_test(self, start, end, mc, expected_time, expected_cpu):
-        from karaage.util.helpers import get_available_time
+        from karaage.common.helpers import get_available_time
         available_time, avg_cpus = get_available_time(start.date(), end.date(), mc)
         self.failUnlessEqual(avg_cpus, expected_cpu)
         self.failUnlessEqual(available_time, expected_time)

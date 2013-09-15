@@ -23,7 +23,7 @@ from andsome.util.filterspecs import Filter, FilterBar
 import datetime
 from django_surveys.models import SurveyGroup
 
-from karaage.util.decorators import admin_required
+from karaage.common.decorators import admin_required
 from karaage.projectreports.models import ProjectSurvey
 from karaage.projects.models import Project
 

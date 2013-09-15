@@ -25,10 +25,10 @@ from django.http import HttpResponseRedirect
 
 from andsome.util.filterspecs import Filter, FilterBar
 
-from karaage.util.decorators import admin_required
+from karaage.common.decorators import admin_required
 from karaage.applications.models import Applicant, Application
 from karaage.applications.forms import ApplicantForm
-from karaage.util import log_object as log
+from karaage.common import log_object as log
 
 
 @admin_required

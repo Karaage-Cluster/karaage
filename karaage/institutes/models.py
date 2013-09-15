@@ -104,7 +104,7 @@ class Institute(models.Model):
         return ('kg_institute_detail', [self.id])
 
     def get_usage(self, start, end, machine_category):
-        from karaage.util.usage import get_institute_usage
+        from karaage.common.usage import get_institute_usage
         return get_institute_usage(self, start, end, machine_category)
 
     def can_view(self, user):

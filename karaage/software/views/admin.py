@@ -27,13 +27,13 @@ from django.db.models import Count, Sum
 import datetime
 from andsome.util.filterspecs import Filter, FilterBar, DateFilter
 
-from karaage.util.decorators import admin_required
+from karaage.common.decorators import admin_required
 from karaage.software.models import SoftwareCategory, Software, SoftwareVersion, SoftwareLicense, SoftwareAccessRequest, SoftwareLicenseAgreement
 from karaage.software.forms import AddPackageForm, LicenseForm, SoftwareVersionForm
 from karaage.people.models import Person
 from karaage.machines.models import Machine
-from karaage.util import get_date_range, log_object as log
-from karaage.util.email_messages import send_software_request_approved_email
+from karaage.common import get_date_range, log_object as log
+from karaage.common.email_messages import send_software_request_approved_email
 
 
 @admin_required

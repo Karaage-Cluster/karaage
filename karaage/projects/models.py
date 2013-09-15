@@ -180,7 +180,7 @@ class Project(models.Model):
     deactivate.alters_data = True
 
     def get_usage(self, start, end, machine_category):
-        from karaage.util.usage import get_project_usage
+        from karaage.common.usage import get_project_usage
         return get_project_usage(self, start, end, machine_category)
 
     def gen_usage_graph(self, start, end, machine_category):
@@ -215,7 +215,7 @@ class ProjectQuota(models.Model):
         unique_together = ('project', 'machine_category')
 
     def get_mpots(self, start=datetime.date.today()-datetime.timedelta(days=90), end=datetime.date.today()):
-        from karaage.util.helpers import get_available_time
+        from karaage.common.helpers import get_available_time
 
         TWOPLACES = decimal.Decimal(10) ** -2
         usage, jobs = self.project.get_usage(start, end, self.machine_category)

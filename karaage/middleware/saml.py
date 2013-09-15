@@ -21,7 +21,7 @@ from karaage.people.models import Person
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-import karaage.util.saml as saml
+import karaage.common.saml as saml
 
 
 class SamlUserMiddleware(object):

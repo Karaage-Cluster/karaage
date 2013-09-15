@@ -25,7 +25,7 @@ from django.http import HttpResponseRedirect
 
 
 from karaage.admin.models import LogEntry
-from karaage.util.decorators import admin_required
+from karaage.common.decorators import admin_required
 from karaage.people.models import Person, Group
 from karaage.projects.models import Project
 

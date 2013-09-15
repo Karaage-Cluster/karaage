@@ -27,7 +27,7 @@ import datetime
 import warnings
 
 from karaage.constants import TITLES, COUNTRIES
-from karaage.util import new_random_token, get_current_person
+from karaage.common import new_random_token, get_current_person
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project

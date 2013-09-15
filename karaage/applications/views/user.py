@@ -30,15 +30,15 @@ from django.core.mail import send_mail
 import datetime
 from andsome.forms import EmailForm
 
-from karaage.util.decorators import login_required, admin_required
+from karaage.common.decorators import login_required, admin_required
 from karaage.applications.models import ProjectApplication, Applicant, Application
 import karaage.applications.forms as forms
 import karaage.applications.emails as emails
-import karaage.util.saml as saml
+import karaage.common.saml as saml
 from karaage.people.models import Person
 from karaage.projects.models import Project
 from karaage.institutes.models import Institute
-from karaage.util import log_object as log
+from karaage.common import log_object as log
 
 import json
 

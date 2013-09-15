@@ -25,7 +25,7 @@ from django.contrib.sites.models import Site
 from django.template.loader import render_to_string
 from django.conf import settings
 
-from karaage.util import log_object as log
+from karaage.common import log_object as log
 
 CONTEXT = {
     'org_email': settings.ACCOUNTS_EMAIL,

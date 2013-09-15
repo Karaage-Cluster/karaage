@@ -25,7 +25,7 @@ from django.db.models import Q
 import datetime
 from andsome.util.filterspecs import Filter, FilterBar, DateFilter
 
-from karaage.util.decorators import admin_required
+from karaage.common.decorators import admin_required
 from karaage.projects.models import Project
 from karaage.people.models import Person, Group
 from karaage.people.emails import send_confirm_password_email
@@ -33,7 +33,7 @@ from karaage.people.forms import AddPersonForm, AdminPersonForm, AdminGroupForm
 from karaage.institutes.models import Institute
 from karaage.machines.models import Account
 from karaage.machines.forms import AccountForm, ShellForm
-from karaage.util import log_object as log
+from karaage.common import log_object as log
 
 
 @admin_required
