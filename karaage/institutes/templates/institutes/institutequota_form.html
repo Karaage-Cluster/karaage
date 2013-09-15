@@ -21,11 +21,9 @@
 
 {% block content %}
 <form method="post" action=".">{% csrf_token %}
-    {% load forms %}
     <fieldset class="module aligned ()">
         {% form_as_div form %}
     </fieldset>
-
     <div class="submit-row">
         <input type="submit" value="Save" class="default" />
     </div>
