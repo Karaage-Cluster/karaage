@@ -62,7 +62,7 @@ def get_current_person():
     return user
 
 
-def log_object(user, object, flag, message):
+def log(user, object, flag, message):
     if user is None:
         user = get_current_user()
     if user is None:

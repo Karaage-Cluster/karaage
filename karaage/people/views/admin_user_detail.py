@@ -30,7 +30,7 @@ from karaage.people.forms import AdminPasswordChangeForm, AddProjectForm
 from karaage.people.emails import send_bounced_warning
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
-from karaage.common import get_date_range, log_object as log
+from karaage.common import get_date_range, log
 import karaage.common as util
 
 

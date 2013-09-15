@@ -32,7 +32,7 @@ from karaage.people.forms import PasswordChangeForm, PersonForm
 from karaage.people.forms import LoginForm, PasswordResetForm
 from karaage.machines.models import Account
 from karaage.machines.forms import ShellForm
-from karaage.common import log_object as log
+from karaage.common import log
 
 from karaage.common.decorators import login_required
 import karaage.common.saml as saml

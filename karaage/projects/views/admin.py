@@ -34,7 +34,7 @@ from karaage.machines.models import MachineCategory, Account
 from karaage.projects.models import Project, ProjectQuota
 from karaage.projects.forms import ProjectForm, ProjectQuotaForm, AddPersonForm
 from karaage.projects.utils import get_new_pid, add_user_to_project, remove_user_from_project
-from karaage.common import log_object as log
+from karaage.common import log
 import karaage.common as util
 
 

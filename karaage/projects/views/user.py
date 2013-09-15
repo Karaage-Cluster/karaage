@@ -26,7 +26,7 @@ from karaage.institutes.models import Institute
 from karaage.projects.forms import UserProjectForm as ProjectForm
 from karaage.projects.models import Project
 from karaage.projects.utils import remove_user_from_project
-from karaage.common import log_object as log
+from karaage.common import log
 
 
 @login_required

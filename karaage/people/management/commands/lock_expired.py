@@ -25,7 +25,7 @@ class Command(BaseCommand):
     @django.db.transaction.commit_on_success
     @tldap.transaction.commit_on_success
     def handle(self, **options):
-        from karaage.common import log_object as log
+        from karaage.common import log
         from karaage.people.models import Person
         from django.core.mail import mail_admins  
         import datetime

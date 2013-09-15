@@ -24,7 +24,7 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.conf import settings
 
-from karaage.common import log_object as log
+from karaage.common import log
 
 CONTEXT = {
     'org_email': settings.ACCOUNTS_EMAIL,

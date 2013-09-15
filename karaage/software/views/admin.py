@@ -33,7 +33,7 @@ from karaage.software.forms import AddPackageForm, LicenseForm, SoftwareVersionF
 from karaage.software.emails import send_software_request_approved_email
 from karaage.people.models import Person
 from karaage.machines.models import Machine
-from karaage.common import get_date_range, log_object as log
+from karaage.common import get_date_range, log
 
 
 @admin_required

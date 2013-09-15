@@ -24,7 +24,7 @@ from karaage.constants import TITLES, STATES, COUNTRIES
 from karaage.people.managers import ActivePersonManager, DeletedPersonManager, LeaderManager, PersonManager
 from karaage.people.emails import send_reset_password_email
 
-from karaage.common import log_object as log
+from karaage.common import log
 from karaage.common import new_random_token, get_current_person
 
 import datetime

@@ -38,7 +38,7 @@ import karaage.common.saml as saml
 from karaage.people.models import Person
 from karaage.projects.models import Project
 from karaage.institutes.models import Institute
-from karaage.common import log_object as log
+from karaage.common import log
 
 import json
 

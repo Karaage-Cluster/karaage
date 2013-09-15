@@ -28,7 +28,7 @@ from andsome.util.filterspecs import Filter, FilterBar
 from karaage.common.decorators import admin_required
 from karaage.applications.models import Applicant, Application
 from karaage.applications.forms import ApplicantForm
-from karaage.common import log_object as log
+from karaage.common import log
 
 
 @admin_required

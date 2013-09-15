@@ -22,7 +22,7 @@ import datetime
 
 from karaage.people.models import Person, Group
 from karaage.machines.managers import MachineCategoryManager, ActiveMachineManager
-from karaage.common import log_object as log
+from karaage.common import log
 
 import warnings
 

@@ -33,7 +33,7 @@ from karaage.people.forms import AddPersonForm, AdminPersonForm, AdminGroupForm
 from karaage.institutes.models import Institute
 from karaage.machines.models import Account
 from karaage.machines.forms import AccountForm, ShellForm
-from karaage.common import log_object as log
+from karaage.common import log
 
 
 @admin_required
