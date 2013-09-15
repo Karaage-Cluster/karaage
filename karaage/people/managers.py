@@ -17,8 +17,12 @@
 
 from karaage.common import log
 from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth import authenticate
 
 class PersonManager(BaseUserManager):
+    def authenticate(self, username, password):
+        return authenticate(username=username, password=password)
+
     def get_query_set(self):
         return super(PersonManager, self).get_query_set().select_related()
 

@@ -30,14 +30,6 @@ from karaage.common import new_random_token, get_current_person
 import datetime
 import warnings
 
-def authenticate(username, password):
-    from django.contrib.auth import authenticate
-    person = authenticate(username=username, password=password)
-    if person is None:
-        return None
-    assert person.is_authenticated()
-    return person
-
 
 # Note on terminology:
 #

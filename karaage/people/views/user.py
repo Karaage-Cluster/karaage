@@ -25,7 +25,7 @@ from django.contrib import messages
 from django.contrib.auth.tokens import default_token_generator
 
 from karaage.common import get_date_range
-from karaage.people.models import Person, authenticate
+from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.people.forms import PasswordChangeForm, PersonForm
@@ -155,7 +155,7 @@ def login(request, username=None):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             from django.contrib.auth import login
-            person = authenticate(username=username, password=password)
+            person = Person.objects.authenticate(username=username, password=password)
             if person is not None:
                 if person.is_active and not person.is_locked():
                     login(request, person.user)
