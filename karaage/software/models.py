@@ -28,7 +28,7 @@ class SoftwareCategory(models.Model):
     class Meta:
         db_table = 'software_category'
         ordering = ['name']
-    
+
     def __unicode__(self):
         return self.name
 
@@ -119,7 +119,7 @@ class Software(models.Model):
 
     def __unicode__(self):
         return self.name
-    
+
     @models.permalink
     def get_absolute_url(self):
         return ('kg_software_detail', [self.id])
@@ -153,7 +153,7 @@ class SoftwareVersion(models.Model):
 
     def __unicode__(self):
         return '%s - %s' % (self.package.name, self.version)
-    
+
     def get_absolute_url(self):
         return self.package.get_absolute_url()
 
@@ -164,7 +164,7 @@ class SoftwareVersion(models.Model):
                 machines += '%s, ' % m.name
         return machines
 
-        
+
 class SoftwareLicense(models.Model):
     package = models.ForeignKey(Software)
     version = models.CharField(max_length=100, blank=True, null=True)
@@ -181,7 +181,7 @@ class SoftwareLicense(models.Model):
 
     def get_absolute_url(self):
         return self.package.get_absolute_url()
-    
+
 
 class SoftwareLicenseAgreement(models.Model):
     user = models.ForeignKey(Person)

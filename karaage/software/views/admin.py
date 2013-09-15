@@ -49,14 +49,14 @@ def software_list(request):
     params = dict(request.GET.items())
     m_params = dict([(str(k), str(v)) for k, v in params.items() if k.startswith('softwareversion__last_used_')])
     software_list = software_list.filter(**m_params).distinct()
-        
+
     if 'search' in request.REQUEST:
         terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
             q = Q(name__icontains=term) | Q(description__icontains=term) | Q(homepage__icontains=term)
             query = query & q
-        
+
         software_list = software_list.filter(query)
     else:
         terms = ""
@@ -66,7 +66,7 @@ def software_list(request):
     filter_bar = FilterBar(request, filter_list)
     filter_list.append(Filter(request, 'machine', Machine.objects.all()))
     filter_list.append(DateFilter(request, 'softwareversion__last_used'))
-    
+
     p = Paginator(software_list, 50)
     page = p.page(page_no)
 
@@ -86,7 +86,7 @@ def software_detail(request, package_id):
                 non_ids.append(member.id)
             except Person.DoesNotExist:
                 member = None
-            
+
             member_list.append({
                 'username': member.username,
                 'person': member,
@@ -152,14 +152,13 @@ def license_detail(request, license_id):
 
 @admin_required
 def add_edit_license(request, package_id, license_id=None):
-
     package = get_object_or_404(Software, pk=package_id)
-    
+
     if license_id is None:
         l = None
     else:
         l = get_object_or_404(SoftwareLicense, pk=license_id)
-    
+
     if request.method == 'POST':
         form = LicenseForm(request.POST, instance=l)
         if form.is_valid():
@@ -170,7 +169,7 @@ def add_edit_license(request, package_id, license_id=None):
             return HttpResponseRedirect(package.get_absolute_url())
     else:
         form = LicenseForm(instance=l)
-        
+
     return render_to_response('software/license_form.html', locals(), context_instance=RequestContext(request))
 
 @admin_required
@@ -185,14 +184,14 @@ def license_delete(request, license_id):
 def delete_version(request, package_id, version_id):
     
     version = get_object_or_404(SoftwareVersion, pk=version_id)
-    
+
     if request.method == 'POST':
         version.delete()
         log(request.user, version.package, 3, 'Deleted version: %s' % version)
-        
+
         messages.success(request, "Version '%s' was deleted succesfully" % version)
         return HttpResponseRedirect(version.get_absolute_url())
-    
+
     return render_to_response('software/version_confirm_delete.html', locals(), context_instance=RequestContext(request))
 
 
@@ -200,7 +199,7 @@ def delete_version(request, package_id, version_id):
 def add_edit_version(request, package_id, version_id=None):
 
     package = get_object_or_404(Software, pk=package_id)
-    
+
     if version_id is None:
         version = None
     else:
@@ -213,7 +212,7 @@ def add_edit_version(request, package_id, version_id=None):
             return HttpResponseRedirect(package.get_absolute_url())
     else:
         form = SoftwareVersionForm(instance=version)
-        
+
     return render_to_response('software/version_form.html', locals(), context_instance=RequestContext(request))
 
 
@@ -283,7 +282,6 @@ def softwarerequest_approve(request, softwarerequest_id):
     softwarerequest = get_object_or_404(SoftwareAccessRequest, pk=softwarerequest_id)
 
     if request.method == 'POST':
-        
         SoftwareLicenseAgreement.objects.create(
             user=softwarerequest.person,
             license=softwarerequest.software_license,
@@ -303,9 +301,9 @@ def softwarerequest_approve(request, softwarerequest_id):
 @admin_required
 def softwarerequest_delete(request, softwarerequest_id):
     softwarerequest = get_object_or_404(SoftwareAccessRequest, pk=softwarerequest_id)
-    
+
     if request.method == 'POST':
-        
+
         softwarerequest.delete()
         messages.success(request, "Software request deleted successfully")
         return HttpResponseRedirect(reverse('kg_softwarerequest_list'))

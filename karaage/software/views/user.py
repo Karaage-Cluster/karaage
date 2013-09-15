@@ -31,7 +31,7 @@ from karaage.software.emails import send_software_request_email
 
 @login_required
 def add_package_list(request):
-    
+
     person = request.user
 
     software_list = []
@@ -46,7 +46,7 @@ def add_package_list(request):
         if software_requests.count() > 0:
             data['pending_request'] = True
         software_list.append(data)
-            
+
     return render_to_response('software/add_package_list.html', locals(), context_instance=RequestContext(request))
 
 
@@ -61,7 +61,7 @@ def add_package(request, package_id):
         raise Http404("Package '%s' has no software license." % (package))
 
     if request.method == 'POST':
-        
+
         if package.restricted:
             software_request, created = SoftwareAccessRequest.objects.get_or_create(
                 person=person,
@@ -81,11 +81,11 @@ def add_package(request, package_id):
         return HttpResponseRedirect(reverse('kg_user_profile_software'))
 
     return render_to_response('software/accept_license.html', locals(), context_instance=RequestContext(request))
-    
-    
+
+
 @login_required
 def license_txt(request, package_id):
-    
+
     package = get_object_or_404(Software, pk=package_id)
     software_license = package.get_current_license()
 

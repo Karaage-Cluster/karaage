@@ -44,7 +44,7 @@ def get_project_members(user, project_id):
         project = Project.objects.get(pid=project_id)
     except Project.DoesNotExist:
         return 'Project not found'
-        
+
     return [x.user.username for x in project.group.members.all()]
 
 
@@ -63,7 +63,7 @@ def get_project(username, proj, machine_name=None):
     """
     Used in the submit filter to make sure user is in project
     """
-    
+
     machine_category = _get_machine_category(machine_name)
     try:
         account = Account.objects.get(
@@ -85,7 +85,7 @@ def get_project(username, proj, machine_name=None):
         else:
             if account.person in account.default_project.group.members.all():
                 return account.default_project.pid
-            
+
     return "None"
 
 
@@ -100,21 +100,21 @@ def change_default_project(user, project, machine_name=None):
         project = Project.objects.get(pid=project)
     except Project.DoesNotExist:
         return -1, "Project %s does not exist" % project
-    
+
     if not person in project.group.members.all():
         return -2, "User %s not a member of project %s" % (user, project.pid)
-    
+
     machine_category = _get_machine_category(machine_name)
     account = Account.objects.get(
             username=username,
             machine_category=machine_category,
             date_deleted__isnull=True)
-    
+
     account.default_project = project
     account.save()
-    
+
     log(user.user, user, 2, 'Changed default project to %s' % project.pid)
-    
+
     return 0, "Default project changed"
 
 

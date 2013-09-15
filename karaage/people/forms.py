@@ -156,13 +156,13 @@ class LoginForm(forms.Form):
 
 
 class SetPasswordForm(BaseSetPasswordForm):
-    
+
     def clean_new_password1(self):
         password1 = self.cleaned_data.get('new_password1')
 
         if not is_password_strong(password1):
             raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (uppercase, lowercase), numbers and is at least 8 characters long.')
-                        
+
         return password1
 
     def save(self, commit=True):
@@ -183,7 +183,7 @@ class PasswordResetForm(BasePasswordResetForm):
         )
         if query.count() == 0:
             raise forms.ValidationError("That e-mail address doesn't have an associated user account. Are you sure you've registered?")
-        
+
         return email
 
 

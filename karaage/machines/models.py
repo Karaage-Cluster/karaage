@@ -72,6 +72,7 @@ class MachineCategory(models.Model):
         set_mc_datastore(self, old_datastore, None)
     delete.alters_data = True
 
+
 class Machine(models.Model):
     name = models.CharField(max_length=50)
     no_cpus = models.IntegerField()
@@ -91,7 +92,7 @@ class Machine(models.Model):
 
     def __unicode__(self):
         return self.name
-    
+
     @models.permalink
     def get_absolute_url(self):
         return ('kg_machine_detail', [self.id])
@@ -125,10 +126,10 @@ class Account(models.Model):
 
     def __unicode__(self):
         return '%s on %s' % (self.username, self.machine_category.name)
-    
+
     def get_absolute_url(self):
         return self.person.get_absolute_url()
-    
+
     @classmethod
     def create(cls, person, default_project, machine_category):
         """Creates a Account (if needed) and activates person.
@@ -149,7 +150,7 @@ class Account(models.Model):
 
     def project_list(self):
         return self.person.projects.filter(machine_categories=self.machine_category)
-    
+
     def get_latest_usage(self):
         try:
             return self.cpujob_set.all()[:5]
@@ -272,7 +273,7 @@ class Account(models.Model):
 
         iq = self.person.institute.institutequota_set.get(machine_category=self.machine_category)
         return iq.disk_quota
-    
+
     def loginShell(self):
         return self.shell
 

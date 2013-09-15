@@ -21,18 +21,18 @@ import tldap.transaction
 
 class Command(BaseCommand):
     help = "Lock expired accounts"
-    
+
     @django.db.transaction.commit_on_success
     @tldap.transaction.commit_on_success
     def handle(self, **options):
         from karaage.common import log
         from karaage.people.models import Person
-        from django.core.mail import mail_admins  
+        from django.core.mail import mail_admins
         import datetime
         today = datetime.date.today()
-        
+
         verbose = int(options.get('verbosity'))
-        
+
         for p in Person.objects.filter(expires__lte=today):
             try:
                 if not p.is_locked():
@@ -46,5 +46,3 @@ class Command(BaseCommand):
                         print "Locked account for %s - %s" % (p.username, p)
             except:
                 print "Failed to lock %s" % p
-
-        

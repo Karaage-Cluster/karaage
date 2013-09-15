@@ -39,7 +39,7 @@ def add_edit_project(request, project_id):
     if request.method == 'POST':
 
         form = ProjectForm(request.POST, instance=project)
-        
+
         if form.is_valid():
             project = form.save()
             messages.success(request, "Project edited successfully")
