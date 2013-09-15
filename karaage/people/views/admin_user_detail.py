@@ -27,9 +27,9 @@ import datetime
 from karaage.common.decorators import admin_required
 from karaage.people.models import Person
 from karaage.people.forms import AdminPasswordChangeForm, AddProjectForm
+from karaage.people.emails import send_bounced_warning
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
-from karaage.common.email_messages import send_bounced_warning
 from karaage.common import get_date_range, log_object as log
 import karaage.common as util
 

@@ -26,7 +26,7 @@ import datetime
 
 from karaage.common.decorators import login_required
 from karaage.software.models import Software, SoftwareLicenseAgreement, SoftwareAccessRequest
-from karaage.common.email_messages import send_software_request_email
+from karaage.software.emails import send_software_request_email
 
 
 @login_required

@@ -15,15 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.core.urlresolvers import get_script_prefix
 
-CONTEXT = {
-    'org_email': settings.ACCOUNTS_EMAIL,
-    'org_name': settings.ACCOUNTS_ORG_NAME,
-    }
+from karaage.common.emails import CONTEXT, send_mail
 
 TEMPLATE_DIRS = ['emails/', 'applications/emails/']
 
@@ -45,7 +41,7 @@ def send_admin_request_email(application):
     to_email = settings.APPROVE_ACCOUNTS_EMAIL
     subject, body = render_email('request_admin', context)
 
-    send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+    send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
 
 
 def send_leader_request_email(application):
@@ -60,7 +56,7 @@ def send_leader_request_email(application):
         to_email = leader.email
         subject, body = render_email('request_leader', context)
 
-        send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+        send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
 
 
 def send_delegate_request_email(application):
@@ -73,7 +69,7 @@ def send_delegate_request_email(application):
         context['receiver'] = delegate
         to_email = delegate.email
         subject, body = render_email('request_delegate', context)
-        send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+        send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
 
 
 
@@ -89,7 +85,7 @@ def send_applicant_invite_email(application, link, is_secret):
     to_email = application.applicant.email
     subject, body = render_email('applicant_invite', context)
 
-    send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+    send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
 
 
 def send_applicant_approved_email(application, created_person, created_account, link, is_secret):
@@ -104,7 +100,7 @@ def send_applicant_approved_email(application, created_person, created_account, 
     subject, body = render_email('applicant_approved', context)
     to_email = application.applicant.email
 
-    send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+    send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
 
 
 def send_project_approved_email(application):
@@ -118,4 +114,4 @@ def send_project_approved_email(application):
             context['receiver'] = leader
             subject, body = render_email('project_approved', context)
             to_email = leader.email
-            send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email], fail_silently=False)
+            send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
