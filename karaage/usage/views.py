@@ -87,7 +87,9 @@ def index(request, machine_category_id):
             time = 0
         m_list.append({'machine': m, 'usage': time, 'jobs': jobs})
             
-    for i in institute_list:
+    for iq in machine_category.institutequota_set.all():
+        i = iq.institute
+
         time, jobs = i.get_usage(start, end, machine_category)
         if time is None:
             time = 0
