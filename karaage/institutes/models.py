@@ -132,6 +132,11 @@ class Institute(models.Model):
 
         return False
 
+    @property
+    def machine_categories(self):
+        for iq in self.institutequota_set.all():
+            yield iq.machine_category
+
 
 class InstituteQuota(models.Model):
     institute = models.ForeignKey(Institute)

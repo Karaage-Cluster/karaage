@@ -199,6 +199,11 @@ class Project(models.Model):
         pc = self.projectquota_set.get(machine_category=machine_category)
         return pc.get_cap_percent(self)
 
+    @property
+    def machine_categories(self):
+        for pq in self.projectquota_set.all():
+            yield pq.machine_category
+
 
 class ProjectQuota(models.Model):
     project = models.ForeignKey(Project)
