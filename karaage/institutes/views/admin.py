@@ -17,6 +17,7 @@
 
 import datetime
 
+from django.forms.util import ErrorList
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
@@ -139,14 +140,17 @@ def institutequota_add(request, institute_id):
                 institute=institute,machine_category=mc)
 
             if conflicting.count() >= 1:
-                form._errors["machine_category"] = util.ErrorList(["Cap already exists with this machine category"])
+                form._errors["machine_category"] = ErrorList(["Cap already exists with this machine category"])
             else:
                 institute_chunk = form.save()
                 new_cap = institute_chunk.cap
                 log(request.user, institute, 2, 'Added cap of %s' % (new_cap))
                 return HttpResponseRedirect(institute.get_absolute_url())
 
-    return render_to_response('institutes/institutequota_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+            'institutes/institutequota_form.html',
+            { 'form': form, 'institute': institute, },
+            context_instance=RequestContext(request))
 
 
 @admin_required
@@ -161,7 +165,7 @@ def institutequota_edit(request, institutequota_id):
         if form.is_valid():
             mc = form.cleaned_data['machine_category']
             if old_mc.pk != mc.pk:
-                form._errors["machine_category"] = util.ErrorList(["Please don't change the machine category; it confuses me"])
+                form._errors["machine_category"] = ErrorList(["Please don't change the machine category; it confuses me"])
             else:
                 institute_chunk = form.save()
                 new_cap = institute_chunk.cap
@@ -169,7 +173,11 @@ def institutequota_edit(request, institutequota_id):
                     log(request.user, institute_chunk.institute, 2, 'Changed cap from %s to %s' % (old_cap, new_cap))
                 return HttpResponseRedirect(institute_chunk.institute.get_absolute_url())
 
-    return render_to_response('institutes/institutequota_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+            'institutes/institutequota_form.html',
+            { 'form': form, 'institute': institute_chunk.institute,
+                'object': institute_chunk },
+            context_instance=RequestContext(request))
 
 
 @admin_required

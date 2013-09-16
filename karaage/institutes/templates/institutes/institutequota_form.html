@@ -1,5 +1,6 @@
 {% extends "forms.html" %}
 {% load url from future %}
+{% load forms %}
 
 
 {% block title %}Edit Institute Quota/Cap{% endblock %}
@@ -9,7 +10,7 @@
 <div class="breadcrumbs">
     <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
     <a href="{% url 'kg_institute_list' %}">Institutes</a>&nbsp;›
-    <a href="{% url 'kg_institute_detail' object.institute.pk %}">{{ object.institute }}</a>&nbsp;›
+    <a href="{% url 'kg_institute_detail' institute.pk %}">{{ institute }}</a>&nbsp;›
     {% if object %}
         Edit Institute Quota/Cap
     {% else %}

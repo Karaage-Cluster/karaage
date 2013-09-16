@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+from django.forms.util import ErrorList
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
@@ -264,7 +265,7 @@ def projectquota_add(request, project_id):
                 project=project,machine_category=mc)
 
             if conflicting.count() >= 1:
-                form._errors["machine_category"] = util.ErrorList(["Cap already exists with this machine category"])
+                form._errors["machine_category"] = ErrorList(["Cap already exists with this machine category"])
             else:
                 project_chunk = form.save()
                 new_cap = project_chunk.cap
@@ -286,7 +287,7 @@ def projectquota_edit(request, projectquota_id):
         if form.is_valid():
             mc = form.cleaned_data['machine_category']
             if old_mc.pk != mc.pk:
-                form._errors["machine_category"] = util.ErrorList(["Please don't change the machine category; it confuses me"])
+                form._errors["machine_category"] = ErrorList(["Please don't change the machine category; it confuses me"])
             else:
                 project_chunk = form.save()
                 new_cap = project_chunk.cap
