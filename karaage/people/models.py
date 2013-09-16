@@ -104,12 +104,6 @@ class Person(AbstractBaseUser):
         return name
     
     def get_absolute_url(self):
-        person = get_current_person()
-        if person == self:
-            try:
-                return reverse('kg_user_profile')
-            except:
-                pass
         return reverse('kg_person_detail', kwargs={'username': self.username})
 
     @staticmethod
