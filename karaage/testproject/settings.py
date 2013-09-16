@@ -163,8 +163,6 @@ INSTALLED_APPS = (
     'django_pbs.jobs',
     'karaage.test_data',
     'django_surveys',
-    'andsome.layout',
-    'andsome',
 )
 
 

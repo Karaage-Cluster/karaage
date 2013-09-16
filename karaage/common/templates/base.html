@@ -40,7 +40,6 @@
                 <a href="{% url 'password_change' %}">{% trans 'Change password' %}</a> /
                 <a href="{% url 'logout' %}">{% trans 'Log out' %}</a>
                 {% else %}
-                {% load karaage_tags %}
                 <a href="{% url 'login' %}{% url_with_param next=request.path %}">{% trans 'Log in' %}</a>
                 {% endif %}
             {% endblock %}

@@ -17,6 +17,7 @@
 
 import datetime
 
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
@@ -25,6 +26,9 @@ from andsome.middleware.threadlocals import get_current_user
 
 from karaage.common.forms import CommentForm
 from karaage.admin.models import LogEntry
+
+from django.template import add_to_builtins
+add_to_builtins('karaage.common.templatetags.karaage_tags')
 
 def get_date_range(request, default_start=(datetime.date.today() - datetime.timedelta(days=90)), default_end=datetime.date.today()):
 
@@ -91,6 +95,33 @@ def new_random_token():
     return sha1("%s%s" % (randrange(0, MAX_KEY), settings.SECRET_KEY)).hexdigest()
 
 
+def log_list(request, content_type, content_url, short_title, obj):
+    log_list = LogEntry.objects.filter(
+        content_type=ContentType.objects.get_for_model(obj.__class__),
+        object_id=obj.pk
+    )
+    paginator = Paginator(log_list, 50)
+
+    page = request.GET.get('page')
+    try:
+        page_obj = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        page_obj = paginator.page(paginator.num_pages)
+
+    return render_to_response(
+            'log_list.html',
+            { 'short': True, 'obj': obj,
+                'page_obj': page_obj,
+                'content_type': content_type,
+                'content_url': content_url,
+                'short_title': short_title },
+            context_instance=RequestContext(request))
+
+
 def add_comment(request, content_type, content_url, short_title, obj):
     form = CommentForm(data=request.POST or None, obj=obj, instance=None)
     if request.method == 'POST':
@@ -104,3 +135,5 @@ def add_comment(request, content_type, content_url, short_title, obj):
                 'content_url': content_url,
                 'short_title': short_title },
             context_instance=RequestContext(request))
+
+

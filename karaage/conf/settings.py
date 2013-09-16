@@ -54,8 +54,6 @@ INSTALLED_APPS = (
     'tldap.methods',
     'django_pbs.servers',
     'django_pbs.jobs',
-    'andsome.layout',
-    'andsome',
 )
 
 TEMPLATE_DIRS = (
@@ -74,7 +72,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.i18n',
     'django.contrib.messages.context_processors.messages',
     'karaage.common.context_processors.common',
-    'andsome.context_processors.base_url',
 )
 
 # List of callables that know how to import templates from various sources.

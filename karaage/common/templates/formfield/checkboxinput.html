@@ -1,0 +1,5 @@
+<div class="form-row checkbox-row {% if formfield.errors %}errors{% endif %}" >
+{% if formfield.errors %}{{ formfield.errors }}{% endif %}
+{{ formfield }}<label for="{{ formfield.auto_id }}"{{ class }}>{{ formfield.label }}</label> 
+{% if formfield.help_text %}<p class="help">{{ formfield.help_text }}</p>{% endif %}
+</div>

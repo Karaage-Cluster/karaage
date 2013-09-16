@@ -1,0 +1,22 @@
+<div class="form-row" {% if field1.errors or field2.errors or field3.errors %}"errors"{% endif %}>
+{% if field1.errors or field2.errors or field3.errors %}
+<ul class="errorlist">
+{% if field1.errors %}<li>{{ field1.label }}: {{ field1.errors|first }}</li>{% endif %}
+{% if field2.errors %}<li>{{ field2.label }}: {{ field2.errors|first }}</li>{% endif %}
+{% if field3.errors %}<li>{{ field3.label }}: {{ field3.errors|first }}</li>{% endif %}
+</ul>
+{% endif %}
+<label for="{{ field1.auto_id }}" class="{% if field1.field.required %}required{% endif %}">{{ field1.label }}:</label> {{ field1 }}
+{#{% if field1.field.required %}<span class="redtext"> *</span>{% endif %}#}
+<label for="{{ field2.auto_id }}" class="{% if field2.field.required %}required{% endif %} inline">{{ field2.label }}:</label> {{ field2 }}
+{#{% if field2.field.required %}<span class="redtext"> *</span>{% endif %}#}
+{% if field3 %}
+<label for="{{ field3.auto_id }}" class="{% if field3.field.required %}required{% endif %} inline">{{ field3.label }}:</label> {{ field3 }}
+{#{% if field3.field.required %}<span class="redtext"> *</span>{% endif %}#}
+{% endif %}
+{% if field1.help_text %}<p class="help">{{ field1.help_text }}</p>{% endif %}
+{% if field2.help_text %}<p class="help">{{ field2.help_text }}</p>{% endif %}
+{% if field3 %}
+{% if field.help_text %}<p class="help">{{ field3.help_text }}</p>{% endif %}
+{% endif %}
+</div>

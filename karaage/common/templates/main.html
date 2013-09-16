@@ -1,0 +1,13 @@
+{% extends "base_site.html" %}
+{% load url from future %}
+
+{% block coltype %}colSM{% endblock %}
+
+{% block sidebar %}
+<div id="content-related">
+  {% block sidebar_extra %}
+  {% block object-tools %}
+  {% endblock %}
+  {% endblock %}
+</div>
+{% endblock %}
