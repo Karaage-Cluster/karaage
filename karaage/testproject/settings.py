@@ -120,7 +120,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.debug',
     'django.core.context_processors.media',
     'django.contrib.messages.context_processors.messages',
-    'karaage.context_processors.common',
+    'karaage.common.context_processors.common',
 )
 
 MIDDLEWARE_CLASSES = (
