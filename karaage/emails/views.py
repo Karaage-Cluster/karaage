@@ -28,8 +28,8 @@ from karaage.emails.forms import BulkEmailForm
 @admin_required
 def send_email(request):
 
+    form = BulkEmailForm(request.POST or None)
     if request.method == 'POST':
-        form = EmailForm(request.POST)
 
         if form.is_valid():
             if 'preview' in request.POST:
@@ -43,8 +43,6 @@ def send_email(request):
                 messages.success(request, "Emails sent successfully")
 
                 return HttpResponseRedirect(reverse('index'))
-    else:
-        form = EmailForm()
 
     return render_to_response('emails/send_email_form.html', locals(), context_instance=RequestContext(request))
 
