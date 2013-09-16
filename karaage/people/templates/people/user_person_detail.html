@@ -79,7 +79,7 @@
                 <td>{{ p.institute }}</td>
                 <td>{% for l in p.leaders.all %}<a href="{{ l.get_absolute_url }}">{{ l }}</a> {% endfor %}</td>
                 <td>{% ifequal p ua.default_project %}
-                <img alt="1" src="{{ STATIC_URL }}admin/img/icon-yes.gif"/>{% else %}
+                <img alt="1" src="{{ STATIC_URL }}img/icon-yes.gif"/>{% else %}
                 {% endifequal %}</td>
             </tr>
             {% endfor %}

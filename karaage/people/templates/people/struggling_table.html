@@ -19,12 +19,12 @@
         <tr class="{% cycle row1,row2 %}">
             <td>
                 {% if not person.is_active %}
-                <img src="{{ STATIC_URL }}admin/img/icon-no.gif" alt="inactive" />
+                <img src="{{ STATIC_URL }}img/icon-no.gif" alt="inactive" />
                 {% else %}
                 {% if person.is_locked %}
                 <img src="{{ STATIC_URL }}img/lock.png" alt="locked" />
                 {% else %}
-                <img src="{{ STATIC_URL }}admin/img/icon-yes.gif" alt="active" />
+                <img src="{{ STATIC_URL }}img/icon-yes.gif" alt="active" />
                 {% endif %}
                 {% endif %}
             </td>

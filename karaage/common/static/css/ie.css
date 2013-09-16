@@ -53,7 +53,7 @@
 /* IE doesn't know alpha transparency in PNGs */
 
 .inline-deletelink {
-    background: transparent url(../admin/img/inline-delete-8bit.png) no-repeat;
+    background: transparent url(../img/inline-delete-8bit.png) no-repeat;
 }
 
 /* IE7 doesn't support inline-block */

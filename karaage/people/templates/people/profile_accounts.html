@@ -26,12 +26,12 @@
             <tr class="{% cycle row1,row2 %}">
                 <td>
                     {% if ua.date_deleted %}
-                    <img alt="Not Active" src="{{ STATIC_URL }}admin/img/icon-no.gif" title="Not Active"/>
+                    <img alt="Not Active" src="{{ STATIC_URL }}img/icon-no.gif" title="Not Active"/>
                     {% else %}
                     {% if ua.is_locked %}
                     <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
                     {% else %}
-                    <img alt="Active" src="{{ STATIC_URL }}admin/img/icon-yes.gif" title="Active"/>
+                    <img alt="Active" src="{{ STATIC_URL }}img/icon-yes.gif" title="Active"/>
                     {% endif %}
                     {% endif %}
                 </td>

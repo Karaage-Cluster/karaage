@@ -31,12 +31,12 @@
         <h3>
             {% if person.title %}{{ person.title }}{% endif %} {{ person }}
             {% if not person.is_active %}
-            <img alt="Not Active" src="{{ STATIC_URL }}admin/img/icon_error.gif" title="Not Active"/>
+            <img alt="Not Active" src="{{ STATIC_URL }}img/icon-yes.gif" title="Not Active"/>
             {% else %}
             {% if person.is_locked %}
             <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
             {% else %}
-            <img alt="Active" src="{{ STATIC_URL }}admin/img/icon_success.gif" title="Active"/>
+            <img alt="Active" src="{{ STATIC_URL }}img/icon-no.gif" title="Active"/>
             {% endif %}
             {% endif %}
         </h3>
@@ -116,12 +116,12 @@
                 <tr class="row1">
                     <td>
                         {% if ua.date_deleted %}
-                        <img alt="Not Active" src="{{ STATIC_URL }}admin/img/icon-no.gif" title="Not Active"/>
+                        <img alt="Not Active" src="{{ STATIC_URL }}img/icon-no.gif" title="Not Active"/>
                         {% else %}
                         {% if ua.is_locked %}
                         <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
                         {% else %}
-                        <img alt="Active" src="{{ STATIC_URL }}admin/img/icon-yes.gif" title="Active"/>
+                        <img alt="Active" src="{{ STATIC_URL }}img/icon-yes.gif" title="Active"/>
                         {% endif %}
                         {% endif %}
                     </td>
@@ -169,7 +169,7 @@
                 <td>{% for leader in p.leaders.all %}<a href="{{ leader.get_absolute_url }}">{{ leader }}, </a>{% endfor %}</td>
                 <td>
                     {% ifequal p ua.default_project %}
-                    <img alt="1" src="{{ STATIC_URL }}admin/img/icon-yes.gif"/>{% else %}
+                    <img alt="1" src="{{ STATIC_URL }}img/icon-yes.gif"/>{% else %}
                     {% if request.user.is_admin %}
                     <form action="{% url 'kg_account_set_default' ua.id p.pid %}" method="post">
                         {% csrf_token %}
