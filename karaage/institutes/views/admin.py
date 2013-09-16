@@ -183,12 +183,8 @@ def institutequota_delete(request, institutequota_id):
 
     return render_to_response('institutes/institutequota_delete_form.html', locals(), context_instance=RequestContext(request))
 
+
 @admin_required
-def projects_by_cap_used(request):
-    from karaage.projects.views.admin import project_list
-    return project_list(request, queryset=Project.active.all(), paginate=False, template_name='pbsmoab/project_capsort.html')
-    
-    
 def institute_logs(request, institute_id):
     obj = get_object_or_404(Institute, pk=institute_id)
     return util.log_list(request, "Institutes", reverse("kg_institute_list"), unicode(obj), obj)
