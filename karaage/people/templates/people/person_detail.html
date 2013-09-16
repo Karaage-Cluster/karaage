@@ -30,13 +30,11 @@
         <h3>
             {% if person.title %}{{ person.title }}{% endif %} {{ person }}
             {% if not person.is_active %}
-            <img alt="Not Active" src="{{ STATIC_URL }}img/icon-yes.gif" title="Not Active"/>
-            {% else %}
-            {% if person.is_locked %}
+            <img alt="Not Active" src="{{ STATIC_URL }}img/icon-no.gif" title="Not Active"/>
+            {% elif person.is_locked %}
             <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
             {% else %}
-            <img alt="Active" src="{{ STATIC_URL }}img/icon-no.gif" title="Active"/>
-            {% endif %}
+            <img alt="Active" src="{{ STATIC_URL }}img/icon-yes.gif" title="Active"/>
             {% endif %}
         </h3>
 
