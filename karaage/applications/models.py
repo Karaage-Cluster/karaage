@@ -26,7 +26,7 @@ from django.conf import settings
 import datetime
 import warnings
 
-from karaage.constants import TITLES, COUNTRIES
+from karaage.common.constants import TITLES, COUNTRIES
 from karaage.common import new_random_token, get_current_person
 from karaage.people.models import Person
 from karaage.institutes.models import Institute

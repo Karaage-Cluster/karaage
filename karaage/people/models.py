@@ -20,7 +20,7 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
-from karaage.constants import TITLES, STATES, COUNTRIES
+from karaage.common.constants import TITLES, STATES, COUNTRIES
 from karaage.people.managers import ActivePersonManager, DeletedPersonManager, LeaderManager, PersonManager
 from karaage.people.emails import send_reset_password_email
 
