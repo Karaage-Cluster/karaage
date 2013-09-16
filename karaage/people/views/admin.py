@@ -23,7 +23,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 
 import datetime
-from andsome.util.filterspecs import Filter, FilterBar, DateFilter
+from karaage.common.filterspecs import Filter, FilterBar, DateFilter
 
 from karaage.common.decorators import admin_required
 from karaage.projects.models import Project

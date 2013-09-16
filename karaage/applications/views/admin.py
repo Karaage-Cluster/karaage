@@ -23,7 +23,7 @@ from django.db.models import Q
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import HttpResponseRedirect
 
-from andsome.util.filterspecs import Filter, FilterBar
+from karaage.common.filterspecs import Filter, FilterBar
 
 from karaage.common.decorators import admin_required
 from karaage.applications.models import Applicant, Application

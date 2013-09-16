@@ -17,7 +17,7 @@
 from django import template
 from django.utils.safestring import mark_safe
 from django.core.paginator import QuerySetPaginator
-from andsome.util.filterspecs import get_query_string
+from karaage.common.filterspecs import get_query_string
 
 register = template.Library()
 

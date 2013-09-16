@@ -24,7 +24,7 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator
 from django.forms.models import inlineformset_factory
 
-from andsome.util.filterspecs import Filter, FilterBar
+from karaage.common.filterspecs import Filter, FilterBar
 
 from karaage.common.decorators import admin_required
 import karaage.common as util

@@ -25,7 +25,7 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 
-from andsome.util.filterspecs import Filter, FilterBar
+from karaage.common.filterspecs import Filter, FilterBar
 
 from karaage.common.decorators import admin_required
 from karaage.people.models import Person

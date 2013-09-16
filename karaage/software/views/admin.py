@@ -25,7 +25,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Count, Sum
 
 import datetime
-from andsome.util.filterspecs import Filter, FilterBar, DateFilter
+from karaage.common.filterspecs import Filter, FilterBar, DateFilter
 
 from karaage.common.decorators import admin_required
 from karaage.software.models import SoftwareCategory, Software, SoftwareVersion, SoftwareLicense, SoftwareAccessRequest, SoftwareLicenseAgreement
