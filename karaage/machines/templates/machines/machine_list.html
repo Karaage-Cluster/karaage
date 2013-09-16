@@ -19,7 +19,7 @@
         <ul>
         {% for c in category_list %}
         <li>
-            <h3>{{ c.name }}</h3>
+        <h3><a href="{% url 'kg_machinecategory_detail' c.pk %}">{{ c }}</a></h3>
             - {% if perms.machines.change_machinecategory %}
             <a class="changelink" href="{% url 'kg_machinecategory_edit' c.id %}">Edit category</a> |
             {% endif %}

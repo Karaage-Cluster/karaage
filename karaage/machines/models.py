@@ -47,7 +47,7 @@ class MachineCategory(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('kg_machine_list',)
+        return ('kg_machinecategory_detail', [self.pk])
 
     def save(self, *args, **kwargs):
         # save the object

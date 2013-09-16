@@ -1,0 +1,54 @@
+{% extends "main.html" %}
+{% load url from future %}
+
+
+{% block title %}Machine{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_machine_list' %}">Machines</a>&nbsp;›
+    Categories&nbsp;›
+    {{ machine_category }}
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+    <div class="module">
+        <h2>Machines</h2>
+        <h3>{{ machine_category.name }}</h3>
+        - {% if perms.machines.change_machinecategory %}
+        <a class="changelink" href="{% url 'kg_machinecategory_edit' machine_category.id %}">Edit category</a> |
+        {% endif %}
+        <a href="{% url 'kg_mc_usage' machine_category.id %}">Usage</a>
+        <ul>
+            {% for m in machine_category.machine_set.all %}
+            <li>
+                <a href="{{ m.get_absolute_url }}">{{ m.name }}</a> 
+                {% if m.end_date %}
+                <span class="red">*Decommissioned</span>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {% comments machine_category %}
+</div>
+{% endblock %}
+
+
+{% block object-tools %}
+{% if request.user.is_admin %}
+<div class="module object-tools">
+    <h2>Object links</h2>
+    <ul>
+        <li><a href="{% url 'kg_machinecategory_logs' machine_category.pk %}">Logs</a></li>
+        <li class="addlink"><a href="{% url 'kg_machinecategory_add_comment' machine_category.pk %}">Add comment</a></li>
+    </ul>
+</div>
+{% endif %}
+{% endblock %}

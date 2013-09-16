@@ -79,7 +79,7 @@ def machine_logs(request, machine_id):
 
 
 @admin_required
-def add_comment(request, machine_id):
+def machine_add_comment(request, machine_id):
     obj = get_object_or_404(Machine, pk=machine_id)
     return util.add_comment(request, "Machines", reverse("kg_machine_list"), unicode(obj), obj)
 
@@ -95,4 +95,24 @@ def category_edit(request, category_id):
     from karaage.legacy.create_update import update_object
     return update_object(request,
             object_id=category_id, model=MachineCategory)
+
+@admin_required
+def category_detail(request, category_id):
+    machine_category = get_object_or_404(MachineCategory, pk=category_id)
+    return render_to_response(
+        'machines/machinecategory_detail.html',
+        {'machine_category': machine_category, },
+        context_instance=RequestContext(request))
+
+
+@admin_required
+def category_logs(request, category_id):
+    obj = get_object_or_404(MachineCategory, pk=category_id)
+    return util.log_list(request, "Machines", reverse("kg_machine_list"), unicode(obj), obj)
+
+
+@admin_required
+def category_add_comment(request, category_id):
+    obj = get_object_or_404(MachineCategory, pk=category_id)
+    return util.add_comment(request, "Machines", reverse("kg_machine_list"), unicode(obj), obj)
 
