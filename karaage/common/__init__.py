@@ -137,3 +137,20 @@ def add_comment(request, content_type, content_url, short_title, obj):
             context_instance=RequestContext(request))
 
 
+def is_password_strong(password, old_password=None):
+    """Return True if password valid"""
+    try:
+        from crack import VeryFascistCheck
+    except ImportError:
+        def VeryFascistCheck(password, old=None):
+            if old and password == old:
+                return False
+            elif len(password) < 6:
+                return False
+            return True
+    try:
+        VeryFascistCheck(password, old=old_password)
+    except:
+        return False
+
+    return True
