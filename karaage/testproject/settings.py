@@ -115,7 +115,7 @@ GRAPH_URL = MEDIA_URL + 'graphs/'
 SITE_ID = 1
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.request',
+    'django.core.common.context_processors.request',
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',
     'django.core.context_processors.media',
