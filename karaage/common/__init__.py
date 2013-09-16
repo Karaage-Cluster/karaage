@@ -22,7 +22,7 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
-from andsome.middleware.threadlocals import get_current_user
+from karaage.middleware.threadlocals import get_current_user
 
 from karaage.common.forms import CommentForm
 from karaage.admin.models import LogEntry
