@@ -28,8 +28,8 @@ from django.conf import settings
 from django.core.mail import send_mail
 
 import datetime
-from andsome.forms import EmailForm
 
+from karaage.emails.forms import EmailForm
 from karaage.common.decorators import login_required, admin_required
 from karaage.applications.models import ProjectApplication, Applicant, Application
 import karaage.applications.forms as forms

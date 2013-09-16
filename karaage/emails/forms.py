@@ -19,8 +19,6 @@ from django import forms
 from django.conf import settings
 from django.template import Context, Template
 
-from andsome.forms import EmailForm
-
 from karaage.people.models import Person
 from karaage.projects.models import Project
 
@@ -32,8 +30,16 @@ EMAIL_GROUPS = (
 )
 
 
-class EmailForm(EmailForm):
+class EmailForm(forms.Form):
+    subject = forms.CharField(widget=forms.TextInput(attrs={ 'size':60 }))
+    body = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }))
 
+
+    def get_data(self):
+        return self.cleaned_data['subject'], self.cleaned_data['body']
+
+
+class BulkEmailForm(EmailForm):
     group = forms.ChoiceField(choices=EMAIL_GROUPS)
 
     def get_emails(self):
@@ -45,7 +51,7 @@ class EmailForm(EmailForm):
         subject_t = Template(subject)
         body_t = Template(body)
         emails = []
-        
+
         if group == 'leaders':
             for p in Project.active.all():
                 for leader in p.leaders.all():
@@ -57,13 +63,13 @@ class EmailForm(EmailForm):
                     body = body_t.render(ctx)
                     emails.append((subject, body, settings.ACCOUNTS_EMAIL, [leader.email]))
             return emails
-                    
+
         elif group == 'users':
             person_list = Person.active.all()
 
         elif group == 'cluster_users':
             person_list = Person.active.filter(account__isnull=False)
-                
+
         if person_list:
             for person in person_list:
                 if person.email not in email_list:
@@ -76,5 +82,5 @@ class EmailForm(EmailForm):
                     email_list.append(person.email)
 
             return emails
-            
+
         return []

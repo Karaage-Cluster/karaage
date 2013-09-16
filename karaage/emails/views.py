@@ -23,14 +23,14 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 
 from karaage.common.decorators import admin_required
-from karaage.emails.forms import EmailForm
+from karaage.emails.forms import BulkEmailForm
 
 @admin_required
 def send_email(request):
 
-    if request.method == 'POST':        
+    if request.method == 'POST':
         form = EmailForm(request.POST)
-            
+
         if form.is_valid():
             if 'preview' in request.POST:
                 emails = form.get_emails()
@@ -38,13 +38,13 @@ def send_email(request):
                     preview = emails[0]
                 except:
                     pass
-            else:           
+            else:
                 send_mass_mail(form.get_emails())
                 messages.success(request, "Emails sent successfully")
-                    
+
                 return HttpResponseRedirect(reverse('index'))
-    else:        
+    else:
         form = EmailForm()
-        
+
     return render_to_response('emails/send_email_form.html', locals(), context_instance=RequestContext(request))
 
