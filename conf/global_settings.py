@@ -82,8 +82,8 @@ LDAP_ADMIN_PASSWORD = 'secret'
 
 
 LOCAL_PBS_SERVERS = [
-    'cluster1.example.com',
-    'cluster2.example.com',
+#    'cluster1.example.com',
+#    'cluster2.example.com',
 ]
 
 
