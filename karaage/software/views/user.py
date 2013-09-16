@@ -51,9 +51,9 @@ def add_package_list(request):
 
 
 @login_required
-def add_package(request, package_id):
+def add_package(request, software_id):
 
-    package = get_object_or_404(Software, pk=package_id)
+    package = get_object_or_404(Software, pk=software_id)
     software_license = package.get_current_license()
     person = request.user
 
@@ -84,9 +84,9 @@ def add_package(request, package_id):
 
 
 @login_required
-def license_txt(request, package_id):
+def license_txt(request, software_id):
 
-    package = get_object_or_404(Software, pk=package_id)
+    package = get_object_or_404(Software, pk=software_id)
     software_license = package.get_current_license()
 
     return HttpResponse(wordwrap(software_license.text, 80), mimetype="text/plain")

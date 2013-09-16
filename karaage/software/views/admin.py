@@ -75,8 +75,8 @@ def software_list(request):
 
 
 @admin_required
-def software_detail(request, package_id):
-    package = get_object_or_404(Software, pk=package_id)
+def software_detail(request, software_id):
+    package = get_object_or_404(Software, pk=software_id)
 
     members = package.get_group_members()
     non_ids = []
@@ -107,8 +107,8 @@ def software_detail(request, package_id):
 
 
 @admin_required
-def software_verbose(request, package_id):
-    package = get_object_or_404(Software, pk=package_id)
+def software_verbose(request, software_id):
+    package = get_object_or_404(Software, pk=software_id)
 
     from karaage.datastores import get_software_details
     package_details = get_software_details(package)
@@ -132,17 +132,17 @@ def add_package(request):
     return render_to_response('software/add_package_form.html', locals(), context_instance=RequestContext(request))
 
 @admin_required
-def software_edit(request, package_id):
+def software_edit(request, software_id):
     from karaage.legacy.create_update import update_object
     return update_object(request,
-            object_id=package_id, model=Software)
+            object_id=software_id, model=Software)
 
 @admin_required
-def software_delete(request, package_id):
+def software_delete(request, software_id):
     from karaage.legacy.create_update import delete_object
     return delete_object(request,
             post_delete_redirect=reverse('software_list'),
-            object_id=package_id, model=Software)
+            object_id=software_id, model=Software)
 
 
 @admin_required
@@ -164,8 +164,8 @@ def license_detail(request, license_id):
 
 
 @admin_required
-def add_edit_license(request, package_id, license_id=None):
-    package = get_object_or_404(Software, pk=package_id)
+def add_edit_license(request, software_id, license_id=None):
+    package = get_object_or_404(Software, pk=software_id)
 
     if license_id is None:
         l = None
@@ -194,7 +194,7 @@ def license_delete(request, license_id):
 
 
 @admin_required
-def delete_version(request, package_id, version_id):
+def delete_version(request, software_id, version_id):
     
     version = get_object_or_404(SoftwareVersion, pk=version_id)
 
@@ -209,9 +209,9 @@ def delete_version(request, package_id, version_id):
 
 
 @admin_required
-def add_edit_version(request, package_id, version_id=None):
+def add_edit_version(request, software_id, version_id=None):
 
-    package = get_object_or_404(Software, pk=package_id)
+    package = get_object_or_404(Software, pk=software_id)
 
     if version_id is None:
         version = None
@@ -248,9 +248,9 @@ def category_edit(request, category_id):
 
 
 @admin_required
-def remove_member(request, package_id, user_id):
+def remove_member(request, software_id, user_id):
 
-    package = get_object_or_404(Software, pk=package_id)
+    package = get_object_or_404(Software, pk=software_id)
     person = get_object_or_404(Person, pk=user_id)
 
     person.remove_group(package.group)
@@ -325,8 +325,8 @@ def softwarerequest_delete(request, softwarerequest_id):
 
 
 @admin_required
-def software_stats(request, package_id):
-    package = get_object_or_404(Software, pk=package_id)
+def software_stats(request, software_id):
+    package = get_object_or_404(Software, pk=software_id)
     start, end = get_date_range(request)
     querystring = request.META.get('QUERY_STRING', '')
     if package.softwareversion_set.count() == 1:
@@ -349,7 +349,7 @@ def software_stats(request, package_id):
 
 
 @admin_required
-def version_stats(request, package_id, version_id):
+def version_stats(request, software_id, version_id):
     version = get_object_or_404(SoftwareVersion, pk=version_id)
     start, end = get_date_range(request)
     querystring = request.META.get('QUERY_STRING', '')
