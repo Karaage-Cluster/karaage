@@ -63,7 +63,7 @@ class Command(BaseCommand):
         username = options['username']
         email = options['email']
         short_name = options['short_name']
-        long_name = options['long_name']
+        full_name = options['full_name']
         password = options['password']
         institute_name = options['institute']
 
