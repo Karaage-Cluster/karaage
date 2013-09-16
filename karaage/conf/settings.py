@@ -92,9 +92,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'andsome.middleware.threadlocals.ThreadLocals',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'karaage.middleware.threadlocals.ThreadLocals',
     'karaage.middleware.saml.SamlUserMiddleware',
     'tldap.middleware.TransactionMiddleware',
 )
