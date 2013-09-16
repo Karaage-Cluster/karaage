@@ -20,15 +20,13 @@ from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
 
-from andsome.util import is_password_strong
-
 from karaage.people.models import Person, Group
 from karaage.people.utils import validate_username, UsernameException
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
 from karaage.common.constants import TITLES, COUNTRIES
-from karaage.common import get_current_person
+from karaage.common import get_current_person, is_password_strong
 
 import ajax_select.fields
 

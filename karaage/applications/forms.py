@@ -31,9 +31,7 @@ from karaage.people.models import Person
 from karaage.people.utils import validate_username, UsernameException
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
-from karaage.common import get_current_person
-
-from andsome.util import is_password_strong
+from karaage.common import get_current_person, is_password_strong
 
 APP_CHOICES = (
     ('U', 'Join an existing project'),
