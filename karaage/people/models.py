@@ -338,7 +338,7 @@ class Person(AbstractBaseUser):
             self.is_active = True
             self.save()
 
-            log(None, self, 2, 'Activated')
+            log(None, self, 2, 'Activated by %s'%approved_by)
     activate.alters_data = True
 
     def deactivate(self, deleted_by):
@@ -354,7 +354,7 @@ class Person(AbstractBaseUser):
         for ua in self.account_set.filter(date_deleted__isnull=True):
             ua.deactivate()
 
-        log(None, self, 2, 'Deactivated')
+        log(None, self, 2, 'Deactivated by %s'%deleted_by)
     deactivate.alters_data = True
 
     def set_password(self, password):

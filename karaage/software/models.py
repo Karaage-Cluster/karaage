@@ -91,7 +91,7 @@ class Software(models.Model):
                     add_account_to_software(account, self)
 
         # log message
-        log(None, self, 2, "Saved software package")
+        log(None, self, 2, "Saved software")
 
         # save the current state
         self._group = self.group

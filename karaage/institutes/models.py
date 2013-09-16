@@ -73,6 +73,9 @@ class Institute(models.Model):
                 for account in Account.objects.filter(person__groups=new_group, date_deleted__isnull=True):
                     add_account_to_institute(account, self)
 
+        # log message
+        log(None, self, 2, 'Saved institute')
+
         # save the current state
         self._group = self.group
     save.alters_data = True

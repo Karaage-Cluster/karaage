@@ -61,6 +61,9 @@ class MachineCategory(models.Model):
             from karaage.datastores import set_mc_datastore
             set_mc_datastore(self, old_datastore, new_datastore)
 
+        # log message
+        log(None, self, 2, 'Saved machine category')
+
         self._datastore = self.datastore
     save.alters_data = True
 
@@ -86,6 +89,13 @@ class Machine(models.Model):
     objects = models.Manager()
     active = ActiveMachineManager()
     scaling_factor = models.IntegerField(default=1)
+
+    def save(self, *args, **kwargs):
+        # save the object
+        super(Machine, self).save(*args, **kwargs)
+
+        # log message
+        log(None, self, 2, 'Saved machine')
 
     class Meta:
         db_table = 'machine'
@@ -169,8 +179,13 @@ class Account(models.Model):
             from karaage.datastores import delete_account
             self.machine_category = old_machine_category
             delete_account(self)
+            log(None, self.machine_category, 2,
+                'Removed account %s from machine_category' % self)
+
             self.machine_category = new_machine_category
             moved = True
+            log(None, self.machine_category, 2,
+                'Added account %s to machine_category' % self)
             log(None, self.person, 2,
                 'Changed machine_category of %s' % self)
 
@@ -181,8 +196,12 @@ class Account(models.Model):
             if self.date_deleted is None and not moved:
                 from karaage.datastores import set_account_username
                 set_account_username(self, old_username, new_username)
+            log(None, self.machine_category, 2,
+                'Changed username of account %s from %s to %s' %
+                (self, old_username, new_username))
             log(None, self.person, 2,
-                'Changed username of %s' % self)
+                'Changed username of %s from %s to %s' %
+                (self, old_username, new_username))
 
         # check if deleted status changed
         old_date_deleted = self._date_deleted
@@ -192,11 +211,15 @@ class Account(models.Model):
                 # account is deactivated
                 from karaage.datastores import delete_account
                 delete_account(self)
+                log(None, self.machine_category, 3,
+                    'Deactivated account of %s' % self)
                 log(None, self.person, 3,
                     'Deactivated account of %s' % self)
                 # deleted
             else:
                 # account is reactivated
+                log(None, self.machine_category, 3,
+                    'Reactivated account of %s' % self)
                 log(None, self.person, 3,
                     'Reactivated account of %s' % self)
 
@@ -205,9 +228,13 @@ class Account(models.Model):
         new_login_enabled = self.login_enabled
         if old_login_enabled != new_login_enabled:
             if self.login_enabled:
+                log(None, self.machine_category, 2,
+                    'Unlocked account %s' % self)
                 log(None, self.person, 2,
                     'Unlocked account %s' % self)
             else:
+                log(None, self.machine_category, 2,
+                    'Locked account %s' % self)
                 log(None, self.person, 2,
                     'Locked account %s' % self)
 
@@ -221,6 +248,8 @@ class Account(models.Model):
             save_account(self)
 
         # log message
+        log(None, self.machine_category, 2,
+            'Saved account %s' % self)
         log(None, self.person, 2,
             'Saved account %s' % self)
 
@@ -238,6 +267,8 @@ class Account(models.Model):
             # delete the datastore
             from karaage.datastores import delete_account
             delete_account(self)
+            log(None, self.machine_category, 2,
+                'Deleted account %s' % self)
     delete.alters_data = True
 
     def deactivate(self):
@@ -263,6 +294,8 @@ class Account(models.Model):
             raise RuntimeError("Account is deactivated")
         from karaage.datastores import set_account_password
         set_account_password(self, password)
+        log(None, self.machine_category, 2,
+            'Changed Password of %s' % self)
         log(None, self.person, 2,
             'Changed Password of %s' % self)
     set_password.alters_data = True

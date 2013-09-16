@@ -25,6 +25,7 @@ from karaage.people.models import Person, Group
 from karaage.institutes.models import Institute
 from karaage.machines.models import MachineCategory, Account
 from karaage.projects.managers import ActiveProjectManager, DeletedProjectManager
+from karaage.common import log
 
 
 class Project(models.Model):
@@ -98,6 +99,9 @@ class Project(models.Model):
                 for account in Account.objects.filter(person__groups=new_group, date_deleted__isnull=True):
                     add_account_to_project(account, self)
 
+        # log message
+        log(None, self, 2, 'Saved project')
+
         # save the current state
         self._group = self.group
     save.alters_data = True
@@ -169,6 +173,7 @@ class Project(models.Model):
         self.date_approved = datetime.datetime.today()
         self.approved_by = approved_by
         self.save()
+        log(None, self, 2, 'Activated by %s'%approved_by)
     activate.alters_data = True
 
     def deactivate(self, deleted_by):
@@ -177,6 +182,7 @@ class Project(models.Model):
         self.date_deleted = datetime.datetime.today()
         self.group.members.clear()
         self.save()
+        log(None, self, 2, 'Deactivated by %s'%deleted_by)
     deactivate.alters_data = True
 
     def get_usage(self, start, end, machine_category):
