@@ -29,6 +29,7 @@ from karaage.common.decorators import admin_required
 from karaage.applications.models import Applicant, Application
 from karaage.applications.forms import ApplicantForm
 from karaage.common import log
+import karaage.common as util
 
 
 @admin_required
@@ -94,3 +95,17 @@ def new_application(request):
     return render_to_response('applications/application_invite_admin.html',
             {},
             context_instance=RequestContext(request))
+
+
+@admin_required
+def application_logs(request, application_id):
+    obj = get_object_or_404(Application, pk=application_id)
+    return util.log_list(request, "Applications", reverse("kg_application_list"), obj.pid, obj)
+
+
+@admin_required
+def add_comment(request, application_id):
+    obj = get_object_or_404(Application, pk=application_id)
+    return util.add_comment(request, "Applications", reverse("kg_application_list"), obj.pid, obj)
+
+

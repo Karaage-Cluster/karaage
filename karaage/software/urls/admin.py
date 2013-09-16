@@ -43,11 +43,12 @@ urlpatterns = patterns('karaage.software.views.admin',
     url(r'^(?P<package_id>\d+)/version/edit/(?P<version_id>\d+)/$', 'add_edit_version', name='kg_softwareversion_edit'),
     url(r'^(?P<package_id>\d+)/version/stats/(?P<version_id>\d+)/$', 'version_stats', name='kg_softwareversion_stats'),
     url(r'^(?P<package_id>\d+)/version/delete/(?P<version_id>\d+)/$', 'delete_version', name='kg_softwareversion_delete'),
+    url(r'^(?P<software_id>\d+)/logs/$', 'software_logs', name='kg_software_logs'),
+    url(r'^(?P<software_id>\d+)/add_comment/$', 'add_comment', name='kg_software_add_comment'),
 
     url(r'^license/(?P<license_id>\d+)/$', 'license_detail', name='kg_softwarelicense_detail'),
     url(r'^license/(?P<license_id>\d+)/delete/$', 'license_delete', name='kg_softwarelicense_delete'),
 )
 
 urlpatterns += patterns('karaage.admin.views',
-    url(r'^(?P<object_id>\d+)/logs/$', 'log_detail', {'model': Software }, name='kg_software_logs'),
 )

@@ -23,11 +23,9 @@ urlpatterns = patterns('karaage.applications.views.admin',
 
     url(r'^$', 'application_list', name='kg_application_list'),
     url(r'^applicants/(?P<applicant_id>\d+)/$', 'applicant_edit', name='kg_applicant_edit'),
+    url(r'^(?P<application_id>\d+)/logs/$', 'application_logs', name='kg_application_logs'),
+    url(r'^(?P<application_id>\d+)/add_comment/$', 'add_comment', name='kg_application_add_comment'),
     url(r'^new/$', 'new_application', name='kg_application_new'),
-)
-
-urlpatterns += patterns('karaage.admin.views',
-    url(r'^(?P<object_id>\d+)/logs/$', 'log_detail', {'model': Application }, name='kg_application_logs'),
 )
 
 urlpatterns += patterns('karaage.applications.views.user',

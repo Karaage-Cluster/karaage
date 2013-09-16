@@ -15,11 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 
 from karaage.machines.models import Machine, MachineCategory
 from karaage.common.decorators import admin_required
+import karaage.common as util
 
 @admin_required
 def index(request):
@@ -68,6 +70,18 @@ def machine_projects(request, machine_id):
         'machines/machine_projects.html',
         {'machine': machine, 'project_list': project_list},
         context_instance=RequestContext(request))
+
+
+@admin_required
+def machine_logs(request, machine_id):
+    obj = get_object_or_404(Machine, pk=machine_id)
+    return util.log_list(request, "Machines", reverse("kg_machine_list"), unicode(obj), obj)
+
+
+@admin_required
+def add_comment(request, machine_id):
+    obj = get_object_or_404(Machine, pk=machine_id)
+    return util.add_comment(request, "Machines", reverse("kg_machine_list"), unicode(obj), obj)
 
 
 @admin_required

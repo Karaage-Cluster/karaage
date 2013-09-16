@@ -24,6 +24,8 @@ urlpatterns = patterns('karaage.machines.views',
     url(r'^(?P<machine_id>\d+)/edit/$', 'machine_edit', name='kg_machine_edit'),
     url(r'^(?P<machine_id>\d+)/accounts/$', 'machine_accounts', name='kg_machine_accounts'),
     url(r'^(?P<machine_id>\d+)/projects/$', 'machine_projects', name='kg_machine_projects'),
+    url(r'^(?P<machine_id>\d+)/logs/$', 'machine_logs', name='kg_machine_logs'),
+    url(r'^(?P<machine_id>\d+)/add_comment/$', 'add_comment', name='kg_machine_add_comment'),
     url(r'^categories/add/$', 'category_create', name='kg_machinecategory_add'),
     url(r'^categories/(?P<category_id>\d+)/edit/$', 'category_edit', name='kg_machinecategory_edit'),
 )

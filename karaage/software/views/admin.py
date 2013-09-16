@@ -34,6 +34,7 @@ from karaage.software.emails import send_software_request_approved_email
 from karaage.people.models import Person
 from karaage.machines.models import Machine
 from karaage.common import get_date_range, log
+import karaage.common as util
 
 
 @admin_required
@@ -142,6 +143,18 @@ def software_delete(request, package_id):
     return delete_object(request,
             post_delete_redirect=reverse('software_list'),
             object_id=package_id, model=Software)
+
+
+@admin_required
+def software_logs(request, software_id):
+    obj = get_object_or_404(Software, pk=software_id)
+    return util.log_list(request, "Software", reverse("kg_software_list"), unicode(obj), obj)
+
+
+@admin_required
+def add_comment(request, software_id):
+    obj = get_object_or_404(Software, pk=software_id)
+    return util.add_comment(request, "Software", reverse("kg_software_list"), unicode(obj), obj)
 
 
 @admin_required

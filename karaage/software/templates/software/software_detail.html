@@ -148,6 +148,8 @@
         </table>
     </div>
     {% endif %}
+
+    {% comments package %}
 </div>
 {% endblock %}
 
@@ -163,6 +165,7 @@
         {% endif %}
         <li><a href="{% url 'kg_software_stats' package.id %}">Statistics</a></li>
         <li><a href="{% url 'kg_software_logs' package.id %}">Logs</a></li>
+        <li><a href="{% url 'kg_software_add_comment' package.pk %}">Add comment</a></li>
         <li><a href="{% url 'kg_job_list' %}?software={{ package.id }}">Display all jobs</a></li>
         <li><a href="{% url 'kg_software_verbose' package.id %}">Verbose</a></li>
     </ul>

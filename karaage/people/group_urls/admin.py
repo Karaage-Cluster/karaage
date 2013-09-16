@@ -25,7 +25,3 @@ urlpatterns = patterns('karaage.people.views.admin',
     url(r'^add/$', 'add_group', name='kg_group_add'),
     (r'^(?P<group_name>[-.\w]+)/', include('karaage.people.group_urls.admin_group_detail')),
 )
-
-urlpatterns += patterns('karaage.admin.views',
-    url(r'^(?P<object_id>\d+)/logs/$', 'log_detail', {'model': Group }, name='kg_group_logs'),
-)

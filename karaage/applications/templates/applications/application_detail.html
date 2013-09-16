@@ -19,7 +19,8 @@
 <div class="module object-tools">
 <h2>Tasks</h2>
 <ul>
-    <li><a href="{% url 'kg_application_logs' application.id %}">Logs</a></li>
+    <li><a href="{% url 'kg_application_logs' application.pk %}">Logs</a></li>
+    <li class="addlink"><a href="{% url 'kg_application_add_comment' application.pk %}">Add comment</a></li>
 </ul>
 </div>
 {% endif %}
@@ -148,6 +149,8 @@
     <form method="post" action=".">{% csrf_token %}
         {% application_actions %}
     </form>
+
+    {% comments application %}
 </div>
 {% endblock %}
 

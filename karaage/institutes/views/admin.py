@@ -20,12 +20,14 @@ import datetime
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator
 from django.forms.models import inlineformset_factory
 
 from andsome.util.filterspecs import Filter, FilterBar
 
 from karaage.common.decorators import admin_required
+import karaage.common as util
 from karaage.usage.graphs import get_institute_trend_graph_url
 from karaage.institutes.models import Institute, InstituteQuota, InstituteDelegate
 from karaage.institutes.forms import InstituteForm, InstituteQuotaForm, DelegateForm
@@ -187,3 +189,12 @@ def projects_by_cap_used(request):
     return project_list(request, queryset=Project.active.all(), paginate=False, template_name='pbsmoab/project_capsort.html')
     
     
+def institute_logs(request, institute_id):
+    obj = get_object_or_404(Institute, pk=institute_id)
+    return util.log_list(request, "Institutes", reverse("kg_institute_list"), unicode(obj), obj)
+
+
+@admin_required
+def add_comment(request, institute_id):
+    obj = get_object_or_404(Institute, pk=institute_id)
+    return util.add_comment(request, "Institutes", reverse("kg_institute_list"), unicode(obj), obj)

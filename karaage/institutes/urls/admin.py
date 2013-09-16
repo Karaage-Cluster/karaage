@@ -30,5 +30,7 @@ urlpatterns = patterns('karaage.institutes.views.admin',
     url(r'^(?P<institute_id>\d+)/users/$', 'institute_detail', name='kg_institute_users'),
     url(r'^(?P<institute_id>\d+)/projects/$', 'institute_detail', name='kg_institute_projects'),
     url(r'^(?P<institute_id>\d+)/quota/add/$', 'institutequota_add', name='kg_institutequota_add'),
+    url(r'^(?P<institute_id>[-.\w]+)/logs/$', 'institute_logs', name='kg_institute_logs'),
+    url(r'^(?P<institute_id>[-.\w]+)/add_comment/$', 'add_comment', name='kg_institute_add_comment'),
 
 )

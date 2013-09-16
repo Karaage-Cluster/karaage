@@ -24,6 +24,8 @@ urlpatterns = patterns('karaage.people.views.admin_group_detail',
     url(r'^delete/$', 'delete_group', name='kg_group_delete'),
     url(r'^add/$', 'add_group_member', name='kg_group_add_person'),
     url(r'^remove/(?P<username>[-.\w]+)/$', 'remove_group_member', name='kg_group_remove_person'),
+    url(r'^logs/$', 'group_logs', name='kg_group_logs'),
+    url(r'^add_comment/$', 'add_comment', name='kg_group_add_comment'),
 )
 
 urlpatterns += patterns('karaage.people.views.admin',

@@ -93,6 +93,7 @@
     </div>
     {% endif %}
 
+    {% comments group %}
 </div>
 {% endblock %}
 
@@ -104,7 +105,8 @@
     <ul>
         <li class="changelink"><a href="{% url 'kg_group_edit' group.name %}">Edit details</a></li>
         <li class="deletelink"><a href="{% url 'kg_group_delete' group.name %}">Delete</a></li>
-        <li><a href="{% url 'kg_group_logs' group.id %}">Logs</a></li>
+        <li><a href="{% url 'kg_group_logs' group.name %}">Logs</a></li>
+        <li class="addlink"><a href="{% url 'kg_group_add_comment' group.name %}">Add comment</a></li>
         <li><a href="{% url 'kg_group_verbose' group.name %}">Verbose</a></li>
     </ul>
 </div>

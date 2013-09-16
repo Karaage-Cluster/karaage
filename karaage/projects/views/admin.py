@@ -238,18 +238,9 @@ def over_quota(request):
 
 @admin_required
 def project_logs(request, project_id):
+    obj = get_object_or_404(Project, pk=project_id)
+    return util.log_list(request, "Projects", reverse("kg_project_list"), obj.pid, obj)
 
-    project = get_object_or_404(Project, pk=project_id)
-
-    log_list = LogEntry.objects.filter(
-        content_type=ContentType.objects.get_for_model(project.__class__),
-        object_id=project_id
-    )
-
-    short = True
-    return render_to_response('log_list.html',
-                              {'log_list': log_list, 'short': short, 'project': project},
-                              context_instance=RequestContext(request))
 
 @admin_required
 def add_comment(request, project_id):

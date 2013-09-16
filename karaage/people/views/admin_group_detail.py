@@ -24,6 +24,7 @@ from django.contrib import messages
 from karaage.common.decorators import admin_required
 from karaage.people.models import Person, Group
 from karaage.people.forms import AddGroupMemberForm
+import karaage.common as util
 
 
 @admin_required
@@ -62,6 +63,18 @@ def group_verbose(request, group_name):
     group_details = get_group_details(group)
 
     return render_to_response('people/group_verbose.html', locals(), context_instance=RequestContext(request))
+
+
+@admin_required
+def group_logs(request, group_name):
+    obj = get_object_or_404(Group, name=group_name)
+    return util.log_list(request, "Groups", reverse("kg_group_list"), unicode(obj), obj)
+
+
+@admin_required
+def add_comment(request, group_name):
+    obj = get_object_or_404(Group, name=group_name)
+    return util.add_comment(request, "Groups", reverse("kg_group_list"), unicode(obj), obj)
 
 
 @admin_required

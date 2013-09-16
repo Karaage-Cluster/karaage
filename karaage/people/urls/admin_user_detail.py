@@ -28,8 +28,8 @@ urlpatterns = patterns('karaage.people.views.admin_user_detail',
     url(r'^lock/$', 'lock_person', name='kg_person_lock'),
     url(r'^unlock/$', 'unlock_person', name='kg_person_unlock'),
     url(r'^bounced_email/$', 'bounced_email', name='kg_person_bounce'),
+    url(r'^logs/$', 'person_logs', name='kg_person_logs'),
     url(r'^add_comment/$', 'add_comment', name='kg_person_add_comment'),
-
 )
 
 urlpatterns += patterns('karaage.people.views.admin',

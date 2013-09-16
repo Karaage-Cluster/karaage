@@ -20,7 +20,6 @@ from django.conf.urls import *
 from karaage.projects.models import Project
 
 urlpatterns = patterns('karaage.projects.views.admin',
-
     url(r'^$', 'project_list', name='kg_project_list'),
     url(r'^add/$', 'add_edit_project', name='kg_add_project'),
     url(r'^no_users/$', 'no_users', name='kg_empty_projects_list'),
@@ -37,13 +36,7 @@ urlpatterns = patterns('karaage.projects.views.admin',
     url(r'^(?P<project_id>[-.\w]+)/edit/$', 'add_edit_project', name='kg_edit_project'),
     url(r'^(?P<project_id>[-.\w]+)/delete/$', 'delete_project', name='kg_delete_project'),
     url(r'^(?P<project_id>[-.\w]+)/remove_user/(?P<username>[-.\w]+)/$', 'remove_user', name='kg_remove_project_member'),
+    url(r'^(?P<project_id>[-.\w]+)/logs/$', 'project_logs', name='kg_project_logs'),
     url(r'^(?P<project_id>[-.\w]+)/add_comment/$', 'add_comment', name='kg_project_add_comment'),
     url(r'^(?P<project_id>[-.\w]+)/quota/add/$', 'projectquota_add', name='kg_projectquota_add'),
-
 )
-
-urlpatterns += patterns('karaage.admin.views',
-
-    url(r'^(?P<object_id>[-.\w]+)/logs/$', 'log_detail', {'model': Project }),
-)
-

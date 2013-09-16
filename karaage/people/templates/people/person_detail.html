@@ -232,10 +232,9 @@
         <li class="changelink"><a href="{% url 'kg_person_edit' person.username %}">Edit details</a></li>
         <li class="addlink"><a href="{% url 'kg_person_add_account' person.username %}">Add user account</a></li>
         <li class="deletelink"><a href="{%url 'kg_person_delete' person.username %}">Delete</a></li>
-        {% endif %}
-
-        <li><a href="{% url 'kg_person_logs' person.id %}">Logs</a></li>
+        <li><a href="{% url 'kg_person_logs' person.username %}">Logs</a></li>
         <li class="addlink"><a href="{% url 'kg_person_add_comment' person.username %}">Add comment</a></li>
+        {% endif %}
 
         {% if person.is_active %}
         <li><a href="{% url 'kg_person_verbose' person.username %}">Verbose</a></li>
