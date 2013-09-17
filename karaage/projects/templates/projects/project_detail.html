@@ -52,7 +52,6 @@
         </table>
         <table id="hidden" style="display: none">
         <tr><td>Additional Req:</td><td>{{ project.additional_req|linebreaks }}</td></tr>
-        <tr><td>Machine Cat:</td><td>{% for mc in project.machine_categories.all %}{{mc}}{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
         {% if project.approved_by %}
         <tr><td>Approved by:</td><td><a href="{{ project.approved_by.get_absolute_url }}">{{ project.approved_by }}</a></td></tr>
         {% endif %}
