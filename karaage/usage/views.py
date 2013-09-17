@@ -223,7 +223,7 @@ def institute_usage(request, institute_id, machine_category_id):
 def project_usage(request, project_id, machine_category_id):
 
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
-    project = get_object_or_404(Project, pk=project_id)
+    project = get_object_or_404(Project, pid=project_id)
 
     if not project.can_view(request.user) and not getattr(settings, 'USAGE_IS_PUBLIC', False):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
@@ -277,7 +277,7 @@ def unknown_usage(request):
     if request.method == 'POST':
 
         try:
-            project_s = Project.objects.get(pk=request.POST['project'])
+            project_s = Project.objects.get(pid=request.POST['project'])
         except Project.DoesNotExist:
             project_s = False
         try:

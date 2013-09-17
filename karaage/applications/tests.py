@@ -92,7 +92,7 @@ class UserApplicationTestCase(TestCase):
         # SUBMIT PROJECT DETAILS
         form_data = {
             'application_type': 'U',
-            'project': 'TestProject1',
+            'project': 1,
             'aup': True,
             'make_leader': False,
             'additional_req': 'Meow',

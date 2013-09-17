@@ -46,7 +46,7 @@ def add_edit_project(request, project_id=None):
         project = None
         flag = 1
     else:
-        project = get_object_or_404(Project, pk=project_id)
+        project = get_object_or_404(Project, pid=project_id)
         flag = 2
 
     if request.method == 'POST':
@@ -84,7 +84,7 @@ def add_edit_project(request, project_id=None):
 @admin_required
 def delete_project(request, project_id):
 
-    project = get_object_or_404(Project, pk=project_id)
+    project = get_object_or_404(Project, pid=project_id)
 
     query = Account.objects.filter(date_deleted__isnull=True, default_project=project)
 
@@ -109,7 +109,7 @@ def delete_project(request, project_id):
 @admin_required
 def project_detail(request, project_id):
 
-    project = get_object_or_404(Project, pk=project_id)
+    project = get_object_or_404(Project, pid=project_id)
 
     form = AddPersonForm(request.POST or None)
     if request.method == 'POST':
@@ -127,7 +127,7 @@ def project_detail(request, project_id):
 
 @admin_required
 def project_verbose(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
+    project = get_object_or_404(Project, pid=project_id)
 
     from karaage.datastores import get_project_details
     project_details = get_project_details(project)
@@ -188,7 +188,7 @@ def project_list(request, queryset=Project.objects.select_related(), template_na
 @admin_required
 def remove_user(request, project_id, username):
 
-    project = get_object_or_404(Project, pk=project_id)
+    project = get_object_or_404(Project, pid=project_id)
     person = get_object_or_404(Person, username=username)
 
     query = person.account_set.filter(date_deleted__isnull=True, default_project=project)
@@ -239,20 +239,20 @@ def over_quota(request):
 
 @admin_required
 def project_logs(request, project_id):
-    obj = get_object_or_404(Project, pk=project_id)
+    obj = get_object_or_404(Project, pid=project_id)
     return util.log_list(request, "Projects", reverse("kg_project_list"), obj.pid, obj)
 
 
 @admin_required
 def add_comment(request, project_id):
-    obj = get_object_or_404(Project, pk=project_id)
+    obj = get_object_or_404(Project, pid=project_id)
     return util.add_comment(request, "Projects", reverse("kg_project_list"), obj.pid, obj)
 
 
 @admin_required
 def projectquota_add(request, project_id):
 
-    project = get_object_or_404(Project, pk=project_id)
+    project = get_object_or_404(Project, pid=project_id)
 
     project_chunk = ProjectQuota()
     project_chunk.project = project

@@ -33,7 +33,7 @@ def survey(request, project_id):
     
     person = request.user
     
-    project = get_object_or_404(Project, pk=project_id)
+    project = get_object_or_404(Project, pid=project_id)
 
     if not person in project.leaders.all():
         if not request.user.is_admin:

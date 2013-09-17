@@ -28,30 +28,8 @@ from karaage.projects.managers import ActiveProjectManager, DeletedProjectManage
 from karaage.common import log
 
 
-class ProjectTmp(models.Model):
-    pid = models.CharField(max_length=50)
-    name = models.CharField(max_length=200)
-    group = models.ForeignKey(Group)
-    institute = models.ForeignKey(Institute, related_name='project_tmp')
-    leaders = models.ManyToManyField(Person, related_name='leaders_tmp')
-    description = models.TextField(null=True, blank=True)
-    is_approved = models.BooleanField()
-    start_date = models.DateField(default=datetime.datetime.today)
-    end_date = models.DateField(null=True, blank=True)
-    additional_req = models.TextField(null=True, blank=True)
-    is_active = models.BooleanField()
-    approved_by = models.ForeignKey(Person, related_name='project_approver_tmp', null=True, blank=True, editable=False)
-    date_approved = models.DateField(null=True, blank=True, editable=False)
-    deleted_by = models.ForeignKey(Person, related_name='project_deletor_tmp', null=True, blank=True, editable=False)
-    date_deleted = models.DateField(null=True, blank=True, editable=False)
-    last_usage = models.DateField(null=True, blank=True, editable=False)
-    objects = models.Manager()
-    active = ActiveProjectManager()
-    deleted = DeletedProjectManager()
-
-
 class Project(models.Model):
-    pid = models.CharField(max_length=50, primary_key=True)
+    pid = models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=200)
     group = models.ForeignKey(Group)
     institute = models.ForeignKey(Institute)
@@ -235,7 +213,6 @@ class Project(models.Model):
 
 class ProjectQuota(models.Model):
     project = models.ForeignKey(Project)
-    project_tmp = models.ForeignKey(ProjectTmp, null=True)
     cap = models.IntegerField(null=True, blank=True)
     machine_category = models.ForeignKey(MachineCategory)
 

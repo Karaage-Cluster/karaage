@@ -218,7 +218,7 @@ class UserTestCase(TestCase):
             'username': 'samtest',
             'password1': 'Exaiquouxei0',
             'password2': 'Exaiquouxei0',
-            'project': 'TestProject1',
+            'project': 1,
             'needs_account': True,
             'machine_category': 1,
         }
@@ -316,7 +316,7 @@ class UserTestCase(TestCase):
         self.client.login(username='kgsuper', password='aq12ws')
         person = Person.objects.get(username='kgtestuser3')
         self.assertEqual(person.is_active, True)
-        self.assertEqual(person.groups.filter(project__gt=2).count(), 1)
+        self.assertEqual(person.projects.count(), 1)
         self.assertEqual(person.account_set.count(), 1)
         self.assertEqual(person.account_set.all()[0].date_deleted, None)
         luser = self._datastore._accounts().get(uid='kgtestuser3')
@@ -383,7 +383,7 @@ class UserTestCase(TestCase):
 
         person = Person.objects.get(pk=Person.objects.count())
         ua = person.account_set.all()[0]
-        project = Project.objects.get(pk='test2')
+        project = Project.objects.get(pid='test2')
        
         self.assertEqual(person.project_set.count(), 2)
         self.assertEqual(project, ua.default_project)

@@ -42,18 +42,6 @@ class LookupChannel(ajax_select.LookupChannel):
 class ProjectLookup(LookupChannel):
     model = Project
 
-    def get_objects(self,ids):
-        """ Get the currently selected objects when editing an existing model """
-        # return in the same order as passed in here # this will be however the
-        # related objects Manager returns them # which is not guaranteed to be the same
-        # order they were in when you last edited # see OrdredManyToMany.md
-
-        # we have to override this function because the base function assumes ids is
-        # a list of integers, and our pk is a string.
-        ids = [id for id in ids]
-        things = self.model.objects.in_bulk(ids)
-        return [things[aid] for aid in ids if things.has_key(aid)]
-
     def get_query(self, q, request):
         """ return a query set searching for the query string q
             either implement this method yourself or set the search_field

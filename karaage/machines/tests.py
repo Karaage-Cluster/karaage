@@ -71,7 +71,7 @@ class AccountTestCase(TestCase):
         
         form_data = {
             'machine_category': 1,
-            'default_project': 'TestProject1',
+            'default_project': 1,
             }
             
         response = self.client.post(reverse('kg_person_add_account', args=['samtest2']), form_data)
@@ -82,7 +82,7 @@ class AccountTestCase(TestCase):
     def test_fail_add_accounts_username(self):
         form_data = {
             'machine_category': 1,
-            'default_project': 'TestProject1',
+            'default_project': 1,
             }          
         response = self.client.post(reverse('kg_person_add_account', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
@@ -94,14 +94,14 @@ class AccountTestCase(TestCase):
     def test_fail_add_accounts_project(self):
         form_data = {
             'machine_category': 1,
-            'default_project': 'TestProject1',
+            'default_project': 1,
             }          
         response = self.client.post(reverse('kg_person_add_account', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
 
         form_data = {
             'machine_category': 2,
-            'default_project': 'TestProject1',
+            'default_project': 1,
             }
 
         response = self.client.post(reverse('kg_person_add_account', args=['samtest2']), form_data)
@@ -115,7 +115,7 @@ class AccountTestCase(TestCase):
         form_data = {
             'username': 'samtest2',
             'machine_category': 1,
-            'default_project': 'TestProject1',
+            'default_project': 1,
             }
             
         response = self.client.post(reverse('kg_person_add_account', args=['samtest2']), form_data)

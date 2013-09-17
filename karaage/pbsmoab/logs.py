@@ -71,7 +71,7 @@ def parse_logs(log_list, date, machine_name, log_type):
 
         if 'project' in data:
             try:
-                project = Project.objects.get(pk=data['project'])
+                project = Project.objects.get(pid=data['project'])
             except Project.DoesNotExist:
                 output.append("Couldn't find specified project %s, using default project" % data['project'])
                 fail = fail + 1

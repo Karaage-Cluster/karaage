@@ -233,7 +233,7 @@ def wrong_default_list(request):
 @admin_required
 def make_default(request, account_id, project_id):
     account = get_object_or_404(Account, pk=account_id)
-    project = get_object_or_404(Project, pk=project_id)
+    project = get_object_or_404(Project, pid=project_id)
 
     if request.method != 'POST':
         return HttpResponseRedirect(account.get_absolute_url())

@@ -753,7 +753,7 @@ class StateStepProject(State):
         project = None
         if project_id:
             try:
-                project = Project.objects.get(pk=project_id)
+                project = Project.objects.get(pid=project_id)
             except Project.DoesNotExist:
                 pass
 
@@ -1248,7 +1248,7 @@ def send_invitation(request, project_id):
     """
 
     person = request.user
-    project = get_object_or_404(Project, pk=project_id)
+    project = get_object_or_404(Project, pid=project_id)
 
     if person not in project.leaders.all():
         return HttpResponseBadRequest("<h1>Bad Request</h1>")
@@ -1264,7 +1264,7 @@ def admin_send_invitation(request, project_id=None):
     """
     project_id = None
     if project_id is not None:
-        project = get_object_or_404(Project, pk=project_id)
+        project = get_object_or_404(Project, pid=project_id)
 
     override_auth = { 'is_admin': True }
     return _send_invitation(request, project_id,

@@ -20,7 +20,7 @@ import warnings
 from django.db import models
 
 from karaage.machines.models import Account, Machine
-from karaage.projects.models import Project, ProjectTmp
+from karaage.projects.models import Project
 from karaage.software.models import SoftwareVersion
 
 
@@ -38,8 +38,7 @@ class Queue(models.Model):
 class CPUJob(models.Model):
     account = models.ForeignKey(Account, blank=True, null=True)
     username = models.CharField(max_length=50, blank=True, null=True)
-    project = models.ForeignKey(Project, blank=True, null=True)
-    project_tmp = models.ForeignKey(ProjectTmp, null=True, blank=True)
+    project = models.ForeignKey(Project, null=True, blank=True)
     machine = models.ForeignKey(Machine, blank=True, null=True)
     date = models.DateField(db_index=True, blank=True, null=True)
     queue = models.ForeignKey(Queue, blank=True, null=True)

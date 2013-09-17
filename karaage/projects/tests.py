@@ -111,7 +111,7 @@ class ProjectTestCase(TestCase):
         self.client.login(username='kgsuper', password='aq12ws')
 
         # get project details
-        project = Project.objects.get(pk='TestProject1')
+        project = Project.objects.get(pid='TestProject1')
         self.assertEqual(project.group.members.count(), 1)
         response = self.client.get(reverse('kg_project_detail', args=[project.pid]))
         self.failUnlessEqual(response.status_code, 200)
@@ -121,7 +121,7 @@ class ProjectTestCase(TestCase):
         new_user = Person.objects.get(username='kgtestuser2')
         response = self.client.post(reverse('kg_project_detail', args=[project.pid]), { 'person': new_user.id} )
         self.failUnlessEqual(response.status_code, 302)
-        project = Project.objects.get(pk='TestProject1')
+        project = Project.objects.get(pid='TestProject1')
         self.assertEqual(project.group.members.count(), 2)
         lgroup = self._datastore._groups().get(cn=project.pid)
         self._datastore._accounts().get(pk='kgtestuser2')
@@ -133,7 +133,7 @@ class ProjectTestCase(TestCase):
             account.save()
         response = self.client.post(reverse('kg_remove_project_member', args=[project.pid, new_user.username]))
         self.failUnlessEqual(response.status_code, 302)
-        project = Project.objects.get(pk='TestProject1')
+        project = Project.objects.get(pid='TestProject1')
         self.assertEqual(project.group.members.count(), 1)
         lgroup = self._datastore._groups().get(cn=project.pid)
         self.assertRaises(self._datastore._account.DoesNotExist, lgroup.secondary_accounts.get, pk='kgtestuser2')
@@ -142,7 +142,7 @@ class ProjectTestCase(TestCase):
 
         self.client.login(username='kgsuper', password='aq12ws')
 
-        project = Project.objects.get(pk='TestProject1')
+        project = Project.objects.get(pid='TestProject1')
         for account in Account.objects.filter(default_project=project):
             account.default_project=None
             account.save()
@@ -152,7 +152,7 @@ class ProjectTestCase(TestCase):
         response = self.client.post(reverse('kg_delete_project', args=[project.pid]))
         self.failUnlessEqual(response.status_code, 302)
         
-        project = Project.objects.get(pk='TestProject1')
+        project = Project.objects.get(pid='TestProject1')
 
         self.assertEqual(project.is_active, False)
         self.assertEqual(project.group.members.count(), 0)
@@ -164,7 +164,7 @@ class ProjectTestCase(TestCase):
         pass
 
     def test_admin_edit_project(self):
-        project = Project.objects.get(pk='TestProject1')
+        project = Project.objects.get(pid='TestProject1')
         self.assertEqual(project.is_active, True)
         self.assertEqual(project.name, 'Test Project 1')
         self.assertTrue(Person.objects.get(pk=1) in project.leaders.all())
@@ -184,7 +184,7 @@ class ProjectTestCase(TestCase):
 
         response = self.client.post(reverse('kg_edit_project', args=['TestProject1']), form_data)
         self.failUnlessEqual(response.status_code, 302)   
-        project = Project.objects.get(pk='TestProject1')
+        project = Project.objects.get(pid='TestProject1')
         self.assertEqual(project.is_active, True)
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
         self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())    

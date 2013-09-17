@@ -32,7 +32,7 @@ from karaage.common import log
 @login_required
 def add_edit_project(request, project_id):
 
-    project = get_object_or_404(Project, pk=project_id)
+    project = get_object_or_404(Project, pid=project_id)
     if not request.user in project.leaders.all():
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
@@ -53,7 +53,7 @@ def add_edit_project(request, project_id):
 
 @login_required
 def project_detail(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
+    project = get_object_or_404(Project, pid=project_id)
 
     if not project.can_view(request.user):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
@@ -80,7 +80,7 @@ def institute_projects_list(request, institute_id):
 @login_required
 def remove_user(request, project_id, username):
 
-    project = get_object_or_404(Project, pk=project_id)
+    project = get_object_or_404(Project, pid=project_id)
     person = get_object_or_404(Person, username=username)
 
     if not request.user in project.leaders.all():
