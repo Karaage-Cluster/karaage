@@ -11,7 +11,7 @@
     <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
     <a href="{% url 'kg_project_list' %}">Projects</a>&nbsp;›
     {% if project %}
-        <a href="{% url 'kg_project_detail' project.pk %}">{{ project.pid }}</a>&nbsp;›
+        <a href="{% url 'kg_project_detail' project.pid %}">{{ project.pid }}</a>&nbsp;›
         Edit
     {% else %}
         Create Project

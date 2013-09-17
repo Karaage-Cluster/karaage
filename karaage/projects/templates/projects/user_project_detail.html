@@ -40,7 +40,7 @@
         <h2>Management tasks</h2>
         <p><a class="addlink" href="{% url 'kg_application_invite' project.pid %}">Invite a new user</a></p>
         <p><a class="changelink" href="{% url 'kg_project_edit' project.pid %}">Edit</a></p>
-        <p>Usage: {% for pc in project.projectquota_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk project.pk %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+        <p>Usage: {% for pc in project.projectquota_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk project.pid %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
     </div>
     {% endif %}
 

@@ -43,7 +43,7 @@
                 <tr class="{% cycle row1,row2 %}">
                     <td>{{ forloop.counter }}</td>
                     <td><a href="{{ u.person.get_absolute_url }}">{{ u.person }}</a></td>
-                    <td><a href="{% url 'kg_usage_project' machine_category.pk u.project.pk %}{% url_with_param start=start end=end %}">{{ u.project|truncatewords:"6" }}</a></td>
+                    <td><a href="{% url 'kg_usage_project' machine_category.pk u.project.pid %}{% url_with_param start=start end=end %}">{{ u.project|truncatewords:"6" }}</a></td>
                     <td class="right">{{ u.usage|timeformat }}</td>
                     <td class="right">{{ u.jobs|intcomma }}</td>
                     <td class="right">{{ u.percent|floatformat:"2" }}%</td>

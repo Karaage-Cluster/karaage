@@ -165,9 +165,9 @@
 <div class="module object-tools">
     <h2>Tasks</h2>
     <ul>
-        <li>Usage: {% for pc in project.projectquota_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk project.pk %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
-        {% if request.user.is_admin %}<li><a href="{% url 'kg_project_logs' project.pk %}">View logs</a></li>{% endif %}
-        {% if request.user.is_admin %}<li class="addlink"><a href="{% url 'kg_project_add_comment' project.pk %}">Add comment</a></li>{% endif %}
+        <li>Usage: {% for pc in project.projectquota_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk project.pid %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
+        {% if request.user.is_admin %}<li><a href="{% url 'kg_project_logs' project.pid %}">View logs</a></li>{% endif %}
+        {% if request.user.is_admin %}<li class="addlink"><a href="{% url 'kg_project_add_comment' project.pid %}">Add comment</a></li>{% endif %}
         <li><a href="{% url 'kg_job_list' %}?project={{ project.pid }}">Display all jobs</a></li>
         {% if request.user.is_admin %}<li><a class="changelink" href="edit/">Edit project details</a></li>{% endif %}
         {% if request.user.is_admin and project.is_active %}<li><a class="deletelink" href="delete/">Delete project</a></li>{% endif %}
