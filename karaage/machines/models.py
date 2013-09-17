@@ -169,7 +169,7 @@ class Account(models.Model):
         return ua
 
     def project_list(self):
-        return self.person.projects.filter(machine_categories=self.machine_category)
+        return self.person.projects.filter(projectquota__machine_category=self.machine_category)
 
     def get_latest_usage(self):
         try:
