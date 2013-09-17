@@ -9,7 +9,10 @@
 {% block breadcrumbs %}
 <div class="breadcrumbs">
     <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
-    Application
+    {% if auth.is_admin %}
+    <a href="{% url 'kg_application_list' %}">Applications</a>&nbsp;›
+    {% endif %}
+    {{ application }}
 </div>
 {% endblock %}
 

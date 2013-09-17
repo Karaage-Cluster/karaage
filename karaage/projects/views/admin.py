@@ -240,13 +240,19 @@ def over_quota(request):
 @admin_required
 def project_logs(request, project_id):
     obj = get_object_or_404(Project, pid=project_id)
-    return util.log_list(request, "Projects", reverse("kg_project_list"), obj.pid, obj)
+    breadcrumbs = []
+    breadcrumbs.append( ("Projects", reverse("kg_project_list")) )
+    breadcrumbs.append( (unicode(obj.pid), reverse("kg_project_detail", args=[obj.pid])) )
+    return util.log_list(request, breadcrumbs, obj)
 
 
 @admin_required
 def add_comment(request, project_id):
     obj = get_object_or_404(Project, pid=project_id)
-    return util.add_comment(request, "Projects", reverse("kg_project_list"), obj.pid, obj)
+    breadcrumbs = []
+    breadcrumbs.append( ("Projects", reverse("kg_project_list")) )
+    breadcrumbs.append( (unicode(obj.pid), reverse("kg_project_detail", args=[obj.pid])) )
+    return util.add_comment(request, breadcrumbs, obj)
 
 
 @admin_required

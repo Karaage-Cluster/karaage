@@ -96,6 +96,14 @@ class Machine(models.Model):
 
         # log message
         log(None, self, 2, 'Saved machine')
+        log(None, self.category, 2, 'Saved machine %s' % self)
+
+    def delete(self, *args, **kwargs):
+        # save the object
+        super(Machine, self).delete(*args, **kwargs)
+
+        # log message
+        log(None, self.category, 2, 'Deleted machine %s' % self)
 
     class Meta:
         db_table = 'machine'
@@ -156,6 +164,8 @@ class Account(models.Model):
 
         log(None, person, 1,
             'Created account on %s' % machine_category)
+        log(None, machine_category, 1,
+            'Created account')
         return ua
 
     def project_list(self):

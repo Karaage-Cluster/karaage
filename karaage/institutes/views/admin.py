@@ -195,10 +195,16 @@ def institutequota_delete(request, institutequota_id):
 @admin_required
 def institute_logs(request, institute_id):
     obj = get_object_or_404(Institute, pk=institute_id)
-    return util.log_list(request, "Institutes", reverse("kg_institute_list"), unicode(obj), obj)
+    breadcrumbs = []
+    breadcrumbs.append( ("Institutes", reverse("kg_institute_list")) )
+    breadcrumbs.append( (unicode(obj), reverse("kg_institute_detail", args=[obj.pk])) )
+    return util.log_list(request, breadcrumbs, obj)
 
 
 @admin_required
 def add_comment(request, institute_id):
     obj = get_object_or_404(Institute, pk=institute_id)
-    return util.add_comment(request, "Institutes", reverse("kg_institute_list"), unicode(obj), obj)
+    breadcrumbs = []
+    breadcrumbs.append( ("Institutes", reverse("kg_institute_list")) )
+    breadcrumbs.append( (unicode(obj), reverse("kg_institute_detail", args=[obj.pk])) )
+    return util.add_comment(request, breadcrumbs, obj)

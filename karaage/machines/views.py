@@ -75,13 +75,21 @@ def machine_projects(request, machine_id):
 @admin_required
 def machine_logs(request, machine_id):
     obj = get_object_or_404(Machine, pk=machine_id)
-    return util.log_list(request, "Machines", reverse("kg_machine_list"), unicode(obj), obj)
+    breadcrumbs = []
+    breadcrumbs.append( ("Machines", reverse("kg_machine_list")) )
+    breadcrumbs.append( (unicode(obj.category), reverse("kg_machinecategory_detail", args=[obj.category.pk])) )
+    breadcrumbs.append( (unicode(obj), reverse("kg_machine_detail", args=[obj.pk])) )
+    return util.log_list(request, breadcrumbs, obj)
 
 
 @admin_required
 def machine_add_comment(request, machine_id):
     obj = get_object_or_404(Machine, pk=machine_id)
-    return util.add_comment(request, "Machines", reverse("kg_machine_list"), unicode(obj), obj)
+    breadcrumbs = []
+    breadcrumbs.append( ("Machines", reverse("kg_machine_list")) )
+    breadcrumbs.append( (unicode(obj.category), reverse("kg_machinecategory_detail", args=[obj.category.pk])) )
+    breadcrumbs.append( (unicode(obj), reverse("kg_machine_detail", args=[obj.pk])) )
+    return util.add_comment(request, breadcrumbs, obj)
 
 
 @admin_required
@@ -108,11 +116,17 @@ def category_detail(request, category_id):
 @admin_required
 def category_logs(request, category_id):
     obj = get_object_or_404(MachineCategory, pk=category_id)
-    return util.log_list(request, "Machines", reverse("kg_machine_list"), unicode(obj), obj)
+    breadcrumbs = []
+    breadcrumbs.append( ("Machines", reverse("kg_machine_list")) )
+    breadcrumbs.append( (unicode(obj), reverse("kg_machinecategory_detail", args=[obj.pk])) )
+    return util.log_list(request, breadcrumbs, obj)
 
 
 @admin_required
 def category_add_comment(request, category_id):
     obj = get_object_or_404(MachineCategory, pk=category_id)
-    return util.add_comment(request, "Machines", reverse("kg_machine_list"), unicode(obj), obj)
+    breadcrumbs = []
+    breadcrumbs.append( ("Machines", reverse("kg_machine_list")) )
+    breadcrumbs.append( (unicode(obj), reverse("kg_machinecategory_detail", args=[obj.pk])) )
+    return util.add_comment(request, breadcrumbs, obj)
 

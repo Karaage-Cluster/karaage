@@ -167,10 +167,16 @@ def user_job_list(request, username):
 @admin_required
 def person_logs(request, username):
     obj = get_object_or_404(Person, username=username)
-    return util.log_list(request, "People", reverse("kg_person_list"), unicode(obj), obj)
+    breadcrumbs = []
+    breadcrumbs.append( ("People", reverse("kg_person_list")) )
+    breadcrumbs.append( (unicode(obj), reverse("kg_person_detail", args=[obj.username])) )
+    return util.log_list(request, breadcrumbs, obj)
 
 
 @admin_required
 def add_comment(request, username):
     obj = get_object_or_404(Person, username=username)
-    return util.add_comment(request, "People", reverse("kg_person_list"), unicode(obj), obj)
+    breadcrumbs = []
+    breadcrumbs.append( ("People", reverse("kg_person_list")) )
+    breadcrumbs.append( (unicode(obj), reverse("kg_person_detail", args=[obj.username])) )
+    return util.add_comment(request, breadcrumbs, obj)

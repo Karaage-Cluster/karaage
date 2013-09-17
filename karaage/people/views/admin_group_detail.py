@@ -68,13 +68,19 @@ def group_verbose(request, group_name):
 @admin_required
 def group_logs(request, group_name):
     obj = get_object_or_404(Group, name=group_name)
-    return util.log_list(request, "Groups", reverse("kg_group_list"), unicode(obj), obj)
+    breadcrumbs = []
+    breadcrumbs.append( ("Groups", reverse("kg_group_list")) )
+    breadcrumbs.append( (unicode(obj), reverse("kg_group_detail", args=[obj.name])) )
+    return util.log_list(request, breadcrumbs, obj)
 
 
 @admin_required
 def add_comment(request, group_name):
     obj = get_object_or_404(Group, name=group_name)
-    return util.add_comment(request, "Groups", reverse("kg_group_list"), unicode(obj), obj)
+    breadcrumbs = []
+    breadcrumbs.append( ("Groups", reverse("kg_group_list")) )
+    breadcrumbs.append( (unicode(obj), reverse("kg_group_detail", args=[obj.name])) )
+    return util.add_comment(request, breadcrumbs, obj)
 
 
 @admin_required

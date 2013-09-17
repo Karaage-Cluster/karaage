@@ -95,7 +95,7 @@ def new_random_token():
     return sha1("%s%s" % (randrange(0, MAX_KEY), settings.SECRET_KEY)).hexdigest()
 
 
-def log_list(request, content_type, content_url, short_title, obj):
+def log_list(request, breadcrumbs, obj):
     log_list = LogEntry.objects.filter(
         content_type=ContentType.objects.get_for_model(obj.__class__),
         object_id=obj.pk
@@ -116,13 +116,12 @@ def log_list(request, content_type, content_url, short_title, obj):
             'log_list.html',
             { 'short': True, 'obj': obj,
                 'page_obj': page_obj,
-                'content_type': content_type,
-                'content_url': content_url,
-                'short_title': short_title },
+                'breadcrumbs': breadcrumbs,
+            },
             context_instance=RequestContext(request))
 
 
-def add_comment(request, content_type, content_url, short_title, obj):
+def add_comment(request, breadcrumbs, obj):
     form = CommentForm(data=request.POST or None, obj=obj, instance=None)
     if request.method == 'POST':
         form.save(request=request)
@@ -131,9 +130,8 @@ def add_comment(request, content_type, content_url, short_title, obj):
     return render_to_response(
             'add_comment.html',
             { 'form': form, 'obj': obj,
-                'content_type': content_type,
-                'content_url': content_url,
-                'short_title': short_title },
+                'breadcrumbs': breadcrumbs,
+            },
             context_instance=RequestContext(request))
 
 

@@ -8,6 +8,7 @@
 <div class="breadcrumbs">
     <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
     <a href="{% url 'kg_machine_list' %}">Machines</a>&nbsp;›
+    <a href="{% url 'kg_machinecategory_detail' machine.category.pk  %}">{{ machine.category }}</a>&nbsp;›
     {{ machine }}
 </div>
 {% endblock %}

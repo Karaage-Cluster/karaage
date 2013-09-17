@@ -8,8 +8,9 @@
 {% block breadcrumbs %}
 <div class="breadcrumbs">
     <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
-    <a href='{{ content_url }}'>{{ content_type }}</a>&nbsp;›
-    <a href='{{ obj.get_absolute_url }}'>{{ short_title }}</a>&nbsp;›
+    {% for title, link in breadcrumbs %}
+    <a href='{{ link }}'>{{ title }}</a>&nbsp;›
+    {% endfor %}
     Logs
 </div>
 {% endblock %}
