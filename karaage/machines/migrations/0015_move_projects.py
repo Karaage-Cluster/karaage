@@ -1,21 +1,30 @@
 # -*- coding: utf-8 -*-
 import datetime
 from south.db import db
-from south.v2 import SchemaMigration
+from south.v2 import DataMigration
 from django.db import models
 
-
-class Migration(SchemaMigration):
+class Migration(DataMigration):
 
     def forwards(self, orm):
-        # Adding unique constraint on 'ProjectQuota', fields ['project', 'machine_category']
-        db.create_unique('project_quota', ['project_id', 'machine_category_id'])
-
+        for pa in orm.Account.objects.all():
+            try:
+                src = pa.default_project
+                if src is not None:
+                    dst = orm['projects.ProjectTmp'].objects.get(pid=src.pid)
+                else:
+                    dst = None
+                pa.default_project_tmp = dst
+                pa.save()
+            except orm['projects.Project'].DoesNotExist:
+                pa.delete()
 
     def backwards(self, orm):
-        # Removing unique constraint on 'ProjectQuota', fields ['project', 'machine_category']
-        db.delete_unique('project_quota', ['project_id', 'machine_category_id'])
-
+        for pa in orm.Account.objects.all():
+            src = pa.default_project_tmp
+            dst = orm['projects.Project'].objects.get(pid=src.pid)
+            pa.default_project = dst
+            pa.save()
 
     models = {
         u'institutes.institute': {
@@ -34,27 +43,39 @@ class Migration(SchemaMigration):
             'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Person']"}),
             'send_email': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
         },
+        u'machines.account': {
+            'Meta': {'ordering': "['person']", 'object_name': 'Account', 'db_table': "'account'"},
+            'date_created': ('django.db.models.fields.DateField', [], {}),
+            'date_deleted': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'default_project': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.Project']", 'null': 'True', 'blank': 'True'}),
+            'default_project_tmp': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.ProjectTmp']", 'null': 'True', 'blank': 'True'}),
+            'disk_quota': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'login_enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'machine_category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['machines.MachineCategory']"}),
+            'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Person']"}),
+            'shell': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'username': ('django.db.models.fields.CharField', [], {'max_length': '100'})
+        },
+        u'machines.machine': {
+            'Meta': {'object_name': 'Machine', 'db_table': "'machine'"},
+            'category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['machines.MachineCategory']"}),
+            'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'mem_per_core': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'no_cpus': ('django.db.models.fields.IntegerField', [], {}),
+            'no_nodes': ('django.db.models.fields.IntegerField', [], {}),
+            'pbs_server_host': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'scaling_factor': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
+            'start_date': ('django.db.models.fields.DateField', [], {}),
+            'type': ('django.db.models.fields.CharField', [], {'max_length': '100'})
+        },
         u'machines.machinecategory': {
             'Meta': {'object_name': 'MachineCategory', 'db_table': "'machine_category'"},
             'datastore': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'institutes.institutequota': {
-            'Meta': {'unique_together': "(('institute', 'machine_category'),)", 'object_name': 'InstituteQuota', 'db_table': "'institute_quota'"},
-            'cap': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'disk_quota': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['institutes.Institute']"}),
-            'machine_category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['machines.MachineCategory']"}),
-            'quota': ('django.db.models.fields.DecimalField', [], {'max_digits': '5', 'decimal_places': '2'})
-        },
-        u'projects.projectquota': {
-            'Meta': {'unique_together': "(('project', 'machine_category'),)", 'object_name': 'ProjectQuota', 'db_table': "'project_quota'"},
-            'cap': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'machine_category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['machines.MachineCategory']"}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.Project']"})
         },
         u'people.group': {
             'Meta': {'ordering': "['name']", 'object_name': 'Group'},
@@ -117,8 +138,37 @@ class Migration(SchemaMigration):
             'leaders': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'leaders'", 'symmetrical': 'False', 'to': u"orm['people.Person']"}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'pid': ('django.db.models.fields.CharField', [], {'max_length': '50', 'primary_key': 'True'}),
-            'start_date': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2013, 9, 13, 0, 0)'})
+            'start_date': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2013, 9, 17, 0, 0)'})
+        },
+        u'projects.projectquota': {
+            'Meta': {'unique_together': "(('project', 'machine_category'),)", 'object_name': 'ProjectQuota', 'db_table': "'project_quota'"},
+            'cap': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'machine_category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['machines.MachineCategory']"}),
+            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.Project']"}),
+            'project_tmp': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.ProjectTmp']", 'null': 'True'})
+        },
+        u'projects.projecttmp': {
+            'Meta': {'object_name': 'ProjectTmp'},
+            'additional_req': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'approved_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'project_approver_tmp'", 'null': 'True', 'to': u"orm['people.Person']"}),
+            'date_approved': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'date_deleted': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'deleted_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'project_deletor_tmp'", 'null': 'True', 'to': u"orm['people.Person']"}),
+            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Group']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'institute': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'project_tmp'", 'to': u"orm['institutes.Institute']"}),
+            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'is_approved': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'last_usage': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'leaders': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'leaders_tmp'", 'symmetrical': 'False', 'to': u"orm['people.Person']"}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'pid': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'start_date': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2013, 9, 17, 0, 0)'})
         }
     }
 
-    complete_apps = ['projects', 'pbsmoab']
+    complete_apps = ['projects', 'machines']
+    symmetrical = True

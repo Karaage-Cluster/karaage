@@ -8,13 +8,50 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding unique constraint on 'ProjectQuota', fields ['project', 'machine_category']
-        db.create_unique('project_quota', ['project_id', 'machine_category_id'])
+        # Adding model 'ProjectTmp'
+        db.create_table(u'projects_projecttmp', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('pid', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=200)),
+            ('group', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.Group'])),
+            ('institute', self.gf('django.db.models.fields.related.ForeignKey')(related_name='project_tmp', to=orm['institutes.Institute'])),
+            ('description', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
+            ('is_approved', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('start_date', self.gf('django.db.models.fields.DateField')(default=datetime.datetime(2013, 9, 17, 0, 0))),
+            ('end_date', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
+            ('additional_req', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
+            ('is_active', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('approved_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='project_approver_tmp', null=True, to=orm['people.Person'])),
+            ('date_approved', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
+            ('deleted_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='project_deletor_tmp', null=True, to=orm['people.Person'])),
+            ('date_deleted', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
+            ('last_usage', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
+        ))
+        db.send_create_signal(u'projects', ['ProjectTmp'])
+
+        # Adding M2M table for field leaders on 'ProjectTmp'
+        db.create_table(u'projects_projecttmp_leaders', (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('projecttmp', models.ForeignKey(orm[u'projects.projecttmp'], null=False)),
+            ('person', models.ForeignKey(orm[u'people.person'], null=False))
+        ))
+        db.create_unique(u'projects_projecttmp_leaders', ['projecttmp_id', 'person_id'])
+
+        # Adding field 'ProjectQuota.project_tmp'
+        db.add_column('project_quota', 'project_tmp',
+                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.ProjectTmp'], null=True),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Removing unique constraint on 'ProjectQuota', fields ['project', 'machine_category']
-        db.delete_unique('project_quota', ['project_id', 'machine_category_id'])
+        # Deleting model 'ProjectTmp'
+        db.delete_table(u'projects_projecttmp')
+
+        # Removing M2M table for field leaders on 'ProjectTmp'
+        db.delete_table('projects_projecttmp_leaders')
+
+        # Deleting field 'ProjectQuota.project_tmp'
+        db.delete_column('project_quota', 'project_tmp_id')
 
 
     models = {
@@ -39,22 +76,6 @@ class Migration(SchemaMigration):
             'datastore': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'institutes.institutequota': {
-            'Meta': {'unique_together': "(('institute', 'machine_category'),)", 'object_name': 'InstituteQuota', 'db_table': "'institute_quota'"},
-            'cap': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'disk_quota': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['institutes.Institute']"}),
-            'machine_category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['machines.MachineCategory']"}),
-            'quota': ('django.db.models.fields.DecimalField', [], {'max_digits': '5', 'decimal_places': '2'})
-        },
-        u'projects.projectquota': {
-            'Meta': {'unique_together': "(('project', 'machine_category'),)", 'object_name': 'ProjectQuota', 'db_table': "'project_quota'"},
-            'cap': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'machine_category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['machines.MachineCategory']"}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.Project']"})
         },
         u'people.group': {
             'Meta': {'ordering': "['name']", 'object_name': 'Group'},
@@ -117,8 +138,36 @@ class Migration(SchemaMigration):
             'leaders': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'leaders'", 'symmetrical': 'False', 'to': u"orm['people.Person']"}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'pid': ('django.db.models.fields.CharField', [], {'max_length': '50', 'primary_key': 'True'}),
-            'start_date': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2013, 9, 13, 0, 0)'})
+            'start_date': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2013, 9, 17, 0, 0)'})
+        },
+        u'projects.projectquota': {
+            'Meta': {'unique_together': "(('project', 'machine_category'),)", 'object_name': 'ProjectQuota', 'db_table': "'project_quota'"},
+            'cap': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'machine_category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['machines.MachineCategory']"}),
+            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.Project']"}),
+            'project_tmp': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.ProjectTmp']", 'null': 'True'})
+        },
+        u'projects.projecttmp': {
+            'Meta': {'object_name': 'ProjectTmp'},
+            'additional_req': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'approved_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'project_approver_tmp'", 'null': 'True', 'to': u"orm['people.Person']"}),
+            'date_approved': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'date_deleted': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'deleted_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'project_deletor_tmp'", 'null': 'True', 'to': u"orm['people.Person']"}),
+            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Group']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'institute': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'project_tmp'", 'to': u"orm['institutes.Institute']"}),
+            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'is_approved': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'last_usage': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'leaders': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'leaders_tmp'", 'symmetrical': 'False', 'to': u"orm['people.Person']"}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'pid': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'start_date': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2013, 9, 17, 0, 0)'})
         }
     }
 
-    complete_apps = ['projects', 'pbsmoab']
+    complete_apps = ['projects']

@@ -30,7 +30,7 @@ from karaage.common.constants import TITLES, COUNTRIES
 from karaage.common import new_random_token, get_current_person
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
-from karaage.projects.models import Project
+from karaage.projects.models import Project, ProjectTmp
 from karaage.machines.models import MachineCategory, Account
 
 
@@ -165,6 +165,7 @@ class ProjectApplication(Application):
 
     # existing project request
     project = models.ForeignKey(Project, null=True, blank=True)
+    project_tmp = models.ForeignKey(ProjectTmp, null=True, blank=True)
     make_leader = models.BooleanField(help_text="Make this person a project leader")
 
     def info(self):

@@ -19,7 +19,7 @@ from django.db import models
 
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
-from karaage.projects.models import Project
+from karaage.projects.models import Project, ProjectTmp
 from karaage.machines.models import MachineCategory, Machine
 
 
@@ -41,12 +41,14 @@ class InstituteCache(UsageCache):
 
 class ProjectCache(UsageCache):
     project = models.ForeignKey(Project)
+    project_tmp = models.ForeignKey(ProjectTmp, null=True)
     machine_category = models.ForeignKey(MachineCategory)
 
 
 class PersonCache(UsageCache):
     person = models.ForeignKey(Person)
     project = models.ForeignKey(Project)
+    project_tmp = models.ForeignKey(ProjectTmp, null=True)
     machine_category = models.ForeignKey(MachineCategory)
 
 
