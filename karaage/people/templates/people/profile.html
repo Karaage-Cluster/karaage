@@ -8,50 +8,58 @@
 
 
 {% block profile_content %}
-<h2>Personal Details</h2>
+<div class="module">
+    <h2>Personal Details</h2>
 
-<table>
-    <tr><td>Username:</td><td>{{ person.username }}</td></tr>
-    <tr><td>Email:</td><td>{{ person.email|urlize }}</td></tr>
-    <tr><td>Position:</td><td>{{ person.position|default:"" }}</td></tr>
-    <tr><td>Department:</td><td>{{ person.department|default:"" }}</td></tr>
-    <tr><td>Institute:</td><td>{{ person.institute }}</td></tr>
-    {% if person.telephone %}<tr><td>Phone:</td><td>{{ person.telephone|default:"" }}</td></tr>{% endif %}
-    {% if person.mobile %}<tr><td>Mobile:</td><td>{{ person.mobile|default:"" }}</td></tr>{% endif %}
-    {% if person.fax %}<tr><td>Fax:</td><td>{{ person.fax }}</td></tr>{% endif %}
-    {% if person.address %}<tr><td>Address:</td><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>{% endif %}
-    <tr><td colspan="2"><a href="edit/" class="changelink">Edit personal details</a></td></tr>
-    <tr><td colspan="2"><a href="{% url 'password_change' %}" class="changelink">Change password</a></td></tr>
-</table>
+    <table>
+        <tr><td>Username:</td><td>{{ person.username }}</td></tr>
+        <tr><td>Email:</td><td>{{ person.email|urlize }}</td></tr>
+        <tr><td>Position:</td><td>{{ person.position|default:"" }}</td></tr>
+        <tr><td>Department:</td><td>{{ person.department|default:"" }}</td></tr>
+        <tr><td>Institute:</td><td>{{ person.institute }}</td></tr>
+        {% if person.telephone %}<tr><td>Phone:</td><td>{{ person.telephone|default:"" }}</td></tr>{% endif %}
+        {% if person.mobile %}<tr><td>Mobile:</td><td>{{ person.mobile|default:"" }}</td></tr>{% endif %}
+        {% if person.fax %}<tr><td>Fax:</td><td>{{ person.fax }}</td></tr>{% endif %}
+        {% if person.address %}<tr><td>Address:</td><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>{% endif %}
+        <tr><td colspan="2"><a href="edit/" class="changelink">Edit personal details</a></td></tr>
+        <tr><td colspan="2"><a href="{% url 'password_change' %}" class="changelink">Change password</a></td></tr>
+    </table>
+</div>
 
-<h2>Tasks</h2>
-<p><a href="{% url 'kg_application_new' %}" class="addlink">Apply for Project</a></p>
+<div class="module">
+    <h2>Tasks</h2>
+    <p><a href="{% url 'kg_application_new' %}" class="addlink">Apply for Project</a></p>
+</div>
 
 {% if person.is_delegate %}
-<h2>Institute Stats</h2>
-<p><a href="{% url 'kg_institute_users' person.institute.id %}">{{ person.institute }} users</a> |
-<a href="{% url 'kg_institute_projects' person.institute.id %}">{{ person.institute }} projects</a></p>
+<div class="module">
+    <h2>Institute Stats</h2>
+    <p><a href="{% url 'kg_institute_users' person.institute.id %}">{{ person.institute }} users</a> |
+    <a href="{% url 'kg_institute_projects' person.institute.id %}">{{ person.institute }} projects</a></p>
+</div>
 {% endif %}
 
 
-<h2>Usage Summary (last 90 days)</h2>
+<div class="module">
+    <h2>Usage Summary</h2>
 
-<table>
-    <thead>
-        <tr>
-            <th>Project ID</th>
-            <th>CPU time</th>
-            <th>No. of Jobs</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for u in usage_list|dictsortreversed:"cpu_hours" %}
-        <tr class="{% cycle row1,row2 %}">
-            <td>{{ u.project.pid }}</td>
-            <td>{{ u.cpu_hours|timeformat }}</td>
-            <td>{{ u.no_jobs }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <table>
+        <thead>
+            <tr>
+                <th>Project ID</th>
+                <th>CPU time</th>
+                <th>No. of Jobs</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in usage_list|dictsortreversed:"cpu_hours" %}
+            <tr class="{% cycle row1,row2 %}">
+                <td>{{ u.project.pid }}</td>
+                <td>{{ u.cpu_hours|timeformat }}</td>
+                <td>{{ u.no_jobs }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}
