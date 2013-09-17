@@ -147,7 +147,7 @@
     {% endif %}
 
     {% if auth.is_admin %}
-    {% comments application %}
+    {% comments application.application_ptr %}
     {% endif %}
 
     <form method="post" action=".">{% csrf_token %}

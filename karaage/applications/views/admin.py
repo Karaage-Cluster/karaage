@@ -100,12 +100,12 @@ def new_application(request):
 @admin_required
 def application_logs(request, application_id):
     obj = get_object_or_404(Application, pk=application_id)
-    return util.log_list(request, "Applications", reverse("kg_application_list"), obj.pid, obj)
+    return util.log_list(request, "Applications", reverse("kg_application_list"), unicode(obj), obj)
 
 
 @admin_required
 def add_comment(request, application_id):
     obj = get_object_or_404(Application, pk=application_id)
-    return util.add_comment(request, "Applications", reverse("kg_application_list"), obj.pid, obj)
+    return util.add_comment(request, "Applications", reverse("kg_application_list"), unicode(obj), obj)
 
 
