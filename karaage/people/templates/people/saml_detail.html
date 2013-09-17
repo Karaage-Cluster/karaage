@@ -33,7 +33,7 @@
         <p>You are not logged in to Karaage.</p>
     {% endif %}
 
-    {% if not saml_session and person %}
+    {% if not saml_session and person and person.institute.saml_entityid %}
         <form method="post" action=".">{% csrf_token %}
             <input type="submit" name="login" value="SAML Login" class="button" />
         </form>
