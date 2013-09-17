@@ -16,6 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.db import models
+from karaage.common import log
 from karaage.people.models import Person, Group
 from karaage.machines.models import Account, MachineCategory
 from karaage.institutes.managers import ActiveInstituteManager
