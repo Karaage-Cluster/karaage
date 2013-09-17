@@ -146,11 +146,13 @@
     </div>
     {% endif %}
 
+    {% if auth.is_admin %}
+    {% comments application %}
+    {% endif %}
+
     <form method="post" action=".">{% csrf_token %}
         {% application_actions %}
     </form>
-
-    {% comments application %}
 </div>
 {% endblock %}
 
