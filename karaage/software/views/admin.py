@@ -312,7 +312,7 @@ def softwarerequest_approve(request, softwarerequest_id):
         send_software_request_approved_email(softwarerequest)
         log(request.user, softwarerequest.software_license.package, 1, "User %s approved" % softwarerequest.person)
         softwarerequest.delete()
-        return HttpResponseRedirect(reverse('kg_softwarerequest_list'))
+        return HttpResponseRedirect(reverse('kg_software_request_list'))
 
     return render_to_response('software/request_approve.html', {'softwarerequest': softwarerequest}, context_instance=RequestContext(request))
 
@@ -325,7 +325,7 @@ def softwarerequest_delete(request, softwarerequest_id):
 
         softwarerequest.delete()
         messages.success(request, "Software request deleted successfully")
-        return HttpResponseRedirect(reverse('kg_softwarerequest_list'))
+        return HttpResponseRedirect(reverse('kg_software_request_list'))
 
     return render_to_response('software/request_delete.html', {'softwarerequest': softwarerequest}, context_instance=RequestContext(request))
 
@@ -336,7 +336,7 @@ def software_stats(request, software_id):
     start, end = get_date_range(request)
     querystring = request.META.get('QUERY_STRING', '')
     if package.softwareversion_set.count() == 1:
-        return HttpResponseRedirect(reverse('kg_softwareversion_stats', args=[package.id, package.softwareversion_set.all()[0].id]))
+        return HttpResponseRedirect(reverse('kg_software_version_stats', args=[package.id, package.softwareversion_set.all()[0].id]))
     version_stats = SoftwareVersion.objects.filter(package=package, cpujob__date__range=(start, end)).annotate(jobs=Count('cpujob'), usage=Sum('cpujob__cpu_usage')).filter(usage__isnull=False)
     version_totaljobs = version_stats.aggregate(Sum('jobs'))['jobs__sum']
     #version_totalusage = version_stats.aggregate(Sum('usage'))

@@ -54,10 +54,10 @@
                         {% endfor %}
                     </td>
                     {% if perms.software.change_softwareversion %}
-                    <td><a class="changelink" href="{% url 'kg_softwareversion_edit' package.id version.id %}">Edit</a></td>
+                    <td><a class="changelink" href="{% url 'kg_software_version_edit' package.id version.id %}">Edit</a></td>
                     {% endif %}
                     {% if perms.software.delete_software_version %}
-                    <td><a class="deletelink" href="{% url 'kg_softwareversion_delete' package.id version.id %}">Delete</a></td>
+                    <td><a class="deletelink" href="{% url 'kg_software_version_delete' package.id version.id %}">Delete</a></td>
                     {% endif %}
                 </tr>
                 {% endfor %}
@@ -82,9 +82,9 @@
                 <tr class="{% cycle row1,row2 %}">
                     <td>{{ license.version }}</td>
                     <td>{{ license.date|date }}</td>
-                    <td><a href="{% url 'kg_softwarelicense_detail' license.id %}">view</a></td>
-                    <td>{% if request.user.is_admin %}<a class="changelink" href="{% url 'kg_softwarelicense_edit' package.id license.id %}">Edit</a>{% endif %}</td>
-                    <td>{% if request.user.is_admin %}<a class="deletelink" href="{% url 'kg_softwarelicense_delete' license.id %}">Delete</a>{% endif %}</td>
+                    <td><a href="{% url 'kg_software_license_detail' license.id %}">view</a></td>
+                    <td>{% if request.user.is_admin %}<a class="changelink" href="{% url 'kg_software_license_edit' package.id license.id %}">Edit</a>{% endif %}</td>
+                    <td>{% if request.user.is_admin %}<a class="deletelink" href="{% url 'kg_software_license_delete' license.id %}">Delete</a>{% endif %}</td>
                     <td>
                         <table cellspacing="0">
                             <thead>
@@ -160,8 +160,8 @@
         {% if request.user.is_admin %}
         <li><a class="changelink" href="{% url 'kg_software_edit' package.id %}">Edit</a></li>
         <li><a class="deletelink" href="{% url 'kg_software_delete' package.id %}">Delete</a></li>
-        <li><a class="addlink" href="{% url 'kg_softwareversion_add' package.id %}">Add Version</a></li>
-        <li><a class="addlink" href="{% url 'kg_softwarelicense_add' package.id %}">Add License</a></li>
+        <li><a class="addlink" href="{% url 'kg_software_version_add' package.id %}">Add Version</a></li>
+        <li><a class="addlink" href="{% url 'kg_software_license_add' package.id %}">Add License</a></li>
         {% endif %}
         <li><a href="{% url 'kg_software_stats' package.id %}">Statistics</a></li>
         <li><a href="{% url 'kg_software_logs' package.id %}">Logs</a></li>

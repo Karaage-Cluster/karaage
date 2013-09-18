@@ -40,7 +40,7 @@
             <tbody>
                 {% for version in version_stats|dictsortreversed:"usage" %}
                 <tr class="{% cycle row1,row2 as rowcolours %}">
-                    <td><a href="{% url 'kg_softwareversion_stats' version.package.id version.id %}?{{ querystring }}">{{ version }}</a></td>
+                    <td><a href="{% url 'kg_software_version_stats' version.package.id version.id %}?{{ querystring }}">{{ version }}</a></td>
                     <td class="right">{{ version.usage|timeformat }}</td>
                     <td class="right">{{ version.jobs|intcomma }}</td>
                 </tr>

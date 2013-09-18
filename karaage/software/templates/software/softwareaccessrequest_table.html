@@ -17,8 +17,8 @@
             <td><a href="{{ sr.software_license.package.get_absolute_url }}">{{ sr.software_license.package }}</a></td>
             <td><a href="{{ sr.software_license.get_absolute_url }}">{{ sr.software_license }}</a></td>
             <td>{{ sr.request_date }}</td>
-            <td><a class="addlink" href="{% url 'kg_softwarerequest_approve' sr.id %}">Approve</a></td>
-            <td><a class="deletelink" href="{% url 'kg_softwarerequest_delete' sr.id %}">Delete</a></td>
+            <td><a class="addlink" href="{% url 'kg_software_request_approve' sr.id %}">Approve</a></td>
+            <td><a class="deletelink" href="{% url 'kg_software_request_delete' sr.id %}">Delete</a></td>
         </tr>
         {% endfor %}
 </table>
