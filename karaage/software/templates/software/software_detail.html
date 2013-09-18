@@ -54,10 +54,10 @@
                         {% endfor %}
                     </td>
                     {% if perms.software.change_softwareversion %}
-                    <td><a class="changelink" href="{% url 'kg_software_version_edit' package.id version.id %}">Edit</a></td>
+                    <td><a class="changelink" href="{% url 'kg_software_version_edit' version.id %}">Edit</a></td>
                     {% endif %}
                     {% if perms.software.delete_software_version %}
-                    <td><a class="deletelink" href="{% url 'kg_software_version_delete' package.id version.id %}">Delete</a></td>
+                    <td><a class="deletelink" href="{% url 'kg_software_version_delete' version.id %}">Delete</a></td>
                     {% endif %}
                 </tr>
                 {% endfor %}
@@ -83,7 +83,7 @@
                     <td>{{ license.version }}</td>
                     <td>{{ license.date|date }}</td>
                     <td><a href="{% url 'kg_software_license_detail' license.id %}">view</a></td>
-                    <td>{% if request.user.is_admin %}<a class="changelink" href="{% url 'kg_software_license_edit' package.id license.id %}">Edit</a>{% endif %}</td>
+                    <td>{% if request.user.is_admin %}<a class="changelink" href="{% url 'kg_software_license_edit' license.id %}">Edit</a>{% endif %}</td>
                     <td>{% if request.user.is_admin %}<a class="deletelink" href="{% url 'kg_software_license_delete' license.id %}">Delete</a>{% endif %}</td>
                     <td>
                         <table cellspacing="0">

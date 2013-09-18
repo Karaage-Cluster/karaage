@@ -170,24 +170,28 @@ def license_detail(request, license_id):
 
 
 @admin_required
-def add_edit_license(request, software_id, license_id=None):
+def add_license(request, software_id):
     package = get_object_or_404(Software, pk=software_id)
 
-    if license_id is None:
-        l = None
-    else:
-        l = get_object_or_404(SoftwareLicense, pk=license_id)
-
+    form = LicenseForm(request.POST or None)
     if request.method == 'POST':
-        form = LicenseForm(request.POST, instance=l)
         if form.is_valid():
             l = form.save()
-            if license_id is None:
-                log(request.user, package, 1, "license: %s added" % l)
-            package.save()
+            log(request.user, package, 1, "license: %s added" % l)
             return HttpResponseRedirect(package.get_absolute_url())
-    else:
-        form = LicenseForm(instance=l)
+
+    return render_to_response('software/license_form.html', locals(), context_instance=RequestContext(request))
+
+@admin_required
+def edit_license(request, license_id):
+    l = get_object_or_404(SoftwareLicense, pk=license_id)
+    package = l.package
+
+    form = LicenseForm(request.POST or None, instance=l)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(package.get_absolute_url())
 
     return render_to_response('software/license_form.html', locals(), context_instance=RequestContext(request))
 
@@ -195,13 +199,12 @@ def add_edit_license(request, software_id, license_id=None):
 def license_delete(request, license_id):
     from karaage.legacy.create_update import delete_object
     return delete_object(request,
-            post_delete_redirect=reverse('software_list'),
+            post_delete_redirect=reverse('kg_software_list'),
             object_id=license_id, model=SoftwareLicense)
 
 
 @admin_required
-def delete_version(request, software_id, version_id):
-    
+def delete_version(request, version_id):
     version = get_object_or_404(SoftwareVersion, pk=version_id)
 
     if request.method == 'POST':
@@ -215,22 +218,28 @@ def delete_version(request, software_id, version_id):
 
 
 @admin_required
-def add_edit_version(request, software_id, version_id=None):
-
+def add_version(request, software_id):
     package = get_object_or_404(Software, pk=software_id)
 
-    if version_id is None:
-        version = None
-    else:
-        version = get_object_or_404(SoftwareVersion, pk=version_id)
-
+    form = SoftwareVersionForm(request.POST or None)
     if request.method == 'POST':
-        form = SoftwareVersionForm(request.POST, instance=version)
         if form.is_valid():
             version = form.save()
             return HttpResponseRedirect(package.get_absolute_url())
-    else:
-        form = SoftwareVersionForm(instance=version)
+
+    return render_to_response('software/version_form.html', locals(), context_instance=RequestContext(request))
+
+
+@admin_required
+def edit_version(request, version_id):
+    version = get_object_or_404(SoftwareVersion, pk=version_id)
+    package = version.package
+
+    form = SoftwareVersionForm(request.POST or None, instance=version)
+    if request.method == 'POST':
+        if form.is_valid():
+            version = form.save()
+            return HttpResponseRedirect(package.get_absolute_url())
 
     return render_to_response('software/version_form.html', locals(), context_instance=RequestContext(request))
 
@@ -336,7 +345,7 @@ def software_stats(request, software_id):
     start, end = get_date_range(request)
     querystring = request.META.get('QUERY_STRING', '')
     if package.softwareversion_set.count() == 1:
-        return HttpResponseRedirect(reverse('kg_software_version_stats', args=[package.id, package.softwareversion_set.all()[0].id]))
+        return HttpResponseRedirect(reverse('kg_software_version_stats', args=[package.softwareversion_set.all()[0].id]))
     version_stats = SoftwareVersion.objects.filter(package=package, cpujob__date__range=(start, end)).annotate(jobs=Count('cpujob'), usage=Sum('cpujob__cpu_usage')).filter(usage__isnull=False)
     version_totaljobs = version_stats.aggregate(Sum('jobs'))['jobs__sum']
     #version_totalusage = version_stats.aggregate(Sum('usage'))
@@ -355,7 +364,7 @@ def software_stats(request, software_id):
 
 
 @admin_required
-def version_stats(request, software_id, version_id):
+def version_stats(request, version_id):
     version = get_object_or_404(SoftwareVersion, pk=version_id)
     start, end = get_date_range(request)
     querystring = request.META.get('QUERY_STRING', '')

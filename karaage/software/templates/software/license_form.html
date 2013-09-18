@@ -9,7 +9,12 @@
     <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
     <a href="{% url 'kg_software_list' %}">Software</a>&nbsp;›
     <a href="{% url 'kg_software_detail' package.pk %}">{{ package }}</a>&nbsp;›
-    {% if l %}Edit{% else %}Create{% endif %} Software License
+    {% if l %}
+    <a href="{% url 'kg_software_license_detail' l.pk %}">{{ l }}</a>&nbsp;›
+    Edit
+    {% else %}
+    Create License
+    {% endif %}
 </div>
 {% endblock %}
 
