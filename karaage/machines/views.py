@@ -77,7 +77,7 @@ def machine_logs(request, machine_id):
     obj = get_object_or_404(Machine, pk=machine_id)
     breadcrumbs = []
     breadcrumbs.append( ("Machines", reverse("kg_machine_list")) )
-    breadcrumbs.append( (unicode(obj.category), reverse("kg_machinecategory_detail", args=[obj.category.pk])) )
+    breadcrumbs.append( (unicode(obj.category), reverse("kg_machine_category_detail", args=[obj.category.pk])) )
     breadcrumbs.append( (unicode(obj), reverse("kg_machine_detail", args=[obj.pk])) )
     return util.log_list(request, breadcrumbs, obj)
 
@@ -87,7 +87,7 @@ def machine_add_comment(request, machine_id):
     obj = get_object_or_404(Machine, pk=machine_id)
     breadcrumbs = []
     breadcrumbs.append( ("Machines", reverse("kg_machine_list")) )
-    breadcrumbs.append( (unicode(obj.category), reverse("kg_machinecategory_detail", args=[obj.category.pk])) )
+    breadcrumbs.append( (unicode(obj.category), reverse("kg_machine_category_detail", args=[obj.category.pk])) )
     breadcrumbs.append( (unicode(obj), reverse("kg_machine_detail", args=[obj.pk])) )
     return util.add_comment(request, breadcrumbs, obj)
 
@@ -118,7 +118,7 @@ def category_logs(request, category_id):
     obj = get_object_or_404(MachineCategory, pk=category_id)
     breadcrumbs = []
     breadcrumbs.append( ("Machines", reverse("kg_machine_list")) )
-    breadcrumbs.append( (unicode(obj), reverse("kg_machinecategory_detail", args=[obj.pk])) )
+    breadcrumbs.append( (unicode(obj), reverse("kg_machine_category_detail", args=[obj.pk])) )
     return util.log_list(request, breadcrumbs, obj)
 
 
@@ -127,6 +127,6 @@ def category_add_comment(request, category_id):
     obj = get_object_or_404(MachineCategory, pk=category_id)
     breadcrumbs = []
     breadcrumbs.append( ("Machines", reverse("kg_machine_list")) )
-    breadcrumbs.append( (unicode(obj), reverse("kg_machinecategory_detail", args=[obj.pk])) )
+    breadcrumbs.append( (unicode(obj), reverse("kg_machine_category_detail", args=[obj.pk])) )
     return util.add_comment(request, breadcrumbs, obj)
 
