@@ -119,7 +119,7 @@ class Migration(SchemaMigration):
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
         },
         u'software.software': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Software', 'db_table': "'software_package'"},
+            'Meta': {'ordering': "['name']", 'object_name': 'Software', 'db_table': "'software'"},
             'academic_only': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.SoftwareCategory']", 'null': 'True', 'blank': 'True'}),
             'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
