@@ -263,10 +263,10 @@ def category_edit(request, category_id):
 
 
 @admin_required
-def remove_member(request, software_id, user_id):
+def remove_member(request, software_id, person_id):
 
     package = get_object_or_404(Software, pk=software_id)
-    person = get_object_or_404(Person, pk=user_id)
+    person = get_object_or_404(Person, pk=person_id)
 
     person.remove_group(package.group)
 
