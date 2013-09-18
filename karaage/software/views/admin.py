@@ -238,18 +238,20 @@ def category_edit(request, category_id):
 
 @admin_required
 def remove_member(request, software_id, person_id):
-
     package = get_object_or_404(Software, pk=software_id)
     person = get_object_or_404(Person, pk=person_id)
 
-    person.remove_group(package.group)
+    if request.method == 'POST':
+        person.remove_group(package.group)
 
-    log(request.user, package, 3, 'Removed %s from group' % person)
-    log(request.user, person, 3, 'Removed from software group %s' % package)
+        log(request.user, package, 3, 'Removed %s from group' % person)
+        log(request.user, person, 3, 'Removed from software group %s' % package)
 
-    messages.success(request, "User '%s' removed successfuly" % person)
+        messages.success(request, "User '%s' removed successfuly" % person)
 
-    return HttpResponseRedirect(package.get_absolute_url())
+        return HttpResponseRedirect(package.get_absolute_url())
+
+    return render_to_response('software/person_confirm_remove.html', locals(), context_instance=RequestContext(request))
 
 
 @admin_required
