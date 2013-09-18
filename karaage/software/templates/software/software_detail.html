@@ -110,23 +110,8 @@
     </div>
     {% endif %}
 
-    {% if package.gid %}
     <div class="module">
-        <h2>LDAP Group members</h2>
-        {% if request.user.is_admin %}
-        <form action="" id="add_member_form" method="post">{% csrf_token %}
-            <div class="form-row">
-                <label for="id_member">Add member:</label>
-                <select class="vNullSelectField" id="id_member" name="member" size="1">
-                <option selected="selected" value="">---------</option>
-                {% for p in not_member_list %}
-                <option value="{{ p.id }}">{{ p }}</option>
-                {% endfor %}
-                </select>
-                <input name="member-add" type="submit" value="Add"/>
-            </div>
-        </form>
-        {% endif %}
+        <h2>Group members</h2>
         <table cellspacing="0">
             <thead>
                 <tr>
@@ -135,19 +120,18 @@
                 </tr>
             </thead>
             <tbody>
-                {% for m in member_list %}
+                {% for person in package.get_group_members %}
                 <tr class="{% cycle row1,row2 %}">
-                    <td>{{ m.username }}</td>
-                    <td><a href="{{ m.person.get_absolute_url }}">{{ m.person }}</a></td>
+                    <td>{{ person.username }}</td>
+                    <td><a href="{{ person.get_absolute_url }}">{{ person }}</a></td>
                     {% if request.user.is_admin %}
-                    <td><a class="deletelink" href="{% url 'kg_software_remove_person' package.id m.person.id %}">Remove</a></td>
+                    <td><a class="deletelink" href="{% url 'kg_software_remove_person' package.id person.id %}">Remove</a></td>
                     {% endif %}
                 </tr>
             </tbody>
             {% endfor %}
         </table>
     </div>
-    {% endif %}
 
     {% comments package %}
 </div>

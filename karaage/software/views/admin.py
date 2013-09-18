@@ -77,32 +77,6 @@ def software_list(request):
 @admin_required
 def software_detail(request, software_id):
     package = get_object_or_404(Software, pk=software_id)
-
-    members = package.get_group_members()
-    non_ids = []
-    member_list = []
-    if members:
-        for member in members:
-            try:
-                non_ids.append(member.id)
-            except Person.DoesNotExist:
-                member = None
-
-            member_list.append({
-                'username': member.username,
-                'person': member,
-                })
-
-    not_member_list = Person.objects.select_related().exclude(id__in=non_ids)
-
-    if request.method == 'POST' and 'member-add' in request.POST:
-        person = get_object_or_404(Person, pk=request.POST['member'])
-        person.add_group(package.group)
-
-        messages.success(request, "User %s added to group" % person)
-        log(request.user, package, 1, "User %s added to group manually" % person)
-        return HttpResponseRedirect(package.get_absolute_url())
-
     return render_to_response('software/software_detail.html', locals(), context_instance=RequestContext(request))
 
 
