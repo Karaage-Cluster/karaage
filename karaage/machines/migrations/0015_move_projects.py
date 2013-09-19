@@ -6,25 +6,17 @@ from django.db import models
 
 class Migration(DataMigration):
 
+    # Account.default_project is optional and can be None
+
     def forwards(self, orm):
-        for pa in orm.Account.objects.iterator():
-            try:
-                src = pa.default_project
-                if src is not None:
-                    dst = orm['projects.ProjectTmp'].objects.get(pid=src.pid)
-                else:
-                    dst = None
-                pa.default_project_tmp = dst
-                pa.save()
-            except orm['projects.Project'].DoesNotExist:
-                pa.delete()
+        for src in orm['projects.Project'].objects.iterator():
+            dst = orm['projects.ProjectTmp'].objects.get(pid=src.pid)
+            orm.Account.objects.filter(default_project=src).update(default_project_tmp=dst)
 
     def backwards(self, orm):
-        for pa in orm.Account.objects.iterator():
-            src = pa.default_project_tmp
+        for src in orm['projects.ProjectTmp'].objects.iterator():
             dst = orm['projects.Project'].objects.get(pid=src.pid)
-            pa.default_project = dst
-            pa.save()
+            orm.Account.objects.filter(default_project_tmp=src).update(default_project=dst)
 
     models = {
         u'institutes.institute': {

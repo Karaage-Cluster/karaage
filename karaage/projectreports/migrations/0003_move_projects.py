@@ -6,22 +6,19 @@ from django.db import models
 
 class Migration(DataMigration):
 
+    # ProjectSurvery.project is mandatory and can not be None
+
     def forwards(self, orm):
-        for ps in orm.ProjectSurvey.objects.iterator():
-            try:
-                src = ps.project
-                dst = orm['projects.ProjectTmp'].objects.get(pid=src.pid)
-                ps.project_tmp = dst
-                ps.save()
-            except orm['projects.Project'].DoesNotExist:
-                ps.delete()
+        for src in orm['projects.Project'].objects.iterator():
+            dst = orm['projects.ProjectTmp'].objects.get(pid=src.pid)
+            orm.ProjectSurvey.objects.filter(project=src).update(project_tmp=dst)
+        orm.ProjectSurvey.objects.filter(project_tmp__isnull=True).delete()
 
     def backwards(self, orm):
-        for ps in orm.ProjectSurvey.objects.iterator():
-            src = ps.project_tmp
+        for src in orm['projects.ProjectTmp'].objects.iterator():
             dst = orm['projects.Project'].objects.get(pid=src.pid)
-            ps.project = dst
-            ps.save()
+            orm.ProjectSurvey.objects.filter(project_tmp=src).update(project=dst)
+        assert orm.ProjectSurvey.objects.filter(project__isnull=True).count() == 0
 
     models = {
         u'django_surveys.survey': {

@@ -6,25 +6,17 @@ from django.db import models
 
 class Migration(DataMigration):
 
+    # CPUJob.project is optional and be None
+
     def forwards(self, orm):
-        for cj in orm.CPUJob.objects.iterator():
-            try:
-                src = cj.project
-                if src is not None:
-                    dst = orm['projects.ProjectTmp'].objects.get(pid=src.pid)
-                else:
-                    dst = None
-                cj.project_tmp = dst
-                cj.save()
-            except orm['projects.Project'].DoesNotExist:
-                cj.delete()
+        for src in orm['projects.Project'].objects.iterator():
+            dst = orm['projects.ProjectTmp'].objects.get(pid=src.pid)
+            orm.CPUJob.objects.filter(project=src).update(project_tmp=dst)
 
     def backwards(self, orm):
-        for cj in orm.CPUJob.objects.iterator():
-            src = cj.project_tmp
+        for src in orm['projects.ProjectTmp'].objects.iterator():
             dst = orm['projects.Project'].objects.get(pid=src.pid)
-            cj.project = dst
-            cj.save()
+            orm.CPUJob.objects.filter(project_tmp=src).update(project=dst)
 
     models = {
         u'institutes.institute': {

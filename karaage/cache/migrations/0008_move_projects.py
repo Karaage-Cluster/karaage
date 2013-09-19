@@ -6,37 +6,24 @@ from django.db import models
 
 class Migration(DataMigration):
 
-    def forwards(self, orm):
-        for pc in orm.ProjectCache.objects.iterator():
-            try:
-                src = pc.project
-                dst = orm['projects.ProjectTmp'].objects.get(pid=src.pid)
-                pc.project_tmp = dst
-                pc.save()
-            except orm['projects.Project'].DoesNotExist:
-                pc.delete()
+    # ProjectCache.project is mandatory and can not be None
+    # PersonCache.project is mandatory and can not be None
 
-        for pc in orm.PersonCache.objects.iterator():
-            try:
-                src = pc.project
-                dst = orm['projects.ProjectTmp'].objects.get(pid=src.pid)
-                pc.project_tmp = dst
-                pc.save()
-            except orm['projects.Project'].DoesNotExist:
-                pc.delete()
+    def forwards(self, orm):
+        for src in orm['projects.Project'].objects.iterator():
+            dst = orm['projects.ProjectTmp'].objects.get(pid=src.pid)
+            orm.ProjectCache.objects.filter(project=src).update(project_tmp=dst)
+            orm.PersonCache.objects.filter(project=src).update(project_tmp=dst)
+        orm.ProjectCache.objects.filter(project_tmp__isnull=True).delete()
+        orm.PersonCache.objects.filter(project_tmp__isnull=True).delete()
 
     def backwards(self, orm):
-        for pc in orm.ProjectCache.objects.iterator():
-            src = pc.project_tmp
+        for src in orm['projects.ProjectTmp'].objects.iterator():
             dst = orm['projects.Project'].objects.get(pid=src.pid)
-            pc.project = dst
-            pc.save()
-
-        for pc in orm.PersonCache.objects.iterator():
-            src = pc.project_tmp
-            dst = orm['projects.Project'].objects.get(pid=src.pid)
-            pc.project = dst
-            pc.save()
+            orm.ProjectCache.objects.filter(project_tmp=src).update(project=dst)
+            orm.PersonCache.objects.filter(project_tmp=src).update(project=dst)
+        assert orm.ProjectCache.objects.filter(project__isnull=True).count() == 0
+        assert orm.PersonCache.objects.filter(project__isnull=True).count() == 0
 
     models = {
         u'cache.institutecache': {

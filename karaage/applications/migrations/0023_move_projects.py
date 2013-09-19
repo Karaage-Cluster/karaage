@@ -6,25 +6,17 @@ from django.db import models
 
 class Migration(DataMigration):
 
+    # ProjectApplication.project is optional and can be None
+
     def forwards(self, orm):
-        for pa in orm.ProjectApplication.objects.iterator():
-            try:
-                src = pa.project
-                if src is not None:
-                    dst = orm['projects.ProjectTmp'].objects.get(pid=src.pid)
-                else:
-                    dst = None
-                pa.project_tmp = dst
-                pa.save()
-            except orm['projects.Project'].DoesNotExist:
-                pa.delete()
+        for src in orm['projects.Project'].objects.iterator():
+            dst = orm['projects.ProjectTmp'].objects.get(pid=src.pid)
+            orm.ProjectApplication.objects.filter(project=src).update(project_tmp=dst)
 
     def backwards(self, orm):
-        for pa in orm.ProjectApplication.objects.iterator():
-            src = pa.project_tmp
+        for src in orm['projects.ProjectTmp'].objects.iterator():
             dst = orm['projects.Project'].objects.get(pid=src.pid)
-            pa.project = dst
-            pa.save()
+            orm.ProjectApplication.objects.filter(project_tmp=src).update(project=dst)
 
     models = {
         u'applications.applicant': {
