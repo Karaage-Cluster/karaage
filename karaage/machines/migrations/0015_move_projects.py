@@ -7,7 +7,7 @@ from django.db import models
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        for pa in orm.Account.objects.all():
+        for pa in orm.Account.objects.iterator():
             try:
                 src = pa.default_project
                 if src is not None:
@@ -20,7 +20,7 @@ class Migration(DataMigration):
                 pa.delete()
 
     def backwards(self, orm):
-        for pa in orm.Account.objects.all():
+        for pa in orm.Account.objects.iterator():
             src = pa.default_project_tmp
             dst = orm['projects.Project'].objects.get(pid=src.pid)
             pa.default_project = dst

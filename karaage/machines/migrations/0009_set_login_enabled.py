@@ -11,7 +11,7 @@ class Migration(DataMigration):
     def forwards(self, orm):
         "Write your forwards methods here."
         datastore = get_test_datastore("ldap", 0)
-        for ua in orm.useraccount.objects.all():
+        for ua in orm.useraccount.objects.iterator():
             if ua.date_deleted is None:
                 # Yes - Account is active.
                 try:

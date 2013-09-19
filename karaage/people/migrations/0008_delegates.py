@@ -7,14 +7,14 @@ from django.db import models
 class Migration(DataMigration):
     
     def forwards(self, orm):
-        for institute in orm.Institute.objects.all():
+        for institute in orm.Institute.objects.iterator():
             if institute.delegate:
                 orm.InstituteDelegate.objects.get_or_create(person=institute.delegate, institute=institute)
             if institute.active_delegate:
                 inst_del, c = orm.InstituteDelegate.objects.get_or_create(person=institute.active_delegate, institute=institute)
                 inst_del.send_email = True
                 inst_del.save()
-            for sub in institute.sub_delegates.all():
+            for sub in institute.sub_delegates.iterator():
                 orm.InstituteDelegate.objects.get_or_create(person=institute.delegate, institute=institute)
     
     

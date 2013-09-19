@@ -10,7 +10,7 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         datastore = get_test_datastore("ldap", 0)
-        for institute in orm.Institute.objects.all():
+        for institute in orm.Institute.objects.iterator():
             name = str(institute.name.lower().replace(' ', ''))
             try:
                 lgroup = datastore._groups().get(gidNumber=institute.gid)
@@ -27,13 +27,13 @@ class Migration(DataMigration):
                 institute.group = group
                 institute.save()
 
-                for member in lgroup.secondary_accounts.all():
+                for member in lgroup.secondary_accounts.iterator():
                     person = orm['people.person'].objects.get(username=member.uid)
                     person.add_account_to_group(group)
 
     def backwards(self, orm):
         datastore = get_test_datastore("ldap", 0)
-        for institute in orm.Institute.objects.all():
+        for institute in orm.Institute.objects.iterator():
             lgroup = datastore._groups().get(cn=institute.group.name)
             institute.gid = lgroup.gidNumber
             institute.save()

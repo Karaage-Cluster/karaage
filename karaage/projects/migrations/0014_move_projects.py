@@ -8,7 +8,7 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        for src in orm.Project.objects.all():
+        for src in orm.Project.objects.iterator():
             try:
                 dst = orm.ProjectTmp.objects.get(pid=src.pid)
             except orm.ProjectTmp.DoesNotExist:
@@ -28,9 +28,9 @@ class Migration(DataMigration):
             dst.date_deleted = src.date_deleted
             dst.last_usage = src.last_usage
             dst.save()
-            dst.leaders = src.leaders.all()
+            dst.leaders = src.leaders.iterator()
 
-        for pq in orm.ProjectQuota.objects.all():
+        for pq in orm.ProjectQuota.objects.iterator():
             try:
                 src = pq.project
                 dst = orm.ProjectTmp.objects.get(pid=src.pid)
@@ -41,7 +41,7 @@ class Migration(DataMigration):
 
     def backwards(self, orm):
         "Write your backwards methods here."
-        for src in orm.ProjectTmp.objects.all():
+        for src in orm.ProjectTmp.objects.iterator():
             try:
                 dst = orm.Project.objects.get(pid=src.pid)
             except orm.Project.DoesNotExist:
@@ -61,9 +61,9 @@ class Migration(DataMigration):
             dst.date_deleted = src.date_deleted
             dst.last_usage = src.last_usage
             dst.save()
-            dst.leaders = src.leaders.all()
+            dst.leaders = src.leaders.iterator()
 
-        for pq in orm.ProjectQuota.objects.all():
+        for pq in orm.ProjectQuota.objects.iterator():
             src = pq.project_tmp
             dst = orm.Project.objects.get(pid=src.pid)
             pq.project = dst

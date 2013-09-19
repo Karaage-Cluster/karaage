@@ -8,7 +8,7 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        for applicant in orm.applicant.objects.all():
+        for applicant in orm.applicant.objects.iterator():
             applicant.short_name = applicant.first_name
             print [applicant.first_name, applicant.last_name]
             applicant.full_name = u"%s %s" % (
@@ -17,7 +17,7 @@ class Migration(DataMigration):
 
     def backwards(self, orm):
         "Write your backwards methods here."
-        for applicant in orm.applicant.objects.all():
+        for applicant in orm.applicant.objects.iterator():
             if applicant.full_name.find(" ") != -1:
                 first_name, _, last_name = applicant.full_name.rpartition(" ")
             else:

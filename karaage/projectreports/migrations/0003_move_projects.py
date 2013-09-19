@@ -7,7 +7,7 @@ from django.db import models
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        for ps in orm.ProjectSurvey.objects.all():
+        for ps in orm.ProjectSurvey.objects.iterator():
             try:
                 src = ps.project
                 dst = orm['projects.ProjectTmp'].objects.get(pid=src.pid)
@@ -17,7 +17,7 @@ class Migration(DataMigration):
                 ps.delete()
 
     def backwards(self, orm):
-        for ps in orm.ProjectSurvey.objects.all():
+        for ps in orm.ProjectSurvey.objects.iterator():
             src = ps.project_tmp
             dst = orm['projects.Project'].objects.get(pid=src.pid)
             ps.project = dst

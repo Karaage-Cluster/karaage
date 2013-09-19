@@ -7,14 +7,14 @@ from django.db import models
 class Migration(DataMigration):
     
     def forwards(self, orm):
-        for a in orm.Application.objects.all():
+        for a in orm.Application.objects.iterator():
             a.content_type = a.content_type_temp
             a.object_id = a.object_id_temp
             a.save()
 
 
     def backwards(self, orm):
-        for a in orm.Application.objects.all():
+        for a in orm.Application.objects.iterator():
             a.content_type_temp = a.content_type
             a.object_id_temp = a.object_id
             a.save()

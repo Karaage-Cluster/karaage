@@ -7,7 +7,7 @@ from django.db import models
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        for mc in orm.MachineCategory.objects.all():
+        for mc in orm.MachineCategory.objects.iterator():
             if mc.datastore == "karaage.datastores.ldap_datastore":
                 mc.datastore = "ldap"
             elif mc.datastore == "karaage.datastores.openldap_datastore":
@@ -19,7 +19,7 @@ class Migration(DataMigration):
             mc.save()
 
     def backwards(self, orm):
-        for mc in orm.MachineCategory.objects.all():
+        for mc in orm.MachineCategory.objects.iterator():
             if mc.datastore == "ldap":
                 mc.datastore = "karaage.datastores.ldap_datastore"
             elif mc.datastore == "dummy":

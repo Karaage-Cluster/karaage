@@ -7,13 +7,13 @@ from django.db import models
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        for project in orm.Project.objects.all():
+        for project in orm.Project.objects.iterator():
             project.leaders.add(project.leader)
             project.save()
 
     def backwards(self, orm):
-        for project in orm.Project.objects.all():
-            project.leader = project.leaders.all()[0]
+        for project in orm.Project.objects.iterator():
+            project.leader = project.leaders.iterator()[0]
             project.save()
 
     models = {

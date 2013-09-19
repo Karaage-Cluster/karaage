@@ -7,18 +7,18 @@ from django.db import models
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        for project in orm.Project.objects.all():
+        for project in orm.Project.objects.iterator():
             if not db.dry_run:
                 group,c = orm['people.group'].objects.get_or_create(name=project.pid)
-                group.members = project.users.all()
+                group.members = project.users.iterator()
                 project.group = group
                 project.save()
 
     def backwards(self, orm):
-        for project in orm.Project.objects.all():
+        for project in orm.Project.objects.iterator():
             if project.pid != project.group.name:
                 raise RuntimeError("Cannot reverse this migration.")
-            project.users = project.group.members.all()
+            project.users = project.group.members.iterator()
 
     models = {
         u'auth.group': {

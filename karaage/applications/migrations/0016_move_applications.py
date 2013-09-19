@@ -8,7 +8,7 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         """ Move UserApplication to ProjectApplication. """
-        for src in orm.UserApplication.objects.all():
+        for src in orm.UserApplication.objects.iterator():
             values = {
                 'pk': src.pk,
                 'expires': src.expires,

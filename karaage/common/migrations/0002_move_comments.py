@@ -8,7 +8,7 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        for comment in orm['comments.comment'].objects.all():
+        for comment in orm['comments.comment'].objects.iterator():
             defaults = {
                 'submit_date': comment.submit_date,
                 'object_pk': comment.object_pk,
@@ -24,7 +24,7 @@ class Migration(DataMigration):
 
     def backwards(self, orm):
         "Write your backwards methods here."
-        for comment in orm.comment.objects.all():
+        for comment in orm.comment.objects.iterator():
             defaults = {
                 'submit_date': comment.submit_date,
                 'object_pk': comment.object_pk,

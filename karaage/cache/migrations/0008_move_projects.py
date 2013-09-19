@@ -7,7 +7,7 @@ from django.db import models
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        for pc in orm.ProjectCache.objects.all():
+        for pc in orm.ProjectCache.objects.iterator():
             try:
                 src = pc.project
                 dst = orm['projects.ProjectTmp'].objects.get(pid=src.pid)
@@ -16,7 +16,7 @@ class Migration(DataMigration):
             except orm['projects.Project'].DoesNotExist:
                 pc.delete()
 
-        for pc in orm.PersonCache.objects.all():
+        for pc in orm.PersonCache.objects.iterator():
             try:
                 src = pc.project
                 dst = orm['projects.ProjectTmp'].objects.get(pid=src.pid)
@@ -26,13 +26,13 @@ class Migration(DataMigration):
                 pc.delete()
 
     def backwards(self, orm):
-        for pc in orm.ProjectCache.objects.all():
+        for pc in orm.ProjectCache.objects.iterator():
             src = pc.project_tmp
             dst = orm['projects.Project'].objects.get(pid=src.pid)
             pc.project = dst
             pc.save()
 
-        for pc in orm.PersonCache.objects.all():
+        for pc in orm.PersonCache.objects.iterator():
             src = pc.project_tmp
             dst = orm['projects.Project'].objects.get(pid=src.pid)
             pc.project = dst

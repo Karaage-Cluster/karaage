@@ -8,7 +8,7 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        for person in orm.person.objects.all():
+        for person in orm.person.objects.iterator():
             assert person.user.username
             person.username = person.user.username
             if not person.user.email:
@@ -24,13 +24,13 @@ class Migration(DataMigration):
             person.is_admin = person.user.is_staff
             person.save()
 
-        for obj in orm['admin.logentry'].objects.all():
+        for obj in orm['admin.logentry'].objects.iterator():
             obj.person = obj.user.person_set.get()
             obj.save()
-        for obj in orm['comments.comment'].objects.all():
+        for obj in orm['comments.comment'].objects.iterator():
             obj.person = obj.user.person_set.get()
             obj.save()
-        for obj in orm['comments.commentflag'].objects.all():
+        for obj in orm['comments.commentflag'].objects.iterator():
             obj.person = obj.user.person_set.get()
             obj.save()
 
@@ -58,13 +58,13 @@ class Migration(DataMigration):
             person.user.save()
             person.save()
 
-        for obj in orm['admin.logentry'].objects.all():
+        for obj in orm['admin.logentry'].objects.iterator():
             obj.user = obj.person.user
             obj.save()
-        for obj in orm['comments.comment'].objects.all():
+        for obj in orm['comments.comment'].objects.iterator():
             obj.user = obj.person.user
             obj.save()
-        for obj in orm['comments.commentflag'].objects.all():
+        for obj in orm['comments.commentflag'].objects.iterator():
             obj.user = obj.person.user
             obj.save()
 

@@ -10,7 +10,7 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         datastore = get_test_datastore("ldap", 0)
-        for software in orm.SoftwarePackage.objects.all():
+        for software in orm.SoftwarePackage.objects.iterator():
             if software.gid is None:
                 software.group = None
                 software.save()
@@ -22,13 +22,13 @@ class Migration(DataMigration):
                     software.group = group
                     software.save()
 
-                    for member in lgroup.secondary_accounts.all():
+                    for member in lgroup.secondary_accounts.iterator():
                         person = orm['people.person'].objects.get(user__username=member.uid)
                         person.groups.add(group)
 
     def backwards(self, orm):
         datastore = get_test_datastore("ldap", 0)
-        for software in orm.SoftwarePackage.objects.all():
+        for software in orm.SoftwarePackage.objects.iterator():
             lgroup = datastore._groups().get(cn=software.group.name)
             software.gid = lgroup.gidNumber
             software.save()

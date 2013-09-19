@@ -24,7 +24,7 @@ class Migration(DataMigration):
                 pass
 
     def backwards(self, orm):
-        for account in orm['machines.useraccount'].objects.all():
+        for account in orm['machines.useraccount'].objects.iterator():
             account.previous_shell = account.shell
             account.save()
 
