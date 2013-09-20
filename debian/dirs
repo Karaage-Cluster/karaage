@@ -1,0 +1,8 @@
+/var/cache/karaage
+/var/cache/karaage/graphs
+/var/cache/karaage/graphs/institutes
+/var/cache/karaage/graphs/i_trends
+/var/cache/karaage/graphs/projects
+/var/cache/karaage/graphs/trends
+/var/cache/karaage/graphs/machines
+/var/www/.kgmatplotlib
