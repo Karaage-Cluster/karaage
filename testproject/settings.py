@@ -124,6 +124,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.humanize',
     'django.contrib.flatpages',
+    'django.contrib.staticfiles',
     'andsome.layout',
     'andsome',
     'captcha',
@@ -165,3 +166,5 @@ REGISTRATION_BASE_URL = 'https://example.com/users'
 DEFAULT_SHELL = '/bin/bash'
 
 SECRET_KEY = '5hvhpe6gv2t5x4$3dtq(w2v#vg@)sx4p3r_@wv%l41g!stslc*'
+
+STATIC_URL = "/static/"
