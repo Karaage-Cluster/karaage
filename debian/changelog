@@ -1,5 +1,10 @@
-karaage (2.8.0-1) UNRELEASED; urgency=low
+karaage (3.0.0-1) unstable; urgency=low
 
+  * MAJOR CHANGES. BACKUP EVERYTHING ***BEFORE*** INSTALLING. BACKUP MYSQL. BACKUP
+    OPENLDAP. TEST YOU CAN USE RESTORE MYSQL AND OPENLDAP. TEST MIGRATIONS
+    WORK ON TEST SYSTEM WITH REAL DATA BEFORE INSTALLING ON PRODUCTION BOX.
+    MIGRATIONS MAY TAKE SOME TIME TO COMPLETE ON REAL DATA (ESPECIALLY IF CPUJob
+    CONTAINS MANY ITEMS).
   * Improved support for transactions.
   * Various bugs fixed.
   * Make mysql database authoritive over LDAP.
@@ -14,8 +19,23 @@ karaage (2.8.0-1) UNRELEASED; urgency=low
   * User's set password after account is created via password reset email.
   * Use new methods stuff in tldap 0.2.7.
   * We no longer require placard, change depends to depends on django-tldap.
+  * Remove project machine_category and machine_categories fields.
+  * Rename user fields to person.
+  * Rename ProjectCache.pid to ProjectCache.project
+  * Rename UserAccount to Account.
+  * Rename UserCache to PersonCache.
+  * Merge User db model/table into Person.
+  * For Project table, pid is no longer PK.
   * Migrations for all of the above.
+  * Rewrite graphs.
   * Existing LDAP entries for non-accounts will get deleted in db migration.
+  * URLS changed.
+  * Cleaned templates.
+  * Intergrate slurm/gold functionality as datastores.
+  * Simplify dependancies.
+  * Rewrite applications app.
+  * Anything not mentioned above was also changed.
+  * World peace is still to come.
 
  -- Brian May <bam@debian.org>  Thu, 18 Jul 2013 14:07:58 +1000
 
