@@ -1,3 +1,9 @@
+karaage (2.7.7-2) stable; urgency=low
+
+  * Move karaage-common functionality into this package.
+
+ -- Brian May <bam@debian.org>  Fri, 20 Sep 2013 10:35:41 +1000
+
 karaage (2.7.7-1) stable; urgency=low
 
   * Fix assortment of bugs.
