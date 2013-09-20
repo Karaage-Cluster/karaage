@@ -10,6 +10,20 @@ if [ "$1" = "configure" ]; then
 	/usr/sbin/kg_set_secret_key
 	
     fi
+
+    for i in /var/cache/karaage/graphs/projects \
+             /var/cache/karaage/graphs/institutes \
+             /var/cache/karaage/graphs/i_trends \
+             /var/cache/karaage/graphs/trends \
+             /var/cache/karaage/graphs/machines \
+             /var/www/.kgmatplotlib
+    do
+        # only do something when no setting exists
+        if ! dpkg-statoverride --list $i >/dev/null 2>&1
+        then
+            dpkg-statoverride --update --add root www-data 2775 $i
+        fi
+    done
 fi
 
 #DEBHELPER#
