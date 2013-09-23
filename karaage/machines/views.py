@@ -19,6 +19,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 
+from karaage.projects.models import Project
 from karaage.machines.models import Machine, MachineCategory
 from karaage.common.decorators import admin_required
 import karaage.common as util
@@ -65,7 +66,7 @@ def machine_accounts(request, machine_id):
 @admin_required
 def machine_projects(request, machine_id):
     machine = get_object_or_404(Machine, pk=machine_id)
-    project_list = machine.category.projects.all()
+    project_list = Project.objects.filter(projectquota__machine_category=machine.category)
     return render_to_response(
         'machines/machine_projects.html',
         {'machine': machine, 'project_list': project_list},
