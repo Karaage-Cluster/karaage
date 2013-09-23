@@ -515,7 +515,7 @@ def job_list(request):
         job_list = job_list.filter(queue=request.GET['queue'])
 
     if 'software' in request.REQUEST:
-        job_list = job_list.filter(software__package__id=int(request.GET['software']))
+        job_list = job_list.filter(software__software__id=int(request.GET['software']))
 
     if 'account' in request.REQUEST:
         job_list = job_list.filter(account__person__username=request.GET['account'])

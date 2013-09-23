@@ -263,7 +263,7 @@ def software_stats(request, software_id):
     version_stats = SoftwareVersion.objects.filter(software=software, cpujob__date__range=(start, end)).annotate(jobs=Count('cpujob'), usage=Sum('cpujob__cpu_usage')).filter(usage__isnull=False)
     version_totaljobs = version_stats.aggregate(Sum('jobs'))['jobs__sum']
     #version_totalusage = version_stats.aggregate(Sum('usage'))
-    person_stats = Person.objects.filter(account__cpujob__software__package=software, account__cpujob__date__range=(start, end)).annotate(jobs=Count('account__cpujob'), usage=Sum('account__cpujob__cpu_usage'))
+    person_stats = Person.objects.filter(account__cpujob__software__software=software, account__cpujob__date__range=(start, end)).annotate(jobs=Count('account__cpujob'), usage=Sum('account__cpujob__cpu_usage'))
 
     context = {
         'software': software,

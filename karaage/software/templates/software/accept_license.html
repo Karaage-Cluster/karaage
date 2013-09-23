@@ -35,7 +35,7 @@
     </div>
     {% endif %}
 
-    <form action="." method="post">{% csrf_token %}
+    <form {% if software.restricted %}action="{% url 'kg_application_software_new' software_license.pk %}"{% else %}action="."{% endif %} method="post">{% csrf_token %}
         <p>By clicking on 'I accept' you are agreeing to the conditions above.</p>
         <div class="submit-row">
             <input type="submit" value="I accept"/>

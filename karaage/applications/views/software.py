@@ -251,6 +251,9 @@ def register():
 
 @login_required
 def new_application(request, software_license_id):
+    if request.method != 'POST':
+        return HttpResponseBadRequest("<h1>Bad Request</h1>")
+
     try:
         license = SoftwareLicense.objects.get(pk=software_license_id)
     except SoftwareLicense.DoesNotExist:

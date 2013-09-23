@@ -35,7 +35,7 @@ def add_package_list(request):
     software_list = []
     for s in Software.objects.filter(softwarelicense__isnull=False).distinct():
         data = {'software': s}
-        license_agreements = SoftwareLicenseAgreement.objects.filter(user=person, license__package=s)
+        license_agreements = SoftwareLicenseAgreement.objects.filter(user=person, license__software=s)
         if license_agreements.count() > 0:
             la = license_agreements.latest()
             data['accepted'] = True
@@ -57,17 +57,14 @@ def add_package(request, software_id):
 
     if request.method == 'POST':
 
-        if software.restricted:
-            return HttpResponseRedirect(reverse('kg_application_software_new', args=[software_license.pk]))
-        else:
+        if not software.restricted:
             SoftwareLicenseAgreement.objects.create(
                 user=person,
                 license=software_license,
                 date=datetime.datetime.today(),
                 )
             person.add_group(software.group)
-
-        return HttpResponseRedirect(reverse('kg_user_profile_software'))
+            return HttpResponseRedirect(reverse('kg_user_profile_software'))
 
     return render_to_response('software/accept_license.html', locals(), context_instance=RequestContext(request))
 
