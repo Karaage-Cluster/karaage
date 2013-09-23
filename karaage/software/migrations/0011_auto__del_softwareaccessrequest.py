@@ -8,7 +8,7 @@ from django.db import models
 class Migration(SchemaMigration):
 
     depends_on = (
-            ('applications', '0027_move_software_requests')
+            ('applications', '0027_move_software_requests'),
     )
 
     def forwards(self, orm):
