@@ -17,22 +17,23 @@
 {% block content %}
 <div id="content-main">
     <div class="module">
-        <h2>Machines</h2>
-        <h3>{{ machine_category.name }}</h3>
-        - {% if perms.machines.change_machinecategory %}
-        <a class="changelink" href="{% url 'kg_machine_category_edit' machine_category.id %}">Edit category</a> |
-        {% endif %}
-        <a href="{% url 'kg_mc_usage' machine_category.id %}">Usage</a>
-        <ul>
+        <h2>{{ machine_category.name }}</h2>
+        <table>
             {% for m in machine_category.machine_set.all %}
-            <li>
-                <a href="{{ m.get_absolute_url }}">{{ m.name }}</a> 
-                {% if m.end_date %}
-                <span class="red">*Decommissioned</span>
-                {% endif %}
-            </li>
+            <tr>
+                <td>
+                    <a href="{{ m.get_absolute_url }}">{{ m.name }}</a> 
+                </td>
+                <td>
+                    {% if m.end_date %}
+                    <span>Decommissioned {{ m.end_date }}.</span>
+                    {% else %}
+                    <span>Active since {{m.start_date }}.</span>
+                    {% endif %}
+                </td>
+            </tr>
             {% endfor %}
-        </ul>
+        </table>
     </div>
 
     {% comments machine_category %}
@@ -47,6 +48,10 @@
     <ul>
         <li><a href="{% url 'kg_machine_category_logs' machine_category.pk %}">Logs</a></li>
         <li class="addlink"><a href="{% url 'kg_machine_category_add_comment' machine_category.pk %}">Add comment</a></li>
+        <li><a href="{% url 'kg_mc_usage' machine_category.id %}">Usage</a></li>
+        {% if perms.machines.change_machinecategory %}
+        <li><a class="changelink" href="{% url 'kg_machine_category_edit' machine_category.id %}">Edit category</a></li>
+        {% endif %}
     </ul>
 </div>
 {% endif %}
