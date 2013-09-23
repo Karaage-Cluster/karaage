@@ -36,8 +36,8 @@ def _get_application(**kwargs):
         application = None
 
     try:
-        application = application.get_object()
         if application is not None:
+            application = application.get_object()
             return application
     except Application.DoesNotExist:
         raise RuntimeError("The application is currupt.")

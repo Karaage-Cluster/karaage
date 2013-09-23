@@ -1045,7 +1045,7 @@ def send_invitation(request, project_id):
 def admin_send_invitation(request, project_id=None):
     """ The logged in administrator wants to invite somebody to their project.
     """
-    project_id = None
+    project = None
     if project_id is not None:
         project = get_object_or_404(Project, pid=project_id)
 
