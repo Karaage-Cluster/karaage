@@ -17,8 +17,6 @@
 
 from django.conf.urls import *
 
-from karaage.applications.models import Application
-
 urlpatterns = patterns('karaage.applications.views.admin',
 
     url(r'^$', 'application_list', name='kg_application_list'),
@@ -28,12 +26,12 @@ urlpatterns = patterns('karaage.applications.views.admin',
     url(r'^new/$', 'new_application', name='kg_application_new'),
 )
 
-urlpatterns += patterns('karaage.applications.views.user',
-    url(r'^invite/$', 'admin_send_invitation', name='kg_application_invite'),
-    url(r'^invite/(?P<project_id>[-.\w]+)/$', 'admin_send_invitation', name='kg_application_invite'),
+urlpatterns += patterns('karaage.applications.views',
+    url(r'^project/invite/$', 'project.admin_send_invitation', name='kg_application_invite'),
+    url(r'^project/invite/(?P<project_id>[-.\w]+)/$', 'project.admin_send_invitation', name='kg_application_invite'),
 
-    url(r'^(?P<application_id>\d+)/$', 'application_detail_admin', name='kg_application_detail'),
-    url(r'^(?P<application_id>\d+)/(?P<state>[-.\w]+)/$', 'application_detail_admin', name='kg_application_detail'),
-    url(r'^(?P<application_id>\d+)/(?P<state>[-.\w]+)/(?P<label>[-.\w]+)/$', 'application_detail_admin', name='kg_application_detail'),
+    url(r'^(?P<application_id>\d+)/$', 'user.application_detail_admin', name='kg_application_detail'),
+    url(r'^(?P<application_id>\d+)/(?P<state>[-.\w]+)/$', 'user.application_detail_admin', name='kg_application_detail'),
+    url(r'^(?P<application_id>\d+)/(?P<state>[-.\w]+)/(?P<label>[-.\w]+)/$', 'user.application_detail_admin', name='kg_application_detail'),
 )
 

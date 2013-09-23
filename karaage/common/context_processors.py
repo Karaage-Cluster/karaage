@@ -17,8 +17,7 @@
 
 from django.conf import settings
 
-from karaage.applications.models import Application, ProjectApplication
-from django.db.models import Q
+from karaage.applications.models import Application
 
 
 def common(request):
@@ -36,21 +35,18 @@ def registration(request):
     ctx = {}
     if request.user.is_authenticated():
         person = request.user
-        my_applications = ProjectApplication.objects.filter(
-            applicant=person).exclude(
-            state__in=[Application.COMPLETED, Application.ARCHIVED, Application.DECLINED]).count()
+        my_applications = Application.objects.get_for_applicant(person)
+        requires_attention = Application.objects.requires_attention(person)
 
-        query = Q(project__in=person.leaders.all(), state=Application.WAITING_FOR_LEADER)
-        query = query | Q(institute__in=person.delegate.all(), state=Application.WAITING_FOR_DELEGATE)
-
-        project_applications = ProjectApplication.objects.filter(query).count()
-        ctx['pending_applications'] = my_applications + project_applications
+        ctx['pending_applications'] = (
+                my_applications.count() + requires_attention.count()
+        )
     return ctx
 
 
 def admin(request):
     """ Set context for admin menu. """
     ctx = {}
-    ctx['pending_applications'] = Application.objects.filter(
-            state=Application.WAITING_FOR_ADMIN).count()
+    requires_admin = Application.objects.requires_admin()
+    ctx['pending_applications'] = requires_admin.count()
     return ctx

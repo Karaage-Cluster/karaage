@@ -32,45 +32,45 @@ from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory, Account
+from karaage.software.models import SoftwareLicenseAgreement
 
+class ApplicationManager(models.Manager):
+    def get_for_applicant(self, person):
+        query = Application.objects.filter(applicant=person).exclude(
+                state__in=[Application.COMPLETED, Application.ARCHIVED, Application.DECLINED])
+        return query
+
+    def requires_attention(self, person):
+        query = Q(projectapplication__project__in=person.leaders.all(), state=ProjectApplication.WAITING_FOR_LEADER)
+        query = query | Q(projectapplication__institute__in=person.delegate.all(), state=ProjectApplication.WAITING_FOR_DELEGATE)
+        return Application.objects.filter(query)
+
+    def requires_admin(self):
+        query = Q(state=Application.WAITING_FOR_ADMIN)
+        query = query | Q(state=ProjectApplication.DUPLICATE, projectapplication__isnull=False)
+        return Application.objects.filter(query)
 
 class Application(models.Model):
     """ Generic application for anything. """
-
-    OPEN = 'O'
-    WAITING_FOR_LEADER = 'L'
-    WAITING_FOR_DELEGATE = 'D'
     WAITING_FOR_ADMIN = 'K'
-    PASSWORD = 'P'
     COMPLETED = 'C'
     ARCHIVED = 'A'
     DECLINED = 'R'
-    DUPLICATE = 'DUP'
-
-    APPLICATION_STATES = (
-        (OPEN, 'Open'),
-        (WAITING_FOR_LEADER, 'Waiting for project leader approval'),
-        (WAITING_FOR_DELEGATE, 'Waiting for institute delegate approval'),
-        (WAITING_FOR_ADMIN, 'Waiting for Karaage admin approval'),
-        (PASSWORD, 'Applicant needs to set password'),
-        (COMPLETED, 'Complete'),
-        (ARCHIVED, 'Archived'),
-        (DECLINED, 'Declined'),
-        (DUPLICATE, 'Duplicate Applicant'),
-        )
 
     secret_token = models.CharField(max_length=64, default=new_random_token, editable=False, unique=True)
     expires = models.DateTimeField(editable=False)
     created_by = models.ForeignKey(Person, editable=False, null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True, editable=False)
     submitted_date = models.DateTimeField(null=True, blank=True)
-    state = models.CharField(max_length=5, choices=APPLICATION_STATES)
+    state = models.CharField(max_length=5)
     complete_date = models.DateTimeField(null=True, blank=True, editable=False)
     content_type = models.ForeignKey(ContentType, limit_choices_to={'model__in': ['person', 'applicant']}, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     applicant = generic.GenericForeignKey()
     header_message = models.TextField('Message', null=True, blank=True, help_text=u"Message displayed at top of application form for the invitee and also in invitation email")
     _class = models.CharField(max_length=100, editable=False)
+
+    objects = ApplicationManager()
 
     def __unicode__(self):
         return "Application #%s" % self.id
@@ -114,7 +114,7 @@ class Application(models.Model):
         self.save()
 
     def submit(self):
-        self.submited_date = datetime.datetime.now()
+        self.submitted_date = datetime.datetime.now()
         self.save()
 
     def approve(self, approved_by):
@@ -130,7 +130,7 @@ class Application(models.Model):
         self.applicant = person
         self.complete_date = datetime.datetime.now()
         self.save()
-        return created_person, False, False
+        return created_person
     approve.alters_data = True
 
     def decline(self):
@@ -150,6 +150,12 @@ class Application(models.Model):
 
 
 class ProjectApplication(Application):
+    OPEN = 'O'
+    WAITING_FOR_LEADER = 'L'
+    WAITING_FOR_DELEGATE = 'D'
+    PASSWORD = 'P'
+    DUPLICATE = 'DUP'
+
     """ Application for an Applicant or a Person to create a new project or
     join an existing project. """
     # common properties
@@ -176,7 +182,9 @@ class ProjectApplication(Application):
             return u"to create unspecified project"
 
     def approve(self, approved_by):
-        created_person, created_account, created_project = super(ProjectApplication, self).approve(approved_by)
+        created_person = super(ProjectApplication, self).approve(approved_by)
+        created_account = False
+        created_project = False
         assert self.applicant is not None
         assert self.content_type.model == "person"
         person = self.applicant
@@ -201,7 +209,7 @@ class ProjectApplication(Application):
             self.save()
             created_project = True
         if self.needs_account:
-            for pc in project.projectquota_set.all():
+            for pc in self.project.projectquota_set.all():
                 if not person.has_account(pc.machine_category):
                     Account.create(person, project, pc.machine_category)
                     created_account = True
@@ -233,14 +241,56 @@ class ProjectApplication(Application):
 
         if self.project is None:
             if not self.name:
-                errors.extend(
+                errors.append(
                 "New project application with no name")
             if self.institute is None:
-                errors.extend(
+                errors.append(
                 "New project application with no institute")
 
         return errors
 
+
+
+class SoftwareRequest(Application):
+    software_license = models.ForeignKey('software.SoftwareLicense')
+
+    def info(self):
+        return u"access to %s" % self.software_license.package
+
+    def authenticate(self, person):
+        auth = {}
+
+        auth['is_applicant'] = False
+        if person == self.applicant:
+            auth['is_applicant'] = True
+
+        return auth
+
+    def check(self):
+        errors = super(SoftwareRequest, self).check()
+
+        if self.content_type.model != 'person':
+            errors.append("Applicant not already registered person.")
+
+        return errors
+
+    def approve(self, approved_by):
+        created_person = super(SoftwareRequest, self).approve(approved_by)
+
+        try:
+            sla = SoftwareLicenseAgreement.objects.get(
+                user=self.applicant,
+                license=self.software_license,
+            )
+        except SoftwareLicenseAgreement.DoesNotExist:
+            sla = SoftwareLicenseAgreement()
+            sla.user = self.applicant
+            sla.license = self.software_license
+            sla.date = datetime.datetime.today()
+            sla.save()
+
+        self.software_license.package.group.add_person(self.applicant)
+        return created_person
 
 
 class Applicant(models.Model):

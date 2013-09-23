@@ -1,0 +1,25 @@
+{% extends "forms.html" %}
+{% load url from future %}
+{% load forms %}
+
+
+{% block title %}Start Application{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_application_list' %}">Applications</a>&nbsp;›
+    Start application
+</div>
+{% endblock %}
+
+
+{% block content %}
+<form method="post" action=".">{% csrf_token %}
+    <p>Please confirm you want to start a new application.</p>
+    <div class="submit-row">
+        <input type="submit" value="Go" class="default" />
+    </div>
+</form>
+{% endblock %}

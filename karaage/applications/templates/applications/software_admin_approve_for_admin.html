@@ -1,0 +1,50 @@
+{% extends "forms.html" %}
+{% load forms %}
+{% load applications %}
+
+
+{% block title %}Approve Application{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_application_list' %}">Applications</a>&nbsp;›
+    <a href='{% url 'kg_application_detail' application.pk %}'>{{ application }}</a>&nbsp;›
+    Approve
+</div>
+{% endblock %}
+
+
+{% block content %}
+<p>The following request is awaiting admin approval:</p>
+<div class="module">
+    <h2>Applicant Details</h2>
+    <table>
+        <tr><td>Name:</td><td>{{ application.applicant }}</td></tr>
+        <tr><td>Institute:</td><td>{{ application.applicant.institute }}</td></tr>
+        <tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
+        <tr><td>Email:</td><td>{{ application.applicant.email|urlize }}</td></tr>
+    </table>
+</div>
+
+<div class="module">
+    <h2>Software License Details</h2>
+    <table>
+        <tr><td>Software:</td><td>{{ application.software_license.package }}</td></tr>
+        <tr><td>Version:</td><td>{{ application.software_license.version }}</td></tr>
+        <tr><td>Text:</td><td>{{ application.software_license.text|linebreaks }}</td></tr>
+    </table>
+</div>
+
+<div class="module">
+    <h2>Confirm</h2>
+    <p>{{ application.applicant }} will receive an email once their software has been confirmed.</p>
+
+    <form method="post" action=".">{% csrf_token %}
+        {% application_actions_plus %}
+        <a href="{% url 'kg_application_detail' application.id application.state 'decline' %}" class="deletelink float-left">Decline</a>
+        {% end_application_actions %}
+    </form>
+</div>
+{% endblock %}

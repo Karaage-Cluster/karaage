@@ -1,0 +1,7 @@
+{% autoescape off %}Hello {{ receiver.get_short_name }},
+
+
+Your application to {{ application.info }} has been approved.
+
+
+{% include "emails/email_footer.txt" %}{% endautoescape %}

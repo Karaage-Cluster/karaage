@@ -191,13 +191,3 @@ class SoftwareLicenseAgreement(models.Model):
     class Meta:
         db_table = 'software_license_agreement'
         get_latest_by = 'date'
-
-
-class SoftwareAccessRequest(models.Model):
-    person = models.ForeignKey(Person)
-    software_license = models.ForeignKey(SoftwareLicense)
-    request_date = models.DateField(auto_now_add=True)
-
-    class Meta:
-        db_table = 'software_access_request'
-        get_latest_by = 'request_date'

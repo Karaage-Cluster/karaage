@@ -1,0 +1,37 @@
+{% extends "forms.html" %}
+{% load forms %}
+{% load applications %}
+
+
+{% block title %}Introduction{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_application_list' %}">Applications</a>&nbsp;›
+    {{ application }}&nbsp;›
+    Declined
+</div>
+{% endblock %}
+
+
+{% block content %}
+<h1>Application Declined</h1>
+
+<form method="post" action=".">{% csrf_token %}
+    {% if application.applicant.get_short_name %}
+    <p>Hi {{ application.applicant.get_short_name }},</p>
+    {% endif %}
+
+    <p>Unfortunately your application for {{ application.info }} was declined or cancelled.</p>
+
+    <p>You may reopen your application and try again if you desire. Before you do so, please check to
+    make sure you understand why the application was declined or cancelled.</p>
+
+    {% application_actions %}
+</form>
+{% endblock %}
+
+
+

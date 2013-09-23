@@ -1,7 +1,0 @@
-Hello {{ receiver.get_short_name }},
-
-Your request for access to the software package {{ software }} has been approved.
-
-Thanks,
-
-{% include "emails/email_footer.txt" %}

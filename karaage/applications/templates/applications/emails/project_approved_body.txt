@@ -6,4 +6,5 @@ and has been assigned the project ID {{ application.project.pid }}
 
 Please see {{ project_link }}.
 
+
 {% include "emails/email_footer.txt" %}{% endautoescape %}

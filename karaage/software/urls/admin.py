@@ -27,10 +27,6 @@ urlpatterns = patterns('karaage.software.views.admin',
     url(r'^categories/add/$', 'category_create', name='kg_software_category_create'),
     url(r'^categories/(?P<category_id>\d+)/edit/$', 'category_edit', name='kg_software_category_edit'),
 
-    url(r'^requests/$', 'softwarerequest_list', name='kg_software_request_list'),
-    url(r'^requests/(?P<softwarerequest_id>\d+)/approve/$', 'softwarerequest_approve', name='kg_software_request_approve'),
-    url(r'^requests/(?P<softwarerequest_id>\d+)/decline/$', 'softwarerequest_delete', name='kg_software_request_delete'),
-
     url(r'^(?P<software_id>\d+)/$', 'software_detail', name='kg_software_detail'),
     url(r'^(?P<software_id>\d+)/edit/$', 'software_edit', name='kg_software_edit'),
     url(r'^(?P<software_id>\d+)/delete/$', 'software_delete', name='kg_software_delete'),

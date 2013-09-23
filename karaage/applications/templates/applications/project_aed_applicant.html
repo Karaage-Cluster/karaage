@@ -1,0 +1,65 @@
+{% extends "forms.html" %}
+{% load forms %}
+{% load applications %}
+
+
+{% block title %}Step 3: Applicant{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_application_list' %}">Applications</a>&nbsp;›
+    {{ application }}&nbsp;
+    Step 3: Applicant
+</div>
+{% endblock %}
+
+
+{% block content %}
+<h1>3. Applicant</h1>
+
+<form method="post" action=".">{% csrf_token %}
+    {% if status %}
+        <p>You are already registered in the system.</p>
+        <div class="module">
+            <h2>Applicant Details</h2>
+            <table>
+                <tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
+                <tr><td>Short name:</td><td>{{ application.applicant.get_short_name }}</td></tr>
+                <tr><td>Full name:</td><td>{{ application.applicant.get_full_name }}</td></tr>
+                <tr><td>Institute:</td><td>{% if application.applicant.institute %}<a href="{{ application.applicant.institute.get_absolute_url }}">{{ application.applicant.institute }}</a>{% else %}None{% endif %}</td></tr>
+                {% if application.applicant.position %}<tr><td>Position:</td><td>{{ application.applicant.position }}</td></tr>{% endif %}
+                {% if application.applicant.telephone %}<tr><td>Phone:</td><td>{{ application.applicant.telephone }}</td></tr>{% endif %}
+                {% if application.applicant.mobile %}<tr><td>Mobile:</td><td>{{ application.applicant.mobile }}</td></tr>{% endif %}
+                {% if application.applicant.department %}<tr><td>Department:</td><td>{{ application.applicant.department }}</td></tr>{% endif %}
+                {% if application.applicant.supervisor %}<tr><td>Supervisor:</td><td>{{ application.applicant.supervisor }}</td></tr>{% endif %}
+                {% if application.applicant.fax %}<tr><td>Fax:</td><td>{{ application.applicant.fax }}</td></tr>{% endif %}
+            </table>
+        </div>
+    {% else %}
+        <div>
+            <p>Any changes to the following will affect all you applications. You currently have the following applications open.</p>
+            <ol>
+            {% for app in application.application.applications %}
+                {% if app == application %}
+                <li> {{ app }} (this application)</li>
+                {% else %}
+                <li> {{ app }} </li>
+                {% endif %}
+            {% endfor %}
+            </ol>
+            {% if form.errors or form.non_field_errors %}
+            <p class="errornote">Please correct the error(s) below.</p>
+            {% endif %}
+            {% if application.header_message %}{{ application.header_message|linebreaks }}{% endif %}
+            <fieldset class="module aligned ()">
+            <h2>Account Details</h2>
+            <p>This username will be used for your computer account as well as access to this website.</p>
+            {% form_as_div form %}
+        </div>
+    {% endif %}
+
+    {% application_actions %}
+</form>
+{% endblock %}

@@ -26,6 +26,7 @@ from django.http import HttpResponseRedirect
 from karaage.common.filterspecs import Filter, FilterBar
 
 from karaage.common.decorators import admin_required
+from karaage.people.models import Person
 from karaage.applications.models import Applicant, Application
 from karaage.applications.forms import ApplicantForm
 from karaage.common import log
@@ -35,30 +36,29 @@ import karaage.common as util
 @admin_required
 def application_list(request):
 
-    apps = Application.objects.select_related().order_by('-id')
-
     try:
         page_no = int(request.GET.get('page', 1))
     except ValueError:
         page_no = 1
 
-    if 'state' in request.REQUEST:
-        apps = apps.filter(state=request.GET['state'])
-
     if 'search' in request.REQUEST:
+        apps = Application.objects.select_related().order_by('-id')
         terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
-            q = Q(created_by__short_name__icontains=term) | Q(created_by__full_name__icontains=term)
-            query = query & q
+            q = Q(short_name__icontains=term)
+            q = q | Q(full_name__icontains=term)
+            q = q | Q(email=term)
+
+            persons = Person.objects.filter(q)
+            applicants = Applicant.objects.filter(q)
+
+            query = query & (Q(applicant__in=persons) | Q(applicant__in=applicants))
 
         apps = apps.filter(query)
     else:
+        apps = Application.objects.requires_admin()
         terms = ""
-
-    filter_list = []
-    filter_list.append(Filter(request, 'state', Application.APPLICATION_STATES))
-    filter_bar = FilterBar(request, filter_list)
 
     p = Paginator(apps, 50)
 
@@ -69,7 +69,7 @@ def application_list(request):
 
     return render_to_response(
             'applications/application_list_for_admin.html',
-            {'page': page, 'filter_bar': filter_bar, 'terms': terms},
+            {'page': page, 'terms': terms},
             context_instance=RequestContext(request))
 
 

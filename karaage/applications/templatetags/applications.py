@@ -17,18 +17,30 @@
 
 """ Application specific tags. """
 
+from karaage.applications.views.user import get_state_machine
 from django import template
 register = template.Library()
 
 
-@register.inclusion_tag(
-        'applications/application_state.html', takes_context = True)
-def application_state(context, application):
+@register.simple_tag(takes_context = True)
+def application_state(context, application_type, application):
     """ Render current state of application, verbose. """
-    return {
+    new_context = template.context.Context({
         'auth': context['auth'],
         'application': application,
-    }
+    })
+    nodelist = template.loader.get_template(
+            'applications/%s_common_state.html' % application_type)
+    output = nodelist.render(new_context)
+    return output
+
+
+@register.simple_tag(takes_context = True)
+def application_simple_state(context, application):
+    """ Render current state of application, verbose. """
+    state_machine = get_state_machine(application)
+    state = state_machine.get_state(application)
+    return state.name
 
 
 @register.inclusion_tag(

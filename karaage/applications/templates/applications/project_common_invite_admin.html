@@ -1,0 +1,25 @@
+{% extends "main.html" %}
+{% load url from future %}
+{% load forms %}
+
+
+{% block title %}Start Application{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_application_list' %}">Applications</a>&nbsp;›
+    Start application
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="content-main">
+    <h1>Start Application</h1>
+    <p>Sorry, applications must be started from the user website, not the admin
+    website.</p>
+</div>
+{% endblock %}
+

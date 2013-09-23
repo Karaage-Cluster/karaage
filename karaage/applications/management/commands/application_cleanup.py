@@ -22,26 +22,34 @@ import tldap.transaction
 
 class Command(BaseCommand):
     help = "Regular cleanup of application db models."
-    
+
     @django.db.transaction.commit_on_success
     @tldap.transaction.commit_on_success
     def handle(self, **options):
-        from karaage.applications.models import Application, ProjectApplication, Applicant
+        from karaage.applications.models import Application, Applicant
         import datetime
         now = datetime.datetime.now()
-        
+
         verbose = int(options.get('verbosity'))
-        # Delete all expired applications
-        for application in Application.objects.filter(expires__lte=now, state=Application.OPEN):
+
+        # Delete all expired unsubmitted applications
+        for application in Application.objects.filter(expires__lte=now, submitted_date__isnull=True):
             if verbose >= 1:
-                print "Deleted expired application #%s" % application.id
+                print "Deleted expired unsubmitted application #%s" % application.id
             application.delete()
- 
-        # Delete all project applications that have been complete for 1 month
+
         month_ago = now - datetime.timedelta(days=30)
-        for application in ProjectApplication.objects.filter(state__in=[Application.COMPLETE, Application.DECLINED], complete_date__lte=month_ago):
+
+        # Delete all unsubmitted applications that have been around for 1 month
+        for application in Application.objects.filter(created_date__lte=month_ago, submitted_date__isnull=True):
             if verbose >= 1:
-                print "Deleted completed project application #%s" % application.id
+                print "Deleted unsubmitted application #%s" % application.id
+            application.delete()
+
+        # Delete all applications that have been complete/declined for 1 month
+        for application in Application.objects.filter(complete_date__isnull=False, complete_date__lte=month_ago):
+            if verbose >= 1:
+                print "Deleted completed application #%s" % application.id
             application.delete()
 
         # Delete all orphaned applicants

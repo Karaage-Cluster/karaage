@@ -28,9 +28,8 @@ import datetime
 from karaage.common.filterspecs import Filter, FilterBar, DateFilter
 
 from karaage.common.decorators import admin_required
-from karaage.software.models import SoftwareCategory, Software, SoftwareVersion, SoftwareLicense, SoftwareAccessRequest, SoftwareLicenseAgreement
+from karaage.software.models import SoftwareCategory, Software, SoftwareVersion, SoftwareLicense, SoftwareLicenseAgreement
 from karaage.software.forms import AddPackageForm, LicenseForm, SoftwareVersionForm
-from karaage.software.emails import send_software_request_approved_email
 from karaage.people.models import Person
 from karaage.machines.models import Machine
 from karaage.common import get_date_range, log
@@ -252,67 +251,6 @@ def remove_member(request, software_id, person_id):
         return HttpResponseRedirect(package.get_absolute_url())
 
     return render_to_response('software/person_confirm_remove.html', locals(), context_instance=RequestContext(request))
-
-
-@admin_required
-def softwarerequest_list(request):
-    softwarerequest_list = SoftwareAccessRequest.objects.all()
-
-    if 'search' in request.REQUEST:
-        terms = request.REQUEST['search']
-        query = Q()
-        for term in terms.split(' '):
-            q = Q(person__short_name__icontains=term)
-            q = q | Q(person__full_name__icontains=term)
-            q = q | Q(software_license__package__name__icontains=term)
-            query = query & q
-
-        softwarerequest_list = softwarerequest_list.filter(query)
-    else:
-        terms = ""
-
-    page_no = int(request.GET.get('page', 1))
-    p = Paginator(softwarerequest_list, 50)
-    page = p.page(page_no)
-
-
-    return render_to_response('software/request_list.html',
-            {'softwarerequest_list': softwarerequest_list,
-                'page': page, 'terms': terms},
-            context_instance=RequestContext(request))
-
-@admin_required
-def softwarerequest_approve(request, softwarerequest_id):
-    softwarerequest = get_object_or_404(SoftwareAccessRequest, pk=softwarerequest_id)
-
-    if request.method == 'POST':
-        SoftwareLicenseAgreement.objects.create(
-            user=softwarerequest.person,
-            license=softwarerequest.software_license,
-            date=datetime.datetime.today(),
-            )
-        softwarerequest.person.add_group(softwarerequest.software_license.package.group)
-
-        messages.success(request, "Software request approved successfully")
-        send_software_request_approved_email(softwarerequest)
-        log(request.user, softwarerequest.software_license.package, 1, "User %s approved" % softwarerequest.person)
-        softwarerequest.delete()
-        return HttpResponseRedirect(reverse('kg_software_request_list'))
-
-    return render_to_response('software/request_approve.html', {'softwarerequest': softwarerequest}, context_instance=RequestContext(request))
-
-
-@admin_required
-def softwarerequest_delete(request, softwarerequest_id):
-    softwarerequest = get_object_or_404(SoftwareAccessRequest, pk=softwarerequest_id)
-
-    if request.method == 'POST':
-
-        softwarerequest.delete()
-        messages.success(request, "Software request deleted successfully")
-        return HttpResponseRedirect(reverse('kg_software_request_list'))
-
-    return render_to_response('software/request_delete.html', {'softwarerequest': softwarerequest}, context_instance=RequestContext(request))
 
 
 @admin_required

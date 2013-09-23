@@ -240,7 +240,7 @@ class UnauthenticatedInviteUserApplicationForm(forms.Form):
         return email
 
 
-def ApproveApplicationFormGenerator(application, auth):
+def ApproveProjectFormGenerator(application, auth):
     if application.project is None:
         # new project
         include_fields = ['machine_categories', 'additional_req', 'needs_account']
@@ -248,7 +248,7 @@ def ApproveApplicationFormGenerator(application, auth):
         # existing project
         include_fields = ['make_leader', 'additional_req', 'needs_account']
 
-    class ApproveApplicationForm(forms.ModelForm):
+    class ApproveProjectForm(forms.ModelForm):
         additional_req = forms.CharField(label="Additional requirements", widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), help_text=u"Do you have any special requirements?", required=False)
 
         class Meta:
@@ -256,17 +256,17 @@ def ApproveApplicationFormGenerator(application, auth):
             fields = include_fields
 
         def __init__(self, *args, **kwargs):
-            super(ApproveApplicationForm, self).__init__(*args, **kwargs)
+            super(ApproveProjectForm, self).__init__(*args, **kwargs)
             self.fields['needs_account'].label = u"Does this person require a cluster account?"
             self.fields['needs_account'].help_text = u"Will this person be working on the project?"
             if application.project is None:
                 self.fields['machine_categories'].required = True
 
-    return ApproveApplicationForm
+    return ApproveProjectForm
 
 
-def AdminApproveApplicationFormGenerator(application, auth):
-    parent = ApproveApplicationFormGenerator(application, auth)
+def AdminApproveProjectFormGenerator(application, auth):
+    parent = ApproveProjectFormGenerator(application, auth)
     if application.project is None:
         # new project
         include_fields = ['pid', 'machine_categories', 'additional_req', 'needs_account']
@@ -274,7 +274,7 @@ def AdminApproveApplicationFormGenerator(application, auth):
         # existing project
         include_fields = ['make_leader', 'additional_req', 'needs_account']
 
-    class AdminApproveApplicationForm(parent):
+    class AdminApproveProjectForm(parent):
         if application.project is None:
             pid = forms.CharField(label="Project ID", help_text="Leave blank for auto generation", required=False)
 
@@ -298,7 +298,7 @@ def AdminApproveApplicationFormGenerator(application, auth):
                 pass
             return pid
 
-    return AdminApproveApplicationForm
+    return AdminApproveProjectForm
 
 
 class PersonSetPassword(forms.Form):

@@ -23,7 +23,7 @@ from django.core.management import call_command
 
 from tldap.test import slapd
 from captcha.models import CaptchaStore
-from karaage.applications.models import Application, Applicant
+from karaage.applications.models import Application, Applicant, ProjectApplication
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
@@ -68,7 +68,7 @@ class UserApplicationTestCase(TestCase):
         self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('index'))
         token = Application.objects.get().secret_token
         self.assertEquals(len(mail.outbox), 1)
-        self.assertEquals(mail.outbox[0].subject, 'TestOrg invitation')
+        self.assertEquals(mail.outbox[0].subject, 'TestOrg invitation to join project')
         self.assertEquals(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL)
         self.assertEquals(mail.outbox[0].to[0], 'jim.bob@example.com')
 
@@ -105,9 +105,9 @@ class UserApplicationTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 200)
         applicant = Applicant.objects.get(username='jimbob')
         application = applicant.applications.all()[0]
-        self.failUnlessEqual(application.state, Application.WAITING_FOR_LEADER)
+        self.failUnlessEqual(application.state, ProjectApplication.WAITING_FOR_LEADER)
         self.assertEquals(len(mail.outbox), 2)
-        self.assertEquals(mail.outbox[1].subject, 'TestOrg new project request')
+        self.assertEquals(mail.outbox[1].subject, 'TestOrg project request')
         self.assertEquals(mail.outbox[1].from_email, settings.ACCOUNTS_EMAIL)
         self.assertEquals(mail.outbox[1].to[0], 'leader@example.com')
 
@@ -168,7 +168,7 @@ class UserApplicationTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 200)
         self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_detail', args=[application.pk,'P']))
         application = Application.objects.get(pk=application.id)
-        self.failUnlessEqual(application.state, Application.PASSWORD)
+        self.failUnlessEqual(application.state, ProjectApplication.PASSWORD)
         self.assertEquals(len(mail.outbox), 4)
         self.client.logout()
         settings.ROOT_URLCONF = "karaage.testproject.registration_urls"
@@ -254,7 +254,7 @@ class ProjectApplicationTestCase(TestCase):
         self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('index'))
         token = Application.objects.get().secret_token
         self.assertEquals(len(mail.outbox), 1)
-        self.assertEquals(mail.outbox[0].subject, 'TestOrg invitation')
+        self.assertEquals(mail.outbox[0].subject, 'TestOrg invitation to join project')
         self.assertEquals(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL)
         self.assertEquals(mail.outbox[0].to[0], 'jim.bob@example.com')
 
@@ -292,9 +292,9 @@ class ProjectApplicationTestCase(TestCase):
         self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_unauthenticated', args=[token,'D']))
         applicant = Applicant.objects.get(username='jimbob')
         application = applicant.applications.all()[0]
-        self.failUnlessEqual(application.state, Application.WAITING_FOR_DELEGATE)
+        self.failUnlessEqual(application.state, ProjectApplication.WAITING_FOR_DELEGATE)
         self.assertEquals(len(mail.outbox), 2)
-        self.assertEquals(mail.outbox[1].subject, 'TestOrg new project request')
+        self.assertEquals(mail.outbox[1].subject, 'TestOrg project request')
         self.assertEquals(mail.outbox[1].from_email, settings.ACCOUNTS_EMAIL)
         self.assertEquals(mail.outbox[1].to[0], 'leader@example.com')
 
@@ -355,7 +355,7 @@ class ProjectApplicationTestCase(TestCase):
         self.failUnlessEqual(response.status_code, 200)
         self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_detail', args=[application.pk,'P']))
         application = Application.objects.get(pk=application.id)
-        self.failUnlessEqual(application.state, Application.PASSWORD)
+        self.failUnlessEqual(application.state, ProjectApplication.PASSWORD)
         self.assertEquals(len(mail.outbox), 4)
         self.client.logout()
         settings.ROOT_URLCONF = "karaage.testproject.registration_urls"

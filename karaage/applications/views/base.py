@@ -1,0 +1,268 @@
+# Copyright 2007-2013 VPAC
+#
+# This file is part of Karaage.
+#
+# Karaage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Karaage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Karaage  If not, see <http://www.gnu.org/licenses/>.
+
+""" This file implements a state machine for the views. """
+
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+from django.core.urlresolvers import reverse
+from django.conf import settings
+from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseBadRequest, HttpResponse
+from django.contrib import messages
+
+from karaage.common import log
+
+
+def get_url(request, application, auth, label=None):
+    """ Retrieve a link that will work for the current user. """
+    args = []
+    if label is not None:
+        args.append(label)
+
+    # don't use secret_token unless we have to
+    if auth['is_admin']:
+        # Administrators can access anything without secrets
+        require_secret = False
+    elif not auth['is_applicant']:
+        # we never give secrets to anybody but the applicant
+        require_secret = False
+    elif not request.user.is_authenticated():
+        # If applicant is not logged in, we redirect them to secret URL
+        require_secret = True
+    elif request.user != application.applicant:
+        # If logged in as different person, we redirect them to secret
+        # URL. This could happen if the application was open with a different
+        # email address, and the applicant is logged in when accessing it.
+        require_secret = True
+    else:
+        # otherwise redirect them to URL that requires correct login.
+        require_secret = False
+
+    # return required url
+    if not require_secret:
+        url = reverse(
+                'kg_application_detail',
+                args=[application.pk, application.state] + args)
+    else:
+        url = reverse(
+                'kg_application_unauthenticated',
+                args=[application.secret_token, application.state] + args)
+    return url
+
+
+def get_email_link(application):
+    """ Retrieve a link that can be emailed to the user. """
+    # don't use secret_token unless we have to
+    if application.content_type.model != 'applicant':
+        url = '%s/applications/%d/' % (
+                settings.REGISTRATION_BASE_URL, application.pk)
+        is_secret = False
+    else:
+        url = '%s/applications/%s/' % (
+                settings.REGISTRATION_BASE_URL, application.secret_token)
+        is_secret = True
+    return url, is_secret
+
+
+class StateMachine(object):
+    """ State machine, for processing states. """
+
+    ##################
+    # PUBLIC METHODS #
+    ##################
+
+    def __init__(self):
+        self._first_state = None
+        self._states = {}
+        super(StateMachine, self).__init__()
+
+    def add_state(self, state, state_id, actions):
+        """ Add a state to the list. The first state added becomes the initial
+        state. """
+        if self._first_state is None:
+            self._first_state = state_id
+        self._states[state_id] = state, actions
+
+    def get_state(self, application):
+        if application.state not in self._states:
+            raise RuntimeError("Invalid state '%s'" % application.state)
+        state, _ = self._states[application.state]
+        return state
+
+    def start(self, request, application, auth_override):
+        """ Continue the state machine at first state. """
+        # Get the authentication of the current user
+        auth = self._authenticate(request, application)
+        if auth_override is not None:
+            auth.update(auth_override)
+
+        # Ensure current user is authenticated. If user isn't applicant,
+        # leader, delegate or admin, they probably shouldn't be here.
+        if (not auth['is_applicant'] and
+                not auth['is_leader'] and
+                not auth['is_delegate'] and
+                not auth['is_admin']):
+            return HttpResponseForbidden('<h1>Access Denied</h1>')
+
+        # Sanity check
+        if self._first_state is None:
+            raise RuntimeError("First state not set.")
+
+        # Go to first state.
+        return self._next(request, application, auth, self._first_state)
+
+    def process(self, request, application, expected_state, label, auth_override):
+        """ Process the view request at the current state. """
+
+        # Get the authentication of the current user
+        auth = self._authenticate(request, application)
+        if auth_override is not None:
+            auth.update(auth_override)
+
+        # Ensure current user is authenticated. If user isn't applicant,
+        # leader, delegate or admin, they probably shouldn't be here.
+        if (not auth['is_applicant'] and
+                not auth['is_leader'] and
+                not auth['is_delegate'] and
+                not auth['is_admin']):
+            return HttpResponseForbidden('<h1>Access Denied</h1>')
+
+        # If user didn't supply state on URL, redirect to full URL.
+        if expected_state is None:
+            url = get_url(request, application, auth, label)
+            return HttpResponseRedirect(url)
+
+        # Check that the current state is valid.
+        if application.state not in self._states:
+            raise RuntimeError("Invalid state '%s'" % application.state)
+
+        # If state user expected is different to state we are in, warn user
+        # and jump to expected state.
+        if expected_state != application.state:
+            # post data will be lost
+            if request.method == "POST":
+                messages.warning(request, "Discarding request and jumping to current state.")
+            # note we discard the label, it probably isn't relevant for new
+            # state
+            url = get_url(request, application, auth)
+            return HttpResponseRedirect(url)
+
+        # Get the current state for this application
+        state, actions =  self._states[application.state]
+
+        # Finally do something
+        if request.method == "GET":
+            # if method is GET, state does not ever change.
+            response = state.view(
+                    request, application, label, auth, actions.keys())
+            assert isinstance(response, HttpResponse)
+            return response
+
+        elif request.method == "POST":
+            # if method is POST, it can return a HttpResponse or a string
+            response = state.view(
+                    request, application, label, auth, actions.keys())
+            if isinstance(response, HttpResponse):
+                # If it returned a HttpResponse, state not changed, just display
+                return response
+            else:
+                # If it returned a string, lookit up in the actions for this
+                # state
+                if response not in actions:
+                    raise RuntimeError(
+                            "Invalid response '%s' from state '%s'" %
+                            (response, state))
+                next_state_key = actions[response]
+                # If next state is a transition, process it
+                if isinstance(next_state_key, Transition):
+                    next_state_key = next_state_key.get_next_state(
+                            request, application, auth)
+                # Go to the next state
+                return self._next(request, application, auth, next_state_key)
+
+        else:
+            # Shouldn't happen, user did something weird
+            return HttpResponseBadRequest("<h1>Bad Request</h1>")
+
+
+    ###################
+    # PRIVATE METHODS #
+    ###################
+    @staticmethod
+    def _log(request, application, flag, message):
+        """ Log a message for this application. """
+        log(request.user, application.application_ptr, flag, message)
+
+    @staticmethod
+    def _authenticate(request, application):
+        """ Check the authentication of the current user. """
+        if not request.user.is_authenticated():
+            return { 'is_applicant': False, 'is_leader': False, 'is_delegate': False, 'is_admin': False, }
+        person = request.user
+        auth = application.authenticate(person)
+        auth["is_admin"] = False
+        return auth
+
+    def _next(self, request, application, auth, state_key):
+        """ Continue the state machine at given state. """
+        # we only support state changes for POST requests
+        if request.method == "POST":
+            # lookup next state
+            if state_key not in self._states:
+                raise RuntimeError("Invalid state '%s'" % state_key)
+            state, _ = self._states[state_key]
+
+            # enter that state
+            state.enter_state(request, application)
+            application.state = state_key
+            application.save()
+
+            # log details
+            self._log(request, application, 2, "state: %s" % state.name)
+
+            # redirect to this new state
+            url = get_url(request, application, auth)
+            return HttpResponseRedirect(url)
+        else:
+            return HttpResponseBadRequest("<h1>Bad Request</h1>")
+
+
+class State(object):
+    """ A abstract class that is the base for all application states. """
+    name = "Abstract State"
+
+    def enter_state(self, request, application):
+        """ This is becoming the new current state. """
+        pass
+
+    def view(self, request, application, label, auth, actions):
+        """ Django view method. We provide a default detail view for
+        applications. """
+
+        # we don't know how to handle this request.
+        return HttpResponseBadRequest("<h1>Bad Request</h1>")
+
+
+class Transition(object):
+    """ A transition from one state to another. """
+    def __init__(self, next_state_id):
+        self._next_state_id = next_state_id
+
+    def get_next_state(self, request, application, auth):
+        """ Retrieve the next state. """
+        return self._next_state_id

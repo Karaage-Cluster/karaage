@@ -1,3 +1,4 @@
+{% load applications %}
 <table cellspacing="0">
     <thead>
         <tr>
@@ -17,7 +18,7 @@
             {% else %}
             <td>{{ app.applicant.email }}</td>
             {% endif %}
-            <td>{{ app.get_state_display }}</td>
+            <td>{% application_simple_state app %}</td>
         </tr>
         {% endfor %}
     </tbody>

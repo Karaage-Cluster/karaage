@@ -1,1 +1,0 @@
-{{ org_name }} Project join request waiting for admin processing

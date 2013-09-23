@@ -18,19 +18,20 @@
 from django.conf.urls import *
 
 
-urlpatterns = patterns('karaage.applications.views.user',
+urlpatterns = patterns('karaage.applications.views',
 
-    url(r'^$', 'pending_applications', name='kg_application_pendinglist'),
+    url(r'^$', 'user.pending_applications', name='kg_application_list'),
 
-    url(r'^new/$', 'new_application', name='kg_application_new'),
+    url(r'^project/new/$', 'project.new_application', name='kg_application_new'),
+    url(r'^project/invite/(?P<project_id>[-.\w]+)/$', 'project.send_invitation', name='kg_application_invite'),
 
-    url(r'^invite/(?P<project_id>[-.\w]+)/$', 'send_invitation', name='kg_application_invite'),
+    url(r'^software/new/(?P<software_license_id>\d+)/$', 'software.new_application', name='kg_application_software_new'),
 
-    url(r'^(?P<application_id>\d+)/$', 'application_detail', name='kg_application_detail'),
-    url(r'^(?P<application_id>\d+)/(?P<state>[-.\w]+)/$', 'application_detail', name='kg_application_detail'),
-    url(r'^(?P<application_id>\d+)/(?P<state>[-.\w]+)/(?P<label>[-.\w]+)/$', 'application_detail', name='kg_application_detail'),
+    url(r'^(?P<application_id>\d+)/$', 'user.application_detail', name='kg_application_detail'),
+    url(r'^(?P<application_id>\d+)/(?P<state>[-.\w]+)/$', 'user.application_detail', name='kg_application_detail'),
+    url(r'^(?P<application_id>\d+)/(?P<state>[-.\w]+)/(?P<label>[-.\w]+)/$', 'user.application_detail', name='kg_application_detail'),
 
-    url(r'^(?P<token>[-.\w]+)/$', 'application_unauthenticated', name='kg_application_unauthenticated'),
-    url(r'^(?P<token>[-.\w]+)/(?P<state>[-.\w]+)/$', 'application_unauthenticated', name='kg_application_unauthenticated'),
-    url(r'^(?P<token>[-.\w]+)/(?P<state>[-.\w]+)/(?P<label>[-.\w]+)/$', 'application_unauthenticated', name='kg_application_unauthenticated'),
+    url(r'^(?P<token>[-.\w]+)/$', 'user.application_unauthenticated', name='kg_application_unauthenticated'),
+    url(r'^(?P<token>[-.\w]+)/(?P<state>[-.\w]+)/$', 'user.application_unauthenticated', name='kg_application_unauthenticated'),
+    url(r'^(?P<token>[-.\w]+)/(?P<state>[-.\w]+)/(?P<label>[-.\w]+)/$', 'user.application_unauthenticated', name='kg_application_unauthenticated'),
 )

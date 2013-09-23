@@ -1,0 +1,235 @@
+{% extends "forms.html" %}
+{% load forms %}
+{% load applications %}
+
+
+{% block title %}Step 4: Project Details{% endblock %}
+
+
+{% block extrahead %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jcookie.js"></script>
+{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_application_list' %}">Applications</a>&nbsp;›
+    {{ application }}&nbsp;›
+    Step 4: Project Details
+</div>
+{% endblock %}
+
+
+{% block content %}
+<h1>4. Project details</h1>
+
+<form method="post" action="." class="module">{% csrf_token %}
+    <div class="module">
+        <h2>Common</h2>
+        {% form_as_div forms.common %}
+    </div>
+
+    <div class="module hidden" id="form_new">
+        <h2>New project details</h2>
+        {% form_as_div forms.new %}
+    </div>
+
+    <div class="module hidden" id="form_existing">
+        <h2>Existing project details</h2>
+
+        <input type="hidden" id="id_project" name="project" value="">
+
+        <div class="form-row">
+            <label for="id_name">Project Leader/Project ID:</label>
+            <input type="text" name="terms" id="id_terms" />
+        </div>
+
+        <div id="error_list">
+            {% if forms.existing.project.errors %}
+            <ul class="errorlist">
+                <li>No project selected.</li>
+            </ul>
+            {% endif %}
+        </div>
+
+        <div id="leader_list">
+        </div>
+
+        <div id="project_list">
+        </div>
+
+        <div id="selected_project">
+        </div>
+    </div>
+
+    {% application_actions %}
+</form>
+
+<script>
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+$.ajaxSetup({
+    crossDomain: false, // obviates need for sameOrigin test
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type)) {
+            xhr.setRequestHeader("X-CSRFToken", $.jCookie("csrftoken"));
+        }
+    }
+});
+
+$(document).ready(function(){
+    function setup_existing() {
+        $("#form_new").addClass("hidden")
+        $("#form_existing").removeClass("hidden")
+    }
+
+    function setup_new() {
+        $("#form_new").removeClass("hidden")
+        $("#form_existing").addClass("hidden")
+    }
+
+    function select_project(pk, name) {
+        $("#id_project").val(pk)
+        $("#selected_project").html($("<p></p>")
+            .addClass("selected")
+            .text("Selected project: " +name))
+    }
+
+    function fill_results(data, project_list_text) {
+        node = $("#error_list").empty()
+        if (data.error) {
+            list = $("<ul class='errorlist'></ul>").appendTo(node)
+            $("<li></li>")
+                .text(data.error)
+                .appendTo(list)
+        }
+
+        if (data.leader_list != null) {
+            node = $("#leader_list")
+                .empty()
+            if (data.leader_list.length > 0) {
+                $("<p></p>")
+                    .text("Leader List:")
+                    .appendTo(node)
+                list = $("<ul></ul>")
+                    .appendTo(node)
+            }
+            for (var i=0; i<data.leader_list.length; ++i) {
+                item = $("<li></li>")
+                    .append($("<input type='radio'></input>")
+                        .attr("id", "id_leader")
+                        .attr("name", "tmp_leader")
+                        .attr("value", data.leader_list[i][0])
+                        .data("name", data.leader_list[i][1])
+                        .change(leader_change))
+                    .append($("<span></span>")
+                        .text(data.leader_list[i][1]))
+                    .appendTo(list)
+            }
+        }
+
+        if (data.project_list != null) {
+            node = $("#project_list")
+                .empty()
+            if (data.project_list.length > 0) {
+                $("<p></p>")
+                    .text(project_list_text)
+                    .appendTo(node)
+                list = $("<ul></ul>")
+                    .appendTo(node)
+            }
+            for (var i=0; i<data.project_list.length; ++i) {
+                item = $("<li></li>")
+                    .append($("<input type='radio'></input>")
+                        .attr("id", "id_project")
+                        .attr("name", "tmp_project")
+                        .attr("value", data.project_list[i][0])
+                        .data("name", data.project_list[i][1])
+                        .change(project_change))
+                    .append($("<span></span>")
+                        .text(data.project_list[i][1]))
+                    .appendTo(list)
+            }
+        }
+    }
+
+    $("#id_application_type_0").change(function() {
+        setup_existing()
+    })
+    $("#id_application_type_1").change(function() {
+        setup_new()
+    })
+
+    function leader_change(ev) {
+        leader_name = $(this).data("name")
+        leader_pk = $(this).val()
+
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            cache: true,
+            data: {
+                leader: leader_pk,
+                terms: $("#id_terms").val(),
+                ajax: true,
+            }
+        })
+            .done(
+                function(data, textStatus, jqXHR) {
+                    fill_results(data, "Projects for leader "+leader_name)
+                }
+            )
+            .fail(
+                function(jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown)
+                }
+            )
+    }
+
+    function project_change(ev) {
+        project_name = $(this).data("name")
+        project_pk = $(this).val()
+        select_project(project_pk, project_name)
+    }
+
+    $("#id_terms").on("input", function() {
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            cache: true,
+            data: {
+                terms: $("#id_terms").val(),
+                ajax: true,
+            }
+        })
+            .done(
+                function(data, textStatus, jqXHR) {
+                    fill_results(data, "Projects for term " + $("#id_terms").val())
+                }
+            )
+            .fail(
+                function(jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown)
+                }
+            )
+    })
+
+    t0 = $("#id_application_type_0").prop('checked')
+    t1 = $("#id_application_type_1").prop('checked')
+    {% if project %}
+    select_project("{{project.pk}}", "{{project}}")
+    {% endif %}
+    if (t0) {
+        setup_existing()
+    }
+    else if (t1) {
+        setup_new()
+    }
+});
+</script>
+{% endblock %}

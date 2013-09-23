@@ -20,13 +20,11 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.template.defaultfilters import wordwrap
-from django.contrib import messages
 
 import datetime
 
 from karaage.common.decorators import login_required
-from karaage.software.models import Software, SoftwareLicenseAgreement, SoftwareAccessRequest
-from karaage.software.emails import send_software_request_email
+from karaage.software.models import Software, SoftwareLicenseAgreement
 
 
 @login_required
@@ -42,9 +40,6 @@ def add_package_list(request):
             la = license_agreements.latest()
             data['accepted'] = True
             data['accepted_date'] = la.date
-        software_requests = SoftwareAccessRequest.objects.filter(person=person, software_license__package=s)
-        if software_requests.count() > 0:
-            data['pending_request'] = True
         software_list.append(data)
 
     return render_to_response('software/add_package_list.html', locals(), context_instance=RequestContext(request))
@@ -63,13 +58,7 @@ def add_package(request, software_id):
     if request.method == 'POST':
 
         if package.restricted:
-            software_request, created = SoftwareAccessRequest.objects.get_or_create(
-                person=person,
-                software_license=software_license,
-                )
-            if created:
-                send_software_request_email(software_request)
-                messages.success(request, "Software request sent.")
+            return HttpResponseRedirect(reverse('kg_application_software_new', args=[software_license.pk]))
         else:
             SoftwareLicenseAgreement.objects.create(
                 user=person,
