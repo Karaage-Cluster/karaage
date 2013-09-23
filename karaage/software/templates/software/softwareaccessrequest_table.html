@@ -14,7 +14,7 @@
         {% for sr in object_list %}
         <tr class="{% cycle row1,row2 %}">
             <td><a href="{{ sr.person.get_absolute_url }}">{{ sr.person }}</a></td>
-            <td><a href="{{ sr.software_license.package.get_absolute_url }}">{{ sr.software_license.package }}</a></td>
+            <td><a href="{{ sr.software_license.software.get_absolute_url }}">{{ sr.software_license.software }}</a></td>
             <td><a href="{{ sr.software_license.get_absolute_url }}">{{ sr.software_license }}</a></td>
             <td>{{ sr.request_date }}</td>
             <td><a class="addlink" href="{% url 'kg_software_request_approve' sr.id %}">Approve</a></td>

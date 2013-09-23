@@ -141,7 +141,7 @@ class Software(models.Model):
 
 
 class SoftwareVersion(models.Model):
-    package = models.ForeignKey(Software)
+    software = models.ForeignKey(Software)
     version = models.CharField(max_length=100)
     machines = models.ManyToManyField(Machine)
     module = models.CharField(max_length=100, blank=True, null=True)
@@ -152,10 +152,10 @@ class SoftwareVersion(models.Model):
         ordering = ['-version']
 
     def __unicode__(self):
-        return '%s - %s' % (self.package.name, self.version)
+        return '%s - %s' % (self.software.name, self.version)
 
     def get_absolute_url(self):
-        return self.package.get_absolute_url()
+        return self.software.get_absolute_url()
 
     def machine_list(self):
         machines = ''
@@ -166,7 +166,7 @@ class SoftwareVersion(models.Model):
 
 
 class SoftwareLicense(models.Model):
-    package = models.ForeignKey(Software)
+    software = models.ForeignKey(Software)
     version = models.CharField(max_length=100, blank=True, null=True)
     date = models.DateField(blank=True, null=True)
     text = models.TextField()
@@ -177,10 +177,10 @@ class SoftwareLicense(models.Model):
         ordering = ['-version']
 
     def __unicode__(self):
-        return '%s - %s' % (self.package.name, self.version)
+        return '%s - %s' % (self.software.name, self.version)
 
     def get_absolute_url(self):
-        return self.package.get_absolute_url()
+        return self.software.get_absolute_url()
 
 
 class SoftwareLicenseAgreement(models.Model):

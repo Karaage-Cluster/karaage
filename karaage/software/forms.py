@@ -31,22 +31,22 @@ class SoftwareForm(forms.Form):
     academic_only = forms.BooleanField(required=False)
     restricted = forms.BooleanField(required=False, help_text="Will require admin approval")
 
-    def save(self, package=None):
+    def save(self, software=None):
         data = self.cleaned_data
 
-        if package is None:
-            package = Software()
+        if software is None:
+            software = Software()
 
-        package.category = data['category']
-        package.name = data['name']
-        package.description = data['description']
-        package.homepage = data['homepage']
-        package.tutorial_url = data['tutorial_url']
-        package.academic_only = data['academic_only']
-        package.restricted = data['restricted']
-        package.save()
+        software.category = data['category']
+        software.name = data['name']
+        software.description = data['description']
+        software.homepage = data['homepage']
+        software.tutorial_url = data['tutorial_url']
+        software.academic_only = data['academic_only']
+        software.restricted = data['restricted']
+        software.save()
 
-        return package
+        return software
 
 
 class AddPackageForm(SoftwareForm):
@@ -68,13 +68,13 @@ class AddPackageForm(SoftwareForm):
 
         return data
 
-    def save(self, package=None):
+    def save(self, software=None):
         data = self.cleaned_data
 
-        package = super(AddPackageForm, self).save()
+        software = super(AddPackageForm, self).save()
 
         version = SoftwareVersion(
-            package=package,
+            software=software,
             version=data['version'],
             module=data['module'],
         )
@@ -84,14 +84,14 @@ class AddPackageForm(SoftwareForm):
 
         if data['license_text']:
             SoftwareLicense.objects.create(
-                package=package,
+                software=software,
                 version=data['license_version'],
                 date=data['license_date'],
                 text=data['license_text'],
                 )
-            package.save()
+            software.save()
 
-        return package
+        return software
 
     
 class LicenseForm(forms.ModelForm):

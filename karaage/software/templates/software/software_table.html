@@ -11,11 +11,11 @@
         </tr>
     </thead>
     <tbody>
-        {% for package in object_list %}
+        {% for software in object_list %}
         <tr class="{% cycle "row1" "row2" as rowcolour %}">
-            <td><a href="{{ package.get_absolute_url }}">{{ package.name }}</a></td>
-            <td>{% if package.group %}<a href='{% url 'kg_group_detail' package.group.name %}'>{{ package.group }}</a>{% endif %}</td>
-        {% for version in package.softwareversion_set.all %}
+            <td><a href="{{ software.get_absolute_url }}">{{ software.name }}</a></td>
+            <td>{% if software.group %}<a href='{% url 'kg_group_detail' software.group.name %}'>{{ software.group }}</a>{% endif %}</td>
+        {% for version in software.softwareversion_set.all %}
         {% if not forloop.first %}
         <tr class="{{ rowcolour }}">
             <td>&nbsp;</td>
@@ -25,7 +25,7 @@
             <td>{% for m in version.machines.all %}<a href="{{ m.get_absolute_url }}">{{ m }}, </a>{% endfor %}</td>
             <td>{{ version.module }}</td>
             {% if version.last_used %}
-            <td><a href="{% url 'kg_software_stats' package.id %}">{{ version.last_used }}</a></td>
+            <td><a href="{% url 'kg_software_stats' software.id %}">{{ version.last_used }}</a></td>
             {% else %}
             <td>Unknown</td>
             {% endif %}

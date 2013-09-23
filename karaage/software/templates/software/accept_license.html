@@ -16,14 +16,14 @@
 
 {% block content %}
 <div id="content-main">
-    <h1>{{ package.name }}</h1>
-    {% if package.restricted %}
+    <h1>{{ software.name }}</h1>
+    {% if software.restricted %}
     <p class="errornote">NOTE: This software is restricted and requires admin approval. You will receive notification via email once your request has been processed</p>
     {% endif %}
 
-    {{ package.description|linebreaks }}
-    <p>Homepage: {{ package.homepage|urlize }}</p>
-    {% if package.tutorial_url %}<p>Tutorial: {{ package.tutorial_url|urlize }}</p>{% endif %}
+    {{ software.description|linebreaks }}
+    <p>Homepage: {{ software.homepage|urlize }}</p>
+    {% if software.tutorial_url %}<p>Tutorial: {{ software.tutorial_url|urlize }}</p>{% endif %}
 
 
     {% if software_license %}

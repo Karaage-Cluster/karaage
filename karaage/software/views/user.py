@@ -34,7 +34,7 @@ def add_package_list(request):
 
     software_list = []
     for s in Software.objects.filter(softwarelicense__isnull=False).distinct():
-        data = {'package': s}
+        data = {'software': s}
         license_agreements = SoftwareLicenseAgreement.objects.filter(user=person, license__package=s)
         if license_agreements.count() > 0:
             la = license_agreements.latest()
@@ -48,16 +48,16 @@ def add_package_list(request):
 @login_required
 def add_package(request, software_id):
 
-    package = get_object_or_404(Software, pk=software_id)
-    software_license = package.get_current_license()
+    software = get_object_or_404(Software, pk=software_id)
+    software_license = software.get_current_license()
     person = request.user
 
     if software_license is None:
-        raise Http404("Package '%s' has no software license." % (package))
+        raise Http404("Package '%s' has no software license." % (software))
 
     if request.method == 'POST':
 
-        if package.restricted:
+        if software.restricted:
             return HttpResponseRedirect(reverse('kg_application_software_new', args=[software_license.pk]))
         else:
             SoftwareLicenseAgreement.objects.create(
@@ -65,7 +65,7 @@ def add_package(request, software_id):
                 license=software_license,
                 date=datetime.datetime.today(),
                 )
-            person.add_group(package.group)
+            person.add_group(software.group)
 
         return HttpResponseRedirect(reverse('kg_user_profile_software'))
 
@@ -75,7 +75,7 @@ def add_package(request, software_id):
 @login_required
 def license_txt(request, software_id):
 
-    package = get_object_or_404(Software, pk=software_id)
-    software_license = package.get_current_license()
+    software = get_object_or_404(Software, pk=software_id)
+    software_license = software.get_current_license()
 
     return HttpResponse(wordwrap(software_license.text, 80), mimetype="text/plain")

@@ -255,7 +255,7 @@ class SoftwareRequest(Application):
     software_license = models.ForeignKey('software.SoftwareLicense')
 
     def info(self):
-        return u"access to %s" % self.software_license.package
+        return u"access to %s" % self.software_license.software
 
     def authenticate(self, person):
         auth = {}
@@ -289,7 +289,7 @@ class SoftwareRequest(Application):
             sla.date = datetime.datetime.today()
             sla.save()
 
-        self.software_license.package.group.add_person(self.applicant)
+        self.software_license.software.group.add_person(self.applicant)
         return created_person
 
 

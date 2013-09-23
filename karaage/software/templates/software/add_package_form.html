@@ -9,8 +9,8 @@
 <div class="breadcrumbs">
     <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
     <a href="{% url 'kg_software_list' %}">Software</a>&nbsp;›
-    {% if package %}
-        <a href="{% url 'kg_software_detail' package.pk %}">{{ package }}</a>&nbsp;›
+    {% if software %}
+        <a href="{% url 'kg_software_detail' software.pk %}">{{ software }}</a>&nbsp;›
         Edit
     {% else %}
         Create Software

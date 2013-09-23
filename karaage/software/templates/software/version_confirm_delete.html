@@ -8,7 +8,7 @@
 <div class="breadcrumbs">
     <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
     <a href="{% url 'kg_software_list' %}">Software</a>&nbsp;›
-    <a href="{% url 'kg_software_detail' version.package.pk %}">{{ version.package }}</a>&nbsp;›
+    <a href="{% url 'kg_software_detail' version.software.pk %}">{{ version.software }}</a>&nbsp;›
     Delete
 </div>
 {% endblock %}

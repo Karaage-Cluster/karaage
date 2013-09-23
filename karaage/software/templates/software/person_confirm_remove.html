@@ -8,7 +8,7 @@
 <div class="breadcrumbs">
     <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
     <a href="{% url 'kg_software_list' %}">Software</a>&nbsp;›
-    <a href="{% url 'kg_software_detail' package.pk %}">{{ package }}</a>&nbsp;›
+    <a href="{% url 'kg_software_detail' software.pk %}">{{ software }}</a>&nbsp;›
     Remove person
 </div>
 {% endblock %}
@@ -16,7 +16,7 @@
 
 {% block content %}
     <h1>Are you sure?</h1>
-    <p>Are you sure you want to remove "{{ person }}" from the software package "{{ package }}"? </p>
+    <p>Are you sure you want to remove "{{ person }}" from the software software "{{ software }}"? </p>
     <form method="post" action=".">{% csrf_token %}
     <div>
     <input type="hidden" name="post" value="yes" />

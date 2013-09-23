@@ -8,7 +8,7 @@
 <div class="breadcrumbs">
     <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
     <a href="{% url 'kg_software_list' %}">Software</a>&nbsp;›
-    <a href="{% url 'kg_software_detail' package.pk %}">{{ package }}</a>&nbsp;›
+    <a href="{% url 'kg_software_detail' software.pk %}">{{ software }}</a>&nbsp;›
     {% if l %}
     <a href="{% url 'kg_software_license_detail' l.pk %}">{{ l }}</a>&nbsp;›
     Edit
@@ -23,7 +23,7 @@
 <form method="post" action=".">{% csrf_token %}
     {% load forms %}
     <fieldset class="module aligned ()">
-    <input type="hidden" name="package" value="{{ package.id }}" />
+    <input type="hidden" name="software" value="{{ software.id }}" />
     {% formfield form.version %}
     {% formfield form.date %}
     {% formfield form.text %}
