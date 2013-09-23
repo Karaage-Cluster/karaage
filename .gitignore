@@ -1,0 +1,5 @@
+debian/files
+debian/karaage3/
+debian/karaage3.*
+*.pyc
+*.bak
