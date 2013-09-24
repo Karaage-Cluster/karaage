@@ -2,24 +2,26 @@
 <table cellspacing="0">
     <thead>
         <tr>
-            <th>Details</th>
-            <th>Type</th>
+            <th>ID</th>
+            <th>For</th>
             <th>User</th>
             <th>State</th>
         </tr>
     </thead>
     <tbody>
-        {% for app in object_list %}
+        {% for obj in object_list %}
+        {% with app=obj.get_object %}
         <tr class="{% cycle row1,row2 %}">
             <td><a href="{{ app.get_absolute_url }}">{{ app.id }}</a></td>
-            <td>{{ app.get_type }}</td>
-            {% if app.applicant.user %}
+            <td>{{ app.info }}</td>
+            {% if app.applicant.is_authenticated %}
             <td><a href="{{ app.applicant.get_absolute_url }}">{{ app.applicant }}</a></td>
             {% else %}
             <td>{{ app.applicant.email }}</td>
             {% endif %}
             <td>{% application_simple_state app %}</td>
         </tr>
+        {% endwith %}
         {% endfor %}
     </tbody>
 </table>
