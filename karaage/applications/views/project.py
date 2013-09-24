@@ -737,7 +737,7 @@ class StateWaitingForAdmin(State):
             if 'approve' in actions:
                 tmp_actions.append("approve")
             if 'duplicate' in actions:
-                tmp_actions.append("approve")
+                tmp_actions.append("duplicate")
             actions = tmp_actions
             application_form = forms.AdminApproveProjectFormGenerator(
                     application, auth)
