@@ -85,8 +85,7 @@ def send_delegate_project_request_email(application):
         send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
 
 
-
-def send_project_invite_email(application, link, is_secret):
+def send_invite_email(application, link, is_secret):
     """ Sends an email inviting someone to create an account"""
 
     context = CONTEXT.copy()
@@ -96,22 +95,7 @@ def send_project_invite_email(application, link, is_secret):
     context['is_secret'] = is_secret
 
     to_email = application.applicant.email
-    subject, body = render_email('project_invite', context)
-
-    send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
-
-
-def send_software_invite_email(application, link, is_secret):
-    """ Sends an email inviting someone to create an account"""
-
-    context = CONTEXT.copy()
-    context['receiver'] = application.applicant
-    context['application'] = application
-    context['link'] = link
-    context['is_secret'] = is_secret
-
-    to_email = application.applicant.email
-    subject, body = render_email('software_invite', context)
+    subject, body = render_email('common_invite', context)
 
     send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
 

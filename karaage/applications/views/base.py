@@ -262,9 +262,9 @@ class State(object):
 
 class Transition(object):
     """ A transition from one state to another. """
-    def __init__(self, next_state_id):
-        self._next_state_id = next_state_id
+    def __init__(self):
+        pass
 
     def get_next_state(self, request, application, auth):
         """ Retrieve the next state. """
-        return self._next_state_id
+        raise NotImplementedError()

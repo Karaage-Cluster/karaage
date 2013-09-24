@@ -175,11 +175,11 @@ class ProjectApplication(Application):
 
     def info(self):
         if self.project is not None:
-            return u"to join project '%s'" % self.project.pid
+            return u"join project '%s'" % self.project.pid
         elif self.name:
-            return u"to create project '%s'" % self.name
+            return u"create project '%s'" % self.name
         else:
-            return u"to create/join project"
+            return u"create/join a project"
 
     def approve(self, approved_by):
         created_person = super(ProjectApplication, self).approve(approved_by)
@@ -255,7 +255,7 @@ class SoftwareApplication(Application):
     software_license = models.ForeignKey('software.SoftwareLicense')
 
     def info(self):
-        return u"access to %s" % self.software_license.software
+        return u"access %s" % self.software_license.software
 
     def authenticate(self, person):
         auth = {}
