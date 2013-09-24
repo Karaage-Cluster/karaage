@@ -8,17 +8,17 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'SoftwareRequest'
-        db.create_table(u'applications_softwarerequest', (
+        # Adding model 'SoftwareApplication'
+        db.create_table(u'applications_softwareapplication', (
             (u'application_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['applications.Application'], unique=True, primary_key=True)),
             ('software_license', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['software.SoftwareLicense'])),
         ))
-        db.send_create_signal(u'applications', ['SoftwareRequest'])
+        db.send_create_signal(u'applications', ['SoftwareApplication'])
 
 
     def backwards(self, orm):
-        # Deleting model 'SoftwareRequest'
-        db.delete_table(u'applications_softwarerequest')
+        # Deleting model 'SoftwareApplication'
+        db.delete_table(u'applications_softwareapplication')
 
 
     models = {
@@ -72,8 +72,8 @@ class Migration(SchemaMigration):
             'pid': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.Project']", 'null': 'True', 'blank': 'True'})
         },
-        u'applications.softwarerequest': {
-            'Meta': {'object_name': 'SoftwareRequest', '_ormbases': [u'applications.Application']},
+        u'applications.softwareapplication': {
+            'Meta': {'object_name': 'SoftwareApplication', '_ormbases': [u'applications.Application']},
             u'application_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['applications.Application']", 'unique': 'True', 'primary_key': 'True'}),
             'software_license': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.SoftwareLicense']"})
         },

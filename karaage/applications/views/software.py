@@ -26,7 +26,7 @@ from django.http import HttpResponseBadRequest
 from karaage.emails.forms import EmailForm
 from karaage.common.decorators import login_required
 from karaage.software.models import SoftwareLicense
-from karaage.applications.models import SoftwareRequest
+from karaage.applications.models import SoftwareApplication
 import karaage.applications.emails as emails
 import karaage.applications.views.base as base
 import karaage.applications.views.user as user
@@ -247,7 +247,7 @@ def get_application_state_machine():
     return state_machine
 
 def register():
-    user.setup_application_type(SoftwareRequest, get_application_state_machine())
+    user.setup_application_type(SoftwareApplication, get_application_state_machine())
 
 @login_required
 def new_application(request, software_license_id):
@@ -259,7 +259,7 @@ def new_application(request, software_license_id):
     except SoftwareLicense.DoesNotExist:
         return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
-    application = SoftwareRequest()
+    application = SoftwareApplication()
     application.applicant = request.user
     application.software_license = license
     application.save()

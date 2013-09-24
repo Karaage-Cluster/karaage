@@ -251,7 +251,7 @@ class ProjectApplication(Application):
 
 
 
-class SoftwareRequest(Application):
+class SoftwareApplication(Application):
     software_license = models.ForeignKey('software.SoftwareLicense')
 
     def info(self):
@@ -267,7 +267,7 @@ class SoftwareRequest(Application):
         return auth
 
     def check(self):
-        errors = super(SoftwareRequest, self).check()
+        errors = super(SoftwareApplication, self).check()
 
         if self.content_type.model != 'person':
             errors.append("Applicant not already registered person.")
@@ -275,7 +275,7 @@ class SoftwareRequest(Application):
         return errors
 
     def approve(self, approved_by):
-        created_person = super(SoftwareRequest, self).approve(approved_by)
+        created_person = super(SoftwareApplication, self).approve(approved_by)
 
         try:
             sla = SoftwareLicenseAgreement.objects.get(

@@ -13,17 +13,17 @@ class Migration(DataMigration):
         for src in orm['software.SoftwareAccessRequest'].objects.all():
             content_type = orm['contenttypes.contenttype'].objects.get(app_label='people', model='Person')
             try:
-                dst = orm.SoftwareRequest.objects.get(
+                dst = orm.SoftwareApplication.objects.get(
                         object_id=src.person.pk,
                         content_type=content_type,
                         software_license=src.software_license)
-            except orm.SoftwareRequest.MultipleObjectsReturned:
-                dst = orm.SoftwareRequest()
+            except orm.SoftwareApplication.MultipleObjectsReturned:
+                dst = orm.SoftwareApplication()
                 dst.object_id = src.person.pk
                 dst.content_type = content_type
                 dst.software_license = src.software_license
-            except orm.SoftwareRequest.DoesNotExist:
-                dst = orm.SoftwareRequest()
+            except orm.SoftwareApplication.DoesNotExist:
+                dst = orm.SoftwareApplication()
                 dst.object_id = src.person.pk
                 dst.content_type = content_type
                 dst.software_license = src.software_license
@@ -32,7 +32,7 @@ class Migration(DataMigration):
             dst.state = 'O'
             dst.secret_token = new_random_token()
             dst.expires = datetime.datetime.now() + datetime.timedelta(days=7)
-            dst._class = "softwarerequest"
+            dst._class = "softwareapplication"
             dst.save()
 
     def backwards(self, orm):
@@ -89,8 +89,8 @@ class Migration(DataMigration):
             'pid': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.Project']", 'null': 'True', 'blank': 'True'})
         },
-        u'applications.softwarerequest': {
-            'Meta': {'object_name': 'SoftwareRequest', '_ormbases': [u'applications.Application']},
+        u'applications.softwareapplication': {
+            'Meta': {'object_name': 'SoftwareApplication', '_ormbases': [u'applications.Application']},
             u'application_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['applications.Application']", 'unique': 'True', 'primary_key': 'True'}),
             'software_license': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.SoftwareLicense']"})
         },
