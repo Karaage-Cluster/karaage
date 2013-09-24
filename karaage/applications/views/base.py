@@ -94,9 +94,10 @@ class StateMachine(object):
     def add_state(self, state, state_id, actions):
         """ Add a state to the list. The first state added becomes the initial
         state. """
-        if self._first_state is None:
-            self._first_state = state_id
         self._states[state_id] = state, actions
+
+    def set_first_state(self, state_id):
+        self._first_state = state_id
 
     def get_state(self, application):
         if application.state not in self._states:
@@ -188,10 +189,6 @@ class StateMachine(object):
                             "Invalid response '%s' from state '%s'" %
                             (response, state))
                 next_state_key = actions[response]
-                # If next state is a transition, process it
-                if isinstance(next_state_key, Transition):
-                    next_state_key = next_state_key.get_next_state(
-                            request, application, auth)
                 # Go to the next state
                 return self._next(request, application, auth, next_state_key)
 
@@ -222,6 +219,11 @@ class StateMachine(object):
         """ Continue the state machine at given state. """
         # we only support state changes for POST requests
         if request.method == "POST":
+            # If next state is a transition, process it
+            while isinstance(state_key, Transition):
+                state_key = state_key.get_next_state(
+                        request, application, auth)
+
             # lookup next state
             if state_key not in self._states:
                 raise RuntimeError("Invalid state '%s'" % state_key)

@@ -74,17 +74,6 @@ class StateIntroduction(State):
     """ Invitation has been sent to applicant. """
     name = "Read introduction"
 
-    def enter_state(self, request, application):
-        """ This is becoming the new current state. """
-        application.reopen()
-        link, is_secret = base.get_email_link(application)
-        emails.send_software_invite_email(application, link, is_secret)
-        messages.success(
-                request,
-                "Sent an invitation to %s." %
-                (application.applicant.email))
-
-
     def view(self, request, application, label, auth, actions):
         """ Django view method. """
         if label is None and auth['is_applicant'] and not auth['is_admin']:
@@ -180,6 +169,23 @@ class StateDeclined(State):
                 request, application, label, auth, actions)
 
 
+class TransitionOpen(base.Transition):
+    """ A transition after application submitted. """
+    def __init__(self, on_success):
+        self._on_success = on_success
+
+    def get_next_state(self, request, application, auth):
+        """ Retrieve the next state. """
+        application.reopen()
+        link, is_secret = base.get_email_link(application)
+        emails.send_software_invite_email(application, link, is_secret)
+        messages.success(
+                request,
+                "Sent an invitation to %s." %
+                (application.applicant.email))
+        return self._on_success
+
+
 class TransitionSubmit(base.Transition):
     """ A transition after application submitted. """
     def __init__(self, on_success, on_error):
@@ -233,6 +239,8 @@ class TransitionApprove(base.Transition):
 
 def get_application_state_machine():
     """ Get the default state machine for applications. """
+    Open = TransitionOpen(on_success='O')
+
     state_machine = base.StateMachine()
     state_machine.add_state(StateIntroduction(), 'O',
             { 'cancel': 'R',
@@ -243,11 +251,14 @@ def get_application_state_machine():
     state_machine.add_state(StateCompleted(), 'C',
             {})
     state_machine.add_state(StateDeclined(), 'R',
-            { 'reopen': 'O',  })
+            { 'reopen': Open,  })
+    state_machine.set_first_state(Open)
     return state_machine
+
 
 def register():
     user.setup_application_type(SoftwareApplication, get_application_state_machine())
+
 
 @login_required
 def new_application(request, software_license_id):

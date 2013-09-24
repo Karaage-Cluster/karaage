@@ -554,16 +554,6 @@ class StateApplicantEnteringDetails(StateWithSteps):
         self.add_step(StateStepApplicant(), 'applicant')
         self.add_step(StateStepProject(), 'project')
 
-    def enter_state(self, request, application):
-        """ This is becoming the new current state. """
-        application.reopen()
-        link, is_secret = base.get_email_link(application)
-        emails.send_project_invite_email(application, link, is_secret)
-        messages.success(
-                request,
-                "Sent an invitation to %s." %
-                (application.applicant.email))
-
     def view(self, request, application, label, auth, actions):
         """ Process the view request at the current step. """
 
@@ -886,6 +876,23 @@ class StateDeclined(State):
                 request, application, label, auth, actions)
 
 
+class TransitionOpen(base.Transition):
+    """ A transition after application submitted. """
+    def __init__(self, on_success):
+        self._on_success = on_success
+
+    def get_next_state(self, request, application, auth):
+        """ Retrieve the next state. """
+        application.reopen()
+        link, is_secret = base.get_email_link(application)
+        emails.send_project_invite_email(application, link, is_secret)
+        messages.success(
+                request,
+                "Sent an invitation to %s." %
+                (application.applicant.email))
+        return self._on_success
+
+
 class TransitionSubmit(base.Transition):
     """ A transition after application submitted. """
     def __init__(self, on_existing_project, on_new_project, on_error):
@@ -950,9 +957,11 @@ class TransitionApprove(base.Transition):
 
 def get_application_state_machine():
     """ Get the default state machine for applications. """
+    Open = TransitionOpen(on_success='O')
+
     state_machine = base.StateMachine()
     state_machine.add_state(StateApplicantEnteringDetails(), 'O',
-            { 'cancel': 'R', 'reopen': 'O', 'duplicate': 'DUP',
+            { 'cancel': 'R', 'reopen': Open, 'duplicate': 'DUP',
             'submit': TransitionSubmit(on_existing_project='L', on_new_project='D', on_error="R"), })
     state_machine.add_state(StateWaitingForLeader(), 'L',
             { 'cancel': 'R', 'approve': 'K', 'duplicate': 'DUP', })
@@ -968,9 +977,10 @@ def get_application_state_machine():
     state_machine.add_state(StateArchived(), 'A',
             {})
     state_machine.add_state(StateDeclined(), 'R',
-            { 'reopen': 'O',  })
+            { 'reopen': Open,  })
     state_machine.add_state(StateDuplicateApplicant(), 'DUP',
-            { 'reopen': 'O', 'cancel': 'R', })
+            { 'reopen': Open, 'cancel': 'R', })
+    state_machine.set_first_state(Open)
 #    NEW = 'N'
 #    OPEN = 'O'
 #    WAITING_FOR_LEADER = 'L'
