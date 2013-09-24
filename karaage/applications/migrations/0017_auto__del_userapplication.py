@@ -10,6 +10,8 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Deleting model 'UserApplication'
         db.delete_table(u'applications_userapplication')
+        if not db.dry_run:
+            orm['contenttypes.contenttype'].objects.filter(app_label='applications', model='userapplication').delete()
 
 
     def backwards(self, orm):
