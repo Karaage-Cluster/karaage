@@ -18,3 +18,5 @@ then
     rm -rf /var/cache/karaage/graphs/i_trends/*
     rm -rf /var/cache/karaage/graphs/machines/*
 fi
+
+#DEBHELPER#
