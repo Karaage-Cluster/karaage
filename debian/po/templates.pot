@@ -1,0 +1,51 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: karaage3\n"
+"Report-Msgid-Bugs-To: karaage3@packages.debian.org\n"
+"POT-Creation-Date: 2013-09-25 16:11+1000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: boolean
+#. Description
+#: ../templates:1001
+msgid "Do you want to migrate the database now?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../templates:1001
+msgid ""
+"There are database schema changes with this release. You can upgrade "
+"automatically now or migrate manually later. Karaage will be unstable until "
+"database migrations are applied."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../templates:1001
+msgid "Note: Migrations can take some time on large databases."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../templates:2001
+msgid "Karaage may be unstable"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../templates:2001
+msgid "You will need to run kg-manage migrate to complete the upgrade"
+msgstr ""

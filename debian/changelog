@@ -1,10 +1,10 @@
 karaage3 (3.0.0-1) unstable; urgency=low
 
-  * MAJOR CHANGES. BACKUP EVERYTHING ***BEFORE*** INSTALLING. BACKUP MYSQL. BACKUP
-    OPENLDAP. TEST YOU CAN USE RESTORE MYSQL AND OPENLDAP. TEST MIGRATIONS
-    WORK ON TEST SYSTEM WITH REAL DATA BEFORE INSTALLING ON PRODUCTION BOX.
-    MIGRATIONS MAY TAKE SOME TIME TO COMPLETE ON REAL DATA (ESPECIALLY IF CPUJob
-    CONTAINS MANY ITEMS).
+  * MAJOR CHANGES. BACKUP EVERYTHING ***BEFORE*** INSTALLING. BACKUP MYSQL.
+    BACKUP OPENLDAP. TEST YOU CAN USE RESTORE MYSQL AND OPENLDAP. TEST
+    MIGRATIONS WORK ON TEST SYSTEM WITH REAL DATA BEFORE INSTALLING ON
+    PRODUCTION BOX.  MIGRATIONS MAY TAKE SOME TIME TO COMPLETE ON REAL DATA
+    (ESPECIALLY IF CPUJob CONTAINS MANY ITEMS).
   * Improved support for transactions.
   * Various bugs fixed.
   * Make mysql database authoritive over LDAP.
@@ -32,7 +32,7 @@ karaage3 (3.0.0-1) unstable; urgency=low
   * URLS changed.
   * Cleaned templates.
   * Intergrate slurm/gold functionality as datastores.
-  * Simplify dependancies.
+  * Simplify dependencies.
   * Rewrite applications app.
   * Anything not mentioned above was also changed.
   * World peace is still to come.

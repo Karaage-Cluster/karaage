@@ -1,13 +1,13 @@
 Template: karaage/run_migrations
 Type: boolean
-Description: Do you want to migrate the database now?
+_Description: Do you want to migrate the database now?
  There are database schema changes with this release.
- You can upgrade automatically now or migrate manually later.   
+ You can upgrade automatically now or migrate manually later.
  Karaage will be unstable until database migrations are applied.
  .
  Note: Migrations can take some time on large databases.
 
 Template: karaage/no_migrations
 Type: note
-Description: Karaage may be unstable 
+_Description: Karaage may be unstable
  You will need to run kg-manage migrate to complete the upgrade
