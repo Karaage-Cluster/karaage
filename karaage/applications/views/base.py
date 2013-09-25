@@ -26,6 +26,7 @@ from django.http import HttpResponseBadRequest, HttpResponse
 from django.contrib import messages
 
 from karaage.common import log
+from karaage.applications.models import Application
 
 
 def get_url(request, application, auth, label=None):
@@ -306,3 +307,29 @@ class Transition(object):
     def get_next_state(self, request, application, auth):
         """ Retrieve the next state. """
         raise NotImplementedError()
+
+
+def get_application(**kwargs):
+    try:
+        application = Application.objects.get(**kwargs)
+    except Application.DoesNotExist:
+        application = None
+
+    try:
+        if application is not None:
+            application = application.get_object()
+            return application
+    except Application.DoesNotExist:
+        raise RuntimeError("The application is currupt.")
+
+    raise Http404("The application does not exist.")
+
+
+_types = {}
+def setup_application_type(application_type, state_machine):
+    _types[application_type] = state_machine
+
+def get_state_machine(application):
+    application = application.get_object()
+    return _types[type(application)]
+

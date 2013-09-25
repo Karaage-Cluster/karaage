@@ -29,6 +29,7 @@ from karaage.common.decorators import admin_required
 from karaage.people.models import Person
 from karaage.applications.models import Applicant, Application
 from karaage.applications.forms import ApplicantForm
+import karaage.applications.views.base as base
 from karaage.common import log
 import karaage.common as util
 
@@ -114,4 +115,11 @@ def add_comment(request, application_id):
     breadcrumbs.append( (unicode(obj), reverse("kg_application_detail", args=[obj.pk])) )
     return util.add_comment(request, breadcrumbs, obj)
 
+
+@admin_required
+def application_detail(request, application_id, state=None, label=None):
+    """ An authenticated admin is trying to access an application. """
+    application = base.get_application(pk=application_id)
+    state_machine = base.get_state_machine(application)
+    return state_machine.process(request, application, state, label, { 'is_admin': True })
 

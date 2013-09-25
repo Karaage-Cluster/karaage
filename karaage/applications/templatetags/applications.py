@@ -17,7 +17,7 @@
 
 """ Application specific tags. """
 
-from karaage.applications.views.user import get_state_machine
+from karaage.applications.views.base import get_state_machine
 from django import template
 register = template.Library()
 

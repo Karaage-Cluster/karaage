@@ -29,48 +29,17 @@ from karaage.applications.models import Application
 import karaage.applications.views.base as base
 
 
-def _get_application(**kwargs):
-    try:
-        application = Application.objects.get(**kwargs)
-    except Application.DoesNotExist:
-        application = None
-
-    try:
-        if application is not None:
-            application = application.get_object()
-            return application
-    except Application.DoesNotExist:
-        raise RuntimeError("The application is currupt.")
-
-    raise Http404("The application does not exist.")
-
-
-_types = {}
-def setup_application_type(application_type, state_machine):
-    _types[application_type] = state_machine
-
-def get_state_machine(application):
-    application = application.get_object()
-    return _types[type(application)]
-
 @login_required
 def application_detail(request, application_id, state=None, label=None):
     """ An authenticated user is trying to access an application. """
-    application = _get_application(pk=application_id)
-    state_machine = get_state_machine(application)
+    application = base.get_application(pk=application_id)
+    state_machine = base.get_state_machine(application)
     return state_machine.process(request, application, state, label, {})
-
-@admin_required
-def application_detail_admin(request, application_id, state=None, label=None):
-    """ An authenticated admin is trying to access an application. """
-    application = _get_application(pk=application_id)
-    state_machine = get_state_machine(application)
-    return state_machine.process(request, application, state, label, { 'is_admin': True })
 
 
 def application_unauthenticated(request, token, state=None, label=None):
     """ An unauthenticated user is trying to access an application. """
-    application = _get_application(
+    application = base.get_application(
                 secret_token=token, expires__gt=datetime.datetime.now())
 
     # redirect user to real url if possible.
@@ -79,7 +48,7 @@ def application_unauthenticated(request, token, state=None, label=None):
             url = base.get_url(request, application, {'is_applicant': True}, label)
             return HttpResponseRedirect(url)
 
-    state_machine = get_state_machine(application)
+    state_machine = base.get_state_machine(application)
     return state_machine.process(request, application, state, label,
             { 'is_applicant': True })
 

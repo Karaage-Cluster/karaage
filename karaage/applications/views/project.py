@@ -685,7 +685,7 @@ def get_application_state_machine():
     return state_machine
 
 def register():
-    user.setup_application_type(ProjectApplication, get_application_state_machine())
+    base.setup_application_type(ProjectApplication, get_application_state_machine())
 
 def get_applicant_from_email(email):
     try:

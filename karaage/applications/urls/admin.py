@@ -30,8 +30,8 @@ urlpatterns += patterns('karaage.applications.views',
     url(r'^project/invite/$', 'project.admin_send_invitation', name='kg_application_invite'),
     url(r'^project/invite/(?P<project_id>[-.\w]+)/$', 'project.admin_send_invitation', name='kg_application_invite'),
 
-    url(r'^(?P<application_id>\d+)/$', 'user.application_detail_admin', name='kg_application_detail'),
-    url(r'^(?P<application_id>\d+)/(?P<state>[-.\w]+)/$', 'user.application_detail_admin', name='kg_application_detail'),
-    url(r'^(?P<application_id>\d+)/(?P<state>[-.\w]+)/(?P<label>[-.\w]+)/$', 'user.application_detail_admin', name='kg_application_detail'),
+    url(r'^(?P<application_id>\d+)/$', 'admin.application_detail', name='kg_application_detail'),
+    url(r'^(?P<application_id>\d+)/(?P<state>[-.\w]+)/$', 'admin.application_detail', name='kg_application_detail'),
+    url(r'^(?P<application_id>\d+)/(?P<state>[-.\w]+)/(?P<label>[-.\w]+)/$', 'admin.application_detail', name='kg_application_detail'),
 )
 

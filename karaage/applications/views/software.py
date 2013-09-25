@@ -87,7 +87,7 @@ def get_application_state_machine():
 
 
 def register():
-    user.setup_application_type(SoftwareApplication, get_application_state_machine())
+    base.setup_application_type(SoftwareApplication, get_application_state_machine())
 
 
 @login_required
