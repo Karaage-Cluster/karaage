@@ -36,4 +36,3 @@ db_reset karaage/run_migrations
 
 
 exit 0
-
