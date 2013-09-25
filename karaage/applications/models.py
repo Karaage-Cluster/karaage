@@ -130,7 +130,7 @@ class Application(models.Model):
         self.applicant = person
         self.complete_date = datetime.datetime.now()
         self.save()
-        return created_person
+        return created_person, False
     approve.alters_data = True
 
     def decline(self):
@@ -150,6 +150,8 @@ class Application(models.Model):
 
 
 class ProjectApplication(Application):
+    type = "project"
+
     OPEN = 'O'
     WAITING_FOR_LEADER = 'L'
     WAITING_FOR_DELEGATE = 'D'
@@ -182,8 +184,7 @@ class ProjectApplication(Application):
             return u"create/join a project"
 
     def approve(self, approved_by):
-        created_person = super(ProjectApplication, self).approve(approved_by)
-        created_account = False
+        created_person, created_account = super(ProjectApplication, self).approve(approved_by)
         created_project = False
         assert self.applicant is not None
         assert self.content_type.model == "person"
@@ -211,10 +212,10 @@ class ProjectApplication(Application):
         if self.needs_account:
             for pc in self.project.projectquota_set.all():
                 if not person.has_account(pc.machine_category):
-                    Account.create(person, project, pc.machine_category)
+                    Account.create(person, self.project, pc.machine_category)
                     created_account = True
         self.project.group.members.add(person)
-        return created_person, created_account, created_project
+        return created_person, created_account
     approve.alters_data = True
 
     def authenticate(self, person):
@@ -252,6 +253,7 @@ class ProjectApplication(Application):
 
 
 class SoftwareApplication(Application):
+    type = "software"
     software_license = models.ForeignKey('software.SoftwareLicense')
 
     def info(self):

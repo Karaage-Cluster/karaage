@@ -23,14 +23,29 @@ register = template.Library()
 
 
 @register.simple_tag(takes_context = True)
-def application_state(context, application_type, application):
+def application_state(context, application):
     """ Render current state of application, verbose. """
     new_context = template.context.Context({
         'auth': context['auth'],
+        'org_name': context['org_name'],
         'application': application,
     })
     nodelist = template.loader.get_template(
-            'applications/%s_common_state.html' % application_type)
+            'applications/%s_common_state.html' % application.type)
+    output = nodelist.render(new_context)
+    return output
+
+
+@register.simple_tag(takes_context = True)
+def application_request(context, application):
+    """ Render current detail of application, verbose. """
+    new_context = template.context.Context({
+        'auth': context['auth'],
+        'org_name': context['org_name'],
+        'application': application,
+    })
+    nodelist = template.loader.get_template(
+            'applications/%s_common_request.html' % application.type)
     output = nodelist.render(new_context)
     return output
 
@@ -44,7 +59,7 @@ def application_simple_state(context, application):
 
 
 @register.inclusion_tag(
-        'applications/application_actions.html', takes_context = True)
+        'applications/common_actions.html', takes_context = True)
 def application_actions(context):
     """ Render actions available. """
     return {
@@ -70,7 +85,7 @@ class ApplicationActionsPlus(template.Node):
     def render(self, context):
         extra = self.nodelist.render(context)
         nodelist = template.loader.get_template(
-                'applications/application_actions.html')
+                'applications/common_actions.html')
         new_context = template.context.Context({
             'auth': context['auth'],
             'extra': extra,

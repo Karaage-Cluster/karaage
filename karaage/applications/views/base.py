@@ -68,7 +68,8 @@ def get_url(request, application, auth, label=None):
 def get_email_link(application):
     """ Retrieve a link that can be emailed to the user. """
     # don't use secret_token unless we have to
-    if application.content_type.model != 'applicant':
+    if (application.content_type.model == 'person' and
+            application.applicant.has_usable_password()):
         url = '%s/applications/%d/' % (
                 settings.REGISTRATION_BASE_URL, application.pk)
         is_secret = False
@@ -248,6 +249,9 @@ class State(object):
     """ A abstract class that is the base for all application states. """
     name = "Abstract State"
 
+    def __init__(self):
+        self.context = {}
+
     def enter_state(self, request, application):
         """ This is becoming the new current state. """
         pass
@@ -256,8 +260,42 @@ class State(object):
         """ Django view method. We provide a default detail view for
         applications. """
 
+        # We only provide a view for when no label provided
+        if label is not None:
+            return HttpResponseBadRequest("<h1>Bad Request</h1>")
+
+        # only certain actions make sense for default view
+        tmp_actions = []
+        if 'reopen' in actions:
+            tmp_actions.append("reopen")
+        if 'cancel' in actions:
+            tmp_actions.append("cancel")
+        if 'duplicate' in actions:
+            tmp_actions.append("duplicate")
+        if 'archive' in actions and auth['is_admin']:
+            tmp_actions.append("archive")
+        actions = tmp_actions
+
+        # process the request in default view
+        if request.method == "GET":
+            context = self.context
+            context.update({
+                    'application': application,
+                    'actions': actions,
+                    'state': self.name,
+                    'auth': auth})
+            return render_to_response(
+                    'applications/common_detail.html',
+                    context,
+                    context_instance=RequestContext(request))
+        elif request.method == "POST":
+            for action in actions:
+                if action in request.POST:
+                    return action
+
         # we don't know how to handle this request.
         return HttpResponseBadRequest("<h1>Bad Request</h1>")
+
 
 
 class Transition(object):

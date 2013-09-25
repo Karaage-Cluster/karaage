@@ -1,7 +1,9 @@
 {% autoescape off %}Hello {{ receiver.get_short_name }},
 
 
-{{ application.applicant }} is requesting {{ application.info }}.
+{{ application.applicant }} is requesting to {{ application.info }}.
+
+This application is now waiting for {{ authorised_text }} to process the application.
 
 Please visit the {{ org_name }} account management site at {{ link }} for more
 information and to accept or decline this request.

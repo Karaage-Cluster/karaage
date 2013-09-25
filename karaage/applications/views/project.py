@@ -26,7 +26,6 @@ from django.contrib import messages
 from django.db.models import Q
 from django.conf import settings
 
-from karaage.emails.forms import EmailForm
 from karaage.common.decorators import login_required, admin_required
 from karaage.applications.models import ProjectApplication, Applicant
 import karaage.applications.forms as forms
@@ -59,49 +58,7 @@ def _get_applicant_from_saml(request):
     return None
 
 
-class State(base.State):
-    """ A abstract class that is the base for all application states. """
-    name = "Abstract State"
-
-    def view(self, request, application, label, auth, actions):
-        """ Django view method. We provide a default detail view for
-        applications. """
-
-        # We only provide a view for when no label provided
-        if label is not None:
-            return HttpResponseBadRequest("<h1>Bad Request</h1>")
-
-        # only certain actions make sense for default view
-        tmp_actions = []
-        if 'reopen' in actions:
-            tmp_actions.append("reopen")
-        if 'cancel' in actions:
-            tmp_actions.append("cancel")
-        if 'duplicate' in actions:
-            tmp_actions.append("duplicate")
-        if 'archive' in actions and auth['is_admin']:
-            tmp_actions.append("archive")
-        actions = tmp_actions
-
-        # process the request in default view
-        if request.method == "GET":
-            return render_to_response(
-                    'applications/project_common_detail.html',
-                    {'application': application,
-                    'actions': actions,
-                    'state': self.name,
-                    'auth': auth},
-                    context_instance=RequestContext(request))
-        elif request.method == "POST":
-            for action in actions:
-                if action in request.POST:
-                    return action
-
-        # we don't know how to handle this request.
-        return HttpResponseBadRequest("<h1>Bad Request</h1>")
-
-
-class StateWithSteps(State):
+class StateWithSteps(base.State):
     """ A state that has a number of steps to complete. """
     def __init__(self):
         self._first_step = None
@@ -391,7 +348,7 @@ class StateStepApplicant(Step):
                 context_instance=RequestContext(request))
 
 
-class StateStepProject(State):
+class StateStepProject(base.State):
     """ Applicant is able to choose the project for the application. """
     name = "Choose project"
 
@@ -604,7 +561,7 @@ class StateApplicantEnteringDetails(StateWithSteps):
                         return HttpResponseRedirect(url)
                     else:
                         return render_to_response(
-                                'applications/application_steal.html',
+                                'applications/project_aed_steal.html',
                                 {'application': application, 'person': new_person,
                                     'reason': reason, 'details': details, },
                                 context_instance=RequestContext(request))
@@ -623,281 +580,64 @@ class StateApplicantEnteringDetails(StateWithSteps):
         return super(StateApplicantEnteringDetails, self).view(request, application, label, auth, actions)
 
 
-class StateWaitingForApproval(State):
-    """ We need the somebody to provide approval. """
-    name = "Waiting for X"
-
-    def check_auth(self, auth):
-        """ Check the person's authorization. """
-        raise NotImplementedError()
-
-    def view(self, request, application, label, auth, actions):
-        """ Django view method. """
-        if label == "approve" and self.check_auth(auth):
-            tmp_actions = []
-            if 'approve' in actions:
-                tmp_actions.append("approve")
-            if 'duplicate' in actions:
-                tmp_actions.append("duplicate")
-            actions = tmp_actions
-            application_form = forms.ApproveProjectFormGenerator(
-                    application, auth)
-            form = application_form(
-                    request.POST or None, instance=application)
-            if request.method == 'POST':
-                if form.is_valid():
-                    form.save()
-                    return "approve"
-            return render_to_response(
-                    self.template_approve,
-                    {'application': application, 'form': form,
-                    'actions': actions, 'auth': auth},
-                    context_instance=RequestContext(request))
-        elif label == "decline" and self.check_auth(auth):
-            actions = [ 'cancel' ]
-            if request.method == 'POST':
-                form = EmailForm(request.POST)
-                if form.is_valid():
-                    to_email = application.applicant.email
-                    subject, body = form.get_data()
-                    emails.send_mail(
-                            subject, body,
-                            settings.ACCOUNTS_EMAIL, [to_email])
-                    return "cancel"
-            else:
-                link, is_secret = base.get_email_link(application)
-                subject, body = emails.render_email(
-                        'project_declined',
-                        {'receiver': application.applicant,
-                        'application': application,
-                        'link': link, 'is_secret': is_secret })
-                initial_data = {'body': body, 'subject': subject}
-                form = EmailForm(initial=initial_data)
-            return render_to_response(
-                    self.template_decline,
-                    {'application': application, 'form': form,
-                    'actions': actions, 'auth': auth},
-                    context_instance=RequestContext(request))
-        return super(StateWaitingForApproval, self).view(
-                request, application, label, auth, actions)
-
-
-class StateWaitingForLeader(StateWaitingForApproval):
+class StateWaitingForLeader(common.StateWaitingForApproval):
     """ We need the leader to provide approval. """
     name = "Waiting for leader"
-    template_approve = "applications/project_leader_approve_for_leader.html"
-    template_decline = "applications/project_leader_decline_for_leader.html"
+    authorised_text = "a project leader"
 
-    def enter_state(self, request, application):
-        """ This is becoming the new current state. """
-        assert application.project is not None
-        emails.send_leader_project_request_email(application)
+    def get_authorised_persons(self, application):
+        return application.project.leaders.filter(is_active=True)
 
-    def check_auth(self, auth):
-        """ Check the person's authorization. """
-        return auth['is_leader']
+    def get_approve_form(self, request, application, auth):
+        return forms.ApproveProjectFormGenerator(
+                application, auth)
 
 
-class StateWaitingForDelegate(StateWaitingForApproval):
+class StateWaitingForDelegate(common.StateWaitingForApproval):
     """ We need the delegate to provide approval. """
     name = "Waiting for delegate"
-    template_approve = "applications/project_delegate_approve_for_delegate.html"
-    template_decline = "applications/project_delegate_decline_for_delegate.html"
+    authorised_text = "an institute delegate"
 
-    def enter_state(self, request, application):
-        """ This is becoming the new current state. """
-        emails.send_delegate_project_request_email(application)
+    def get_authorised_persons(self, application):
+        return application.institute.delegates.filter(institutedelegate__send_email=True)
 
-    def check_auth(self, auth):
-        """ Check the person's authorization. """
-        return auth['is_delegate']
+    def get_approve_form(self, request, application, auth):
+        return forms.ApproveProjectFormGenerator(
+                application, auth)
 
 
-class StateWaitingForAdmin(State):
+class StateWaitingForAdmin(common.StateWaitingForApproval):
     """ We need the administrator to provide approval. """
     name = "Waiting for administrator"
+    authorised_text = "an administrator"
 
-    def enter_state(self, request, application):
-        """ This is becoming the new current state. """
-        emails.send_admin_project_request_email(application)
+    def get_authorised_persons(self, application):
+        return Person.objects.filter(is_admin=True)
 
-    def view(self, request, application, label, auth, actions):
-        """ Django view method. """
-        if label == "approve" and auth['is_admin']:
-            tmp_actions = []
-            if 'approve' in actions:
-                tmp_actions.append("approve")
-            if 'duplicate' in actions:
-                tmp_actions.append("duplicate")
-            actions = tmp_actions
-            application_form = forms.AdminApproveProjectFormGenerator(
-                    application, auth)
-            form = application_form(
-                    request.POST or None, instance=application)
-            if request.method == 'POST':
-                if form.is_valid():
-                    form.save()
-                    return "approve"
-            return render_to_response(
-                    'applications/project_admin_approve_for_admin.html',
-                    {'application': application, 'form': form,
-                        'actions': actions, 'auth': auth},
-                    context_instance=RequestContext(request))
-        elif label == "decline" and auth['is_admin']:
-            actions = [ 'cancel' ]
-            if request.method == 'POST':
-                form = EmailForm(request.POST)
-                if form.is_valid():
-                    to_email = application.applicant.email
-                    subject, body = form.get_data()
-                    emails.send_mail(
-                            subject, body,
-                            settings.ACCOUNTS_EMAIL, [to_email])
-                    return "cancel"
-            else:
-                link, is_secret = base.get_email_link(application)
-                subject, body = emails.render_email(
-                        'project_declined',
-                        {'receiver': application.applicant,
-                        'application': application,
-                        'link': link, 'is_secret': is_secret})
-                initial_data = {'body': body, 'subject': subject}
-                form = EmailForm(initial=initial_data)
-            return render_to_response(
-                    'applications/project_admin_decline_for_admin.html',
-                    {'application': application, 'form': form,
-                    'actions': actions, 'auth': auth},
-                    context_instance=RequestContext(request))
-        return super(StateWaitingForAdmin, self).view(
-                request, application, label, auth, actions)
+    def check_authorised(self, request, application, auth):
+        """ Check the person's authorization. """
+        return auth['is_admin']
+
+    def get_approve_form(self, request, application, auth):
+        return forms.AdminApproveProjectFormGenerator(
+                application, auth)
 
 
-
-class StatePassword(State):
-    """ This application is completed and processed. """
-    name = "Password"
-
-
-    def view(self, request, application, label, auth, actions):
-        """ Django view method. """
-        if label is None and auth['is_applicant']:
-            assert application.content_type.model == 'person'
-            if application.applicant.has_usable_password():
-                form = forms.PersonVerifyPassword(data=request.POST or None, person=application.applicant)
-                form_type = "verify"
-            else:
-                form = forms.PersonSetPassword(data=request.POST or None, person=application.applicant)
-                form_type = "set"
-            if request.method == 'POST':
-                if 'cancel' in request.POST:
-                    return 'cancel'
-                if form.is_valid():
-                    form.save()
-                    messages.success(request, 'Password updated. New accounts activated.')
-                    for action in actions:
-                        if action in request.POST:
-                            return action
-                    return HttpResponseBadRequest("<h1>Bad Request</h1>")
-            return render_to_response(
-                    'applications/project_password_for_applicant.html',
-                    {'application': application, 'form': form,
-                        'actions': actions, 'auth': auth, 'type': form_type },
-                    context_instance=RequestContext(request))
-        return super(StatePassword, self).view(
-                request, application, label, auth, actions)
-
-
-
-class StateCompleted(State):
-    """ This application is completed and processed. """
-    name = "Completed"
-
-
-class StateDuplicateApplicant(State):
-    """ Somebody has declared application is existing user. """
-    name = "Replace Applicant"
-
-    def enter_state(self, request, application):
-        emails.send_admin_project_request_email(application)
-
-    def view(self, request, application, label, auth, actions):
-        # if not admin, don't allow reopen
-        if not auth['is_admin']:
-            if 'reopen' in actions:
-                actions.remove('reopen')
-        if label is None and auth['is_admin']:
-            form = forms.ApplicantReplace(data=request.POST or None,
-                    application=application)
-
-            if request.method == 'POST':
-                if 'replace' in request.POST:
-                    if form.is_valid():
-                        form.save()
-                        return "reopen"
-                else:
-                    for action in actions:
-                        if action in request.POST:
-                            return action
-                    return HttpResponseBadRequest("<h1>Bad Request</h1>")
-
-            return render_to_response(
-                    'applications/project_duplicate_applicant.html',
-                    {'application': application, 'form': form,
-                    'actions': actions, 'auth': auth, },
-                    context_instance=RequestContext(request))
-        return super(StateDuplicateApplicant, self).view(
-                request, application, label, auth, actions)
-
-
-class StateArchived(StateCompleted):
+class StateArchived(common.StateCompleted):
     """ This application is archived. """
     name = "Archived"
 
 
-class StateDeclined(State):
-    """ This application declined. """
-    name = "Declined"
-
-    def enter_state(self, request, application):
-        """ This is becoming the new current state. """
-        application.decline()
-
-    def view(self, request, application, label, auth, actions):
-        """ Django view method. """
-        if label is None and auth['is_applicant'] and not auth['is_admin']:
-            # applicant, admin, leader can reopen an application
-            if 'reopen' in request.POST:
-                return 'reopen'
-            return render_to_response(
-                    'applications/project_declined_for_applicant.html',
-                    {'application': application,
-                    'actions': actions, 'auth': auth},
-                    context_instance=RequestContext(request))
-        return super(StateDeclined, self).view(
-                request, application, label, auth, actions)
-
-
-class TransitionSubmit(base.Transition):
+class TransitionSplit(base.Transition):
     """ A transition after application submitted. """
     def __init__(self, on_existing_project, on_new_project, on_error):
+        super(TransitionSplit, self).__init__()
         self._on_existing_project = on_existing_project
         self._on_new_project = on_new_project
         self._on_error = on_error
 
     def get_next_state(self, request, application, auth):
         """ Retrieve the next state. """
-
-        # Check for serious errors in submission.
-        # Should only happen in rare circumstances.
-        errors = application.check()
-        if len(errors) > 0:
-            for error in errors:
-                messages.error(request, error)
-            return self._on_error
-
-        # mark as submitted
-        application.submit()
-
         # Do we need to wait for leader or delegate approval?
         if application.project is None:
             return self._on_new_project
@@ -905,64 +645,32 @@ class TransitionSubmit(base.Transition):
             return self._on_existing_project
 
 
-class TransitionApprove(base.Transition):
-    """ A transition after application fully approved. """
-    def __init__(self, on_password_needed, on_password_ok, on_error):
-        self._on_password_needed = on_password_needed
-        self._on_password_ok = on_password_ok
-        self._on_error = on_error
-
-    def get_next_state(self, request, application, auth):
-        """ Retrieve the next state. """
-        # Check for serious errors in submission.
-        # Should only happen in rare circumstances.
-        errors = application.check()
-        if len(errors) > 0:
-            for error in errors:
-                messages.error(request, error)
-            return self._on_error
-
-        # approve application
-        approved_by = request.user
-        created_person, created_account, created_project = application.approve(approved_by)
-
-        # send emails
-        if created_project:
-            emails.send_project_approved_email(application)
-
-        if created_person or created_account:
-            link, is_secret = base.get_email_link(application)
-            emails.send_project_applicant_approved_email(
-                    application, created_person, created_account, link, is_secret)
-            return self._on_password_needed
-        else:
-            return self._on_password_ok
-
 
 def get_application_state_machine():
     """ Get the default state machine for applications. """
     Open = common.TransitionOpen(on_success='O')
+    Split = TransitionSplit(on_existing_project='L', on_new_project='D', on_error="R")
 
     state_machine = base.StateMachine()
     state_machine.add_state(StateApplicantEnteringDetails(), 'O',
             { 'cancel': 'R', 'reopen': Open, 'duplicate': 'DUP',
-            'submit': TransitionSubmit(on_existing_project='L', on_new_project='D', on_error="R"), })
+                'submit':  common.TransitionSubmit(on_success=Split, on_error="R")})
     state_machine.add_state(StateWaitingForLeader(), 'L',
             { 'cancel': 'R', 'approve': 'K', 'duplicate': 'DUP', })
     state_machine.add_state(StateWaitingForDelegate(), 'D',
             { 'cancel': 'R', 'approve': 'K', 'duplicate': 'DUP', })
     state_machine.add_state(StateWaitingForAdmin(), 'K',
             { 'cancel': 'R', 'duplicate': 'DUP',
-            'approve': TransitionApprove(on_password_needed='P', on_password_ok='C', on_error="R")})
-    state_machine.add_state(StatePassword(), 'P',
+            'approve': common.TransitionApprove(on_password_needed='P', on_password_ok='C', on_error="R")})
+    state_machine.add_state(common.StatePassword(), 'P',
             { 'submit': 'C', })
-    state_machine.add_state(StateCompleted(), 'C',
+    state_machine.add_state(common.StateCompleted(), 'C',
             { 'archive': 'A', })
     state_machine.add_state(StateArchived(), 'A',
             {})
-    state_machine.add_state(StateDeclined(), 'R',
+    state_machine.add_state(common.StateDeclined(), 'R',
             { 'reopen': Open,  })
-    state_machine.add_state(StateDuplicateApplicant(), 'DUP',
+    state_machine.add_state(common.StateDuplicateApplicant(), 'DUP',
             { 'reopen': Open, 'cancel': 'R', })
     state_machine.set_first_state(Open)
 #    NEW = 'N'

@@ -31,62 +31,31 @@ def render_email(name, context):
     return subject, body
 
 
-def send_admin_project_request_email(application):
+def send_request_email(authorised_text, authorised_persons, application):
     """Sends an email to admin asking to approve user application"""
     context = CONTEXT.copy()
     context['requester'] = application.applicant
     context['link'] = '%s/applications/%d/' % (settings.REGISTRATION_BASE_URL, application.pk)
     context['application'] = application
+    context['authorised_text'] = authorised_text
 
-    to_email = settings.APPROVE_ACCOUNTS_EMAIL
-    subject, body = render_email('project_request_admin', context)
+    for person in authorised_persons:
+        if not person.email:
+            continue
 
-    send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
+        context['receiver'] = person
 
+        to_email = person.email
+        subject, body = render_email('common_request', context)
 
-def send_admin_software_request_email(application):
-    """Sends an email to admin asking to approve user application"""
-    context = CONTEXT.copy()
-    context['requester'] = application.applicant
-    context['link'] = '%s/applications/%d/' % (settings.REGISTRATION_BASE_URL, application.pk)
-    context['application'] = application
-
-    to_email = settings.APPROVE_ACCOUNTS_EMAIL
-    subject, body = render_email('software_request_admin', context)
-
-    send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
-
-
-def send_leader_project_request_email(application):
-    """Sends an email to each project leader asking to approve user application"""
-    context = CONTEXT.copy()
-    context['link'] = '%s/applications/%d/' % (settings.REGISTRATION_BASE_URL, application.pk)
-    context['application'] = application
-
-    for leader in application.project.leaders.filter(is_active=True):
-        context['receiver'] = leader
-
-        to_email = leader.email
-        subject, body = render_email('project_request_leader', context)
-
-        send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
-
-
-def send_delegate_project_request_email(application):
-    """Sends an email to the projects institutes active delegate for approval"""
-    context = CONTEXT.copy()
-    context['link'] = '%s/applications/%d/' % (settings.REGISTRATION_BASE_URL, application.pk)
-    context['application'] = application
-
-    for delegate in application.institute.delegates.filter(institutedelegate__send_email=True):
-        context['receiver'] = delegate
-        to_email = delegate.email
-        subject, body = render_email('project_request_delegate', context)
         send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
 
 
 def send_invite_email(application, link, is_secret):
     """ Sends an email inviting someone to create an account"""
+
+    if not application.applicant.email:
+        return
 
     context = CONTEXT.copy()
     context['receiver'] = application.applicant
@@ -100,8 +69,11 @@ def send_invite_email(application, link, is_secret):
     send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
 
 
-def send_project_applicant_approved_email(application, created_person, created_account, link, is_secret):
-    """Sends an email informing person account is ready"""
+def send_approved_email(application, created_person, created_account, link, is_secret):
+    """Sends an email informing person application is approved"""
+    if not application.applicant.email:
+        return
+
     context = CONTEXT.copy()
     context['receiver'] = application.applicant
     context['application'] = application
@@ -109,32 +81,7 @@ def send_project_applicant_approved_email(application, created_person, created_a
     context['created_account'] = created_account
     context['link'] = link
     context['is_secret'] = is_secret
-    subject, body = render_email('project_applicant_approved', context)
-    to_email = application.applicant.email
-
-    send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
-
-
-def send_project_approved_email(application):
-    """Sends an email to the projects leaders once approved"""
-    context = CONTEXT.copy()
-    context['project_link'] = '%s/projects/%s/' % (settings.REGISTRATION_BASE_URL, application.project.pid)
-    context['application'] = application
-
-    for leader in application.project.leaders.all():
-        if leader != application.applicant:
-            context['receiver'] = leader
-            subject, body = render_email('project_approved', context)
-            to_email = leader.email
-            send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
-
-
-def send_software_approved_email(application):
-    """Sends an email informing person software is ready"""
-    context = CONTEXT.copy()
-    context['receiver'] = application.applicant
-    context['application'] = application
-    subject, body = render_email('software_approved', context)
+    subject, body = render_email('common_approved', context)
     to_email = application.applicant.email
 
     send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])

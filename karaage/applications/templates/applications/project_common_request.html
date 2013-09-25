@@ -1,0 +1,23 @@
+{% if application.project %}
+<div class="module">
+    <h2>Existing Project Details</h2>
+    <table>
+        <tr><td>Project:</td><td><a href='{% url 'kg_project_detail' application.project.pid %}'>{{ application.project }}</a></td></tr>
+        <tr><td>Institute:</td><td>{{ application.project.institute }}</td></tr>
+        <tr><td>Description:</td><td>{{ application.project.description|linebreaks }}</td></tr>
+        <tr><td>Additional requirements:</td><td>{{ application.project.additional_req|linebreaks }}</td></tr>
+    </table>
+</div>
+{% endif %}
+
+{% if application.name %}
+<div class="module">
+    <h2>New Project Details</h2>
+    <table>
+        <tr><td>Name:</td><td>{{ application.name }}</td></tr>
+        <tr><td>Institute:</td><td>{{ application.institute }}</td></tr>
+        <tr><td>Description:</td><td>{{ application.description|linebreaks }}</td></tr>
+        <tr><td>Additional requirements:</td><td>{{ application.additional_req|linebreaks }}</td></tr>
+    </table>
+</div>
+{% endif %}

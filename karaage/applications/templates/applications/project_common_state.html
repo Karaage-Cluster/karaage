@@ -18,10 +18,29 @@
     {% endif %}
     </li>
 
-    <li {% if application.state = 'L' %}class='selected'{% endif %}>Project leader approval.</li>
-    <li {% if application.state = 'D' %}class='selected'{% endif %}>Institute delegate approval.</li>
+    {% if application.state = 'L' %}
+    <li class='selected'>Project leader approval.</li>
+    {% elif application.state = 'D' %}
+    <li class='selected'>Institute delegate approval.</li>
+    {% elif application.project %}
+    <li>Project leader approval.</li>
+    {% elif application.name %}
+    <li>Institute delegate approval.</li>
+    {% else %}
+    <li>Project leader/Institute delegate approval.</li>
+    {% endif %}
+
     <li {% if application.state = 'K' %}class='selected'{% endif %}>Administrator approval.</li>
     <li {% if application.state = 'P' %}class='selected'{% endif %}>Set password for new accounts.</li>
     <li {% if application.state = 'C' %}class='selected'{% endif %}>Application complete.</li>
 </ol>
+
+{% if application.state = 'C' %}
+{% elif application.state = 'A' %}
+{% elif application.state = 'R' %}
+{% else %}
+{% if application.needs_account %}
+<p>A computer account on the {{ org_name }} clusters will be made for {{ application.applicant }} if they does not already have one.</p>
+{% endif %}
+{% endif %}
 {% endif %}

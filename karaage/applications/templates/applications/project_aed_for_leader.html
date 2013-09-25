@@ -22,7 +22,7 @@
     <form method="post" action=".">{% csrf_token %}
         <p>The applicant is still completing this application. Come back later.</p>
         <p>Application process:</p>
-        {% application_state "project" application %}
+        {% application_state application %}
         {% application_actions %}
     </form>
 </div>

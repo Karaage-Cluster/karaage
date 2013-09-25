@@ -57,7 +57,7 @@ def application_list(request):
 
         apps = apps.filter(query)
     else:
-        apps = Application.objects.requires_admin()
+        apps = Application.objects.requires_admin().order_by('-id')
         terms = ""
 
     p = Paginator(apps, 50)

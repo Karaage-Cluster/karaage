@@ -31,24 +31,16 @@
 {% block content %}
 <div id="content-main">
     <h1>{{ application.applicant }}'s Request</h1>
-    <p>{{ application.applicant }} has requested <b>{{ application.info }}</b></p>
+    <p>{{ application.applicant }} has requested to <b>{{ application.info }}</b></p>
 
     <div class="module">
         <h2>Current Status</h2>
 
         <p>Application process:</p>
-        {% application_state "software" application %}
+        {% application_state application %}
 
-        {% if application.state == 'L' and auth.is_leader %}
-        <p>As you are a project leader, please
-        <a class="yeslink" href="{% url 'kg_application_detail' application.id application.state 'approve' %}">Approve</a> or
-        <a class="nolink" href="{% url 'kg_application_detail' application.id application.state 'decline' %}">Decline</a> this request</p>
-        {% elif application.state == 'D' and auth.is_delegate %}
-        <p>As you are an institute delegate, please
-        <a class="yeslink" href="{% url 'kg_application_detail' application.id application.state 'approve' %}">Approve</a> or
-        <a class="nolink" href="{% url 'kg_application_detail' application.id application.state 'decline' %}">Decline</a> this request</p>
-        {% elif application.state == 'K' and auth.is_admin %}
-        <p>As you are an administrator, please
+        {% if auth.can_approve %}
+        <p>As you are {{ authorised_text }}, please
         <a class="yeslink" href="{% url 'kg_application_detail' application.id application.state 'approve' %}">Approve</a> or
         <a class="nolink" href="{% url 'kg_application_detail' application.id application.state 'decline' %}">Decline</a> this request</p>
         {% endif %}
@@ -95,21 +87,20 @@
         </table>
     </div>
 
+    {% if application.content_type.model == 'applicant' %}
     <div class="module">
-        <h2>Software License Details</h2>
-        <table>
-            {% if auth.is_admin %}
-            <tr>
-                <td>Software:</td>
-                <td><a href="{% url 'kg_software_detail' application.software_license.software.pk %}">{{ application.software_license.software }}</a></td>
-            </tr>
-            {% else %}
-            <tr><td>Software:</td><td>{{ application.software_license.software }}</td></tr>
+        <form method="post" action=".">{% csrf_token %}
+            <h2>Similar People</h2>
+            <p>Please check that the applicant isn't an existing user.</p>
+            {% gen_table application.applicant.similar_people %}
+            {% if 'duplicate' in actions %}
+            <input type="submit" name="duplicate" value="Is existing user" class="button" />
             {% endif %}
-            <tr><td>Version:</td><td>{{ application.software_license.version }}</td></tr>
-            <tr><td>Text:</td><td>{{ application.software_license.text|linebreaks }}</td></tr>
-        </table>
+        </form>
     </div>
+    {% endif %}
+
+    {% application_request application %}
 
     {% if auth.is_admin %}
     {% comments application.application_ptr %}

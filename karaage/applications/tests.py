@@ -68,7 +68,7 @@ class UserApplicationTestCase(TestCase):
         self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('index'))
         token = Application.objects.get().secret_token
         self.assertEquals(len(mail.outbox), 1)
-        self.assertEquals(mail.outbox[0].subject, 'TestOrg invitation to join project')
+        self.assertTrue(mail.outbox[0].subject.startswith('TestOrg invitation'))
         self.assertEquals(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL)
         self.assertEquals(mail.outbox[0].to[0], 'jim.bob@example.com')
 
@@ -107,7 +107,7 @@ class UserApplicationTestCase(TestCase):
         application = applicant.applications.all()[0]
         self.failUnlessEqual(application.state, ProjectApplication.WAITING_FOR_LEADER)
         self.assertEquals(len(mail.outbox), 2)
-        self.assertEquals(mail.outbox[1].subject, 'TestOrg project request')
+        self.assertTrue(mail.outbox[1].subject.startswith('TestOrg request'))
         self.assertEquals(mail.outbox[1].from_email, settings.ACCOUNTS_EMAIL)
         self.assertEquals(mail.outbox[1].to[0], 'leader@example.com')
 
@@ -254,7 +254,7 @@ class ProjectApplicationTestCase(TestCase):
         self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('index'))
         token = Application.objects.get().secret_token
         self.assertEquals(len(mail.outbox), 1)
-        self.assertEquals(mail.outbox[0].subject, 'TestOrg invitation to join project')
+        self.assertTrue(mail.outbox[0].subject.startswith('TestOrg invitation'))
         self.assertEquals(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL)
         self.assertEquals(mail.outbox[0].to[0], 'jim.bob@example.com')
 
@@ -294,7 +294,7 @@ class ProjectApplicationTestCase(TestCase):
         application = applicant.applications.all()[0]
         self.failUnlessEqual(application.state, ProjectApplication.WAITING_FOR_DELEGATE)
         self.assertEquals(len(mail.outbox), 2)
-        self.assertEquals(mail.outbox[1].subject, 'TestOrg project request')
+        self.assertTrue(mail.outbox[1].subject.startswith('TestOrg request'))
         self.assertEquals(mail.outbox[1].from_email, settings.ACCOUNTS_EMAIL)
         self.assertEquals(mail.outbox[1].to[0], 'leader@example.com')
 

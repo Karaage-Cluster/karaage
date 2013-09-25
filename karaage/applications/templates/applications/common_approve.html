@@ -17,7 +17,7 @@
 
 
 {% block content %}
-<p>The following request is awaiting project leader approval:</p>
+<p>The following request is awaiting for {{ authorised_text }} to approve it:</p>
 <div class="module">
     <h2>Applicant Details</h2>
     <table>
@@ -39,33 +39,13 @@
 </div>
 {% endif %}
 
-{% if application.project %}
-<div class="module">
-    <h2>Existing Project Details</h2>
-    <table>
-        <tr><td>Project:</td><td>{{ application.project }}</td></tr>
-        <tr><td>Institute:</td><td>{{ application.project.institute }}</td></tr>
-        <tr><td>Description:</td><td>{{ application.project.description|linebreaks }}</td></tr>
-        <tr><td>Additional requirements:</td><td>{{ application.project.additional_req|linebreaks }}</td></tr>
-    </table>
-</div>
-{% else %}
-<div class="module">
-    <h2>New Project Details</h2>
-    <table>
-        <tr><td>Name:</td><td>{{ application.name }}</td></tr>
-        <tr><td>Institute:</td><td>{{ application.institute }}</td></tr>
-        <tr><td>Description:</td><td>{{ application.description|linebreaks }}</td></tr>
-        <tr><td>Additional requirements:</td><td>{{ application.additional_req|linebreaks }}</td></tr>	
-    </table>
-</div>
-{% endif %}
+{% application_request application %}
 
 <div class="module">
     <h2>Confirm</h2>
-    <p>{{ application.applicant }} will receive an email once their account has been confirmed.</p>
+    <p>{{ application.applicant }} will receive an email once their application has been processed.</p>
     <br />
-    {% if form %}
+    {% if form.fields %}
     <p>Please amend the following to suit.</p>
     {% endif %}
 

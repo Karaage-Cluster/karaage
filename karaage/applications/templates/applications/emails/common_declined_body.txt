@@ -1,7 +1,7 @@
 {% autoescape off %}Hello {{ receiver.get_short_name }},
 
 
-Your {{ org_name }} application {{ application.info }} has been declined.
+Your {{ org_name }} application to {{ application.info }} has been declined.
 
 If you think this is an error please email {{ org_email }}
 

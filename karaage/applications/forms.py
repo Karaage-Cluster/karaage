@@ -26,7 +26,7 @@ from django.utils.safestring import mark_safe
 
 from captcha.fields import CaptchaField
 
-from karaage.applications.models import Application, ProjectApplication, Applicant
+from karaage.applications.models import Application, ProjectApplication, SoftwareApplication, Applicant
 from karaage.people.models import Person
 from karaage.people.utils import validate_username, UsernameException
 from karaage.institutes.models import Institute
@@ -246,10 +246,12 @@ def ApproveProjectFormGenerator(application, auth):
         include_fields = ['machine_categories', 'additional_req', 'needs_account']
     else:
         # existing project
-        include_fields = ['make_leader', 'additional_req', 'needs_account']
+        include_fields = ['make_leader', 'needs_account']
 
     class ApproveProjectForm(forms.ModelForm):
-        additional_req = forms.CharField(label="Additional requirements", widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), help_text=u"Do you have any special requirements?", required=False)
+        if application.project is None:
+            # new project
+            additional_req = forms.CharField(label="Additional requirements", widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), help_text=u"Do you have any special requirements?", required=False)
 
         class Meta:
             model = ProjectApplication
@@ -272,10 +274,12 @@ def AdminApproveProjectFormGenerator(application, auth):
         include_fields = ['pid', 'machine_categories', 'additional_req', 'needs_account']
     else:
         # existing project
-        include_fields = ['make_leader', 'additional_req', 'needs_account']
+        include_fields = ['make_leader', 'needs_account']
 
     class AdminApproveProjectForm(parent):
         if application.project is None:
+            # new project
+            additional_req = forms.CharField(label="Additional requirements", widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), help_text=u"Do you have any special requirements?", required=False)
             pid = forms.CharField(label="Project ID", help_text="Leave blank for auto generation", required=False)
 
         class Meta:
@@ -299,6 +303,13 @@ def AdminApproveProjectFormGenerator(application, auth):
             return pid
 
     return AdminApproveProjectForm
+
+
+class ApproveSoftwareForm(forms.ModelForm):
+
+    class Meta:
+        model = SoftwareApplication
+        fields = []
 
 
 class PersonSetPassword(forms.Form):
