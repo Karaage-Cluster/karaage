@@ -28,8 +28,8 @@ class Migration(DataMigration):
                 institute.save()
 
                 for member in lgroup.secondary_accounts.iterator():
-                    person = orm['people.person'].objects.get(username=member.uid)
-                    person.add_account_to_group(group)
+                    person = orm['people.person'].objects.get(user__username=member.uid)
+                    person.groups.add(group)
 
     def backwards(self, orm):
         datastore = get_test_datastore("ldap", 0)
