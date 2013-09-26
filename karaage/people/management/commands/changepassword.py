@@ -25,7 +25,7 @@ class Command(BaseCommand):
 
         try:
             person = Person.objects.get(username=username)
-        except User.DoesNotExist:
+        except Person.DoesNotExist:
             raise CommandError("person '%s' does not exist" % username)
 
         self.stdout.write("Changing password for person '%s'\n" % person)
