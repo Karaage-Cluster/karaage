@@ -40,12 +40,14 @@
     {% endif %}
 
     {% if saml_session and person %}
+    {% if not person.saml_id or person.saml_id != attrs.persistent_id %}
         <p>If you continue and click Register, then your details, including
         your email address, will be replaced by those above and you will be
         able to log in using SAML.</p>
         <form method="post" action=".">{% csrf_token %}
             <input type="submit" name="register" value="Register" class="button" />
         </form>
+    {% endif %}
     {% endif %}
 </div>
 {% endblock %}
