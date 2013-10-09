@@ -7,7 +7,7 @@
 
 
 {% block breadcrumbs %}
-<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+<div class="breadcrumbs"><a href='{% url "index" %}'>Home</a>&nbsp;›
     <a href="{% url 'kg_software_list' %}">Software</a>&nbsp;›
     <a href="{{ software.get_absolute_url }}">{{ software }}</a>&nbsp;›
     Statistics

@@ -8,7 +8,7 @@
 
 {% block breadcrumbs %}
 <div class="breadcrumbs">
-    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
     <a href='{% url 'kg_usage_list' %}{% url_with_param start=start end=end %}'>Usage</a>&nbsp;›
     {{ machine_category }}
 </div>

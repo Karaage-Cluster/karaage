@@ -7,7 +7,7 @@
 
 {% block breadcrumbs %}
 <div class="breadcrumbs">
-    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
     {% for title, link in breadcrumbs %}
     <a href='{{ link }}'>{{ title }}</a>&nbsp;›
     {% endfor %}

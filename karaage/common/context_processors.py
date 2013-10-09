@@ -26,7 +26,6 @@ def common(request):
     ctx['GRAPH_URL'] = settings.GRAPH_URL
     ctx['org_name'] = settings.ACCOUNTS_ORG_NAME
     ctx['accounts_email'] = settings.ACCOUNTS_EMAIL
-    ctx['base_url'] = '%s' % request.META.get('SCRIPT_NAME', '')
     return ctx
 
 

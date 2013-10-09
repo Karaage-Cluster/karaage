@@ -50,7 +50,7 @@
     <!-- END Header -->
     {% block breadcrumbs %}
     <div class="breadcrumbs">
-    <a href="{{ base_url|default:"/" }}">{% trans 'Home' %}</a>
+    <a href="{% url "index" %}">{% trans 'Home' %}</a>
     {% if title %} &rsaquo; {{ title }}{% endif %}
     </div>
     {% endblock %}

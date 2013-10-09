@@ -9,7 +9,7 @@
 
 {% block breadcrumbs %}
 <div class="breadcrumbs">
-    <a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;›
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
     <a href="{% url 'kg_usage_list' %}">Usage</a>&nbsp;›
     <a href="{% url 'kg_mc_usage' machine_category.pk %}">{{ machine_category }}</a>&nbsp;›
     Core Report
