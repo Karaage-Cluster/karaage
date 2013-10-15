@@ -22,6 +22,9 @@ import os.path
 from django.conf import settings
 from django.db.models import Sum
 
+import os
+os.environ['MPLCONFIGDIR'] = settings.GRAPH_TMP
+
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt

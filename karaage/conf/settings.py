@@ -11,6 +11,7 @@ AJAX_SELECT_INLINES = "staticfiles"
 
 GRAPH_DEBUG = False
 GRAPH_ROOT = '/var/cache/karaage/graphs'
+GRAPH_TMP = '/var/cache/karaage/matplotlib'
 GRAPH_URL = '/karaage_graphs/'
 
 DEFAULT_MC = 1

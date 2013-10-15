@@ -5,4 +5,4 @@
 /var/cache/karaage/graphs/projects
 /var/cache/karaage/graphs/trends
 /var/cache/karaage/graphs/machines
-/var/www/.kgmatplotlib
+/var/cache/karaage/matplotlib

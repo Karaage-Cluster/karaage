@@ -110,6 +110,7 @@ LANGUAGE_CODE = 'en-au'
 MEDIA_ROOT = '/tmp'
 MEDIA_URL = '/media/'
 GRAPH_ROOT = MEDIA_ROOT + '/graphs/'
+GRAPH_TMP = MEDIA_ROOT + '/matplotlib/'
 GRAPH_URL = MEDIA_URL + 'graphs/'
 
 SITE_ID = 1
