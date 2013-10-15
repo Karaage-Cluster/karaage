@@ -14,8 +14,6 @@ AJAX_SELECT_INLINES = "staticfiles"
 
 GRAPH_DEBUG = True
 
-GRAPH_LIB = 'karaage.graphs.matplotlib9'
-
 SHIB_SUPPORTED = False
 SHIB_ATTRIBUTE_MAP = {
     "HTTP_SHIB_IDENTITY_PROVIDER": (True, "idp"),
