@@ -23,6 +23,9 @@ from django.conf import settings
 from django.db import connection
 from django.template.defaultfilters import dictsortreversed
 
+import os
+os.environ['MPLCONFIGDIR'] = '/var/cache/karaage/matplotlib'
+
 import matplotlib
 matplotlib.use('Agg')  # force the antigrain backend
 from matplotlib.backends.backend_agg import FigureCanvasAgg

@@ -11,12 +11,22 @@ if [ "$1" = "configure" ]; then
 	
     fi
 
+    for i in /var/www/.matplotlib \
+             /var/www/.kgmatplotlib
+    do
+        if dpkg-statoverride --list $i >/dev/null 2>&1
+        then
+            dpkg-statoverride --remove $i
+            rm -rf $i
+        fi
+    done
+
     for i in /var/cache/karaage/graphs/projects \
              /var/cache/karaage/graphs/institutes \
              /var/cache/karaage/graphs/i_trends \
              /var/cache/karaage/graphs/trends \
              /var/cache/karaage/graphs/machines \
-             /var/www/.kgmatplotlib
+             /var/cache/karaage/matplotlib
     do
         # only do something when no setting exists
         if ! dpkg-statoverride --list $i >/dev/null 2>&1
