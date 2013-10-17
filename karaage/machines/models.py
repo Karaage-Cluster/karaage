@@ -17,12 +17,13 @@
 
 from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import AbstractBaseUser
 
 import datetime
 
 from karaage.people.models import Person, Group
-from karaage.machines.managers import MachineCategoryManager, ActiveMachineManager
-from karaage.common import log
+from karaage.machines.managers import MachineCategoryManager, MachineManager, ActiveMachineManager
+from karaage.common import log, new_random_token
 
 import warnings
 
@@ -76,7 +77,7 @@ class MachineCategory(models.Model):
     delete.alters_data = True
 
 
-class Machine(models.Model):
+class Machine(AbstractBaseUser):
     name = models.CharField(max_length=50)
     no_cpus = models.IntegerField()
     no_nodes = models.IntegerField()
@@ -86,7 +87,7 @@ class Machine(models.Model):
     end_date = models.DateField(null=True, blank=True)
     pbs_server_host = models.CharField(max_length=50, null=True, blank=True)
     mem_per_core = models.IntegerField(help_text="In GB", null=True, blank=True)
-    objects = models.Manager()
+    objects = MachineManager()
     active = ActiveMachineManager()
     scaling_factor = models.IntegerField(default=1)
 

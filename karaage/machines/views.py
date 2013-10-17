@@ -55,6 +55,19 @@ def machine_edit(request, machine_id):
             object_id=machine_id, model=Machine)
 
 @admin_required
+def machine_password(request, machine_id):
+    machine = get_object_or_404(Machine, pk=machine_id)
+    password = None
+    if request.method == 'POST':
+        password = Machine.objects.make_random_password()
+        machine.set_password(password)
+        machine.save()
+    return render_to_response(
+        'machines/machine_password.html',
+        {'machine': machine, 'password': password},
+        context_instance=RequestContext(request))
+
+@admin_required
 def machine_accounts(request, machine_id):
     machine = get_object_or_404(Machine, pk=machine_id)
     accounts = machine.category.account_set.filter(date_deleted__isnull=True)

@@ -55,3 +55,34 @@ def login_required(function=None):
     if function:
         return actual_decorator(function)
     return actual_decorator
+
+
+def xmlrpc_machine_required(function=None):
+    """
+    Decorator for views that checks that the user is logged in, redirecting
+    to the log-in page if necessary.
+    """
+    def actual_decorator(func):
+        def wrapper(machine_name, password, *args):
+            from django_xmlrpc.decorators import AuthenticationFailedException
+            from karaage.machines.models import Machine
+            machine = Machine.objects.authenticate(machine_name, password)
+            if machine is None:
+                raise AuthenticationFailedException
+            return func(machine, *args)
+
+        if hasattr(func, '_xmlrpc_signature'):
+            sig = func._xmlrpc_signature
+            sig['args'] = (['string'] * 2) + sig['args']
+            wrapper._xmlrpc_signature = sig
+
+        if func.__doc__:
+            wrapper.__doc__ = func.__doc__ + \
+                    "\nNote: Machine authentication is required."
+        return wrapper
+
+    if function:
+        return actual_decorator(function)
+    return actual_decorator
+
+

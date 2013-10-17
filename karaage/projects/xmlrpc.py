@@ -15,12 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-
 from django_xmlrpc.decorators import xmlrpc_func, permission_required
 
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory, Machine, Account
 from karaage.common import log
+from karaage.common.decorators import xmlrpc_machine_required
 
 
 def _get_machine_category(machine_name):
@@ -34,28 +34,28 @@ def _get_machine_category(machine_name):
     return machine_category
 
 
+@xmlrpc_machine_required()
 @xmlrpc_func(returns='list', args=['string'])
-@permission_required(perm='projects.change_project')
-def get_project_members(user, project_id):
+def get_project_members(machine, project_id):
     """
     Returns list of usernames given a project id
     """
     try:
-        project = Project.objects.get(pid=project_id)
+        project = Project.objects.get(pid=project_id, projectquota__machine_category=machine.category)
     except Project.DoesNotExist:
         return 'Project not found'
 
     return [x.user.username for x in project.group.members.all()]
 
 
+@xmlrpc_machine_required()
 @xmlrpc_func(returns='list')
-@permission_required(perm='projects.change_project')
-def get_projects(user):
+def get_projects(machine):
     """
     Returns list of project ids
     """
 
-    return [x.pid for x in Project.active.all()]
+    return [x.pid for x in Project.active.filter(projectquota__machine_category=machine.category)]
 
 
 @xmlrpc_func(returns='string', args=['string', 'string', 'string'])
@@ -89,25 +89,24 @@ def get_project(username, proj, machine_name=None):
     return "None"
 
 
-@xmlrpc_func(returns='int', args=['string', 'string'])
 @permission_required()
-def change_default_project(user, project, machine_name=None):
+@xmlrpc_func(returns='int', args=['string', 'string'])
+def change_default_project(user, project):
     """
     Change default project
     """
     person = user
     try:
-        project = Project.objects.get(pid=project)
+        project = Project.objects.get(pid=project, projectquota__machine_category=machine.category)
     except Project.DoesNotExist:
         return -1, "Project %s does not exist" % project
 
     if not person in project.group.members.all():
         return -2, "User %s not a member of project %s" % (user, project.pid)
 
-    machine_category = _get_machine_category(machine_name)
     account = Account.objects.get(
             username=username,
-            machine_category=machine_category,
+            machine_category=machine.category,
             date_deleted__isnull=True)
 
     account.default_project = project
@@ -118,8 +117,8 @@ def change_default_project(user, project, machine_name=None):
     return 0, "Default project changed"
 
 
-@xmlrpc_func(returns='list')
 @permission_required()
+@xmlrpc_func(returns='list')
 def get_users_projects(user):
     """
     List projects a user is part of

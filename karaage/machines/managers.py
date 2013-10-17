@@ -18,6 +18,8 @@
 from django.db import models
 import datetime
 
+from django.contrib.auth.models import BaseUserManager
+
 
 class MachineCategoryManager(models.Manager):
     def get_default(self):
@@ -25,7 +27,19 @@ class MachineCategoryManager(models.Manager):
         machine_category = self.get(pk=settings.DEFAULT_MC)
         return machine_category
 
-class ActiveMachineManager(models.Manager):
+
+class MachineManager(BaseUserManager):
+    def authenticate(self, machine_name, password):
+        try:
+            machine = self.get(name=machine_name)
+        except self.model.DoesNotExist:
+            return None
+        if not machine.check_password(password):
+            return None
+        return machine
+
+
+class ActiveMachineManager(MachineManager):
     def get_query_set(self):
         today = datetime.datetime.today()
         return super(ActiveMachineManager, self).get_query_set().filter(end_date__isnull=True)

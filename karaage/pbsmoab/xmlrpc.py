@@ -15,13 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django_xmlrpc.decorators import xmlrpc_func, permission_required
+from django_xmlrpc.decorators import xmlrpc_func
 import datetime
 
 from karaage.people.models import Person
 from karaage.machines.models import MachineCategory, Machine, Account
 from karaage.projects.models import Project, ProjectQuota
 from karaage.pbsmoab.logs import parse_logs
+from karaage.common.decorators import xmlrpc_machine_required
 
 
 def _get_machine_category(machine_name):
@@ -35,12 +36,13 @@ def _get_machine_category(machine_name):
     return machine_category
 
 
-@xmlrpc_func(returns='string', args=['string', 'date'])
-@permission_required(perm='projects.change_project')
-def parse_usage(user, usage, date, machine_name, log_type):
+@xmlrpc_machine_required()
+@xmlrpc_func(returns='string', args=['string', 'date', 'string', 'string'])
+def parse_usage(machine, usage, date, machine_name, log_type):
     """
     Parses usage
     """
+    assert machine.name == machine_name
 
     year, month, day = date.split('-')
     date = datetime.date(int(year), int(month), int(day))
@@ -109,8 +111,9 @@ def showquota(username, machine_name=None):
         return -1, 'Default Project not found'
 
     p_l = []
-    for project in u_a.person.projects.filter(is_active=True, machine_categories=machine_category):
-        project_chunk, created = ProjectQuota.objects.get_or_create(project=project, machine_category=machine_category)
+    for project_chunk in ProjectQuota.objects.filter(project__is_active=True, machine_category=machine_category):
+        project = project_chunk.project
+
         is_default = False
         if project == d_p:
             is_default = True
