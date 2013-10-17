@@ -1,3 +1,10 @@
+karaage3 (3.0.1-1) UNRELEASED; urgency=low
+
+  * Various bugs fixed.
+  * Add unique constraints to usage caches.
+
+ -- Brian May <bam@debian.org>  Thu, 17 Oct 2013 11:58:50 +1100
+
 karaage3 (3.0.0-1) unstable; urgency=low
 
   * MAJOR CHANGES. BACKUP EVERYTHING ***BEFORE*** INSTALLING. BACKUP MYSQL.
