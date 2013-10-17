@@ -93,10 +93,7 @@ class Person(AbstractBaseUser):
         verbose_name_plural = 'people'
         ordering = ['full_name', 'short_name']
         db_table = 'person'
-        permissions = (
-            ("lock_person", "Can lock/unlock a person"),
-            )
-    
+
     def __unicode__(self):
         name = self.get_full_name()
         if not name:
