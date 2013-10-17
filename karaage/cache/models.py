@@ -32,23 +32,29 @@ class UsageCache(models.Model):
 
     class Meta:
         abstract = True
-        
 
 class InstituteCache(UsageCache):
     institute = models.ForeignKey(Institute)
     machine_category = models.ForeignKey(MachineCategory)
-    
+    class Meta:
+        unique_together = ('date', 'start', 'end', 'institute', 'machine_category')
 
 class ProjectCache(UsageCache):
     project = models.ForeignKey(Project)
     machine_category = models.ForeignKey(MachineCategory)
+    class Meta:
+        unique_together = ('date', 'start', 'end', 'project', 'machine_category')
 
 
 class PersonCache(UsageCache):
     person = models.ForeignKey(Person)
     project = models.ForeignKey(Project)
     machine_category = models.ForeignKey(MachineCategory)
+    class Meta:
+        unique_together = ('date', 'start', 'end', 'person', 'project')
 
 
 class MachineCache(UsageCache):
     machine = models.ForeignKey(Machine)
+    class Meta:
+        unique_together = ('date', 'start', 'end', 'machine')
