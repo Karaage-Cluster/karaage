@@ -125,8 +125,5 @@ def get_machine_usage(machine, start, end):
                                      date__range=(start, end)).aggregate(usage=Sum('cpu_usage'), jobs=Count('id'))
 
         cache = MachineCache.objects.create(machine=machine, start=start, end=end, cpu_hours=data['usage'], no_jobs=data['jobs'])
-    except MachineCache.MultipleObjectsReturned:
-        MachineCache.objects.filter(machine=machine, date=datetime.date.today(), start=start, end=end).delete()
-        return get_machine_usage(machine, start, end)
-        
+
     return cache.cpu_hours, cache.no_jobs
