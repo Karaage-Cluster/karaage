@@ -29,7 +29,7 @@ import warnings
 
 class MachineCategory(models.Model):
     DATASTORES = [ (i,i) for i in settings.DATASTORES.keys() ]
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     datastore = models.CharField(max_length=255, choices=DATASTORES, help_text="Modifying this value on existing categories will affect accounts created under the old datastore")
     objects = MachineCategoryManager()
 
@@ -78,7 +78,7 @@ class MachineCategory(models.Model):
 
 
 class Machine(AbstractBaseUser):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     no_cpus = models.IntegerField()
     no_nodes = models.IntegerField()
     type = models.CharField(max_length=100)
