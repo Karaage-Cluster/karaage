@@ -26,6 +26,7 @@ class Command(BaseCommand):
     @django.db.transaction.commit_on_success
     @tldap.transaction.commit_on_success
     def handle(self, **options):
+        from django.db.models import Count
         from karaage.applications.models import Application, Applicant
         import datetime
         now = datetime.datetime.now()
@@ -53,7 +54,7 @@ class Command(BaseCommand):
             application.delete()
 
         # Delete all orphaned applicants
-        for applicant in Applicant.objects.filter(applications__isnull=True):
+        for applicant in Applicant.objects.annotate(cc=Count('applications')).filter(cc=0):
             if verbose >= 1:
                 print "Deleted orphaned applicant #%s" % applicant.id
-            application.delete()
+            applicant.delete()
