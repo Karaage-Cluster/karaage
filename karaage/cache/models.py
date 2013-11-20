@@ -51,7 +51,7 @@ class PersonCache(UsageCache):
     project = models.ForeignKey(Project)
     machine_category = models.ForeignKey(MachineCategory)
     class Meta:
-        unique_together = ('date', 'start', 'end', 'person', 'project')
+        unique_together = ('date', 'start', 'end', 'person', 'project', 'machine_category')
 
 
 class MachineCache(UsageCache):

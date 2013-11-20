@@ -8,78 +8,22 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding unique constraint on 'ProjectCache', fields ['date', 'start', 'machine_category', 'end', 'project']
-        db.create_unique(u'cache_projectcache', ['date', 'start', 'machine_category_id', 'end', 'project_id'])
+        # Adding unique constraint on 'Machine', fields ['name']
+        db.create_unique('machine', ['name'])
 
-        # Adding unique constraint on 'PersonCache', fields ['end', 'person', 'project', 'start', 'machine_category', 'date']
-        db.create_unique(u'cache_personcache', ['end', 'person_id', 'project_id', 'start', 'machine_category_id', 'date'])
-
-        # Adding unique constraint on 'InstituteCache', fields ['date', 'start', 'machine_category', 'end', 'institute']
-        db.create_unique(u'cache_institutecache', ['date', 'start', 'machine_category_id', 'end', 'institute_id'])
-
-        # Adding unique constraint on 'MachineCache', fields ['date', 'start', 'machine', 'end']
-        db.create_unique(u'cache_machinecache', ['date', 'start', 'machine_id', 'end'])
+        # Adding unique constraint on 'MachineCategory', fields ['name']
+        db.create_unique('machine_category', ['name'])
 
 
     def backwards(self, orm):
-        # Removing unique constraint on 'MachineCache', fields ['date', 'start', 'machine', 'end']
-        db.delete_unique(u'cache_machinecache', ['date', 'start', 'machine_id', 'end'])
+        # Removing unique constraint on 'MachineCategory', fields ['name']
+        db.delete_unique('machine_category', ['name'])
 
-        # Removing unique constraint on 'InstituteCache', fields ['date', 'start', 'machine_category', 'end', 'institute']
-        db.delete_unique(u'cache_institutecache', ['date', 'start', 'machine_category_id', 'end', 'institute_id'])
-
-        # Removing unique constraint on 'PersonCache', fields ['end', 'person', 'project', 'start', 'machine_category', 'date']
-        db.delete_unique(u'cache_personcache', ['end', 'person_id', 'project_id', 'start', 'machine_category_id', 'date'])
-
-        # Removing unique constraint on 'ProjectCache', fields ['date', 'start', 'machine_category', 'end', 'project']
-        db.delete_unique(u'cache_projectcache', ['date', 'start', 'machine_category_id', 'end', 'project_id'])
+        # Removing unique constraint on 'Machine', fields ['name']
+        db.delete_unique('machine', ['name'])
 
 
     models = {
-        u'cache.institutecache': {
-            'Meta': {'unique_together': "(('date', 'start', 'end', 'institute', 'machine_category'),)", 'object_name': 'InstituteCache'},
-            'cpu_hours': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '30', 'decimal_places': '2', 'blank': 'True'}),
-            'date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'end': ('django.db.models.fields.DateField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['institutes.Institute']"}),
-            'machine_category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['machines.MachineCategory']"}),
-            'no_jobs': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'start': ('django.db.models.fields.DateField', [], {})
-        },
-        u'cache.machinecache': {
-            'Meta': {'unique_together': "(('date', 'start', 'end', 'machine'),)", 'object_name': 'MachineCache'},
-            'cpu_hours': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '30', 'decimal_places': '2', 'blank': 'True'}),
-            'date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'end': ('django.db.models.fields.DateField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'machine': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['machines.Machine']"}),
-            'no_jobs': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'start': ('django.db.models.fields.DateField', [], {})
-        },
-        u'cache.personcache': {
-            'Meta': {'unique_together': "(('date', 'start', 'end', 'person', 'project', 'machine_category'),)", 'object_name': 'PersonCache'},
-            'cpu_hours': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '30', 'decimal_places': '2', 'blank': 'True'}),
-            'date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'end': ('django.db.models.fields.DateField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'machine_category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['machines.MachineCategory']"}),
-            'no_jobs': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Person']"}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.Project']"}),
-            'start': ('django.db.models.fields.DateField', [], {})
-        },
-        u'cache.projectcache': {
-            'Meta': {'unique_together': "(('date', 'start', 'end', 'project', 'machine_category'),)", 'object_name': 'ProjectCache'},
-            'cpu_hours': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '30', 'decimal_places': '2', 'blank': 'True'}),
-            'date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'end': ('django.db.models.fields.DateField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'machine_category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['machines.MachineCategory']"}),
-            'no_jobs': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.Project']"}),
-            'start': ('django.db.models.fields.DateField', [], {})
-        },
         u'institutes.institute': {
             'Meta': {'ordering': "['name']", 'object_name': 'Institute', 'db_table': "'institute'"},
             'delegates': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'delegate'", 'to': u"orm['people.Person']", 'through': u"orm['institutes.InstituteDelegate']", 'blank': 'True', 'symmetrical': 'False', 'null': 'True'}),
@@ -95,6 +39,19 @@ class Migration(SchemaMigration):
             'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['institutes.Institute']"}),
             'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Person']"}),
             'send_email': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
+        },
+        u'machines.account': {
+            'Meta': {'ordering': "['person']", 'object_name': 'Account', 'db_table': "'account'"},
+            'date_created': ('django.db.models.fields.DateField', [], {}),
+            'date_deleted': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'default_project': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.Project']", 'null': 'True', 'blank': 'True'}),
+            'disk_quota': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'login_enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'machine_category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['machines.MachineCategory']"}),
+            'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Person']"}),
+            'shell': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'username': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
         u'machines.machine': {
             'Meta': {'object_name': 'Machine', 'db_table': "'machine'"},
@@ -180,8 +137,8 @@ class Migration(SchemaMigration):
             'leaders': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'leaders'", 'symmetrical': 'False', 'to': u"orm['people.Person']"}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'pid': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
-            'start_date': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2013, 11, 20, 0, 0)'})
+            'start_date': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2013, 10, 18, 0, 0)'})
         }
     }
 
-    complete_apps = ['cache']
+    complete_apps = ['machines']
