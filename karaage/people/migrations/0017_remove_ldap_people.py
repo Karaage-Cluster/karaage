@@ -5,7 +5,6 @@ from south.v2 import DataMigration
 from django.db import models
 
 from karaage.datastores import get_test_datastore
-from django.contrib.auth.hashers import UNUSABLE_PASSWORD
 
 class Migration(DataMigration):
 

@@ -3,15 +3,16 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
-from django.contrib.auth.hashers import UNUSABLE_PASSWORD
+from django.contrib.auth.hashers import make_password
 
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
         # Adding field 'Machine.password'
+        unusable_password = make_password(None)
         db.add_column('machine', 'password',
-                      self.gf('django.db.models.fields.CharField')(default=UNUSABLE_PASSWORD, max_length=128),
+                      self.gf('django.db.models.fields.CharField')(default=unusable_password, max_length=128),
                       keep_default=False)
 
         # Adding field 'Machine.last_login'
