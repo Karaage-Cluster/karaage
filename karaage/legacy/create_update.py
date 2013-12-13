@@ -1,7 +1,6 @@
 from django.forms.models import ModelFormMetaclass, ModelForm
 from django.template import RequestContext, loader
 from django.http import Http404, HttpResponse, HttpResponseRedirect
-from django.core.xheaders import populate_xheaders
 from django.core.exceptions import ObjectDoesNotExist, ImproperlyConfigured
 from django.utils.translation import ugettext
 from django.contrib.auth.views import redirect_to_login
@@ -171,7 +170,6 @@ def update_object(request, model=None, object_id=None, slug=None,
     }, context_processors)
     apply_extra_context(extra_context, c)
     response = HttpResponse(t.render(c))
-    populate_xheaders(request, response, model, getattr(obj, obj._meta.pk.attname))
     return response
 
 def delete_object(request, model, post_delete_redirect, object_id=None,
@@ -211,5 +209,4 @@ def delete_object(request, model, post_delete_redirect, object_id=None,
         }, context_processors)
         apply_extra_context(extra_context, c)
         response = HttpResponse(t.render(c))
-        populate_xheaders(request, response, model, getattr(obj, obj._meta.pk.attname))
         return response
