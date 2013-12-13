@@ -1,3 +1,9 @@
+karaage (2.7.9-1) unstable; urgency=low
+
+  * Various bugs fixed.
+
+ -- Brian May <bam@debian.org>  Fri, 13 Dec 2013 12:14:52 +1100
+
 karaage (2.7.8-1) stable; urgency=low
 
   * Various bugs fixed.
