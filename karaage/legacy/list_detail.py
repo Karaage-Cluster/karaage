@@ -1,6 +1,5 @@
 from django.template import loader, RequestContext
 from django.http import Http404, HttpResponse
-from django.core.xheaders import populate_xheaders
 from django.core.paginator import Paginator, InvalidPage
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -148,5 +147,4 @@ def object_detail(request, queryset, object_id=None, slug=None,
         else:
             c[key] = value
     response = HttpResponse(t.render(c), mimetype=mimetype)
-    populate_xheaders(request, response, model, getattr(obj, obj._meta.pk.name))
     return response
