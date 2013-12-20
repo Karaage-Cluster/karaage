@@ -61,7 +61,7 @@ def log_object(user, object, flag, message):
 
 def new_random_token():
     import random
-    from django.utils.hashcompat import sha_constructor
+    from hashlib import sha1 as sha_constructor
     from django.conf import settings
     # Use the system (hardware-based) random number generator if it exists.
     if hasattr(random, 'SystemRandom'):
