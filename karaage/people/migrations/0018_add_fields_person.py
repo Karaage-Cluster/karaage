@@ -2,7 +2,7 @@
 import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+from django.db import models, connection
 
 
 class Migration(SchemaMigration):
@@ -16,6 +16,7 @@ class Migration(SchemaMigration):
         ('institutes', '0005_auto__del_field_institute_gid'),
         ('software', '0008_auto__del_field_software_gid'),
         ('common', '0001_initial'),
+        ('admin', '00001_initial_create'),
         ('applications', '0018_auto__add_unique_applicant_saml_id'),
     )
 
@@ -23,12 +24,17 @@ class Migration(SchemaMigration):
         db.add_column('django_admin_log', 'person',
                       self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person'], null=True),
                       keep_default=False)
-        db.add_column('django_comments', 'person',
-                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person'], null=True),
-                      keep_default=False)
-        db.add_column('django_comment_flags', 'person',
-                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person'], null=True),
-                      keep_default=False)
+
+        # If the django comments table exists then add the extra missing fields
+        cursor = connection.cursor()
+        if 'django_comments' in connection.introspection.get_table_list(cursor):
+            db.add_column('django_comments', 'person',
+                          self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person'], null=True),
+                          keep_default=False)
+        if 'django_comment_flags' in connection.introspection.get_table_list(cursor):
+            db.add_column('django_comment_flags', 'person',
+                          self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person'], null=True),
+                          keep_default=False)
 
         # Adding field 'Person.password'
         db.add_column('person', 'password',
@@ -76,8 +82,12 @@ class Migration(SchemaMigration):
 
     def backwards(self, orm):
         db.delete_column('django_admin_log', 'person_id')
-        db.delete_column('django_comments', 'person_id')
-        db.delete_column('django_comment_flags', 'person_id')
+
+        cursor = connection.cursor()
+        if 'django_comments' in connection.introspection.get_table_list(cursor):
+            db.delete_column('django_comments', 'person_id')
+        if 'django_comment_flags' in connection.introspection.get_table_list(cursor):
+            db.delete_column('django_comment_flags', 'person_id')
 
         # Deleting field 'Person.password'
         db.delete_column('person', 'password')

@@ -2,44 +2,43 @@
 import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
-
+from django.db import models, connection
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting field 'ProjectSurvey.project'
-        db.delete_column(u'projectreports_projectsurvey', 'project_id')
-
-        # Changing field 'ProjectSurvey.project_tmp'
-        db.alter_column(u'projectreports_projectsurvey', 'project_tmp_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.ProjectTmp']))
-
-    def backwards(self, orm):
-        # Adding field 'ProjectSurvey.project'
-        db.add_column(u'projectreports_projectsurvey', 'project',
-                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.Project']),
-                      keep_default=False)
-
-
-        # Changing field 'ProjectSurvey.project_tmp'
-        db.alter_column(u'projectreports_projectsurvey', 'project_tmp_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.ProjectTmp'], null=True))
+        cursor = connection.cursor()
+        if 'django_admin_log' not in connection.introspection.get_table_list(cursor):
+            db.create_table(u'django_admin_log', (
+                (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+                ('action_time', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
+                ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.Person'], null=True)),
+                ('content_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contenttypes.ContentType'], null=True, blank=True)),
+                ('object_id', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
+                ('object_repr', self.gf('django.db.models.fields.CharField')(max_length=200)),
+                ('action_flag', self.gf('django.db.models.fields.PositiveSmallIntegerField')()),
+                ('change_message', self.gf('django.db.models.fields.TextField')(blank=True)),
+            ))
+            db.send_create_signal(u'admin', ['LogEntry'])
 
     models = {
-        u'django_surveys.survey': {
-            'Meta': {'object_name': 'Survey'},
-            'date_submitted': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+        u'admin.logentry': {
+            'Meta': {'ordering': "(u'-action_time',)", 'object_name': 'LogEntry', 'db_table': "u'admin_log'"},
+            'action_flag': ('django.db.models.fields.PositiveSmallIntegerField', [], {}),
+            'action_time': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'change_message': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']", 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'submitter': ('django.db.models.fields.CharField', [], {'default': "'anonymous'", 'max_length': '100'}),
-            'survey_group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['django_surveys.SurveyGroup']"})
+            'object_id': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'object_repr': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Person']"})
         },
-        u'django_surveys.surveygroup': {
-            'Meta': {'object_name': 'SurveyGroup'},
-            'abstract': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'end_date': ('django.db.models.fields.DateField', [], {}),
+        u'contenttypes.contenttype': {
+            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
+            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50'}),
-            'start_date': ('django.db.models.fields.DateField', [], {})
+            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
         u'institutes.institute': {
             'Meta': {'ordering': "['name']", 'object_name': 'Institute', 'db_table': "'institute'"},
@@ -100,32 +99,7 @@ class Migration(SchemaMigration):
             'title': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'}),
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
-        },
-        u'projectreports.projectsurvey': {
-            'Meta': {'object_name': 'ProjectSurvey', '_ormbases': [u'django_surveys.Survey']},
-            'project_tmp': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.ProjectTmp']"}),
-            u'survey_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['django_surveys.Survey']", 'unique': 'True', 'primary_key': 'True'})
-        },
-        u'projects.projecttmp': {
-            'Meta': {'ordering': "['pid']", 'object_name': 'ProjectTmp', 'db_table': "'project'"},
-            'additional_req': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'approved_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'project_approver_tmp'", 'null': 'True', 'to': u"orm['people.Person']"}),
-            'date_approved': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'date_deleted': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'deleted_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'project_deletor_tmp'", 'null': 'True', 'to': u"orm['people.Person']"}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Group']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'institute': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'project_tmp'", 'to': u"orm['institutes.Institute']"}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_approved': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_usage': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'leaders': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'leaders_tmp'", 'symmetrical': 'False', 'to': u"orm['people.Person']"}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'pid': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'start_date': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2013, 9, 17, 0, 0)'})
         }
     }
 
-    complete_apps = ['projectreports']
+    complete_apps = ['admin']

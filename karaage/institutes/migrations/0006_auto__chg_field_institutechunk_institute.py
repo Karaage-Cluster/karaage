@@ -7,6 +7,10 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+            ('pbsmoab', '0001_initial'),
+    )
+
     def forwards(self, orm):
 
         # Changing field 'InstituteChunk.institute'
@@ -15,6 +19,8 @@ class Migration(SchemaMigration):
     def backwards(self, orm):
 
         # Changing field 'InstituteChunk.institute'
+
+        # TODO (RS) this currently errors KeyError: "The model 'institute' from the app 'people' is not available in this migration."
         db.alter_column('institute_quota', 'institute_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.Institute']))
 
     models = {

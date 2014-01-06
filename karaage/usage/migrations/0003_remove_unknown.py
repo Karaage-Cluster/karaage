@@ -2,7 +2,7 @@
 import datetime
 from south.db import db
 from south.v2 import DataMigration
-from django.db import models
+from django.db import models, connection
 
 class Migration(DataMigration):
 
@@ -15,6 +15,10 @@ class Migration(DataMigration):
     )
 
     def forwards(self, orm):
+        cursor = connection.cursor()
+        # Skip migration if there is no auth_user table
+        if 'auth_user' not in connection.introspection.get_table_list(cursor):
+            return
         try:
             unknown_user = orm['people.Person'].objects.get(username='unknown_user')
         except orm['people.Person'].DoesNotExist:
@@ -36,7 +40,7 @@ class Migration(DataMigration):
             unknown_user.user.delete()
         if unknown_project:
             unknown_project.delete()
-        
+
 
     def backwards(self, orm):
         raise RuntimeError("Cannot reverse this migration.")

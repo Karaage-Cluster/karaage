@@ -7,6 +7,10 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+            ('pbsmoab', '0001_initial'),
+    )
+
     def forwards(self, orm):
         db.rename_table('pbsmoab_projectchunk', 'project_quota')
         if not db.dry_run:

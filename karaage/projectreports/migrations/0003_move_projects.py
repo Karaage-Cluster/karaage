@@ -7,6 +7,10 @@ from django.db import models
 class Migration(DataMigration):
 
     # ProjectSurvery.project is mandatory and can not be None
+    depends_on = (
+            ('projects', '0014_move_projects'),
+    )
+
 
     def forwards(self, orm):
         for src in orm['projects.Project'].objects.iterator():

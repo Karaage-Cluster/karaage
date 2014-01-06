@@ -7,6 +7,14 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ('machines', '0016_auto__del_field_account_default_project'),
+        ('cache', '0009_auto__del_field_projectcache_project__chg_field_projectcache_project_t'),
+        ('applications', '0024_auto__del_field_projectapplication_project'),
+        ('usage', '0010_auto__del_field_cpujob_project'),
+        ('projectreports', '0004_auto__del_field_projectsurvey_project__chg_field_projectsurvey_project'),
+    )
+
     def forwards(self, orm):
         # Removing unique constraint on 'ProjectQuota', fields ['project_tmp', 'machine_category']
         db.delete_unique('project_quota', ['project_tmp_id', 'machine_category_id'])

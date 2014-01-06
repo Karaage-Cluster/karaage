@@ -7,10 +7,6 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
-    depends_on = (
-            ('projects', '0016_rename_project'),
-    )
-
     def forwards(self, orm):
         # Deleting field 'Account.default_project'
         db.delete_column('account', 'default_project_id')
