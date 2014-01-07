@@ -43,12 +43,22 @@
             {% formfield form.fax %}
             {% formfield form.address %}
             {% formfield form.country %}
-            {% formfield form.institute %}
             {% formfield form.comment %}
             {% formfield form.expires %}
             {% formfield form.is_admin %}
             {% formfield form.is_systemuser %}
         </fieldset>
+
+        {% if not person %}
+        <fieldset class="module aligned ()">
+            <h2>User Account Details</h2>
+            {% formfield form.needs_account %}
+            {% formfield form.project %}
+            {% formfield form.username %}
+            {% formfield form.password1 %}
+            {% formfield form.password2 %}
+        </fieldset>
+        {% endif %}
 
         {{ form.non_field_errors }}
     </div>
