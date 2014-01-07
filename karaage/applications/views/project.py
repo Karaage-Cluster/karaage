@@ -390,7 +390,7 @@ class StateStepProject(base.State):
         """ Django view method. """
         if 'ajax' in request.POST:
             resp = self.handle_ajax(request, application)
-            return HttpResponse(json.dumps(resp), mimetype="application/json")
+            return HttpResponse(json.dumps(resp), content_type="application/json")
 
 
         form_models = {
