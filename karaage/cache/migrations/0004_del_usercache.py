@@ -8,7 +8,8 @@ class Migration(DataMigration):
     """ Fix up possible incorrect defaults from previous migrate. """
 
     def forwards(self, orm):
-        orm.UserCache.objects.all().delete()
+        if not db.dry_run:
+            orm.UserCache.objects.all().delete()
 
     def backwards(self, orm):
         pass
