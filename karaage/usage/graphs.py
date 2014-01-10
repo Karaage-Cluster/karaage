@@ -64,17 +64,19 @@ def get_project_trend_graph_url(project,
     """
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
-    filename = os.path.join(
-            "projects",
-            "%s_%s_%s_%i" % (
-                project.pid, start_str, end_str, machine_category.id)
-    )
-    csv_filename = os.path.join(settings.GRAPH_ROOT, filename + '.csv')
-    png_filename = os.path.join(settings.GRAPH_ROOT, filename + '.png')
+    base_path = os.path.join(settings.GRAPH_ROOT, 'projects')
+    base_url = os.path.join(settings.GRAPH_URL, 'projects')
+    filename = "%s_%s_%s_%i" % (project.pid, start_str, end_str, machine_category.id)
+
+    if not os.path.exists(base_path):
+        os.makedirs(base_path)
+
+    csv_filename = os.path.join(base_path, filename + '.csv')
+    png_filename = os.path.join(base_path, filename + '.png')
 
     urls = {
-        'graph_url': os.path.join(settings.GRAPH_URL, filename + ".png"),
-        'data_url': os.path.join(settings.GRAPH_URL, filename + ".csv"),
+        'graph_url': os.path.join(base_url, filename + ".png"),
+        'data_url': os.path.join(base_url, filename + ".csv"),
     }
 
     if not settings.GRAPH_DEBUG or force_overwrite:
@@ -176,17 +178,19 @@ def get_institute_graph_url(start, end, machine_category,
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
 
-    filename = os.path.join(
-            "institutes",
-            "%s_%s_%i" % (
-                start_str, end_str, machine_category.id)
-    )
-    csv_filename = os.path.join(settings.GRAPH_ROOT, filename + '.csv')
-    png_filename = os.path.join(settings.GRAPH_ROOT, filename + '.png')
+    base_path = os.path.join(settings.GRAPH_ROOT, 'institutes')
+    base_url = os.path.join(settings.GRAPH_URL, 'institutes')
+    filename = "%s_%s_%i" % (start_str, end_str, machine_category.id)
+
+    if not os.path.exists(base_path):
+        os.makedirs(base_path)
+
+    csv_filename = os.path.join(base_path, filename + '.csv')
+    png_filename = os.path.join(base_path, filename + '.png')
 
     urls = {
-        'graph_url': os.path.join(settings.GRAPH_URL, filename + ".png"),
-        'data_url': os.path.join(settings.GRAPH_URL, filename + ".csv"),
+        'graph_url': os.path.join(base_url, filename + ".png"),
+        'data_url': os.path.join(base_url, filename + ".csv"),
     }
 
     if not settings.GRAPH_DEBUG or force_overwrite:
@@ -224,17 +228,19 @@ def get_machine_graph_url(start, end, machine_category,
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
 
-    filename = os.path.join(
-            "machines",
-            "%s_%s_%i" % (
-                start_str, end_str, machine_category.id)
-    )
-    csv_filename = os.path.join(settings.GRAPH_ROOT, filename + '.csv')
-    png_filename = os.path.join(settings.GRAPH_ROOT, filename + '.png')
+    base_path = os.path.join(settings.GRAPH_ROOT, 'machines')
+    base_url = os.path.join(settings.GRAPH_URL, 'machines')
+    filename = "%s_%s_%i" % (start_str, end_str, machine_category.id)
+
+    if not os.path.exists(base_path):
+        os.makedirs(base_path)
+
+    csv_filename = os.path.join(base_path, filename + '.csv')
+    png_filename = os.path.join(base_path, filename + '.png')
 
     urls = {
-        'graph_url': os.path.join(settings.GRAPH_URL, filename + ".png"),
-        'data_url': os.path.join(settings.GRAPH_URL, filename + ".csv"),
+        'graph_url': os.path.join(base_url, filename + ".png"),
+        'data_url': os.path.join(base_url, filename + ".csv"),
     }
 
     if not settings.GRAPH_DEBUG or force_overwrite:
@@ -271,17 +277,19 @@ def get_trend_graph_url(start, end, machine_category,
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
 
-    filename = os.path.join(
-            "trends",
-            "%s_%s_%i" % (
-                start_str, end_str, machine_category.id)
-    )
-    csv_filename = os.path.join(settings.GRAPH_ROOT, filename + '.csv')
-    png_filename = os.path.join(settings.GRAPH_ROOT, filename + '.png')
+    base_path = os.path.join(settings.GRAPH_ROOT, 'trends')
+    base_url = os.path.join(settings.GRAPH_URL, 'trends')
+    filename = "%s_%s_%i" % (start_str, end_str, machine_category.id)
+
+    if not os.path.exists(base_path):
+        os.makedirs(base_path)
+
+    csv_filename = os.path.join(base_path, filename + '.csv')
+    png_filename = os.path.join(base_path, filename + '.png')
 
     urls = {
-        'graph_url': os.path.join(settings.GRAPH_URL, filename + ".png"),
-        'data_url': os.path.join(settings.GRAPH_URL, filename + ".csv"),
+        'graph_url': os.path.join(base_url, filename + ".png"),
+        'data_url': os.path.join(base_url, filename + ".csv"),
     }
 
     if not settings.GRAPH_DEBUG or force_overwrite:
@@ -354,18 +362,21 @@ def get_institute_trend_graph_url(institute,
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
 
-    filename = os.path.join(
-            "i_trends",
-            "%s_%s_%s_%i" % (
-                institute.name.replace(' ', '').replace('/', '-').lower(),
-                start_str, end_str, machine_category.id)
-    )
-    csv_filename = os.path.join(settings.GRAPH_ROOT, filename + '.csv')
-    png_filename = os.path.join(settings.GRAPH_ROOT, filename + '.png')
+    base_path = os.path.join(settings.GRAPH_ROOT, 'i_trends')
+    base_url = os.path.join(settings.GRAPH_URL, 'i_trends')
+    filename = "%s_%s_%s_%i" % (
+        institute.name.replace(' ', '').replace('/', '-').lower(),
+        start_str, end_str, machine_category.id)
+
+    if not os.path.exists(base_path):
+        os.makedirs(base_path)
+
+    csv_filename = os.path.join(base_path, filename + '.csv')
+    png_filename = os.path.join(base_path, filename + '.png')
 
     urls = {
-        'graph_url': os.path.join(settings.GRAPH_URL, filename + ".png"),
-        'data_url': os.path.join(settings.GRAPH_URL, filename + ".csv"),
+        'graph_url': os.path.join(base_url, filename + ".png"),
+        'data_url': os.path.join(base_url, filename + ".csv"),
     }
 
     if not settings.GRAPH_DEBUG or force_overwrite:
