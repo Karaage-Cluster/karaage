@@ -8,6 +8,10 @@ class Migration(DataMigration):
 
     # ProjectApplication.project is optional and can be None
 
+    depends_on = (
+            ('projects', '0014_move_projects'),
+    )
+
     def forwards(self, orm):
         for src in orm['projects.Project'].objects.iterator():
             dst = orm['projects.ProjectTmp'].objects.get(pid=src.pid)
