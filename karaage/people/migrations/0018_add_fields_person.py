@@ -16,6 +16,7 @@ class Migration(SchemaMigration):
         ('institutes', '0005_auto__del_field_institute_gid'),
         ('software', '0008_auto__del_field_software_gid'),
         ('common', '0001_initial'),
+        ('admin', '00001_initial_create'),
         ('applications', '0018_auto__add_unique_applicant_saml_id'),
     )
 
