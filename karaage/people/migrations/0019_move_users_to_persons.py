@@ -2,12 +2,13 @@
 import datetime
 from south.db import db
 from south.v2 import DataMigration
-from django.db import models
+from django.db import models, connection
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
+        cursor = connection.cursor()
         for person in orm.person.objects.iterator():
             assert person.user.username
             person.username = person.user.username
@@ -27,15 +28,18 @@ class Migration(DataMigration):
         for obj in orm['admin.logentry'].objects.iterator():
             obj.person = obj.user.person_set.get()
             obj.save()
-        for obj in orm['comments.comment'].objects.iterator():
-            obj.person = obj.user.person_set.get()
-            obj.save()
-        for obj in orm['comments.commentflag'].objects.iterator():
-            obj.person = obj.user.person_set.get()
-            obj.save()
+        if 'django_comments' in connection.introspection.get_table_list(cursor):
+            for obj in orm['comments.comment'].objects.iterator():
+                obj.person = obj.user.person_set.get()
+                obj.save()
+        if 'django_comment_flags' in connection.introspection.get_table_list(cursor):
+            for obj in orm['comments.commentflag'].objects.iterator():
+                obj.person = obj.user.person_set.get()
+                obj.save()
 
     def backwards(self, orm):
         "Write your backwards methods here."
+        cursor = connection.cursor()
         for person in orm.person.objects.filter(user__isnull=True):
             assert person.username
             person.user, _ = orm['auth.user'].objects.get_or_create(
@@ -61,12 +65,14 @@ class Migration(DataMigration):
         for obj in orm['admin.logentry'].objects.iterator():
             obj.user = obj.person.user
             obj.save()
-        for obj in orm['comments.comment'].objects.iterator():
-            obj.user = obj.person.user
-            obj.save()
-        for obj in orm['comments.commentflag'].objects.iterator():
-            obj.user = obj.person.user
-            obj.save()
+        if 'django_comments' in connection.introspection.get_table_list(cursor):
+            for obj in orm['comments.comment'].objects.iterator():
+                obj.user = obj.person.user
+                obj.save()
+        if 'django_comment_flags' in connection.introspection.get_table_list(cursor):
+            for obj in orm['comments.commentflag'].objects.iterator():
+                obj.user = obj.person.user
+                obj.save()
 
 
     models = {

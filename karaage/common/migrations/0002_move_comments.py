@@ -2,44 +2,48 @@
 import datetime
 from south.db import db
 from south.v2 import DataMigration
-from django.db import models
+from django.db import models, connection
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        for comment in orm['comments.comment'].objects.iterator():
-            defaults = {
-                'submit_date': comment.submit_date,
-                'object_pk': comment.object_pk,
-                'content_type': comment.content_type,
-            }
-            new, _ = orm.comment.objects.get_or_create(pk=comment.pk, defaults=defaults)
-            new.object_pk = comment.object_pk
-            new.content_type = comment.content_type
-            new.comment = comment.comment
-            new.user = comment.user
-            new.submit_date = comment.submit_date
-            new.save()
+        cursor = connection.cursor()
+        if 'django_comments' in connection.introspection.get_table_list(cursor):
+            for comment in orm['comments.comment'].objects.iterator():
+                defaults = {
+                    'submit_date': comment.submit_date,
+                    'object_pk': comment.object_pk,
+                    'content_type': comment.content_type,
+                }
+                new, _ = orm.comment.objects.get_or_create(pk=comment.pk, defaults=defaults)
+                new.object_pk = comment.object_pk
+                new.content_type = comment.content_type
+                new.comment = comment.comment
+                new.user = comment.user
+                new.submit_date = comment.submit_date
+                new.save()
 
     def backwards(self, orm):
         "Write your backwards methods here."
-        for comment in orm.comment.objects.iterator():
-            defaults = {
-                'submit_date': comment.submit_date,
-                'object_pk': comment.object_pk,
-                'content_type': comment.content_type,
-            }
-            new, _ = orm['comments.comment'].objects.get_or_create(pk=comment.pk, defaults=defaults)
-            new.object_pk = comment.object_pk
-            new.content_type = comment.content_type
-            new.comment = comment.comment
-            new.user = comment.user
-            new.user_name = comment.user.username
-            new.user_email = comment.user.email
-            new.submit_date = comment.submit_date
-            new.site_id = 1
-            new.save()
+        cursor = connection.cursor()
+        if 'django_comments' in connection.introspection.get_table_list(cursor):
+            for comment in orm.comment.objects.iterator():
+                defaults = {
+                    'submit_date': comment.submit_date,
+                    'object_pk': comment.object_pk,
+                    'content_type': comment.content_type,
+                }
+                new, _ = orm['comments.comment'].objects.get_or_create(pk=comment.pk, defaults=defaults)
+                new.object_pk = comment.object_pk
+                new.content_type = comment.content_type
+                new.comment = comment.comment
+                new.user = comment.user
+                new.user_name = comment.user.username
+                new.user_email = comment.user.email
+                new.submit_date = comment.submit_date
+                new.site_id = 1
+                new.save()
 
     models = {
         u'comments.comment': {
