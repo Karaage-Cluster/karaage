@@ -2,7 +2,7 @@
 import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+from django.db import models, connection
 
 
 class Migration(SchemaMigration):
@@ -19,20 +19,33 @@ class Migration(SchemaMigration):
     )
 
     def forwards(self, orm):
+        cursor = connection.cursor()
+        django_comments_exists = ('django_comments' in
+                                  connection.introspection.get_table_list(cursor))
+        django_comment_flags_exists = ('django_comment_flags' in
+                                       connection.introspection.get_table_list(cursor))
+
         db.alter_column('django_admin_log', 'person_id',
                       self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person']))
-        db.alter_column('django_comments', 'person_id',
-                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person']))
-        db.alter_column('django_comment_flags', 'person_id',
-                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person']))
+
+        if django_comments_exists:
+            db.alter_column('django_comments', 'person_id',
+                            self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person']))
+        if django_comment_flags_exists:
+            db.alter_column('django_comment_flags', 'person_id',
+                            self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person']))
 
         db.delete_column('django_admin_log', 'user_id')
-        db.delete_column('django_comments', 'user_id')
-        db.delete_column('django_comment_flags', 'user_id')
+        if django_comments_exists:
+            db.delete_column('django_comments', 'user_id')
+        if django_comment_flags_exists:
+            db.delete_column('django_comment_flags', 'user_id')
 
         db.rename_column('django_admin_log', 'person_id', 'user_id')
-        db.rename_column('django_comments', 'person_id', 'user_id')
-        db.rename_column('django_comment_flags', 'person_id', 'user_id')
+        if django_comments_exists:
+            db.rename_column('django_comments', 'person_id', 'user_id')
+        if django_comment_flags_exists:
+            db.rename_column('django_comment_flags', 'person_id', 'user_id')
 
         # Deleting field 'Person.user'
         db.delete_column('person', 'user_id')
@@ -48,26 +61,38 @@ class Migration(SchemaMigration):
         db.alter_column('person', 'short_name', self.gf('django.db.models.fields.CharField')(max_length=30))
 
     def backwards(self, orm):
+        cursor = connection.cursor()
+        django_comments_exists = ('django_comments' in
+                                  connection.introspection.get_table_list(cursor))
+        django_comment_flags_exists = ('django_comment_flags' in
+                                       connection.introspection.get_table_list(cursor))
+
         db.rename_column('django_admin_log', 'user_id', 'person_id')
-        db.rename_column('django_comments', 'user_id', 'person_id')
-        db.rename_column('django_comment_flags', 'user_id', 'person_id')
+        if django_comments_exists:
+            db.rename_column('django_comments', 'user_id', 'person_id')
+        if django_comment_flags_exists:
+            db.rename_column('django_comment_flags', 'user_id', 'person_id')
 
         db.add_column('django_admin_log', 'user',
                       self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User']),
                       keep_default=False)
-        db.add_column('django_comments', 'user',
-                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User']),
-                      keep_default=False)
-        db.add_column('django_comment_flags', 'user',
-                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User']),
-                      keep_default=False)
+        if django_comments_exists:
+            db.add_column('django_comments', 'user',
+                          self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User']),
+                          keep_default=False)
+        if django_comment_flags_exists:
+            db.add_column('django_comment_flags', 'user',
+                          self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User']),
+                          keep_default=False)
 
         db.alter_column('django_admin_log', 'person_id',
                       self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person'], null=True))
-        db.alter_column('django_comments', 'person_id',
-                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person'], null=True))
-        db.alter_column('django_comment_flags', 'person_id',
-                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person'], null=True))
+        if django_comments_exists:
+            db.alter_column('django_comments', 'person_id',
+                            self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person'], null=True))
+        if django_comment_flags_exists:
+            db.alter_column('django_comment_flags', 'person_id',
+                            self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person'], null=True))
 
         # Adding field 'Person.user'
         db.add_column('person', 'user',
