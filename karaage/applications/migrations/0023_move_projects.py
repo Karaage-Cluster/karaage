@@ -6,7 +6,9 @@ from django.db import models
 
 class Migration(DataMigration):
 
-    # ProjectApplication.project is optional and can be None
+    depends_on = (
+            ('projects', '0014_move_projects'),
+    )
 
     depends_on = (
             ('projects', '0014_move_projects'),

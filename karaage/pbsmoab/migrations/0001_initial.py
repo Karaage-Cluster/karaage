@@ -9,8 +9,12 @@ class Migration(SchemaMigration):
             ('machines', '0001_initial'),
     )
 
+    depends_on = (
+            ('machines', '0001_initial'),
+    )
+
     def forwards(self, orm):
-        
+
         # Adding model 'InstituteChunk'
         db.create_table('institute_quota', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -36,7 +40,7 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        
+
         # Deleting model 'InstituteChunk'
         db.delete_table('institute_quota')
 

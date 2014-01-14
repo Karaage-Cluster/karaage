@@ -40,7 +40,7 @@ class Migration(DataMigration):
             unknown_user.user.delete()
         if unknown_project:
             unknown_project.delete()
-        
+
 
     def backwards(self, orm):
         raise RuntimeError("Cannot reverse this migration.")
