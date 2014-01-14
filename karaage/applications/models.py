@@ -36,7 +36,8 @@ from karaage.software.models import SoftwareLicenseAgreement
 
 class ApplicationManager(models.Manager):
     def get_for_applicant(self, person):
-        query = Application.objects.filter(applicant=person).exclude(
+        ct = ContentType.objects.get(model='person')
+        query = Application.objects.filter(content_type=ct, object_id=person.pk).exclude(
                 state__in=[Application.COMPLETED, Application.ARCHIVED, Application.DECLINED])
         return query
 
