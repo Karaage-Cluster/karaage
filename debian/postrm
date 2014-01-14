@@ -1,3 +1,5 @@
+#!/bin/sh -e
+
 if [ "$1" = "purge" ]
 then
     for i in /var/cache/karaage/graphs/projects \
