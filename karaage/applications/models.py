@@ -174,7 +174,7 @@ class ProjectApplication(Application):
 
     # existing project request
     project = models.ForeignKey(Project, null=True, blank=True)
-    make_leader = models.BooleanField(help_text="Make this person a project leader")
+    make_leader = models.BooleanField(help_text="Make this person a project leader", default=False)
 
     def info(self):
         if self.project is not None:
@@ -300,7 +300,7 @@ class Applicant(models.Model):
     """ A person who has completed an application however is not yet officially
     registered on the system yet. """
     email = models.EmailField(unique=True)
-    email_verified = models.BooleanField(editable=False)
+    email_verified = models.BooleanField(editable=False, default=False)
     username = models.CharField(max_length=16, unique=True, help_text="Required. 16 characters or fewer. Letters, numbers and underscores only", null=True, blank=True)
     title = models.CharField(choices=TITLES, max_length=10, null=True, blank=True)
     short_name = models.CharField(max_length=30)
