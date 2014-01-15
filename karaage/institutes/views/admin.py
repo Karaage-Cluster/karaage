@@ -29,7 +29,7 @@ from karaage.common.filterspecs import Filter, FilterBar
 
 from karaage.common.decorators import admin_required
 import karaage.common as util
-from karaage.usage.graphs import get_institute_trend_graph_url
+from karaage.cache.graphs import get_institute_trend_graph_url
 from karaage.institutes.models import Institute, InstituteQuota, InstituteDelegate
 from karaage.institutes.forms import InstituteForm, InstituteQuotaForm, DelegateForm
 from karaage.machines.models import MachineCategory

@@ -31,27 +31,8 @@
     {% for mc in mc_list %}
     <div class="module">
         <h2><a href='{% url 'kg_mc_usage' mc.obj.pk %}{% url_with_param start=start end=end %}'>{{ mc.obj }}</a></h2>
-        <img class="float-right" src="{{ mc.graph.graph_url }}"/>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>CPU Time</th>
-                    <th>No. Jobs</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for m in mc.machines %}
-                <tr class="{% cycle row1,row2 as rowcolours %}">
-                    <td>{{ m.obj.name }}</td>
-                    <td class="right">{{ m.usage|timeformat }}</td>
-                    <td class="right">{{ m.jobs|intcomma }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <img src="{{ mc.graph.graph_url }}"/>
         <p><a href="{{ mc.graph.data_url }}">data</a></p>
-        <br clear="all"/>
     </div>
     {% endfor %}
 </div>

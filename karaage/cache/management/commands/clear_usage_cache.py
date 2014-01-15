@@ -26,18 +26,33 @@ class Command(BaseCommand):
     @tldap.transaction.commit_on_success
     def handle(self, **options):
         verbose = int(options.get('verbosity'))
-        from karaage.cache.models import ProjectCache, InstituteCache, PersonCache, MachineCache
+        import karaage.cache.models as models
+        import datetime
+        if verbose > 1:
+            print "Clearing expired tasks"
+        today = datetime.date.today()
+        models.TaskMachineCategoryCache.objects.filter(date__lt=today).delete()
+        models.TaskCacheForMachineCategory.objects.filter(date__lt=today).delete()
+        models.TaskCacheForProject.objects.filter(date__lt=today).delete()
+#        models.TaskCacheForInstitute.objects.filter(date__lt=today).delete()
+        if verbose > 1:
+            print "Clearing finished tasks"
+        models.TaskMachineCategoryCache.objects.filter(ready=True).delete()
+        models.TaskCacheForMachineCategory.objects.filter(ready=True).delete()
+        models.TaskCacheForProject.objects.filter(ready=True).delete()
+#        models.TaskCacheForInstitute.objects.filter(ready=True).delete()
         if verbose > 1:
             print "Clearing project cache"
-        ProjectCache.objects.all().delete()
+        models.ProjectCache.objects.all().delete()
         if verbose > 1:
             print "Clearing institute cache"
-        InstituteCache.objects.all().delete()
+        models.InstituteCache.objects.all().delete()
         if verbose > 1:
             print "Clearing user cache"
-        PersonCache.objects.all().delete()
+        models.PersonCache.objects.all().delete()
         if verbose > 1:
             print "Clearing machine cache"
-        MachineCache.objects.all().delete()
-        
-        
+        models.MachineCache.objects.all().delete()
+        if verbose > 1:
+            print "Clearing machine category cache"
+        models.MachineCategoryCache.objects.all().delete()

@@ -107,10 +107,6 @@ class Institute(models.Model):
     def get_absolute_url(self):
         return ('kg_institute_detail', [self.id])
 
-    def get_usage(self, start, end, machine_category):
-        from karaage.cache.usage import get_institute_usage
-        return get_institute_usage(self, start, end, machine_category)
-
     def can_view(self, user):
         if not user.is_authenticated():
             return False
