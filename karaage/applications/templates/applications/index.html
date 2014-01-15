@@ -1,10 +1,11 @@
 {% extends "forms-side.html" %}
 {% load common forms %}
+{% load url from future %}
 {% block title %}Home{% endblock %}
 
+{% block content_title %}Apply for an Account{% endblock %}
 
-
-{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;Home</div>{% endblock %}
+{% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› Application</div>{% endblock %}
     
 {% block content %}<div id="content-main">
 <p class="errornote">This is an example template. You should create your own in /etc/karaage/templates/applications/index.html</p>
@@ -12,15 +13,16 @@
 
 
 {% if user.is_authenticated %}
-<p>You already have an account! Why do you want another one?</p>
+<p>Hi {{ user.first_name }}, please go to <a href="{% url 'kg_user_profile' %}">your account</a> to start new applications.</p>
 {% else %}
 <p>Please choose your institute below to kick off the application process</p>
 <form action="." method="post">{% csrf_token %}
 {% form_as_div form %}
 <input class="default" type="submit" value="Start Application"/>
 </form>
+{% endif %}
+
 <h3>Contact</h3>
 <p>Please contact {{ accounts_email }} for further information.</p>
-{% endif %}
 	
 </div>{% endblock %}

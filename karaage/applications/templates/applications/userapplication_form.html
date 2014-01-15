@@ -2,6 +2,7 @@
 {% load forms %}
 {% block title %}Applications{% endblock %}
 
+{% block content_title %}New User Application{% endblock %}
 
 
 {% block breadcrumbs %}<div class="breadcrumbs"><a href='{{ base_url|default:"/" }}'>Home</a>&nbsp;› User Application
@@ -44,6 +45,7 @@
 {% formfield applicant_form.title %}
 {% inlineformfield applicant_form.first_name applicant_form.last_name %}
 {% inlineformfield applicant_form.institute applicant_form.department %}
+{% inlineformfield applicant_form.position applicant_form.supervisor %}
 {% inlineformfield applicant_form.telephone applicant_form.mobile %}
 </fieldset>
 {% endif %}
