@@ -8,7 +8,7 @@ Standards-Version: 3.9.4
 Package: karaage3
 Architecture: all
 Homepage: https://github.com/Karaage-Cluster/karaage
-Depends: ${misc:Depends}, ${python:Depends}, python, debconf, python-matplotlib (>= 0.98), python-django (>= 1.4), python-alogger (>= 2.0), django-tldap (>= 0.2.9), django-surveys (>= 1.0.1), python-django-xmlrpc (>= 0.1), python-django-south (>= 0.7), django-simple-captcha, python-ajax-select (>= 1.3.3)
+Depends: ${misc:Depends}, ${python:Depends}, python, debconf, python-matplotlib (>= 0.98), python-django (>= 1.4), python-alogger (>= 2.0), django-tldap (>= 0.2.9), django-surveys (>= 1.0.1), python-django-xmlrpc (>= 0.1), python-django-south (>= 0.7), django-simple-captcha, python-ajax-select (>= 1.3.3), django-celery
 Breaks: karaage (<< 3.0.0), karaage-admin (<< 3.0.0), karaage-registration (<< 3.0.0), karaage-common (<< 1.1.3-4)
 Replaces: karaage (<< 3.0.0)
 Description: Collection of Django apps to manage a cluster

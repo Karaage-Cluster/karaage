@@ -52,10 +52,10 @@
             </tr>
         </thead>
         <tbody>
-            {% for u in usage_list|dictsortreversed:"cpu_hours" %}
+            {% for u in usage_list|dictsortreversed:"cpu_time" %}
             <tr class="{% cycle row1,row2 %}">
                 <td>{{ u.project.pid }}</td>
-                <td>{{ u.cpu_hours|timeformat }}</td>
+                <td>{{ u.cpu_time|timeformat }}</td>
                 <td>{{ u.no_jobs }}</td>
             </tr>
             {% endfor %}

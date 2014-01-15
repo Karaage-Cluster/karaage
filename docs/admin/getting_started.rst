@@ -34,6 +34,8 @@ Installation
 
 .. todo::
 
+   auto start celeryd
+
    CENTOS
 
    Add the VPAC CentOS repo

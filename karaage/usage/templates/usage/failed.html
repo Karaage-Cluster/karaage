@@ -1,0 +1,34 @@
+{% extends "main.html" %}
+{% load humanize %}
+{% load filters %}
+
+{% block title %}Processing{% endblock %}
+
+
+{% block extrahead %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jcookie.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css" />
+{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    Usage
+</div>
+{% endblock %}
+
+
+{% block object-tools %}
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <h1>Failed</h1>
+    <p>The background task failed. Please reload to retry, or contact support if problem persists.</p>
+</div>
+
+{% endblock %}
+

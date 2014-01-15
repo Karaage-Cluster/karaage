@@ -24,7 +24,7 @@
     <h2>Usage {{ start|date }} - {{ end|date }}</h2>
     <p>{% date_filter start end %}</p>
     <h1><a href="{% url 'kg_usage_institute' machine_category.pk institute.pk %}{% url_with_param start=start end=end %}">{{ institute }}</a></h1>
-    {% if account_list %}
+    {% if person_list %}
     <div class="module">
         <h2>All users</h2>
         <table>
@@ -39,7 +39,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for u in account_list|dictsortreversed:"usage" %}
+                {% for u in person_list|dictsortreversed:"usage" %}
                 <tr class="{% cycle row1,row2 %}">
                     <td>{{ forloop.counter }}</td>
                     <td><a href="{{ u.person.get_absolute_url }}">{{ u.person }}</a></td>
@@ -55,9 +55,9 @@
                     <td>Total</td>
                     <td></td>
                     <td></td>
-                    <td class="right">{{ account_total|timeformat }}</td>
-                    <td class="right">{{ account_total_jobs|intcomma }}</td>
-                    <td class="right">{{ account_percent|floatformat:"2" }}%</td>
+                    <td class="right">{{ person_total|timeformat }}</td>
+                    <td class="right">{{ person_total_jobs|intcomma }}</td>
+                    <td class="right">{{ person_percent|floatformat:"2" }}%</td>
                 </tr>
             </tfoot>
         </table>
