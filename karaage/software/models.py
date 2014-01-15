@@ -43,8 +43,8 @@ class SoftwarePackage(models.Model):
     gid = models.IntegerField(blank=True, null=True, editable=False)
     homepage = models.URLField(blank=True, null=True)
     tutorial_url = models.URLField(blank=True, null=True)
-    academic_only = models.BooleanField()
-    restricted = models.BooleanField(help_text="Will require admin approval")
+    academic_only = models.BooleanField(default=False)
+    restricted = models.BooleanField(help_text="Will require admin approval", default=False)
 
     class Meta:
         ordering = ['name']
