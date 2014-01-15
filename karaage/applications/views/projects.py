@@ -81,8 +81,6 @@ def do_projectapplication(request, token=None, application_form=ProjectApplicati
             if saml:
                 applicant = add_saml_data(applicant, request)
                 applicant.email_verified = True
-            else:
-                applicant.email_verified = False
             applicant.save()
             application = form.save(commit=False)
             application.applicant = applicant
