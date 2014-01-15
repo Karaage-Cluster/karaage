@@ -44,8 +44,8 @@ class Software(models.Model):
     group = models.ForeignKey(Group, blank=True, null=True)
     homepage = models.URLField(blank=True, null=True)
     tutorial_url = models.URLField(blank=True, null=True)
-    academic_only = models.BooleanField()
-    restricted = models.BooleanField(help_text="Will require admin approval")
+    academic_only = models.BooleanField(default=False)
+    restricted = models.BooleanField(help_text="Will require admin approval", default=False)
 
     def __init__(self, *args, **kwargs):
         super(Software, self).__init__(*args, **kwargs)
