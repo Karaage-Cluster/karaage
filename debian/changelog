@@ -1,3 +1,11 @@
+karaage (2.7.10-1) unstable; urgency=low
+
+  * Use correct hash function.
+  * Support [] for job array jobid.
+  * Ensure BooleanField have sensible default.
+
+ -- Brian May <bam@debian.org>  Wed, 15 Jan 2014 11:53:03 +1100
+
 karaage (2.7.9-1) unstable; urgency=low
 
   * Various bugs fixed.
