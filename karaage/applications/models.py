@@ -116,8 +116,8 @@ class Application(models.Model):
 class UserApplication(Application):
     """ Associated with an Applicant or a Person"""
     project = models.ForeignKey(Project, null=True, blank=True, limit_choices_to={'is_active': True})
-    needs_account = models.BooleanField(u"Do you need a personal cluster account?", help_text=u"Required if you will be working on the project yourself.")
-    make_leader = models.BooleanField(help_text="Make this person a project leader")
+    needs_account = models.BooleanField(u"Do you need a personal cluster account?", help_text=u"Required if you will be working on the project yourself.", default=True)
+    make_leader = models.BooleanField(help_text="Make this person a project leader", default=False)
 
     def approve(self):
         person = super(UserApplication, self).approve()
@@ -138,7 +138,7 @@ class ProjectApplication(Application):
     institute = models.ForeignKey(Institute, limit_choices_to={'is_active': True})
     description = models.TextField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
-    needs_account = models.BooleanField(u"Do you need a personal cluster account?", help_text=u"Required if you will be working on the project yourself.")
+    needs_account = models.BooleanField(u"Do you need a personal cluster account?", help_text=u"Required if you will be working on the project yourself.", default=True)
     machine_categories = models.ManyToManyField(MachineCategory, null=True, blank=True)
     project = models.ForeignKey(Project, null=True, blank=True)
 
@@ -169,7 +169,7 @@ class ProjectApplication(Application):
 
 class Applicant(models.Model):
     email = models.EmailField(unique=True)
-    email_verified = models.BooleanField(editable=False)
+    email_verified = models.BooleanField(editable=False, default=False)
     username = models.CharField(max_length=16, unique=True, help_text="Required. 16 characters or fewer. Letters, numbers and underscores only", null=True, blank=True)
     password = models.CharField(max_length=128, null=True, blank=True, editable=False)
     title = models.CharField(choices=TITLES, max_length=10, null=True, blank=True)
