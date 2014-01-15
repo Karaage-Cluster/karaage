@@ -2,11 +2,7 @@
 
 if [ "$1" = "purge" ]
 then
-    for i in /var/cache/karaage/graphs/projects \
-             /var/cache/karaage/graphs/institutes \
-             /var/cache/karaage/graphs/i_trends \
-             /var/cache/karaage/graphs/trends \
-             /var/cache/karaage/graphs/machines \
+    for i in /var/cache/karaage/graphs \
              /var/cache/karaage/matplotlib
     do
         if dpkg-statoverride --list $i >/dev/null 2>&1

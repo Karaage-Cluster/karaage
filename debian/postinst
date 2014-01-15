@@ -25,7 +25,15 @@ if [ "$1" = "configure" ]; then
              /var/cache/karaage/graphs/institutes \
              /var/cache/karaage/graphs/i_trends \
              /var/cache/karaage/graphs/trends \
-             /var/cache/karaage/graphs/machines \
+             /var/cache/karaage/graphs/machines
+    do
+        if dpkg-statoverride --list $i >/dev/null 2>&1
+        then
+            dpkg-statoverride --remove $i
+        fi
+    done
+
+    for i in /var/cache/karaage/graphs \
              /var/cache/karaage/matplotlib
     do
         # only do something when no setting exists
