@@ -310,10 +310,6 @@ class Person(AbstractBaseUser):
         except:
             return None
 
-    def get_usage(self, project, start, end, machine_category):
-        from karaage.cache.usage import get_user_usage
-        return get_user_usage(self, project, start, end, machine_category)
-    
     def is_leader(self):
         if self.leaders.count() > 0:
             return True

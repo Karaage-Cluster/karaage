@@ -24,6 +24,7 @@ from karaage.projects.models import Project
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.machines.models import MachineCategory
+import karaage.cache.usage as cache
 import django.db.transaction
 import tldap.transaction
 
@@ -36,7 +37,7 @@ def pop_project_cache(period):
 
     for p in Project.active.all():
         for machine_category in MachineCategory.objects.all():
-            p.get_usage(start, end, machine_category)
+            cache.get_project_usage(p, start, end, machine_category)
 
 
 def pop_institute_cache(period):
@@ -45,7 +46,7 @@ def pop_institute_cache(period):
     
     for i in Institute.active.all():
         for machine_category in MachineCategory.objects.all():
-            i.get_usage(start, end, machine_category)
+            cache.get_institute_usage(i, start, end, machine_category)
 
 
 def pop_user_cache(period):
@@ -55,7 +56,7 @@ def pop_user_cache(period):
     for u in Person.active.all():
         for p in u.projects.all():
             for machine_category in MachineCategory.objects.all():
-                u.get_usage(p, start, end, machine_category)
+                cache.get_person_usage(u, p, start, end, machine_category)
 
 def gen_last_usage_project():
     for p in Project.objects.all():

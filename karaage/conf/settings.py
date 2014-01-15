@@ -55,6 +55,7 @@ INSTALLED_APPS = (
     'tldap.methods',
     'django_pbs.servers',
     'django_pbs.jobs',
+    'djcelery',
 )
 
 TEMPLATE_DIRS = (
