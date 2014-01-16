@@ -65,22 +65,8 @@ LOCKED_SHELL = '/usr/local/sbin/insecure'
 # SHIB_SUPPORTED = False
 
 ###
-### Placard Settings
-###
-
-
-LDAP_URL = 'ldap://ldap.example.org'
-LDAP_BASE = 'dc=example, dc=org'
-LDAP_USER_BASE='ou=People, %s' % LDAP_BASE
-LDAP_GROUP_BASE='ou=Groups, %s' % LDAP_BASE
-LDAP_USE_TLS = False
-LDAP_ADMIN_USER = 'cn=admin,dc=example,dc=org'
-LDAP_ADMIN_PASSWORD = 'secret'
-
-###
 ### Django PBS settings
 ###
-
 
 LOCAL_PBS_SERVERS = [
 #    'cluster1.example.com',
