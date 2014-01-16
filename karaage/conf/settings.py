@@ -1,6 +1,4 @@
 # Package defined Karaage Settings
-LDAP_SCHEMA_FILE = "/etc/karaage/ldap_schemas.py"
-
 AUTH_USER_MODEL = 'people.Person'
 
 AJAX_LOOKUP_CHANNELS = {
@@ -105,19 +103,6 @@ AUTHENTICATION_BACKENDS = (
 # DATA STORES
 
 DATASTORES = {
-    'ldap' : [
-        {
-            'DESCRIPTION': 'Default LDAP datastore',
-            'ENGINE': 'karaage.datastores.ldap.AccountDataStore',
-            'LDAP': 'default',
-            'ACCOUNT': 'karaage.datastores.ldap_schemas.openldap_account',
-            'GROUP': 'karaage.datastores.ldap_schemas.openldap_group',
-            'PRIMARY_GROUP': "institute",
-            'DEFAULT_PRIMARY_GROUP': "dummy",
-            'HOME_DIRECTORY': "/home/%(uid)s",
-            'LOCKED_SHELL': "/usr/local/sbin/locked",
-        },
-    ],
     'dummy' : [
     ],
 }
