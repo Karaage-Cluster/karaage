@@ -1,29 +1,24 @@
 .. Karaage documentation master file, created by
-   sphinx-quickstart on Mon May  3 10:20:43 2010.
+   sphinx-quickstart on Thu Jan 16 14:28:57 2014.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Karaage's documentation!
-===================================
+Karaage admin documentation
+===========================
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
-Objects
--------
-.. toctree::
-   :maxdepth: 1
-
-   ref/people
-   ref/projects
-   ref/machines
+   introduction
+   getting_started
+   datastores
+   tasks
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
 
