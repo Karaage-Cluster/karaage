@@ -176,17 +176,8 @@ class Person(AbstractBaseUser):
         from karaage.datastores import delete_user
     delete.alters_data = True
 
-    def _set_last_name(self, value):
-        warnings.warn('Person.last_name obsolete (set)', DeprecationWarning)
-        first_name = self.first_name
-        if self.first_name:
-            self.full_name = "%s %s" % (first_name, value)
-        else:
-            self.full_name = "first_name %s" % (value)
-    _set_last_name.alters_data = True
-
-    def _get_last_name(self):
-        warnings.warn('Person.last_name obsolete (get)', DeprecationWarning)
+    @property
+    def last_name(self):
         if not self.full_name:
             return None
         elif self.full_name.find(" ") != -1:
@@ -194,20 +185,9 @@ class Person(AbstractBaseUser):
             return last_name.strip()
         else:
             return self.full_name
-    last_name = property(_get_last_name, _set_last_name)
 
-    def _set_first_name(self, value):
-        warnings.warn('Person.first_name obsolete (set)', DeprecationWarning)
-        self.short_name = value
-        if self.last_name:
-            self.full_name = "%s %s" % (value, self.last_name)
-        else:
-            self.full_name = value
-        self.last_name = self.last_name
-    _set_first_name.alters_data = True
-
-    def _get_first_name(self):
-        warnings.warn('Person.first_name obsolete (get)', DeprecationWarning)
+    @property
+    def first_name(self):
         if not self.full_name:
             return None
         elif self.full_name.find(" ") != -1:
@@ -215,7 +195,6 @@ class Person(AbstractBaseUser):
             return first_name.strip()
         else:
             return self.full_name
-    first_name = property(_get_first_name, _set_first_name)
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
