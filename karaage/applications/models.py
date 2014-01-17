@@ -336,47 +336,6 @@ class Applicant(models.Model):
         """ Get the abbreviated name of the person. """
         return self.short_name
 
-    def _set_last_name(self, value):
-        warnings.warn('Applicant.last_name obsolete (set)', DeprecationWarning)
-        first_name = self.first_name
-        if self.first_name:
-            self.full_name = "%s %s" % (first_name, value)
-        else:
-            self.full_name = "first_name %s" % (value)
-    _set_last_name.alters_data = True
-
-    def _get_last_name(self):
-        warnings.warn('Applicant.last_name obsolete (get)', DeprecationWarning)
-        if not self.full_name:
-            return None
-        elif self.full_name.find(" ") != -1:
-            _, _, last_name = self.full_name.rpartition(" ")
-            return last_name.strip()
-        else:
-            return None
-    last_name = property(_get_last_name, _set_last_name)
-
-    def _set_first_name(self, value):
-        warnings.warn('Applicant.first_name obsolete (set)', DeprecationWarning)
-        self.short_name = value
-        if self.last_name:
-            self.full_name = "%s %s" % (value, self.last_name)
-        else:
-            self.full_name = value
-        self.last_name = self.last_name
-    _set_first_name.alters_data = True
-
-    def _get_first_name(self):
-        warnings.warn('Applicant.first_name obsolete (get)', DeprecationWarning)
-        if not self.full_name:
-            return None
-        elif self.full_name.find(" ") != -1:
-            first_name, _, _ = self.full_name.rpartition(" ")
-            return first_name.strip()
-        else:
-            return self.full_name
-    first_name = property(_get_first_name, _set_first_name)
-
     def check(self):
         errors = []
 
