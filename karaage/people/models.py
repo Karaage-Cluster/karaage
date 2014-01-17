@@ -193,7 +193,7 @@ class Person(AbstractBaseUser):
             _, _, last_name = self.full_name.rpartition(" ")
             return last_name.strip()
         else:
-            return None
+            return self.full_name
     last_name = property(_get_last_name, _set_last_name)
 
     def _set_first_name(self, value):
