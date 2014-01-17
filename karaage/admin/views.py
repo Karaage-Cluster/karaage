@@ -44,7 +44,7 @@ def admin_index(request):
 def search(request):
 
     if 'sitesearch' in request.GET and request.GET['sitesearch'].strip() != "":
-        user_list = Person.objects.all()
+        people_list = Person.objects.all()
         group_list = Group.objects.all()
         project_list = Project.objects.all()
 
@@ -58,7 +58,7 @@ def search(request):
             q = Q(username__icontains=term) | Q(short_name__icontains=term) | Q(full_name__icontains=term) | Q(email__icontains=term)
             query = query & q
 
-        user_list = user_list.filter(query).distinct()
+        people_list = people_list.filter(query).distinct()
 
         # groups
         query = Q()
@@ -78,7 +78,7 @@ def search(request):
 
         empty = False
 
-        if not (user_list or group_list or project_list):
+        if not (people_list or group_list or project_list):
             empty = True
         
         return render_to_response('site_search.html', locals(), context_instance=RequestContext(request))
