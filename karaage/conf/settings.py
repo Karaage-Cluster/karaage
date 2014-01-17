@@ -104,8 +104,6 @@ AUTHENTICATION_BACKENDS = (
     'karaage.backends.LDAPBackend',
 )
 
-ATOMIC_REQUESTS = True
-
 # DATA STORES
 
 DATASTORES = {
