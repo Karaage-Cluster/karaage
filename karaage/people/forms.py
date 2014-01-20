@@ -106,9 +106,9 @@ class AddPersonForm(AdminPersonForm):
         person.is_admin = data['is_admin']
         person.is_active = True
         person.approved_by = get_current_person()
+        person.set_password(data['password2'])
         super(AddPersonForm, self).save()
 
-        person.set_password(data['password2'])
         if data['needs_account'] and data['project']:
             add_user_to_project(person, data['project'])
 
@@ -133,6 +133,7 @@ class AdminPasswordChangeForm(forms.Form):
     def save(self, person):
         data = self.cleaned_data
         person.set_password(data['new1'])
+        person.save()
 
 
 class PasswordChangeForm(AdminPasswordChangeForm):
@@ -166,6 +167,8 @@ class SetPasswordForm(BaseSetPasswordForm):
     def save(self, commit=True):
         person = self.user
         person.set_password(self.cleaned_data['new_password1'])
+        if commit:
+                person.save()
         return self.user
 
 

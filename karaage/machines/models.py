@@ -138,6 +138,7 @@ class Account(models.Model):
         self._machine_category = self.machine_category
         self._date_deleted = self.date_deleted
         self._login_enabled = self.login_enabled
+        self._password = None
 
     class Meta:
         ordering = ['person', ]
@@ -258,6 +259,15 @@ class Account(models.Model):
             from karaage.datastores import save_account
             save_account(self)
 
+            if self._password is not None:
+                from karaage.datastores import set_account_password
+                set_account_password(self, password)
+                log(None, self.machine_category, 2,
+                    'Changed Password of %s' % self)
+                log(None, self.person, 2,
+                    'Changed Password of %s' % self)
+                self._password = None
+
         # log message
         log(None, self.machine_category, 2,
             'Saved account %s' % self)
@@ -303,12 +313,7 @@ class Account(models.Model):
     def set_password(self, password):
         if self.date_deleted is not None:
             raise RuntimeError("Account is deactivated")
-        from karaage.datastores import set_account_password
-        set_account_password(self, password)
-        log(None, self.machine_category, 2,
-            'Changed Password of %s' % self)
-        log(None, self.person, 2,
-            'Changed Password of %s' % self)
+        self._password = password
     set_password.alters_data = True
 
     def get_disk_quota(self):

@@ -88,6 +88,7 @@ class Person(AbstractBaseUser):
         else:
             self._institute = self.institute
         self._username = self.username
+        self._password = None
 
     class Meta:
         verbose_name_plural = 'people'
@@ -157,6 +158,15 @@ class Person(AbstractBaseUser):
                 from karaage.datastores import add_account_to_institute
                 for account in self.account_set.filter(date_deleted__isnull=True):
                     add_account_to_institute(account, new_institute)
+
+        if self._password is not None:
+            from karaage.datastores import set_person_password
+            set_person_password(self, self._password)
+            for ua in self.account_set.filter(date_deleted__isnull=True):
+                ua.set_password(self._password)
+                ua.save()
+            log(None, self, 2, 'Changed Password')
+            self._password = None
 
         # log message
         log(None, self, 2, 'Saved person')
@@ -331,12 +341,7 @@ class Person(AbstractBaseUser):
         super(Person, self).set_password(password)
         if self.legacy_ldap_password is not None:
             self.legacy_ldap_password = None
-        super(Person, self).save()
-        from karaage.datastores import set_person_password
-        set_person_password(self, password)
-        for ua in self.account_set.filter(date_deleted__isnull=True):
-            ua.set_password(password)
-        log(None, self, 2, 'Changed Password')
+        self._password = password
     set_password.alters_data = True
 
     def lock(self):

@@ -338,6 +338,8 @@ class PersonSetPassword(forms.Form):
 
     def save(self, commit=True):
         self.person.set_password(self.cleaned_data['new_password1'])
+        if commit:
+            self.person.save()
         return self.person
 
 
@@ -369,7 +371,8 @@ class PersonVerifyPassword(forms.Form):
     def save(self, commit=True):
         password = self.cleaned_data['password']
         self.person.set_password(password)
-        self.person.save()
+        if commit:
+            self.person.save()
         return self.person
 
 class ApplicantReplace(forms.Form):
