@@ -19,8 +19,6 @@ urlpatterns = patterns('',
     url(r'^emails/', include('karaage.emails.urls')),
     url(r'^applications/', include('karaage.applications.urls.admin')),
 
-    url(r'^pbs/', include('django_pbs.servers.urls')),
-
     url(r'^lookup/', include(ajax_select.urls)),
 
     url(r'^logs/$', 'karaage.admin.views.log_list', name='kg_log_list'),

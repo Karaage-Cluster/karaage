@@ -11,6 +11,5 @@ urlpatterns = patterns('',
     (r'^reports/', include('karaage.projectreports.urls.user')),
     (r'^applications/', include('karaage.applications.urls.user')),
     (r'xmlrpc/$', 'django_xmlrpc.views.handle_xmlrpc',),
-    (r'^pbs/', include('django_pbs.servers.urls')),
     url(r'^captcha/', include('captcha.urls')),
 )

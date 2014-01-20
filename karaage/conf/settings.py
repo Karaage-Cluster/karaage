@@ -53,8 +53,6 @@ INSTALLED_APPS = (
     'karaage.applications',
     'ajax_select',
     'tldap.methods',
-    'django_pbs.servers',
-    'django_pbs.jobs',
 )
 
 TEMPLATE_DIRS = (

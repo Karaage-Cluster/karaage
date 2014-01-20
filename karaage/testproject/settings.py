@@ -158,8 +158,6 @@ INSTALLED_APPS = (
     'karaage.emails',
     'karaage.applications',
     'tldap.methods',
-    'django_pbs.servers',
-    'django_pbs.jobs',
     'karaage.test_data',
     'django_surveys',
 )
