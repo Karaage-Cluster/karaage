@@ -163,9 +163,6 @@ INSTALLED_APPS = (
 )
 
 
-LOCAL_PBS_SERVERS = []
-
-
 INTERNAL_IPS = (
     '127.0.0.1',
     '172.25.10.10',

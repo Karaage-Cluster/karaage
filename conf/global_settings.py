@@ -63,14 +63,3 @@ LOCKED_SHELL = '/usr/local/sbin/insecure'
 # REGISTRATION_BASE_URL = 'https://<hostname>/users'
 
 # SHIB_SUPPORTED = False
-
-###
-### Django PBS settings
-###
-
-LOCAL_PBS_SERVERS = [
-#    'cluster1.example.com',
-#    'cluster2.example.com',
-]
-
-
