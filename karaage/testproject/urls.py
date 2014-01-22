@@ -8,6 +8,7 @@ urlpatterns = patterns('',
     url(r'^misc/$', 'karaage.admin.views.misc', name='kg_misc'),
 
     url(r'^people/', include('karaage.people.urls.admin')),
+    url(r'^groups/', include('karaage.people.group_urls.admin')),
     url(r'^profile/', include('karaage.people.urls.profile')),
     url(r'^institutes/', include('karaage.institutes.urls.admin')),
     url(r'^projects/', include('karaage.projects.urls.admin')),
