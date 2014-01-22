@@ -20,7 +20,6 @@
         <h2>Institutes</h2>
         <h3>{{ institute }}</h3>
         <table>
-            <tr><td>Usage</td><td>{% for mc, graph_url in graph.iteritems %}<a href="{% url 'kg_usage_institute' mc.pk institute.pk %}">{{ mc }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
             <tr><td>Active:</td><td>{% yes_no_img institute.is_active %}</td></tr>
             <tr><td>Delegate(s):</td><td>{% for delegate in institute.delegates.all %}<a href="{{ delegate.get_absolute_url }}">{{ delegate }}</a>, {% endfor %}</td></tr>
             <tr><td>Group:</td><td><a href="{{ institute.group.get_absolute_url }}">{{ institute.group }}</a></td></tr>
@@ -72,16 +71,6 @@
     <h2>Users</h2>
         {% gen_table institute.person_set.select_related %}
     </div>
-
-    {% for mc, graph in graph.iteritems %}
-    <div class="module">
-        <h2>Usage - {{ mc }}</h2>
-        <p><a href="{{ graph.data_url }}">data</a></p>
-        <a href="{% url 'kg_usage_institute' mc.pk institute.pk %}">
-            <img src="{{ graph.graph_url }}"/>
-        </a>
-    </div>
-    {% endfor %}
 
     {% comments institute %}
 </div>

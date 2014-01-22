@@ -29,7 +29,6 @@ from karaage.common.filterspecs import Filter, FilterBar
 
 from karaage.common.decorators import admin_required
 import karaage.common as util
-from karaage.usage.graphs import get_institute_trend_graph_url
 from karaage.institutes.models import Institute, InstituteQuota, InstituteDelegate
 from karaage.institutes.forms import InstituteForm, InstituteQuotaForm, DelegateForm
 from karaage.machines.models import MachineCategory
@@ -40,14 +39,6 @@ def institute_detail(request, institute_id):
     
     institute = get_object_or_404(Institute, pk=institute_id)
 
-    start=datetime.date.today() - datetime.timedelta(days=90)
-    end=datetime.date.today()
-
-    if institute.is_active:
-        graph = {}
-        for ic in institute.institutequota_set.all():
-            graph[ic.machine_category] = get_institute_trend_graph_url(institute, start, end, ic.machine_category)
-    
     return render_to_response('institutes/institute_detail.html', locals(), context_instance=RequestContext(request))
     
 
