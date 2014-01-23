@@ -37,6 +37,7 @@ def registration(request):
         my_applications = Application.objects.get_for_applicant(person)
         requires_attention = Application.objects.requires_attention(person)
 
+        ctx['karaage_site'] = 'registraton'
         ctx['pending_applications'] = (
                 my_applications.count() + requires_attention.count()
         )
@@ -47,5 +48,6 @@ def admin(request):
     """ Set context for admin menu. """
     ctx = {}
     requires_admin = Application.objects.requires_admin()
+    ctx['karaage_site'] = 'admin'
     ctx['pending_applications'] = requires_admin.count()
     return ctx

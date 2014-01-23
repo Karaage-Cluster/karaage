@@ -18,6 +18,8 @@
 from django.conf.urls import *
 
 urlpatterns = patterns('karaage.institutes.views.user',
+    url(r'^$', 'institute_list', name='kg_institute_list'),
+    url(r'^(?P<institute_id>\d+)/$', 'institute_detail', name='kg_institute_detail'),
     url(r'^(?P<institute_id>\d+)/users/$', 'institute_users_list', name='kg_institute_users'),
     url(r'^(?P<institute_id>\d+)/projects/$', 'institute_projects_list', name='kg_institute_projects'),
 )
