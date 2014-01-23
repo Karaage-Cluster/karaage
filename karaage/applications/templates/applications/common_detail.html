@@ -16,7 +16,7 @@
 
 
 {% block object-tools %}
-{% if auth.is_admin %}
+{% if karaage_site == 'admin' %}
 <div class="module object-tools">
 <h2>Tasks</h2>
 <ul>
@@ -64,7 +64,7 @@
         <h2>Applicant Details</h2>
         <table>
             {% if application.content_type.model == 'applicant' %}
-            <tr><td>Applicant type</td><td>New applicant {% if auth.is_admin %}<a href="{% url 'kg_applicant_edit' application.applicant.pk %}">[edit]</a>{% endif %}</td>
+            <tr><td>Applicant type</td><td>New applicant {% if karaage_site == 'admin' %}<a href="{% url 'kg_applicant_edit' application.applicant.pk %}">[edit]</a>{% endif %}</td>
             <tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
             {% elif application.content_type.model == 'person' %}
             <tr><td>Applicant type</td><td>Existing person</td>
@@ -102,7 +102,7 @@
 
     {% application_request application %}
 
-    {% if auth.is_admin %}
+    {% if karaage_site == 'admin' %}
     {% comments application.application_ptr %}
     {% endif %}
 
