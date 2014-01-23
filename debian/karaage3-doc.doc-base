@@ -1,9 +1,0 @@
-Document: karaage
-Title: Karaage Admin Documentation
-Author: Brian May
-Abstract: This documents karaage functions for Administrators.
-Section: System/Administration
-
-Format: HTML
-Index: /usr/share/doc/karaage-doc/admin/index.html
-Files: /usr/share/doc/karaage-doc/admin/*.html

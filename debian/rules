@@ -1,10 +1,7 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
-%:
-	dh $@ --with python2,sphinxdoc
+DEB_PYTHON2_MODULE_PACKAGES := karaage3
 
-.PHONY: override_dh_auto_build
-override_dh_auto_build:
-	PYTHONPATH=. sphinx-build -b html -d docs/admin/.build/.doctrees -N docs/admin docs/admin/.build/admin
-	dh_auto_build
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/python-distutils.mk
