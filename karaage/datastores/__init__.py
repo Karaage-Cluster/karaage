@@ -295,17 +295,17 @@ def get_group_details(group):
 # Project #
 ###########
 
-def save_project(institute):
+def save_project(project):
     """ An institute has been saved. """
     for name in _get_all_names():
         for datastore in _get_datastores_for_name(name):
-            datastore.save_project(institute)
+            datastore.save_project(project)
 
-def delete_project(institute):
+def delete_project(project):
     """ An institute has been deleted. """
     for name in _get_all_names():
         for datastore in _get_datastores_for_name(name):
-            datastore.delete_project(institute)
+            datastore.delete_project(project)
 
 def get_project_details(project):
     """ Get details for this user. """
@@ -351,17 +351,17 @@ def get_institute_details(institute):
 # Software #
 ############
 
-def save_software(institute):
+def save_software(software):
     """ An institute has been saved. """
     for name in _get_all_names():
         for datastore in _get_datastores_for_name(name):
-            datastore.save_software(institute)
+            datastore.save_software(software)
 
-def delete_software(institute):
+def delete_software(software):
     """ An institute has been deleted. """
     for name in _get_all_names():
         for datastore in _get_datastores_for_name(name):
-            datastore.delete_software(institute)
+            datastore.delete_software(software)
 
 def get_software_details(software):
     """ Get details for this user. """
