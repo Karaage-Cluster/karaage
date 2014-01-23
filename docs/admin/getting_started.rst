@@ -1,15 +1,15 @@
 Getting Started
 ===============
 
-Requirements
-------------
-None of these requirements are absolute requirements, however strongly
-recommended as these are what have been extensively tested and documented:
+Assumptions
+-----------
+Assumptions made by this documentation. Other configurations are possible,
+however you will have to adapt from this documentation.
 
-* Cluster running Slurm or PBS (assumed to be already up and running).
-* OpenLDAP with ppolicy support. 389 or AD might also work.
-* Debian Wheezy server for Karaage.
-
+* You have a cluster running Slurm or PBS that is already up and running.
+* You want to OpenLDAP with ppolicy support, on the same server.
+* You have a Debian Wheezy server already setup for Karaage.
+* You will be installing all components on a single system.
 
 Installation
 ------------
@@ -29,8 +29,16 @@ Installation
    .. code-block:: bash
 
       apt-get update
-      apt-get install karaage-admin
-      apt-get install karaage-registration
+      apt-get install karaage3-admin
+      apt-get install karaage3-registration
+      apt-get install rabbitmq-server
+      apt-get install karaage3-celery
+
+4. Edit /etc/default/karaage3-celery and change ENABLED to true. Then run the following:
+
+   .. code-block:: bash
+
+      service karaage3-celery start
 
 .. todo::
 

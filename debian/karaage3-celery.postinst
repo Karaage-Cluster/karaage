@@ -1,0 +1,19 @@
+#!/bin/sh -e
+
+. /usr/share/debconf/confmodule
+
+if [ "$1" = "configure" ]; then
+    for i in /var/run/karaage3-celery \
+             /var/log/karaage3-celery
+    do
+        # only do something when no setting exists
+        if ! dpkg-statoverride --list $i >/dev/null 2>&1
+        then
+            dpkg-statoverride --update --add root www-data 2775 $i
+        fi
+    done
+fi
+
+#DEBHELPER#
+
+exit 0
