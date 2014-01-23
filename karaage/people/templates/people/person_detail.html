@@ -259,7 +259,6 @@
         <li><a href="{% url 'kg_person_bounce' person.username %}">Bounced Email</a></li>
         {% endif %}
         <li><a href="{% url 'kg_job_list' %}?user={{ person.username }}">Display all jobs</a></li>
-        <li><a href="{% url 'pbs_user_detail' person.username %}">Submitted jobs</a></li>
         {% endif %}
     </ul>
 </div>
