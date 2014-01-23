@@ -18,6 +18,7 @@
 from django.test import TestCase
 from django.core import mail
 from django.core.urlresolvers import reverse
+from django.core.urlresolvers import set_urlconf as _set_urlconf
 from django.conf import settings
 from django.core.management import call_command
 
@@ -29,6 +30,9 @@ from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.test_data.initial_ldap_data import test_ldif
 
+def set_urlconf(urlconf_name):
+    _set_urlconf(urlconf_name)
+    settings.ROOT_URLCONF = urlconf_name
 
 class UserApplicationTestCase(TestCase):
     urls = 'karaage.testproject.registration_urls'
@@ -44,7 +48,6 @@ class UserApplicationTestCase(TestCase):
 
     def tearDown(self):
         self.server.stop()
-
 
     def test_register_account(self):
         self.assertEquals(len(mail.outbox), 0)
@@ -142,7 +145,7 @@ class UserApplicationTestCase(TestCase):
         self.client.logout()
 
         # ADMIN LOGS IN TO APPROVE
-        settings.ROOT_URLCONF = "karaage.testproject.urls"
+        set_urlconf("karaage.testproject.urls")
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
 
@@ -171,7 +174,7 @@ class UserApplicationTestCase(TestCase):
         self.failUnlessEqual(application.state, ProjectApplication.PASSWORD)
         self.assertEquals(len(mail.outbox), 4)
         self.client.logout()
-        settings.ROOT_URLCONF = "karaage.testproject.registration_urls"
+        set_urlconf("karaage.testproject.registration_urls")
 
         # APPLICANT GET PASSWORD
         response = self.client.get(reverse('kg_application_unauthenticated', args=[token,'P']))
@@ -202,14 +205,14 @@ class UserApplicationTestCase(TestCase):
         self.client.logout()
 
         # ADMIN ARCHIVE
-        settings.ROOT_URLCONF = "karaage.testproject.urls"
+        set_urlconf("karaage.testproject.urls")
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         response = self.client.post(reverse('kg_application_detail', args=[application.pk,'C']), form_data, follow=True)
         self.failUnlessEqual(response.status_code, 200)
         self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_detail', args=[application.pk,'A']))
         self.client.logout()
-        settings.ROOT_URLCONF = "karaage.testproject.registration_urls"
+        set_urlconf("karaage.testproject.registration_urls")
 
         # APPLICANT GET ARCHIVE
         response = self.client.get(reverse('kg_application_unauthenticated', args=[token,'A']))
@@ -329,7 +332,7 @@ class ProjectApplicationTestCase(TestCase):
         self.client.logout()
 
         # ADMIN LOGS IN TO APPROVE
-        settings.ROOT_URLCONF = "karaage.testproject.urls"
+        set_urlconf("karaage.testproject.urls")
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
 
@@ -358,7 +361,7 @@ class ProjectApplicationTestCase(TestCase):
         self.failUnlessEqual(application.state, ProjectApplication.PASSWORD)
         self.assertEquals(len(mail.outbox), 4)
         self.client.logout()
-        settings.ROOT_URLCONF = "karaage.testproject.registration_urls"
+        set_urlconf("karaage.testproject.registration_urls")
 
         # APPLICANT GET PASSWORD
         response = self.client.get(reverse('kg_application_unauthenticated', args=[token,'P']))
@@ -389,14 +392,14 @@ class ProjectApplicationTestCase(TestCase):
         self.client.logout()
 
         # ADMIN ARCHIVE
-        settings.ROOT_URLCONF = "karaage.testproject.urls"
+        set_urlconf("karaage.testproject.urls")
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         response = self.client.post(reverse('kg_application_detail', args=[application.pk,'C']), form_data, follow=True)
         self.failUnlessEqual(response.status_code, 200)
         self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_detail', args=[application.pk,'A']))
         self.client.logout()
-        settings.ROOT_URLCONF = "karaage.testproject.registration_urls"
+        set_urlconf("karaage.testproject.registration_urls")
 
         # APPLICANT GET ARCHIVE
         response = self.client.get(reverse('kg_application_unauthenticated', args=[token,'A']))
