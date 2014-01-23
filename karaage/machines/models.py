@@ -116,10 +116,6 @@ class Machine(AbstractBaseUser):
     def get_absolute_url(self):
         return ('kg_machine_detail', [self.id])
 
-    def get_usage(self, start, end):
-        from karaage.cache.usage import get_machine_usage
-        return get_machine_usage(self, start, end)
-
 
 class Account(models.Model):
     person = models.ForeignKey(Person)
