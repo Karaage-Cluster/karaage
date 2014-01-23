@@ -2,8 +2,8 @@
 
 if [ "$1" = "purge" ]
 then
-    for i in /var/cache/karaage/graphs \
-             /var/cache/karaage/matplotlib
+    for i in /var/run/karaage3-celery \
+             /var/log/karaage3-celery
     do
         if dpkg-statoverride --list $i >/dev/null 2>&1
         then
