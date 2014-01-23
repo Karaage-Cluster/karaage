@@ -9,7 +9,7 @@
 
 # Change this to true when done to enable the init.d script. 
 # Default: false
-ENABLED="false"
+ENABLED="true"
 
 # Name of nodes to start
 # here we have a single node

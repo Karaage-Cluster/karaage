@@ -34,12 +34,6 @@ Installation
       apt-get install rabbitmq-server
       apt-get install karaage3-celery
 
-4. Edit /etc/default/karaage3-celery and change ENABLED to true. Then run the following:
-
-   .. code-block:: bash
-
-      service karaage3-celery start
-
 .. todo::
 
    CENTOS
