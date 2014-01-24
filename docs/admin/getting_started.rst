@@ -1,5 +1,11 @@
 Getting Started
 ===============
+This section is for administrators who don't already have Karaage installed and
+wish to get started for the first time.
+
+If you do have an older version of Karaage already installed, please see the
+:doc:`upgrading` section.
+
 
 Assumptions
 -----------
@@ -11,127 +17,131 @@ however you will have to adapt from this documentation.
 * You have a Debian Wheezy server already setup for Karaage.
 * You will be installing all components on a single system.
 
+
 Installation
 ------------
-1. First you need to install the VPAC Debian Archive signing key:
+1.  First you need to install the VPAC Debian Archive signing key:
 
-   .. code-block:: bash
+    .. code-block:: bash
 
-      wget http://code.vpac.org/debian/vpac-debian-key.gpg -O - | apt-key add -
+        wget http://code.vpac.org/debian/vpac-debian-key.gpg -O - | apt-key add -
 
-2. Then create a /etc/apt/sources.list.d/vpac.list containing::
+2.  Then create a /etc/apt/sources.list.d/vpac.list containing::
 
-      deb     http://code.vpac.org/debian  wheezy main
-      deb-src http://code.vpac.org/debian  wheezy main
+        deb     http://code.vpac.org/debian  wheezy main
+        deb-src http://code.vpac.org/debian  wheezy main
 
-3. Then update your apt database and install the packages:
+3.  Then update your apt database and install the packages:
 
-   .. code-block:: bash
+    .. code-block:: bash
 
-      apt-get update
-      apt-get install karaage3-admin
-      apt-get install karaage3-registration
-      apt-get install rabbitmq-server
-      apt-get install karaage3-celery
+        apt-get update
+        apt-get install karaage3-admin
+        apt-get install karaage3-registration
+        apt-get install rabbitmq-server
+        apt-get install karaage3-celery
 
 .. todo::
 
-   CENTOS
+    CENTOS
 
-   Add the VPAC CentOS repo
+    Add the VPAC CentOS repo
 
-   wget http://code.vpac.org/centos/vpac.repo -O /etc/yum.repos.d/vpac.repo
+    wget http://code.vpac.org/centos/vpac.repo -O /etc/yum.repos.d/vpac.repo
 
 
 MySQL server installation
 -------------------------
 
-1. Run the following commands:
+1.  Run the following commands:
 
-   .. code-block:: bash
+    .. code-block:: bash
 
-      apt-get install mysql-server
+        apt-get install mysql-server
 
-2. Create a /etc/mysql/conf.d/karaage.cnf file containing::
+2.  Create a /etc/mysql/conf.d/karaage.cnf file containing::
 
-      [mysqld]
-      character_set_server=utf8
-      default-storage-engine = innodb
-      sql_mode = STRICT_ALL_TABLES
+        [mysqld]
+        character_set_server=utf8
+        default-storage-engine = innodb
+        sql_mode = STRICT_ALL_TABLES
 
-      [client]
-      default-character-set = utf8
+        [client]
+        default-character-set = utf8
 
-3. Restart mysql server to load config:
+    Note: these settings may affect other applications that use this database.
 
-   .. code-block:: bash
+3.  Restart mysql server to load config:
 
-      service apache2 reload
+    .. code-block:: bash
 
-3. Create a user and database for karaage::
+        service mysql reload
 
-      mysql> create database karaage;
-      mysql> CREATE USER 'karaage'@'localhost' IDENTIFIED BY 'XXXXXXXX';
-      mysql> GRANT ALL PRIVILEGES ON karaage.* TO 'karaage'@'localhost';
+3.  Create a user and database for karaage::
 
-   Use the values you set in karaage settings.
+        mysql> create database karaage;
+        mysql> CREATE USER 'karaage'@'localhost' IDENTIFIED BY 'XXXXXXXX';
+        mysql> GRANT ALL PRIVILEGES ON karaage.* TO 'karaage'@'localhost';
+
+    Use the values you set in karaage settings.
 
 
 Initial setup
 -------------
 
-1. Run kg_set_secret_key, this will automatically set SECRET_KEY inside /etc/karaage/global_settings.py
+1.  Run kg_set_secret_key, this will automatically set SECRET_KEY inside /etc/karaage/global_settings.py
 
-   .. code-block:: bash
+    .. code-block:: bash
 
-       kg_set_secret_key
+         kg_set_secret_key
 
-2. Edit the DATABASES setting in /etc/karaage/global_settings.py:
+2.  Edit the DATABASES setting in /etc/karaage/global_settings.py:
 
-   .. code-block:: python
+    .. code-block:: python
 
-       DATABASES = {
-           'default': {
-               'ENGINE': 'django.db.backends.mysql',
-               'NAME': 'karaage',
-               'USER': 'karaage',
-               'PASSWORD': 'XXXXXXXX',
-               'HOST': 'localhost',
-               'PORT': '',
-               'ATOMIC_REQUESTS': True,
-           }
-       }
+         DATABASES = {
+              'default': {
+                    'ENGINE': 'django.db.backends.mysql',
+                    'NAME': 'karaage',
+                    'USER': 'karaage',
+                    'PASSWORD': 'XXXXXXXX',
+                    'HOST': 'localhost',
+                    'PORT': '',
+                    'ATOMIC_REQUESTS': True,
+              }
+         }
 
-3. Add ALLOWED_HOSTS = [ "hostname" ] to /etc/karaage/global_settings.py.
-   Replace hostname with the visible hostname of your server.
+3.  Add ALLOWED_HOSTS = [ "hostname" ] to /etc/karaage/global_settings.py.
+    Replace hostname with the visible hostname of your server.
 
-3. Update other settings in /etc/karaage/global_settings.py as required.
+3.  Update other settings in /etc/karaage/global_settings.py as required.
 
-4. Create DB tables:
+4.  Create DB tables:
 
-   .. code-block:: bash
+    .. code-block:: bash
 
-      kg-manage syncdb --noinput
-      kg-manage migrate --all
+        kg-manage syncdb --noinput
+        kg-manage migrate --all
+        service karaage3-celery restart
 
-5. Create a karaage superuser:
+5.  Create a karaage superuser:
 
-   .. code-block:: bash
+    .. code-block:: bash
 
-      kg-manage kgcreatesuperuser
+        kg-manage kgcreatesuperuser
 
-   (do not use kg-manage createsuperuser, that doesn't exist.)
+    (do not use kg-manage createsuperuser, that doesn't exist.)
 
-6. Setup cron job. You should add a cron job running as the user that runs
-   Karaage, probably www-data, which runs /usr/sbin/kg-daily-cleanup
+6.  Setup cron job. You should add a cron job running as the user that runs
+    Karaage, probably www-data, which runs /usr/sbin/kg-daily-cleanup
 
-7. Setup symlink in apache conf.
+7.  Setup symlink in apache conf.
 
-   .. code-block:: bash
+    .. code-block:: bash
 
-      ln -s /etc/karaage/kgadmin-apache.conf /etc/apache/conf.d
-      ln -s /etc/karaage/kgreg-apache.conf /etc/apache/conf.d
-      service apache2 reload
+        ln -s /etc/karaage/kgadmin-apache.conf /etc/apache/conf.d
+        ln -s /etc/karaage/kgreg-apache.conf /etc/apache/conf.d
+        service apache2 reload
 
 8.  Test. You should now be able to go to http://hostname/kgadmin/
 
