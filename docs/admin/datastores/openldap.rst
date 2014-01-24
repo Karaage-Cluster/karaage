@@ -105,10 +105,8 @@ Configuring Karaage to use LDAP
 
    .. code-block:: bash
 
-      ln -s /etc/karaage/kgadmin-apache.conf /etc/apache/conf.d
-      ln -s /etc/karaage/kgreg-apache.conf /etc/apache/conf.d
       service apache2 reload
-
+      service karaage3-celery restart
 
 3. Log into web interface and add a machine category that references the ldap
    datastore. This should automatically populate LDAP with any entries you have

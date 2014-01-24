@@ -26,3 +26,10 @@ Edit DATASTORES in /etc/karaage/global_settings.py:
    }
 
 Values PREFIX, PATH, and NULL_PROJECT are defaults and can be omitted.
+
+Reload apache.
+
+.. code-block:: bash
+
+   service apache2 reload
+   service karaage3-celery restart
