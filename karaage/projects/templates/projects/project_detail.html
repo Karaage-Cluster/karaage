@@ -76,18 +76,14 @@
             <thead>
                 <tr>
                     <th>Machine Category</th>
-                    <th>Actual</th>
                     <th>Quota</th>
-                    <th>% Cap used</th>
                 </tr>
             </thead>
             <tbody>
                 {% for pc in project.projectquota_set.all %}
                 <tr class="{% cycle row1,row2 %}">
                     <td>{{ pc.machine_category }}</td>
-                    <td>{{ pc.get_mpots|floatformat:"2" }}</td>
                     <td>{{ pc.get_cap }}</td>
-                    <td>{{ pc.get_cap_percent|floatformat:"2" }}%</td>
                     {% if request.user.is_admin %}
                     <td><a class="changelink" href="{% url 'kg_projectquota_edit' pc.pk %}">edit</a></td>
                     <td><a class="deletelink" href="{% url 'kg_projectquota_delete' pc.pk %}">Remove</a></td>
