@@ -20,6 +20,7 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
+from karaage.admin.models import CHANGE
 from karaage.common.constants import TITLES, STATES, COUNTRIES
 from karaage.people.managers import ActivePersonManager, DeletedPersonManager, LeaderManager, PersonManager
 from karaage.people.emails import send_reset_password_email
@@ -507,28 +508,28 @@ def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs)
         if not reverse:
             group = instance
             for person in model.objects.filter(pk__in=pk_set):
-                log(None, person, 2, "Added person to group %s" % group)
-                log(None, group, 2, "Added person %s to group" % person)
+                log(None, person, CHANGE, "Added person to group %s" % group)
+                log(None, group, CHANGE, "Added person %s to group" % person)
                 _add_person_to_group(person, group)
         else:
             person = instance
             for group in model.objects.filter(pk__in=pk_set):
-                log(None, person, 2, "Added person to group %s" % group)
-                log(None, group, 2, "Added person %s to group" % person)
+                log(None, person, CHANGE, "Added person to group %s" % group)
+                log(None, group, CHANGE, "Added person %s to group" % person)
                 _add_person_to_group(person, group)
 
     elif action == "post_remove":
         if not reverse:
             group = instance
             for person in model.objects.filter(pk__in=pk_set):
-                log(None, person, 2, "Removed person from group %s" % group)
-                log(None, group, 2, "Removed person %s from group" % person)
+                log(None, person, CHANGE, "Removed person from group %s" % group)
+                log(None, group, CHANGE, "Removed person %s from group" % person)
                 _remove_person_from_group(person, group)
         else:
             person = instance
             for group in model.objects.filter(pk__in=pk_set):
-                log(None, person, 2, "Removed person from group %s" % group)
-                log(None, group, 2, "Removed person %s from group" % person)
+                log(None, person, CHANGE, "Removed person from group %s" % group)
+                log(None, group, CHANGE, "Removed person %s from group" % person)
                 _remove_person_from_group(person, group)
 
     elif action == "pre_clear":
@@ -536,15 +537,15 @@ def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs)
         # we won't see what groups need to be removed.
         if not reverse:
             group = instance
-            log(None, group, 2, "Removed all people from group")
+            log(None, group, CHANGE, "Removed all people from group")
             for person in group.members.all():
-                log(None, group, 2, "Removed person %s from group" % person)
+                log(None, group, CHANGE, "Removed person %s from group" % person)
                 _remove_person_from_group(person, group)
         else:
             person = instance
-            log(None, person, 2, "Removed person from all groups")
+            log(None, person, CHANGE, "Removed person from all groups")
             for group in person.groups.all():
-                log(None, group, 2, "Removed person %s from group" % person)
+                log(None, group, CHANGE, "Removed person %s from group" % person)
                 _remove_person_from_group(person, group)
 
 models.signals.m2m_changed.connect(_members_changed, sender=Group.members.through)
