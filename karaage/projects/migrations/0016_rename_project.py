@@ -11,7 +11,6 @@ class Migration(SchemaMigration):
             ('cache', '0009_auto__del_field_projectcache_project__chg_field_projectcache_project_t'),
             ('applications', '0024_auto__del_field_projectapplication_project'),
             ('usage', '0010_auto__del_field_cpujob_project'),
-            ('projectreports', '0004_auto__del_field_projectsurvey_project__chg_field_projectsurvey_project'),
     )
 
     def forwards(self, orm):
