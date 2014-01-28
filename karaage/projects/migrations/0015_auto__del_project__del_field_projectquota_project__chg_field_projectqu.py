@@ -11,7 +11,6 @@ class Migration(SchemaMigration):
             ('applications', '0023_move_projects'),
             ('usage', '0009_move_projects'),
             ('cache', '0008_move_projects'),
-            ('projectreports', '0003_move_projects'),
             ('machines', '0015_move_projects'),
     )
 
