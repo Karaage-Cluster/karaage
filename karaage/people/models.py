@@ -451,10 +451,9 @@ def _add_person_to_group(person, group):
     from karaage.datastores import add_account_to_software
 
     a_list = list(person.account_set.filter(date_deleted__isnull=True))
-    if True:
-        add_person_to_group(person, group)
-        for account in a_list:
-            add_account_to_group(account, group)
+    add_person_to_group(person, group)
+    for account in a_list:
+        add_account_to_group(account, group)
     for project in group.project_set.all():
         add_person_to_project(person, project)
         for account in a_list:
@@ -480,10 +479,9 @@ def _remove_person_from_group(person, group):
     from karaage.datastores import remove_account_from_software
 
     a_list = list(person.account_set.filter(date_deleted__isnull=True))
-    if True:
-        remove_person_from_group(person, group)
-        for account in a_list:
-            remove_account_from_group(account, group)
+    remove_person_from_group(person, group)
+    for account in a_list:
+        remove_account_from_group(account, group)
     for project in group.project_set.all():
         remove_person_from_project(person, project)
         for account in a_list:
