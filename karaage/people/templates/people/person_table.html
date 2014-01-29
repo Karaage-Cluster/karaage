@@ -9,23 +9,23 @@
         </tr>
     </thead>
     <tbody>
-        {% for user in object_list %}
+        {% for person in object_list %}
         <tr class="{% cycle row1,row2 %}">
-            <td><a href="{{ user.get_absolute_url }}">{{ user.username }}</a></td>
-            <td>{{ user.get_full_name }}</td>
-            <td>{{ user.email|urlize }}</td>
+            <td><a href="{{ person.get_absolute_url }}">{{ person.username }}</a></td>
+            <td>{{ person.get_full_name }}</td>
+            <td>{{ person.email|urlize }}</td>
             <td>
-                {% if not user.is_active %}
+                {% if not person.is_active %}
                 <img src="{{ STATIC_URL }}img/icon-no.gif" alt="inactive" />
                 {% else %}
-                {% if user.is_locked %}
+                {% if person.is_locked %}
                 <img src="{{ STATIC_URL }}img/lock.png" alt="locked" />
                 {% else %}
                 <img src="{{ STATIC_URL }}img/icon-yes.gif" alt="active" />
                 {% endif %}
                 {% endif %}
             </td>
-            <td>{{ user.last_usage }}</td>
+            <td>{{ person.last_usage }}</td>
         </tr>
         {% endfor %}
     </tbody>

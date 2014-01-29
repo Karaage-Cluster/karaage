@@ -31,7 +31,7 @@ from initial_ldap_data import test_ldif
 
 from karaage.datastores import get_test_datastore
 
-class UserTestCase(TestCase):
+class PersonTestCase(TestCase):
 
     def setUp(self):
         self._datastore = get_test_datastore()
