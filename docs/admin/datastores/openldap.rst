@@ -1,3 +1,4 @@
+.. index:: pair: data store;openldap
 Adding OpenLDAP
 ===============
 

@@ -1,3 +1,5 @@
+.. index:: pair: adding; person
+
 Adding people
 -------------
 
