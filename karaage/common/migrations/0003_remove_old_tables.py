@@ -2,61 +2,59 @@
 import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+from django.db import models, connection
 
 
 class Migration(SchemaMigration):
+    @staticmethod
+    def delete_table(name):
+        cursor = connection.cursor()
+        if name in connection.introspection.get_table_list(cursor):
+            db.delete_table(name)
 
     def forwards(self, orm):
-        db.alter_column('person', 'institute_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['institutes.Institute']))
-        db.rename_table('people_institutedelegate', 'institutedelegate')
+        self.delete_table('django_surveys_booleananswer')
+        self.delete_table('django_surveys_charanswer')
+        self.delete_table('django_surveys_integeranswer')
+        self.delete_table('django_surveys_textanswer')
+        self.delete_table('django_surveys_answer')
+        self.delete_table('django_surveys_question')
+        self.delete_table('django_surveys_surveygroup')
+        self.delete_table('django_surveys_survey')
+        if not db.dry_run:
+            orm['contenttypes.contenttype'].objects.filter(app_label='django_surveys').delete()
+
+        self.delete_table('projectreports_projectsurvey')
+        if not db.dry_run:
+            orm['contenttypes.contenttype'].objects.filter(app_label='projectreports').delete()
+
+        self.delete_table('django_flatpage')
+        self.delete_table('django_flatpage_sites')
+        if not db.dry_run:
+            orm['contenttypes.contenttype'].objects.filter(app_label='flatpages').delete()
+
+        self.delete_table('page_cache')
+
+        self.delete_table('django_comments')
+        self.delete_table('django_comment_flags')
+        if not db.dry_run:
+            orm['contenttypes.contenttype'].objects.filter(app_label='comments').delete()
 
         if not db.dry_run:
-            # For permissions to work properly after migrating
-            orm['contenttypes.contenttype'].objects.filter(app_label='people', model='institute').update(app_label='institutes')
-            orm['contenttypes.contenttype'].objects.filter(app_label='people', model='institutedelegate').update(app_label='institutes')
-            # in case contenttype didn't already exist
-            db.send_create_signal('institutes', ['Institute'])
-            db.send_create_signal('institutes', ['InstituteDelegate'])
+            orm['contenttypes.contenttype'].objects.filter(app_label='requests').delete()
 
     def backwards(self, orm):
-        db.alter_column('person', 'institute_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.Institute']))
-        db.rename_table('institutedelegate', 'people_institutedelegate')
-
-        if not db.dry_run:
-            # For permissions to work properly after migrating
-            orm['contenttypes.contenttype'].objects.filter(app_label='institutes', model='institute').update(app_label='people')
-            orm['contenttypes.contenttype'].objects.filter(app_label='institutes', model='institutedelegate').update(app_label='people')
+        raise RuntimeError("Cannot reverse this migration.")
 
     models = {
-        u'auth.group': {
-            'Meta': {'object_name': 'Group'},
+        u'common.comment': {
+            'Meta': {'ordering': "('submit_date',)", 'object_name': 'Comment', 'db_table': "'comments'"},
+            'comment': ('django.db.models.fields.TextField', [], {'max_length': '3000'}),
+            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'content_type_set_for_comment'", 'to': u"orm['contenttypes.ContentType']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        u'auth.permission': {
-            'Meta': {'ordering': "(u'content_type__app_label', u'content_type__model', u'codename')", 'unique_together': "((u'content_type', u'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        u'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
+            'object_pk': ('django.db.models.fields.TextField', [], {}),
+            'submit_date': ('django.db.models.fields.DateTimeField', [], {'default': 'None'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'comment_comments'", 'null': 'True', 'to': u"orm['people.Person']"})
         },
         u'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
@@ -68,21 +66,28 @@ class Migration(SchemaMigration):
         u'institutes.institute': {
             'Meta': {'ordering': "['name']", 'object_name': 'Institute', 'db_table': "'institute'"},
             'delegates': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'delegate'", 'to': u"orm['people.Person']", 'through': u"orm['institutes.InstituteDelegate']", 'blank': 'True', 'symmetrical': 'False', 'null': 'True'}),
-            'gid': ('django.db.models.fields.IntegerField', [], {}),
+            'group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Group']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
             'saml_entityid': ('django.db.models.fields.CharField', [], {'max_length': '200', 'unique': 'True', 'null': 'True', 'blank': 'True'})
         },
         u'institutes.institutedelegate': {
-            'Meta': {'object_name': 'InstituteDelegate'},
+            'Meta': {'object_name': 'InstituteDelegate', 'db_table': "'institutedelegate'"},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['institutes.Institute']"}),
             'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Person']"}),
-            'send_email': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
+            'send_email': ('django.db.models.fields.BooleanField', [], {})
+        },
+        u'people.group': {
+            'Meta': {'ordering': "['name']", 'object_name': 'Group'},
+            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'members': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'groups'", 'symmetrical': 'False', 'to': u"orm['people.Person']"}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})
         },
         u'people.person': {
-            'Meta': {'ordering': "['first_name', 'last_name']", 'object_name': 'Person', 'db_table': "'person'"},
+            'Meta': {'ordering': "['full_name', 'short_name']", 'object_name': 'Person', 'db_table': "'person'"},
             'address': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'approved_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'user_approver'", 'null': 'True', 'to': u"orm['people.Person']"}),
             'city': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
@@ -92,24 +97,32 @@ class Migration(SchemaMigration):
             'date_deleted': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'deleted_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'user_deletor'", 'null': 'True', 'to': u"orm['people.Person']"}),
             'department': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
+            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'null': 'True', 'db_index': 'True'}),
             'expires': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'fax': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'full_name': ('django.db.models.fields.CharField', [], {'max_length': '60'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['institutes.Institute']"}),
+            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'is_admin': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_systemuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'last_usage': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'legacy_ldap_password': ('django.db.models.fields.CharField', [], {'max_length': '128', 'null': 'True', 'blank': 'True'}),
             'login_enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'mobile': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
+            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'position': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'postcode': ('django.db.models.fields.CharField', [], {'max_length': '8', 'null': 'True', 'blank': 'True'}),
             'saml_id': ('django.db.models.fields.CharField', [], {'max_length': '200', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
+            'short_name': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             'state': ('django.db.models.fields.CharField', [], {'max_length': '4', 'null': 'True', 'blank': 'True'}),
             'supervisor': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'telephone': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']", 'unique': 'True'}),
+            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'}),
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
         }
     }
 
-    complete_apps = ['people']
+    complete_apps = ['common']

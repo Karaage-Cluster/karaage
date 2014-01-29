@@ -12,14 +12,14 @@ class Migration(SchemaMigration):
 
         if not db.dry_run:
             # For permissions to work properly after migrating
-            orm['contenttypes.contenttype'].objects.filter(app_label='machines', model='useraccount').update(model='account')
+            orm['contenttypes.contenttype'].objects.filter(app_label='machines', model='useraccount').update(name='account', model='account')
 
     def backwards(self, orm):
         db.rename_table('account', 'user_account')
 
         if not db.dry_run:
             # For permissions to work properly after migrating
-            orm['contenttypes.contenttype'].objects.filter(app_label='machines', model='account').update(model='useraccount')
+            orm['contenttypes.contenttype'].objects.filter(app_label='machines', model='account').update(name='user account', model='useraccount')
 
 
     models = {
