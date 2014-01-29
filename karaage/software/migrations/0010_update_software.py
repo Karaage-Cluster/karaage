@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         db.rename_table('software_package', 'software')
         if not db.dry_run:
-            orm['contenttypes.contenttype'].objects.filter(app_label='software', model='software').update(name='software', model='software')
+            orm['contenttypes.contenttype'].objects.filter(app_label='software', model='softwarepackage').update(name='software', model='software')
 
         # Changing field 'SoftwareLicense.package'
         db.alter_column('software_license', 'package_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['software.Software']))

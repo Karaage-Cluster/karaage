@@ -2,34 +2,60 @@
 import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+from django.db import models, connection
 
 
 class Migration(SchemaMigration):
-
-    depends_on = (
-            ('applications', '0027_move_software_requests'),
-    )
+    @staticmethod
+    def delete_table(name):
+        cursor = connection.cursor()
+        if name in connection.introspection.get_table_list(cursor):
+            db.delete_table(name)
 
     def forwards(self, orm):
-        # Deleting model 'SoftwareAccessRequest'
-        db.delete_table('software_access_request')
+        self.delete_table('django_surveys_booleananswer')
+        self.delete_table('django_surveys_charanswer')
+        self.delete_table('django_surveys_integeranswer')
+        self.delete_table('django_surveys_textanswer')
+        self.delete_table('django_surveys_answer')
+        self.delete_table('django_surveys_question')
+        self.delete_table('django_surveys_surveygroup')
+        self.delete_table('django_surveys_survey')
+        if not db.dry_run:
+            orm['contenttypes.contenttype'].objects.filter(app_label='django_surveys').delete()
+
+        self.delete_table('projectreports_projectsurvey')
+        if not db.dry_run:
+            orm['contenttypes.contenttype'].objects.filter(app_label='projectreports').delete()
+
+        self.delete_table('django_flatpage')
+        self.delete_table('django_flatpage_sites')
+        if not db.dry_run:
+            orm['contenttypes.contenttype'].objects.filter(app_label='flatpages').delete()
+
+        self.delete_table('page_cache')
+
+        self.delete_table('django_comments')
+        self.delete_table('django_comment_flags')
+        if not db.dry_run:
+            orm['contenttypes.contenttype'].objects.filter(app_label='comments').delete()
 
         if not db.dry_run:
-            orm['contenttypes.contenttype'].objects.filter(app_label='software', model='softwareaccessrequest').delete()
+            orm['contenttypes.contenttype'].objects.filter(app_label='requests').delete()
 
     def backwards(self, orm):
-        # Adding model 'SoftwareAccessRequest'
-        db.create_table('software_access_request', (
-            ('person', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.Person'])),
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('request_date', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
-            ('software_license', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['software.SoftwareLicense'])),
-        ))
-        db.send_create_signal(u'software', ['SoftwareAccessRequest'])
-
+        raise RuntimeError("Cannot reverse this migration.")
 
     models = {
+        u'common.comment': {
+            'Meta': {'ordering': "('submit_date',)", 'object_name': 'Comment', 'db_table': "'comments'"},
+            'comment': ('django.db.models.fields.TextField', [], {'max_length': '3000'}),
+            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'content_type_set_for_comment'", 'to': u"orm['contenttypes.ContentType']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'object_pk': ('django.db.models.fields.TextField', [], {}),
+            'submit_date': ('django.db.models.fields.DateTimeField', [], {'default': 'None'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'comment_comments'", 'null': 'True', 'to': u"orm['people.Person']"})
+        },
         u'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
             'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
@@ -51,27 +77,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['institutes.Institute']"}),
             'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Person']"}),
-            'send_email': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
-        },
-        u'machines.machine': {
-            'Meta': {'object_name': 'Machine', 'db_table': "'machine'"},
-            'category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['machines.MachineCategory']"}),
-            'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'mem_per_core': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'no_cpus': ('django.db.models.fields.IntegerField', [], {}),
-            'no_nodes': ('django.db.models.fields.IntegerField', [], {}),
-            'pbs_server_host': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
-            'scaling_factor': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
-            'start_date': ('django.db.models.fields.DateField', [], {}),
-            'type': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'machines.machinecategory': {
-            'Meta': {'object_name': 'MachineCategory', 'db_table': "'machine_category'"},
-            'datastore': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
+            'send_email': ('django.db.models.fields.BooleanField', [], {})
         },
         u'people.group': {
             'Meta': {'ordering': "['name']", 'object_name': 'Group'},
@@ -116,48 +122,7 @@ class Migration(SchemaMigration):
             'title': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'}),
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
-        },
-        u'software.software': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Software', 'db_table': "'software'"},
-            'academic_only': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.SoftwareCategory']", 'null': 'True', 'blank': 'True'}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Group']", 'null': 'True', 'blank': 'True'}),
-            'homepage': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'}),
-            'restricted': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'tutorial_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
-        },
-        u'software.softwarecategory': {
-            'Meta': {'ordering': "['name']", 'object_name': 'SoftwareCategory', 'db_table': "'software_category'"},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'software.softwarelicense': {
-            'Meta': {'ordering': "['-version']", 'object_name': 'SoftwareLicense', 'db_table': "'software_license'"},
-            'date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'package': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.Software']"}),
-            'text': ('django.db.models.fields.TextField', [], {}),
-            'version': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'})
-        },
-        u'software.softwarelicenseagreement': {
-            'Meta': {'object_name': 'SoftwareLicenseAgreement', 'db_table': "'software_license_agreement'"},
-            'date': ('django.db.models.fields.DateField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'license': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.SoftwareLicense']"}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Person']"})
-        },
-        u'software.softwareversion': {
-            'Meta': {'ordering': "['-version']", 'object_name': 'SoftwareVersion', 'db_table': "'software_version'"},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'last_used': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'machines': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['machines.Machine']", 'symmetrical': 'False'}),
-            'module': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'package': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['software.Software']"}),
-            'version': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         }
     }
 
-    complete_apps = ['software']
+    complete_apps = ['common']

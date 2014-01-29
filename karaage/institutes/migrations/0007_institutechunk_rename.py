@@ -10,6 +10,10 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         if not db.dry_run:
             orm['contenttypes.contenttype'].objects.filter(app_label='pbsmoab', model='institutechunk').update(app_label="institutes", name='institute quota', model='institutequota')
+            # create contenttypes that don't exist
+            db.send_create_signal('institutes', ['Institute'])
+            db.send_create_signal('institutes', ['InstituteDelegate'])
+            db.send_create_signal('institutes', ['InstituteQuota'])
 
     def backwards(self, orm):
         if not db.dry_run:

@@ -11,13 +11,13 @@ class Migration(SchemaMigration):
         db.rename_table('cache_usercache', 'cache_personcache')
         if not db.dry_run:
             # For permissions to work properly after migrating
-            orm['contenttypes.contenttype'].objects.filter(app_label='cache', model='usercache').update(model='personcache')
+            orm['contenttypes.contenttype'].objects.filter(app_label='cache', model='usercache').update(name='person cache', model='personcache')
 
     def backwards(self, orm):
         db.rename_table('cache_personcache', 'cache_usercache')
         if not db.dry_run:
             # For permissions to work properly after migrating
-            orm['contenttypes.contenttype'].objects.filter(app_label='cache', model='personcache').update(model='usercache')
+            orm['contenttypes.contenttype'].objects.filter(app_label='cache', model='personcache').update(name='user cache', model='usercache')
 
     models = {
         u'auth.group': {
