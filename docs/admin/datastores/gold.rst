@@ -1,3 +1,6 @@
+.. index:: pair: data store; gold
+.. index:: see:mam;gold
+
 Adding Gold
 ===========
 

@@ -1,3 +1,5 @@
+.. index:: pair: machine; adding
+
 Adding machines
 ---------------
 

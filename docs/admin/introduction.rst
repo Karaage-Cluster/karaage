@@ -8,42 +8,44 @@ Karaage is a cluster account management tool. It can manage users and projects i
 Terminology
 -----------
 
-person
+:index:`person <person;definition>`
   A person who has access to the karaage-registration system. A person could have one/more accounts,
   be an administrator, be a project manager, be an institute delegate. These are optional.
 
-machine
+:index:`machine <machine;definition>`
   A single cluster or computer which is managed as a distinct unit.
 
-machine category
+:index:`machine category <machine category;definition>`
   A group of machines that share the same authentication systems.
 
-data store
+:index:`data store <data store;definition>`
   A list of external databases that we should link to and update automatically.
   Supported databases include LDAP, Gold, and Slurm.
 
-account
+:index:`account <account;definition>`
   A person may have one or more accounts. An account allows a person to access
   machines on a given machine_category.
 
-group
+:index:`group <group;definition>`
   A list of people. Usually maps directly to an LDAP Group, but this depends on the data stores used.
 
-project
+:index:`project <project;definition>`
   A list of people who share the common goal.
 
-project manager
+:index:`project manager <project manager;definition>`
   A person who manages a project, and can allow new user's to use the project.
 
-institute
+:index:`institute <institute;definition>`
   An Institute is just a group of projects.
 
-institute delegate
+:index:`institute delegate <institute delegate;definition>`
   A person who manages an institute, and can allow new project's for the institute.
 
-administrator
+:index:`administrator <administrator;definition>`
   A person who has administration rights and can access karaage-admin.
 
+
+.. index:: Karaage; features
 
 Features
 --------
@@ -54,6 +56,7 @@ Features
 * Usage reporting. Report on a per institute, per project or per user for CPU usage.
 * Track usage of software and versions. Keep track of what software (and version) and type of jobs a user is running.
 
+.. index:: Karaage; Karaage-admin
 
 karaage-admin
 -------------
@@ -61,6 +64,8 @@ Admin portal for cluster administrators (karaage-admin).
 
 * See/modify information about all users/projects/institutes/applications/usage etc.
 * Many changes are logged.
+
+.. index:: Karaage; Karaage-registration
 
 karaage-registration
 --------------------
