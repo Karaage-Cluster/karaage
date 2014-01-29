@@ -1,0 +1,5 @@
+[gerrit]
+host=code.vpac.org
+port=29418
+project=karaage
+defaultbranch=master
