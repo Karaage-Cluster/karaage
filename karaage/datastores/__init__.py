@@ -165,6 +165,12 @@ def get_person_details(person):
 # ACCOUNT #
 ###########
 
+def account_edit_form(account):
+    """Return the form used to edit the account."""
+    name = account.machine_category.datastore
+    for datastore in _get_datastores_for_name(name):
+        return datastore.edit_form(account)
+
 def save_account(account):
     """ Account was saved. """
     name = account.machine_category.datastore
