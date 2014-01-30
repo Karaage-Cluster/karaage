@@ -346,6 +346,9 @@ class Account(models.Model):
     def is_locked(self):
         return not self.login_enabled
 
+    def edit_form(self):
+        from karaage.datastores import account_edit_form
+        return account_edit_form(self)
 
 def _remove_group(group, person):
     # if removing default project from person, then break link first

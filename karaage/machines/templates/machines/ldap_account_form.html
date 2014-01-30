@@ -1,0 +1,50 @@
+{% load machines %}
+
+<table cellspacing="0">
+  <thead>
+    <tr>
+      <th>Active</th>
+      <th>Username</th>
+      <th>Date Created</th>
+      {% if ua.date_deleted %}
+      <th>Date Deleted</th>
+      {% endif %}
+      <th>Shell</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="row1">
+      <td>
+        {% if ua.date_deleted %}
+        <img alt="Not Active" src="{{ STATIC_URL }}img/icon-no.gif" title="Not Active"/>
+        {% else %}
+        {% if ua.is_locked %}
+        <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
+        {% else %}
+        <img alt="Active" src="{{ STATIC_URL }}img/icon-yes.gif" title="Active"/>
+        {% endif %}
+        {% endif %}
+      </td>
+      <td>{{ ua.username }}</td>
+      <td>{{ ua.date_created|date }}</td>
+      {% if ua.date_deleted %}
+      <td>{{ ua.date_deleted|date }}</td>
+      {% endif %}
+      <td>
+        {{ ua.shell }}
+        {% if not ua.date_deleted and user.is_admin %}
+        <form action="{% url 'kg_account_shell' ua.pk %}" method="post">{% csrf_token %}
+        <div>
+          {% shell_field ua %}
+          <input type="submit" value="Change"/>
+        </div>
+        </form>
+        {% endif %}
+      </td>
+      {% if not ua.date_deleted and request.user.is_admin %}
+      <td><a class="deletelink" href="{% url 'kg_account_delete' ua.id %}">Delete</a></td>
+      {% endif %}
+    </tr>
+  </tbody>
+</table>

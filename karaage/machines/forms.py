@@ -17,6 +17,8 @@
 
 from django import forms
 from django.conf import settings
+from django.template import Context, loader
+from django.utils.safestring import mark_safe
 
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory, Machine
@@ -56,3 +58,11 @@ class ShellForm(forms.Form):
 
     def save(self, account):
         account.change_shell(self.cleaned_data['shell'])
+
+class AccountDetails():
+    def __init__(self, account):
+        self.account = account
+
+    def as_table(self):
+        template = loader.get_template('machines/ldap_account_form.html')
+        return (template, {'ua': self.account})
