@@ -78,6 +78,11 @@ class AccountDataStore(base.BaseDataStore):
         return self._group(
                 using=self._using, settings=self._settings)
 
+    def edit_form(self, account):
+        """Return the edit form for this account type."""
+        from karaage.machines.forms import AccountDetails
+        return AccountDetails(account)
+
     def save_account(self, account):
         """ Account was saved. """
         person = account.person
