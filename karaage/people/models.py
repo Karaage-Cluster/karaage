@@ -15,10 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import datetime
+import warnings
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from jsonfield import JSONField
 
 from karaage.admin.models import CHANGE
 from karaage.common.constants import TITLES, STATES, COUNTRIES
@@ -27,9 +31,6 @@ from karaage.people.emails import send_reset_password_email
 
 from karaage.common import log
 from karaage.common import new_random_token, get_current_person
-
-import datetime
-import warnings
 
 
 # Note on terminology:
@@ -101,7 +102,7 @@ class Person(AbstractBaseUser):
         if not name:
             name = "No Name"
         return name
-    
+
     def get_absolute_url(self):
         return reverse('kg_person_detail', kwargs={'username': self.username})
 
@@ -383,12 +384,19 @@ class Person(AbstractBaseUser):
 
 
 class Group(models.Model):
+    """Groups represent collections of people, these objects can be
+    expressed externally in a datastore."""
     name = models.CharField(max_length=100, unique=True)
+    foreign_id = models.CharField(max_length=255, null=True, blank=True, unique=True,
+                                  help_text='The foreign identifier from the datastore.')
     members = models.ManyToManyField(Person, related_name='groups')
     description = models.TextField(null=True, blank=True)
+    extra_data = JSONField(default={},
+                           help_text='Datastore specific values should be stored in this field.')
 
     class Meta:
         ordering = ['name']
+        unique_together = (('name', 'foreign_id'))
 
     def __unicode__(self):
         return u"%s" % self.name
