@@ -90,6 +90,10 @@ class BaseDataStore(object):
     # ACCOUNT #
     ###########
 
+    def edit_form(self, account):
+        """Return the account edit form for this datastore."""
+        pass
+
     def save_account(self, account):
         """ Account was saved. """
         return
