@@ -1,9 +1,10 @@
-karaage3 (3.0.1-1) UNRELEASED; urgency=low
+karaage3 (3.0.1-1) unstable; urgency=low
 
   * Various bugs fixed.
   * Add unique constraints to usage caches.
+  * Usage uses django-celery.
 
- -- Brian May <bam@debian.org>  Thu, 17 Oct 2013 11:58:50 +1100
+ -- Brian May <bam@debian.org>  Thu, 30 Jan 2014 15:30:47 +1100
 
 karaage3 (3.0.0-1) unstable; urgency=low
 
