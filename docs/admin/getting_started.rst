@@ -20,26 +20,28 @@ however you will have to adapt from this documentation.
 
 Installation
 ------------
-1.  First you need to install the VPAC Debian Archive signing key:
+#.  If you require a proxy server for out going connections, set it up now.
+
+    .. code-block:: bash
+
+        export http_proxy=http://proxy.example.org
+
+#.  You need to install the VPAC Debian Archive signing key:
 
     .. code-block:: bash
 
         wget http://code.vpac.org/debian/vpac-debian-key.gpg -O - | apt-key add -
 
-2.  Then create a /etc/apt/sources.list.d/vpac.list containing::
+#.  Create a /etc/apt/sources.list.d/vpac.list containing::
 
         deb     http://code.vpac.org/debian  wheezy main
         deb-src http://code.vpac.org/debian  wheezy main
 
-3.  Then update your apt database and install the packages:
+#.  Update your apt database and install the packages:
 
     .. code-block:: bash
 
         apt-get update
-        apt-get install karaage3-admin
-        apt-get install karaage3-registration
-        apt-get install rabbitmq-server
-        apt-get install karaage3-celery
 
 .. todo::
 
@@ -53,13 +55,24 @@ Installation
 MySQL server installation
 -------------------------
 
-1.  Run the following commands:
+#.  Run the following commands:
 
     .. code-block:: bash
 
         apt-get install mysql-server
 
-2.  Create a /etc/mysql/conf.d/karaage.cnf file containing::
+    This should ask for a password for the root mysql user. Make sure this is a
+    secure password. You can use makepasswd if you want. For the purpose of
+    this documentation, we will assume you used XXXXXXXX. Do not use XXXXXXXX
+    for your password on a production system.
+
+#.  (optional) Create a /root/.my.cnf file containing::
+
+        [client]
+        user            = root
+        password        = XXXXXXXX
+
+#.  Create a /etc/mysql/conf.d/karaage.cnf file containing::
 
         [mysqld]
         character_set_server=utf8
@@ -71,31 +84,49 @@ MySQL server installation
 
     Note: these settings may affect other applications that use this database.
 
-3.  Restart mysql server to load config:
+#.  Restart mysql server to load config:
 
     .. code-block:: bash
 
         service mysql reload
 
-3.  Create a user and database for karaage::
+#.  Create a user and database for karaage::
 
         mysql> create database karaage;
-        mysql> CREATE USER 'karaage'@'localhost' IDENTIFIED BY 'XXXXXXXX';
+        mysql> CREATE USER 'karaage'@'localhost' IDENTIFIED BY 'YYYYYYYY';
         mysql> GRANT ALL PRIVILEGES ON karaage.* TO 'karaage'@'localhost';
 
-    Use the values you set in karaage settings.
+    Use the values you set in karaage settings. Do not use YYYYYYYY on a
+    production system.
 
 
 Initial setup
 -------------
 
-1.  Run kg_set_secret_key, this will automatically set SECRET_KEY inside /etc/karaage/global_settings.py
+#.  Install the packages:
+
+    .. code-block:: bash
+
+        apt-get install karaage3-admin
+        apt-get install karaage3-registration
+        apt-get install python-mysqldb
+        apt-get install libapache2-mod-wsgi
+
+    If you have disabled installing recommended packages by default, you will
+    need to install these packages by hand:
+
+    .. code-block:: bash
+
+        apt-get install rabbitmq-server
+        apt-get install karaage3-celery
+
+#.  Run kg_set_secret_key, this will automatically set SECRET_KEY inside /etc/karaage/global_settings.py
 
     .. code-block:: bash
 
          kg_set_secret_key
 
-2.  Edit the DATABASES setting in /etc/karaage/global_settings.py:
+#.  Edit the DATABASES setting in /etc/karaage/global_settings.py:
 
     .. code-block:: python
 
@@ -104,19 +135,19 @@ Initial setup
                     'ENGINE': 'django.db.backends.mysql',
                     'NAME': 'karaage',
                     'USER': 'karaage',
-                    'PASSWORD': 'XXXXXXXX',
+                    'PASSWORD': 'YYYYYYYY',
                     'HOST': 'localhost',
                     'PORT': '',
                     'ATOMIC_REQUESTS': True,
               }
          }
 
-3.  Add ALLOWED_HOSTS = [ "hostname" ] to /etc/karaage/global_settings.py.
+#.  Add ALLOWED_HOSTS = [ "hostname" ] to /etc/karaage/global_settings.py.
     Replace hostname with the visible hostname of your server.
 
-3.  Update other settings in /etc/karaage/global_settings.py as required.
+#.  Update other settings in /etc/karaage/global_settings.py as required.
 
-4.  Create DB tables:
+#.  Create DB tables:
 
     .. code-block:: bash
 
@@ -124,7 +155,7 @@ Initial setup
         kg-manage migrate --all
         service karaage3-celery restart
 
-5.  Create a karaage superuser:
+#.  Create a karaage superuser:
 
     .. code-block:: bash
 
@@ -132,20 +163,21 @@ Initial setup
 
     (do not use kg-manage createsuperuser, that doesn't exist.)
 
-6.  Setup cron job. You should add a cron job running as the user that runs
-    Karaage, probably www-data, which runs /usr/sbin/kg-daily-cleanup
+#.  Setup cron job. Edit the /etc/cron.d/karaage3-admin file::
 
-7.  Setup symlink in apache conf.
+        10 1 * * * www-data /usr/sbin/kg-daily-cleanup
+
+#.  Setup symlink in apache conf.
 
     .. code-block:: bash
 
-        ln -s /etc/karaage/kgadmin-apache.conf /etc/apache/conf.d
-        ln -s /etc/karaage/kgreg-apache.conf /etc/apache/conf.d
+        ln -s /etc/karaage/kgadmin-apache.conf /etc/apache2/conf.d
+        ln -s /etc/karaage/kgreg-apache.conf /etc/apache2/conf.d
         service apache2 reload
 
-8.  Test. You should now be able to go to http://hostname/kgadmin/
+#.  Test. You should now be able to go to http://hostname/kgadmin/
 
-9.  You should set up apache to use SSL.
+#.  You should set up apache to use SSL.
 
 
 Data stores
