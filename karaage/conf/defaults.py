@@ -21,7 +21,7 @@ SHELLS = (
     ('/bin/tcsh', 'tcsh'),
     ('/bin/zsh', 'zsh'),
 )
-   
+
 DEFAULT_SHELL = '/bin/bash'
 BOUNCED_SHELL = '/usr/local/sbin/bouncedemail'
 
@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'karaage.applications',
     'ajax_select',
     'tldap.methods',
+    'jsonfield',
     'djcelery',
 )
 
