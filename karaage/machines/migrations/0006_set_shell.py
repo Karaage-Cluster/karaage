@@ -8,7 +8,10 @@ from karaage.datastores import get_test_datastore
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        datastore = get_test_datastore("ldap", 0)
+        try:
+            datastore = get_test_datastore("ldap", 0)
+        except KeyError:
+            return
         for account in orm['machines.useraccount'].objects.filter(date_deleted__isnull=True):
             try:
                 p = datastore._accounts().get(uid=account.username)

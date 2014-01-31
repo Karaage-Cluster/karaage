@@ -22,7 +22,10 @@ class Migration(DataMigration):
         if db.dry_run:
             return
 
-        datastore = get_test_datastore("ldap", 0)
+        try:
+            datastore = get_test_datastore("ldap", 0)
+        except KeyError:
+            return
 
         last_uid = None
         for obj in datastore._accounts():

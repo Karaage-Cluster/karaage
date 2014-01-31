@@ -9,7 +9,10 @@ from karaage.datastores import get_test_datastore
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        datastore = get_test_datastore("ldap", 0)
+        try:
+            datastore = get_test_datastore("ldap", 0)
+        except KeyError:
+            return
         for software in orm.SoftwarePackage.objects.iterator():
             if software.gid is None:
                 software.group = None
@@ -27,7 +30,10 @@ class Migration(DataMigration):
                         person.groups.add(group)
 
     def backwards(self, orm):
-        datastore = get_test_datastore("ldap", 0)
+        try:
+            datastore = get_test_datastore("ldap", 0)
+        except KeyError:
+            return
         for software in orm.SoftwarePackage.objects.iterator():
             lgroup = datastore._groups().get(cn=software.group.name)
             software.gid = lgroup.gidNumber
