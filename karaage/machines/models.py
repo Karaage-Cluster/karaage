@@ -257,7 +257,7 @@ class Account(models.Model):
 
             if self._password is not None:
                 from karaage.datastores import set_account_password
-                set_account_password(self, password)
+                set_account_password(self, self._password)
                 log(None, self.machine_category, 2,
                     'Changed Password of %s' % self)
                 log(None, self.person, 2,
