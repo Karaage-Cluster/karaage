@@ -178,6 +178,11 @@ The following applies if you want to upgrade from 2.7.x to 3.0.x.
              ],
         }
 
+    .. warning::
+
+        You must call the ldap datastore 'ldap' otherwise the migrations will fail to retrieve LDAP
+        information correctly.
+
 #.  Migrate DB tables:
 
     .. code-block:: bash
