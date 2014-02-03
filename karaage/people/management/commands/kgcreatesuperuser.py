@@ -29,7 +29,7 @@ from django.core.management.base import BaseCommand
 from django.utils.translation import ugettext as _
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
-from karaage.people.utils import validate_username, UsernameException
+from karaage.people.utils import validate_username_for_new_person, UsernameException
 
 import django.db.transaction
 import tldap.transaction
@@ -102,7 +102,7 @@ class Command(BaseCommand):
                     if default_username and username=='':
                         username = default_username
                 try:
-                    validate_username(username)
+                    validate_username_for_new_person(username)
                     break
                 except UsernameException, e:
                     sys.stderr.write("%s\n" % e)

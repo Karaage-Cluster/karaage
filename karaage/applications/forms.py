@@ -28,7 +28,7 @@ from captcha.fields import CaptchaField
 
 from karaage.applications.models import Application, ProjectApplication, SoftwareApplication, Applicant
 from karaage.people.models import Person
-from karaage.people.utils import validate_username, UsernameException
+from karaage.people.utils import validate_username_for_new_person, UsernameException
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.common import get_current_person, is_password_strong
@@ -97,7 +97,7 @@ class ApplicantForm(forms.ModelForm):
         username = self.cleaned_data['username']
         if username:
             try:
-                validate_username(username)
+                validate_username_for_new_person(username)
             except UsernameException, e:
                 raise forms.ValidationError(e.args[0])
         

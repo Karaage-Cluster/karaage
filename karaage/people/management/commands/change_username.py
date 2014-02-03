@@ -17,13 +17,13 @@
 
 from django.core.management.base import BaseCommand, CommandError
 from karaage.people.models import Person
-from karaage.people.utils import validate_username, UsernameInvalid, UsernameTaken
+from karaage.people.utils import validate_username_for_rename_person, UsernameInvalid, UsernameTaken
 import sys
 import django.db.transaction
 import tldap.transaction
 
 class Command(BaseCommand):
-    help = 'Change a users username'
+    help = 'Change a username for a person and all accounts for that person'
     args = '<old username> <new username>'
 
     @django.db.transaction.commit_on_success
@@ -38,13 +38,13 @@ class Command(BaseCommand):
             person = Person.objects.get(username=old)
         except Person.DoesNotExist:
             raise CommandError('user %s does not exist' % old)
-        
+
         try:
-            validate_username(new)
+            validate_username_for_rename_person(new, person)
         except UsernameInvalid, e:
             raise CommandError(e.args[0])
-        except UsernameTaken:
-            raise CommandError('Username %s already exists' % new)
+        except UsernameTaken, e:
+            raise CommandError(e.args[0])
 
         while 1:
             confirm = raw_input('Change user "%s" to "%s (yes,no): ' % (old, new))
