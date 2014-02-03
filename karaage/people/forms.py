@@ -21,7 +21,7 @@ from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
 
 from karaage.people.models import Person, Group
-from karaage.people.utils import validate_username, UsernameException
+from karaage.people.utils import validate_username_for_new_person, UsernameException
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
@@ -81,7 +81,7 @@ class AddPersonForm(AdminPersonForm):
     def clean_username(self):
         username = self.cleaned_data['username']
         try:
-            validate_username(username)
+            validate_username_for_new_person(username)
         except UsernameException, e:
             raise forms.ValidationError(e.args[0])
         return username
