@@ -62,7 +62,7 @@ class AdminPersonForm(PersonForm):
     comment = forms.CharField(widget=forms.Textarea(), required=False)
     expires = forms.DateField(widget=AdminDateWidget, required=False)
     is_admin = forms.BooleanField(help_text="Designates whether the user can log into this admin site.", required=False)
-    is_systemuser = forms.BooleanField(help_text="Designates that this user is a sytem user only.", required=False)
+    is_systemuser = forms.BooleanField(help_text="Designates that this user is a system process, not a person.", required=False)
 
     class Meta:
         model = Person
@@ -86,6 +86,15 @@ class AddPersonForm(AdminPersonForm):
             raise forms.ValidationError(e.args[0])
         return username
 
+    def clean_password1(self):
+        data = self.cleaned_data
+
+        if data.get('password1'):
+            if not is_password_strong(data['password1']):
+                raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (uppercase, lowercase), numbers and is at least 8 characters long.')
+
+        return data['password1']
+
     def clean_password2(self):
         data = self.cleaned_data
 
@@ -93,21 +102,18 @@ class AddPersonForm(AdminPersonForm):
             if data['password1'] != data['password2']:
                 raise forms.ValidationError(u'You must type the same password each time')
 
-            if not is_password_strong(data['password1']):
-                raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (uppercase, lowercase), numbers and is at least 8 characters long.')
-
-            return data
+        return data['password2']
 
     def save(self):
         data = self.cleaned_data
 
-        person = self.instance
+        person = super(AddPersonForm, self).save(commit=False)
         person.username = data['username']
         person.is_admin = data['is_admin']
         person.is_active = True
         person.approved_by = get_current_person()
         person.set_password(data['password2'])
-        super(AddPersonForm, self).save()
+        person.save()
 
         if data['needs_account'] and data['project']:
             add_user_to_project(person, data['project'])

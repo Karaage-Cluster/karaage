@@ -271,7 +271,7 @@
 
         {% if request.user.is_admin and person.is_active %}
         <li class="changelink"><a href="{% url 'kg_person_edit' person.username %}">Edit details</a></li>
-        <li class="addlink"><a href="{% url 'kg_person_add_account' person.username %}">Add user account</a></li>
+        <li class="addlink"><a href="{% url 'kg_person_add_account' person.username %}">Add account</a></li>
         <li class="deletelink"><a href="{%url 'kg_person_delete' person.username %}">Delete</a></li>
         <li><a href="{% url 'kg_person_logs' person.username %}">Logs</a></li>
         <li class="addlink"><a href="{% url 'kg_person_add_comment' person.username %}">Add comment</a></li>
