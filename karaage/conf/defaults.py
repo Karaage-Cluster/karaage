@@ -121,6 +121,8 @@ SHIB_ATTRIBUTE_MAP = {
     "HTTP_TELEPHONENUMBER": (False, "telephone"),
     }
 
+USERNAME_VALIDATION_RE = '[-\w]+'
+USERNAME_VALIDATION_ERROR_MSG = u'Usernames can only contain letters, numbers and underscores'
 
 TRAINING_ACCOUNT_PREFIX = 'train'
 

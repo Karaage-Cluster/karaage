@@ -16,6 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf.urls import *
+from django.conf import settings
 
 from karaage.projects.models import Project
 
@@ -35,7 +36,7 @@ urlpatterns = patterns('karaage.projects.views.admin',
     url(r'^(?P<project_id>[-.\w]+)/verbose/$', 'project_verbose', name='kg_project_verbose'),
     url(r'^(?P<project_id>[-.\w]+)/edit/$', 'add_edit_project', name='kg_edit_project'),
     url(r'^(?P<project_id>[-.\w]+)/delete/$', 'delete_project', name='kg_delete_project'),
-    url(r'^(?P<project_id>[-.\w]+)/remove_user/(?P<username>[-.\w]+)/$', 'remove_user', name='kg_remove_project_member'),
+    url(r'^(?P<project_id>[-.\w]+)/remove_user/(?P<username>%s)/$' % settings.USERNAME_VALIDATION_RE, 'remove_user', name='kg_remove_project_member'),
     url(r'^(?P<project_id>[-.\w]+)/logs/$', 'project_logs', name='kg_project_logs'),
     url(r'^(?P<project_id>[-.\w]+)/add_comment/$', 'add_comment', name='kg_project_add_comment'),
     url(r'^(?P<project_id>[-.\w]+)/quota/add/$', 'projectquota_add', name='kg_projectquota_add'),

@@ -16,10 +16,11 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf.urls import *
+from django.conf import settings
 
 
 urlpatterns = patterns('karaage.people.views.user',
-    url(r'^detail/(?P<username>[-.\w]+)/$', 'user_detail', name='kg_person_detail'),
+    url(r'^detail/(?P<username>%s)/$' % settings.USERNAME_VALIDATION_RE, 'user_detail', name='kg_person_detail'),
     url(r'^request_password/$', 'password_reset_request', name='password_reset_request'),
     url(r'^accounts/(?P<account_id>\d+)/change_shell/$', 'change_account_shell', name='kg_account_shell'),
     url(r'^accounts/(?P<account_id>\d+)/makedefault/(?P<project_id>[-.\w]+)/$', 'make_default', name='kg_account_set_default'),

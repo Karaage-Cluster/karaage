@@ -16,6 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf.urls import *
+from django.conf import settings
 from karaage.people.models import Person
 
 
@@ -38,5 +39,5 @@ urlpatterns = patterns('karaage.people.views.admin',
     url(r'^accounts/(?P<account_id>\d+)/delete/$', 'delete_account', name='kg_account_delete'),
     url(r'^accounts/(?P<account_id>\d+)/makedefault/(?P<project_id>[-.\w]+)/$', 'make_default', name='kg_account_set_default'),
 
-    (r'^(?P<username>[-.\w]+)/', include('karaage.people.urls.admin_user_detail')),
+    (r'^(?P<username>%s)/' % settings.USERNAME_VALIDATION_RE, include('karaage.people.urls.admin_user_detail')),
 )
