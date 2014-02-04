@@ -8,3 +8,8 @@
 override_dh_auto_build:
 	PYTHONPATH=. sphinx-build -b html -d docs/admin/.build/.doctrees -N docs/admin docs/admin/.build/admin
 	dh_auto_build
+
+.PHONY: override_dh_clean
+override_dh_clean:
+	dh_clean
+	rm -rf docs/admin/.build docs/admin/_build

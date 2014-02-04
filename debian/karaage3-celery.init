@@ -19,7 +19,9 @@
 # Description:       Starts the Celery worker daemon for a single project.
 ### END INIT INFO
 
-#set -e
+set -e
+
+. /lib/lsb/init-functions
 
 DEFAULT_PID_FILE="/var/run/karaage3-celery@%n.pid"
 DEFAULT_LOG_FILE="/var/log/karaage3-celery@%n.log"

@@ -3,8 +3,7 @@
 . /usr/share/debconf/confmodule
 
 if [ "$1" = "configure" ]; then
-    for i in /var/run/karaage3-celery \
-             /var/log/karaage3-celery
+    for i in /var/log/karaage3-celery
     do
         # only do something when no setting exists
         if ! dpkg-statoverride --list $i >/dev/null 2>&1

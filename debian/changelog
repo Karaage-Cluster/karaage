@@ -1,3 +1,11 @@
+karaage3 (3.0.2-1) unstable; urgency=low
+
+  * Bugs fixed.
+  * Update documentation.
+  * Updates to installation procedures.
+
+ -- Brian May <bam@debian.org>  Wed, 05 Feb 2014 10:10:50 +1100
+
 karaage3 (3.0.1-1) unstable; urgency=low
 
   * Various bugs fixed.
