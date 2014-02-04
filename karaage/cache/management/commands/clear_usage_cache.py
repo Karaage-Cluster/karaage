@@ -34,13 +34,13 @@ class Command(BaseCommand):
         models.TaskMachineCategoryCache.objects.filter(date__lt=today).delete()
         models.TaskCacheForMachineCategory.objects.filter(date__lt=today).delete()
         models.TaskCacheForProject.objects.filter(date__lt=today).delete()
-#        models.TaskCacheForInstitute.objects.filter(date__lt=today).delete()
+        models.TaskCacheForInstitute.objects.filter(date__lt=today).delete()
         if verbose > 1:
             print "Clearing finished tasks"
         models.TaskMachineCategoryCache.objects.filter(ready=True).delete()
         models.TaskCacheForMachineCategory.objects.filter(ready=True).delete()
         models.TaskCacheForProject.objects.filter(ready=True).delete()
-#        models.TaskCacheForInstitute.objects.filter(ready=True).delete()
+        models.TaskCacheForInstitute.objects.filter(ready=True).delete()
         if verbose > 1:
             print "Clearing project cache"
         models.ProjectCache.objects.all().delete()
