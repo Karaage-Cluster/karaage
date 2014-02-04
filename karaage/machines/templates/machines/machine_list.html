@@ -27,7 +27,7 @@
 
 
 {% block object-tools %}
-{% if request.user.is_admin %}
+{% if karaage_site == 'admin' and request.user.is_admin %}
 <div class="module object-tools">
     <h2>Object links</h2>
     <ul>
