@@ -1,0 +1,297 @@
+.. index:: upgrading; to 3.0.x
+
+Upgrading to 3.0.x
+==================
+This section is for administrators who have an older version of Karaage already
+installed, and wish to upgrade to 3.0.x.
+
+If you don't already have Karaage installed and wish to get started for the
+first time, please see the :doc:`/upgrading` section.
+
+.. warning::
+
+    This is a non-trivial upgrade with non-trivial database migrations. The
+    database migrations will take some time to complete and could fail or cause
+    data loss. It is recommended that you copy your production data and run the
+    database migrations on a test system, as shown below.
+
+
+Assumptions
+-----------
+Assumptions made by this documentation. Other configurations are possible,
+however you will have to adapt from this documentation.
+
+* You have a cluster running Slurm or PBS that is already up and running.
+* You want to OpenLDAP with ppolicy support, on the same server.
+* You have a Debian Wheezy server already setup for Karaage.
+* You will be upgrading all components on a single system, called production.
+* You will do the upgrade via a testbox, called testbox, so you can test the new karaage before being commited.
+
+
+Backup production box
+---------------------
+
+.. warning::
+
+    Any changes to database while after the backup, but before the upgrade is
+    finished, may be lost. It is recommended to shutdown Karaage before running
+    the final run to ensure important changes are not made.
+
+Backup various things on production box:
+
+#.  Backup /etc/karaage and everything under this directory.
+
+#.  Backup /etc/ldap or /etc/openldap and everything under this directory.
+
+#.  Dump mysql database on production box.
+
+    .. code-block:: bash
+
+        mysqldump karaage > karaage.sql
+
+    You will use this file in the next step.
+
+#.  Dump LDAP database on production box.
+
+    .. code-block:: bash
+
+        slapcat > karaage.ldif
+
+
+Install on test server
+----------------------
+.. warning::
+
+    Double check what you are doing to ensure you don't accidentally delete
+    production data.
+
+.. warning::
+
+    You must have sufficient disk space on the production box to create a copy
+    of the Karaage database.
+
+.. note::
+
+    The migrations do not make any invasive changes to LDAP in any way until
+    you run migrate_ldap, manually, by hand. This can be done after testing
+    everything to make sure it is working fine. This means you don't need to
+    copy LDAP data from your test system to your production system.
+
+    If any institute references a group by gidNumber that does not exist, and
+    cannot be found by name either, it will automatically be created. Not
+    having a group is an error, even for Karaage 2.7.x.
+
+.. note::
+
+    If you do encounter any problems performing database migrations, please file
+    a bug report, so the problem can be fixed. Bug reports can be submitted at
+    `github <https://github.com/Karaage-Cluster/karaage/issues>`_.
+
+#.  Create a copy of the karaage database on your production mysql server:
+
+    #.  Create a new user and database for karaage3::
+
+            mysql> create database karaage3;
+            mysql> CREATE USER 'karaage3'@'localhost' IDENTIFIED BY 'YYYYYYYY';
+            mysql> GRANT ALL PRIVILEGES ON karaage3.* TO 'karaage3'@'localhost';
+
+        You will use the values you set, later, in the karaage settings. Do not
+        use YYYYYYYY on a production system.
+
+        It is recommended that the user karaage3 should not have any access to
+        the karaage database, to avoid the potential for mistakes being made.
+
+        You will need to create karaage3 users that can access this database from your test box::
+
+            mysql> CREATE USER 'karaage3'@'testbox' IDENTIFIED BY 'YYYYYYYY';
+            mysql> GRANT ALL PRIVILEGES ON karaage3.* TO 'karaage3'@'testbox';
+
+    #.  Copy mysql to new database on production box:
+
+            .. code-block:: bash
+
+                mysql karaage3 < karaage.sql
+
+    #.  Check data in karaage3 looks correct, before proceeding.
+
+#.  Setup a test system.  Read the steps in :doc:`/getting_started`. Do not set
+    up any data stores yet. These steps will instruct you to install a mysql
+    database, which isn't essential, however does help ensure karaage is
+    working correctly at this point.
+
+#.  Stop karaage processes on test box.
+
+    .. code-block:: bash
+
+        service apache2 stop
+        service karaage3-celery stop
+
+#.  Check the following settings are in /etc/karaage/global_settings.py. The
+    mysql server should refer to the *new* database you created above, the LDAP
+    server should refer to your production server.
+
+    .. code-block:: python
+
+         DATABASES = {
+              'default': {
+                    'ENGINE': 'django.db.backends.mysql',
+                    'NAME': 'karaage3',
+                    'USER': 'karaage3',
+                    'PASSWORD': 'YYYYYYYY',
+                    'HOST': 'production',
+                    'PORT': '',
+                    'ATOMIC_REQUESTS': True,
+              }
+         }
+
+        LDAP = {
+             'default': {
+                  'ENGINE': 'tldap.backend.fake_transactions',
+                  'URI': 'ldap://production',
+                  'USER': 'cn=admin,dc=example,dc=org',
+                  'PASSWORD': 'XXXXXXXX',
+                  'USE_TLS': False,
+                  'TLS_CA' : None,
+                  'LDAP_ACCOUNT_BASE': 'ou=People,dc=example,dc=org',
+                  'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
+             }
+        }
+
+        DATASTORES = {
+             'ldap' : [
+                  {
+                        'DESCRIPTION': 'Default LDAP datastore',
+                        'ENGINE': 'karaage.datastores.ldap.AccountDataStore',
+                        'LDAP': 'default',
+                        'ACCOUNT': 'karaage.datastores.ldap_schemas.openldap_account',
+                        'GROUP': 'karaage.datastores.ldap_schemas.openldap_group',
+                        'PRIMARY_GROUP': "institute",
+                        'DEFAULT_PRIMARY_GROUP': "dummy",
+                        'HOME_DIRECTORY': "/home/%(uid)s",
+                        'LOCKED_SHELL': "/usr/local/sbin/locked",
+                  },
+             ],
+             'dummy' : [
+             ],
+        }
+
+    .. warning::
+
+        You must call the ldap datastore 'ldap' otherwise the migrations will fail to retrieve LDAP
+        information correctly.
+
+    .. warning::
+
+        You must have LDAP configured correctly before you proceed to the migration step. The migrations reference
+        LDAP information if it is available. If it is not available, the database may end up with incorrect
+        information.
+
+#.  Migrate DB tables:
+
+    .. code-block:: bash
+
+        kg-manage migrate --all
+
+    Some of these migrations may take some time to complete.
+
+#.  Check mysql data is correct.
+
+    #.  Connect to mysql database:
+
+            .. code-block:: bash
+
+                mysql karaage3
+
+    #.  Ensure all tables in database are using innodb and utf8 encoding::
+
+            mysql> use karaage3
+            mysql> show table status
+
+        For every table that is not innodb, convert it with::
+
+            mysql> ALTER TABLE table_name ENGINE=InnoDB;
+
+        For every table that is not utf8, convert it with::
+
+            mysql> ALTER TABLE table_name CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci
+
+        Some of these conversions may take some time to complete, especially
+        for the cpujob table.
+
+    #.  Ensure mysql data is correct without any obvious signs of problems.
+
+#. If you have any other datastores, configure them now (:doc:`/datastores`).
+
+#.  Restart karaage processes.
+
+    .. code-block:: bash
+
+        service apache2 start
+        service karaage3-celery start
+
+#.  You can run the following command to check what LDAP changes are required:
+
+    .. code-block:: bash
+
+        kg-manage update_ldap --ldif
+
+    These need to be run before the upgrade can be considered complete, however
+    there is no hurry just yet. If you make the changes now, some operations on your
+    production box may not work correctly until after you upgrade.
+
+#.  Test. You should now be able to go to http://hostname/kgadmin/.  Apply any
+    local customizations you need to have a fully operational system now.  Do
+    not continue if you are not completely happy.
+
+
+Install on production server
+----------------------------
+
+#.  Up to this point you have not made any changes to your production server.
+    If you are not happy with the upgrade, you can revert to your production
+    system. After you pass this point, it will still be possible to revert,
+    only it will be slightly harder, as you have to undo the following steps.
+
+#.  Move /etc/karaage to temp place:
+
+    .. code-block:: bash
+
+        mv /etc/karaage /etc/karaage.old
+
+#.  Make a complete copy of /etc/karaage from test box to production box. Check
+    /etc/karaage/global_settings.py and ensure database and LDAP references are
+    still correct for the production box.
+
+#.  Install the latest packages on your production box:
+
+    .. code-block:: bash
+
+        apt-get install karaage3-admin
+        apt-get install karaage3-registration
+        apt-get install python-mysqldb
+        apt-get install libapache2-mod-wsgi
+
+    If prompted to replace config files, say No, unless you know what you are
+    doing.
+
+    If you have disabled installing recommended packages by default, you will
+    need to install these packages by hand:
+
+    .. code-block:: bash
+
+        apt-get install rabbitmq-server
+        apt-get install karaage3-celery
+
+#.  Run the following commands to check what LDAP changes are required:
+
+    .. code-block:: bash
+
+        kg-manage update_ldap --ldif
+
+    Make the LDAP changes if happy:
+
+    .. code-block:: bash
+
+        kg-manage update_ldap
+
+#. Test production box and make sure everything is working.

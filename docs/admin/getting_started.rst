@@ -96,8 +96,8 @@ MySQL server installation
         mysql> CREATE USER 'karaage'@'localhost' IDENTIFIED BY 'YYYYYYYY';
         mysql> GRANT ALL PRIVILEGES ON karaage.* TO 'karaage'@'localhost';
 
-    Use the values you set in karaage settings. Do not use YYYYYYYY on a
-    production system.
+    You will use the values you set, later, in the karaage settings. Do not use
+    YYYYYYYY on a production system.
 
 
 Initial setup
