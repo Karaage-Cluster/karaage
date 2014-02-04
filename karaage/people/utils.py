@@ -23,7 +23,7 @@ from karaage.people.models import Person
 from karaage.datastores import person_exists, account_exists
 from karaage.machines.models import MachineCategory, Account
 
-username_re = re.compile(r'^[-\w]+$')
+username_re = re.compile(r'^%s$' % settings.USERNAME_VALIDATION_RE)
 
 class UsernameException(Exception):
     pass
@@ -51,7 +51,7 @@ def validate_username(username):
     if len(username) < 2:
         raise UsernameInvalid(u'Username must be at least 2 characters')
     if not username_re.search(username):
-        raise UsernameInvalid(u'Usernames can only contain letters, numbers and underscores')
+        raise UsernameInvalid(settings.USERNAME_VALIDATION_ERROR_MSG)
 
     return username
 
@@ -132,4 +132,3 @@ def validate_username_for_rename_person(username, person):
             date_deleted__isnull=True).count()
         if count == 0 and account_exists(username, mc):
              raise UsernameTaken(u'Username is already in external account datastore.')
-
