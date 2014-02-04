@@ -24,13 +24,6 @@ class Migration(DataMigration):
                     p = datastore._accounts().get(uid=person.user.username)
                     if p.userPassword is not None:
                         person.legacy_ldap_password = p.userPassword
-
-                    # If there are no accounts for this person, then delete
-                    # the LDAP entry.
-                    ua = person.useraccount_set.all()
-                    ua = ua.filter(date_deleted__isnull=True)
-                    if ua.count() == 0 and 'posixAccount' not in p.objectClass:
-                        p.delete()
                 except datastore._account.DoesNotExist:
                     # If we cannot find LDAP entry, assume this is because person
                     # has no access.
