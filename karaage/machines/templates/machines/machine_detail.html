@@ -15,7 +15,7 @@
 
 
 {% block object-tools %}
-{% if request.user.is_admin %}
+{% if karaage_site == 'admin'  and request.user.is_admin %}
 <div class="module object-tools">
     <h2>Tasks</h2>
     <ul>
@@ -45,18 +45,22 @@
             <tr><td>PBS server host:</td><td>{{ machine.pbs_server_host }}</td></tr>
             <tr><td>Memory per core:</td><td>{{ machine.mem_per_core }}</td></tr>
             <tr><td>Scaling factor:</td><td>{{ machine.scaling_factor }}</td></tr>
+            {% if karaage_site == 'admin' %}
             <tr><td colspan="2"><a href="{% url 'kg_machine_accounts' machine.pk %}">User Accounts</a></td></tr>
             <tr><td colspan="2"><a href="{% url 'kg_machine_projects' machine.pk %}">Projects</a></td></tr>
             {% if request.user.is_admin %}
             <tr><td colspan="2"><a class="changelink" href="{% url 'kg_machine_edit' machine.pk %}">Edit</a></td></tr>
             {% endif %}
+            {% endif %}
         </table>
     </div>
+    {% if karaage_site == 'admin' %}
     <div class="module">
         <h2>Last 5 jobs</h2>
         {% gen_table usage_list %}
     </div>
     {% comments machine %}
+    {% endif %}
 </div>
 {% endblock %}
 
