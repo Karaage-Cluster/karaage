@@ -131,7 +131,7 @@ def gen_cache_for_machine_category(start, end, machine_category):
 def gen_cache_for_project(start, end, project, machine_category):
     current = gen_cache_for_project
     logger = current.get_logger()
-    total = Person.objects.count()
+    total = 1
     i = 0
 
     logger.info("generating project graphs %s" % project)
@@ -144,7 +144,7 @@ def gen_cache_for_project(start, end, project, machine_category):
 def gen_cache_for_institute(start, end, institute, machine_category):
     current = gen_cache_for_institute
     logger = current.get_logger()
-    total = Person.objects.count()
+    total = 1
     i = 0
 
     logger.info("generating institute graphs %s" % institute)
