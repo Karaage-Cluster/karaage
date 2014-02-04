@@ -4,9 +4,9 @@
         <tr>
             <th>Job ID</th>
             {% ifnotequal type "user" %}
-            <th>User</th>
+            <th>Person</th>
             {% if user.is_authenticated %}
-            <th>Username</th>
+            <th>Account</th>
             {% endif %}
             {% endifnotequal %}
             {% ifnotequal type "project" %}
