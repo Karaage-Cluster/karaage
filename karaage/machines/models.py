@@ -20,6 +20,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
 
 import datetime
+from jsonfield import JSONField
 
 from karaage.people.models import Person, Group
 from karaage.machines.managers import MachineCategoryManager, MachineManager, ActiveMachineManager
@@ -120,6 +121,8 @@ class Machine(AbstractBaseUser):
 class Account(models.Model):
     person = models.ForeignKey(Person)
     username = models.CharField(max_length=100)
+    foreign_id = models.CharField(max_length=255, null=True,
+                                  help_text='The foreign identifier from the datastore.')
     machine_category = models.ForeignKey(MachineCategory)
     default_project = models.ForeignKey('projects.Project', null=True, blank=True)
     date_created = models.DateField()
@@ -127,6 +130,8 @@ class Account(models.Model):
     disk_quota = models.IntegerField(null=True, blank=True, help_text="In GB")
     shell = models.CharField(max_length=50)
     login_enabled = models.BooleanField(default=True)
+    extra_data = JSONField(default={},
+                           help_text='Datastore specific values should be stored in this field.')
 
     def __init__(self, *args, **kwargs):
         super(Account, self).__init__(*args, **kwargs)

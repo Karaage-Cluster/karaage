@@ -19,6 +19,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from jsonfield import JSONField
 
 from karaage.admin.models import CHANGE
 from karaage.common.constants import TITLES, STATES, COUNTRIES
@@ -384,8 +385,12 @@ class Person(AbstractBaseUser):
 
 class Group(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    foreign_id = models.CharField(max_length=255, null=True, unique=True,
+                                  help_text='The foreign identifier from the datastore.')
     members = models.ManyToManyField(Person, related_name='groups')
     description = models.TextField(null=True, blank=True)
+    extra_data = JSONField(default={},
+                           help_text='Datastore specific values should be stored in this field.')
 
     class Meta:
         ordering = ['name']

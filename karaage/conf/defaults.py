@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'karaage.applications',
     'ajax_select',
     'tldap.methods',
+    'jsonfield',
     'djcelery',
 )
 
