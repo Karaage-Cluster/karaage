@@ -33,7 +33,6 @@ DATASTORES = {
             'ACCOUNT': 'karaage.datastores.ldap_schemas.openldap_account',
             'GROUP': 'karaage.datastores.ldap_schemas.openldap_group',
             'PRIMARY_GROUP': "institute",
-            'DEFAULT_PRIMARY_GROUP': "dummy",
             'HOME_DIRECTORY': "/vpac/%(default_project)s/%(uid)s",
             'LOCKED_SHELL': '/usr/local/sbin/insecure',
         },
