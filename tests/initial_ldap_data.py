@@ -19,8 +19,8 @@
 
 from django.conf import settings
 
-GROUP_DN = settings.LDAP['default']['LDAP_GROUP_BASE']
-USER_DN = settings.LDAP['default']['LDAP_ACCOUNT_BASE']
+GROUP_DN = 'ou=Group, dc=python-ldap,dc=org'
+USER_DN = 'ou=People, dc=python-ldap,dc=org'
 
 test_ldif = [
     "dn: " + GROUP_DN,
