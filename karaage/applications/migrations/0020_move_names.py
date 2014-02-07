@@ -10,7 +10,6 @@ class Migration(DataMigration):
         "Write your forwards methods here."
         for applicant in orm.applicant.objects.iterator():
             applicant.short_name = applicant.first_name
-            print [applicant.first_name, applicant.last_name]
             applicant.full_name = u"%s %s" % (
                     applicant.first_name, applicant.last_name)
             applicant.save()
