@@ -40,8 +40,123 @@ def _lookup(cls):
     return(cls)
 
 
+class PersonDataStore(base.BaseDataStore):
+    """ LDAP Person datastore. """
+
+    def __init__(self, config):
+        super(PersonDataStore, self).__init__(config)
+        self._using = config['LDAP']
+        self._person = _lookup(config['PERSON'])
+        self._group = _lookup(config['GROUP'])
+        self._settings = config
+
+    def _people(self):
+        """ Return people query. """
+        return self._person.objects.using(
+                using=self._using, settings=self._settings)
+
+    def _groups(self):
+        """ Return groups query. """
+        return self._group.objects.using(
+                using=self._using, settings=self._settings)
+
+    def _create_person(self, **kwargs):
+        """ Create a new person. """
+        return self._person(
+                using=self._using, settings=self._settings, **kwargs)
+
+    def save_person(self, person):
+        """ Person was saved. """
+        try:
+            luser = self._people().get(uid=person.username)
+            luser.givenName = person.first_name
+            luser.sn = person.last_name
+            luser.fullName = person.full_name
+            luser.telephoneNumber = _str_or_none(person.telephone)
+            luser.mail = _str_or_none(person.email)
+            luser.title = _str_or_none(person.title)
+            luser.o = person.institute.name
+            if person.is_locked():
+                luser.lock()
+            else:
+                luser.unlock()
+            luser.save()
+        except self._person.DoesNotExist:
+            luser = self._create_person()
+            luser.uid = person.username
+            luser.givenName = person.first_name
+            luser.sn = person.last_name
+            luser.fullName = person.full_name
+            luser.telephoneNumber = _str_or_none(person.telephone)
+            luser.mail = _str_or_none(person.email)
+            luser.title = _str_or_none(person.title)
+            luser.o = person.institute.name
+            if person.is_locked():
+                luser.lock()
+            else:
+                luser.unlock()
+            luser.save()
+
+            # add all groups
+            for group in person.groups.all():
+                self.add_person_to_group(person, group)
+
+    def delete_person(self, person):
+        """ Person was deleted. """
+        try:
+            luser = self._people().get(uid=person.username)
+            luser.secondary_groups.clear()
+            luser.delete()
+        except self._person.DoesNotExist:
+            # it doesn't matter if it doesn't exist
+            pass
+
+    def set_person_password(self, person, raw_password):
+        """ Person's password was changed. """
+        luser = self._people().get(uid=person.username)
+        luser.change_password(raw_password)
+        luser.save()
+
+    def set_person_username(self, person, old_username, new_username):
+        """ Person's username was changed. """
+        luser = self._people().get(uid=old_username)
+        luser.rename(uid=new_username)
+
+    def add_person_to_group(self, person, group):
+        """ Add person to group. """
+        lgroup = self._groups().get(cn=group.name)
+        person = self._people().get(uid=person.username)
+        lgroup.secondary_people.add(person)
+
+    def remove_person_from_group(self, person, group):
+        """ Remove person from group. """
+        lgroup = self._groups().get(cn=group.name)
+        person = self._people().get(uid=person.username)
+        lgroup.secondary_people.remove(person)
+
+    def get_person_details(self, person):
+        """ Get the person details. """
+        luser = self._people().get(uid=person.username)
+        result = {}
+        for i, j in luser.get_fields():
+            if i != 'userPassword' and j is not None:
+                result[i] = j
+        result['dn'] = luser.dn
+        result['secondary_accounts'] = [
+                a.dn for a in luser.secondary_groups.all() ]
+        return result
+
+    def person_exists(self, username):
+        """ Account's details were changed. """
+        try:
+            self._people().get(uid=username)
+            return True
+        except self._person.DoesNotExist:
+            return False
+
+
 class AccountDataStore(base.BaseDataStore):
-    """ LDAP Account datastore. """
+    """ LDAP Account and group datastore. """
 
     def __init__(self, config):
         super(AccountDataStore, self).__init__(config)
@@ -68,15 +183,15 @@ class AccountDataStore(base.BaseDataStore):
         return self._group.objects.using(
                 using=self._using, settings=self._settings)
 
-    def _create_account(self):
+    def _create_account(self, **kwargs):
         """ Create a new account. """
         return self._account(
-                using=self._using, settings=self._settings)
+                using=self._using, settings=self._settings, **kwargs)
 
-    def _create_group(self):
+    def _create_group(self, **kwargs):
         """ Create a new group. """
         return self._group(
-                using=self._using, settings=self._settings)
+                using=self._using, settings=self._settings, **kwargs)
 
     def save_account(self, account):
         """ Account was saved. """

@@ -17,6 +17,7 @@
 
 import sys
 import ldif
+import ldap.dn
 import optparse
 
 from django.core.management.base import BaseCommand
@@ -25,6 +26,7 @@ import tldap.transaction
 
 from karaage.machines.models import Account
 from karaage.datastores import get_test_datastore
+import karaage.datastores.ldap as dldap
 
 class Command(BaseCommand):
     help = "Run migrations on the LDAP database."
@@ -40,17 +42,79 @@ class Command(BaseCommand):
     @django.db.transaction.commit_on_success
     @tldap.transaction.commit_on_success
     def handle(self, **options):
-        datastore = get_test_datastore("ldap", 0)
+        account_datastore = get_test_datastore("ldap", 0)
+        assert isinstance(account_datastore, dldap.AccountDataStore)
+
+        try:
+            person_datastore = get_test_datastore("ldap", 1)
+            if not isinstance(person_datastore, dldap.PersonDataStore):
+                person_datastore = None
+        except IndexError:
+            person_datastore = None
+        assert person_datastore is not None
+
         if options['ldif']:
             ldif_writer=ldif.LDIFWriter(sys.stdout)
 
-        for p in datastore._accounts():
-            # If there are no accounts for this person, then delete
-            # the LDAP entry.
-            ua = Account.objects.filter(username=p.uid, date_deleted__isnull=True)
-            if ua.count() == 0 and 'posixAccount' not in p.objectClass:
+        if person_datastore is not None:
+            # we have to move accounts to the account_base.
+            # no changes rquired for people.
+            account_base_dn = account_datastore._accounts().get_base_dn()
+            split_account_base_dn = ldap.dn.str2dn(account_base_dn)
+
+            for p in person_datastore._people().filter(objectClass='posixAccount'):
+                # Convert account to person, strip unwanted fields.
+                # This is better then calling person.save() as we get the
+                # password too.
+                new_person = person_datastore._create_person(dn=p.dn)
+                for i, _ in new_person.get_fields():
+                    if i != "objectClass":
+                        value = getattr(p, i)
+                        setattr(new_person, i, value)
+
                 if options['ldif']:
+                    # calculate fully qualified new DN.
+                    split_dn = ldap.dn.str2dn(p.dn)
+                    tmp = []
+                    tmp.append(split_dn[0])
+                    tmp.extend(split_account_base_dn)
+                    new_dn = ldap.dn.dn2str(tmp)
+
+                    # we can do move in ldif, so delete and add
                     entry = { 'changetype': [ 'delete' ] }
                     ldif_writer.unparse(p.dn,entry)
+
+                    # write person entry
+                    if new_person.pwdAttribute is None:
+                        new_person.pwdAttribute = 'userPassword'
+                    new_person.unparse(ldif_writer,
+                            None, { 'changetype': [ 'add' ] } )
+
+                    # write account entry
+                    if p.pwdAttribute is None:
+                        p.pwdAttribute = 'userPassword'
+                    p.unparse(ldif_writer, new_dn, { 'changetype': [ 'add' ] } )
                 else:
-                    p.delete()
+                    # move account from person to accounts
+                    print "moving account and creating person for %s" % p.dn
+                    p.rename(new_base_dn=account_base_dn)
+                    # write person entry, if not already existing
+                    try:
+                        new_person.save()
+                    except account_person._account.AlreadyExists:
+                        pass
+
+        else:
+            # people not in LDAP, delete people without accounts.
+
+            for p in account_datastore._accounts():
+                # If there are no accounts for this person, then delete
+                # the LDAP entry.
+                ua = Account.objects.filter(username=p.uid, date_deleted__isnull=True)
+                if ua.count() == 0 and 'posixAccount' not in p.objectClass:
+                    if options['ldif']:
+                        entry = { 'changetype': [ 'delete' ] }
+                        ldif_writer.unparse(p.dn,entry)
+                    else:
+                        print "deleting %s" % p.dn
+                        p.delete()
