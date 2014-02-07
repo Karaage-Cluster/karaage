@@ -71,7 +71,7 @@ RHEL 6 installation
         objectClass: top
         objectClass: domain
 
-        dn: ou=People,dc=example,dc=org
+        dn: ou=Accounts,dc=example,dc=org
         objectClass: organizationalUnit
 
         dn: ou=Groups,dc=example,dc=org
@@ -131,7 +131,7 @@ Debian installation
 
 #.  Create the file with the following contents in /tmp/ppolicy.ldif::
 
-        dn: ou=People,dc=example,dc=org
+        dn: ou=Accounts,dc=example,dc=org
         objectClass: organizationalUnit
 
         dn: ou=Groups,dc=example,dc=org
@@ -196,7 +196,7 @@ Configuring Karaage to use LDAP
                   'PASSWORD': 'XXXXXXXX',
                   'USE_TLS': False,
                   'TLS_CA' : None,
-                  'LDAP_ACCOUNT_BASE': 'ou=People,dc=example,dc=org',
+                  'LDAP_ACCOUNT_BASE': 'ou=Accounts,dc=example,dc=org',
                   'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
              }
         }
@@ -219,6 +219,27 @@ Configuring Karaage to use LDAP
              ],
         }
 
+#.  (optional) If you require people to be recorded in LDAP, add the following to what you just set:
+
+    .. code-block:: python
+
+        DATASTORES = {
+             'ldap' : [
+                  {
+                        # as above
+                  },
+                  {
+                        'DESCRIPTION': 'Default LDAP person datastore',
+                        'ENGINE': 'karaage.datastores.ldap.PersonDataStore',
+                        'LDAP': 'default',
+                        'PERSON': 'karaage.datastores.ldap_schemas.openldap_person',
+                        'GROUP': 'karaage.datastores.ldap_schemas.openldap_group',
+                  },
+             ],
+             # as above
+        }
+
+    The GROUP setting should match for both parts.
 
 #.  Reload apache.
 

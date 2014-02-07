@@ -132,48 +132,51 @@ Install on test server
 
     .. code-block:: python
 
-         DATABASES = {
-              'default': {
-                    'ENGINE': 'django.db.backends.mysql',
-                    'NAME': 'karaage3',
-                    'USER': 'karaage3',
-                    'PASSWORD': 'YYYYYYYY',
-                    'HOST': 'production',
-                    'PORT': '',
-                    'ATOMIC_REQUESTS': True,
-              }
-         }
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': 'karaage3',
+                'USER': 'karaage3',
+                'PASSWORD': 'YYYYYYYY',
+                'HOST': 'production',
+                'PORT': '',
+                'ATOMIC_REQUESTS': True,
+            }
+        }
 
         LDAP = {
-             'default': {
-                  'ENGINE': 'tldap.backend.fake_transactions',
-                  'URI': 'ldap://production',
-                  'USER': 'cn=admin,dc=example,dc=org',
-                  'PASSWORD': 'XXXXXXXX',
-                  'USE_TLS': False,
-                  'TLS_CA' : None,
-                  'LDAP_ACCOUNT_BASE': 'ou=People,dc=example,dc=org',
-                  'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
-             }
+            'default': {
+                'ENGINE': 'tldap.backend.fake_transactions',
+                'URI': 'ldap://production',
+                'USER': 'cn=admin,dc=example,dc=org',
+                'PASSWORD': 'XXXXXXXX',
+                'USE_TLS': False,
+                'TLS_CA' : None,
+                'LDAP_ACCOUNT_BASE': 'ou=People,dc=example,dc=org',
+                'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
+            }
         }
 
         DATASTORES = {
-             'ldap' : [
-                  {
-                        'DESCRIPTION': 'Default LDAP datastore',
-                        'ENGINE': 'karaage.datastores.ldap.AccountDataStore',
-                        'LDAP': 'default',
-                        'ACCOUNT': 'karaage.datastores.ldap_schemas.openldap_account',
-                        'GROUP': 'karaage.datastores.ldap_schemas.openldap_group',
-                        'PRIMARY_GROUP': "institute",
-                        'DEFAULT_PRIMARY_GROUP': "dummy",
-                        'HOME_DIRECTORY': "/home/%(uid)s",
-                        'LOCKED_SHELL': "/usr/local/sbin/locked",
-                  },
-             ],
-             'dummy' : [
-             ],
+            'ldap' : [
+                {
+                    'DESCRIPTION': 'Default LDAP datastore',
+                    'ENGINE': 'karaage.datastores.ldap.AccountDataStore',
+                    'LDAP': 'default',
+                    'ACCOUNT': 'karaage.datastores.ldap_schemas.openldap_account',
+                    'GROUP': 'karaage.datastores.ldap_schemas.openldap_group',
+                    'PRIMARY_GROUP': "institute",
+                    'DEFAULT_PRIMARY_GROUP': "dummy",
+                    'HOME_DIRECTORY': "/home/%(uid)s",
+                    'LOCKED_SHELL': "/usr/local/sbin/locked",
+                },
+            ],
+            'dummy' : [
+            ],
         }
+
+    The values given for LDAP_ACCOUNT_BASE and LDAP_GROUP_BASE should
+    correspond with your existing LDAP data.
 
     .. warning::
 
@@ -282,6 +285,42 @@ Install on production server
         apt-get install rabbitmq-server
         apt-get install karaage3-celery
 
+#.  Test production box and make sure everything is working.
+
+#.  (optional) If you require people to be recorded in LDAP:
+
+    #.  *Update* the following settings in /etc/karaage/global_settings.config:
+
+        .. code-block:: python
+
+            LDAP = {
+                'default': {
+                    # as above
+                    'LDAP_ACCOUNT_BASE': 'ou=Accounts,dc=example,dc=org',
+                    'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
+                }
+            }
+
+            DATASTORES = {
+                'ldap' : [
+                    {
+                        # as above
+                    },
+                    {
+                        'DESCRIPTION': 'Default LDAP person datastore',
+                        'ENGINE': 'karaage.datastores.ldap.PersonDataStore',
+                        'LDAP': 'default',
+                        'PERSON': 'karaage.datastores.ldap_schemas.openldap_person',
+                        'GROUP': 'karaage.datastores.ldap_schemas.openldap_group',
+                    },
+                ],
+                # as above
+            }
+
+        The GROUP setting should match for both parts. For the next step to
+        work correctly, the first datastore should be the AccountDataStore, and
+        the second datastore should be the PersonDataStore.
+
 #.  Run the following commands to check what LDAP changes are required:
 
     .. code-block:: bash
@@ -294,4 +333,4 @@ Install on production server
 
         kg-manage update_ldap
 
-#. Test production box and make sure everything is working.
+#.  Test production box and make sure everything is working.
