@@ -25,7 +25,7 @@ from tldap.test import slapd
 
 from karaage.people.models import Person
 from karaage.machines.models import Machine, MachineCategory
-from karaage.test_data.initial_ldap_data import test_ldif
+from initial_ldap_data import test_ldif
 from karaage.datastores import ldap_schemas
 
 class AccountTestCase(TestCase):
@@ -35,7 +35,7 @@ class AccountTestCase(TestCase):
         server.set_port(38911)
         server.start()
         server.ldapadd("\n".join(test_ldif)+"\n")
-        call_command('loaddata', 'karaage/testproject/karaage_data', **{'verbosity': 0})
+        call_command('loaddata', 'karaage_data', **{'verbosity': 0})
         self.server = server
         form_data = {
             'title' : 'Mr',
