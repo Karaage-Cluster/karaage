@@ -156,10 +156,8 @@ def project_list(request, queryset=Project.objects.select_related(), template_na
         terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
-            q = Q(pid__icontains=term) | Q(name__icontains=term) | Q(description__icontains=term) | Q(leaders__short_name__icontains=term) | Q(leaders__full_name__icontains=term) | Q(institute__name__icontains=term)
-            query = query & q
-        
-        project_list = project_list.filter(query)
+            query = Q(pid__icontains=term) | Q(name__icontains=term) | Q(description__icontains=term) | Q(leaders__short_name__icontains=term) | Q(leaders__full_name__icontains=term) | Q(institute__name__icontains=term)
+        project_list = project_list.filter(query).distinct()
     else:
         terms = ""
 
