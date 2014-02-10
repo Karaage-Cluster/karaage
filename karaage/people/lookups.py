@@ -21,6 +21,7 @@ from django.db.models import Q
 
 import ajax_select
 
+from karaage.common import is_admin
 from karaage.people.models import Person, Group
 
 
@@ -36,6 +37,8 @@ class LookupChannel(ajax_select.LookupChannel):
         PermissionDenied (401 response)
         """
         if not request.user.is_authenticated():
+            raise PermissionDenied
+        if not is_admin(request):
             raise PermissionDenied
 
 

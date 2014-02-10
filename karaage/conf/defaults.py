@@ -142,3 +142,6 @@ X_FRAME_OPTIONS = 'DENY'
 
 from socket import getfqdn
 REGISTRATION_BASE_URL = 'https://%s/users' % getfqdn()
+
+ADMIN_REQUIRED = False
+ADMIN_IGNORED = False

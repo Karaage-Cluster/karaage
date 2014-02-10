@@ -22,13 +22,15 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
-from karaage.middleware.threadlocals import get_current_user
+from django.conf import settings
 
+from karaage.middleware.threadlocals import get_current_user
 from karaage.common.forms import CommentForm
 from karaage.admin.models import LogEntry
 
 from django.template import add_to_builtins
 add_to_builtins('karaage.common.templatetags.karaage_tags')
+
 
 def get_date_range(request, default_start=(datetime.date.today() - datetime.timedelta(days=90)), default_end=datetime.date.today()):
 
@@ -152,3 +154,10 @@ def is_password_strong(password, old_password=None):
         return False
 
     return True
+
+def is_admin(request):
+    if settings.ADMIN_IGNORED:
+        return False
+    if not request.user.is_authenticated():
+        return False
+    return request.user.is_admin

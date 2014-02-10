@@ -17,6 +17,7 @@
 
 from django.conf import settings
 
+from karaage.common import is_admin
 from karaage.applications.models import Application
 
 
@@ -26,6 +27,7 @@ def common(request):
     ctx['GRAPH_URL'] = settings.GRAPH_URL
     ctx['org_name'] = settings.ACCOUNTS_ORG_NAME
     ctx['accounts_email'] = settings.ACCOUNTS_EMAIL
+    ctx['is_admin'] = is_admin(request)
     return ctx
 
 

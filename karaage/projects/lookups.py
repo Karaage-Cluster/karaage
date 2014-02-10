@@ -19,6 +19,7 @@ from django.db.models import Q
 from django.core.exceptions import PermissionDenied
 from django.utils.html import escape
 
+from karaage.common import is_admin
 from karaage.projects.models import Project
 
 import ajax_select
@@ -37,7 +38,8 @@ class LookupChannel(ajax_select.LookupChannel):
         """
         if not request.user.is_authenticated():
             raise PermissionDenied
-
+        if not is_admin(request):
+            raise PermissionDenied
 
 class ProjectLookup(LookupChannel):
     model = Project

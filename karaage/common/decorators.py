@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
 
@@ -27,10 +28,13 @@ def admin_required(function=None):
         # if user not logged in, show login form
         if not user.is_authenticated():
             return False
-        # First check if the user has the permission (even anon users)
-        if user.is_admin:
-            return True
-        raise PermissionDenied
+        # if this site doesn't allow admin access, fail
+        if settings.ADMIN_IGNORED:
+            raise PermissionDenied
+        # check if the user has admin rights
+        if not user.is_admin:
+            raise PermissionDenied
+        return True
 
     actual_decorator = user_passes_test(
         check_perms,
@@ -47,8 +51,45 @@ def login_required(function=None):
     Decorator for views that checks that the user is logged in, redirecting
     to the log-in page if necessary.
     """
+    def check_perms(user):
+        # if user not logged in, show login form
+        if not user.is_authenticated():
+            return False
+        # if this is the admin site only admin access
+        if settings.ADMIN_REQUIRED and not user.is_admin:
+            raise PermissionDenied
+        return True
+
     actual_decorator = user_passes_test(
-        lambda u: u.is_authenticated(),
+        check_perms,
+        login_url="login",
+        redirect_field_name="next"
+    )
+    if function:
+        return actual_decorator(function)
+    return actual_decorator
+
+
+def usage_required(function=None):
+    """
+    Decorator for views that checks that the user is logged in, redirecting
+    to the log-in page if necessary.
+    """
+    def check_perms(user):
+        # if user not logged in, show login form
+        if not user.is_authenticated():
+            return False
+        # if this is the admin site only admin access
+        if settings.ADMIN_REQUIRED and not user.is_admin:
+            raise PermissionDenied
+        if settings.USAGE_IS_PUBLIC:
+            return True
+        if user.is_admin:
+            return True
+        return False
+
+    actual_decorator = user_passes_test(
+        check_perms,
         login_url="login",
         redirect_field_name="next"
     )
