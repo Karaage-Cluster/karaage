@@ -164,7 +164,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Karaage-admin'
+htmlhelp_basename = 'Karaage-user'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -183,7 +183,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'Karaage.tex', u'Karaage Admin Documentation',
+  ('index', 'Karaage.tex', u'Karaage User Documentation',
    u'Brian May', 'manual'),
 ]
 
@@ -213,7 +213,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'karaage', u'Karaage Admin Documentation',
+    ('index', 'karaage', u'Karaage User Documentation',
      [u'Brian May'], 1)
 ]
 
@@ -227,7 +227,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'Karaage', u'Karaage Admin Documentation',
+  ('index', 'Karaage', u'Karaage User Documentation',
    u'Brian May', 'Karaage', 'Karaage is a cluster account management tool.',
    'Miscellaneous'),
 ]
@@ -245,7 +245,7 @@ texinfo_documents = [
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'Karaage Admin Documentation'
+epub_title = u'Karaage User Documentation'
 epub_author = u'Brian May'
 epub_publisher = u'Brian May'
 epub_copyright = u'2014, Brian May'
