@@ -32,12 +32,13 @@ def common(request):
 def registration(request):
     """ Set context for registration menu. """
     ctx = {}
+    ctx['karaage_site'] = 'registraton'
+
     if request.user.is_authenticated():
         person = request.user
         my_applications = Application.objects.get_for_applicant(person)
         requires_attention = Application.objects.requires_attention(person)
 
-        ctx['karaage_site'] = 'registraton'
         ctx['pending_applications'] = (
                 my_applications.count() + requires_attention.count()
         )
