@@ -16,7 +16,31 @@ import sys, os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
+sys.path.insert(0, os.path.abspath('../..'))
+
+class Mock(object):
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def __call__(self, *args, **kwargs):
+        return Mock()
+
+    @classmethod
+    def __getattr__(cls, name):
+        if name in ('__file__', '__path__'):
+            return '/dev/null'
+        elif name[0] == name[0].upper():
+            mockType = type(name, (), {})
+            mockType.__module__ = __name__
+            return mockType
+        else:
+            return Mock()
+
+#MOCK_MODULES = ['ldap', 'ldap.filter', 'ldap.modlist', 'ldap.dn', 'smbpasswd']
+MOCK_MODULES = ['ldap.dn', 'tldap', 'tldap.schemas', 'tldap.schemas.ds389', 'tldap.schemas.rfc', 'tldap.transaction', 'tldap.methods', 'tldap.methods.ldap_passwd', 'captcha', 'captcha.fields', 'ajax_select', 'ajax_select.fields', 'django_xmlrpc', 'matplotlib']
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = Mock()
 
 # -- General configuration -----------------------------------------------------
 
@@ -25,7 +49,7 @@ import sys, os
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.todo']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.viewcode']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -164,7 +188,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Karaage-admin'
+htmlhelp_basename = 'Karaage-programmer'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -183,7 +207,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'Karaage.tex', u'Karaage Admin Documentation',
+  ('index', 'Karaage.tex', u'Karaage Programmer Documentation',
    u'Brian May', 'manual'),
 ]
 
@@ -213,7 +237,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'karaage', u'Karaage Admin Documentation',
+    ('index', 'karaage', u'Karaage Programmer Documentation',
      [u'Brian May'], 1)
 ]
 
@@ -227,7 +251,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'Karaage', u'Karaage Admin Documentation',
+  ('index', 'Karaage', u'Karaage Programmer Documentation',
    u'Brian May', 'Karaage', 'Karaage is a cluster account management tool.',
    'Miscellaneous'),
 ]
@@ -245,7 +269,7 @@ texinfo_documents = [
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'Karaage Admin Documentation'
+epub_title = u'Karaage Programmer Documentation'
 epub_author = u'Brian May'
 epub_publisher = u'Brian May'
 epub_copyright = u'2014, Brian May'

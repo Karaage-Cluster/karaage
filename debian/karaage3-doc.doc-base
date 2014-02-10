@@ -3,7 +3,24 @@ Title: Karaage Admin Documentation
 Author: Brian May
 Abstract: This documents karaage functions for Administrators.
 Section: System/Administration
-
 Format: HTML
 Index: /usr/share/doc/karaage3-doc/admin/index.html
 Files: /usr/share/doc/karaage3-doc/admin/*.html
+
+Document: karaage-user
+Title: Karaage User Documentation
+Author: Brian May
+Abstract: This documents karaage functions for Users.
+Section: Network/Communication
+Format: HTML
+Index: /usr/share/doc/karaage3-doc/user/index.html
+Files: /usr/share/doc/karaage3-doc/user/*.html
+
+Document: karaage-programmer
+Title: Karaage Admin Documentation
+Author: Brian May
+Abstract: This documents karaage functions for Administrators.
+Section: Programming/Python
+Format: HTML
+Index: /usr/share/doc/karaage3-doc/programmer/index.html
+Files: /usr/share/doc/karaage3-doc/programmer/*.html
