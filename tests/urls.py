@@ -16,10 +16,11 @@ urlpatterns = patterns('',
     url(r'^usage/', include('karaage.usage.urls.admin')),
     url(r'^software/', include('karaage.software.urls.admin')),
     url(r'^emails/', include('karaage.emails.urls')),
-    url(r'^applications/', include('karaage.applications.urls.admin')),
+    url(r'^applications/', include('karaage.applications.urls')),
 
     url(r'^lookup/', include(ajax_select.urls)),
 
     url(r'^logs/$', 'karaage.admin.views.log_list', name='kg_log_list'),
+    url(r'^captcha/', include('captcha.urls')),
 )
 

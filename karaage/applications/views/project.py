@@ -32,12 +32,12 @@ import karaage.applications.forms as forms
 import karaage.applications.emails as emails
 import karaage.applications.views.base as base
 import karaage.applications.views.user as user
-import karaage.applications.views.common as common
+import karaage.applications.views.states as states
 import karaage.common.saml as saml
 from karaage.people.models import Person
 from karaage.projects.models import Project
 from karaage.institutes.models import Institute
-from karaage.common import log
+from karaage.common import log, is_admin
 
 import json
 
@@ -580,7 +580,7 @@ class StateApplicantEnteringDetails(StateWithSteps):
         return super(StateApplicantEnteringDetails, self).view(request, application, label, auth, actions)
 
 
-class StateWaitingForLeader(common.StateWaitingForApproval):
+class StateWaitingForLeader(states.StateWaitingForApproval):
     """ We need the leader to provide approval. """
     name = "Waiting for leader"
     authorised_text = "a project leader"
@@ -593,7 +593,7 @@ class StateWaitingForLeader(common.StateWaitingForApproval):
                 application, auth)
 
 
-class StateWaitingForDelegate(common.StateWaitingForApproval):
+class StateWaitingForDelegate(states.StateWaitingForApproval):
     """ We need the delegate to provide approval. """
     name = "Waiting for delegate"
     authorised_text = "an institute delegate"
@@ -606,7 +606,7 @@ class StateWaitingForDelegate(common.StateWaitingForApproval):
                 application, auth)
 
 
-class StateWaitingForAdmin(common.StateWaitingForApproval):
+class StateWaitingForAdmin(states.StateWaitingForApproval):
     """ We need the administrator to provide approval. """
     name = "Waiting for administrator"
     authorised_text = "an administrator"
@@ -623,7 +623,7 @@ class StateWaitingForAdmin(common.StateWaitingForApproval):
                 application, auth)
 
 
-class StateArchived(common.StateCompleted):
+class StateArchived(states.StateCompleted):
     """ This application is archived. """
     name = "Archived"
 
@@ -648,29 +648,29 @@ class TransitionSplit(base.Transition):
 
 def get_application_state_machine():
     """ Get the default state machine for applications. """
-    Open = common.TransitionOpen(on_success='O')
+    Open = states.TransitionOpen(on_success='O')
     Split = TransitionSplit(on_existing_project='L', on_new_project='D', on_error="R")
 
     state_machine = base.StateMachine()
     state_machine.add_state(StateApplicantEnteringDetails(), 'O',
             { 'cancel': 'R', 'reopen': Open, 'duplicate': 'DUP',
-                'submit':  common.TransitionSubmit(on_success=Split, on_error="R")})
+                'submit':  states.TransitionSubmit(on_success=Split, on_error="R")})
     state_machine.add_state(StateWaitingForLeader(), 'L',
             { 'cancel': 'R', 'approve': 'K', 'duplicate': 'DUP', })
     state_machine.add_state(StateWaitingForDelegate(), 'D',
             { 'cancel': 'R', 'approve': 'K', 'duplicate': 'DUP', })
     state_machine.add_state(StateWaitingForAdmin(), 'K',
             { 'cancel': 'R', 'duplicate': 'DUP',
-            'approve': common.TransitionApprove(on_password_needed='P', on_password_ok='C', on_error="R")})
-    state_machine.add_state(common.StatePassword(), 'P',
+            'approve': states.TransitionApprove(on_password_needed='P', on_password_ok='C', on_error="R")})
+    state_machine.add_state(states.StatePassword(), 'P',
             { 'submit': 'C', })
-    state_machine.add_state(common.StateCompleted(), 'C',
+    state_machine.add_state(states.StateCompleted(), 'C',
             { 'archive': 'A', })
     state_machine.add_state(StateArchived(), 'A',
             {})
-    state_machine.add_state(common.StateDeclined(), 'R',
+    state_machine.add_state(states.StateDeclined(), 'R',
             { 'reopen': Open,  })
-    state_machine.add_state(common.StateDuplicateApplicant(), 'DUP',
+    state_machine.add_state(states.StateDuplicateApplicant(), 'DUP',
             { 'reopen': Open, 'cancel': 'R', })
     state_machine.set_first_state(Open)
 #    NEW = 'N'
@@ -696,7 +696,7 @@ def get_applicant_from_email(email):
         existing_person = False
     return applicant, existing_person
 
-def _send_invitation(request, project, invite_form, override_auth):
+def _send_invitation(request, project, invite_form):
     """ The logged in project leader OR administrator wants to invite somebody.
     """
     form = invite_form(request.POST or None)
@@ -718,7 +718,7 @@ def _send_invitation(request, project, invite_form, override_auth):
                 application.project = project
             application.save()
             state_machine = get_application_state_machine()
-            response = state_machine.start(request, application, override_auth)
+            response = state_machine.start(request, application)
             return response
 
     return render_to_response(
@@ -728,32 +728,27 @@ def _send_invitation(request, project, invite_form, override_auth):
 
 
 @login_required
-def send_invitation(request, project_id):
+def send_invitation(request, project_id=None):
     """ The logged in project leader wants to invite somebody to their project.
     """
 
-    person = request.user
-    project = get_object_or_404(Project, pid=project_id)
-
-    if person not in project.leaders.all():
-        return HttpResponseBadRequest("<h1>Bad Request</h1>")
-
-    override_auth = { 'is_leader': True }
-    return _send_invitation(request, project,
-            forms.LeaderInviteUserApplicationForm, override_auth)
-
-
-@admin_required
-def admin_send_invitation(request, project_id=None):
-    """ The logged in administrator wants to invite somebody to their project.
-    """
-    project = None
-    if project_id is not None:
+    if is_admin(request):
+        project = None
+        if project_id is not None:
+            project = get_object_or_404(Project, pid=project_id)
+        form = forms.AdminInviteUserApplicationForm
+    else:
+        person = request.user
         project = get_object_or_404(Project, pid=project_id)
 
-    override_auth = { 'is_admin': True }
-    return _send_invitation(request, project,
-            forms.AdminInviteUserApplicationForm, override_auth)
+        if project_id is not None:
+            return HttpResponseBadRequest("<h1>Bad Request</h1>")
+
+        if person not in project.leaders.all():
+            return HttpResponseBadRequest("<h1>Bad Request</h1>")
+        form = forms.LeaderInviteUserApplicationForm
+
+    return _send_invitation(request, project, form)
 
 
 def new_application(request):

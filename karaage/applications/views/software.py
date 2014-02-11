@@ -30,7 +30,7 @@ import karaage.applications.emails as emails
 import karaage.applications.forms as forms
 import karaage.applications.views.base as base
 import karaage.applications.views.user as user
-import karaage.applications.views.common as common
+import karaage.applications.views.states as states
 
 
 class StateIntroduction(base.State):
@@ -51,7 +51,7 @@ class StateIntroduction(base.State):
         return super(StateIntroduction, self).view(request, application, label, auth, actions)
 
 
-class StateWaitingForAdmin(common.StateWaitingForApproval):
+class StateWaitingForAdmin(states.StateWaitingForApproval):
     """ We need the administrator to provide approval. """
     name = "Waiting for administrator"
     authorised_text = "an administrator"
@@ -69,18 +69,18 @@ class StateWaitingForAdmin(common.StateWaitingForApproval):
 
 def get_application_state_machine():
     """ Get the default state machine for applications. """
-    Open = common.TransitionOpen(on_success='O')
+    Open = states.TransitionOpen(on_success='O')
 
     state_machine = base.StateMachine()
     state_machine.add_state(StateIntroduction(), 'O',
             { 'cancel': 'R',
-                'submit':  common.TransitionSubmit(on_success='K', on_error="R")})
+                'submit':  states.TransitionSubmit(on_success='K', on_error="R")})
     state_machine.add_state(StateWaitingForAdmin(), 'K',
             { 'cancel': 'R',
-                'approve': common.TransitionApprove(on_password_needed='R', on_password_ok='C', on_error="R")})
-    state_machine.add_state(common.StateCompleted(), 'C',
+                'approve': states.TransitionApprove(on_password_needed='R', on_password_ok='C', on_error="R")})
+    state_machine.add_state(states.StateCompleted(), 'C',
             {})
-    state_machine.add_state(common.StateDeclined(), 'R',
+    state_machine.add_state(states.StateDeclined(), 'R',
             { 'reopen': Open,  })
     state_machine.set_first_state(Open)
     return state_machine

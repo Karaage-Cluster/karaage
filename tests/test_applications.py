@@ -18,7 +18,6 @@
 from django.test import TestCase
 from django.core import mail
 from django.core.urlresolvers import reverse
-from django.core.urlresolvers import set_urlconf as _set_urlconf
 from django.conf import settings
 from django.core.management import call_command
 
@@ -30,12 +29,13 @@ from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from initial_ldap_data import test_ldif
 
-def set_urlconf(urlconf_name):
-    _set_urlconf(urlconf_name)
-    settings.ROOT_URLCONF = urlconf_name
+def set_admin():
+    settings.ADMIN_IGNORED = False
+
+def set_no_admin():
+    settings.ADMIN_IGNORED = True
 
 class UserApplicationTestCase(TestCase):
-    urls = 'registration_urls'
 
     def setUp(self):
         server = slapd.Slapd()
@@ -47,9 +47,12 @@ class UserApplicationTestCase(TestCase):
         self.server = server
 
     def tearDown(self):
+        set_admin()
         self.server.stop()
 
     def test_register_account(self):
+        set_no_admin()
+
         self.assertEquals(len(mail.outbox), 0)
         response = self.client.get(reverse('kg_application_new'))
         self.failUnlessEqual(response.status_code, 200)
@@ -145,7 +148,7 @@ class UserApplicationTestCase(TestCase):
         self.client.logout()
 
         # ADMIN LOGS IN TO APPROVE
-        set_urlconf("urls")
+        set_admin()
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
 
@@ -174,7 +177,7 @@ class UserApplicationTestCase(TestCase):
         self.failUnlessEqual(application.state, ProjectApplication.PASSWORD)
         self.assertEquals(len(mail.outbox), 4)
         self.client.logout()
-        set_urlconf("registration_urls")
+        set_no_admin()
 
         # APPLICANT GET PASSWORD
         response = self.client.get(reverse('kg_application_unauthenticated', args=[token,'P']))
@@ -205,14 +208,14 @@ class UserApplicationTestCase(TestCase):
         self.client.logout()
 
         # ADMIN ARCHIVE
-        set_urlconf("urls")
+        set_admin()
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         response = self.client.post(reverse('kg_application_detail', args=[application.pk,'C']), form_data, follow=True)
         self.failUnlessEqual(response.status_code, 200)
         self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_detail', args=[application.pk,'A']))
         self.client.logout()
-        set_urlconf("registration_urls")
+        set_no_admin()
 
         # APPLICANT GET ARCHIVE
         response = self.client.get(reverse('kg_application_unauthenticated', args=[token,'A']))
@@ -220,7 +223,6 @@ class UserApplicationTestCase(TestCase):
 
 
 class ProjectApplicationTestCase(TestCase):
-    urls = 'registration_urls'
 
     def setUp(self):
         server = slapd.Slapd()
@@ -236,6 +238,8 @@ class ProjectApplicationTestCase(TestCase):
 
 
     def test_register_account(self):
+        set_no_admin()
+
         self.assertEquals(len(mail.outbox), 0)
         response = self.client.get(reverse('kg_application_new'))
         self.failUnlessEqual(response.status_code, 200)
@@ -332,7 +336,7 @@ class ProjectApplicationTestCase(TestCase):
         self.client.logout()
 
         # ADMIN LOGS IN TO APPROVE
-        set_urlconf("urls")
+        set_admin()
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
 
@@ -361,7 +365,7 @@ class ProjectApplicationTestCase(TestCase):
         self.failUnlessEqual(application.state, ProjectApplication.PASSWORD)
         self.assertEquals(len(mail.outbox), 4)
         self.client.logout()
-        set_urlconf("registration_urls")
+        set_no_admin()
 
         # APPLICANT GET PASSWORD
         response = self.client.get(reverse('kg_application_unauthenticated', args=[token,'P']))
@@ -392,14 +396,14 @@ class ProjectApplicationTestCase(TestCase):
         self.client.logout()
 
         # ADMIN ARCHIVE
-        set_urlconf("urls")
+        set_admin()
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         response = self.client.post(reverse('kg_application_detail', args=[application.pk,'C']), form_data, follow=True)
         self.failUnlessEqual(response.status_code, 200)
         self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_detail', args=[application.pk,'A']))
         self.client.logout()
-        set_urlconf("registration_urls")
+        set_no_admin()
 
         # APPLICANT GET ARCHIVE
         response = self.client.get(reverse('kg_application_unauthenticated', args=[token,'A']))

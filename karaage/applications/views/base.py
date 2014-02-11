@@ -22,12 +22,13 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.http import HttpResponseBadRequest, HttpResponse
+from django.http import HttpResponseBadRequest, HttpResponse, Http404
 from django.contrib import messages
 
 from karaage.common import log
 from karaage.applications.models import Application
 
+import karaage.common as common
 
 def get_url(request, application, auth, label=None):
     """ Retrieve a link that will work for the current user. """
@@ -107,7 +108,7 @@ class StateMachine(object):
         state, _ = self._states[application.state]
         return state
 
-    def start(self, request, application, auth_override):
+    def start(self, request, application, auth_override=None):
         """ Continue the state machine at first state. """
         # Get the authentication of the current user
         auth = self._authenticate(request, application)
@@ -129,7 +130,7 @@ class StateMachine(object):
         # Go to first state.
         return self._next(request, application, auth, self._first_state)
 
-    def process(self, request, application, expected_state, label, auth_override):
+    def process(self, request, application, expected_state, label, auth_override=None):
         """ Process the view request at the current state. """
 
         # Get the authentication of the current user
@@ -211,10 +212,13 @@ class StateMachine(object):
     def _authenticate(request, application):
         """ Check the authentication of the current user. """
         if not request.user.is_authenticated():
-            return { 'is_applicant': False, 'is_leader': False, 'is_delegate': False, 'is_admin': False, }
+            return {
+                'is_applicant': False, 'is_leader': False,
+                'is_delegate': False, 'is_admin': common.is_admin(request),
+            }
         person = request.user
         auth = application.authenticate(person)
-        auth["is_admin"] = False
+        auth["is_admin"] = common.is_admin(request)
         return auth
 
     def _next(self, request, application, auth, state_key):

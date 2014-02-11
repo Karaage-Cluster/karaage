@@ -15,275 +15,142 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-""" This file is for common state or transitions that can be shared. """
+import datetime
 
-from django.shortcuts import render_to_response
+from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
+from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.conf import settings
+from django.db.models import Q
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.http import HttpResponseRedirect
 
-from karaage.emails.forms import EmailForm
+from karaage.common.filterspecs import Filter, FilterBar
+from karaage.common.decorators import admin_required, login_required
 from karaage.people.models import Person
-import karaage.applications.forms as forms
+from karaage.applications.models import Applicant, Application
+from karaage.applications.forms import ApplicantForm
 import karaage.applications.views.base as base
-import karaage.applications.emails as emails
+from karaage.common import log
+import karaage.common as util
+
+@admin_required
+def application_list_admin(request):
+
+    try:
+        page_no = int(request.GET.get('page', 1))
+    except ValueError:
+        page_no = 1
+
+    if 'search' in request.REQUEST:
+        apps = Application.objects.select_related().order_by('-id')
+        terms = request.REQUEST['search'].lower()
+        query = Q()
+        for term in terms.split(' '):
+            q = Q(short_name__icontains=term)
+            q = q | Q(full_name__icontains=term)
+            q = q | Q(email=term)
+
+            persons = Person.objects.filter(q)
+            applicants = Applicant.objects.filter(q)
+
+            query = query & (Q(applicant__in=persons) | Q(applicant__in=applicants))
+
+        apps = apps.filter(query)
+    else:
+        apps = Application.objects.requires_admin().order_by('-id')
+        terms = ""
+
+    p = Paginator(apps, 50)
+
+    try:
+        page = p.page(page_no)
+    except (EmptyPage, InvalidPage):
+        page = p.page(p.num_pages)
+
+    return render_to_response(
+            'applications/application_list_for_admin.html',
+            {'page': page, 'terms': terms},
+            context_instance=RequestContext(request))
 
 
-class TransitionOpen(base.Transition):
-    """ A transition after application opened. """
-    def __init__(self, on_success):
-        super(TransitionOpen, self).__init__()
-        self._on_success = on_success
+@login_required
+def application_list_user(request):
+    """ a logged in user wants to see all his pending applications. """
+    person = request.user
+    my_applications = Application.objects.get_for_applicant(person)
+    requires_attention = Application.objects.requires_attention(person)
 
-    def get_next_state(self, request, application, auth):
-        """ Retrieve the next state. """
-        application.reopen()
-        link, is_secret = base.get_email_link(application)
-        emails.send_invite_email(application, link, is_secret)
-        messages.success(
-                request,
-                "Sent an invitation to %s." %
-                (application.applicant.email))
-        return self._on_success
+    return render_to_response(
+            'applications/application_list.html',
+            {
+            'my_applications': my_applications,
+            'requires_attention': requires_attention,
+            },
+            context_instance=RequestContext(request))
 
 
-class StateWaitingForApproval(base.State):
-    """ We need the somebody to provide approval. """
-    name = "Waiting for X"
-    authorised_text = "X"
-    template_approve = "applications/common_approve.html"
-    template_decline = "applications/common_decline.html"
-
-    def get_authorised_persons(self, application):
-        raise NotImplementedError()
-
-    def get_approve_form(self, request, application, auth):
-        raise NotImplementedError()
-
-    def check_authorised(self, request, application, auth):
-        """ Check the person's authorization. """
-        try:
-            authorised_persons = self.get_authorised_persons(application)
-            authorised_persons.get(pk=request.user.pk)
-            return True
-        except Person.DoesNotExist:
-            return False
-
-    def enter_state(self, request, application):
-        """ This is becoming the new current state. """
-        authorised_persons = self.get_authorised_persons(application)
-        emails.send_request_email(
-                self.authorised_text,
-                authorised_persons,
-                application)
-
-    def view(self, request, application, label, auth, actions):
-        """ Django view method. """
-        if self.check_authorised(request, application, auth):
-            auth['can_approve'] = True
-        if label == "approve" and auth['can_approve']:
-            tmp_actions = []
-            if 'approve' in actions:
-                tmp_actions.append("approve")
-            if 'duplicate' in actions:
-                tmp_actions.append("duplicate")
-            actions = tmp_actions
-            application_form = self.get_approve_form(request, application, auth)
-            form = application_form(request.POST or None, instance=application)
-            if request.method == 'POST':
-                if form.is_valid():
-                    form.save()
-                    return "approve"
-            return render_to_response(
-                    self.template_approve,
-                    {'application': application, 'form': form,
-                        'authorised_text': self.authorised_text,
-                        'actions': actions, 'auth': auth},
-                    context_instance=RequestContext(request))
-        elif label == "decline" and auth['can_approve']:
-            actions = [ 'cancel' ]
-            if request.method == 'POST':
-                form = EmailForm(request.POST)
-                if form.is_valid():
-                    to_email = application.applicant.email
-                    subject, body = form.get_data()
-                    emails.send_mail(
-                            subject, body,
-                            settings.ACCOUNTS_EMAIL, [to_email])
-                    return "cancel"
-            else:
-                link, is_secret = base.get_email_link(application)
-                subject, body = emails.render_email(
-                        'common_declined',
-                        {'receiver': application.applicant,
-                            'authorised_text': self.authorised_text,
-                            'application': application,
-                            'link': link, 'is_secret': is_secret })
-                initial_data = {'body': body, 'subject': subject}
-                form = EmailForm(initial=initial_data)
-            return render_to_response(
-                    self.template_decline,
-                    {'application': application, 'form': form,
-                        'authorised_text': self.authorised_text,
-                        'actions': actions, 'auth': auth},
-                    context_instance=RequestContext(request))
-        self.context = {
-            'authorised_text': self.authorised_text,
-        }
-        return super(StateWaitingForApproval, self).view(
-                request, application, label, auth, actions)
+@login_required
+def application_list(request):
+    if util.is_admin(request):
+        return application_list_admin(request)
+    else:
+        return application_list_user(request)
 
 
-class TransitionSubmit(base.Transition):
-    """ A transition after application submitted. """
-    def __init__(self, on_success, on_error):
-        self._on_success = on_success
-        self._on_error = on_error
+@admin_required
+def applicant_edit(request, applicant_id):
+    applicant = get_object_or_404(Applicant, id=applicant_id)
 
-    def get_next_state(self, request, application, auth):
-        """ Retrieve the next state. """
+    form = ApplicantForm(request.POST or None, instance=applicant)
+    if request.method == 'POST':
+        if form.is_valid():
+            applicant = form.save()
+            log(request.user, applicant, 2, 'Edited')
+            messages.success(request, "%s modified successfully." % applicant)
+            return HttpResponseRedirect(reverse('kg_application_list'))
 
-        # Check for serious errors in submission.
-        # Should only happen in rare circumstances.
-        errors = application.check()
-        if len(errors) > 0:
-            for error in errors:
-                messages.error(request, error)
-            return self._on_error
-
-        # mark as submitted
-        application.submit()
-
-        return self._on_success
+    return render_to_response('applications/applicant_form.html',
+            {'form': form}, context_instance=RequestContext(request))
 
 
-class TransitionApprove(base.Transition):
-    """ A transition after application fully approved. """
-    def __init__(self, on_password_needed, on_password_ok, on_error):
-        self._on_password_needed = on_password_needed
-        self._on_password_ok = on_password_ok
-        self._on_error = on_error
-
-    def get_next_state(self, request, application, auth):
-        """ Retrieve the next state. """
-        # Check for serious errors in submission.
-        # Should only happen in rare circumstances.
-        errors = application.check()
-        if len(errors) > 0:
-            for error in errors:
-                messages.error(request, error)
-            return self._on_error
-
-        # approve application
-        approved_by = request.user
-        created_person, created_account = application.approve(approved_by)
-
-        # send email
-        link, is_secret = base.get_email_link(application)
-        emails.send_approved_email(application, created_person, created_account, link, is_secret)
-
-        if created_person or created_account:
-            return self._on_password_needed
-        else:
-            return self._on_password_ok
+@admin_required
+def application_logs(request, application_id):
+    obj = get_object_or_404(Application, pk=application_id)
+    breadcrumbs = []
+    breadcrumbs.append( ("Applications", reverse("kg_application_list")) )
+    breadcrumbs.append( (unicode(obj), reverse("kg_application_detail", args=[obj.pk])) )
+    return util.log_list(request, breadcrumbs, obj)
 
 
-class StatePassword(base.State):
-    """ This application is completed and processed. """
-    name = "Password"
+@admin_required
+def add_comment(request, application_id):
+    obj = get_object_or_404(Application, pk=application_id)
+    breadcrumbs = []
+    breadcrumbs.append( ("Applications", reverse("kg_application_list")) )
+    breadcrumbs.append( (unicode(obj), reverse("kg_application_detail", args=[obj.pk])) )
+    return util.add_comment(request, breadcrumbs, obj)
 
 
-    def view(self, request, application, label, auth, actions):
-        """ Django view method. """
-        if label is None and auth['is_applicant']:
-            assert application.content_type.model == 'person'
-            if application.applicant.has_usable_password():
-                form = forms.PersonVerifyPassword(data=request.POST or None, person=application.applicant)
-                form_type = "verify"
-            else:
-                form = forms.PersonSetPassword(data=request.POST or None, person=application.applicant)
-                form_type = "set"
-            if request.method == 'POST':
-                if 'cancel' in request.POST:
-                    return 'cancel'
-                if form.is_valid():
-                    form.save()
-                    messages.success(request, 'Password updated. New accounts activated.')
-                    for action in actions:
-                        if action in request.POST:
-                            return action
-                    return HttpResponseBadRequest("<h1>Bad Request</h1>")
-            return render_to_response(
-                    'applications/common_password.html',
-                    {'application': application, 'form': form,
-                        'actions': actions, 'auth': auth, 'type': form_type },
-                    context_instance=RequestContext(request))
-        return super(StatePassword, self).view(
-                request, application, label, auth, actions)
+@login_required
+def application_detail(request, application_id, state=None, label=None):
+    """ A authenticated used is trying to access an application. """
+    application = base.get_application(pk=application_id)
+    state_machine = base.get_state_machine(application)
+    return state_machine.process(request, application, state, label)
 
+def application_unauthenticated(request, token, state=None, label=None):
+    """ An somebody is trying to access an application. """
+    application = base.get_application(
+                secret_token=token, expires__gt=datetime.datetime.now())
 
-class StateCompleted(base.State):
-    """ This application is completed and processed. """
-    name = "Completed"
+    # redirect user to real url if possible.
+    if request.user.is_authenticated():
+        if request.user == application.applicant:
+            url = base.get_url(request, application, {'is_applicant': True}, label)
+            return HttpResponseRedirect(url)
 
+    state_machine = base.get_state_machine(application)
+    return state_machine.process(request, application, state, label,
+            { 'is_applicant': True })
 
-class StateDuplicateApplicant(base.State):
-    """ Somebody has declared application is existing user. """
-    name = "Replace Applicant"
-
-    def enter_state(self, request, application):
-        emails.send_request_email(
-                "an administrator",
-                Person.objects.filter(is_admin=True),
-                application)
-
-    def view(self, request, application, label, auth, actions):
-        # if not admin, don't allow reopen
-        if not auth['is_admin']:
-            if 'reopen' in actions:
-                actions.remove('reopen')
-        if label is None and auth['is_admin']:
-            form = forms.ApplicantReplace(data=request.POST or None,
-                    application=application)
-
-            if request.method == 'POST':
-                if 'replace' in request.POST:
-                    if form.is_valid():
-                        form.save()
-                        return "reopen"
-                else:
-                    for action in actions:
-                        if action in request.POST:
-                            return action
-                    return HttpResponseBadRequest("<h1>Bad Request</h1>")
-
-            return render_to_response(
-                    'applications/common_duplicate_applicant.html',
-                    {'application': application, 'form': form,
-                    'actions': actions, 'auth': auth, },
-                    context_instance=RequestContext(request))
-        return super(StateDuplicateApplicant, self).view(
-                request, application, label, auth, actions)
-
-
-class StateDeclined(base.State):
-    """ This application declined. """
-    name = "Declined"
-
-    def enter_state(self, request, application):
-        """ This is becoming the new current state. """
-        application.decline()
-
-    def view(self, request, application, label, auth, actions):
-        """ Django view method. """
-        if label is None and auth['is_applicant'] and not auth['is_admin']:
-            # applicant, admin, leader can reopen an application
-            if 'reopen' in request.POST:
-                return 'reopen'
-            return render_to_response(
-                    'applications/common_declined.html',
-                    {'application': application,
-                    'actions': actions, 'auth': auth},
-                    context_instance=RequestContext(request))
-        return super(StateDeclined, self).view(
-                request, application, label, auth, actions)

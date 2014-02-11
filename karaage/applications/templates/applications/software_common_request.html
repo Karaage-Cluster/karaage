@@ -1,7 +1,7 @@
 <div class="module">
     <h2>Software License Details</h2>
     <table>
-        {% if karaage_site == 'admin' %}
+        {% if is_admin %}
         <tr>
             <td>Software:</td>
             <td><a href="{% url 'kg_software_detail' application.software_license.software.pk %}">{{ application.software_license.software }}</a></td>
