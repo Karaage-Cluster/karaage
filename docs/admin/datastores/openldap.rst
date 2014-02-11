@@ -7,9 +7,9 @@ Assumptions
 -----------
 You will need to substitute correct values for the following when applicable:
 
-*  Base DN: dc=example,dc=org
-*  Administrator DN: cn=admin,dc=example,dc=org
-*  Administrator password: XXXXXXXX (do not use XXXXXXXX).
+*  Base DN: ``dc=example,dc=org``
+*  Administrator DN: ``cn=admin,dc=example,dc=org``
+*  Administrator password: ``XXXXXXXX`` (do not use ``XXXXXXXX``).
 
 
 RHEL 6 installation
@@ -36,27 +36,16 @@ RHEL 6 installation
 
     The result for XXXXXXXX is {SSHA}4bxi0+aXeYvv2TGT10VWUIwcaynqBbxH (do not use this value).
 
-#.  Edit olcDatabase={2}bdb.ldif, and update/add the following values. Do not change anything else::
+#.  Edit ``olcDatabase={2}bdb.ldif``, and update/add the following values. Do not change anything else::
 
         olcSuffix: dc=example,dc=org
         olcRootDN: cn=admin,dc=example,dc=org
         olcRootPW: {SSHA}4bxi0+aXeYvv2TGT10VWUIwcaynqBbxH
 
-    .. todo::
-
-        olcTLSCertificateFile: /etc/.../cert.pem
-        olcTLSCertificatekeyFile: /etc/.../key.pem
-
-#.  Edit olcDatabase={1}monitor.ldif, and update update the admin DN. Do not change anything else::
+#.  Edit ``olcDatabase={1}monitor.ldif``, and update update the admin DN. Do not change anything else::
 
         olcAccess: {0}to *  by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=externa
          l,cn=auth" read  by dn.base="cn=admin,dc=example,dc=org" read  by * none
-
-    .. todo::
-
-        #. Edit /etc/sysconfig/ldap::
-
-                SLAPD_LDAPS=yes
 
 #.  Run the following commands:
 
@@ -65,7 +54,36 @@ RHEL 6 installation
         service slapd start
         chkconfig slapd on
 
-#.  Create the file with the following contents in /tmp/ppolicy.ldif::
+#.  Create the file with the following contents in ``/tmp/ldapssl.ldif``::
+
+        dn: cn=config
+        changetype: modify
+        replace: olcTLSCertificateFile
+        olcTLSCertificateFile: /etc/ssl/private/hostcert.pem
+        -
+        replace: olcTLSCertificatekeyFile
+        olcTLSCertificatekeyFile: /etc/ssl/private/hostkey.pem
+
+    Any intermediate certicates need to be listed with ``olcTLSCACertificatePath``.
+
+#.  Import with the following command:
+
+    .. code-block:: bash
+
+        ldapadd -Y EXTERNAL -H ldapi:///  < /tmp/ldapssl.ldif
+
+#.  Edit ``/etc/sysconfig/ldap``::
+
+        SLAPD_LDAPS=yes
+
+
+#.  Restart LDAP server.
+
+    .. code-block:: bash
+
+        service slapd restart
+
+#.  Create the file with the following contents in ``/tmp/ppolicy.ldif``::
 
         dn: dc=example,dc=org
         objectClass: top
@@ -90,9 +108,9 @@ RHEL 6 installation
 
     .. code-block:: bash
 
-        ldapadd -x -H ldapi:///  -D cn=admin,dc=example,dc=org -W < /tmp/ppolicy.ldif
+        ldapadd -x -H ldapi:///  -D cn=admin,dc=example,dc=org -W < /tmp/ppolicy2.ldif
 
-#.  Create the file with the following contents in /tmp/ppolicy.ldif::
+#.  Create the file with the following contents in ``/tmp/ppolicy2.ldif``::
 
         dn: cn=module,cn=config
         objectClass: olcModuleList
@@ -116,6 +134,14 @@ RHEL 6 installation
 
         ldapadd -Y EXTERNAL -H ldapi:///  < /tmp/ppolicy.ldif
 
+.. todo::
+
+    REPLICATION
+
+    CENTOS REPLICATION
+
+    See http://itdavid.blogspot.com.au/2012/06/howto-openldap-24-replication-on-centos.html
+
 
 Debian installation
 ---------------------
@@ -129,7 +155,7 @@ Debian installation
 
     Enter XXXXXXXX when prompted for administrator's password.
 
-#.  Create the file with the following contents in /tmp/ppolicy.ldif::
+#.  Create the file with the following contents in ``/tmp/ppolicy.ldif``::
 
         dn: ou=Accounts,dc=example,dc=org
         objectClass: organizationalUnit
@@ -152,7 +178,7 @@ Debian installation
 
         ldapadd -x -H ldapi:///  -D cn=admin,dc=example,dc=org -W < /tmp/ppolicy.ldif
 
-#.  Create the file with the following contents in /tmp/ppolicy.ldif::
+#.  Create the file with the following contents in ``/tmp/ppolicy2.ldif``::
 
         dn: cn=module,cn=config
         objectClass: olcModuleList
@@ -168,17 +194,13 @@ Debian installation
 
     .. code-block:: bash
 
-        ldapadd -Y EXTERNAL -H ldapi:///  < /tmp/ppolicy.ldif
+        ldapadd -Y EXTERNAL -H ldapi:///  < /tmp/ppolicy2.ldif
 
 .. todo::
 
     REPLICATION
 
     SSL
-
-    CENTOS REPLICATION
-
-    See http://itdavid.blogspot.com.au/2012/06/howto-openldap-24-replication-on-centos.html
 
 
 Configuring Karaage to use LDAP
