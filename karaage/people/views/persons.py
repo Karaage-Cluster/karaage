@@ -15,28 +15,32 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import datetime
+
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.core.urlresolvers import reverse
 from django.db.models import Q
+from django.conf import settings
 
-import datetime
 from karaage.common.filterspecs import Filter, FilterBar, DateFilter
-
-from karaage.common.decorators import admin_required
+from karaage.common.decorators import admin_required, login_required
 from karaage.projects.models import Project
+from karaage.projects.utils import add_user_to_project
 from karaage.people.models import Person, Group
 from karaage.people.emails import send_confirm_password_email
+from karaage.people.emails import send_bounced_warning
 from karaage.people.forms import AddPersonForm, AdminPersonForm, AdminGroupForm
+from karaage.people.forms import AdminPasswordChangeForm, AddProjectForm
 from karaage.institutes.models import Institute
 from karaage.machines.models import Account
 from karaage.machines.forms import AccountForm, ShellForm
-from karaage.common import log
+from karaage.common import get_date_range, log, is_admin
 
 
-@admin_required
 def _add_edit_user(request, form_class, username):
     PersonForm = form_class
 
@@ -66,16 +70,21 @@ def _add_edit_user(request, form_class, username):
             context_instance=RequestContext(request))
 
 
+@admin_required
 def add_user(request):
     return _add_edit_user(request, AddPersonForm, None)
 
+@admin_required
 def edit_user(request, username):
     return _add_edit_user(request, AdminPersonForm, username)
 
-@admin_required
+@login_required
 def user_list(request, queryset=None):
     if queryset is None:
         queryset=Person.objects.select_related()
+
+    if not is_admin(request):
+        queryset = queryset.filter(pk=request.user.pk)
 
     page_no = int(request.GET.get('page', 1))
 
@@ -230,19 +239,24 @@ def wrong_default_list(request):
     return user_list(request, Person.objects.filter(id__in=wrong))
 
     
-@admin_required
+@login_required
 def make_default(request, account_id, project_id):
-    account = get_object_or_404(Account, pk=account_id)
-    project = get_object_or_404(Project, pid=project_id)
+    if is_admin(request):
+        account = get_object_or_404(Account, pk=account_id)
+        redirect = account.get_absolute_url()
+    else:
+        account = get_object_or_404(Account, pk=account_id, person=request.user)
+        redirect = reverse("kg_user_profile_projects")
 
+    project = get_object_or_404(Project, pid=project_id)
     if request.method != 'POST':
-        return HttpResponseRedirect(account.get_absolute_url())
+        return HttpResponseRedirect(redirect)
 
     account.default_project = project
     account.save()
     messages.success(request, "Default project changed succesfully")
     log(request.user, account.person, 2, 'Changed default project to %s' % project.pid)
-    return HttpResponseRedirect(account.get_absolute_url())
+    return HttpResponseRedirect(redirect)
 
     
 @admin_required
@@ -292,79 +306,171 @@ def struggling(request):
         context_instance=RequestContext(request))
 
 
-@admin_required
+@login_required
 def change_account_shell(request, account_id):
+    if is_admin(request):
+        account = get_object_or_404(Account, pk=account_id)
+        redirect = account.get_absolute_url()
+    else:
+        account = get_object_or_404(Account, pk=account_id, person=request.user)
+        redirect = reverse("kg_user_profile_accounts")
+
     account = get_object_or_404(Account, pk=account_id)
     if request.method != 'POST':
-        return HttpResponseRedirect(account.get_absolute_url())
+        return HttpResponseRedirect(redirect)
 
     shell_form = ShellForm(request.POST)
     if shell_form.is_valid():
         shell_form.save(account=account)
         messages.success(request, 'Shell changed successfully')
-        return HttpResponseRedirect(account.get_absolute_url())
-
-
-@admin_required
-def group_list(request, queryset=None):
-    if queryset is None:
-        queryset=Group.objects.select_related()
-
-    page_no = int(request.GET.get('page', 1))
-
-    group_list = queryset
-
-    if 'search' in request.REQUEST:
-        terms = request.REQUEST['search'].lower()
-        query = Q()
-        for term in terms.split(' '):
-            q = Q(name__icontains=term) | Q(description__icontains=term)
-            query = query & q
-
-        group_list = group_list.filter(query)
-    else:
-        terms = ""
-
-    p = Paginator(group_list, 50)
-    page = p.page(page_no)
-
-    return render_to_response(
-            'people/group_list.html',
-            {'page': page, 'terms': terms},
-            context_instance=RequestContext(request))
-
+        return HttpResponseRedirect(redirect)
 
 @admin_required
-def _add_edit_group(request, form_class, group_name):
-    GroupForm = form_class
+def delete_user(request, username):
 
-    if group_name is None:
-        group = None
-    else:
-        group = get_object_or_404(Group, name=group_name)
+    person = get_object_or_404(Person, username=username)
 
     if request.method == 'POST':
-        form = GroupForm(request.POST, instance=group)
+        deleted_by = request.user
+        person.deactivate(deleted_by)
+        messages.success(request, "User '%s' was deleted succesfully" % person)
+        return HttpResponseRedirect(person.get_absolute_url())
+        
+    return render_to_response('people/person_confirm_delete.html', locals(), context_instance=RequestContext(request))
+
+
+@login_required
+def user_detail(request, username):
+    
+    person = get_object_or_404(Person, username=username)
+    if not is_admin(request):
+        if not person.can_view(request.user):
+            return HttpResponseForbidden('<h1>Access Denied</h1><p>You do not have permission to view details about this user.</p>')
+
+    my_projects = person.projects.all()
+    my_pids = [p.pid for p in my_projects]
+    
+    #Add to project form
+    form = AddProjectForm(request.POST or None)
+    if request.method == 'POST':
+        # Post means adding this user to a project
         if form.is_valid():
-            if group:
-                # edit
-                group = form.save()
-                messages.success(request, "Group '%s' was edited succesfully" % group)
-            else:
-                #Add
-                group = form.save()
-                messages.success(request, "Group '%s' was created succesfully" % group)
+            project = form.cleaned_data['project']
+            add_user_to_project(person, project)
+            messages.success(request, "User '%s' was added to %s succesfully" % (person, project))
+            log(request.user, project, 2, '%s added to project' % person)
 
-            return HttpResponseRedirect(group.get_absolute_url())
+            return HttpResponseRedirect(person.get_absolute_url())
+
+    return render_to_response('people/person_detail.html', locals(), context_instance=RequestContext(request))
+
+@admin_required
+def user_verbose(request, username):
+    person = get_object_or_404(Person, username=username)
+
+    from karaage.datastores import get_person_details
+    person_details = get_person_details(person)
+
+    from karaage.datastores import get_account_details
+    account_details = []
+    for ua in person.account_set.filter(date_deleted__isnull=True):
+        details = get_account_details(ua)
+        account_details.append(details)
+
+    return render_to_response('people/person_verbose.html', locals(), context_instance=RequestContext(request))
+
+@admin_required
+def activate(request, username):
+    person = get_object_or_404(Person, username=username, is_active=False)
+
+    if request.method == 'POST':
+        approved_by = request.user
+        person.activate(approved_by)
+        return HttpResponseRedirect(reverse('kg_person_password_change', args=[person.username]))
+    
+    return render_to_response('people/reactivate_confirm.html', {'person': person}, context_instance=RequestContext(request))
+
+
+@admin_required
+def password_change(request, username):
+    person = get_object_or_404(Person, username=username)
+    
+    if request.POST:
+        form = AdminPasswordChangeForm(request.POST)
+        
+        if form.is_valid():
+            form.save(person)
+            messages.success(request, "Password changed successfully")
+            if person.is_locked():
+                person.unlock()
+            return HttpResponseRedirect(person.get_absolute_url())
     else:
-        form = GroupForm(instance=group)
+        form = AdminPasswordChangeForm()
+        
+    return render_to_response('people/password_change_form.html', {'person': person, 'form': form}, context_instance=RequestContext(request))
 
-    return render_to_response('people/group_form.html',
-            {'group': group, 'form': form},
-            context_instance=RequestContext(request))
 
-def add_group(request):
-    return _add_edit_group(request, AdminGroupForm, None)
+@admin_required
+def lock_person(request, username):
+    person = get_object_or_404(Person, username=username)
+    if request.method == 'POST':
+        person.lock()
+        messages.success(request, "%s's account has been locked" % person)
+    return HttpResponseRedirect(person.get_absolute_url())
 
-def edit_group(request, group_name):
-    return _add_edit_group(request, AdminGroupForm, group_name)
+
+@admin_required
+def unlock_person(request, username):
+    person = get_object_or_404(Person, username=username)
+    if request.method == 'POST':
+        person.unlock()
+        messages.success(request, "%s's account has been unlocked" % person)
+    return HttpResponseRedirect(person.get_absolute_url())
+
+
+@admin_required
+def bounced_email(request, username):
+    person = get_object_or_404(Person, username=username)
+    if request.method == 'POST':
+        person.lock()
+        send_bounced_warning(person)
+        messages.success(request, "%s's account has been locked and emails have been sent" % person)
+        log(request.user, person, 2, 'Emails sent to project leaders and account locked')
+        for ua in person.account_set.all():
+            ua.change_shell(ua.previous_shell)
+            ua.change_shell(settings.BOUNCED_SHELL)
+        return HttpResponseRedirect(person.get_absolute_url())
+
+    return render_to_response('people/bounced_email.html', locals(), context_instance=RequestContext(request))
+
+
+@admin_required
+def user_job_list(request, username):
+    today = datetime.date.today()
+    start = today - datetime.timedelta(days=7)
+    person = get_object_or_404(Person, username=username)
+    start, end = get_date_range(request, start, today)
+
+    job_list = []
+    for ua in person.account_set.all():
+        job_list.extend(ua.cpujob_set.filter(date__range=(start, end)))
+
+    return render_to_response('users/job_list.html', locals(), context_instance=RequestContext(request))
+
+
+@admin_required
+def person_logs(request, username):
+    obj = get_object_or_404(Person, username=username)
+    breadcrumbs = []
+    breadcrumbs.append( ("People", reverse("kg_person_list")) )
+    breadcrumbs.append( (unicode(obj), reverse("kg_person_detail", args=[obj.username])) )
+    return util.log_list(request, breadcrumbs, obj)
+
+
+@admin_required
+def add_comment(request, username):
+    obj = get_object_or_404(Person, username=username)
+    breadcrumbs = []
+    breadcrumbs.append( ("People", reverse("kg_person_list")) )
+    breadcrumbs.append( (unicode(obj), reverse("kg_person_detail", args=[obj.username])) )
+    return util.add_comment(request, breadcrumbs, obj)

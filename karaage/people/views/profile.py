@@ -103,25 +103,6 @@ def profile_projects(request):
 
 
 @login_required
-def user_detail(request, username):
-    person = get_object_or_404(Person, username=username)
-    if not person.can_view(request.user):
-        return HttpResponseForbidden('<h1>Access Denied</h1><p>You do not have permission to view details about this user.</p>')
-    return render_to_response('people/user_person_detail.html', locals(), context_instance=RequestContext(request))
-
-
-@login_required
-def institute_users_list(request, institute_id):
-
-    institute = get_object_or_404(Institute, pk=institute_id)
-    if not institute.can_view(request.user):
-        return HttpResponseForbidden('<h1>Access Denied</h1>')
-
-    user_list = institute.person_set.all()
-    return render_to_response('users/institute_user_list.html', locals(), context_instance=RequestContext(request))
-
-
-@login_required
 def password_change(request):
 
     person = request.user
@@ -267,72 +248,10 @@ def saml_details(request):
                 'person': person, },
             context_instance=RequestContext(request))
 
+
 def logout(request, username=None):
     url = reverse("index")
     from django.contrib.auth import logout
     logout(request)
     messages.success(request, 'Logout was successful.')
     return HttpResponseRedirect(url)
-
-
-@login_required
-def password_reset_request(request):
-    post_reset_redirect = reverse('password_reset_done')
-
-    if request.user.is_admin:
-        person_list = Person.active.all()
-    if request.user.is_leader():
-        person_list = Person.active.filter(project__leaders=request.user).distinct()
-    else:
-        person_list = Person.objects.none()
-
-    if request.method == "POST":
-        form = PasswordResetForm(request.POST)
-        form.fields['email'].queryset = person_list
-
-        if form.is_valid():
-            opts = {}
-            opts['use_https'] = request.is_secure()
-            opts['token_generator'] = default_token_generator
-            opts['email_template_name'] = 'registration/password_reset_email.html'
-            opts['domain_override'] = settings.ACCOUNTS_ORG_NAME
-            form.save(**opts)
-            return HttpResponseRedirect(post_reset_redirect)
-    else:
-        form = PasswordResetForm()
-        form.fields['email'].queryset = person_list
-
-    return render_to_response(
-        'registration/password_reset_form.html',
-        {'form': form},
-        context_instance=RequestContext(request))
-
-
-@login_required
-def change_account_shell(request, account_id):
-    person = request.user
-    account = get_object_or_404(Account, pk=account_id, person=person)
-
-    if request.method != 'POST':
-        return HttpResponseRedirect(reverse('kg_user_profile_accounts'))
-
-    shell_form = ShellForm(request.POST)
-    if shell_form.is_valid():
-        shell_form.save(account=account)
-        messages.success(request, 'Shell changed successfully')
-        return HttpResponseRedirect(reverse('kg_user_profile_accounts'))
-
-@login_required
-def make_default(request, account_id, project_id):
-    person = request.user
-    account = get_object_or_404(Account, pk=account_id, person=person)
-    project = get_object_or_404(Project, pid=project_id)
-
-    if request.method != 'POST':
-        return HttpResponseRedirect(account.get_absolute_url())
-
-    account.default_project = project
-    account.save()
-    messages.success(request, "Default project changed succesfully")
-    log(request.user, account.user, 2, 'Changed default project to %s' % project.pid)
-    return HttpResponseRedirect(account.get_absolute_url())

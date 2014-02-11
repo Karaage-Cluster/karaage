@@ -17,7 +17,7 @@
 
 from django.conf.urls import *
 
-urlpatterns = patterns('karaage.people.views.admin_user_detail',
+urlpatterns = patterns('karaage.people.views.persons',
 
     url(r'^$', 'user_detail', name='kg_person_detail'),
     url(r'^verbose/$', 'user_verbose', name='kg_person_verbose'),
@@ -30,10 +30,6 @@ urlpatterns = patterns('karaage.people.views.admin_user_detail',
     url(r'^bounced_email/$', 'bounced_email', name='kg_person_bounce'),
     url(r'^logs/$', 'person_logs', name='kg_person_logs'),
     url(r'^add_comment/$', 'add_comment', name='kg_person_add_comment'),
-)
-
-urlpatterns += patterns('karaage.people.views.admin',
-
     url(r'^add_account/$', 'add_edit_account', name='kg_person_add_account'),
     url(r'^edit/$', 'edit_user', name='kg_person_edit'),
 )

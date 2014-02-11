@@ -18,7 +18,10 @@
 from django.conf.urls import *
 from django.conf import settings
 
-urlpatterns = patterns('karaage.people.views.user',
+from karaage.people.forms import SetPasswordForm
+
+
+urlpatterns = patterns('karaage.people.views.profile',
     url(r'^$', 'profile', name='kg_user_profile'),
     url(r'^accounts/$', 'profile_accounts', name='kg_user_profile_accounts'),
     url(r'^software/$', 'profile_software', name='kg_user_profile_software'),
@@ -31,4 +34,10 @@ urlpatterns = patterns('karaage.people.views.user',
     url(r'^login/(?P<username>%s)/$' % settings.USERNAME_VALIDATION_RE, 'login', name="login"),
     url(r'^logout/$', 'logout', name='logout'),
     url(r'^password/$', 'password_change', name='password_change'),
+)
+
+
+urlpatterns += patterns('django.contrib.auth.views',
+    url(r'^reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', 'password_reset_confirm', {'set_password_form': SetPasswordForm}, name='password_reset_confirm'),
+    url(r'^reset/done/$', 'password_reset_complete', name='password_reset_complete'),
 )

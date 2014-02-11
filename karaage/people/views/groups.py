@@ -18,13 +18,93 @@
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db.models import Q
+
+import datetime
+from karaage.common.filterspecs import Filter, FilterBar, DateFilter
 
 from karaage.common.decorators import admin_required
+from karaage.projects.models import Project
 from karaage.people.models import Person, Group
+from karaage.people.emails import send_confirm_password_email
+from karaage.people.forms import AddPersonForm, AdminPersonForm, AdminGroupForm
 from karaage.people.forms import AddGroupMemberForm
+from karaage.institutes.models import Institute
+from karaage.machines.models import Account
+from karaage.machines.forms import AccountForm, ShellForm
+from karaage.common import log
 import karaage.common as util
+
+
+@admin_required
+def group_list(request, queryset=None):
+    if queryset is None:
+        queryset=Group.objects.select_related()
+
+    page_no = int(request.GET.get('page', 1))
+
+    group_list = queryset
+
+    if 'search' in request.REQUEST:
+        terms = request.REQUEST['search'].lower()
+        query = Q()
+        for term in terms.split(' '):
+            q = Q(name__icontains=term) | Q(description__icontains=term)
+            query = query & q
+
+        group_list = group_list.filter(query)
+    else:
+        terms = ""
+
+    p = Paginator(group_list, 50)
+    page = p.page(page_no)
+
+    return render_to_response(
+            'people/group_list.html',
+            {'page': page, 'terms': terms},
+            context_instance=RequestContext(request))
+
+
+def _add_edit_group(request, form_class, group_name):
+    GroupForm = form_class
+
+    if group_name is None:
+        group = None
+    else:
+        group = get_object_or_404(Group, name=group_name)
+
+    if request.method == 'POST':
+        form = GroupForm(request.POST, instance=group)
+        if form.is_valid():
+            if group:
+                # edit
+                group = form.save()
+                messages.success(request, "Group '%s' was edited succesfully" % group)
+            else:
+                #Add
+                group = form.save()
+                messages.success(request, "Group '%s' was created succesfully" % group)
+
+            return HttpResponseRedirect(group.get_absolute_url())
+    else:
+        form = GroupForm(instance=group)
+
+    return render_to_response('people/group_form.html',
+            {'group': group, 'form': form},
+            context_instance=RequestContext(request))
+
+
+@admin_required
+def add_group(request):
+    return _add_edit_group(request, AdminGroupForm, None)
+
+
+@admin_required
+def edit_group(request, group_name):
+    return _add_edit_group(request, AdminGroupForm, group_name)
 
 
 @admin_required
