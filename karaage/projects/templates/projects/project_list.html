@@ -11,11 +11,11 @@
 
 
 {% block object-tools %}
-{% if request.user.is_admin %}
+{% if is_admin %}
 <div class="module object-tools">
     <h2>Object links</h2>
     <ul>
-        <li><a class="addlink" href="add/">Add project</a></li>
+        <li><a class="addlink" href="{% url 'kg_project_add' %}">Add project</a></li>
     </ul>
 </div>
 {% endif %}

@@ -47,9 +47,9 @@ class ProjectTestCase(TestCase):
     def test_admin_add_project(self):
 
         Project.objects.count()
-        
+
         self.client.login(username='kgsuper', password='aq12ws')
-        response = self.client.get(reverse('kg_add_project'))
+        response = self.client.get(reverse('kg_project_add'))
         self.failUnlessEqual(response.status_code, 200)
 
         form_data = {
@@ -60,11 +60,11 @@ class ProjectTestCase(TestCase):
             'start_date': datetime.date.today(),
         }
 
-        response = self.client.post(reverse('kg_add_project'), form_data)
+        response = self.client.post(reverse('kg_project_add'), form_data)
         self.failUnlessEqual(response.status_code, 302)
-        
+
         project = Project.objects.get(name='Test Project 4')
-        
+
         self.assertEqual(project.is_active, True)
         self.assertEqual(project.date_approved, datetime.date.today())
         self.assertEqual(project.approved_by, Person.objects.get(username='kgsuper'))
@@ -76,9 +76,9 @@ class ProjectTestCase(TestCase):
 
     def test_admin_add_project_pid(self):
         Project.objects.count()
-        
+
         self.client.login(username='kgsuper', password='aq12ws')
-        response = self.client.get(reverse('kg_add_project'))
+        response = self.client.get(reverse('kg_project_add'))
         self.failUnlessEqual(response.status_code, 200)
 
         form_data = {
@@ -90,11 +90,11 @@ class ProjectTestCase(TestCase):
             'start_date': datetime.date.today(),
         }
 
-        response = self.client.post(reverse('kg_add_project'), form_data)
+        response = self.client.post(reverse('kg_project_add'), form_data)
         self.failUnlessEqual(response.status_code, 302)
-        
+
         project = Project.objects.get(pid="Enrico")
-        
+
         self.assertEqual(project.is_active, True)
         self.assertEqual(project.date_approved, datetime.date.today())
         self.assertEqual(project.approved_by, Person.objects.get(username='kgsuper'))
@@ -148,19 +148,18 @@ class ProjectTestCase(TestCase):
             account.save()
 
         self.assertEqual(project.is_active, True)
-        
-        response = self.client.post(reverse('kg_delete_project', args=[project.pid]))
+
+        response = self.client.post(reverse('kg_project_delete', args=[project.pid]))
         self.failUnlessEqual(response.status_code, 302)
-        
+
         project = Project.objects.get(pid='TestProject1')
 
         self.assertEqual(project.is_active, False)
         self.assertEqual(project.group.members.count(), 0)
         self.assertEqual(project.date_deleted, datetime.date.today())
         self.assertEqual(project.deleted_by, Person.objects.get(username='kgsuper'))
-        
 
-    def test_change_deafult(self):
+    def test_change_default(self):
         pass
 
     def test_admin_edit_project(self):
@@ -171,7 +170,7 @@ class ProjectTestCase(TestCase):
         self.assertTrue(Person.objects.get(pk=3) in project.group.members.all())
 
         self.client.login(username='kgsuper', password='aq12ws')
-        response = self.client.get(reverse('kg_edit_project', args=['TestProject1']))
+        response = self.client.get(reverse('kg_project_edit', args=['TestProject1']))
         self.failUnlessEqual(response.status_code, 200)
 
         form_data = {
@@ -182,15 +181,14 @@ class ProjectTestCase(TestCase):
             'start_date': project.start_date,
         }
 
-        response = self.client.post(reverse('kg_edit_project', args=['TestProject1']), form_data)
+        response = self.client.post(reverse('kg_project_edit', args=['TestProject1']), form_data)
         self.failUnlessEqual(response.status_code, 302)   
         project = Project.objects.get(pid='TestProject1')
         self.assertEqual(project.is_active, True)
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
-        self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())    
+        self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())
         lgroup = self._datastore._groups().get(cn=project.pid)
         self.assertEqual(lgroup.cn, project.pid)
-
 
     def test_user_add_project(self):
         pass

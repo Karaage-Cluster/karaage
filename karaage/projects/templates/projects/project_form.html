@@ -27,16 +27,27 @@
 
 {% block content %}
 <form method="post" action=".">{% csrf_token %}
+    {{ form.errors }}
+    {% load forms %}
+    {% if form.errors  or form.non_field_errors %}
+            <p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
+    {% endif %}
     <fieldset class="module aligned ()">
-    {% formfield form.pid %}
-    {% formfield form.name %}
-    {% formfield form.institute %}
-    {% formfield form.leaders %}
-    {% formfield form.description %}
-    {% formfield form.additional_req %}
-    {% formfield form.start_date %}
-    {% formfield form.end_date %}
-    {% formfield form.machine_categories %}
+        {% if is_admin %}
+        {% formfield form.pid %}
+        {% endif %}
+        {% formfield form.name %}
+        {% if is_admin %}
+        {% formfield form.institute %}
+        {% formfield form.leaders %}
+        {% endif %}
+        {% formfield form.description %}
+        {% formfield form.additional_req %}
+        {% if is_admin %}
+        {% formfield form.start_date %}
+        {% formfield form.end_date %}
+        {% formfield form.machine_categories %}
+        {% endif %}
     </fieldset>
     <div class="submit-row">
         <input type="submit" value="Save" class="default" />

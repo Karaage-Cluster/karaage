@@ -28,18 +28,18 @@ from django.core.urlresolvers import reverse
 
 from karaage.common.filterspecs import Filter, FilterBar
 
-from karaage.common.decorators import admin_required
+from karaage.common.decorators import admin_required, login_required
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.machines.models import MachineCategory, Account
 from karaage.projects.models import Project, ProjectQuota
-from karaage.projects.forms import ProjectForm, ProjectQuotaForm, AddPersonForm
+from karaage.projects.forms import ProjectForm, UserProjectForm, ProjectQuotaForm, AddPersonForm
 from karaage.projects.utils import get_new_pid, add_user_to_project, remove_user_from_project
 from karaage.common import log
 import karaage.common as util
 
 
-@admin_required
+@login_required
 def add_edit_project(request, project_id=None):
 
     if project_id is None:
@@ -49,9 +49,16 @@ def add_edit_project(request, project_id=None):
         project = get_object_or_404(Project, pid=project_id)
         flag = 2
 
-    if request.method == 'POST':
-        form = ProjectForm(request.POST, instance=project)
+    if util.is_admin(request):
+        form = ProjectForm(instance=project, data=request.POST or None)
+    else:
+        if project is None:
+            return HttpResponseForbidden('<h1>Access Denied</h1>')
+        if not request.user in project.leaders.all():
+            return HttpResponseForbidden('<h1>Access Denied</h1>')
+        form = UserProjectForm(instance=project, data=request.POST or None)
 
+    if request.method == 'POST':
         if form.is_valid():
             project = form.save(commit=False)
             if project_id is not None:
@@ -75,8 +82,6 @@ def add_edit_project(request, project_id=None):
                 log(None, project, 2, 'Edited')
 
             return HttpResponseRedirect(project.get_absolute_url())
-    else:
-        form = ProjectForm(instance=project)
 
     return render_to_response('projects/project_form.html', locals(), context_instance=RequestContext(request))
 
@@ -105,11 +110,15 @@ def delete_project(request, project_id):
             { 'project': project, 'error': error },
             context_instance=RequestContext(request))
 
-    
-@admin_required
+
+@login_required
 def project_detail(request, project_id):
 
     project = get_object_or_404(Project, pid=project_id)
+
+    if not util.is_admin(request):
+        if not project.can_view(request.user):
+            return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     form = AddPersonForm(request.POST or None)
     if request.method == 'POST':
@@ -135,10 +144,12 @@ def project_verbose(request, project_id):
     return render_to_response('projects/project_verbose.html', locals(), context_instance=RequestContext(request))
 
 
-@admin_required
-def project_list(request, queryset=Project.objects.select_related(), template_name='projects/project_list.html', paginate=True):
+@login_required
+def project_list(request, template_name='projects/project_list.html', paginate=True):
 
-    project_list = queryset
+    project_list = Project.objects.select_related()
+    if not util.is_admin(request):
+        project_list = project_list.filter(group__members=request.user)
 
     # Make sure page request is an int. If not, deliver first page.
     try:
@@ -183,11 +194,15 @@ def project_list(request, queryset=Project.objects.select_related(), template_na
             context_instance=RequestContext(request))
 
 
-@admin_required
+@login_required
 def remove_user(request, project_id, username):
 
     project = get_object_or_404(Project, pid=project_id)
     person = get_object_or_404(Person, username=username)
+
+    if not util.is_admin(request):
+        if not request.user in project.leaders.all():
+            return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     query = person.account_set.filter(date_deleted__isnull=True, default_project=project)
 
