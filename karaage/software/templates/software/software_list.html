@@ -14,7 +14,7 @@
 
 
 {% block object-tools %}
-{% if request.user.is_admin %}
+{% if is_admin %}
 <div class="module object-tools">
     <h2>Object links</h2>
     <ul>

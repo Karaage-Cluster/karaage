@@ -15,19 +15,20 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import datetime
+
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db.models import Count, Sum
+from django.template.defaultfilters import wordwrap
 
-import datetime
 from karaage.common.filterspecs import Filter, FilterBar, DateFilter
-
-from karaage.common.decorators import admin_required
+from karaage.common.decorators import admin_required, login_required
 from karaage.software.models import SoftwareCategory, Software, SoftwareVersion, SoftwareLicense, SoftwareLicenseAgreement
 from karaage.software.forms import AddPackageForm, LicenseForm, SoftwareVersionForm
 from karaage.people.models import Person
@@ -36,8 +37,11 @@ from karaage.common import get_date_range, log
 import karaage.common as util
 
 
-@admin_required
+@login_required
 def software_list(request):
+    if not util.is_admin(request):
+        return add_package_list(request)
+
     software_list = Software.objects.all()
     page_no = int(request.GET.get('page', 1))
 
@@ -293,3 +297,54 @@ def version_stats(request, version_id):
         'querystring': querystring,
     }
     return render_to_response('software/version_stats.html', context, context_instance=RequestContext(request))
+
+
+@login_required
+def add_package_list(request):
+
+    person = request.user
+
+    software_list = []
+    for s in Software.objects.filter(softwarelicense__isnull=False).distinct():
+        data = {'software': s}
+        license_agreements = SoftwareLicenseAgreement.objects.filter(user=person, license__software=s)
+        if license_agreements.count() > 0:
+            la = license_agreements.latest()
+            data['accepted'] = True
+            data['accepted_date'] = la.date
+        software_list.append(data)
+
+    return render_to_response('software/add_package_list.html', locals(), context_instance=RequestContext(request))
+
+
+@login_required
+def add_package(request, software_id):
+
+    software = get_object_or_404(Software, pk=software_id)
+    software_license = software.get_current_license()
+    person = request.user
+
+    if software_license is None:
+        raise Http404("Package '%s' has no software license." % (software))
+
+    if request.method == 'POST':
+
+        if not software.restricted:
+            SoftwareLicenseAgreement.objects.create(
+                user=person,
+                license=software_license,
+                date=datetime.datetime.today(),
+                )
+            person.add_group(software.group)
+            return HttpResponseRedirect(reverse('kg_user_profile_software'))
+
+    return render_to_response('software/accept_license.html', locals(), context_instance=RequestContext(request))
+
+
+@login_required
+def license_txt(request, software_id):
+
+    software = get_object_or_404(Software, pk=software_id)
+    software_license = software.get_current_license()
+
+    return HttpResponse(wordwrap(software_license.text, 80), mimetype="text/plain")

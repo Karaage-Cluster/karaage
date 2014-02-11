@@ -14,7 +14,7 @@ urlpatterns = patterns('',
     url(r'^projects/', include('karaage.projects.urls')),
     url(r'^machines/', include('karaage.machines.urls')),
     url(r'^usage/', include('karaage.usage.urls.admin')),
-    url(r'^software/', include('karaage.software.urls.admin')),
+    url(r'^software/', include('karaage.software.urls')),
     url(r'^emails/', include('karaage.emails.urls')),
     url(r'^applications/', include('karaage.applications.urls')),
 
