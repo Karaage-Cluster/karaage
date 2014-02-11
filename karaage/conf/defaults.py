@@ -2,6 +2,9 @@
 AUTH_USER_MODEL = 'people.Person'
 
 AJAX_LOOKUP_CHANNELS = {
+    'person' : ( 'karaage.people.lookups', 'PersonLookup'),
+    'group' : ( 'karaage.people.lookups', 'GroupLookup'),
+    'project' : ( 'karaage.projects.lookups', 'ProjectLookup'),
 }
 
 AJAX_SELECT_BOOTSTRAP = True
@@ -108,7 +111,7 @@ DATASTORES = {
 
 # OTHER
 
-USAGE_IS_PUBLIC = False
+USAGE_IS_PUBLIC = True
 
 SHIB_SUPPORTED = False
 
@@ -139,9 +142,11 @@ XMLRPC_METHODS = (
 )
 
 X_FRAME_OPTIONS = 'DENY'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 from socket import getfqdn
 REGISTRATION_BASE_URL = 'https://%s/users' % getfqdn()
+ALLOW_REGISTRATIONS = False
 
 ADMIN_REQUIRED = False
 ADMIN_IGNORED = False
