@@ -7,16 +7,17 @@
 {% block breadcrumbs %}
 <div class="breadcrumbs">
     <a href='{% url "index" %}'>Home</a>&nbsp;›
-    Institutes</div>
+    Institutes
+</div>
 {% endblock %}
 
 
 {% block object-tools %}
-{% if request.user.is_admin %}
+{% if is_admin %}
 <div class="module object-tools">
     <h2>Object links</h2>
     <ul>
-        <li><a class="addlink" href="add/">Add institute</a></li>
+        <li><a class="addlink" href="{% url 'kg_institute_add' %}">Add institute</a></li>
     </ul>
 </div>
 {% endif %}
