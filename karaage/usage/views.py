@@ -30,6 +30,7 @@ from django.core.urlresolvers import reverse
 from django.template.defaultfilters import dictsortreversed
 from django.core.paginator import Paginator
 
+from karaage.common.decorators import admin_required, login_required, usage_required
 from karaage.common.filterspecs import Filter, FilterBar, DateFilter
 from karaage.people.models import Person
 from karaage.institutes.models import Institute, InstituteQuota
@@ -71,8 +72,6 @@ def progress(request):
                         'info': result.info,
                         'ready': result.ready(),
                 }
-            print "****************"
-            print result.state, result.info
             return HttpResponse(json.dumps(value), content_type="application/json")
     return None
 
@@ -116,9 +115,7 @@ def gen_cache_for_machine_category(request, start, end, machine_category):
             tc = cache.TaskCacheForMachineCategory.objects.create(date=datetime.date.today(), start=start, end=end,
                 machine_category=machine_category,
                 celery_task_id="")
-            print "!!!!!!!!!!!!!!!!"
             result = tasks.gen_cache_for_machine_category.delay(start, end, machine_category)
-            print "$$$$$$$$$$$$$$$$", result.task_id
             tc.celery_task_id = result.task_id
             tc.save()
 
@@ -238,10 +235,8 @@ def usage_index(request):
     return render_to_response('usage/mc_list.html', locals(), context_instance=RequestContext(request))
 
 
+@usage_required
 def index(request, machine_category_id):
-    if not getattr(settings, 'USAGE_IS_PUBLIC', False):
-        return HttpResponseForbidden('<h1>Access Denied</h1>')
-
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
     mc_list = MachineCategory.objects.exclude(id__exact=machine_category_id)
 
@@ -335,10 +330,8 @@ def index(request, machine_category_id):
     return render_to_response('usage/usage_institute_list.html', locals(), context_instance=RequestContext(request))
 
 
+@usage_required
 def institute_usage(request, institute_id, machine_category_id):
-    if not getattr(settings, 'USAGE_IS_PUBLIC', False):
-        return HttpResponseForbidden('<h1>Access Denied</h1>')
-
     result = progress(request)
     if result is not None:
         return result
@@ -435,6 +428,7 @@ def institute_usage(request, institute_id, machine_category_id):
     return render_to_response('usage/usage_institute_detail.html', locals(), context_instance=RequestContext(request))
 
 
+@usage_required
 def project_usage(request, project_id, machine_category_id):
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
     project = get_object_or_404(Project, pid=project_id)
@@ -492,6 +486,7 @@ def project_usage(request, project_id, machine_category_id):
     return render_to_response('usage/project_usage.html', locals(), context_instance=RequestContext(request))
 
 
+@admin_required
 def unknown_usage(request):
     if not getattr(settings, 'USAGE_IS_PUBLIC', False):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
@@ -536,6 +531,7 @@ def unknown_usage(request):
     return render_to_response('usage/unknown_usage.html', locals(), context_instance=RequestContext(request))
 
 
+@usage_required
 def search(request):
     if not getattr(settings, 'USAGE_IS_PUBLIC', False):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
@@ -610,6 +606,7 @@ def search(request):
     return render_to_response('usage/search.html', locals(), context_instance=RequestContext(request))
 
 
+@usage_required
 def top_users(request, machine_category_id, count=20):
     if not getattr(settings, 'USAGE_IS_PUBLIC', False):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
@@ -649,6 +646,7 @@ def top_users(request, machine_category_id, count=20):
     return render_to_response('usage/top_users.html', locals(), context_instance=RequestContext(request))
 
 
+@usage_required
 def institute_trends(request, machine_category_id):
     if not getattr(settings, 'USAGE_IS_PUBLIC', False):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
@@ -669,6 +667,7 @@ def institute_trends(request, machine_category_id):
     return render_to_response('usage/institute_trends.html', locals(), context_instance=RequestContext(request))
 
 
+@usage_required
 def institute_users(request, machine_category_id, institute_id):
     if not getattr(settings, 'USAGE_IS_PUBLIC', False):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
@@ -711,6 +710,7 @@ def institute_users(request, machine_category_id, institute_id):
     return render_to_response('usage/institute_users.html', locals(), context_instance=RequestContext(request))
 
 
+@usage_required
 def core_report(request, machine_category_id):
     if not getattr(settings, 'USAGE_IS_PUBLIC', False):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
@@ -740,6 +740,7 @@ def core_report(request, machine_category_id):
     return render_to_response('usage/core_report.html', locals(), context_instance=RequestContext(request))
 
 
+@usage_required
 def mem_report(request, machine_category_id):
 
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
@@ -767,6 +768,7 @@ def mem_report(request, machine_category_id):
     return render_to_response('usage/mem_report.html', locals(), context_instance=RequestContext(request))
 
 
+@usage_required
 def job_detail(request, jobid):
     if not getattr(settings, 'USAGE_IS_PUBLIC', False):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
@@ -779,6 +781,7 @@ def job_detail(request, jobid):
     return render_to_response('usage/job_detail.html', {'job': job}, context_instance=RequestContext(request))
 
 
+@usage_required
 def job_list(request):
     if not getattr(settings, 'USAGE_IS_PUBLIC', False):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
