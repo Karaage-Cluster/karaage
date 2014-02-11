@@ -25,22 +25,25 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator
 from django.forms.models import inlineformset_factory
 
+from karaage.common import is_admin
 from karaage.common.filterspecs import Filter, FilterBar
-
-from karaage.common.decorators import admin_required
+from karaage.common.decorators import admin_required, login_required
 import karaage.common as util
 from karaage.institutes.models import Institute, InstituteQuota, InstituteDelegate
 from karaage.institutes.forms import InstituteForm, InstituteQuotaForm, DelegateForm
 from karaage.machines.models import MachineCategory
 
 
-@admin_required
+@login_required
 def institute_detail(request, institute_id):
-    
-    institute = get_object_or_404(Institute, pk=institute_id)
+
+    if is_admin(request):
+        institute = get_object_or_404(Institute, pk=institute_id)
+    else:
+        institute = get_object_or_404(Institute, pk=institute_id, delegates=request.user)
 
     return render_to_response('institutes/institute_detail.html', locals(), context_instance=RequestContext(request))
-    
+
 
 @admin_required
 def institute_verbose(request, institute_id):
@@ -52,10 +55,12 @@ def institute_verbose(request, institute_id):
     return render_to_response('institutes/institute_verbose.html', locals(), context_instance=RequestContext(request))
 
 
-@admin_required
+@login_required
 def institute_list(request):
 
     institute_list = Institute.objects.all()
+    if not is_admin(request):
+        institute_list = institute_list.filter(delegates=request.user)
     page_no = int(request.GET.get('page', 1))
 
     if 'active' in request.REQUEST:

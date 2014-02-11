@@ -22,13 +22,13 @@
         <table>
             <tr><td>Active:</td><td>{% yes_no_img institute.is_active %}</td></tr>
             <tr><td>Delegate(s):</td><td>{% for delegate in institute.delegates.all %}<a href="{{ delegate.get_absolute_url }}">{{ delegate }}</a>, {% endfor %}</td></tr>
-            {% if karaage_site == 'admin' %}
+            {% if is_admin %}
             <tr><td>Group:</td><td><a href="{{ institute.group.get_absolute_url }}">{{ institute.group }}</a></td></tr>
             {% endif %}
             {% if institute.saml_entityid %}
             <tr><td>SAML entityID:</td><td>{{ institute.saml_entityid }}</td></tr>
             {% endif %}
-            {% if karaage_site == 'admin' and request.user.is_admin %}
+            {% if is_admin %}
             <tr><td colspan="2"><a class="changelink" href="edit/">Edit</a></td></tr>
             {% endif %}
         </table>
@@ -36,7 +36,7 @@
 
     <div class="module">
         <h2>Caps and quotas
-            {% if karaage_site == 'admin' and request.user.is_admin %}
+            {% if is_admin %}
             <a class="addlink" href="{% url 'kg_institutequota_add' institute.pk %}">Add</a>
             {% endif %}
         </h2>
@@ -54,7 +54,7 @@
                     <td>{{ iq.machine_category }}</td>
                     <td>{{ iq.quota }}</td>
                     <td>{{ iq.get_cap }}</td>
-                    {% if request.user.is_admin %}<td><a class="changelink" href="{% url 'kg_institutequota_edit' iq.pk %}">edit</a></td>{% endif %}
+                    {% if is_admin %}<td><a class="changelink" href="{% url 'kg_institutequota_edit' iq.pk %}">edit</a></td>{% endif %}
                     <td><a class="deletelink" href="{% url 'kg_institutequota_delete' iq.pk %}">Remove</a></td>
                 </tr>
                 {% endfor %}
@@ -74,13 +74,15 @@
         {% gen_table institute.person_set.select_related %}
     </div>
 
+    {% if is_admin %}
     {% comments institute %}
+    {% endif %}
 </div>
 {% endblock %}
 
 
 {% block object-tools %}
-{% if karaage_site == 'admin' and request.user.is_admin %}
+{% if is_admin %}
 <div class="module object-tools">
     <h2>Tasks</h2>
     <ul>
