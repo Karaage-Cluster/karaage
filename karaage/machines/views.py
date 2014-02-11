@@ -21,10 +21,10 @@ from django.template import RequestContext
 
 from karaage.projects.models import Project
 from karaage.machines.models import Machine, MachineCategory
-from karaage.common.decorators import admin_required
+from karaage.common.decorators import admin_required, login_required
 import karaage.common as util
 
-@admin_required
+@login_required
 def index(request):
     category_list = MachineCategory.objects.all()
     return render_to_response(
@@ -33,7 +33,7 @@ def index(request):
         context_instance=RequestContext(request))
 
 
-@admin_required
+@login_required
 def machine_detail(request, machine_id):
     machine = get_object_or_404(Machine, pk=machine_id)
     usage_list = machine.cpujob_set.all()[:5]
@@ -118,7 +118,7 @@ def category_edit(request, category_id):
     return update_object(request,
             object_id=category_id, model=MachineCategory)
 
-@admin_required
+@login_required
 def category_detail(request, category_id):
     machine_category = get_object_or_404(MachineCategory, pk=category_id)
     return render_to_response(
