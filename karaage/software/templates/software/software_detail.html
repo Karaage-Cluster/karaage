@@ -83,8 +83,8 @@
                     <td>{{ license.version }}</td>
                     <td>{{ license.date|date }}</td>
                     <td><a href="{% url 'kg_software_license_detail' license.id %}">view</a></td>
-                    <td>{% if request.user.is_admin %}<a class="changelink" href="{% url 'kg_software_license_edit' license.id %}">Edit</a>{% endif %}</td>
-                    <td>{% if request.user.is_admin %}<a class="deletelink" href="{% url 'kg_software_license_delete' license.id %}">Delete</a>{% endif %}</td>
+                    <td>{% if is_admin %}<a class="changelink" href="{% url 'kg_software_license_edit' license.id %}">Edit</a>{% endif %}</td>
+                    <td>{% if is_admin %}<a class="deletelink" href="{% url 'kg_software_license_delete' license.id %}">Delete</a>{% endif %}</td>
                     <td>
                         <table cellspacing="0">
                             <thead>
@@ -124,7 +124,7 @@
                 <tr class="{% cycle row1,row2 %}">
                     <td>{{ person.username }}</td>
                     <td><a href="{{ person.get_absolute_url }}">{{ person }}</a></td>
-                    {% if request.user.is_admin %}
+                    {% if is_admin %}
                     <td><a class="deletelink" href="{% url 'kg_software_remove_person' software.id person.id %}">Remove</a></td>
                     {% endif %}
                 </tr>
@@ -141,7 +141,7 @@
 <div class="module object-tools">
     <h2>Tasks</h2>
     <ul>
-        {% if request.user.is_admin %}
+        {% if is_admin %}
         <li><a class="changelink" href="{% url 'kg_software_edit' software.id %}">Edit</a></li>
         <li><a class="deletelink" href="{% url 'kg_software_delete' software.id %}">Delete</a></li>
         <li><a class="addlink" href="{% url 'kg_software_add_version' software.id %}">Add Version</a></li>

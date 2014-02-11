@@ -29,7 +29,7 @@
     {% if software_license %}
     <div class="border">
         <h3>End User License Agreement</h3>
-        <p><a href="print/">Print version</a></p>
+        <p><a href="{% url 'kg_software_license_txt' software.pk %}">Print version</a></p>
         {% if software_license.version %}<p>Version: {{ software_license.version }}</p>{% endif %}
         {{ software_license.text|safe|linebreaks }}
     </div>

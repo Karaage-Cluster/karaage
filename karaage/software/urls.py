@@ -19,7 +19,7 @@ from django.conf.urls import *
 
 from karaage.software.models import Software
 
-urlpatterns = patterns('karaage.software.views.admin',
+urlpatterns = patterns('karaage.software.views',
     url(r'^$', 'software_list', name='kg_software_list'),
     url(r'^add/$', 'add_package', name='kg_software_add'),
 
@@ -45,7 +45,7 @@ urlpatterns = patterns('karaage.software.views.admin',
     url(r'^license/(?P<license_id>\d+)/$', 'license_detail', name='kg_software_license_detail'),
     url(r'^license/(?P<license_id>\d+)/edit/$', 'edit_license', name='kg_software_license_edit'),
     url(r'^license/(?P<license_id>\d+)/delete/$', 'license_delete', name='kg_software_license_delete'),
-)
 
-urlpatterns += patterns('karaage.admin.views',
+    url(r'^(?P<software_id>\d+)/join/$', 'add_package', name='kg_software_join'),
+    url(r'^(?P<software_id>\d+)/print/$', 'license_txt', name='kg_software_license_txt'),
 )
