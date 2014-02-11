@@ -6,6 +6,7 @@ urlpatterns = patterns('',
     url(r'^$', 'karaage.admin.views.admin_index', name='index'),
     url(r'^search/$', 'karaage.admin.views.search', name='kg_site_search'),
     url(r'^misc/$', 'karaage.admin.views.misc', name='kg_misc'),
+    url(r'^logs/$', 'karaage.admin.views.log_list', name='kg_log_list'),
 
     url(r'^people/', include('karaage.people.urls.persons')),
     url(r'^groups/', include('karaage.people.urls.groups')),
@@ -19,8 +20,6 @@ urlpatterns = patterns('',
     url(r'^applications/', include('karaage.applications.urls')),
 
     url(r'^lookup/', include(ajax_select.urls)),
-
-    url(r'^logs/$', 'karaage.admin.views.log_list', name='kg_log_list'),
     url(r'^captcha/', include('captcha.urls')),
+    (r'xmlrpc/$', 'django_xmlrpc.views.handle_xmlrpc',),
 )
-
