@@ -34,7 +34,6 @@ def common(request):
 def registration(request):
     """ Set context for registration menu. """
     ctx = {}
-    ctx['karaage_site'] = 'registraton'
 
     if request.user.is_authenticated():
         person = request.user
@@ -51,6 +50,5 @@ def admin(request):
     """ Set context for admin menu. """
     ctx = {}
     requires_admin = Application.objects.requires_admin()
-    ctx['karaage_site'] = 'admin'
     ctx['pending_applications'] = requires_admin.count()
     return ctx
