@@ -111,7 +111,7 @@
             </tbody>
         </table>
     </div>
-    {% elif project.is_active and user.get_profile in project.leaders.all %}
+    {% elif project.is_active and user in project.leaders.all %}
     <div class="module">
         <h2>Management tasks</h2>
         <p><a class="addlink" href="{% url 'kg_application_invite' project.pid %}">Invite a new user</a></p>
@@ -137,7 +137,7 @@
                     {% if is_admin %}
                     <th>Last Usage</th>
                     {% endif %}
-                    {% if is_admin or request.user.get_profile in project.leaders.all %}
+                    {% if is_admin or request.user in project.leaders.all %}
                     <th></th>
                     {% endif %}
                 </tr>
@@ -166,7 +166,7 @@
                     {% if is_admin %}
                     <td>{{ person.last_usage }}</td>
                     {% endif %}
-                    {% if is_admin or request.user.get_profile in project.leaders.all %}
+                    {% if is_admin or request.user in project.leaders.all %}
                     <td><a class="deletelink" href="{% url 'kg_remove_project_member' project.pid person.username %}">Remove</a></td>
                     {% endif %}
                 </tr>
