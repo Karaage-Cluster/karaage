@@ -309,6 +309,10 @@
         {% if person.is_active %}
         <li><a href="{% url 'kg_job_list' %}?user={{ person.username }}">Display all jobs</a></li>
         {% endif %}
+
+        {% if person.username != user.username %}
+        <li><a href="{% url 'kg_password_request' person.username %}">Reset Password</a></li>
+        {% endif %}
     </ul>
 </div>
 {% endblock %}
