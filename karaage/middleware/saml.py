@@ -78,5 +78,5 @@ class SamlUserMiddleware(object):
 
         # User is valid.  Set request.user and persist user in the session
         # by logging the user in.
-        request.user = person.user
-        auth.login(request, person.user)
+        request.user = person
+        auth.login(request, person)
