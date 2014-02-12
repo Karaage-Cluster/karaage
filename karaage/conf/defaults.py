@@ -148,5 +148,7 @@ from socket import getfqdn
 REGISTRATION_BASE_URL = 'https://%s/users' % getfqdn()
 ALLOW_REGISTRATIONS = False
 
+ROOT_URLCONF = 'karaage.conf.urls'
+
 ADMIN_REQUIRED = False
 ADMIN_IGNORED = False
