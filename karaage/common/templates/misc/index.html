@@ -1,0 +1,26 @@
+{% extends "main.html" %}
+{% load url from future %}
+
+{% block title %}Users{% endblock %}
+
+{% block content %}
+<div id="content-main">
+
+    <div class="module">
+    	<h2>Troubleshooting</h2>
+    		<p><a href="{% url "kg_person_no_default" %}">View users with no default project</a></p>
+    		<p><a href="{% url "kg_person_no_account" %}">Find users who are in projects that they don't have an account for</a></p>
+    		<p><a href="{% url "kg_person_no_project" %}">Find users who are not in a project and have a user account</a></p>
+    		<p><a href="{% url "kg_person_wrong_default" %}">Find users whos default project is a project they are not in</a></p>
+    		<p><a href="{% url "kg_empty_projects_list" %}">List projects with no users</a></p>
+    		<p><a href="{% url "kg_unknown_usage" %}">List unassigned usage</a></p>
+    		<p><a href="{% url "kg_person_locked" %}">View all locked users</a></p>
+    		<p><a href="{% url "kg_person_struggling" %}">List new users that haven't had any usage yet.</a></p>
+    		<p><a href="{% url "kg_projects_over_quota" %}">Projects over quota</a></p>
+    		<p><a href="{% url "kg_projects_by_cap_used" %}">List of projects sorted by cap used</a></p>
+    		<p><a href="{% url "kg_log_list" %}">View logs</a></p>
+    	
+	</div>
+</div>
+{% endblock %}
+ 

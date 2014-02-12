@@ -1,0 +1,64 @@
+{% extends "main.html" %}
+{% load url from future %}
+{% block title %}Home{% endblock %}
+
+
+{% block sidebar_extra %}
+{% if is_admin %}
+<div class="module">
+    <h2>Recent Actions</h2>
+    <h3>My Actions <a href="{% url "kg_log_list" %}">View All</a></h3>
+    <ul class="plainlist">
+        {% for action in recent_actions %}
+        {% spaceless %}
+        <li class=
+        {% if action.is_addition %}"addlink"{% endif %}
+        {% if action.is_change %}"changelink"{% endif %}
+        {% if action.is_deletion %}"deletelink"{% endif %}
+        >
+        {{ action.object_repr }}
+        <br /><span class="mini quiet">{{ action.content_type }}</span></li>
+        {% endspaceless %}
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+
+    <h1>Welcome to Karaage 3</h1>
+
+    {% if is_admin %}
+
+    {% if pending_apps %}
+    <ul class="messagelist">
+        <li>There are <a href="{% url "kg_application_list" %}?state=K">pending applications</a> that require admin approval.</li>
+    </ul>
+    {% endif %}
+
+    <div class="module">
+        <h2>Newest Users</h2>
+        {% gen_table newest_users %}
+    </div>
+
+    <div class="module">
+        <h2>Newest Projects</h2>
+        {% gen_table newest_projects %}
+    </div>
+
+    {% else %}
+
+    <p>On this site you can:</p>
+    <ul>
+        <li>Check/edit your personal details</li>
+        <li>View your projects and usage</li>
+        <li>View and agree to license terms for restricted software</li>
+        <li>Change your password</li>
+    </ul>
+
+    {% endif %}
+</div>
+{% endblock %}
