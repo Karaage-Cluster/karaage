@@ -741,7 +741,7 @@ def send_invitation(request, project_id=None):
         person = request.user
         project = get_object_or_404(Project, pid=project_id)
 
-        if project_id is not None:
+        if project_id is None:
             return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
         if person not in project.leaders.all():
