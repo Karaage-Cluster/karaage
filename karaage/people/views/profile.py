@@ -139,7 +139,7 @@ def login(request, username=None):
             person = Person.objects.authenticate(username=username, password=password)
             if person is not None:
                 if person.is_active and not person.is_locked():
-                    login(request, person.user)
+                    login(request, person)
                     return HttpResponseRedirect(redirect_to)
                 else:
                     error = 'User account is inactive or locked'
