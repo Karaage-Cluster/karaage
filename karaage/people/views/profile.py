@@ -29,7 +29,7 @@ from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.people.forms import PasswordChangeForm, PersonForm
-from karaage.people.forms import LoginForm, PasswordResetForm
+from karaage.people.forms import LoginForm
 from karaage.machines.models import Account
 from karaage.machines.forms import ShellForm
 from karaage.common import log

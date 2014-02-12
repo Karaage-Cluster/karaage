@@ -30,10 +30,11 @@ from karaage.common.filterspecs import Filter, FilterBar, DateFilter
 from karaage.common.decorators import admin_required, login_required
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
-from karaage.people.models import Person, Group
+from karaage.people.models import Person
 from karaage.people.emails import send_confirm_password_email
 from karaage.people.emails import send_bounced_warning
-from karaage.people.forms import AddPersonForm, AdminPersonForm, AdminGroupForm
+from karaage.people.emails import send_reset_password_email
+from karaage.people.forms import AddPersonForm, AdminPersonForm
 from karaage.people.forms import AdminPasswordChangeForm, AddProjectForm
 from karaage.institutes.models import Institute
 from karaage.machines.models import Account

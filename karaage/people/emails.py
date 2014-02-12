@@ -18,6 +18,7 @@
 from django.template.loader import render_to_string
 from django.conf import settings
 
+from karaage.common import log
 from karaage.common.emails import CONTEXT, send_mail
 
 
