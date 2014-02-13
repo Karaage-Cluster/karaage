@@ -23,5 +23,5 @@ from karaage.people.forms import AdminGroupForm
 urlpatterns = patterns('karaage.people.views.groups',
     url(r'^$', 'group_list', name='kg_group_list'),
     url(r'^add/$', 'add_group', name='kg_group_add'),
-    (r'^(?P<group_name>[-.\w]+)/', include('karaage.people.urls.group_detail')),
+    (r'^detail/(?P<group_name>[-.\w]+)/', include('karaage.people.urls.group_detail')),
 )
