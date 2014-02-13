@@ -42,7 +42,7 @@ from karaage.common import log, is_admin
 # access for some reason.
 
 class Person(AbstractBaseUser):
-    username = models.CharField(max_length=30, unique=True, help_text="Required. 16 characters or fewer. Letters, numbers and underscores only")
+    username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(null=True, db_index=True)
     short_name = models.CharField(max_length=30)
     full_name = models.CharField(max_length=60)
