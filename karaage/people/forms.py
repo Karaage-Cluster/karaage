@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import ajax_select.fields
 from django import forms
 from django.conf import settings
 from django.contrib.admin.widgets import AdminDateWidget
@@ -28,8 +29,6 @@ from karaage.projects.utils import add_user_to_project
 from karaage.common.constants import COUNTRIES
 from karaage.common import get_current_person
 from karaage.common.forms import validate_password
-
-import ajax_select.fields
 
 
 class PersonForm(forms.ModelForm):
@@ -75,7 +74,9 @@ class AdminPersonForm(PersonForm):
 class AddPersonForm(AdminPersonForm):
     project = forms.ModelChoiceField(queryset=Project.objects.all(), label=u"Default Project", required=False)
     needs_account = forms.BooleanField(required=False, label=u"Do you require a cluster account", help_text=u"eg. Will you be working on the project yourself")
-    username = forms.CharField(label=u"Requested username", max_length=16, help_text=u"16 characters or fewer. Alphanumeric characters only (letters, digits and underscores).")
+    username = forms.CharField(label=u"Requested username",
+                               max_length=settings.USERNAME_MAX_LENGTH,
+                               help_text=u"%s characters or fewer. Alphanumeric characters only (letters, digits and underscores)." % settings.USERNAME_MAX_LENGTH)
     password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
     password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)')
 
