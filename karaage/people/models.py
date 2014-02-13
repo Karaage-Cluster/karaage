@@ -23,7 +23,7 @@ from karaage.admin.models import CHANGE
 from karaage.common.constants import TITLES, STATES, COUNTRIES
 from karaage.people.managers import ActivePersonManager, DeletedPersonManager, LeaderManager, PersonManager
 
-from karaage.common import log
+from karaage.common import log, is_admin
 
 import datetime
 import warnings
@@ -237,16 +237,15 @@ class Person(AbstractBaseUser):
         return self.is_admin
 
     # Can person view this self record?
-    def can_view(self, user):
+    def can_view(self, request):
         from karaage.projects.models import Project
+        person = request.user
 
-        if not user.is_authenticated():
+        if not person.is_authenticated():
             return False
 
-        person = user
-
         # staff members can view everything
-        if person.is_admin:
+        if is_admin(request):
             return True
 
         # ensure person making request isn't locked.

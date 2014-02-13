@@ -344,9 +344,8 @@ def delete_user(request, username):
 def user_detail(request, username):
     
     person = get_object_or_404(Person, username=username)
-    if not is_admin(request):
-        if not person.can_view(request.user):
-            return HttpResponseForbidden('<h1>Access Denied</h1><p>You do not have permission to view details about this user.</p>')
+    if not person.can_view(request):
+        return HttpResponseForbidden('<h1>Access Denied</h1><p>You do not have permission to view details about this user.</p>')
 
     my_projects = person.projects.all()
     my_pids = [p.pid for p in my_projects]
@@ -482,9 +481,8 @@ def password_request(request, username):
 
     post_reset_redirect = reverse('kg_person_reset_done', args=[person.username])
 
-    if not is_admin(request):
-        if not person.can_view(request.user):
-            return HttpResponseForbidden('<h1>Access Denied</h1><p>You do not have permission to view details about this user.</p>')
+    if not person.can_view(request):
+        return HttpResponseForbidden('<h1>Access Denied</h1><p>You do not have permission to view details about this user.</p>')
 
     if request.method == "POST":
         if person.has_usable_password():

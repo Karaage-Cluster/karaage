@@ -31,6 +31,11 @@ from initial_ldap_data import test_ldif
 
 from karaage.datastores import get_test_datastore
 
+class FakeRequest(object):
+    def __init__(self, person):
+        self.user = person
+
+
 class PersonTestCase(TestCase):
 
     def setUp(self):
@@ -50,8 +55,9 @@ class PersonTestCase(TestCase):
     def do_permission_tests(self, test_object, users):
         for user_id in users:
 #            print "can user '%d' access '%s'?"%(user_id, test_object)
-            user = Person.objects.get(id=user_id)
-            result = test_object.can_view(user)
+            person = Person.objects.get(id=user_id)
+            request = FakeRequest(person)
+            result = test_object.can_view(request)
             expected_result = users[user_id]
 #            print "---> got:'%s' expected:'%s'"%(result, expected_result)
             self.failUnlessEqual(result, expected_result)

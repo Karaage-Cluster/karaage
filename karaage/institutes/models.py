@@ -16,7 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.db import models
-from karaage.common import log
+from karaage.common import log, is_admin
 from karaage.people.models import Person, Group
 from karaage.machines.models import Account, MachineCategory
 from karaage.institutes.managers import ActiveInstituteManager
@@ -107,14 +107,14 @@ class Institute(models.Model):
     def get_absolute_url(self):
         return ('kg_institute_detail', [self.id])
 
-    def can_view(self, user):
-        if not user.is_authenticated():
+    def can_view(self, request):
+        person = request.user
+
+        if not person.is_authenticated():
             return False
 
-        person = user
-
         # staff members can view everything
-        if person.is_admin:
+        if is_admin(request):
             return True
 
         if not self.is_active:

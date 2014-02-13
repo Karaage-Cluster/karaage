@@ -116,9 +116,8 @@ def project_detail(request, project_id):
 
     project = get_object_or_404(Project, pid=project_id)
 
-    if not util.is_admin(request):
-        if not project.can_view(request.user):
-            return HttpResponseForbidden('<h1>Access Denied</h1>')
+    if not project.can_view(request):
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     form = AddPersonForm(request.POST or None)
     if request.method == 'POST':

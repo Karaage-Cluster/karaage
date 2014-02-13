@@ -25,7 +25,7 @@ from karaage.people.models import Person, Group
 from karaage.institutes.models import Institute
 from karaage.machines.models import MachineCategory, Account
 from karaage.projects.managers import ActiveProjectManager, DeletedProjectManager
-from karaage.common import log
+from karaage.common import log, is_admin
 
 
 class Project(models.Model):
@@ -130,13 +130,13 @@ class Project(models.Model):
     delete.alters_data = True
 
     # Can user view this self record?
-    def can_view(self, user):
-        if not user.is_authenticated():
+    def can_view(self, request):
+        person = request.user
+
+        if not person.is_authenticated():
             return False
 
-        person = user
-
-        if person.is_admin:
+        if is_admin(request):
             return True
 
         if not self.is_active:

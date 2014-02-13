@@ -351,7 +351,7 @@ def institute_usage(request, institute_id, machine_category_id):
     project_list = []
     institute_list = Institute.active.all()
 
-    if not institute.can_view(request.user) and not getattr(settings, 'USAGE_IS_PUBLIC', False):
+    if not institute.can_view(request) and not getattr(settings, 'USAGE_IS_PUBLIC', False):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     mc_cache = usage.get_machine_category_usage(machine_category, start, end)
@@ -432,7 +432,7 @@ def institute_usage(request, institute_id, machine_category_id):
 def project_usage(request, project_id, machine_category_id):
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
     project = get_object_or_404(Project, pid=project_id)
-    if not project.can_view(request.user) and not getattr(settings, 'USAGE_IS_PUBLIC', False):
+    if not project.can_view(request) and not getattr(settings, 'USAGE_IS_PUBLIC', False):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     result = progress(request)
@@ -685,7 +685,7 @@ def institute_users(request, machine_category_id, institute_id):
 
     institute = get_object_or_404(Institute, pk=institute_id)
 
-    if not institute.can_view(request.user) and not getattr(settings, 'USAGE_IS_PUBLIC', False):
+    if not institute.can_view(request) and not getattr(settings, 'USAGE_IS_PUBLIC', False):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     start, end = get_date_range(request)
@@ -775,7 +775,7 @@ def job_detail(request, jobid):
 
     job = get_object_or_404(CPUJob, jobid=jobid)
 
-    if not job.project.can_view(request.user) and not getattr(settings, 'USAGE_IS_PUBLIC', False):
+    if not job.project.can_view(request) and not getattr(settings, 'USAGE_IS_PUBLIC', False):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     return render_to_response('usage/job_detail.html', {'job': job}, context_instance=RequestContext(request))
