@@ -18,7 +18,43 @@
 from django.core import exceptions as django_exceptions
 from django.test import TestCase
 
-from karaage.people.models import Group
+from karaage.institutes.models import Institute
+from karaage.people.models import Person, Group
+from karaage.tests.fixtures import PersonFactory
+
+
+class ModelTestCase(TestCase):
+    def test_minimum_create(self):
+        institute = Institute.objects.create()
+        person = Person.objects.create(institute=institute)
+        person.full_clean()
+        self.assertFalse(person.is_admin)
+        self.assertFalse(person.is_systemuser)
+        self.assertEqual(str(person), 'No Name')
+
+    def test_username(self):
+        assert_raises = self.assertRaises(django_exceptions.ValidationError)
+
+        # Max length
+        person = PersonFactory(username="a" * 255)
+        person.full_clean()
+
+        # Name is too long
+        person = PersonFactory(username="a" * 256)
+        with assert_raises:
+            person.full_clean()
+
+    def test_locking(self):
+        person = PersonFactory()
+        self.assertTrue(person.login_enabled)
+
+        # Test that a locked person is disabled
+        person.lock()
+        self.assertFalse(person.login_enabled)
+
+        # Test that an unlocked person is enabled
+        person.unlock()
+        self.assertTrue(person.login_enabled)
 
 
 class GroupTestCase(TestCase):
