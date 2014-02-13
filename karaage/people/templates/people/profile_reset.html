@@ -1,0 +1,17 @@
+{% extends "people/profile_base.html" %}
+
+
+{% block title %}Personal Details - Password reset{% endblock %}
+{% block profile_title %}Password reset{% endblock %}
+
+
+{% block profile_content %}
+<h1>Password reset</h1>
+
+<p>You can request reseting the password of {{ person }}. This will send the
+person an email with instructions allowing them to change their password.</p>
+
+<form action="" method="post">{% csrf_token %}
+<p><input type="submit" value="Send password reset instructions" /></p>
+</form>
+{% endblock %}

@@ -18,8 +18,8 @@
 from django import forms
 from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
-from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
 
+from karaage.people.emails import send_reset_password_email
 from karaage.people.models import Person, Group
 from karaage.people.utils import validate_username_for_new_person, UsernameException
 from karaage.institutes.models import Institute
@@ -169,29 +169,6 @@ class SetPasswordForm(BaseSetPasswordForm):
             raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (uppercase, lowercase), numbers and is at least 8 characters long.')
 
         return password1
-
-    def save(self, commit=True):
-        person = self.user
-        person.set_password(self.cleaned_data['new_password1'])
-        if commit:
-                person.save()
-        return self.user
-
-
-class PasswordResetForm(BasePasswordResetForm):
-
-    email = forms.ModelChoiceField(queryset=Person.active.all(), label="Select person")
-
-    def clean_email(self):
-        email = self.cleaned_data["email"].email
-        query = Person.objects.filter(
-            email__iexact=email,
-            is_active=True
-        )
-        if query.count() == 0:
-            raise forms.ValidationError("That e-mail address doesn't have an associated user account. Are you sure you've registered?")
-
-        return email
 
 
 class AdminGroupForm(forms.Form):

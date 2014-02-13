@@ -408,7 +408,7 @@ def password_change(request, username):
     else:
         form = AdminPasswordChangeForm()
         
-    return render_to_response('people/password_change_form.html', {'person': person, 'form': form}, context_instance=RequestContext(request))
+    return render_to_response('people/person_password.html', {'person': person, 'form': form}, context_instance=RequestContext(request))
 
 
 @admin_required
@@ -475,3 +475,31 @@ def add_comment(request, username):
     breadcrumbs.append( ("People", reverse("kg_person_list")) )
     breadcrumbs.append( (unicode(obj), reverse("kg_person_detail", args=[obj.username])) )
     return util.add_comment(request, breadcrumbs, obj)
+
+@login_required
+def password_request(request, username):
+    person = get_object_or_404(Person, username=username)
+
+    post_reset_redirect = reverse('kg_person_reset_done', args=[person.username])
+
+    if not is_admin(request):
+        if not person.can_view(request.user):
+            return HttpResponseForbidden('<h1>Access Denied</h1><p>You do not have permission to view details about this user.</p>')
+
+    if request.method == "POST":
+        if person.has_usable_password():
+            send_reset_password_email(person)
+            return HttpResponseRedirect(post_reset_redirect)
+
+    var = {
+        'person': person,
+    }
+    return render_to_response('people/person_reset.html', var, context_instance=RequestContext(request))
+
+@login_required
+def password_request_done(request, username):
+    person = get_object_or_404(Person, username=username)
+    var = {
+        'person': person,
+    }
+    return render_to_response('people/person_reset_done.html', var, context_instance=RequestContext(request))
