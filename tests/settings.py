@@ -72,6 +72,13 @@ LDAP = {
 LDAP_TEST_DATASTORE = 'ldap'
 LDAP_TEST_DATASTORE_N = 0
 
+USERNAME_VALIDATION_RE = '[-\w]+'
+USERNAME_VALIDATION_ERROR_MSG = u'Usernames can only contain letters, numbers and underscores'
+
+PROJECT_VALIDATION_RE = '[-\w]+'
+
+GROUP_VALIDATION_RE = '[-\w]+'
+
 SERVER_EMAIL = 'django@' + uname()[1]
 ACCOUNTS_EMAIL = 'accounts@vpac.org'
 APPROVE_ACCOUNTS_EMAIL = ACCOUNTS_EMAIL

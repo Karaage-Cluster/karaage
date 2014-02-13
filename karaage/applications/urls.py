@@ -34,7 +34,8 @@ urlpatterns = patterns('karaage.applications.views',
 
     url(r'^project/new/$', 'project.new_application', name='kg_application_new'),
     url(r'^project/invite/$', 'project.send_invitation', name='kg_application_invite'),
-    url(r'^project/invite/(?P<project_id>[-.\w]+)/$', 'project.send_invitation', name='kg_application_invite'),
+    url(r'^project/invite/(?P<project_id>%s)/$' % settings.PROJECT_VALIDATION_RE,
+        'project.admin_send_invitation', name='kg_application_invite'),
 
     url(r'^software/new/(?P<software_license_id>\d+)/$', 'software.new_application', name='kg_application_software_new'),
 
