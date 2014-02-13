@@ -70,7 +70,7 @@ class MachineCategory(models.Model):
 
     def delete(self):
         # delete the object
-        super(Account, self).delete()
+        super(MachineCategory, self).delete()
         from karaage.datastores import set_mc_datastore
         old_datastore = self._datastore
         set_mc_datastore(self, old_datastore, None)
