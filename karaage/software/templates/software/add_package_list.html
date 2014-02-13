@@ -21,7 +21,7 @@
     <h2>{{ s.software }}<span class="small green">
     {% if s.accepted %}- accepted {{ s.accepted_date|date }}{% endif %}{% if s.pending_request %}- Request pending{% endif %}</span></h2>
     {% else %}
-    <h2><a href="{% url 'kg_software_join' s.software.id %}">{{ s.software }}</a></h2>
+    <h2><a href="{% url 'kg_software_detail' s.software.id %}">{{ s.software }}</a></h2>
     {% endif %}
     <p>{{ s.software.description|truncatewords:"20" }}</p>
     <hr/>

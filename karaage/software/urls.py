@@ -46,6 +46,5 @@ urlpatterns = patterns('karaage.software.views',
     url(r'^license/(?P<license_id>\d+)/edit/$', 'edit_license', name='kg_software_license_edit'),
     url(r'^license/(?P<license_id>\d+)/delete/$', 'license_delete', name='kg_software_license_delete'),
 
-    url(r'^(?P<software_id>\d+)/join/$', 'add_package', name='kg_software_join'),
     url(r'^(?P<software_id>\d+)/print/$', 'license_txt', name='kg_software_license_txt'),
 )

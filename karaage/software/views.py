@@ -40,7 +40,7 @@ import karaage.common as util
 @login_required
 def software_list(request):
     if not util.is_admin(request):
-        return add_package_list(request)
+        return join_package_list(request)
 
     software_list = Software.objects.all()
     page_no = int(request.GET.get('page', 1))
@@ -77,8 +77,11 @@ def software_list(request):
     return render_to_response('software/software_list.html', locals(), context_instance=RequestContext(request))
 
 
-@admin_required
+@login_required
 def software_detail(request, software_id):
+    if not util.is_admin(request):
+        return join_package(request, software_id)
+
     software = get_object_or_404(Software, pk=software_id)
     return render_to_response('software/software_detail.html', locals(), context_instance=RequestContext(request))
 
@@ -300,7 +303,7 @@ def version_stats(request, version_id):
 
 
 @login_required
-def add_package_list(request):
+def join_package_list(request):
 
     person = request.user
 
@@ -318,7 +321,7 @@ def add_package_list(request):
 
 
 @login_required
-def add_package(request, software_id):
+def join_package(request, software_id):
 
     software = get_object_or_404(Software, pk=software_id)
     software_license = software.get_current_license()
