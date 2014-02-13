@@ -376,7 +376,7 @@ class Person(AbstractBaseUser):
 class Group(models.Model):
     """Groups represent collections of people, these objects can be
     expressed externally in a datastore."""
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=255, unique=True)
     foreign_id = models.CharField(max_length=255, null=True, unique=True,
                                   help_text='The foreign identifier from the datastore.')
     members = models.ManyToManyField(Person, related_name='groups')
