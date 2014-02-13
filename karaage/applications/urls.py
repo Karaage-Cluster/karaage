@@ -16,6 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf.urls import *
+from django.conf import settings
 
 from karaage.applications.views.project import register as register_project
 from karaage.applications.views.software import register as register_software
@@ -34,7 +35,8 @@ urlpatterns = patterns('karaage.applications.views',
 
     url(r'^project/new/$', 'project.new_application', name='kg_application_new'),
     url(r'^project/invite/$', 'project.send_invitation', name='kg_application_invite'),
-    url(r'^project/invite/(?P<project_id>[-.\w]+)/$', 'project.send_invitation', name='kg_application_invite'),
+    url(r'^project/invite/(?P<project_id>%s)/$' % settings.PROJECT_VALIDATION_RE,
+        'project.send_invitation', name='kg_application_invite'),
 
     url(r'^software/new/(?P<software_license_id>\d+)/$', 'software.new_application', name='kg_application_software_new'),
 
