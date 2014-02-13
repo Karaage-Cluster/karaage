@@ -294,7 +294,7 @@
             </form>
         </li>
         {% else %}
-        <li class="changelink"><a href="{% url 'kg_person_password_change' person.username %}">Change Password</a></li>
+        <li class="changelink"><a href="{% url 'kg_person_password' person.username %}">Change Password</a></li>
         <li>
             <form action="{% url 'kg_person_lock' person.username %}" method="post">
                 {% csrf_token %}
@@ -309,6 +309,8 @@
         {% if person.is_active %}
         <li><a href="{% url 'kg_job_list' %}?user={{ person.username }}">Display all jobs</a></li>
         {% endif %}
+
+        <li><a href="{% url 'kg_person_reset' person.username %}">Reset Password</a></li>
     </ul>
 </div>
 {% endblock %}

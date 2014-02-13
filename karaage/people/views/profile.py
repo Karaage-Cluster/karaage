@@ -25,6 +25,7 @@ from django.contrib import messages
 from django.contrib.auth.tokens import default_token_generator
 
 from karaage.common import get_date_range
+from karaage.people.emails import send_reset_password_email
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
@@ -117,7 +118,7 @@ def password_change(request):
     else:
         form = PasswordChangeForm()
 
-    return render_to_response('people/user_password_form.html',
+    return render_to_response('people/profile_password.html',
             {'person': person, 'form': form},
             context_instance=RequestContext(request))
 
@@ -255,3 +256,28 @@ def logout(request, username=None):
     logout(request)
     messages.success(request, 'Logout was successful.')
     return HttpResponseRedirect(url)
+
+
+@login_required
+def password_request(request):
+    person = request.user
+
+    post_reset_redirect = reverse('kg_profile_reset_done')
+
+    if request.method == "POST":
+        if person.has_usable_password():
+            send_reset_password_email(person)
+            return HttpResponseRedirect(post_reset_redirect)
+
+    var = {
+        'person': person,
+    }
+    return render_to_response('people/profile_reset.html', var, context_instance=RequestContext(request))
+
+@login_required
+def password_request_done(request):
+    person = request.user
+    var = {
+        'person': person,
+    }
+    return render_to_response('people/profile_reset_done.html', var, context_instance=RequestContext(request))

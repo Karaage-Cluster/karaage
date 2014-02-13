@@ -17,7 +17,9 @@
 
 from django.conf.urls import *
 from django.conf import settings
+
 from karaage.people.models import Person
+from karaage.people.forms import SetPasswordForm
 
 
 urlpatterns = patterns('karaage.people.views.persons',
@@ -40,4 +42,15 @@ urlpatterns = patterns('karaage.people.views.persons',
     url(r'^accounts/(?P<account_id>\d+)/makedefault/(?P<project_id>[-.\w]+)/$', 'make_default', name='kg_account_set_default'),
 
     (r'^detail/(?P<username>%s)/' % settings.USERNAME_VALIDATION_RE, include('karaage.people.urls.person_detail')),
+)
+
+urlpatterns += patterns('django.contrib.auth.views',
+    url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        'password_reset_confirm', {
+            'set_password_form': SetPasswordForm,
+            'template_name': 'people/password_reset_confirm.html',
+        }, name='password_reset_confirm'),
+    url(r'^reset/done/$', 'password_reset_complete', {
+            'template_name': 'people/password_reset_complete.html',
+        }, name='password_reset_complete'),
 )

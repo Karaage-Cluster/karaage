@@ -38,7 +38,7 @@
                 {% if docsroot %}
                     <a href="{{ docsroot }}">{% trans 'Documentation' %}</a> /
                 {% endif %}
-                <a href="{% url 'password_change' %}">{% trans 'Change password' %}</a> /
+                <a href="{% url 'kg_profile_password' %}">{% trans 'Change password' %}</a> /
                 <a href="{% url 'logout' %}">{% trans 'Log out' %}</a>
                 {% else %}
                 <a href="{% url 'login' %}{% url_with_param next=request.path %}">{% trans 'Log in' %}</a>
