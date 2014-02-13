@@ -127,6 +127,10 @@ SHIB_ATTRIBUTE_MAP = {
 USERNAME_VALIDATION_RE = '[-\w]+'
 USERNAME_VALIDATION_ERROR_MSG = u'Usernames can only contain letters, numbers and underscores'
 
+PROJECT_VALIDATION_RE = '[-\w]+'
+
+GROUP_VALIDATION_RE = '[-\w]+'
+
 TRAINING_ACCOUNT_PREFIX = 'train'
 
 XMLRPC_METHODS = (
