@@ -70,7 +70,7 @@
             {% for member in group.members.all %}
             <tr class="row1">
                 <td><a href="{{ member.get_absolute_url }}">{{ member.username }}</a></td>
-                <td>{{ member.user.get_full_name }}</td>
+                <td>{{ member.get_full_name }}</td>
                 {% if is_admin %}
                 <td>
                     <div class="deletelink"><a href="{% url 'kg_group_remove_person' group.name member.username %}">Delete</a></li>
