@@ -37,7 +37,8 @@ urlpatterns = patterns('karaage.people.views.persons',
     url(r'^accounts/(?P<account_id>\d+)/change_shell/$', 'change_account_shell', name='kg_account_shell'),
     url(r'^accounts/(?P<account_id>\d+)/edit/$', 'add_edit_account', name='kg_account_edit'),
     url(r'^accounts/(?P<account_id>\d+)/delete/$', 'delete_account', name='kg_account_delete'),
-    url(r'^accounts/(?P<account_id>\d+)/makedefault/(?P<project_id>[-.\w]+)/$', 'make_default', name='kg_account_set_default'),
+    url(r'^accounts/(?P<account_id>\d+)/makedefault/(?P<project_id>%s)/$' % settings.PROJECT_VALIDATION_RE,
+        'make_default', name='kg_account_set_default'),
 
     (r'^(?P<username>%s)/' % settings.USERNAME_VALIDATION_RE, include('karaage.people.urls.person_detail')),
 )
