@@ -15,9 +15,56 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+from django.core import exceptions as django_exceptions
 from django.test import TestCase
 
-from karaage.people.models import Group
+from karaage.institutes.models import Institute
+from karaage.people.models import Person, Group
+from karaage.tests.fixtures import PersonFactory
+
+
+class PersonTestCase(TestCase):
+    def test_minimum_create(self):
+        institute = Institute.objects.create()
+        person = Person.objects.create(
+            username='mchagr',
+            password='test',
+            short_name='RK',
+            full_name='Rick Spicy McHaggis',
+            email='test@example.com',
+            institute=institute)
+        person.full_clean()
+        self.assertFalse(person.is_admin)
+        self.assertFalse(person.is_systemuser)
+        self.assertEqual(str(person), 'Rick Spicy McHaggis')
+        self.assertEqual(person.short_name, 'RK')
+        self.assertEqual(person.email, 'test@example.com')
+        self.assertEqual(person.first_name, 'Rick Spicy')
+        self.assertEqual(person.last_name, 'McHaggis')
+
+    def test_username(self):
+        assert_raises = self.assertRaises(django_exceptions.ValidationError)
+
+        # Max length
+        person = PersonFactory(username="a" * 255)
+        person.full_clean()
+
+        # Name is too long
+        person = PersonFactory(username="a" * 256)
+        with assert_raises:
+            person.full_clean()
+
+    def test_locking(self):
+        person = PersonFactory()
+        self.assertTrue(person.login_enabled)
+
+        # Test that a locked person is disabled
+        person.lock()
+        self.assertFalse(person.login_enabled)
+
+        # Test that an unlocked person is enabled
+        person.unlock()
+        self.assertTrue(person.login_enabled)
 
 
 class GroupTestCase(TestCase):
