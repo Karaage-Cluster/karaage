@@ -42,31 +42,23 @@ class Command(BaseCommand):
     @django.db.transaction.commit_on_success
     @tldap.transaction.commit_on_success
     def handle(self, **options):
-        account_datastore = get_test_datastore("ldap", 0)
-        assert isinstance(account_datastore, dldap.AccountDataStore)
-
-        try:
-            person_datastore = get_test_datastore("ldap", 1)
-            if not isinstance(person_datastore, dldap.PersonDataStore):
-                person_datastore = None
-        except IndexError:
-            person_datastore = None
-        assert person_datastore is not None
+        datastore = get_test_datastore("ldap", 0)
+        assert isinstance(datastore, dldap.AccountDataStore)
 
         if options['ldif']:
             ldif_writer=ldif.LDIFWriter(sys.stdout)
 
-        if person_datastore is not None:
+        if datastore._person is not None:
             # we have to move accounts to the account_base.
             # no changes rquired for people.
-            account_base_dn = account_datastore._accounts().get_base_dn()
+            account_base_dn = datastore._accounts().get_base_dn()
             split_account_base_dn = ldap.dn.str2dn(account_base_dn)
 
-            for p in person_datastore._people().filter(objectClass='posixAccount'):
+            for p in datastore._people().filter(objectClass='posixAccount'):
                 # Convert account to person, strip unwanted fields.
                 # This is better then calling person.save() as we get the
                 # password too.
-                new_person = person_datastore._create_person(dn=p.dn)
+                new_person = datastore._create_person(dn=p.dn)
                 for i, _ in new_person.get_fields():
                     if i != "objectClass":
                         value = getattr(p, i)
@@ -107,7 +99,7 @@ class Command(BaseCommand):
         else:
             # people not in LDAP, delete people without accounts.
 
-            for p in account_datastore._accounts():
+            for p in datastore._accounts():
                 # If there are no accounts for this person, then delete
                 # the LDAP entry.
                 ua = Account.objects.filter(username=p.uid, date_deleted__isnull=True)

@@ -218,8 +218,6 @@ Configuring Karaage to use LDAP
                   'PASSWORD': 'XXXXXXXX',
                   'USE_TLS': False,
                   'TLS_CA' : None,
-                  'LDAP_ACCOUNT_BASE': 'ou=Accounts,dc=example,dc=org',
-                  'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
              }
         }
 
@@ -235,33 +233,39 @@ Configuring Karaage to use LDAP
                         'DEFAULT_PRIMARY_GROUP': "dummy",
                         'HOME_DIRECTORY': "/home/%(uid)s",
                         'LOCKED_SHELL': "/usr/local/sbin/locked",
+                        'LDAP_ACCOUNT_BASE': 'ou=Accounts,dc=example,dc=org',
+                        'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
                   },
              ],
              'dummy' : [
              ],
         }
 
-#.  (optional) If you require people to be recorded in LDAP, add the following to what you just set:
+#.  (optional) If you require people to be recorded in LDAP, add the
+    ``PERSON`` and ``LDAP_PERSON_BASE`` settings to the ``ldap`` datastore:
 
     .. code-block:: python
 
         DATASTORES = {
              'ldap' : [
                   {
-                        # as above
-                  },
-                  {
-                        'DESCRIPTION': 'Default LDAP person datastore',
-                        'ENGINE': 'karaage.datastores.ldap.PersonDataStore',
+                        'DESCRIPTION': 'Default LDAP datastore',
+                        'ENGINE': 'karaage.datastores.ldap.AccountDataStore',
                         'LDAP': 'default',
                         'PERSON': 'karaage.datastores.ldap_schemas.openldap_person',
+                        'ACCOUNT': 'karaage.datastores.ldap_schemas.openldap_account',
                         'GROUP': 'karaage.datastores.ldap_schemas.openldap_group',
+                        'PRIMARY_GROUP': "institute",
+                        'DEFAULT_PRIMARY_GROUP': "dummy",
+                        'HOME_DIRECTORY': "/home/%(uid)s",
+                        'LOCKED_SHELL': "/usr/local/sbin/locked",
+                        'LDAP_PERSON_BASE': 'ou=People,dc=example,dc=org',
+                        'LDAP_ACCOUNT_BASE': 'ou=Accounts,dc=example,dc=org',
+                        'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
                   },
              ],
              # as above
         }
-
-    The GROUP setting should match for both parts.
 
 #.  Reload apache.
 
