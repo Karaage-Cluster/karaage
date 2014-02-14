@@ -1,4 +1,11 @@
 # Package defined Karaage Settings
+
+# Good default for production systems.
+DEBUG = False
+
+# This only has meaning if DEBUG = True
+TEMPLATE_DEBUG = True
+
 AUTH_USER_MODEL = 'people.Person'
 
 AJAX_LOOKUP_CHANNELS = {
