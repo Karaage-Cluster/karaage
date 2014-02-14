@@ -131,9 +131,9 @@ ACCOUNTS_ORG_NAME = 'Example'
 
 # Do we allow any logged in user to access all usage information?
 #
-# default: USAGE_IS_PUBLIC = False
+# default: USAGE_IS_PUBLIC = True
 #
-# USAGE_IS_PUBLIC = True
+# USAGE_IS_PUBLIC = False
 
 # Settings to restrict the valid list of email addresses we allow in
 # applications.  EMAIL_MATCH_TYPE can be "include" or "exclude".  If "include"
