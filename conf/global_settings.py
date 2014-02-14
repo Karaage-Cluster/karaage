@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Globally defined Karaage settings
 # These settings will be used for karaage-admin and karaage-registration.
 
