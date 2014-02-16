@@ -247,7 +247,7 @@ def make_default(request, account_id, project_id):
         redirect = account.get_absolute_url()
     else:
         account = get_object_or_404(Account, pk=account_id, person=request.user)
-        redirect = reverse("kg_user_profile_projects")
+        redirect = reverse("kg_profile_projects")
 
     project = get_object_or_404(Project, pid=project_id)
     if request.method != 'POST':
@@ -314,7 +314,7 @@ def change_account_shell(request, account_id):
         redirect = account.get_absolute_url()
     else:
         account = get_object_or_404(Account, pk=account_id, person=request.user)
-        redirect = reverse("kg_user_profile_accounts")
+        redirect = reverse("kg_profile_accounts")
 
     account = get_object_or_404(Account, pk=account_id)
     if request.method != 'POST':

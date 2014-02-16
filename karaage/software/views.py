@@ -339,7 +339,7 @@ def join_package(request, software_id):
                 date=datetime.datetime.today(),
                 )
             person.add_group(software.group)
-            return HttpResponseRedirect(reverse('kg_user_profile_software'))
+            return HttpResponseRedirect(reverse('kg_profile_software'))
 
     return render_to_response('software/accept_license.html', locals(), context_instance=RequestContext(request))
 

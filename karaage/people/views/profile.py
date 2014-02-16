@@ -114,7 +114,7 @@ def password_change(request):
         if form.is_valid():
             form.save(person)
             messages.success(request, "Password changed successfully")
-            return HttpResponseRedirect(reverse('kg_user_profile'))
+            return HttpResponseRedirect(reverse('kg_profile'))
     else:
         form = PasswordChangeForm()
 

@@ -20,10 +20,10 @@ from django.conf import settings
 
 
 urlpatterns = patterns('karaage.people.views.profile',
-    url(r'^$', 'profile', name='kg_user_profile'),
-    url(r'^accounts/$', 'profile_accounts', name='kg_user_profile_accounts'),
-    url(r'^software/$', 'profile_software', name='kg_user_profile_software'),
-    url(r'^projects/$', 'profile_projects', name='kg_user_profile_projects'),
+    url(r'^$', 'profile', name='kg_profile'),
+    url(r'^accounts/$', 'profile_accounts', name='kg_profile_accounts'),
+    url(r'^software/$', 'profile_software', name='kg_profile_software'),
+    url(r'^projects/$', 'profile_projects', name='kg_profile_projects'),
     url(r'^edit/$', 'edit_profile', name='kg_profile_edit'),
 
     url(r'^slogin/$', 'saml_login', name='login_saml'),

@@ -9,7 +9,7 @@
 {% block breadcrumbs %}
 <div class="breadcrumbs">
     <a href='{% url "index" %}'>Home</a>&nbsp;›
-    <a href='{% url "kg_user_profile" %}'>Profile</a>&nbsp;›
+    <a href='{% url "kg_profile" %}'>Profile</a>&nbsp;›
     {% block profile_title %}My Profile{% endblock %}
 </div>
 {% endblock %}
@@ -19,10 +19,10 @@
 <div id="content-main">
     <h1>Welcome {{ person.get_short_name }}</h1>
     <p>
-        <a href="{% url 'kg_user_profile' %}">Personal Details</a> | 
-        <a href="{% url 'kg_user_profile_accounts' %}">Cluster Account</a> | 
-        <a href="{% url 'kg_user_profile_projects' %}">Projects</a> | 
-        <a href="{% url 'kg_user_profile_software' %}">Licensed Software</a> |
+        <a href="{% url 'kg_profile' %}">Personal Details</a> | 
+        <a href="{% url 'kg_profile_accounts' %}">Cluster Account</a> | 
+        <a href="{% url 'kg_profile_projects' %}">Projects</a> | 
+        <a href="{% url 'kg_profile_software' %}">Licensed Software</a> |
         <a href="{% url 'saml_details' %}">SAML</a>
     </p>
     {% block profile_content %}{% endblock %}
