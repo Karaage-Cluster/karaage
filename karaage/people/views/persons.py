@@ -464,7 +464,7 @@ def person_logs(request, username):
     breadcrumbs = []
     breadcrumbs.append( ("People", reverse("kg_person_list")) )
     breadcrumbs.append( (unicode(obj), reverse("kg_person_detail", args=[obj.username])) )
-    return util.log_list(request, breadcrumbs, obj)
+    return common.log_list(request, breadcrumbs, obj)
 
 
 @admin_required
