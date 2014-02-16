@@ -1,5 +1,4 @@
 {% load url from future %}
-{% load comments %}
 <table cellspacing="0">
     <thead>
         <tr>
@@ -14,7 +13,6 @@
     </thead>
     <tbody>
         {% for person in object_list %}
-        {% get_comment_count for people.person person.pk as comment_count %}
 
         <tr class="{% cycle row1,row2 %}">
             <td>
@@ -34,7 +32,7 @@
             <td><a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a></td>
             <td>{{ person.date_approved }}</td>
             <td>
-                <a href="{% url 'kg_person_comments' person.username %}">{{ comment_count }}</a>
+                <a href="{% url 'kg_person_detail' person.username %}">{% comment_count person %}</a>
                 <a href="{% url 'kg_person_add_comment' person.username %}" class="addlink"></a></td>
         </tr>
         {% endfor %}

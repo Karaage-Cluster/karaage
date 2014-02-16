@@ -39,7 +39,7 @@ from karaage.people.forms import AdminPasswordChangeForm, AddProjectForm
 from karaage.institutes.models import Institute
 from karaage.machines.models import Account
 from karaage.machines.forms import AccountForm, ShellForm
-from karaage.common import get_date_range, log, is_admin
+import karaage.common as common
 
 
 def _add_edit_user(request, form_class, username):
@@ -84,7 +84,7 @@ def user_list(request, queryset=None):
     if queryset is None:
         queryset=Person.objects.select_related()
 
-    if not is_admin(request):
+    if not common.is_admin(request):
         queryset = queryset.filter(pk=request.user.pk)
 
     page_no = int(request.GET.get('page', 1))
@@ -242,7 +242,7 @@ def wrong_default_list(request):
     
 @login_required
 def make_default(request, account_id, project_id):
-    if is_admin(request):
+    if common.is_admin(request):
         account = get_object_or_404(Account, pk=account_id)
         redirect = account.get_absolute_url()
     else:
@@ -256,7 +256,7 @@ def make_default(request, account_id, project_id):
     account.default_project = project
     account.save()
     messages.success(request, "Default project changed succesfully")
-    log(request.user, account.person, 2, 'Changed default project to %s' % project.pid)
+    common.log(request.user, account.person, 2, 'Changed default project to %s' % project.pid)
     return HttpResponseRedirect(redirect)
 
     
@@ -302,14 +302,14 @@ def struggling(request):
     page = p.page(page_no)
 
     return render_to_response(
-        'people/struggling.html',
+        'people/person_struggling.html',
         {'page': page, 'filter_bar': filter_bar},
         context_instance=RequestContext(request))
 
 
 @login_required
 def change_account_shell(request, account_id):
-    if is_admin(request):
+    if common.is_admin(request):
         account = get_object_or_404(Account, pk=account_id)
         redirect = account.get_absolute_url()
     else:
@@ -358,7 +358,7 @@ def user_detail(request, username):
             project = form.cleaned_data['project']
             add_user_to_project(person, project)
             messages.success(request, "User '%s' was added to %s succesfully" % (person, project))
-            log(request.user, project, 2, '%s added to project' % person)
+            common.log(request.user, project, 2, '%s added to project' % person)
 
             return HttpResponseRedirect(person.get_absolute_url())
 
@@ -435,7 +435,7 @@ def bounced_email(request, username):
         person.lock()
         send_bounced_warning(person)
         messages.success(request, "%s's account has been locked and emails have been sent" % person)
-        log(request.user, person, 2, 'Emails sent to project leaders and account locked')
+        common.log(request.user, person, 2, 'Emails sent to project leaders and account locked')
         for ua in person.account_set.all():
             ua.change_shell(ua.previous_shell)
             ua.change_shell(settings.BOUNCED_SHELL)
@@ -449,7 +449,7 @@ def user_job_list(request, username):
     today = datetime.date.today()
     start = today - datetime.timedelta(days=7)
     person = get_object_or_404(Person, username=username)
-    start, end = get_date_range(request, start, today)
+    start, end = common.get_date_range(request, start, today)
 
     job_list = []
     for ua in person.account_set.all():
@@ -473,7 +473,7 @@ def add_comment(request, username):
     breadcrumbs = []
     breadcrumbs.append( ("People", reverse("kg_person_list")) )
     breadcrumbs.append( (unicode(obj), reverse("kg_person_detail", args=[obj.username])) )
-    return util.add_comment(request, breadcrumbs, obj)
+    return common.add_comment(request, breadcrumbs, obj)
 
 @login_required
 def password_request(request, username):

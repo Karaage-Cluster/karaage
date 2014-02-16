@@ -98,6 +98,14 @@ def comments(obj):
         'comment_list': comment_list,
     }
 
+@register.simple_tag
+def comment_count(obj):
+    content_type = ContentType.objects.get_for_model(obj.__class__)
+    comment_list = Comment.objects.filter(
+            content_type=content_type,
+            object_pk=obj.pk
+    )
+    return int(comment_list.count())
 
 @register.simple_tag
 def active(request, pattern):
