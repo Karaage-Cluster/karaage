@@ -195,7 +195,7 @@ def saml_login(request):
 
 
 def saml_details(request):
-    redirect_to = reverse('saml_details')
+    redirect_to = reverse('kg_profile_saml')
     saml_session = saml.is_saml_session(request)
 
     if request.method == 'POST':
@@ -204,7 +204,6 @@ def saml_details(request):
                 person = request.user
                 institute = person.institute
                 if institute.saml_entityid:
-                    redirect_to = reverse("saml_details")
                     url = saml.build_shib_url(request, redirect_to,
                             institute.saml_entityid)
                     return HttpResponseRedirect(url)
@@ -219,7 +218,6 @@ def saml_details(request):
                 person = saml.add_saml_data(
                         person, request)
                 person.save()
-                url = reverse("saml_details")
                 return HttpResponseRedirect(url)
             else:
                 return HttpResponseBadRequest("<h1>Bad Request</h1>")
