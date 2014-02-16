@@ -38,7 +38,7 @@ def admin_required(function=None):
 
     actual_decorator = user_passes_test(
         check_perms,
-        login_url="login",
+        login_url="kg_profile_login",
         redirect_field_name="next"
     )
     if function:
@@ -62,7 +62,7 @@ def login_required(function=None):
 
     actual_decorator = user_passes_test(
         check_perms,
-        login_url="login",
+        login_url="kg_profile_login",
         redirect_field_name="next"
     )
     if function:
@@ -90,7 +90,7 @@ def usage_required(function=None):
 
     actual_decorator = user_passes_test(
         check_perms,
-        login_url="login",
+        login_url="kg_profile_login",
         redirect_field_name="next"
     )
     if function:

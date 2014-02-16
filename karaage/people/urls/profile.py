@@ -28,9 +28,9 @@ urlpatterns = patterns('karaage.people.views.profile',
 
     url(r'^slogin/$', 'saml_login', name='kg_profile_login_saml'),
     url(r'^saml/$', 'saml_details', name='kg_profile_saml'),
-    url(r'^login/$', 'login', name='login'),
-    url(r'^login/(?P<username>%s)/$' % settings.USERNAME_VALIDATION_RE, 'login', name="login"),
-    url(r'^logout/$', 'logout', name='logout'),
+    url(r'^login/$', 'login', name='kg_profile_login'),
+    url(r'^login/(?P<username>%s)/$' % settings.USERNAME_VALIDATION_RE, 'login', name="kg_profile_login"),
+    url(r'^logout/$', 'logout', name='kg_profile_logout'),
 
     url(r'^password/$', 'password_change', name='kg_profile_password'),
     url(r'^reset/$', 'password_request', name='kg_profile_reset'),
