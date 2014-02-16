@@ -242,7 +242,7 @@ def saml_details(request):
     if request.user.is_authenticated():
         person = request.user
 
-    return render_to_response('people/saml_detail.html',
+    return render_to_response('people/profile_saml.html',
             {'attrs': attrs, 'saml_session': saml_session,
                 'person': person, },
             context_instance=RequestContext(request))
