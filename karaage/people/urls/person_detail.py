@@ -31,6 +31,6 @@ urlpatterns = patterns('karaage.people.views.persons',
     url(r'^add_comment/$', 'add_comment', name='kg_person_add_comment'),
     url(r'^add_account/$', 'add_edit_account', name='kg_person_add_account'),
     url(r'^edit/$', 'edit_user', name='kg_person_edit'),
-    url(r'^reset/$', 'password_request', name='kg_person_reset'),
-    url(r'^reset/done/$', 'password_request_done', name='kg_person_reset_done'),
+    url(r'^password_request/$', 'password_request', name='kg_person_reset'),
+    url(r'^password_request/done/$', 'password_request_done', name='kg_person_reset_done'),
 )
