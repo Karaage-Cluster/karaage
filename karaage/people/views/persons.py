@@ -209,7 +209,7 @@ def delete_account(request, account_id):
 @admin_required
 def no_default_list(request):
     account_list = Account.objects.filter(default_project__isnull=True).filter(date_deleted__isnull=True)
-    return render_to_response('people/no_default_list.html', {'account_list': account_list}, context_instance=RequestContext(request))
+    return render_to_response('people/person_no_default_list.html', {'account_list': account_list}, context_instance=RequestContext(request))
 
 
 @admin_required
