@@ -28,7 +28,7 @@ urlpatterns = patterns('karaage.usage.views',
     url(r'^jobs/$', 'job_list', name='kg_usage_job_list'),
     url(r'^jobs/(?P<jobid>[-.\w\[\]]+)/$', 'job_detail', name='kg_usage_job_detail'),
 
-    url(r'^(?P<machine_category_id>\d+)/$', 'index', name='kg_mc_usage'),
+    url(r'^(?P<machine_category_id>\d+)/$', 'index', name='kg_usage_mc'),
 
     url(r'^(?P<machine_category_id>\d+)/core_report/$', 'core_report', name='kg_core_report'),
     url(r'^(?P<machine_category_id>\d+)/mem_report/$', 'mem_report', name='kg_mem_report'),
