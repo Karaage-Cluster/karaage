@@ -23,7 +23,7 @@
         <li><a href="{% url 'kg_mem_report' machine_category.pk %}{% url_with_param start=start end=end %}">Memory Report</a></li>
         <li><a href="{% url 'kg_institute_trends' machine_category.pk %}{% url_with_param start=start end=end %}">Trends</a></li>
         <li><a href="{% url 'kg_top_users' machine_category.pk %}{% url_with_param start=start end=end %}">Top Users</a></li>
-        <li><a href="{% url 'kg_job_list' %}{% url_with_param date__gte=start date__lte=end %}">All Jobs</a></li>
+        <li><a href="{% url 'kg_usage_job_list' %}{% url_with_param date__gte=start date__lte=end %}">All Jobs</a></li>
         <li><a class="viewsitelink" href="{% url 'kg_usage_search' %}{% url_with_param start=start end=end machine_category=machine_category.pk %}">Advanced Search</a></li>
     </ul>
 </div>
