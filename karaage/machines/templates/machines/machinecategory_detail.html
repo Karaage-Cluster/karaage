@@ -50,7 +50,7 @@
     <ul>
         <li><a href="{% url 'kg_machine_category_logs' machine_category.pk %}">Logs</a></li>
         <li class="addlink"><a href="{% url 'kg_machine_category_add_comment' machine_category.pk %}">Add comment</a></li>
-        <li><a href="{% url 'kg_mc_usage' machine_category.id %}">Usage</a></li>
+        <li><a href="{% url 'kg_usage_mc' machine_category.id %}">Usage</a></li>
         {% if perms.machines.change_machinecategory %}
         <li><a class="changelink" href="{% url 'kg_machine_category_edit' machine_category.id %}">Edit category</a></li>
         {% endif %}
