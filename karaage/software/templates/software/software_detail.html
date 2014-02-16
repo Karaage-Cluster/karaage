@@ -150,7 +150,7 @@
         <li><a href="{% url 'kg_software_stats' software.id %}">Statistics</a></li>
         <li><a href="{% url 'kg_software_logs' software.id %}">Logs</a></li>
         <li><a href="{% url 'kg_software_add_comment' software.pk %}">Add comment</a></li>
-        <li><a href="{% url 'kg_job_list' %}?software={{ software.id }}">Display all jobs</a></li>
+        <li><a href="{% url 'kg_usage_job_list' %}?software={{ software.id }}">Display all jobs</a></li>
         <li><a href="{% url 'kg_software_verbose' software.id %}">Verbose</a></li>
     </ul>
 </div>
