@@ -69,7 +69,7 @@ def edit_profile(request):
             messages.success(request, "User '%s' was edited succesfully" % person)
             return HttpResponseRedirect(person.get_absolute_url())
 
-    return render_to_response('people/edit_profile.html',
+    return render_to_response('people/profile_edit.html',
             {'person': person, 'form': form},
             context_instance=RequestContext(request))
 
