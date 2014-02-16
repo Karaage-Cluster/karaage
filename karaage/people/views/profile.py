@@ -276,7 +276,7 @@ def password_request(request):
     var = {
         'person': person,
     }
-    return render_to_response('people/profile_reset.html', var, context_instance=RequestContext(request))
+    return render_to_response('people/profile_password_request.html', var, context_instance=RequestContext(request))
 
 @login_required
 def password_request_done(request):
@@ -284,4 +284,4 @@ def password_request_done(request):
     var = {
         'person': person,
     }
-    return render_to_response('people/profile_reset_done.html', var, context_instance=RequestContext(request))
+    return render_to_response('people/profile_password_request_done.html', var, context_instance=RequestContext(request))

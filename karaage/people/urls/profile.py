@@ -34,6 +34,6 @@ urlpatterns = patterns('karaage.people.views.profile',
     url(r'^logout/$', 'logout', name='kg_profile_logout'),
 
     url(r'^password/$', 'password_change', name='kg_profile_password'),
-    url(r'^reset/$', 'password_request', name='kg_profile_reset'),
-    url(r'^reset/done/$', 'password_request_done', name='kg_profile_reset_done'),
+    url(r'^password_request/$', 'password_request', name='kg_profile_reset'),
+    url(r'^password_request/done/$', 'password_request_done', name='kg_profile_reset_done'),
 )
