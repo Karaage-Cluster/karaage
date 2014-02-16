@@ -155,7 +155,7 @@ def login(request, username=None):
     else:
         form = LoginForm(initial = {'username': username})
 
-    return render_to_response('people/login.html', {
+    return render_to_response('people/profile_login.html', {
         'form': form,
         'next': redirect_to,
         'error': error,
@@ -195,7 +195,7 @@ def saml_login(request):
         except Person.DoesNotExist:
             error = "Cannot log in with shibboleth as we do not know your shibboleth id."
 
-    return render_to_response('people/login_saml.html',
+    return render_to_response('people/profile_login_saml.html',
             {'form': form, 'error': error, 'saml_session': saml_session, },
             context_instance=RequestContext(request))
 
