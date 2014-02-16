@@ -441,7 +441,7 @@ def bounced_email(request, username):
             ua.change_shell(settings.BOUNCED_SHELL)
         return HttpResponseRedirect(person.get_absolute_url())
 
-    return render_to_response('people/bounced_email.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('people/person_bounced_email.html', locals(), context_instance=RequestContext(request))
 
 
 @admin_required
