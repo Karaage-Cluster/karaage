@@ -73,7 +73,7 @@ def send_confirm_password_email(person):
 
     context = CONTEXT.copy()
     context.update({
-        'url': '%s/users/%s/login/' % (settings.REGISTRATION_BASE_URL, person.username),
+        'url': '%s/profile/login/%s/' % (settings.REGISTRATION_BASE_URL, person.username),
         'receiver': person,
     })
 
