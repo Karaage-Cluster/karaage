@@ -445,20 +445,6 @@ def bounced_email(request, username):
 
 
 @admin_required
-def user_job_list(request, username):
-    today = datetime.date.today()
-    start = today - datetime.timedelta(days=7)
-    person = get_object_or_404(Person, username=username)
-    start, end = common.get_date_range(request, start, today)
-
-    job_list = []
-    for ua in person.account_set.all():
-        job_list.extend(ua.cpujob_set.filter(date__range=(start, end)))
-
-    return render_to_response('users/job_list.html', locals(), context_instance=RequestContext(request))
-
-
-@admin_required
 def person_logs(request, username):
     obj = get_object_or_404(Person, username=username)
     breadcrumbs = []
