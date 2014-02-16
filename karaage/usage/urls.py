@@ -22,7 +22,7 @@ from django.conf import settings
 urlpatterns = patterns('karaage.usage.views',
     url(r'^$', 'usage_index', name='kg_usage_list'),
 
-    url(r'^unknown/$', 'unknown_usage', name='kg_unknown_usage'),
+    url(r'^unknown/$', 'unknown_usage', name='kg_usage_unknown'),
 
     url(r'^search/$', 'search', name='kg_usage_search'),
     url(r'^jobs/$', 'job_list', name='kg_job_list'),
