@@ -388,7 +388,7 @@ def activate(request, username):
         person.activate(approved_by)
         return HttpResponseRedirect(reverse('kg_person_password', args=[person.username]))
     
-    return render_to_response('people/reactivate_confirm.html', {'person': person}, context_instance=RequestContext(request))
+    return render_to_response('people/person_reactivate.html', {'person': person}, context_instance=RequestContext(request))
 
 
 @admin_required
