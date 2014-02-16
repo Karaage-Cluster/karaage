@@ -40,6 +40,12 @@ import karaage.common.saml as saml
 
 @login_required
 def profile(request):
+    person = request.user
+    return render_to_response('people/profile.html', locals(), context_instance=RequestContext(request))
+
+
+@login_required
+def profile_personal(request):
 
     person = request.user
     project_list = person.projects.all()
@@ -49,7 +55,7 @@ def profile(request):
 
     usage_list = person.personcache_set.filter(start=start, end=end)
 
-    return render_to_response('people/profile.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('people/profile_personal.html', locals(), context_instance=RequestContext(request))
 
 
 @login_required

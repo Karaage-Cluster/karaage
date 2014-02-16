@@ -1,27 +1,25 @@
-{% extends "forms.html" %}
+{% extends "people/profile_form.html" %}
+
+{% block title %}Edit personal details - My profile{% endblock %}
+{% block profile_title %}Edit personal details{% endblock %}
 
 
-{% block title %}Edit Profile{% endblock %}
-
-
-{% block breadcrumbs %}
-<div class="breadcrumbs">
-    <a href='{% url "index" %}'>Home</a>&nbsp;›
-    <a href='{% url "kg_profile" %}'>Profile</a>&nbsp;›
-    Edit
-</div>
+{% block extrastyle %}
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static "css/forms.css" %}" />
 {% endblock %}
 
 
-{% block content %}
-<form method="post" action=".">{% csrf_token %}
-    <div>
-        {% load forms %}
-        {% if form.errors  or form.non_field_errors %}
-        <p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
-        {% endif %}
-        <fieldset class="module aligned ()">
-            <h2>Personal Details</h2>
+{% block profile_content %}
+<div class="module">
+    <h2>Edit personal details</h2>
+    <form method="post" action=".">{% csrf_token %}
+        <div>
+            {% load forms %}
+            {% if form.errors  or form.non_field_errors %}
+            <p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
+            {% endif %}
+            <fieldset class="module aligned ()">
             {{ form.non_field_errors }}
             {% formfield form.title %}
             {% inlineformfield form.short_name form.full_name %}
@@ -31,11 +29,12 @@
             {% inlineformfield form.telephone form.mobile %}
             {% formfield form.fax %}
             {% formfield form.address %}
-        </fieldset>
-    </div>
+            </fieldset>
+        </div>
 
-    <div class="submit-row">
-        <input type="submit" value="Save" class="default" />
-    </div>
-</form>
+        <div class="submit-row">
+            <input type="submit" value="Save" class="default" />
+        </div>
+    </form>
+</div>
 {% endblock %}

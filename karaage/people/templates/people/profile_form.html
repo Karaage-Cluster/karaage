@@ -1,0 +1,20 @@
+{% extends "forms.html" %}
+{% load url from future %}
+{% load forms %}
+
+
+{% block title %}My Profile{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    <a href='{% url "kg_profile" %}'>Profile</a>&nbsp;›
+    {% block profile_title %}My Profile{% endblock %}
+</div>
+{% endblock %}
+
+
+{% block content %}
+    {% block profile_content %}{% endblock %}
+{% endblock %}
