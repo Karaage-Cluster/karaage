@@ -1,0 +1,4 @@
+<div class="form-row {% if formfield.errors %}errors{% endif %}" >
+{% if formfield.errors %}{{ formfield.errors }}{% endif %}
+<label for="{{ formfield.auto_id }}" class="{{ class }}">{{ formfield.label }}:</label> {{ formfield }}
+</div>
