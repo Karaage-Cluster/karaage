@@ -5,6 +5,47 @@
 
 {% block sidebar %}
 <div id="content-related">
+  {% if is_admin %}
+  <div class="module">
+    <h2>Quick search</h2>
+    <form id="changelist-search" action="{% url "kg_site_search" %}" method="get">
+      <div><!-- DIV needed for valid HTML -->
+          &nbsp;<input type="text" size="21" name="sitesearch" value="{% if siteterms %}{{ siteterms }}{% endif %}" id="sitesearch" />
+        <input type="submit" value="Go" />
+      </div>
+    </form>
+  </div>
+  <div class="module">
+    <h2>Admin links</h2>
+    <ul>
+      <li><a class="{% active request "$" %}" href="{% url "index" %}">Home</a></li>
+      <li><a class="{% active request "persons/" %}" href="{% url "kg_person_list" %}?status=1">People</a></li>
+      <li><a class="{% active request "groups/" %}" href="{% url "kg_group_list" %}">Groups</a></li>
+      <li><a class="{% active request "projects/" %}" href="{% url "kg_project_list" %}?status=1">Projects</a></li>
+      <li><a class="{% active request "usage/" %}" href="{% url "kg_usage_list" %}">Usage</a></li>
+      <li><a class="{% active request "institutes/" %}" href="{% url "kg_institute_list" %}">Institutes</a></li>
+      <li><a class="{% active request "machines/" %}" href="{% url "kg_machine_list" %}">Machines</a></li>
+      <li><a class="{% active request "software/" %}" href="{% url "kg_software_list" %}">Software</a></li>
+      <li><a class="{% active request "emails/" %}" href="{% url "kg_emails_index" %}">Send Email</a></li>
+      <li><a class="{% active request "misc/" %}" href="{% url "kg_misc" %}">Other Stuff</a></li>
+      <li><a class="{% active request "applications/" %}" href="{% url "kg_application_list" %}">Applications</a>{% if pending_applications %} ({{ pending_applications }}){% endif %}</li>
+    </ul>
+  </div>
+  {% endif %}
+  <div class="module">
+    <h2>User links</h2>
+    <ul>
+      <li><a class="{% active request "$" %}" href="{% url 'index' %}">Home</a></li>
+      {% if user.is_authenticated %}
+      <li><a class="{% active request "profile/" %}" href="{% url 'kg_profile' %}">My profile</a></li>
+      <li><a class="{% active request "applications/" %}" href="{% url 'kg_application_list' %}">Pending Applications</a> {% if pending_applications %} ({{ pending_applications }}){% endif %}</li>
+      <li><a href="{% url 'kg_profile_logout' %}">Log Out</a></li>
+      {% else %}
+      <li><a href="{% url 'kg_profile_login' %}">Log In</a></li>
+      <li><a class="{% active request "new/" %}" href="{% url 'kg_application_new' %}">Apply for an account</a></li>
+      {% endif %}
+    </ul>
+  </div>
   {% block sidebar_extra %}
   {% block object-tools %}
   {% endblock %}
