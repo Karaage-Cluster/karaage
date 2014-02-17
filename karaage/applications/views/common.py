@@ -34,69 +34,21 @@ import karaage.applications.views.base as base
 from karaage.common import log
 import karaage.common as util
 
-@admin_required
-def application_list_admin(request):
-
-    try:
-        page_no = int(request.GET.get('page', 1))
-    except ValueError:
-        page_no = 1
-
-    if 'search' in request.REQUEST:
-        apps = Application.objects.select_related().order_by('-id')
-        terms = request.REQUEST['search'].lower()
-        query = Q()
-        for term in terms.split(' '):
-            q = Q(short_name__icontains=term)
-            q = q | Q(full_name__icontains=term)
-            q = q | Q(email=term)
-
-            persons = Person.objects.filter(q)
-            applicants = Applicant.objects.filter(q)
-
-            query = query & (Q(applicant__in=persons) | Q(applicant__in=applicants))
-
-        apps = apps.filter(query)
-    else:
-        apps = Application.objects.requires_admin().order_by('-id')
-        terms = ""
-
-    p = Paginator(apps, 50)
-
-    try:
-        page = p.page(page_no)
-    except (EmptyPage, InvalidPage):
-        page = p.page(p.num_pages)
-
-    return render_to_response(
-            'applications/application_list_for_admin.html',
-            {'page': page, 'terms': terms},
-            context_instance=RequestContext(request))
-
-
 @login_required
-def application_list_user(request):
+def application_list(request):
     """ a logged in user wants to see all his pending applications. """
     person = request.user
     my_applications = Application.objects.get_for_applicant(person)
-    requires_attention = Application.objects.requires_attention(person)
+    requires_attention = Application.objects.requires_attention(request)
 
     return render_to_response(
             'applications/application_list.html',
             {
             'my_applications': my_applications,
             'requires_attention': requires_attention,
+            'requires_admin': requires_admin,
             },
             context_instance=RequestContext(request))
-
-
-@login_required
-def application_list(request):
-    if util.is_admin(request):
-        return application_list_admin(request)
-    else:
-        return application_list_user(request)
-
 
 @admin_required
 def applicant_edit(request, applicant_id):

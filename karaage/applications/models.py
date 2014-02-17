@@ -27,7 +27,7 @@ import datetime
 import warnings
 
 from karaage.common.constants import TITLES, COUNTRIES
-from karaage.common import new_random_token, get_current_person
+from karaage.common import new_random_token, get_current_person, is_admin
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
@@ -41,15 +41,13 @@ class ApplicationManager(models.Manager):
                 state__in=[Application.COMPLETED, Application.ARCHIVED, Application.DECLINED])
         return query
 
-    def requires_attention(self, person):
+    def requires_attention(self, request):
         query = Q(projectapplication__project__in=person.leaders.all(), state=ProjectApplication.WAITING_FOR_LEADER)
         query = query | Q(projectapplication__institute__in=person.delegate.all(), state=ProjectApplication.WAITING_FOR_DELEGATE)
+        if is_admin(request):
+            query = query | Q(state=ProjectApplication.DUPLICATE, projectapplication__isnull=False)
         return Application.objects.filter(query)
 
-    def requires_admin(self):
-        query = Q(state=Application.WAITING_FOR_ADMIN)
-        query = query | Q(state=ProjectApplication.DUPLICATE, projectapplication__isnull=False)
-        return Application.objects.filter(query)
 
 class Application(models.Model):
     """ Generic application for anything. """
