@@ -46,6 +46,7 @@ class ApplicationManager(models.Manager):
         query = Q(projectapplication__project__in=person.leaders.all(), state=ProjectApplication.WAITING_FOR_LEADER)
         query = query | Q(projectapplication__institute__in=person.delegate.all(), state=ProjectApplication.WAITING_FOR_DELEGATE)
         if is_admin(request):
+            query = query | Q(state=Application.WAITING_FOR_ADMIN)
             query = query | Q(state=ProjectApplication.DUPLICATE, projectapplication__isnull=False)
         return Application.objects.filter(query)
 
