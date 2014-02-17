@@ -92,7 +92,7 @@ def log_list(request):
         page_obj = paginator.page(paginator.num_pages)
 
     return render_to_response(
-                ['%s/log_list.html' % "admin", 'log_list.html'],
+                'log_list.html',
                 {'page_obj': page_obj, 'short': True},
                 context_instance=RequestContext(request))
 
