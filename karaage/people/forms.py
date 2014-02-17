@@ -16,6 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django import forms
+from django.conf import settings
 from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 
@@ -172,7 +173,8 @@ class SetPasswordForm(BaseSetPasswordForm):
 
 
 class AdminGroupForm(forms.Form):
-    name = forms.CharField()
+    name = forms.RegexField("^%s$" % settings.GROUP_VALIDATION_RE, required=True,
+            error_messages={'invalid': settings.GROUP_VALIDATION_ERROR_MSG})
     description = forms.CharField()
 
     def __init__(self, *args, **kwargs):

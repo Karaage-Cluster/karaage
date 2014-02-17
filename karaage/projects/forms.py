@@ -17,6 +17,7 @@
 
 from django import forms
 from django.contrib.admin.widgets import AdminDateWidget, FilteredSelectMultiple
+from django.conf import settings
 import datetime
 
 import ajax_select.fields
@@ -28,7 +29,9 @@ from karaage.projects.models import Project, ProjectQuota
 
 
 class ProjectForm(forms.ModelForm):
-    pid = forms.CharField(label='PID', help_text='Leave blank for auto generation', required=False)
+    pid = forms.RegexField("^%s$" % settings.PROJECT_VALIDATION_RE, required=False,
+                          label='PID', help_text='Leave blank for auto generation',
+                          error_messages={'invalid': settings.PROJECT_VALIDATION_ERROR_MSG})
     name = forms.CharField(label='Project Title', widget=forms.TextInput(attrs={'size': 60}))
     description = forms.CharField(widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), required=False)
     institute = forms.ModelChoiceField(queryset=Institute.active.all())

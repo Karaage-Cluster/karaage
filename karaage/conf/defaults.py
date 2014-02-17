@@ -136,8 +136,10 @@ USERNAME_VALIDATION_RE = '[-\w]+'
 USERNAME_VALIDATION_ERROR_MSG = u'Usernames can only contain letters, numbers and underscores'
 
 PROJECT_VALIDATION_RE = '[-\w]+'
+PROJECT_VALIDATION_ERROR_MSG = u'Project names can only contain letters, numbers and underscores'
 
 GROUP_VALIDATION_RE = '[-\w]+'
+GROUP_VALIDATION_ERROR_MSG = u'Group names can only contain letters, numbers and underscores'
 
 TRAINING_ACCOUNT_PREFIX = 'train'
 
