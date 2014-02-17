@@ -91,6 +91,8 @@ class StateWaitingForApproval(base.State):
             application_form = self.get_approve_form(request, application, auth)
             form = application_form(request.POST or None, instance=application)
             if request.method == 'POST':
+                if 'duplicate' in request.POST:
+                    return 'duplicate'
                 if form.is_valid():
                     form.save()
                     return "approve"
