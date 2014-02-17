@@ -227,45 +227,6 @@ class StateCompleted(base.State):
     name = "Completed"
 
 
-class StateDuplicateApplicant(base.State):
-    """ Somebody has declared application is existing user. """
-    name = "Replace Applicant"
-
-    def enter_state(self, request, application):
-        emails.send_request_email(
-                "an administrator",
-                Person.objects.filter(is_admin=True),
-                application)
-
-    def view(self, request, application, label, auth, actions):
-        # if not admin, don't allow reopen
-        if not auth['is_admin']:
-            if 'reopen' in actions:
-                actions.remove('reopen')
-        if label is None and auth['is_admin']:
-            form = forms.ApplicantReplace(data=request.POST or None,
-                    application=application)
-
-            if request.method == 'POST':
-                if 'replace' in request.POST:
-                    if form.is_valid():
-                        form.save()
-                        return "reopen"
-                else:
-                    for action in actions:
-                        if action in request.POST:
-                            return action
-                    return HttpResponseBadRequest("<h1>Bad Request</h1>")
-
-            return render_to_response(
-                    'applications/common_duplicate_applicant.html',
-                    {'application': application, 'form': form,
-                    'actions': actions, 'auth': auth, },
-                    context_instance=RequestContext(request))
-        return super(StateDuplicateApplicant, self).view(
-                request, application, label, auth, actions)
-
-
 class StateDeclined(base.State):
     """ This application declined. """
     name = "Declined"

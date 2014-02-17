@@ -29,6 +29,7 @@ from django.conf import settings
 from karaage.common.decorators import login_required
 from karaage.applications.models import ProjectApplication, Applicant
 import karaage.applications.forms as forms
+import karaage.applications.emails as emails
 import karaage.applications.views.base as base
 import karaage.applications.views.states as states
 import karaage.common.saml as saml
@@ -621,6 +622,45 @@ class StateWaitingForAdmin(states.StateWaitingForApproval):
                 application, auth)
 
 
+class StateDuplicateApplicant(base.State):
+    """ Somebody has declared application is existing user. """
+    name = "Duplicate Applicant"
+
+    def enter_state(self, request, application):
+        emails.send_request_email(
+                "an administrator",
+                Person.objects.filter(is_admin=True),
+                application)
+
+    def view(self, request, application, label, auth, actions):
+        # if not admin, don't allow reopen
+        if not auth['is_admin']:
+            if 'reopen' in actions:
+                actions.remove('reopen')
+        if label is None and auth['is_admin']:
+            form = forms.ApplicantReplace(data=request.POST or None,
+                    application=application)
+
+            if request.method == 'POST':
+                if 'replace' in request.POST:
+                    if form.is_valid():
+                        form.save()
+                        return "reopen"
+                else:
+                    for action in actions:
+                        if action in request.POST:
+                            return action
+                    return HttpResponseBadRequest("<h1>Bad Request</h1>")
+
+            return render_to_response(
+                    'applications/project_duplicate_applicant.html',
+                    {'application': application, 'form': form,
+                    'actions': actions, 'auth': auth, },
+                    context_instance=RequestContext(request))
+        return super(StateDuplicateApplicant, self).view(
+                request, application, label, auth, actions)
+
+
 class StateArchived(states.StateCompleted):
     """ This application is archived. """
     name = "Archived"
@@ -668,7 +708,7 @@ def get_application_state_machine():
             {})
     state_machine.add_state(states.StateDeclined(), 'R',
             { 'reopen': Open,  })
-    state_machine.add_state(states.StateDuplicateApplicant(), 'DUP',
+    state_machine.add_state(StateDuplicateApplicant(), 'DUP',
             { 'reopen': Open, 'cancel': 'R', })
     state_machine.set_first_state(Open)
 #    NEW = 'N'
