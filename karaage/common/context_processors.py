@@ -28,17 +28,11 @@ def common(request):
     ctx['org_name'] = settings.ACCOUNTS_ORG_NAME
     ctx['accounts_email'] = settings.ACCOUNTS_EMAIL
     ctx['is_admin'] = is_admin(request)
-    return ctx
-
-
-def registration(request):
-    """ Set context for registration menu. """
-    ctx = {}
 
     if request.user.is_authenticated():
         person = request.user
         my_applications = Application.objects.get_for_applicant(person)
-        requires_attention = Application.objects.requires_attention(person)
+        requires_attention = Application.objects.requires_attention(request)
 
         ctx['pending_applications'] = (
                 my_applications.count() + requires_attention.count()
@@ -46,9 +40,13 @@ def registration(request):
     return ctx
 
 
+def registration(request):
+    """ Set context for registration menu. """
+    ctx = {}
+    return ctx
+
+
 def admin(request):
     """ Set context for admin menu. """
     ctx = {}
-    requires_admin = Application.objects.requires_admin()
-    ctx['pending_applications'] = requires_admin.count()
     return ctx
