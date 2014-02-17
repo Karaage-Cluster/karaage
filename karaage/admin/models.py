@@ -20,7 +20,7 @@ class LogEntryManager(models.Manager):
 
 @python_2_unicode_compatible
 class LogEntry(models.Model):
-    action_time = models.DateTimeField(_('action time'), auto_now=True)
+    action_time = models.DateTimeField(_('action time'), auto_now_add=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
     object_id = models.TextField(_('object id'), blank=True, null=True)

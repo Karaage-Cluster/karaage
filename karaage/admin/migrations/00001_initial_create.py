@@ -11,7 +11,7 @@ class Migration(SchemaMigration):
         if 'django_admin_log' not in connection.introspection.get_table_list(cursor):
             db.create_table(u'django_admin_log', (
                 (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-                ('action_time', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
+                ('action_time', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
                 ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.Person'], null=True)),
                 ('content_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contenttypes.ContentType'], null=True, blank=True)),
                 ('object_id', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
@@ -25,7 +25,7 @@ class Migration(SchemaMigration):
         u'admin.logentry': {
             'Meta': {'ordering': "(u'-action_time',)", 'object_name': 'LogEntry', 'db_table': "u'admin_log'"},
             'action_flag': ('django.db.models.fields.PositiveSmallIntegerField', [], {}),
-            'action_time': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'action_time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'change_message': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']", 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
