@@ -607,9 +607,11 @@ def search(request):
 
 
 @usage_required
-def top_users(request, machine_category_id, count=20):
+def top_users(request, machine_category_id):
     if not getattr(settings, 'USAGE_IS_PUBLIC', False):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
+
+    count = 20
 
     result = progress(request)
     if result is not None:
