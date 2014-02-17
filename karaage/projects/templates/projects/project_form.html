@@ -27,7 +27,6 @@
 
 {% block content %}
 <form method="post" action=".">{% csrf_token %}
-    {{ form.errors }}
     {% load forms %}
     {% if form.errors  or form.non_field_errors %}
             <p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
