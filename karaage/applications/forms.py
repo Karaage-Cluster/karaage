@@ -280,7 +280,9 @@ def AdminApproveProjectFormGenerator(application, auth):
         if application.project is None:
             # new project
             additional_req = forms.CharField(label="Additional requirements", widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), help_text=u"Do you have any special requirements?", required=False)
-            pid = forms.CharField(label="Project ID", help_text="Leave blank for auto generation", required=False)
+            pid = forms.RegexField("^%s$" % settings.PROJECT_VALIDATION_RE, required=False,
+                                  label='PID', help_text='Leave blank for auto generation',
+                                  error_messages={'invalid': settings.PROJECT_VALIDATION_ERROR_MSG})
 
         class Meta:
             model = ProjectApplication
