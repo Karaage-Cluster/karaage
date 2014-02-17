@@ -6,6 +6,11 @@ from django.db import models
 
 class Migration(DataMigration):
 
+    depends_on = (
+        ('projects', '0007_migrate_groups'),
+        ('people', '0016_auto__add_field_person_legacy_ldap_password'),
+    )
+
     def forwards(self, orm):
         """ Move UserApplication to ProjectApplication. """
         for src in orm.UserApplication.objects.iterator():
