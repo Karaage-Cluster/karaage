@@ -19,17 +19,14 @@
 
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.contrib import messages
 from django.http import HttpResponseBadRequest
 
 from karaage.common.decorators import login_required
 from karaage.software.models import SoftwareLicense
 from karaage.people.models import Person
 from karaage.applications.models import SoftwareApplication
-import karaage.applications.emails as emails
 import karaage.applications.forms as forms
 import karaage.applications.views.base as base
-import karaage.applications.views.user as user
 import karaage.applications.views.states as states
 
 

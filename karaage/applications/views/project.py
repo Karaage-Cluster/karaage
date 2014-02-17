@@ -26,12 +26,10 @@ from django.contrib import messages
 from django.db.models import Q
 from django.conf import settings
 
-from karaage.common.decorators import login_required, admin_required
+from karaage.common.decorators import login_required
 from karaage.applications.models import ProjectApplication, Applicant
 import karaage.applications.forms as forms
-import karaage.applications.emails as emails
 import karaage.applications.views.base as base
-import karaage.applications.views.user as user
 import karaage.applications.views.states as states
 import karaage.common.saml as saml
 from karaage.people.models import Person
