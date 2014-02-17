@@ -39,6 +39,6 @@ urlpatterns = patterns('karaage.usage.views',
     url(r'^(?P<machine_category_id>\d+)/projects/(?P<project_id>%s)/$' % settings.PROJECT_VALIDATION_RE,
         'project_usage', name='kg_usage_project'),
 
-    url(r'^(?P<machine_category_id>\d+)/top_users/$', 'top_users', name='kg_top_users'),
+    url(r'^(?P<machine_category_id>\d+)/top_users/$', 'top_users', name='kg_usage_top_users'),
     url(r'^(?P<machine_category_id>\d+)/top_users/(?P<count>\d+)/$', 'top_users'),
 )
