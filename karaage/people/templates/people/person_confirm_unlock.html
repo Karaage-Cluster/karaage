@@ -1,0 +1,26 @@
+{% extends "forms.html" %}
+
+
+{% block title %}Unlock person{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_person_list' %}">People</a>&nbsp;›
+    <a href="{% url 'kg_person_detail' person.username %}">{{ person }}</a>&nbsp;›
+    Unlock
+</div>
+{% endblock %}
+
+
+{% block content %}
+<h1>Are you sure?</h1>
+<p>Are you sure you want to unlock the person "{{ person }}"? </p>
+<form method="post" action=".">{% csrf_token %}
+<div>
+    <input type="hidden" name="post" value="yes" />
+    <input type="submit" value="Yes, I'm sure" />
+</div>
+</form>
+{% endblock %}

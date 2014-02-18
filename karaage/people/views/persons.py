@@ -416,7 +416,8 @@ def lock_person(request, username):
     if request.method == 'POST':
         person.lock()
         messages.success(request, "%s's account has been locked" % person)
-    return HttpResponseRedirect(person.get_absolute_url())
+        return HttpResponseRedirect(person.get_absolute_url())
+    return render_to_response('people/person_confirm_lock.html', locals(), context_instance=RequestContext(request))
 
 
 @admin_required
@@ -425,7 +426,8 @@ def unlock_person(request, username):
     if request.method == 'POST':
         person.unlock()
         messages.success(request, "%s's account has been unlocked" % person)
-    return HttpResponseRedirect(person.get_absolute_url())
+        return HttpResponseRedirect(person.get_absolute_url())
+    return render_to_response('people/person_confirm_unlock.html', locals(), context_instance=RequestContext(request))
 
 
 @admin_required

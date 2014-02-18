@@ -290,20 +290,14 @@
         <li><a href="{% url 'kg_person_verbose' person.username %}">Verbose</a></li>
         {% if person.is_locked %}
         <li>
-            <form action="{% url 'kg_person_unlock' person.username %}" method="post">
-                {% csrf_token %}
-                <img alt="Lock" src="{{ STATIC_URL }}img/unlock.png"/>
-                <input type="submit" value="Unlock"/></input>
-            </form>
+            <img alt="" src="{{ STATIC_URL }}img/unlock.png"/>
+            <a href="{% url 'kg_person_unlock' person.username %}">Unlock</a>
         </li>
         {% else %}
         <li class="changelink"><a href="{% url 'kg_person_password' person.username %}">Change Password</a></li>
         <li>
-            <form action="{% url 'kg_person_lock' person.username %}" method="post">
-                {% csrf_token %}
-                <img alt="Lock" src="{{ STATIC_URL }}img/lock.png"/>
-                <input type="submit" value="Lock"/></input>
-            </form>
+            <img alt="" src="{{ STATIC_URL }}img/lock.png"/>
+            <a href="{% url 'kg_person_lock' person.username %}">Lock</a>
         </li>
         {% endif %}
         <li><a href="{% url 'kg_person_bounce' person.username %}">Bounced Email</a></li>
