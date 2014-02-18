@@ -1,12 +1,11 @@
-<div class="module">
-    <h2>Comments</h2>
-    {% for comment in comment_list %}
-    <div class="comment_{% cycle odd,even %}" id="c{{ comment.id }}">
-        <span class="comnum"><a href="#c{{ comment.id }}" id="c{{ comment.id }}">#{{ forloop.counter }}</a></span>
-        <p><b>{{ comment.user.get_full_name }}</b> commented, on {{ comment.action_time|date:"F j, Y" }} at {{ comment.action_time|date:"P" }}:</p>
-        {{ comment.change_message|escape|urlizetrunc:40|linebreaks }}
-    </div>
-    {% empty %}
-    <p>No Comments</p>
-    {% endfor %}
+{% if is_admin %}
+{% for comment in comment_list %}
+<div class="comment_{% cycle odd,even %}" id="c{{ comment.id }}">
+    <span class="comnum"><a href="#c{{ comment.id }}" id="c{{ comment.id }}">#{{ forloop.counter }}</a></span>
+    <p><b>{{ comment.user.get_full_name }}</b> commented, on {{ comment.action_time|date:"F j, Y" }} at {{ comment.action_time|date:"P" }}:</p>
+    {{ comment.change_message|escape|urlizetrunc:40|linebreaks }}
 </div>
+{% empty %}
+<p>No Comments</p>
+{% endfor %}
+{% endif %}

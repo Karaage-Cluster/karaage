@@ -75,7 +75,10 @@
     </div>
 
     {% if is_admin %}
-    {% comments institute %}
+    <div class="module">
+        <h2>Comments</h2>
+        {% comments institute %}
+    </div>
     {% endif %}
 </div>
 {% endblock %}

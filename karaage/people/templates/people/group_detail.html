@@ -92,7 +92,12 @@
     </div>
     {% endif %}
 
-    {% comments group %}
+    {% if is_admin %}
+    <div class="module">
+        <h2>Comments</h2>
+        {% comments group %}
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
 

@@ -57,7 +57,10 @@
         <h2>Last 5 jobs</h2>
         {% gen_table usage_list %}
     </div>
-    {% comments machine %}
+    <div class="module">
+        <h2>Comments</h2>
+        {% comments machine %}
+    </div>
     {% endif %}
 </div>
 {% endblock %}

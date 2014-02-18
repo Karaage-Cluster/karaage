@@ -259,7 +259,10 @@
     {% endif %}
 
     {% if is_admin %}
-    {% comments person %}
+    <div class="module">
+        <h2>Comments</h2>
+        {% comments person %}
+    </div>
     {% endif %}
 </div>
 {% endblock %}

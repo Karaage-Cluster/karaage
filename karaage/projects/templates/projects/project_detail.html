@@ -196,7 +196,10 @@
     {% endif %}
 
     {% if is_admin %}
-    {% comments project %}
+    <div class="module">
+        <h2>Comments</h2>
+        {% comments project %}
+    </div>
     {% endif %}
 </div>
 {% endblock %}

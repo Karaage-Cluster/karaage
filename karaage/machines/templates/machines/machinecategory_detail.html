@@ -37,7 +37,10 @@
     </div>
 
     {% if is_admin %}
-    {% comments machine_category %}
+    <div class="module">
+        <h2>Comments</h2>
+        {% comments machine_category %}
+    </div>
     {% endif %}
 </div>
 {% endblock %}

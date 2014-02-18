@@ -103,7 +103,10 @@
     {% application_request application %}
 
     {% if is_admin %}
-    {% comments application.application_ptr %}
+    <div class="module">
+        <h2>Comments</h2>
+        {% comments application.application_ptr %}
+    </div>
     {% endif %}
 
     <form method="post" action=".">{% csrf_token %}
