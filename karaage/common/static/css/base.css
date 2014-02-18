@@ -486,12 +486,49 @@ input[type=text], input[type=password], textarea, select, .vTextField {
     font-size: 11px;
     text-align: left;
     font-weight: bold;
-    background: #7CA0C7 url(../img/default-bg.gif) top left repeat-x;
-    color: white;
+    background: #7CA0C7;
+    color: #666;
 }
 
 .module table {
     border-collapse: collapse;
+}
+
+/* OBJECT TOOLS */
+
+.object-tools ul {
+    margin: 0;
+    padding: 0;
+}
+.object-tools li {
+    display: inline-block;
+    width: 100px;
+    height: 30px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 20px;
+    vertical-align: bottom;
+    background-color: #eee;
+    background-position: 5px 5px;
+    margin-bottom: 4px;
+}
+.object-tools li:hover {
+    background-color: #ccc;
+}
+.object-tools a {
+    color: #333;
+}
+.object-tools a:hover {
+    color: #333;
+}
+#content-related .object-tools ul {
+    margin-left: 20px;
+}
+#content-related .object-tools li {
+    margin-top: 0;
+    margin-bottom: 0;
+    width: 100%;
+    margin-left: -20px;
 }
 
 /* MESSAGES & ERRORS */
@@ -600,18 +637,28 @@ div.breadcrumbs {
 /* ACTION ICONS */
 
 .addlink {
-    padding-left: 12px;
+    padding-left: 16px;
     background: url(../img/icon_addlink.gif) 0 .2em no-repeat;
 }
 
 .changelink {
-    padding-left: 12px;
+    padding-left: 16px;
     background: url(../img/icon_changelink.gif) 0 .2em no-repeat;
 }
 
 .deletelink {
-    padding-left: 12px;
+    padding-left: 16px;
     background: url(../img/icon_deletelink.gif) 0 .25em no-repeat;
+}
+
+.locklink {
+    padding-left: 16px;
+    background: url(../img/lock.png) 0 .25em no-repeat;
+}
+
+.unlocklink {
+    padding-left: 16px;
+    background: url(../img/unlock.png) 0 .25em no-repeat;
 }
 
 a.deletelink:link, a.deletelink:visited {
@@ -772,7 +819,7 @@ table#change-history tbody th {
 }
 
 #content-related .module h2 {
-    background: #eee url(../img/nav-bg.gif) bottom left repeat-x;
+    background: #C7C7A0;
     color: #666;
 }
 

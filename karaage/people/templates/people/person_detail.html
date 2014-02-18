@@ -7,8 +7,6 @@
 
 
 {% block extrahead %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/karaage.js"></script>
 {% if is_admin %}
 {{ form.media }}
 {% endif %}
@@ -134,6 +132,49 @@
             {% endif %}
             {% endif %}
         </table>
+        <h3>Person actions</h3>
+        <div class="object-tools">
+            <ul>
+                {% if not person.is_active %}
+                {% if not requestor %}
+                <li><a href="activate/">Activate</a></li>
+                {% endif %}
+                {% endif %}
+
+                {% if is_admin and person.is_active %}
+                <li class="changelink"><a href="{% url 'kg_person_edit' person.username %}">Edit details</a></li>
+                <li class="deletelink"><a href="{%url 'kg_person_delete' person.username %}">Delete</a></li>
+                <li><a href="{% url 'kg_person_logs' person.username %}">Logs</a></li>
+                {% endif %}
+
+                {% if is_admin and person.is_active %}
+                <li><a href="{% url 'kg_person_verbose' person.username %}">Verbose</a></li>
+                {% if person.is_locked %}
+                <li class="unlocklink">
+                    <form action="{% url 'kg_person_unlock' person.username %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" value="Unlock"/></input>
+                    </form>
+                </li>
+                {% else %}
+                <li class="changelink"><a href="{% url 'kg_person_password' person.username %}">Change Password</a></li>
+                <li class="locklink">
+                    <form action="{% url 'kg_person_lock' person.username %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" value="Lock"/></input>
+                    </form>
+                </li>
+                {% endif %}
+                <li><a href="{% url 'kg_person_bounce' person.username %}">Bounced Email</a></li>
+                {% endif %}
+
+                {% if person.is_active %}
+                <li><a href="{% url 'kg_usage_job_list' %}?person={{ person.username }}">Display all jobs</a></li>
+                {% endif %}
+
+                <li><a href="{% url 'kg_person_reset' person.username %}">Reset Password</a></li>
+            </ul>
+        </div>
     </div>
 
 
@@ -236,6 +277,15 @@
         <h3>Latest Usage</h3>
         {% gen_table ua.get_latest_usage usage/user_table.html %}
         {% endif %}
+
+        {% if is_admin and person.is_active %}
+        <h3>Account actions</h3>
+        <div class="object-tools">
+            <ul>
+                <li class="addlink"><a href="{% url 'kg_person_add_account' person.username %}">Add account</a></li>
+            </ul>
+        </div>
+        {% endif %}
     </div>
     {% endfor %}
 
@@ -262,6 +312,12 @@
     <div class="module">
         <h2>Comments</h2>
         {% comments person %}
+        <h3>Comment actions</h3>
+        <div class="object-tools">
+            <ul>
+                <li class="addlink"><a href="{% url 'kg_person_add_comment' person.username %}">Add comment</a></li>
+            </ul>
+        </div>
     </div>
     {% endif %}
 </div>
@@ -269,51 +325,4 @@
 
 
 {% block object-tools %}
-<div class="module object-tools">
-    <h2>Tasks</h2>
-    <ul>
-        {% if not person.is_active %}
-        {% if not requestor %}
-        <li><a href="activate/">Activate</a></li>
-        {% endif %}
-        {% endif %}
-
-        {% if is_admin and person.is_active %}
-        <li class="changelink"><a href="{% url 'kg_person_edit' person.username %}">Edit details</a></li>
-        <li class="addlink"><a href="{% url 'kg_person_add_account' person.username %}">Add account</a></li>
-        <li class="deletelink"><a href="{%url 'kg_person_delete' person.username %}">Delete</a></li>
-        <li><a href="{% url 'kg_person_logs' person.username %}">Logs</a></li>
-        <li class="addlink"><a href="{% url 'kg_person_add_comment' person.username %}">Add comment</a></li>
-        {% endif %}
-
-        {% if is_admin and person.is_active %}
-        <li><a href="{% url 'kg_person_verbose' person.username %}">Verbose</a></li>
-        {% if person.is_locked %}
-        <li>
-            <form action="{% url 'kg_person_unlock' person.username %}" method="post">
-                {% csrf_token %}
-                <img alt="Lock" src="{{ STATIC_URL }}img/unlock.png"/>
-                <input type="submit" value="Unlock"/></input>
-            </form>
-        </li>
-        {% else %}
-        <li class="changelink"><a href="{% url 'kg_person_password' person.username %}">Change Password</a></li>
-        <li>
-            <form action="{% url 'kg_person_lock' person.username %}" method="post">
-                {% csrf_token %}
-                <img alt="Lock" src="{{ STATIC_URL }}img/lock.png"/>
-                <input type="submit" value="Lock"/></input>
-            </form>
-        </li>
-        {% endif %}
-        <li><a href="{% url 'kg_person_bounce' person.username %}">Bounced Email</a></li>
-        {% endif %}
-
-        {% if person.is_active %}
-        <li><a href="{% url 'kg_usage_job_list' %}?person={{ person.username }}">Display all jobs</a></li>
-        {% endif %}
-
-        <li><a href="{% url 'kg_person_reset' person.username %}">Reset Password</a></li>
-    </ul>
-</div>
 {% endblock %}
