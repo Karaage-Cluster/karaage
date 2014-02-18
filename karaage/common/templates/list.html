@@ -1,0 +1,43 @@
+{% extends "main.html" %}
+
+{% load staticfiles %}
+{% load paginator %}
+
+{% block extrastyle %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css" />
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <div class="toolbar">
+        {% searchform %}
+        {% if filter_bar %}
+        <ul id="menu">
+            <li>
+                <a href='#'>Filter</a>
+                <ul>
+                {{ filter_bar|safe }}
+                </ul>
+            </li>
+        </ul>
+        {% endif %}
+        {% block actions %}{% endblock %}
+    </div>
+    <div class="module clear">
+        <h2>{% block short_title %}List{% endblock %}</h2>
+        {% block list_content %}
+        {% gen_table page.object_list %}
+        {% endblock %}
+        {% pagination page request %}
+    </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+        $( "#menu" ).menu();
+});
+</script>
+
+{% endblock %}

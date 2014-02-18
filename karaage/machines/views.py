@@ -18,6 +18,8 @@
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
+from django.db.models import Q
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from karaage.projects.models import Project
 from karaage.machines.models import Machine, MachineCategory
@@ -27,9 +29,32 @@ import karaage.common as util
 @login_required
 def index(request):
     category_list = MachineCategory.objects.all()
+
+    if 'search' in request.REQUEST:
+        terms = request.REQUEST['search'].lower()
+        query = Q()
+        for term in terms.split(' '):
+            q = Q(name=term) | Q(machine__name=term)
+            query = query & q
+
+        category_list = category_list.filter(query)
+    else:
+        terms = ""
+
+    page = request.GET.get('page')
+    paginator = Paginator(category_list, 50)
+    try:
+        page = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        page = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        page = paginator.page(paginator.num_pages)
+
     return render_to_response(
         'machines/machine_list.html',
-        {'category_list': category_list},
+        {'terms': terms, 'page': page},
         context_instance=RequestContext(request))
 
 

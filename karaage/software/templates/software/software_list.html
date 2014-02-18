@@ -1,8 +1,9 @@
-{% extends "changelist.html" %}
+{% extends "list.html" %}
 {% load url from future %}
 
 
 {% block title %}Software{% endblock %}
+{% block short_title %}Software List{% endblock %}
 
 
 {% block breadcrumbs %}
@@ -13,13 +14,12 @@
 {% endblock %}
 
 
-{% block object-tools %}
+{% block actions %}
 {% if is_admin %}
-<div class="module object-tools">
-    <h2>Object links</h2>
+<div class="object-tools">
     <ul>
         <li><a href="{% url 'kg_software_category_list' %}">Categories</a></li>
-        <li><a class="addlink" href="{% url 'kg_software_add' %}">Add software</a></li>
+        <li><a href="{% url 'kg_software_add' %}" class="addlink">Add software</a></li>
     </ul>
 </div>
 {% endif %}

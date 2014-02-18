@@ -29,6 +29,20 @@
             {% endif %}
             <tr><td>Restricted:</td><td>{% yes_no_img software.restricted %}</td></tr>
         </table>
+        <div class="object-tools">
+            <ul>
+                {% if is_admin %}
+                <li><a href="{% url 'kg_software_edit' software.id %}" class="changelink">Edit</a></li>
+                <li><a href="{% url 'kg_software_delete' software.id %}" class="deletelink">Delete</a></li>
+                <li><a href="{% url 'kg_software_add_version' software.id %}" class="addlink">Add Version</a></li>
+                <li><a href="{% url 'kg_software_add_license' software.id %}" class="addlink">Add License</a></li>
+                <li><a href="{% url 'kg_software_logs' software.id %}">Logs</a></li>
+                <li><a href="{% url 'kg_software_verbose' software.id %}">Verbose</a></li>
+                <li><a href="{% url 'kg_software_stats' software.id %}">Statistics</a></li>
+                {% endif %}
+                <li><a href="{% url 'kg_usage_job_list' %}?software={{ software.id }}">Display all jobs</a></li>
+            </ul>
+        </div>
     </div>
 
     <div class="module">
@@ -53,11 +67,9 @@
                                 <a href="{{ m.get_absolute_url }}">{{ m }}</a>
                         {% endfor %}
                     </td>
-                    {% if perms.software.change_softwareversion %}
-                    <td><a class="changelink" href="{% url 'kg_software_version_edit' version.id %}">Edit</a></td>
-                    {% endif %}
-                    {% if perms.software.delete_software_version %}
-                    <td><a class="deletelink" href="{% url 'kg_software_version_delete' version.id %}">Delete</a></td>
+                    {% if is_admin %}
+                    <td><a href="{% url 'kg_software_version_edit' version.id %}" class="changelink">Edit</a></td>
+                    <td><a href="{% url 'kg_software_version_delete' version.id %}" class="deletelink">Delete</a></td>
                     {% endif %}
                 </tr>
                 {% endfor %}
@@ -83,8 +95,8 @@
                     <td>{{ license.version }}</td>
                     <td>{{ license.date|date }}</td>
                     <td><a href="{% url 'kg_software_license_detail' license.id %}">view</a></td>
-                    <td>{% if is_admin %}<a class="changelink" href="{% url 'kg_software_license_edit' license.id %}">Edit</a>{% endif %}</td>
-                    <td>{% if is_admin %}<a class="deletelink" href="{% url 'kg_software_license_delete' license.id %}">Delete</a>{% endif %}</td>
+                    <td>{% if is_admin %}<a href="{% url 'kg_software_license_edit' license.id %}" class="changelink">Edit</a>{% endif %}</td>
+                    <td>{% if is_admin %}<a href="{% url 'kg_software_license_delete' license.id %}" class="deletelink">Delete</a>{% endif %}</td>
                     <td>
                         <table cellspacing="0">
                             <thead>
@@ -125,7 +137,7 @@
                     <td>{{ person.username }}</td>
                     <td><a href="{{ person.get_absolute_url }}">{{ person }}</a></td>
                     {% if is_admin %}
-                    <td><a class="deletelink" href="{% url 'kg_software_remove_person' software.id person.id %}">Remove</a></td>
+                    <td><a href="{% url 'kg_software_remove_person' software.id person.id %}" class="deletelink">Remove</a></td>
                     {% endif %}
                 </tr>
             </tbody>
@@ -137,26 +149,12 @@
     <div class="module">
         <h2>Comments</h2>
         {% comments software %}
+        <div class="object-tools">
+            <ul>
+                <li><a href="{% url 'kg_software_add_comment' software.pk %}" class="addlink">Add comment</a></li>
+            </ul>
+        </div>
     </div>
     {% endif %}
-</div>
-{% endblock %}
-
-{% block object-tools %}
-<div class="module object-tools">
-    <h2>Tasks</h2>
-    <ul>
-        {% if is_admin %}
-        <li><a class="changelink" href="{% url 'kg_software_edit' software.id %}">Edit</a></li>
-        <li><a class="deletelink" href="{% url 'kg_software_delete' software.id %}">Delete</a></li>
-        <li><a class="addlink" href="{% url 'kg_software_add_version' software.id %}">Add Version</a></li>
-        <li><a class="addlink" href="{% url 'kg_software_add_license' software.id %}">Add License</a></li>
-        {% endif %}
-        <li><a href="{% url 'kg_software_stats' software.id %}">Statistics</a></li>
-        <li><a href="{% url 'kg_software_logs' software.id %}">Logs</a></li>
-        <li><a href="{% url 'kg_software_add_comment' software.pk %}">Add comment</a></li>
-        <li><a href="{% url 'kg_usage_job_list' %}?software={{ software.id }}">Display all jobs</a></li>
-        <li><a href="{% url 'kg_software_verbose' software.id %}">Verbose</a></li>
-    </ul>
 </div>
 {% endblock %}

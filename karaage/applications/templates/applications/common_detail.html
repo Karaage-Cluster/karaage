@@ -15,19 +15,6 @@
 {% endblock %}
 
 
-{% block object-tools %}
-{% if is_admin %}
-<div class="module object-tools">
-<h2>Tasks</h2>
-<ul>
-    <li><a href="{% url 'kg_application_logs' application.pk %}">Logs</a></li>
-    <li class="addlink"><a href="{% url 'kg_application_add_comment' application.pk %}">Add comment</a></li>
-</ul>
-</div>
-{% endif %}
-{% endblock %}
-
-
 {% block content %}
 <div id="content-main">
     <h1>{{ application.applicant }}'s Request</h1>
@@ -40,9 +27,21 @@
         {% application_state application %}
 
         {% if auth.can_approve %}
-        <p>As you are {{ authorised_text }}, please
-        <a class="yeslink" href="{% url 'kg_application_detail' application.id application.state 'approve' %}">Approve</a> or
-        <a class="nolink" href="{% url 'kg_application_detail' application.id application.state 'decline' %}">Decline</a> this request</p>
+        <p>As you are {{ authorised_text }}, please Approve or Decline this request.</p>
+        {% endif %}
+
+        {% if auth.can_approve or is_admin %}
+        <div class="object-tools">
+            <ul>
+                {% if auth.can_approve %}
+                <li><a href="{% url 'kg_application_detail' application.id application.state 'approve' %}" class="yeslink">Approve</a></li>
+                <li><a href="{% url 'kg_application_detail' application.id application.state 'decline' %}" class="nolink">Decline</a></li>
+                {% endif %}
+                {% if is_admin %}
+                <li><a href="{% url 'kg_application_logs' application.pk %}">Logs</a></li>
+                {% endif %}
+            </ul>
+        </div>
         {% endif %}
     </div>
 
@@ -106,6 +105,13 @@
     <div class="module">
         <h2>Comments</h2>
         {% comments application.application_ptr %}
+        {% if is_admin %}
+        <div class="object-tools">
+            <ul>
+                <li><a href="{% url 'kg_application_add_comment' application.pk %}" class="addlink">Add comment</a></li>
+            </ul>
+        </div>
+        {% endif %}
     </div>
     {% endif %}
 
@@ -114,5 +120,3 @@
     </form>
 </div>
 {% endblock %}
-
-

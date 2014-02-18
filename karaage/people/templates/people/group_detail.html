@@ -58,6 +58,17 @@
         {% endfor %}
         </tbody>
         </table>
+
+        {% if is_admin %}
+        <div class="object-tools">
+            <ul>
+                <li><a href="{% url 'kg_group_edit' group.name %}" class="changelink">Edit details</a></li>
+                <li><a href="{% url 'kg_group_delete' group.name %}" class="deletelink">Delete</a></li>
+                <li><a href="{% url 'kg_group_logs' group.name %}">Logs</a></li>
+                <li><a href="{% url 'kg_group_verbose' group.name %}">Verbose</a></li>
+            </ul>
+        </div>
+        {% endif %}
     </div>
 
     <div class="module">
@@ -73,7 +84,7 @@
                 <td>{{ member.get_full_name }}</td>
                 {% if is_admin %}
                 <td>
-                    <div class="deletelink"><a href="{% url 'kg_group_remove_person' group.name member.username %}">Delete</a></li>
+                    <div><a href="{% url 'kg_group_remove_person' group.name member.username %}" class="deletelink">Delete</a></li>
                 </td>
                 {% endif %}
             </tr>
@@ -96,23 +107,12 @@
     <div class="module">
         <h2>Comments</h2>
         {% comments group %}
+        <div class="object-tools">
+            <ul>
+                <li><a href="{% url 'kg_group_add_comment' group.name %}" class="addlink">Add comment</a></li>
+            </ul>
+        </div>
     </div>
     {% endif %}
 </div>
-{% endblock %}
-
-
-{% block object-tools %}
-{% if is_admin %}
-<div class="module object-tools">
-<h2>Tasks</h2>
-    <ul>
-        <li class="changelink"><a href="{% url 'kg_group_edit' group.name %}">Edit details</a></li>
-        <li class="deletelink"><a href="{% url 'kg_group_delete' group.name %}">Delete</a></li>
-        <li><a href="{% url 'kg_group_logs' group.name %}">Logs</a></li>
-        <li class="addlink"><a href="{% url 'kg_group_add_comment' group.name %}">Add comment</a></li>
-        <li><a href="{% url 'kg_group_verbose' group.name %}">Verbose</a></li>
-    </ul>
-</div>
-{% endif %}
 {% endblock %}
