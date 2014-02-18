@@ -20,6 +20,10 @@ from django.conf import settings
 
 urlpatterns = patterns('',
     url(r'^$', 'karaage.common.views.index', name='index'),
+    url(r'^search/$', 'karaage.common.views.search', name='kg_site_search'),
+    url(r'^misc/$', 'karaage.common.views.misc', name='kg_misc'),
+    url(r'^logs/$', 'karaage.common.views.log_list', name='kg_log_list'),
+
     url(r'^persons/', include('karaage.people.urls.persons')),
     url(r'^profile/', include('karaage.people.urls.profile')),
     url(r'^groups/', include('karaage.people.urls.groups')),
@@ -33,11 +37,8 @@ urlpatterns = patterns('',
 
     url(r'^aup/$', 'karaage.legacy.simple.direct_to_template', {'template': 'aup.html'}, name="aup"),
     url(r'^captcha/', include('captcha.urls')),
-    url(r'^search/$', 'karaage.admin.views.search', name='kg_site_search'),
-    url(r'^misc/$', 'karaage.admin.views.misc', name='kg_misc'),
     url(r'^lookup/', include('ajax_select.urls')),
     url(r'^emails/', include('karaage.emails.urls')),
-    url(r'^logs/$', 'karaage.admin.views.log_list', name='kg_log_list'),
 )
 
 if settings.DEBUG:

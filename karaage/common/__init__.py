@@ -26,7 +26,7 @@ from django.conf import settings
 
 from karaage.middleware.threadlocals import get_current_user
 from karaage.common.forms import CommentForm
-from karaage.admin.models import LogEntry
+from karaage.common.models import LogEntry
 
 from django.template import add_to_builtins
 add_to_builtins('karaage.common.templatetags.karaage_tags')
