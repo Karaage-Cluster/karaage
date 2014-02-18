@@ -28,7 +28,7 @@
 <div id="content-main">
 
     <div class="module">
-        <h2>People</h2>
+        <h2>Person</h2>
 
         <h3>
             {% if person.title %}{{ person.title }}{% endif %} {{ person }}
@@ -139,7 +139,7 @@
 
     {% if person.leaders.all %}
     <div class="module">
-        <h2>Projects I lead</h2>
+        <h2>Leader of Projects</h2>
         {% gen_table person.leaders.all %}
     </div>
     {% endif %}
@@ -233,7 +233,7 @@
         {% endif %}
 
         {% if ua.get_latest_usage %}
-        <h5>Latest Usage</h5>
+        <h3>Latest Usage</h3>
         {% gen_table ua.get_latest_usage usage/user_table.html %}
         {% endif %}
     </div>
