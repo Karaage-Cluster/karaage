@@ -7,18 +7,31 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
-    def forwards(self, orm):
+    depends_on = (
+            ('admin', '0004_auto__del_logentry'),
+    )
 
-        # Changing field 'LogEntry.action_time'
-        # this should already be the case, but for older installs, it may not be.
-        db.alter_column(u'admin_log', 'action_time', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True))
+    def forwards(self, orm):
+        if not db.dry_run:
+            orm['contenttypes.contenttype'].objects.filter(app_label='admin', model='logentry').update(app_label="common")
+
 
     def backwards(self, orm):
-        # nothing to do
-        pass
+        if not db.dry_run:
+            orm['contenttypes.contenttype'].objects.filter(app_label='common', model='logentry').update(app_label="admin")
+
 
     models = {
-        u'admin.logentry': {
+        u'common.comment': {
+            'Meta': {'ordering': "(u'submit_date',)", 'object_name': 'Comment', 'db_table': "u'comments'"},
+            'comment': ('django.db.models.fields.TextField', [], {'max_length': '3000'}),
+            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'content_type_set_for_comment'", 'to': u"orm['contenttypes.ContentType']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'object_pk': ('django.db.models.fields.TextField', [], {}),
+            'submit_date': ('django.db.models.fields.DateTimeField', [], {'default': 'None'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "u'comment_comments'", 'null': 'True', 'to': u"orm['people.Person']"})
+        },
+        u'common.logentry': {
             'Meta': {'ordering': "(u'-action_time',)", 'object_name': 'LogEntry', 'db_table': "u'admin_log'"},
             'action_flag': ('django.db.models.fields.PositiveSmallIntegerField', [], {}),
             'action_time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -100,4 +113,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['admin']
+    complete_apps = ['common']

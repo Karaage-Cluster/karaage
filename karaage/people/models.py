@@ -24,7 +24,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from jsonfield import JSONField
 
-from karaage.admin.models import CHANGE
+from karaage.common.models import CHANGE
 from karaage.common.constants import TITLES, STATES, COUNTRIES
 from karaage.people.managers import ActivePersonManager, DeletedPersonManager, LeaderManager, PersonManager
 

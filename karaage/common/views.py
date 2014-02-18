@@ -18,10 +18,16 @@
 from django.conf import settings
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db.models import Q
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
+
 
 from karaage.common import is_admin
 from karaage.common.decorators import admin_required
-from karaage.people.models import Person
+from karaage.common.models import LogEntry
+from karaage.people.models import Person, Group
 from karaage.projects.models import Project
 
 
@@ -38,3 +44,78 @@ def index(request):
     if settings.ADMIN_REQUIRED or is_admin(request):
         return admin_index(request)
     return render_to_response('index.html', context_instance=RequestContext(request))
+
+
+
+@admin_required
+def search(request):
+
+    if 'sitesearch' in request.GET and request.GET['sitesearch'].strip() != "":
+        people_list = Person.objects.all()
+        group_list = Group.objects.all()
+        project_list = Project.objects.all()
+
+        new_data = request.GET.copy()
+        siteterms = new_data['sitesearch'].lower()
+        term_list = siteterms.split(' ')
+
+        # users
+        query = Q()
+        for term in term_list:
+            q = Q(username__icontains=term) | Q(short_name__icontains=term) | Q(full_name__icontains=term) | Q(email__icontains=term)
+            query = query & q
+
+        people_list = people_list.filter(query).distinct()
+
+        # groups
+        query = Q()
+        for term in term_list:
+            q = Q(name__icontains=term) | Q(description__icontains=term)
+            query = query & q
+
+        group_list = group_list.filter(query)
+
+         # projects
+        query = Q()
+        for term in term_list:
+            q = Q(pid__icontains=term) | Q(name__icontains=term) | Q(leaders__username__icontains=term) | Q(leaders__short_name__icontains=term) | Q(leaders__full_name__icontains=term)
+            query = query & q
+
+        project_list = project_list.filter(query).distinct()
+
+        empty = False
+
+        if not (people_list or group_list or project_list):
+            empty = True
+        
+        return render_to_response('site_search.html', locals(), context_instance=RequestContext(request))
+    else:
+        return HttpResponseRedirect(reverse('index'))
+
+
+@admin_required
+def log_list(request):
+    log_list = LogEntry.objects.all()
+    paginator = Paginator(log_list, 50)
+
+    page = request.GET.get('page')
+    try:
+        page_obj = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        page_obj = paginator.page(paginator.num_pages)
+
+    return render_to_response(
+                'log_list.html',
+                {'page_obj': page_obj, 'short': True},
+                context_instance=RequestContext(request))
+
+
+@admin_required
+def misc(request):
+    from karaage.legacy.simple import direct_to_template
+    return direct_to_template(request,
+            template='misc/index.html')
