@@ -289,14 +289,12 @@
         {% if is_admin and person.is_active %}
         <li><a href="{% url 'kg_person_verbose' person.username %}">Verbose</a></li>
         {% if person.is_locked %}
-        <li>
-            <img alt="" src="{{ STATIC_URL }}img/unlock.png"/>
+        <li class="unlocklink">
             <a href="{% url 'kg_person_unlock' person.username %}">Unlock</a>
         </li>
         {% else %}
         <li class="changelink"><a href="{% url 'kg_person_password' person.username %}">Change Password</a></li>
-        <li>
-            <img alt="" src="{{ STATIC_URL }}img/lock.png"/>
+        <li class="locklink">
             <a href="{% url 'kg_person_lock' person.username %}">Lock</a>
         </li>
         {% endif %}

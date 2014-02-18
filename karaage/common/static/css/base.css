@@ -614,6 +614,16 @@ div.breadcrumbs {
     background: url(../img/icon_deletelink.gif) 0 .25em no-repeat;
 }
 
+.locklink {
+    padding-left: 16px;
+    background: url(../img/lock.png) 0 .25em no-repeat;
+}
+
+.unlocklink {
+    padding-left: 16px;
+    background: url(../img/unlock.png) 0 .25em no-repeat;
+}
+
 a.deletelink:link, a.deletelink:visited {
     color: #CC3434;
 }
