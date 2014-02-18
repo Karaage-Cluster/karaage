@@ -4,23 +4,40 @@
 {% load paginator %}
 
 {% block extrastyle %}
-<link rel="stylesheet" type="text/css" href="{% static "css/changelists.css" %}" />
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css" />
 {% endblock %}
 
 {% block bodyclass %}change-list{% endblock %}
 
 {% block content %}
 <div id="content-main">
-    <div class="module  {% if filter_bar %}filtered{% endif %}" id="changelist">
-        {% if filter_bar %}
-            <div id="changelist-filter">
-                <h2>Filter</h2>
-                {{ filter_bar|safe }}
-            </div>
-        {% endif %}
+    <div class="toolbar">
         {% searchform %}
+        <ul id="menu">
+            <li>
+                <a href='#'>Menu</a>
+                <ul>
+                {% block menu %}{% endblock %}
+                {% if filter_bar %}
+                {{ filter_bar|safe }}
+                {% endif %}
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="module">
+        <h2>List</h2>
         {% gen_table page.object_list %}
         {% pagination page request %}
     </div>
 </div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+        $( "#menu" ).menu();
+});
+</script>
+
 {% endblock %}

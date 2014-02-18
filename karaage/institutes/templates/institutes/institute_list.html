@@ -12,14 +12,9 @@
 {% endblock %}
 
 
-{% block object-tools %}
+{% block menu %}
 {% if is_admin %}
-<div class="module object-tools">
-    <h2>Object links</h2>
-    <ul>
-        <li><a class="addlink" href="{% url 'kg_institute_add' %}">Add institute</a></li>
-    </ul>
-</div>
+<li><a class="addlink" href="{% url 'kg_institute_add' %}">Add institute</a></li>
 {% endif %}
 {% endblock %}
 

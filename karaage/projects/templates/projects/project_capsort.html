@@ -16,11 +16,7 @@
 
 {% block object-tools %}
 {% if is_admin %}
-<div class="module object-tools">
-    <h2>Object links</h2>
-    <ul>
-        <li><a class="addlink" href="add/">Add project</a></li>
-    </ul>
+<li><a href="{% url 'kg_project_add' %}" class="addlink">Add project</a></li>
 </div>
 {% endif %}
 {% endblock %}

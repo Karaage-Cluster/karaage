@@ -83,12 +83,31 @@
             {% endif %}
         </table>
         {% endif %}
+
+        <div class="object-tools">
+            <ul>
+                {% for pc in project.projectquota_set.all %}<li><a href="{% url 'kg_usage_project' pc.machine_category.pk project.pid %}">Usage: {{ pc.machine_category }}</a></li>{% if not forloop.last %}, {% endif %}{% endfor %}
+                <li><a href="{% url 'kg_usage_job_list' %}?project={{ project.pid }}">Display all jobs</a></li>
+
+                {% if is_admin %}
+                    <li><a href="{% url 'kg_project_logs' project.pid %}">View logs</a></li>
+                    <li><a href="{% url 'kg_project_verbose' project.pid %}">Verbose</a></li>
+                    <li><a href="{% url 'kg_project_edit' project.pid %}" class="changelink">Edit</a></li>
+                    {% if project.is_active %}<li><a href="{% url 'kg_project_delete' project.pid %}" class="deletelink">Delete project</a></li>{% endif %}
+                {% else %}
+                    {% if project.is_active %}
+                        <li><a href="{% url 'kg_application_invite' project.pid %}" class="addlink">Invite a new user</a></li>
+                        <li><a href="{% url 'kg_project_edit' project.pid %}" class="changelink">Edit</a></li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+        </div>
     </div>
 
     {% if is_admin %}
     <div class="module">
         <h2>Project Caps/quota
-            <a class="addlink" href="{% url 'kg_projectquota_add' project.pid %}">Add</a>
+            <a href="{% url 'kg_projectquota_add' project.pid %}" class="addlink">Add</a>
         </h2>
         <table>
             <thead>
@@ -103,20 +122,13 @@
                     <td>{{ pc.machine_category }}</td>
                     <td>{{ pc.get_cap }}</td>
                     {% if is_admin %}
-                    <td><a class="changelink" href="{% url 'kg_projectquota_edit' pc.pk %}">edit</a></td>
-                    <td><a class="deletelink" href="{% url 'kg_projectquota_delete' pc.pk %}">Remove</a></td>
+                    <td><a href="{% url 'kg_projectquota_edit' pc.pk %}" class="changelink">edit</a></td>
+                    <td><a href="{% url 'kg_projectquota_delete' pc.pk %}" class="deletelink">Remove</a></td>
                     {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-    </div>
-    {% elif project.is_active and user in project.leaders.all %}
-    <div class="module">
-        <h2>Management tasks</h2>
-        <p><a class="addlink" href="{% url 'kg_application_invite' project.pid %}">Invite a new user</a></p>
-        <p><a class="changelink" href="{% url 'kg_project_edit' project.pid %}">Edit</a></p>
-        <p>Usage: {% for pc in project.projectquota_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk project.pid %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
     </div>
     {% endif %}
 
@@ -167,7 +179,7 @@
                     <td>{{ person.last_usage }}</td>
                     {% endif %}
                     {% if is_admin or request.user in project.leaders.all %}
-                    <td><a class="deletelink" href="{% url 'kg_remove_project_member' project.pid person.username %}">Remove</a></td>
+                    <td><a href="{% url 'kg_remove_project_member' project.pid person.username %}" class="deletelink">Remove</a></td>
                     {% endif %}
                 </tr>
                 {% endfor %}
@@ -199,22 +211,12 @@
     <div class="module">
         <h2>Comments</h2>
         {% comments project %}
+        <div class="object-tools">
+            <ul>
+                {% if is_admin %}<li><a href="{% url 'kg_project_add_comment' project.pid %}" class="addlink">Add comment</a></li>{% endif %}
+            </ul>
+        </div>
     </div>
     {% endif %}
-</div>
-{% endblock %}
-
-{% block object-tools %}
-<div class="module object-tools">
-    <h2>Tasks</h2>
-    <ul>
-        <li>Usage: {% for pc in project.projectquota_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk project.pid %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
-        {% if is_admin%}<li><a href="{% url 'kg_project_logs' project.pid %}">View logs</a></li>{% endif %}
-        {% if is_admin %}<li class="addlink"><a href="{% url 'kg_project_add_comment' project.pid %}">Add comment</a></li>{% endif %}
-        <li><a href="{% url 'kg_usage_job_list' %}?project={{ project.pid }}">Display all jobs</a></li>
-        {% if is_admin %}<li><a class="changelink" href="{% url 'kg_project_edit' project.pid %}">Edit project details</a></li>{% endif %}
-        {% if is_admin and project.is_active %}<li><a class="deletelink" href="{% url 'kg_project_delete' project.pid %}">Delete project</a></li>{% endif %}
-        {% if is_admin %}<li><a href="{% url 'kg_project_verbose' project.pid %}">Verbose</a></li>{% endif %}
-    </ul>
 </div>
 {% endblock %}

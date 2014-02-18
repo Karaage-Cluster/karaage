@@ -134,6 +134,46 @@
             {% endif %}
             {% endif %}
         </table>
+        {% if person.is_active or is_admin %}
+        <div class="object-tools">
+            <ul>
+                {% if person.is_active %}
+
+                    <li><a href="{% url 'kg_usage_job_list' %}?person={{ person.username }}">Display all jobs</a></li>
+
+                    {% if is_admin %}
+
+                        <li><a href="{% url 'kg_person_logs' person.username %}">Logs</a></li>
+                        <li><a href="{% url 'kg_person_verbose' person.username %}">Verbose</a></li>
+                        <li><a href="{% url 'kg_person_edit' person.username %}" class="changelink">Edit details</a></li>
+                        <li><a href="{%url 'kg_person_delete' person.username %}" class="deletelink">Delete</a></li>
+                        {% if person.is_locked %}
+                        <li><a href="{% url 'kg_person_unlock' person.username %}" class="unlocklink">Unlock</a></li>
+                        {% else %}
+                        <li> <a href="{% url 'kg_person_lock' person.username %}" class="locklink">Lock</a></li>
+                        <li><a href="{% url 'kg_person_reset' person.username %}">Reset Password</a></li>
+                        <li><a href="{% url 'kg_person_password' person.username %}" class="changelink">Change Password</a></li>
+                        {% endif %}
+                        <li><a href="{% url 'kg_person_bounce' person.username %}">Bounced Email</a></li>
+
+                    {% else %}
+
+                        <li><a href="{% url 'kg_person_reset' person.username %}">Reset Password</a></li>
+
+                    {% endif %}
+
+                {% else %}
+
+                    {% if is_admin and not person.is_active %}
+                    <li><a href="activate/">Activate</a></li>
+                    {% endif %}
+
+
+                {% endif %}
+
+            </ul>
+        </div>
+        {% endif %}
     </div>
 
 
@@ -186,7 +226,7 @@
                         {% endif %}
                     </td>
                     {% if not ua.date_deleted and is_admin %}
-                        <td><a class="deletelink" href="{% url 'kg_account_delete' ua.id %}">Delete</a></td>
+                        <td><a href="{% url 'kg_account_delete' ua.id %}" class="deletelink">Delete</a></td>
                     {% endif %}
                 </tr>
             </tbody>
@@ -223,7 +263,7 @@
                 </td>
                 <td>
                     {% if is_admin %}{% ifnotequal p ua.default_project %}
-                    <a class="deletelink" href="{% url 'kg_remove_project_member' p.pid person.username %}">Remove</a>
+                    <a href="{% url 'kg_remove_project_member' p.pid person.username %}" class="deletelink">Remove</a>
                     {% endifnotequal %}{% endif %}
                 </td>
             </tr>
@@ -235,6 +275,15 @@
         {% if ua.get_latest_usage %}
         <h3>Latest Usage</h3>
         {% gen_table ua.get_latest_usage usage/user_table.html %}
+        {% endif %}
+
+        {% if is_admin and person.is_active %}
+        <div class="object-tools">
+            <ul>
+                <li><a href="{% url 'kg_usage_job_list' %}?account={{ ua.username }}">Display all jobs</a></li>
+                <li><a href="{% url 'kg_person_add_account' person.username %}" class="addlink">Add account</a></li>
+            </ul>
+        </div>
         {% endif %}
     </div>
     {% endfor %}
@@ -262,50 +311,12 @@
     <div class="module">
         <h2>Comments</h2>
         {% comments person %}
+        <div class="object-tools">
+            <ul>
+                <li><a href="{% url 'kg_person_add_comment' person.username %}" class="addlink">Add comment</a></li>
+            </ul>
+        </div>
     </div>
     {% endif %}
-</div>
-{% endblock %}
-
-
-{% block object-tools %}
-<div class="module object-tools">
-    <h2>Tasks</h2>
-    <ul>
-        {% if not person.is_active %}
-        {% if not requestor %}
-        <li><a href="activate/">Activate</a></li>
-        {% endif %}
-        {% endif %}
-
-        {% if is_admin and person.is_active %}
-        <li class="changelink"><a href="{% url 'kg_person_edit' person.username %}">Edit details</a></li>
-        <li class="addlink"><a href="{% url 'kg_person_add_account' person.username %}">Add account</a></li>
-        <li class="deletelink"><a href="{%url 'kg_person_delete' person.username %}">Delete</a></li>
-        <li><a href="{% url 'kg_person_logs' person.username %}">Logs</a></li>
-        <li class="addlink"><a href="{% url 'kg_person_add_comment' person.username %}">Add comment</a></li>
-        {% endif %}
-
-        {% if is_admin and person.is_active %}
-        <li><a href="{% url 'kg_person_verbose' person.username %}">Verbose</a></li>
-        {% if person.is_locked %}
-        <li class="unlocklink">
-            <a href="{% url 'kg_person_unlock' person.username %}">Unlock</a>
-        </li>
-        {% else %}
-        <li class="changelink"><a href="{% url 'kg_person_password' person.username %}">Change Password</a></li>
-        <li class="locklink">
-            <a href="{% url 'kg_person_lock' person.username %}">Lock</a>
-        </li>
-        {% endif %}
-        <li><a href="{% url 'kg_person_bounce' person.username %}">Bounced Email</a></li>
-        {% endif %}
-
-        {% if person.is_active %}
-        <li><a href="{% url 'kg_usage_job_list' %}?person={{ person.username }}">Display all jobs</a></li>
-        {% endif %}
-
-        <li><a href="{% url 'kg_person_reset' person.username %}">Reset Password</a></li>
-    </ul>
 </div>
 {% endblock %}

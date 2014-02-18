@@ -13,15 +13,10 @@
 {% endblock %}
 
 
-{% block object-tools %}
+{% block menu %}
 {% if is_admin %}
-<div class="module object-tools">
-    <h2>Object links</h2>
-    <ul>
-        <li><a href="{% url 'kg_software_category_list' %}">Categories</a></li>
-        <li><a class="addlink" href="{% url 'kg_software_add' %}">Add software</a></li>
-    </ul>
-</div>
+<li><a href="{% url 'kg_software_category_list' %}">Categories</a></li>
+<li><a class="addlink" href="{% url 'kg_software_add' %}">Add software</a></li>
 {% endif %}
 {% endblock %}
 
