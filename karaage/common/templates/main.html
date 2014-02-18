@@ -28,7 +28,6 @@
       <li><a class="{% active request "software/" %}" href="{% url "kg_software_list" %}">Software</a></li>
       <li><a class="{% active request "emails/" %}" href="{% url "kg_emails_index" %}">Send Email</a></li>
       <li><a class="{% active request "misc/" %}" href="{% url "kg_misc" %}">Other Stuff</a></li>
-      <li><a class="{% active request "applications/" %}" href="{% url "kg_application_list" %}">Applications</a>{% if pending_applications %} ({{ pending_applications }}){% endif %}</li>
     </ul>
   </div>
   {% endif %}
