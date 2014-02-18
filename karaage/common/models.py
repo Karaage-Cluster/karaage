@@ -27,34 +27,6 @@ from django.utils.encoding import smart_text
 from django.utils.encoding import python_2_unicode_compatible
 
 
-COMMENT_MAX_LENGTH = 3000
-
-
-class Comment(models.Model):
-    content_type = models.ForeignKey(ContentType,
-            verbose_name=_('content type'),
-            related_name="content_type_set_for_%(class)s")
-    object_pk = models.TextField(_('object ID'))
-    content_object = generic.GenericForeignKey(ct_field="content_type", fk_field="object_pk")
-
-    comment = models.TextField(_('comment'), max_length=COMMENT_MAX_LENGTH)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('user'),
-                    blank=True, null=True, related_name="%(class)s_comments")
-    submit_date = models.DateTimeField(_('date/time submitted'), default=None)
-
-
-    class Meta:
-        db_table = "comments"
-        ordering = ('submit_date',)
-        verbose_name = _('comment')
-        verbose_name_plural = _('comments')
-
-    def save(self, *args, **kwargs):
-        if self.submit_date is None:
-            self.submit_date = timezone.now()
-        super(Comment, self).save(*args, **kwargs)
-
-
 ADDITION = 1
 CHANGE = 2
 DELETION = 3
