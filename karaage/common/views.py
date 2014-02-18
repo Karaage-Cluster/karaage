@@ -110,7 +110,7 @@ def log_list(request):
 
     return render_to_response(
                 'log_list.html',
-                {'page_obj': page_obj, 'short': True},
+                {'page_obj': page_obj, 'short': False},
                 context_instance=RequestContext(request))
 
 

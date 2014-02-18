@@ -41,11 +41,13 @@
                     {% if not short %}
                     <td>{{ l.content_type }}</td>
                     <td>
-                    {#{% if l.get_edited_object %}#}
-                    {#<a href="{{ l.get_edited_object.get_absolute_url }}">{{ l.object_repr }}</a>#}
-                    {#{% else %}#}
+                    {% with object=l.content_object %}
+                    {% if object %}
+                    <a href="{{ object.get_absolute_url }}">{{ l.object_repr }}</a>
+                    {% else %}
                     {{ l.object_repr }}
-                    {#{% endif %}#}
+                    {% endif %}
+                    {% endwith %}
                     </td>
                     {% endif %}
                     <td> <a class=
