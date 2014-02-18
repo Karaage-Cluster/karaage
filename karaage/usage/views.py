@@ -793,7 +793,7 @@ def job_list(request):
     job_list = CPUJob.objects.select_related()
     
     if 'person' in request.REQUEST:
-        job_list = job_list.filter(account__person=username)
+        job_list = job_list.filter(account__person__username=request.GET['person'])
 
     if 'machine' in request.REQUEST:
         job_list = job_list.filter(machine__id=int(request.GET['machine']))
