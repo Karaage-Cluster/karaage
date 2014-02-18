@@ -624,14 +624,6 @@ div.breadcrumbs {
     background: url(../img/unlock.png) 0 .25em no-repeat;
 }
 
-a.deletelink:link, a.deletelink:visited {
-    color: #CC3434;
-}
-
-a.deletelink:hover {
-    color: #993333;
-}
-
 /* OBJECT TOOLS */
 
 
