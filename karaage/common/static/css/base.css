@@ -486,8 +486,8 @@ input[type=text], input[type=password], textarea, select, .vTextField {
     font-size: 11px;
     text-align: left;
     font-weight: bold;
-    background: #7CA0C7 url(../img/default-bg.gif) top left repeat-x;
-    color: white;
+    background: #7CA0C7;
+    color: #666;
 }
 
 .module table {
@@ -599,32 +599,77 @@ div.breadcrumbs {
 
 /* ACTION ICONS */
 
-.addlink {
-    padding-left: 12px;
+.addlink a {
+    padding-left: 16px;
     background: url(../img/icon_addlink.gif) 0 .2em no-repeat;
 }
 
-.changelink {
-    padding-left: 12px;
+.changelink a {
+    padding-left: 16px;
     background: url(../img/icon_changelink.gif) 0 .2em no-repeat;
 }
 
-.deletelink {
-    padding-left: 12px;
+.deletelink a {
+    padding-left: 16px;
     background: url(../img/icon_deletelink.gif) 0 .25em no-repeat;
 }
 
-.locklink {
+.locklink a {
     padding-left: 16px;
     background: url(../img/lock.png) 0 .25em no-repeat;
 }
 
-.unlocklink {
+.unlocklink a {
     padding-left: 16px;
     background: url(../img/unlock.png) 0 .25em no-repeat;
 }
 
 /* OBJECT TOOLS */
+
+.object-tools ul {
+    margin: 0;
+    padding: 0 4px 0 4px;
+}
+.object-tools li {
+    display: inline-block;
+    vertical-align: bottom;
+}
+.object-tools li:hover {
+}
+.object-tools a {
+    display: block;
+    width: 100px;
+    height: 30px;
+    background-color: #eee;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 20px;
+    background-position: 5px 5px;
+    vertical-align: bottom;
+    margin-bottom: 4px;
+    color: #333;
+}
+.object-tools a:hover {
+    color: #333;
+    background-color: #ccc;
+}
+#content-related .object-tools li {
+    width: 100%;
+}
+#content-related .object-tools a {
+    width: auto;
+}
+/*
+#content-related .object-tools li {
+    margin: 0 0 0 20px;
+    width: 100%;
+}
+
+#content-related .object-tools a {
+    width: 100%;
+    margin-left: -20px;
+}
+*/
 
 
 /* OBJECT HISTORY */
@@ -661,9 +706,9 @@ table#change-history tbody th {
 
 #content-related {
     float: right;
-    width: 18em;
+    width: 16em;
     position: relative;
-    margin-right: -19em;
+    margin-right: -17em;
 }
 
 #footer {
@@ -674,17 +719,17 @@ table#change-history tbody th {
 /* COLUMN TYPES */
 
 .colMS {
-    margin-right: 20em !important;
+    margin-right: 18em !important;
 }
 
 .colSM {
-    margin-left: 20em !important;
+    margin-left: 18em !important;
 }
 
 .colSM #content-related {
     float: left;
     margin-right: 0;
-    margin-left: -19em;
+    margin-left: -17em;
 }
 
 .colSM #content-main {
@@ -749,32 +794,14 @@ table#change-history tbody th {
 /* SIDEBAR */
 
 #content-related input[type="text"] {
-    width:15em;
+    width:13em;
 }
-
-#content-related .active {
-    color: #666
-}
-
-#content-related li {
-    font-size:12px;
-    line-height:normal;
-    margin-top: 9px;
-    margin-bottom: 6px;
-}
-
-#content-related h3 {
-    font-size: 12px;
-    color: #666;
-    margin-bottom: 3px;
-}
-
-#content-related h4 {
-    font-size: 11px;
+#content-related input[type="submit"] {
+    width:2em;
 }
 
 #content-related .module h2 {
-    background: #eee url(../img/nav-bg.gif) bottom left repeat-x;
+    background: #C7C7A0;
     color: #666;
 }
 
