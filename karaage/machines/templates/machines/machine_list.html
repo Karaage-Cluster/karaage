@@ -1,8 +1,9 @@
-{% extends "main.html" %}
+{% extends "list.html" %}
 {% load url from future %}
 
 
-{% block title %}Machines{% endblock %}
+{% block title %}Machine Categories{% endblock %}
+{% block short_title %}Machine Category List{% endblock %}
 
 
 {% block breadcrumbs %}
@@ -12,28 +13,22 @@
 {% endblock %}
 
 
-{% block content %}
-<div id="content-main">
-    <div class="module">
-        <h2>Machine Categories</h2>
-        <ul>
-            {% for c in category_list %}
-            <li><a href="{% url 'kg_machine_category_detail' c.pk %}">{{ c }}</a></li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
-{% endblock %}
-
-
-{% block object-tools %}
+{% block actions %}
 {% if is_admin %}
-<div class="module object-tools">
-    <h2>Object links</h2>
+<div class="object-tools">
     <ul>
         <li><a class="addlink" href="{% url 'kg_machine_category_add' %}">Add machine category</a></li>
-        <li><a class="addlink" href="add/">Add machine</a></li>
+        <li><a class="addlink" href="{% url 'kg_machine_add' %}">Add machine</a></li>
     </ul>
 </div>
 {% endif %}
+{% endblock %}
+
+
+{% block list_content %}
+<ul>
+    {% for c in page.object_list %}
+    <li><a href="{% url 'kg_machine_category_detail' c.pk %}">{{ c }}</a></li>
+    {% endfor %}
+</ul>
 {% endblock %}

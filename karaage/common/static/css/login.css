@@ -30,7 +30,7 @@ body.login {
 
 .login .form-row label {
     float: left;
-    width: 9em;
+    width: 7em;
     padding-right: 0.5em;
     line-height: 2em;
     text-align: right;
@@ -39,7 +39,7 @@ body.login {
 }
 
 .login .form-row #id_username, .login .form-row #id_password {
-    width: 14em;
+    width: 13em;
 }
 
 .login span.help {

@@ -1,8 +1,9 @@
-{% extends "changelist.html" %}
+{% extends "list.html" %}
 {% load paginator %}
 
 
 {% block title %}Logs{% endblock %}
+{% block short_title %}Log List{% endblock %}
 
 
 {% block breadcrumbs %}
@@ -16,53 +17,46 @@
 {% endblock %}
 
 
-{% block content %}
-<div id="content-main">
-    <div class="module" id="changelist">
+{% block list_content %}
+<table cellspacing="0">
+    <thead>
+        <tr>
+            <th>Time</th>
+            <th>User</th>
+            {% if not short %}
+            <th>Object Type</th>
+            <th>Object</th>
+            {% endif %}
+            <th>Type</th>
+            <th>Message</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for l in page.object_list %}
+        <tr class="{% cycle row1,row2 %}">
+            <td>{{ l.action_time }}</td>
+            <td>{% if l.user %}<a href="{{ l.user.get_absolute_url }}">{{ l.user.get_full_name }}</a>{% else %}Unknown{% endif %}</td>
+            {% if not short %}
+            <td>{{ l.content_type }}</td>
+            <td>
+            {% with object=l.content_object %}
+            {% if object %}
+            <a href="{{ object.get_absolute_url }}">{{ l.object_repr }}</a>
+            {% else %}
+            {{ l.object_repr }}
+            {% endif %}
+            {% endwith %}
+            </td>
+            {% endif %}
+            <td> <a class=
+            {% if l.is_addition %}"addlink"{% endif %}
+            {% if l.is_change %}"changelink"{% endif %}
+            {% if l.is_deletion %}"deletelink"{% endif %}
+            ></a></td>
 
-        <table cellspacing="0">
-            <thead>
-                <tr>
-                    <th>Time</th>
-                    <th>User</th>
-                    {% if not short %}
-                    <th>Object Type</th>
-                    <th>Object</th>
-                    {% endif %}
-                    <th>Type</th>
-                    <th>Message</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for l in page.object_list %}
-                <tr class="{% cycle row1,row2 %}">
-                    <td>{{ l.action_time }}</td>
-                    <td>{% if l.user %}<a href="{{ l.user.get_absolute_url }}">{{ l.user.get_full_name }}</a>{% else %}Unknown{% endif %}</td>
-                    {% if not short %}
-                    <td>{{ l.content_type }}</td>
-                    <td>
-                    {% with object=l.content_object %}
-                    {% if object %}
-                    <a href="{{ object.get_absolute_url }}">{{ l.object_repr }}</a>
-                    {% else %}
-                    {{ l.object_repr }}
-                    {% endif %}
-                    {% endwith %}
-                    </td>
-                    {% endif %}
-                    <td> <a class=
-                    {% if l.is_addition %}"addlink"{% endif %}
-                    {% if l.is_change %}"changelink"{% endif %}
-                    {% if l.is_deletion %}"deletelink"{% endif %}
-                    ></a></td>
-
-                    <td>{{ l.change_message }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% pagination page request %}
-
-    </div>
-</div>
+            <td>{{ l.change_message }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

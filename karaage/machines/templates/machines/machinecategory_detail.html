@@ -34,30 +34,27 @@
             </tr>
             {% endfor %}
         </table>
+        {% if is_admin %}
+        <div class="object-tools">
+            <ul>
+                <li><a href="{% url 'kg_machine_category_logs' machine_category.pk %}">Logs</a></li>
+                <li><a href="{% url 'kg_usage_mc' machine_category.id %}">Usage</a></li>
+                <li><a href="{% url 'kg_machine_category_edit' machine_category.id %}" class="changelink">Edit category</a></li>
+            </ul>
+        </div>
+        {% endif %}
     </div>
 
     {% if is_admin %}
     <div class="module">
         <h2>Comments</h2>
         {% comments machine_category %}
+        <div class="object-tools">
+            <ul>
+                <li><a href="{% url 'kg_machine_category_add_comment' machine_category.pk %}" class="addlink">Add comment</a></li>
+            </ul>
+        </div>
     </div>
     {% endif %}
 </div>
-{% endblock %}
-
-
-{% block object-tools %}
-{% if is_admin %}
-<div class="module object-tools">
-    <h2>Object links</h2>
-    <ul>
-        <li><a href="{% url 'kg_machine_category_logs' machine_category.pk %}">Logs</a></li>
-        <li class="addlink"><a href="{% url 'kg_machine_category_add_comment' machine_category.pk %}">Add comment</a></li>
-        <li><a href="{% url 'kg_usage_mc' machine_category.id %}">Usage</a></li>
-        {% if perms.machines.change_machinecategory %}
-        <li><a class="changelink" href="{% url 'kg_machine_category_edit' machine_category.id %}">Edit category</a></li>
-        {% endif %}
-    </ul>
-</div>
-{% endif %}
 {% endblock %}

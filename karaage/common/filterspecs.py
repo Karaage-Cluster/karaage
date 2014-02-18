@@ -62,10 +62,18 @@ class Filter(object):
         except:
             pass
 
-        output = ''
-        output += '<h3>By %s</h3>\n' % self.header.replace('_', ' ')
-        output += '<ul>\n'
         filters = sorted(self.filters.iteritems(), key=itemgetter(1))
+
+        selected = None
+        for k, v in filters:
+            if str(self.selected) == str(k):
+                selected = v
+        if selected is None:
+            selected = "all"
+
+        output = '<li>'
+        output += '<a href="#">By %s (%s)</a>\n' % (self.header.replace('_', ' '), selected)
+        output += '<ul>\n'
 
         if self.selected is not None:
             output += """<li><a href="%s">All</a></li>\n""" % get_query_string(qs)
@@ -79,7 +87,7 @@ class Filter(object):
             qs[self.name] = k
             output += """<li %s><a href="%s">%s</a></li>\n""" % (style, get_query_string(qs), v)
 
-        output += '</ul>'
+        output += '</ul></li>'
 
         return output
 
@@ -125,14 +133,23 @@ class DateFilter(object):
 
 
     def output(self, qs):
-        choices = self.choices()
+        choices = list(self.choices())
+
+        selected = None
+        for choice in choices:
+            if choice['selected']:
+                selected = choice['display']
+        if selected is None:
+            selected = "all"
 
         output = ''
-        output += '<h3>By %s</h3>\n' % self.header.replace('_', ' ')
+        output += '<li>\n'
+        output += '<a href="#">By %s (%s)</a>\n' % (self.header.replace('_', ' '), selected)
         output += '<ul>\n'
 
 
         for choice in choices:
+            print choice
             for k,v in qs.items():
                 if k.startswith(self.field_generic):
                     del(qs[k])
@@ -142,7 +159,7 @@ class DateFilter(object):
 
             output += """<li %s><a href="%s">%s</a></li>\n""" % (choice['selected'] and "class='selected'" or '', get_query_string(qs), choice['display'])
 
-        output += '</ul>'
+        output += '</ul></li>'
         return output
 
 

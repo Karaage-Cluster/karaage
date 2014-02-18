@@ -19,7 +19,7 @@ from django.conf.urls import *
 
 urlpatterns = patterns('karaage.machines.views',
     url(r'^$', 'index', name='kg_machine_list'),
-    url(r'^add/$', 'machine_create', name='kg_machine_create'),
+    url(r'^add/$', 'machine_create', name='kg_machine_add'),
     url(r'^(?P<machine_id>\d+)/$', 'machine_detail', name='kg_machine_detail'),
     url(r'^(?P<machine_id>\d+)/edit/$', 'machine_edit', name='kg_machine_edit'),
     url(r'^(?P<machine_id>\d+)/password/$', 'machine_password', name='kg_machine_password'),

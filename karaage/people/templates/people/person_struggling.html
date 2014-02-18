@@ -1,8 +1,9 @@
-{% extends "changelist.html" %}
+{% extends "list.html" %}
 {% load paginator %}
 
 
 {% block title %}People (struggling){% endblock %}
+{% block short_title %}Struggling{% endblock %}
 
 
 {% block breadcrumbs %}
@@ -14,15 +15,6 @@
 {% endblock %}
 
 
-{% block content %}
-<div id="content-main">
-    <div class="module filtered" id="changelist">
-        <div id="changelist-filter">
-        <h2>Filter</h2>
-        {{ filter_bar|safe }}
-        </div>
-        {% gen_table page.object_list people/struggling_table.html %}
-        {% pagination page request %}
-    </div>
-</div>
+{% block list_content %}
+{% gen_table page.object_list people/struggling_table.html %}
 {% endblock %}
