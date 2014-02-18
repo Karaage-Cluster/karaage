@@ -21,28 +21,26 @@ from django import forms
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 
-from karaage.common.models import Comment
+from karaage.common.models import LogEntry, COMMENT
 
 class CommentForm(forms.ModelForm):
     """ Comment form. """
 
     class Meta:
-        model = Comment
-        fields = [ "comment" ]
+        model = LogEntry
+        fields = [ "change_message" ]
 
     def __init__(self, obj, instance=None, **kwargs):
         self.obj = obj
         if instance is not None:
+            assert instance.action_flag == COMMENT
             assert obj == instance.content_object
         return super(CommentForm, self).__init__(instance=instance, **kwargs)
 
     def save(self, request):
-        comment = self.instance
-        if comment.pk is None:
-            comment.content_object = self.obj
-            comment.user = request.user
-            comment.site = Site.objects.get_current()
-            comment.valid_rating = 0
-            comment.is_public = True
-            comment.is_removed = False
-        return super(CommentForm, self).save(self)
+        log = super(CommentForm, self).save(commit=False)
+        log.content_object = self.obj
+        log.object_repr = unicode(self.obj)
+        log.action_flag = COMMENT
+        log.user = request.user
+        log.save()

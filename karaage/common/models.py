@@ -58,6 +58,7 @@ class Comment(models.Model):
 ADDITION = 1
 CHANGE = 2
 DELETION = 3
+COMMENT = 4
 
 
 class LogEntryManager(models.Manager):
@@ -72,6 +73,7 @@ class LogEntry(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
     object_id = models.TextField(_('object id'), blank=True, null=True)
+    content_object = generic.GenericForeignKey(ct_field="content_type", fk_field="object_id")
     object_repr = models.CharField(_('object repr'), max_length=200)
     action_flag = models.PositiveSmallIntegerField(_('action flag'))
     change_message = models.TextField(_('change message'), blank=True)

@@ -24,7 +24,7 @@ from django.http import QueryDict
 from django import template
 from django.contrib.contenttypes.models import ContentType
 
-from karaage.common.models import Comment
+from karaage.common.models import LogEntry, COMMENT
 
 register = template.Library()
 
@@ -89,9 +89,10 @@ def url_with_param(parser, token):
 def comments(obj):
     """ Render comments for obj. """
     content_type = ContentType.objects.get_for_model(obj.__class__)
-    comment_list = Comment.objects.filter(
+    comment_list = LogEntry.objects.filter(
             content_type=content_type,
-            object_pk=obj.pk
+            object_id=obj.pk,
+            action_flag=COMMENT
     )
     return {
         'obj': obj,
@@ -101,9 +102,10 @@ def comments(obj):
 @register.simple_tag
 def comment_count(obj):
     content_type = ContentType.objects.get_for_model(obj.__class__)
-    comment_list = Comment.objects.filter(
+    comment_list = LogEntry.objects.filter(
             content_type=content_type,
-            object_pk=obj.pk
+            object_id=obj.pk,
+            action_flag=COMMENT
     )
     return int(comment_list.count())
 
