@@ -80,9 +80,12 @@ def edit_user(request, username):
     return _add_edit_user(request, AdminPersonForm, username)
 
 @login_required
-def user_list(request, queryset=None):
+def user_list(request, queryset=None, template=None):
     if queryset is None:
         queryset=Person.objects.select_related()
+
+    if template is None:
+        template="people/person_list.html"
 
     if not common.is_admin(request):
         queryset = queryset.filter(pk=request.user.pk)
@@ -128,7 +131,7 @@ def user_list(request, queryset=None):
         page = paginator.page(paginator.num_pages)
     
     return render_to_response(
-        'people/person_list.html',
+        template,
         {'page': page, 'filter_bar': filter_bar, 'terms': terms},
         context_instance=RequestContext(request))
 
@@ -214,8 +217,8 @@ def delete_account(request, account_id):
 
 @admin_required
 def no_default_list(request):
-    account_list = Account.objects.filter(default_project__isnull=True).filter(date_deleted__isnull=True)
-    return render_to_response('people/person_no_default_list.html', {'account_list': account_list}, context_instance=RequestContext(request))
+    persons = Person.objects.filter(account__isnull=False, account__default_project__isnull=True, account__date_deleted__isnull=True)
+    return user_list(request, persons, "people/person_no_default_list.html")
 
 
 @admin_required
@@ -290,28 +293,7 @@ def struggling(request):
     persons = persons.filter(last_usage__isnull=True)
     persons = persons.order_by('-date_approved')
 
-    if 'institute' in request.REQUEST:
-        institute_id = int(request.GET['institute'])
-        persons = persons.filter(institute=institute_id)
-
-    params = dict(request.GET.items())
-    m_params = dict([(str(k), str(v)) for k, v in params.items() if k.startswith('date_approved__')])
-    persons = persons.filter(**m_params)
-    page_no = int(request.GET.get('page', 1))
-
-    filter_list = []
-    filter_list.append(Filter(request, 'institute', Institute.active.all()))
-    filter_list.append(DateFilter(request, 'date_approved'))
-    filter_bar = FilterBar(request, filter_list)
-
-    p = Paginator(persons, 50)
-    page = p.page(page_no)
-
-    return render_to_response(
-        'people/person_struggling.html',
-        {'page': page, 'filter_bar': filter_bar},
-        context_instance=RequestContext(request))
-
+    return user_list(request, persons, "people/person_struggling.html")
 
 @login_required
 def change_account_shell(request, account_id):
