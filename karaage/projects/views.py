@@ -143,9 +143,18 @@ def project_verbose(request, project_id):
 
 
 @login_required
-def project_list(request, template_name='projects/project_list.html', paginate=True):
+def project_list(request, queryset=None, template_name=None, paginate=True):
 
-    project_list = Project.objects.select_related()
+    if queryset is None:
+        project_list = Project.objects.all()
+    else:
+        project_list = queryset
+
+    if template_name is None:
+        template_name='projects/project_list.html'
+
+    project_list = project_list.select_related()
+
     if not util.is_admin(request):
         project_list = project_list.filter(group__members=request.user)
 
@@ -328,5 +337,4 @@ def projectquota_delete(request, projectquota_id):
 
 @admin_required
 def projects_by_cap_used(request):
-    from karaage.projects.views.admin import project_list
-    return project_list(request, queryset=Project.active.all(), paginate=False, template_name='projects/project_capsort.html')
+    return project_list(request, paginate=False, template_name='projects/project_capsort.html')
