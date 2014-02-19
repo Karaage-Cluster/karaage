@@ -100,17 +100,17 @@ def log_list(request):
 
     page = request.GET.get('page')
     try:
-        page_obj = paginator.page(page)
+        page = paginator.page(page)
     except PageNotAnInteger:
         # If page is not an integer, deliver first page.
-        page_obj = paginator.page(1)
+        page = paginator.page(1)
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
-        page_obj = paginator.page(paginator.num_pages)
+        page = paginator.page(paginator.num_pages)
 
     return render_to_response(
                 'log_list.html',
-                {'page_obj': page_obj, 'short': False},
+                {'page': page, 'short': False},
                 context_instance=RequestContext(request))
 
 
