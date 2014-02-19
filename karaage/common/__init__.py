@@ -23,6 +23,7 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
+from django.db.models import Q
 
 from karaage.middleware.threadlocals import get_current_user
 from karaage.common.forms import CommentForm
@@ -102,6 +103,18 @@ def log_list(request, breadcrumbs, obj):
         content_type=ContentType.objects.get_for_model(obj.__class__),
         object_id=obj.pk
     )
+
+    if 'search' in request.REQUEST:
+        terms = request.REQUEST['search'].lower()
+        query = Q()
+        for term in terms.split(' '):
+            q = Q(user__username__iexact=term) | Q(object_repr__iexact=term) | Q(change_message__icontains=term)
+            query = query & q
+
+        log_list = log_list.filter(query)
+    else:
+        terms = ""
+
     paginator = Paginator(log_list, 50)
 
     page = request.GET.get('page')
@@ -119,6 +132,7 @@ def log_list(request, breadcrumbs, obj):
             { 'short': True, 'obj': obj,
                 'page': page,
                 'breadcrumbs': breadcrumbs,
+                'terms': terms,
             },
             context_instance=RequestContext(request))
 

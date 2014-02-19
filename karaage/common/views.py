@@ -96,6 +96,18 @@ def search(request):
 @admin_required
 def log_list(request):
     log_list = LogEntry.objects.all()
+
+    if 'search' in request.REQUEST:
+        terms = request.REQUEST['search'].lower()
+        query = Q()
+        for term in terms.split(' '):
+            q = Q(user__username__iexact=term) | Q(object_repr__iexact=term) | Q(change_message__icontains=term)
+            query = query & q
+
+        log_list = log_list.filter(query)
+    else:
+        terms = ""
+
     paginator = Paginator(log_list, 50)
 
     page = request.GET.get('page')
@@ -110,7 +122,7 @@ def log_list(request):
 
     return render_to_response(
                 'log_list.html',
-                {'page': page, 'short': False},
+                {'page': page, 'short': False, 'terms': terms},
                 context_instance=RequestContext(request))
 
 
