@@ -31,7 +31,6 @@ from karaage.common.decorators import admin_required, login_required
 import karaage.common as util
 from karaage.institutes.models import Institute, InstituteQuota, InstituteDelegate
 from karaage.institutes.forms import InstituteForm, InstituteQuotaForm, DelegateForm
-from karaage.machines.models import MachineCategory
 
 
 @login_required

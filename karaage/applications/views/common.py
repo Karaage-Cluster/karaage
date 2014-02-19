@@ -21,13 +21,9 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.db.models import Q
-from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import HttpResponseRedirect
 
-from karaage.common.filterspecs import Filter, FilterBar
 from karaage.common.decorators import admin_required, login_required
-from karaage.people.models import Person
 from karaage.applications.models import Applicant, Application
 from karaage.applications.forms import ApplicantForm
 import karaage.applications.views.base as base
