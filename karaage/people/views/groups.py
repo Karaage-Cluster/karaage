@@ -20,7 +20,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib import messages
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 
 import datetime
@@ -44,8 +44,6 @@ def group_list(request, queryset=None):
     if queryset is None:
         queryset=Group.objects.select_related()
 
-    page_no = int(request.GET.get('page', 1))
-
     group_list = queryset
 
     if 'search' in request.REQUEST:
@@ -59,8 +57,16 @@ def group_list(request, queryset=None):
     else:
         terms = ""
 
-    p = Paginator(group_list, 50)
-    page = p.page(page_no)
+    page_no = request.GET.get('page')
+    paginator = Paginator(group_list, 50)
+    try:
+        page = paginator.page(page_no)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        page = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        page = paginator.page(paginator.num_pages)
 
     return render_to_response(
             'people/group_list.html',

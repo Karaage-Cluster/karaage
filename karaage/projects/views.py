@@ -21,7 +21,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
-from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 
@@ -149,12 +149,6 @@ def project_list(request, template_name='projects/project_list.html', paginate=T
     if not util.is_admin(request):
         project_list = project_list.filter(group__members=request.user)
 
-    # Make sure page request is an int. If not, deliver first page.
-    try:
-        page_no = int(request.GET.get('page', '1'))
-    except ValueError:
-        page_no = 1
-
     if 'institute' in request.REQUEST:
         project_list = project_list.filter(institute=int(request.GET['institute']))
 
@@ -175,16 +169,21 @@ def project_list(request, template_name='projects/project_list.html', paginate=T
     filter_list.append(Filter(request, 'institute', Institute.active.all()))
     filter_bar = FilterBar(request, filter_list)
 
+    page_no = request.GET.get('page')
     if paginate:
-        p = Paginator(project_list, 50)
+        paginator = Paginator(project_list, 50)
     else:
-        p = Paginator(project_list, 100000)
+        paginator = Paginator(project_list, 100000)
 
     # If page request (9999) is out of range, deliver last page of results.
     try:
-        page = p.page(page_no)
-    except (EmptyPage, InvalidPage):
-        page = p.page(p.num_pages)
+        page = paginator.page(page_no)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        page = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        page = paginator.page(paginator.num_pages)
 
     return render_to_response(
             template_name,

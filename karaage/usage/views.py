@@ -28,7 +28,7 @@ from django.db.models import Q
 from django.db import transaction, IntegrityError
 from django.core.urlresolvers import reverse
 from django.template.defaultfilters import dictsortreversed
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from karaage.common.decorators import admin_required, login_required, usage_required
 from karaage.common.filterspecs import Filter, FilterBar, DateFilter
@@ -788,8 +788,6 @@ def job_list(request):
     if not getattr(settings, 'USAGE_IS_PUBLIC', False):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
-    page_no = int(request.GET.get('page', 1))
-
     job_list = CPUJob.objects.select_related()
     
     if 'person' in request.REQUEST:
@@ -833,8 +831,16 @@ def job_list(request):
     filter_list.append(Filter(request, 'queue', Queue.objects.all()))
     filter_bar = FilterBar(request, filter_list)
 
-    p = Paginator(job_list, 50)
-    page = p.page(page_no)
+    page_no = request.GET.get('page')
+    paginator = Paginator(job_list, 50)
+    try:
+        page = paginator.page(page_no)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        page = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        page = paginator.page(paginator.num_pages)
     
     return render_to_response(
             'usage/job_list.html',

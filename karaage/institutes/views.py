@@ -22,7 +22,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.forms.models import inlineformset_factory
 
 from karaage.common import is_admin
@@ -60,7 +60,6 @@ def institute_list(request):
     institute_list = Institute.objects.all()
     if not is_admin(request):
         institute_list = institute_list.filter(delegates=request.user)
-    page_no = int(request.GET.get('page', 1))
 
     if 'active' in request.REQUEST:
         institute_list = institute_list.filter(is_active=int(request.GET['active']))
@@ -74,8 +73,16 @@ def institute_list(request):
     filter_list.append(Filter(request, 'active', {1: 'Yes', 0: 'No'}))
     filter_bar = FilterBar(request, filter_list)
 
-    p = Paginator(institute_list, 50)
-    page = p.page(page_no)
+    page_no = request.GET.get('page')
+    paginator = Paginator(institute_list, 50)
+    try:
+        page = paginator.page(page_no)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        page = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        page = paginator.page(paginator.num_pages)
 
     return render_to_response('institutes/institute_list.html', locals(), context_instance=RequestContext(request))
 

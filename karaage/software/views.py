@@ -21,7 +21,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse
 from django.db.models import Q
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db.models import Count, Sum
@@ -43,7 +43,6 @@ def software_list(request):
         return join_package_list(request)
 
     software_list = Software.objects.all()
-    page_no = int(request.GET.get('page', 1))
 
     if 'category' in request.REQUEST:
         software_list = software_list.filter(category=int(request.GET['category']))
@@ -71,8 +70,16 @@ def software_list(request):
     filter_list.append(Filter(request, 'machine', Machine.objects.all()))
     filter_list.append(DateFilter(request, 'softwareversion__last_used'))
 
-    p = Paginator(software_list, 50)
-    page = p.page(page_no)
+    page_no = request.GET.get('page')
+    paginator = Paginator(software_list, 50)
+    try:
+        page = paginator.page(page_no)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        page = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        page = paginator.page(paginator.num_pages)
 
     return render_to_response('software/software_list.html', locals(), context_instance=RequestContext(request))
 
