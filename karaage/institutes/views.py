@@ -115,7 +115,7 @@ def add_edit_institute(request, institute_id=None):
 
 @admin_required
 def institute_quota_edit(request, institutequota_id):
-    from karaage.legacy.create_update import update_object
+    from karaage.common.create_update import update_object
     return update_object(request,
             object_id=institutequota_id, model=InstituteQuota)
 

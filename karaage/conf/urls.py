@@ -35,7 +35,7 @@ urlpatterns = patterns('',
     url(r'^applications/', include('karaage.applications.urls')),
     url(r'^xmlrpc/$', 'django_xmlrpc.views.handle_xmlrpc',),
 
-    url(r'^aup/$', 'karaage.legacy.simple.direct_to_template', {'template': 'aup.html'}, name="aup"),
+    url(r'^aup/$', 'karaage.common.simple.direct_to_template', {'template': 'aup.html'}, name="aup"),
     url(r'^captcha/', include('captcha.urls')),
     url(r'^lookup/', include('ajax_select.urls')),
     url(r'^emails/', include('karaage.emails.urls')),

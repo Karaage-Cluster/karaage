@@ -44,13 +44,13 @@ def machine_detail(request, machine_id):
 
 @admin_required
 def machine_create(request):
-    from karaage.legacy.create_update import create_object
+    from karaage.common.create_update import create_object
     return create_object(request,
             model=Machine)
 
 @admin_required
 def machine_edit(request, machine_id):
-    from karaage.legacy.create_update import update_object
+    from karaage.common.create_update import update_object
     return update_object(request,
             object_id=machine_id, model=Machine)
 
@@ -108,13 +108,13 @@ def machine_add_comment(request, machine_id):
 
 @admin_required
 def category_create(request):
-    from karaage.legacy.create_update import create_object
+    from karaage.common.create_update import create_object
     return create_object(request,
             model=MachineCategory)
 
 @admin_required
 def category_edit(request, category_id):
-    from karaage.legacy.create_update import update_object
+    from karaage.common.create_update import update_object
     return update_object(request,
             object_id=category_id, model=MachineCategory)
 

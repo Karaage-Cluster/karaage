@@ -113,13 +113,13 @@ def add_package(request):
 
 @admin_required
 def software_edit(request, software_id):
-    from karaage.legacy.create_update import update_object
+    from karaage.common.create_update import update_object
     return update_object(request,
             object_id=software_id, model=Software)
 
 @admin_required
 def software_delete(request, software_id):
-    from karaage.legacy.create_update import delete_object
+    from karaage.common.create_update import delete_object
     return delete_object(request,
             post_delete_redirect=reverse('software_list'),
             object_id=software_id, model=Software)
@@ -177,7 +177,7 @@ def edit_license(request, license_id):
 
 @admin_required
 def license_delete(request, license_id):
-    from karaage.legacy.create_update import delete_object
+    from karaage.common.create_update import delete_object
     return delete_object(request,
             post_delete_redirect=reverse('kg_software_list'),
             object_id=license_id, model=SoftwareLicense)
@@ -231,13 +231,13 @@ def category_list(request):
 
 @admin_required
 def category_create(request):
-    from karaage.legacy.create_update import create_object
+    from karaage.common.create_update import create_object
     return create_object(request,
             model=SoftwareCategory)
 
 @admin_required
 def category_edit(request, category_id):
-    from karaage.legacy.create_update import update_object
+    from karaage.common.create_update import update_object
     return update_object(request,
             object_id=category_id, model=SoftwareCategory)
 

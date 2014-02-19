@@ -116,6 +116,6 @@ def log_list(request):
 
 @admin_required
 def misc(request):
-    from karaage.legacy.simple import direct_to_template
+    from karaage.common.simple import direct_to_template
     return direct_to_template(request,
             template='misc/index.html')
