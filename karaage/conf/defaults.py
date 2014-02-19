@@ -72,7 +72,7 @@ INSTALLED_APPS = (
     'djcelery',
     'tldap.methods',
     'karaage.common',
-    'karaage.admin',
+    'karaage.legacy.admin',
     'karaage.people',
     'karaage.machines',
     'karaage.institutes',
@@ -80,7 +80,7 @@ INSTALLED_APPS = (
     'karaage.usage',
     'karaage.cache',
     'karaage.software',
-    'karaage.pbsmoab',
+    'karaage.legacy.pbsmoab',
     'karaage.emails',
     'karaage.applications',
 )
