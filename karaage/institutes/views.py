@@ -20,7 +20,7 @@ import datetime
 from django.forms.util import ErrorList
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.forms.models import inlineformset_factory
@@ -36,10 +36,9 @@ from karaage.institutes.forms import InstituteForm, InstituteQuotaForm, Delegate
 @login_required
 def institute_detail(request, institute_id):
 
-    if is_admin(request):
-        institute = get_object_or_404(Institute, pk=institute_id)
-    else:
-        institute = get_object_or_404(Institute, pk=institute_id, delegates=request.user)
+    institute = get_object_or_404(Institute, pk=institute_id)
+    if not institute.can_view(request):
+        return HttpResponseForbidden('<h1>Access Denied</h1><p>You do not have permission to view details about this institute.</p>')
 
     return render_to_response('institutes/institute_detail.html', locals(), context_instance=RequestContext(request))
 
@@ -59,7 +58,7 @@ def institute_list(request):
 
     institute_list = Institute.objects.all()
     if not is_admin(request):
-        institute_list = institute_list.filter(delegates=request.user)
+        institute_list = institute_list.filter(is_active=True, delegates=request.user)
 
     if 'active' in request.REQUEST:
         institute_list = institute_list.filter(is_active=int(request.GET['active']))
