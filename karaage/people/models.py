@@ -127,9 +127,11 @@ class Person(AbstractBaseUser):
         # has username changed?
         self._tracker.has_changed("username")
         if self._tracker.has_changed("username"):
-            from karaage.datastores import set_person_username
-            set_person_username(self, self._tracker.previous('username'), self.username)
-            log(None, self, 2, 'Renamed')
+            old_username = self._tracker.previous('username')
+            if old_username is not None:
+                from karaage.datastores import set_person_username
+                set_person_username(self, old_username, self.username)
+                log(None, self, 2, 'Renamed')
 
         # has locked status changed?
         if self._tracker.has_changed("login_enabled"):
