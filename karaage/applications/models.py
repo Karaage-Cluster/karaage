@@ -26,8 +26,10 @@ from django.conf import settings
 import datetime
 import warnings
 
+from model_utils import FieldTracker
+
 from karaage.common.constants import TITLES, COUNTRIES
-from karaage.common import new_random_token, get_current_person, is_admin
+from karaage.common import new_random_token, get_current_person, is_admin, log
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
@@ -73,6 +75,8 @@ class Application(models.Model):
 
     objects = ApplicationManager()
 
+    _tracker = FieldTracker()
+
     def __unicode__(self):
         return "Application #%s" % self.id
 
@@ -96,6 +100,10 @@ class Application(models.Model):
                 if isinstance(klass, RelatedObject) and klass.field.primary_key and klass.opts == self._meta:
                     self._class = klass.get_accessor_name()
                     break
+
+        for field in self._tracker.changed():
+            log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
+
         return super(Application, self).save(*args, **kwargs)
     save.alters_data = True
 

@@ -17,6 +17,8 @@
 
 from django.db import models
 
+from model_utils import FieldTracker
+
 from karaage.people.models import Person, Group
 from karaage.machines.models import Machine, Account
 
@@ -47,12 +49,7 @@ class Software(models.Model):
     academic_only = models.BooleanField(default=False)
     restricted = models.BooleanField(help_text="Will require admin approval", default=False)
 
-    def __init__(self, *args, **kwargs):
-        super(Software, self).__init__(*args, **kwargs)
-        if self.group_id is None:
-            self._group = None
-        else:
-            self._group = self.group
+    _tracker = FieldTracker()
 
     class Meta:
         ordering = ['name']
@@ -67,15 +64,19 @@ class Software(models.Model):
         # save the object
         super(Software, self).save(*args, **kwargs)
 
+        for field in self._tracker.changed():
+            log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
+
         # update the datastore
         from karaage.datastores import save_software
         save_software(self)
 
         # has group changed?
-        old_group = self._group
-        new_group = self.group
-        if old_group != new_group:
-            if old_group is not None:
+        if self._tracker.has_changed("group_id"):
+            old_group_pk = self._tracker.previous("group_id")
+            new_group = self.group
+            if old_group_pk is not None:
+                old_group = Group.objects.get(pk=group_pk)
                 from karaage.datastores import remove_person_from_software
                 for person in Person.objects.filter(groups=old_group):
                     remove_person_from_software(person, self)
@@ -90,12 +91,6 @@ class Software(models.Model):
                 for account in Account.objects.filter(person__groups=new_group, date_deleted__isnull=True):
                     add_account_to_software(account, self)
 
-        # log message
-        log(None, self, 2, "Saved software")
-
-        # save the current state
-        self._group = self.group
-
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
@@ -103,8 +98,9 @@ class Software(models.Model):
         super(Software, self).delete(*args, **kwargs)
 
         # update datastore associations
-        old_group = self._group
-        if old_group is not None:
+        old_group_pk = self._tracker.previous("group_id")
+        if old_group_pk is not None:
+            old_group = Group.objects.get(pk=group_pk)
             from karaage.datastores import remove_person_from_software
             for person in Person.objects.filter(groups=old_group):
                 remove_person_from_software(person, self)
