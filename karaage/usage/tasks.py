@@ -39,9 +39,9 @@ from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.people.models import Person
 from karaage.usage.models import CPUJob
-from karaage.cache.models import InstituteCache, ProjectCache, PersonCache, MachineCache, MachineCategoryCache
-import karaage.cache.usage as usage
-import karaage.cache.graphs as graphs
+from karaage.usage.models import InstituteCache, ProjectCache, PersonCache, MachineCache, MachineCategoryCache
+import karaage.usage.usage as usage
+import karaage.usage.graphs as graphs
 
 # app.conf.update(CELERYD_HIJACK_ROOT_LOGGER = False)
 

@@ -38,10 +38,10 @@ from karaage.projects.models import Project, ProjectQuota
 from karaage.machines.models import Account, MachineCategory, Machine
 from karaage.usage.models import CPUJob, Queue
 from karaage.usage.forms import UsageSearchForm
-import karaage.cache.models as cache
-import karaage.cache.graphs as graphs
-import karaage.cache.tasks as tasks
-import karaage.cache.usage as usage
+import karaage.usage.models as cache
+import karaage.usage.graphs as graphs
+import karaage.usage.tasks as tasks
+import karaage.usage.usage as usage
 from karaage.common import get_date_range
 
 

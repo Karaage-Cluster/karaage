@@ -16,12 +16,18 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import warnings
+import datetime
+import decimal
 
 from django.db import models
 
 from karaage.machines.models import Account, Machine
 from karaage.projects.models import Project
 from karaage.software.models import SoftwareVersion
+
+from karaage.people.models import Person
+from karaage.institutes.models import Institute
+from karaage.machines.models import MachineCategory, Machine
 
 
 class Queue(models.Model):
@@ -84,3 +90,128 @@ class UsedModules(models.Model):
     jobid = models.CharField(max_length=100, primary_key=True)
     date_added = models.DateField(auto_now_add=True)
     modules = models.TextField()
+
+class TaskMachineCategoryCache(models.Model):
+    date = models.DateField(editable=False, auto_now_add=True)
+    start = models.DateField()
+    end = models.DateField()
+    celery_task_id = models.CharField(max_length = 50, unique=True)
+    ready = models.BooleanField(default=False)
+    class Meta:
+        unique_together = ('date', 'start', 'end')
+        db_table = 'cache_taskmachinecategorycache'
+
+
+class TaskCacheForMachineCategory(models.Model):
+    date = models.DateField(editable=False, auto_now_add=True)
+    start = models.DateField()
+    end = models.DateField()
+    machine_category = models.ForeignKey(MachineCategory)
+    celery_task_id = models.CharField(max_length = 50, unique=True)
+    ready = models.BooleanField(default=False)
+    class Meta:
+        unique_together = ('date', 'start', 'end', 'machine_category')
+        db_table = 'cache_taskcacheformachinecategory'
+
+
+class TaskCacheForProject(models.Model):
+    date = models.DateField(editable=False, auto_now_add=True)
+    start = models.DateField()
+    end = models.DateField()
+    project = models.ForeignKey(Project)
+    machine_category = models.ForeignKey(MachineCategory)
+    celery_task_id = models.CharField(max_length = 50, unique=True)
+    ready = models.BooleanField(default=False)
+    class Meta:
+        unique_together = ('date', 'start', 'end', 'project', 'machine_category')
+        db_table = 'cache_taskcacheforproject'
+
+
+class TaskCacheForInstitute(models.Model):
+    date = models.DateField(editable=False, auto_now_add=True)
+    start = models.DateField()
+    end = models.DateField()
+    institute = models.ForeignKey(Institute)
+    machine_category = models.ForeignKey(MachineCategory)
+    celery_task_id = models.CharField(max_length = 50, unique=True)
+    ready = models.BooleanField(default=False)
+    class Meta:
+        unique_together = ('date', 'start', 'end', 'institute', 'machine_category')
+        db_table = 'cache_taskcacheforinstitute'
+
+
+class UsageCache(models.Model):
+    date = models.DateField(editable=False, auto_now_add=True)
+    start = models.DateField()
+    end = models.DateField()
+    cpu_time = models.DecimalField(max_digits=30, decimal_places=2)
+    no_jobs = models.IntegerField()
+    class Meta:
+        abstract = True
+
+
+class InstituteCache(UsageCache):
+    institute = models.ForeignKey(Institute)
+    machine_category = models.ForeignKey(MachineCategory)
+    class Meta:
+        unique_together = ('date', 'start', 'end', 'institute', 'machine_category')
+        db_table = 'cache_institutecache'
+
+
+class ProjectCache(UsageCache):
+    project = models.ForeignKey(Project)
+    machine_category = models.ForeignKey(MachineCategory)
+    class Meta:
+        unique_together = ('date', 'start', 'end', 'project', 'machine_category')
+        db_table = 'cache_projectcache'
+
+
+class PersonCache(UsageCache):
+    person = models.ForeignKey(Person)
+    project = models.ForeignKey(Project)
+    machine_category = models.ForeignKey(MachineCategory)
+    class Meta:
+        unique_together = ('date', 'start', 'end', 'person', 'project', 'machine_category')
+        db_table = 'cache_personcache'
+
+
+class MachineCategoryCache(UsageCache):
+    machine_category = models.ForeignKey(MachineCategory)
+    available_time = models.DecimalField(max_digits=30, decimal_places=2)
+    class Meta:
+        unique_together = ('date', 'start', 'end', 'machine_category')
+        db_table = 'cache_machinecategorycache'
+
+    def get_project_mpots(self, project_quota, start, end):
+        project_cache = ProjectCache.objects.get(
+                project=project_quota.project,
+                machine_category=self.machine_category,
+                start=start,
+                end=end,
+                date=datetime.date.today()
+        )
+        usage = project_cache.cpu_time
+        total_time = self.available_time
+        if total_time == 0:
+            return 0
+        TWOPLACES = decimal.Decimal(10) ** -2
+        return ((usage / total_time) * 100 * 1000).quantize(TWOPLACES)
+
+    def is_project_over_quota(self, project_quota, start, end):
+        if self.get_project_mpots(project_quota, start, end) > project_quota.get_cap():
+            return True
+        return False
+
+    def get_project_cap_percent(self, project_quota, start, end):
+        cap = project_quota.get_cap()
+        if cap == 0:
+            return 'NaN'
+        else:
+            return (self.get_project_mpots(project_quota, start, end) / cap) * 100
+
+
+class MachineCache(UsageCache):
+    machine = models.ForeignKey(Machine)
+    class Meta:
+        unique_together = ('date', 'start', 'end', 'machine')
+        db_table = 'cache_machinecache'
