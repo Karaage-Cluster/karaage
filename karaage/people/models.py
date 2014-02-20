@@ -29,6 +29,7 @@ from karaage.common.constants import TITLES, STATES, COUNTRIES
 from karaage.people.managers import ActivePersonManager, DeletedPersonManager, LeaderManager, PersonManager
 
 from karaage.common import log, is_admin
+from model_utils import FieldTracker
 
 
 # Note on terminology:
@@ -80,14 +81,10 @@ class Person(AbstractBaseUser):
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'short_name', 'full_name', 'institute']
 
+    _tracker = FieldTracker()
+
     def __init__(self, *args, **kwargs):
         super(Person, self).__init__(*args, **kwargs)
-        self._login_enabled = self.login_enabled
-        if self.institute_id is None:
-            self._institute = None
-        else:
-            self._institute = self.institute
-        self._username = self.username
         self._password = None
 
     class Meta:
@@ -113,6 +110,10 @@ class Person(AbstractBaseUser):
         # save the object
         super(Person, self).save(*args, **kwargs)
 
+        for field in self._tracker.changed():
+            if field != "password":
+                log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
+
         # update the datastore
         from karaage.datastores import save_person
         save_person(self)
@@ -123,17 +124,15 @@ class Person(AbstractBaseUser):
             save_account(ua)
 
         # has username changed?
-        old_username = self._username
-        new_username = self.username
-        if old_username != new_username:
+        self._tracker.has_changed("username")
+        if self._tracker.has_changed("username"):
             from karaage.datastores import set_person_username
-            set_person_username(self, old_username, new_username)
+            set_person_username(self, self._tracker.previous('username'), self.username)
+            log(None, self, 2, 'Renamed')
 
         # has locked status changed?
-        old_login_enabled = self._login_enabled
-        new_login_enabled = self.login_enabled
-        if old_login_enabled != new_login_enabled:
-            if new_login_enabled:
+        if self._tracker.has_changed("login_enabled"):
+            if self.login_enabled:
                 for ua in self.account_set.filter(date_deleted__isnull=True):
                     ua.unlock()
                 log(None, self, 2, 'Unlocked person')
@@ -143,10 +142,12 @@ class Person(AbstractBaseUser):
                 log(None, self, 2, 'Locked person')
 
         # has the institute changed?
-        old_institute = self._institute
-        new_institute = self.institute
-        if old_institute != new_institute:
-            if old_institute is not None:
+        if self._tracker.has_changed("institute_id"):
+            from karaage.institutes.models import Institute
+            old_institute_pk = self._tracker.previous("institute_id")
+            new_institute = self.institute
+            if old_institute_pk is not None:
+                old_institute = Institute.objects.get(pk=old_institute_pk)
                 from karaage.datastores import remove_person_from_institute
                 remove_person_from_institute(self, old_institute)
                 from karaage.datastores import remove_account_from_institute
@@ -167,14 +168,6 @@ class Person(AbstractBaseUser):
                 ua.save()
             log(None, self, 2, 'Changed Password')
             self._password = None
-
-        # log message
-        log(None, self, 2, 'Saved person')
-
-        # save current state
-        self._username = self.username
-        self._login_enabled = self.login_enabled
-        self._institute = self.institute
     save.alters_data = True
 
     def delete(self, *args, **kwargs):

@@ -10,7 +10,7 @@ X-Python-Version: >= 2.6
 
 Package: karaage3
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, python, debconf, python-matplotlib (>= 0.98), python-django (>= 1.5), python-alogger (>= 2.0), python-tldap (>= 0.2.9), python-django-xmlrpc (>= 0.1), python-django-south (>= 0.7), django-simple-captcha, python-ajax-select (>= 1.3.3), python-django-celery, python-django-jsonfield
+Depends: ${misc:Depends}, ${python:Depends}, python, debconf, python-matplotlib (>= 0.98), python-django (>= 1.5), python-alogger (>= 2.0), python-tldap (>= 0.2.9), python-django-xmlrpc (>= 0.1), python-django-south (>= 0.7), django-simple-captcha, python-ajax-select (>= 1.3.3), python-django-celery, python-django-jsonfield, python-django-model-utils (>= 2.0.0)
 Recommends: karaage3-celery, python-cracklib
 Breaks: karaage (<< 3.0.0), karaage-admin (<< 3.0.0), karaage-registration (<< 3.0.0), karaage-common (<< 1.1.3-4)
 Replaces: karaage (<< 3.0.0)
