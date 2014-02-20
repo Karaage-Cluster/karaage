@@ -301,7 +301,7 @@ class Person(AbstractBaseUser):
             return None
 
     def is_leader(self):
-        if self.leaders.count() > 0:
+        if self.leads.count() > 0:
             return True
         return False
 
