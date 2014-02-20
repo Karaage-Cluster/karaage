@@ -21,6 +21,8 @@ from django.db.models.signals import post_save, pre_delete
 import datetime
 import decimal
 
+from model_utils import FieldTracker
+
 from karaage.people.models import Person, Group
 from karaage.institutes.models import Institute
 from karaage.machines.models import MachineCategory, Account
@@ -49,12 +51,7 @@ class Project(models.Model):
     active = ActiveProjectManager()
     deleted = DeletedProjectManager()
 
-    def __init__(self, *args, **kwargs):
-        super(Project, self).__init__(*args, **kwargs)
-        if self.group_id is None:
-            self._group = None
-        else:
-            self._group = self.group
+    _tracker = FieldTracker()
 
     class Meta:
         ordering = ['pid']
@@ -76,15 +73,20 @@ class Project(models.Model):
         # save the object
         super(Project, self).save(*args, **kwargs)
 
+        for field in self._tracker.changed():
+            log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
+
+
         # update the datastore
         from karaage.datastores import save_project
         save_project(self)
 
         # has group changed?
-        old_group = self._group
-        new_group = self.group
-        if old_group != new_group:
-            if old_group is not None:
+        if self._tracker.has_changed("group_id"):
+            old_group_pk = self._tracker.previous("group_id")
+            new_group = self.group
+            if old_group_pk is not None:
+                old_group = Group.objects.get(pk=group_pk)
                 from karaage.datastores import remove_person_from_project
                 for person in Person.objects.filter(groups=old_group):
                     remove_person_from_project(person, self)
@@ -98,12 +100,6 @@ class Project(models.Model):
                 from karaage.datastores import add_account_to_project
                 for account in Account.objects.filter(person__groups=new_group, date_deleted__isnull=True):
                     add_account_to_project(account, self)
-
-        # log message
-        log(None, self, 2, 'Saved project')
-
-        # save the current state
-        self._group = self.group
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
@@ -115,8 +111,9 @@ class Project(models.Model):
         super(Project, self).delete(*args, **kwargs)
 
         # update datastore associations
-        old_group = self._group
-        if old_group is not None:
+        old_group_pk = self._tracker.previous("group_id")
+        if old_group_pk is not None:
+            old_group = Group.objects.get(pk=group_pk)
             from karaage.datastores import remove_person_from_project
             for person in Person.objects.filter(groups=old_group):
                 remove_person_from_project(person, self)
@@ -202,6 +199,15 @@ class ProjectQuota(models.Model):
     project = models.ForeignKey(Project)
     cap = models.IntegerField(null=True, blank=True)
     machine_category = models.ForeignKey(MachineCategory)
+
+    _tracker = FieldTracker()
+
+    def save(self, *args, **kwargs):
+        super(ProjectQuota, self).save(*args, **kwargs)
+
+        for field in self._tracker.changed():
+            log(None, self.project, 2, 'Quota %s: Changed %s to %s' %
+                    (self.machine_category, field,  getattr(self, field)))
 
     class Meta:
         db_table = 'project_quota'

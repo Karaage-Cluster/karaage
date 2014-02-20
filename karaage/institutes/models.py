@@ -16,6 +16,9 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.db import models
+
+from model_utils import FieldTracker
+
 from karaage.common import log, is_admin
 from karaage.people.models import Person, Group
 from karaage.machines.models import Account, MachineCategory
@@ -31,12 +34,7 @@ class Institute(models.Model):
     objects = models.Manager()
     active = ActiveInstituteManager()
 
-    def __init__(self, *args, **kwargs):
-        super(Institute, self).__init__(*args, **kwargs)
-        if self.group_id is None:
-            self._group = None
-        else:
-            self._group = self.group
+    _tracker = FieldTracker()
 
     class Meta:
         ordering = ['name']
@@ -51,15 +49,19 @@ class Institute(models.Model):
         # save the object
         super(Institute, self).save(*args, **kwargs)
 
+        for field in self._tracker.changed():
+            log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
+
         # update the datastore
         from karaage.datastores import save_institute
         save_institute(self)
 
         # has group changed?
-        old_group = self._group
-        new_group = self.group
-        if old_group != new_group:
-            if old_group is not None:
+        if self._tracker.has_changed("group_id"):
+            old_group_pk = self._tracker.previous("group_id")
+            new_group = self.group
+            if old_group_pk is not None:
+                old_group = Group.objects.get(pk=group_pk)
                 from karaage.datastores import remove_person_from_institute
                 for person in Person.objects.filter(groups=old_group):
                     remove_person_from_institute(person, self)
@@ -73,12 +75,6 @@ class Institute(models.Model):
                 from karaage.datastores import add_account_to_institute
                 for account in Account.objects.filter(person__groups=new_group, date_deleted__isnull=True):
                     add_account_to_institute(account, self)
-
-        # log message
-        log(None, self, 2, 'Saved institute')
-
-        # save the current state
-        self._group = self.group
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
@@ -86,8 +82,9 @@ class Institute(models.Model):
         super(Institute, self).delete(*args, **kwargs)
 
         # update datastore associations
-        old_group = self._group
-        if old_group is not None:
+        old_group_pk = self._tracker.previous("group_id")
+        if old_group_pk is not None:
+            old_group = Group.objects.get(pk=group_pk)
             from karaage.datastores import remove_person_from_institute
             for person in Person.objects.filter(groups=old_group):
                 remove_person_from_institute(person, self)
@@ -145,9 +142,18 @@ class InstituteQuota(models.Model):
     cap = models.IntegerField(null=True, blank=True)
     disk_quota = models.IntegerField(null=True, blank=True)
 
+    _tracker = FieldTracker()
+
     class Meta:
         db_table = 'institute_quota'
         unique_together = ('institute', 'machine_category')
+
+    def save(self, *args, **kwargs):
+        super(InstituteQuota, self).save(*args, **kwargs)
+
+        for field in self._tracker.changed():
+            log(None, self.institute, 2, 'Quota %s: Changed %s to %s' %
+                    (self.machine_category, field,  getattr(self, field)))
 
     def __unicode__(self):
         return '%s - %s' % (self.institute, self.machine_category)
@@ -168,5 +174,14 @@ class InstituteDelegate(models.Model):
     institute = models.ForeignKey(Institute)
     send_email = models.BooleanField()
 
+    _tracker = FieldTracker()
+
     class Meta:
         db_table = 'institutedelegate'
+
+    def save(self, *args, **kwargs):
+        super(InstituteDelegate, self).save(*args, **kwargs)
+
+        for field in self._tracker.changed():
+            log(None, self.institute, 2, 'Delegate %s: Changed %s to %s' %
+                    (self.person, field,  getattr(self, field)))

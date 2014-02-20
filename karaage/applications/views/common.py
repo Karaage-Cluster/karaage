@@ -53,7 +53,6 @@ def applicant_edit(request, applicant_id):
     if request.method == 'POST':
         if form.is_valid():
             applicant = form.save()
-            log(request.user, applicant, 2, 'Edited')
             messages.success(request, "%s modified successfully." % applicant)
             return HttpResponseRedirect(reverse('kg_application_list'))
 

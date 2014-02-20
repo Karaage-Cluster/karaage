@@ -39,7 +39,7 @@ class PersonManager(BaseUserManager):
             **extra_fields
             )
         person.set_password(password)
-        person.save(self._db)
+        person.save()
 
         log(None, person, 1, 'Created person')
         return person

@@ -75,10 +75,8 @@ def add_edit_project(request, project_id=None):
             form.save_m2m()
             if flag == 1:
                 messages.success(request, "Project '%s' created succesfully" % project)
-                log(None, project, 1, 'Created')
             else:
                 messages.success(request, "Project '%s' edited succesfully" % project)
-                log(None, project, 2, 'Edited')
 
             return HttpResponseRedirect(project.get_absolute_url())
 
