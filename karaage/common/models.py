@@ -56,7 +56,7 @@ class LogEntry(models.Model):
         verbose_name = _('log entry')
         verbose_name_plural = _('log entries')
         db_table = 'admin_log'
-        ordering = ('-action_time',)
+        ordering = ('-action_time','-pk')
 
     def __repr__(self):
         return smart_text(self.action_time)
