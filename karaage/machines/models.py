@@ -281,8 +281,6 @@ class Account(models.Model):
             # delete the datastore
             from karaage.datastores import delete_account
             delete_account(self)
-            log(None, self.machine_category, 2,
-                'Deleted account %s' % self)
     delete.alters_data = True
 
     def deactivate(self):
@@ -299,8 +297,6 @@ class Account(models.Model):
         self.shell = shell
         self.save()
         # self.save() will update the datastore for us.
-        log(None, self.person, 2,
-            'Changed shell of %s' % self)
     change_shell.alters_data = True
 
     def set_password(self, password):
