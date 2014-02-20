@@ -304,7 +304,7 @@ class AccountDataStore(base.BaseDataStore):
         lgroup.secondary_accounts.remove(person)
 
     def get_account_details(self, account):
-        """ Account's details were changed. """
+        """ Get the account details. """
         luser = self._accounts().get(uid=account.username)
         result = {}
         for i, j in luser.get_fields():
@@ -319,7 +319,7 @@ class AccountDataStore(base.BaseDataStore):
         return result
 
     def account_exists(self, username):
-        """ Account's details were changed. """
+        """ Does the account exist? """
         try:
             self._accounts().get(uid=username)
             return True
