@@ -306,6 +306,10 @@ class AccountDataStore(base.BaseDataStore):
         person = self._accounts().get(uid=account.username)
         lgroup.secondary_accounts.remove(person)
 
+    def get_account_attrs(self, account):
+        """ Get a list of extra attributes for account. """
+        return [ "kg_shell" ]
+
     def get_account_details(self, account):
         """ Get the account details. """
         luser = self._accounts().get(uid=account.username)

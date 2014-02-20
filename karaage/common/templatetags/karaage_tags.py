@@ -246,7 +246,6 @@ def divide(a, b):
     except:
         return ''
 
-
 class ForEachAppIncludeNode(template.Node):
 
     def __init__(self, template_name):
@@ -296,3 +295,6 @@ def is_for_each_app_include_empty(template_name):
     return True
 
 
+@register.assignment_tag()
+def resolve(lookup, target):
+    return lookup[target]

@@ -335,9 +335,16 @@ def user_detail(request, username):
     if not person.can_view(request):
         return HttpResponseForbidden('<h1>Access Denied</h1><p>You do not have permission to view details about this user.</p>')
 
+    accounts = person.account_set.filter(date_deleted__isnull=True)
     my_projects = person.projects.all()
     my_pids = [p.pid for p in my_projects]
-    
+
+    from karaage.datastores import get_account_attrs
+    account_attrs = {}
+    for account in accounts:
+        attrs = get_account_attrs(account)
+        account_attrs[account.pk] = attrs
+
     #Add to project form
     form = AddProjectForm(request.POST or None)
     if request.method == 'POST':

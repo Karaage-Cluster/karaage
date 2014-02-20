@@ -78,6 +78,12 @@ def profile_accounts(request):
     person = request.user
     accounts = person.account_set.filter(date_deleted__isnull=True)
 
+    from karaage.datastores import get_account_attrs
+    account_attrs = {}
+    for account in accounts:
+        attrs = get_account_attrs(account)
+        account_attrs[account.pk] = attrs
+
     return render_to_response('people/profile_accounts.html', locals(), context_instance=RequestContext(request))
 
 
