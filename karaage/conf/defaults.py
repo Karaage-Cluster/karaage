@@ -78,7 +78,7 @@ INSTALLED_APPS = (
     'karaage.institutes',
     'karaage.projects',
     'karaage.usage',
-    'karaage.cache',
+    'karaage.legacy.cache',
     'karaage.software',
     'karaage.legacy.pbsmoab',
     'karaage.emails',

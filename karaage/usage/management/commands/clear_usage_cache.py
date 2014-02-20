@@ -26,7 +26,7 @@ class Command(BaseCommand):
     @tldap.transaction.commit_on_success
     def handle(self, **options):
         verbose = int(options.get('verbosity'))
-        import karaage.cache.models as models
+        import karaage.usage.models as models
         import datetime
         if verbose > 1:
             print "Clearing expired tasks"

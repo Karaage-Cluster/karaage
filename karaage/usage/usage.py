@@ -25,7 +25,7 @@ from django.db.models import Count, Sum
 
 import datetime
 
-from karaage.cache.models import InstituteCache, ProjectCache, PersonCache, MachineCache, MachineCategoryCache
+from karaage.usage.models import InstituteCache, ProjectCache, PersonCache, MachineCache, MachineCategoryCache
 from karaage.usage.models import CPUJob
 
 
