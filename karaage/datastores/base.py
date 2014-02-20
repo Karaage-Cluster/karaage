@@ -142,6 +142,10 @@ class BaseDataStore(object):
         """ Does the account exist? """
         return False
 
+    def get_account_attr(self, account):
+        """ Get a list of extra attributes for account. """
+        return []
+
     def get_account_details(self, account):
         """ Get the account details """
         return {}

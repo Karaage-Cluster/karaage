@@ -245,6 +245,17 @@ def account_exists(username, machine_category):
             return True
     return False
 
+def get_account_attrs(account):
+    """ Get a list of extra attributes for account. """
+    result = []
+    name = account.machine_category.datastore
+    for datastore in _get_datastores_for_name(name):
+        values = datastore.get_account_attrs(account)
+        for name in values:
+            if name not in result:
+                result.append(name)
+    return result
+
 def get_account_details(account):
     """ Get the account details. """
     result = {}
