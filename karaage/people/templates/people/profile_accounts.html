@@ -10,8 +10,8 @@
 {% block profile_content %}
 {% for ua in accounts %}
 <div class="module">
-
     <h2>{{ ua.machine_category }} Account</h2>
+    {% resolve account_attrs ua.pk as attrs %}
     <table cellspacing="0">
         <thead>
             <tr>
@@ -19,7 +19,9 @@
                 <th>Username</th>
                 <th>Date Created</th>
                 <th>Date Deleted</th>
-                <th>Shell</th>
+                {% for attr in attrs %}
+                    <th>{% render_account_attr ua attr "title" %}</th>
+                {% endfor %}
             </tr>
         </thead>
         <tbody>
@@ -38,17 +40,11 @@
                 <td>{{ ua.username }}</td>
                 <td>{{ ua.date_created|date }}</td>
                 <td>{{ ua.date_deleted|date }}</td>
+                {% for attr in attrs %}
                 <td>
-                    {{ ua.loginShell }}
-                    {% if not ua.is_locked %}
-                    <form method="post" action="{% url 'kg_account_shell' ua.pk %}">{% csrf_token %}
-                        <div>
-                            {% shell_field ua %}
-                            <input type="submit" value="Change" name="shell-form" />
-                        </div>
-                    </form>
-                    {% endif %}
+                    {% render_account_attr ua attr "variable" %}
                 </td>
+                {% endfor %}
             </tr>
         </tbody>
     </table>

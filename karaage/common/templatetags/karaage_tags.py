@@ -247,3 +247,7 @@ def divide(a, b):
         return (Decimal(a) / Decimal(b) * 100).quantize(TWOPLACES)
     except:
         return ''
+
+@register.assignment_tag()
+def resolve(lookup, target):
+    return lookup[target]
