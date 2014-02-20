@@ -1,0 +1,14 @@
+{% load machines %}
+{% if not account.date_deleted %}
+    {{ account.shell }}
+    {% if not account.is_locked %}
+    {% if is_admin or request.user == account.person %}
+    <form action="{% url 'kg_account_shell' account.pk %}" method="post">{% csrf_token %}
+        <div>
+            {% shell_field account %}
+            <input type="submit" value="Change"/>
+        </div>
+    </form>
+    {% endif %}
+    {% endif %}
+{% endif %}

@@ -188,6 +188,7 @@
     <div class="module">
         <h2>{{ ua.machine_category }} Account</h2>
         <h3>Account</h3>
+        {% resolve account_attrs ua.pk as attrs %}
         <table cellspacing="0">
             <thead>
                 <tr>
@@ -195,7 +196,12 @@
                     <th>Username</th>
                     <th>Date Created</th>
                     <th>Date Deleted</th>
-                    <th>Shell</th>
+                    {% for attr in attrs %}
+                        <th>{% render_account_attr ua attr "title" %}</th>
+                    {% endfor %}
+                    {% if not ua.date_deleted and is_admin %}
+                    <th>Actions</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -214,19 +220,13 @@
                     <td>{{ ua.username }}</td>
                     <td>{{ ua.date_created|date }}</td>
                     <td>{{ ua.date_deleted|date }}</td>
+                    {% for attr in attrs %}
                     <td>
-                        {{ ua.shell }}
-                        {% if not ua.date_deleted and is_admin %}
-                        <form action="{% url 'kg_account_shell' ua.pk %}" method="post">{% csrf_token %}
-                            <div>
-                                {% shell_field ua %}
-                                <input type="submit" value="Change"/>
-                            </div>
-                        </form>
-                        {% endif %}
+                        {% render_account_attr ua attr "variable" %}
                     </td>
+                    {% endfor %}
                     {% if not ua.date_deleted and is_admin %}
-                        <td><a href="{% url 'kg_account_delete' ua.id %}" class="deletelink">Delete</a></td>
+                    <td><a href="{% url 'kg_account_delete' ua.id %}" class="deletelink">Delete</a></td>
                     {% endif %}
                 </tr>
             </tbody>
