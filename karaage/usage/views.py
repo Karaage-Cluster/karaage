@@ -90,7 +90,6 @@ def gen_machine_category_cache(request, start, end):
         if tc.ready:
             return None
         result = Task.AsyncResult(tc.celery_task_id)
-        print result.state, result.info
         if result.failed():
             result.forget()
             tc.delete()
