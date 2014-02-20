@@ -319,7 +319,7 @@ class AccountDataStore(base.BaseDataStore):
         return result
 
     def account_exists(self, username):
-        """ Account's details were changed. """
+        """ Get the account details. """
         try:
             self._accounts().get(uid=username)
             return True
