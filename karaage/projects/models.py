@@ -35,7 +35,7 @@ class Project(models.Model):
     name = models.CharField(max_length=200)
     group = models.ForeignKey(Group)
     institute = models.ForeignKey(Institute)
-    leaders = models.ManyToManyField(Person, related_name='leaders')
+    leaders = models.ManyToManyField(Person, related_name='leads')
     description = models.TextField(null=True, blank=True)
     is_approved = models.BooleanField(default=False)
     start_date = models.DateField(default=datetime.datetime.today)
