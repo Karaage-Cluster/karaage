@@ -28,6 +28,7 @@ from karaage.institutes.models import Institute
 from karaage.machines.models import MachineCategory, Account
 from karaage.projects.managers import ActiveProjectManager, DeletedProjectManager
 from karaage.common import log, is_admin
+from karaage.common.models import CHANGE
 
 
 class Project(models.Model):
@@ -224,3 +225,50 @@ class ProjectQuota(models.Model):
         if iq.cap is not None:
             return iq.cap
         return iq.quota * 1000
+
+
+def _leaders_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
+    """
+    Hook that executes whenever the group members are changed.
+    """
+    #print "'%s','%s','%s','%s','%s'"%(instance, action, reverse, model, pk_set)
+
+    if action == "post_add":
+        if not reverse:
+            project = instance
+            for person in model.objects.filter(pk__in=pk_set):
+                log(None, person, CHANGE, "Added person to project %s leaders" % project)
+                log(None, project, CHANGE, "Added person %s to project leaders" % person)
+        else:
+            person = instance
+            for project in model.objects.filter(pk__in=pk_set):
+                log(None, person, CHANGE, "Added person to project %s leaders" % project)
+                log(None, project, CHANGE, "Added person %s to project leaders" % person)
+
+    elif action == "post_remove":
+        if not reverse:
+            project = instance
+            for person in model.objects.filter(pk__in=pk_set):
+                log(None, person, CHANGE, "Removed person from project %s leaders" % project)
+                log(None, project, CHANGE, "Removed person %s from project leaders" % person)
+        else:
+            person = instance
+            for project in model.objects.filter(pk__in=pk_set):
+                log(None, person, CHANGE, "Removed person from project %s leaders" % project)
+                log(None, project, CHANGE, "Removed person %s from project leaders" % person)
+
+    elif action == "pre_clear":
+        # This has to occur in pre_clear, not post_clear, as otherwise
+        # we won't see what project leaders need to be removed.
+        if not reverse:
+            project = instance
+            log(None, project, CHANGE, "Removed all project leaders")
+            for person in project.leaders.all():
+                log(None, project, CHANGE, "Removed person %s from project leaders" % person)
+        else:
+            person = instance
+            log(None, person, CHANGE, "Removed person from all project leaders")
+            for project in person.leads.all():
+                log(None, project, CHANGE, "Removed person %s from project leaders" % person)
+
+models.signals.m2m_changed.connect(_leaders_changed, sender=Project.leaders.through)
