@@ -606,7 +606,7 @@ def trace(_name):
     #  trace
     ####
 
-    logging.basicConfig(level = logging.DEBUG)
+#    logging.basicConfig(level = logging.DEBUG)
     if type(_name) in CallableTypes:
         return decorator(_name)
     else:
