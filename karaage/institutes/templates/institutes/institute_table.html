@@ -9,7 +9,7 @@
     {% for i in object_list %}
     <tr class="{% cycle row1,row2 %}">
       <td><a href="{{ i.get_absolute_url }}">{{ i.name }}</a></td>
-      <td>{% for delegate in i.delegates.all %}<a href="{{ delegate.get_absolute_url }}">{{ delegate }}</a>, {% endfor %}</td>
+      <td>{% for delegate in i.delegates.all %}<a href="{{ delegate.get_absolute_url }}">{{ delegate }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
       {% endfor %}
   </tbody>
 </table>
