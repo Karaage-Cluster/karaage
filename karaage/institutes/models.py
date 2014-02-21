@@ -185,3 +185,9 @@ class InstituteDelegate(models.Model):
         for field in self._tracker.changed():
             log(None, self.institute, 2, 'Delegate %s: Changed %s to %s' %
                     (self.person, field,  getattr(self, field)))
+
+    def delete(self, *args, **kwargs):
+        super(InstituteDelegate, self).delete(*args, **kwargs)
+
+        log(None, self.institute, 2, 'Delegate %s: Deleted' %
+                (self.person))
