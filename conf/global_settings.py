@@ -91,7 +91,70 @@ LANGUAGE_CODE = 'en-au'
 # cryptographic signing, and should be set to a unique, unpredictable value.
 SECRET_KEY = ''
 
-
+# A data structure containing configuration information. The contents of this
+# data structure will be passed as the argument to the configuration method
+# described in LOGGING_CONFIG.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'debug_file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/var/log/karaage/debug.log',
+            'formatter': 'verbose',
+        },
+#        'ldap_file': {
+#            'level': 'DEBUG',
+#            'class': 'logging.FileHandler',
+#            'filename': '/var/log/karaage/ldap.log',
+#            'formatter': 'verbose',
+#        },
+#        'gold_file': {
+#            'level': 'DEBUG',
+#            'class': 'logging.FileHandler',
+#            'filename': '/var/log/karaage/gold.log',
+#            'formatter': 'verbose',
+#       },
+#       'slurm_file': {
+#            'level': 'DEBUG',
+#            'class': 'logging.FileHandler',
+#            'filename': '/var/log/karaage/slurm.log',
+#            'formatter': 'verbose',
+#        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['debug_file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+#        'karaage.datastores.ldap': {
+#            'handlers': ['ldap_file'],
+#            'level': 'DEBUG',
+#            'propagate': True,
+#        },
+#        'karaage.datastores.gold': {
+#            'handlers': ['gold_file'],
+#            'level': 'DEBUG',
+#            'propagate': True,
+#        },
+#        'karaage.datastores.slurm': {
+#            'handlers': ['slurm_file'],
+#            'level': 'DEBUG',
+#            'propagate': True,
+#        },
+    },
+    },
+}
 
 ###
 ### Karaage settings

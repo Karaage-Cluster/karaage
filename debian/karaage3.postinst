@@ -30,7 +30,8 @@ if [ "$1" = "configure" ]; then
         fi
     done
 
-    for i in /var/cache/karaage/graphs \
+    for i in /var/log/karaage \
+             /var/cache/karaage/graphs \
              /var/cache/karaage/matplotlib
     do
         # only do something when no setting exists
