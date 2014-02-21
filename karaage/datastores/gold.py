@@ -20,6 +20,7 @@
 import subprocess
 import csv
 import logging
+import karaage.common.trace as trace
 logger = logging.getLogger(__name__)
 
 from karaage.datastores import base
@@ -261,7 +262,6 @@ class GoldDataStore(base.BaseDataStore):
 
     def _save_account(self, account, username):
         """ Called when account is created/updated. With username override. """
-        logger.debug("account_saved '%s'"%username)
 
         # retrieve default project, or use null project if none
         default_project_name = self._null_project
@@ -311,7 +311,6 @@ class GoldDataStore(base.BaseDataStore):
                 # delete Gold user if account marked as deleted
                 self._call(["grmuser", "-u", username], ignore_errors=[8])
 
-        logger.debug("returning")
         return
 
     def save_account(self, account):
@@ -320,7 +319,6 @@ class GoldDataStore(base.BaseDataStore):
 
     def _delete_account(self, account, username):
         """ Called when account is deleted. With username override. """
-        logger.debug("account_deleted '%s'"%username)
 
         # account deleted
 
@@ -328,7 +326,6 @@ class GoldDataStore(base.BaseDataStore):
         if ds_user is not None:
             self._call(["grmuser", "-u", username], ignore_errors=[8])
 
-        logger.debug("returning")
         return
 
     def delete_account(self, account):
@@ -348,8 +345,6 @@ class GoldDataStore(base.BaseDataStore):
         """ Add account to project. """
         username = account.username
         projectname = project.pid
-        logger.debug("add user '%s' to project '%s'"%
-                (username, projectname))
         self._call([
             "gchproject",
             "--add-user", username,
@@ -360,8 +355,6 @@ class GoldDataStore(base.BaseDataStore):
         """ Remove account from project. """
         username = account.username
         projectname = project.pid
-        logger.debug("delete user '%s' to project '%s'"%
-                (username,projectname))
         self._call([
             "gchproject",
             "--del-users", username,
@@ -394,7 +387,6 @@ class GoldDataStore(base.BaseDataStore):
     def save_project(self, project):
         """ Called when project is saved/updated. """
         pid = project.pid
-        logger.debug("project_saved '%s'"%pid)
 
         # project created
         # project updated
@@ -424,13 +416,11 @@ class GoldDataStore(base.BaseDataStore):
             if ds_project is not None:
                 self._call(["grmproject", "-p", pid])
 
-        logger.debug("returning")
         return
 
     def delete_project(self, project):
         """ Called when project is deleted. """
         pid = project.pid
-        logger.debug("project_deleted '%s'"%pid)
 
         # project deleted
 
@@ -438,7 +428,6 @@ class GoldDataStore(base.BaseDataStore):
         if ds_project is not None:
             self._call(["grmproject", "-p", pid])
 
-        logger.debug("returning")
         return
 
     def get_project_details(self, project):
@@ -448,3 +437,4 @@ class GoldDataStore(base.BaseDataStore):
             result = {}
         return result
 
+trace.attach(trace.trace(logger), GoldDataStore)

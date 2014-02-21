@@ -21,6 +21,9 @@ from karaage.datastores import base
 
 from django.conf import settings
 import django.utils
+import logging
+import karaage.common.trace as trace
+logger = logging.getLogger(__name__)
 
 def _str_or_none(string):
     """ Return a string of None if string is empty. """
@@ -366,3 +369,5 @@ class AccountDataStore(base.BaseDataStore):
         result['secondary_accounts'] = [
                 a.dn for a in lgroup.secondary_accounts.all() ]
         return result
+
+trace.attach(trace.trace(logger), AccountDataStore)
