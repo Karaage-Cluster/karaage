@@ -106,10 +106,16 @@ LOGGING = {
         },
     },
     'handlers': {
-        'debug_file': {
-            'level': 'DEBUG',
+        'django_file': {
+            'level': 'WARNING',
             'class': 'logging.FileHandler',
-            'filename': '/var/log/karaage/debug.log',
+            'filename': '/var/log/karaage/django.log',
+            'formatter': 'verbose',
+        },
+        'karaage_file': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': '/var/log/karaage/karaage.log',
             'formatter': 'verbose',
         },
 #        'ldap_file': {
@@ -132,8 +138,13 @@ LOGGING = {
 #        },
     },
     'loggers': {
-        'django.request': {
-            'handlers': ['debug_file'],
+        'django': {
+            'handlers': ['django_file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'karaage': {
+            'handlers': ['karaage_file'],
             'level': 'DEBUG',
             'propagate': True,
         },
@@ -153,8 +164,8 @@ LOGGING = {
 #            'propagate': True,
 #        },
     },
-    },
 }
+
 
 ###
 ### Karaage settings
