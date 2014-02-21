@@ -20,6 +20,7 @@
 import subprocess
 import csv
 import logging
+import karaage.common.trace as trace
 logger = logging.getLogger(__name__)
 
 from karaage.datastores import base
@@ -218,7 +219,6 @@ class SlurmDataStore(base.BaseDataStore):
 
     def _save_account(self, account, username):
         """ Called when account is created/updated. With username override. """
-        logger.debug("account_saved '%s'"%username)
 
         # retrieve default project, or use null project if none
         default_project_name = self._null_project
@@ -262,7 +262,6 @@ class SlurmDataStore(base.BaseDataStore):
                 # delete Slurm user if account marked as deleted
                 self._call(["delete", "user", "name=%s"%username])
 
-        logger.debug("returning")
         return
 
     def save_account(self, account):
@@ -271,7 +270,6 @@ class SlurmDataStore(base.BaseDataStore):
 
     def _delete_account(self, account, username):
         """ Called when account is deleted. With username override. """
-        logger.debug("account_deleted '%s'"%username)
 
         # account deleted
 
@@ -279,7 +277,6 @@ class SlurmDataStore(base.BaseDataStore):
         if ds_user is not None:
             self._call(["delete", "user", "name=%s"%username])
 
-        logger.debug("returning")
         return
 
     def delete_account(self, account):
@@ -299,8 +296,6 @@ class SlurmDataStore(base.BaseDataStore):
         """ Add account to project. """
         username = account.username
         projectname = project.pid
-        logger.debug("add user '%s' to project '%s'"%
-                (username, projectname))
         self._call([
             "add", "user",
             "accounts=%s"%projectname,
@@ -310,8 +305,6 @@ class SlurmDataStore(base.BaseDataStore):
         """ Remove account from project. """
         username = account.username
         projectname = project.pid
-        logger.debug("delete user '%s' to project '%s'"%
-                (username,projectname))
         self._call([
             "delete", "user",
             "name=%s"%username,
@@ -344,7 +337,6 @@ class SlurmDataStore(base.BaseDataStore):
     def save_project(self, project):
         """ Called when project is saved/updated. """
         pid = project.pid
-        logger.debug("project_saved '%s'"%pid)
 
         # project created
         # project updated
@@ -373,13 +365,11 @@ class SlurmDataStore(base.BaseDataStore):
             if ds_project is not None:
                 self._call(["delete", "account", "name=%s"%pid])
 
-        logger.debug("returning")
         return
 
     def delete_project(self, project):
         """ Called when project is deleted. """
         pid = project.pid
-        logger.debug("project_deleted '%s'"%pid)
 
         # project deleted
 
@@ -387,7 +377,6 @@ class SlurmDataStore(base.BaseDataStore):
         if ds_project is not None:
             self._call(["delete", "account", "name=%s"%pid])
 
-        logger.debug("returning")
         return
 
     def get_project_details(self, project):
@@ -397,3 +386,4 @@ class SlurmDataStore(base.BaseDataStore):
             result = {}
         return result
 
+trace.attach(trace.trace(logger), SlurmDataStore)
