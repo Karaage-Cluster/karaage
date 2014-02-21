@@ -37,7 +37,7 @@ class Command(BaseCommand):
         try:
             person = Person.objects.get(username=old)
         except Person.DoesNotExist:
-            raise CommandError('user %s does not exist' % old)
+            raise CommandError('person %s does not exist' % old)
 
         try:
             validate_username_for_rename_person(new, person)
@@ -47,7 +47,7 @@ class Command(BaseCommand):
             raise CommandError(e.args[0])
 
         while 1:
-            confirm = raw_input('Change user "%s" to "%s (yes,no): ' % (old, new))
+            confirm = raw_input('Change person "%s" and accounts to "%s (yes,no): ' % (old, new))
             if confirm == 'yes':
                 break
             elif confirm == 'no':
@@ -61,6 +61,7 @@ class Command(BaseCommand):
             print "Changed username on %s account" % account.machine_category
 
         person.username = new
+        person.save()
         print "Changed username on person"
 
         print "Done"
