@@ -24,6 +24,12 @@
                 <td>{% for delegate in i.delegates.all %}{{ delegate }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
             </tr>
             {% endwith %}
+            {% for i in person.institutes.all %}
+            <tr>
+                <td>{{ i.name }}</td>
+                <td>{% for delegate in i.delegates.all %}{{ delegate }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
 </div>

@@ -17,6 +17,14 @@
         <tr><td>Position:</td><td>{{ person.position|default:"" }}</td></tr>
         <tr><td>Department:</td><td>{{ person.department|default:"" }}</td></tr>
         <tr><td>Institute:</td><td>{{ person.institute }}</td></tr>
+        <tr>
+          <td>Institutes (extra):</td>
+          <td>
+            {% for institute in person.institutes.all %}{{institute}}
+            {% if not forloop.last %}, {% endif %}
+            {% endfor %}
+          </td>
+        </tr>
         {% if person.telephone %}<tr><td>Phone:</td><td>{{ person.telephone|default:"" }}</td></tr>{% endif %}
         {% if person.mobile %}<tr><td>Mobile:</td><td>{{ person.mobile|default:"" }}</td></tr>{% endif %}
         {% if person.fax %}<tr><td>Fax:</td><td>{{ person.fax }}</td></tr>{% endif %}
