@@ -28,14 +28,15 @@
         {% if person.mobile %}<tr><td>Mobile:</td><td>{{ person.mobile|default:"" }}</td></tr>{% endif %}
         {% if person.fax %}<tr><td>Fax:</td><td>{{ person.fax }}</td></tr>{% endif %}
         {% if person.address %}<tr><td>Address:</td><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>{% endif %}
-        <tr><td colspan="2"><a href="{% url 'kg_profile_edit' %}" class="changelink">Edit personal details</a></td></tr>
-        <tr><td colspan="2"><a href="{% url 'kg_profile_password' %}" class="changelink">Change password</a></td></tr>
     </table>
-</div>
 
-<div class="module">
-    <h2>Tasks</h2>
-    <p><a href="{% url 'kg_application_new' %}" class="addlink">Apply for Project</a></p>
+    <div class="object-tools">
+        <ul>
+            <li><a href="{% url 'kg_profile_edit' %}" class="changelink">Edit personal details</a></li>
+            <li><a href="{% url 'kg_profile_password' %}" class="changelink">Change password</a></li>
+            <li><a href="{% url 'kg_application_new' %}" class="addlink">Apply for Project</a></li>
+        </ul>
+    </div>
 </div>
 
 {% if person.is_delegate %}
