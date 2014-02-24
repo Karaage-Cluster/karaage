@@ -31,7 +31,7 @@
         {% if form.errors or form.non_field_errors %}
         <p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
         {% endif %}
-        <fieldset class="module aligned ()">
+        <fieldset class="aligned ()">
             {% formfield form.name %}
             {% formfield form.description %}
         </fieldset>

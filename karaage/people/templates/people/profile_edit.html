@@ -19,7 +19,7 @@
             {% if form.errors  or form.non_field_errors %}
             <p class="errornote">Please correct the error{{ form.errors|pluralize }} below.</p>
             {% endif %}
-            <fieldset class="module aligned ()">
+            <fieldset class="aligned ()">
             {{ form.non_field_errors }}
             {% formfield form.title %}
             {% inlineformfield form.short_name form.full_name %}

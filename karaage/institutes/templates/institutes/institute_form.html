@@ -35,6 +35,7 @@
 <form method="post" action=".">{% csrf_token %}
     {{ delegate_formset.management_form }}
     <fieldset class="module aligned ()">
+        <h2>Details</h2>
         {% form_as_div form %}
     </fieldset>
     <fieldset class="module aligned ()">
