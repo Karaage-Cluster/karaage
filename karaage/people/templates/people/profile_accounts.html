@@ -10,8 +10,8 @@
 {% block profile_content %}
 {% for ua in accounts %}
 <div class="module">
-
     <h2>{{ ua.machine_category }} Account</h2>
+
     <table cellspacing="0">
         <thead>
             <tr>
@@ -54,7 +54,7 @@
     </table>
 
     {% if ua.get_latest_usage %}
-    <h2>Latest Usage</h2>
+    <h3>Latest Usage</h3>
     <table cellspacing="0">
         <thead>
             <tr>
