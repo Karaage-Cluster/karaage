@@ -9,6 +9,9 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         if not db.dry_run:
+            orm.InstituteCache.objects.all().delete()
+            orm.MachineCache.objects.all().delete()
+            orm.ProjectCache.objects.all().delete()
             orm.UserCache.objects.all().delete()
 
     def backwards(self, orm):
