@@ -6,15 +6,13 @@
 {% block content %}
 <div id="content-main">
 
-    <h1>Welcome to Karaage 3</h1>
-
-    {% if is_admin %}
-
-    {% if pending_apps %}
+    {% if pending_applications %}
     <ul class="messagelist">
-        <li>There are <a href="{% url "kg_application_list" %}?state=K">pending applications</a> that require admin approval.</li>
+        <li>There are <a href="{% url "kg_application_list" %}?state=K">pending applications</a>.</li>
     </ul>
     {% endif %}
+
+    {% if is_admin %}
 
     <div class="module">
         <h2>Newest Users</h2>
