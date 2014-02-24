@@ -26,9 +26,6 @@
     {% if person_list %}
     <div class="module">
         <h2>Top 5 users  <a href="{% url 'kg_usage_users' machine_category.pk institute.pk %}{% url_with_param start=start end=end %}">Show all</a></h2>
-        <a href="#graph">
-            <img class="float-right" height="150" src="{{ graph.graph_url }}" width="300"/>
-        </a>
 
         <table>
             <thead>
@@ -64,6 +61,10 @@
                 </tr>
             </tfoot>
         </table>
+
+        {% if graph %}
+        <img src="{{ graph.graph_url }}" />
+        {% endif %}
     </div>
     {% endif %}
 
@@ -101,10 +102,6 @@
             </tfoot>
         </table>
     </div>
-    {% endif %}
-
-    {% if graph %}
-    <img id="graph" src="{{ graph.graph_url }}"/>
     {% endif %}
 
 </div>
