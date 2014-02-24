@@ -307,9 +307,9 @@ def index(request, machine_category_id):
 
     # Unused Entry
     unused = {'usage': available_time - total, 'quota': 0}
-    try:
+    if available_time != 0:
         unused['percent'] = (unused['usage'] / available_time) * 100
-    except ZeroDivisionError:
+    else:
         unused['percent'] = 0
     unused['diff'] = unused['percent'] - unused['quota'] / 100
     if unused['diff'] <= 0:
