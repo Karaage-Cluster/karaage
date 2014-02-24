@@ -248,35 +248,9 @@ th {
 tbody tr:nth-child(even) {background: #DDD}
 tbody tr:nth-child(odd) {background: #FFF}
 
+
 table p {
     padding: 0;
-}
-
-
-/* SORTABLE TABLES */
-
-thead th {
-    padding: 2px 5px;
-    line-height: normal;
-}
-
-thead th a:link, thead th a:visited {
-    color: #666;
-}
-
-thead th.sorted {
-    background: #c5c5c5 url(../img/nav-bg-selected.gif) top left repeat-x;
-}
-
-table thead th .text span {
-    padding: 2px 5px;
-    display:block;
-}
-
-table thead th .text a {
-    display: block;
-    cursor: pointer;
-    padding: 2px 5px;
 }
 
 
