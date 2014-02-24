@@ -3,29 +3,6 @@
 {% block title %}Home{% endblock %}
 
 
-{% block sidebar_extra %}
-{% if is_admin %}
-<div class="module">
-    <h2>Recent Actions</h2>
-    <h3>My Actions <a href="{% url "kg_log_list" %}">View All</a></h3>
-    <ul class="plainlist">
-        {% for action in recent_actions %}
-        {% spaceless %}
-        <li class=
-        {% if action.is_addition %}"addlink"{% endif %}
-        {% if action.is_change %}"changelink"{% endif %}
-        {% if action.is_deletion %}"deletelink"{% endif %}
-        >
-        {{ action.object_repr }}
-        <br /><span class="mini quiet">{{ action.content_type }}</span></li>
-        {% endspaceless %}
-        {% endfor %}
-    </ul>
-</div>
-{% endif %}
-{% endblock %}
-
-
 {% block content %}
 <div id="content-main">
 
@@ -60,5 +37,18 @@
     </ul>
 
     {% endif %}
+
+    {% if is_admin %}
+    <div class="module">
+        <h2>Recent Actions</h2>
+        {% gen_table recent_actions %}
+        <div class="object-tools">
+            <ul>
+                <li><a href="{% url "kg_log_list" %}">View All</a></li>
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}
