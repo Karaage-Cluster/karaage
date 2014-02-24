@@ -33,6 +33,7 @@ from karaage.people.forms import PasswordChangeForm, PersonForm
 from karaage.people.forms import LoginForm
 from karaage.machines.models import Account
 from karaage.machines.forms import ShellForm
+from karaage.usage.models import CPUJob
 from karaage.common import log
 
 from karaage.common.decorators import login_required
@@ -53,7 +54,8 @@ def profile_personal(request):
     user_applications = []
     start, end = get_date_range(request)
 
-    usage_list = person.personcache_set.filter(start=start, end=end)
+    job_list = CPUJob.objects.select_related()
+    usage_list = job_list.filter(account__person=person)[:5]
 
     return render_to_response('people/profile_personal.html', locals(), context_instance=RequestContext(request))
 

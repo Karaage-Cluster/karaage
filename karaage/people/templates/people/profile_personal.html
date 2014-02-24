@@ -47,27 +47,43 @@
 </div>
 {% endif %}
 
-
+{% if usage_list %}
 <div class="module">
-    <h2>Usage Summary</h2>
-
-    <table>
+    <h2>Latest Usage</h2>
+    <table cellspacing="0">
         <thead>
             <tr>
-                <th>Project ID</th>
-                <th>CPU time</th>
-                <th>No. of Jobs</th>
+                <th>Project</th>
+                <th>Machine</th>
+                <th>date</th>
+                <th>queue</th>
+                <th>cpu usage</th>
+                <th>mem</th>
+                <th>vmem</th>
+                <th>Time in Queue</th>
+                <th>Estimated wall time</th>
+                <th>Actual wall time</th>
             </tr>
         </thead>
         <tbody>
-            {% for u in usage_list|dictsortreversed:"cpu_time" %}
+            {% for u in usage_list %}
             <tr>
-                <td>{{ u.project.pid }}</td>
-                <td>{{ u.cpu_time|timeformat }}</td>
-                <td>{{ u.no_jobs }}</td>
+                <td><a href="{{ u.project.get_absolute_url }}">{{ u.project.pid }}</a></td>
+                {#<td><a href="{{ u.machine.get_absolute_url }}">{{ u.machine }}</a></td>#}
+                <td>{{ u.machine }}</td>
+                <td>{{ u.date }}</td>
+                <td>{{ u.queue }}</td>
+                <td class="right">{{ u.cpu_usage|timeformat }}</td>
+                <td class="right">{{ u.mem|fileformat }}</td>
+                <td class="right">{{ u.vmem|fileformat }}</td>
+                <td class="right">{{ u.wait_time|timeformat }}</td>
+                <td class="right">{{ u.est_wall_time|timeformat }}</td>
+                <td class="right">{{ u.act_wall_time|timeformat }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
+{% endif %}
+
 {% endblock %}
