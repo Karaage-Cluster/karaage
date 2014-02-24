@@ -22,7 +22,7 @@
         </thead>
         <tbody>
             {% for p in leader_project_list %}
-            <tr class="{% cycle row1,row2 %}">
+            <tr>
                 <td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
                 <td>{{ p.name|truncatewords:"8" }}</td>
                 <td>{{ p.start_date|date }}</td>
@@ -55,7 +55,7 @@
                 <td colspan="6">{{ ua }}</td>
             </tr>
             {% for p in ua.project_list %}
-            <tr class="{% cycle row1,row2 %}">
+            <tr>
                 <td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
                 <td>{{ p.name|truncatewords:"8" }}</td>
                 <td>{{ p.start_date|date }}</td>

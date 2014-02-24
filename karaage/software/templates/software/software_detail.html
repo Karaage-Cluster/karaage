@@ -19,15 +19,15 @@
     <div class="module">
         <h2>Details</h2>
         <h3>{{ software }}</h3>
-        <table>
-            {% if software.category %}<tr><td>Category:</td><td><a href="{% url 'kg_software_list' %}?category={{ software.category.id }}">{{ software.category }}</a></td></tr>{% endif %}
-            <tr><td>Description:</td><td>{{ software.description }}</td></tr>
-            <tr><td>Homepage:</td><td>{{ software.homepage|urlize }}</td></tr>
-            <tr><td>Tutorial:</td><td>{{ software.tutorial_url|urlize }}</td></tr>
+        <table class="keyvalue">
+            {% if software.category %}<tr><th>Category:</th><td><a href="{% url 'kg_software_list' %}?category={{ software.category.id }}">{{ software.category }}</a></td></tr>{% endif %}
+            <tr><th>Description:</th><td>{{ software.description }}</td></tr>
+            <tr><th>Homepage:</th><td>{{ software.homepage|urlize }}</td></tr>
+            <tr><th>Tutorial:</th><td>{{ software.tutorial_url|urlize }}</td></tr>
             {% if software.group %}
-            <tr><td>Group:</td><td><a href="{{ software.group.get_absolute_url }}">{{ software.group }}</a></td></tr>
+            <tr><th>Group:</th><td><a href="{{ software.group.get_absolute_url }}">{{ software.group }}</a></td></tr>
             {% endif %}
-            <tr><td>Restricted:</td><td>{% yes_no_img software.restricted %}</td></tr>
+            <tr><th>Restricted:</th><td>{% yes_no_img software.restricted %}</td></tr>
         </table>
         <div class="object-tools">
             <ul>
@@ -59,7 +59,7 @@
             </thead>
             <tbody>
                 {% for version in software.softwareversion_set.select_related %}
-                <tr class="{% cycle row1,row2 %}">
+                <tr>
                     <td>{{ version.version }}</td>
                     <td>{{ version.module }}</td>
                     <td>
@@ -91,7 +91,7 @@
             </thead>
             <tbody>
                 {% for license in software.softwarelicense_set.all %}
-                <tr class="{% cycle row1,row2 %}">
+                <tr>
                     <td>{{ license.version }}</td>
                     <td>{{ license.date|date }}</td>
                     <td><a href="{% url 'kg_software_license_detail' license.id %}">view</a></td>
@@ -133,7 +133,7 @@
             </thead>
             <tbody>
                 {% for person in software.get_group_members %}
-                <tr class="{% cycle row1,row2 %}">
+                <tr>
                     <td>{{ person.username }}</td>
                     <td><a href="{{ person.get_absolute_url }}">{{ person }}</a></td>
                     {% if is_admin %}

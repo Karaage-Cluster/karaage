@@ -40,7 +40,7 @@
             </thead>
             <tbody>
                 {% for u in person_list|dictsortreversed:"usage" %}
-                <tr class="{% cycle row1,row2 %}">
+                <tr>
                     <td>{{ forloop.counter }}</td>
                     <td><a href="{{ u.person.get_absolute_url }}">{{ u.person }}</a></td>
                     <td><a href="{% url 'kg_usage_project' machine_category.pk u.project.pid %}{% url_with_param start=start end=end %}">{{ u.project|truncatewords:"6" }}</a></td>

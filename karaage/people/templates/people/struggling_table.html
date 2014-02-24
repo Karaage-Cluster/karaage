@@ -14,7 +14,7 @@
     <tbody>
         {% for person in object_list %}
 
-        <tr class="{% cycle row1,row2 %}">
+        <tr>
             <td>
                 {% if not person.is_active %}
                 <img src="{{ STATIC_URL }}img/icon-no.gif" alt="inactive" />

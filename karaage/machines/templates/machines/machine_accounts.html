@@ -32,7 +32,7 @@
             </thead>
             <tbody>
                 {% for ua in accounts %}
-                <tr class="{% cycle row1,row2 %}">
+                <tr>
                     <td>{% yes_no_img ua.date_deleted "reversed" %}</td>
                     <td><a href="{{ ua.person.get_absolute_url }}">{{ ua.person }}</a></td>
                     <td>{{ ua.username }}</td>

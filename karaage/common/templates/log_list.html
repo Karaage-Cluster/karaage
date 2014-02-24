@@ -33,7 +33,7 @@
     </thead>
     <tbody>
         {% for l in page.object_list %}
-        <tr class="{% cycle row1,row2 %}">
+        <tr>
             <td>{{ l.action_time }}</td>
             <td>{% if l.user %}<a href="{{ l.user.get_absolute_url }}">{{ l.user.get_full_name }}</a>{% else %}Unknown{% endif %}</td>
             {% if not short %}

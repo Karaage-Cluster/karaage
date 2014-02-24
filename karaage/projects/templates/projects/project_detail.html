@@ -38,55 +38,53 @@
             {% endif %}
         </h3>
 
-        <table>
+        <table class="keyvalue">
             {% if not project.is_active and not requestor %}
             <tr><td colspan="2">Deleted by {{ project.deleted_by }} on {{ project.date_deleted }}</td></tr>
             {% endif %}
             <tr>
-                <td>Leaders:</td>
+                <th>Leaders:</th>
                 <td>{% for l in project.leaders.all %}<a href="{{ l.get_absolute_url }}">{{ l }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
             </tr>
-            <tr><td>Institute:</td><td><a href="{{ project.institute.get_absolute_url }}">{{ project.institute }}</a></td></tr>
+            <tr><th>Institute:</th><td><a href="{{ project.institute.get_absolute_url }}">{{ project.institute }}</a></td></tr>
 
 
             {% if is_admin %}
-            <tr><td>Group:</td><td><a href="{{ project.group.get_absolute_url }}">{{ project.group }}</a></td></tr>
+            <tr><th>Group:</th><td><a href="{{ project.group.get_absolute_url }}">{{ project.group }}</a></td></tr>
             {% else %}
-            <tr><td>Group:</td><td>{{ project.group }}</td></tr>
+            <tr><th>Group:</th><td>{{ project.group }}</td></tr>
             {% endif %}
 
-            <tr><td>Description:</td><td>{{ project.description|linebreaks }}</td></tr>
+            <tr><th>Description:</th><td>{{ project.description|linebreaks }}</td></tr>
             {% if is_admin %}
-            <tr><td>Last Usage:</td><td>{% if project.last_usage %}{{ project.last_usage|date }} ({{ project.last_usage|timesince }}){% else %}No usage{% endif %}</td></tr>
+            <tr><th>Last Usage:</th><td>{% if project.last_usage %}{{ project.last_usage|date }} ({{ project.last_usage|timesince }}){% else %}No usage{% endif %}</td></tr>
             {% endif %}
-            <tr><td>Start Date:</td><td>{{ project.start_date|date }}</td></tr>
+            <tr><th>Start Date:</th><td>{{ project.start_date|date }}</td></tr>
             {% if project.end_date %}
-            <tr><td>End Date:</td><td>{{ project.end_date|date }}</td></tr>
+            <tr><th>End Date:</th><td>{{ project.end_date|date }}</td></tr>
             {% endif %}
-            <tr><td>Approved:</td><td>{% yes_no_img project.is_approved %}</td></tr>
-            <tr><td>Active:</td><td>{% yes_no_img project.is_active %}</td></tr>
-            <tr id="hidden-link"><td colspan="2"><a href="#" onclick="showHidden()">More....</a></td></tr>
-        </table>
-
-        {% if is_admin %}
-        <table id="hidden" style="display: none">
-            <tr><td>Additional Req:</td><td>{{ project.additional_req|linebreaks }}</td></tr>
+            <tr><th>Approved:</th><td>{% yes_no_img project.is_approved %}</td></tr>
+            <tr><th>Active:</th><td>{% yes_no_img project.is_active %}</td></tr>
+            <tr><th>Categories:</th><td>{% for pq in project.projectquota_set.all %}<a href='{% url 'kg_machine_category_detail' pq.machine_category.pk %}'>{{ pq.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
+            {% if is_admin %}
+            <tr class="hidden-link"><td colspan="2"><a href="#">More....</a></td></tr>
+            <tr><th>Additional Req:</th><td>{{ project.additional_req|linebreaks }}</td></tr>
             {% if project.approved_by %}
-            <tr><td>Approved by:</td><td><a href="{{ project.approved_by.get_absolute_url }}">{{ project.approved_by }}</a></td></tr>
+            <tr><th>Approved by:</th><td><a href="{{ project.approved_by.get_absolute_url }}">{{ project.approved_by }}</a></td></tr>
             {% endif %}
             {% if project.date_approved %}
-            <tr><td>Date Approved:</td><td>{{ project.date_approved|date }}</td></tr>
+            <tr><th>Date Approved:</th><td>{{ project.date_approved|date }}</td></tr>
             {% endif %}
             {% if project.deleted_by %}
-            <tr><td>Deleted by:</td><td><a href="{{ project.deleted_by.get_absolute_url }}">{{ project.deleted_by }}</a></td></tr>
-            <tr><td>Date Deleted:</td><td>{{ project.date_deleted|date }}</td></tr>
+            <tr><th>Deleted by:</th><td><a href="{{ project.deleted_by.get_absolute_url }}">{{ project.deleted_by }}</a></td></tr>
+            <tr><th>Date Deleted:</th><td>{{ project.date_deleted|date }}</td></tr>
+            {% endif %}
             {% endif %}
         </table>
-        {% endif %}
 
         <div class="object-tools">
             <ul>
-                {% for pc in project.projectquota_set.all %}<li><a href="{% url 'kg_usage_project' pc.machine_category.pk project.pid %}">Usage: {{ pc.machine_category }}</a></li>{% if not forloop.last %}, {% endif %}{% endfor %}
+                {% for pc in project.projectquota_set.all %}<li><a href="{% url 'kg_usage_project' pc.machine_category.pk project.pid %}">Usage: {{ pc.machine_category }}</a></li>{% endfor %}
                 <li><a href="{% url 'kg_usage_job_list' %}?project={{ project.pid }}">Display all jobs</a></li>
 
                 {% if is_admin %}
@@ -106,14 +104,15 @@
 
     {% if is_admin %}
     <div class="module">
-        <h2>Project Caps/quota
-            <a href="{% url 'kg_projectquota_add' project.pid %}" class="addlink">Add</a>
-        </h2>
+        <h2>Project Caps/quota</h2>
         <table>
             <thead>
                 <tr>
                     <th>Machine Category</th>
                     <th>Quota</th>
+                    {% if is_admin %}
+                    <th></th><th></th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -129,6 +128,11 @@
                 {% endfor %}
             </tbody>
         </table>
+        <div class="object-tools">
+            <ul>
+                <li><a href="{% url 'kg_projectquota_add' project.pid %}" class="addlink">Add</a></li>
+            </ul>
+        </div>
     </div>
     {% endif %}
 

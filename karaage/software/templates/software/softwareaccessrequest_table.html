@@ -12,7 +12,7 @@
     </thead>
     <tbody>
         {% for sr in object_list %}
-        <tr class="{% cycle row1,row2 %}">
+        <tr>
             <td><a href="{{ sr.person.get_absolute_url }}">{{ sr.person }}</a></td>
             <td><a href="{{ sr.software_license.software.get_absolute_url }}">{{ sr.software_license.software }}</a></td>
             <td><a href="{{ sr.software_license.get_absolute_url }}">{{ sr.software_license }}</a></td>

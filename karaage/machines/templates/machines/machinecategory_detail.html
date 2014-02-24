@@ -19,20 +19,28 @@
     <div class="module">
         <h2>{{ machine_category.name }}</h2>
         <table>
-            {% for m in machine_category.machine_set.all %}
-            <tr>
-                <td>
-                    <a href="{{ m.get_absolute_url }}">{{ m.name }}</a> 
-                </td>
-                <td>
-                    {% if m.end_date %}
-                    <span>Decommissioned {{ m.end_date }}.</span>
-                    {% else %}
-                    <span>Active since {{m.start_date }}.</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
+            <thead>
+                <tr>
+                    <th>Machine Name</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in machine_category.machine_set.all %}
+                <tr>
+                    <td>
+                        <a href="{{ m.get_absolute_url }}">{{ m.name }}</a> 
+                    </td>
+                    <td>
+                        {% if m.end_date %}
+                        <span>Decommissioned {{ m.end_date }}.</span>
+                        {% else %}
+                        <span>Active since {{m.start_date }}.</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
         {% if is_admin %}
         <div class="object-tools">

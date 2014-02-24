@@ -11,7 +11,7 @@
     <tbody>
         {% for obj in object_list %}
         {% with app=obj.get_object %}
-        <tr class="{% cycle row1,row2 %}">
+        <tr>
             <td><a href="{{ app.get_absolute_url }}">{{ app.id }}</a></td>
             <td>{{ app.info }}</td>
             {% if app.applicant.is_authenticated %}

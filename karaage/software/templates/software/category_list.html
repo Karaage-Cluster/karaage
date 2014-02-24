@@ -25,7 +25,7 @@
             </thead>
             <tbody>
                 {% for c in category_list %}
-                <tr class="{% cycle row1,row2 %}">
+                <tr>
                     <td><a href="{{ c.id }}/edit/">{{ c.name }}</a></td>
                 </tr>
                 {% endfor %}

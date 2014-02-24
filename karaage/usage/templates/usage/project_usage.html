@@ -44,7 +44,7 @@
             {% if usage_list %}
             <tbody>
                 {% for u in usage_list %}
-                <tr class="{% cycle row1,row2 %}">
+                <tr>
                 <td><a href="{{ u.person.get_absolute_url }}">{{ u.person }}</a></td>
                 <td class="right">{{ u.usage|timeformat }}</td>
                 <td class="right">{{ u.jobs|intcomma }}</td>
@@ -62,7 +62,7 @@
             </tfoot>
             {% else %}
             <tbody>
-                <tr class="{% cycle row1,row2 %}">
+                <tr>
                     <td colspan="4">No usage for that time period</td>
                 </tr>
             </tbody>

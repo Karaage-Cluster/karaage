@@ -41,7 +41,7 @@
                 </thead>
                 <tbody>
                     {% for u in usage_list %}
-                    <tr class="{% cycle row1,row2 %}">
+                    <tr>
                         <td><input name="uid" type="checkbox" value="{{ u.id }}"/></td>
                         <td><a href="{{ u.account.person.get_absolute_url }}">{{ u.account.person }}</a></td>
                         <td>{{ u.username }}</td>

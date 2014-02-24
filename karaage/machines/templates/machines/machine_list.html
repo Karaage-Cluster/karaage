@@ -26,9 +26,18 @@
 
 
 {% block list_content %}
-<ul>
-    {% for c in page.object_list %}
-    <li><a href="{% url 'kg_machine_category_detail' c.pk %}">{{ c }}</a></li>
-    {% endfor %}
-</ul>
+<table>
+    <thead>
+        <tr>
+            <th>Machine Category Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in page.object_list %}
+        <tr>
+            <td><a href="{% url 'kg_machine_category_detail' c.pk %}">{{ c }}</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

@@ -42,7 +42,7 @@
 
             <tbody>
                 {% for person in person_stats|dictsortreversed:"usage" %}
-                <tr class="{% cycle row1,row2 as rowcolours %}">
+                <tr>
                     <td><a href="{{ person.get_absolute_url }}">{{ person }}</a></td>
                     <td class="right">{{ person.usage|timeformat }}</td>
                     <td class="right">{{ person.jobs|intcomma }}</td>

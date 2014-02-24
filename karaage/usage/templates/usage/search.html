@@ -40,7 +40,7 @@
         </thead>
         <tbody>
             {% for p in project_list|dictsortreversed:"time" %}
-            <tr class="{% cycle row1,row2 %}">
+            <tr>
                 <td><a href="{% url 'kg_usage_project' machine_category.pk p.obj.pk %}{% url_with_param start=start end=end %}">{{ p.obj }}</a></td>
                 <td class="right">{{ p.time|timeformat }}</td>
                 <td class="right">{{ p.jobs }}</td>
@@ -64,7 +64,7 @@
         </thead>
         <tbody>
             {% for i in institute_list|dictsortreversed:"time" %}
-            <tr class="{% cycle row1,row2 %}">
+            <tr>
                 <td><a href="{% url 'kg_usage_institute' machine_category.pk i.obj.pk %}{% url_with_param start=start end=end %}">{{ i.obj }}</a></td>
                 <td class="right">{{ i.time|timeformat }}</td>
                 <td class="right">{{ i.jobs }}</td>

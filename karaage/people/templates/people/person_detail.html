@@ -41,23 +41,18 @@
             {% endif %}
         </h3>
 
-        <table>
+        <table class="keyvalue">
             {% if person.deleted_by %}
             <tr><td colspan="2">Deleted by {{ person.deleted_by }} on {{ person.date_deleted }}</td></tr>
             {% endif %}
-            <tr><td>Email:</td><td>{{ person.email|urlize }}</td></tr>
-            <tr><td>Position:</td><td>{{ person.position|default:"" }}</td></tr>
-            <tr><td>Department:</td><td>{{ person.department|default:"" }}</td></tr>
-            <tr><td>Supervisor:</td><td>{{ person.supervisor|default:"" }}</td></tr>
+            <tr><th>Email:</th><td>{{ person.email|urlize }}</td></tr>
+            <tr><th>Position:</th><td>{{ person.position|default:"" }}</td></tr>
+            <tr><th>Department:</th><td>{{ person.department|default:"" }}</td></tr>
+            <tr><th>Supervisor:</th><td>{{ person.supervisor|default:"" }}</td></tr>
             <tr>
-              <td>Institute:</td>
+              <th>Institutes:</th>
               <td>
-                <a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a>
-              </td>
-            </tr>
-            <tr>
-              <td>Insitutes (extra):</td>
-              <td>
+                  <a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a><br/>
                 {% for institute in person.institutes.all %}
                 <a href="{{ institute.get_absolute_url }}">{{ institute }}</a>
                 {% if not forloop.last %}, {% endif %}
@@ -66,18 +61,18 @@
             </tr>
 
             <tr>
-              <td>Phone:</td>
+              <th>Phone:</th>
               <td>{{ person.telephone|default:"" }}</td>
             </tr>
 
             {% if person.mobile %}
             <tr>
-              <td>Mobile:</td><td>{{ person.mobile|default:"" }}</td>
+              <th>Mobile:</th><td>{{ person.mobile|default:"" }}</td>
             </tr>
             {% endif %}
 
             <tr>
-              <td>Groups:</td>
+              <th>Groups:</th>
               <td>
                 {% for group in person.groups.all %}
                 {% if is_admin %}
@@ -91,7 +86,7 @@
             </tr>
 
             <tr>
-              <td>Projects:</td>
+              <th>Projects:</th>
               <td>
                 {% for project in person.projects.all %}
                 <a href="{{ project.get_absolute_url }}">{{ project }}</a>
@@ -101,7 +96,7 @@
             </tr>
 
             <tr>
-              <td>Software:</td>
+              <th>Software:</th>
               <td>
                 {% for software in person.software.all %}
                 <a href="{{ software.get_absolute_url }}">{{ software }}</a>
@@ -109,26 +104,23 @@
                 {% endfor %}
               </td>
             </tr>
-            <tr id="hidden-link">
+            <tr class="hidden-link">
               <td colspan="2">
-                <a href="#" onclick="showHidden()">More....</a>
+                <a href="#">More....</a>
               </td>
             </tr>
-        </table>
-
-        <table id="hidden" style="display: none">
-            <tr><td>Fax:</td><td>{{ person.fax }}</td></tr>
-            <tr><td>Address:</td><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>
-            <tr><td>Country:</td><td>{{ person.get_country_display|default:"" }}</td></tr>
+            <tr><th>Fax:</th><td>{{ person.fax }}</td></tr>
+            <tr><th>Address:</th><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>
+            <tr><th>Country:</th><td>{{ person.get_country_display|default:"" }}</td></tr>
             {% if is_admin %}
-            <tr><td>Comment:</td><td>{{ person.comment|default:"" }}</td></tr>
-            <tr><td>Approved by:</td><td>{{ person.approved_by }}</td></tr>
-            <tr><td>Date Approved:</td><td>{{ person.date_approved|date }}</td></tr>
+            <tr><th>Comment:</th><td>{{ person.comment|default:"" }}</td></tr>
+            <tr><th>Approved by:</th><td>{{ person.approved_by }}</td></tr>
+            <tr><th>Date Approved:</th><td>{{ person.date_approved|date }}</td></tr>
             {% if person.deleted_by %}
             <tr><td>Deleted by:</td><td>{{ person.deleted_by }}</td></tr>
             <tr><td>Date Deleted:</td><td>{{ person.date_deleted|date }}</td></tr>
             {% endif %}
-            <tr><td>Username:</td><td>{{ person.username }}</td></tr>
+            <tr><th>Username:</th><td>{{ person.username }}</td></tr>
             {% if person.saml_id %}
             <tr><td>SAML ID:</td><td>{{ person.saml_id }}</td></tr>
             {% endif %}
@@ -187,8 +179,8 @@
     {% for ua in person.account_set.all %}
     <div class="module">
         <h2>{{ ua.machine_category }} Account</h2>
-        <h3>Account</h3>
-        <table cellspacing="0">
+        <h3>Details</h3>
+        <table>
             <thead>
                 <tr>
                     <th>Active</th>
@@ -196,10 +188,13 @@
                     <th>Date Created</th>
                     <th>Date Deleted</th>
                     <th>Shell</th>
+                    {% if not ua.date_deleted and is_admin %}
+                    <th> </th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
-                <tr class="row1">
+                <tr>
                     <td>
                         {% if ua.date_deleted %}
                         <img alt="Not Active" src="{{ STATIC_URL }}img/icon-no.gif" title="Not Active"/>
@@ -234,7 +229,7 @@
 
         {% if ua.project_list and not ua.date_deleted %}
         <h3>Projects</h3>
-        <table cellspacing="0">
+        <table>
             <thead>
                 <tr>
                     <th>Project</th>
@@ -242,30 +237,37 @@
                     <th>Institute</th>
                     <th>Leaders</th>
                     <th>Default</th>
+                    {% if is_admin %}{% ifnotequal p ua.default_project %}
+                    <th></th>
+                    {% endifnotequal %}{% endif %}
                 </tr>
             </thead>
             <tbody>
             {% for p in ua.project_list %}
-            <tr class="{% cycle row1,row2 %}">
+            <tr>
                 <td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
                 <td>{{ p.name|truncatewords:"10" }}</td>
                 <td><a href="{{ p.institute.get_absolute_url }}">{{ p.institute }}</a></td>
                 <td>{% for leader in p.leaders.all %}<a href="{{ leader.get_absolute_url }}">{{ leader }}, </a>{% endfor %}</td>
                 <td>
                     {% ifequal p ua.default_project %}
-                    <img alt="1" src="{{ STATIC_URL }}img/icon-yes.gif"/>{% else %}
-                    {% if is_admin %}
-                    <form action="{% url 'kg_account_set_default' ua.id p.pid %}" method="post">
-                        {% csrf_token %}
-                        <input type="submit" value="Make Default"/></input>
-                    </form>
-                    {% endif %}{% endifequal %}
+                        <img alt="1" src="{{ STATIC_URL }}img/icon-yes.gif"/>
+                    {% else %}
+                        {% if is_admin %}
+                        <form action="{% url 'kg_account_set_default' ua.id p.pid %}" method="post">
+                            {% csrf_token %}
+                            <input type="submit" value="Make Default"/></input>
+                        </form>
+                        {% else %}
+                        <img alt="1" src="{{ STATIC_URL }}img/icon-no.gif"/>
+                        {% endif %}
+                    {% endifequal %}
                 </td>
+                {% if is_admin %}{% ifnotequal p ua.default_project %}
                 <td>
-                    {% if is_admin %}{% ifnotequal p ua.default_project %}
                     <a href="{% url 'kg_remove_project_member' p.pid person.username %}" class="deletelink">Remove</a>
-                    {% endifnotequal %}{% endif %}
                 </td>
+                {% endifnotequal %}{% endif %}
             </tr>
             {% endfor %}
             </tbody>

@@ -10,7 +10,7 @@
     </thead>
     <tbody>
         {% for person in object_list %}
-        <tr class="{% cycle row1,row2 %}">
+        <tr>
             <td><a href="{{ person.get_absolute_url }}">{{ person.username }}</a></td>
             <td>{{ person.get_full_name }}</td>
             <td>{{ person.email|urlize }}</td>

@@ -23,27 +23,27 @@
     <div class="module">
         <h2>Machines</h2>
         <h3>{{ machine }}</h3>
-        <table>
-            <tr><td>No. CPUs:</td><td>{{ machine.no_cpus }}</td></tr>
-            <tr><td>No. Nodes:</td><td>{{ machine.no_nodes }}</td></tr>
+        <table class="keyvalue">
+            <tr><th>No. CPUs:</th><td>{{ machine.no_cpus }}</td></tr>
+            <tr><th>No. Nodes:</th><td>{{ machine.no_nodes }}</td></tr>
             <tr><td>Type: </td><td>{{ machine.type }}</td></tr>
-            <tr><td>Category:</td><td>{{ machine.category }}</td></tr>
-            <tr><td>Start Date:</td><td>{{ machine.start_date }}</td></tr>
+            <tr><th>Category:</th><td>{{ machine.category }}</td></tr>
+            <tr><th>Start Date:</th><td>{{ machine.start_date }}</td></tr>
             {% if machine.end_date %}
-            <tr><td>End Date:</td><td>{{ machine.end_date }}</td></tr>
+            <tr><th>End Date:</th><td>{{ machine.end_date }}</td></tr>
             {% endif %}
-            <tr><td>PBS server host:</td><td>{{ machine.pbs_server_host }}</td></tr>
-            <tr><td>Memory per core:</td><td>{{ machine.mem_per_core }}</td></tr>
-            <tr><td>Scaling factor:</td><td>{{ machine.scaling_factor }}</td></tr>
+            <tr><th>PBS server host:</th><td>{{ machine.pbs_server_host }}</td></tr>
+            <tr><th>Memory per core:</th><td>{{ machine.mem_per_core }}</td></tr>
+            <tr><th>Scaling factor:</th><td>{{ machine.scaling_factor }}</td></tr>
             {% if is_admin %}
-            <tr><td colspan="2"><a href="{% url 'kg_machine_accounts' machine.pk %}">User Accounts</a></td></tr>
-            <tr><td colspan="2"><a href="{% url 'kg_machine_projects' machine.pk %}">Projects</a></td></tr>
-            <tr><td colspan="2"><a href="{% url 'kg_machine_edit' machine.pk %}" class="changelink">Edit</a></td></tr>
             {% endif %}
         </table>
         {% if is_admin %}
         <div class="object-tools">
             <ul>
+                <li><a href="{% url 'kg_machine_accounts' machine.pk %}">User Accounts</a></li>
+                <li><a href="{% url 'kg_machine_projects' machine.pk %}">Projects</a></li>
+                <li><a href="{% url 'kg_machine_edit' machine.pk %}" class="changelink">Edit</a></li>
                 <li><a href="{% url 'kg_machine_logs' machine.pk %}">Logs</a></li>
                 <li><a href="{% url 'kg_machine_password' machine.pk %}">Password</a></li>
             </ul>

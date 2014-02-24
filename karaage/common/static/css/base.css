@@ -7,6 +7,7 @@ body {
     background: #fff;
 }
 
+
 /* LINKS */
 
 a:link, a:visited {
@@ -26,6 +27,7 @@ a.section:link, a.section:visited {
     color: white;
     text-decoration: none;
 }
+
 
 /* GLOBAL DEFAULTS */
 
@@ -214,72 +216,42 @@ p img, h1 img, h2 img, h3 img, h4 img, td img {
     white-space: nowrap;
 }
 
+
 /* TABLES */
 
 table {
     border-collapse: collapse;
     border-color: #ccc;
+    overflow: auto;
+    width: 100%;
 }
 
 td, th {
     line-height: 13px;
-    border-bottom: 1px solid #eee;
+    border: 1px solid #ddd;
     vertical-align: top;
     padding: 5px;
     font-family: "Lucida Grande", Verdana, Arial, sans-serif;
 }
 
+table.keyvalue th {
+    width: 100px;
+}
+
 th {
     text-align: left;
     font-weight: bold;
+    color: #333;
+    background: #7CA0A0;
 }
 
-thead th,
-tfoot td {
-    color: #666;
-    padding: 2px 5px;
-    background: #e1e1e1 url(../img/nav-bg.gif) top left repeat-x;
-    border-left: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
+tbody tr:nth-child(even) {background: #DDD}
+tbody tr:nth-child(odd) {background: #FFF}
+
+table p {
+    padding: 0;
 }
 
-tfoot td {
-    border-bottom: none;
-    border-top: 1px solid #ddd;
-}
-
-thead th:first-child,
-tfoot td:first-child {
-    border-left: none !important;
-}
-
-thead th.optional {
-    font-weight: normal !important;
-}
-
-fieldset table {
-    border-right: 1px solid #eee;
-}
-
-tr.row-label td {
-    padding-top: 2px;
-    padding-bottom: 0;
-    border-bottom: none;
-    color: #666;
-    margin-top: -1px;
-}
-
-tr.alt {
-    background: #f6f6f6;
-}
-
-.row1 {
-    background: #EDF3FE;
-}
-
-.row2 {
-    background: white;
-}
 
 /* SORTABLE TABLES */
 
@@ -307,76 +279,6 @@ table thead th .text a {
     padding: 2px 5px;
 }
 
-table thead th.sortable:hover {
-    background: white url(../img/nav-bg-reverse.gif) 0 -5px repeat-x;
-}
-
-thead th.sorted a.sortremove {
-    visibility: hidden;
-}
-
-table thead th.sorted:hover a.sortremove {
-    visibility: visible;
-}
-
-table thead th.sorted .sortoptions {
-    display: block;
-    padding: 4px 5px 0 5px;
-    float: right;
-    text-align: right;
-}
-
-table thead th.sorted .sortpriority {
-    min-width: 12px;
-    text-align: center;
-    vertical-align: top;
-}
-
-table thead th.sorted .sortoptions a {
-    width: 14px;
-    height: 12px;
-    display: inline-block;
-}
-
-table thead th.sorted .sortoptions a.sortremove {
-    background: url(../img/sorting-icons.gif) -4px -5px no-repeat;
-}
-
-table thead th.sorted .sortoptions a.sortremove:hover {
-    background: url(../img/sorting-icons.gif) -4px -27px no-repeat;
-}
-
-table thead th.sorted .sortoptions a.ascending {
-    background: url(../img/sorting-icons.gif) -5px -50px no-repeat;
-}
-
-table thead th.sorted .sortoptions a.ascending:hover {
-    background: url(../img/sorting-icons.gif) -5px -72px no-repeat;
-}
-
-table thead th.sorted .sortoptions a.descending {
-    background: url(../img/sorting-icons.gif) -5px -94px no-repeat;
-}
-
-table thead th.sorted .sortoptions a.descending:hover {
-    background: url(../img/sorting-icons.gif) -5px -115px no-repeat;
-}
-
-/* ORDERABLE TABLES */
-
-table.orderable tbody tr td:hover {
-    cursor: move;
-}
-
-table.orderable tbody tr td:first-child {
-    padding-left: 14px;
-    background-image: url(../img/nav-bg-grabber.gif);
-    background-repeat: repeat-y;
-}
-
-table.orderable-initalized .order-cell, body>tr>td.order-cell {
-    display: none;
-}
 
 /* FORM DEFAULTS */
 
@@ -396,9 +298,10 @@ input[type=text], input[type=password], textarea, select, .vTextField {
     border: 1px solid #ccc;
 }
 
+
 /* FORM BUTTONS */
 
-.button, input[type=submit], input[type=button], .submit-row input {
+.button, input[type=submit], input[type=button] {
     background: white url(../img/nav-bg.gif) bottom repeat-x;
     padding: 3px 5px;
     color: black;
@@ -412,59 +315,62 @@ input[type=text], input[type=password], textarea, select, .vTextField {
 }
 
 .button[disabled], input[type=submit][disabled], input[type=button][disabled] {
-	background-image: url(../img/nav-bg.gif);
-	background-position: bottom;
-	opacity: 0.4;
+    background-image: url(../img/nav-bg.gif);
+    background-position: bottom;
+    opacity: 0.4;
 }
 
-.button.default, input[type=submit].default, .submit-row input.default {
+.button.default, input[type=submit].default, input[type=button].default {
     border: 2px solid #5b80b2;
     background: #7CA0C7 url(../img/default-bg.gif) bottom repeat-x;
     font-weight: bold;
     color: white;
-    float: right;
 }
 
-.button.default:active, input[type=submit].default:active {
+.button.default:active, input[type=submit].default:active, input[type=button]:active {
     background-image: url(../img/default-bg-reverse.gif);
     background-position: top;
 }
 
 .button[disabled].default, input[type=submit][disabled].default, input[type=button][disabled].default {
-	background-image: url(../img/default-bg.gif);
-	background-position: bottom;
-	opacity: 0.4;
+    background-image: url(../img/default-bg.gif);
+    background-position: bottom;
+    opacity: 0.4;
+}
+
+
+/* SUBMIT ROW */
+
+.submit-row .button.default, .submit-row input.default {
+    float: right;
 }
 
 
 /* MODULES */
 
 .module, .module.object-tools {
-    border: 1px solid #ccc;
+    border: 1px solid #666;
     margin: 0 0 5px 0;
     background: white;
     width: 100%;
 }
 
-.module p, .module ul, .module h3, .module h4, .module dl, .module pre {
-    padding-left: 10px;
-    padding-right: 10px;
+.module p, .module ul, .module h3, .module h4, .module dl, .module pre, .module form, .module table, .module .object-tools {
+    margin: 0 4px 2px 4px;
+}
+
+.module table {
+    width: 99%;
+    width: calc(100% - 8px);
 }
 
 .module blockquote {
     margin-left: 12px;
 }
 
-.module ul, .module ol {
-    margin-left: 1.5em;
-}
-
-.module h3 {
-    margin-top: .6em;
-}
-
 .module h2, .module caption, .inline-group h2 {
-    margin: 0;
+    margin-top: 0;
+    margin-bottom: 4px;
     padding: 2px 5px 3px 5px;
     font-size: 11px;
     text-align: left;
@@ -473,15 +379,17 @@ input[type=text], input[type=password], textarea, select, .vTextField {
     color: #666;
 }
 
-.module table {
-    border-collapse: collapse;
-    width: 100%;
-    overflow: auto;
+.module h3 {
+    margin-top: 0;
+    margin-bottom: 4px;
+    padding: 2px 5px 3px 5px;
+    font-size: 11px;
+    text-align: left;
+    font-weight: bold;
+    background-color: #C7C7A0;
 }
 
-.module table td {
-    border-left: 1px solid #ddd;
-}
+
 
 /* MESSAGES & ERRORS */
 
@@ -569,6 +477,7 @@ div.system-message p.system-message-title {
     padding: 5px 0 0 12px;
 }
 
+
 /* BREADCRUMBS */
 
 div.breadcrumbs {
@@ -579,6 +488,7 @@ div.breadcrumbs {
     border-bottom: 1px solid #ccc;
     text-align: left;
 }
+
 
 /* ACTION ICONS */
 
@@ -622,20 +532,20 @@ div.breadcrumbs {
 .object-tools {
     display: inline-block;
     border: 1px solid black;
-    margin: 0 4px 4px 4px;
+    margin-bottom: 4px;
 }
 
 .object-tools ul {
     margin: 0;
     padding: 2px 4px 0 4px;
 }
+
 .object-tools li {
     display: inline-block;
     vertical-align: bottom;
     margin-bottom: 2px;
 }
-.object-tools li:hover {
-}
+
 .object-tools a {
     display: block;
     width: 100px;
@@ -646,34 +556,28 @@ div.breadcrumbs {
     color: #333;
     background-color: #bbb;
 }
+
 .object-tools a:hover {
     color: #fff;
     background-color: #333;
 }
+
 #content-related .object-tools li {
     width: 100%;
 }
+
 #content-related .object-tools a {
     width: auto;
     color: #333;
     background-color: #eee;
 }
+
 #content-related .object-tools a:hover {
     width: auto;
     color: #fff;
     background-color: #333;
 }
 
-
-/* OBJECT HISTORY */
-
-table#change-history {
-    width: 100%;
-}
-
-table#change-history tbody th {
-    width: 16em;
-}
 
 /* PAGE STRUCTURE */
 
@@ -787,10 +691,11 @@ table#change-history tbody th {
 /* SIDEBAR */
 
 #content-related input[type="text"] {
-    width:9em;
+    width: 9em;
 }
 #content-related input[type="submit"] {
-    width:2em;
+    width: 2em;
+    padding: 0;
 }
 
 #content-related .module h2 {
@@ -803,10 +708,6 @@ table#change-history tbody th {
 .locked {
     color: #AAA;
     text-decoration:line-through;
-}
-
-.module table p {
-    padding: 0;
 }
 
 .graph_key_red { background-color: red; }

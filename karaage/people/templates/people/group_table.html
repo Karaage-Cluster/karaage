@@ -8,7 +8,7 @@
     </thead>
     <tbody>
         {% for group in object_list %}
-        <tr class="{% cycle row1,row2 %}">
+        <tr>
             <td><a href="{{ group.get_absolute_url }}">{{ group.name }}</a></td>
             <td>{{ group.description }}</td>
             <td>{% for member in group.members.all %}

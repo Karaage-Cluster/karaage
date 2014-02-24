@@ -23,7 +23,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="{% cycle row1,row2 %}">
+            <tr>
                 <td>
                     {% if ua.date_deleted %}
                     <img alt="Not Active" src="{{ STATIC_URL }}img/icon-no.gif" title="Not Active"/>
@@ -72,7 +72,7 @@
         </thead>
         <tbody>
             {% for u in ua.get_latest_usage %}
-            <tr class="{% cycle row1,row2 %}">
+            <tr>
                 <td><a href="{{ u.project.get_absolute_url }}">{{ u.project.pid }}</a></td>
                 {#<td><a href="{{ u.machine.get_absolute_url }}">{{ u.machine }}</a></td>#}
                 <td>{{ u.machine }}</td>
