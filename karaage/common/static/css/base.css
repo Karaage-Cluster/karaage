@@ -248,6 +248,9 @@ th {
 tbody tr:nth-child(even) {background: #DDD}
 tbody tr:nth-child(odd) {background: #FFF}
 
+tfoot td {
+    font-weight: bold;
+}
 
 table p {
     padding: 0;
