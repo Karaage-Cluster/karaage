@@ -280,7 +280,7 @@
         {% if is_admin and person.is_active %}
         <div class="object-tools">
             <ul>
-                <li><a href="{% url 'kg_usage_job_list' %}?account={{ ua.username }}">Display all jobs</a></li>
+                <li><a href="{% url 'kg_usage_job_list' %}?account={{ ua.pk }}">Display all jobs</a></li>
                 <li><a href="{% url 'kg_person_add_account' person.username %}" class="addlink">Add account</a></li>
             </ul>
         </div>

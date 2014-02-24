@@ -802,7 +802,7 @@ def job_list(request):
         job_list = job_list.filter(software__software__id=int(request.GET['software']))
 
     if 'account' in request.REQUEST:
-        job_list = job_list.filter(account__username=request.GET['account'])
+        job_list = job_list.filter(account__pk=int(request.GET['account']))
 
     if 'project' in request.REQUEST:
         job_list = job_list.filter(project__pid=request.GET['project'])
