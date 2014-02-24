@@ -27,9 +27,14 @@
 
     {% for mc in mc_list %}
     <div class="module">
-        <h2><a href='{% url 'kg_usage_mc' mc.obj.pk %}{% url_with_param start=start end=end %}'>{{ mc.obj }}</a></h2>
+        <h2>{{ mc.obj }}</h2>
         <img src="{{ mc.graph.graph_url }}"/>
         <p><a href="{{ mc.graph.data_url }}">data</a></p>
+        <div class="object-tools">
+            <ul>
+                <li><a href='{% url 'kg_usage_mc' mc.obj.pk %}{% url_with_param start=start end=end %}'>Details</a></li>
+            </ul>
+        </div>
     </div>
     {% endfor %}
 </div>
