@@ -114,7 +114,7 @@ def gen_cache_for_machine_category(request, start, end, machine_category):
             tc = cache.TaskCacheForMachineCategory.objects.create(date=datetime.date.today(), start=start, end=end,
                 machine_category=machine_category,
                 celery_task_id="")
-            result = tasks.gen_cache_for_machine_category.delay(start, end, machine_category)
+            result = tasks.gen_cache_for_machine_category.delay(start, end, machine_category.pk)
             tc.celery_task_id = result.task_id
             tc.save()
 
@@ -148,13 +148,13 @@ def gen_cache_for_project(request, start, end, project, machine_category):
             tc = cache.TaskCacheForProject.objects.create(date=datetime.date.today(), start=start, end=end,
                 project=project, machine_category=machine_category,
                 celery_task_id="")
-            result = tasks.gen_cache_for_project.delay(start, end, project, machine_category)
+            result = tasks.gen_cache_for_project.delay(start, end, project.pk, machine_category.pk)
             tc.celery_task_id = result.task_id
             tc.save()
 
     except IntegrityError:
         tc = cache.TaskCacheForProject.objects.get(date=datetime.date.today(), start=start, end=end,
-                project=project, machine_category=machine_category)
+                project=project.pk, machine_category=machine_category.pk)
         if tc.ready:
             return None
         result = Task.AsyncResult(tc.celery_task_id)
@@ -182,7 +182,7 @@ def gen_cache_for_institute(request, start, end, institute, machine_category):
             tc = cache.TaskCacheForInstitute.objects.create(date=datetime.date.today(), start=start, end=end,
                 institute=institute, machine_category=machine_category,
                 celery_task_id="")
-            result = tasks.gen_cache_for_institute.delay(start, end, institute, machine_category)
+            result = tasks.gen_cache_for_institute.delay(start, end, institute.pk, machine_category.pk)
             tc.celery_task_id = result.task_id
             tc.save()
 

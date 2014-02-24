@@ -86,7 +86,9 @@ def gen_machine_category_cache(start, end):
 
 
 @app.task()
-def gen_cache_for_machine_category(start, end, machine_category):
+def gen_cache_for_machine_category(start, end, machine_category_pk):
+    machine_category = MachineCategory.objects.get(pk=machine_category_pk)
+
     current = gen_machine_category_cache
     logger = current.get_logger()
 
@@ -128,7 +130,10 @@ def gen_cache_for_machine_category(start, end, machine_category):
 
 
 @app.task()
-def gen_cache_for_project(start, end, project, machine_category):
+def gen_cache_for_project(start, end, project_pk, machine_category_pk):
+    project = Project.objects.get(pk=project_pk)
+    machine_category = MachineCategory.objects.get(pk=machine_category_pk)
+
     current = gen_cache_for_project
     logger = current.get_logger()
     total = 1
@@ -141,7 +146,10 @@ def gen_cache_for_project(start, end, project, machine_category):
 
 
 @app.task()
-def gen_cache_for_institute(start, end, institute, machine_category):
+def gen_cache_for_institute(start, end, institute_pk, machine_category_pk):
+    institute = Institute.objects.get(pk=institute_pk)
+    machine_category = MachineCategory.objects.get(pk=machine_category_pk)
+
     current = gen_cache_for_institute
     logger = current.get_logger()
     total = 1
