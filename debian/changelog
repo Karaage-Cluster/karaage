@@ -1,3 +1,13 @@
+karaage3 (3.0.3-1) unstable; urgency=low
+
+  * New release of Karaage.
+  * Updates to theme.
+  * Lots of bug fixes.
+  * Updates to documentation.
+  * Restructure the views.
+
+ -- Brian May <bam@debian.org>  Mon, 24 Feb 2014 15:24:22 +1100
+
 karaage3 (3.0.2-1) unstable; urgency=low
 
   * Bugs fixed.
