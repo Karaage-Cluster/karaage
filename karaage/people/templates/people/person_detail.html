@@ -279,14 +279,14 @@
         {% gen_table ua.get_latest_usage usage/user_table.html %}
         {% endif %}
 
-        {% if is_admin and person.is_active %}
         <div class="object-tools">
             <ul>
                 <li><a href="{% url 'kg_usage_job_list' %}?account={{ ua.pk }}">Display all jobs</a></li>
+                {% if is_admin and person.is_active %}
                 <li><a href="{% url 'kg_person_add_account' person.username %}" class="addlink">Add account</a></li>
+                {% endif %}
             </ul>
         </div>
-        {% endif %}
     </div>
     {% endfor %}
 

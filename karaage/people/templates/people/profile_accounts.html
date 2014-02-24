@@ -88,6 +88,12 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <div class="object-tools">
+        <ul>
+            <li><a href="{% url 'kg_usage_job_list' %}?account={{ ua.pk }}">Display all jobs</a></li>
+        </ul>
+    </div>
     {% endif %}
 
 </div>

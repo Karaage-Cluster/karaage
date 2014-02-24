@@ -32,6 +32,7 @@
 
     <div class="object-tools">
         <ul>
+            <li><a href="{% url 'kg_usage_job_list' %}?person={{ person.username }}">Display all jobs</a></li>
             <li><a href="{% url 'kg_profile_edit' %}" class="changelink">Edit personal details</a></li>
             <li><a href="{% url 'kg_profile_password' %}" class="changelink">Change password</a></li>
             <li><a href="{% url 'kg_application_new' %}" class="addlink">Apply for Project</a></li>
