@@ -1,0 +1,6 @@
+{% load usage %}
+{% get_account_recent_usage account as usage_list %}
+{% if usage_list %}
+<h3>Latest Usage</h3>
+{% gen_table usage_list %}
+{% endif %}

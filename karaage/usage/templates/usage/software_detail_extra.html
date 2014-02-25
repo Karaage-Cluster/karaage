@@ -1,0 +1,13 @@
+{% load usage %}
+{% get_software_recent_usage software as usage_list %}
+{% if usage_list %}
+<div class="module">
+    <h2>Latest Usage</h2>
+    {% gen_table usage_list %}
+    <div class="object-tools">
+        <ul>
+            <li><a href="{% url 'kg_usage_job_list' %}?software={{ software.id }}">Display all jobs</a></li>
+        </ul>
+    </div>
+</div>
+{% endif %}

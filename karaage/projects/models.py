@@ -183,9 +183,6 @@ class Project(models.Model):
         log(None, self, 2, 'Deactivated by %s'%deleted_by)
     deactivate.alters_data = True
 
-    def get_latest_usage(self):
-        return self.cpujob_set.select_related()[:5]
-
     def get_cap(self, machine_category):
         pc = self.projectquota_set.get(machine_category=machine_category)
         return pc.get_cap()

@@ -3,15 +3,9 @@
     <thead>
         <tr>
             <th>Job ID</th>
-            {% ifnotequal type "user" %}
             <th>Person</th>
-            {% if user.is_authenticated %}
             <th>Account</th>
-            {% endif %}
-            {% endifnotequal %}
-            {% ifnotequal type "project" %}
             <th>Project</th>
-            {% endifnotequal %}
             <th>Machine</th>
             <th>date</th>
             <th>queue</th>
@@ -27,15 +21,9 @@
         {% for u in object_list %}
         <tr>
             <td><a href="{{ u.get_absolute_url }}">{{ u.jobid }}</a></td>
-            {% ifnotequal type "user" %}
             <td><a href="{{ u.account.person.get_absolute_url }}">{{ u.account.person }}</a></td>
-            {% if user.is_authenticated %}
-            <td>{{ u.username }}</td>
-            {% endif %}
-            {% endifnotequal %}
-            {% ifnotequal type "project" %}
+            <td>{{ u.account }}</td>
             <td><a href="{{ u.project.get_absolute_url }}">{{ u.project.pid }}</a></td>
-            {% endifnotequal %}
             <td><a href="{{ u.machine.get_absolute_url }}">{{ u.machine }}</a></td>
             <td>{{ u.date }}</td>
             <td>{{ u.queue }}</td>

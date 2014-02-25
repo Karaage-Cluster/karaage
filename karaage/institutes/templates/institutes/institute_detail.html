@@ -31,12 +31,16 @@
             <tr><th>Categories:</th><td>{% for iq in institute.institutequota_set.all %}<a href='{% url 'kg_machine_category_detail' iq.machine_category.pk %}'>{{ iq.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
         </table>
 
-        {% if is_admin %}
+        {% is_for_each_app_include_empty "project_detail_tools.html" as is_empty %}
+        {% if is_admin or not is_empty %}
         <div class="object-tools">
             <ul>
+                {% if is_admin %}
                 <li><a href="{% url 'kg_institute_edit' institute.pk %}" class="changelink">Edit</a></li>
                 <li><a href="{% url 'kg_institute_logs' institute.pk %}">View logs</a></li>
                 <li><a href="{% url 'kg_institute_verbose' institute.pk %}">Verbose</a></li>
+                {% endif %}
+                {% for_each_app_include "institute_detail_tools.html" %}
             </ul>
         </div>
         {% endif %}
@@ -89,6 +93,8 @@
     <h2>Users</h2>
         {% gen_table institute.person_set.select_related %}
     </div>
+
+    {% for_each_app_include "institute_detail_extra.html" %}
 
     {% if is_admin %}
     <div class="module">

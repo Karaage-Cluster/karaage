@@ -10,28 +10,7 @@
 {% if leader_project_list %}
 <div class="module">
     <h2>Projects I lead or manage</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Project ID</th>
-                <th>Title</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for p in leader_project_list %}
-            <tr>
-                <td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
-                <td>{{ p.name|truncatewords:"8" }}</td>
-                <td>{{ p.start_date|date }}</td>
-                <td>{{ p.end_date|date }}</td>
-                <td>Usage: {% for pc in p.projectquota_set.all %}<a href="{% url 'kg_usage_project' pc.machine_category.pk p.pid %}">{{ pc.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% gen_table leader_project_list %}
 </div>
 {% endif %}
 
@@ -41,21 +20,19 @@
     <table>
         <thead>
             <tr>
+                <th>Account</th>
                 <th>Project ID</th>
                 <th>Title</th>
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Default</th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
             {% for ua in person.account_set.all %}
-            <tr>
-                <td colspan="6">{{ ua }}</td>
-            </tr>
             {% for p in ua.project_list %}
             <tr>
+                <td>{{ ua }}</td>
                 <td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
                 <td>{{ p.name|truncatewords:"8" }}</td>
                 <td>{{ p.start_date|date }}</td>
@@ -67,12 +44,6 @@
                         <input type="submit" value="Make Default"/></input>
                     </form>
                     {% endifequal %}
-                </td>
-                <td>
-                    Usage:
-                    {% for pc in p.projectquota_set.all %}
-                    <a href="{% url 'kg_usage_project' pc.machine_category.pk p.pid %}">{{ pc.machine_category }}</a>
-                    {% if not forloop.last %}, {% endif %}{% endfor %}
                 </td>
             </tr>
             {% endfor %}

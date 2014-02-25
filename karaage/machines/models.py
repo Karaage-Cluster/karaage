@@ -177,12 +177,6 @@ class Account(models.Model):
     def project_list(self):
         return self.person.projects.filter(projectquota__machine_category=self.machine_category)
 
-    def get_latest_usage(self):
-        try:
-            return self.cpujob_set.all()[:5]
-        except:
-            return None
-
     def save(self, *args, **kwargs):
         # save the object
         super(Account, self).save(*args, **kwargs)

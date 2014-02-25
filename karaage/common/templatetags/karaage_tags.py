@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 import datetime
+import os.path
 from decimal import Decimal
 
 from django import template
@@ -221,10 +222,7 @@ class QuerySetTableNode(template.Node):
         self.template_name = template_name
 
     def render(self, context):
-        try:
-            queryset = self.queryset.resolve(context)
-        except template.VariableDoesNotExist:
-            return ''
+        queryset = self.queryset.resolve(context)
 
         if not self.template_name:
             app_label = queryset.model._meta.app_label
@@ -247,3 +245,54 @@ def divide(a, b):
         return (Decimal(a) / Decimal(b) * 100).quantize(TWOPLACES)
     except:
         return ''
+
+
+class ForEachAppIncludeNode(template.Node):
+
+    def __init__(self, template_name):
+        self.template_name = template.Variable(template_name)
+
+    def render(self, context):
+        template_name = self.template_name.resolve(context)
+
+        result = []
+        for app in settings.INSTALLED_APPS:
+            _, _, directory = app.rpartition(".")
+            if directory is not None:
+                template_path = os.path.join(directory, template_name)
+                try:
+                    template_obj = template.loader.get_template(template_path)
+                except template.TemplateDoesNotExist:
+                    pass
+                else:
+                    context.push()
+                    output = template_obj.render(context)
+                    result.append(output)
+                    context.pop()
+
+        return "".join(result)
+
+
+@register.tag
+def for_each_app_include(parser, token):
+    try:
+        tag_name, template_name = token.split_contents()
+    except:
+        raise template.TemplateSyntaxError, "%r tag requires one arguments" % token.contents.split()[0]
+    return ForEachAppIncludeNode(template_name)
+
+
+@register.assignment_tag()
+def is_for_each_app_include_empty(template_name):
+    for app in settings.INSTALLED_APPS:
+        _, _, directory = app.rpartition(".")
+        if directory is not None:
+            template_path = os.path.join(directory, template_name)
+            try:
+                template_obj = template.loader.get_template(template_path)
+                return False
+            except template.TemplateDoesNotExist:
+                pass
+    return True
+
+
