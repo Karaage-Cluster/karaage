@@ -147,7 +147,7 @@ class CommonApplicationForm(forms.ModelForm):
         super(CommonApplicationForm, self).__init__(*args, **kwargs)
         aup_url = getattr(settings, 'AUP_URL', None)
         if aup_url is None:
-            aup_url = reverse('aup')
+            aup_url = reverse('kg_aup')
         self.fields['aup'].label = mark_safe(u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>' % aup_url)
 
     class Meta:

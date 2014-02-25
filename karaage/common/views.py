@@ -131,3 +131,8 @@ def misc(request):
     from karaage.common.simple import direct_to_template
     return direct_to_template(request,
             template='common/misc_detail.html')
+
+def aup(request):
+    from karaage.common.simple import direct_to_template
+    return direct_to_template(request,
+            template='common/aup_detail.html')

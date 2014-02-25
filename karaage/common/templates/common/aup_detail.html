@@ -1,0 +1,36 @@
+{% extends "main.html" %}
+{% block title %}Acceptable Use Policy{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    AUP
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+    <div class="module">
+        <h2>Acceptable Use Policy</h2>
+        <p>{{ org_name }} has an Acceptable Use Policy which relates to security and mis-use. All users of {{ org_name }}’s High Performance Computing Facilities must be familiar with, and abide by, this policy.</p> 
+        <h3>Security</h3>
+        <ul>
+            <li>I agree not to share my {{ org_name }} account in any manner.</li> 
+            <li>I agree to use pass-phrases or passwords that are, to the best of my knowledge, secure and unknown to anyone else.</li> 
+            <li>I agree not to attempt to subvert security measures; nor to attempt to access facilities, systems or data that I am not authorised to access.</li> 
+            <li>I agree to advise the {{ org_name }} management if I become aware of any security breach or potential risk.</li> 
+        </ul>
+        <h3>Usage</h3>
+        <ul>
+            <li>I agree to use the facilities provided in an efficient and economical manner.</li> 
+            <li>I agree to use the facilities for only those purposes I have obtained approval.</li> 
+            <li>If I use software covered by any license agreement on {{ org_name }} systems I agree to be bound by that agreement.</li> 
+            <li>I agree not to use the {{ org_name }} facilities in a way that could be reasonably expected to offend other users.</li> 
+            <li>I agree to hold the operators of {{ org_name }} blameless in the event that I suffer any loss as a result of my use of the {{ org_name }} facilities.</li> 
+            <li>I accept that the facilities of {{ org_name }} may not always be available for my use in the manner that I expect and agree to hold the operators blameless in any situation where I am adversely affected by availability or any other aspect of the {{ org_name }} facilities.</li> 
+            <li>I understand that I am bound by various state and federal legislation that, amongst other things, bans Discrimination, Harassment, Vilification, Bullying and Defamation and movement or retention of Illicit material.</li> 
+        </ul>
+    </div>
+</div>
+{% endblock %}
