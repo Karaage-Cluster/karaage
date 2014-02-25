@@ -40,6 +40,10 @@ def get_software_recent_usage(software):
     return CPUJob.objects.filter(software=software).select_related()[:5]
 
 @register.assignment_tag()
+def get_machine_recent_usage(machine):
+    return CPUJob.objects.filter(machine=machine).select_related()[:5]
+
+@register.assignment_tag()
 def get_machinecategory_recent_usage(machinecategory):
     # we must do two separate queries here, otherwise mysql takes
     # ages and uses a lot of disk space.

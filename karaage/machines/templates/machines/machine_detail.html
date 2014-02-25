@@ -50,11 +50,8 @@
         </div>
         {% endif %}
     </div>
+    {% for_each_app_include "machine_detail_extra.html" %}
     {% if is_admin %}
-    <div class="module">
-        <h2>Last 5 jobs</h2>
-        {% gen_table usage_list %}
-    </div>
     <div class="module">
         <h2>Comments</h2>
         {% comments machine %}

@@ -1,0 +1,13 @@
+{% load usage %}
+{% get_machine_recent_usage machine as usage_list %}
+{% if usage_list %}
+<div class="module">
+    <h2>Latest Usage</h2>
+    {% gen_table usage_list %}
+    <div class="object-tools">
+        <ul>
+            <li><a href="{% url 'kg_usage_job_list' %}?machine={{ machine.pk }}">Display all jobs</a></li>
+        </ul>
+    </div>
+</div>
+{% endif %}

@@ -61,10 +61,9 @@ def index(request):
 @login_required
 def machine_detail(request, machine_id):
     machine = get_object_or_404(Machine, pk=machine_id)
-    usage_list = machine.cpujob_set.all()[:5]
     return render_to_response(
         'machines/machine_detail.html',
-        {'machine': machine, 'usage_list': usage_list},
+        {'machine': machine},
         context_instance=RequestContext(request))
 
 @admin_required
