@@ -334,10 +334,7 @@ def join_package(request, software_id):
     software_license = software.get_current_license()
     person = request.user
 
-    if software_license is None:
-        raise Http404("Package '%s' has no software license." % (software))
-
-    if request.method == 'POST':
+    if software_license is None and request.method == 'POST':
 
         if not software.restricted:
             SoftwareLicenseAgreement.objects.create(

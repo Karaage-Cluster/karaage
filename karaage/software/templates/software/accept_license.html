@@ -33,7 +33,6 @@
         {% if software_license.version %}<p>Version: {{ software_license.version }}</p>{% endif %}
         {{ software_license.text|safe|linebreaks }}
     </div>
-    {% endif %}
 
     <form {% if software.restricted %}action="{% url 'kg_application_software_new' software_license.pk %}"{% else %}action="."{% endif %} method="post">{% csrf_token %}
         <p>By clicking on 'I accept' you are agreeing to the conditions above.</p>
@@ -41,5 +40,6 @@
             <input type="submit" value="I accept"/>
         </div>
     </form>
+    {% endif %}
 </div>
 {% endblock %}
