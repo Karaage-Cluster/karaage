@@ -194,7 +194,7 @@ class SearchFormNode(template.Node):
         self.post_url = post_url
 
     def render(self, context):
-        template_obj = template.loader.get_template('search_form.html')
+        template_obj = template.loader.get_template('common/search_form.html')
         context.push()
         context['post_url'] = self.post_url
         output = template_obj.render(context)

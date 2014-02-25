@@ -34,11 +34,6 @@ def checkbox_formfield(field):
 def form_as_div(form):
     return {'form': form, }
 
-@register.inclusion_tag('search_form.html')
-def search_form(url='', terms=''):
-    return { 'url': url, 'terms': terms, 'STATIC_URL': settings.STATIC_URL }
-
-
 @register.tag
 def formfield(parser, token):
     try:
