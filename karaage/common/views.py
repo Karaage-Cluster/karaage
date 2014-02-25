@@ -38,12 +38,12 @@ def admin_index(request):
         'newest_projects': Project.objects.order_by('-date_approved').filter(date_approved__isnull=False).filter(is_active=True).select_related()[:5],
         'recent_actions': request.user.logentry_set.all()[:10],
     }
-    return render_to_response('index.html', var, context_instance=RequestContext(request))
+    return render_to_response('common/index.html', var, context_instance=RequestContext(request))
 
 def index(request):
     if settings.ADMIN_REQUIRED or is_admin(request):
         return admin_index(request)
-    return render_to_response('index.html', context_instance=RequestContext(request))
+    return render_to_response('common/index.html', context_instance=RequestContext(request))
 
 
 
