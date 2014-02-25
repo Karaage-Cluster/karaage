@@ -183,10 +183,6 @@ class Project(models.Model):
         log(None, self, 2, 'Deactivated by %s'%deleted_by)
     deactivate.alters_data = True
 
-    def get_cap(self, machine_category):
-        pc = self.projectquota_set.get(machine_category=machine_category)
-        return pc.get_cap()
-
     @property
     def machine_categories(self):
         for pq in self.projectquota_set.all():

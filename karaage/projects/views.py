@@ -331,8 +331,3 @@ def projectquota_delete(request, projectquota_id):
         return HttpResponseRedirect(project_chunk.project.get_absolute_url())
 
     return render_to_response('projects/projectquota_delete_form.html', locals(), context_instance=RequestContext(request))
-
-
-@admin_required
-def projects_by_cap_used(request):
-    return project_list(request, paginate=False, template_name='projects/project_capsort.html')
