@@ -88,7 +88,7 @@ def search(request):
         if not (people_list or group_list or project_list):
             empty = True
         
-        return render_to_response('site_search.html', locals(), context_instance=RequestContext(request))
+        return render_to_response('common/site_search.html', locals(), context_instance=RequestContext(request))
     else:
         return HttpResponseRedirect(reverse('index'))
 
