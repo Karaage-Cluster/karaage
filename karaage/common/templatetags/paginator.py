@@ -98,4 +98,4 @@ def pagination(page, request, eitherside=10):
         'qs': qs,
         'page_list': page_range,
     }
-pagination = register.inclusion_tag('pagination.html')(pagination)
+pagination = register.inclusion_tag('common/pagination.html')(pagination)
