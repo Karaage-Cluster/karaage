@@ -26,10 +26,6 @@ register = Library()
 def inlineformfield(field1, field2, field3=False):
     return locals()
 
-@register.inclusion_tag('checkbox_formfield.html')
-def checkbox_formfield(field):
-    return {'field': field, }
-
 @register.inclusion_tag('common/form_as_div.html')
 def form_as_div(form):
     return {'form': form, }
