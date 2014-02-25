@@ -86,7 +86,7 @@ def url_with_param(parser, token):
             raise template.TemplateSyntaxError, "Argument syntax wrong: should be key=value"
     return url_with_param_node(copy, nopage, qschanges)
 
-@register.inclusion_tag('comments.html', takes_context=True)
+@register.inclusion_tag('common/comments.html', takes_context=True)
 def comments(context, obj):
     """ Render comments for obj. """
     content_type = ContentType.objects.get_for_model(obj.__class__)
