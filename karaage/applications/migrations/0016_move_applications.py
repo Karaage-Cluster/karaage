@@ -35,7 +35,10 @@ class Migration(DataMigration):
             }
             src.delete()
             dst = orm.ProjectApplication.objects.create(**values)
-
+        if not db.dry_run:
+            src = orm['contenttypes.contenttype'].objects.filter(app_label='applications', model='userapplication')
+            dst = orm['contenttypes.contenttype'].objects.filter(app_label='applications', model='application')
+            orm['admin.logentry'].objects.filter(content_type=src).update(content_type=dst)
 
     def backwards(self, orm):
         """ Move ProjectApplication with project back UserApplication. """
@@ -64,6 +67,17 @@ class Migration(DataMigration):
 
 
     models = {
+        u'admin.logentry': {
+            'Meta': {'ordering': "(u'-action_time',)", 'object_name': 'LogEntry', 'db_table': "u'django_admin_log'"},
+            'action_flag': ('django.db.models.fields.PositiveSmallIntegerField', [], {}),
+            'action_time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'change_message': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']", 'null': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'object_id': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'object_repr': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
+        },
         u'applications.applicant': {
             'Meta': {'object_name': 'Applicant'},
             'address': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
