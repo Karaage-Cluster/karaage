@@ -149,7 +149,6 @@ class DateFilter(object):
 
 
         for choice in choices:
-            print choice
             for k,v in qs.items():
                 if k.startswith(self.field_generic):
                     del(qs[k])
