@@ -27,38 +27,6 @@ from karaage.common.decorators import admin_required, login_required
 import karaage.common as util
 
 @login_required
-def index(request):
-    category_list = MachineCategory.objects.all()
-
-    if 'search' in request.REQUEST:
-        terms = request.REQUEST['search'].lower()
-        query = Q()
-        for term in terms.split(' '):
-            q = Q(name=term) | Q(machine__name=term)
-            query = query & q
-
-        category_list = category_list.filter(query)
-    else:
-        terms = ""
-
-    page = request.GET.get('page')
-    paginator = Paginator(category_list, 50)
-    try:
-        page = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        page = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        page = paginator.page(paginator.num_pages)
-
-    return render_to_response(
-        'machines/machine_list.html',
-        {'terms': terms, 'page': page},
-        context_instance=RequestContext(request))
-
-
-@login_required
 def machine_detail(request, machine_id):
     machine = get_object_or_404(Machine, pk=machine_id)
     return render_to_response(
@@ -109,6 +77,37 @@ def machine_add_comment(request, machine_id):
     breadcrumbs.append( (unicode(obj.category), reverse("kg_machine_category_detail", args=[obj.category.pk])) )
     breadcrumbs.append( (unicode(obj), reverse("kg_machine_detail", args=[obj.pk])) )
     return util.add_comment(request, breadcrumbs, obj)
+
+@login_required
+def category_list(request):
+    category_list = MachineCategory.objects.all()
+
+    if 'search' in request.REQUEST:
+        terms = request.REQUEST['search'].lower()
+        query = Q()
+        for term in terms.split(' '):
+            q = Q(name=term) | Q(machine__name=term)
+            query = query & q
+
+        category_list = category_list.filter(query)
+    else:
+        terms = ""
+
+    page = request.GET.get('page')
+    paginator = Paginator(category_list, 50)
+    try:
+        page = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        page = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        page = paginator.page(paginator.num_pages)
+
+    return render_to_response(
+        'machines/machinecategory_list.html',
+        {'terms': terms, 'page': page},
+        context_instance=RequestContext(request))
 
 @admin_required
 def category_create(request):
