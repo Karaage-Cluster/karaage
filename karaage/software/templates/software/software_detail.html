@@ -122,6 +122,7 @@
     </div>
     {% endif %}
 
+    {% if software.get_group_members %}
     <div class="module">
         <h2>Group members</h2>
         <table cellspacing="0">
@@ -144,6 +145,7 @@
             {% endfor %}
         </table>
     </div>
+    {% endif %}
 
     {% if is_admin %}
     <div class="module">
