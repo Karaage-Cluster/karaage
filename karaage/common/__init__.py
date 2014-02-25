@@ -128,7 +128,7 @@ def log_list(request, breadcrumbs, obj):
         page = paginator.page(paginator.num_pages)
 
     return render_to_response(
-            'log_list.html',
+            'common/log_list.html',
             { 'short': True, 'obj': obj,
                 'page': page,
                 'breadcrumbs': breadcrumbs,

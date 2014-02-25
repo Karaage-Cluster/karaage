@@ -121,7 +121,7 @@ def log_list(request):
         page = paginator.page(paginator.num_pages)
 
     return render_to_response(
-                'log_list.html',
+                'common/log_list.html',
                 {'page': page, 'short': False, 'terms': terms},
                 context_instance=RequestContext(request))
 
