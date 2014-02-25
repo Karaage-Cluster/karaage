@@ -84,9 +84,6 @@
 
         <div class="object-tools">
             <ul>
-                {% for pc in project.projectquota_set.all %}<li><a href="{% url 'kg_usage_project' pc.machine_category.pk project.pid %}">Usage: {{ pc.machine_category }}</a></li>{% endfor %}
-                <li><a href="{% url 'kg_usage_job_list' %}?project={{ project.pid }}">Display all jobs</a></li>
-
                 {% if is_admin %}
                     <li><a href="{% url 'kg_project_logs' project.pid %}">View logs</a></li>
                     <li><a href="{% url 'kg_project_verbose' project.pid %}">Verbose</a></li>
@@ -192,6 +189,8 @@
     </div>
     {% endif %}
 
+    {% for_each_app_include "project_detail_extra.html" %}
+
     {% if is_admin  and project.is_active %}
     <div class="module">
         <h2>Add person</h2>
@@ -201,13 +200,6 @@
             <input type="submit" value="Add"/>
             </div>
         </form>
-    </div>
-    {% endif %}
-
-    {% if project.get_latest_usage %}
-    <div class="module">
-        <h2>Last 5 cpu jobs</h2>
-        {% gen_table project.get_latest_usage %}
     </div>
     {% endif %}
 

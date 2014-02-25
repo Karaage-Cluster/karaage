@@ -8,9 +8,9 @@
 
 
 {% block profile_content %}
-{% for ua in accounts %}
+{% for account in accounts %}
 <div class="module">
-    <h2>{{ ua.machine_category }} Account</h2>
+    <h2>{{ account.machine_category }} Account</h2>
 
     <table cellspacing="0">
         <thead>
@@ -25,25 +25,25 @@
         <tbody>
             <tr>
                 <td>
-                    {% if ua.date_deleted %}
+                    {% if account.date_deleted %}
                     <img alt="Not Active" src="{{ STATIC_URL }}img/icon-no.gif" title="Not Active"/>
                     {% else %}
-                    {% if ua.is_locked %}
+                    {% if account.is_locked %}
                     <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
                     {% else %}
                     <img alt="Active" src="{{ STATIC_URL }}img/icon-yes.gif" title="Active"/>
                     {% endif %}
                     {% endif %}
                 </td>
-                <td>{{ ua.username }}</td>
-                <td>{{ ua.date_created|date }}</td>
-                <td>{{ ua.date_deleted|date }}</td>
+                <td>{{ account.username }}</td>
+                <td>{{ account.date_created|date }}</td>
+                <td>{{ account.date_deleted|date }}</td>
                 <td>
-                    {{ ua.loginShell }}
-                    {% if not ua.is_locked %}
-                    <form method="post" action="{% url 'kg_account_shell' ua.pk %}">{% csrf_token %}
+                    {{ account.loginShell }}
+                    {% if not account.is_locked %}
+                    <form method="post" action="{% url 'kg_account_shell' account.pk %}">{% csrf_token %}
                         <div>
-                            {% shell_field ua %}
+                            {% shell_field account %}
                             <input type="submit" value="Change" name="shell-form" />
                         </div>
                     </form>
@@ -53,45 +53,13 @@
         </tbody>
     </table>
 
-    {% if ua.get_latest_usage %}
-    <h3>Latest Usage</h3>
-    <table cellspacing="0">
-        <thead>
-            <tr>
-                <th>Project</th>
-                <th>Machine</th>
-                <th>date</th>
-                <th>queue</th>
-                <th>cpu usage</th>
-                <th>mem</th>
-                <th>vmem</th>
-                <th>Time in Queue</th>
-                <th>Estimated wall time</th>
-                <th>Actual wall time</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for u in ua.get_latest_usage %}
-            <tr>
-                <td><a href="{{ u.project.get_absolute_url }}">{{ u.project.pid }}</a></td>
-                {#<td><a href="{{ u.machine.get_absolute_url }}">{{ u.machine }}</a></td>#}
-                <td>{{ u.machine }}</td>
-                <td>{{ u.date }}</td>
-                <td>{{ u.queue }}</td>
-                <td class="right">{{ u.cpu_usage|timeformat }}</td>
-                <td class="right">{{ u.mem|fileformat }}</td>
-                <td class="right">{{ u.vmem|fileformat }}</td>
-                <td class="right">{{ u.wait_time|timeformat }}</td>
-                <td class="right">{{ u.est_wall_time|timeformat }}</td>
-                <td class="right">{{ u.act_wall_time|timeformat }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% for_each_app_include "account_detail_extra.html" %}
 
+    {% is_for_each_app_include_empty "account_detail_tools.html" as is_empty %}
+    {% if not is_empty %}
     <div class="object-tools">
         <ul>
-            <li><a href="{% url 'kg_usage_job_list' %}?account={{ ua.pk }}">Display all jobs</a></li>
+            {% for_each_app_include "account_detail_tools.html" %}
         </ul>
     </div>
     {% endif %}

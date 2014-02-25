@@ -32,9 +32,6 @@
 
     <div class="object-tools">
         <ul>
-            {% if usage_list %}
-            <li><a href="{% url 'kg_usage_job_list' %}?person={{ person.username }}">Display all jobs</a></li>
-            {% endif %}
             <li><a href="{% url 'kg_profile_edit' %}" class="changelink">Edit personal details</a></li>
             <li><a href="{% url 'kg_profile_password' %}" class="changelink">Change password</a></li>
             <li><a href="{% url 'kg_application_new' %}" class="addlink">Apply for Project</a></li>
@@ -50,43 +47,6 @@
 </div>
 {% endif %}
 
-{% if usage_list %}
-<div class="module">
-    <h2>Latest Usage</h2>
-    <table cellspacing="0">
-        <thead>
-            <tr>
-                <th>Project</th>
-                <th>Machine</th>
-                <th>date</th>
-                <th>queue</th>
-                <th>cpu usage</th>
-                <th>mem</th>
-                <th>vmem</th>
-                <th>Time in Queue</th>
-                <th>Estimated wall time</th>
-                <th>Actual wall time</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for u in usage_list %}
-            <tr>
-                <td><a href="{{ u.project.get_absolute_url }}">{{ u.project.pid }}</a></td>
-                {#<td><a href="{{ u.machine.get_absolute_url }}">{{ u.machine }}</a></td>#}
-                <td>{{ u.machine }}</td>
-                <td>{{ u.date }}</td>
-                <td>{{ u.queue }}</td>
-                <td class="right">{{ u.cpu_usage|timeformat }}</td>
-                <td class="right">{{ u.mem|fileformat }}</td>
-                <td class="right">{{ u.vmem|fileformat }}</td>
-                <td class="right">{{ u.wait_time|timeformat }}</td>
-                <td class="right">{{ u.est_wall_time|timeformat }}</td>
-                <td class="right">{{ u.act_wall_time|timeformat }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% endif %}
+{% for_each_app_include "person_detail_extra.html" %}
 
 {% endblock %}

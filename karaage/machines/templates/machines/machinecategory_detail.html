@@ -46,12 +46,13 @@
         <div class="object-tools">
             <ul>
                 <li><a href="{% url 'kg_machine_category_logs' machine_category.pk %}">Logs</a></li>
-                <li><a href="{% url 'kg_usage_mc' machine_category.id %}">Usage</a></li>
                 <li><a href="{% url 'kg_machine_category_edit' machine_category.id %}" class="changelink">Edit category</a></li>
             </ul>
         </div>
         {% endif %}
     </div>
+
+    {% for_each_app_include "machinecategory_detail_extra.html" %}
 
     {% if is_admin %}
     <div class="module">

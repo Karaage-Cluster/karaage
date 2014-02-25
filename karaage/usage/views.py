@@ -795,6 +795,12 @@ def job_list(request):
     if 'machine' in request.REQUEST:
         job_list = job_list.filter(machine__id=int(request.GET['machine']))
 
+    if 'machine_category' in request.REQUEST:
+        # we must do two separate queries here, otherwise mysql takes
+        # ages and uses a lot of disk space.
+        machines = Machine.objects.filter(category=int(request.GET['machine_category']))
+        job_list = job_list.filter(machine__in=machines)
+
     if 'queue' in request.REQUEST:
         job_list = job_list.filter(queue=request.GET['queue'])
 

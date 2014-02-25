@@ -29,9 +29,9 @@
             {% endif %}
             <tr><th>Restricted:</th><td>{% yes_no_img software.restricted %}</td></tr>
         </table>
+        {% if is_admin %}
         <div class="object-tools">
             <ul>
-                {% if is_admin %}
                 <li><a href="{% url 'kg_software_edit' software.id %}" class="changelink">Edit</a></li>
                 <li><a href="{% url 'kg_software_delete' software.id %}" class="deletelink">Delete</a></li>
                 <li><a href="{% url 'kg_software_add_version' software.id %}" class="addlink">Add Version</a></li>
@@ -39,10 +39,9 @@
                 <li><a href="{% url 'kg_software_logs' software.id %}">Logs</a></li>
                 <li><a href="{% url 'kg_software_verbose' software.id %}">Verbose</a></li>
                 <li><a href="{% url 'kg_software_stats' software.id %}">Statistics</a></li>
-                {% endif %}
-                <li><a href="{% url 'kg_usage_job_list' %}?software={{ software.id }}">Display all jobs</a></li>
             </ul>
         </div>
+        {% endif %}
     </div>
 
     <div class="module">
@@ -130,6 +129,9 @@
                 <tr>
                     <th>username</th>
                     <th>Person</th>
+                    {% if is_admin %}
+                    <th></th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -146,6 +148,8 @@
         </table>
     </div>
     {% endif %}
+
+    {% for_each_app_include "software_detail_extra.html" %}
 
     {% if is_admin %}
     <div class="module">
