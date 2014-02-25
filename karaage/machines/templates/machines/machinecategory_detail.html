@@ -46,6 +46,8 @@
         <div class="object-tools">
             <ul>
                 <li><a href="{% url 'kg_machine_category_logs' machine_category.pk %}">Logs</a></li>
+                <li><a href="{% url 'kg_machine_category_accounts' machine_category.pk %}">Accounts</a></li>
+                <li><a href="{% url 'kg_machine_category_projects' machine_category.pk %}">Projects</a></li>
                 <li><a href="{% url 'kg_machine_category_edit' machine_category.id %}" class="changelink">Edit category</a></li>
             </ul>
         </div>

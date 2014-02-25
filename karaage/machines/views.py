@@ -92,25 +92,6 @@ def machine_password(request, machine_id):
         context_instance=RequestContext(request))
 
 @admin_required
-def machine_accounts(request, machine_id):
-    machine = get_object_or_404(Machine, pk=machine_id)
-    accounts = machine.category.account_set.filter(date_deleted__isnull=True)
-    return render_to_response(
-        'machines/machine_accounts.html',
-        {'machine': machine, 'accounts': accounts},
-        context_instance=RequestContext(request))
-
-@admin_required
-def machine_projects(request, machine_id):
-    machine = get_object_or_404(Machine, pk=machine_id)
-    project_list = Project.objects.filter(projectquota__machine_category=machine.category)
-    return render_to_response(
-        'machines/machine_projects.html',
-        {'machine': machine, 'project_list': project_list},
-        context_instance=RequestContext(request))
-
-
-@admin_required
 def machine_logs(request, machine_id):
     obj = get_object_or_404(Machine, pk=machine_id)
     breadcrumbs = []
@@ -128,7 +109,6 @@ def machine_add_comment(request, machine_id):
     breadcrumbs.append( (unicode(obj.category), reverse("kg_machine_category_detail", args=[obj.category.pk])) )
     breadcrumbs.append( (unicode(obj), reverse("kg_machine_detail", args=[obj.pk])) )
     return util.add_comment(request, breadcrumbs, obj)
-
 
 @admin_required
 def category_create(request):
@@ -150,6 +130,23 @@ def category_detail(request, category_id):
         {'machine_category': machine_category, },
         context_instance=RequestContext(request))
 
+@admin_required
+def category_accounts(request, category_id):
+    machine_category = get_object_or_404(MachineCategory, pk=category_id)
+    accounts = machine_category.account_set.filter(date_deleted__isnull=True)
+    return render_to_response(
+        'machines/machinecategory_accounts.html',
+        {'machine_category': machine_category, 'accounts': accounts},
+        context_instance=RequestContext(request))
+
+@admin_required
+def category_projects(request, category_id):
+    machine_category = get_object_or_404(MachineCategory, pk=category_id)
+    project_list = Project.objects.filter(projectquota__machine_category=machine_category)
+    return render_to_response(
+        'machines/machinecategory_projects.html',
+        {'machine_category': machine_category, 'project_list': project_list},
+        context_instance=RequestContext(request))
 
 @admin_required
 def category_logs(request, category_id):

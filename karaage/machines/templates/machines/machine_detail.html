@@ -41,8 +41,6 @@
         {% if is_admin %}
         <div class="object-tools">
             <ul>
-                <li><a href="{% url 'kg_machine_accounts' machine.pk %}">User Accounts</a></li>
-                <li><a href="{% url 'kg_machine_projects' machine.pk %}">Projects</a></li>
                 <li><a href="{% url 'kg_machine_edit' machine.pk %}" class="changelink">Edit</a></li>
                 <li><a href="{% url 'kg_machine_logs' machine.pk %}">Logs</a></li>
                 <li><a href="{% url 'kg_machine_password' machine.pk %}">Password</a></li>
