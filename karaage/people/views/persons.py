@@ -226,7 +226,7 @@ def no_account_list(request):
     person_id_list = []
 
     for u in Person.objects.all():
-        for p in u.projects.all():
+        for project in u.projects.all():
             for pc in project.projectquota_set.all():
                 if not u.has_account(pc.machine_category):
                     person_id_list.append(u.id)
