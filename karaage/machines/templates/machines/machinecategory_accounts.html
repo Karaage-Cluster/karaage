@@ -19,6 +19,7 @@
     <div class="module">
         <h2>Users Accounts</h2>
         <h4>Total user accounts: {{ accounts|length }}</h4>
+        {% if accounts %}
         <table cellspacing="0">
             <thead>
                 <tr>
@@ -43,6 +44,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
