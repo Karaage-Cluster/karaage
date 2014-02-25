@@ -22,7 +22,7 @@ from django.template import resolve_variable
 register = Library()
 
 
-@register.inclusion_tag('inlineformfield.html')
+@register.inclusion_tag('common/inlineformfield.html')
 def inlineformfield(field1, field2, field3=False):
     return locals()
 
