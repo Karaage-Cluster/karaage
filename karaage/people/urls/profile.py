@@ -18,6 +18,7 @@
 from django.conf.urls import *
 from django.conf import settings
 
+from karaage.common import get_hooks
 
 urlpatterns = patterns('karaage.people.views.profile',
     url(r'^$', 'profile', name='kg_profile'),
@@ -38,3 +39,7 @@ urlpatterns = patterns('karaage.people.views.profile',
     url(r'^password_request/$', 'password_request', name='kg_profile_reset'),
     url(r'^password_request/done/$', 'password_request_done', name='kg_profile_reset_done'),
 )
+
+for hook in get_hooks("profile_urlpatterns"):
+    urlpatterns += hook
+    del hook
