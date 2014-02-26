@@ -120,7 +120,7 @@ def parse_logs(log_list, date, machine_name, log_type):
 
         try:
             cpujob, created = CPUJob.objects.get_or_create(jobid=data['jobid'])
-            cpujob.user=account
+            cpujob.account=account
             cpujob.username=data['user']
             cpujob.project=project
             cpujob.machine=machine
