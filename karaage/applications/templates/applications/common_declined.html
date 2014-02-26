@@ -17,9 +17,9 @@
 
 
 {% block content %}
-<h1>Application Declined</h1>
+<div class="module">
+    <h2>Application Declined</h2>
 
-<form method="post" action=".">{% csrf_token %}
     {% if application.applicant.get_short_name %}
     <p>Hi {{ application.applicant.get_short_name }},</p>
     {% endif %}
@@ -29,8 +29,10 @@
     <p>You may reopen your application and try again if you desire. Before you do so, please check to
     make sure you understand why the application was declined or cancelled.</p>
 
-    {% application_actions %}
-</form>
+    <form method="post" action=".">{% csrf_token %}
+        {% application_actions %}
+    </form>
+</div>
 {% endblock %}
 
 

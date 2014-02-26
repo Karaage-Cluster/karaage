@@ -3,7 +3,7 @@
 {% load forms %}
 
 
-{% block title %}Start Application{% endblock %}
+{% block title %}Invite new user{% endblock %}
 
 
 {% block breadcrumbs %}
@@ -16,7 +16,7 @@
 
 {% block content %}
 <div class="module">
-    <h2>Start Application</h2>
+    <h2>Send invitation</h2>
     <form method="post" action=".">{% csrf_token %}
         {% form_as_div form %}
 

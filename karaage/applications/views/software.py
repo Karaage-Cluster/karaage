@@ -88,18 +88,15 @@ def register():
 
 
 @login_required
-def new_application(request, software_license_id):
-    if request.method != 'POST':
-        return HttpResponseBadRequest("<h1>Bad Request</h1>")
+def new_application(request, software_license):
+    # Called automatically by hook.
 
-    try:
-        license = SoftwareLicense.objects.get(pk=software_license_id)
-    except SoftwareLicense.DoesNotExist:
+    if request.method != 'POST':
         return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
     application = SoftwareApplication()
     application.applicant = request.user
-    application.software_license = license
+    application.software_license = software_license
     application.save()
 
     state_machine = get_application_state_machine()

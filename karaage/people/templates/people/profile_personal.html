@@ -34,7 +34,7 @@
         <ul>
             <li><a href="{% url 'kg_profile_edit' %}" class="changelink">Edit personal details</a></li>
             <li><a href="{% url 'kg_profile_password' %}" class="changelink">Change password</a></li>
-            <li><a href="{% url 'kg_application_new' %}" class="addlink">Apply for Project</a></li>
+            {% for_each_app_include "profile_personal_detail_tools.html" %}
         </ul>
     </div>
 </div>

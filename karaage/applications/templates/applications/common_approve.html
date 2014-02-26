@@ -17,59 +17,63 @@
 
 
 {% block content %}
-<p>The following request is awaiting for {{ authorised_text }} to approve it:</p>
 <div class="module">
-    <h2>Applicant Details</h2>
-    <table class="keyvalue">
-        <tr><th>Short name:</th><td>{{ application.applicant.get_short_name }}</td></tr>
-        <tr><th>Full name:</th><td>{{ application.applicant.get_full_name }}</td></tr>
-        <tr><th>Institute:</th><td>{{ application.applicant.institute }}</td></tr>
-        <tr><th>Username:</th><td>{{ application.applicant.username }}</td></tr>
-        <tr><th>Email:</th><td>{{ application.applicant.email|urlize }}</td></tr>
-    </table>
-</div>
+    <h2>Approve Application</h2>
 
-{% if application.content_type.model == 'applicant' %}
-<div class="module">
-    <form method="post" action=".">{% csrf_token %}
-        <h2>Similar People</h2>
-        <p>Please check that the applicant isn't an existing user.</p>
-        {% if application.applicant.similar_people %}
-        {% gen_table application.applicant.similar_people %}
-        {% endif %}
-        {% if 'duplicate' in actions %}
-        <input type="submit" name="duplicate" value="Is existing user" class="button" />
-        {% endif %}
-    </form>
-</div>
-{% endif %}
+    <p>The following request is awaiting for {{ authorised_text }} to approve it:</p>
+    <div>
+        <h3>Applicant Details</h3>
+        <table class="keyvalue">
+            <tr><th>Short name:</th><td>{{ application.applicant.get_short_name }}</td></tr>
+            <tr><th>Full name:</th><td>{{ application.applicant.get_full_name }}</td></tr>
+            <tr><th>Institute:</th><td>{{ application.applicant.institute }}</td></tr>
+            <tr><th>Username:</th><td>{{ application.applicant.username }}</td></tr>
+            <tr><th>Email:</th><td>{{ application.applicant.email|urlize }}</td></tr>
+        </table>
+    </div>
 
-{% application_request application %}
-
-<div class="module">
-    <h2>Confirm</h2>
-    <p>{{ application.applicant }} will receive an email once their application has been processed.</p>
-    <br />
-    {% if form.fields %}
-    <p>Please amend the following to suit.</p>
+    {% if application.content_type.model == 'applicant' %}
+    <div>
+        <h3>Similar People</h3>
+        <form method="post" action=".">{% csrf_token %}
+            <p>Please check that the applicant isn't an existing user.</p>
+            {% if application.applicant.similar_people %}
+            {% gen_table application.applicant.similar_people %}
+            {% endif %}
+            {% if 'duplicate' in actions %}
+            <input type="submit" name="duplicate" value="Is existing user" class="button" />
+            {% endif %}
+        </form>
+    </div>
     {% endif %}
 
-    <form method="post" action=".">{% csrf_token %}
-        <div>
-            {% load forms %}
-            {% if form.errors or form.non_field_errors %}
-            <p class="errornote">Please correct the error(s) below.</p>
-            {% endif %}
+    {% application_request application %}
 
-            <fieldset class="aligned ()">
-                {{ form.non_field_errors }}
-                {% form_as_div form %}
-            </fieldset>
-        </div>
+    <div>
+        <h3>Confirm</h3>
+        <p>{{ application.applicant }} will receive an email once their application has been processed.</p>
+        <br />
+        {% if form.fields %}
+        <p>Please amend the following to suit.</p>
+        {% endif %}
 
-        {% application_actions_plus %}
-        <a href="{% url 'kg_application_detail' application.id application.state 'decline' %}" class="deletelink float-left">Decline</a>
-        {% end_application_actions %}
-    </form>
+        <form method="post" action=".">{% csrf_token %}
+            <div>
+                {% load forms %}
+                {% if form.errors or form.non_field_errors %}
+                <p class="errornote">Please correct the error(s) below.</p>
+                {% endif %}
+
+                <fieldset class="aligned ()">
+                    {{ form.non_field_errors }}
+                    {% form_as_div form %}
+                </fieldset>
+            </div>
+
+            {% application_actions_plus %}
+            <a href="{% url 'kg_application_detail' application.id application.state 'decline' %}" class="deletelink float-left">Decline</a>
+            {% end_application_actions %}
+        </form>
+    </div>
 </div>
 {% endblock %}

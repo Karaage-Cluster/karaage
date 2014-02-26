@@ -91,10 +91,10 @@
                     {% if project.is_active %}<li><a href="{% url 'kg_project_delete' project.pid %}" class="deletelink">Delete project</a></li>{% endif %}
                 {% else %}
                     {% if project.is_active %}
-                        <li><a href="{% url 'kg_application_invite' project.pid %}" class="addlink">Invite a new user</a></li>
                         <li><a href="{% url 'kg_project_edit' project.pid %}" class="changelink">Edit</a></li>
                     {% endif %}
                 {% endif %}
+                {% for_each_app_include "project_detail_tools.html" %}
             </ul>
         </div>
     </div>

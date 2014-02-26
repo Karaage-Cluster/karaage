@@ -95,6 +95,10 @@ ul.plainlist li {
     list-style-type: none;
 }
 
+li.selected {
+    font-weight: bold;
+}
+
 li ul {
     margin-bottom: 0;
 }

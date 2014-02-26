@@ -17,9 +17,7 @@
 
 from django.conf import settings
 
-from karaage.common import is_admin
-from karaage.applications.models import Application
-
+from karaage.common import is_admin, get_hooks
 
 def common(request):
     """ Set context with common variables. """
@@ -29,24 +27,8 @@ def common(request):
     ctx['accounts_email'] = settings.ACCOUNTS_EMAIL
     ctx['is_admin'] = is_admin(request)
 
-    if request.user.is_authenticated():
-        person = request.user
-        my_applications = Application.objects.get_for_applicant(person)
-        requires_attention = Application.objects.requires_attention(request)
+    for hook in get_hooks("context"):
+        context = hook(request)
+        ctx.update(context)
 
-        ctx['pending_applications'] = (
-                my_applications.count() + requires_attention.count()
-        )
-    return ctx
-
-
-def registration(request):
-    """ Set context for registration menu. """
-    ctx = {}
-    return ctx
-
-
-def admin(request):
-    """ Set context for admin menu. """
-    ctx = {}
     return ctx

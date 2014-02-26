@@ -23,49 +23,51 @@
 
 
 {% block content %}
-<h1>4. Project details</h1>
+<div class="module">
+    <h2>4. Project details</h2>
 
-<form method="post" action="." class="module">{% csrf_token %}
-    <div class="module">
-        <h2>Common</h2>
-        {% form_as_div forms.common %}
-    </div>
-
-    <div class="module hidden" id="form_new">
-        <h2>New project details</h2>
-        {% form_as_div forms.new %}
-    </div>
-
-    <div class="module hidden" id="form_existing">
-        <h2>Existing project details</h2>
-
-        <input type="hidden" id="id_project" name="project" value="">
-
-        <div class="form-row">
-            <label for="id_name">Project Leader/Project ID:</label>
-            <input type="text" name="terms" id="id_terms" />
+    <form method="post" action=".">{% csrf_token %}
+        <div>
+            <h3>Common</h3>
+            {% form_as_div forms.common %}
         </div>
 
-        <div id="error_list">
-            {% if forms.existing.project.errors %}
-            <ul class="errorlist">
-                <li>No project selected.</li>
-            </ul>
-            {% endif %}
+        <div class="hidden" id="form_new">
+            <h3>New project details</h3>
+            {% form_as_div forms.new %}
         </div>
 
-        <div id="leader_list">
+        <div class="hidden" id="form_existing">
+            <h3>Existing project details</h3>
+
+            <input type="hidden" id="id_project" name="project" value="">
+
+            <div class="form-row">
+                <label for="id_name">Project Leader/Project ID:</label>
+                <input type="text" name="terms" id="id_terms" />
+            </div>
+
+            <div id="error_list">
+                {% if forms.existing.project.errors %}
+                <ul class="errorlist">
+                    <li>No project selected.</li>
+                </ul>
+                {% endif %}
+            </div>
+
+            <div id="leader_list">
+            </div>
+
+            <div id="project_list">
+            </div>
+
+            <div id="selected_project">
+            </div>
         </div>
 
-        <div id="project_list">
-        </div>
-
-        <div id="selected_project">
-        </div>
-    </div>
-
-    {% application_actions %}
-</form>
+        {% application_actions %}
+    </form>
+</div>
 
 <script>
 function csrfSafeMethod(method) {

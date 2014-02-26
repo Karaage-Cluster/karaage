@@ -17,9 +17,9 @@
 
 
 {% block content %}
-<h1>1. Application Introduction</h1>
+<div class="module">
+    <h1>1. Application Introduction</h1>
 
-<form method="post" action=".">{% csrf_token %}
     {% if application.applicant.get_short_name %}
     <p>Hi {{ application.applicant.get_short_name }},</p>
     {% endif %}
@@ -55,8 +55,10 @@
 
     <p>Thank you</p>
 
-    {% application_actions %}
-</form>
+    <form method="post" action=".">{% csrf_token %}
+        {% application_actions %}
+    </form>
+</div>
 {% endblock %}
 
 

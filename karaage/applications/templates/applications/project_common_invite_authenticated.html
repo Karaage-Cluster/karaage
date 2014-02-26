@@ -16,10 +16,13 @@
 
 
 {% block content %}
-<form method="post" action=".">{% csrf_token %}
-    <p>Please confirm you want to start a new application.</p>
-    <div class="submit-row">
-        <input type="submit" value="Go" class="default" />
-    </div>
-</form>
+<div class="module">
+    <h2>Start Application</h2>
+    <form method="post" action=".">{% csrf_token %}
+        <p>Please confirm you want to start a new application.</p>
+        <div class="submit-row">
+            <input type="submit" value="Go" class="default" />
+        </div>
+    </form>
+</div>
 {% endblock %}

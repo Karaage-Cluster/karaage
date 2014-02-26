@@ -38,8 +38,6 @@ urlpatterns = patterns('karaage.applications.views',
     url(r'^project/invite/(?P<project_id>%s)/$' % settings.PROJECT_VALIDATION_RE,
         'project.send_invitation', name='kg_application_invite'),
 
-    url(r'^software/new/(?P<software_license_id>\d+)/$', 'software.new_application', name='kg_application_software_new'),
-
     # this must come last
     url(r'^(?P<token>[-.\w]+)/$', 'common.application_unauthenticated', name='kg_application_unauthenticated'),
     url(r'^(?P<token>[-.\w]+)/(?P<state>[-.\w]+)/$', 'common.application_unauthenticated', name='kg_application_unauthenticated'),

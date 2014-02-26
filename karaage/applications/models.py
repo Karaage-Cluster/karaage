@@ -38,9 +38,9 @@ from karaage.software.models import SoftwareLicenseAgreement
 
 class ApplicationManager(models.Manager):
     def get_for_applicant(self, person):
-        ct = ContentType.objects.get(model='person')
-        query = Application.objects.filter(content_type=ct, object_id=person.pk).exclude(
-                state__in=[Application.COMPLETED, Application.ARCHIVED, Application.DECLINED])
+        query = self.get_queryset()
+        query = query.filter(content_type__model="person", object_id=person.pk)
+        query = query.exclude(state__in=[Application.COMPLETED, Application.ARCHIVED, Application.DECLINED])
         return query
 
     def requires_attention(self, request):
@@ -50,7 +50,7 @@ class ApplicationManager(models.Manager):
         if is_admin(request):
             query = query | Q(state=Application.WAITING_FOR_ADMIN)
             query = query | Q(state=ProjectApplication.DUPLICATE, projectapplication__isnull=False)
-        return Application.objects.filter(query)
+        return self.get_queryset().filter(query)
 
 
 class Application(models.Model):
@@ -184,6 +184,8 @@ class ProjectApplication(Application):
     project = models.ForeignKey(Project, null=True, blank=True)
     make_leader = models.BooleanField(help_text="Make this person a project leader", default=False)
 
+    objects = ApplicationManager()
+
     def info(self):
         if self.project is not None:
             return u"join project '%s'" % self.project.pid
@@ -265,8 +267,10 @@ class SoftwareApplication(Application):
     type = "software"
     software_license = models.ForeignKey('software.SoftwareLicense')
 
+    objects = ApplicationManager()
+
     def info(self):
-        return u"access %s" % self.software_license.software
+        return u"access to %s" % self.software_license.software
 
     def authenticate(self, person):
         auth = {}

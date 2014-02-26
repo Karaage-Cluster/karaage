@@ -8,14 +8,19 @@
 
 {% block profile_content %}
 <div class="module">
-    <h2>Licensed Software</h2><br />
-    <h3><a href="{% url 'kg_software_list' %}" class="addlink">Add software</a></h3>
+    <h2>Softare Agreements</h2>
 
-    {% if software_list %}
-    {% gen_table software_list %}
+    <div class="object-tools">
+        <ul>
+            <li><a href="{% url 'kg_software_list' %}" class="addlink">Add software</a></li>
+        </ul>
+    </div>
+
+    {% if agreement_list %}
+    {% gen_table agreement_list %}
     </table>
     {% else %}
-    <p>No licensed software.</p>
+    <p>No licensed software agreements.</p>
     {% endif %}
 </div>
 

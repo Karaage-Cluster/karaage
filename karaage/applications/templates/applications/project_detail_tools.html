@@ -1,0 +1,3 @@
+{% if project.is_active %}
+<li><a href="{% url 'kg_application_invite' project.pid %}" class="addlink">Invite a new user</a></li>
+{% endif %}

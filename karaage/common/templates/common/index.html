@@ -6,11 +6,7 @@
 {% block content %}
 <div id="content-main">
 
-    {% if pending_applications %}
-    <ul class="messagelist">
-        <li>There are <a href="{% url "kg_application_list" %}?state=K">pending applications</a>.</li>
-    </ul>
-    {% endif %}
+    {% for_each_app_include "index_top.html" %}
 
     {% if is_admin %}
 
@@ -35,6 +31,8 @@
     </ul>
 
     {% endif %}
+
+    {% for_each_app_include "index_bottom.html" %}
 
     {% if is_admin %}
     <div class="module">

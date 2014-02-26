@@ -16,23 +16,23 @@
 {% block content %}
 <div id="content-main">
 
-    {% if my_applications %}
     <div class="module">
         <h2>My applications</h2>
+        {% if my_applications %}
         {% gen_table my_applications %}
+        {% else %}
+        <p>No applications.</p>
+        {% endif %}
     </div>
-    {% endif %}
 
-    {% if requires_attention %}
     <div class="module">
         <h2>Requires Attention</h2>
+        {% if requires_attention %}
         {% gen_table requires_attention %}
+        {% else %}
+        <p>No applications.</p>
+        {% endif %}
     </div>
-    {% endif %}
-
-    {% if not my_applications and not requires_attention %}
-    <h3>You currently have no pending applications.</h3>
-    {% endif %}
 
 </div>
 {% endblock %}

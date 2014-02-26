@@ -35,12 +35,11 @@
     <ul>
       {% if user.is_authenticated %}
       <li><a class="{% active request "profile/" %}" href="{% url 'kg_profile_personal' %}">My profile</a></li>
-      <li><a class="{% active request "applications/" %}" href="{% url 'kg_application_list' %}">Pending Applications{% if pending_applications %} ({{ pending_applications }}){% endif %}</a></li>
       <li><a href="{% url 'kg_profile_logout' %}">Log Out</a></li>
       {% else %}
       <li><a href="{% url 'kg_profile_login' %}">Log In</a></li>
-      <li><a class="{% active request "new/" %}" href="{% url 'kg_application_new' %}">Apply for an account</a></li>
       {% endif %}
+      {% for_each_app_include "main_user.html" %}
     </ul>
   </div>
   {% block sidebar_extra %}

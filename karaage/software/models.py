@@ -175,8 +175,9 @@ class SoftwareLicense(models.Model):
     def __unicode__(self):
         return '%s - %s' % (self.software.name, self.version)
 
+    @models.permalink
     def get_absolute_url(self):
-        return self.software.get_absolute_url()
+        return ('kg_software_license_detail', [self.id])
 
 
 class SoftwareLicenseAgreement(models.Model):

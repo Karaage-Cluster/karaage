@@ -17,14 +17,16 @@
 
 {% block content %}
 <div id="content-main">
-    <h1>Application</h1>
+    <div class="module">
+        <h2>Application</h2>
 
-    <form method="post" action=".">{% csrf_token %}
-        <p>The applicant is still completing this application. Come back later.</p>
-        <p>Application process:</p>
-        {% application_state application %}
-        {% application_actions %}
-    </form>
+        <form method="post" action=".">{% csrf_token %}
+            <p>The applicant is still completing this application. Come back later.</p>
+            <p>Application process:</p>
+            {% application_state application %}
+            {% application_actions %}
+        </form>
+    </div>
 </div>
 {% endblock %}
 

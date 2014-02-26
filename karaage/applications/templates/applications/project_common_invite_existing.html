@@ -14,22 +14,24 @@
 
 
 {% block content %}
-<h1>User already in system</h1>
-<p>A user with this email address ({{ person.email }}) already exists in the system.</p>
-<table>
-    <tr><td>Name:</td><td>{{ person }}</td></tr>
-    <tr><td>Position:</td><td>{{ person.position|default:"" }}</td></tr>
-    <tr><td>Department:</td><td>{{ person.department|default:"" }}</td></tr>
-    <tr><td>Institute:</td><td><a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a></td></tr>
-</table>
+<div class="module">
+    <h2>User already in system</h2>
+    <p>A user with this email address ({{ person.email }}) already exists in the system.</p>
+    <table class="keyvalue">
+        <tr><th>Name:</th><td>{{ person }}</td></tr>
+        <tr><th>Position:</th><td>{{ person.position|default:"" }}</td></tr>
+        <tr><th>Department:</th><td>{{ person.department|default:"" }}</td></tr>
+        <tr><th>Institute:</th><td><a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a></td></tr>
+    </table>
 
-<p>Do you want to add them directly to the project and send an email informing them?</p>
-<form method="post" action=".">{% csrf_token %}
-    {% for field in form %}{{ field.as_hidden }}
-    {% endfor %}
-    <div>
-        <input type="hidden" name="existing" value="yes" />
-        <input type="submit" value="Yes, I'm sure" />
-    </div>
-</form>
+    <p>Do you want to to continue with the person?</p>
+    <form method="post" action=".">{% csrf_token %}
+        {% for field in form %}{{ field.as_hidden }}
+        {% endfor %}
+        <div>
+            <input type="hidden" name="existing" value="yes" />
+            <input type="submit" value="Yes, I'm sure" />
+        </div>
+    </form>
+</div>
 {% endblock %}

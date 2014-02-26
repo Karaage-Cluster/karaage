@@ -84,10 +84,10 @@ def profile_accounts(request):
 @login_required
 def profile_software(request):
     person = request.user
-    software_list = person.softwarelicenseagreement_set.all()
+    agreement_list = person.softwarelicenseagreement_set.all()
     return render_to_response(
         'people/profile_software.html',
-        {'person': person, 'software_list': software_list},
+        {'person': person, 'agreement_list': agreement_list},
         context_instance=RequestContext(request))
 
 

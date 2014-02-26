@@ -16,6 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
+import importlib
 
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.template import RequestContext
@@ -175,3 +176,15 @@ def is_admin(request):
     if not request.user.is_authenticated():
         return False
     return request.user.is_admin
+
+def get_hooks(name):
+    for app in settings.INSTALLED_APPS:
+        try:
+            module_name = app + ".hooks"
+            module = importlib.import_module(module_name)
+        except ImportError:
+            pass
+        else:
+            function = getattr(module, name, None)
+            if function is not None:
+                yield function

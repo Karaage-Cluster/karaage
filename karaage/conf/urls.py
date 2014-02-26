@@ -31,7 +31,6 @@ urlpatterns = patterns('',
     url(r'^institutes/', include('karaage.institutes.urls')),
     url(r'^projects/', include('karaage.projects.urls')),
     url(r'^machines/', include('karaage.machines.urls')),
-    url(r'^usage/', include('karaage.usage.urls')),
     url(r'^software/', include('karaage.software.urls')),
     url(r'^applications/', include('karaage.applications.urls')),
     url(r'^xmlrpc/$', 'django_xmlrpc.views.handle_xmlrpc',),
@@ -40,6 +39,16 @@ urlpatterns = patterns('',
     url(r'^lookup/', include('ajax_select.urls')),
     url(r'^emails/', include('karaage.emails.urls')),
 )
+
+if "karaage.usage" in settings.INSTALLED_APPS:
+    urlpatterns += patterns('',
+        url(r'^usage/', include('karaage.usage.urls')),
+    )
+
+if "karaage.applications" in settings.INSTALLED_APPS:
+    urlpatterns += patterns('',
+        url(r'^applications/', include('karaage.applications.urls')),
+    )
 
 if settings.DEBUG:
     urlpatterns += patterns('',

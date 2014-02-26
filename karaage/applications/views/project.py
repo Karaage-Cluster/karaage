@@ -760,7 +760,7 @@ def _send_invitation(request, project, invite_form):
             return response
 
     return render_to_response(
-            'applications/project_common_invite_unauthenticated.html',
+            'applications/project_common_invite_other.html',
             {'form': form, 'project': project, },
             context_instance=RequestContext(request))
 

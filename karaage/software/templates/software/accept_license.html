@@ -31,25 +31,49 @@
             <tr><th>Restricted:</th><td>{% yes_no_img software.restricted %}</td></tr>
         </table>
 
-        {% if software.restricted %}
+        {% if software.restricted and not agreement %}
         <p class="errornote">NOTE: This software is restricted and requires admin approval. You will receive notification via email once your request has been processed</p>
         {% endif %}
     </div>
 
-    {% if software_license %}
     <div class="module">
-        <h2>End User License Agreement</h2>
+        <h2>Current End User License Agreement</h2>
 
-        <form {% if software.restricted %}action="{% url 'kg_application_software_new' software_license.pk %}"{% else %}action="."{% endif %} method="post">{% csrf_token %}
-            <p><a href="{% url 'kg_software_license_txt' software.pk %}">Print version</a></p>
-            {% if software_license.version %}<p>Version: {{ software_license.version }}</p>{% endif %}
-            <blockquote>{{ software_license.text|safe|linebreaks }}</blockquote>
+        {% if software_license %}
+        <table class="keyvalue">
+            {% if software_license.version %}
+            <tr><th>Version:</th><td>{{ software_license.version }}</td></tr>
+            <tr><th>Date:</th><td>{{ software_license.date }}</td></tr>
+            {% endif %}
+            <tr>
+                <th>Text:</th>
+                <td>
+                    {{ software_license.text|safe|linebreaks }}
+                    <a href="{% url 'kg_software_license_txt' software.pk %}">[Print version]</a>
+                </td>
+            </tr>
+            {% if pending %}
+            <tr><th>Pending:</th><td>Request is pending.</td></tr>
+            {% endif %}
+            {% if agreement %}
+            <tr><th>Accepted:</th><td>Approved on {{ agreement.date }}.</td></tr>
+            {% endif %}
+        </table>
+        {% endif %}
+
+        {% if not agreement and not pending %}
+            <h3>Accept</h3>
             <p>By clicking on 'I accept' you are agreeing to the conditions above.</p>
-            <div class="submit-row">
-                <input type="submit" value="I accept"/>
-            </div>
-        </form>
+            <form action="." method="post">{% csrf_token %}
+                <div class="submit-row">
+                    <input type="submit" value="I accept"/>
+                </div>
+            </form>
+            {% if failed %}
+            <p class="errornote">The attempt to gain admin approval has failed.
+            Please contact {{ accounts_email }} for help.</p>
+            {% endif %}
+        {% endif %}
     </div>
-    {% endif %}
 </div>
 {% endblock %}
