@@ -3,7 +3,7 @@ import datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
-from karaage.datastores import get_test_datastore
+from karaage.datastores import get_machine_category_test_datastore
 
 class Migration(DataMigration):
 
@@ -23,7 +23,7 @@ class Migration(DataMigration):
             return
 
         try:
-            datastore = get_test_datastore("ldap", 0)
+            datastore = get_machine_category_test_datastore("ldap", 0)
         except KeyError:
             return
 

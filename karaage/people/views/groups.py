@@ -145,8 +145,11 @@ def group_detail(request, group_name):
 def group_verbose(request, group_name):
     group = get_object_or_404(Group, name=group_name)
 
-    from karaage.datastores import get_group_details
-    group_details = get_group_details(group)
+    from karaage.datastores import global_get_group_details
+    global_group_details = global_get_group_details(group)
+
+    from karaage.datastores import machine_category_get_group_details
+    machine_category_group_details = machine_category_get_group_details(group)
 
     return render_to_response('people/group_verbose.html', locals(), context_instance=RequestContext(request))
 

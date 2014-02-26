@@ -205,7 +205,7 @@ Debian installation
 
 Configuring Karaage to use LDAP
 -------------------------------
-#.  Add the following to /etc/karaage/global_settings.py:
+#.  Add the following to ``/etc/karaage/global_settings.py``:
 
     .. code-block:: python
 
@@ -221,14 +221,14 @@ Configuring Karaage to use LDAP
              }
         }
 
-        DATASTORES = {
+        MACHINE_CATEGORY_DATASTORES = {
              'ldap' : [
                   {
-                        'DESCRIPTION': 'Default LDAP datastore',
+                        'DESCRIPTION': 'LDAP datastore',
                         'ENGINE': 'karaage.datastores.ldap.AccountDataStore',
                         'LDAP': 'default',
                         'ACCOUNT': 'karaage.datastores.ldap_schemas.openldap_account',
-                        'GROUP': 'karaage.datastores.ldap_schemas.openldap_group',
+                        'GROUP': 'karaage.datastores.ldap_schemas.openldap_account_group',
                         'PRIMARY_GROUP': "institute",
                         'DEFAULT_PRIMARY_GROUP': "dummy",
                         'HOME_DIRECTORY': "/home/%(uid)s",
@@ -241,31 +241,25 @@ Configuring Karaage to use LDAP
              ],
         }
 
-#.  (optional) If you require people to be recorded in LDAP, add the
-    ``PERSON`` and ``LDAP_PERSON_BASE`` settings to the ``ldap`` datastore:
+#.  (optional) If you require people to be recorded in LDAP, add the following
+    to ``/etc/karaage/global_settings.py``:
 
     .. code-block:: python
 
-        DATASTORES = {
-             'ldap' : [
-                  {
-                        'DESCRIPTION': 'Default LDAP datastore',
-                        'ENGINE': 'karaage.datastores.ldap.AccountDataStore',
-                        'LDAP': 'default',
-                        'PERSON': 'karaage.datastores.ldap_schemas.openldap_person',
-                        'ACCOUNT': 'karaage.datastores.ldap_schemas.openldap_account',
-                        'GROUP': 'karaage.datastores.ldap_schemas.openldap_group',
-                        'PRIMARY_GROUP': "institute",
-                        'DEFAULT_PRIMARY_GROUP': "dummy",
-                        'HOME_DIRECTORY': "/home/%(uid)s",
-                        'LOCKED_SHELL': "/usr/local/sbin/locked",
-                        'LDAP_PERSON_BASE': 'ou=People,dc=example,dc=org',
-                        'LDAP_ACCOUNT_BASE': 'ou=Accounts,dc=example,dc=org',
-                        'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
-                  },
-             ],
-             # as above
-        }
+        GLOBAL_DATASTORES = [
+              {
+                    'DESCRIPTION': 'LDAP datastore',
+                    'ENGINE': 'karaage.datastores.ldap.GlobalDataStore',
+                    'LDAP': 'default',
+                    'PERSON': 'karaage.datastores.ldap_schemas.openldap_person',
+                    'GROUP': 'karaage.datastores.ldap_schemas.openldap_person_group',
+                    'LDAP_PERSON_BASE': 'ou=People,dc=example,dc=org',
+                    'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
+              },
+        ]
+
+    For best results the base settings should be different for the
+    ``GLOBAL_DATASTORE`` and the ``MACHINE_CATEGORY_DATASTORE`` settings.
 
 #.  Reload apache.
 

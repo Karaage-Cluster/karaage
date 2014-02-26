@@ -20,7 +20,11 @@
 from django.conf import settings
 import django.utils
 
-_DATASTORES = {}
+from .base import GlobalDataStore, MachineCategoryDataStore
+from karaage.machines.models import MachineCategory
+
+_GLOBAL_DATASTORES = []
+_MACHINE_CATEGORY_DATASTORES = {}
 
 def _lookup(cls):
     """ Lookup module.class. """
@@ -35,259 +39,263 @@ def _lookup(cls):
 
 def _init_datastores():
     """ Initialize all datastores. """
-    for name, array in settings.DATASTORES.iteritems():
-        _DATASTORES[name] = []
+    array = settings.GLOBAL_DATASTORES
+    for config in array:
+        cls = _lookup(config['ENGINE'])
+        assert issubclass(cls, GlobalDataStore)
+        _GLOBAL_DATASTORES.append(cls(config))
+    for name, array in settings.MACHINE_CATEGORY_DATASTORES.iteritems():
+        _MACHINE_CATEGORY_DATASTORES[name] = []
         for config in array:
             cls = _lookup(config['ENGINE'])
-            _DATASTORES[name].append(cls(config))
+            assert issubclass(cls, MachineCategoryDataStore)
+            _MACHINE_CATEGORY_DATASTORES[name].append(cls(config))
 
-def _get_datastores_for_name(name):
-    """ Get the datastores for name. """
-    return _DATASTORES[name]
+def _get_global_datastores():
+    return _GLOBAL_DATASTORES
 
-def _get_all_names():
-    """ Get all datstores that are in use. """
-    from karaage.machines.models import MachineCategory
-    mc_query = MachineCategory.objects.all().values('datastore').distinct()
-    for machine_category in mc_query:
-        yield machine_category['datastore']
+def _get_machine_category_datastores(machine_category):
+    """ Get the datastores for machine category. """
+    name = machine_category.datastore
+    return _MACHINE_CATEGORY_DATASTORES[name]
 
-def get_test_datastore(name=None, number=None):
+def _get_machine_categorys():
+    return MachineCategory.objects.all()
+
+def get_global_test_datastore(number=None):
+    """ For testing only. Do not use. """
+    if number is None:
+        number = settings.LDAP_TEST_DATASTORE_N
+    datastores = _GLOBAL_DATASTORES
+    return datastores[number]
+
+def get_machine_category_test_datastore(name=None, number=None):
     """ For testing only. Do not use. """
     if name is None:
         name = settings.LDAP_TEST_DATASTORE
     if number is None:
         number = settings.LDAP_TEST_DATASTORE_N
-    datastores = _get_datastores_for_name(name)
+    datastores = _MACHINE_CATEGORY_DATASTORES[name]
     return datastores[number]
 
 # Initialize data stores
 _init_datastores()
 
 
+######################################################################
+# GLOBAL DATA STORES                                                 #
+######################################################################
+
+
 ##########
-# PERSON #
+# Person #
 ##########
 
-def save_person(person):
+def global_save_person(person):
     """ Person was saved. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
-            datastore.save_person(person)
+    for datastore in _get_global_datastores():
+        datastore.save_person(person)
 
-def delete_person(person):
+def global_delete_person(person):
     """ Person was deleted. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
-            datastore.delete_person(person)
+    for datastore in _get_global_datastores():
+        datastore.delete_person(person)
 
-def set_person_password(person, raw_password):
+def global_set_person_password(person, raw_password):
     """ Person's password was changed. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
-            datastore.set_person_password(person, raw_password)
+    for datastore in _get_global_datastores():
+        datastore.set_person_password(person, raw_password)
 
-def set_person_username(person, old_username, new_username):
+def global_set_person_username(person, old_username, new_username):
     """ Person's username was changed. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
-            datastore.set_person_username(person, old_username, new_username)
+    for datastore in _get_global_datastores():
+        datastore.set_person_username(person, old_username, new_username)
 
-def add_person_to_group(person, group):
+def global_add_person_to_group(person, group):
     """ Add person to group. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
-            datastore.add_person_to_group(person, group)
+    for datastore in _get_global_datastores():
+        datastore.add_person_to_group(person, group)
 
-def remove_person_from_group(person, group):
+def global_remove_person_from_group(person, group):
     """ Remove person from group. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
-            datastore.remove_person_from_group(person, group)
+    for datastore in _get_global_datastores():
+        datastore.remove_person_from_group(person, group)
 
-def add_person_to_project(person, project):
+def global_add_person_to_project(person, project):
     """ Add person to project. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
-            datastore.add_person_to_project(person, project)
+    for datastore in _get_global_datastores():
+        datastore.add_person_to_project(person, project)
 
-def remove_person_from_project(person, project):
+def global_remove_person_from_project(person, project):
     """ Remove person from project. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
-            datastore.remove_person_from_project(person, project)
+    for datastore in _get_global_datastores():
+        datastore.remove_person_from_project(person, project)
 
-def add_person_to_institute(person, institute):
-    """ Add person to institute. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
-            datastore.add_person_to_institute(person, institute)
-
-def remove_person_from_institute(person, institute):
-    """ Remove person from institute. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
-            datastore.remove_person_from_institute(person, institute)
-
-def add_person_to_software(person, software):
-    """ Add person to software. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
-            datastore.add_person_to_software(person, software)
-
-def remove_person_from_software(person, software):
-    """ Remove person from software. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
-            datastore.remove_person_from_software(person, software)
-
-def person_exists(username):
+def global_person_exists(username):
     """ Does this person exist??? """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
-            if datastore.person_exists(username):
-                return True
+    for datastore in _get_global_datastores():
+        if datastore.person_exists(username):
+            return True
     return False
 
-def get_person_details(person):
+def global_get_person_details(person):
     """ Get details for this user. """
-    result = {}
-    for name in _get_all_names():
-        result[name] = []
-        for datastore in _get_datastores_for_name(name):
-            value = datastore.get_person_details(person)
-            value['datastore'] = datastore.config['DESCRIPTION']
-            result[name].append(value)
+    result = []
+    for datastore in _get_global_datastores():
+        value = datastore.get_person_details(person)
+        value['datastore'] = datastore.config['DESCRIPTION']
+        result.append(value)
     return result
 
 
+#########
+# Group #
+#########
+
+def global_save_group(group):
+    """ Group was saved. """
+    for datastore in _get_global_datastores():
+        datastore.save_group(group)
+
+def global_delete_group(group):
+    """ Group was deleted. """
+    for datastore in _get_global_datastores():
+        datastore.delete_group(group)
+
+def global_set_group_name(group, old_name, new_name):
+    """ Group was renamed. """
+    for datastore in _get_global_datastores():
+        datastore.set_group_name(group, old_name, new_name)
+
+def global_get_group_details(group):
+    """ Get group details. """
+    result = []
+    for datastore in _get_global_datastores():
+        value = datastore.get_group_details(group)
+        value['datastore'] = datastore.config['DESCRIPTION']
+        result.append(value)
+    return result
+
+
+######################################################################
+# MACHINE CATEGORY DATASTORES                                        #
+######################################################################
+
+
 ###########
-# ACCOUNT #
+# Account #
 ###########
 
-def save_account(account):
+def machine_category_save_account(account):
     """ Account was saved. """
-    name = account.machine_category.datastore
-    for datastore in _get_datastores_for_name(name):
+    for datastore in _get_machine_category_datastores(account.machine_category):
         datastore.save_account(account)
 
-def delete_account(account):
+def machine_category_delete_account(account):
     """ Account was deleted. """
-    name = account.machine_category.datastore
-    for datastore in _get_datastores_for_name(name):
+    for datastore in _get_machine_category_datastores(account.machine_category):
         datastore.delete_account(account)
 
-def set_account_password(account, raw_password):
+def machine_category_set_account_password(account, raw_password):
     """ Account's password was changed. """
-    name = account.machine_category.datastore
-    for datastore in _get_datastores_for_name(name):
+    for datastore in _get_machine_category_datastores(account.machine_category):
         datastore.set_account_password(account, raw_password)
 
-def set_account_username(account, old_username, new_username):
+def machine_category_set_account_username(account, old_username, new_username):
     """ Account's username was changed. """
-    name = account.machine_category.datastore
-    for datastore in _get_datastores_for_name(name):
+    for datastore in _get_machine_category_datastores(account.machine_category):
         datastore.set_account_username(account, old_username, new_username)
 
-def add_account_to_group(account, group):
+def machine_category_add_account_to_group(account, group):
     """ Add account to group. """
-    name = account.machine_category.datastore
-    for datastore in _get_datastores_for_name(name):
+    for datastore in _get_machine_category_datastores(account.machine_category):
         datastore.add_account_to_group(account, group)
 
-def remove_account_from_group(account, group):
+def machine_category_remove_account_from_group(account, group):
     """ Remove account from group. """
-    name = account.machine_category.datastore
-    for datastore in _get_datastores_for_name(name):
+    for datastore in _get_machine_category_datastores(account.machine_category):
         datastore.remove_account_from_group(account, group)
 
-def add_account_to_project(account, project):
+def machine_category_add_account_to_project(account, project):
     """ Add account to project. """
-    name = account.machine_category.datastore
-    for datastore in _get_datastores_for_name(name):
+    for datastore in _get_machine_category_datastores(account.machine_category):
         datastore.add_account_to_project(account, project)
 
-def remove_account_from_project(account, project):
+def machine_category_remove_account_from_project(account, project):
     """ Remove account from project. """
-    name = account.machine_category.datastore
-    for datastore in _get_datastores_for_name(name):
+    for datastore in _get_machine_category_datastores(account.machine_category):
         datastore.remove_account_from_project(account, project)
 
-def add_account_to_institute(account, institute):
+def machine_category_add_account_to_institute(account, institute):
     """ Add account to institute. """
-    name = account.machine_category.datastore
-    for datastore in _get_datastores_for_name(name):
+    for datastore in _get_machine_category_datastores(account.machine_category):
         datastore.add_account_to_institute(account, institute)
 
-def remove_account_from_institute(account, institute):
+def machine_category_remove_account_from_institute(account, institute):
     """ Remove account from institute. """
-    name = account.machine_category.datastore
-    for datastore in _get_datastores_for_name(name):
+    for datastore in _get_machine_category_datastores(account.machine_category):
         datastore.remove_account_from_institute(account, institute)
 
-def add_account_to_software(account, software):
+def machine_category_add_account_to_software(account, software):
     """ Add account to software. """
-    name = account.machine_category.datastore
-    for datastore in _get_datastores_for_name(name):
+    for datastore in _get_machine_category_datastores(account.machine_category):
         datastore.add_account_to_software(account, software)
 
-def remove_account_from_software(account, software):
+def machine_category_remove_account_from_software(account, software):
     """ Remove account from software. """
-    name = account.machine_category.datastore
-    for datastore in _get_datastores_for_name(name):
+    for datastore in _get_machine_category_datastores(account.machine_category):
         datastore.remove_account_from_software(account, software)
 
-def account_exists(username, machine_category):
+def machine_category_account_exists(username, machine_category):
     """ Does the account exist??? """
-    name = machine_category.datastore
-    for datastore in _get_datastores_for_name(name):
+    for datastore in _get_machine_category_datastores(machine_category):
         if datastore.account_exists(username):
             return True
     return False
 
-def get_account_details(account):
+def machine_category_get_account_details(account):
     """ Get the account details. """
+    machine_category = account.machine_category
     result = {}
-    name = account.machine_category.datastore
-    result[name] = []
-    for datastore in _get_datastores_for_name(name):
+    result[machine_category.name] = []
+    for datastore in _get_machine_category_datastores(machine_category):
         value = datastore.get_account_details(account)
         value['datastore'] = datastore.config['DESCRIPTION']
-        result[name].append(value)
+        result[machine_category.name].append(value)
     return result
 
 
 #########
-# GROUP #
+# Group #
 #########
 
-def save_group(group):
+def machine_category_save_group(group):
     """ Group was saved. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
+    for machine_category in _get_machine_categorys():
+        for datastore in _get_machine_category_datastores(machine_category):
             datastore.save_group(group)
 
-def delete_group(group):
+def machine_category_delete_group(group):
     """ Group was deleted. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
+    for machine_category in _get_machine_categorys():
+        for datastore in _get_machine_category_datastores(machine_category):
             datastore.delete_group(group)
 
-def set_group_name(group, old_name, new_name):
+def machine_category_set_group_name(group, old_name, new_name):
     """ Group was renamed. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
+    for machine_category in _get_machine_categorys():
+        for datastore in _get_machine_category_datastores(machine_category):
             datastore.set_group_name(group, old_name, new_name)
 
-def get_group_details(group):
+def machine_category_get_group_details(group):
     """ Get group details. """
     result = {}
-    for name in _get_all_names():
-        result[name] = []
-        for datastore in _get_datastores_for_name(name):
+    for machine_category in _get_machine_categorys():
+        result[machine_category.name] = []
+        for datastore in _get_machine_category_datastores(machine_category):
             value = datastore.get_group_details(group)
             value['datastore'] = datastore.config['DESCRIPTION']
-            result[name].append(value)
+            result[machine_category.name].append(value)
     return result
 
 
@@ -295,27 +303,32 @@ def get_group_details(group):
 # Project #
 ###########
 
-def save_project(project):
-    """ An institute has been saved. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
+def machine_category_save_project(project):
+    """ An machine has been saved. """
+    for project_quota in project.projectquota_set.all():
+        for datastore in _get_machine_category_datastores(project_quota.machine_category):
             datastore.save_project(project)
 
-def delete_project(project):
-    """ An institute has been deleted. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
+def machine_category_delete_project(project, machine_category=None):
+    """ An machine has been deleted. """
+    if machine_category is None:
+        for project_quota in project.projectquota_set.all():
+            for datastore in _get_machine_category_datastores(project_quota.machine_category):
+                datastore.delete_project(project)
+    else:
+        for datastore in _get_machine_category_datastores(machine_category):
             datastore.delete_project(project)
 
-def get_project_details(project):
+def machine_category_get_project_details(project):
     """ Get details for this user. """
     result = {}
-    for name in _get_all_names():
-        result[name] = []
-        for datastore in _get_datastores_for_name(name):
+    for project_quota in project.projectquota_set.all():
+        machine_category = project_quota.machine_category
+        result[machine_category.name] = []
+        for datastore in _get_machine_category_datastores(machine_category):
             value = datastore.get_project_details(project)
             value['datastore'] = datastore.config['DESCRIPTION']
-            result[name].append(value)
+            result[machine_category.name].append(value)
     return result
 
 
@@ -323,27 +336,32 @@ def get_project_details(project):
 # Institute #
 #############
 
-def save_institute(institute):
+def machine_category_save_institute(institute):
     """ An institute has been saved. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
+    for institute_quota in institute.institutequota_set.all():
+        for datastore in _get_machine_category_datastores(institute_quota.machine_category):
             datastore.save_institute(institute)
 
-def delete_institute(institute):
+def machine_category_delete_institute(institute, machine_category):
     """ An institute has been deleted. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
+    if machine_category is None:
+        for institute_quota in institute.institutequota_set.all():
+            for datastore in _get_machine_category_datastores(institute_quota.machine_category):
+                datastore.delete_institute(institute)
+    else:
+        for datastore in _get_machine_category_datastores(machine_category):
             datastore.delete_institute(institute)
 
-def get_institute_details(institute):
+def machine_category_get_institute_details(institute):
     """ Get details for this user. """
     result = {}
-    for name in _get_all_names():
-        result[name] = []
-        for datastore in _get_datastores_for_name(name):
+    for institute_quota in institute.institutequota_set.all():
+        machine_category = institute_quota.machine_category
+        result[machine_category.name] = []
+        for datastore in _get_machine_category_datastores(machine_category):
             value = datastore.get_institute_details(institute)
             value['datastore'] = datastore.config['DESCRIPTION']
-            result[name].append(value)
+            result[machine_category.name].append(value)
     return result
 
 
@@ -351,28 +369,34 @@ def get_institute_details(institute):
 # Software #
 ############
 
-def save_software(software):
+def machine_category_save_software(software):
     """ An institute has been saved. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
+    for machine_category in _get_machine_categorys():
+        for datastore in _get_machine_category_datastores(machine_category):
             datastore.save_software(software)
 
-def delete_software(software):
+def machine_category_delete_software(software):
     """ An institute has been deleted. """
-    for name in _get_all_names():
-        for datastore in _get_datastores_for_name(name):
+    for machine_category in _get_machine_categorys():
+        for datastore in _get_machine_category_datastores(machine_category):
             datastore.delete_software(software)
 
-def get_software_details(software):
+def machine_category_get_software_details(software):
     """ Get details for this user. """
     result = {}
-    for name in _get_all_names():
-        result[name] = []
-        for datastore in _get_datastores_for_name(name):
+    for machine_category in _get_machine_categorys():
+        result[machine_category.name] = []
+        for datastore in _get_machine_category_datastores(machine_category):
             value = datastore.get_software_details(software)
             value['datastore'] = datastore.config['DESCRIPTION']
-            result[name].append(value)
+            result[machine_category.name].append(value)
     return result
+
+
+######################################################################
+# OTHER                                                              #
+######################################################################
+
 
 ###################
 # MachineCategory #
@@ -388,12 +412,10 @@ def set_mc_datastore(machine_category, old_datastore, new_datastore):
         mc_query = mc_query.filter(datastore=new_datastore)
         mc_query = mc_query.exclude(pk=machine_category.pk)
         other_mc_refer_datastore = (mc_query.count() > 0)
-        for datastore in _get_datastores_for_name(new_datastore):
+        for datastore in _get_machine_category_datastores(new_datastore):
             if not other_mc_refer_datastore:
                 for group in Group.objects.all():
                     datastore.save_group(group)
-                for person in Person.objects.all():
-                    datastore.save_person(person)
             for account in Account.objects.filter(
                     date_deleted__isnull=True, machine_category=machine_category):
                 datastore.save_account(account)

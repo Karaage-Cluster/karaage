@@ -116,21 +116,21 @@ class Person(AbstractBaseUser):
                 log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
 
         # update the datastore
-        from karaage.datastores import save_person
-        save_person(self)
+        from karaage.datastores import global_save_person
+        global_save_person(self)
 
         # update account datastores
-        from karaage.datastores import save_account
+        from karaage.datastores import machine_category_save_account
         for ua in self.account_set.filter(date_deleted__isnull=True):
-            save_account(ua)
+            machine_category_save_account(ua)
 
         # has username changed?
         self._tracker.has_changed("username")
         if self._tracker.has_changed("username"):
             old_username = self._tracker.previous('username')
             if old_username is not None:
-                from karaage.datastores import set_person_username
-                set_person_username(self, old_username, self.username)
+                from karaage.datastores import global_set_person_username
+                global_set_person_username(self, old_username, self.username)
                 log(None, self, 2, 'Renamed')
 
         # has locked status changed?
@@ -149,21 +149,17 @@ class Person(AbstractBaseUser):
             new_institute = self.institute
             if old_institute_pk is not None:
                 old_institute = Institute.objects.get(pk=old_institute_pk)
-                from karaage.datastores import remove_person_from_institute
-                remove_person_from_institute(self, old_institute)
-                from karaage.datastores import remove_account_from_institute
+                from karaage.datastores import machine_category_remove_account_from_institute
                 for account in self.account_set.filter(date_deleted__isnull=True):
-                    remove_account_from_institute(account, old_institute)
+                    machine_category_remove_account_from_institute(account, old_institute)
             if new_institute is not None:
-                from karaage.datastores import add_person_to_institute
-                add_person_to_institute(self, new_institute)
-                from karaage.datastores import add_account_to_institute
+                from karaage.datastores import machine_category_add_account_to_institute
                 for account in self.account_set.filter(date_deleted__isnull=True):
-                    add_account_to_institute(account, new_institute)
+                    machine_category_add_account_to_institute(account, new_institute)
 
         if self._password is not None:
-            from karaage.datastores import set_person_password
-            set_person_password(self, self._password)
+            from karaage.datastores import global_set_person_password
+            global_set_person_password(self, self._password)
             for ua in self.account_set.filter(date_deleted__isnull=True):
                 ua.set_password(self._password)
                 ua.save()
@@ -173,11 +169,11 @@ class Person(AbstractBaseUser):
 
     def delete(self, *args, **kwargs):
         # delete the object
-        delete_person(self)
+        super(Person, self).delete(*args, **kwargs)
 
         # update the datastore
-        super(Person, self).delete(*args, **kwargs)
-        from karaage.datastores import delete_user
+        from karaage.datastores import global_delete_person
+        global_delete_person(self)
     delete.alters_data = True
 
     @property
@@ -411,9 +407,21 @@ class Group(models.Model):
         for field in self._tracker.changed():
             log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
 
+        old_name = self._tracker.previous("name")
+        new_name = self.name
+        if old_name is not None and old_name != new_name:
+            from karaage.datastores import global_set_group_name
+            global_set_group_name(self, old_name, new_name)
+            from karaage.datastores import machine_category_set_group_name
+            machine_category_set_group_name(self, old_name, new_name)
+            log(None, self, 2, "Renamed group")
+
         # update the datastore
-        from karaage.datastores import save_group
-        save_group(self)
+        from karaage.datastores import global_save_group
+        global_save_group(self)
+        from karaage.datastores import machine_category_save_group
+        machine_category_save_group(self)
+
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
@@ -424,8 +432,10 @@ class Group(models.Model):
         super(Group, self).delete(*args, **kwargs)
 
         # update the datastore
-        from karaage.datastores import delete_group
-        delete_group(self)
+        from karaage.datastores import global_delete_group
+        global_delete_group(self)
+        from karaage.datastores import machine_category_delete_group
+        machine_category_delete_group(self)
     delete.alters_data = True
 
     def add_person(self, person):
@@ -436,73 +446,50 @@ class Group(models.Model):
         self.members.remove(person)
     remove_person.alters_data = True
 
-    def change_name(self, new_name):
-        old_name = self.name
-        if old_name != new_name:
-            self.name = new_name
-            # we call super.save() to avoid calling datastore save needlessly
-            super(Group, self).save()
-            from karaage.datastores import set_group_name
-            set_group_name(self, old_name, new_name)
-            log(None, self, 2, "Renamed group")
-    change_name.alters_data = True
-
 
 def _add_person_to_group(person, group):
     """ Call datastores after adding a person to a group. """
-    from karaage.datastores import add_person_to_group
-    from karaage.datastores import add_person_to_project
-    from karaage.datastores import add_person_to_institute
-    from karaage.datastores import add_person_to_software
-    from karaage.datastores import add_account_to_group
-    from karaage.datastores import add_account_to_project
-    from karaage.datastores import add_account_to_institute
-    from karaage.datastores import add_account_to_software
+    from karaage.datastores import global_add_person_to_group
+    from karaage.datastores import machine_category_add_account_to_group
+    from karaage.datastores import machine_category_add_account_to_project
+    from karaage.datastores import machine_category_add_account_to_institute
+    from karaage.datastores import machine_category_add_account_to_software
 
     a_list = list(person.account_set.filter(date_deleted__isnull=True))
-    add_person_to_group(person, group)
+    global_add_person_to_group(person, group)
     for account in a_list:
-        add_account_to_group(account, group)
+        machine_category_add_account_to_group(account, group)
     for project in group.project_set.all():
-        add_person_to_project(person, project)
         for account in a_list:
-            add_account_to_project(account, project)
+            machine_category_add_account_to_project(account, project)
     for institute in group.institute_set.all():
-        add_person_to_institute(person, institute)
         for account in a_list:
-            add_account_to_institute(account, institute)
+            machine_category_add_account_to_institute(account, institute)
     for software in group.software_set.all():
-        add_person_to_software(person, software)
         for account in a_list:
-            add_account_to_software(account, software)
+            machine_category_add_account_to_software(account, software)
 
 def _remove_person_from_group(person, group):
     """ Call datastores after removing a person from a group. """
-    from karaage.datastores import remove_person_from_group
-    from karaage.datastores import remove_person_from_project
-    from karaage.datastores import remove_person_from_institute
-    from karaage.datastores import remove_person_from_software
-    from karaage.datastores import remove_account_from_group
-    from karaage.datastores import remove_account_from_project
-    from karaage.datastores import remove_account_from_institute
-    from karaage.datastores import remove_account_from_software
+    from karaage.datastores import global_remove_person_from_group
+    from karaage.datastores import machine_category_remove_account_from_group
+    from karaage.datastores import machine_category_remove_account_from_project
+    from karaage.datastores import machine_category_remove_account_from_institute
+    from karaage.datastores import machine_category_remove_account_from_software
 
     a_list = list(person.account_set.filter(date_deleted__isnull=True))
-    remove_person_from_group(person, group)
+    global_remove_person_from_group(person, group)
     for account in a_list:
-        remove_account_from_group(account, group)
+        machine_category_remove_account_from_group(account, group)
     for project in group.project_set.all():
-        remove_person_from_project(person, project)
         for account in a_list:
-            remove_account_from_project(account, project)
+            machine_category_remove_account_from_project(account, project)
     for institute in group.institute_set.all():
-        remove_person_from_institute(person, institute)
         for account in a_list:
-            remove_account_from_institute(account, institute)
+            machine_category_remove_account_from_institute(account, institute)
     for software in group.software_set.all():
-        remove_person_from_software(person, software)
         for account in a_list:
-            remove_account_from_software(account, software)
+            machine_category_remove_account_from_software(account, software)
 
 def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
     """

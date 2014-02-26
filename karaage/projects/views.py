@@ -134,8 +134,8 @@ def project_detail(request, project_id):
 def project_verbose(request, project_id):
     project = get_object_or_404(Project, pid=project_id)
 
-    from karaage.datastores import get_project_details
-    project_details = get_project_details(project)
+    from karaage.datastores import machine_category_get_project_details
+    project_details = machine_category_get_project_details(project)
 
     return render_to_response('projects/project_verbose.html', locals(), context_instance=RequestContext(request))
 

@@ -97,8 +97,8 @@ def software_detail(request, software_id):
 def software_verbose(request, software_id):
     software = get_object_or_404(Software, pk=software_id)
 
-    from karaage.datastores import get_software_details
-    package_details = get_software_details(software)
+    from karaage.datastores import machine_category_get_software_details
+    package_details = machine_category_get_software_details(software)
 
     return render_to_response('software/software_verbose.html', locals(), context_instance=RequestContext(request))
 

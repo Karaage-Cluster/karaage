@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 from karaage.datastores import base
 
 
-class GoldDataStore(base.BaseDataStore):
+class GoldMachineCategoryDataStore(base.MachineCategoryDataStore):
     """ Gold datastore. """
 
     def __init__(self, config):
@@ -226,40 +226,6 @@ class GoldDataStore(base.BaseDataStore):
             project_list.append(bal["Name"])
         return project_list
 
-    def save_institute(self, institute):
-        """ Called when institute is created/updated. """
-        name = institute.name
-        logger.debug("save_institute '%s'"%name)
-
-        # institute created
-        # institute updated
-
-        if institute.is_active:
-            # date_deleted is not set, user should exist
-            logger.debug("institute is active")
-
-            self._call(["goldsh", "Organization", "Create", "Name=%s"%name],
-                    ignore_errors=[185])
-        else:
-            # date_deleted is not set, user should not exist
-            logger.debug("institute is not active")
-            # delete Gold organisation if institute marked as deleted
-            self._call(["goldsh", "Organization", "Delete", "Name==%s"%name])
-
-        logger.debug("returning")
-        return
-
-    def delete_institute(self, institute):
-        """ Called when institute is deleted. """
-        name = institute.name
-        logger.debug("institute_deleted '%s'"%name)
-
-        # institute deleted
-        self._call(["goldsh", "Organization", "Delete", "Name==%s"%name])
-
-        logger.debug("returning")
-        return
-
     def _save_account(self, account, username):
         """ Called when account is created/updated. With username override. """
 
@@ -436,5 +402,40 @@ class GoldDataStore(base.BaseDataStore):
         if result is None:
             result = {}
         return result
+
+    def save_institute(self, institute):
+        """ Called when institute is created/updated. """
+        name = institute.name
+        logger.debug("save_institute '%s'"%name)
+
+        # institute created
+        # institute updated
+
+        if institute.is_active:
+            # date_deleted is not set, user should exist
+            logger.debug("institute is active")
+
+            self._call(["goldsh", "Organization", "Create", "Name=%s"%name],
+                    ignore_errors=[185])
+        else:
+            # date_deleted is not set, user should not exist
+            logger.debug("institute is not active")
+            # delete Gold organisation if institute marked as deleted
+            self._call(["goldsh", "Organization", "Delete", "Name==%s"%name])
+
+        logger.debug("returning")
+        return
+
+    def delete_institute(self, institute):
+        """ Called when institute is deleted. """
+        name = institute.name
+        logger.debug("institute_deleted '%s'"%name)
+
+        # institute deleted
+        self._call(["goldsh", "Organization", "Delete", "Name==%s"%name])
+
+        logger.debug("returning")
+        return
+
 
 trace.attach(trace.trace(logger), GoldDataStore)

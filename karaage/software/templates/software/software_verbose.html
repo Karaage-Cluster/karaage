@@ -20,18 +20,26 @@
 
     {% for name, details in package_details.iteritems %}
     <div class="module">
-        <h2>Group details - {{name}}</h2>
+        <h2>Software details - {{name}}</h2>
         {% for a in details %}
         <h3>{{a.datastore}}</h3>
-        <table>
+        <table class="keyvalue">
             {% for i,j in a.iteritems %}
                 <tr>
-                    <td>{{ i }}</td><td>{{ j }}</td>
+                    <th>{{ i }}</th><td>{{ j }}</td>
                </tr>
             {% endfor %}
         </table>
+        {% empty %}
+        <p>No datastores.</p>
         {% endfor %}
     </div>
+    {% empty %}
+    <div class="module">
+        <h2>Software details</h2>
+        <p>Software is not in any machine categories.</p>
+    </div>
     {% endfor %}
+
 </div>
 {% endblock %}

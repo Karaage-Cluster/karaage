@@ -53,8 +53,8 @@ class Institute(models.Model):
             log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
 
         # update the datastore
-        from karaage.datastores import save_institute
-        save_institute(self)
+        from karaage.datastores import machine_category_save_institute
+        machine_category_save_institute(self)
 
         # has group changed?
         if self._tracker.has_changed("group_id"):
@@ -62,19 +62,13 @@ class Institute(models.Model):
             new_group = self.group
             if old_group_pk is not None:
                 old_group = Group.objects.get(pk=group_pk)
-                from karaage.datastores import remove_person_from_institute
-                for person in Person.objects.filter(groups=old_group):
-                    remove_person_from_institute(person, self)
-                from karaage.datastores import remove_account_from_institute
+                from karaage.datastores import machine_category_remove_account_from_institute
                 for account in Account.objects.filter(person__groups=old_group, date_deleted__isnull=True):
-                    remove_account_from_institute(account, self)
+                    machine_category_remove_account_from_institute(account, self)
             if new_group is not None:
-                from karaage.datastores import add_person_to_institute
-                for person in Person.objects.filter(groups=new_group):
-                    add_person_to_institute(person, self)
-                from karaage.datastores import add_account_to_institute
+                from karaage.datastores import machine_category_add_account_to_institute
                 for account in Account.objects.filter(person__groups=new_group, date_deleted__isnull=True):
-                    add_account_to_institute(account, self)
+                    machine_category_add_account_to_institute(account, self)
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
@@ -85,16 +79,13 @@ class Institute(models.Model):
         old_group_pk = self._tracker.previous("group_id")
         if old_group_pk is not None:
             old_group = Group.objects.get(pk=group_pk)
-            from karaage.datastores import remove_person_from_institute
-            for person in Person.objects.filter(groups=old_group):
-                remove_person_from_institute(person, self)
-            from karaage.datastores import remove_account_from_institute
+            from karaage.datastores import machine_category_remove_account_from_institute
             for account in Account.objects.filter(person__groups=old_group, date_deleted__isnull=True):
-                remove_account_from_institute(account, self)
+                machine_category_remove_account_from_institute(account, self)
 
         # update the datastore
-        from karaage.datastores import delete_institute
-        delete_institute(self)
+        from karaage.datastores import machine_category_delete_institute
+        machine_category_delete_institute(self)
     delete.alters_data = True
 
     def __unicode__(self):
@@ -154,6 +145,14 @@ class InstituteQuota(models.Model):
         for field in self._tracker.changed():
             log(None, self.institute, 2, 'Quota %s: Changed %s to %s' %
                     (self.machine_category, field,  getattr(self, field)))
+
+        from karaage.datastores import machine_category_save_institute
+        machine_category_save_institute(self.institute)
+
+    def delete(self, *args, **kwargs):
+        super(InstituteQuota, self).delete(*args, **kwargs)
+        from karaage.datastores import machine_category_delete_institute
+        machine_category_delete_institute(self.institute, self.machine_category)
 
     def __unicode__(self):
         return '%s - %s' % (self.institute, self.machine_category)

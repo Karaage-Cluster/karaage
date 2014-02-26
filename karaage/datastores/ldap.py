@@ -43,35 +43,18 @@ def _lookup(cls):
     return(cls)
 
 
-class AccountDataStore(base.BaseDataStore):
-    """ LDAP Account and group datastore. """
+class GlobalDataStore(base.GlobalDataStore):
 
     def __init__(self, config):
-        super(AccountDataStore, self).__init__(config)
+        super(GlobalDataStore, self).__init__(config)
         self._using = config['LDAP']
-        self._person = None
-        if 'PERSON' in config:
-            self._person = _lookup(config['PERSON'])
-        self._account = _lookup(config['ACCOUNT'])
+        self._person = _lookup(config['PERSON'])
         self._group = _lookup(config['GROUP'])
-        self._primary_group = config.get('PRIMARY_GROUP',
-                'institute')
-        self._default_primary_group = config.get('DEFAULT_PRIMARY_GROUP',
-                'dummy')
-        self._home_directory = config.get('HOME_DIRECTORY',
-                "/home/%(uid)s")
-        self._locked_shell = config.get('LOCKED_SHELL',
-                "/usr/local/sbin/locked")
         self._settings = config
 
     def _people(self):
         """ Return people query. """
         return self._person.objects.using(
-                using=self._using, settings=self._settings)
-
-    def _accounts(self):
-        """ Return accounts query. """
-        return self._account.objects.using(
                 using=self._using, settings=self._settings)
 
     def _groups(self):
@@ -84,11 +67,6 @@ class AccountDataStore(base.BaseDataStore):
         return self._person(
                 using=self._using, settings=self._settings, **kwargs)
 
-    def _create_account(self, **kwargs):
-        """ Create a new account. """
-        return self._account(
-                using=self._using, settings=self._settings, **kwargs)
-
     def _create_group(self, **kwargs):
         """ Create a new group. """
         return self._group(
@@ -96,9 +74,6 @@ class AccountDataStore(base.BaseDataStore):
 
     def save_person(self, person):
         """ Person was saved. """
-        # don't do anything if no DN configured
-        if self._person is None:
-            return
         try:
             luser = self._people().get(uid=person.username)
             luser.givenName = person.first_name
@@ -135,9 +110,6 @@ class AccountDataStore(base.BaseDataStore):
 
     def delete_person(self, person):
         """ Person was deleted. """
-        # don't do anything if no DN configured
-        if self._person is None:
-            return
         try:
             luser = self._people().get(uid=person.username)
             luser.secondary_groups.clear()
@@ -148,26 +120,17 @@ class AccountDataStore(base.BaseDataStore):
 
     def set_person_password(self, person, raw_password):
         """ Person's password was changed. """
-        # don't do anything if no DN configured
-        if self._person is None:
-            return
         luser = self._people().get(uid=person.username)
         luser.change_password(raw_password)
         luser.save()
 
     def set_person_username(self, person, old_username, new_username):
         """ Person's username was changed. """
-        # don't do anything if no DN configured
-        if self._person is None:
-            return
         luser = self._people().get(uid=old_username)
         luser.rename(uid=new_username)
 
     def add_person_to_group(self, person, group):
         """ Add person to group. """
-        # don't do anything if no DN configured
-        if self._person is None:
-            return
         lgroup = self._groups().get(cn=group.name)
         person = self._people().get(uid=person.username)
         lgroup.secondary_people.add(person)
@@ -199,13 +162,90 @@ class AccountDataStore(base.BaseDataStore):
     def person_exists(self, username):
         """ Account's details were changed. """
         # don't do anything if no DN configured
-        if self._person is None:
-            return False
         try:
             self._people().get(uid=username)
             return True
         except self._person.DoesNotExist:
             return False
+
+    def save_group(self, group):
+        """ Group was saved. """
+        # if group already exists, take over existing group rather then error.
+        try:
+            lgroup = self._groups().get(cn=group.name)
+            lgroup.description = group.description
+            lgroup.save()
+        except self._group.DoesNotExist:
+            lgroup = self._create_group()
+            lgroup.cn = group.name
+            lgroup.description = group.description
+            lgroup.save()
+
+    def delete_group(self, group):
+        """ Group was deleted. """
+        try:
+            lgroup = self._groups().get(cn=group.name)
+            lgroup.delete()
+        except self._group.DoesNotExist:
+            # it doesn't matter if it doesn't exist
+            pass
+
+    def set_group_name(self, group, old_name, new_name):
+        """ Group was renamed. """
+        lgroup = self._groups().get(cn=old_name)
+        lgroup.rename(cn=new_name)
+
+    def get_group_details(self, group):
+        """ Get the group details. """
+        lgroup = self._groups().get(cn=group.name)
+        result = {}
+        result['sss'] = "Dmdd"
+        for i, j in lgroup.get_fields():
+            if j is not None:
+                result[i] = j
+        result['dn'] = lgroup.dn
+        result['secondary_people'] = [
+                a.dn for a in lgroup.secondary_people.all() ]
+        return result
+
+
+class MachineCategoryDataStore(base.MachineCategoryDataStore):
+    """ LDAP Account and group datastore. """
+
+    def __init__(self, config):
+        super(MachineCategoryDataStore, self).__init__(config)
+        self._using = config['LDAP']
+        self._account = _lookup(config['ACCOUNT'])
+        self._group = _lookup(config['GROUP'])
+        self._primary_group = config.get('PRIMARY_GROUP',
+                'institute')
+        self._default_primary_group = config.get('DEFAULT_PRIMARY_GROUP',
+                'dummy')
+        self._home_directory = config.get('HOME_DIRECTORY',
+                "/home/%(uid)s")
+        self._locked_shell = config.get('LOCKED_SHELL',
+                "/usr/local/sbin/locked")
+        self._settings = config
+
+    def _accounts(self):
+        """ Return accounts query. """
+        return self._account.objects.using(
+                using=self._using, settings=self._settings)
+
+    def _groups(self):
+        """ Return groups query. """
+        return self._group.objects.using(
+                using=self._using, settings=self._settings)
+
+    def _create_account(self, **kwargs):
+        """ Create a new account. """
+        return self._account(
+                using=self._using, settings=self._settings, **kwargs)
+
+    def _create_group(self, **kwargs):
+        """ Create a new group. """
+        return self._group(
+                using=self._using, settings=self._settings, **kwargs)
 
     def save_account(self, account):
         """ Account was saved. """
@@ -370,4 +410,5 @@ class AccountDataStore(base.BaseDataStore):
                 a.dn for a in lgroup.secondary_accounts.all() ]
         return result
 
-trace.attach(trace.trace(logger), AccountDataStore)
+trace.attach(trace.trace(logger), GlobalDataStore)
+trace.attach(trace.trace(logger), MachineCategoryDataStore)

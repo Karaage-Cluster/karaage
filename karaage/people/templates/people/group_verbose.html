@@ -17,20 +17,44 @@
 
 {% block content %}
 <div id="content-main">
-    {% for name, details in group_details.iteritems %}
+
     <div class="module">
-        <h2>Group details - {{name}}</h2>
-        {% for a in details %}
+        <h2>Group details</h2>
+        {% for a in global_group_details %}
         <h3>{{a.datastore}}</h3>
-        <table>
+        <table class="keyvalue">
             {% for i,j in a.iteritems %}
                 <tr>
-                    <td>{{ i }}</td><td>{{ j }}</td>
+                    <th>{{ i }}</th><td>{{ j }}</td>
                </tr>
             {% endfor %}
         </table>
         {% endfor %}
     </div>
+
+    {% for name, details in machine_category_group_details.iteritems %}
+    <div class="module">
+        <h2>Group details - {{name}}</h2>
+        {% for a in details %}
+        <h3>{{a.datastore}}</h3>
+        <table class="keyvalue">
+            {% for i,j in a.iteritems %}
+                <tr>
+                    <th>{{ i }}</th><td>{{ j }}</td>
+               </tr>
+            {% endfor %}
+        </table>
+        {% empty %}
+        <p>No datastores.</p>
+        {% endfor %}
+    </div>
+    {% empty %}
+    <div class="module">
+        <h2>Group details</h2>
+        <p>Group is not in any machine categories.</p>
+    </div>
     {% endfor %}
+
+
 </div>
 {% endblock %}

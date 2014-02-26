@@ -30,7 +30,7 @@ from karaage.machines.managers import MachineCategoryManager, MachineManager, Ac
 from karaage.common import log, new_random_token
 
 class MachineCategory(models.Model):
-    DATASTORES = [ (i,i) for i in settings.DATASTORES.keys() ]
+    DATASTORES = [ (i,i) for i in settings.MACHINE_CATEGORY_DATASTORES.keys() ]
     name = models.CharField(max_length=100, unique=True)
     datastore = models.CharField(max_length=255, choices=DATASTORES, help_text="Modifying this value on existing categories will affect accounts created under the old datastore")
     objects = MachineCategoryManager()
@@ -201,8 +201,8 @@ class Account(models.Model):
                 self.machine_category = old_machine_category
                 self.username = old_username
 
-                from karaage.datastores import delete_account
-                delete_account(self)
+                from karaage.datastores import machine_category_delete_account
+                machine_category_delete_account(self)
                 log(None, self.person, 2, 'Account %s: Removed account' % self)
                 log(None, self.machine_category, 2, 'Account %s: Removed account' % self)
 
@@ -221,8 +221,8 @@ class Account(models.Model):
             if old_username is not None:
                 new_username = self.username
                 if self.date_deleted is None and not moved:
-                    from karaage.datastores import set_account_username
-                    set_account_username(self, old_username, new_username)
+                    from karaage.datastores import machine_category_set_account_username
+                    machine_category_set_account_username(self, old_username, new_username)
                 log(None, self.person, 2,
                     'Account %s: Changed username from %s to %s' %
                     (self, old_username, new_username))
@@ -235,8 +235,8 @@ class Account(models.Model):
             old_date_deleted = self._tracker.previous('date_deleted')
             if self.date_deleted is not None:
                 # account is deactivated
-                from karaage.datastores import delete_account
-                delete_account(self)
+                from karaage.datastores import machine_category_delete_account
+                machine_category_delete_account(self)
                 log(None, self.person, 3,
                     'Account %s: Deactivated account' % self)
                 log(None, self.machine_category, 3,
@@ -255,12 +255,12 @@ class Account(models.Model):
 
         # update the datastore
         if self.date_deleted is None:
-            from karaage.datastores import save_account
-            save_account(self)
+            from karaage.datastores import machine_category_save_account
+            machine_category_save_account(self)
 
             if self._password is not None:
-                from karaage.datastores import set_account_password
-                set_account_password(self, self._password)
+                from karaage.datastores import machine_category_set_account_password
+                machine_category_set_account_password(self, self._password)
                 log(None, self.person, 2,
                         'Account %s: Changed Password' % self)
                 log(None, self.machine_category, 2,
@@ -273,8 +273,8 @@ class Account(models.Model):
         super(Account, self).delete()
         if self.date_deleted is None:
             # delete the datastore
-            from karaage.datastores import delete_account
-            delete_account(self)
+            from karaage.datastores import machine_category_delete_account
+            machine_category_delete_account(self)
     delete.alters_data = True
 
     def deactivate(self):

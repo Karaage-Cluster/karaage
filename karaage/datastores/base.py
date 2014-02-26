@@ -18,8 +18,9 @@
 """ Base file used for all datastores. """
 
 
-class BaseDataStore(object):
-    """ Base class used for all personal datastores. """
+class GlobalDataStore(object):
+
+    """ Base class used for all global datastores. """
 
     def __init__(self, config):
         self.config = config
@@ -53,30 +54,6 @@ class BaseDataStore(object):
         """ Remove person from group. """
         return
 
-    def add_person_to_project(self, person, project):
-        """ Add person to project. """
-        return
-
-    def remove_person_from_project(self, person, project):
-        """ Remove person from project. """
-        return
-
-    def add_person_to_institute(self, person, institute):
-        """ Add person to institute. """
-        return
-
-    def remove_person_from_institute(self, person, institute):
-        """ Remove person from institute. """
-        return
-
-    def add_person_to_software(self, person, software):
-        """ Add person to software. """
-        return
-
-    def remove_person_from_software(self, person, software):
-        """ Remove person from software. """
-        return
-
     def get_person_details(self, person):
         """ Get person's details. """
         return {}
@@ -84,6 +61,34 @@ class BaseDataStore(object):
     def person_exists(self, username):
         """ Does the person exist? """
         return False
+
+
+    #########
+    # GROUP #
+    #########
+
+    def save_group(self, group):
+        """ Group was saved. """
+        return
+
+    def delete_group(self, group):
+        """ Group was deleted. """
+        return
+
+    def set_group_name(self, group, old_name, new_name):
+        """ Group was renamed. """
+        return
+
+    def get_group_details(self, group):
+        """ Get the group details. """
+        return {}
+
+
+class MachineCategoryDataStore(object):
+    """ Base class used for all MC datastores. """
+
+    def __init__(self, config):
+        self.config = config
 
 
     ###########

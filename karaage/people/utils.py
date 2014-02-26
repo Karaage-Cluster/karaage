@@ -20,7 +20,7 @@ import re
 from django.conf import settings
 
 from karaage.people.models import Person
-from karaage.datastores import person_exists, account_exists
+from karaage.datastores import global_person_exists, machine_category_account_exists
 from karaage.machines.models import MachineCategory, Account
 
 username_re = re.compile(r'^%s$' % settings.USERNAME_VALIDATION_RE)
@@ -80,13 +80,13 @@ def validate_username_for_new_person(username):
 
     # Check person datastore, in case username created outside Karaage.
 
-    if person_exists(username):
+    if global_person_exists(username):
         raise UsernameTaken(u'Username is already in external personal datastore.')
 
     # Check account datastore, in case username created outside Karaage.
 
     for mc in MachineCategory.objects.all():
-        if account_exists(username, mc):
+        if machine_category_account_exists(username, mc):
              raise UsernameTaken(u'Username is already in external account datastore.')
 
     return username
@@ -118,7 +118,7 @@ def validate_username_for_rename_person(username, person):
 
     # Check person datastore, in case username created outside Karaage.
 
-    if person_exists(username):
+    if global_person_exists(username):
         raise UsernameTaken(u'Username is already in external personal datastore.')
 
     # Check account datastore, in case username created outside Karaage.
@@ -130,5 +130,5 @@ def validate_username_for_rename_person(username, person):
             person=person,
             machine_category=mc,
             date_deleted__isnull=True).count()
-        if count == 0 and account_exists(username, mc):
+        if count == 0 and machine_category_account_exists(username, mc):
              raise UsernameTaken(u'Username is already in external account datastore.')

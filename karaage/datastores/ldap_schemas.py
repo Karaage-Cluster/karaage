@@ -106,7 +106,7 @@ class openldap_account(methods.baseMixin):
     unixHomeDirectory = tldap.manager.AliasDescriptor("homeDirectory")
 
 
-class openldap_group(methods.baseMixin):
+class openldap_person_group(methods.baseMixin):
 
     schema_list = [ schemas.rfc.posixGroup ]
     mixin_list = [ methods.common.groupMixin ]
@@ -119,6 +119,18 @@ class openldap_group(methods.baseMixin):
 
     # people
     secondary_people = tldap.manager.ManyToManyDescriptor(this_key='memberUid', linked_cls=openldap_person, linked_key='uid', linked_is_p=False, related_name="secondary_groups")
+
+
+class openldap_account_group(methods.baseMixin):
+
+    schema_list = [ schemas.rfc.posixGroup ]
+    mixin_list = [ methods.common.groupMixin ]
+
+    class Meta:
+        base_dn_setting = "LDAP_GROUP_BASE"
+        object_classes = set([ 'top' ])
+        search_classes = set([ 'posixGroup' ])
+        pk = 'cn'
 
     # accounts
     primary_accounts = tldap.manager.OneToManyDescriptor(this_key='gidNumber', linked_cls=openldap_account, linked_key='gidNumber', related_name="primary_group")
@@ -186,7 +198,7 @@ class ds389_account(methods.baseMixin):
     unixHomeDirectory = tldap.manager.AliasDescriptor("homeDirectory")
 
 
-class ds389_group(methods.baseMixin):
+class ds389_person_group(methods.baseMixin):
 
     schema_list = [ schemas.rfc.posixGroup ]
     mixin_list = [ methods.common.groupMixin ]
@@ -200,6 +212,17 @@ class ds389_group(methods.baseMixin):
     # people
     secondary_people = tldap.manager.ManyToManyDescriptor(this_key='memberUid', linked_cls=ds389_person, linked_key='uid', linked_is_p=False, related_name="secondary_groups")
 
+
+class ds389_account_group(methods.baseMixin):
+
+    schema_list = [ schemas.rfc.posixGroup ]
+    mixin_list = [ methods.common.groupMixin ]
+
+    class Meta:
+        base_dn_setting = "LDAP_GROUP_BASE"
+        object_classes = set([ 'top' ])
+        search_classes = set([ 'posixGroup' ])
+        pk = 'cn'
 
     # accounts
     primary_accounts = tldap.manager.OneToManyDescriptor(this_key='gidNumber', linked_cls=ds389_account, linked_key='gidNumber', related_name="primary_group")

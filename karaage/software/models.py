@@ -68,8 +68,8 @@ class Software(models.Model):
             log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
 
         # update the datastore
-        from karaage.datastores import save_software
-        save_software(self)
+        from karaage.datastores import machine_category_save_software
+        machine_category_save_software(self)
 
         # has group changed?
         if self._tracker.has_changed("group_id"):
@@ -77,19 +77,13 @@ class Software(models.Model):
             new_group = self.group
             if old_group_pk is not None:
                 old_group = Group.objects.get(pk=group_pk)
-                from karaage.datastores import remove_person_from_software
-                for person in Person.objects.filter(groups=old_group):
-                    remove_person_from_software(person, self)
-                from karaage.datastores import remove_account_from_software
+                from karaage.datastores import machine_category_remove_account_from_software
                 for account in Account.objects.filter(person__groups=old_group, date_deleted__isnull=True):
-                    remove_account_from_software(account, self)
+                    machine_category_remove_account_from_software(account, self)
             if new_group is not None:
-                from karaage.datastores import add_person_to_software
-                for person in Person.objects.filter(groups=new_group):
-                    add_person_to_software(person, self)
-                from karaage.datastores import add_account_to_software
+                from karaage.datastores import machine_category_add_account_to_software
                 for account in Account.objects.filter(person__groups=new_group, date_deleted__isnull=True):
-                    add_account_to_software(account, self)
+                    machine_category_add_account_to_software(account, self)
 
     save.alters_data = True
 
@@ -101,16 +95,13 @@ class Software(models.Model):
         old_group_pk = self._tracker.previous("group_id")
         if old_group_pk is not None:
             old_group = Group.objects.get(pk=group_pk)
-            from karaage.datastores import remove_person_from_software
-            for person in Person.objects.filter(groups=old_group):
-                remove_person_from_software(person, self)
-            from karaage.datastores import remove_account_from_software
+            from karaage.datastores import machine_category_remove_account_from_software
             for account in Account.objects.filter(person__groups=old_group, date_deleted__isnull=True):
-                remove_account_from_software(account, self)
+                machine_category_remove_account_from_software(account, self)
 
         # update the datastore
-        from karaage.datastores import delete_software
-        delete_software(self)
+        from karaage.datastores import global_delete_software
+        global_delete_software(self)
     delete.alters_data = True
 
     def __unicode__(self):

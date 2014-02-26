@@ -20,18 +20,26 @@
 
     {% for name, details in project_details.iteritems %}
     <div class="module">
-        <h2>Group details - {{name}}</h2>
+        <h2>Project details - {{name}}</h2>
         {% for a in details %}
         <h3>{{a.datastore}}</h3>
-        <table>
+        <table class="keyvalue">
             {% for i,j in a.iteritems %}
                 <tr>
-                    <td>{{ i }}</td><td>{{ j }}</td>
+                    <th>{{ i }}</th><td>{{ j }}</td>
                </tr>
             {% endfor %}
         </table>
+        {% empty %}
+        <p>No datastores.</p>
         {% endfor %}
+    {% empty %}
+    <div class="module">
+        <h2>Project details</h2>
+        <p>Project is not in any machine categories.</p>
+    </div>
     </div>
     {% endfor %}
+
 </div>
 {% endblock %}

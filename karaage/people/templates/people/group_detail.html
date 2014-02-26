@@ -42,6 +42,7 @@
         {% endif %}
     </div>
 
+    {% if group.software_set.all or group.institute_set.all or group.project_set.all %}
     <div class="module">
         <h2>Used by</h2>
         <table>
@@ -70,6 +71,7 @@
             </tbody>
         </table>
     </div>
+    {% endif %}
 
     <div class="module">
         <h2>Members</h2>

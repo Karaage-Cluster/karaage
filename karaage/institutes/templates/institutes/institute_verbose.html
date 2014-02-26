@@ -17,20 +17,29 @@
 
 {% block content %}
 <div id="content-main">
+
     {% for name, details in institute_details.iteritems %}
     <div class="module">
-        <h2>Group details - {{name}}</h2>
+        <h2>Institute details - {{name}}</h2>
         {% for a in details %}
         <h3>{{a.datastore}}</h3>
-        <table>
+        <table class="keyvalue">
             {% for i,j in a.iteritems %}
                 <tr>
-                    <td>{{ i }}</td><td>{{ j }}</td>
+                    <th>{{ i }}</th><td>{{ j }}</td>
                </tr>
             {% endfor %}
         </table>
+        {% empty %}
+        <p>No datastores.</p>
         {% endfor %}
     </div>
+    {% empty %}
+    <div class="module">
+        <h2>Institute details</h2>
+        <p>Institute is not in any machine categories.</p>
+    </div>
     {% endfor %}
+
 </div>
 {% endblock %}

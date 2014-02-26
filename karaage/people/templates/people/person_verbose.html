@@ -17,21 +17,20 @@
 
 {% block content %}
 <div id="content-main">
-    {% for name, details in person_details.iteritems %}
+
     <div class="module">
-        <h2>Person details - {{name}}</h2>
-        {% for a in details %}
+        <h2>Person details</h2>
+        {% for a in person_details %}
         <h3>{{a.datastore}}</h3>
-        <table>
+        <table class="keyvalue">
             {% for i,j in a.iteritems %}
                 <tr>
-                    <td>{{ i }}</td><td>{{ j }}</td>
+                    <th>{{ i }}</th><td>{{ j }}</td>
                </tr>
             {% endfor %}
         </table>
         {% endfor %}
     </div>
-    {% endfor %}
 
     {% for account in account_details %}
     {% for name, details in account.iteritems %}
@@ -39,16 +38,24 @@
         <h2>Account details - {{ name }}</h2>
         {% for a in details %}
         <h3>{{ a.datastore }}</h3>
-        <table>
+        <table class="keyvalue">
             {% for i,j in a.iteritems %}
                 <tr>
-                    <td>{{ i }}</td><td>{{ j }}</td>
+                    <th>{{ i }}</th><td>{{ j }}</td>
                </tr>
             {% endfor %}
         </table>
+        {% empty %}
+        <p>No datastores.</p>
         {% endfor %}
+    </div>
+    {% empty %}
+    <div class="module">
+        <h2>Account details</h2>
+        <p>Account is not in any machine categories (should never happen).</p>
     </div>
     {% endfor %}
     {% endfor %}
+
 </div>
 {% endblock %}

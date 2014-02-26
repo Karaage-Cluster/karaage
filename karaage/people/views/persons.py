@@ -356,13 +356,13 @@ def user_detail(request, username):
 def user_verbose(request, username):
     person = get_object_or_404(Person, username=username)
 
-    from karaage.datastores import get_person_details
-    person_details = get_person_details(person)
+    from karaage.datastores import global_get_person_details
+    person_details = global_get_person_details(person)
 
-    from karaage.datastores import get_account_details
+    from karaage.datastores import machine_category_get_account_details
     account_details = []
     for ua in person.account_set.filter(date_deleted__isnull=True):
-        details = get_account_details(ua)
+        details = machine_category_get_account_details(ua)
         account_details.append(details)
 
     return render_to_response('people/person_verbose.html', locals(), context_instance=RequestContext(request))

@@ -25,7 +25,7 @@ import django.db.transaction
 import tldap.transaction
 
 from karaage.machines.models import Account
-from karaage.datastores import get_test_datastore
+from karaage.datastores import get_global_test_datastore, get_machine_category_test_datastore
 import karaage.datastores.ldap as dldap
 
 class Command(BaseCommand):
@@ -42,23 +42,28 @@ class Command(BaseCommand):
     @django.db.transaction.commit_on_success
     @tldap.transaction.commit_on_success
     def handle(self, **options):
-        datastore = get_test_datastore("ldap", 0)
-        assert isinstance(datastore, dldap.AccountDataStore)
+        try:
+            global_datastore = get_global_test_datastore(0)
+            assert isinstance(global_datastore, dldap.GlobalDataStore)
+        except IndexError:
+            global_datastore = None
+        machine_category_datastore = get_machine_category_test_datastore("ldap", 0)
+        assert isinstance(machine_category_datastore, dldap.MachineCategoryDataStore)
 
         if options['ldif']:
             ldif_writer=ldif.LDIFWriter(sys.stdout)
 
-        if datastore._person is not None:
+        if global_datastore is not None :
             # we have to move accounts to the account_base.
             # no changes rquired for people.
-            account_base_dn = datastore._accounts().get_base_dn()
+            account_base_dn = machine_category_datastore._accounts().get_base_dn()
             split_account_base_dn = ldap.dn.str2dn(account_base_dn)
 
-            for p in datastore._people().filter(objectClass='posixAccount'):
+            for p in global_datastore._people().filter(objectClass='posixAccount'):
                 # Convert account to person, strip unwanted fields.
                 # This is better then calling person.save() as we get the
                 # password too.
-                new_person = datastore._create_person(dn=p.dn)
+                new_person = global_datastore._create_person(dn=p.dn)
                 for i, _ in new_person.get_fields():
                     if i != "objectClass":
                         value = getattr(p, i)
@@ -99,7 +104,7 @@ class Command(BaseCommand):
         else:
             # people not in LDAP, delete people without accounts.
 
-            for p in datastore._accounts():
+            for p in machine_category_datastore._accounts():
                 # If there are no accounts for this person, then delete
                 # the LDAP entry.
                 ua = Account.objects.filter(username=p.uid, date_deleted__isnull=True)

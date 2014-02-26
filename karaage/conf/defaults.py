@@ -235,8 +235,13 @@ DEFAULT_SHELL = '/bin/bash'
 # Change the shell to this value if emails start bouncing (manual process).
 BOUNCED_SHELL = '/usr/local/sbin/bouncedemail'
 
-# List of datastores and configurations for Karaage.
-DATASTORES = {
+# List of global datastores and configurations for Karaage.
+GLOBAL_DATASTORES = [
+]
+
+
+# List of MC datastores and configurations for Karaage.
+MACHINE_CATEGORY_DATASTORES = {
     'dummy' : [
     ],
 }

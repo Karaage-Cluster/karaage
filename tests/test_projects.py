@@ -26,13 +26,13 @@ from karaage.people.models import Person
 from initial_ldap_data import test_ldif
 from karaage.projects.models import Project
 from karaage.machines.models import Account
-from karaage.datastores import get_test_datastore
+from karaage.datastores import get_machine_category_test_datastore
 
 
 class ProjectTestCase(TestCase):
 
     def setUp(self):
-        self._datastore = get_test_datastore()
+        self._datastore = get_machine_category_test_datastore()
 
         server = slapd.Slapd()
         server.set_port(38911)

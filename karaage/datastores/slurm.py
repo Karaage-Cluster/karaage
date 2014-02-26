@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 from karaage.datastores import base
 
-class SlurmDataStore(base.BaseDataStore):
+class SlurmDataStore(base.MachineCategoryDataStore):
     """ Slurm datastore. """
 
     def __init__(self, config):
@@ -206,16 +206,6 @@ class SlurmDataStore(base.BaseDataStore):
         for result in results:
             project_list.append(result["Account"])
         return project_list
-
-    def save_institute(self, institute):
-        """ Called when institute is created/updated. """
-        name = institute.name
-        # FIXME: Is this needed?
-
-    def delete_institute(self, institute):
-        """ Called when institute is deleted. """
-        name = institute.name
-        # FIXME: Is this needed?
 
     def _save_account(self, account, username):
         """ Called when account is created/updated. With username override. """
