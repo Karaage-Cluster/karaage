@@ -181,7 +181,7 @@ class SoftwareLicense(models.Model):
 
 
 class SoftwareLicenseAgreement(models.Model):
-    user = models.ForeignKey(Person)
+    person = models.ForeignKey(Person)
     license = models.ForeignKey(SoftwareLicense)
     date = models.DateField()
 

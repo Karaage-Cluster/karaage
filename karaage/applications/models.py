@@ -294,12 +294,12 @@ class SoftwareApplication(Application):
 
         try:
             sla = SoftwareLicenseAgreement.objects.get(
-                user=self.applicant,
+                person=self.applicant,
                 license=self.software_license,
             )
         except SoftwareLicenseAgreement.DoesNotExist:
             sla = SoftwareLicenseAgreement()
-            sla.user = self.applicant
+            sla.person = self.applicant
             sla.license = self.software_license
             sla.date = datetime.datetime.today()
             sla.save()

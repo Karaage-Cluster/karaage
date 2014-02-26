@@ -317,7 +317,7 @@ def join_package_list(request):
     software_list = []
     for software in Software.objects.filter(softwarelicense__isnull=False).distinct():
         data = {'software': software}
-        license_agreements = SoftwareLicenseAgreement.objects.filter(user=person, license__software=software)
+        license_agreements = SoftwareLicenseAgreement.objects.filter(person=person, license__software=software)
         if license_agreements.count() > 0:
             la = license_agreements.latest()
             data['accepted'] = True
@@ -338,7 +338,7 @@ def join_package(request, software_id):
     software = get_object_or_404(Software, pk=software_id)
     software_license = software.get_current_license()
     person = request.user
-    license_agreements =  SoftwareLicenseAgreement.objects.filter(user=person, license=software_license)
+    license_agreements =  SoftwareLicenseAgreement.objects.filter(person=person, license=software_license)
     agreement = None
     if license_agreements.count() > 0:
         agreement = license_agreements.latest()
@@ -368,7 +368,7 @@ def join_package(request, software_id):
 
         if approved:
             SoftwareLicenseAgreement.objects.create(
-                user=person,
+                person=person,
                 license=software_license,
                 date=datetime.datetime.today(),
                 )

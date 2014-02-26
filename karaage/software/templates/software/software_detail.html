@@ -107,7 +107,7 @@
                             <tbody>
                                 {% for a in license.softwarelicenseagreement_set.select_related %}
                                 <tr>
-                                    <td><a href="{{ a.user.get_absolute_url }}">{{ a.user }}</a></td>
+                                    <td><a href="{{ a.person.get_absolute_url }}">{{ a.person }}</a></td>
                                     <td>{{ a.date }}</td>
                                 </tr>
                                 {% endfor %}
