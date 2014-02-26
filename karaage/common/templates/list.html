@@ -28,7 +28,9 @@
     <div class="module clear">
         <h2>{% block short_title %}List{% endblock %}</h2>
         {% block list_content %}
+        {% if page.object_list %}
         {% gen_table page.object_list %}
+        {% endif %}
         {% endblock %}
         {% pagination page request %}
     </div>
