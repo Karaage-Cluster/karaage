@@ -15,17 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import *
-from django.conf import settings
-
-from karaage.common import get_hooks
+from django.conf.urls import patterns, url, include
 
 urlpatterns = patterns('',
-    url(r'^xmlrpc/$', 'django_xmlrpc.views.handle_xmlrpc',),
-    url(r'^captcha/', include('captcha.urls')),
-    url(r'^lookup/', include('ajax_select.urls')),
+    url(r'^persons/', include('karaage.people.urls.persons')),
+    url(r'^profile/', include('karaage.people.urls.profile')),
+    url(r'^groups/', include('karaage.people.urls.groups')),
 )
-
-for hook in get_hooks("urlpatterns"):
-    urlpatterns += hook
-    del hook
