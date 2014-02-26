@@ -30,22 +30,25 @@
 </div>
 {% endif %}
 
-<form method="post" action=".">{% csrf_token %}
-    {% load forms %}
-    <fieldset class="aligned ()">
-        {% form_as_div form %}
-    </fieldset>
-    <p>All Project Leaders Context:
-        <ul><li>{% templatetag openvariable %} project {% templatetag closevariable %} </li><li>{% templatetag openvariable %} receiver {% templatetag closevariable %}</li></ul>
-    </p>
-    <p>All Users Context:
-        <ul><li>{% templatetag openvariable %} receiver {% templatetag closevariable %}</li></ul>
-    </p>
-    <div class="submit-row">
-        <input type="submit" name="preview" value="Preview" />
-        {% if preview %}
-        <input type="submit" value="Send" class="default" />
-        {% endif %}
-    </div>
-</form>
+<div class="module">
+    <h2>E-Mail</h2>
+    <form method="post" action=".">{% csrf_token %}
+        {% load forms %}
+        <fieldset class="aligned ()">
+            {% form_as_div form %}
+        </fieldset>
+        <p>All Project Leaders Context:
+            <ul><li>{% templatetag openvariable %} project {% templatetag closevariable %} </li><li>{% templatetag openvariable %} receiver {% templatetag closevariable %}</li></ul>
+        </p>
+        <p>All Users Context:
+            <ul><li>{% templatetag openvariable %} receiver {% templatetag closevariable %}</li></ul>
+        </p>
+        <div class="submit-row">
+            <input type="submit" name="preview" value="Preview" />
+            {% if preview %}
+            <input type="submit" value="Send" class="default" />
+            {% endif %}
+        </div>
+    </form>
+</div>
 {% endblock %}
