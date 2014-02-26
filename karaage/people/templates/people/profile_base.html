@@ -25,6 +25,7 @@
         <a href="{% url 'kg_profile_institutes' %}">Institutes</a> | 
         <a href="{% url 'kg_profile_software' %}">Software Agreements</a> |
         <a href="{% url 'kg_profile_saml' %}">SAML</a>
+        {% for_each_app_include "profile_list.html" %}
     </p>
     {% block profile_content %}{% endblock %}
 </div>

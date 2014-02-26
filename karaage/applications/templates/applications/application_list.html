@@ -1,4 +1,4 @@
-{% extends "main.html" %}
+{% extends "list.html" %}
 {% load url from future %}
 
 
@@ -9,30 +9,5 @@
 <div class="breadcrumbs">
     <a href='{% url "index" %}'>Home</a>&nbsp;›
     Applications
-</div>
-{% endblock %}
-
-
-{% block content %}
-<div id="content-main">
-
-    <div class="module">
-        <h2>My applications</h2>
-        {% if my_applications %}
-        {% gen_table my_applications %}
-        {% else %}
-        <p>No applications.</p>
-        {% endif %}
-    </div>
-
-    <div class="module">
-        <h2>Requires Attention</h2>
-        {% if requires_attention %}
-        {% gen_table requires_attention %}
-        {% else %}
-        <p>No applications.</p>
-        {% endif %}
-    </div>
-
 </div>
 {% endblock %}

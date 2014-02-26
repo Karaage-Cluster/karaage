@@ -24,6 +24,10 @@ urlpatterns = patterns('',
     url(r'^applications/', include('karaage.applications.urls')),
 )
 
+profile_urlpatterns = patterns('',
+    url(r'^applications/$', 'karaage.applications.views.common.profile_application_list', name='kg_profile_applications'),
+)
+
 def context(request):
     ctx = {}
     if request.user.is_authenticated():
