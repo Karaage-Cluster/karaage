@@ -31,15 +31,20 @@
   </div>
   {% endif %}
   <div class="module object-tools">
-    <h2>User links</h2>
+    <h2>Profile links</h2>
     <ul>
+      <li><a class="{% active request "profile/personal/" %}" href="{% url 'kg_profile_personal' %}">Personal</a></li>
+      <li><a class="{% active request "profile/accounts/" %}" href="{% url 'kg_profile_accounts' %}">Accounts</a></li>
+      <li><a class="{% active request "profile/projects/" %}" href="{% url 'kg_profile_projects' %}">Projects</a></li>
+      <li><a class="{% active request "profile/institutes/" %}" href="{% url 'kg_profile_institutes' %}">Institutes</a></li>
+      <li><a class="{% active request "profile/software/" %}" href="{% url 'kg_profile_software' %}">Software Agreements</a></li>
+      <li><a class="{% active request "profile/saml/" %}" href="{% url 'kg_profile_saml' %}">SAML</a></li>
+      {% for_each_app_include "main_profile.html" %}
       {% if user.is_authenticated %}
-      <li><a class="{% active request "profile/" %}" href="{% url 'kg_profile_personal' %}">My profile</a></li>
       <li><a href="{% url 'kg_profile_logout' %}">Log Out</a></li>
       {% else %}
       <li><a href="{% url 'kg_profile_login' %}">Log In</a></li>
       {% endif %}
-      {% for_each_app_include "main_user.html" %}
     </ul>
   </div>
   {% block sidebar_extra %}
