@@ -91,7 +91,7 @@
 
     <div class="module">
     <h2>Users</h2>
-        {% gen_table institute.person_set.select_related %}
+        {% gen_table institute.group.members.select_related %}
     </div>
 
     {% for_each_app_include "institute_detail_extra.html" %}
