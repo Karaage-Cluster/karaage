@@ -48,6 +48,7 @@
 
     <div class="module">
         <h2>Caps and quotas</h2>
+        {% if institute.institutequota_set.all %}
         <table>
             <thead>
                 <tr>
@@ -73,6 +74,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% endif %}
         {% if is_admin %}
         <div class="object-tools">
             <ul>
@@ -89,10 +91,12 @@
     </div>
     {% endif %}
 
+    {% if institute.group.members.select_related %}
     <div class="module">
-    <h2>Users</h2>
+    <h2>People</h2>
         {% gen_table institute.group.members.select_related %}
     </div>
+    {% endif %}
 
     {% for_each_app_include "institute_detail_extra.html" %}
 

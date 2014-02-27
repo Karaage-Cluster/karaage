@@ -102,6 +102,7 @@
     {% if is_admin %}
     <div class="module">
         <h2>Project Caps/quota</h2>
+        {% if project.projectquota_set.all %}
         <table>
             <thead>
                 <tr>
@@ -125,6 +126,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% endif %}
         <div class="object-tools">
             <ul>
                 <li><a href="{% url 'kg_projectquota_add' project.pid %}" class="addlink">Add</a></li>
@@ -135,7 +137,7 @@
 
     {% if project.group.members.all %}
     <div class="module">
-        <h2>Users</h2>
+        <h2>People</h2>
         <table cellspacing="0">
             <thead>
                 <tr>
