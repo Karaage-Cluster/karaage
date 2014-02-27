@@ -11,23 +11,23 @@
 <div class="module">
     <h2>Personal</h2>
 
-    <table>
-        <tr><td>Username:</td><td>{{ person.username }}</td></tr>
-        <tr><td>Email:</td><td>{{ person.email|urlize }}</td></tr>
-        <tr><td>Position:</td><td>{{ person.position|default:"" }}</td></tr>
-        <tr><td>Department:</td><td>{{ person.department|default:"" }}</td></tr>
+    <table class="keyvalue">
+        <tr><th>Username:</th><td>{{ person.username }}</td></tr>
+        <tr><th>Email:</th><td>{{ person.email|urlize }}</td></tr>
+        <tr><th>Position:</th><td>{{ person.position|default:"" }}</td></tr>
+        <tr><th>Department:</th><td>{{ person.department|default:"" }}</td></tr>
         <tr>
-            <td>Institutes:</td>
+            <th>Institutes:</th>
             <td>{{ person.institute }}<br/>
                 {% for institute in person.institutes.all %}{{institute}}
                 {% if not forloop.last %}, {% endif %}
                 {% endfor %}
             </td>
         </tr>
-        {% if person.telephone %}<tr><td>Phone:</td><td>{{ person.telephone|default:"" }}</td></tr>{% endif %}
-        {% if person.mobile %}<tr><td>Mobile:</td><td>{{ person.mobile|default:"" }}</td></tr>{% endif %}
-        {% if person.fax %}<tr><td>Fax:</td><td>{{ person.fax }}</td></tr>{% endif %}
-        {% if person.address %}<tr><td>Address:</td><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>{% endif %}
+        {% if person.telephone %}<tr><th>Phone:</th><td>{{ person.telephone|default:"" }}</td></tr>{% endif %}
+        {% if person.mobile %}<tr><th>Mobile:</th><td>{{ person.mobile|default:"" }}</td></tr>{% endif %}
+        {% if person.fax %}<tr><th>Fax:</th><td>{{ person.fax }}</td></tr>{% endif %}
+        {% if person.address %}<tr><th>Address:</th><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>{% endif %}
     </table>
 
     <div class="object-tools">
