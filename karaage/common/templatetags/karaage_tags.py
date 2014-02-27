@@ -162,7 +162,7 @@ def date_filter(start, end):
 
 
 @register.simple_tag
-def yes_no_img(boolean, reversed=False, alt_true='Active', alt_false='Not Active'):
+def yes_no(boolean, true_msg='Yes', false_msg='No'):
     if reversed == 'reversed':
         if boolean:
             boolean = False
@@ -170,9 +170,9 @@ def yes_no_img(boolean, reversed=False, alt_true='Active', alt_false='Not Active
             boolean = True
 
     if boolean:
-        return """<img src="%simg/icon-yes.gif" alt="%s" />""" % (settings.STATIC_URL, alt_true)
+        return "<span class='yes'>%s</span>" % true_msg
     else:
-        return """<img src="%simg/icon-no.gif" alt="%s"/>""" % (settings.STATIC_URL, alt_false)
+        return "<span class='no'>%s</span>" % false_msg
 
 
 

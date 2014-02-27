@@ -260,6 +260,17 @@ table p {
     padding: 0;
 }
 
+.yes {
+    padding-left: 16px;
+    background: url(../img/icon-yes.gif) 0 .25em no-repeat;
+}
+
+.no {
+    padding-left: 16px;
+    background: url(../img/icon-no.gif) 0 .25em no-repeat;
+}
+
+
 
 /* FORM DEFAULTS */
 

@@ -20,7 +20,7 @@
         <h2>Institutes</h2>
         <h3>{{ institute }}</h3>
         <table class="keyvalue">
-            <tr><th>Active:</th><td>{% yes_no_img institute.is_active %}</td></tr>
+            <tr><th>Active:</th><td>{% yes_no institute.is_active %}</td></tr>
             <tr><th>Delegate(s):</th><td>{% for delegate in institute.delegates.all %}<a href="{{ delegate.get_absolute_url }}">{{ delegate }}</a>, {% endfor %}</td></tr>
             {% if is_admin %}
             <tr><th>Group:</th><td><a href="{{ institute.group.get_absolute_url }}">{{ institute.group }}</a></td></tr>

@@ -20,7 +20,7 @@
               <a href="{{ l.get_absolute_url }}">{{ l }}{% if not forloop.last %}, {% endif %}</a>
               {% endfor %}
             </td>
-            <td>{% yes_no_img p.is_active %}</td>
+            <td>{% yes_no p.is_active %}</td>
             <td>{{ p.last_usage }}</td>
         </tr>
         {% endfor %}

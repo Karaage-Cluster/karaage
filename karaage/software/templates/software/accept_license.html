@@ -28,7 +28,7 @@
             {% if software.group %}
             <tr><th>Group:</th><td><a href="{{ software.group.get_absolute_url }}">{{ software.group }}</a></td></tr>
             {% endif %}
-            <tr><th>Restricted:</th><td>{% yes_no_img software.restricted %}</td></tr>
+            <tr><th>Restricted:</th><td>{% yes_no software.restricted %}</td></tr>
         </table>
 
         {% if software.restricted and not agreement %}

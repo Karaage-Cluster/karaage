@@ -32,14 +32,24 @@
                 </tr>
             </thead>
             <tbody>
-                {% for ua in accounts %}
+                {% for account in accounts %}
                 <tr>
-                    <td>{% yes_no_img ua.date_deleted "reversed" %}</td>
-                    <td><a href="{{ ua.person.get_absolute_url }}">{{ ua.person }}</a></td>
-                    <td>{{ ua.username }}</td>
-                    <td>{% if ua.default_project %}<a href="{{ ua.default_project.get_absolute_url }}">{{ ua.default_project }}</a>{% else %}No project{% endif %}</td>
-                    <td>{{ ua.date_created }}</td>
-                    <td>{{ ua.date_deleted }}</td>
+                    <td>
+                        {% if account.date_deleted %}
+                        <img alt="Not Active" src="{{ STATIC_URL }}img/icon-no.gif" title="Not Active"/>
+                        {% else %}
+                        {% if account.is_locked %}
+                        <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
+                        {% else %}
+                        <img alt="Active" src="{{ STATIC_URL }}img/icon-yes.gif" title="Active"/>
+                        {% endif %}
+                        {% endif %}
+                    </td>
+                    <td><a href="{{ account.person.get_absolute_url }}">{{ account.person }}</a></td>
+                    <td>{{ account.username }}</td>
+                    <td>{% if account.default_project %}<a href="{{ account.default_project.get_absolute_url }}">{{ account.default_project }}</a>{% else %}No project{% endif %}</td>
+                    <td>{{ account.date_created }}</td>
+                    <td>{{ account.date_deleted }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
