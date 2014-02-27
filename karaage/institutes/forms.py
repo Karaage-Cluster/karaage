@@ -24,7 +24,6 @@ import ajax_select.fields
 
 
 class InstituteForm(forms.ModelForm):
-    group = ajax_select.fields.AutoCompleteSelectField('group', required=True)
 
     def clean_saml_entityid(self):
         if self.cleaned_data['saml_entityid'] == "":
@@ -33,7 +32,7 @@ class InstituteForm(forms.ModelForm):
 
     class Meta:
         model = Institute
-        fields = ('name', 'group', 'saml_entityid', 'is_active')
+        fields = ('name', 'saml_entityid', 'is_active')
 
     def clean_name(self):
         name = self.cleaned_data['name']

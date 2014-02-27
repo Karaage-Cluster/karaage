@@ -113,9 +113,13 @@ def add_edit_institute(request, institute_id=None):
         form = InstituteForm(instance=institute)
         delegate_formset = DelegateFormSet(instance=institute)
 
+    media = form.media
+    for dform in delegate_formset.forms:
+        media = media + dform.media
+
     return render_to_response(
         'institutes/institute_form.html',
-        {'institute': institute, 'form': form, 'delegate_formset': delegate_formset},
+        {'institute': institute, 'form': form, 'media': media, 'delegate_formset': delegate_formset},
         context_instance=RequestContext(request))
 
 @admin_required
