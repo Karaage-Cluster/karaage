@@ -50,6 +50,12 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <div class="object-tools">
+        <ul>
+            {% for_each_app_include "profile_project_detail_tools.html" %}
+        </ul>
+    </div>
 </div>
 {% endif %}
 {% endblock %}
