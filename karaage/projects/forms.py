@@ -79,6 +79,6 @@ class ProjectQuotaForm(forms.ModelForm):
 
     class Meta:
         model = ProjectQuota
-        exclude = ('project',)
+        fields = ('machine_category', 'cap')
 
 

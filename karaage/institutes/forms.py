@@ -33,7 +33,7 @@ class InstituteForm(forms.ModelForm):
 
     class Meta:
         model = Institute
-        exclude = ('delegates',)
+        fields = ('name', 'group', 'saml_entityid', 'is_active')
 
     def clean_name(self):
         name = self.cleaned_data['name']
@@ -48,7 +48,7 @@ class InstituteQuotaForm(forms.ModelForm):
 
     class Meta:
         model = InstituteQuota
-        exclude = ('institute',)
+        fields = ('machine_category', 'quota', 'cap', 'disk_quota')
 
 
 class DelegateForm(forms.ModelForm):
@@ -56,4 +56,4 @@ class DelegateForm(forms.ModelForm):
 
     class Meta:
         model = InstituteDelegate
-        include = ('person', 'send_email')
+        fields = ('person', 'send_email')
