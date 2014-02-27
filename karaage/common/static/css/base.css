@@ -553,6 +553,11 @@ div.breadcrumbs {
     background-color: #eee;
 }
 
+#content-related .object-tools a.active {
+    background-color: #aaa;
+}
+
+
 #content-related .object-tools a:hover {
     width: auto;
     color: #fff;
