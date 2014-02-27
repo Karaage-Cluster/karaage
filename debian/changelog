@@ -1,3 +1,12 @@
+karaage3 (3.0.4-1) unstable; urgency=low
+
+  * Redesign datastores.
+  * Some small config changes required. See /usr/share/doc/karaage3/NEWS.
+  * Bugs fixed.
+  * New theme.
+
+ -- Brian May <bam@debian.org>  Thu, 27 Feb 2014 12:56:51 +1100
+
 karaage3 (3.0.3-1) unstable; urgency=low
 
   * New release of Karaage.
