@@ -17,7 +17,7 @@
 
 from django.conf.urls import *
 
-urlpatterns = patterns('karaage.machines.views',
+urlpatterns = patterns('karaage.machines.views.machines',
     url(r'^$', 'category_list', name='kg_machine_category_list'),
     url(r'^add/$', 'machine_create', name='kg_machine_add'),
     url(r'^(?P<machine_id>\d+)/$', 'machine_detail', name='kg_machine_detail'),
