@@ -39,6 +39,22 @@ import karaage.common as util
 
 
 @login_required
+def profile_projects(request):
+
+    person = request.user
+    project_list = person.projects.all()
+    leader_project_list = []
+
+    if person.is_leader():
+        leader_project_list = Project.objects.filter(leaders=person, is_active=True)
+
+    return render_to_response('projects/profile_projects.html',
+            {'person': person, 'project_list': project_list,
+                'leader_project_list': leader_project_list},
+            context_instance=RequestContext(request))
+
+
+@login_required
 def add_edit_project(request, project_id=None):
 
     if project_id is None:

@@ -1,0 +1,3 @@
+{% if user.is_authenticated %}
+<li><a class="{% active request "profile/personal/" %}" href="{% url 'kg_profile_personal' %}">Personal</a></li>
+{% endif %}

@@ -31,10 +31,85 @@ from karaage.common.decorators import admin_required, login_required
 from karaage.people.models import Person
 from karaage.people.emails import send_bounced_warning
 from karaage.people.emails import send_reset_password_email
-from karaage.people.forms import AddPersonForm, AdminPersonForm
+from karaage.people.forms import AddPersonForm, AdminPersonForm, PersonForm
 from karaage.people.forms import AdminPasswordChangeForm
 from karaage.institutes.models import Institute
 import karaage.common as common
+from karaage.common import get_date_range
+
+
+@login_required
+def profile_personal(request):
+
+    person = request.user
+    project_list = person.projects.all()
+    project_requests = []
+    user_applications = []
+    start, end = get_date_range(request)
+
+    return render_to_response('people/profile_personal.html', locals(), context_instance=RequestContext(request))
+
+
+@login_required
+def edit_profile(request):
+    person = request.user
+    form = PersonForm(request.POST or None, instance=person)
+    if request.method == 'POST':
+        if form.is_valid():
+            person = form.save()
+            assert person is not None
+            messages.success(request, "User '%s' was edited succesfully" % person)
+            return HttpResponseRedirect(person.get_absolute_url())
+
+    return render_to_response('people/profile_edit.html',
+            {'person': person, 'form': form},
+            context_instance=RequestContext(request))
+
+
+@login_required
+def password_change(request):
+
+    person = request.user
+
+    if request.POST:
+        form = PasswordChangeForm(request.POST)
+
+        if form.is_valid():
+            form.save(person)
+            messages.success(request, "Password changed successfully")
+            return HttpResponseRedirect(reverse('kg_profile'))
+    else:
+        form = PasswordChangeForm()
+
+    return render_to_response('common/profile_password.html',
+            {'person': person, 'form': form},
+            context_instance=RequestContext(request))
+
+
+@login_required
+def password_request(request):
+    person = request.user
+
+    post_reset_redirect = reverse('kg_profile_reset_done')
+
+    if request.method == "POST":
+        if person.has_usable_password():
+            send_reset_password_email(person)
+            return HttpResponseRedirect(post_reset_redirect)
+
+    var = {
+        'person': person,
+    }
+    return render_to_response('common/profile_password_request.html', var, context_instance=RequestContext(request))
+
+
+@login_required
+def password_request_done(request):
+    person = request.user
+    var = {
+        'person': person,
+    }
+    return render_to_response('common/profile_password_request_done.html', var, context_instance=RequestContext(request))
 
 
 def _add_edit_user(request, form_class, username):

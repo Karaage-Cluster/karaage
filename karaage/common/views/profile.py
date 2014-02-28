@@ -22,105 +22,16 @@ from django.http import HttpResponseBadRequest
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 
-from karaage.common import get_date_range
-from karaage.people.emails import send_reset_password_email
-from karaage.people.models import Person
-from karaage.projects.models import Project
-from karaage.people.forms import PasswordChangeForm, PersonForm
-from karaage.people.forms import LoginForm
-
+from karaage.common.forms import LoginForm
 from karaage.common.decorators import login_required
 import karaage.common.saml as saml
+from karaage.people.models import Person
+
 
 @login_required
 def profile(request):
     person = request.user
-    return render_to_response('people/profile.html', locals(), context_instance=RequestContext(request))
-
-
-@login_required
-def profile_personal(request):
-
-    person = request.user
-    project_list = person.projects.all()
-    project_requests = []
-    user_applications = []
-    start, end = get_date_range(request)
-
-    return render_to_response('people/profile_personal.html', locals(), context_instance=RequestContext(request))
-
-
-@login_required
-def edit_profile(request):
-    person = request.user
-    form = PersonForm(request.POST or None, instance=person)
-    if request.method == 'POST':
-        if form.is_valid():
-            person = form.save()
-            assert person is not None
-            messages.success(request, "User '%s' was edited succesfully" % person)
-            return HttpResponseRedirect(person.get_absolute_url())
-
-    return render_to_response('people/profile_edit.html',
-            {'person': person, 'form': form},
-            context_instance=RequestContext(request))
-
-
-@login_required
-def profile_software(request):
-    person = request.user
-    agreement_list = person.softwarelicenseagreement_set.all()
-    return render_to_response(
-        'people/profile_software.html',
-        {'person': person, 'agreement_list': agreement_list},
-        context_instance=RequestContext(request))
-
-
-@login_required
-def profile_projects(request):
-
-    person = request.user
-    project_list = person.projects.all()
-    leader_project_list = []
-
-    if person.is_leader():
-        leader_project_list = Project.objects.filter(leaders=person, is_active=True)
-
-    return render_to_response('people/profile_projects.html',
-            {'person': person, 'project_list': project_list,
-                'leader_project_list': leader_project_list},
-            context_instance=RequestContext(request))
-
-
-@login_required
-def profile_institutes(request):
-
-    person = request.user
-    institute_list = person.delegate_for.all()
-
-    return render_to_response('people/profile_institutes.html',
-            {'person': person, 'institute_list': institute_list },
-            context_instance=RequestContext(request))
-
-
-@login_required
-def password_change(request):
-
-    person = request.user
-
-    if request.POST:
-        form = PasswordChangeForm(request.POST)
-
-        if form.is_valid():
-            form.save(person)
-            messages.success(request, "Password changed successfully")
-            return HttpResponseRedirect(reverse('kg_profile'))
-    else:
-        form = PasswordChangeForm()
-
-    return render_to_response('people/profile_password.html',
-            {'person': person, 'form': form},
-            context_instance=RequestContext(request))
+    return render_to_response('common/profile.html', locals(), context_instance=RequestContext(request))
 
 
 def login(request, username=None):
@@ -149,7 +60,7 @@ def login(request, username=None):
     else:
         form = LoginForm(initial = {'username': username})
 
-    return render_to_response('people/profile_login.html', {
+    return render_to_response('common/profile_login.html', {
         'form': form,
         'next': redirect_to,
         'error': error,
@@ -189,7 +100,7 @@ def saml_login(request):
         except Person.DoesNotExist:
             error = "Cannot log in with shibboleth as we do not know your shibboleth id."
 
-    return render_to_response('people/profile_login_saml.html',
+    return render_to_response('common/profile_login_saml.html',
             {'form': form, 'error': error, 'saml_session': saml_session, },
             context_instance=RequestContext(request))
 
@@ -242,7 +153,7 @@ def saml_details(request):
     if request.user.is_authenticated():
         person = request.user
 
-    return render_to_response('people/profile_saml.html',
+    return render_to_response('common/profile_saml.html',
             {'attrs': attrs, 'saml_session': saml_session,
                 'person': person, },
             context_instance=RequestContext(request))
@@ -254,28 +165,3 @@ def logout(request, username=None):
     logout(request)
     messages.success(request, 'Logout was successful.')
     return HttpResponseRedirect(url)
-
-
-@login_required
-def password_request(request):
-    person = request.user
-
-    post_reset_redirect = reverse('kg_profile_reset_done')
-
-    if request.method == "POST":
-        if person.has_usable_password():
-            send_reset_password_email(person)
-            return HttpResponseRedirect(post_reset_redirect)
-
-    var = {
-        'person': person,
-    }
-    return render_to_response('people/profile_password_request.html', var, context_instance=RequestContext(request))
-
-@login_required
-def password_request_done(request):
-    person = request.user
-    var = {
-        'person': person,
-    }
-    return render_to_response('people/profile_password_request_done.html', var, context_instance=RequestContext(request))

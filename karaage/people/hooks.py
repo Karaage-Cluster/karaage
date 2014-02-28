@@ -19,6 +19,13 @@ from django.conf.urls import patterns, url, include
 
 urlpatterns = patterns('',
     url(r'^persons/', include('karaage.people.urls.persons')),
-    url(r'^profile/', include('karaage.people.urls.profile')),
     url(r'^groups/', include('karaage.people.urls.groups')),
+)
+
+profile_urlpatterns = patterns('karaage.people.views.persons',
+    url(r'^personal/$', 'profile_personal', name='kg_profile_personal'),
+    url(r'^edit/$', 'edit_profile', name='kg_profile_edit'),
+    url(r'^password/$', 'password_change', name='kg_profile_password'),
+    url(r'^password_request/$', 'password_request', name='kg_profile_reset'),
+    url(r'^password_request/done/$', 'password_request_done', name='kg_profile_reset_done'),
 )

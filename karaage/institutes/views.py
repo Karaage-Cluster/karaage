@@ -34,6 +34,17 @@ from karaage.institutes.forms import InstituteForm, InstituteQuotaForm, Delegate
 
 
 @login_required
+def profile_institutes(request):
+
+    person = request.user
+    institute_list = person.delegate_for.all()
+
+    return render_to_response('institutes/profile_institutes.html',
+            {'person': person, 'institute_list': institute_list },
+            context_instance=RequestContext(request))
+
+
+@login_required
 def institute_detail(request, institute_id):
 
     institute = get_object_or_404(Institute, pk=institute_id)

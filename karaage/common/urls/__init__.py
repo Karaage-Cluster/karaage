@@ -15,12 +15,3 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import patterns, url, include
-
-urlpatterns = patterns('',
-    url(r'^software/', include('karaage.software.urls')),
-)
-
-profile_urlpatterns = patterns('karaage.software.views',
-    url(r'^software/$', 'profile_software', name='kg_profile_software'),
-)
