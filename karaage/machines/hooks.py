@@ -22,7 +22,6 @@ urlpatterns = patterns('',
     url(r'^machines/', include('karaage.machines.urls.machines')),
 )
 
-profile_urlpatterns = patterns('',
-    url(r'^accounts/$', 'karaage.machines.views.accounts.profile_accounts', name='kg_profile_accounts'),
+profile_urlpatterns = patterns('karaage.machines.views.accounts',
+    url(r'^accounts/$', 'profile_accounts', name='kg_profile_accounts'),
 )
-

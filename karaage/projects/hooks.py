@@ -20,3 +20,7 @@ from django.conf.urls import patterns, url, include
 urlpatterns = patterns('',
     url(r'^projects/', include('karaage.projects.urls')),
 )
+
+profile_urlpatterns = patterns('karaage.projects.views',
+    url(r'^projects/$', 'profile_projects', name='kg_profile_projects'),
+)

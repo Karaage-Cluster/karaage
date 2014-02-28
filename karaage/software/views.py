@@ -38,6 +38,16 @@ import karaage.common as util
 
 
 @login_required
+def profile_software(request):
+    person = request.user
+    agreement_list = person.softwarelicenseagreement_set.all()
+    return render_to_response(
+        'software/profile_software.html',
+        {'person': person, 'agreement_list': agreement_list},
+        context_instance=RequestContext(request))
+
+
+@login_required
 def software_list(request):
     if not util.is_admin(request):
         return join_package_list(request)
