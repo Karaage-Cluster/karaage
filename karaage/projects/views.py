@@ -242,19 +242,6 @@ def no_users(request):
 
 
 @admin_required
-def over_quota(request):
-
-    project_ids = []
-
-    for p in Project.active.all():
-        for pc in p.projectquota_set.all():
-            if pc.is_over_quota():
-                project_ids.append(p.pid)
-
-    return project_list(request, Project.objects.filter(pid__in=project_ids))
-
-
-@admin_required
 def project_logs(request, project_id):
     obj = get_object_or_404(Project, pid=project_id)
     breadcrumbs = []

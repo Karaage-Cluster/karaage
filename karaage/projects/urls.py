@@ -24,7 +24,6 @@ urlpatterns = patterns('karaage.projects.views',
     url(r'^$', 'project_list', name='kg_project_list'),
     url(r'^add/$', 'add_edit_project', name='kg_project_add'),
     url(r'^no_users/$', 'no_users', name='kg_empty_projects_list'),
-    url(r'^over_quota/$', 'over_quota', name='kg_projects_over_quota'),
 
     url(r'^quota/(?P<projectquota_id>\d+)/$', 'projectquota_edit', name='kg_projectquota_edit'),
     url(r'^quota/(?P<projectquota_id>\d+)/delete/$', 'projectquota_delete', name='kg_projectquota_delete'),
