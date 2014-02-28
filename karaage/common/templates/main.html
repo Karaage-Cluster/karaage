@@ -18,33 +18,27 @@
   <div class="module object-tools">
     <h2>Admin links</h2>
     <ul>
-      <li><a class="{% active request "persons/" %}" href="{% url "kg_person_list" %}?status=1">People</a></li>
-      <li><a class="{% active request "groups/" %}" href="{% url "kg_group_list" %}">Groups</a></li>
-      <li><a class="{% active request "projects/" %}" href="{% url "kg_project_list" %}?status=1">Projects</a></li>
-      <li><a class="{% active request "institutes/" %}" href="{% url "kg_institute_list" %}">Institutes</a></li>
-      <li><a class="{% active request "software/" %}" href="{% url "kg_software_list" %}">Software</a></li>
-      <li><a class="{% active request "emails/" %}" href="{% url "kg_emails_index" %}">Send Email</a></li>
-      <li><a class="{% active request "misc/" %}" href="{% url "kg_misc" %}">Other Stuff</a></li>
-      {% for_each_app_include "main_admin.html" %}
+        {% for_each_app_include "main_admin.html" %}
+        <li><a class="{% active request "misc/" %}" href="{% url "kg_misc" %}">Other Stuff</a></li>
     </ul>
   </div>
   {% endif %}
   <div class="module object-tools">
     <h2>Profile links</h2>
     <ul>
-      {% if user.is_authenticated %}
-      <li><a class="{% active request "profile/personal/" %}" href="{% url 'kg_profile_personal' %}">Personal</a></li>
-      <li><a class="{% active request "profile/projects/" %}" href="{% url 'kg_profile_projects' %}">Projects</a></li>
-      <li><a class="{% active request "profile/institutes/" %}" href="{% url 'kg_profile_institutes' %}">Institutes</a></li>
-      <li><a class="{% active request "profile/software/" %}" href="{% url 'kg_profile_software' %}">Software Agreements</a></li>
-      <li><a class="{% active request "profile/saml/" %}" href="{% url 'kg_profile_saml' %}">SAML</a></li>
-      {% endif %}
-      {% for_each_app_include "main_profile.html" %}
-      {% if user.is_authenticated %}
-      <li><a href="{% url 'kg_profile_logout' %}">Log Out</a></li>
-      {% else %}
-      <li><a href="{% url 'kg_profile_login' %}">Log In</a></li>
-      {% endif %}
+        {% if user.is_authenticated %}
+        <li><a class="{% active request "profile/personal/" %}" href="{% url 'kg_profile_personal' %}">Personal</a></li>
+        <li><a class="{% active request "profile/projects/" %}" href="{% url 'kg_profile_projects' %}">Projects</a></li>
+        <li><a class="{% active request "profile/institutes/" %}" href="{% url 'kg_profile_institutes' %}">Institutes</a></li>
+        <li><a class="{% active request "profile/software/" %}" href="{% url 'kg_profile_software' %}">Software Agreements</a></li>
+        <li><a class="{% active request "profile/saml/" %}" href="{% url 'kg_profile_saml' %}">SAML</a></li>
+        {% endif %}
+        {% for_each_app_include "main_profile.html" %}
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'kg_profile_logout' %}">Log Out</a></li>
+        {% else %}
+        <li><a href="{% url 'kg_profile_login' %}">Log In</a></li>
+        {% endif %}
     </ul>
   </div>
   {% block sidebar_extra %}
