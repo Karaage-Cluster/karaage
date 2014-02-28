@@ -1,0 +1,6 @@
+{% if user.is_authenticated %}
+<li><a class="{% active request "profile/personal/" %}" href="{% url 'kg_profile_personal' %}">Personal</a></li>
+{% if SHIB_SUPPORTED %}
+<li><a class="{% active request "profile/saml/" %}" href="{% url 'kg_profile_saml' %}">SAML Profile</a></li>
+{% endif %}
+{% endif %}

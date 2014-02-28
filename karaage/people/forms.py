@@ -20,7 +20,6 @@ from django.conf import settings
 from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 
-from karaage.people.emails import send_reset_password_email
 from karaage.people.models import Person, Group
 from karaage.people.utils import validate_username_for_new_person, UsernameException
 from karaage.institutes.models import Institute
@@ -154,11 +153,6 @@ class PasswordChangeForm(AdminPasswordChangeForm):
             raise forms.ValidationError(u'Your old password was incorrect')
 
         return self.cleaned_data['old']
-
-
-class LoginForm(forms.Form):
-    username = forms.CharField(label="Username", max_length=30)
-    password = forms.CharField(label="Password", widget=forms.PasswordInput)
 
 
 class SetPasswordForm(BaseSetPasswordForm):

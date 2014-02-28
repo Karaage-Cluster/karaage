@@ -18,8 +18,6 @@
 """ Forms for Karaage use. """
 
 from django import forms
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.sites.models import Site
 
 from karaage.common.models import LogEntry, COMMENT
 
@@ -44,3 +42,8 @@ class CommentForm(forms.ModelForm):
         log.action_flag = COMMENT
         log.user = request.user
         log.save()
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(label="Username", max_length=30)
+    password = forms.CharField(label="Password", widget=forms.PasswordInput)
