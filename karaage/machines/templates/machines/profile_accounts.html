@@ -1,0 +1,57 @@
+{% extends "people/profile_base.html" %}
+{% load filters %}
+
+
+{% block title %}Cluster Account - My profile{% endblock %}
+{% block profile_title %}Cluster Account{% endblock %}
+
+
+{% block profile_content %}
+{% for account in accounts %}
+<div class="module">
+    <h2>{{ account.machine_category }} Account</h2>
+
+    <table cellspacing="0">
+        <thead>
+            <tr>
+                <th>Active</th>
+                <th>Username</th>
+                <th>Date Created</th>
+                <th>Date Deleted</th>
+                <th>Shell</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    {% if account.date_deleted %}
+                    <img alt="Not Active" src="{{ STATIC_URL }}img/icon-no.gif" title="Not Active"/>
+                    {% else %}
+                    {% if account.is_locked %}
+                    <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
+                    {% else %}
+                    <img alt="Active" src="{{ STATIC_URL }}img/icon-yes.gif" title="Active"/>
+                    {% endif %}
+                    {% endif %}
+                </td>
+                <td>{{ account.username }}</td>
+                <td>{{ account.date_created|date }}</td>
+                <td>{{ account.date_deleted|date }}</td>
+                <td>{{ account.loginShell }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% for_each_app_include "account_detail_extra.html" %}
+
+    <div class="object-tools">
+        <ul>
+            <li><a href="{% url 'kg_account_edit' account.pk %}" class="changelink">Edit Account</a></li>
+            {% for_each_app_include "account_detail_tools.html" %}
+            {% for_each_app_include "profile_account_detail_tools.html" %}
+        </ul>
+    </div>
+
+</div>
+{% endfor %}
+{% endblock %}

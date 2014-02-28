@@ -28,17 +28,12 @@ from django.conf import settings
 
 from karaage.common.filterspecs import Filter, FilterBar, DateFilter
 from karaage.common.decorators import admin_required, login_required
-from karaage.projects.models import Project
-from karaage.projects.utils import add_user_to_project
 from karaage.people.models import Person
-from karaage.people.emails import send_confirm_password_email
 from karaage.people.emails import send_bounced_warning
 from karaage.people.emails import send_reset_password_email
 from karaage.people.forms import AddPersonForm, AdminPersonForm
-from karaage.people.forms import AdminPasswordChangeForm, AddProjectForm
+from karaage.people.forms import AdminPasswordChangeForm
 from karaage.institutes.models import Institute
-from karaage.machines.models import Account
-from karaage.machines.forms import AccountForm, ShellForm
 import karaage.common as common
 
 
@@ -75,12 +70,14 @@ def _add_edit_user(request, form_class, username):
 def add_user(request):
     return _add_edit_user(request, AddPersonForm, None)
 
+
 @admin_required
 def edit_user(request, username):
     return _add_edit_user(request, AdminPersonForm, username)
 
+
 @login_required
-def user_list(request, queryset=None, template=None):
+def user_list(request, queryset=None, template=None, context=None):
     if queryset is None:
         queryset=Person.objects.select_related()
 
@@ -129,146 +126,19 @@ def user_list(request, queryset=None, template=None):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         page = paginator.page(paginator.num_pages)
-    
-    return render_to_response(
-        template,
-        {'page': page, 'filter_bar': filter_bar, 'terms': terms},
+
+    new_context = {}
+    if context is not None:
+        new_context.update(context)
+
+    new_context.update(
+        {'page': page, 'filter_bar': filter_bar, 'terms': terms}
+    )
+
+    return render_to_response(template, new_context,
         context_instance=RequestContext(request))
 
 
-@admin_required
-def add_edit_account(request, username=None, account_id=None):
-    username_error = False
-
-    if username is None:
-        # Edit
-        account = get_object_or_404(Account, pk=account_id)
-        person = account.person
-        username = account.username
-    else:
-        #Add
-        person = get_object_or_404(Person, username=username)
-        account = None
-
-    if request.method == 'POST':
-        
-        form = AccountForm(request.POST)
-
-        if form.is_valid():
-
-            data = form.cleaned_data
-            if account:
-                # Edit
-                account.machine_category = data['machine_category']
-                account.default_project = data['default_project']
-                account.save()
-                messages.success(request, "User account for '%s' changed succesfully" % account.person)
-                return HttpResponseRedirect(person.get_absolute_url())
-                
-            else:
-                #add
-                try:
-                    project = data['default_project']
-                except:
-                    project = None
-                    
-                machine_category = data['machine_category']
-                
-                try:
-                    Account.objects.get(
-                        username__exact=username, machine_category=machine_category, date_deleted__isnull=True)
-                except Account.DoesNotExist:
-                    account = Account.create(person, project, machine_category)
-                    send_confirm_password_email(account.person)
-                    messages.success(request, "User account for '%s' created succesfully" % account.person)
-                    
-                    return HttpResponseRedirect(person.get_absolute_url())
-                username_error = True
-    else:
-        form = AccountForm()
-        from django import forms
-        form.initial['username'] = username
-        if account:
-            # Fill form with initial
-            form.fields['default_project'] = forms.ModelChoiceField(queryset=person.projects.all())
-            form.initial = account.__dict__
-            form.initial['default_project'] = form.initial['default_project_id']
-            form.initial['machine_category'] = form.initial['machine_category_id']
-            
-    return render_to_response(
-        'machines/account_form.html',
-        {'form': form, 'person': person, 'account': account, 'username_error': username_error},
-        context_instance=RequestContext(request))
-
-
-@admin_required
-def delete_account(request, account_id):
-
-    account = get_object_or_404(Account, pk=account_id)
-
-    if request.method == 'POST':
-        account.deactivate()
-        messages.success(request, "User account for '%s' deleted succesfully" % account.person)
-        return HttpResponseRedirect(account.get_absolute_url())
-    else:
-        
-        return render_to_response('machines/account_confirm_delete.html', locals(), context_instance=RequestContext(request))
-
-
-@admin_required
-def no_default_list(request):
-    persons = Person.objects.filter(account__isnull=False, account__default_project__isnull=True, account__date_deleted__isnull=True)
-    return user_list(request, persons, "people/person_no_default_list.html")
-
-
-@admin_required
-def no_account_list(request):
-    person_id_list = []
-
-    for u in Person.objects.all():
-        for project in u.projects.all():
-            for pc in project.projectquota_set.all():
-                if not u.has_account(pc.machine_category):
-                    person_id_list.append(u.id)
-
-    return user_list(request, Person.objects.filter(id__in=person_id_list))
-
-    
-@admin_required
-def wrong_default_list(request):
-    wrong = []
-    for u in Person.active.all():
-        for ua in u.account_set.filter(machine_category__id=1, date_deleted__isnull=True):
-            d = False
-            for p in ua.project_list():
-                if p == ua.default_project:
-                    d = True
-            if not d:
-                if not u.is_locked():
-                    wrong.append(u.id)
-    return user_list(request, Person.objects.filter(id__in=wrong))
-
-    
-@login_required
-def make_default(request, account_id, project_id):
-    if common.is_admin(request):
-        account = get_object_or_404(Account, pk=account_id)
-        redirect = account.get_absolute_url()
-    else:
-        account = get_object_or_404(Account, pk=account_id, person=request.user)
-        redirect = reverse("kg_profile_projects")
-
-    project = get_object_or_404(Project, pid=project_id)
-    if request.method != 'POST':
-        return HttpResponseRedirect(redirect)
-
-    account.default_project = project
-    account.save()
-    messages.success(request, "Default project changed succesfully")
-    common.log(request.user, account.person, 2, 'Changed default project to %s' % project.pid)
-    return HttpResponseRedirect(redirect)
-
-    
 @admin_required
 def locked_list(request):
 
@@ -278,7 +148,9 @@ def locked_list(request):
         if p.is_locked():
             ids.append(p.id)
 
-    return user_list(request, Person.objects.filter(id__in=ids))
+    persons = Person.objects.filter(id__in=ids)
+    context = { 'title': 'Locked' }
+    return user_list(request, persons, "people/person_list_filtered.html", context)
 
 
 @admin_required
@@ -293,26 +165,8 @@ def struggling(request):
     persons = persons.filter(last_usage__isnull=True)
     persons = persons.order_by('-date_approved')
 
-    return user_list(request, persons, "people/person_struggling.html")
-
-@login_required
-def change_account_shell(request, account_id):
-    if common.is_admin(request):
-        account = get_object_or_404(Account, pk=account_id)
-        redirect = account.get_absolute_url()
-    else:
-        account = get_object_or_404(Account, pk=account_id, person=request.user)
-        redirect = reverse("kg_profile_accounts")
-
-    account = get_object_or_404(Account, pk=account_id)
-    if request.method != 'POST':
-        return HttpResponseRedirect(redirect)
-
-    shell_form = ShellForm(request.POST)
-    if shell_form.is_valid():
-        shell_form.save(account=account)
-        messages.success(request, 'Shell changed successfully')
-        return HttpResponseRedirect(redirect)
+    context = { 'title': 'Struggling' }
+    return user_list(request, persons, "people/person_struggling.html", context)
 
 @admin_required
 def delete_user(request, username):
@@ -338,19 +192,8 @@ def user_detail(request, username):
     my_projects = person.projects.all()
     my_pids = [p.pid for p in my_projects]
     
-    #Add to project form
-    form = AddProjectForm(request.POST or None)
-    if request.method == 'POST':
-        # Post means adding this user to a project
-        if form.is_valid():
-            project = form.cleaned_data['project']
-            add_user_to_project(person, project)
-            messages.success(request, "User '%s' was added to %s succesfully" % (person, project))
-            common.log(request.user, project, 2, '%s added to project' % person)
-
-            return HttpResponseRedirect(person.get_absolute_url())
-
     return render_to_response('people/person_detail.html', locals(), context_instance=RequestContext(request))
+
 
 @admin_required
 def user_verbose(request, username):
@@ -366,6 +209,7 @@ def user_verbose(request, username):
         account_details.append(details)
 
     return render_to_response('people/person_verbose.html', locals(), context_instance=RequestContext(request))
+
 
 @admin_required
 def activate(request, username):
@@ -451,6 +295,7 @@ def add_comment(request, username):
     breadcrumbs.append( (unicode(obj), reverse("kg_person_detail", args=[obj.username])) )
     return common.add_comment(request, breadcrumbs, obj)
 
+
 @login_required
 def password_request(request, username):
     person = get_object_or_404(Person, username=username)
@@ -469,6 +314,7 @@ def password_request(request, username):
         'person': person,
     }
     return render_to_response('people/person_password_request.html', var, context_instance=RequestContext(request))
+
 
 @login_required
 def password_request_done(request, username):

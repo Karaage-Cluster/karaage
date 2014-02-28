@@ -15,11 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import datetime
+
 from django import forms
 from django.conf import settings
 
 from karaage.projects.models import Project
-from karaage.machines.models import MachineCategory, Machine
+from karaage.machines.models import MachineCategory, Machine, Account
 
 import ajax_select.fields
 
@@ -33,26 +35,70 @@ class MachineCategoryForm(forms.ModelForm):
         model = MachineCategory
 
 
-class AccountForm(forms.Form):
+class AdminAccountForm(forms.ModelForm):
     machine_category = forms.ModelChoiceField(queryset=MachineCategory.objects.all(), initial=1)
     default_project = ajax_select.fields.AutoCompleteSelectField('project', required=True)
+    shell = forms.ChoiceField(choices=settings.SHELLS)
+
+    def __init__(self, person, **kwargs):
+        self.person = person
+        super(AdminAccountForm, self).__init__(**kwargs)
+
+    def clean_default_project(self):
+        data = self.cleaned_data
+        if 'default_project' not in data:
+            return data
+        default_project = data['default_project']
+
+        query = self.person.projects.filter(pk=default_project.pk)
+        if query.count() == 0:
+            raise forms.ValidationError(u'Person does not belong to default project.')
+
+        return default_project
 
     def clean(self):
         data = self.cleaned_data
+        if 'username' not in data:
+            return data
         if 'machine_category' not in data:
             return data
         if 'default_project' not in data:
             return data
+        username = data['username']
         default_project = data['default_project']
         machine_category = data['machine_category']
+
         query = default_project.projectquota_set.filter(machine_category=machine_category)
         if query.count() == 0:
-            raise forms.ValidationError(u'Default project not in machine category')
+            raise forms.ValidationError(u'Default project not in machine category.')
+
+        query = Account.objects.filter(
+                    username__exact=username, machine_category=machine_category, date_deleted__isnull=True)
+        if self.instance.pk is not None:
+            query = query.exclude(pk=self.instance.pk)
+        if query.count() > 0:
+            raise forms.ValidationError(u'Username already in use on machine category %s.' % machine_category)
+
         return data
 
+    def save(self, **kwargs):
+        if self.instance.pk is None:
+            self.instance.person = self.person
+            self.instance.date_created = datetime.date.today()
+        return super(AdminAccountForm, self).save(**kwargs)
 
-class ShellForm(forms.Form):
+    class Meta:
+        model = Account
+        fields = ('username', 'machine_category', 'default_project', 'disk_quota', 'shell')
+
+
+class UserAccountForm(forms.ModelForm):
     shell = forms.ChoiceField(choices=settings.SHELLS)
 
-    def save(self, account):
-        account.change_shell(self.cleaned_data['shell'])
+    class Meta:
+        model = Account
+        fields = ('shell',)
+
+
+class AddProjectForm(forms.Form):
+    project = ajax_select.fields.AutoCompleteSelectField('project', required=True, label='Add to existing project')

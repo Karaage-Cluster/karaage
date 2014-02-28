@@ -18,5 +18,11 @@
 from django.conf.urls import patterns, url, include
 
 urlpatterns = patterns('',
+    url(r'^accounts/', include('karaage.machines.urls.accounts')),
     url(r'^machines/', include('karaage.machines.urls.machines')),
 )
+
+profile_urlpatterns = patterns('',
+    url(r'^accounts/$', 'karaage.machines.views.accounts.profile_accounts', name='kg_profile_accounts'),
+)
+

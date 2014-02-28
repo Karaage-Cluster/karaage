@@ -1,13 +1,4 @@
-{% extends "people/profile_base.html" %}
-{% load filters %}
 {% load machines %}
-
-
-{% block title %}Cluster Account - My profile{% endblock %}
-{% block profile_title %}Cluster Account{% endblock %}
-
-
-{% block profile_content %}
 {% for account in accounts %}
 <div class="module">
     <h2>{{ account.machine_category }} Account</h2>
@@ -43,7 +34,7 @@
                     {% if not account.is_locked %}
                     <form method="post" action="{% url 'kg_account_shell' account.pk %}">{% csrf_token %}
                         <div>
-                            {% shell_field account %}
+                            {% shell_form account %}
                             <input type="submit" value="Change" name="shell-form" />
                         </div>
                     </form>
@@ -64,4 +55,3 @@
 
 </div>
 {% endfor %}
-{% endblock %}

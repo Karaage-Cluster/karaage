@@ -24,6 +24,7 @@ import datetime
 from tldap.test import slapd
 
 from karaage.people.models import Person
+from karaage.projects.models import Project
 from karaage.machines.models import Machine, MachineCategory
 from initial_ldap_data import test_ldif
 from karaage.datastores import ldap_schemas
@@ -65,60 +66,93 @@ class AccountTestCase(TestCase):
         self.server.stop()
 
     def test_add_account(self):
+        project = Project.objects.get(pk=1)
+        person = Person.objects.get(username="samtest2")
+        person.groups.add(project.group)
 
-        response = self.client.get(reverse('kg_person_add_account', args=['samtest2']))
+        response = self.client.get(reverse('kg_account_add', args=['samtest2']))
         self.failUnlessEqual(response.status_code, 200)
         
         form_data = {
+            'username': person.username,
+            'shell': '/bin/bash',
             'machine_category': 1,
             'default_project': 1,
             }
             
-        response = self.client.post(reverse('kg_person_add_account', args=['samtest2']), form_data)
+        response = self.client.post(reverse('kg_account_add', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
         person = Person.objects.get(username="samtest2")
         self.assertTrue(person.has_account(MachineCategory.objects.get(pk=1)))
 
     def test_fail_add_accounts_username(self):
+        project = Project.objects.get(pk=1)
+        person = Person.objects.get(username="samtest2")
+        person.groups.add(project.group)
+
         form_data = {
+            'username': person.username,
+            'shell': '/bin/bash',
             'machine_category': 1,
             'default_project': 1,
             }          
-        response = self.client.post(reverse('kg_person_add_account', args=['samtest2']), form_data)
+        response = self.client.post(reverse('kg_account_add', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
         
-        response = self.client.post(reverse('kg_person_add_account', args=['samtest2']), form_data)
-        self.assertContains(response, "Username already in use")
+        response = self.client.post(reverse('kg_account_add', args=['samtest2']), form_data)
+        self.assertContains(response, "Username already in use on machine category Default")
 
 
     def test_fail_add_accounts_project(self):
         form_data = {
+            'username': 'samtest2',
+            'shell': '/bin/bash',
+            'machine_category': 1,
+            'default_project': 1,
+            }
+        response = self.client.post(reverse('kg_account_add', args=['samtest2']), form_data)
+        self.assertContains(response, "Person does not belong to default project")
+
+        project = Project.objects.get(pk=1)
+        person = Person.objects.get(username="samtest2")
+        person.groups.add(project.group)
+
+        form_data = {
+            'username': person.username,
+            'shell': '/bin/bash',
             'machine_category': 1,
             'default_project': 1,
             }          
-        response = self.client.post(reverse('kg_person_add_account', args=['samtest2']), form_data)
+        response = self.client.post(reverse('kg_account_add', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
 
         form_data = {
+            'username': person.username,
+            'shell': '/bin/bash',
             'machine_category': 2,
             'default_project': 1,
             }
 
-        response = self.client.post(reverse('kg_person_add_account', args=['samtest2']), form_data)
+        response = self.client.post(reverse('kg_account_add', args=['samtest2']), form_data)
         self.assertContains(response, "Default project not in machine category")
 
 
     def test_lock_unlock_account(self):
-        response = self.client.get(reverse('kg_person_add_account', args=['samtest2']))
+        project = Project.objects.get(pk=1)
+        person = Person.objects.get(username="samtest2")
+        person.groups.add(project.group)
+
+        response = self.client.get(reverse('kg_account_add', args=['samtest2']))
         self.failUnlessEqual(response.status_code, 200)
         
         form_data = {
-            'username': 'samtest2',
+            'username': person.username,
+            'shell': '/bin/bash',
             'machine_category': 1,
             'default_project': 1,
             }
             
-        response = self.client.post(reverse('kg_person_add_account', args=['samtest2']), form_data)
+        response = self.client.post(reverse('kg_account_add', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
         person = Person.objects.get(username='samtest2')
         ua = person.get_account(MachineCategory.objects.get(pk=1))

@@ -15,25 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect
 from django.http import HttpResponseBadRequest
 from django.core.urlresolvers import reverse
-from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.tokens import default_token_generator
 
 from karaage.common import get_date_range
 from karaage.people.emails import send_reset_password_email
 from karaage.people.models import Person
-from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.people.forms import PasswordChangeForm, PersonForm
 from karaage.people.forms import LoginForm
-from karaage.machines.models import Account
-from karaage.machines.forms import ShellForm
-from karaage.common import log
 
 from karaage.common.decorators import login_required
 import karaage.common.saml as saml
@@ -70,15 +64,6 @@ def edit_profile(request):
     return render_to_response('people/profile_edit.html',
             {'person': person, 'form': form},
             context_instance=RequestContext(request))
-
-
-@login_required
-def profile_accounts(request):
-
-    person = request.user
-    accounts = person.account_set.filter(date_deleted__isnull=True)
-
-    return render_to_response('people/profile_accounts.html', locals(), context_instance=RequestContext(request))
 
 
 @login_required

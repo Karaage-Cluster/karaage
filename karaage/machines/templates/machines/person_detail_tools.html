@@ -1,0 +1,4 @@
+{% if person.is_active and is_admin %}
+<li><a href="{% url 'kg_account_add' person.username %}" class="addlink">Add account</a></li>
+<li><a href="{% url 'kg_account_add_project' person.username %}" class="addlink">Add project</a></li>
+{% endif %}
