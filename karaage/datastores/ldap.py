@@ -279,7 +279,7 @@ class MachineCategoryDataStore(base.MachineCategoryDataStore):
             luser.gidNumber = lgroup.gidNumber
             luser.homeDirectory = self._home_directory % {
                 'default_project': default_project,
-                'uid': person.username }
+                'uid': account.username }
             if account.is_locked():
                 luser.loginShell = self._locked_shell
                 luser.lock()
@@ -289,7 +289,7 @@ class MachineCategoryDataStore(base.MachineCategoryDataStore):
             luser.save()
         except self._account.DoesNotExist:
             luser = self._create_account()
-            luser.uid = person.username
+            luser.uid = account.username
             luser.givenName = person.first_name
             luser.sn = person.last_name
             luser.fullName = person.full_name
@@ -300,7 +300,7 @@ class MachineCategoryDataStore(base.MachineCategoryDataStore):
             luser.gidNumber = lgroup.gidNumber
             luser.homeDirectory = self._home_directory % {
                 'default_project': default_project,
-                'uid': person.username }
+                'uid': account.username }
             if account.is_locked():
                 luser.loginShell = self._locked_shell
                 luser.lock()
