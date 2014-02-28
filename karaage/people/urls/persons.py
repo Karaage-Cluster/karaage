@@ -27,20 +27,10 @@ urlpatterns = patterns('karaage.people.views.persons',
     url(r'^$', 'user_list', name='kg_person_list'),
     url(r'^deleted/$', 'user_list', { 'queryset': Person.deleted.all(),}),
     url(r'^last_used/$', 'user_list', { 'queryset': Person.active.order_by('last_usage'),}),
-    url(r'^no_project/$', 'user_list', { 'queryset': Person.active.filter(groups__project__isnull=True, account__isnull=False),}, name='kg_person_no_project'),
     url(r'^struggling/$', 'struggling', name='kg_person_struggling'),
-    url(r'^no_default/$', 'no_default_list', name='kg_person_no_default'),
-    url(r'^wrong_default/$', 'wrong_default_list', name='kg_person_wrong_default'),
-    url(r'^no_account/$', 'no_account_list', name='kg_person_no_account'),
     url(r'^locked/$', 'locked_list', name='kg_person_locked'),
 
     url(r'^add/$', 'add_user', name='kg_person_add'),
-
-    url(r'^accounts/(?P<account_id>\d+)/change_shell/$', 'change_account_shell', name='kg_account_shell'),
-    url(r'^accounts/(?P<account_id>\d+)/edit/$', 'add_edit_account', name='kg_account_edit'),
-    url(r'^accounts/(?P<account_id>\d+)/delete/$', 'delete_account', name='kg_account_delete'),
-    url(r'^accounts/(?P<account_id>\d+)/makedefault/(?P<project_id>%s)/$' % settings.PROJECT_VALIDATION_RE,
-        'make_default', name='kg_account_set_default'),
 
     (r'^detail/(?P<username>%s)/' % settings.USERNAME_VALIDATION_RE, include('karaage.people.urls.person_detail')),
 )

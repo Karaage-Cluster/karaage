@@ -1,0 +1,95 @@
+{% for account in person.account_set.all %}
+<div class="module">
+    <h2>{{ account.machine_category }} Account</h2>
+    <h3>Details</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Active</th>
+                <th>Username</th>
+                <th>Date Created</th>
+                <th>Date Deleted</th>
+                <th>Shell</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    {% if account.date_deleted %}
+                    <img alt="Not Active" src="{{ STATIC_URL }}img/icon-no.gif" title="Not Active"/>
+                    {% else %}
+                    {% if account.is_locked %}
+                    <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
+                    {% else %}
+                    <img alt="Active" src="{{ STATIC_URL }}img/icon-yes.gif" title="Active"/>
+                    {% endif %}
+                    {% endif %}
+                </td>
+                <td>{{ account.username }}</td>
+                <td>{{ account.date_created|date }}</td>
+                <td>{{ account.date_deleted|date }}</td>
+                <td>{{ account.shell }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% if account.project_list and not account.date_deleted %}
+    <h3>Projects</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Project</th>
+                <th>Name</th>
+                <th>Institute</th>
+                <th>Leaders</th>
+                <th>Default</th>
+                {% if is_admin %}{% ifnotequal p account.default_project %}
+                <th></th>
+                {% endifnotequal %}{% endif %}
+            </tr>
+        </thead>
+        <tbody>
+        {% for p in account.project_list %}
+        <tr>
+            <td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
+            <td>{{ p.name|truncatewords:"10" }}</td>
+            <td><a href="{{ p.institute.get_absolute_url }}">{{ p.institute }}</a></td>
+            <td>{% for leader in p.leaders.all %}<a href="{{ leader.get_absolute_url }}">{{ leader }}, </a>{% endfor %}</td>
+            <td>
+                {% ifequal p account.default_project %}
+                    <img alt="1" src="{{ STATIC_URL }}img/icon-yes.gif"/>
+                {% else %}
+                    {% if is_admin %}
+                    <form action="{% url 'kg_account_set_default' account.id p.pid %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" value="Make Default"/></input>
+                    </form>
+                    {% else %}
+                    <img alt="1" src="{{ STATIC_URL }}img/icon-no.gif"/>
+                    {% endif %}
+                {% endifequal %}
+            </td>
+            {% if is_admin %}{% ifnotequal p account.default_project %}
+            <td>
+                <a href="{% url 'kg_remove_project_member' p.pid person.username %}" class="deletelink">Remove</a>
+            </td>
+            {% endifnotequal %}{% endif %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    {% for_each_app_include "account_detail_extra.html" %}
+
+    <div class="object-tools">
+        <ul>
+            {% if not account.date_deleted and is_admin %}
+                <li><a href="{% url 'kg_account_edit' account.pk %}" class="changelink">Edit Account</a></li>
+                <li><a href="{% url 'kg_account_delete' account.id %}" class="deletelink">Delete Account</a></li>
+            {% endif %}
+            {% for_each_app_include "account_detail_tools.html" %}
+        </ul>
+    </div>
+</div>
+{% endfor %}

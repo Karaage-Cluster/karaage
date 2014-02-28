@@ -2,9 +2,7 @@
 {% load forms %}
 
 
-{% block title %}
-{% if account %}Edit Account{% else %}Create Account{% endif %}
-{% endblock %}
+{% block title %}Edit Account{% endblock %}
 
 
 {% block extrahead %}
@@ -17,21 +15,18 @@
     <a href='{% url "index" %}'>Home</a>&nbsp;›
     <a href="{% url 'kg_person_list' %}">People</a>&nbsp;›
     <a href="{% url 'kg_person_detail' person.username %}">{{ person }}</a>&nbsp;›
-    {% if account %}
-        {{ account.username }}&nbsp;›
-        Edit
-    {% else %}
-        Create Account
-    {% endif %}
+    Add Project
 </div>
 {% endblock %}
 
 
 {% block content %}
 <div class="module">
-    <h2>Edit Account</h2>
+    <h2>Add person to project</h2>
 
     <form method="post" action=".">{% csrf_token %}
+        <p>Person will be given an account if required.</p>
+
         {{ form.non_field_errors }}
         {% form_as_div form %}
 

@@ -18,24 +18,15 @@
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 
-import datetime
-from karaage.common.filterspecs import Filter, FilterBar, DateFilter
-
 from karaage.common.decorators import admin_required
-from karaage.projects.models import Project
 from karaage.people.models import Person, Group
-from karaage.people.emails import send_confirm_password_email
-from karaage.people.forms import AddPersonForm, AdminPersonForm, AdminGroupForm
+from karaage.people.forms import AdminGroupForm
 from karaage.people.forms import AddGroupMemberForm
-from karaage.institutes.models import Institute
-from karaage.machines.models import Account
-from karaage.machines.forms import AccountForm, ShellForm
-from karaage.common import log
 import karaage.common as util
 
 
