@@ -17,39 +17,7 @@
 {% if project_list %}
 <div class="module">
     <h2>Projects I am a member of</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Account</th>
-                <th>Project ID</th>
-                <th>Title</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Default</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for ua in person.account_set.all %}
-            {% for p in ua.project_list %}
-            <tr>
-                <td>{{ ua }}</td>
-                <td><a href="{{ p.get_absolute_url }}">{{ p.pid }}</a></td>
-                <td>{{ p.name|truncatewords:"8" }}</td>
-                <td>{{ p.start_date|date }}</td>
-                <td>{{ p.end_date|date }}</td>
-                <td>{% ifequal p ua.default_project %}
-                    <img src="{{ STATIC_URL }}img/icon-yes.gif" alt="1" />{% else %}
-                    <form action="{% url 'kg_account_set_default' ua.id p.pid %}" method="post">
-                        {% csrf_token %}
-                        <input type="submit" value="Make Default"/></input>
-                    </form>
-                    {% endifequal %}
-                </td>
-            </tr>
-            {% endfor %}
-            {% endfor %}
-        </tbody>
-    </table>
+    {% gen_table project_list %}
 
     {% is_for_each_app_include_empty "profile_project_detail_tools.html" as is_empty %}
     {% if not is_empty %}
