@@ -15,9 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import *
+from django.conf.urls import patterns, url, include
 from django.conf import settings
-
 
 urlpatterns = patterns('karaage.usage.views',
     url(r'^$', 'usage_index', name='kg_usage_list'),
@@ -41,3 +40,12 @@ urlpatterns = patterns('karaage.usage.views',
 
     url(r'^(?P<machine_category_id>\d+)/top_users/$', 'top_users', name='kg_usage_top_users'),
 )
+
+urlpatterns = patterns('',
+    url(r'^usage/', include(urlpatterns)),
+)
+
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        (r'^karaage_graphs/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.GRAPH_ROOT}),
+    )

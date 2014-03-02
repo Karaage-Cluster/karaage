@@ -15,8 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import *
-
+from django.conf.urls import patterns, url, include
 from karaage.software.models import Software
 
 urlpatterns = patterns('karaage.software.views',
@@ -47,4 +46,12 @@ urlpatterns = patterns('karaage.software.views',
     url(r'^license/(?P<license_id>\d+)/delete/$', 'license_delete', name='kg_software_license_delete'),
 
     url(r'^(?P<software_id>\d+)/print/$', 'license_txt', name='kg_software_license_txt'),
+)
+
+urlpatterns = patterns('',
+    url(r'^software/', include(urlpatterns)),
+)
+
+profile_urlpatterns = patterns('karaage.software.views',
+    url(r'^software/$', 'profile_software', name='kg_profile_software'),
 )

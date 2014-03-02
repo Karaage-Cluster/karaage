@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import *
+from django.conf.urls import patterns, url, include
 from django.conf import settings
 
 from karaage.applications.views.project import register as register_project
@@ -42,5 +42,13 @@ urlpatterns = patterns('karaage.applications.views',
     url(r'^(?P<token>[-.\w]+)/$', 'common.application_unauthenticated', name='kg_application_unauthenticated'),
     url(r'^(?P<token>[-.\w]+)/(?P<state>[-.\w]+)/$', 'common.application_unauthenticated', name='kg_application_unauthenticated'),
     url(r'^(?P<token>[-.\w]+)/(?P<state>[-.\w]+)/(?P<label>[-.\w]+)/$', 'common.application_unauthenticated', name='kg_application_unauthenticated'),
-
 )
+
+urlpatterns = patterns('',
+    url(r'^applications/', include(urlpatterns)),
+)
+
+profile_urlpatterns = patterns('',
+    url(r'^applications/$', 'karaage.applications.views.common.profile_application_list', name='kg_profile_applications'),
+)
+

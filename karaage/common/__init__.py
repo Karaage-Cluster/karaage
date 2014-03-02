@@ -188,3 +188,15 @@ def get_hooks(name):
             function = getattr(module, name, None)
             if function is not None:
                 yield function
+
+def get_urls(name):
+    for app in settings.INSTALLED_APPS:
+        try:
+            module_name = app + ".urls"
+            module = importlib.import_module(module_name)
+        except ImportError:
+            pass
+        else:
+            urls = getattr(module, name, None)
+            if urls is not None:
+                yield urls

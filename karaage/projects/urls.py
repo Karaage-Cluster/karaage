@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import *
+from django.conf.urls import patterns, url, include
 from django.conf import settings
 
 from karaage.projects.models import Project
@@ -45,4 +45,12 @@ urlpatterns = patterns('karaage.projects.views',
         'add_comment', name='kg_project_add_comment'),
     url(r'^(?P<project_id>%s)/quota/add/$' % settings.PROJECT_VALIDATION_RE,
         'projectquota_add', name='kg_projectquota_add'),
+)
+
+urlpatterns = patterns('',
+    url(r'^projects/', include(urlpatterns)),
+)
+
+profile_urlpatterns = patterns('karaage.projects.views',
+    url(r'^projects/$', 'profile_projects', name='kg_profile_projects'),
 )

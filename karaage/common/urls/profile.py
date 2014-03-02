@@ -18,13 +18,13 @@
 from django.conf.urls import *
 from django.conf import settings
 
-from karaage.common import get_hooks
+from karaage.common import get_urls
 
 urlpatterns = patterns('karaage.common.views.profile',
     url(r'^$', 'profile', name='kg_profile'),
     url(r'^logout/$', 'logout', name='kg_profile_logout'),
 )
 
-for hook in get_hooks("profile_urlpatterns"):
-    urlpatterns += hook
-    del hook
+for urls in get_urls("profile_urlpatterns"):
+    urlpatterns += urls
+    del urls

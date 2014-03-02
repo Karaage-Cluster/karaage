@@ -15,18 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import patterns, url, include
-
 import karaage.applications.models as models
 import karaage.applications.views.software as software
-
-urlpatterns = patterns('',
-    url(r'^applications/', include('karaage.applications.urls')),
-)
-
-profile_urlpatterns = patterns('',
-    url(r'^applications/$', 'karaage.applications.views.common.profile_application_list', name='kg_profile_applications'),
-)
 
 def context(request):
     ctx = {}

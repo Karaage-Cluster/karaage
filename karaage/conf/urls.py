@@ -18,7 +18,7 @@
 from django.conf.urls import *
 from django.conf import settings
 
-from karaage.common import get_hooks
+from karaage.common import get_urls
 
 urlpatterns = patterns('',
     url(r'^xmlrpc/$', 'django_xmlrpc.views.handle_xmlrpc',),
@@ -26,6 +26,6 @@ urlpatterns = patterns('',
     url(r'^lookup/', include('ajax_select.urls')),
 )
 
-for hook in get_hooks("urlpatterns"):
-    urlpatterns += hook
-    del hook
+for urls in get_urls("urlpatterns"):
+    urlpatterns += urls
+    del urls

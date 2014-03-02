@@ -14,3 +14,14 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
+
+from django.conf.urls import patterns, url, include
+
+urlpatterns = patterns('',
+    url(r'^accounts/', include('karaage.machines.urls.accounts')),
+    url(r'^machines/', include('karaage.machines.urls.machines')),
+)
+
+profile_urlpatterns = patterns('karaage.machines.views.accounts',
+    url(r'^accounts/$', 'profile_accounts', name='kg_profile_accounts'),
+)
