@@ -11,6 +11,13 @@
 <div class="module">
     <h2>My Profile</h2>
 
-    <p>Welcome {{ person }} to Karaage. Please select from the links to your left.</p>
+    <p>Welcome {{ person }} to Karaage. Please select from the links.</p>
+
+    <div class="object-tools">
+        <ul>
+            {% for_each_app_include "main_profile.html" %}
+            {% for_each_app_include "main_profile_end.html" %}
+        </ul>
+    </div>
 </div>
 {% endblock %}

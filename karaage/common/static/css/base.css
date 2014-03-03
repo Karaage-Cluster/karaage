@@ -549,10 +549,15 @@ div.breadcrumbs {
     background-color: #bbb;
 }
 
+.object-tools a.active {
+    background-color: #C7C7A0;
+}
+
 .object-tools a:hover {
     color: #fff;
     background-color: #333;
 }
+
 
 #content-related .object-tools li {
     width: 100%;
