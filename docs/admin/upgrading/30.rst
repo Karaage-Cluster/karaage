@@ -339,3 +339,22 @@ Install on production server
         kg-manage update_ldap
 
 #.  Test production box and make sure everything is working.
+
+
+Fix PBS Logging
+---------------
+Only do this if kg-pbs-logger was previously configured.
+
+Karaage no longer requires a dedicated account for kg-pbs-logger. Rather it uses the machine entry. For every machine:
+
+#.  (optional) Delete the dedicated account that was previously used for authenticating this system.
+
+#.  Navigate to machine entry in admin website.
+
+#.  Click password button to reset the password.
+
+#.  Update ``/etc/karaage/pbs-logger.cfg`` and for ``ws_username`` use the
+    machine name in karaage, and for ``ws_password`` use the password obtained
+    in the previous step.
+
+#.  Test.
