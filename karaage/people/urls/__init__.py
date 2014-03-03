@@ -23,7 +23,7 @@ urlpatterns = patterns('',
     url(r'^groups/', include('karaage.people.urls.groups')),
 )
 
-profile_urlpatterns = patterns('karaage.people.views.persons',
+profile_urlpatterns = patterns('karaage.people.views.profile',
     url(r'^personal/$', 'profile_personal', name='kg_profile_personal'),
     url(r'^edit/$', 'edit_profile', name='kg_profile_edit'),
     url(r'^password/$', 'password_change', name='kg_profile_password'),
@@ -34,7 +34,7 @@ profile_urlpatterns = patterns('karaage.people.views.persons',
 )
 
 if settings.SHIB_SUPPORTED:
-    profile_urlpatterns += patterns('karaage.people.views.persons',
+    profile_urlpatterns += patterns('karaage.people.views.profile',
         url(r'^saml/$', 'saml_details', name='kg_profile_saml'),
         url(r'^slogin/$', 'saml_login', name='kg_profile_login_saml'),
     )
