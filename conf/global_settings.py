@@ -29,6 +29,13 @@
 #
 # DEBUG = False
 
+# A list of strings representing the host/domain names that this Django site
+# can serve. This is a security measure to prevent an attacker from poisoning
+# caches and password reset emails with links to malicious hosts by submitting
+# requests with a fake HTTP Host header, which is possible even under many
+# seemingly-safe web server configurations.
+ALLOWED_HOSTS = [ "www.example.org" ]
+
 # Whether to use a secure cookie for the session cookie. If this is set to
 # True, the cookie will be marked as “secure,” which means browsers may ensure
 # that the cookie is only sent under an HTTPS connection.
