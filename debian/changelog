@@ -1,3 +1,11 @@
+karaage3 (3.0.5-1) unstable; urgency=low
+
+  * Start arranging code into correct modules.
+  * Display profile menu in top level profile page.
+  * Cosmetic changes.
+
+ -- Brian May <bam@debian.org>  Mon, 03 Mar 2014 11:56:24 +1100
+
 karaage3 (3.0.4-1) unstable; urgency=low
 
   * Redesign datastores.
