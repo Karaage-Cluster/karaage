@@ -108,9 +108,9 @@ Install on test server
 
     #.  Copy mysql to new database on production box:
 
-            .. code-block:: bash
+        .. code-block:: bash
 
-                mysql karaage3 < karaage.sql
+            mysql karaage3 < karaage.sql
 
     #.  Check data in karaage3 looks correct, before proceeding.
 
@@ -201,9 +201,9 @@ Install on test server
 
     #.  Connect to mysql database:
 
-            .. code-block:: bash
+        .. code-block:: bash
 
-                mysql karaage3
+            mysql karaage3
 
     #.  Ensure all tables in database are using innodb and utf8 encoding::
 
