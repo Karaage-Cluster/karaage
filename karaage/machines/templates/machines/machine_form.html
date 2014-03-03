@@ -8,8 +8,8 @@
 <div class="breadcrumbs">
     <a href='{% url "index" %}'>Home</a>&nbsp;›
     <a href="{% url 'kg_machine_category_list' %}">Machines</a>&nbsp;›
-    {% if object %}
-        <a href="{% url 'kg_machine_detail' object.pk %}">{{ object }}</a>&nbsp;›
+    {% if machine %}
+        <a href="{% url 'kg_machine_detail' machine.pk %}">{{ machine }}</a>&nbsp;›
         Edit
     {% else %}
         Create Machine

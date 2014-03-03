@@ -17,12 +17,14 @@
 
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render_to_response
+from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.db.models import Q
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from karaage.projects.models import Project
 from karaage.machines.models import Machine, MachineCategory
+from karaage.machines.forms import MachineForm
 from karaage.common.decorators import admin_required, login_required
 import karaage.common as util
 
@@ -36,15 +38,25 @@ def machine_detail(request, machine_id):
 
 @admin_required
 def machine_create(request):
-    from karaage.common.create_update import create_object
-    return create_object(request,
-            model=Machine)
+    form = MachineForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            machine = form.save()
+            return HttpResponseRedirect(machine.get_absolute_url())
+
+    return render_to_response('machines/machine_form.html', locals(), context_instance=RequestContext(request))
 
 @admin_required
 def machine_edit(request, machine_id):
-    from karaage.common.create_update import update_object
-    return update_object(request,
-            object_id=machine_id, model=Machine)
+    machine = get_object_or_404(Machine, pk=machine_id)
+
+    form = MachineForm(request.POST or None, instance=machine)
+    if request.method == 'POST':
+        if form.is_valid():
+            machine = form.save()
+            return HttpResponseRedirect(machine.get_absolute_url())
+
+    return render_to_response('machines/machine_form.html', locals(), context_instance=RequestContext(request))
 
 @admin_required
 def machine_password(request, machine_id):

@@ -36,6 +36,7 @@
             <tr><th>Memory per core:</th><td>{{ machine.mem_per_core }}</td></tr>
             <tr><th>Scaling factor:</th><td>{{ machine.scaling_factor }}</td></tr>
             {% if is_admin %}
+            <tr><th>Usable password:</th><td>{{ machine.has_usable_password }}</td></tr>
             {% endif %}
         </table>
         {% if is_admin %}

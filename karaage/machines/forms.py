@@ -28,6 +28,9 @@ import ajax_select.fields
 class MachineForm(forms.ModelForm):
     class Meta:
         model = Machine
+        fields = ('name', 'no_cpus', 'no_nodes', 'type', 'category',
+            'start_date', 'end_date', 'pbs_server_host',
+            'mem_per_core', 'scaling_factor')
 
 
 class MachineCategoryForm(forms.ModelForm):
