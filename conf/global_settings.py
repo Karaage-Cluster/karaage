@@ -27,7 +27,7 @@
 #
 # default: DEBUG = False
 #
-# DEBUG = False
+# DEBUG = True
 
 # A list of strings representing the host/domain names that this Django site
 # can serve. This is a security measure to prevent an attacker from poisoning
