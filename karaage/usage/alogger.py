@@ -95,8 +95,8 @@ def parse_logs(log_list, date, machine_name, log_type):
                 
         if project is not None and account is not None:
         
-            if account.user not in project.users.all():
-                output.append("%s is not in project %s, cpu usage: %s" % (account.user, project, data['cpu_usage']))
+            if account.person not in project.group.members.all():
+                output.append("%s is not in project %s, cpu usage: %s" % (account.person, project, data['cpu_usage']))
                 fail += 1
 
         # Everything is good so add entry
