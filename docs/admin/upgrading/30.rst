@@ -210,7 +210,24 @@ Install on test server
             mysql> use karaage3
             mysql> show table status
 
-        For every table that is not innodb, convert it with::
+    #.  If not all tables are using innodb and utf8, this can be corrected with the following script:
+
+        .. code-block:: bash
+
+            #!/bin/sh
+            set -x
+
+            DBNAME="karaage3"
+            USERNAME="karaage3"
+            PASSWORD="YYYYYYYY"
+
+            for i in $(mysql -B -N -e "SHOW TABLES" -u$USERNAME -p$PASSWORD $DBNAME); do
+                mysql -B -N -e "ALTER TABLE $i ENGINE=InnoDB;" -u$USERNAME -p$PASSWORD $DBNAME
+                mysql -B -N -e "ALTER TABLE $i CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci" -u$USERNAME -p$PASSWORD $DBNAME
+            done
+
+    #.  The above can also be done manually. For every table that is not
+        innodb, convert it with::
 
             mysql> ALTER TABLE table_name ENGINE=InnoDB;
 
