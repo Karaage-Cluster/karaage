@@ -1,8 +1,0 @@
-Hello {{ receiver }},
-
-Your {{ org_name }} project has been declined.
-
-If you think this is an error please email {{ org_email }}
-
-
-{% include "emails/email_footer.txt" %}
