@@ -160,6 +160,23 @@ def gen_cache_for_institute(start, end, institute_pk, machine_category_pk):
     _gen_institute_trend_graph(institute, start, end, machine_category, force_overwrite=False)
     i = i + 1
 
+
+@app.task()
+def gen_cache_for_all_institutes(start, end, machine_category_pk):
+    machine_category = MachineCategory.objects.get(pk=machine_category_pk)
+
+    current = gen_cache_for_all_institutes
+    logger = current.get_logger()
+    total =  len(machine_category.institutequota_set.all())
+    i = 0
+
+    for iq in machine_category.institutequota_set.all():
+        institute = iq.institute
+        logger.info("generating institute graphs %s" % institute)
+        current.update_state(state='PROGRESS', meta={'completed': i, 'total': total, 'message': 'generating institute graphs'})
+        _gen_institute_trend_graph(institute, start, end, machine_category, force_overwrite=False)
+        i = i + 1
+
 # -----------------------------------------------------------------------
 
 def _gen_machine_category_cache(start, end):
@@ -648,13 +665,3 @@ def _gen_institute_trend_graph(institute,
     plt.tight_layout()
     plt.savefig(png_filename)
     plt.close()
-
-
-#def _gen_institutes_trend_graphs(start, end, machine_category,
-#        force_overwrite=False):
-#    """ Get all institute trend graphs. """
-#
-#    graph_list = []
-#    for institute in Institute.active.all():
-#        _gen_institute_trend_graph(
-#            institute, start, end, machine_category, force_overwrite)

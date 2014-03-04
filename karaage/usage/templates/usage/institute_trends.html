@@ -20,13 +20,14 @@
 {% block content %}
 <div id="content-main">
     <p>{% date_filter start end %}</p>
+    {% for g in graph_list %}
     <div class="module">
+        <h2>{{ g.institute }}</h2>
 
-        {% for g in graph_list %}
         <img id="graph" src="{{ g.graph_url }}"/><br/>
         <p><a href="{{ g.data_url }}">data</a></p>
-        {% endfor %}
 
     </div>
+    {% endfor %}
 </div>
 {% endblock %}

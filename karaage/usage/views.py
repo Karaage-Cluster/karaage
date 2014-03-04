@@ -117,6 +117,10 @@ def gen_cache_for_institute(request, start, end, institute, machine_category):
         return tasks.gen_cache_for_institute.delay(start, end, institute.pk, machine_category.pk)
 
 
+@synchronise
+def gen_cache_for_all_institutes(request, start, end, machine_category):
+        return tasks.gen_cache_for_all_institutes.delay(start, end, machine_category.pk)
+
 
 def usage_index(request):
     if not getattr(settings, 'USAGE_IS_PUBLIC', False):
@@ -581,7 +585,7 @@ def institute_trends(request, machine_category_id):
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
     start, end = get_date_range(request)
 
-    result = gen_cache_for_machine_category(request, start, end, machine_category)
+    result = gen_cache_for_all_institutes(request, start, end, machine_category)
     if result is not None:
         return render_to_response( 'usage/progress.html',
             { 'task_id': result.task_id },

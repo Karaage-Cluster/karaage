@@ -165,9 +165,11 @@ def get_institutes_trend_graph_urls(start, end, machine_category):
     """ Get all institute trend graphs. """
 
     graph_list = []
-    for institute in Institute.active.all():
+    for iq in machine_category.institutequota_set.all():
+        institute = iq.institute
         urls = get_institute_trend_graph_url(
                 institute, start, end, machine_category)
+        urls['institute'] = institute
         graph_list.append(urls)
 
     return graph_list
