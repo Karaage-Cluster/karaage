@@ -211,7 +211,7 @@ class PersonTestCase(TestCase):
         self.failUnlessEqual(logged_in, True)
         response = self.client.get(reverse('kg_person_add'))
         self.failUnlessEqual(response.status_code, 200)
-        
+
         form_data = {
             'title' : 'Mr',
             'short_name': 'Sam',
@@ -233,7 +233,7 @@ class PersonTestCase(TestCase):
         response = self.client.post(reverse('kg_person_add'), form_data)
         self.failUnlessEqual(response.status_code, 302)
 
-        self.assertEqual(Person.objects.count(), users+1)
+        self.assertEqual(Person.objects.count(), users + 1)
         users = users + 1
         person = Person.objects.get(pk=users)
         self.assertEqual(person.is_active, True)
@@ -243,8 +243,8 @@ class PersonTestCase(TestCase):
         luser = self._datastore._accounts().get(uid='samtest')
         self.assertEqual(luser.givenName, 'Sam')
         self.assertEqual(luser.homeDirectory, '/vpac/TestProject1/samtest')
-        
-     
+
+
     def test_admin_create_user(self):
         users = Person.objects.count()
         project = Project.objects.get(pid='TestProject1')
@@ -252,7 +252,7 @@ class PersonTestCase(TestCase):
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
         response = self.client.get(reverse('kg_person_add'))
-        
+
         self.failUnlessEqual(response.status_code, 200)
 
         form_data = {
@@ -296,7 +296,7 @@ class PersonTestCase(TestCase):
         self.failUnlessEqual(luser.gecos, 'Test User3 (Example)')
         response = self.client.get(reverse('kg_person_edit', args=['kgtestuser3']))
         self.failUnlessEqual(response.status_code, 200)
-        
+
         form_data = {
             'title' : 'Mr',
             'short_name': 'Test',
@@ -334,7 +334,7 @@ class PersonTestCase(TestCase):
         # Test deleting
         response = self.client.post(reverse('kg_person_delete', args=[person.username]))
         self.failUnlessEqual(response.status_code, 302)
-        
+
         person = Person.objects.get(username='kgtestuser3')
 
         self.assertEqual(person.is_active, False)
@@ -358,7 +358,7 @@ class PersonTestCase(TestCase):
 
         response = self.client.post('/%susers/accounts/delete/%i/' % (settings.BASE_URL, ua.id))
         self.failUnlessEqual(response.status_code, 302)
-        
+
         person = Person.objects.get(pk=Person.objects.count())
         ua = person.account_set.all()[0]
         self.assertEqual(ua.date_deleted, datetime.date.today())
@@ -385,17 +385,17 @@ class PersonTestCase(TestCase):
         self.assertEqual(person.project_set.count(), 2)
         # change default
         response = self.client.post(reverse('kg_account_set_default', args=[ua.id, project.pid]))
-        
+
         self.failUnlessEqual(response.status_code, 302)
 
         person = Person.objects.get(pk=Person.objects.count())
         ua = person.account_set.all()[0]
         project = Project.objects.get(pid='test2')
-       
+
         self.assertEqual(person.project_set.count(), 2)
         self.assertEqual(project, ua.default_project)
 
-       
+
     def stest_add_user_to_project(self):
 
         person = Person.objects.get(pk=Person.objects.count())

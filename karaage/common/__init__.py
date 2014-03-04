@@ -154,15 +154,23 @@ def add_comment(request, breadcrumbs, obj):
 
 def is_password_strong(password, old_password=None):
     """Return True if password valid"""
-    try:
-        from crack import VeryFascistCheck
-    except ImportError:
-        def VeryFascistCheck(password, old=None):
-            if old and password == old:
-                return False
-            elif len(password) < 6:
-                return False
-            return True
+    from django.conf import settings
+
+    def simple_check(password, old=None):
+        if old and password == old:
+            return False
+        elif len(password) < 6:
+            return False
+        return True
+
+    if settings.ENABLE_CRACKLIB:
+        try:
+            from crack import VeryFascistCheck
+        except ImportError:
+            VeryFascistCheck = simple_check
+    else:
+        VeryFascistCheck = simple_check
+
     try:
         VeryFascistCheck(password, old=old_password)
     except:

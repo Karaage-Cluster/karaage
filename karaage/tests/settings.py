@@ -132,3 +132,9 @@ REGISTRATION_BASE_URL = 'https://example.com/users'
 SECRET_KEY = '5hvhpe6gv2t5x4$3dtq(w2v#vg@)sx4p3r_@wv%l41g!stslc*'
 
 STATIC_URL = "/static/"
+
+import os.path
+TEST_MODULE_ROOT = os.path.dirname(os.path.realpath(__file__))
+FIXTURE_DIRS = (os.path.join(TEST_MODULE_ROOT),)
+
+ENABLE_CRACKLIB = False
