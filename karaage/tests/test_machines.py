@@ -26,7 +26,7 @@ from tldap.test import slapd
 from karaage.people.models import Person
 from karaage.projects.models import Project
 from karaage.machines.models import Machine, MachineCategory
-from initial_ldap_data import test_ldif
+from karaage.tests.initial_ldap_data import test_ldif
 from karaage.datastores import ldap_schemas
 
 class AccountTestCase(TestCase):
@@ -72,14 +72,14 @@ class AccountTestCase(TestCase):
 
         response = self.client.get(reverse('kg_account_add', args=['samtest2']))
         self.failUnlessEqual(response.status_code, 200)
-        
+
         form_data = {
             'username': person.username,
             'shell': '/bin/bash',
             'machine_category': 1,
             'default_project': 1,
             }
-            
+
         response = self.client.post(reverse('kg_account_add', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
         person = Person.objects.get(username="samtest2")
@@ -95,10 +95,10 @@ class AccountTestCase(TestCase):
             'shell': '/bin/bash',
             'machine_category': 1,
             'default_project': 1,
-            }          
+            }
         response = self.client.post(reverse('kg_account_add', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
-        
+
         response = self.client.post(reverse('kg_account_add', args=['samtest2']), form_data)
         self.assertContains(response, "Username already in use on machine category Default")
 
@@ -122,7 +122,7 @@ class AccountTestCase(TestCase):
             'shell': '/bin/bash',
             'machine_category': 1,
             'default_project': 1,
-            }          
+            }
         response = self.client.post(reverse('kg_account_add', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
 
@@ -144,14 +144,14 @@ class AccountTestCase(TestCase):
 
         response = self.client.get(reverse('kg_account_add', args=['samtest2']))
         self.failUnlessEqual(response.status_code, 200)
-        
+
         form_data = {
             'username': person.username,
             'shell': '/bin/bash',
             'machine_category': 1,
             'default_project': 1,
             }
-            
+
         response = self.client.post(reverse('kg_account_add', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
         person = Person.objects.get(username='samtest2')
@@ -180,7 +180,7 @@ class MachineTestCase(TestCase):
         server.set_port(38911)
         server.start()
         server.ldapadd("\n".join(test_ldif)+"\n")
-        call_command('loaddata', 'karaage/testproject/karaage_data', **{'verbosity': 0})
+        call_command('loaddata', 'karaage_data', **{'verbosity': 0})
 
         self.server = server
         today = datetime.datetime.now()
@@ -206,21 +206,21 @@ class MachineTestCase(TestCase):
         cache = get_machine_category_usage(mc, start.date(), end.date())
         available_time = cache.available_time
         self.failUnlessEqual(available_time, expected_time)
-        
+
     def no_test_available_time(self):
         mc1 = MachineCategory.objects.get(pk=1)
         mc2 = MachineCategory.objects.get(pk=2)
         for machine in Machine.objects.all():
             machine.category = mc1
             machine.save()
-            
+
         day = 60*60*24
         today = datetime.datetime.now()
-        
+
         end = today - datetime.timedelta(days=20)
         start = today - datetime.timedelta(days=30)
         self.do_availablity_test(start, end, mc1, 8050*day*11, 8050)
-        
+
         start = today - datetime.timedelta(days=99)
         end = today - datetime.timedelta(days=90)
         self.do_availablity_test(start, end, mc1, 40*day*10, 40)
