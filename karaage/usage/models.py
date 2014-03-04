@@ -91,54 +91,6 @@ class UsedModules(models.Model):
     date_added = models.DateField(auto_now_add=True)
     modules = models.TextField()
 
-class TaskMachineCategoryCache(models.Model):
-    date = models.DateField(editable=False, auto_now_add=True)
-    start = models.DateField()
-    end = models.DateField()
-    celery_task_id = models.CharField(max_length = 50, unique=True)
-    ready = models.BooleanField(default=False)
-    class Meta:
-        unique_together = ('date', 'start', 'end')
-        db_table = 'cache_taskmachinecategorycache'
-
-
-class TaskCacheForMachineCategory(models.Model):
-    date = models.DateField(editable=False, auto_now_add=True)
-    start = models.DateField()
-    end = models.DateField()
-    machine_category = models.ForeignKey(MachineCategory)
-    celery_task_id = models.CharField(max_length = 50, unique=True)
-    ready = models.BooleanField(default=False)
-    class Meta:
-        unique_together = ('date', 'start', 'end', 'machine_category')
-        db_table = 'cache_taskcacheformachinecategory'
-
-
-class TaskCacheForProject(models.Model):
-    date = models.DateField(editable=False, auto_now_add=True)
-    start = models.DateField()
-    end = models.DateField()
-    project = models.ForeignKey(Project)
-    machine_category = models.ForeignKey(MachineCategory)
-    celery_task_id = models.CharField(max_length = 50, unique=True)
-    ready = models.BooleanField(default=False)
-    class Meta:
-        unique_together = ('date', 'start', 'end', 'project', 'machine_category')
-        db_table = 'cache_taskcacheforproject'
-
-
-class TaskCacheForInstitute(models.Model):
-    date = models.DateField(editable=False, auto_now_add=True)
-    start = models.DateField()
-    end = models.DateField()
-    institute = models.ForeignKey(Institute)
-    machine_category = models.ForeignKey(MachineCategory)
-    celery_task_id = models.CharField(max_length = 50, unique=True)
-    ready = models.BooleanField(default=False)
-    class Meta:
-        unique_together = ('date', 'start', 'end', 'institute', 'machine_category')
-        db_table = 'cache_taskcacheforinstitute'
-
 
 class UsageCache(models.Model):
     date = models.DateField(editable=False, auto_now_add=True)

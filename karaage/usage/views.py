@@ -29,6 +29,7 @@ from django.db import transaction, IntegrityError
 from django.core.urlresolvers import reverse
 from django.template.defaultfilters import dictsortreversed
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.cache import cache
 
 from karaage.common.decorators import admin_required, login_required, usage_required
 from karaage.common.filterspecs import Filter, FilterBar, DateFilter
@@ -38,22 +39,21 @@ from karaage.projects.models import Project, ProjectQuota
 from karaage.machines.models import Account, MachineCategory, Machine
 from karaage.usage.models import CPUJob, Queue
 from karaage.usage.forms import UsageSearchForm
-import karaage.usage.models as cache
+import karaage.usage.models as models
 import karaage.usage.graphs as graphs
 import karaage.usage.tasks as tasks
 import karaage.usage.usage as usage
 from karaage.common import get_date_range
 
+LOCK_EXPIRE = 60 * 60 # Lock expires in 1 hour
 
 def progress(request):
+    """ Check status of task. """
     if 'delete' in request.GET:
-        cache.TaskMachineCategoryCache.objects.all().delete()
-        cache.TaskCacheForMachineCategory.objects.all().delete()
-        cache.MachineCategoryCache.objects.all().delete()
-        cache.MachineCache.objects.all().delete()
-        cache.InstituteCache.objects.all().delete()
-        cache.PersonCache.objects.all().delete()
-        cache.ProjectCache.objects.all().delete()
+        models.MachineCache.objects.all().delete()
+        models.InstituteCache.objects.all().delete()
+        models.PersonCache.objects.all().delete()
+        models.ProjectCache.objects.all().delete()
         return render_to_response(
                 'main.html',
                 {'content': 'Deleted'},
@@ -76,138 +76,46 @@ def progress(request):
     return None
 
 
+def synchronise(func):
+    """ If task already queued, running, or finished, don't restart. """
+    def inner(request, *args):
+        lock_id = '%s-%s-built-%s' % (datetime.date.today(), func.func_name, ",".join([str(a) for a in args]))
+        if cache.add(lock_id, 'true', LOCK_EXPIRE):
+            result = func(request, *args)
+            cache.set(lock_id, result.task_id)
+        else:
+            task_id = cache.get(lock_id)
+            if not task_id:
+                return None
+
+            cache.set(lock_id, "")
+            result = Task.AsyncResult(task_id)
+            if result.ready():
+                result.forget()
+                return None
+        return result
+    return inner
+
+
+@synchronise
 def gen_machine_category_cache(request, start, end):
-    try:
-        with transaction.atomic():
-            tc = cache.TaskMachineCategoryCache.objects.create(date=datetime.date.today(), start=start, end=end,
-                celery_task_id="")
-            result = tasks.gen_machine_category_cache.delay(start, end)
-            tc.celery_task_id = result.task_id
-            tc.save()
-
-    except IntegrityError:
-        tc = cache.TaskMachineCategoryCache.objects.get(date=datetime.date.today(), start=start, end=end)
-        if tc.ready:
-            return None
-        result = Task.AsyncResult(tc.celery_task_id)
-        if result.failed():
-            result.forget()
-            tc.delete()
-            return render_to_response(
-                    'usage/failed.html',
-                    context_instance=RequestContext(request))
-        if result.ready():
-            result.forget()
-            tc.ready = True
-            tc.save()
-            return None
-
-    return render_to_response(
-            'usage/progress.html',
-            { 'task_id': result.task_id },
-            context_instance=RequestContext(request))
+        return tasks.gen_machine_category_cache.delay(start, end)
 
 
+@synchronise
 def gen_cache_for_machine_category(request, start, end, machine_category):
-    try:
-        with transaction.atomic():
-            tc = cache.TaskCacheForMachineCategory.objects.create(date=datetime.date.today(), start=start, end=end,
-                machine_category=machine_category,
-                celery_task_id="")
-            result = tasks.gen_cache_for_machine_category.delay(start, end, machine_category.pk)
-            tc.celery_task_id = result.task_id
-            tc.save()
-
-    except IntegrityError:
-        tc = cache.TaskCacheForMachineCategory.objects.get(date=datetime.date.today(), start=start, end=end,
-                machine_category=machine_category)
-        if tc.ready:
-            return None
-        result = Task.AsyncResult(tc.celery_task_id)
-        if result.failed():
-            result.forget()
-            tc.delete()
-            return render_to_response(
-                    'usage/failed.html',
-                    context_instance=RequestContext(request))
-        if result.ready():
-            result.forget()
-            tc.ready = True
-            tc.save()
-            return None
-
-    return render_to_response(
-            'usage/progress.html',
-            { 'task_id': result.task_id },
-            context_instance=RequestContext(request))
+        return tasks.gen_cache_for_machine_category.delay(start, end, machine_category.pk)
 
 
+@synchronise
 def gen_cache_for_project(request, start, end, project, machine_category):
-    try:
-        with transaction.atomic():
-            tc = cache.TaskCacheForProject.objects.create(date=datetime.date.today(), start=start, end=end,
-                project=project, machine_category=machine_category,
-                celery_task_id="")
-            result = tasks.gen_cache_for_project.delay(start, end, project.pk, machine_category.pk)
-            tc.celery_task_id = result.task_id
-            tc.save()
-
-    except IntegrityError:
-        tc = cache.TaskCacheForProject.objects.get(date=datetime.date.today(), start=start, end=end,
-                project=project.pk, machine_category=machine_category.pk)
-        if tc.ready:
-            return None
-        result = Task.AsyncResult(tc.celery_task_id)
-        if result.failed():
-            result.forget()
-            tc.delete()
-            return render_to_response(
-                    'usage/failed.html',
-                    context_instance=RequestContext(request))
-        if result.ready():
-            result.forget()
-            tc.ready = True
-            tc.save()
-            return None
-
-    return render_to_response(
-            'usage/progress.html',
-            { 'task_id': result.task_id },
-            context_instance=RequestContext(request))
+        return tasks.gen_cache_for_project.delay(start, end, project.pk, machine_category.pk)
 
 
+@synchronise
 def gen_cache_for_institute(request, start, end, institute, machine_category):
-    try:
-        with transaction.atomic():
-            tc = cache.TaskCacheForInstitute.objects.create(date=datetime.date.today(), start=start, end=end,
-                institute=institute, machine_category=machine_category,
-                celery_task_id="")
-            result = tasks.gen_cache_for_institute.delay(start, end, institute.pk, machine_category.pk)
-            tc.celery_task_id = result.task_id
-            tc.save()
+        return tasks.gen_cache_for_institute.delay(start, end, institute.pk, machine_category.pk)
 
-    except IntegrityError:
-        tc = cache.TaskCacheForInstitute.objects.get(date=datetime.date.today(), start=start, end=end,
-                institute=institute, machine_category=machine_category)
-        if tc.ready:
-            return None
-        result = Task.AsyncResult(tc.celery_task_id)
-        if result.failed():
-            result.forget()
-            tc.delete()
-            return render_to_response(
-                    'usage/failed.html',
-                    context_instance=RequestContext(request))
-        if result.ready():
-            result.forget()
-            tc.ready = True
-            tc.save()
-            return None
-
-    return render_to_response(
-            'usage/progress.html',
-            { 'task_id': result.task_id },
-            context_instance=RequestContext(request))
 
 
 def usage_index(request):
@@ -222,7 +130,9 @@ def usage_index(request):
 
     result = gen_machine_category_cache(request, start, end)
     if result is not None:
-        return result
+        return render_to_response( 'usage/progress.html',
+            { 'task_id': result.task_id },
+            context_instance=RequestContext(request))
 
     mc_list = []
     for machine_category in MachineCategory.objects.all():
@@ -247,7 +157,9 @@ def index(request, machine_category_id):
 
     result = gen_cache_for_machine_category(request, start, end, machine_category)
     if result is not None:
-        return result
+        return render_to_response( 'usage/progress.html',
+            { 'task_id': result.task_id },
+            context_instance=RequestContext(request))
 
     show_zeros = True
 
@@ -261,14 +173,14 @@ def index(request, machine_category_id):
     available_time = mc_cache.available_time
     avg_cpus = available_time / (60*24*24) / ((end-start).days + 1)
 
-    for m_cache in cache.MachineCache.objects.filter(machine__category=machine_category,
+    for m_cache in models.MachineCache.objects.filter(machine__category=machine_category,
             date=datetime.date.today(), start=start, end=end):
         m = m_cache.machine
         time = m_cache.cpu_time
         jobs = m_cache.no_jobs
         m_list.append({'machine': m, 'usage': time, 'jobs': jobs})
 
-    for i_cache in cache.InstituteCache.objects.filter(machine_category=machine_category,
+    for i_cache in models.InstituteCache.objects.filter(machine_category=machine_category,
             date=datetime.date.today(), start=start, end=end):
         i = i_cache.institute
         time = i_cache.cpu_time
@@ -341,11 +253,15 @@ def institute_usage(request, institute_id, machine_category_id):
 
     result = gen_cache_for_machine_category(request, start, end, machine_category)
     if result is not None:
-        return result
+        return render_to_response( 'usage/progress.html',
+            { 'task_id': result.task_id },
+            context_instance=RequestContext(request))
 
     result = gen_cache_for_institute(request, start, end, institute, machine_category)
     if result is not None:
-        return result
+        return render_to_response( 'usage/progress.html',
+            { 'task_id': result.task_id },
+            context_instance=RequestContext(request))
 
     project_list = []
     institute_list = Institute.active.all()
@@ -360,7 +276,7 @@ def institute_usage(request, institute_id, machine_category_id):
 
     i_usage, i_jobs = usage.get_institute_usage(institute, start, end, machine_category)
 
-    for p_cache in cache.ProjectCache.objects.filter(project__institute=institute,
+    for p_cache in models.ProjectCache.objects.filter(project__institute=institute,
             machine_category=machine_category,
             date=datetime.date.today(), start=start, end=end):
         p = p_cache.project
@@ -395,7 +311,7 @@ def institute_usage(request, institute_id, machine_category_id):
 
     person_list = []
     person_total, person_total_jobs = 0, 0
-    for u in cache.PersonCache.objects.order_by('-cpu_time').filter(project__institute=institute,
+    for u in models.PersonCache.objects.order_by('-cpu_time').filter(project__institute=institute,
             machine_category=machine_category,
             date=datetime.date.today(), start=start, end=end)[:5]:
         person_total += u.cpu_time
@@ -442,11 +358,15 @@ def project_usage(request, project_id, machine_category_id):
 
     result = gen_cache_for_machine_category(request, start, end, machine_category)
     if result is not None:
-        return result
+        return render_to_response( 'usage/progress.html',
+            { 'task_id': result.task_id },
+            context_instance=RequestContext(request))
 
     result = gen_cache_for_project(request, start, end, project, machine_category)
     if result is not None:
-        return result
+        return render_to_response( 'usage/progress.html',
+            { 'task_id': result.task_id },
+            context_instance=RequestContext(request))
 
     usage_list = []
     total, total_jobs = 0, 0
@@ -621,7 +541,9 @@ def top_users(request, machine_category_id):
 
     result = gen_cache_for_machine_category(request, start, end, machine_category)
     if result is not None:
-        return result
+        return render_to_response( 'usage/progress.html',
+            { 'task_id': result.task_id },
+            context_instance=RequestContext(request))
 
     start, end = get_date_range(request)
     mc_cache = usage.get_machine_category_usage(machine_category, start, end)
@@ -629,7 +551,7 @@ def top_users(request, machine_category_id):
     person_list = []
 
     person_total, person_total_jobs = 0, 0
-    for u in cache.PersonCache.objects.order_by('-cpu_time').filter(start=start, end=end).filter(
+    for u in models.PersonCache.objects.order_by('-cpu_time').filter(start=start, end=end).filter(
             machine_category=machine_category)[:count]:
         if u.cpu_time:
             person_total += u.cpu_time
@@ -661,7 +583,9 @@ def institute_trends(request, machine_category_id):
 
     result = gen_cache_for_machine_category(request, start, end, machine_category)
     if result is not None:
-        return result
+        return render_to_response( 'usage/progress.html',
+            { 'task_id': result.task_id },
+            context_instance=RequestContext(request))
 
     graph_list = graphs.get_institutes_trend_graph_urls(start, end, machine_category)
 
@@ -682,7 +606,9 @@ def institute_users(request, machine_category_id, institute_id):
 
     result = gen_cache_for_machine_category(request, start, end, machine_category)
     if result is not None:
-        return result
+        return render_to_response( 'usage/progress.html',
+            { 'task_id': result.task_id },
+            context_instance=RequestContext(request))
 
     institute = get_object_or_404(Institute, pk=institute_id)
 
@@ -697,7 +623,7 @@ def institute_users(request, machine_category_id, institute_id):
     person_list = []
 
     person_total, person_total_jobs = 0, 0
-    for u in cache.PersonCache.objects.order_by('-cpu_time').filter(start=start, end=end).filter(
+    for u in models.PersonCache.objects.order_by('-cpu_time').filter(start=start, end=end).filter(
             machine_category=machine_category).filter(person__institute=institute).filter(no_jobs__gt=0):
         person_total = person_total + u.cpu_time
         person_total_jobs = person_total_jobs + u.no_jobs

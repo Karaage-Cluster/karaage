@@ -7,22 +7,99 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
-    depends_on = (
-        ('cache', '0015_auto__del_taskmachinecategorycache__del_unique_taskmachinecategorycach'),
-    )
-
     def forwards(self, orm):
-        if not db.dry_run:
-            orm['contenttypes.contenttype'].objects.filter(app_label='cache').update(app_label="usage")
+        # Removing unique constraint on 'TaskCacheForMachineCategory', fields ['date', 'start', 'end', 'machine_category']
+        db.delete_unique('cache_taskcacheformachinecategory', ['date', 'start', 'end', 'machine_category_id'])
+
+        # Removing unique constraint on 'TaskCacheForInstitute', fields ['date', 'start', 'end', 'institute', 'machine_category']
+        db.delete_unique('cache_taskcacheforinstitute', ['date', 'start', 'end', 'institute_id', 'machine_category_id'])
+
+        # Removing unique constraint on 'TaskMachineCategoryCache', fields ['date', 'start', 'end']
+        db.delete_unique('cache_taskmachinecategorycache', ['date', 'start', 'end'])
+
+        # Removing unique constraint on 'TaskCacheForProject', fields ['date', 'start', 'end', 'project', 'machine_category']
+        db.delete_unique('cache_taskcacheforproject', ['date', 'start', 'end', 'project_id', 'machine_category_id'])
+
+        # Deleting model 'TaskCacheForProject'
+        db.delete_table('cache_taskcacheforproject')
+
+        # Deleting model 'TaskMachineCategoryCache'
+        db.delete_table('cache_taskmachinecategorycache')
+
+        # Deleting model 'TaskCacheForInstitute'
+        db.delete_table('cache_taskcacheforinstitute')
+
+        # Deleting model 'TaskCacheForMachineCategory'
+        db.delete_table('cache_taskcacheformachinecategory')
+
 
     def backwards(self, orm):
-        if not db.dry_run:
-            orm['contenttypes.contenttype'].objects.filter(app_label='usage').update(app_label="cache")
+        # Adding model 'TaskCacheForProject'
+        db.create_table('cache_taskcacheforproject', (
+            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.Project'])),
+            ('ready', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('machine_category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['machines.MachineCategory'])),
+            ('celery_task_id', self.gf('django.db.models.fields.CharField')(max_length=50, unique=True)),
+            ('start', self.gf('django.db.models.fields.DateField')()),
+            ('date', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
+            ('end', self.gf('django.db.models.fields.DateField')()),
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        ))
+        db.send_create_signal(u'usage', ['TaskCacheForProject'])
+
+        # Adding unique constraint on 'TaskCacheForProject', fields ['date', 'start', 'end', 'project', 'machine_category']
+        db.create_unique('cache_taskcacheforproject', ['date', 'start', 'end', 'project_id', 'machine_category_id'])
+
+        # Adding model 'TaskMachineCategoryCache'
+        db.create_table('cache_taskmachinecategorycache', (
+            ('end', self.gf('django.db.models.fields.DateField')()),
+            ('start', self.gf('django.db.models.fields.DateField')()),
+            ('ready', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('celery_task_id', self.gf('django.db.models.fields.CharField')(max_length=50, unique=True)),
+            ('date', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        ))
+        db.send_create_signal(u'usage', ['TaskMachineCategoryCache'])
+
+        # Adding unique constraint on 'TaskMachineCategoryCache', fields ['date', 'start', 'end']
+        db.create_unique('cache_taskmachinecategorycache', ['date', 'start', 'end'])
+
+        # Adding model 'TaskCacheForInstitute'
+        db.create_table('cache_taskcacheforinstitute', (
+            ('institute', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['institutes.Institute'])),
+            ('machine_category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['machines.MachineCategory'])),
+            ('celery_task_id', self.gf('django.db.models.fields.CharField')(max_length=50, unique=True)),
+            ('start', self.gf('django.db.models.fields.DateField')()),
+            ('date', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
+            ('end', self.gf('django.db.models.fields.DateField')()),
+            ('ready', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        ))
+        db.send_create_signal(u'usage', ['TaskCacheForInstitute'])
+
+        # Adding unique constraint on 'TaskCacheForInstitute', fields ['date', 'start', 'end', 'institute', 'machine_category']
+        db.create_unique('cache_taskcacheforinstitute', ['date', 'start', 'end', 'institute_id', 'machine_category_id'])
+
+        # Adding model 'TaskCacheForMachineCategory'
+        db.create_table('cache_taskcacheformachinecategory', (
+            ('ready', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('machine_category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['machines.MachineCategory'])),
+            ('celery_task_id', self.gf('django.db.models.fields.CharField')(max_length=50, unique=True)),
+            ('start', self.gf('django.db.models.fields.DateField')()),
+            ('date', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
+            ('end', self.gf('django.db.models.fields.DateField')()),
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        ))
+        db.send_create_signal(u'usage', ['TaskCacheForMachineCategory'])
+
+        # Adding unique constraint on 'TaskCacheForMachineCategory', fields ['date', 'start', 'end', 'machine_category']
+        db.create_unique('cache_taskcacheformachinecategory', ['date', 'start', 'end', 'machine_category_id'])
+
 
     models = {
         u'institutes.institute': {
             'Meta': {'ordering': "['name']", 'object_name': 'Institute', 'db_table': "'institute'"},
-            'delegates': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'delegate'", 'to': u"orm['people.Person']", 'through': u"orm['institutes.InstituteDelegate']", 'blank': 'True', 'symmetrical': 'False', 'null': 'True'}),
+            'delegates': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'delegate_for'", 'to': u"orm['people.Person']", 'through': u"orm['institutes.InstituteDelegate']", 'blank': 'True', 'symmetrical': 'False', 'null': 'True'}),
             'group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Group']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
@@ -134,10 +211,10 @@ class Migration(SchemaMigration):
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_approved': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'last_usage': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'leaders': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'leaders'", 'symmetrical': 'False', 'to': u"orm['people.Person']"}),
+            'leaders': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'leads'", 'symmetrical': 'False', 'to': u"orm['people.Person']"}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'pid': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
-            'start_date': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2014, 2, 20, 0, 0)'})
+            'start_date': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2014, 3, 4, 0, 0)'})
         },
         u'software.software': {
             'Meta': {'ordering': "['name']", 'object_name': 'Software', 'db_table': "'software'"},
@@ -253,60 +330,12 @@ class Migration(SchemaMigration):
             'description': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'primary_key': 'True'})
         },
-        u'usage.taskcacheforinstitute': {
-            'Meta': {'unique_together': "(('date', 'start', 'end', 'institute', 'machine_category'),)", 'object_name': 'TaskCacheForInstitute', 'db_table': "'cache_taskcacheforinstitute'"},
-            'celery_task_id': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
-            'date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'end': ('django.db.models.fields.DateField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['institutes.Institute']"}),
-            'machine_category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['machines.MachineCategory']"}),
-            'ready': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'start': ('django.db.models.fields.DateField', [], {})
-        },
-        u'usage.taskcacheformachinecategory': {
-            'Meta': {'unique_together': "(('date', 'start', 'end', 'machine_category'),)", 'object_name': 'TaskCacheForMachineCategory', 'db_table': "'cache_taskmachinecategorycache'"},
-            'celery_task_id': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
-            'date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'end': ('django.db.models.fields.DateField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'machine_category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['machines.MachineCategory']"}),
-            'ready': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'start': ('django.db.models.fields.DateField', [], {})
-        },
-        u'usage.taskcacheforproject': {
-            'Meta': {'unique_together': "(('date', 'start', 'end', 'project', 'machine_category'),)", 'object_name': 'TaskCacheForProject', 'db_table': "'cache_taskcacheforproject'"},
-            'celery_task_id': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
-            'date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'end': ('django.db.models.fields.DateField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'machine_category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['machines.MachineCategory']"}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.Project']"}),
-            'ready': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'start': ('django.db.models.fields.DateField', [], {})
-        },
-        u'usage.taskmachinecategorycache': {
-            'Meta': {'unique_together': "(('date', 'start', 'end'),)", 'object_name': 'TaskMachineCategoryCache', 'db_table': "'cache_taskmachinecategorycache'"},
-            'celery_task_id': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
-            'date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'end': ('django.db.models.fields.DateField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'ready': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'start': ('django.db.models.fields.DateField', [], {})
-        },
         u'usage.usedmodules': {
             'Meta': {'object_name': 'UsedModules'},
             'date_added': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'jobid': ('django.db.models.fields.CharField', [], {'max_length': '100', 'primary_key': 'True'}),
             'modules': ('django.db.models.fields.TextField', [], {})
-        },
-        u'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
+        }
     }
 
     complete_apps = ['usage']

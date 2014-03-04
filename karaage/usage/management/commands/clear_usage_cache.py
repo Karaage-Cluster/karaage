@@ -29,19 +29,6 @@ class Command(BaseCommand):
         import karaage.usage.models as models
         import datetime
         if verbose > 1:
-            print "Clearing expired tasks"
-        today = datetime.date.today()
-        models.TaskMachineCategoryCache.objects.filter(date__lt=today).delete()
-        models.TaskCacheForMachineCategory.objects.filter(date__lt=today).delete()
-        models.TaskCacheForProject.objects.filter(date__lt=today).delete()
-        models.TaskCacheForInstitute.objects.filter(date__lt=today).delete()
-        if verbose > 1:
-            print "Clearing finished tasks"
-        models.TaskMachineCategoryCache.objects.filter(ready=True).delete()
-        models.TaskCacheForMachineCategory.objects.filter(ready=True).delete()
-        models.TaskCacheForProject.objects.filter(ready=True).delete()
-        models.TaskCacheForInstitute.objects.filter(ready=True).delete()
-        if verbose > 1:
             print "Clearing project cache"
         models.ProjectCache.objects.all().delete()
         if verbose > 1:
