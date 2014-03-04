@@ -88,14 +88,14 @@ INSTALLED_APPS = (
 # List of locations of the template source files searched by
 # django.template.loaders.filesystem.Loader, in search order.
 
-# Allow administrator to override templates. 
+# Allow administrator to override templates.
 TEMPLATE_DIRS = (
     "/etc/karaage/templates",
 )
 
 # A tuple of callables that are used to populate the context in
 # RequestContext. These callables take a request object as their argument and
-# return a dictionary of items to be merged into the context. 
+# return a dictionary of items to be merged into the context.
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.contrib.auth.context_processors.auth',
@@ -111,7 +111,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 # knows how to import templates from a particular source. Optionally, a tuple
 # can be used instead of a string. The first item in the tuple should be the
 # Loader’s module, subsequent items are passed to the Loader during
-# initialization. 
+# initialization.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
@@ -120,7 +120,7 @@ TEMPLATE_LOADERS = (
 # A boolean that specifies whether Django’s translation system should be
 # enabled. This provides an easy way to turn it off, for performance. If this is
 # set to False, Django will make some optimizations so as not to load the
-# translation machinery. 
+# translation machinery.
 USE_I18N = False
 
 # A tuple of middleware classes to use.
@@ -141,7 +141,7 @@ MIDDLEWARE_CLASSES = (
 # to authenticate a user.
 
 # The ``karaage.backends.LDAPBackend`` backend is legacy, to support upgrades
-# from Karaage versions before 3. 
+# from Karaage versions before 3.
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'karaage.backends.LDAPBackend',
@@ -149,12 +149,12 @@ AUTHENTICATION_BACKENDS = (
 
 # The default value for the X-Frame-Options header used by
 # XFrameOptionsMiddleware. See the `clickjacking protection
-# <https://docs.djangoproject.com/en/dev/ref/clickjacking/>`_ documentation. 
+# <https://docs.djangoproject.com/en/dev/ref/clickjacking/>`_ documentation.
 X_FRAME_OPTIONS = 'DENY'
 
 # Whether to use a secure cookie for the session cookie. If this is set to
 # True, the cookie will be marked as “secure,” which means browsers may ensure
-# that the cookie is only sent under an HTTPS connection. 
+# that the cookie is only sent under an HTTPS connection.
 SESSION_COOKIE_SECURE = True
 
 # Whether to expire the session when the user closes their browser. See
@@ -164,7 +164,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # A string representing the full Python import path to your root URLconf. For
 # example: "mydjangoapps.urls". Can be overridden on a per-request basis by
-# setting the attribute urlconf on the incoming HttpRequest object. 
+# setting the attribute urlconf on the incoming HttpRequest object.
 ROOT_URLCONF = 'karaage.conf.urls'
 
 
@@ -217,7 +217,7 @@ GRAPH_TMP = '/var/cache/karaage/matplotlib'
 GRAPH_URL = '/karaage_graphs/'
 
 # Default machine category, used by legacy XMLRPC when client doesn't specify
-# a machine name. 
+# a machine name.
 DEFAULT_MC = 1
 
 # List of shells that we support.
@@ -296,3 +296,6 @@ ADMIN_REQUIRED = False
 # If false, administrators can log in but don't get any special access. Used
 # for karaage-registration.
 ADMIN_IGNORED = False
+
+# Use cracklib to ensure that paswords are strong enough.
+ENABLE_CRACKLIB = True
