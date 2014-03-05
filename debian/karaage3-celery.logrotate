@@ -10,4 +10,5 @@
     postrotate
         service karaage3-celery restart > /dev/null
     endscript
+    su www-data www-data
 }
