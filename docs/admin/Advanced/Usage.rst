@@ -16,7 +16,7 @@ Install usage logger on cluster
 PBS/Torque
 ~~~~~~~~~~
 
-Install :doc:`karaage-pbs-logger`
+Install :doc:`/Installing/karaage-pbs-logger`
 
 Others
 ~~~~~~

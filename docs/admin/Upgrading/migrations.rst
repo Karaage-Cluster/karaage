@@ -25,7 +25,7 @@ If you need to apply a specific migration do
 
     kg-manage migrate <appname>
 
- will be the name of the karaage app eg. people
+will be the name of the karaage app eg. people
 
 You should always backup your database before upgrading karaage.
 

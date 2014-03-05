@@ -1,8 +1,9 @@
 Karaage
 =======
 
-This documentation is for Karaage 2.x. For the documentation on the
-latest Karaage 3.x and later, please see http://karaage.readthedocs.org/
+This is documentation for Karaage 2.7. For documentation for the latest version
+of Karaage, please see `the latest documentation
+<http://karaage.readthedocs.org/en/latest/>`_.
 
 What is Karaage?
 ----------------
@@ -16,10 +17,8 @@ Features
 
 -  Can store user information and/or posix account information in
    LDAP/Active Directory/passwd file
--  Admin portal for cluster administrators
-   (:doc:`karaage-admin <KaraageAdmin>`)
--  User portal for cluster account holders
-   (:doc:`karaage-registration <KaraageRegistration>`)
+-  Admin portal for cluster administrators karaage-admin
+-  User portal for cluster account holders karaage-registration
 -  Email notifications
 -  Auto account creation - Allow project leaders to manager their users
 -  Applications work flow - Users can apply for accounts and be approved

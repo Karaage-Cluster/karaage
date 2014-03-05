@@ -23,15 +23,12 @@ Which Karaage?
 
 Karaage as two web interfaces
 
--  :doc:`karaage-admin <KaraageAdmin>` - Designed for use by admins of the
-   system
--  :doc:`karaage-registration <KaraageRegistration>` - Designed for use by
-   users of the system
+-  KaraageAdmin - Designed for use by admins of the system
+-  karaage-registration - Designed for use by users of the system
 
 Each Install needs to have karaage-admin installed on one host. You can
 install karaage-registration on the same host or on a different host (or
 not at all)
-
 
 Installing
 ----------
@@ -124,4 +121,42 @@ Configuring
 
    You should set up apache to use SSL.
 
+Karaage Admin
+-------------
+
+The interface is intended to be used by site admins only
+
+Karaage Registration
+--------------------
+
+This site is intended to be used by end users of your systems.
+
+It allows logged in users to
+
+-  Edit their profile
+-  Change their password
+-  Accept software licenses for restricted software
+-  Change their default project
+-  Apply to join existing projects
+-  Apply to start a new project
+
+Unauthenticated users can apply for accounts and projects if this
+feature is enabled
+
+To enable registrations add the following to
+/etc/karaage/registration\_settings.py
+
+::
+
+    ALLOW_REGISTRATIONS = True
+
+By default usage information is private and only available to people who
+are in the project
+
+To allow anyone to view usage information add the following to
+/etc/karaage/registration\_settings.py
+
+::
+
+    USAGE_IS_PUBLIC = True
 

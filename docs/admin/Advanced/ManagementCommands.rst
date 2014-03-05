@@ -33,7 +33,7 @@ Generates usage cache values for last 7, 90 and 365 days
 import\_csv\_users
 ~~~~~~~~~~~~~~~~~~
 
-See :doc:`Guides on migrating to Karaage <Advanced/Migration>`
+See :doc:`Guides on migrating to Karaage <Migration>`
 
 kgcreatesuperuser
 ~~~~~~~~~~~~~~~~~

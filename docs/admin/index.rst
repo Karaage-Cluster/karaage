@@ -7,7 +7,8 @@ Karaage admin documentation
 ===========================
 
 This is documentation for Karaage 2.7. For documentation for the latest version
-of Karaage, please see http://karaage.readthedocs.org/
+of Karaage, please see `the latest documentation
+<http://karaage.readthedocs.org/en/latest/>`_.
 
 Contents:
 
