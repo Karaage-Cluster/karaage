@@ -165,7 +165,7 @@ def is_password_strong(password, old_password=None):
             return True
     try:
         VeryFascistCheck(password, old=old_password)
-    except:
+    except ValueError:
         return False
 
     return True
