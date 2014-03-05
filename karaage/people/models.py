@@ -372,11 +372,6 @@ class Person(AbstractBaseUser):
         from karaage.institutes.models import Institute
         return Institute.objects.filter(group__members=self)
 
-    @property
-    def software(self):
-        from karaage.software.models import Software
-        return Software.objects.filter(group__members=self)
-
 
 class Group(models.Model):
     """Groups represent collections of people, these objects can be
