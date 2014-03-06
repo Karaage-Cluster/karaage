@@ -59,12 +59,6 @@ for dirpath, dirnames, filenames in os.walk(code_dir):
     elif filenames:
         data_files.append([dirpath, [os.path.join(dirpath, f) for f in filenames]])
 
-# Small hack for working with bdist_wininst.
-# See http://mail.python.org/pipermail/distutils-sig/2004-August/004134.html
-if len(sys.argv) > 1 and sys.argv[1] == 'bdist_wininst':
-    for file_info in data_files:
-        file_info[0] = '\\PURELIB\\%s' % file_info[0]
-
 # Dynamically calculate the version based on vomit.VERSION.
 version = __import__(code_dir).get_version()
 
