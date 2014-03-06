@@ -59,8 +59,8 @@ for dirpath, dirnames, filenames in os.walk(code_dir):
     elif filenames:
         data_files.append([dirpath, [os.path.join(dirpath, f) for f in filenames]])
 
-# Dynamically calculate the version based on vomit.VERSION.
-version = __import__(code_dir).get_version()
+with open('VERSION.txt', 'r') as f:
+    version = f.readline().strip()
 
 for dirpath, dirnames, filenames in os.walk('conf'):
     for i, dirname in enumerate(dirnames):
