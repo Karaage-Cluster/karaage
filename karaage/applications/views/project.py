@@ -526,7 +526,7 @@ class StateApplicantEnteringDetails(StateWithSteps):
             saml_id = attrs['persistent_id']
             if saml_id is not None:
                 query = Person.objects.filter(saml_id=saml_id)
-                if query.content_type.model == "person":
+                if application.content_type.model == "person":
                     query = query.exclude(pk=application.applicant.pk)
                 if query.count() > 0:
                     new_person = Person.objects.get(saml_id=saml_id)
