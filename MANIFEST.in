@@ -1,11 +1,9 @@
-include README
-include AUTHORS
-include COPYING
+include *.txt
+include *.py
 include MANIFEST.in
 include pylint.conf
 recursive-include docs *
 recursive-include scripts *
 recursive-include karaage *
-recursive-include testproject *
 recursive-include sbin *
 recursive-include conf *
