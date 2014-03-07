@@ -75,5 +75,6 @@ setup(
         "django-xmlrpc >= 0.1",
         "django_celery",
         "django_model_utils >= 2.0.0",
+        "matplotlib",
     ],
 )
