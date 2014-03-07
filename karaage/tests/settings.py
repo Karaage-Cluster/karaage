@@ -116,8 +116,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 TIME_ZONE = 'Australia/Melbourne'
 LANGUAGE_CODE = 'en-au'
 
-GRAPH_ROOT = '/tmp/graphs/'
-GRAPH_TMP = '/tmp/matplotlib/'
+GRAPH_ROOT = 'tmp/graphs'
+GRAPH_TMP = 'tmp/matplotlib'
 GRAPH_URL = '/media/graphs/'
 
 INTERNAL_IPS = (
