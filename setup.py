@@ -52,7 +52,7 @@ setup(
     author = 'Brian May',
     author_email = 'brian@vpac.org',
     description = 'Collection of Django apps to manage a clusters',
-    licence = "GPL3+",
+    license = "GPL3+",
     packages = packages,
     package_data = {
         '': [ '*.css', '*.html', '*.js', '*.png', '*.gif', '*.map', '*.txt' ],
