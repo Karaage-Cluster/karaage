@@ -5,5 +5,5 @@ Abstract: This documents karaage functions for Administrators.
 Section: Programming/Python
 
 Format: HTML
-Index: /usr/share/doc/karaage3-doc/programmer/index.html
-Files: /usr/share/doc/karaage3-doc/programmer/*.html
+Index: /usr/share/doc/python-karaage-doc/programmer/index.html
+Files: /usr/share/doc/python-karaage-doc/programmer/*.html

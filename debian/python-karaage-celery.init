@@ -1,16 +1,16 @@
 #!/bin/sh -e
 # ============================================
-#  karaage3-celery - Starts the Celery worker daemon.
+#  python-karaage-celery - Starts the Celery worker daemon.
 # ============================================
 #
-# :Usage: /etc/init.d/karaage3-celery {start|stop|force-reload|restart|try-restart|status}
-# :Configuration file: /etc/default/karaage3-celery
+# :Usage: /etc/init.d/python-karaage-celery {start|stop|force-reload|restart|try-restart|status}
+# :Configuration file: /etc/default/python-karaage-celery
 #
 # See http://docs.celeryq.org/en/latest/cookbook/daemonizing.html#init-script-celeryd
 
 
 ### BEGIN INIT INFO
-# Provides:          karaage3-celery
+# Provides:          python-karaage-celery
 # Required-Start:    $network $local_fs $remote_fs
 # Required-Stop:     $network $local_fs $remote_fs
 # Default-Start:     2 3 4 5
@@ -23,8 +23,8 @@ set -e
 
 . /lib/lsb/init-functions
 
-DEFAULT_PID_FILE="/var/run/karaage3-celery@%n.pid"
-DEFAULT_LOG_FILE="/var/log/karaage3-celery@%n.log"
+DEFAULT_PID_FILE="/var/run/python-karaage-celery@%n.pid"
+DEFAULT_LOG_FILE="/var/log/python-karaage-celery@%n.log"
 DEFAULT_LOG_LEVEL="INFO"
 DEFAULT_NODES="celery"
 DEFAULT_CELERYD="-m celery.bin.celeryd_detach"
@@ -32,10 +32,10 @@ ENABLED="false"
 
 [ -r "$CELERY_DEFAULTS" ] && . "$CELERY_DEFAULTS"
 
-[ -r /etc/default/karaage3-celery ] && . /etc/default/karaage3-celery
+[ -r /etc/default/python-karaage-celery ] && . /etc/default/python-karaage-celery
 
 if [ "$ENABLED" != "true" ]; then
-    echo "celery daemon disabled - see /etc/default/karaage3-celery."
+    echo "celery daemon disabled - see /etc/default/python-karaage-celery."
     exit 0
 fi
 
@@ -145,7 +145,7 @@ case "$1" in
     ;;
 
     *)
-        echo "Usage: /etc/init.d/karaage3-celery {start|stop|restart|try-restart|kill}"
+        echo "Usage: /etc/init.d/python-karaage-celery {start|stop|restart|try-restart|kill}"
         exit 1
     ;;
 esac
