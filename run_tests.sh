@@ -19,7 +19,7 @@ fi
 # fi
 
 
-./manage.py test --settings=karaage.tests.settings $TESTS
+./manage.py test --settings=karaage.tests.settings -v 2 $TESTS
 if [ ! $? -eq 0 ]
 then
     RETURN=1
