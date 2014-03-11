@@ -22,14 +22,12 @@
         <thead>
         <tr>
             <th>Machine Category</th>
-            <th>Actual</th>
             <th>Quota</th>
         </tr>
         </thead>
         <tbody>
         <tr>
             <td>{{ project_chunk.machine_category }}</td>
-            <td>{{ project_chunk.get_mpots|floatformat:"2" }}</td>
             <td>{{ project_chunk.get_cap }}</td>
         </tr>
         </tbody>

@@ -209,7 +209,7 @@ class ProjectQuota(models.Model):
     def delete(self, *args, **kwargs):
         log(None, self.project, 2, 'Quota %s: Deleted' %
                 (self.machine_category))
-        super(InstituteQuota, self).delete(*args, **kwargs)
+        super(ProjectQuota, self).delete(*args, **kwargs)
         from karaage.datastores import machine_category_delete_project
         machine_category_delete_project(self.project, self.machine_category)
 
