@@ -266,7 +266,7 @@ Configuring Karaage to use LDAP
     .. code-block:: bash
 
         service apache2 reload
-        service karaage3-celery restart
+        service python-karaage-celery restart
 
 #.  Log into web interface and add a machine category that references the ldap
     datastore. This should automatically populate LDAP with any entries you have
