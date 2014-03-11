@@ -39,38 +39,30 @@ class InstituteTestCase(TestCase):
     def tearDown(self):
         self.server.stop()
 
-
     def test_add(self):
         institute = Institute.objects.create(name='TestInstitute54')
         self.assertEqual(
-                institute.group.name,
-                'testinstitute54',
-        )
+            institute.group.name,
+            'testinstitute54')
         self.assertEqual(
-                institute.group.name,
-                institute.name.lower().replace(' ' , '')
-        )
-
+            institute.group.name,
+            institute.name.lower().replace(' ', ''))
 
     def test_add_spaces(self):
         institute = Institute.objects.create(name='Test Institute 60')
         self.assertEqual(
-                institute.group.name,
-                'testinstitute60',
-        )
+            institute.group.name,
+            'testinstitute60')
         self.assertEqual(
-                institute.group.name,
-                institute.name.lower().replace(' ' , '')
-        )
+            institute.group.name,
+            institute.name.lower().replace(' ', ''))
 
     def test_add_existing_name(self):
         Group.objects.get_or_create(name='testinstitute27')
         institute = Institute.objects.create(name='Test Institute 27')
         self.assertEqual(
-                institute.group.name,
-                'testinstitute27',
-        )
+            institute.group.name,
+            'testinstitute27')
         self.assertEqual(
-                institute.group.name,
-                institute.name.lower().replace(' ' , '')
-        )
+            institute.group.name,
+            institute.name.lower().replace(' ', ''))
