@@ -61,16 +61,6 @@ LOGGING = {
 
 MACHINE_CATEGORY_DATASTORES = {
     'ldap' : [
-        {
-            'DESCRIPTION': 'Default LDAP datastore',
-            'ENGINE': 'karaage.datastores.ldap.MachineCategoryDataStore',
-            'LDAP': 'default',
-            'ACCOUNT': 'karaage.datastores.ldap_schemas.openldap_account',
-            'GROUP': 'karaage.datastores.ldap_schemas.openldap_account_group',
-            'PRIMARY_GROUP': "institute",
-            'HOME_DIRECTORY': "/vpac/%(default_project)s/%(uid)s",
-            'LOCKED_SHELL': '/usr/local/sbin/insecure',
-        },
     ],
     'dummy' : [
     ],

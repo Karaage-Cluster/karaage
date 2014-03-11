@@ -15,34 +15,22 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.test import TestCase
+import datetime
+
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
 
-from tldap.test import slapd
-import datetime
-
 from karaage.people.models import Person
-from initial_ldap_data import test_ldif
 from karaage.projects.models import Project
 from karaage.machines.models import Account
-from karaage.datastores import get_machine_category_test_datastore
+from karaage.tests.integration import IntegrationTestCase
 
-
-class ProjectTestCase(TestCase):
+class ProjectTestCase(IntegrationTestCase):
 
     def setUp(self):
-        self._datastore = get_machine_category_test_datastore()
-
-        server = slapd.Slapd()
-        server.set_port(38911)
-        server.start()
-        server.ldapadd("\n".join(test_ldif)+"\n")
+        super(ProjectTestCase, self).setUp()
         call_command('loaddata', 'karaage_data', **{'verbosity': 0})
-        self.server = server
-
-    def tearDown(self):
-        self.server.stop()
+        self._datastore = self.mc_ldap_datastore
 
     def test_admin_add_project(self):
 
