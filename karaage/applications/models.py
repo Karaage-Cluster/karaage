@@ -101,10 +101,10 @@ class Application(models.Model):
                     self._class = klass.get_accessor_name()
                     break
 
+        super(Application, self).save(*args, **kwargs)
+
         for field in self._tracker.changed():
             log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
-
-        return super(Application, self).save(*args, **kwargs)
     save.alters_data = True
 
     def get_object(self):
