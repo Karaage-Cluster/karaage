@@ -21,11 +21,11 @@ from django.conf import settings
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.utils import timezone
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.utils.encoding import smart_text
 from django.utils.encoding import python_2_unicode_compatible
 
+from karaage.middleware.threadlocals import get_current_user
 
 ADDITION = 1
 CHANGE = 2
@@ -34,9 +34,30 @@ COMMENT = 4
 
 
 class LogEntryManager(models.Manager):
-    def log_action(self, user_id, content_type_id, object_id, object_repr, action_flag, change_message=''):
-        e = self.model(None, None, user_id, content_type_id, object_id, object_repr[:200], action_flag, change_message)
-        e.save()
+
+    def log_action(self, user_id, content_type_id, object_id,
+                   object_repr, action_flag, change_message=''):
+        msg = self.model(None, None, user_id, content_type_id, object_id,
+                         object_repr[:200], action_flag, change_message)
+        msg.save()
+        return msg
+
+    def log_object(self, obj, flag, message, user=None):
+        assert obj is not None
+        assert obj.pk is not None
+        if user is None:
+            user = get_current_user()
+        if user is None:
+            user_id = None
+        else:
+            user_id = user.pk
+        return self.log_action(
+            user_id=user_id,
+            content_type_id=ContentType.objects.get_for_model(obj).pk,
+            object_id=obj.pk,
+            object_repr=unicode(obj),
+            action_flag=flag,
+            change_message=message)
 
 
 @python_2_unicode_compatible
@@ -45,7 +66,8 @@ class LogEntry(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
     object_id = models.TextField(_('object id'), blank=True, null=True)
-    content_object = generic.GenericForeignKey(ct_field="content_type", fk_field="object_id")
+    content_object = generic.GenericForeignKey(ct_field="content_type",
+                                               fk_field="object_id")
     object_repr = models.CharField(_('object repr'), max_length=200)
     action_flag = models.PositiveSmallIntegerField(_('action flag'))
     change_message = models.TextField(_('change message'), blank=True)
@@ -56,21 +78,23 @@ class LogEntry(models.Model):
         verbose_name = _('log entry')
         verbose_name_plural = _('log entries')
         db_table = 'admin_log'
-        ordering = ('-action_time','-pk')
+        ordering = ('-action_time', '-pk')
 
     def __repr__(self):
         return smart_text(self.action_time)
 
     def __str__(self):
         if self.action_flag == ADDITION:
-            return ugettext('Added "%(object)s".') % {'object': self.object_repr}
+            return ugettext('Added "%(object)s".') % \
+                {'object': self.object_repr}
         elif self.action_flag == CHANGE:
             return ugettext('Changed "%(object)s" - %(changes)s') % {
                 'object': self.object_repr,
                 'changes': self.change_message,
             }
         elif self.action_flag == DELETION:
-            return ugettext('Deleted "%(object)s."') % {'object': self.object_repr}
+            return ugettext('Deleted "%(object)s."') % \
+                {'object': self.object_repr}
         elif self.action_flag == COMMENT:
             return ugettext('Comment "%(object)s" - %(changes)s') % {
                 'object': self.object_repr,
