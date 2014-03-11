@@ -26,7 +26,8 @@ from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
 from karaage.common.constants import COUNTRIES
-from karaage.common import get_current_person, is_password_strong
+from karaage.common import get_current_person
+from karaage.common.forms import validate_password
 
 import ajax_select.fields
 
@@ -86,23 +87,10 @@ class AddPersonForm(AdminPersonForm):
             raise forms.ValidationError(e.args[0])
         return username
 
-    def clean_password1(self):
-        data = self.cleaned_data
-
-        if data.get('password1'):
-            if not is_password_strong(data['password1']):
-                raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (uppercase, lowercase), numbers and is at least 8 characters long.')
-
-        return data['password1']
-
     def clean_password2(self):
-        data = self.cleaned_data
-
-        if data.get('password1') and data.get('password2'):
-            if data['password1'] != data['password2']:
-                raise forms.ValidationError(u'You must type the same password each time')
-
-        return data['password2']
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        return validate_password(password1, password2)
 
     def save(self):
         data = self.cleaned_data
@@ -126,15 +114,10 @@ class AdminPasswordChangeForm(forms.Form):
     new2 = forms.CharField(widget=forms.PasswordInput(), label=u'New Password (again)')
 
     def clean(self):
-        data = self.cleaned_data
-
-        if data.get('new1') and data.get('new2'):
-
-            if data['new1'] != data['new2']:
-                raise forms.ValidationError(u'You must type the same password each time')
-            if not is_password_strong(data['new1'], data.get('old', None)):
-                raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (uppercase, lowercase), numbers and is at least 8 characters long.')
-            return data
+        password1 = self.cleaned_data.get('new1')
+        password2 = self.cleaned_data.get('new2')
+        old_password = self.cleaned_data.get('old', None)
+        return validate_password(password1, password2, old_password)
 
     def save(self, person):
         data = self.cleaned_data
@@ -159,11 +142,7 @@ class SetPasswordForm(BaseSetPasswordForm):
 
     def clean_new_password1(self):
         password1 = self.cleaned_data.get('new_password1')
-
-        if not is_password_strong(password1):
-            raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (uppercase, lowercase), numbers and is at least 8 characters long.')
-
-        return password1
+        return validate_password(password1)
 
 
 class AdminGroupForm(forms.Form):
