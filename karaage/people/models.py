@@ -311,7 +311,7 @@ class Person(AbstractBaseUser):
             self.is_active = True
             self.save()
 
-            log(None, self, 2, 'Activated by %s'%approved_by)
+            log.change(self, 'Activated by %s' % approved_by)
     activate.alters_data = True
 
     def deactivate(self, deleted_by):
@@ -327,7 +327,7 @@ class Person(AbstractBaseUser):
         for ua in self.account_set.filter(date_deleted__isnull=True):
             ua.deactivate()
 
-        log(None, self, 2, 'Deactivated by %s'%deleted_by)
+        log.change(self, 'Deactivated by %s' % deleted_by)
     deactivate.alters_data = True
 
     def set_password(self, password):
@@ -400,7 +400,7 @@ class Group(models.Model):
         super(Group, self).save(*args, **kwargs)
 
         for field in self._tracker.changed():
-            log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
+            log.field_change(self, field=field, new_value=getattr(self, field))
 
         old_name = self._tracker.previous("name")
         new_name = self.name

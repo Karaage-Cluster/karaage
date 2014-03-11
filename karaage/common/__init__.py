@@ -17,6 +17,7 @@
 
 import datetime
 import importlib
+import warnings
 
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.template import RequestContext
@@ -28,7 +29,9 @@ from django.db.models import Q
 
 from karaage.middleware.threadlocals import get_current_user
 from karaage.common.forms import CommentForm
-from karaage.common.models import LogEntry
+from karaage.common.models import (LogEntry, ADDITION, CHANGE,
+                                   DELETION, COMMENT)
+
 
 from django.template import add_to_builtins
 add_to_builtins('karaage.common.templatetags.karaage_tags')
@@ -70,20 +73,47 @@ def get_current_person():
     return user
 
 
-def log(user, object, flag, message):
-    if user is None:
-        user = get_current_user()
-    if user is None:
-        user_id = None
-    else:
-        user_id = user.pk
-    LogEntry.objects.log_action(
-        user_id         = user_id,
-        content_type_id = ContentType.objects.get_for_model(object).pk,
-        object_id       = object.pk,
-        object_repr     = unicode(object),
-        action_flag=flag,
-        change_message=message)
+class log():
+    def __init__(self, user, object, flag, message):
+        warnings.warn("Calling karaage.common.log directly has been deprecated.",
+                      DeprecationWarning)
+        return self._log(object, flag, message, user)
+
+    @staticmethod
+    def _log(object, flag, message, user=None):
+        if user is None:
+            user = get_current_user()
+        if user is None:
+            user_id = None
+        else:
+            user_id = user.pk
+        return LogEntry.objects.log_action(
+            user_id=user_id,
+            content_type_id=ContentType.objects.get_for_model(object).pk,
+            object_id=object.pk,
+            object_repr=unicode(object),
+            action_flag=flag,
+            change_message=message)
+
+    @classmethod
+    def add(cls, object, message, user=None):
+        return cls._log(object, ADDITION, message, user)
+
+    @classmethod
+    def change(cls, object, message, user=None):
+        return cls._log(object, CHANGE, message, user)
+
+    @classmethod
+    def field_change(cls, object, user=None, field=None, new_value=None):
+        return cls._log(object, CHANGE, 'Changed %s to %s' % (field, new_value), user)
+
+    @classmethod
+    def delete(cls, object, message, user=None):
+        return cls._log(object, DELETION, message, user)
+
+    @classmethod
+    def comment(cls, object, message, user=None):
+        return cls._log(object, COMMENT, message, user)
 
 
 def new_random_token():
