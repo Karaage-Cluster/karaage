@@ -71,6 +71,8 @@ def get_current_person():
 
 
 def log(user, object, flag, message):
+    assert object is not None
+    assert object.pk is not None
     if user is None:
         user = get_current_user()
     if user is None:
@@ -139,6 +141,8 @@ def log_list(request, breadcrumbs, obj):
 
 
 def add_comment(request, breadcrumbs, obj):
+    assert obj is not None
+    assert obj.pk is not None
     form = CommentForm(data=request.POST or None, obj=obj, instance=None)
     if request.method == 'POST':
         form.save(request=request)
