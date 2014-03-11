@@ -79,4 +79,7 @@ class SamlUserMiddleware(object):
         # User is valid.  Set request.user and persist user in the session
         # by logging the user in.
         request.user = person
+        # We must set the model backend here manually as we skip
+        # the call to auth.authenticate().
+        request.user.backend = 'django.contrib.auth.backends.ModelBackend'
         auth.login(request, person)
