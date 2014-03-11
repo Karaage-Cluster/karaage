@@ -19,7 +19,6 @@ from django.core import exceptions as django_exceptions
 from django.test import TestCase
 
 from karaage.machines.models import MachineCategory
-from karaage.tests.fixtures import MachineCategoryFactory
 
 
 class MachineCategoryTestCase(TestCase):
