@@ -65,7 +65,7 @@ class MachineCategory(models.Model):
         if self._tracker.has_changed("datastore"):
             old_datastore = self._tracker.previous("datastore")
             from karaage.datastores import set_mc_datastore
-            set_mc_datastore(self, old_datastore, self.datastore)
+            set_mc_datastore(self, old_datastore, self)
     save.alters_data = True
 
     def delete(self):
