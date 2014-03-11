@@ -118,7 +118,7 @@ Initial setup
     .. code-block:: bash
 
         apt-get install rabbitmq-server
-        apt-get install karaage3-celery
+        apt-get install python-karaage-celery
 
 #.  Karaage, by default, requires a https connection. While this default can be
     changed, this is not advisable on a production system.
@@ -182,7 +182,7 @@ Initial setup
 
         kg-manage syncdb --noinput
         kg-manage migrate --all
-        service karaage3-celery restart
+        service python-karaage-celery restart
 
 #.  Create a karaage superuser:
 

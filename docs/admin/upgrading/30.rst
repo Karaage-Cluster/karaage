@@ -124,7 +124,7 @@ Install on test server
     .. code-block:: bash
 
         service apache2 stop
-        service karaage3-celery stop
+        service python-karaage-celery stop
 
 #.  Check the following settings are in /etc/karaage/global_settings.py. The
     mysql server should refer to the *new* database you created above, the LDAP
@@ -247,7 +247,7 @@ Install on test server
     .. code-block:: bash
 
         service apache2 start
-        service karaage3-celery start
+        service python-karaage-celery start
 
 #.  You can run the following command to check what LDAP changes are required:
 
@@ -300,7 +300,7 @@ Install on production server
     .. code-block:: bash
 
         apt-get install rabbitmq-server
-        apt-get install karaage3-celery
+        apt-get install python-karaage-celery
 
 #.  Test production box and make sure everything is working.
 

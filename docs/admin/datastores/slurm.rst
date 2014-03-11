@@ -33,4 +33,4 @@ Reload apache.
 .. code-block:: bash
 
    service apache2 reload
-   service karaage3-celery restart
+   service python-karaage-celery restart
