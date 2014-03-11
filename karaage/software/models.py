@@ -56,6 +56,8 @@ class Software(models.Model):
         db_table = 'software'
 
     def save(self, *args, **kwargs):
+        created = self.pk is None
+
         # set group if not already set
         if self.group_id is None:
             name = str(self.name.lower().replace(' ', ''))
@@ -64,6 +66,8 @@ class Software(models.Model):
         # save the object
         super(Software, self).save(*args, **kwargs)
 
+        if created:
+            log(None, self, 2, 'Created')
         for field in self._tracker.changed():
             log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
 
@@ -89,6 +93,7 @@ class Software(models.Model):
 
     def delete(self, *args, **kwargs):
         # delete the object
+        log(None, self, 3, 'Deleted')
         super(Software, self).delete(*args, **kwargs)
 
         # update datastore associations

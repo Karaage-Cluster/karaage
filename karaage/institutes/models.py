@@ -41,6 +41,8 @@ class Institute(models.Model):
         db_table = 'institute'
 
     def save(self, *args, **kwargs):
+        created = self.pk is None
+
         # set group if not already set
         if self.group_id is None:
             name = str(self.name.lower().replace(' ', ''))
@@ -49,6 +51,8 @@ class Institute(models.Model):
         # save the object
         super(Institute, self).save(*args, **kwargs)
 
+        if created:
+            log(None, self, 2, 'Created')
         for field in self._tracker.changed():
             log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
 
@@ -73,6 +77,7 @@ class Institute(models.Model):
 
     def delete(self, *args, **kwargs):
         # delete the object
+        log(None, self, 3, 'Deleted')
         super(Institute, self).delete(*args, **kwargs)
 
         # update datastore associations
@@ -140,8 +145,13 @@ class InstituteQuota(models.Model):
         unique_together = ('institute', 'machine_category')
 
     def save(self, *args, **kwargs):
+        created = self.pk is None
+
         super(InstituteQuota, self).save(*args, **kwargs)
 
+        if created:
+            log(None, self.institute, 2, 'Quota %s: Created' %
+                    (self.machine_category))
         for field in self._tracker.changed():
             log(None, self.institute, 2, 'Quota %s: Changed %s to %s' %
                     (self.machine_category, field,  getattr(self, field)))
@@ -150,6 +160,8 @@ class InstituteQuota(models.Model):
         machine_category_save_institute(self.institute)
 
     def delete(self, *args, **kwargs):
+        log(None, self.institute, 2, 'Quota %s: Deleted' %
+                (self.machine_category))
         super(InstituteQuota, self).delete(*args, **kwargs)
         from karaage.datastores import machine_category_delete_institute
         machine_category_delete_institute(self.institute, self.machine_category)

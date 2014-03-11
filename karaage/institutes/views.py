@@ -160,7 +160,6 @@ def institutequota_add(request, institute_id):
             else:
                 institute_chunk = form.save()
                 new_cap = institute_chunk.cap
-                log(request.user, institute, 2, 'Added cap of %s' % (new_cap))
                 return HttpResponseRedirect(institute.get_absolute_url())
 
     return render_to_response(
@@ -173,7 +172,6 @@ def institutequota_add(request, institute_id):
 def institutequota_edit(request, institutequota_id):
 
     institute_chunk = get_object_or_404(InstituteQuota, pk=institutequota_id)
-    old_cap = institute_chunk.cap
     old_mc = institute_chunk.machine_category
 
     form = InstituteQuotaForm(request.POST or None, instance=institute_chunk)
@@ -184,9 +182,6 @@ def institutequota_edit(request, institutequota_id):
                 form._errors["machine_category"] = ErrorList(["Please don't change the machine category; it confuses me"])
             else:
                 institute_chunk = form.save()
-                new_cap = institute_chunk.cap
-                if old_cap != new_cap:
-                    log(request.user, institute_chunk.institute, 2, 'Changed cap from %s to %s' % (old_cap, new_cap))
                 return HttpResponseRedirect(institute_chunk.institute.get_absolute_url())
 
     return render_to_response(

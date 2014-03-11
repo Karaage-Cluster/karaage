@@ -34,7 +34,6 @@ from karaage.machines.models import MachineCategory, Account
 from karaage.projects.models import Project, ProjectQuota
 from karaage.projects.forms import ProjectForm, UserProjectForm, ProjectQuotaForm, AddPersonForm
 from karaage.projects.utils import get_new_pid, add_user_to_project, remove_user_from_project
-from karaage.common import log
 import karaage.common as util
 
 
@@ -113,7 +112,6 @@ def delete_project(request, project_id):
     elif request.method == 'POST':
         deleted_by = request.user
         project.deactivate(deleted_by)
-        log(request.user, project, 3, 'Deleted')
         messages.success(request, "Project '%s' deleted succesfully" % project)
         return HttpResponseRedirect(project.get_absolute_url())
 
@@ -233,10 +231,6 @@ def remove_user(request, project_id, username):
     elif request.method == 'POST':
         remove_user_from_project(person, project)
         messages.success(request, "User '%s' removed succesfully from project %s" % (person, project.pid))
-
-        log(request.user, project, 3, 'Removed %s from project' % person)
-        log(request.user, person, 3, 'Removed from project %s' % project)
-
         return HttpResponseRedirect(project.get_absolute_url())
 
     del query
@@ -295,7 +289,6 @@ def projectquota_add(request, project_id):
             else:
                 project_chunk = form.save()
                 new_cap = project_chunk.cap
-                log(request.user, project, 2, 'Added cap of %s' % (new_cap))
                 return HttpResponseRedirect(project.get_absolute_url())
 
     return render_to_response('projects/projectquota_form.html', locals(), context_instance=RequestContext(request))
@@ -305,7 +298,6 @@ def projectquota_add(request, project_id):
 def projectquota_edit(request, projectquota_id):
 
     project_chunk = get_object_or_404(ProjectQuota, pk=projectquota_id)
-    old_cap = project_chunk.cap
     old_mc = project_chunk.machine_category
 
     form = ProjectQuotaForm(request.POST or None, instance=project_chunk)
@@ -316,9 +308,6 @@ def projectquota_edit(request, projectquota_id):
                 form._errors["machine_category"] = ErrorList(["Please don't change the machine category; it confuses me"])
             else:
                 project_chunk = form.save()
-                new_cap = project_chunk.cap
-                if old_cap != new_cap:
-                    log(request.user, project_chunk.project, 2, 'Changed cap from %s to %s' % (old_cap, new_cap))
                 return HttpResponseRedirect(project_chunk.project.get_absolute_url())
 
     return render_to_response('projects/projectquota_form.html', locals(), context_instance=RequestContext(request))

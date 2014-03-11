@@ -91,6 +91,7 @@ class Application(models.Model):
         return ('kg_application_detail', [self.id])
 
     def save(self, *args, **kwargs):
+        created = self.pk is None
         if not self.pk:
             self.created_by = get_current_person()
             self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
@@ -103,9 +104,15 @@ class Application(models.Model):
 
         super(Application, self).save(*args, **kwargs)
 
+        if created:
+            log(None, self, 2, 'Created')
         for field in self._tracker.changed():
             log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
     save.alters_data = True
+
+    def delete(self, *args, **kwargs):
+        log(None, self, 3, 'Deleted')
+        super(Application, self).delete(*args, **kwargs)
 
     def get_object(self):
         try:

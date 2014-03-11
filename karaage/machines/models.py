@@ -55,9 +55,13 @@ class MachineCategory(models.Model):
         return ('kg_machine_category_detail', [self.pk])
 
     def save(self, *args, **kwargs):
+        created = self.pk is None
+
         # save the object
         super(MachineCategory, self).save(*args, **kwargs)
 
+        if created:
+            log(None, self, 2, 'Created')
         for field in self._tracker.changed():
             log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
 
@@ -70,6 +74,7 @@ class MachineCategory(models.Model):
 
     def delete(self):
         # delete the object
+        log(None, self, 3, 'Deleted')
         super(MachineCategory, self).delete()
         from karaage.datastores import set_mc_datastore
         old_datastore = self._datastore
@@ -94,9 +99,13 @@ class Machine(AbstractBaseUser):
     _tracker = FieldTracker()
 
     def save(self, *args, **kwargs):
+        created = self.pk is None
+
         # save the object
         super(Machine, self).save(*args, **kwargs)
 
+        if created:
+            log(None, self, 2, 'Created')
         for field in self._tracker.changed():
             if field == "password":
                 log(None, self, 2, 'Changed %s' % (field))
@@ -106,11 +115,10 @@ class Machine(AbstractBaseUser):
                 log(None, self.category, 2, 'Machine %s: Changed %s to %s' % (self, field,  getattr(self, field)))
 
     def delete(self, *args, **kwargs):
-        # save the object
+        # delete the object
+        log(None, self, 3, 'Deleted')
+        log(None, self.category, 3, 'Deleted machine %s' % self)
         super(Machine, self).delete(*args, **kwargs)
-
-        # log message
-        log(None, self.category, 2, 'Deleted machine %s' % self)
 
     class Meta:
         db_table = 'machine'
@@ -178,9 +186,13 @@ class Account(models.Model):
         return self.person.projects.filter(projectquota__machine_category=self.machine_category)
 
     def save(self, *args, **kwargs):
+        created = self.pk is None
+
         # save the object
         super(Account, self).save(*args, **kwargs)
 
+        if created:
+            log(None, self, 2, 'Created')
         for field in self._tracker.changed():
             if field != "password":
                 log(None, self.person, 2, 'Account %s: Changed %s to %s' % (self, field,  getattr(self, field)))
@@ -270,6 +282,10 @@ class Account(models.Model):
 
     def delete(self):
         # delete the object
+        log(None, self.person, 2,
+                'Account %s: Deleted' % self)
+        log(None, self.machine_category, 2,
+                'Account %s: Deleted' % self)
         super(Account, self).delete()
         if self.date_deleted is None:
             # delete the datastore

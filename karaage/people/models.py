@@ -108,9 +108,13 @@ class Person(AbstractBaseUser):
         return True
 
     def save(self, *args, **kwargs):
+        created = self.pk is None
+
         # save the object
         super(Person, self).save(*args, **kwargs)
 
+        if created:
+            log(None, self, 2, 'Created')
         for field in self._tracker.changed():
             if field != "password":
                 log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
@@ -169,6 +173,7 @@ class Person(AbstractBaseUser):
 
     def delete(self, *args, **kwargs):
         # delete the object
+        log(None, self, 3, 'Deleted')
         super(Person, self).delete(*args, **kwargs)
 
         # update the datastore
@@ -396,9 +401,13 @@ class Group(models.Model):
         return reverse('kg_group_detail', kwargs={'group_name': self.name})
 
     def save(self, *args, **kwargs):
+        created = self.pk is None
+
         # save the object
         super(Group, self).save(*args, **kwargs)
 
+        if created:
+            log(None, self, 2, 'Created')
         for field in self._tracker.changed():
             log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
 
@@ -424,6 +433,7 @@ class Group(models.Model):
             _remove_person_from_group(person, self)
 
         # delete the object
+        log(None, self, 3, 'Deleted')
         super(Group, self).delete(*args, **kwargs)
 
         # update the datastore

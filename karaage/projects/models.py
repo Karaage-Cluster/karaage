@@ -66,6 +66,8 @@ class Project(models.Model):
         return ('kg_project_detail', [self.pid])
 
     def save(self, *args, **kwargs):
+        created = self.pk is None
+
         # set group if not already set
         if self.group_id is None:
             name = self.pid
@@ -74,6 +76,8 @@ class Project(models.Model):
         # save the object
         super(Project, self).save(*args, **kwargs)
 
+        if created:
+            log(None, self, 2, 'Created')
         for field in self._tracker.changed():
             log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
 
@@ -103,6 +107,7 @@ class Project(models.Model):
         query.update(default_project=None)
 
         # delete the object
+        log(None, self, 3, 'Deleted')
         super(Project, self).delete(*args, **kwargs)
 
         # update datastore associations
@@ -188,8 +193,13 @@ class ProjectQuota(models.Model):
     _tracker = FieldTracker()
 
     def save(self, *args, **kwargs):
+        created = self.pk is None
+
         super(ProjectQuota, self).save(*args, **kwargs)
 
+        if created:
+            log(None, self.project, 2, 'Quota %s: Created' %
+                    (self.machine_category))
         for field in self._tracker.changed():
             log(None, self.project, 2, 'Quota %s: Changed %s to %s' %
                     (self.machine_category, field,  getattr(self, field)))
@@ -197,6 +207,8 @@ class ProjectQuota(models.Model):
         machine_category_save_project(self.project)
 
     def delete(self, *args, **kwargs):
+        log(None, self.project, 2, 'Quota %s: Deleted' %
+                (self.machine_category))
         super(InstituteQuota, self).delete(*args, **kwargs)
         from karaage.datastores import machine_category_delete_project
         machine_category_delete_project(self.project, self.machine_category)
