@@ -21,34 +21,25 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.core.management import call_command
 
-from tldap.test import slapd
 from captcha.models import CaptchaStore
 from karaage.applications.models import Application, Applicant, ProjectApplication
-from karaage.people.models import Person
-from karaage.institutes.models import Institute
-from karaage.projects.models import Project
-from initial_ldap_data import test_ldif
+
 
 def set_admin():
     settings.ADMIN_IGNORED = False
 
+
 def set_no_admin():
     settings.ADMIN_IGNORED = True
+
 
 class UserApplicationTestCase(TestCase):
 
     def setUp(self):
-        server = slapd.Slapd()
-        server.set_port(38911)
-        server.start()
-        server.ldapadd("\n".join(test_ldif)+"\n")
         call_command('loaddata', 'karaage_data', **{'verbosity': 0})
-
-        self.server = server
 
     def tearDown(self):
         set_admin()
-        self.server.stop()
 
     def test_register_account(self):
         set_no_admin()
@@ -225,17 +216,10 @@ class UserApplicationTestCase(TestCase):
 class ProjectApplicationTestCase(TestCase):
 
     def setUp(self):
-        server = slapd.Slapd()
-        server.set_port(38911)
-        server.start()
-        server.ldapadd("\n".join(test_ldif)+"\n")
         call_command('loaddata', 'karaage_data', **{'verbosity': 0})
 
-        self.server = server
-
     def tearDown(self):
-        self.server.stop()
-
+        set_admin()
 
     def test_register_account(self):
         set_no_admin()

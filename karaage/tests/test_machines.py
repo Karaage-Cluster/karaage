@@ -15,29 +15,21 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import datetime
+
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
-from django.conf import settings
-
-import datetime
-from tldap.test import slapd
 
 from karaage.people.models import Person
 from karaage.projects.models import Project
 from karaage.machines.models import Machine, MachineCategory
-from karaage.tests.initial_ldap_data import test_ldif
-from karaage.datastores import ldap_schemas
+
 
 class AccountTestCase(TestCase):
 
     def setUp(self):
-        server = slapd.Slapd()
-        server.set_port(38911)
-        server.start()
-        server.ldapadd("\n".join(test_ldif)+"\n")
         call_command('loaddata', 'karaage_data', **{'verbosity': 0})
-        self.server = server
         form_data = {
             'title' : 'Mr',
             'short_name': 'Sam',
@@ -60,10 +52,6 @@ class AccountTestCase(TestCase):
         person = Person.objects.get(username='kgsuper')
         self.failUnlessEqual(person.short_name, 'Super')
         self.failUnlessEqual(person.full_name, 'Super User')
-
-
-    def tearDown(self):
-        self.server.stop()
 
     def test_add_account(self):
         project = Project.objects.get(pk=1)
@@ -175,14 +163,6 @@ class AccountTestCase(TestCase):
 class MachineTestCase(TestCase):
 
     def setUp(self):
-        global server
-        server = slapd.Slapd()
-        server.set_port(38911)
-        server.start()
-        server.ldapadd("\n".join(test_ldif)+"\n")
-        call_command('loaddata', 'karaage_data', **{'verbosity': 0})
-
-        self.server = server
         today = datetime.datetime.now()
         # 10cpus
         mach1 = Machine.objects.get(pk=1)
@@ -197,9 +177,6 @@ class MachineTestCase(TestCase):
         mach3 = Machine.objects.get(pk=3)
         mach3.start_date = today - datetime.timedelta(days=30)
         mach3.save()
-
-    def tearDown(self):
-        self.server.stop()
 
     def do_availablity_test(self, start, end, mc, expected_time, expected_cpu):
         from karaage.cache.usage import get_machine_category_usage

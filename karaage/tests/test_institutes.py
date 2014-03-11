@@ -16,28 +16,12 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.test import TestCase
-from django.core.management import call_command
-
-from tldap.test import slapd
 
 from karaage.people.models import Group
 from karaage.institutes.models import Institute
-from initial_ldap_data import test_ldif
 
 
 class InstituteTestCase(TestCase):
-
-    def setUp(self):
-        server = slapd.Slapd()
-        server.set_port(38911)
-        server.start()
-        server.ldapadd("\n".join(test_ldif)+"\n")
-        call_command('loaddata', 'karaage_data', **{'verbosity': 0})
-
-        self.server = server
-
-    def tearDown(self):
-        self.server.stop()
 
     def test_add(self):
         institute = Institute.objects.create(name='TestInstitute54')
