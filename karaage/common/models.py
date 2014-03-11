@@ -71,6 +71,11 @@ class LogEntry(models.Model):
             }
         elif self.action_flag == DELETION:
             return ugettext('Deleted "%(object)s."') % {'object': self.object_repr}
+        elif self.action_flag == COMMENT:
+            return ugettext('Comment "%(object)s" - %(changes)s') % {
+                'object': self.object_repr,
+                'changes': self.change_message,
+            }
 
         return ugettext('LogEntry Object')
 
