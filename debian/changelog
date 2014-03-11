@@ -1,3 +1,12 @@
+karaage3 (3.0.6-1) unstable; urgency=low
+
+  * Various bugs fixed.
+  * Update python packaging.
+  * Rename Debian packages to Debian python compliant names.
+  * Add legacy packages for backword compatibility.
+
+ -- Brian May <bam@debian.org>  Tue, 11 Mar 2014 11:04:08 +1100
+
 karaage3 (3.0.5-1) unstable; urgency=low
 
   * Start arranging code into correct modules.
@@ -604,7 +613,7 @@ karaage (2.3.9) testing; urgency=low
 
 karaage (2.3.8) testing; urgency=low
 
-  * Fixed Django 1.2 incompatability
+  * Fixed Django 1.2 incompatibility
 
  -- Sam Morrison <sam@vpac.org>  Tue, 08 Jun 2010 17:22:25 +1000
 
