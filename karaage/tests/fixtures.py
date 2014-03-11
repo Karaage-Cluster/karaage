@@ -82,6 +82,7 @@ class AccountFactory(DjangoModelFactory):
     FACTORY_DJANGO_GET_OR_CREATE = ('person', 'username', 'machine_category')
 
     username = FuzzyText(prefix='account-')
+    foreign_id = FuzzyText()
     person = factory.SubFactory(PersonFactory)
     machine_category = factory.SubFactory(MachineCategoryFactory)
     date_created = factory.LazyAttribute(lambda a: datetime.datetime.today())
