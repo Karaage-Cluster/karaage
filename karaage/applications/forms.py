@@ -31,7 +31,9 @@ from karaage.people.models import Person
 from karaage.people.utils import validate_username_for_new_person, UsernameException
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
-from karaage.common import get_current_person, is_password_strong
+from karaage.common import get_current_person
+from karaage.common.forms import validate_password
+
 
 APP_CHOICES = (
     ('U', 'Join an existing project'),
@@ -331,12 +333,7 @@ class PersonSetPassword(forms.Form):
     def clean_new_password2(self):
         password1 = self.cleaned_data.get('new_password1')
         password2 = self.cleaned_data.get('new_password2')
-        if not is_password_strong(password1):
-            raise forms.ValidationError(u'Your password was found to be insecure, a good password has a combination of letters (uppercase, lowercase), numbers and is at least 8 characters long.')
-        if password1 and password2:
-            if password1 != password2:
-                raise forms.ValidationError(u"The two password fields didn't match.")
-        return password2
+        return validate_password(password1, password2)
 
     def save(self, commit=True):
         self.person.set_password(self.cleaned_data['new_password1'])
