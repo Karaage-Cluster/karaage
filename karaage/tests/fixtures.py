@@ -23,10 +23,11 @@ from factory.django import DjangoModelFactory
 from factory.fuzzy import FuzzyText, FuzzyChoice
 import factory
 
+from karaage.projects.utils import add_user_to_project
 import karaage.institutes.models
+import karaage.machines.models
 import karaage.people.models
 import karaage.projects.models
-import karaage.machines.models
 
 
 class InstituteFactory(DjangoModelFactory):
@@ -82,8 +83,21 @@ class AccountFactory(DjangoModelFactory):
     FACTORY_DJANGO_GET_OR_CREATE = ('person', 'username', 'machine_category')
 
     username = FuzzyText(prefix='account-')
+    foreign_id = FuzzyText()
     person = factory.SubFactory(PersonFactory)
     machine_category = factory.SubFactory(MachineCategoryFactory)
     date_created = factory.LazyAttribute(lambda a: datetime.datetime.today())
     default_project = factory.SubFactory(ProjectFactory)
     shell = FuzzyChoice(settings.SHELLS)
+
+
+def simple_account(machine_category=None):
+    if not machine_category:
+        machine_category = MachineCategoryFactory()
+    project = ProjectFactory()
+    account = AccountFactory(machine_category=machine_category,
+                             default_project=project)
+    ProjectQuotaFactory(project=project,
+                        machine_category=machine_category)
+    add_user_to_project(account.person, project)
+    return account

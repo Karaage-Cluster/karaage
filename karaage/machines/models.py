@@ -133,7 +133,7 @@ class Machine(AbstractBaseUser):
 
 class Account(models.Model):
     person = models.ForeignKey(Person)
-    username = models.CharField(max_length=100)
+    username = models.CharField(max_length=255)
     foreign_id = models.CharField(max_length=255, null=True, unique=True,
                                   help_text='The foreign identifier from the datastore.')
     machine_category = models.ForeignKey(MachineCategory)
