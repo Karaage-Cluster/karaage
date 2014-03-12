@@ -3,7 +3,8 @@ Introduction
 
 What is Karaage?
 ----------------
-Karaage is a cluster account management tool. It can manage users and projects in a cluster and can store the data in various backends.
+Karaage is a cluster account management tool. It can manage users and projects
+in a cluster and can store the data in various backends.
 
 Terminology
 -----------
@@ -28,7 +29,8 @@ Terminology
   machines on a given machine_category.
 
 :index:`group <group;definition>`
-  A list of people. Usually maps directly to an LDAP Group, but this depends on the data stores used.
+  A list of people. Usually maps directly to an LDAP Group, but this depends on
+  the data stores used.
 
 :index:`project <project;definition>`
   A list of people who share the common goal.
@@ -40,10 +42,11 @@ Terminology
   An Institute is just a group of projects.
 
 :index:`institute delegate <institute delegate;definition>`
-  A person who manages an institute, and can allow new project's for the institute.
+  A person who manages an institute, and can allow new project's for the
+  institute.
 
 :index:`administrator <administrator;definition>`
-  A person who has administration rights and can access karaage-admin.
+  A person who has unlimited access to Karaage.
 
 
 .. index:: Karaage; features
@@ -52,7 +55,7 @@ Features
 --------
 * Can store user information and/or posix account information in LDAP/Active Directory/passwd file.
 * Email notifications.
-* Auto account creation - Allow project leaders to manager their users.
+* Auto account creation - Allow project leaders to manage their users.
 * Applications work flow - Users can apply for accounts and be approved by project leaders.
 * Usage reporting. Report on a per institute, per project or per user for CPU usage.
 * Track usage of software and versions. Keep track of what software (and version) and type of jobs a user is running.
