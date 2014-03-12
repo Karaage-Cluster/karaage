@@ -122,10 +122,8 @@ def gen_cache_for_all_institutes(request, start, end, machine_category):
         return tasks.gen_cache_for_all_institutes.delay(start, end, machine_category.pk)
 
 
+@usage_required
 def usage_index(request):
-    if not getattr(settings, 'USAGE_IS_PUBLIC', False):
-        return HttpResponseForbidden('<h1>Access Denied</h1>')
-
     result = progress(request)
     if result is not None:
         return result
@@ -411,9 +409,6 @@ def project_usage(request, project_id, machine_category_id):
 
 @admin_required
 def unknown_usage(request):
-    if not getattr(settings, 'USAGE_IS_PUBLIC', False):
-        return HttpResponseForbidden('<h1>Access Denied</h1>')
-
     showall = request.REQUEST.get('showall', False)
     project_list = Project.objects.all()
     person_list = Person.objects.all()
@@ -456,9 +451,6 @@ def unknown_usage(request):
 
 @usage_required
 def search(request):
-    if not getattr(settings, 'USAGE_IS_PUBLIC', False):
-        return HttpResponseForbidden('<h1>Access Denied</h1>')
-
     if request.method == 'POST':
 
         form = UsageSearchForm(request.POST)
@@ -531,9 +523,6 @@ def search(request):
 
 @usage_required
 def top_users(request, machine_category_id):
-    if not getattr(settings, 'USAGE_IS_PUBLIC', False):
-        return HttpResponseForbidden('<h1>Access Denied</h1>')
-
     count = 20
 
     result = progress(request)
@@ -575,9 +564,6 @@ def top_users(request, machine_category_id):
 
 @usage_required
 def institute_trends(request, machine_category_id):
-    if not getattr(settings, 'USAGE_IS_PUBLIC', False):
-        return HttpResponseForbidden('<h1>Access Denied</h1>')
-
     result = progress(request)
     if result is not None:
         return result
@@ -598,9 +584,6 @@ def institute_trends(request, machine_category_id):
 
 @usage_required
 def institute_users(request, machine_category_id, institute_id):
-    if not getattr(settings, 'USAGE_IS_PUBLIC', False):
-        return HttpResponseForbidden('<h1>Access Denied</h1>')
-
     result = progress(request)
     if result is not None:
         return result
@@ -643,8 +626,6 @@ def institute_users(request, machine_category_id, institute_id):
 
 @usage_required
 def core_report(request, machine_category_id):
-    if not getattr(settings, 'USAGE_IS_PUBLIC', False):
-        return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     machine_category = get_object_or_404(MachineCategory, pk=machine_category_id)
 
@@ -701,9 +682,6 @@ def mem_report(request, machine_category_id):
 
 @usage_required
 def job_detail(request, jobid):
-    if not getattr(settings, 'USAGE_IS_PUBLIC', False):
-        return HttpResponseForbidden('<h1>Access Denied</h1>')
-
     job = get_object_or_404(CPUJob, jobid=jobid)
 
     if not job.project.can_view(request) and not getattr(settings, 'USAGE_IS_PUBLIC', False):
