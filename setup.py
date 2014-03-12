@@ -52,8 +52,20 @@ setup(
     author = 'Brian May',
     author_email = 'brian@vpac.org',
     description = 'Collection of Django apps to manage a clusters',
-    license = "GPL3+",
     packages = packages,
+    license = "GPL3+",
+    long_description = open('README.rst').read(),
+    classifiers = [
+        "Development Status :: 5 - Production/Stable",
+        "Framework :: Django",
+        "Intended Audience :: Developers",
+        "Intended Audience :: System Administrators",
+        "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python"
+        "Topic :: Software Development :: Libraries :: Python Modules",
+    ],
+    keywords = "karaage cluster user administration",
     package_data = {
         '': [ '*.css', '*.html', '*.js', '*.png', '*.gif', '*.map', '*.txt' ],
     },
