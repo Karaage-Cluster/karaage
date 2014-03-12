@@ -42,7 +42,12 @@ class MachineCategoryForm(forms.ModelForm):
 
 
 class AdminAccountForm(forms.ModelForm):
-    username = forms.CharField(label=u"Requested username", max_length=16, help_text=u"16 characters or fewer. Alphanumeric characters only (letters, digits and underscores).")
+    username = forms.CharField(
+        label=u"Requested username",
+        max_length=settings.USERNAME_MAX_LENGTH,
+        help_text=((settings.USERNAME_VALIDATION_ERROR_MSG
+                    " and has a max length of %s.")
+                   % settings.USERNAME_MAX_LENGTH))
     machine_category = forms.ModelChoiceField(queryset=MachineCategory.objects.all(), initial=1)
     default_project = ajax_select.fields.AutoCompleteSelectField('project', required=True)
     shell = forms.ChoiceField(choices=settings.SHELLS)

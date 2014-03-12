@@ -1,6 +1,13 @@
 #!/bin/bash
 DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 
+# Print some diagnostics
+env
+
+python -c 'import sys; import pprint; pprint.pprint(sys.path)'
+
+python -c 'import karaage.conf; karaage.conf.settings.__file__'
+
 RETURN=0
 cd $DIR
 
