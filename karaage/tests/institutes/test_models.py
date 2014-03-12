@@ -15,10 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+from django.core import exceptions as django_exceptions
 from django.test import TestCase
 
 from karaage.people.models import Group
 from karaage.institutes.models import Institute
+from karaage.tests.fixtures import InstituteFactory
 
 
 class InstituteTestCase(TestCase):
@@ -50,3 +52,15 @@ class InstituteTestCase(TestCase):
         self.assertEqual(
             institute.group.name,
             institute.name.lower().replace(' ', ''))
+
+    def test_username(self):
+        assert_raises = self.assertRaises(django_exceptions.ValidationError)
+
+        # Max length
+        institution = InstituteFactory(name="a" * 255)
+        institution.full_clean()
+
+        # Name is too long
+        institution = InstituteFactory(name="a" * 256)
+        with assert_raises:
+            institution.full_clean()
