@@ -20,6 +20,8 @@ import datetime
 from django import forms
 from django.conf import settings
 
+from karaage.people.utils import validate_username_for_new_account
+from karaage.people.utils import UsernameException
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory, Machine, Account
 
@@ -39,6 +41,7 @@ class MachineCategoryForm(forms.ModelForm):
 
 
 class AdminAccountForm(forms.ModelForm):
+    username = forms.CharField(label=u"Requested username", max_length=16, help_text=u"16 characters or fewer. Alphanumeric characters only (letters, digits and underscores).")
     machine_category = forms.ModelChoiceField(queryset=MachineCategory.objects.all(), initial=1)
     default_project = ajax_select.fields.AutoCompleteSelectField('project', required=True)
     shell = forms.ChoiceField(choices=settings.SHELLS)
@@ -46,6 +49,14 @@ class AdminAccountForm(forms.ModelForm):
     def __init__(self, person, **kwargs):
         self.person = person
         super(AdminAccountForm, self).__init__(**kwargs)
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        try:
+            validate_username_for_new_account(self.person, username)
+        except UsernameException, e:
+            raise forms.ValidationError(e.args[0])
+        return username
 
     def clean_default_project(self):
         data = self.cleaned_data
