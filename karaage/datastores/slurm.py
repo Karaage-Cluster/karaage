@@ -376,4 +376,10 @@ class SlurmDataStore(base.MachineCategoryDataStore):
             result = {}
         return result
 
+    def set_project_pid(self, project, old_pid, new_pid):
+        """ Project's pid was changed. """
+        # FIXME
+        return
+
+
 trace.attach(trace.trace(logger), SlurmDataStore)
