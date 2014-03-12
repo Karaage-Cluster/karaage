@@ -84,9 +84,10 @@ MANAGERS = ADMINS
 TIME_ZONE = 'Australia/Melbourne'
 LANGUAGE_CODE = 'en-au'
 
-MEDIA_ROOT = '/tmp'
+MEDIA_ROOT = 'tmp'
 MEDIA_URL = '/media/'
 GRAPH_ROOT = MEDIA_ROOT + '/graphs/'
+GRAPH_TMP = MEDIA_ROOT + '/matplotlib/'
 GRAPH_URL = MEDIA_URL + 'graphs/'
 
 SITE_ID = 1
@@ -112,7 +113,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 
-ROOT_URLCONF = 'testproject.urls'
+ROOT_URLCONF = 'urls'
 
 
 INSTALLED_APPS = (

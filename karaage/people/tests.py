@@ -149,7 +149,7 @@ class UserTestCase(TestCase):
 #        print "-------------------------------------------------------------------"
         Person.objects.all().update(institute=2)
         #Institute.objects.filter(pk=2).update(delegate=2,active_delegate=2)
-        InstituteDelegate.objects.get_or_create(institute=Institute.objects.get(id=2), person=Person.objects.get(id=2))
+        InstituteDelegate.objects.get_or_create(institute=Institute.objects.get(id=2), person=Person.objects.get(id=2), send_email=False)
         project = Project.objects.get(pid="TestProject1")
         project.leaders=[2]
 

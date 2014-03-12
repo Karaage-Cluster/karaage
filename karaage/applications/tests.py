@@ -30,7 +30,7 @@ from karaage.test_data.initial_ldap_data import test_ldif
 
 
 class UserApplicationTestCase(TestCase):
-    urls = 'testproject.registration_urls'
+    urls = 'registration_urls'
 
     def setUp(self):
         server = slapd.Slapd()
@@ -180,7 +180,7 @@ class AdminRegistrationTestCase(TestCase):
 
 
 class ProjectRegistrationTestCase(TestCase):
-    urls = 'testproject.registration_urls'
+    urls = 'registration_urls'
 
     def setUp(self):
         global server

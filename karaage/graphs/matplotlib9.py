@@ -24,7 +24,7 @@ from django.db import connection
 from django.template.defaultfilters import dictsortreversed
 
 import os
-os.environ['MPLCONFIGDIR'] = '/var/cache/karaage/matplotlib'
+os.environ['MPLCONFIGDIR'] = settings.GRAPH_TMP
 
 import matplotlib
 matplotlib.use('Agg')  # force the antigrain backend

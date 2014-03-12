@@ -30,3 +30,6 @@ def get_version():
         if VERSION[3] != 'final':
             version = '%s %s %s' % (version, VERSION[3], VERSION[4])
     return version
+
+from django.template import add_to_builtins
+add_to_builtins('andsome.templatetags.common')
