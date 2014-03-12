@@ -9,8 +9,9 @@ Terminology
 -----------
 
 :index:`person <person;definition>`
-  A person who has access to the karaage-registration system. A person could have one/more accounts,
-  be an administrator, be a project manager, be an institute delegate. These are optional.
+  A person who has access to the Karaage system. A person could have one/more
+  accounts, be an administrator, be a project leader, be an institute
+  delegate. These are optional.
 
 :index:`machine <machine;definition>`
   A single cluster or computer which is managed as a distinct unit.
@@ -32,7 +33,7 @@ Terminology
 :index:`project <project;definition>`
   A list of people who share the common goal.
 
-:index:`project manager <project manager;definition>`
+:index:`project leader <project leader;definition>`
   A person who manages a project, and can allow new user's to use the project.
 
 :index:`institute <institute;definition>`
@@ -77,7 +78,7 @@ Allows users to:
 * Change password.
 * Manage what projects they are in.
 
-Allow project managers to:
+Allow project leaders to:
 
 * Approve/Decline applications to join their project.
 * Reset passwords for their members.
