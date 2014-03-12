@@ -45,6 +45,10 @@ for dirpath, dirnames, filenames in os.walk("karaage"):
     if filenames:
         packages.append('.'.join(fullsplit(dirpath)))
 
+tests_require = [
+    "factory_boy",
+]
+
 setup(
     name = "karaage",
     version = version,
@@ -87,7 +91,9 @@ setup(
         "django-xmlrpc >= 0.1",
         "django_celery",
         "django_model_utils >= 2.0.0",
-        "factory_boy",
         "matplotlib",
     ],
+    tests_require=tests_require,
+    extras_require={
+        'tests': tests_require},
 )

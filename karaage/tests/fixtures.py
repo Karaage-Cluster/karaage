@@ -19,9 +19,12 @@ import datetime
 
 from django.conf import settings
 from django.contrib.auth.hashers import make_password
-from factory.django import DjangoModelFactory
-from factory.fuzzy import FuzzyText, FuzzyChoice
-import factory
+try:
+    from factory.django import DjangoModelFactory
+    from factory.fuzzy import FuzzyText, FuzzyChoice
+    import factory
+except ImportError:
+    raise ImportError("factory_boy is required, either install from a package or using \'pip install -e .[tests]\'")
 
 from karaage.projects.utils import add_user_to_project
 import karaage.institutes.models
