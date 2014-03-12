@@ -31,7 +31,7 @@ class AccountTestCase(TestCase):
     def setUp(self):
         call_command('loaddata', 'karaage_data', **{'verbosity': 0})
         form_data = {
-            'title' : 'Mr',
+            'title': 'Mr',
             'short_name': 'Sam',
             'full_name': 'Sam Morrison2',
             'position': 'Sys Admin',
@@ -58,7 +58,8 @@ class AccountTestCase(TestCase):
         person = Person.objects.get(username="samtest2")
         person.groups.add(project.group)
 
-        response = self.client.get(reverse('kg_account_add', args=['samtest2']))
+        response = self.client.get(
+            reverse('kg_account_add', args=['samtest2']))
         self.failUnlessEqual(response.status_code, 200)
 
         form_data = {
@@ -68,7 +69,8 @@ class AccountTestCase(TestCase):
             'default_project': 1,
             }
 
-        response = self.client.post(reverse('kg_account_add', args=['samtest2']), form_data)
+        response = self.client.post(
+            reverse('kg_account_add', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
         person = Person.objects.get(username="samtest2")
         self.assertTrue(person.has_account(MachineCategory.objects.get(pk=1)))
@@ -84,12 +86,14 @@ class AccountTestCase(TestCase):
             'machine_category': 1,
             'default_project': 1,
             }
-        response = self.client.post(reverse('kg_account_add', args=['samtest2']), form_data)
+        response = self.client.post(
+            reverse('kg_account_add', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
 
-        response = self.client.post(reverse('kg_account_add', args=['samtest2']), form_data)
-        self.assertContains(response, "Username already in use on machine category Default")
-
+        response = self.client.post(
+            reverse('kg_account_add', args=['samtest2']), form_data)
+        self.assertContains(
+            response, "Username already in use on machine category Default")
 
     def test_fail_add_accounts_project(self):
         form_data = {
@@ -98,8 +102,10 @@ class AccountTestCase(TestCase):
             'machine_category': 1,
             'default_project': 1,
             }
-        response = self.client.post(reverse('kg_account_add', args=['samtest2']), form_data)
-        self.assertContains(response, "Person does not belong to default project")
+        response = self.client.post(
+            reverse('kg_account_add', args=['samtest2']), form_data)
+        self.assertContains(
+            response, "Person does not belong to default project")
 
         project = Project.objects.get(pk=1)
         person = Person.objects.get(username="samtest2")
@@ -111,7 +117,8 @@ class AccountTestCase(TestCase):
             'machine_category': 1,
             'default_project': 1,
             }
-        response = self.client.post(reverse('kg_account_add', args=['samtest2']), form_data)
+        response = self.client.post(
+            reverse('kg_account_add', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
 
         form_data = {
@@ -121,16 +128,18 @@ class AccountTestCase(TestCase):
             'default_project': 1,
             }
 
-        response = self.client.post(reverse('kg_account_add', args=['samtest2']), form_data)
-        self.assertContains(response, "Default project not in machine category")
-
+        response = self.client.post(
+            reverse('kg_account_add', args=['samtest2']), form_data)
+        self.assertContains(
+            response, "Default project not in machine category")
 
     def test_lock_unlock_account(self):
         project = Project.objects.get(pk=1)
         person = Person.objects.get(username="samtest2")
         person.groups.add(project.group)
 
-        response = self.client.get(reverse('kg_account_add', args=['samtest2']))
+        response = self.client.get(reverse('kg_account_add',
+                                           args=['samtest2']))
         self.failUnlessEqual(response.status_code, 200)
 
         form_data = {
@@ -140,20 +149,23 @@ class AccountTestCase(TestCase):
             'default_project': 1,
             }
 
-        response = self.client.post(reverse('kg_account_add', args=['samtest2']), form_data)
+        response = self.client.post(
+            reverse('kg_account_add', args=['samtest2']), form_data)
         self.failUnlessEqual(response.status_code, 302)
         person = Person.objects.get(username='samtest2')
         ua = person.get_account(MachineCategory.objects.get(pk=1))
         self.failUnlessEqual(person.is_locked(), False)
         self.failUnlessEqual(ua.loginShell(), '/bin/bash')
 
-        response = self.client.post(reverse('kg_person_lock', args=['samtest2']))
+        response = self.client.post(
+            reverse('kg_person_lock', args=['samtest2']))
         person = Person.objects.get(username='samtest2')
         ua = person.get_account(MachineCategory.objects.get(pk=1))
         self.failUnlessEqual(person.is_locked(), True)
         self.failUnlessEqual(ua.loginShell(), '/bin/bash')
 
-        response = self.client.post(reverse('kg_person_unlock', args=['samtest2']))
+        response = self.client.post(
+            reverse('kg_person_unlock', args=['samtest2']))
         person = Person.objects.get(username='samtest2')
         ua = person.get_account(MachineCategory.objects.get(pk=1))
         self.failUnlessEqual(person.is_locked(), False)
@@ -186,7 +198,7 @@ class MachineTestCase(TestCase):
 
     def no_test_available_time(self):
         mc1 = MachineCategory.objects.get(pk=1)
-        mc2 = MachineCategory.objects.get(pk=2)
+        MachineCategory.objects.get(pk=2)
         for machine in Machine.objects.all():
             machine.category = mc1
             machine.save()

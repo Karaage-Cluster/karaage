@@ -1,6 +1,10 @@
 #!/bin/bash
 DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 
+# Print some diagnostics
+
+python -c 'import karaage.conf.defaults; print karaage.conf.defaults.__file__'
+
 RETURN=0
 cd $DIR
 

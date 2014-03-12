@@ -19,6 +19,22 @@ from django.core import exceptions as django_exceptions
 from django.test import TestCase
 
 from karaage.machines.models import MachineCategory
+from karaage.tests.fixtures import AccountFactory
+
+
+class AccountTestCase(TestCase):
+
+    def test_username(self):
+        assert_raises = self.assertRaises(django_exceptions.ValidationError)
+
+        # Max length
+        account = AccountFactory(username="a" * 255)
+        account.full_clean()
+
+        # Name is too long
+        account = AccountFactory(username="a" * 256)
+        with assert_raises:
+            account.full_clean()
 
 
 class MachineCategoryTestCase(TestCase):
