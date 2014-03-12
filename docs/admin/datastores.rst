@@ -1,4 +1,5 @@
 .. index:: ! data store; main
+
 Data Stores
 ===========
 
