@@ -112,7 +112,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 
-ROOT_URLCONF = 'testproject.urls'
+ROOT_URLCONF = 'urls'
 
 
 INSTALLED_APPS = (
