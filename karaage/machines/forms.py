@@ -20,6 +20,9 @@ import datetime
 from django import forms
 from django.conf import settings
 
+from karaage.people.utils import validate_username_for_new_account
+from karaage.people.utils import check_username_for_new_account
+from karaage.people.utils import UsernameException
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory, Machine, Account
 
@@ -39,6 +42,7 @@ class MachineCategoryForm(forms.ModelForm):
 
 
 class AdminAccountForm(forms.ModelForm):
+    username = forms.CharField(label=u"Requested username", max_length=16, help_text=u"16 characters or fewer. Alphanumeric characters only (letters, digits and underscores).")
     machine_category = forms.ModelChoiceField(queryset=MachineCategory.objects.all(), initial=1)
     default_project = ajax_select.fields.AutoCompleteSelectField('project', required=True)
     shell = forms.ChoiceField(choices=settings.SHELLS)
@@ -46,6 +50,15 @@ class AdminAccountForm(forms.ModelForm):
     def __init__(self, person, **kwargs):
         self.person = person
         super(AdminAccountForm, self).__init__(**kwargs)
+        self.old_username = self.instance.username
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        try:
+            validate_username_for_new_account(self.person, username)
+        except UsernameException, e:
+            raise forms.ValidationError(e.args[0])
+        return username
 
     def clean_default_project(self):
         data = self.cleaned_data
@@ -61,13 +74,10 @@ class AdminAccountForm(forms.ModelForm):
 
     def clean(self):
         data = self.cleaned_data
-        if 'username' not in data:
-            return data
         if 'machine_category' not in data:
             return data
         if 'default_project' not in data:
             return data
-        username = data['username']
         default_project = data['default_project']
         machine_category = data['machine_category']
 
@@ -75,12 +85,17 @@ class AdminAccountForm(forms.ModelForm):
         if query.count() == 0:
             raise forms.ValidationError(u'Default project not in machine category.')
 
-        query = Account.objects.filter(
-                    username__exact=username, machine_category=machine_category, date_deleted__isnull=True)
-        if self.instance.pk is not None:
-            query = query.exclude(pk=self.instance.pk)
-        if query.count() > 0:
-            raise forms.ValidationError(u'Username already in use on machine category %s.' % machine_category)
+        if 'username' not in data:
+            return data
+        username = data['username']
+
+        if (self.old_username is None or
+                self.old_username != username):
+            try:
+                check_username_for_new_account(
+                    self.person, username, machine_category)
+            except UsernameException, e:
+                raise forms.ValidationError(e.args[0])
 
         return data
 

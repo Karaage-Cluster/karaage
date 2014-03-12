@@ -91,6 +91,79 @@ def validate_username_for_new_person(username):
 
     return username
 
+
+def validate_username_for_new_account(person, username):
+    """ Validate the new username for a new account. If the username is invalid
+    or in use, raises :py:exc:`UsernameInvalid` or :py:exc:`UsernameTaken`.
+
+    :param person: Owner of new account.
+    :param username: Username to validate.
+    """
+
+    # This is much the same as validate_username_for_new_person, except
+    # we don't care if the username is used by the person owning the account
+
+    # is the username valid?
+
+    validate_username(username)
+
+    # Check for existing people
+
+    query = Person.objects.filter(username__exact=username)
+    count = query.exclude(pk=person.pk).count()
+    if count >= 1:
+        raise UsernameTaken(
+            u'The username is already taken. Please choose another. '
+            u'If this was the name of your old account please email %s'
+            % settings.ACCOUNTS_EMAIL)
+
+    # Check for existing accounts not belonging to this person
+
+    query = Account.objects.filter(username__exact=username)
+    count = query.exclude(person__pk=person.pk).count()
+    if count >= 1:
+        raise UsernameTaken(
+            u'The username is already taken. Please choose another. '
+            'If this was the name of your old account please email %s'
+            % settings.ACCOUNTS_EMAIL)
+
+    # Check person datastore, in case username created outside Karaage.
+    # Make sure we don't count the entry for person.
+
+    query = Person.objects.filter(username__exact=username)
+    count = query.filter(pk=person.pk).count()
+    if count == 0 and global_person_exists(username):
+        raise UsernameTaken(
+            u'Username is already in external personal datastore.')
+
+
+def check_username_for_new_account(person, username, machine_category):
+    """ Check the new username for a new account. If the username  is
+    in use, raises :py:exc:`UsernameTaken`.
+
+    :param person: Owner of new account.
+    :param username: Username to validate.
+    :param machine_category: Machine category for new account.
+    """
+
+    query = Account.objects.filter(
+        username__exact=username,
+        machine_category=machine_category,
+        date_deleted__isnull=True)
+
+    if query.count() > 0:
+        raise UsernameTaken(
+            u'Username already in use on machine category %s.'
+            % machine_category)
+
+    if machine_category_account_exists(username, machine_category):
+         raise UsernameTaken(
+            u'Username is already in datastore for machine category %s.'
+            % machine_category)
+
+    return username
+
+
 def validate_username_for_rename_person(username, person):
     """ Validate the new username to rename a person. If the username is invalid
     or in use, raises :py:exc:`UsernameInvalid` or :py:exc:`UsernameTaken`.
