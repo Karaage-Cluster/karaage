@@ -331,6 +331,11 @@ def machine_category_get_project_details(project):
             result[machine_category.name].append(value)
     return result
 
+def global_set_project_pid(project, old_pid, new_pid):
+    """ Project's PID was changed. """
+    for datastore in _get_global_datastores():
+        datastore.set_project_pid(project, old_pid, new_pid)
+
 
 #############
 # Institute #

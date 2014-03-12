@@ -189,6 +189,9 @@ class MachineCategoryDataStore(object):
         """ Get project's details. """
         return {}
 
+    def set_project_pid(self, project, old_pid, new_pid):
+        """ Project's pid was changed. """
+        return
 
     #############
     # INSTITUTE #

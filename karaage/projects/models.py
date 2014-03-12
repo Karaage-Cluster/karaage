@@ -81,6 +81,14 @@ class Project(models.Model):
         for field in self._tracker.changed():
             log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
 
+        # has pid changed?
+        self._tracker.has_changed("pid")
+        if self._tracker.has_changed("pid"):
+            old_pid = self._tracker.previous('pid')
+            if old_pid is not None:
+                from karaage.datastores import machine_category_set_project_pid
+                global_set_project_pid(self, old_pid, self.pid)
+                log(None, self, 2, 'Renamed %s to %s' % (old_pid, self.pid))
 
         # update the datastore
         from karaage.datastores import machine_category_save_project
