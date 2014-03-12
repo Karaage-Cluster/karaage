@@ -176,10 +176,6 @@ class Account(models.Model):
         if default_project is not None:
             person.add_group(default_project.group)
 
-        log(None, person, 1,
-            'Created account on %s' % machine_category)
-        log(None, machine_category, 1,
-            'Created account')
         return ua
 
     def project_list(self):
@@ -192,7 +188,10 @@ class Account(models.Model):
         super(Account, self).save(*args, **kwargs)
 
         if created:
-            log(None, self, 2, 'Created')
+            log(None, self.person, 1,
+                'Account %s: Created on %s' % (self, self.machine_category))
+            log(None, self.machine_category, 1,
+                'Account %s: Created on %s' % (self, self.machine_category))
         for field in self._tracker.changed():
             if field != "password":
                 log(None, self.person, 2, 'Account %s: Changed %s to %s' % (self, field,  getattr(self, field)))
