@@ -119,6 +119,16 @@ class Person(AbstractBaseUser):
             if field != "password":
                 log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
 
+        # has username changed?
+        self._tracker.has_changed("username")
+        if self._tracker.has_changed("username"):
+            old_username = self._tracker.previous('username')
+            if old_username is not None:
+                from karaage.datastores import global_set_person_username
+                global_set_person_username(self, old_username, self.username)
+                log(None, self, 2, 'Renamed %s to %s'
+                        % (old_username, self.username))
+
         # update the datastore
         from karaage.datastores import global_save_person
         global_save_person(self)
@@ -127,15 +137,6 @@ class Person(AbstractBaseUser):
         from karaage.datastores import machine_category_save_account
         for ua in self.account_set.filter(date_deleted__isnull=True):
             machine_category_save_account(ua)
-
-        # has username changed?
-        self._tracker.has_changed("username")
-        if self._tracker.has_changed("username"):
-            old_username = self._tracker.previous('username')
-            if old_username is not None:
-                from karaage.datastores import global_set_person_username
-                global_set_person_username(self, old_username, self.username)
-                log(None, self, 2, 'Renamed')
 
         # has locked status changed?
         if self._tracker.has_changed("login_enabled"):
