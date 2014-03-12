@@ -90,7 +90,7 @@
                     <li><a href="{% url 'kg_project_edit' project.pid %}" class="changelink">Edit</a></li>
                     {% if project.is_active %}<li><a href="{% url 'kg_project_delete' project.pid %}" class="deletelink">Delete project</a></li>{% endif %}
                 {% else %}
-                    {% if project.is_active %}
+                    {% if project.is_active and request.user in project.leaders.all %}
                         <li><a href="{% url 'kg_project_edit' project.pid %}" class="changelink">Edit</a></li>
                     {% endif %}
                 {% endif %}
