@@ -26,7 +26,7 @@ from karaage.institutes.managers import ActiveInstituteManager
 
 
 class Institute(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=255, unique=True)
     delegates = models.ManyToManyField(Person, related_name='delegate_for', blank=True, null=True, through='InstituteDelegate')
     group = models.ForeignKey(Group)
     saml_entityid = models.CharField(max_length=200, null=True, blank=True, unique=True)
