@@ -1,6 +1,13 @@
 #!/bin/bash
 DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 
+# Print some diagnostics
+cat `python -c 'import karaage.conf.defaults; print karaage.conf.defaults.__file__.rstrip("c")'`
+
+python -c 'import karaage.conf.defaults; print karaage.conf.defaults.USERNAME_MAX_LENGTH'
+
+echo "import django.conf; print django.conf.settings.USERNAME_MAX_LENGTH"  |./manage.py shell --settings=karaage.tests.settings
+
 RETURN=0
 cd $DIR
 
