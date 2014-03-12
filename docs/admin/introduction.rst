@@ -6,49 +6,6 @@ What is Karaage?
 Karaage is a cluster account management tool. It can manage users and projects
 in a cluster and can store the data in various backends.
 
-Terminology
------------
-
-:index:`person <person;definition>`
-  A person who has access to the Karaage system. A person could have one/more
-  accounts, be an administrator, be a project leader, be an institute
-  delegate. These are optional.
-
-:index:`machine <machine;definition>`
-  A single cluster or computer which is managed as a distinct unit.
-
-:index:`machine category <machine category;definition>`
-  A group of machines that share the same authentication systems.
-
-:index:`data store <data store;definition>`
-  A list of external databases that we should link to and update automatically.
-  Supported databases include LDAP, Gold, and Slurm.
-
-:index:`account <account;definition>`
-  A person may have one or more accounts. An account allows a person to access
-  machines on a given machine_category.
-
-:index:`group <group;definition>`
-  A list of people. Usually maps directly to an LDAP Group, but this depends on
-  the data stores used.
-
-:index:`project <project;definition>`
-  A list of people who share the common goal.
-
-:index:`project leader <project leader;definition>`
-  A person who manages a project, and can allow new user's to use the project.
-
-:index:`institute <institute;definition>`
-  An Institute is just a group of projects.
-
-:index:`institute delegate <institute delegate;definition>`
-  A person who manages an institute, and can allow new project's for the
-  institute.
-
-:index:`administrator <administrator;definition>`
-  A person who has unlimited access to Karaage.
-
-
 .. index:: Karaage; features
 
 Features

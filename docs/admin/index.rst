@@ -20,6 +20,7 @@ Contents:
    upgrading
    datastores
    tasks
+   glossary
 
 Indices and tables
 ==================
