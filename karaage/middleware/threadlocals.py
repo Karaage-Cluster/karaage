@@ -16,16 +16,19 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 # threadlocals middleware
 try:
     from threading import local
 except ImportError:
     from django.utils._threading_local import local
 
+
 _thread_locals = local()
+
+
 def get_current_user():
     return getattr(_thread_locals, 'user', None)
+
 
 class ThreadLocals(object):
     """Middleware that gets various objects from the
