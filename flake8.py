@@ -1,0 +1,131 @@
+#!/usr/bin/env python
+import os
+import re
+import sys
+import subprocess
+
+
+env = os.environ.copy()
+line_match = re.compile(r'^([^\s]+):([\d]+):[\d]+: ')
+
+
+def which(name, flags=os.X_OK):
+    """https://twistedmatrix.com/trac/browser/tags/releases/twisted-8.2.0/twisted/python/procutils.py"""
+    result = []
+    exts = filter(None, os.environ.get('PATHEXT', '').split(os.pathsep))
+    path = os.environ.get('PATH', None)
+    if path is None:
+        return []
+    for p in os.environ.get('PATH', '').split(os.pathsep):
+        p = os.path.join(p, name)
+        if os.access(p, flags):
+            result.append(p)
+        for e in exts:
+            pext = p + e
+            if os.access(pext, flags):
+                result.append(pext)
+    return result
+
+GIT = which('git')[0]
+
+
+def git_diff_linenumbers(filename, revision=None):
+    """Return a list of lines that have been added/changed in a file."""
+    diff_command = ' '.join(['diff',
+                             '--new-line-format="%dn "',
+                             '--unchanged-line-format=""',
+                             '--changed-group-format="%>"'])
+    difftool_command = "difftool -y -x '%s'" % diff_command
+
+    def _call(*args):
+        try:
+            lines_output = subprocess.check_output(
+                " ".join([GIT, difftool_command]
+                         + list(args)
+                         + ["--", filename]),
+                env=env, shell=True)
+        except subprocess.CalledProcessError:
+            lines_output = ""
+        return lines_output
+
+    if revision:
+        lines_output = _call(revision)
+        return lines_output.split()
+    else:
+        lines_output = _call()
+        # Check any files that are in the cache
+        lines_output1 = _call("--cached")
+        return lines_output.split() + lines_output1.split()
+
+
+def flake8(filename):
+    """Run flake8 over a file and return the output"""
+    proc = subprocess.Popen(" ".join([which('flake8')[0], filename]),
+                            stdout=subprocess.PIPE, env=env, shell=True)
+    (output, err) = proc.communicate()
+    status = proc.wait()
+    if status != 0 and len(output) == 0:
+        print err
+        raise Exception("Something odd happened while executing flake8.")
+    return output
+
+
+def git_changed_files(revision=None):
+    """Return a list of all the files changed in git"""
+    if revision:
+        files = subprocess.check_output(
+            " ".join([GIT, "diff --name-only", revision]),
+            env=env, shell=True)
+        return [filename for filename in files.split('\n')
+                if filename]
+    else:
+        files = subprocess.check_output(
+            " ".join([GIT, "diff --name-only"]),
+            env=env, shell=True)
+        cached_files = subprocess.check_output(
+            " ".join([GIT, "diff --name-only --cached"]),
+            env=env, shell=True)
+        return [filename for filename
+                in set(files.split('\n')) | set(cached_files.split('\n'))
+                if filename]
+
+
+def git_current_rev():
+    return subprocess.check_output(" ".join([GIT, "rev-parse HEAD^"]),
+                                   env=env, shell=True).strip()
+
+
+WHITE_LIST = [re.compile(r'.*[.]py$')]
+BLACK_LIST = []
+
+
+def main():
+    exit_status = 0
+    revision = None
+    files = git_changed_files()
+    if not files:
+        revision = git_current_rev()
+        files = git_changed_files(revision)
+    for filename in files:
+        if not all(map(lambda x: x.match(filename),
+                       WHITE_LIST)):
+            print >> sys.stderr, 'SKIPPING %s' % filename
+            continue
+        if any(map(lambda x: x.match(filename),
+                   BLACK_LIST)):
+            print >> sys.stderr, 'SKIPPING %s' % filename
+            continue
+        included_lines = git_diff_linenumbers(filename, revision)
+        flake8_output = flake8(filename)
+        for line in flake8_output.split('\n'):
+            line_details = line_match.match(line)
+            if not line_details:
+                continue
+            flake_filename, lineno = line_details.groups()
+            if lineno in included_lines:
+                print line
+                exit_status = 1
+    sys.exit(exit_status)
+
+if __name__ == "__main__":
+    main()
