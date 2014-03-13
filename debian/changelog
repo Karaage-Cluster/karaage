@@ -1,3 +1,16 @@
+karaage3 (3.0.7-1) unstable; urgency=low
+
+  * Numerous fixes to logging.
+  * Fix password reset URL.
+  * Numerous errors fixed.
+  * Updates to documentation.
+  * Fix to SAML middleware.
+  * Fix account username validation.
+  * Fixes to renaming people and projects.
+  * Hide project edit button if not leader.
+
+ -- Brian May <bam@debian.org>  Thu, 13 Mar 2014 11:59:36 +1100
+
 karaage3 (3.0.6-1) unstable; urgency=low
 
   * Various bugs fixed.
