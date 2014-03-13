@@ -552,10 +552,10 @@ class StateApplicantEnteringDetails(StateWithSteps):
                         application.applicant = new_person
                         application.save()
                         log(request.user, application.application_ptr,
-                                1, "Stolen application from %s", old_applicant)
+                            1, "Stolen application from %s" % old_applicant)
                         messages.success(
-                                request,
-                                "Stolen application from %s", old_applicant)
+                            request,
+                            "Stolen application from %s" % old_applicant)
                         url = base.get_url(request, application, auth, label)
                         return HttpResponseRedirect(url)
                     else:
