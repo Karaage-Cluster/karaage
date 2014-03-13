@@ -320,7 +320,7 @@ class Applicant(models.Model):
     registered on the system yet. """
     email = models.EmailField(unique=True)
     email_verified = models.BooleanField(editable=False, default=False)
-    username = models.CharField(max_length=16, unique=True, help_text="Required. 16 characters or fewer. Letters, numbers and underscores only", null=True, blank=True)
+    username = models.CharField(max_length=255, unique=True, null=True, blank=True)
     title = models.CharField(choices=TITLES, max_length=10, null=True, blank=True)
     short_name = models.CharField(max_length=30)
     full_name = models.CharField(max_length=60)
