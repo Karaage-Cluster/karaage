@@ -72,6 +72,12 @@ class StartApplicationForm(forms.Form):
 
 
 class ApplicantForm(forms.ModelForm):
+    username = forms.RegexField(
+        "^%s$" % settings.USERNAME_VALIDATION_RE,
+        label=u"Requested username",
+        max_length=settings.USERNAME_MAX_LENGTH,
+        help_text=(settings.USERNAME_VALIDATION_ERROR_MSG
+                   + " and has a max length of %s." % settings.USERNAME_MAX_LENGTH))
     telephone = forms.RegexField(
             "^[0-9a-zA-Z\.( )+-]+$", required=True, label=u"Office Telephone",
             help_text=u"Used for emergency contact and password reset service.",
