@@ -15,10 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.core import exceptions as django_exceptions
 from django.test import TestCase
 
-from karaage.institutes.models import Institute
 from karaage.people.forms import AddPersonForm
 from karaage.tests.fixtures import ProjectFactory
 
@@ -52,7 +50,8 @@ class AddPersonFormTestCase(TestCase):
         self.assertEqual(
             form.errors.items(),
             [('username',
-              [u'Usernames can only contain letters, numbers and underscores'])])
+              [u'Usernames can only contain '
+               u'letters, numbers and underscores'])])
 
     def test_upper_username(self):
         form_data = self._valid_user()
@@ -72,4 +71,5 @@ class AddPersonFormTestCase(TestCase):
         self.assertEqual(
             form.errors.items(),
             [('username',
-              [u'Ensure this value has at most 255 characters (it has 400).'])])
+              [u'Ensure this value has at most '
+               u'255 characters (it has 400).'])])
