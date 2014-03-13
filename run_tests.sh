@@ -12,7 +12,7 @@ fi
 
 echo "FLAKE8"
 echo "############################"
-./flake8.py
+./flake8-diff.py
 if [ ! $? -eq 0 ]
 then
     RETURN=1
