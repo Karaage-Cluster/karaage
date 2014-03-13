@@ -1,3 +1,13 @@
+karaage3 (3.0.8-1) unstable; urgency=low
+
+  * Remove REMOTE_USER middleware from karaage.middleware.auth.
+    Django now has django.contrib.auth.middleware.RemoteUserMiddleware
+    and django.contrib.auth.backends.RemoteUserBackend.
+  * Fix error in calling log function in Applications.
+  * Test changes in Karaage source code with flake8.
+
+ -- Brian May <bam@debian.org>  Fri, 14 Mar 2014 09:09:19 +1100
+
 karaage3 (3.0.7-1) unstable; urgency=low
 
   * Numerous fixes to logging.
