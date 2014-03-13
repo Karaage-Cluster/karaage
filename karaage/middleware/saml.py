@@ -29,13 +29,13 @@ class SamlUserMiddleware(object):
     Middleware for utilizing Web-server-provided authentication.
 
     If request.user is not authenticated, then this middleware attempts to
-    authenticate the username passed in the ``HTTP_PERSISTENT_ID`` request header.
-    If authentication is successful, the user is automatically logged in to
-    persist the user in the session.
+    authenticate the username passed in the ``HTTP_PERSISTENT_ID`` request
+    header.  If authentication is successful, the user is automatically logged
+    in to persist the user in the session.
 
-    The header used is configurable and defaults to ``HTTP_PERSISTENT_ID``.  Subclass
-    this class and change the ``header`` attribute if you need to use a
-    different header.
+    The header used is configurable and defaults to ``HTTP_PERSISTENT_ID``.
+    Subclass this class and change the ``header`` attribute if you need to use
+    a different header.
     """
 
     def process_request(self, request):
@@ -72,7 +72,7 @@ class SamlUserMiddleware(object):
         # We are seeing this user for the first time in this session, attempt
         # to authenticate the user.
         try:
-            person = Person.objects.get(saml_id = saml_id)
+            person = Person.objects.get(saml_id=saml_id)
         except Person.DoesNotExist:
             return
 

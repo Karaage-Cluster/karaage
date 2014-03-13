@@ -17,6 +17,7 @@
 
 from django.db import models
 
+
 class EmailTemplate(models.Model):
     name = models.CharField(max_length=100, help_text="Do not change")
     description = models.CharField(max_length=200)
@@ -25,4 +26,3 @@ class EmailTemplate(models.Model):
 
     def __unicode__(self):
         return self.name
-    

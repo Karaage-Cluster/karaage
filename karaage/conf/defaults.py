@@ -38,8 +38,8 @@ DEBUG = False
 
 # A boolean that turns on/off template debug mode. If this is True, the fancy
 # error page will display a detailed report for any exception raised during
-# template rendering. This report contains the relevant snippet of the template,
-# with the appropriate line highlighted.
+# template rendering. This report contains the relevant snippet of the
+# template, with the appropriate line highlighted.
 #
 # Note that Django only displays fancy error pages if DEBUG is True, so you’ll
 # want to set that to take advantage of this setting.
@@ -88,14 +88,14 @@ INSTALLED_APPS = (
 # List of locations of the template source files searched by
 # django.template.loaders.filesystem.Loader, in search order.
 
-# Allow administrator to override templates. 
+# Allow administrator to override templates.
 TEMPLATE_DIRS = (
     "/etc/karaage/templates",
 )
 
 # A tuple of callables that are used to populate the context in
 # RequestContext. These callables take a request object as their argument and
-# return a dictionary of items to be merged into the context. 
+# return a dictionary of items to be merged into the context.
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.contrib.auth.context_processors.auth',
@@ -111,16 +111,16 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 # knows how to import templates from a particular source. Optionally, a tuple
 # can be used instead of a string. The first item in the tuple should be the
 # Loader’s module, subsequent items are passed to the Loader during
-# initialization. 
+# initialization.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
 )
 
 # A boolean that specifies whether Django’s translation system should be
-# enabled. This provides an easy way to turn it off, for performance. If this is
-# set to False, Django will make some optimizations so as not to load the
-# translation machinery. 
+# enabled. This provides an easy way to turn it off, for performance. If this
+# is set to False, Django will make some optimizations so as not to load the
+# translation machinery.
 USE_I18N = False
 
 # A tuple of middleware classes to use.
@@ -141,7 +141,7 @@ MIDDLEWARE_CLASSES = (
 # to authenticate a user.
 
 # The ``karaage.backends.LDAPBackend`` backend is legacy, to support upgrades
-# from Karaage versions before 3. 
+# from Karaage versions before 3.
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'karaage.backends.LDAPBackend',
@@ -149,12 +149,12 @@ AUTHENTICATION_BACKENDS = (
 
 # The default value for the X-Frame-Options header used by
 # XFrameOptionsMiddleware. See the `clickjacking protection
-# <https://docs.djangoproject.com/en/dev/ref/clickjacking/>`_ documentation. 
+# <https://docs.djangoproject.com/en/dev/ref/clickjacking/>`_ documentation.
 X_FRAME_OPTIONS = 'DENY'
 
 # Whether to use a secure cookie for the session cookie. If this is set to
 # True, the cookie will be marked as “secure,” which means browsers may ensure
-# that the cookie is only sent under an HTTPS connection. 
+# that the cookie is only sent under an HTTPS connection.
 SESSION_COOKIE_SECURE = True
 
 # Whether to expire the session when the user closes their browser. See
@@ -164,7 +164,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # A string representing the full Python import path to your root URLconf. For
 # example: "mydjangoapps.urls". Can be overridden on a per-request basis by
-# setting the attribute urlconf on the incoming HttpRequest object. 
+# setting the attribute urlconf on the incoming HttpRequest object.
 ROOT_URLCONF = 'karaage.conf.urls'
 
 
@@ -174,9 +174,9 @@ ROOT_URLCONF = 'karaage.conf.urls'
 
 # Channels for django-ajax-selects.
 AJAX_LOOKUP_CHANNELS = {
-    'person' : ( 'karaage.people.lookups', 'PersonLookup'),
-    'group' : ( 'karaage.people.lookups', 'GroupLookup'),
-    'project' : ( 'karaage.projects.lookups', 'ProjectLookup'),
+    'person': ('karaage.people.lookups', 'PersonLookup'),
+    'group': ('karaage.people.lookups', 'GroupLookup'),
+    'project': ('karaage.projects.lookups', 'ProjectLookup'),
 }
 
 # Automatically load media files required for django-ajax-selects.
@@ -217,7 +217,7 @@ GRAPH_TMP = '/var/cache/karaage/matplotlib'
 GRAPH_URL = '/karaage_graphs/'
 
 # Default machine category, used by legacy XMLRPC when client doesn't specify
-# a machine name. 
+# a machine name.
 DEFAULT_MC = 1
 
 # List of shells that we support.
@@ -242,7 +242,7 @@ GLOBAL_DATASTORES = [
 
 # List of MC datastores and configurations for Karaage.
 MACHINE_CATEGORY_DATASTORES = {
-    'dummy' : [
+    'dummy': [
     ],
 }
 

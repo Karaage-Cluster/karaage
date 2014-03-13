@@ -31,9 +31,9 @@ EMAIL_GROUPS = (
 
 
 class EmailForm(forms.Form):
-    subject = forms.CharField(widget=forms.TextInput(attrs={ 'size':60 }))
-    body = forms.CharField(widget=forms.Textarea(attrs={'class':'vLargeTextField', 'rows':10, 'cols':40 }))
-
+    subject = forms.CharField(widget=forms.TextInput(attrs={'size': 60}))
+    body = forms.CharField(widget=forms.Textarea(
+        attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}))
 
     def get_data(self):
         return self.cleaned_data['subject'], self.cleaned_data['body']
@@ -61,7 +61,10 @@ class BulkEmailForm(EmailForm):
                     })
                     subject = subject_t.render(ctx)
                     body = body_t.render(ctx)
-                    emails.append((subject, body, settings.ACCOUNTS_EMAIL, [leader.email]))
+                    emails.append(
+                        (subject, body, settings.ACCOUNTS_EMAIL,
+                            [leader.email])
+                    )
             return emails
 
         elif group == 'users':
@@ -74,11 +77,14 @@ class BulkEmailForm(EmailForm):
             for person in person_list:
                 if person.email not in email_list:
                     ctx = Context({
-                            'receiver': person,
-                            })
+                        'receiver': person,
+                        })
                     subject = subject_t.render(ctx)
                     body = body_t.render(ctx)
-                    emails.append((subject, body, settings.ACCOUNTS_EMAIL, [person.email]))
+                    emails.append(
+                        (subject, body, settings.ACCOUNTS_EMAIL,
+                            [person.email])
+                    )
                     email_list.append(person.email)
 
             return emails

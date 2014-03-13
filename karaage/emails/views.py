@@ -25,6 +25,7 @@ from django.contrib import messages
 from karaage.common.decorators import admin_required
 from karaage.emails.forms import BulkEmailForm
 
+
 @admin_required
 def send_email(request):
 
@@ -36,7 +37,7 @@ def send_email(request):
                 emails = form.get_emails()
                 try:
                     preview = emails[0]
-                except:
+                except IndexError:
                     pass
             else:
                 send_mass_mail(form.get_emails())
@@ -44,5 +45,6 @@ def send_email(request):
 
                 return HttpResponseRedirect(reverse('index'))
 
-    return render_to_response('emails/send_email_form.html', locals(), context_instance=RequestContext(request))
-
+    return render_to_response(
+        'emails/send_email_form.html', locals(),
+        context_instance=RequestContext(request))

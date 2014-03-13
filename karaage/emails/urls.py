@@ -17,10 +17,12 @@
 
 from django.conf.urls import patterns, url, include
 
-urlpatterns = patterns('karaage.emails.views',
+urlpatterns = patterns(
+    'karaage.emails.views',
     url(r'^$', 'send_email', name='kg_emails_index'),
 )
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^emails/', include(urlpatterns)),
 )
