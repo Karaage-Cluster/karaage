@@ -56,19 +56,21 @@ except:
 
 def git_diff_linenumbers(filename, revision=None):
     """Return a list of lines that have been added/changed in a file."""
-    diff_command = ' '.join(['diff',
-                             '--new-line-format="%dn "',
-                             '--unchanged-line-format=""',
-                             '--changed-group-format="%>"'])
-    difftool_command = "difftool -y -x '%s'" % diff_command
+    diff_command = ['diff',
+                    '--new-line-format="%dn "',
+                    '--unchanged-line-format=""',
+                    '--changed-group-format="%>"']
+    difftool_command = ['difftool',
+                        '-y', '-x', " ".join(diff_command)]
 
     def _call(*args):
         try:
             lines_output = subprocess.check_output(
-                " ".join([GIT, difftool_command]
-                         + list(args)
-                         + ["--", filename]),
-                env=env, shell=True)
+                [GIT]
+                + difftool_command
+                + list(args)
+                + ["--", filename],
+                env=env)
         except subprocess.CalledProcessError:
             lines_output = ""
         return lines_output
@@ -85,8 +87,8 @@ def git_diff_linenumbers(filename, revision=None):
 
 def flake8(filename, *args):
     """Run flake8 over a file and return the output"""
-    proc = subprocess.Popen(" ".join([FLAKE8, filename] + list(args)),
-                            stdout=subprocess.PIPE, env=env, shell=True)
+    proc = subprocess.Popen([FLAKE8, filename] + list(args),
+                            stdout=subprocess.PIPE, env=env)
     (output, err) = proc.communicate()
     status = proc.wait()
     if status != 0 and len(output) == 0:
@@ -99,25 +101,26 @@ def git_changed_files(revision=None):
     """Return a list of all the files changed in git"""
     if revision:
         files = subprocess.check_output(
-            " ".join([GIT, "diff --name-only", revision]),
-            env=env, shell=True)
+            [GIT, "diff", "--name-only", revision],
+            env=env)
         return [filename for filename in files.split('\n')
                 if filename]
     else:
         files = subprocess.check_output(
-            " ".join([GIT, "diff --name-only"]),
-            env=env, shell=True)
+            [GIT, "diff", "--name-only"],
+            env=env)
         cached_files = subprocess.check_output(
-            " ".join([GIT, "diff --name-only --cached"]),
-            env=env, shell=True)
+            [GIT, "diff", "--name-only", "--cached"],
+            env=env)
         return [filename for filename
                 in set(files.split('\n')) | set(cached_files.split('\n'))
                 if filename]
 
 
 def git_current_rev():
-    return subprocess.check_output(" ".join([GIT, "rev-parse HEAD^"]),
-                                   env=env, shell=True).strip()
+    return subprocess.check_output(
+        [GIT, "rev-parse", "HEAD^"],
+        env=env).strip()
 
 
 WHITE_LIST = [re.compile(r'.*[.]py$')]
