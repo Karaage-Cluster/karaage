@@ -12,7 +12,7 @@ fi
 
 echo "FLAKE8"
 echo "############################"
-./flake8-diff.py
+./flake8-diff.py --changed --verbose
 if [ ! $? -eq 0 ]
 then
     RETURN=1
