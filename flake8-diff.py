@@ -20,6 +20,7 @@ import os
 import re
 import sys
 import subprocess
+import argparse
 
 
 env = os.environ.copy()
@@ -128,27 +129,55 @@ BLACK_LIST = []
 SPECIAL_CASE_ARGS = {r'migrations/[0-9]+': ['--ignore=E501']}
 
 
-def main():
-    exit_status = 0
-    revision = None
+def list_changed_files():
     files = git_changed_files()
     if not files:
         revision = git_current_rev()
         files = git_changed_files(revision)
+    return files
+
+
+def list_all_files():
+    for root, directories, files in os.walk("karaage"):
+        for filename in files:
+            yield os.path.join(root, filename)
+
+
+def main():
+    parser = argparse.ArgumentParser(description='flake8 check of karaage')
+    parser.add_argument("--changed", help="Only check changed files",
+                        action="store_true")
+    parser.add_argument("--verbose", help="increase output verbosity",
+                        action="store_true")
+    args = parser.parse_args()
+
+    exit_status = 0
+    revision = None
+    if args.changed:
+        files = list_changed_files()
+    else:
+        files = list_all_files()
     for filename in files:
         if not all(map(lambda x: x.match(filename),
                        WHITE_LIST)):
-            print >> sys.stderr, 'SKIPPING %s' % filename
+            if args.verbose:
+                print >> sys.stderr, 'SKIPPING %s' % filename
             continue
         if any(map(lambda x: x.match(filename),
                    BLACK_LIST)):
-            print >> sys.stderr, 'SKIPPING %s' % filename
+            if args.verbose:
+                print >> sys.stderr, 'SKIPPING %s' % filename
             continue
-        included_lines = git_diff_linenumbers(filename, revision)
 
-        for regex, args in SPECIAL_CASE_ARGS.items():
+        if args.changed:
+            included_lines = git_diff_linenumbers(filename, revision)
+
+        if args.verbose:
+            sys.stderr.write("Processing %s\n" % filename)
+
+        for regex, flake_args in SPECIAL_CASE_ARGS.items():
             if re.search(regex, filename):
-                flake8_output = flake8(filename, *args)
+                flake8_output = flake8(filename, *flake_args)
                 break
         else:
             flake8_output = flake8(filename)
@@ -158,7 +187,7 @@ def main():
             if not line_details:
                 continue
             flake_filename, lineno = line_details.groups()
-            if lineno in included_lines:
+            if not args.changed or lineno in included_lines:
                 print line
                 exit_status = 1
     sys.exit(exit_status)
