@@ -506,15 +506,23 @@ def _gen_institute_graph(start, end, machine_category,
     data = []
     labels = []
 
+    total = 0
     with open(csv_filename, 'wb') as csv_file:
         csv_writer = csv.writer(csv_file)
         for institute in institute_list.iterator():
             hours, jobs = usage.get_institute_usage(
                 institute, start, end, machine_category)
+            total = total + int(hours)
             if hours > 0:
                 csv_writer.writerow([institute.name, hours, jobs])
                 data.append(hours)
                 labels.append(institute.name)
+
+        mcu = usage.get_machine_category_usage(machine_category, start, end)
+        hours = int(mcu.available_time - total)
+        csv_writer.writerow(["unused", hours, jobs])
+        data.append(hours)
+        labels.append('Unused')
 
     plt.pie(data, labels=labels, autopct='%1.1f%%', shadow=True)
     plt.tight_layout()
