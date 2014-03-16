@@ -65,7 +65,7 @@ class Institute(models.Model):
             old_group_pk = self._tracker.previous("group_id")
             new_group = self.group
             if old_group_pk is not None:
-                old_group = Group.objects.get(pk=group_pk)
+                old_group = Group.objects.get(pk=old_group_pk)
                 from karaage.datastores import machine_category_remove_account_from_institute
                 for account in Account.objects.filter(person__groups=old_group, date_deleted__isnull=True):
                     machine_category_remove_account_from_institute(account, self)
@@ -83,7 +83,7 @@ class Institute(models.Model):
         # update datastore associations
         old_group_pk = self._tracker.previous("group_id")
         if old_group_pk is not None:
-            old_group = Group.objects.get(pk=group_pk)
+            old_group = Group.objects.get(pk=old_group_pk)
             from karaage.datastores import machine_category_remove_account_from_institute
             for account in Account.objects.filter(person__groups=old_group, date_deleted__isnull=True):
                 machine_category_remove_account_from_institute(account, self)
