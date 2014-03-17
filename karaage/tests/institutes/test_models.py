@@ -64,3 +64,9 @@ class InstituteTestCase(TestCase):
         institution = InstituteFactory(name="a" * 256)
         with assert_raises:
             institution.full_clean()
+
+    def test_change_group(self):
+        group, _ = Group.objects.get_or_create(name='example')
+        institute = Institute.objects.create(name='test')
+        institute.group = group
+        institute.save()

@@ -20,7 +20,7 @@ import datetime
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
 
-from karaage.people.models import Person
+from karaage.people.models import Person, Group
 from karaage.projects.models import Project
 from karaage.machines.models import Account
 from karaage.tests.integration import IntegrationTestCase
@@ -184,3 +184,8 @@ class ProjectTestCase(IntegrationTestCase):
     def test_user_edit_project(self):
         pass
 
+    def test_change_group(self):
+        group, _ = Group.objects.get_or_create(name='example')
+        project = Project.objects.get(pid='TestProject1')
+        project.group = group
+        project.save()
