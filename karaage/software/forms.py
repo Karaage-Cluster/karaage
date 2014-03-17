@@ -18,18 +18,19 @@
 from django import forms
 
 from karaage.machines.models import Machine
-from karaage.software.models import SoftwareCategory, Software, SoftwareVersion, SoftwareLicense
+from karaage.software.models import SoftwareCategory, Software
+from karaage.software.models import SoftwareVersion, SoftwareLicense
 
 
 class SoftwareForm(forms.Form):
-    
     category = forms.ModelChoiceField(queryset=SoftwareCategory.objects.all())
     name = forms.CharField()
     description = forms.CharField(required=False, widget=forms.Textarea())
     homepage = forms.URLField(required=False)
     tutorial_url = forms.URLField(required=False)
     academic_only = forms.BooleanField(required=False)
-    restricted = forms.BooleanField(required=False, help_text="Will require admin approval")
+    restricted = forms.BooleanField(required=False,
+                                    help_text="Will require admin approval")
 
     def save(self, software=None):
         data = self.cleaned_data
@@ -50,7 +51,6 @@ class SoftwareForm(forms.Form):
 
 
 class AddPackageForm(SoftwareForm):
-    
     version = forms.CharField()
     module = forms.CharField(required=False)
     machines = forms.ModelMultipleChoiceField(queryset=Machine.active.all())
@@ -93,7 +93,7 @@ class AddPackageForm(SoftwareForm):
 
         return software
 
-    
+
 class LicenseForm(forms.ModelForm):
 
     class Meta:

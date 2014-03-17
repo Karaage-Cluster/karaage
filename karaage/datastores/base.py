@@ -25,7 +25,6 @@ class GlobalDataStore(object):
     def __init__(self, config):
         self.config = config
 
-
     ##########
     # PERSON #
     ##########
@@ -62,7 +61,6 @@ class GlobalDataStore(object):
         """ Does the person exist? """
         return False
 
-
     #########
     # GROUP #
     #########
@@ -89,7 +87,6 @@ class MachineCategoryDataStore(object):
 
     def __init__(self, config):
         self.config = config
-
 
     ###########
     # ACCOUNT #
@@ -151,7 +148,6 @@ class MachineCategoryDataStore(object):
         """ Get the account details """
         return {}
 
-
     #########
     # GROUP #
     #########
@@ -171,7 +167,6 @@ class MachineCategoryDataStore(object):
     def get_group_details(self, group):
         """ Get the group details. """
         return {}
-
 
     ###########
     # PROJECT #
@@ -208,7 +203,6 @@ class MachineCategoryDataStore(object):
     def get_institute_details(self, institute):
         """ Get institute's details. """
         return {}
-
 
     ############
     # SOFTWARE #

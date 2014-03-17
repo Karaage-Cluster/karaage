@@ -16,17 +16,16 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.db import models
-from django.db.models.signals import post_save, pre_delete
 
 import datetime
-import decimal
 
 from model_utils import FieldTracker
 
 from karaage.people.models import Person, Group
 from karaage.institutes.models import Institute
 from karaage.machines.models import MachineCategory, Account
-from karaage.projects.managers import ActiveProjectManager, DeletedProjectManager
+from karaage.projects.managers import ActiveProjectManager
+from karaage.projects.managers import DeletedProjectManager
 from karaage.common import log, is_admin
 from karaage.common.models import CHANGE
 
@@ -43,9 +42,13 @@ class Project(models.Model):
     end_date = models.DateField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
     is_active = models.BooleanField(default=False)
-    approved_by = models.ForeignKey(Person, related_name='project_approver', null=True, blank=True, editable=False)
+    approved_by = models.ForeignKey(
+        Person, related_name='project_approver',
+        null=True, blank=True, editable=False)
     date_approved = models.DateField(null=True, blank=True, editable=False)
-    deleted_by = models.ForeignKey(Person, related_name='project_deletor', null=True, blank=True, editable=False)
+    deleted_by = models.ForeignKey(
+        Person, related_name='project_deletor',
+        null=True, blank=True, editable=False)
     date_deleted = models.DateField(null=True, blank=True, editable=False)
     last_usage = models.DateField(null=True, blank=True, editable=False)
     objects = models.Manager()
@@ -71,7 +74,7 @@ class Project(models.Model):
         # set group if not already set
         if self.group_id is None:
             name = self.pid
-            self.group,_ = Group.objects.get_or_create(name=name)
+            self.group, _ = Group.objects.get_or_create(name=name)
 
         # save the object
         super(Project, self).save(*args, **kwargs)
@@ -79,7 +82,8 @@ class Project(models.Model):
         if created:
             log(None, self, 2, 'Created')
         for field in self._tracker.changed():
-            log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
+            log(None, self, 2, 'Changed %s to %s'
+                               % (field,  getattr(self, field)))
 
         # has pid changed?
         self._tracker.has_changed("pid")
@@ -168,14 +172,14 @@ class Project(models.Model):
         return False
 
     def activate(self, approved_by):
-        if self.is_active == True:
+        if self.is_active is True:
             return
         self.is_active = True
         self.is_approved = True
         self.date_approved = datetime.datetime.today()
         self.approved_by = approved_by
         self.save()
-        log(None, self, 2, 'Activated by %s'%approved_by)
+        log(None, self, 2, 'Activated by %s' % approved_by)
     activate.alters_data = True
 
     def deactivate(self, deleted_by):
@@ -184,7 +188,7 @@ class Project(models.Model):
         self.date_deleted = datetime.datetime.today()
         self.group.members.clear()
         self.save()
-        log(None, self, 2, 'Deactivated by %s'%deleted_by)
+        log(None, self, 2, 'Deactivated by %s' % deleted_by)
     deactivate.alters_data = True
 
     @property
@@ -207,16 +211,16 @@ class ProjectQuota(models.Model):
 
         if created:
             log(None, self.project, 2, 'Quota %s: Created' %
-                    (self.machine_category))
+                (self.machine_category))
         for field in self._tracker.changed():
             log(None, self.project, 2, 'Quota %s: Changed %s to %s' %
-                    (self.machine_category, field,  getattr(self, field)))
+                (self.machine_category, field,  getattr(self, field)))
         from karaage.datastores import machine_category_save_project
         machine_category_save_project(self.project)
 
     def delete(self, *args, **kwargs):
         log(None, self.project, 2, 'Quota %s: Deleted' %
-                (self.machine_category))
+            (self.machine_category))
         super(ProjectQuota, self).delete(*args, **kwargs)
         from karaage.datastores import machine_category_delete_project
         machine_category_delete_project(self.project, self.machine_category)
@@ -230,7 +234,8 @@ class ProjectQuota(models.Model):
             return self.cap
 
         try:
-            iq = self.project.institute.institutequota_set.get(machine_category=self.machine_category)
+            iq = self.project.institute.institutequota_set.get(
+                machine_category=self.machine_category)
         except:
             return None
         if iq.cap is not None:
@@ -238,48 +243,63 @@ class ProjectQuota(models.Model):
         return iq.quota * 1000
 
 
-def _leaders_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
+def _leaders_changed(
+        sender, instance, action, reverse, model, pk_set, **kwargs):
     """
     Hook that executes whenever the group members are changed.
     """
-    #print "'%s','%s','%s','%s','%s'"%(instance, action, reverse, model, pk_set)
+    #print("'%s','%s','%s','%s','%s'"
+    #   %(instance, action, reverse, model, pk_set))
 
     if action == "post_add":
         if not reverse:
             project = instance
             for person in model.objects.filter(pk__in=pk_set):
-                log(None, person, CHANGE, "Added person to project %s leaders" % project)
-                log(None, project, CHANGE, "Added person %s to project leaders" % person)
+                log(None, person, CHANGE,
+                    "Added person to project %s leaders" % project)
+                log(None, project, CHANGE,
+                    "Added person %s to project leaders" % person)
         else:
             person = instance
             for project in model.objects.filter(pk__in=pk_set):
-                log(None, person, CHANGE, "Added person to project %s leaders" % project)
-                log(None, project, CHANGE, "Added person %s to project leaders" % person)
+                log(None, person, CHANGE,
+                    "Added person to project %s leaders" % project)
+                log(None, project, CHANGE,
+                    "Added person %s to project leaders" % person)
 
     elif action == "post_remove":
         if not reverse:
             project = instance
             for person in model.objects.filter(pk__in=pk_set):
-                log(None, person, CHANGE, "Removed person from project %s leaders" % project)
-                log(None, project, CHANGE, "Removed person %s from project leaders" % person)
+                log(None, person, CHANGE,
+                    "Removed person from project %s leaders" % project)
+                log(None, project, CHANGE,
+                    "Removed person %s from project leaders" % person)
         else:
             person = instance
             for project in model.objects.filter(pk__in=pk_set):
-                log(None, person, CHANGE, "Removed person from project %s leaders" % project)
-                log(None, project, CHANGE, "Removed person %s from project leaders" % person)
+                log(None, person, CHANGE,
+                    "Removed person from project %s leaders" % project)
+                log(None, project, CHANGE,
+                    "Removed person %s from project leaders" % person)
 
     elif action == "pre_clear":
         # This has to occur in pre_clear, not post_clear, as otherwise
         # we won't see what project leaders need to be removed.
         if not reverse:
             project = instance
-            log(None, project, CHANGE, "Removed all project leaders")
+            log(None, project, CHANGE,
+                "Removed all project leaders")
             for person in project.leaders.all():
-                log(None, project, CHANGE, "Removed person %s from project leaders" % person)
+                log(None, project, CHANGE,
+                    "Removed person %s from project leaders" % person)
         else:
             person = instance
-            log(None, person, CHANGE, "Removed person from all project leaders")
+            log(None, person, CHANGE,
+                "Removed person from all project leaders")
             for project in person.leads.all():
-                log(None, project, CHANGE, "Removed person %s from project leaders" % person)
+                log(None, project, CHANGE,
+                    "Removed person %s from project leaders" % person)
 
-models.signals.m2m_changed.connect(_leaders_changed, sender=Project.leaders.through)
+models.signals.m2m_changed.connect(
+    _leaders_changed, sender=Project.leaders.through)

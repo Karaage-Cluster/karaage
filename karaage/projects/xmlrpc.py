@@ -105,6 +105,7 @@ def change_default_project(user, project):
         return -2, "User %s not a member of project %s" % (user, project.pid)
 
     account = Account.objects.get(
+            person=person,
             username=username,
             machine_category=machine.category,
             date_deleted__isnull=True)

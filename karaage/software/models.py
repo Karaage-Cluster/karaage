@@ -24,6 +24,7 @@ from karaage.machines.models import Machine, Account
 
 from karaage.common import log
 
+
 class SoftwareCategory(models.Model):
     name = models.CharField(max_length=100)
 
@@ -47,7 +48,8 @@ class Software(models.Model):
     homepage = models.URLField(blank=True, null=True)
     tutorial_url = models.URLField(blank=True, null=True)
     academic_only = models.BooleanField(default=False)
-    restricted = models.BooleanField(help_text="Will require admin approval", default=False)
+    restricted = models.BooleanField(
+        help_text="Will require admin approval", default=False)
 
     _tracker = FieldTracker()
 
@@ -61,7 +63,7 @@ class Software(models.Model):
         # set group if not already set
         if self.group_id is None:
             name = str(self.name.lower().replace(' ', ''))
-            self.group,_ = Group.objects.get_or_create(name=name)
+            self.group, _ = Group.objects.get_or_create(name=name)
 
         # save the object
         super(Software, self).save(*args, **kwargs)
@@ -69,7 +71,8 @@ class Software(models.Model):
         if created:
             log(None, self, 2, 'Created')
         for field in self._tracker.changed():
-            log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
+            log(None, self, 2, 'Changed %s to %s'
+                               % (field,  getattr(self, field)))
 
         # update the datastore
         from karaage.datastores import machine_category_save_software

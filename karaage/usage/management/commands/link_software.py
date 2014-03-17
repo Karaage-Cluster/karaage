@@ -26,12 +26,15 @@ from karaage.software.models import SoftwareVersion, Software
 
 class Command(BaseCommand):
 
-    help = "Link used modules to jobs in the DB. Defaults to parsing all of yesterdays data"
+    help = ("Link used modules to jobs in the DB. "
+            "Defaults to parsing all of yesterdays data")
 
     option_list = BaseCommand.option_list + (
-        make_option('-a', '--all', action='store_true', dest='all', default=False,
+        make_option('-a', '--all', action='store_true',
+                    dest='all', default=False,
                     help='Report on all months.'),
-        make_option('--start', dest='start', default='',
+        make_option('--start',
+                    dest='start', default='',
                     help='Start date to process modules from'),
     )
 
@@ -49,12 +52,14 @@ class Command(BaseCommand):
             try:
                 year, month, day = start.split('-')
                 start = datetime.date(int(year), int(month), int(day))
-                used_modules = UsedModules.objects.filter(date_added__gte=start)
+                used_modules = UsedModules.objects.filter(
+                    date_added__gte=start)
             except ValueError:
-                raise CommandError('Failed to parse start date. Format YYYY-MM-DD')
+                raise CommandError('Failed to parse start date. '
+                                   'Format YYYY-MM-DD')
         else:
             used_modules = UsedModules.objects.filter(date_added=yesterday)
- 
+
         for um in used_modules:
             try:
                 job = CPUJob.objects.get(jobid=um.jobid)
@@ -75,14 +80,18 @@ class Command(BaseCommand):
                             package_name, version_name = module.split('//')
                         except ValueError:
                             try:
-                                print 'Failed to create a new software software from module string %s' % module
+                                print('Failed to create a new software '
+                                      'software from module string '
+                                      '%s' % module)
                             except UnicodeEncodeError:
                                 pass
                             continue
-                    software, created = Software.objects.get_or_create(name=package_name)
+                    software, created = Software.objects.get_or_create(
+                        name=package_name)
                     if created and verbose > 0:
                         print "Created new Software software %s" % software
-                    sv, created = SoftwareVersion.objects.get_or_create(software=software, version=version_name)
+                    sv, created = SoftwareVersion.objects.get_or_create(
+                        software=software, version=version_name)
                     if created and verbose > 0:
                         print "Created new Software version %s" % sv
                     sv.module = module
@@ -94,5 +103,5 @@ class Command(BaseCommand):
                 if not sv.last_used or job.date > sv.last_used:
                     sv.last_used = job.date
                     sv.save()
-            
+
             um.delete()

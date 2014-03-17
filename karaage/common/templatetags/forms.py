@@ -15,9 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 from django.template import Library
-from django.conf import settings
 from django import template
-from django.template import resolve_variable
 
 register = Library()
 
@@ -26,16 +24,19 @@ register = Library()
 def inlineformfield(field1, field2, field3=False):
     return locals()
 
+
 @register.inclusion_tag('common/form_as_div.html')
 def form_as_div(form):
     return {'form': form, }
+
 
 @register.tag
 def formfield(parser, token):
     try:
         tag_name, field = token.split_contents()
     except:
-        raise template.TemplateSyntaxError, "%r tag requires exactly one argument" % token.contents.split()[0]
+        raise template.TemplateSyntaxError(
+            "%r tag requires exactly one argument" % token.contents.split()[0])
     return FormFieldNode(field)
 
 
@@ -61,7 +62,6 @@ class FormFieldNode(template.Node):
             label_class_names.append('required')
 
         widget_class_name = field.field.widget.__class__.__name__.lower()
-        field_class_name = field.field.__class__.__name__.lower()
         if widget_class_name == 'checkboxinput':
             label_class_names.append('vCheckboxLabel')
 
@@ -71,7 +71,8 @@ class FormFieldNode(template.Node):
         context.push()
         context['class'] = class_str
         context['formfield'] = field
-        output = self.get_template(field.field.widget.__class__.__name__.lower()).render(context)
+        output = self.get_template(
+            field.field.widget.__class__.__name__.lower()).render(context)
         context.pop()
         context.pop()
         return output

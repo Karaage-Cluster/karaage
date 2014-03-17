@@ -42,17 +42,17 @@ class GoldDataStore(base.MachineCategoryDataStore):
             value = ""
 
         # replace whitespace with space
-        value = value.replace("\n"," ")
-        value = value.replace("\t"," ")
+        value = value.replace("\n", " ")
+        value = value.replace("\t", " ")
 
         # CSV seperator
-        value = value.replace("|"," ")
+        value = value.replace("|", " ")
 
         # remove leading/trailing whitespace
         value = value.strip()
 
         # hack because gold doesn't quote sql correctly
-        value = value.replace("\\","")
+        value = value.replace("\\", "")
 
         # Used for stripping non-ascii characters
         value = ''.join(c for c in value if ord(c) > 31 and ord(c) < 127)
@@ -79,37 +79,40 @@ class GoldDataStore(base.MachineCategoryDataStore):
             ignore_errors = []
         cmd = []
         cmd.extend(self._prefix)
-        cmd.append("%s/%s"%(self._path, command[0]))
+        cmd.append("%s/%s" % (self._path, command[0]))
         cmd.extend(command[1:])
         command = cmd
 
-        logger.debug("Cmd %s"%command)
+        logger.debug("Cmd %s" % command)
         null = open('/dev/null', 'w')
         retcode = subprocess.call(command, stdout=null, stderr=null)
         null.close()
 
         if retcode in ignore_errors:
-            logger.debug("<-- Cmd %s returned %d (ignored)"%(command, retcode))
+            logger.debug(
+                "<-- Cmd %s returned %d (ignored)" % (command, retcode))
             return
 
         if retcode:
-            logger.error("<-- Cmd %s returned: %d (error)"%(command, retcode))
+            logger.error(
+                "<-- Cmd %s returned: %d (error)" % (command, retcode))
             raise subprocess.CalledProcessError(retcode, command)
 
-        logger.debug("<-- Returned %d (good)"%(retcode))
+        logger.debug("<-- Returned %d (good)" % (retcode))
         return
 
     def _read_output(self, command):
         """ Read CSV delimited input from Gold. """
         cmd = []
         cmd.extend(self._prefix)
-        cmd.append("%s/%s"%(self._path, command[0]))
+        cmd.append("%s/%s" % (self._path, command[0]))
         cmd.extend(command[1:])
         command = cmd
 
-        logger.debug("Cmd %s"%command)
+        logger.debug("Cmd %s" % command)
         null = open('/dev/null', 'w')
-        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=null)
+        process = subprocess.Popen(
+            command, stdout=subprocess.PIPE, stderr=null)
         null.close()
 
         results = []
@@ -117,13 +120,13 @@ class GoldDataStore(base.MachineCategoryDataStore):
 
         try:
             headers = reader.next()
-            logger.debug("<-- headers %s"%headers)
+            logger.debug("<-- headers %s" % headers)
         except StopIteration:
-            logger.debug("Cmd %s headers not found"%command)
+            logger.debug("Cmd %s headers not found" % command)
             headers = []
 
         for row in reader:
-            logger.debug("<-- row %s"%row)
+            logger.debug("<-- row %s" % row)
             this_row = {}
 
             i = 0
@@ -136,40 +139,43 @@ class GoldDataStore(base.MachineCategoryDataStore):
 
         retcode = process.wait()
         if retcode != 0:
-            logger.error("<-- Cmd %s returned %d (error)"%(command, retcode))
+            logger.error("<-- Cmd %s returned %d (error)" % (command, retcode))
             raise subprocess.CalledProcessError(retcode, command)
 
         if len(headers) == 0:
-            logger.debug("Cmd %s didn't return any headers."%command)
+            logger.debug("Cmd %s didn't return any headers." % command)
 
-        logger.debug("<-- Returned: %d (good)"%(retcode))
+        logger.debug("<-- Returned: %d (good)" % (retcode))
         return results
 
     def get_user(self, username):
         """ Get the user details from Gold. """
-        cmd = [ "glsuser", "-u", username, "--raw" ]
+        cmd = ["glsuser", "-u", username, "--raw"]
         results = self._read_output(cmd)
 
         if len(results) == 0:
             return None
         elif len(results) > 1:
-            logger.error("Command returned multiple results for '%s'."%username)
-            raise RuntimeError("Command returned multiple results for '%s'."
-                    %username)
+            logger.error(
+                "Command returned multiple results for '%s'." % username)
+            raise RuntimeError(
+                "Command returned multiple results for '%s'." % username)
 
         the_result = results[0]
         the_name = the_result["Name"]
         if username.lower() != the_name.lower():
-            logger.error("We expected username '%s' but got username '%s'."
-                    %(username,the_name))
-            raise RuntimeError("We expected username '%s' "
-                    "but got username '%s'."%(username,the_name))
+            logger.error(
+                "We expected username '%s' but got username '%s'."
+                % (username, the_name))
+            raise RuntimeError(
+                "We expected username '%s' but got username '%s'."
+                % (username, the_name))
 
         return the_result
 
     def get_user_balance(self, username):
         """ Get the user balance details from Gold. """
-        cmd = [ "gbalance", "-u", username, "--raw" ]
+        cmd = ["gbalance", "-u", username, "--raw"]
         results = self._read_output(cmd)
 
         if len(results) == 0:
@@ -179,24 +185,26 @@ class GoldDataStore(base.MachineCategoryDataStore):
 
     def get_project(self, projectname):
         """ Get the project details from Gold. """
-        cmd = [ "glsproject", "-p", projectname, "--raw" ]
+        cmd = ["glsproject", "-p", projectname, "--raw"]
         results = self._read_output(cmd)
 
         if len(results) == 0:
             return None
         elif len(results) > 1:
-            logger.error("Command returned multiple results for '%s'."
-                    %projectname)
-            raise RuntimeError("Command returned multiple results for '%s'."
-                    %projectname)
+            logger.error(
+                "Command returned multiple results for '%s'." % projectname)
+            raise RuntimeError(
+                "Command returned multiple results for '%s'." % projectname)
 
         the_result = results[0]
         the_project = the_result["Name"]
         if projectname.lower() != the_project.lower():
-            logger.error("We expected projectname '%s' "
-                    "but got projectname '%s'."%(projectname,the_project))
-            raise RuntimeError("We expected projectname '%s' "
-                    "but got projectname '%s'."%(projectname,the_project))
+            logger.error(
+                "We expected projectname '%s' "
+                "but got projectname '%s'." % (projectname, the_project))
+            raise RuntimeError(
+                "We expected projectname '%s' "
+                "but got projectname '%s'." % (projectname, the_project))
 
         return the_result
 
@@ -204,22 +212,22 @@ class GoldDataStore(base.MachineCategoryDataStore):
         """ Get list of users in project from Gold. """
         ds_project = self.get_project(projectname)
         if ds_project is None:
-            logger.error("Project '%s' does not exist in Gold"
-                    %(projectname))
-            raise RuntimeError("Project '%s' does not exist in Gold"
-                    %(projectname))
+            logger.error(
+                "Project '%s' does not exist in Gold" % (projectname))
+            raise RuntimeError(
+                "Project '%s' does not exist in Gold" % (projectname))
 
         user_list = []
         if ds_project["Users"] != "":
-            user_list =  ds_project["Users"].lower().split(",")
+            user_list = ds_project["Users"].lower().split(",")
         return user_list
 
     def get_projects_in_user(self, username):
         """ Get list of projects in user from Gold. """
         ds_balance = self.get_user_balance(username)
         if ds_balance is None:
-            logger.error("User '%s' does not exist in Gold"%(username))
-            raise RuntimeError("User '%s' does not exist in Gold"%(username))
+            logger.error("User '%s' does not exist in Gold" % (username))
+            raise RuntimeError("User '%s' does not exist in Gold" % (username))
 
         project_list = []
         for bal in ds_balance:
@@ -372,8 +380,8 @@ class GoldDataStore(base.MachineCategoryDataStore):
                 "-p", pid])
             self._call([
                 "gchproject",
-                "-X", "Organization=%s"%
-                    self._filter_string(project.institute.name),
+                "-X", "Organization=%s"
+                % self._filter_string(project.institute.name),
                 "-p", pid])
         else:
             # project is deleted
@@ -411,7 +419,7 @@ class GoldDataStore(base.MachineCategoryDataStore):
     def save_institute(self, institute):
         """ Called when institute is created/updated. """
         name = institute.name
-        logger.debug("save_institute '%s'"%name)
+        logger.debug("save_institute '%s'" % name)
 
         # institute created
         # institute updated
@@ -420,13 +428,14 @@ class GoldDataStore(base.MachineCategoryDataStore):
             # date_deleted is not set, user should exist
             logger.debug("institute is active")
 
-            self._call(["goldsh", "Organization", "Create", "Name=%s"%name],
-                    ignore_errors=[185])
+            self._call(
+                ["goldsh", "Organization", "Create", "Name=%s" % name],
+                ignore_errors=[185])
         else:
             # date_deleted is not set, user should not exist
             logger.debug("institute is not active")
             # delete Gold organisation if institute marked as deleted
-            self._call(["goldsh", "Organization", "Delete", "Name==%s"%name])
+            self._call(["goldsh", "Organization", "Delete", "Name==%s" % name])
 
         logger.debug("returning")
         return
@@ -434,10 +443,10 @@ class GoldDataStore(base.MachineCategoryDataStore):
     def delete_institute(self, institute):
         """ Called when institute is deleted. """
         name = institute.name
-        logger.debug("institute_deleted '%s'"%name)
+        logger.debug("institute_deleted '%s'" % name)
 
         # institute deleted
-        self._call(["goldsh", "Organization", "Delete", "Name==%s"%name])
+        self._call(["goldsh", "Organization", "Delete", "Name==%s" % name])
 
         logger.debug("returning")
         return

@@ -54,144 +54,144 @@ class PersonTestCase(IntegrationTestCase):
     def test_permissions(self):
         test_object = Project.objects.get(pid="TestProject1")
         self.do_permission_tests(test_object, {
-            1: True, # person 1 can view: person's institute delegate, project leader
-            2: False, # person 2 cannot view
-            3: True, # person 3 can view: project member
-            4: True, # person 4 can view: is_staff
+            1: True,    # person 1 can view: person's institute delegate, project leader
+            2: False,   # person 2 cannot view
+            3: True,    # person 3 can view: project member
+            4: True,    # person 4 can view: is_staff
         })
 
         test_object = Person.objects.get(id=1)
         self.do_permission_tests(test_object, {
-            1: True, # person 1 can view: self, project member, person's institute delegate
-            2: False, # person 2 cannot view
-            3: False, # person 3 cannot view
-            4: True, # person 4 can view: is_staff, institute delegate
+            1: True,    # person 1 can view: self, project member, person's institute delegate
+            2: False,   # person 2 cannot view
+            3: False,   # person 3 cannot view
+            4: True,    # person 4 can view: is_staff, institute delegate
         })
 
         test_object = Person.objects.get(id=2)
         self.do_permission_tests(test_object, {
-            1: True, # person 1 can view: person's institute delegate
-            2: True, # person 2 can view: self
-            3: False, # person 3 cannot view
-            4: True, # person 4 can view: is_staff
+            1: True,    # person 1 can view: person's institute delegate
+            2: True,    # person 2 can view: self
+            3: False,   # person 3 cannot view
+            4: True,    # person 4 can view: is_staff
         })
 
         test_object = Person.objects.get(id=3)
         self.do_permission_tests(test_object, {
-            1: True, # person 1 can view: person's institute delegate, project leader
-            2: False, # person 2 cannot view
-            3: True, # person 3 can view: self, project member
-            4: True, # person 4 can view: is_staff
+            1: True,    # person 1 can view: person's institute delegate, project leader
+            2: False,   # person 2 cannot view
+            3: True,    # person 3 can view: self, project member
+            4: True,    # person 4 can view: is_staff
         })
 
         test_object = Person.objects.get(id=4)
         self.do_permission_tests(test_object, {
-            1: True, # person 1 can view: person's institute delegate
-            2: False, # person 2 cannot view
-            3: False, # person 3 cannot view
-            4: True, # person 4 can view: self, is_staff
+            1: True,    # person 1 can view: person's institute delegate
+            2: False,   # person 2 cannot view
+            3: False,   # person 3 cannot view
+            4: True,    # person 4 can view: self, is_staff
         })
 
         # add user 2 to project
         # test that members can see other people in own project
-#        print "-------------------------------------------------------------------"
+#        print "--------------------------------------------------------------"
         project = Project.objects.get(pid="TestProject1")
         project.group.members=[2,3]
 
         test_object = Project.objects.get(pid="TestProject1")
         self.do_permission_tests(test_object, {
-            1: True, # person 1 can view: person's institute delegate
-            2: True, # person 2 can view: project member
-            3: True, # person 3 can view: project member
-            4: True, # person 4 can view: is_staff
+            1: True,    # person 1 can view: person's institute delegate
+            2: True,    # person 2 can view: project member
+            3: True,    # person 3 can view: project member
+            4: True,    # person 4 can view: is_staff
         })
 
         test_object = Person.objects.get(id=1)
         self.do_permission_tests(test_object, {
-            1: True, # person 1 can view:  self, project member, delegate of institute
-            2: False, # person 2 cannot view
-            3: False, # person 3 cannot view
-            4: True, # person 4 can view: is_staff
+            1: True,    # person 1 can view:  self, project member, delegate of institute
+            2: False,   # person 2 cannot view
+            3: False,   # person 3 cannot view
+            4: True,    # person 4 can view: is_staff
         })
 
         test_object = Person.objects.get(id=2)
         self.do_permission_tests(test_object, {
-            1: True, # person 1 can view: person's institute delegate, project leader
-            2: True, # person 2 can view: self
-            3: True, # person 3 can view: project member
-            4: True, # person 4 can view: is_staff
+            1: True,    # person 1 can view: person's institute delegate, project leader
+            2: True,    # person 2 can view: self
+            3: True,    # person 3 can view: project member
+            4: True,    # person 4 can view: is_staff
         })
 
         test_object = Person.objects.get(id=3)
         self.do_permission_tests(test_object, {
-            1: True, # person 1 can view: person's institute delegate, project leader
-            2: True, # person 2 can view: project member
-            3: True, # person 3 can view: self, project member
-            4: True, # person 4 can view: is_staff
+            1: True,    # person 1 can view: person's institute delegate, project leader
+            2: True,    # person 2 can view: project member
+            3: True,    # person 3 can view: self, project member
+            4: True,    # person 4 can view: is_staff
         })
 
         test_object = Person.objects.get(id=4)
         self.do_permission_tests(test_object, {
-            1: True, # person 1 can view: person's institute delegate
-            2: False, # person 2 cannot view
-            3: False, # person 3 cannot view
-            4: True, # person 4 can view: self, is_staff
+            1: True,    # person 1 can view: person's institute delegate
+            2: False,   # person 2 cannot view
+            3: False,   # person 3 cannot view
+            4: True,    # person 4 can view: self, is_staff
         })
 
         # change institute of all people
         # Test institute leader can access people in project despite not being
         # institute leader for these people.
-#        print "-------------------------------------------------------------------"
+#        print "--------------------------------------------------------------"
         Person.objects.all().update(institute=2)
         #Institute.objects.filter(pk=2).update(delegate=2,active_delegate=2)
-        InstituteDelegate.objects.get_or_create(institute=Institute.objects.get(id=2), person=Person.objects.get(id=2),
-                defaults={'send_email': False})
+        InstituteDelegate.objects.get_or_create(
+            institute=Institute.objects.get(id=2),
+            person=Person.objects.get(id=2),
+            defaults={'send_email': False})
         project = Project.objects.get(pid="TestProject1")
-        project.leaders=[2]
+        project.leaders = [2]
 
         test_object = Project.objects.get(pid="TestProject1")
         self.do_permission_tests(test_object, {
-            1: True, # person 1 can view: person's institute delegate
-            2: True, # person 2 can view: project member, person's institute delegate, project leader
-            3: True, # person 3 can view: project member
-            4: True, # person 4 can view: is_staff
+            1: True,    # person 1 can view: person's institute delegate
+            2: True,    # person 2 can view: project member, person's institute delegate, project leader
+            3: True,    # person 3 can view: project member
+            4: True,    # person 4 can view: is_staff
         })
 
         test_object = Person.objects.get(id=1)
         self.do_permission_tests(test_object, {
-            1: True, # person 1 can view: self, project member
-            2: True, # person 2 can view: person's institute delegate
-            3: False, # person 3 cannot view
-            4: True, # person 4 can view: is_staff
+            1: True,    # person 1 can view: self, project member
+            2: True,    # person 2 can view: person's institute delegate
+            3: False,   # person 3 cannot view
+            4: True,    # person 4 can view: is_staff
         })
 
         test_object = Person.objects.get(id=2)
         self.do_permission_tests(test_object, {
-            1: True, # person 1 can view: project's institute leader
-            2: True, # person 2 can view: self, person's institute delegate, project leader
-            3: True, # person 3 can view: project member
-            4: True, # person 4 can view: is_staff
+            1: True,    # person 1 can view: project's institute leader
+            2: True,    # person 2 can view: self, person's institute delegate, project leader
+            3: True,    # person 3 can view: project member
+            4: True,    # person 4 can view: is_staff
         })
 
         test_object = Person.objects.get(id=3)
         self.do_permission_tests(test_object, {
-            1: True, # person 1 can view: project's institute leader
-            2: True, # person 2 can view: project member, person's institute delegate, project leader
-            3: True, # person 3 can view: self, project member
-            4: True, # person 4 can view: is_staff
+            1: True,    # person 1 can view: project's institute leader
+            2: True,    # person 2 can view: project member, person's institute delegate, project leader
+            3: True,    # person 3 can view: self, project member
+            4: True,    # person 4 can view: is_staff
         })
 
         test_object = Person.objects.get(id=4)
         self.do_permission_tests(test_object, {
-            1: True, # person 1 can view: person's institute delegate
-            2: True, # person 2 can view: person's institute delegate
-            3: False, # person 3 cannot view
-            4: True, # person 4 can view: self, is_staff
+            1: True,    # person 1 can view: person's institute delegate
+            2: True,    # person 2 can view: person's institute delegate
+            3: False,   # person 3 cannot view
+            4: True,    # person 4 can view: self, is_staff
         })
 
-
     def test_admin_create_user_with_account(self):
-
         users = Person.objects.count()
         project = Project.objects.get(pid='TestProject1')
         p_users = project.group.members.count()
@@ -201,7 +201,7 @@ class PersonTestCase(IntegrationTestCase):
         self.failUnlessEqual(response.status_code, 200)
 
         form_data = {
-            'title' : 'Mr',
+            'title': 'Mr',
             'short_name': 'Sam',
             'full_name': 'Sam Morrison',
             'position': 'Sys Admin',
@@ -232,7 +232,6 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(luser.givenName, 'Sam')
         self.assertEqual(luser.homeDirectory, '/vpac/TestProject1/samtest')
 
-
     def test_admin_create_user(self):
         users = Person.objects.count()
         project = Project.objects.get(pid='TestProject1')
@@ -244,7 +243,7 @@ class PersonTestCase(IntegrationTestCase):
         self.failUnlessEqual(response.status_code, 200)
 
         form_data = {
-            'title' : 'Mr',
+            'title': 'Mr',
             'short_name': 'Sam',
             'full_name': 'Sam Morrison2',
             'position': 'Sys Admin',
@@ -271,7 +270,6 @@ class PersonTestCase(IntegrationTestCase):
         response = self.client.post(reverse('kg_person_add'), form_data)
         self.failUnlessEqual(response.status_code, 200)
 
-
     def test_admin_update_person(self):
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
@@ -282,11 +280,12 @@ class PersonTestCase(IntegrationTestCase):
         self.failUnlessEqual(luser.gidNumber, 500)
         self.failUnlessEqual(luser.o, 'Example')
         self.failUnlessEqual(luser.gecos, 'Test User3 (Example)')
-        response = self.client.get(reverse('kg_person_edit', args=['kgtestuser3']))
+        response = self.client.get(
+            reverse('kg_person_edit', args=['kgtestuser3']))
         self.failUnlessEqual(response.status_code, 200)
 
         form_data = {
-            'title' : 'Mr',
+            'title': 'Mr',
             'short_name': 'Test',
             'full_name': 'Test User3',
             'position': 'Sys Admin',
@@ -297,7 +296,8 @@ class PersonTestCase(IntegrationTestCase):
             'telephone': '4444444',
             'mobile': '555666',
         }
-        response = self.client.post(reverse('kg_person_edit', args=['kgtestuser3']), form_data)
+        response = self.client.post(
+            reverse('kg_person_edit', args=['kgtestuser3']), form_data)
         self.failUnlessEqual(response.status_code, 302)
 
         person = Person.objects.get(username='kgtestuser3')
@@ -317,10 +317,12 @@ class PersonTestCase(IntegrationTestCase):
         luser = self._datastore._accounts().get(uid='kgtestuser3')
         self.assertEqual(luser.givenName, 'Test')
 
-        response = self.client.get(reverse('kg_person_delete', args=[person.username]))
+        response = self.client.get(
+            reverse('kg_person_delete', args=[person.username]))
         self.failUnlessEqual(response.status_code, 200)
         # Test deleting
-        response = self.client.post(reverse('kg_person_delete', args=[person.username]))
+        response = self.client.post(
+            reverse('kg_person_delete', args=[person.username]))
         self.failUnlessEqual(response.status_code, 302)
 
         person = Person.objects.get(username='kgtestuser3')
@@ -328,11 +330,16 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(person.is_active, False)
         self.assertEqual(person.projects.count(), 0)
         self.assertEqual(person.account_set.count(), 1)
-        self.assertEqual(person.account_set.all()[0].date_deleted, datetime.date.today())
-        self.failUnlessRaises(self._datastore._account.DoesNotExist, self._datastore._accounts().get, uid='kgtestuser3')
+        self.assertEqual(person.account_set.all()[0].date_deleted,
+                         datetime.date.today())
+        self.failUnlessRaises(
+            self._datastore._account.DoesNotExist,
+            self._datastore._accounts().get,
+            uid='kgtestuser3')
 
         # Test activating
-        response = self.client.post(reverse('kg_person_activate', args=[person.username]))
+        response = self.client.post(
+            reverse('kg_person_activate', args=[person.username]))
         self.failUnlessEqual(response.status_code, 302)
         person = Person.objects.get(username='kgtestuser3')
         self.assertEqual(person.is_active, True)
@@ -344,7 +351,8 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(person.account_set.count(), 1)
         self.assertEqual(ua.date_deleted, None)
 
-        response = self.client.post('/%susers/accounts/delete/%i/' % (settings.BASE_URL, ua.id))
+        response = self.client.post(
+            '/%susers/accounts/delete/%i/' % (settings.BASE_URL, ua.id))
         self.failUnlessEqual(response.status_code, 302)
 
         person = Person.objects.get(pk=Person.objects.count())
@@ -363,7 +371,7 @@ class PersonTestCase(IntegrationTestCase):
             pid='test2',
             name='test project',
             leader=person,
-            start_date = datetime.date.today(),
+            start_date=datetime.date.today(),
             machine_category=MachineCategory.objects.get(name='VPAC'),
             institute=Institute.objects.get(name='VPAC'),
             is_active=True,
@@ -372,7 +380,8 @@ class PersonTestCase(IntegrationTestCase):
         project.users.add(person)
         self.assertEqual(person.project_set.count(), 2)
         # change default
-        response = self.client.post(reverse('kg_account_set_default', args=[ua.id, project.pid]))
+        response = self.client.post(
+            reverse('kg_account_set_default', args=[ua.id, project.pid]))
 
         self.failUnlessEqual(response.status_code, 302)
 
@@ -382,7 +391,6 @@ class PersonTestCase(IntegrationTestCase):
 
         self.assertEqual(person.project_set.count(), 2)
         self.assertEqual(project, ua.default_project)
-
 
     def stest_add_user_to_project(self):
 
@@ -395,13 +403,15 @@ class PersonTestCase(IntegrationTestCase):
             pid='test2',
             name='test project 5',
             leader=Person.objects.get(username='leader'),
-            start_date = datetime.date.today(),
+            start_date=datetime.date.today(),
             machine_category=MachineCategory.objects.get(name='VPAC'),
             institute=Institute.objects.get(name='VPAC'),
             is_active=True,
             is_approved=True,
         )
 
-        response = self.client.post(reverse('kg_person_detail', args=[person.username]), { 'project': 'test2', 'project-add': 'true' })
+        response = self.client.post(
+            reverse('kg_person_detail', args=[person.username]),
+            {'project': 'test2', 'project-add': 'true'})
         self.failUnlessEqual(response.status_code, 200)
         self.assertEqual(person.project_set.count(), 2)

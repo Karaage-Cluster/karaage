@@ -26,8 +26,15 @@ from karaage.common.emails import CONTEXT, send_mail
 
 
 def render_email(name, context):
-    subject = render_to_string(['emails/%s_subject.txt' % name, 'people/emails/%s_subject.txt' % name], context).replace('\n', '')
-    body = render_to_string(['emails/%s_body.txt' % name, 'people/emails/%s_body.txt' % name], context)
+    subject = render_to_string(
+        ['emails/%s_subject.txt' % name,
+            'people/emails/%s_subject.txt' % name],
+        context)
+    subject = subject.replace('\n', '')
+    body = render_to_string(
+        ['emails/%s_body.txt' % name,
+            'people/emails/%s_body.txt' % name],
+        context)
     return subject, body
 
 
@@ -44,17 +51,23 @@ def send_bounced_warning(person):
                 context['receiver'] = leader
 
                 to_email = leader.email
-                subject = render_to_string('people/emails/bounced_email_subject.txt', context)
-                body = render_to_string('people/emails/bounced_email_body.txt', context)
-                send_mail(subject.replace('\n', ''), body, settings.ACCOUNTS_EMAIL, [to_email])
-                log(None, leader, 2, 'Sent email about bounced emails from %s' % person)
+                subject = render_to_string(
+                    'people/emails/bounced_email_subject.txt', context)
+                body = render_to_string(
+                    'people/emails/bounced_email_body.txt', context)
+                send_mail(
+                    subject.replace('\n', ''), body,
+                    settings.ACCOUNTS_EMAIL, [to_email])
+                log(None, leader, 2,
+                    'Sent email about bounced emails from %s' % person)
 
 
 def send_reset_password_email(person):
     """Sends an email to user allowing them to set their password."""
     uid = urlsafe_base64_encode(force_bytes(person.pk))
     token = default_token_generator.make_token(person)
-    url = '%s/persons/reset/%s/%s/' % (settings.REGISTRATION_BASE_URL, uid, token)
+    url = '%s/persons/reset/%s/%s/' % (
+        settings.REGISTRATION_BASE_URL, uid, token)
 
     context = CONTEXT.copy()
     context.update({
@@ -70,10 +83,12 @@ def send_reset_password_email(person):
 
 def send_confirm_password_email(person):
     """Sends an email to user allowing them to confirm their password."""
+    url = '%s/profile/login/%s/' % (
+        settings.REGISTRATION_BASE_URL, person.username)
 
     context = CONTEXT.copy()
     context.update({
-        'url': '%s/profile/login/%s/' % (settings.REGISTRATION_BASE_URL, person.username),
+        'url': url,
         'receiver': person,
     })
 

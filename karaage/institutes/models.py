@@ -27,9 +27,13 @@ from karaage.institutes.managers import ActiveInstituteManager
 
 class Institute(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    delegates = models.ManyToManyField(Person, related_name='delegate_for', blank=True, null=True, through='InstituteDelegate')
+    delegates = models.ManyToManyField(
+        Person, related_name='delegate_for',
+        blank=True, null=True, through='InstituteDelegate')
     group = models.ForeignKey(Group)
-    saml_entityid = models.CharField(max_length=200, null=True, blank=True, unique=True)
+    saml_entityid = models.CharField(
+        max_length=200,
+        null=True, blank=True, unique=True)
     is_active = models.BooleanField(default=True)
     objects = models.Manager()
     active = ActiveInstituteManager()
@@ -46,7 +50,7 @@ class Institute(models.Model):
         # set group if not already set
         if self.group_id is None:
             name = str(self.name.lower().replace(' ', ''))
-            self.group,_ = Group.objects.get_or_create(name=name)
+            self.group, _ = Group.objects.get_or_create(name=name)
 
         # save the object
         super(Institute, self).save(*args, **kwargs)
@@ -54,7 +58,8 @@ class Institute(models.Model):
         if created:
             log(None, self, 2, 'Created')
         for field in self._tracker.changed():
-            log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
+            log(None, self, 2, 'Changed %s to %s'
+                               % (field,  getattr(self, field)))
 
         # update the datastore
         from karaage.datastores import machine_category_save_institute
@@ -151,20 +156,21 @@ class InstituteQuota(models.Model):
 
         if created:
             log(None, self.institute, 2, 'Quota %s: Created' %
-                    (self.machine_category))
+                (self.machine_category))
         for field in self._tracker.changed():
             log(None, self.institute, 2, 'Quota %s: Changed %s to %s' %
-                    (self.machine_category, field,  getattr(self, field)))
+                (self.machine_category, field,  getattr(self, field)))
 
         from karaage.datastores import machine_category_save_institute
         machine_category_save_institute(self.institute)
 
     def delete(self, *args, **kwargs):
         log(None, self.institute, 2, 'Quota %s: Deleted' %
-                (self.machine_category))
+            (self.machine_category))
         super(InstituteQuota, self).delete(*args, **kwargs)
         from karaage.datastores import machine_category_delete_institute
-        machine_category_delete_institute(self.institute, self.machine_category)
+        machine_category_delete_institute(
+            self.institute, self.machine_category)
 
     def __unicode__(self):
         return '%s - %s' % (self.institute, self.machine_category)
@@ -195,10 +201,10 @@ class InstituteDelegate(models.Model):
 
         for field in self._tracker.changed():
             log(None, self.institute, 2, 'Delegate %s: Changed %s to %s' %
-                    (self.person, field,  getattr(self, field)))
+                (self.person, field,  getattr(self, field)))
 
     def delete(self, *args, **kwargs):
         super(InstituteDelegate, self).delete(*args, **kwargs)
 
         log(None, self.institute, 2, 'Delegate %s: Deleted' %
-                (self.person))
+            (self.person))

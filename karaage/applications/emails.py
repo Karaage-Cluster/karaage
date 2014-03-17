@@ -17,7 +17,6 @@
 
 from django.template.loader import render_to_string
 from django.conf import settings
-from django.core.urlresolvers import get_script_prefix
 
 from karaage.common.emails import CONTEXT, send_mail
 
@@ -26,8 +25,14 @@ TEMPLATE_DIRS = ['emails/', 'applications/emails/']
 
 def render_email(name, context):
     context.update(CONTEXT)
-    subject = render_to_string(['emails/%s_subject.txt' % name, 'applications/emails/%s_subject.txt' % name], context).replace('\n', '')
-    body = render_to_string(['emails/%s_body.txt' % name, 'applications/emails/%s_body.txt' % name], context)
+    subject = render_to_string(
+        ['emails/%s_subject.txt' % name,
+            'applications/emails/%s_subject.txt' % name],
+        context).replace('\n', '')
+    body = render_to_string(
+        ['emails/%s_body.txt' % name,
+            'applications/emails/%s_body.txt' % name],
+        context)
     return subject, body
 
 
@@ -35,7 +40,9 @@ def send_request_email(authorised_text, authorised_persons, application):
     """Sends an email to admin asking to approve user application"""
     context = CONTEXT.copy()
     context['requester'] = application.applicant
-    context['link'] = '%s/applications/%d/' % (settings.REGISTRATION_BASE_URL, application.pk)
+    context['link'] = (
+        '%s/applications/%d/'
+        % (settings.REGISTRATION_BASE_URL, application.pk))
     context['application'] = application
     context['authorised_text'] = authorised_text
 
@@ -69,7 +76,8 @@ def send_invite_email(application, link, is_secret):
     send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
 
 
-def send_approved_email(application, created_person, created_account, link, is_secret):
+def send_approved_email(
+        application, created_person, created_account, link, is_secret):
     """Sends an email informing person application is approved"""
     if not application.applicant.email:
         return
@@ -85,4 +93,3 @@ def send_approved_email(application, created_person, created_account, link, is_s
     to_email = application.applicant.email
 
     send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
-

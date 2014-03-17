@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import datetime;
 from django import template
 
 from karaage.machines.models import Machine
@@ -23,25 +22,31 @@ from karaage.usage.models import CPUJob
 
 register = template.Library()
 
+
 @register.assignment_tag()
 def get_person_recent_usage(person):
     return CPUJob.objects.filter(account__person=person).select_related()[:5]
+
 
 @register.assignment_tag()
 def get_account_recent_usage(account):
     return CPUJob.objects.filter(account=account).select_related()[:5]
 
+
 @register.assignment_tag()
 def get_project_recent_usage(project):
     return CPUJob.objects.filter(project=project).select_related()[:5]
+
 
 @register.assignment_tag()
 def get_software_recent_usage(software):
     return CPUJob.objects.filter(software=software).select_related()[:5]
 
+
 @register.assignment_tag()
 def get_machine_recent_usage(machine):
     return CPUJob.objects.filter(machine=machine).select_related()[:5]
+
 
 @register.assignment_tag()
 def get_machinecategory_recent_usage(machinecategory):
