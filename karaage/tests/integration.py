@@ -24,32 +24,33 @@ from karaage.tests.initial_ldap_data import test_ldif
 from karaage.datastores import _MACHINE_CATEGORY_DATASTORES, _GLOBAL_DATASTORES
 from karaage.datastores.ldap import MachineCategoryDataStore, GlobalDataStore
 
-LDAP_CONFIG = {
-    'DESCRIPTION': 'LDAP datastore',
-    'ENGINE': 'karaage.datastores.ldap.AccountDataStore',
-    'LDAP': 'default',
-    'ACCOUNT': 'karaage.datastores.ldap_schemas.openldap_account',
-    'GROUP': 'karaage.datastores.ldap_schemas.openldap_account_group',
-    'PRIMARY_GROUP': "institute",
-    'DEFAULT_PRIMARY_GROUP': "dummy",
-    'HOME_DIRECTORY': "/vpac/%(default_project)s/%(uid)s",
-    'LOCKED_SHELL': "/usr/local/sbin/locked",
-    'LDAP_ACCOUNT_BASE': 'ou=People,dc=python-ldap,dc=org',
-    'LDAP_GROUP_BASE': 'ou=Group,dc=python-ldap,dc=org',
-}
-
-GLOBAL_LDAP_CONFIG = {
-    'DESCRIPTION': 'LDAP datastore',
-    'ENGINE': 'karaage.datastores.ldap.GlobalDataStore',
-    'LDAP': 'default',
-    'PERSON': 'karaage.datastores.ldap_schemas.openldap_person',
-    'GROUP': 'karaage.datastores.ldap_schemas.openldap_person_group',
-    'LDAP_PERSON_BASE': 'ou=People,dc=python-ldap,dc=org',
-    'LDAP_GROUP_BASE': 'ou=Group,dc=python-ldap,dc=org',
-}
 
 class IntegrationTestCase(TestCase):
     ldap_datastore = 'ldap'
+
+    GLOBAL_LDAP_CONFIG = {
+        'DESCRIPTION': 'LDAP datastore',
+        'ENGINE': 'karaage.datastores.ldap.GlobalDataStore',
+        'LDAP': 'default',
+        'PERSON': 'karaage.datastores.ldap_schemas.openldap_person',
+        'GROUP': 'karaage.datastores.ldap_schemas.openldap_person_group',
+        'LDAP_PERSON_BASE': 'ou=People,dc=python-ldap,dc=org',
+        'LDAP_GROUP_BASE': 'ou=PeopleGroup,dc=python-ldap,dc=org',
+    }
+
+    LDAP_CONFIG = {
+        'DESCRIPTION': 'LDAP datastore',
+        'ENGINE': 'karaage.datastores.ldap.AccountDataStore',
+        'LDAP': 'default',
+        'ACCOUNT': 'karaage.datastores.ldap_schemas.openldap_account',
+        'GROUP': 'karaage.datastores.ldap_schemas.openldap_account_group',
+        'PRIMARY_GROUP': "institute",
+        'DEFAULT_PRIMARY_GROUP': "dummy",
+        'HOME_DIRECTORY': "/vpac/%(default_project)s/%(uid)s",
+        'LOCKED_SHELL': "/usr/local/sbin/locked",
+        'LDAP_ACCOUNT_BASE': 'ou=Account,dc=python-ldap,dc=org',
+        'LDAP_GROUP_BASE': 'ou=Group,dc=python-ldap,dc=org',
+    }
 
     def setUp(self):
         super(IntegrationTestCase, self).setUp()
@@ -58,8 +59,8 @@ class IntegrationTestCase(TestCase):
         server.start()
         server.ldapadd("\n".join(test_ldif)+"\n")
         self.__ldap_server = server
-        self.mc_ldap_datastore = MachineCategoryDataStore(LDAP_CONFIG)
-        self.global_ldap_datastore = GlobalDataStore(GLOBAL_LDAP_CONFIG)
+        self.mc_ldap_datastore = MachineCategoryDataStore(self.LDAP_CONFIG)
+        self.global_ldap_datastore = GlobalDataStore(self.GLOBAL_LDAP_CONFIG)
         _MACHINE_CATEGORY_DATASTORES[self.ldap_datastore] = [self.mc_ldap_datastore]
         # NOTE (RS) this is currently disabled because it causes test
         # failures.

@@ -56,12 +56,12 @@ class openldap_person(methods.baseMixin):
         schemas.rfc.organizationalPerson,
         schemas.rfc.inetOrgPerson,
         schemas.rfc.pwdPolicy,
-        kPersonMixin,
     ]
 
     mixin_list = [
         methods.common.personMixin,
         methods.pwdpolicy.pwdPolicyMixin,
+        kPersonMixin,
     ]
 
     class Meta:
