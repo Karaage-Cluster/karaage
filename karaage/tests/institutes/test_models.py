@@ -16,14 +16,16 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.core import exceptions as django_exceptions
-from django.test import TestCase
+import mock
 
+from karaage.tests.unit import UnitTestCase
 from karaage.people.models import Group
-from karaage.institutes.models import Institute
-from karaage.tests.fixtures import InstituteFactory
+from karaage.institutes.models import Institute, InstituteQuota
+from karaage.tests.fixtures import (InstituteFactory, simple_account,
+                                    GroupFactory)
 
 
-class InstituteTestCase(TestCase):
+class InstituteTestCase(UnitTestCase):
 
     def test_add(self):
         institute = Institute.objects.create(name='TestInstitute54')
@@ -66,7 +68,38 @@ class InstituteTestCase(TestCase):
             institution.full_clean()
 
     def test_change_group(self):
-        group, _ = Group.objects.get_or_create(name='example')
-        institute = Institute.objects.create(name='test')
-        institute.group = group
+        """Check that when changing an institutes group, old accounts are
+        removed from the institute and new ones are added.
+
+        """
+        account1 = simple_account(machine_category=self.machine_category)
+        group1 = GroupFactory()
+        group1.add_person(account1.person)
+
+        # Test during initial creation of the institute
+        self.resetDatastore()
+        institute = Institute.objects.create(group=group1)
+        institute_quota = InstituteQuota(machine_category=self.machine_category,
+                                         institute=institute)
         institute.save()
+        self.assertEqual(
+            self.datastore.method_calls,
+            [mock.call.add_account_to_institute(account1, institute)])
+
+        # Test changing an existing institutions group
+        account2 = simple_account(institute=institute,
+                                  machine_category=self.machine_category)
+        institute = institute_quota.institute
+        self.resetDatastore()
+        group2 = GroupFactory()
+        group2.add_person(account2.person)
+        institute.group = group2
+        institute.save()
+        self.assertEqual(
+            self.datastore.method_calls,
+            [mock.call.save_group(group2),
+             mock.call.add_account_to_group(account2, group2),
+             # old accounts are removed
+             mock.call.remove_account_from_institute(account1, institute),
+             # new accounts are added
+             mock.call.add_account_to_institute(account2, institute)])
