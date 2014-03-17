@@ -33,8 +33,8 @@ class AddPersonFormTestCase(TestCase):
             'needs_account': True,
             'email': 'test@example.com',
             'telephone': '8888888888',
-            'password1': 'test2134uuutuut',
-            'password2': 'test2134uuutuut'}
+            'password1': 'wai5bixa8Igohxa',
+            'password2': 'wai5bixa8Igohxa'}
         return valid_user
 
     def test_valid_data(self):
