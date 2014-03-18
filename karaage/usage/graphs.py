@@ -41,7 +41,11 @@ def get_project_trend_graph_filename(project,
     end_str = end.strftime('%Y-%m-%d')
     base_path = os.path.join(settings.GRAPH_ROOT, 'projects')
     base_url = os.path.join(settings.GRAPH_URL, 'projects')
-    filename = "%s_%s_%s_%i" % (project.pid, start_str, end_str, machine_category.id)
+    filename = os.path.join(
+        "projects",
+        "%s_%s_%s_%i" % (
+            project.pid, start_str, end_str, machine_category.id)
+    )
     return filename
 
 
