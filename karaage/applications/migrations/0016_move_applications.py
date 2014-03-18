@@ -36,9 +36,13 @@ class Migration(DataMigration):
             src.delete()
             dst = orm.ProjectApplication.objects.create(**values)
         if not db.dry_run:
-            src = orm['contenttypes.contenttype'].objects.get(app_label='applications', model='userapplication')
-            dst = orm['contenttypes.contenttype'].objects.get(app_label='applications', model='application')
-            orm['admin.logentry'].objects.filter(content_type=src).update(content_type=dst)
+            try:
+                src = orm['contenttypes.contenttype'].objects.get(app_label='applications', model='userapplication')
+            except orm['contenttypes.contenttype'].DoesNotExist:
+                pass
+            else:
+                dst = orm['contenttypes.contenttype'].objects.get(app_label='applications', model='application')
+                orm['admin.logentry'].objects.filter(content_type=src).update(content_type=dst)
 
     def backwards(self, orm):
         """ Move ProjectApplication with project back UserApplication. """
