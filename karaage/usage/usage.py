@@ -20,13 +20,11 @@ Methods for getting usage data
 uses a database cache to speed up proccess
 
 """
-__author__ = 'Sam Morrison'
-from django.db.models import Count, Sum
-
 import datetime
 
-from karaage.usage.models import InstituteCache, ProjectCache, PersonCache, MachineCache, MachineCategoryCache
-from karaage.usage.models import CPUJob
+from karaage.usage.models import InstituteCache, ProjectCache
+from karaage.usage.models import PersonCache, MachineCache
+from karaage.usage.models import MachineCategoryCache
 
 
 def get_institute_usage(institute, start, end, machine_category):
@@ -38,11 +36,11 @@ def get_institute_usage(institute, start, end, machine_category):
     start -- start date
     end -- end date
     machine_category -- MachineCategory object
-    
     """
     try:
-        cache = InstituteCache.objects.get(institute=institute,
-                date=datetime.date.today(), start=start, end=end, machine_category=machine_category)
+        cache = InstituteCache.objects.get(
+            institute=institute, date=datetime.date.today(),
+            start=start, end=end, machine_category=machine_category)
         return cache.cpu_time, cache.no_jobs
     except InstituteCache.DoesNotExist:
         return 0, 0
@@ -56,18 +54,20 @@ def get_project_usage(project, start, end, machine_category):
     project --
     start -- start date
     end -- end date
-    
+
     """
     try:
-        cache = ProjectCache.objects.get(project=project,
-                date=datetime.date.today(), start=start, end=end, machine_category=machine_category)
+        cache = ProjectCache.objects.get(
+            project=project, date=datetime.date.today(),
+            start=start, end=end, machine_category=machine_category)
         return cache.cpu_time, cache.no_jobs
     except ProjectCache.DoesNotExist:
         return 0, 0
 
 
 def get_person_usage(person, project, start, end, machine_category):
-    """Return a tuple of cpu hours and number of jobs for a person in a specific project
+    """Return a tuple of cpu hours and number of jobs for a person in a
+    specific project
 
     Keyword arguments:
     person --
@@ -76,8 +76,9 @@ def get_person_usage(person, project, start, end, machine_category):
     end -- end date
     """
     try:
-        cache = PersonCache.objects.get(person=person, project=project, machine_category=machine_category,
-                date=datetime.date.today(), start=start, end=end)
+        cache = PersonCache.objects.get(
+            person=person, project=project, date=datetime.date.today(),
+            start=start, end=end, machine_category=machine_category)
         return cache.cpu_time, cache.no_jobs
     except PersonCache.DoesNotExist:
         return 0, 0
@@ -95,11 +96,13 @@ def get_machine_usage(machine, start, end):
     """
 
     try:
-        cache = MachineCache.objects.get(machine=machine,
-                date=datetime.date.today(), start=start, end=end)
+        cache = MachineCache.objects.get(
+            machine=machine, date=datetime.date.today(),
+            start=start, end=end)
         return cache.cpu_time, cache.no_jobs
     except MachineCache.DoesNotExist:
         return 0, 0
+
 
 def get_machine_category_usage(machine_category, start, end):
     """Return a tuple of cpu hours and number of jobs for a machine_category
@@ -112,6 +115,7 @@ def get_machine_category_usage(machine_category, start, end):
 
     """
 
-    cache = MachineCategoryCache.objects.get(machine_category=machine_category,
-            date=datetime.date.today(), start=start, end=end)
+    cache = MachineCategoryCache.objects.get(
+        date=datetime.date.today(),
+        start=start, end=end, machine_category=machine_category)
     return cache

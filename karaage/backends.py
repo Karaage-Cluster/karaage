@@ -32,7 +32,8 @@ class LDAPBackend(ModelBackend):
             return None
 
         up = tldap.methods.ldap_passwd.UserPassword()
-        if not up._compareSinglePassword(password, person.legacy_ldap_password):
+        if not up._compareSinglePassword(
+                password, person.legacy_ldap_password):
             return None
 
         # Success.

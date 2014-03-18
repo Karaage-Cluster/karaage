@@ -22,9 +22,10 @@ import shutil
 
 GRAPH_BASE_DIR = settings.GRAPH_ROOT
 
+
 class Command(BaseCommand):
     help = "Deletes all usage graphs"
-    
+
     def handle(self, **options):
         verbose = int(options.get('verbosity'))
 

@@ -19,15 +19,15 @@ from django.core.management.base import BaseCommand
 import django.db.transaction
 import tldap.transaction
 
+
 class Command(BaseCommand):
     help = "Cleans up usage cache"
-    
+
     @django.db.transaction.commit_on_success
     @tldap.transaction.commit_on_success
     def handle(self, **options):
         verbose = int(options.get('verbosity'))
         import karaage.usage.models as models
-        import datetime
         if verbose > 1:
             print "Clearing project cache"
         models.ProjectCache.objects.all().delete()

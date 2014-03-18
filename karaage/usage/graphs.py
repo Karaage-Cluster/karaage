@@ -17,14 +17,13 @@
 
 import os.path
 from django.conf import settings
-from karaage.institutes.models import Institute
 
 
 def get_colour(index):
     """ get color number index. """
     colours = [
-            'red', 'blue', 'green', 'pink',
-            'yellow', 'magenta','orange', 'cyan',
+        'red', 'blue', 'green', 'pink',
+        'yellow', 'magenta', 'orange', 'cyan',
     ]
     default_colour = 'purple'
     if index < len(colours):
@@ -32,15 +31,15 @@ def get_colour(index):
     else:
         return default_colour
 
+
 # -----------------------------------------------------------------------
 
+
 def get_project_trend_graph_filename(project,
-                                start, end,
-                                machine_category):
+                                     start, end,
+                                     machine_category):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
-    base_path = os.path.join(settings.GRAPH_ROOT, 'projects')
-    base_url = os.path.join(settings.GRAPH_URL, 'projects')
     filename = os.path.join(
         "projects",
         "%s_%s_%s_%i" % (
@@ -53,9 +52,9 @@ def get_institute_graph_filename(start, end, machine_category):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
     filename = os.path.join(
-            "institutes",
-            "%s_%s_%i" % (
-                start_str, end_str, machine_category.id)
+        "institutes",
+        "%s_%s_%i" % (
+            start_str, end_str, machine_category.id)
     )
     return filename
 
@@ -64,9 +63,9 @@ def get_machine_graph_filename(start, end, machine_category):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
     filename = os.path.join(
-            "machines",
-            "%s_%s_%i" % (
-                start_str, end_str, machine_category.id)
+        "machines",
+        "%s_%s_%i" % (
+            start_str, end_str, machine_category.id)
     )
     return filename
 
@@ -75,23 +74,23 @@ def get_trend_graph_filename(start, end, machine_category):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
     filename = os.path.join(
-            "trends",
-            "%s_%s_%i" % (
-                start_str, end_str, machine_category.id)
+        "trends",
+        "%s_%s_%i" % (
+            start_str, end_str, machine_category.id)
     )
     return filename
 
 
 def get_institute_trend_graph_filename(institute,
-                                  start, end,
-                                  machine_category):
+                                       start, end,
+                                       machine_category):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
     filename = os.path.join(
-            "i_trends",
-            "%s_%s_%s_%i" % (
-                institute.name.replace(' ', '').replace('/', '-').lower(),
-                start_str, end_str, machine_category.id)
+        "i_trends",
+        "%s_%s_%s_%i" % (
+            institute.name.replace(' ', '').replace('/', '-').lower(),
+            start_str, end_str, machine_category.id)
     )
     return filename
 
@@ -104,8 +103,8 @@ def get_project_trend_graph_url(project,
 
     """Generates a bar graph for a project. """
 
-    filename = get_project_trend_graph_filename(project,
-            start, end, machine_category)
+    filename = get_project_trend_graph_filename(
+        project, start, end, machine_category)
     urls = {
         'graph_url': os.path.join(settings.GRAPH_URL, filename + ".png"),
         'data_url': os.path.join(settings.GRAPH_URL, filename + ".csv"),
@@ -155,8 +154,8 @@ def get_institute_trend_graph_url(institute,
                                   machine_category):
     """ Institute trend graph for machine category. """
 
-    filename = get_institute_trend_graph_filename(institute,
-            start, end, machine_category)
+    filename = get_institute_trend_graph_filename(
+        institute, start, end, machine_category)
     urls = {
         'graph_url': os.path.join(settings.GRAPH_URL, filename + ".png"),
         'data_url': os.path.join(settings.GRAPH_URL, filename + ".csv"),
@@ -172,7 +171,7 @@ def get_institutes_trend_graph_urls(start, end, machine_category):
     for iq in machine_category.institutequota_set.all():
         institute = iq.institute
         urls = get_institute_trend_graph_url(
-                institute, start, end, machine_category)
+            institute, start, end, machine_category)
         urls['institute'] = institute
         graph_list.append(urls)
 

@@ -18,34 +18,47 @@
 from django.conf.urls import patterns, url, include
 from django.conf import settings
 
-urlpatterns = patterns('karaage.usage.views',
+urlpatterns = patterns(
+    'karaage.usage.views',
     url(r'^$', 'usage_index', name='kg_usage_list'),
 
     url(r'^unknown/$', 'unknown_usage', name='kg_usage_unknown'),
 
     url(r'^search/$', 'search', name='kg_usage_search'),
     url(r'^jobs/$', 'job_list', name='kg_usage_job_list'),
-    url(r'^jobs/(?P<jobid>[-.\w\[\]]+)/$', 'job_detail', name='kg_usage_job_detail'),
+    url(r'^jobs/(?P<jobid>[-.\w\[\]]+)/$',
+        'job_detail', name='kg_usage_job_detail'),
 
     url(r'^(?P<machine_category_id>\d+)/$', 'index', name='kg_usage_mc'),
 
-    url(r'^(?P<machine_category_id>\d+)/core_report/$', 'core_report', name='kg_usage_core_report'),
-    url(r'^(?P<machine_category_id>\d+)/mem_report/$', 'mem_report', name='kg_usage_mem_report'),
-    url(r'^(?P<machine_category_id>\d+)/trends/$', 'institute_trends', name='kg_usage_institute_trends'),
+    url(r'^(?P<machine_category_id>\d+)/core_report/$',
+        'core_report', name='kg_usage_core_report'),
+    url(r'^(?P<machine_category_id>\d+)/mem_report/$',
+        'mem_report', name='kg_usage_mem_report'),
+    url(r'^(?P<machine_category_id>\d+)/trends/$',
+        'institute_trends', name='kg_usage_institute_trends'),
 
-    url(r'^(?P<machine_category_id>\d+)/institute/(?P<institute_id>\d+)/$', 'institute_usage', name='kg_usage_institute'),
-    url(r'^(?P<machine_category_id>\d+)/institute/(?P<institute_id>\d+)/users/$', 'institute_users', name='kg_usage_users'),
-    url(r'^(?P<machine_category_id>\d+)/projects/(?P<project_id>%s)/$' % settings.PROJECT_VALIDATION_RE,
+    url(r'^(?P<machine_category_id>\d+)/institute/(?P<institute_id>\d+)/$',
+        'institute_usage', name='kg_usage_institute'),
+    url(r'^(?P<machine_category_id>\d+)/institute/(?P<institute_id>\d+)/users/$',
+        'institute_users', name='kg_usage_users'),
+    url(r'^(?P<machine_category_id>\d+)/projects/(?P<project_id>%s)/$'
+        % settings.PROJECT_VALIDATION_RE,
         'project_usage', name='kg_usage_project'),
 
-    url(r'^(?P<machine_category_id>\d+)/top_users/$', 'top_users', name='kg_usage_top_users'),
+    url(r'^(?P<machine_category_id>\d+)/top_users/$',
+        'top_users', name='kg_usage_top_users'),
 )
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^usage/', include(urlpatterns)),
 )
 
 if settings.DEBUG:
-    urlpatterns += patterns('',
-        (r'^karaage_graphs/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.GRAPH_ROOT}),
+    urlpatterns += patterns(
+        '',
+        url(r'^karaage_graphs/(?P<path>.*)$',
+            'django.views.static.serve',
+            {'document_root': settings.GRAPH_ROOT}),
     )
