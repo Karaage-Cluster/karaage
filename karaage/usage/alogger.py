@@ -18,6 +18,8 @@
 from __future__ import absolute_import
 
 from math import ceil
+import logging
+logger = logging.getLogger(__name__)
 
 from karaage.machines.models import Machine, Account
 from karaage.usage.models import CPUJob, Queue
@@ -156,11 +158,10 @@ def parse_logs(log_list, date, machine_name, log_type):
 
     summary = 'Inserted : %i\nUpdated  : %i\nFailed   : %i\nSkiped   : %i' % (count, updated, fail, skip)
 
-    if DEBUG:
-        print 'Inserted : %i' % count
-        print 'Updated  : %i' % updated
-        print 'Failed   : %i' % fail
-        print 'Skiped   : %i' % skip
+    logger.debug('Inserted : %i' % count)
+    logger.debug('Updated  : %i' % updated)
+    logger.debug('Failed   : %i' % fail)
+    logger.debug('Skiped   : %i' % skip)
 
         
     return summary, output
