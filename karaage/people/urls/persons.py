@@ -15,33 +15,38 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import *
+from django.conf.urls import patterns, url, include
 from django.conf import settings
 
 from karaage.people.models import Person
 from karaage.people.forms import SetPasswordForm
 
 
-urlpatterns = patterns('karaage.people.views.persons',
-
+urlpatterns = patterns(
+    'karaage.people.views.persons',
     url(r'^$', 'user_list', name='kg_person_list'),
-    url(r'^deleted/$', 'user_list', { 'queryset': Person.deleted.all(),}),
-    url(r'^last_used/$', 'user_list', { 'queryset': Person.active.order_by('last_usage'),}),
+    url(r'^deleted/$', 'user_list',
+        {'queryset': Person.deleted.all()}),
+    url(r'^last_used/$', 'user_list',
+        {'queryset': Person.active.order_by('last_usage')}),
     url(r'^struggling/$', 'struggling', name='kg_person_struggling'),
     url(r'^locked/$', 'locked_list', name='kg_person_locked'),
 
     url(r'^add/$', 'add_user', name='kg_person_add'),
 
-    (r'^detail/(?P<username>%s)/' % settings.USERNAME_VALIDATION_RE, include('karaage.people.urls.person_detail')),
+    (r'^detail/(?P<username>%s)/' % settings.USERNAME_VALIDATION_RE,
+        include('karaage.people.urls.person_detail')),
 )
 
-urlpatterns += patterns('django.contrib.auth.views',
+urlpatterns += patterns(
+    'django.contrib.auth.views',
     url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         'password_reset_confirm', {
             'set_password_form': SetPasswordForm,
             'template_name': 'people/person_reset_confirm.html',
         }, name='password_reset_confirm'),
-    url(r'^reset/done/$', 'password_reset_complete', {
+    url(r'^reset/done/$',
+        'password_reset_complete', {
             'template_name': 'people/person_reset_complete.html',
         }, name='password_reset_complete'),
 )

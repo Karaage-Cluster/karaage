@@ -15,15 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import *
+from django.conf.urls import patterns, url, include
 from django.conf import settings
-from karaage.people.models import Group
-from karaage.people.forms import AdminGroupForm
 
 
-urlpatterns = patterns('karaage.people.views.groups',
+urlpatterns = patterns(
+    'karaage.people.views.groups',
     url(r'^$', 'group_list', name='kg_group_list'),
     url(r'^add/$', 'add_group', name='kg_group_add'),
     (r'^detail/(?P<group_name>%s)/' % settings.GROUP_VALIDATION_RE,
-     include('karaage.people.urls.group_detail')),
+        include('karaage.people.urls.group_detail')),
 )

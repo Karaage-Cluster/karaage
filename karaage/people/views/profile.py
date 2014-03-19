@@ -45,7 +45,8 @@ def login(request, username=None):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             from django.contrib.auth import login
-            person = Person.objects.authenticate(username=username, password=password)
+            person = Person.objects.authenticate(
+                username=username, password=password)
             if person is not None:
                 if person.is_active and not person.is_locked():
                     login(request, person)
@@ -55,7 +56,7 @@ def login(request, username=None):
             else:
                 error = 'Username or password was incorrect'
     else:
-        form = LoginForm(initial = {'username': username})
+        form = LoginForm(initial={'username': username})
 
     return render_to_response('people/profile_login.html', {
         'form': form,
@@ -75,8 +76,9 @@ def saml_login(request):
     if request.method == 'POST':
         if 'login' in request.POST and form.is_valid():
             institute = form.cleaned_data['institute']
-            url = saml.build_shib_url(request, redirect_to,
-                    institute.saml_entityid)
+            url = saml.build_shib_url(
+                request, redirect_to,
+                institute.saml_entityid)
             return HttpResponseRedirect(url)
         elif 'logout' in request.POST:
             if saml_session:
@@ -92,14 +94,17 @@ def saml_login(request):
         attrs, error = saml.parse_attributes(request)
         saml_id = attrs['persistent_id']
         try:
-            person = Person.objects.get(saml_id = saml_id)
-            error = "Shibboleth session established but you did not get logged in."
+            Person.objects.get(saml_id=saml_id)
+            error = "Shibboleth session established " \
+                    "but you did not get logged in."
         except Person.DoesNotExist:
-            error = "Cannot log in with shibboleth as we do not know your shibboleth id."
+            error = "Cannot log in with shibboleth as " \
+                    "we do not know your shibboleth id."
 
-    return render_to_response('people/profile_login_saml.html',
-            {'form': form, 'error': error, 'saml_session': saml_session, },
-            context_instance=RequestContext(request))
+    return render_to_response(
+        'people/profile_login_saml.html',
+        {'form': form, 'error': error, 'saml_session': saml_session, },
+        context_instance=RequestContext(request))
 
 
 def saml_details(request):
@@ -112,8 +117,9 @@ def saml_details(request):
                 person = request.user
                 institute = person.institute
                 if institute.saml_entityid:
-                    url = saml.build_shib_url(request, redirect_to,
-                            institute.saml_entityid)
+                    url = saml.build_shib_url(
+                        request, redirect_to,
+                        institute.saml_entityid)
                     return HttpResponseRedirect(url)
                 else:
                     return HttpResponseBadRequest("<h1>Bad Request</h1>")
@@ -124,7 +130,7 @@ def saml_details(request):
             if request.user.is_authenticated() and saml_session:
                 person = request.user
                 person = saml.add_saml_data(
-                        person, request)
+                    person, request)
                 person.save()
                 return HttpResponseRedirect(url)
             else:
@@ -140,7 +146,6 @@ def saml_details(request):
         else:
             return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
-
     attrs = {}
     if saml_session:
         attrs, _ = saml.parse_attributes(request)
@@ -150,10 +155,10 @@ def saml_details(request):
     if request.user.is_authenticated():
         person = request.user
 
-    return render_to_response('people/profile_saml.html',
-            {'attrs': attrs, 'saml_session': saml_session,
-                'person': person, },
-            context_instance=RequestContext(request))
+    return render_to_response(
+        'people/profile_saml.html',
+        {'attrs': attrs, 'saml_session': saml_session, 'person': person, },
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -165,7 +170,10 @@ def profile_personal(request):
     user_applications = []
     start, end = common.get_date_range(request)
 
-    return render_to_response('people/profile_personal.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'people/profile_personal.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -176,12 +184,14 @@ def edit_profile(request):
         if form.is_valid():
             person = form.save()
             assert person is not None
-            messages.success(request, "User '%s' was edited succesfully" % person)
+            messages.success(
+                request, "User '%s' was edited succesfully" % person)
             return HttpResponseRedirect(person.get_absolute_url())
 
-    return render_to_response('people/profile_edit.html',
-            {'person': person, 'form': form},
-            context_instance=RequestContext(request))
+    return render_to_response(
+        'people/profile_edit.html',
+        {'person': person, 'form': form},
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -199,9 +209,10 @@ def password_change(request):
     else:
         form = PasswordChangeForm()
 
-    return render_to_response('common/profile_password.html',
-            {'person': person, 'form': form},
-            context_instance=RequestContext(request))
+    return render_to_response(
+        'common/profile_password.html',
+        {'person': person, 'form': form},
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -218,7 +229,10 @@ def password_request(request):
     var = {
         'person': person,
     }
-    return render_to_response('common/profile_password_request.html', var, context_instance=RequestContext(request))
+    return render_to_response(
+        'common/profile_password_request.html',
+        var,
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -227,6 +241,7 @@ def password_request_done(request):
     var = {
         'person': person,
     }
-    return render_to_response('common/profile_password_request_done.html', var, context_instance=RequestContext(request))
-
-
+    return render_to_response(
+        'common/profile_password_request_done.html',
+        var,
+        context_instance=RequestContext(request))

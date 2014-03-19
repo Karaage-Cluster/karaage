@@ -33,7 +33,7 @@ import karaage.common as util
 @admin_required
 def group_list(request, queryset=None):
     if queryset is None:
-        queryset=Group.objects.select_related()
+        queryset = Group.objects.select_related()
 
     group_list = queryset
 
@@ -60,9 +60,9 @@ def group_list(request, queryset=None):
         page = paginator.page(paginator.num_pages)
 
     return render_to_response(
-            'people/group_list.html',
-            {'page': page, 'terms': terms},
-            context_instance=RequestContext(request))
+        'people/group_list.html',
+        {'page': page, 'terms': terms},
+        context_instance=RequestContext(request))
 
 
 def _add_edit_group(request, form_class, group_name):
@@ -79,19 +79,22 @@ def _add_edit_group(request, form_class, group_name):
             if group:
                 # edit
                 group = form.save()
-                messages.success(request, "Group '%s' was edited succesfully" % group)
+                messages.success(
+                    request, "Group '%s' was edited succesfully" % group)
             else:
                 #Add
                 group = form.save()
-                messages.success(request, "Group '%s' was created succesfully" % group)
+                messages.success(
+                    request, "Group '%s' was created succesfully" % group)
 
             return HttpResponseRedirect(group.get_absolute_url())
     else:
         form = GroupForm(instance=group)
 
-    return render_to_response('people/group_form.html',
-            {'group': group, 'form': form},
-            context_instance=RequestContext(request))
+    return render_to_response(
+        'people/group_form.html',
+        {'group': group, 'form': form},
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -106,7 +109,6 @@ def edit_group(request, group_name):
 
 @admin_required
 def delete_group(request, group_name):
-
     group = get_object_or_404(Group, name=group_name)
 
     error = None
@@ -121,7 +123,10 @@ def delete_group(request, group_name):
         messages.success(request, "Group '%s' was deleted succesfully" % group)
         return HttpResponseRedirect(reverse("kg_group_list"))
 
-    return render_to_response('people/group_confirm_delete.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'people/group_confirm_delete.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -129,7 +134,10 @@ def group_detail(request, group_name):
     group = get_object_or_404(Group, name=group_name)
     form = AddGroupMemberForm(instance=group)
 
-    return render_to_response('people/group_detail.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'people/group_detail.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -142,15 +150,20 @@ def group_verbose(request, group_name):
     from karaage.datastores import machine_category_get_group_details
     machine_category_group_details = machine_category_get_group_details(group)
 
-    return render_to_response('people/group_verbose.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'people/group_verbose.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
 def group_logs(request, group_name):
     obj = get_object_or_404(Group, name=group_name)
     breadcrumbs = []
-    breadcrumbs.append( ("Groups", reverse("kg_group_list")) )
-    breadcrumbs.append( (unicode(obj), reverse("kg_group_detail", args=[obj.name])) )
+    breadcrumbs.append(
+        ("Groups", reverse("kg_group_list")))
+    breadcrumbs.append(
+        (unicode(obj), reverse("kg_group_detail", args=[obj.name])))
     return util.log_list(request, breadcrumbs, obj)
 
 
@@ -158,8 +171,10 @@ def group_logs(request, group_name):
 def add_comment(request, group_name):
     obj = get_object_or_404(Group, name=group_name)
     breadcrumbs = []
-    breadcrumbs.append( ("Groups", reverse("kg_group_list")) )
-    breadcrumbs.append( (unicode(obj), reverse("kg_group_detail", args=[obj.name])) )
+    breadcrumbs.append(
+        ("Groups", reverse("kg_group_list")))
+    breadcrumbs.append(
+        (unicode(obj), reverse("kg_group_detail", args=[obj.name])))
     return util.add_comment(request, breadcrumbs, obj)
 
 
@@ -174,7 +189,10 @@ def add_group_member(request, group_name):
     else:
         form = AddGroupMemberForm(instance=group)
 
-    return render_to_response('people/group_add_member.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'people/group_add_member.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -188,10 +206,14 @@ def remove_group_member(request, group_name, username):
         count = group.project_set.filter(pk=account.default_project.pk).count()
         # If yes, error
         if count > 0:
-            error = "The person has accounts that use this group as the default_project."
+            error = "The person has accounts that use " \
+                    "this group as the default_project."
 
     if error is None and request.method == 'POST':
         group.remove_person(person)
         return HttpResponseRedirect(group.get_absolute_url())
 
-    return render_to_response('people/group_remove_member.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'people/group_remove_member.html',
+        locals(),
+        context_instance=RequestContext(request))

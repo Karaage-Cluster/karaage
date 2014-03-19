@@ -1,9 +1,26 @@
+# Copyright 2007-2014 VPAC
+#
+# This file is part of Karaage.
+#
+# Karaage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Karaage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Karaage  If not, see <http://www.gnu.org/licenses/>.
+
 import getpass
-from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
 
 from karaage.people.models import Person
+
 
 class Command(BaseCommand):
     help = "Change a person's password for Karaage."
@@ -16,7 +33,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if len(args) > 1:
-            raise CommandError("need exactly one or zero arguments for username")
+            raise CommandError(
+                "need exactly one or zero arguments for username")
 
         if args:
             username, = args
@@ -37,11 +55,14 @@ class Command(BaseCommand):
             p1 = self._get_pass()
             p2 = self._get_pass("Password (again): ")
             if p1 != p2:
-                self.stdout.write("Passwords do not match. Please try again.\n")
+                self.stdout.write(
+                    "Passwords do not match. Please try again.\n")
                 count = count + 1
 
         if count == MAX_TRIES:
-            raise CommandError("Aborting password change for user '%s' after %s attempts" % (username, count))
+            raise CommandError(
+                "Aborting password change for user '%s' after %s attempts"
+                % (username, count))
 
         person.set_password(p1)
         person.save()

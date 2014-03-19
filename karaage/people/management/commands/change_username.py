@@ -17,10 +17,12 @@
 
 from django.core.management.base import BaseCommand, CommandError
 from karaage.people.models import Person
-from karaage.people.utils import validate_username_for_rename_person, UsernameInvalid, UsernameTaken
+from karaage.people.utils import validate_username_for_rename_person
+from karaage.people.utils import UsernameInvalid, UsernameTaken
 import sys
 import django.db.transaction
 import tldap.transaction
+
 
 class Command(BaseCommand):
     help = 'Change a username for a person and all accounts for that person'
@@ -30,7 +32,9 @@ class Command(BaseCommand):
     @tldap.transaction.commit_on_success
     def handle(self, *args, **options):
         if len(args) != 2:
-            raise CommandError('Usage: change_username <old username> <new username>')
+            raise CommandError(
+                'Usage: change_username <old username> <new username>')
+
         old = args[0]
         new = args[1]
 
@@ -47,7 +51,9 @@ class Command(BaseCommand):
             raise CommandError(e.args[0])
 
         while 1:
-            confirm = raw_input('Change person "%s" and accounts to "%s (yes,no): ' % (old, new))
+            confirm = raw_input(
+                'Change person "%s" and accounts to "%s (yes,no): '
+                % (old, new))
             if confirm == 'yes':
                 break
             elif confirm == 'no':
@@ -65,4 +71,3 @@ class Command(BaseCommand):
         print "Changed username on person"
 
         print "Done"
-

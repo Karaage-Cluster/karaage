@@ -52,19 +52,22 @@ def _add_edit_user(request, form_class, username):
             if person:
                 # edit
                 person = form.save()
-                messages.success(request, "User '%s' was edited succesfully" % person)
+                messages.success(
+                    request, "User '%s' was edited succesfully" % person)
                 assert person is not None
             else:
                 #Add
                 person = form.save()
-                messages.success(request, "User '%s' was created succesfully" % person)
+                messages.success(
+                    request, "User '%s' was created succesfully" % person)
                 assert person is not None
 
             return HttpResponseRedirect(person.get_absolute_url())
 
-    return render_to_response('people/person_form.html',
-            {'person': person, 'form': form},
-            context_instance=RequestContext(request))
+    return render_to_response(
+        'people/person_form.html',
+        {'person': person, 'form': form},
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -80,10 +83,10 @@ def edit_user(request, username):
 @login_required
 def user_list(request, queryset=None, template=None, context=None):
     if queryset is None:
-        queryset=Person.objects.select_related()
+        queryset = Person.objects.select_related()
 
     if template is None:
-        template="people/person_list.html"
+        template = "people/person_list.html"
 
     if not common.is_admin(request):
         queryset = queryset.filter(pk=request.user.pk)
@@ -97,14 +100,19 @@ def user_list(request, queryset=None, template=None, context=None):
         user_list = user_list.filter(is_active=int(request.GET['status']))
 
     params = dict(request.GET.items())
-    m_params = dict([(str(k), str(v)) for k, v in params.items() if k.startswith('date_approved__')])
+    m_params = dict(
+        [(str(k), str(v)) for k, v in params.items()
+            if k.startswith('date_approved__')])
     user_list = user_list.filter(**m_params)
 
     if 'search' in request.REQUEST:
         terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
-            q = Q(username__icontains=term) | Q(short_name__icontains=term) | Q(full_name__icontains=term) | Q(comment__icontains=term)
+            q = Q(username__icontains=term)
+            q = q | Q(short_name__icontains=term)
+            q = q | Q(full_name__icontains=term)
+            q = q | Q(comment__icontains=term)
             query = query & q
 
         user_list = user_list.filter(query)
@@ -136,7 +144,8 @@ def user_list(request, queryset=None, template=None, context=None):
         {'page': page, 'filter_bar': filter_bar, 'terms': terms}
     )
 
-    return render_to_response(template, new_context,
+    return render_to_response(
+        template, new_context,
         context_instance=RequestContext(request))
 
 
@@ -150,8 +159,9 @@ def locked_list(request):
             ids.append(p.id)
 
     persons = Person.objects.filter(id__in=ids)
-    context = { 'title': 'Locked' }
-    return user_list(request, persons, "people/person_list_filtered.html", context)
+    context = {'title': 'Locked'}
+    return user_list(
+        request, persons, "people/person_list_filtered.html", context)
 
 
 @admin_required
@@ -166,8 +176,11 @@ def struggling(request):
     persons = persons.filter(last_usage__isnull=True)
     persons = persons.order_by('-date_approved')
 
-    context = { 'title': 'Struggling' }
-    return user_list(request, persons, "people/person_struggling.html", context)
+    context = {'title': 'Struggling'}
+
+    return user_list(
+        request, persons, "people/person_struggling.html", context)
+
 
 @admin_required
 def delete_user(request, username):
@@ -179,21 +192,27 @@ def delete_user(request, username):
         person.deactivate(deleted_by)
         messages.success(request, "User '%s' was deleted succesfully" % person)
         return HttpResponseRedirect(person.get_absolute_url())
-        
-    return render_to_response('people/person_confirm_delete.html', locals(), context_instance=RequestContext(request))
+
+    return render_to_response(
+        'people/person_confirm_delete.html', locals(),
+        context_instance=RequestContext(request))
 
 
 @login_required
 def user_detail(request, username):
-    
     person = get_object_or_404(Person, username=username)
     if not person.can_view(request):
-        return HttpResponseForbidden('<h1>Access Denied</h1><p>You do not have permission to view details about this user.</p>')
+        return HttpResponseForbidden(
+            '<h1>Access Denied</h1>'
+            '<p>You do not have permission to view details '
+            'about this user.</p>')
 
     my_projects = person.projects.all()
     my_pids = [p.pid for p in my_projects]
-    
-    return render_to_response('people/person_detail.html', locals(), context_instance=RequestContext(request))
+
+    return render_to_response(
+        'people/person_detail.html', locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -209,7 +228,9 @@ def user_verbose(request, username):
         details = machine_category_get_account_details(ua)
         account_details.append(details)
 
-    return render_to_response('people/person_verbose.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'people/person_verbose.html', locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -219,18 +240,22 @@ def activate(request, username):
     if request.method == 'POST':
         approved_by = request.user
         person.activate(approved_by)
-        return HttpResponseRedirect(reverse('kg_person_password', args=[person.username]))
-    
-    return render_to_response('people/person_reactivate.html', {'person': person}, context_instance=RequestContext(request))
+        return HttpResponseRedirect(
+            reverse('kg_person_password', args=[person.username]))
+
+    return render_to_response(
+        'people/person_reactivate.html',
+        {'person': person},
+        context_instance=RequestContext(request))
 
 
 @admin_required
 def password_change(request, username):
     person = get_object_or_404(Person, username=username)
-    
+
     if request.POST:
         form = AdminPasswordChangeForm(request.POST)
-        
+
         if form.is_valid():
             form.save(person)
             messages.success(request, "Password changed successfully")
@@ -239,18 +264,26 @@ def password_change(request, username):
             return HttpResponseRedirect(person.get_absolute_url())
     else:
         form = AdminPasswordChangeForm()
-        
-    return render_to_response('people/person_password.html', {'person': person, 'form': form}, context_instance=RequestContext(request))
+
+    return render_to_response(
+        'people/person_password.html',
+        {'person': person, 'form': form},
+        context_instance=RequestContext(request))
 
 
 @admin_required
 def lock_person(request, username):
     person = get_object_or_404(Person, username=username)
+
     if request.method == 'POST':
         person.lock()
         messages.success(request, "%s's account has been locked" % person)
         return HttpResponseRedirect(person.get_absolute_url())
-    return render_to_response('people/person_confirm_lock.html', locals(), context_instance=RequestContext(request))
+
+    return render_to_response(
+        'people/person_confirm_lock.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -260,7 +293,10 @@ def unlock_person(request, username):
         person.unlock()
         messages.success(request, "%s's account has been unlocked" % person)
         return HttpResponseRedirect(person.get_absolute_url())
-    return render_to_response('people/person_confirm_unlock.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'people/person_confirm_unlock.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -269,22 +305,31 @@ def bounced_email(request, username):
     if request.method == 'POST':
         person.lock()
         send_bounced_warning(person)
-        messages.success(request, "%s's account has been locked and emails have been sent" % person)
-        common.log(request.user, person, 2, 'Emails sent to project leaders and account locked')
+        messages.success(
+            request,
+            "%s's account has been locked and emails have been sent" % person)
+        common.log(
+            request.user, person, 2,
+            'Emails sent to project leaders and account locked')
         for ua in person.account_set.all():
             ua.change_shell(ua.previous_shell)
             ua.change_shell(settings.BOUNCED_SHELL)
         return HttpResponseRedirect(person.get_absolute_url())
 
-    return render_to_response('people/person_bounced_email.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'people/person_bounced_email.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
 def person_logs(request, username):
     obj = get_object_or_404(Person, username=username)
     breadcrumbs = []
-    breadcrumbs.append( ("People", reverse("kg_person_list")) )
-    breadcrumbs.append( (unicode(obj), reverse("kg_person_detail", args=[obj.username])) )
+    breadcrumbs.append(
+        ("People", reverse("kg_person_list")))
+    breadcrumbs.append(
+        (unicode(obj), reverse("kg_person_detail", args=[obj.username])))
     return common.log_list(request, breadcrumbs, obj)
 
 
@@ -292,8 +337,10 @@ def person_logs(request, username):
 def add_comment(request, username):
     obj = get_object_or_404(Person, username=username)
     breadcrumbs = []
-    breadcrumbs.append( ("People", reverse("kg_person_list")) )
-    breadcrumbs.append( (unicode(obj), reverse("kg_person_detail", args=[obj.username])) )
+    breadcrumbs.append(
+        ("People", reverse("kg_person_list")))
+    breadcrumbs.append(
+        (unicode(obj), reverse("kg_person_detail", args=[obj.username])))
     return common.add_comment(request, breadcrumbs, obj)
 
 
@@ -301,10 +348,14 @@ def add_comment(request, username):
 def password_request(request, username):
     person = get_object_or_404(Person, username=username)
 
-    post_reset_redirect = reverse('kg_person_reset_done', args=[person.username])
+    post_reset_redirect = reverse(
+        'kg_person_reset_done', args=[person.username])
 
     if not person.can_view(request):
-        return HttpResponseForbidden('<h1>Access Denied</h1><p>You do not have permission to view details about this user.</p>')
+        return HttpResponseForbidden(
+            '<h1>Access Denied</h1>'
+            '<p>You do not have permission to view details '
+            'about this user.</p>')
 
     if request.method == "POST":
         if person.has_usable_password():
@@ -314,7 +365,10 @@ def password_request(request, username):
     var = {
         'person': person,
     }
-    return render_to_response('people/person_password_request.html', var, context_instance=RequestContext(request))
+    return render_to_response(
+        'people/person_password_request.html',
+        var,
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -323,4 +377,7 @@ def password_request_done(request, username):
     var = {
         'person': person,
     }
-    return render_to_response('people/person_password_request_done.html', var, context_instance=RequestContext(request))
+    return render_to_response(
+        'people/person_password_request_done.html',
+        var,
+        context_instance=RequestContext(request))

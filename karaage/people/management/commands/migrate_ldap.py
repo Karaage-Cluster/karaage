@@ -25,19 +25,23 @@ import django.db.transaction
 import tldap.transaction
 
 from karaage.machines.models import Account
-from karaage.datastores import get_global_test_datastore, get_machine_category_test_datastore
+from karaage.datastores import get_global_test_datastore
+from karaage.datastores import get_machine_category_test_datastore
 import karaage.datastores.ldap as dldap
+
 
 class Command(BaseCommand):
     help = "Run migrations on the LDAP database."
 
     option_list = BaseCommand.option_list + (
-        optparse.make_option('--ldif',
-        action='store_true',
-        dest='ldif',
-        default=False,
-        help='Don\'t change anything, output ldif of what needs to change instead.'),
-    )
+        optparse.make_option(
+            '--ldif',
+            action='store_true',
+            dest='ldif',
+            default=False,
+            help='Don\'t change anything, output ldif of what needs '
+            'to change instead.'),
+        )
 
     @django.db.transaction.commit_on_success
     @tldap.transaction.commit_on_success
@@ -47,19 +51,23 @@ class Command(BaseCommand):
             assert isinstance(global_datastore, dldap.GlobalDataStore)
         except IndexError:
             global_datastore = None
-        machine_category_datastore = get_machine_category_test_datastore("ldap", 0)
-        assert isinstance(machine_category_datastore, dldap.MachineCategoryDataStore)
+        machine_category_datastore = get_machine_category_test_datastore(
+            "ldap", 0)
+        assert isinstance(
+            machine_category_datastore, dldap.MachineCategoryDataStore)
 
         if options['ldif']:
-            ldif_writer=ldif.LDIFWriter(sys.stdout)
+            ldif_writer = ldif.LDIFWriter(sys.stdout)
 
-        if global_datastore is not None :
+        if global_datastore is not None:
             # we have to move accounts to the account_base.
             # no changes rquired for people.
-            account_base_dn = machine_category_datastore._accounts().get_base_dn()
+            account_base_dn = machine_category_datastore._accounts(
+                ).get_base_dn()
             split_account_base_dn = ldap.dn.str2dn(account_base_dn)
 
-            for p in global_datastore._people().filter(objectClass='posixAccount'):
+            for p in global_datastore._people().filter(
+                    objectClass='posixAccount'):
                 # Convert account to person, strip unwanted fields.
                 # This is better then calling person.save() as we get the
                 # password too.
@@ -78,19 +86,22 @@ class Command(BaseCommand):
                     new_dn = ldap.dn.dn2str(tmp)
 
                     # we can do move in ldif, so delete and add
-                    entry = { 'changetype': [ 'delete' ] }
-                    ldif_writer.unparse(p.dn,entry)
+                    entry = {'changetype': ['delete']}
+                    ldif_writer.unparse(p.dn, entry)
 
                     # write person entry
                     if new_person.pwdAttribute is None:
                         new_person.pwdAttribute = 'userPassword'
-                    new_person.unparse(ldif_writer,
-                            None, { 'changetype': [ 'add' ] } )
+                    new_person.unparse(
+                        ldif_writer, None,
+                        {'changetype': ['add']})
 
                     # write account entry
                     if p.pwdAttribute is None:
                         p.pwdAttribute = 'userPassword'
-                    p.unparse(ldif_writer, new_dn, { 'changetype': [ 'add' ] } )
+                    p.unparse(
+                        ldif_writer, new_dn,
+                        {'changetype': ['add']})
                 else:
                     # move account from person to accounts
                     print "moving account and creating person for %s" % p.dn
@@ -107,11 +118,12 @@ class Command(BaseCommand):
             for p in machine_category_datastore._accounts():
                 # If there are no accounts for this person, then delete
                 # the LDAP entry.
-                ua = Account.objects.filter(username=p.uid, date_deleted__isnull=True)
+                ua = Account.objects.filter(
+                    username=p.uid, date_deleted__isnull=True)
                 if ua.count() == 0 and 'posixAccount' not in p.objectClass:
                     if options['ldif']:
-                        entry = { 'changetype': [ 'delete' ] }
-                        ldif_writer.unparse(p.dn,entry)
+                        entry = {'changetype': ['delete']}
+                        ldif_writer.unparse(p.dn, entry)
                     else:
                         print "deleting %s" % p.dn
                         p.delete()

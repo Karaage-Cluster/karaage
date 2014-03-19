@@ -23,17 +23,18 @@ from karaage.people.models import Person
 import django.db.transaction
 import tldap.transaction
 
+
 class Command(BaseCommand):
     help = "Lock all training accounts"
-    
+
     @django.db.transaction.commit_on_success
     @tldap.transaction.commit_on_success
     def handle(self, **options):
-        
-        verbose = int(options.get('verbosity'))
-        training_prefix = getattr(settings, 'TRAINING_ACCOUNT_PREFIX', 'train')
 
-        for person in Person.active.filter(username__startswith=training_prefix):
+        verbose = int(options.get('verbosity'))
+        prefix = getattr(settings, 'TRAINING_ACCOUNT_PREFIX', 'train')
+
+        for person in Person.active.filter(username__startswith=prefix):
             try:
                 person.lock()
                 if verbose > 1:

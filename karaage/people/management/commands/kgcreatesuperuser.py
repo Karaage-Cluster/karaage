@@ -29,15 +29,21 @@ from django.core.management.base import BaseCommand
 from django.utils.translation import ugettext as _
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
-from karaage.people.utils import validate_username_for_new_person, UsernameException
+from karaage.people.utils import validate_username_for_new_person
+from karaage.people.utils import UsernameException
 
 import django.db.transaction
 import tldap.transaction
 
 EMAIL_RE = re.compile(
-    r"(^[-!#$%&'*+/=?^_`{}|~0-9A-Z]+(\.[-!#$%&'*+/=?^_`{}|~0-9A-Z]+)*"  # dot-atom
-    r'|^"([\001-\010\013\014\016-\037!#-\[\]-\177]|\\[\001-\011\013\014\016-\177])*"'  # quoted-string
-    r')@(?:[A-Z0-9-]+\.)+[A-Z]{2,6}$', re.IGNORECASE)  # domain
+    # dot-atom
+    r"(^[-!#$%&'*+/=?^_`{}|~0-9A-Z]+(\.[-!#$%&'*+/=?^_`{}|~0-9A-Z]+)*"
+
+    # quoted-string
+    r'|^"([\001-\010\013\014\016-\037!#-\[\]-\177]|\\[\001-\011\013\014\016-\177])*"'
+
+    # domain
+    r')@(?:[A-Z0-9-]+\.)+[A-Z]{2,6}$', re.IGNORECASE)
 
 
 def is_valid_email(value):
@@ -59,7 +65,7 @@ class Command(BaseCommand):
     @django.db.transaction.commit_on_success
     @tldap.transaction.commit_on_success
     def handle(self, *args, **options):
- 
+
         username = options['username']
         email = options['email']
         short_name = options['short_name']
@@ -67,10 +73,13 @@ class Command(BaseCommand):
         password = options['password']
         institute_name = options['institute']
 
-        # Try to determine the current system user's username to use as a default.
+        # Try to determine the current system user's username to use as a
+        # default.
         try:
             import pwd
-            default_username = pwd.getpwuid(os.getuid())[0].replace(' ', '').lower()
+            unix_uid = os.getuid()
+            unix_username = pwd.getpwuid(unix_uid)[0]
+            default_username = unix_username.replace(' ', '').lower()
             if default_username == 'root':
                 default_username = ''
         except (ImportError, KeyError):
@@ -97,9 +106,10 @@ class Command(BaseCommand):
                 if not username:
                     input_msg = 'Username'
                     if default_username:
-                        input_msg += ' (Leave blank to use %r)' % default_username
+                        input_msg += \
+                            ' (Leave blank to use %r)' % default_username
                     username = raw_input(input_msg + ': ')
-                    if default_username and username=='':
+                    if default_username and username == '':
                         username = default_username
                 try:
                     validate_username_for_new_person(username)
@@ -108,7 +118,7 @@ class Command(BaseCommand):
                     sys.stderr.write("%s\n" % e)
                     username = None
                     continue
-                
+
             # Get an email
             while 1:
                 if not email:
@@ -116,22 +126,25 @@ class Command(BaseCommand):
                 try:
                     is_valid_email(email)
                 except exceptions.ValidationError:
-                    sys.stderr.write("Error: That e-mail address is invalid.\n")
+                    sys.stderr.write(
+                        "Error: That e-mail address is invalid.\n")
                     email = None
                 else:
                     break
-            
+
             # Get a password
             while 1:
                 if not password:
                     password = getpass.getpass()
                     password2 = getpass.getpass('Password (again): ')
                     if password != password2:
-                        sys.stderr.write("Error: Your passwords didn't match.\n")
+                        sys.stderr.write(
+                            "Error: Your passwords didn't match.\n")
                         password = None
                         continue
                 if password.strip() == '':
-                    sys.stderr.write("Error: Blank passwords aren't allowed.\n")
+                    sys.stderr.write(
+                        "Error: Blank passwords aren't allowed.\n")
                     password = None
                     continue
                 break
@@ -155,7 +168,8 @@ class Command(BaseCommand):
                         institute_name = raw_input('New Institute Name: ')
                     else:
                         break
-                institute = Institute.objects.create(name=institute_name, is_active=True)
+                institute = Institute.objects.create(
+                    name=institute_name, is_active=True)
             else:
                 if not institute_name:
                     print "Choose an existing institute for new superuser:"
@@ -172,7 +186,7 @@ class Command(BaseCommand):
                         institute_name = None
                         continue
                     break
-                    
+
         except KeyboardInterrupt:
             sys.stderr.write("\nOperation cancelled.\n")
             sys.exit(1)
@@ -185,5 +199,5 @@ class Command(BaseCommand):
             'full_name': full_name,
             'institute': institute,
             }
-        person = Person.objects.create_superuser(**data)
+        Person.objects.create_superuser(**data)
         print "Karaage Superuser created successfully."

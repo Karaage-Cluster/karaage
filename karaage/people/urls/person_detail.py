@@ -15,9 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import *
+from django.conf.urls import patterns, url
 
-urlpatterns = patterns('karaage.people.views.persons',
+urlpatterns = patterns(
+    'karaage.people.views.persons',
     url(r'^$', 'user_detail', name='kg_person_detail'),
     url(r'^verbose/$', 'user_verbose', name='kg_person_verbose'),
     url(r'^activate/$', 'activate', name='kg_person_activate'),
@@ -30,5 +31,6 @@ urlpatterns = patterns('karaage.people.views.persons',
     url(r'^add_comment/$', 'add_comment', name='kg_person_add_comment'),
     url(r'^edit/$', 'edit_user', name='kg_person_edit'),
     url(r'^password_request/$', 'password_request', name='kg_person_reset'),
-    url(r'^password_request/done/$', 'password_request_done', name='kg_person_reset_done'),
+    url(r'^password_request/done/$',
+        'password_request_done', name='kg_person_reset_done'),
 )
