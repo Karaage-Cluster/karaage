@@ -109,7 +109,7 @@ class Command(BaseCommand):
                     # write person entry, if not already existing
                     try:
                         new_person.save()
-                    except account_person._account.AlreadyExists:
+                    except machine_category_datastore._account.AlreadyExists:
                         pass
 
         else:
