@@ -22,7 +22,7 @@ from django import template
 register = template.Library()
 
 
-@register.simple_tag(takes_context = True)
+@register.simple_tag(takes_context=True)
 def application_state(context, application):
     """ Render current state of application, verbose. """
     new_context = template.context.Context({
@@ -31,12 +31,12 @@ def application_state(context, application):
         'application': application,
     })
     nodelist = template.loader.get_template(
-            'applications/%s_common_state.html' % application.type)
+        'applications/%s_common_state.html' % application.type)
     output = nodelist.render(new_context)
     return output
 
 
-@register.simple_tag(takes_context = True)
+@register.simple_tag(takes_context=True)
 def application_request(context, application):
     """ Render current detail of application, verbose. """
     new_context = template.context.Context({
@@ -45,12 +45,12 @@ def application_request(context, application):
         'application': application,
     })
     nodelist = template.loader.get_template(
-            'applications/%s_common_request.html' % application.type)
+        'applications/%s_common_request.html' % application.type)
     output = nodelist.render(new_context)
     return output
 
 
-@register.simple_tag(takes_context = True)
+@register.simple_tag(takes_context=True)
 def application_simple_state(context, application):
     """ Render current state of application, verbose. """
     state_machine = get_state_machine(application)
@@ -58,8 +58,7 @@ def application_simple_state(context, application):
     return state.name
 
 
-@register.inclusion_tag(
-        'applications/common_actions.html', takes_context = True)
+@register.inclusion_tag('applications/common_actions.html', takes_context=True)
 def application_actions(context):
     """ Render actions available. """
     return {
@@ -76,6 +75,7 @@ def do_application_actions_plus(parser, token):
     parser.delete_first_token()
     return ApplicationActionsPlus(nodelist)
 
+
 class ApplicationActionsPlus(template.Node):
     """ Node for rendering actions available with extra text. """
     def __init__(self, nodelist):
@@ -85,7 +85,7 @@ class ApplicationActionsPlus(template.Node):
     def render(self, context):
         extra = self.nodelist.render(context)
         nodelist = template.loader.get_template(
-                'applications/common_actions.html')
+            'applications/common_actions.html')
         new_context = template.context.Context({
             'auth': context['auth'],
             'extra': extra,

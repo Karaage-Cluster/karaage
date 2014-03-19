@@ -42,9 +42,9 @@ class TransitionOpen(base.Transition):
         link, is_secret = base.get_email_link(application)
         emails.send_invite_email(application, link, is_secret)
         messages.success(
-                request,
-                "Sent an invitation to %s." %
-                (application.applicant.email))
+            request,
+            "Sent an invitation to %s."
+            % (application.applicant.email))
         return self._on_success
 
 
@@ -74,9 +74,9 @@ class StateWaitingForApproval(base.State):
         """ This is becoming the new current state. """
         authorised_persons = self.get_authorised_persons(application)
         emails.send_request_email(
-                self.authorised_text,
-                authorised_persons,
-                application)
+            self.authorised_text,
+            authorised_persons,
+            application)
 
     def view(self, request, application, label, auth, actions):
         """ Django view method. """
@@ -89,7 +89,8 @@ class StateWaitingForApproval(base.State):
             if 'duplicate' in actions:
                 tmp_actions.append("duplicate")
             actions = tmp_actions
-            application_form = self.get_approve_form(request, application, auth)
+            application_form = self.get_approve_form(
+                request, application, auth)
             form = application_form(request.POST or None, instance=application)
             if request.method == 'POST':
                 if 'duplicate' in request.POST:
@@ -98,43 +99,43 @@ class StateWaitingForApproval(base.State):
                     form.save()
                     return "approve"
             return render_to_response(
-                    self.template_approve,
-                    {'application': application, 'form': form,
-                        'authorised_text': self.authorised_text,
-                        'actions': actions, 'auth': auth},
-                    context_instance=RequestContext(request))
+                self.template_approve,
+                {'application': application, 'form': form,
+                    'authorised_text': self.authorised_text,
+                    'actions': actions, 'auth': auth},
+                context_instance=RequestContext(request))
         elif label == "decline" and auth['can_approve']:
-            actions = [ 'cancel' ]
+            actions = ['cancel']
             if request.method == 'POST':
                 form = EmailForm(request.POST)
                 if form.is_valid():
                     to_email = application.applicant.email
                     subject, body = form.get_data()
                     emails.send_mail(
-                            subject, body,
-                            settings.ACCOUNTS_EMAIL, [to_email])
+                        subject, body,
+                        settings.ACCOUNTS_EMAIL, [to_email])
                     return "cancel"
             else:
                 link, is_secret = base.get_email_link(application)
                 subject, body = emails.render_email(
-                        'common_declined',
-                        {'receiver': application.applicant,
-                            'authorised_text': self.authorised_text,
-                            'application': application,
-                            'link': link, 'is_secret': is_secret })
+                    'common_declined',
+                    {'receiver': application.applicant,
+                        'authorised_text': self.authorised_text,
+                        'application': application,
+                        'link': link, 'is_secret': is_secret})
                 initial_data = {'body': body, 'subject': subject}
                 form = EmailForm(initial=initial_data)
             return render_to_response(
-                    self.template_decline,
-                    {'application': application, 'form': form,
-                        'authorised_text': self.authorised_text,
-                        'actions': actions, 'auth': auth},
-                    context_instance=RequestContext(request))
+                self.template_decline,
+                {'application': application, 'form': form,
+                    'authorised_text': self.authorised_text,
+                    'actions': actions, 'auth': auth},
+                context_instance=RequestContext(request))
         self.context = {
             'authorised_text': self.authorised_text,
         }
         return super(StateWaitingForApproval, self).view(
-                request, application, label, auth, actions)
+            request, application, label, auth, actions)
 
 
 class TransitionSubmit(base.Transition):
@@ -183,7 +184,8 @@ class TransitionApprove(base.Transition):
 
         # send email
         link, is_secret = base.get_email_link(application)
-        emails.send_approved_email(application, created_person, created_account, link, is_secret)
+        emails.send_approved_email(
+            application, created_person, created_account, link, is_secret)
 
         if created_person or created_account:
             return self._on_password_needed
@@ -195,34 +197,36 @@ class StatePassword(base.State):
     """ This application is completed and processed. """
     name = "Password"
 
-
     def view(self, request, application, label, auth, actions):
         """ Django view method. """
         if label is None and auth['is_applicant']:
             assert application.content_type.model == 'person'
             if application.applicant.has_usable_password():
-                form = forms.PersonVerifyPassword(data=request.POST or None, person=application.applicant)
+                form = forms.PersonVerifyPassword(
+                    data=request.POST or None, person=application.applicant)
                 form_type = "verify"
             else:
-                form = forms.PersonSetPassword(data=request.POST or None, person=application.applicant)
+                form = forms.PersonSetPassword(
+                    data=request.POST or None, person=application.applicant)
                 form_type = "set"
             if request.method == 'POST':
                 if 'cancel' in request.POST:
                     return 'cancel'
                 if form.is_valid():
                     form.save()
-                    messages.success(request, 'Password updated. New accounts activated.')
+                    messages.success(
+                        request, 'Password updated. New accounts activated.')
                     for action in actions:
                         if action in request.POST:
                             return action
                     return HttpResponseBadRequest("<h1>Bad Request</h1>")
             return render_to_response(
-                    'applications/common_password.html',
-                    {'application': application, 'form': form,
-                        'actions': actions, 'auth': auth, 'type': form_type },
-                    context_instance=RequestContext(request))
+                'applications/common_password.html',
+                {'application': application, 'form': form,
+                    'actions': actions, 'auth': auth, 'type': form_type},
+                context_instance=RequestContext(request))
         return super(StatePassword, self).view(
-                request, application, label, auth, actions)
+            request, application, label, auth, actions)
 
 
 class StateCompleted(base.State):
@@ -245,9 +249,9 @@ class StateDeclined(base.State):
             if 'reopen' in request.POST:
                 return 'reopen'
             return render_to_response(
-                    'applications/common_declined.html',
-                    {'application': application,
+                'applications/common_declined.html',
+                {'application': application,
                     'actions': actions, 'auth': auth},
-                    context_instance=RequestContext(request))
+                context_instance=RequestContext(request))
         return super(StateDeclined, self).view(
-                request, application, label, auth, actions)
+            request, application, label, auth, actions)

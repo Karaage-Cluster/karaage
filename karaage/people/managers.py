@@ -19,6 +19,7 @@ from karaage.common import log
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth import authenticate
 
+
 class PersonManager(BaseUserManager):
     def authenticate(self, username, password):
         return authenticate(username=username, password=password)
@@ -26,7 +27,8 @@ class PersonManager(BaseUserManager):
     def get_query_set(self):
         return super(PersonManager, self).get_query_set().select_related()
 
-    def _create_user(self, username, email, short_name, full_name,
+    def _create_user(
+            self, username, email, short_name, full_name,
             institute, password, is_admin, **extra_fields):
         """Creates a new active person. """
 
@@ -44,37 +46,48 @@ class PersonManager(BaseUserManager):
         log(None, person, 1, 'Created person')
         return person
 
-    def create_user(self, username, email, short_name, full_name,
+    def create_user(
+            self, username, email, short_name, full_name,
             institute, password=None, **extra_fields):
         """ Creates a new ordinary person. """
-        return self._create_user(username=username, email=email,
-                short_name=short_name, full_name=full_name,
-                institute=institute, password=password,
-                is_admin=False, **extra_fields)
+        return self._create_user(
+            username=username, email=email,
+            short_name=short_name, full_name=full_name,
+            institute=institute, password=password,
+            is_admin=False, **extra_fields)
 
-    def create_superuser(self, username, email, short_name, full_name,
+    def create_superuser(
+            self, username, email, short_name, full_name,
             institute, password, **extra_fields):
         """ Creates a new person with super powers. """
-        return self._create_user(username=username, email=email,
-                institute=institute, password=password,
-                short_name=short_name, full_name=full_name,
-                is_admin=True, **extra_fields)
+        return self._create_user(
+            username=username, email=email,
+            institute=institute, password=password,
+            short_name=short_name, full_name=full_name,
+            is_admin=True, **extra_fields)
 
 
 class ActivePersonManager(PersonManager):
     def get_query_set(self):
-        return super(ActivePersonManager, self).get_query_set().select_related().filter(is_active=True, is_systemuser=False)
+        return super(ActivePersonManager, self) \
+            .get_query_set() \
+            .select_related() \
+            .filter(is_active=True, is_systemuser=False)
 
 
 class DeletedPersonManager(PersonManager):
     def get_query_set(self):
-        return super(DeletedPersonManager, self).get_query_set().filter(is_active=False)
+        return super(DeletedPersonManager, self) \
+            .get_query_set() \
+            .filter(is_active=False)
 
 
 class LeaderManager(PersonManager):
     def get_query_set(self):
         leader_ids = []
-        for l in super(LeaderManager, self).get_query_set().filter(is_active=True):
+        query = super(LeaderManager, self).get_query_set()
+        query = query.filter(is_active=True)
+        for l in query:
             if l.is_leader():
                 leader_ids.append(l.id)
 

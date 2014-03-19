@@ -29,8 +29,10 @@ from django.template.defaultfilters import wordwrap
 
 from karaage.common.filterspecs import Filter, FilterBar, DateFilter
 from karaage.common.decorators import admin_required, login_required
-from karaage.software.models import SoftwareCategory, Software, SoftwareVersion, SoftwareLicense, SoftwareLicenseAgreement
-from karaage.software.forms import AddPackageForm, LicenseForm, SoftwareVersionForm
+from karaage.software.models import SoftwareCategory, Software, SoftwareVersion
+from karaage.software.models import SoftwareLicense, SoftwareLicenseAgreement
+from karaage.software.forms import AddPackageForm, LicenseForm
+from karaage.software.forms import SoftwareVersionForm
 from karaage.people.models import Person
 from karaage.machines.models import Machine
 from karaage.common import get_date_range, log
@@ -55,19 +57,25 @@ def software_list(request):
     software_list = Software.objects.all()
 
     if 'category' in request.REQUEST:
-        software_list = software_list.filter(category=int(request.GET['category']))
+        software_list = software_list.filter(
+            category=int(request.GET['category']))
     if 'machine' in request.REQUEST:
-        software_list = software_list.filter(softwareversion__machines=int(request.GET['machine']))
+        software_list = software_list.filter(
+            softwareversion__machines=int(request.GET['machine']))
 
     params = dict(request.GET.items())
-    m_params = dict([(str(k), str(v)) for k, v in params.items() if k.startswith('softwareversion__last_used_')])
+    m_params = dict(
+        [(str(k), str(v)) for k, v in params.items()
+            if k.startswith('softwareversion__last_used_')])
     software_list = software_list.filter(**m_params).distinct()
 
     if 'search' in request.REQUEST:
         terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
-            q = Q(name__icontains=term) | Q(description__icontains=term) | Q(homepage__icontains=term)
+            q = Q(name__icontains=term)
+            q = q | Q(description__icontains=term)
+            q = q | Q(homepage__icontains=term)
             query = query & q
 
         software_list = software_list.filter(query)
@@ -75,10 +83,12 @@ def software_list(request):
         terms = ""
 
     filter_list = []
-    filter_list.append(Filter(request, 'category', SoftwareCategory.objects.all()))
-    filter_bar = FilterBar(request, filter_list)
+    filter_list.append(
+        Filter(request, 'category', SoftwareCategory.objects.all()))
     filter_list.append(Filter(request, 'machine', Machine.objects.all()))
     filter_list.append(DateFilter(request, 'softwareversion__last_used'))
+
+    filter_bar = FilterBar(request, filter_list)
 
     page_no = request.GET.get('page')
     paginator = Paginator(software_list, 50)
@@ -91,7 +101,10 @@ def software_list(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         page = paginator.page(paginator.num_pages)
 
-    return render_to_response('software/software_list.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'software/software_list.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -100,7 +113,10 @@ def software_detail(request, software_id):
         return join_package(request, software_id)
 
     software = get_object_or_404(Software, pk=software_id)
-    return render_to_response('software/software_detail.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'software/software_detail.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -110,7 +126,10 @@ def software_verbose(request, software_id):
     from karaage.datastores import machine_category_get_software_details
     package_details = machine_category_get_software_details(software)
 
-    return render_to_response('software/software_verbose.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'software/software_verbose.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -126,28 +145,35 @@ def add_package(request):
     else:
         form = AddPackageForm()
 
-    return render_to_response('software/add_package_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'software/add_package_form.html',
+        locals(),
+        context_instance=RequestContext(request))
+
 
 @admin_required
 def software_edit(request, software_id):
     from karaage.common.create_update import update_object
-    return update_object(request,
-            object_id=software_id, model=Software)
+    return update_object(
+        request, object_id=software_id, model=Software)
+
 
 @admin_required
 def software_delete(request, software_id):
     from karaage.common.create_update import delete_object
-    return delete_object(request,
-            post_delete_redirect=reverse('software_list'),
-            object_id=software_id, model=Software)
+    return delete_object(
+        request, post_delete_redirect=reverse('software_list'),
+        object_id=software_id, model=Software)
 
 
 @admin_required
 def software_logs(request, software_id):
     obj = get_object_or_404(Software, pk=software_id)
     breadcrumbs = []
-    breadcrumbs.append( ("Softwares", reverse("kg_software_list")) )
-    breadcrumbs.append( (unicode(obj), reverse("kg_software_detail", args=[obj.pk])) )
+    breadcrumbs.append(
+        ("Softwares", reverse("kg_software_list")))
+    breadcrumbs.append(
+        (unicode(obj), reverse("kg_software_detail", args=[obj.pk])))
     return util.log_list(request, breadcrumbs, obj)
 
 
@@ -155,15 +181,20 @@ def software_logs(request, software_id):
 def add_comment(request, software_id):
     obj = get_object_or_404(Software, pk=software_id)
     breadcrumbs = []
-    breadcrumbs.append( ("Softwares", reverse("kg_software_list")) )
-    breadcrumbs.append( (unicode(obj), reverse("kg_software_detail", args=[obj.pk])) )
+    breadcrumbs.append(
+        ("Softwares", reverse("kg_software_list")))
+    breadcrumbs.append(
+        (unicode(obj), reverse("kg_software_detail", args=[obj.pk])))
     return util.add_comment(request, breadcrumbs, obj)
 
 
 @login_required
 def license_detail(request, license_id):
     l = get_object_or_404(SoftwareLicense, pk=license_id)
-    return render_to_response('software/license_detail.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'software/license_detail.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -177,7 +208,11 @@ def add_license(request, software_id):
             log(request.user, software, 1, "license: %s added" % l)
             return HttpResponseRedirect(software.get_absolute_url())
 
-    return render_to_response('software/license_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'software/license_form.html',
+        locals(),
+        context_instance=RequestContext(request))
+
 
 @admin_required
 def edit_license(request, license_id):
@@ -190,14 +225,19 @@ def edit_license(request, license_id):
             form.save()
             return HttpResponseRedirect(software.get_absolute_url())
 
-    return render_to_response('software/license_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'software/license_form.html',
+        locals(),
+        context_instance=RequestContext(request))
+
 
 @admin_required
 def license_delete(request, license_id):
     from karaage.common.create_update import delete_object
-    return delete_object(request,
-            post_delete_redirect=reverse('kg_software_list'),
-            object_id=license_id, model=SoftwareLicense)
+    return delete_object(
+        request,
+        post_delete_redirect=reverse('kg_software_list'),
+        object_id=license_id, model=SoftwareLicense)
 
 
 @admin_required
@@ -208,10 +248,14 @@ def delete_version(request, version_id):
         version.delete()
         log(request.user, version.software, 3, 'Deleted version: %s' % version)
 
-        messages.success(request, "Version '%s' was deleted succesfully" % version)
+        messages.success(
+            request, "Version '%s' was deleted succesfully" % version)
         return HttpResponseRedirect(version.get_absolute_url())
 
-    return render_to_response('software/version_confirm_delete.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'software/version_confirm_delete.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -224,7 +268,10 @@ def add_version(request, software_id):
             version = form.save()
             return HttpResponseRedirect(software.get_absolute_url())
 
-    return render_to_response('software/version_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'software/version_form.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -238,25 +285,33 @@ def edit_version(request, version_id):
             version = form.save()
             return HttpResponseRedirect(software.get_absolute_url())
 
-    return render_to_response('software/version_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'software/version_form.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
 def category_list(request):
     category_list = SoftwareCategory.objects.all()
-    return render_to_response('software/category_list.html', {'category_list': category_list}, context_instance=RequestContext(request))
+    return render_to_response(
+        'software/category_list.html',
+        {'category_list': category_list},
+        context_instance=RequestContext(request))
+
 
 @admin_required
 def category_create(request):
     from karaage.common.create_update import create_object
-    return create_object(request,
-            model=SoftwareCategory)
+    return create_object(
+        request, model=SoftwareCategory)
+
 
 @admin_required
 def category_edit(request, category_id):
     from karaage.common.create_update import update_object
-    return update_object(request,
-            object_id=category_id, model=SoftwareCategory)
+    return update_object(
+        request, object_id=category_id, model=SoftwareCategory)
 
 
 @admin_required
@@ -267,14 +322,19 @@ def remove_member(request, software_id, person_id):
     if request.method == 'POST':
         person.remove_group(software.group)
 
-        log(request.user, software, 3, 'Removed %s from group' % person)
-        log(request.user, person, 3, 'Removed from software group %s' % software)
+        log(request.user, software, 3,
+            'Removed %s from group' % person)
+        log(request.user, person, 3,
+            'Removed from software group %s' % software)
 
         messages.success(request, "User '%s' removed successfuly" % person)
 
         return HttpResponseRedirect(software.get_absolute_url())
 
-    return render_to_response('software/person_confirm_remove.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'software/person_confirm_remove.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -283,11 +343,20 @@ def software_stats(request, software_id):
     start, end = get_date_range(request)
     querystring = request.META.get('QUERY_STRING', '')
     if software.softwareversion_set.count() == 1:
-        return HttpResponseRedirect(reverse('kg_software_version_stats', args=[software.softwareversion_set.all()[0].id]))
-    version_stats = SoftwareVersion.objects.filter(software=software, cpujob__date__range=(start, end)).annotate(jobs=Count('cpujob'), usage=Sum('cpujob__cpu_usage')).filter(usage__isnull=False)
+        sv = software.softwareversion_set.all()[0]
+        url = reverse('kg_software_version_stats', args=[sv.id])
+        return HttpResponseRedirect(url)
+    version_stats = SoftwareVersion.objects \
+        .filter(software=software, cpujob__date__range=(start, end)) \
+        .annotate(jobs=Count('cpujob'), usage=Sum('cpujob__cpu_usage')) \
+        .filter(usage__isnull=False)
     version_totaljobs = version_stats.aggregate(Sum('jobs'))['jobs__sum']
     #version_totalusage = version_stats.aggregate(Sum('usage'))
-    person_stats = Person.objects.filter(account__cpujob__software__software=software, account__cpujob__date__range=(start, end)).annotate(jobs=Count('account__cpujob'), usage=Sum('account__cpujob__cpu_usage'))
+    person_stats = Person.objects \
+        .filter(account__cpujob__software__software=software,
+                account__cpujob__date__range=(start, end)) \
+        .annotate(jobs=Count('account__cpujob'),
+                  usage=Sum('account__cpujob__cpu_usage'))
 
     context = {
         'software': software,
@@ -298,7 +367,10 @@ def software_stats(request, software_id):
         'end': end,
         'querystring': querystring,
     }
-    return render_to_response('software/software_stats.html', context, context_instance=RequestContext(request))
+    return render_to_response(
+        'software/software_stats.html',
+        context,
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -307,7 +379,11 @@ def version_stats(request, version_id):
     start, end = get_date_range(request)
     querystring = request.META.get('QUERY_STRING', '')
 
-    person_stats = Person.objects.filter(account__cpujob__software=version, account__cpujob__date__range=(start, end)).annotate(jobs=Count('account__cpujob'), usage=Sum('account__cpujob__cpu_usage'))
+    person_stats = Person.objects \
+        .filter(account__cpujob__software=version,
+                account__cpujob__date__range=(start, end)) \
+        .annotate(jobs=Count('account__cpujob'),
+                  usage=Sum('account__cpujob__cpu_usage'))
 
     context = {
         'version': version,
@@ -316,7 +392,11 @@ def version_stats(request, version_id):
         'end': end,
         'querystring': querystring,
     }
-    return render_to_response('software/version_stats.html', context, context_instance=RequestContext(request))
+
+    return render_to_response(
+        'software/version_stats.html',
+        context,
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -324,10 +404,12 @@ def join_package_list(request):
 
     person = request.user
 
+    query = Software.objects.filter(softwarelicense__isnull=False).distinct()
     software_list = []
-    for software in Software.objects.filter(softwarelicense__isnull=False).distinct():
+    for software in query:
         data = {'software': software}
-        license_agreements = SoftwareLicenseAgreement.objects.filter(person=person, license__software=software)
+        license_agreements = SoftwareLicenseAgreement.objects.filter(
+            person=person, license__software=software)
         if license_agreements.count() > 0:
             la = license_agreements.latest()
             data['accepted'] = True
@@ -339,7 +421,10 @@ def join_package_list(request):
                 data['pending'] = True
         software_list.append(data)
 
-    return render_to_response('software/add_package_list.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'software/add_package_list.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -348,7 +433,8 @@ def join_package(request, software_id):
     software = get_object_or_404(Software, pk=software_id)
     software_license = software.get_current_license()
     person = request.user
-    license_agreements =  SoftwareLicenseAgreement.objects.filter(person=person, license=software_license)
+    license_agreements = SoftwareLicenseAgreement.objects \
+        .filter(person=person, license=software_license)
     agreement = None
     if license_agreements.count() > 0:
         agreement = license_agreements.latest()
@@ -372,7 +458,8 @@ def join_package(request, software_id):
                 if isinstance(response, HttpResponse):
                     return response
                 elif bool(response):
-                    log(request.user, software, 1, "Approved join by %s" % hook.__module__)
+                    log(request.user, software, 1,
+                        "Approved join by %s" % hook.__module__)
                     approved = True
                     break
 
@@ -389,7 +476,10 @@ def join_package(request, software_id):
             failed = True
             messages.error(request, "Failed granting access to %s." % software)
 
-    return render_to_response('software/accept_license.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'software/accept_license.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -398,4 +488,6 @@ def license_txt(request, software_id):
     software = get_object_or_404(Software, pk=software_id)
     software_license = software.get_current_license()
 
-    return HttpResponse(wordwrap(software_license.text, 80), mimetype="text/plain")
+    return HttpResponse(
+        wordwrap(software_license.text, 80),
+        mimetype="text/plain")

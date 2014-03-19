@@ -79,7 +79,8 @@ class StateWithSteps(base.State):
 
         # if the user is not the applicant, the steps don't apply.
         if not auth['is_applicant'] or auth['is_admin']:
-            return super(StateWithSteps, self).view(request, application, label, auth, actions)
+            return super(StateWithSteps, self).view(
+                request, application, label, auth, actions)
 
         # was label supplied?
         if label is None:
@@ -95,7 +96,7 @@ class StateWithSteps(base.State):
             position = self._order.index(this_id)
 
         # get the step given the label
-        this_step =  self._steps[this_id]
+        this_step = self._steps[this_id]
 
         # define list of allowed actions for step
         step_actions = {}
@@ -112,13 +113,13 @@ class StateWithSteps(base.State):
         if request.method == "GET":
             # if GET request, state changes are not allowed
             response = this_step.view(
-                    request, application, this_id, auth, step_actions.keys())
+                request, application, this_id, auth, step_actions.keys())
             assert isinstance(response, HttpResponse)
             return response
         elif request.method == "POST":
             # if POST request, state changes are allowed
             response = this_step.view(
-                    request, application, this_id, auth, step_actions.keys())
+                request, application, this_id, auth, step_actions.keys())
             assert response is not None
 
             # If it was a HttpResponse, just return it
@@ -128,8 +129,8 @@ class StateWithSteps(base.State):
                 # try to lookup the response
                 if response not in step_actions:
                     raise RuntimeError(
-                            "Invalid response '%s' from step '%s'" %
-                            (response, this_step))
+                        "Invalid response '%s' from step '%s'"
+                        % (response, this_step))
                 action = step_actions[response]
 
                 # process the required action
@@ -167,10 +168,14 @@ class StateStepIntroduction(Step):
             if action in request.POST:
                 return action
         link, is_secret = base.get_email_link(application)
-        return render_to_response('applications/project_aed_introduction.html',
-                {'actions': actions, 'application': application, 'auth': auth,
-                'link': link, 'is_secret': is_secret },
-                context_instance=RequestContext(request))
+        return render_to_response(
+            'applications/project_aed_introduction.html',
+            {
+                'actions': actions,
+                'application': application, 'auth': auth,
+                'link': link, 'is_secret': is_secret,
+            },
+            context_instance=RequestContext(request))
 
 
 class StateStepShibboleth(Step):
@@ -208,7 +213,8 @@ class StateStepShibboleth(Step):
             form = None
             done = True
 
-        elif Institute.objects.filter(saml_entityid__isnull=False).count() == 0:
+        elif Institute.objects.filter(
+                saml_entityid__isnull=False).count() == 0:
             status = "No institutes support shibboleth here."
             form = None
             done = True
@@ -217,8 +223,9 @@ class StateStepShibboleth(Step):
             # shibboleth registration is required
 
             # Do construct the form
-            form = saml.SAMLInstituteForm(request.POST or None,
-                    initial = {'institute': applicant.institute})
+            form = saml.SAMLInstituteForm(
+                request.POST or None,
+                initial={'institute': applicant.institute})
             done = False
             status = None
 
@@ -239,7 +246,7 @@ class StateStepShibboleth(Step):
                     url = base.get_url(request, application, auth, label)
                     if institute.saml_entityid is not None:
                         url = saml.build_shib_url(
-                                request, url, institute.saml_entityid)
+                            request, url, institute.saml_entityid)
                     return HttpResponseRedirect(url)
 
                 # Did we get a register request?
@@ -253,7 +260,7 @@ class StateStepShibboleth(Step):
                             applicant = application.applicant
 
                         applicant = saml.add_saml_data(
-                                applicant, request)
+                            applicant, request)
                         applicant.save()
 
                         url = base.get_url(request, application, auth, label)
@@ -274,7 +281,6 @@ class StateStepShibboleth(Step):
                 attrs, _ = saml.parse_attributes(request)
                 saml_session = True
 
-
         # if we are done, we can proceed to next state
         if request.method == 'POST':
             if done:
@@ -287,11 +293,11 @@ class StateStepShibboleth(Step):
 
         # render the page
         return render_to_response(
-                'applications/project_aed_shibboleth.html',
-                {'form': form, 'done': done, 'status': status,
-                    'actions': actions, 'auth': auth, 'application': application,
-                    'attrs': attrs, 'saml_session': saml_session,},
-                context_instance=RequestContext(request))
+            'applications/project_aed_shibboleth.html',
+            {'form': form, 'done': done, 'status': status,
+                'actions': actions, 'auth': auth, 'application': application,
+                'attrs': attrs, 'saml_session': saml_session, },
+            context_instance=RequestContext(request))
 
 
 class StateStepApplicant(Step):
@@ -308,12 +314,12 @@ class StateStepApplicant(Step):
         elif application.content_type.model == 'applicant':
             if application.applicant.saml_id is not None:
                 form = forms.SAMLApplicantForm(
-                        request.POST or None,
-                        instance=application.applicant)
+                    request.POST or None,
+                    instance=application.applicant)
             else:
                 form = forms.UserApplicantForm(
-                        request.POST or None,
-                        instance=application.applicant)
+                    request.POST or None,
+                    instance=application.applicant)
 
         # Process the form, if there is one
         if form is not None and request.method == 'POST':
@@ -331,7 +337,6 @@ class StateStepApplicant(Step):
                 if 'prev' in request.POST:
                     return 'prev'
 
-
         # If we don't have a form, we can just process the actions here
         if form is None:
             for action in actions:
@@ -340,11 +345,13 @@ class StateStepApplicant(Step):
 
         # Render the response
         return render_to_response(
-                'applications/project_aed_applicant.html', {
+            'applications/project_aed_applicant.html',
+            {
                 'form': form,
                 'application': application,
-                'status': status, 'actions': actions, 'auth': auth },
-                context_instance=RequestContext(request))
+                'status': status, 'actions': actions, 'auth': auth,
+            },
+            context_instance=RequestContext(request))
 
 
 class StateStepProject(base.State):
@@ -362,7 +369,7 @@ class StateStepProject(base.State):
             terms = request.POST['terms'].lower()
             try:
                 project = Project.active.get(pid__icontains=terms)
-                resp['project_list'] = [ (project.pk, unicode(project)) ]
+                resp['project_list'] = [(project.pk, unicode(project))]
             except Project.DoesNotExist:
                 resp['project_list'] = []
             except Project.MultipleObjectsReturned:
@@ -373,14 +380,16 @@ class StateStepProject(base.State):
             if len(terms) >= 3:
                 query = Q()
                 for term in terms.split(' '):
-                    q =     Q(username__icontains=term)
+                    q = Q(username__icontains=term)
                     q = q | Q(short_name__icontains=term)
                     q = q | Q(full_name__icontains=term)
                     query = query & q
                 leader_list = leader_list.filter(query)
-                resp['leader_list'] = [(p.pk, "%s (%s)"%(p,p.username)) for p in leader_list]
+                resp['leader_list'] = [
+                    (p.pk, "%s (%s)" % (p, p.username)) for p in leader_list]
             else:
-                resp['error'] = "Please enter at lease three characters for search."
+                resp['error'] = "Please enter at lease three " \
+                    "characters for search."
                 resp['leader_list'] = []
 
         return resp
@@ -389,25 +398,25 @@ class StateStepProject(base.State):
         """ Django view method. """
         if 'ajax' in request.POST:
             resp = self.handle_ajax(request, application)
-            return HttpResponse(json.dumps(resp), content_type="application/json")
-
+            return HttpResponse(
+                json.dumps(resp), content_type="application/json")
 
         form_models = {
-                'common': forms.CommonApplicationForm,
-                'new': forms.NewProjectApplicationForm,
-                'existing': forms.ExistingProjectApplicationForm,
+            'common': forms.CommonApplicationForm,
+            'new': forms.NewProjectApplicationForm,
+            'existing': forms.ExistingProjectApplicationForm,
         }
 
         project_forms = {}
 
         for key, form in form_models.iteritems():
             project_forms[key] = form(
-                    request.POST or None, instance=application)
+                request.POST or None, instance=application)
 
         if application.project is not None:
-            project_forms["common"].initial = { 'application_type': 'U' }
+            project_forms["common"].initial = {'application_type': 'U'}
         elif application.name != "":
-            project_forms["common"].initial = { 'application_type': 'P' }
+            project_forms["common"].initial = {'application_type': 'P'}
 
         if 'application_type' in request.POST:
             at = request.POST['application_type']
@@ -442,7 +451,7 @@ class StateStepProject(base.State):
             if at != 'U':
                 # existing project form was not displayed
                 project_forms["existing"] = (
-                        form_models["existing"](instance=application))
+                    form_models["existing"](instance=application))
                 application.project = None
                 application.make_leader = False
             if at != 'P':
@@ -493,11 +502,11 @@ class StateStepProject(base.State):
 
         # render the response
         return render_to_response(
-                'applications/project_aed_project.html',
-                {'forms': project_forms, 'project': project,
-                    'actions': actions, 'auth': auth,
-                    'application': application, },
-                context_instance=RequestContext(request))
+            'applications/project_aed_project.html',
+            {'forms': project_forms, 'project': project,
+                'actions': actions, 'auth': auth,
+                'application': application, },
+            context_instance=RequestContext(request))
 
 
 class StateApplicantEnteringDetails(StateWithSteps):
@@ -517,8 +526,8 @@ class StateApplicantEnteringDetails(StateWithSteps):
         # if user is logged and and not applicant, steal the
         # application
         if auth['is_applicant']:
-            # if we got this far, then we either we are logged in as applicant, or
-            # we know the secret for this application.
+            # if we got this far, then we either we are logged in as applicant,
+            # or we know the secret for this application.
 
             new_person = None
 
@@ -531,15 +540,18 @@ class StateApplicantEnteringDetails(StateWithSteps):
                 if query.count() > 0:
                     new_person = Person.objects.get(saml_id=saml_id)
                     reason = "SAML id is already in use by existing person."
-                    details = ("It is not possible to continue this application " +
+                    details = (
+                        "It is not possible to continue this application " +
                         "as is because the saml identity already exists " +
                         "as a registered user.")
                 del query
 
             if request.user.is_authenticated():
                 new_person = request.user
-                reason = "%s was logged in and accessed the secret URL." % new_person
-                details = ("If you want to access this application "+
+                reason = "%s was logged in " \
+                    "and accessed the secret URL." % new_person
+                details = (
+                    "If you want to access this application " +
                     "as %s " % application.applicant +
                     "without %s stealing it, " % new_person +
                     "you will have to ensure %s is " % new_person +
@@ -560,23 +572,27 @@ class StateApplicantEnteringDetails(StateWithSteps):
                         return HttpResponseRedirect(url)
                     else:
                         return render_to_response(
-                                'applications/project_aed_steal.html',
-                                {'application': application, 'person': new_person,
-                                    'reason': reason, 'details': details, },
-                                context_instance=RequestContext(request))
+                            'applications/project_aed_steal.html',
+                            {'application': application, 'person': new_person,
+                                'reason': reason, 'details': details, },
+                            context_instance=RequestContext(request))
 
         # if the user is the leader, show him the leader specific page.
-        if (auth['is_leader'] or auth['is_delegate']) and not auth['is_admin'] and not auth['is_applicant']:
+        if (auth['is_leader'] or auth['is_delegate']) \
+                and not auth['is_admin'] \
+                and not auth['is_applicant']:
             actions = ['reopen']
             if 'reopen' in request.POST:
                 return 'reopen'
             return render_to_response(
-                    'applications/project_aed_for_leader.html',
-                    {'application': application, 'actions': actions, 'auth': auth, },
-                    context_instance=RequestContext(request))
+                'applications/project_aed_for_leader.html',
+                {'application': application,
+                    'actions': actions, 'auth': auth, },
+                context_instance=RequestContext(request))
 
         # otherwise do the default behaviour for StateWithSteps
-        return super(StateApplicantEnteringDetails, self).view(request, application, label, auth, actions)
+        return super(StateApplicantEnteringDetails, self) \
+            .view(request, application, label, auth, actions)
 
 
 class StateWaitingForLeader(states.StateWaitingForApproval):
@@ -588,8 +604,7 @@ class StateWaitingForLeader(states.StateWaitingForApproval):
         return application.project.leaders.filter(is_active=True)
 
     def get_approve_form(self, request, application, auth):
-        return forms.ApproveProjectFormGenerator(
-                application, auth)
+        return forms.ApproveProjectFormGenerator(application, auth)
 
 
 class StateWaitingForDelegate(states.StateWaitingForApproval):
@@ -598,11 +613,11 @@ class StateWaitingForDelegate(states.StateWaitingForApproval):
     authorised_text = "an institute delegate"
 
     def get_authorised_persons(self, application):
-        return application.institute.delegates.filter(institutedelegate__send_email=True)
+        return application.institute.delegates \
+            .filter(institutedelegate__send_email=True)
 
     def get_approve_form(self, request, application, auth):
-        return forms.ApproveProjectFormGenerator(
-                application, auth)
+        return forms.ApproveProjectFormGenerator(application, auth)
 
 
 class StateWaitingForAdmin(states.StateWaitingForApproval):
@@ -619,7 +634,7 @@ class StateWaitingForAdmin(states.StateWaitingForApproval):
 
     def get_approve_form(self, request, application, auth):
         return forms.AdminApproveProjectFormGenerator(
-                application, auth)
+            application, auth)
 
 
 class StateDuplicateApplicant(base.State):
@@ -628,9 +643,9 @@ class StateDuplicateApplicant(base.State):
 
     def enter_state(self, request, application):
         emails.send_request_email(
-                "an administrator",
-                Person.objects.filter(is_admin=True),
-                application)
+            "an administrator",
+            Person.objects.filter(is_admin=True),
+            application)
 
     def view(self, request, application, label, auth, actions):
         # if not admin, don't allow reopen
@@ -638,8 +653,9 @@ class StateDuplicateApplicant(base.State):
             if 'reopen' in actions:
                 actions.remove('reopen')
         if label is None and auth['is_admin']:
-            form = forms.ApplicantReplace(data=request.POST or None,
-                    application=application)
+            form = forms.ApplicantReplace(
+                data=request.POST or None,
+                application=application)
 
             if request.method == 'POST':
                 if 'replace' in request.POST:
@@ -653,12 +669,12 @@ class StateDuplicateApplicant(base.State):
                     return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
             return render_to_response(
-                    'applications/project_duplicate_applicant.html',
-                    {'application': application, 'form': form,
+                'applications/project_duplicate_applicant.html',
+                {'application': application, 'form': form,
                     'actions': actions, 'auth': auth, },
-                    context_instance=RequestContext(request))
+                context_instance=RequestContext(request))
         return super(StateDuplicateApplicant, self).view(
-                request, application, label, auth, actions)
+            request, application, label, auth, actions)
 
 
 class StateArchived(states.StateCompleted):
@@ -683,33 +699,44 @@ class TransitionSplit(base.Transition):
             return self._on_existing_project
 
 
-
 def get_application_state_machine():
     """ Get the default state machine for applications. """
     Open = states.TransitionOpen(on_success='O')
-    Split = TransitionSplit(on_existing_project='L', on_new_project='D', on_error="R")
+    Split = TransitionSplit(
+        on_existing_project='L', on_new_project='D', on_error="R")
 
     state_machine = base.StateMachine()
-    state_machine.add_state(StateApplicantEnteringDetails(), 'O',
-            { 'cancel': 'R', 'reopen': Open, 'duplicate': 'DUP',
-                'submit':  states.TransitionSubmit(on_success=Split, on_error="R")})
-    state_machine.add_state(StateWaitingForLeader(), 'L',
-            { 'cancel': 'R', 'approve': 'K', 'duplicate': 'DUP', })
-    state_machine.add_state(StateWaitingForDelegate(), 'D',
-            { 'cancel': 'R', 'approve': 'K', 'duplicate': 'DUP', })
-    state_machine.add_state(StateWaitingForAdmin(), 'K',
-            { 'cancel': 'R', 'duplicate': 'DUP',
-            'approve': states.TransitionApprove(on_password_needed='P', on_password_ok='C', on_error="R")})
-    state_machine.add_state(states.StatePassword(), 'P',
-            { 'submit': 'C', })
-    state_machine.add_state(states.StateCompleted(), 'C',
-            { 'archive': 'A', })
-    state_machine.add_state(StateArchived(), 'A',
-            {})
-    state_machine.add_state(states.StateDeclined(), 'R',
-            { 'reopen': Open,  })
-    state_machine.add_state(StateDuplicateApplicant(), 'DUP',
-            { 'reopen': Open, 'cancel': 'R', })
+    state_machine.add_state(
+        StateApplicantEnteringDetails(), 'O',
+        {'cancel': 'R', 'reopen': Open, 'duplicate': 'DUP',
+            'submit':  states.TransitionSubmit(
+                on_success=Split, on_error="R")})
+    state_machine.add_state(
+        StateWaitingForLeader(), 'L',
+        {'cancel': 'R', 'approve': 'K', 'duplicate': 'DUP', })
+    state_machine.add_state(
+        StateWaitingForDelegate(), 'D',
+        {'cancel': 'R', 'approve': 'K', 'duplicate': 'DUP', })
+    state_machine.add_state(
+        StateWaitingForAdmin(), 'K',
+        {'cancel': 'R', 'duplicate': 'DUP',
+            'approve': states.TransitionApprove(
+                on_password_needed='P', on_password_ok='C', on_error="R")})
+    state_machine.add_state(
+        states.StatePassword(), 'P',
+        {'submit': 'C', })
+    state_machine.add_state(
+        states.StateCompleted(), 'C',
+        {'archive': 'A', })
+    state_machine.add_state(
+        StateArchived(), 'A',
+        {})
+    state_machine.add_state(
+        states.StateDeclined(), 'R',
+        {'reopen': Open, })
+    state_machine.add_state(
+        StateDuplicateApplicant(), 'DUP',
+        {'reopen': Open, 'cancel': 'R', })
     state_machine.set_first_state(Open)
 #    NEW = 'N'
 #    OPEN = 'O'
@@ -722,8 +749,11 @@ def get_application_state_machine():
 #    DECLINED = 'R'
     return state_machine
 
+
 def register():
-    base.setup_application_type(ProjectApplication, get_application_state_machine())
+    base.setup_application_type(
+        ProjectApplication, get_application_state_machine())
+
 
 def get_applicant_from_email(email):
     try:
@@ -733,6 +763,7 @@ def get_applicant_from_email(email):
         applicant, _ = Applicant.objects.get_or_create(email=email)
         existing_person = False
     return applicant, existing_person
+
 
 def _send_invitation(request, project, invite_form):
     """ The logged in project leader OR administrator wants to invite somebody.
@@ -746,9 +777,9 @@ def _send_invitation(request, project, invite_form):
 
             if existing_person and not 'existing' in request.POST:
                 return render_to_response(
-                        'applications/project_common_invite_existing.html',
-                        {'form': form, 'person': applicant},
-                        context_instance=RequestContext(request))
+                    'applications/project_common_invite_existing.html',
+                    {'form': form, 'person': applicant},
+                    context_instance=RequestContext(request))
 
             application = form.save(commit=False)
             application.applicant = applicant
@@ -760,9 +791,9 @@ def _send_invitation(request, project, invite_form):
             return response
 
     return render_to_response(
-            'applications/project_common_invite_other.html',
-            {'form': form, 'project': project, },
-            context_instance=RequestContext(request))
+        'applications/project_common_invite_other.html',
+        {'form': form, 'project': project, },
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -791,12 +822,17 @@ def send_invitation(request, project_id=None):
 
 def new_application(request):
     """ A new application by a user to start a new project. """
-    # Note default applications/index.html will display error if user logged in.
+    # Note default applications/index.html will display error if user logged
+    # in.
     if not settings.ALLOW_REGISTRATIONS:
-        return render_to_response('applications/project_common_disabled.html', {}, context_instance=RequestContext(request))
+        return render_to_response(
+            'applications/project_common_disabled.html',
+            {},
+            context_instance=RequestContext(request))
 
     if not request.user.is_authenticated():
-        form = forms.UnauthenticatedInviteUserApplicationForm(request.POST or None)
+        form = forms.UnauthenticatedInviteUserApplicationForm(
+            request.POST or None)
         if request.method == 'POST':
             if form.is_valid():
                 email = form.cleaned_data['email']
@@ -808,14 +844,16 @@ def new_application(request):
                 application.save()
 
                 state_machine = get_application_state_machine()
-                state_machine.start(request, application, { 'is_applicant': True })
-                # we do not show unauthenticated users the application at this stage.
+                state_machine.start(
+                    request, application, {'is_applicant': True})
+                # we do not show unauthenticated users the application at this
+                # stage.
                 url = reverse('index')
                 return HttpResponseRedirect(url)
         return render_to_response(
-                'applications/project_common_invite_unauthenticated.html',
-                {'form': form, },
-                context_instance=RequestContext(request))
+            'applications/project_common_invite_unauthenticated.html',
+            {'form': form, },
+            context_instance=RequestContext(request))
     else:
         if request.method == 'POST':
                 person = request.user
@@ -825,9 +863,10 @@ def new_application(request):
                 application.save()
 
                 state_machine = get_application_state_machine()
-                response = state_machine.start(request, application, { 'is_applicant': True })
+                response = state_machine.start(
+                    request, application, {'is_applicant': True})
                 return response
         return render_to_response(
-                'applications/project_common_invite_authenticated.html',
-                {},
-                context_instance=RequestContext(request))
+            'applications/project_common_invite_authenticated.html',
+            {},
+            context_instance=RequestContext(request))

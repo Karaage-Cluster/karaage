@@ -30,6 +30,7 @@ from karaage.applications.models import Application
 
 import karaage.common as common
 
+
 def get_url(request, application, auth, label=None):
     """ Retrieve a link that will work for the current user. """
     args = []
@@ -58,12 +59,12 @@ def get_url(request, application, auth, label=None):
     # return required url
     if not require_secret:
         url = reverse(
-                'kg_application_detail',
-                args=[application.pk, application.state] + args)
+            'kg_application_detail',
+            args=[application.pk, application.state] + args)
     else:
         url = reverse(
-                'kg_application_unauthenticated',
-                args=[application.secret_token, application.state] + args)
+            'kg_application_unauthenticated',
+            args=[application.secret_token, application.state] + args)
     return url
 
 
@@ -73,11 +74,11 @@ def get_email_link(application):
     if (application.content_type.model == 'person' and
             application.applicant.has_usable_password()):
         url = '%s/applications/%d/' % (
-                settings.REGISTRATION_BASE_URL, application.pk)
+            settings.REGISTRATION_BASE_URL, application.pk)
         is_secret = False
     else:
         url = '%s/applications/%s/' % (
-                settings.REGISTRATION_BASE_URL, application.secret_token)
+            settings.REGISTRATION_BASE_URL, application.secret_token)
         is_secret = True
     return url, is_secret
 
@@ -130,7 +131,9 @@ class StateMachine(object):
         # Go to first state.
         return self._next(request, application, auth, self._first_state)
 
-    def process(self, request, application, expected_state, label, auth_override=None):
+    def process(
+            self, request, application,
+            expected_state, label, auth_override=None):
         """ Process the view request at the current state. """
 
         # Get the authentication of the current user
@@ -160,37 +163,40 @@ class StateMachine(object):
         if expected_state != application.state:
             # post data will be lost
             if request.method == "POST":
-                messages.warning(request, "Discarding request and jumping to current state.")
+                messages.warning(
+                    request,
+                    "Discarding request and jumping to current state.")
             # note we discard the label, it probably isn't relevant for new
             # state
             url = get_url(request, application, auth)
             return HttpResponseRedirect(url)
 
         # Get the current state for this application
-        state, actions =  self._states[application.state]
+        state, actions = self._states[application.state]
 
         # Finally do something
         if request.method == "GET":
             # if method is GET, state does not ever change.
             response = state.view(
-                    request, application, label, auth, actions.keys())
+                request, application, label, auth, actions.keys())
             assert isinstance(response, HttpResponse)
             return response
 
         elif request.method == "POST":
             # if method is POST, it can return a HttpResponse or a string
             response = state.view(
-                    request, application, label, auth, actions.keys())
+                request, application, label, auth, actions.keys())
             if isinstance(response, HttpResponse):
-                # If it returned a HttpResponse, state not changed, just display
+                # If it returned a HttpResponse, state not changed, just
+                # display
                 return response
             else:
                 # If it returned a string, lookit up in the actions for this
                 # state
                 if response not in actions:
                     raise RuntimeError(
-                            "Invalid response '%s' from state '%s'" %
-                            (response, state))
+                        "Invalid response '%s' from state '%s'"
+                        % (response, state))
                 next_state_key = actions[response]
                 # Go to the next state
                 return self._next(request, application, auth, next_state_key)
@@ -198,7 +204,6 @@ class StateMachine(object):
         else:
             # Shouldn't happen, user did something weird
             return HttpResponseBadRequest("<h1>Bad Request</h1>")
-
 
     ###################
     # PRIVATE METHODS #
@@ -228,7 +233,7 @@ class StateMachine(object):
             # If next state is a transition, process it
             while isinstance(state_key, Transition):
                 state_key = state_key.get_next_state(
-                        request, application, auth)
+                    request, application, auth)
 
             # lookup next state
             if state_key not in self._states:
@@ -285,14 +290,14 @@ class State(object):
         if request.method == "GET":
             context = self.context
             context.update({
-                    'application': application,
-                    'actions': actions,
-                    'state': self.name,
-                    'auth': auth})
+                'application': application,
+                'actions': actions,
+                'state': self.name,
+                'auth': auth})
             return render_to_response(
-                    'applications/common_detail.html',
-                    context,
-                    context_instance=RequestContext(request))
+                'applications/common_detail.html',
+                context,
+                context_instance=RequestContext(request))
         elif request.method == "POST":
             for action in actions:
                 if action in request.POST:
@@ -300,7 +305,6 @@ class State(object):
 
         # we don't know how to handle this request.
         return HttpResponseBadRequest("<h1>Bad Request</h1>")
-
 
 
 class Transition(object):
@@ -330,10 +334,12 @@ def get_application(**kwargs):
 
 
 _types = {}
+
+
 def setup_application_type(application_type, state_machine):
     _types[application_type] = state_machine
+
 
 def get_state_machine(application):
     application = application.get_object()
     return _types[type(application)]
-

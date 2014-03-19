@@ -24,7 +24,6 @@ from django.contrib.contenttypes import generic
 from django.conf import settings
 
 import datetime
-import warnings
 
 from model_utils import FieldTracker
 
@@ -36,20 +35,28 @@ from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory, Account
 from karaage.software.models import SoftwareLicenseAgreement
 
+
 class ApplicationManager(models.Manager):
     def get_for_applicant(self, person):
         query = self.get_queryset()
         query = query.filter(content_type__model="person", object_id=person.pk)
-        query = query.exclude(state__in=[Application.COMPLETED, Application.ARCHIVED, Application.DECLINED])
+        query = query.exclude(state__in=[
+            Application.COMPLETED, Application.ARCHIVED, Application.DECLINED])
         return query
 
     def requires_attention(self, request):
         person = request.user
-        query = Q(projectapplication__project__in=person.leads.all(), state=ProjectApplication.WAITING_FOR_LEADER)
-        query = query | Q(projectapplication__institute__in=person.delegate_for.all(), state=ProjectApplication.WAITING_FOR_DELEGATE)
+        query = Q(
+            projectapplication__project__in=person.leads.all(),
+            state=ProjectApplication.WAITING_FOR_LEADER)
+        query = query | Q(
+            projectapplication__institute__in=person.delegate_for.all(),
+            state=ProjectApplication.WAITING_FOR_DELEGATE)
         if is_admin(request):
             query = query | Q(state=Application.WAITING_FOR_ADMIN)
-            query = query | Q(state=ProjectApplication.DUPLICATE, projectapplication__isnull=False)
+            query = query | Q(
+                state=ProjectApplication.DUPLICATE,
+                projectapplication__isnull=False)
         return self.get_queryset().filter(query)
 
 
@@ -60,17 +67,25 @@ class Application(models.Model):
     ARCHIVED = 'A'
     DECLINED = 'R'
 
-    secret_token = models.CharField(max_length=64, default=new_random_token, editable=False, unique=True)
+    secret_token = models.CharField(
+        max_length=64, default=new_random_token, editable=False, unique=True)
     expires = models.DateTimeField(editable=False)
-    created_by = models.ForeignKey(Person, editable=False, null=True, blank=True)
+    created_by = models.ForeignKey(
+        Person, editable=False, null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True, editable=False)
     submitted_date = models.DateTimeField(null=True, blank=True)
     state = models.CharField(max_length=5)
     complete_date = models.DateTimeField(null=True, blank=True, editable=False)
-    content_type = models.ForeignKey(ContentType, limit_choices_to={'model__in': ['person', 'applicant']}, null=True, blank=True)
+    content_type = models.ForeignKey(
+        ContentType,
+        limit_choices_to={'model__in': ['person', 'applicant']},
+        null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     applicant = generic.GenericForeignKey()
-    header_message = models.TextField('Message', null=True, blank=True, help_text=u"Message displayed at top of application form for the invitee and also in invitation email")
+    header_message = models.TextField(
+        'Message', null=True, blank=True,
+        help_text=u"Message displayed at top of application form "
+        u"for the invitee and also in invitation email")
     _class = models.CharField(max_length=100, editable=False)
 
     objects = ApplicationManager()
@@ -98,7 +113,9 @@ class Application(models.Model):
             parent = self._meta.parents.keys()[0]
             subclasses = parent._meta.get_all_related_objects()
             for klass in subclasses:
-                if isinstance(klass, RelatedObject) and klass.field.primary_key and klass.opts == self._meta:
+                if isinstance(klass, RelatedObject) \
+                        and klass.field.primary_key \
+                        and klass.opts == self._meta:
                     self._class = klass.get_accessor_name()
                     break
 
@@ -107,7 +124,8 @@ class Application(models.Model):
         if created:
             log(None, self, 2, 'Created')
         for field in self._tracker.changed():
-            log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
+            log(None, self, 2,
+                'Changed %s to %s' % (field,  getattr(self, field)))
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
@@ -116,7 +134,9 @@ class Application(models.Model):
 
     def get_object(self):
         try:
-            if self._class and self._meta.get_field_by_name(self._class)[0].opts != self._meta:
+            if self._class \
+                    and self._meta.get_field_by_name(self._class)[0].opts \
+                    != self._meta:
                 return getattr(self, self._class)
         except FieldDoesNotExist:
             pass
@@ -138,7 +158,7 @@ class Application(models.Model):
         if self.content_type.model == 'applicant':
             person = self.applicant.approve(approved_by)
             created_person = True
-        elif self.content_type.model == 'person' :
+        elif self.content_type.model == 'person':
             person = self.applicant
             created_person = False
         else:
@@ -177,19 +197,25 @@ class ProjectApplication(Application):
     """ Application for an Applicant or a Person to create a new project or
     join an existing project. """
     # common properties
-    needs_account = models.BooleanField(u"Do you need a personal cluster account?", help_text=u"Required if you will be working on the project yourself.", default=True)
+    needs_account = models.BooleanField(
+        u"Do you need a personal cluster account?",
+        help_text=u"Required if you will be working on the project yourself.",
+        default=True)
 
     # new project request
     name = models.CharField('Title', max_length=200)
-    institute = models.ForeignKey(Institute, limit_choices_to={'is_active': True}, null=True, blank=True)
+    institute = models.ForeignKey(
+        Institute, limit_choices_to={'is_active': True}, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
-    machine_categories = models.ManyToManyField(MachineCategory, null=True, blank=True)
+    machine_categories = models.ManyToManyField(
+        MachineCategory, null=True, blank=True)
     pid = models.CharField(max_length=50, null=True, blank=True)
 
     # existing project request
     project = models.ForeignKey(Project, null=True, blank=True)
-    make_leader = models.BooleanField(help_text="Make this person a project leader", default=False)
+    make_leader = models.BooleanField(
+        help_text="Make this person a project leader", default=False)
 
     objects = ApplicationManager()
 
@@ -202,8 +228,8 @@ class ProjectApplication(Application):
             return u"create/join a project"
 
     def approve(self, approved_by):
-        created_person, created_account = super(ProjectApplication, self).approve(approved_by)
-        created_project = False
+        created_person, created_account = \
+            super(ProjectApplication, self).approve(approved_by)
         assert self.applicant is not None
         assert self.content_type.model == "person"
         person = self.applicant
@@ -217,7 +243,8 @@ class ProjectApplication(Application):
                 institute=self.institute,
                 additional_req=self.additional_req,
                 start_date=datetime.datetime.today(),
-                end_date=datetime.datetime.today() + datetime.timedelta(days=365),
+                end_date=datetime.datetime.today()
+                + datetime.timedelta(days=365),
                 )
             project.save()
             project.leaders.add(person)
@@ -226,7 +253,6 @@ class ProjectApplication(Application):
             project.activate(approved_by)
             self.project = project
             self.save()
-            created_project = True
         if self.needs_account:
             for pc in self.project.projectquota_set.all():
                 if not person.has_account(pc.machine_category):
@@ -261,13 +287,12 @@ class ProjectApplication(Application):
         if self.project is None:
             if not self.name:
                 errors.append(
-                "New project application with no name")
+                    "New project application with no name")
             if self.institute is None:
                 errors.append(
-                "New project application with no institute")
+                    "New project application with no institute")
 
         return errors
-
 
 
 class SoftwareApplication(Application):
@@ -322,21 +347,30 @@ class Applicant(models.Model):
     email_verified = models.BooleanField(editable=False, default=False)
     username = models.CharField(max_length=255, unique=True,
                                 null=True, blank=True)
-    title = models.CharField(choices=TITLES, max_length=10, null=True, blank=True)
+    title = models.CharField(
+        choices=TITLES, max_length=10, null=True, blank=True)
     short_name = models.CharField(max_length=30)
     full_name = models.CharField(max_length=60)
-    institute = models.ForeignKey(Institute, help_text="If your institute is not listed please contact %s" % settings.ACCOUNTS_EMAIL, limit_choices_to={'is_active': True}, null=True, blank=True)
+    institute = models.ForeignKey(
+        Institute,
+        help_text="If your institute is not listed please contact %s"
+        % settings.ACCOUNTS_EMAIL,
+        limit_choices_to={'is_active': True},
+        null=True, blank=True)
     department = models.CharField(max_length=200, null=True, blank=True)
     position = models.CharField(max_length=200, null=True, blank=True)
-    telephone = models.CharField("Office Telephone", max_length=200, null=True, blank=True)
+    telephone = models.CharField(
+        "Office Telephone", max_length=200, null=True, blank=True)
     mobile = models.CharField(max_length=200, null=True, blank=True)
     supervisor = models.CharField(max_length=100, null=True, blank=True)
     address = models.CharField(max_length=200, null=True, blank=True)
     city = models.CharField(max_length=100, null=True, blank=True)
     postcode = models.CharField(max_length=8, null=True, blank=True)
-    country = models.CharField(max_length=2, choices=COUNTRIES, null=True, blank=True)
+    country = models.CharField(
+        max_length=2, choices=COUNTRIES, null=True, blank=True)
     fax = models.CharField(max_length=50, null=True, blank=True)
-    saml_id = models.CharField(max_length=200, null=True, blank=True, editable=False, unique=True)
+    saml_id = models.CharField(
+        max_length=200, null=True, blank=True, editable=False, unique=True)
     applications = generic.GenericRelation(Application)
 
     def __unicode__(self):
@@ -372,22 +406,22 @@ class Applicant(models.Model):
         query = Person.objects.filter(username=self.username)
         if self.username and query.count() > 0:
             errors.append(
-                    "Application username address conflicts "
-                    "with existing person.")
+                "Application username address conflicts "
+                "with existing person.")
 
         # check for saml_id conflict
         query = Person.objects.filter(saml_id=self.saml_id)
         if self.saml_id and query.count() > 0:
             errors.append(
-                    "Application saml_id address conflicts "
-                    "with existing person.")
+                "Application saml_id address conflicts "
+                "with existing person.")
 
         # check for email conflict
         query = Person.objects.filter(email=self.email)
         if self.email and query.count() > 0:
             errors.append(
-                    "Application email address conflicts "
-                    "with existing person.")
+                "Application email address conflicts "
+                "with existing person.")
 
         return errors
 

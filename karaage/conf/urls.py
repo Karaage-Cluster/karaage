@@ -15,12 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import *
-from django.conf import settings
+from django.conf.urls import patterns, url, include
 
 from karaage.common import get_urls
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^xmlrpc/$', 'django_xmlrpc.views.handle_xmlrpc',),
     url(r'^captcha/', include('captcha.urls')),
     url(r'^lookup/', include('ajax_select.urls')),

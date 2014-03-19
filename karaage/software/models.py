@@ -84,12 +84,17 @@ class Software(models.Model):
             new_group = self.group
             if old_group_pk is not None:
                 old_group = Group.objects.get(pk=old_group_pk)
-                from karaage.datastores import machine_category_remove_account_from_software
-                for account in Account.objects.filter(person__groups=old_group, date_deleted__isnull=True):
-                    machine_category_remove_account_from_software(account, self)
+                from karaage.datastores \
+                    import machine_category_remove_account_from_software
+                for account in Account.objects.filter(
+                        person__groups=old_group, date_deleted__isnull=True):
+                    machine_category_remove_account_from_software(
+                        account, self)
             if new_group is not None:
-                from karaage.datastores import machine_category_add_account_to_software
-                for account in Account.objects.filter(person__groups=new_group, date_deleted__isnull=True):
+                from karaage.datastores \
+                    import machine_category_add_account_to_software
+                for account in Account.objects.filter(
+                        person__groups=new_group, date_deleted__isnull=True):
                     machine_category_add_account_to_software(account, self)
 
     save.alters_data = True
@@ -103,8 +108,10 @@ class Software(models.Model):
         old_group_pk = self._tracker.previous("group_id")
         if old_group_pk is not None:
             old_group = Group.objects.get(pk=old_group_pk)
-            from karaage.datastores import machine_category_remove_account_from_software
-            for account in Account.objects.filter(person__groups=old_group, date_deleted__isnull=True):
+            from karaage.datastores \
+                import machine_category_remove_account_from_software
+            for account in Account.objects.filter(
+                    person__groups=old_group, date_deleted__isnull=True):
                 machine_category_remove_account_from_software(account, self)
 
         # update the datastore
