@@ -21,6 +21,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib import messages
 from django.conf import settings
+from django.http import HttpResponseBadRequest
 
 from karaage.emails.forms import EmailForm
 from karaage.people.models import Person
