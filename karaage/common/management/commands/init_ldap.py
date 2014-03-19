@@ -23,6 +23,7 @@ import tldap.transaction
 
 import ldap.dn
 
+
 class Command(BaseCommand):
     help = "Inititlise LDAP"
     args = "server [server ...]"
@@ -51,14 +52,16 @@ class Command(BaseCommand):
             group_base_dn = ldap.dn.dn2str(ldap.dn.str2dn(group_dn)[1:])
 
             ou = tldap.schemas.rfc.organizationalUnit
-            v, c = ou.objects.using(using).base_dn(user_base_dn).get_or_create(dn=user_dn)
+            query = ou.objects.using(using).base_dn(user_base_dn)
+            v, c = query.get_or_create(dn=user_dn)
             if verbose > 0:
                 if c:
                     print "Added " + user_dn
                 else:
                     print user_dn + " already exists."
 
-            v, c = ou.objects.using(using).base_dn(group_base_dn).get_or_create(dn=group_dn)
+            query = ou.objects.using(using).base_dn(group_base_dn)
+            v, c = query.get_or_create(dn=group_dn)
             if verbose > 0:
                 if c:
                     print "Added " + group_dn

@@ -16,7 +16,6 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf import settings
-from django.shortcuts import render_to_response
 from django import forms
 from karaage.institutes.models import Institute
 
@@ -27,6 +26,7 @@ def is_saml_session(request):
     if not request.META['HTTP_SHIB_SESSION_ID']:
         return False
     return True
+
 
 def parse_attributes(request):
     shib_attrs = {}
@@ -51,7 +51,8 @@ def parse_attributes(request):
 
 def build_shib_url(request, target, entityid=None):
     url_base = 'https://%s' % request.get_host()
-    shib_url = "%s%s" % (url_base, getattr(settings, 'SHIB_HANDLER', '/Shibboleth.sso/DS'))
+    shib_url = "%s%s" % (
+        url_base, getattr(settings, 'SHIB_HANDLER', '/Shibboleth.sso/DS'))
     if not target.startswith('http'):
         target = url_base + target
 
@@ -63,7 +64,8 @@ def build_shib_url(request, target, entityid=None):
 
 def logout_url(request):
     url_base = 'https://%s' % request.get_host()
-    url = "%s%s" % (url_base, getattr(settings, 'SHIB_HANDLER', '/Shibboleth.sso/Logout'))
+    url = "%s%s" % (
+        url_base, getattr(settings, 'SHIB_HANDLER', '/Shibboleth.sso/Logout'))
     return url
 
 
@@ -80,5 +82,9 @@ def add_saml_data(person, request):
     return person
 
 
+_queryset = Institute.active.filter(saml_entityid__isnull=False)
+_queryset = _queryset.exclude(saml_entityid="")
+
+
 class SAMLInstituteForm(forms.Form):
-    institute = forms.ModelChoiceField(queryset=Institute.active.filter(saml_entityid__isnull=False).exclude(saml_entityid=""), required=True)
+    institute = forms.ModelChoiceField(queryset=_queryset, required=True)

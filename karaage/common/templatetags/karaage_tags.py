@@ -20,14 +20,13 @@ from decimal import Decimal
 
 from django import template
 from django.conf import settings
-
 from django.http import QueryDict
-from django import template
 from django.contrib.contenttypes.models import ContentType
 
 from karaage.common.models import LogEntry, COMMENT
 
 register = template.Library()
+
 
 class url_with_param_node(template.Node):
     def __init__(self, copy, nopage, changes):
@@ -83,17 +82,19 @@ def url_with_param(parser, token):
             key, newvalue = i.split('=', 1)
             qschanges.append((key, newvalue,))
         except ValueError:
-            raise template.TemplateSyntaxError, "Argument syntax wrong: should be key=value"
+            raise template.TemplateSyntaxError(
+                "Argument syntax wrong: should be key=value")
     return url_with_param_node(copy, nopage, qschanges)
+
 
 @register.inclusion_tag('common/comments.html', takes_context=True)
 def comments(context, obj):
     """ Render comments for obj. """
     content_type = ContentType.objects.get_for_model(obj.__class__)
     comment_list = LogEntry.objects.filter(
-            content_type=content_type,
-            object_id=obj.pk,
-            action_flag=COMMENT
+        content_type=content_type,
+        object_id=obj.pk,
+        action_flag=COMMENT
     )
     return {
         'obj': obj,
@@ -101,23 +102,25 @@ def comments(context, obj):
         'is_admin': context['is_admin'],
     }
 
+
 @register.simple_tag
 def comment_count(obj):
     content_type = ContentType.objects.get_for_model(obj.__class__)
     comment_list = LogEntry.objects.filter(
-            content_type=content_type,
-            object_id=obj.pk,
-            action_flag=COMMENT
+        content_type=content_type,
+        object_id=obj.pk,
+        action_flag=COMMENT
     )
     return int(comment_list.count())
+
 
 @register.simple_tag
 def active(request, pattern):
     import re
-    if re.search('^%s/%s' % (request.META['SCRIPT_NAME'], pattern), request.path):
+    spec = '^%s/%s' % (request.META['SCRIPT_NAME'], pattern)
+    if re.search(spec, request.path):
         return 'active'
     return ''
-
 
 
 @register.simple_tag
@@ -127,7 +130,6 @@ def date_filter(start, end):
     last_7 = (today - datetime.timedelta(days=7)).strftime('%Y-%m-%d')
     last_90 = (today - datetime.timedelta(days=90)).strftime('%Y-%m-%d')
     last_365 = (today - datetime.timedelta(days=365)).strftime('%Y-%m-%d')
-
 
     view_7, view_90, view_365 = False, False, False
 
@@ -157,7 +159,6 @@ def date_filter(start, end):
     else:
         s += """<a href="./?start=%s">Last 365 Days</a>""" % last_365
 
-
     return s
 
 
@@ -175,17 +176,18 @@ def yes_no(boolean, true_msg='Yes', false_msg='No'):
         return "<span class='no'>%s</span>" % false_msg
 
 
-
 @register.tag
 def searchform(parser, token):
     try:
         tag_name, post_url = token.split_contents()
     except:
         try:
-            tag_name = token.split_contents()
+            _, = token.split_contents()
             post_url = '.'
         except:
-            raise template.TemplateSyntaxError, "%r tag requires one or no arguments" % token.contents.split()[0]
+            raise template.TemplateSyntaxError(
+                "%r tag requires one or no arguments"
+                % token.contents.split()[0])
     return SearchFormNode(post_url)
 
 
@@ -211,7 +213,9 @@ def gen_table(parser, token):
             tag_name, queryset = token.split_contents()
             template_name = None
         except:
-            raise template.TemplateSyntaxError, "%r tag requires one or two arguments" % token.contents.split()[0]
+            raise template.TemplateSyntaxError(
+                "%r tag requires one or two arguments"
+                % token.contents.split()[0])
     return QuerySetTableNode(queryset, template_name)
 
 
@@ -227,9 +231,10 @@ class QuerySetTableNode(template.Node):
         if not self.template_name:
             app_label = queryset.model._meta.app_label
             model_name = queryset.model._meta.verbose_name
-            template_name = '%s/%s_table.html' % (app_label, model_name.lower().replace(' ', ''))
+            template_name = '%s/%s_table.html' % (
+                app_label, model_name.lower().replace(' ', ''))
         else:
-            template_name  = self.template_name
+            template_name = self.template_name
         template_obj = template.loader.get_template(template_name)
 
         context.push()
@@ -237,6 +242,7 @@ class QuerySetTableNode(template.Node):
         output = template_obj.render(context)
         context.pop()
         return output
+
 
 @register.simple_tag
 def divide(a, b):
@@ -278,7 +284,8 @@ def for_each_app_include(parser, token):
     try:
         tag_name, template_name = token.split_contents()
     except:
-        raise template.TemplateSyntaxError, "%r tag requires one arguments" % token.contents.split()[0]
+        raise template.TemplateSyntaxError(
+            "%r tag requires one arguments" % token.contents.split()[0])
     return ForEachAppIncludeNode(template_name)
 
 
@@ -289,10 +296,8 @@ def is_for_each_app_include_empty(template_name):
         if directory is not None:
             template_path = os.path.join(directory, template_name)
             try:
-                template_obj = template.loader.get_template(template_path)
+                template.loader.get_template(template_path)
                 return False
             except template.TemplateDoesNotExist:
                 pass
     return True
-
-

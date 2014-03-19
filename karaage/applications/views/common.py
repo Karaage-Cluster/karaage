@@ -29,18 +29,16 @@ from karaage.common.decorators import admin_required, login_required
 from karaage.applications.models import Applicant, Application
 from karaage.applications.forms import ApplicantForm
 import karaage.applications.views.base as base
-from karaage.common import log
 import karaage.common as util
+
 
 @login_required
 def application_list(request):
     """ a logged in user wants to see all his pending applications. """
-    person = request.user
     applications = Application.objects.all()
 
     if not util.is_admin(request):
         applications = Application.objects.get_for_applicant(request.user)
-
 
     if 'search' in request.REQUEST:
         terms = request.REQUEST['search'].lower()
@@ -73,6 +71,7 @@ def application_list(request):
         {'page': page, 'terms': terms},
         context_instance=RequestContext(request))
 
+
 @login_required
 def profile_application_list(request):
     """ a logged in user wants to see all his pending applications. """
@@ -81,13 +80,13 @@ def profile_application_list(request):
     requires_attention = Application.objects.requires_attention(request)
 
     return render_to_response(
-            'applications/profile_applications.html',
-            {
+        'applications/profile_applications.html',
+        {
             'person': request.user,
             'my_applications': my_applications,
             'requires_attention': requires_attention,
-            },
-            context_instance=RequestContext(request))
+        },
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -101,16 +100,19 @@ def applicant_edit(request, applicant_id):
             messages.success(request, "%s modified successfully." % applicant)
             return HttpResponseRedirect(reverse('kg_application_list'))
 
-    return render_to_response('applications/applicant_form.html',
-            {'form': form}, context_instance=RequestContext(request))
+    return render_to_response(
+        'applications/applicant_form.html',
+        {'form': form}, context_instance=RequestContext(request))
 
 
 @admin_required
 def application_logs(request, application_id):
     obj = get_object_or_404(Application, pk=application_id)
     breadcrumbs = []
-    breadcrumbs.append( ("Applications", reverse("kg_application_list")) )
-    breadcrumbs.append( (unicode(obj), reverse("kg_application_detail", args=[obj.pk])) )
+    breadcrumbs.append(
+        ("Applications", reverse("kg_application_list")))
+    breadcrumbs.append(
+        (unicode(obj), reverse("kg_application_detail", args=[obj.pk])))
     return util.log_list(request, breadcrumbs, obj)
 
 
@@ -118,8 +120,10 @@ def application_logs(request, application_id):
 def add_comment(request, application_id):
     obj = get_object_or_404(Application, pk=application_id)
     breadcrumbs = []
-    breadcrumbs.append( ("Applications", reverse("kg_application_list")) )
-    breadcrumbs.append( (unicode(obj), reverse("kg_application_detail", args=[obj.pk])) )
+    breadcrumbs.append(
+        ("Applications", reverse("kg_application_list")))
+    breadcrumbs.append(
+        (unicode(obj), reverse("kg_application_detail", args=[obj.pk])))
     return util.add_comment(request, breadcrumbs, obj)
 
 
@@ -130,18 +134,20 @@ def application_detail(request, application_id, state=None, label=None):
     state_machine = base.get_state_machine(application)
     return state_machine.process(request, application, state, label)
 
+
 def application_unauthenticated(request, token, state=None, label=None):
     """ An somebody is trying to access an application. """
     application = base.get_application(
-                secret_token=token, expires__gt=datetime.datetime.now())
+        secret_token=token, expires__gt=datetime.datetime.now())
 
     # redirect user to real url if possible.
     if request.user.is_authenticated():
         if request.user == application.applicant:
-            url = base.get_url(request, application, {'is_applicant': True}, label)
+            url = base.get_url(
+                request, application, {'is_applicant': True}, label)
             return HttpResponseRedirect(url)
 
     state_machine = base.get_state_machine(application)
-    return state_machine.process(request, application, state, label,
-            { 'is_applicant': True })
-
+    return state_machine.process(
+        request, application, state, label,
+        {'is_applicant': True})

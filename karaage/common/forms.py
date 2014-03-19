@@ -29,13 +29,14 @@ def validate_password(password1, password2=None, old_password=None):
         assert_strong_password(password1, old_password)
     except ValueError, e:
         raise forms.ValidationError(
-                u'Your password was found to be insecure: %s. '
-                    'A good password has a combination of letters '
-                    '(uppercase, lowercase), numbers and is at least 8 '
-                    'characters long.' % str(e))
+            u'Your password was found to be insecure: %s. '
+            'A good password has a combination of letters '
+            '(uppercase, lowercase), numbers and is at least 8 '
+            'characters long.' % str(e))
     if password1 and password2 is not None:
         if password1 != password2:
-            raise forms.ValidationError(u"The two password fields didn't match.")
+            raise forms.ValidationError(
+                u"The two password fields didn't match.")
     return password1
 
 
@@ -44,7 +45,7 @@ class CommentForm(forms.ModelForm):
 
     class Meta:
         model = LogEntry
-        fields = [ "change_message" ]
+        fields = ["change_message"]
 
     def __init__(self, obj, instance=None, **kwargs):
         self.obj = obj

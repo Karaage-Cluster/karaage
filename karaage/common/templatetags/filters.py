@@ -20,6 +20,7 @@ from django.template.defaultfilters import filesizeformat
 
 register = Library()
 
+
 @register.filter
 def timeformat(value):
 
@@ -50,9 +51,9 @@ def timeformat(value):
         v = int(value/3600)
         return '%sh' % intcomma(v)
 
+
 @register.filter
 def fileformat(kilobytes):
     if kilobytes:
         return filesizeformat(kilobytes*1024)
     return None
-

@@ -19,6 +19,7 @@ from django.conf import settings
 
 from karaage.common import is_admin, get_hooks
 
+
 def common(request):
     """ Set context with common variables. """
     ctx = {}

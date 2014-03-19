@@ -19,6 +19,7 @@ def apply_extra_context(extra_context, context):
         else:
             context[key] = value
 
+
 def get_model_and_form_class(model, form_class):
     """
     Returns a model and form class based on the model and form_class
@@ -36,13 +37,17 @@ def get_model_and_form_class(model, form_class):
         tmp_model = model
         # TODO: we should be able to construct a ModelForm without creating
         # and passing in a temporary inner class.
+
         class Meta:
             model = tmp_model
+
         class_name = model.__name__ + 'Form'
-        form_class = ModelFormMetaclass(class_name, (ModelForm,), {'Meta': Meta})
+        form_class = ModelFormMetaclass(
+            class_name, (ModelForm,), {'Meta': Meta})
         return model, form_class
     raise GenericViewError("Generic view must be called with either a model or"
                            " form_class argument.")
+
 
 def redirect(post_save_redirect, obj):
     """
@@ -68,6 +73,7 @@ def redirect(post_save_redirect, obj):
             " parameter to the generic view or define a get_absolute_url"
             " method on the Model.")
 
+
 def lookup_object(model, object_id, slug, slug_field):
     """
     Return the ``model`` object with the passed ``object_id``.  If
@@ -90,7 +96,9 @@ def lookup_object(model, object_id, slug, slug_field):
         raise Http404("No %s found for %s"
                       % (model._meta.verbose_name, lookup_kwargs))
 
-def create_object(request, model=None, template_name=None,
+
+def create_object(
+        request, model=None, template_name=None,
         template_loader=loader, extra_context=None, post_save_redirect=None,
         login_required=False, context_processors=None, form_class=None):
     """
@@ -101,7 +109,8 @@ def create_object(request, model=None, template_name=None,
         form
             the form for the object
     """
-    if extra_context is None: extra_context = {}
+    if extra_context is None:
+        extra_context = {}
     if login_required and not request.user.is_authenticated():
         return redirect_to_login(request.path)
 
@@ -112,7 +121,7 @@ def create_object(request, model=None, template_name=None,
             new_object = form.save()
 
             msg = ugettext("The %(verbose_name)s was created successfully.") %\
-                                    {"verbose_name": model._meta.verbose_name}
+                {"verbose_name": model._meta.verbose_name}
             messages.success(request, msg, fail_silently=True)
             return redirect(post_save_redirect, new_object)
     else:
@@ -120,7 +129,8 @@ def create_object(request, model=None, template_name=None,
 
     # Create the template, context, response
     if not template_name:
-        template_name = "%s/%s_form.html" % (model._meta.app_label, model._meta.object_name.lower())
+        template_name = "%s/%s_form.html" % (
+            model._meta.app_label, model._meta.object_name.lower())
     t = template_loader.get_template(template_name)
     c = RequestContext(request, {
         'form': form,
@@ -128,7 +138,9 @@ def create_object(request, model=None, template_name=None,
     apply_extra_context(extra_context, c)
     return HttpResponse(t.render(c))
 
-def update_object(request, model=None, object_id=None, slug=None,
+
+def update_object(
+        request, model=None, object_id=None, slug=None,
         slug_field='slug', template_name=None, template_loader=loader,
         extra_context=None, post_save_redirect=None, login_required=False,
         context_processors=None, template_object_name='object',
@@ -143,7 +155,8 @@ def update_object(request, model=None, object_id=None, slug=None,
         object
             the original object being edited
     """
-    if extra_context is None: extra_context = {}
+    if extra_context is None:
+        extra_context = {}
     if login_required and not request.user.is_authenticated():
         return redirect_to_login(request.path)
 
@@ -155,14 +168,15 @@ def update_object(request, model=None, object_id=None, slug=None,
         if form.is_valid():
             obj = form.save()
             msg = ugettext("The %(verbose_name)s was updated successfully.") %\
-                                    {"verbose_name": model._meta.verbose_name}
+                {"verbose_name": model._meta.verbose_name}
             messages.success(request, msg, fail_silently=True)
             return redirect(post_save_redirect, obj)
     else:
         form = form_class(instance=obj)
 
     if not template_name:
-        template_name = "%s/%s_form.html" % (model._meta.app_label, model._meta.object_name.lower())
+        template_name = "%s/%s_form.html" % (
+            model._meta.app_label, model._meta.object_name.lower())
     t = template_loader.get_template(template_name)
     c = RequestContext(request, {
         'form': form,
@@ -172,7 +186,9 @@ def update_object(request, model=None, object_id=None, slug=None,
     response = HttpResponse(t.render(c))
     return response
 
-def delete_object(request, model, post_delete_redirect, object_id=None,
+
+def delete_object(
+        request, model, post_delete_redirect, object_id=None,
         slug=None, slug_field='slug', template_name=None,
         template_loader=loader, extra_context=None, login_required=False,
         context_processors=None, template_object_name='object'):
@@ -188,7 +204,8 @@ def delete_object(request, model, post_delete_redirect, object_id=None,
         object
             the original object being deleted
     """
-    if extra_context is None: extra_context = {}
+    if extra_context is None:
+        extra_context = {}
     if login_required and not request.user.is_authenticated():
         return redirect_to_login(request.path)
 
@@ -197,12 +214,13 @@ def delete_object(request, model, post_delete_redirect, object_id=None,
     if request.method == 'POST':
         obj.delete()
         msg = ugettext("The %(verbose_name)s was deleted.") %\
-                                    {"verbose_name": model._meta.verbose_name}
+            {"verbose_name": model._meta.verbose_name}
         messages.success(request, msg, fail_silently=True)
         return HttpResponseRedirect(post_delete_redirect)
     else:
         if not template_name:
-            template_name = "%s/%s_confirm_delete.html" % (model._meta.app_label, model._meta.object_name.lower())
+            template_name = "%s/%s_confirm_delete.html" % (
+                model._meta.app_label, model._meta.object_name.lower())
         t = template_loader.get_template(template_name)
         c = RequestContext(request, {
             template_object_name: obj,

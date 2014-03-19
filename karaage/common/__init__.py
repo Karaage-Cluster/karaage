@@ -37,7 +37,12 @@ from django.template import add_to_builtins
 add_to_builtins('karaage.common.templatetags.karaage_tags')
 
 
-def get_date_range(request, default_start=(datetime.date.today() - datetime.timedelta(days=90)), default_end=datetime.date.today()):
+def get_date_range(request, default_start=None, default_end=None):
+
+    if default_start is None:
+        default_start = datetime.date.today() - datetime.timedelta(days=90)
+    if default_end is None:
+        default_end = datetime.date.today()
 
     today = datetime.date.today()
 
@@ -106,14 +111,15 @@ class log():
 def new_random_token():
     import random
     from hashlib import sha1
-    from django.conf import settings
     # Use the system (hardware-based) random number generator if it exists.
     if hasattr(random, 'SystemRandom'):
         randrange = random.SystemRandom().randrange
     else:
         randrange = random.randrange
     MAX_KEY = 18446744073709551616L     # 2 << 63
-    return sha1("%s%s" % (randrange(0, MAX_KEY), settings.SECRET_KEY)).hexdigest()
+
+    string = "%s%s" % (randrange(0, MAX_KEY), settings.SECRET_KEY)
+    return sha1(string).hexdigest()
 
 
 def log_list(request, breadcrumbs, obj):
@@ -126,7 +132,9 @@ def log_list(request, breadcrumbs, obj):
         terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
-            q = Q(user__username__iexact=term) | Q(object_repr__iexact=term) | Q(change_message__icontains=term)
+            q = Q(user__username__iexact=term)
+            q = q | Q(object_repr__iexact=term)
+            q = q | Q(change_message__icontains=term)
             query = query & q
 
         log_list = log_list.filter(query)
@@ -146,13 +154,14 @@ def log_list(request, breadcrumbs, obj):
         page = paginator.page(paginator.num_pages)
 
     return render_to_response(
-            'common/log_list.html',
-            { 'short': True, 'obj': obj,
-                'page': page,
-                'breadcrumbs': breadcrumbs,
-                'terms': terms,
-            },
-            context_instance=RequestContext(request))
+        'common/log_list.html',
+        {
+            'short': True, 'obj': obj,
+            'page': page,
+            'breadcrumbs': breadcrumbs,
+            'terms': terms,
+        },
+        context_instance=RequestContext(request))
 
 
 def add_comment(request, breadcrumbs, obj):
@@ -164,11 +173,12 @@ def add_comment(request, breadcrumbs, obj):
         return HttpResponseRedirect(obj.get_absolute_url())
 
     return render_to_response(
-            'common/add_comment.html',
-            { 'form': form, 'obj': obj,
-                'breadcrumbs': breadcrumbs,
-            },
-            context_instance=RequestContext(request))
+        'common/add_comment.html',
+        {
+            'form': form, 'obj': obj,
+            'breadcrumbs': breadcrumbs,
+        },
+        context_instance=RequestContext(request))
 
 
 def is_admin(request):
@@ -177,6 +187,7 @@ def is_admin(request):
     if not request.user.is_authenticated():
         return False
     return request.user.is_admin
+
 
 def get_hooks(name):
     for app in settings.INSTALLED_APPS:
@@ -189,6 +200,7 @@ def get_hooks(name):
             function = getattr(module, name, None)
             if function is not None:
                 yield function
+
 
 def get_urls(name):
     for app in settings.INSTALLED_APPS:

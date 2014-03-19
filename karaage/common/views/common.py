@@ -33,18 +33,31 @@ from karaage.projects.models import Project
 
 @admin_required
 def admin_index(request):
+    newest_users = Person.objects.order_by('-date_approved', '-id')
+    newest_users = newest_users.filter(date_approved__isnull=False)
+    newest_users = newest_users.select_related()[:5],
+
+    newest_projects = Project.objects.order_by('-date_approved')
+    newest_projects = newest_projects.filter(date_approved__isnull=False)
+    newest_projects = newest_projects.filter(is_active=True)
+    newest_projects = newest_projects.select_related()[:5],
+
+    recent_actions = request.user.logentry_set.all()[:10],
+
     var = {
-        'newest_users': Person.objects.order_by('-date_approved', '-id').filter(date_approved__isnull=False).select_related()[:5],
-        'newest_projects': Project.objects.order_by('-date_approved').filter(date_approved__isnull=False).filter(is_active=True).select_related()[:5],
-        'recent_actions': request.user.logentry_set.all()[:10],
+        'newest_users': newest_users,
+        'newest_projects': newest_projects,
+        'recent_actions': recent_actions,
     }
-    return render_to_response('common/index.html', var, context_instance=RequestContext(request))
+    return render_to_response(
+        'common/index.html', var, context_instance=RequestContext(request))
+
 
 def index(request):
     if settings.ADMIN_REQUIRED or is_admin(request):
         return admin_index(request)
-    return render_to_response('common/index.html', context_instance=RequestContext(request))
-
+    return render_to_response(
+        'common/index.html', context_instance=RequestContext(request))
 
 
 @admin_required
@@ -62,7 +75,10 @@ def search(request):
         # users
         query = Q()
         for term in term_list:
-            q = Q(username__icontains=term) | Q(short_name__icontains=term) | Q(full_name__icontains=term) | Q(email__icontains=term)
+            q = Q(username__icontains=term)
+            q = q | Q(short_name__icontains=term)
+            q = q | Q(full_name__icontains=term)
+            q = q | Q(email__icontains=term)
             query = query & q
 
         people_list = people_list.filter(query).distinct()
@@ -78,7 +94,11 @@ def search(request):
          # projects
         query = Q()
         for term in term_list:
-            q = Q(pid__icontains=term) | Q(name__icontains=term) | Q(leaders__username__icontains=term) | Q(leaders__short_name__icontains=term) | Q(leaders__full_name__icontains=term)
+            q = Q(pid__icontains=term)
+            q = q | Q(name__icontains=term)
+            q = q | Q(leaders__username__icontains=term)
+            q = q | Q(leaders__short_name__icontains=term)
+            q = q | Q(leaders__full_name__icontains=term)
             query = query & q
 
         project_list = project_list.filter(query).distinct()
@@ -87,8 +107,11 @@ def search(request):
 
         if not (people_list or group_list or project_list):
             empty = True
-        
-        return render_to_response('common/site_search.html', locals(), context_instance=RequestContext(request))
+
+        return render_to_response(
+            'common/site_search.html',
+            locals(),
+            context_instance=RequestContext(request))
     else:
         return HttpResponseRedirect(reverse('index'))
 
@@ -101,7 +124,9 @@ def log_list(request):
         terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
-            q = Q(user__username__iexact=term) | Q(object_repr__iexact=term) | Q(change_message__icontains=term)
+            q = Q(user__username__iexact=term)
+            q = q | Q(object_repr__iexact=term)
+            q = q | Q(change_message__icontains=term)
             query = query & q
 
         log_list = log_list.filter(query)
@@ -121,18 +146,21 @@ def log_list(request):
         page = paginator.page(paginator.num_pages)
 
     return render_to_response(
-                'common/log_list.html',
-                {'page': page, 'short': False, 'terms': terms},
-                context_instance=RequestContext(request))
+        'common/log_list.html',
+        {'page': page, 'short': False, 'terms': terms},
+        context_instance=RequestContext(request))
 
 
 @admin_required
 def misc(request):
     from karaage.common.simple import direct_to_template
-    return direct_to_template(request,
-            template='common/misc_detail.html')
+    return direct_to_template(
+        request,
+        template='common/misc_detail.html')
+
 
 def aup(request):
     from karaage.common.simple import direct_to_template
-    return direct_to_template(request,
-            template='common/aup_detail.html')
+    return direct_to_template(
+        request,
+        template='common/aup_detail.html')

@@ -23,20 +23,26 @@ register = template.Library()
 
 DOT = '.'
 
+
 def paginator_number(page, i, qs):
 
     qs['page'] = i
-    
     if i == DOT:
         return u'... '
     elif i == page.number:
         return mark_safe(u'<span class="this-page">%d</span> ' % (i))
     else:
-        return mark_safe(u'<a href="%s"%s>%d</a> ' % ((get_query_string(qs)), (i == page.paginator.num_pages and ' class="end"' or ''), i))
+        return mark_safe(
+            u'<a href="%s"%s>%d</a> ' % (
+                (get_query_string(qs)),
+                (i == page.paginator.num_pages and ' class="end"' or ''),
+                i
+            )
+        )
 paginator_number = register.simple_tag(paginator_number)
 
+
 def pagination(page, request, eitherside=10):
-    
     tqs = request.META['QUERY_STRING']
     qs = {}
     try:
@@ -49,7 +55,7 @@ def pagination(page, request, eitherside=10):
     pagination_required = False
     if page.paginator.num_pages > 1:
         pagination_required = True
-      
+
     if page.paginator.count == 1:
         object_name = 'object'
     else:
@@ -57,9 +63,11 @@ def pagination(page, request, eitherside=10):
 
     if isinstance(page.paginator, QuerySetPaginator):
         if page.paginator.count == 1:
-            object_name = page.paginator.object_list.model._meta.verbose_name
+            object_name = \
+                page.paginator.object_list.model._meta.verbose_name
         else:
-            object_name = page.paginator.object_list.model._meta.verbose_name_plural
+            object_name = \
+                page.paginator.object_list.model._meta.verbose_name_plural
 
     if not pagination_required:
         page_range = []
@@ -78,18 +86,25 @@ def pagination(page, request, eitherside=10):
             # ON_EACH_SIDE links at either end of the "current page" link.
             page_range = []
             page_num = page.number
-            if page_num > (ON_EACH_SIDE + ON_ENDS +1):
+            if page_num > (ON_EACH_SIDE + ON_ENDS + 1):
                 page_range.extend(range(1, ON_EACH_SIDE))
                 page_range.append(DOT)
                 page_range.extend(range(page_num - ON_EACH_SIDE, page_num + 1))
             else:
                 page_range.extend(range(1, page_num + 1))
             if page_num < (page.paginator.num_pages - ON_EACH_SIDE - ON_ENDS):
-                page_range.extend(range(page_num + 1, page_num + ON_EACH_SIDE + 1))
+                page_range.extend(
+                    range(
+                        page_num + 1,
+                        page_num + ON_EACH_SIDE + 1))
                 page_range.append(DOT)
-                page_range.extend(range(page.paginator.num_pages - ON_ENDS + 1, page.paginator.num_pages + 1))
+                page_range.extend(
+                    range(
+                        page.paginator.num_pages - ON_ENDS + 1,
+                        page.paginator.num_pages + 1))
             else:
-                page_range.extend(range(page_num + 1, page.paginator.num_pages + 1))
+                page_range.extend(
+                    range(page_num + 1, page.paginator.num_pages + 1))
 
     return {
         'page': page,
@@ -98,4 +113,5 @@ def pagination(page, request, eitherside=10):
         'qs': qs,
         'page_list': page_range,
     }
+
 pagination = register.inclusion_tag('common/pagination.html')(pagination)

@@ -17,11 +17,14 @@
 
 from django.conf.urls import patterns, url, include
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^$', 'karaage.common.views.common.index', name='index'),
-    url(r'^search/$', 'karaage.common.views.common.search', name='kg_site_search'),
+    url(r'^search/$', 'karaage.common.views.common.search',
+        name='kg_site_search'),
     url(r'^misc/$', 'karaage.common.views.common.misc', name='kg_misc'),
-    url(r'^logs/$', 'karaage.common.views.common.log_list', name='kg_log_list'),
+    url(r'^logs/$', 'karaage.common.views.common.log_list',
+        name='kg_log_list'),
     url(r'^aup/$', 'karaage.common.views.common.aup', name="kg_aup"),
     url(r'^profile/', include('karaage.common.urls.profile')),
 )

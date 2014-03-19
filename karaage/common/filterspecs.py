@@ -20,8 +20,11 @@ from django.db.models.query import QuerySet, ValuesQuerySet
 import datetime
 from operator import itemgetter
 
+
 def get_query_string(qs):
-    return '?' + '&amp;'.join([u'%s=%s' % (k, v) for k, v in qs.items()]).replace(' ', '%20')
+    return '?' + '&amp;'.join(
+        [u'%s=%s' % (k, v) for k, v in qs.items()]).replace(' ', '%20')
+
 
 class Filter(object):
     multi = False
@@ -51,9 +54,8 @@ class Filter(object):
         self.name = name
         self.filters = filters
         self.selected = None
-        if request.GET.has_key(name):
+        if name in request.GET:
             self.selected = request.GET[name]
-
 
     def output(self, qs):
 
@@ -72,26 +74,34 @@ class Filter(object):
             selected = "all"
 
         output = '<li>'
-        output += '<a href="#">By %s (%s)</a>\n' % (self.header.replace('_', ' '), selected)
+        output += '<a href="#">By %s (%s)</a>\n' % (
+            self.header.replace('_', ' '), selected)
         output += '<ul>\n'
 
         if self.selected is not None:
-            output += """<li><a href="%s">All</a></li>\n""" % get_query_string(qs)
+            output += (
+                """<li><a href="%s">All</a></li>\n"""
+                % get_query_string(qs)
+            )
         else:
-            output += """<li class="selected"><a href="%s">All</a></li>\n""" % get_query_string(qs)
+            output += (
+                """<li class="selected"><a href="%s">All</a></li>\n"""
+                % get_query_string(qs)
+            )
         for k, v in filters:
             if str(self.selected) == str(k):
                 style = """class="selected" """
             else:
                 style = ""
             qs[self.name] = k
-            output += """<li %s><a href="%s">%s</a></li>\n""" % (style, get_query_string(qs), v)
+            output += (
+                """<li %s><a href="%s">%s</a></li>\n"""
+                % (style, get_query_string(qs), v)
+            )
 
         output += '</ul></li>'
 
         return output
-
-
 
 
 class DateFilter(object):
@@ -107,7 +117,9 @@ class DateFilter(object):
 
         self.field_generic = '%s__' % self.name
 
-        self.date_params = dict([(k, v) for k, v in params.items() if k.startswith(self.field_generic)])
+        self.date_params = dict(
+            [(k, v) for k, v in params.items()
+                if k.startswith(self.field_generic)])
 
         today = datetime.date.today()
         one_week_ago = today - datetime.timedelta(days=7)
@@ -121,7 +133,7 @@ class DateFilter(object):
             ('Past 7 days', {'%s__gte' % self.name: one_week_ago.strftime('%Y-%m-%d'),
                              '%s__lte' % self.name: today_str}),
             ('This month', {'%s__year' % self.name: str(today.year),
-                             '%s__month' % self.name: str(today.month)}),
+                            '%s__month' % self.name: str(today.month)}),
             ('This year', {'%s__year' % self.name: str(today.year)})
         )
 
@@ -130,7 +142,6 @@ class DateFilter(object):
             yield {'selected': self.date_params == param_dict,
                    'query_dict': param_dict,
                    'display': title}
-
 
     def output(self, qs):
         choices = list(self.choices())
@@ -144,19 +155,23 @@ class DateFilter(object):
 
         output = ''
         output += '<li>\n'
-        output += '<a href="#">By %s (%s)</a>\n' % (self.header.replace('_', ' '), selected)
+        output += (
+            '<a href="#">By %s (%s)</a>\n'
+            % (self.header.replace('_', ' '), selected)
+        )
         output += '<ul>\n'
 
-
         for choice in choices:
-            for k,v in qs.items():
+            for k, v in qs.items():
                 if k.startswith(self.field_generic):
                     del(qs[k])
 
-            for k,v in choice['query_dict'].items():
+            for k, v in choice['query_dict'].items():
                 qs[k] = v
 
-            output += """<li %s><a href="%s">%s</a></li>\n""" % (choice['selected'] and "class='selected'" or '', get_query_string(qs), choice['display'])
+            output += """<li %s><a href="%s">%s</a></li>\n""" % (
+                choice['selected'] and "class='selected'" or '',
+                get_query_string(qs), choice['display'])
 
         output += '</ul></li>'
         return output
@@ -181,16 +196,17 @@ class FilterBar(object):
             if f.multi:
                 params = dict(request.GET.items())
                 field_generic = '%s__' % f.name
-                m_params = dict([(k, v) for k, v in params.items() if k.startswith(field_generic)])
-                for k,v in m_params.items():
+                m_params = dict(
+                    [(k, v) for k, v in params.items()
+                        if k.startswith(field_generic)])
+                for k, v in m_params.items():
                     qs[k] = v
 
             else:
-                if self.request.GET.has_key(f.name):
+                if f.name in self.request.GET:
                     qs[f.name] = self.request.GET[f.name]
 
         self.qs = qs
-
 
     def output(self):
 
@@ -205,10 +221,7 @@ class FilterBar(object):
         return mark_safe(self.output())
 
 
-
-
 class ObjectList(object):
-
 
     def __init__(self, request, object_list, headers, filters):
 

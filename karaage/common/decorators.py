@@ -19,6 +19,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
 
+
 def admin_required(function=None):
     """
     Decorator for views that checks that the user is an administrator,
@@ -119,11 +120,9 @@ def xmlrpc_machine_required(function=None):
 
         if func.__doc__:
             wrapper.__doc__ = func.__doc__ + \
-                    "\nNote: Machine authentication is required."
+                "\nNote: Machine authentication is required."
         return wrapper
 
     if function:
         return actual_decorator(function)
     return actual_decorator
-
-

@@ -18,13 +18,9 @@
 """
 All email sending is done from this module
 """
-__author__ = 'Sam Morrison'
-
 from django.core.mail import EmailMessage
-from django.template.loader import render_to_string
 from django.conf import settings
 
-from karaage.common import log
 
 CONTEXT = {
     'org_email': settings.ACCOUNTS_EMAIL,
@@ -39,5 +35,5 @@ def send_mail(subject, message, from_email, recipient_list):
     }
 
     email = EmailMessage(subject, message, from_email, recipient_list,
-                        headers=headers)
+                         headers=headers)
     return email.send()
