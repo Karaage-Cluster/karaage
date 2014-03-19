@@ -22,7 +22,8 @@ from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 
 from karaage.people.models import Person, Group
-from karaage.people.utils import validate_username_for_new_person, UsernameException
+from karaage.people.utils import validate_username_for_new_person
+from karaage.people.utils import UsernameException
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
@@ -38,50 +39,72 @@ class PersonForm(forms.ModelForm):
 #    department = forms.CharField(required=False)
 #    supervisor = forms.CharField(required=False)
     telephone = forms.RegexField(
-            "^[0-9a-zA-Z\.( )+-]+$", required=True, label=u"Office Telephone",
-            help_text=u"Used for emergency contact and password reset service.",
-            error_messages={'invalid':
-            'Telephone number may only contain digits, letter, hyphens, spaces, braces,  and the plus sign.'})
+        "^[0-9a-zA-Z\.( )+-]+$", required=True, label=u"Office Telephone",
+        help_text=u"Used for emergency contact and password reset service.",
+        error_messages={
+            'invalid': 'Telephone number may only contain digits, letter, '
+                       'hyphens, spaces, braces,  and the plus sign.'})
     mobile = forms.RegexField(
-            "^[0-9a-zA-Z( )+-]+$",
-            required=False,
-            error_messages={'invalid':
-            'Telephone number may only contain digits, letter, hyphens, spaces, braces,  and the plus sign.'})
+        "^[0-9a-zA-Z( )+-]+$",
+        required=False,
+        error_messages={
+            'invalid': 'Telephone number may only contain digits, letter, '
+                       'hyphens, spaces, braces,  and the plus sign.'})
     fax = forms.CharField(required=False)
-    address = forms.CharField(label=u"Mailing Address", required=False, widget=forms.Textarea())
-    country = forms.ChoiceField(choices=COUNTRIES, initial='AU', required=False)
+    address = forms.CharField(
+        label=u"Mailing Address", required=False, widget=forms.Textarea())
+    country = forms.ChoiceField(
+        choices=COUNTRIES, initial='AU', required=False)
 
     class Meta:
         model = Person
-        fields = ['short_name', 'full_name', 'email', 'title', 'position', 'supervisor',
-                'department', 'telephone', 'mobile', 'fax', 'address', 'country' ]
+        fields = [
+            'short_name', 'full_name', 'email', 'title', 'position',
+            'supervisor', 'department', 'telephone', 'mobile', 'fax',
+            'address', 'country'
+        ]
 
 
 class AdminPersonForm(PersonForm):
     institute = forms.ModelChoiceField(queryset=Institute.active.all())
     comment = forms.CharField(widget=forms.Textarea(), required=False)
     expires = forms.DateField(widget=AdminDateWidget, required=False)
-    is_admin = forms.BooleanField(help_text="Designates whether the user can log into this admin site.", required=False)
-    is_systemuser = forms.BooleanField(help_text="Designates that this user is a system process, not a person.", required=False)
+    is_admin = forms.BooleanField(
+        help_text="Designates whether the user can log into this admin site.",
+        required=False)
+    is_systemuser = forms.BooleanField(
+        help_text="Designates that this user is a system process, "
+                  "not a person.",
+        required=False)
 
     class Meta:
         model = Person
-        fields = ['short_name', 'full_name', 'email', 'title', 'position', 'supervisor',
-                'department', 'institute', 'telephone', 'mobile', 'fax', 'address', 'country',
-                'expires', 'comment', 'is_systemuser', 'is_admin', ]
+        fields = [
+            'short_name', 'full_name', 'email', 'title', 'position',
+            'supervisor', 'department', 'institute', 'telephone', 'mobile',
+            'fax', 'address', 'country', 'expires', 'comment',
+            'is_systemuser', 'is_admin', ]
 
 
 class AddPersonForm(AdminPersonForm):
-    project = forms.ModelChoiceField(queryset=Project.objects.all(), label=u"Default Project", required=False)
-    needs_account = forms.BooleanField(required=False, label=u"Do you require a cluster account", help_text=u"eg. Will you be working on the project yourself")
+    project = forms.ModelChoiceField(
+        queryset=Project.objects.all(),
+        label=u"Default Project", required=False)
+    needs_account = forms.BooleanField(
+        required=False, label=u"Do you require a cluster account",
+        help_text=u"eg. Will you be working on the project yourself")
     username = forms.CharField(
         label=u"Requested username",
         max_length=settings.USERNAME_MAX_LENGTH,
         help_text=(settings.USERNAME_VALIDATION_ERROR_MSG
                    + " and has a max length of %s."
                    % settings.USERNAME_MAX_LENGTH))
-    password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password')
-    password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=u'Password (again)')
+    password1 = forms.CharField(
+        widget=forms.PasswordInput(render_value=False),
+        label=u'Password')
+    password2 = forms.CharField(
+        widget=forms.PasswordInput(render_value=False),
+        label=u'Password (again)')
 
     def clean_username(self):
         username = self.cleaned_data['username']
@@ -114,8 +137,12 @@ class AddPersonForm(AdminPersonForm):
 
 
 class AdminPasswordChangeForm(forms.Form):
-    new1 = forms.CharField(widget=forms.PasswordInput(), label=u'New Password')
-    new2 = forms.CharField(widget=forms.PasswordInput(), label=u'New Password (again)')
+    new1 = forms.CharField(
+        widget=forms.PasswordInput(),
+        label=u'New Password')
+    new2 = forms.CharField(
+        widget=forms.PasswordInput(),
+        label=u'New Password (again)')
 
     def clean(self):
         password1 = self.cleaned_data.get('new1')
@@ -135,7 +162,9 @@ class PasswordChangeForm(AdminPasswordChangeForm):
     def clean_old(self):
         person = get_current_person()
 
-        person = Person.objects.authenticate(username=person.username, password=self.cleaned_data['old'])
+        person = Person.objects.authenticate(
+            username=person.username,
+            password=self.cleaned_data['old'])
         if person is None:
             raise forms.ValidationError(u'Your old password was incorrect')
 
@@ -150,8 +179,10 @@ class SetPasswordForm(BaseSetPasswordForm):
 
 
 class AdminGroupForm(forms.Form):
-    name = forms.RegexField("^%s$" % settings.GROUP_VALIDATION_RE, required=True,
-            error_messages={'invalid': settings.GROUP_VALIDATION_ERROR_MSG})
+    name = forms.RegexField(
+        "^%s$" % settings.GROUP_VALIDATION_RE,
+        required=True,
+        error_messages={'invalid': settings.GROUP_VALIDATION_ERROR_MSG})
     description = forms.CharField()
 
     def __init__(self, *args, **kwargs):
@@ -185,9 +216,11 @@ class AdminGroupForm(forms.Form):
 
         return group
 
+
 class AddGroupMemberForm(forms.Form):
     """ Add a user to a group form """
-    person = ajax_select.fields.AutoCompleteSelectField('person', required=True, label="Add person")
+    person = ajax_select.fields.AutoCompleteSelectField(
+        'person', required=True, label="Add person")
 
     def __init__(self, *args, **kwargs):
         self.instance = kwargs.pop('instance', None)

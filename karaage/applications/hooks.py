@@ -18,20 +18,24 @@
 import karaage.applications.models as models
 import karaage.applications.views.software as software
 
+
 def context(request):
     ctx = {}
     if request.user.is_authenticated():
         person = request.user
         my_applications = models.Application.objects.get_for_applicant(person)
-        requires_attention = models.Application.objects.requires_attention(request)
+        requires_attention = \
+            models.Application.objects.requires_attention(request)
 
         ctx['pending_applications'] = (
-                  my_applications.count() + requires_attention.count()
+            my_applications.count() + requires_attention.count()
         )
     return ctx
 
+
 def approve_join_software(request, software_license):
     return software.new_application(request, software_license)
+
 
 def is_approve_join_software_pending(request, software_license):
     person = request.user

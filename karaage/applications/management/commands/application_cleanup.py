@@ -34,27 +34,32 @@ class Command(BaseCommand):
         verbose = int(options.get('verbosity'))
 
         # Delete all expired unsubmitted applications
-        for application in Application.objects.filter(expires__lte=now, submitted_date__isnull=True):
+        for application in Application.objects.filter(
+                expires__lte=now, submitted_date__isnull=True):
             if verbose >= 1:
-                print "Deleted expired unsubmitted application #%s" % application.id
+                print "Deleted expired unsubmitted application #%s" \
+                    % application.id
             application.delete()
 
         month_ago = now - datetime.timedelta(days=30)
 
         # Delete all unsubmitted applications that have been around for 1 month
-        for application in Application.objects.filter(created_date__lte=month_ago, submitted_date__isnull=True):
+        for application in Application.objects.filter(
+                created_date__lte=month_ago, submitted_date__isnull=True):
             if verbose >= 1:
                 print "Deleted unsubmitted application #%s" % application.id
             application.delete()
 
         # Delete all applications that have been complete/declined for 1 month
-        for application in Application.objects.filter(complete_date__isnull=False, complete_date__lte=month_ago):
+        for application in Application.objects.filter(
+                complete_date__isnull=False, complete_date__lte=month_ago):
             if verbose >= 1:
                 print "Deleted completed application #%s" % application.id
             application.delete()
 
         # Delete all orphaned applicants
-        for applicant in Applicant.objects.annotate(cc=Count('applications')).filter(cc=0):
+        for applicant in Applicant.objects.annotate(
+                cc=Count('applications')).filter(cc=0):
             if verbose >= 1:
                 print "Deleted orphaned applicant #%s" % applicant.id
             applicant.delete()

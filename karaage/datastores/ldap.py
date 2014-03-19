@@ -19,17 +19,18 @@
 
 from karaage.datastores import base
 
-from django.conf import settings
 import django.utils
 import logging
 import karaage.common.trace as trace
 logger = logging.getLogger(__name__)
+
 
 def _str_or_none(string):
     """ Return a string of None if string is empty. """
     if string is None or string == "":
         return None
     return string
+
 
 def _lookup(cls):
     """ Lookup module.class. """
@@ -55,22 +56,22 @@ class GlobalDataStore(base.GlobalDataStore):
     def _people(self):
         """ Return people query. """
         return self._person.objects.using(
-                using=self._using, settings=self._settings)
+            using=self._using, settings=self._settings)
 
     def _groups(self):
         """ Return groups query. """
         return self._group.objects.using(
-                using=self._using, settings=self._settings)
+            using=self._using, settings=self._settings)
 
     def _create_person(self, **kwargs):
         """ Create a new person. """
         return self._person(
-                using=self._using, settings=self._settings, **kwargs)
+            using=self._using, settings=self._settings, **kwargs)
 
     def _create_group(self, **kwargs):
         """ Create a new group. """
         return self._group(
-                using=self._using, settings=self._settings, **kwargs)
+            using=self._using, settings=self._settings, **kwargs)
 
     def save_person(self, person):
         """ Person was saved. """
@@ -156,7 +157,7 @@ class GlobalDataStore(base.GlobalDataStore):
                 result[i] = j
         result['dn'] = luser.dn
         result['secondary_accounts'] = [
-                a.dn for a in luser.secondary_groups.all() ]
+            a.dn for a in luser.secondary_groups.all()]
         return result
 
     def person_exists(self, username):
@@ -205,7 +206,7 @@ class GlobalDataStore(base.GlobalDataStore):
                 result[i] = j
         result['dn'] = lgroup.dn
         result['secondary_people'] = [
-                a.dn for a in lgroup.secondary_people.all() ]
+            a.dn for a in lgroup.secondary_people.all()]
         return result
 
 
@@ -217,35 +218,35 @@ class MachineCategoryDataStore(base.MachineCategoryDataStore):
         self._using = config['LDAP']
         self._account = _lookup(config['ACCOUNT'])
         self._group = _lookup(config['GROUP'])
-        self._primary_group = config.get('PRIMARY_GROUP',
-                'institute')
-        self._default_primary_group = config.get('DEFAULT_PRIMARY_GROUP',
-                'dummy')
-        self._home_directory = config.get('HOME_DIRECTORY',
-                "/home/%(uid)s")
-        self._locked_shell = config.get('LOCKED_SHELL',
-                "/usr/local/sbin/locked")
+        self._primary_group = config.get(
+            'PRIMARY_GROUP', 'institute')
+        self._default_primary_group = config.get(
+            'DEFAULT_PRIMARY_GROUP', 'dummy')
+        self._home_directory = config.get(
+            'HOME_DIRECTORY', "/home/%(uid)s")
+        self._locked_shell = config.get(
+            'LOCKED_SHELL', "/usr/local/sbin/locked")
         self._settings = config
 
     def _accounts(self):
         """ Return accounts query. """
         return self._account.objects.using(
-                using=self._using, settings=self._settings)
+            using=self._using, settings=self._settings)
 
     def _groups(self):
         """ Return groups query. """
         return self._group.objects.using(
-                using=self._using, settings=self._settings)
+            using=self._using, settings=self._settings)
 
     def _create_account(self, **kwargs):
         """ Create a new account. """
         return self._account(
-                using=self._using, settings=self._settings, **kwargs)
+            using=self._using, settings=self._settings, **kwargs)
 
     def _create_group(self, **kwargs):
         """ Create a new group. """
         return self._group(
-                using=self._using, settings=self._settings, **kwargs)
+            using=self._using, settings=self._settings, **kwargs)
 
     def save_account(self, account):
         """ Account was saved. """
@@ -279,7 +280,7 @@ class MachineCategoryDataStore(base.MachineCategoryDataStore):
             luser.gidNumber = lgroup.gidNumber
             luser.homeDirectory = self._home_directory % {
                 'default_project': default_project,
-                'uid': account.username }
+                'uid': account.username}
             if account.is_locked():
                 luser.loginShell = self._locked_shell
                 luser.lock()
@@ -300,7 +301,7 @@ class MachineCategoryDataStore(base.MachineCategoryDataStore):
             luser.gidNumber = lgroup.gidNumber
             luser.homeDirectory = self._home_directory % {
                 'default_project': default_project,
-                'uid': account.username }
+                'uid': account.username}
             if account.is_locked():
                 luser.loginShell = self._locked_shell
                 luser.lock()
@@ -358,7 +359,7 @@ class MachineCategoryDataStore(base.MachineCategoryDataStore):
         if group is not None:
             result['primary_group'] = group.dn
         result['secondary_groups'] = [
-                g.dn for g in luser.secondary_groups.all() ]
+            g.dn for g in luser.secondary_groups.all()]
         return result
 
     def account_exists(self, username):
@@ -405,9 +406,9 @@ class MachineCategoryDataStore(base.MachineCategoryDataStore):
                 result[i] = j
         result['dn'] = lgroup.dn
         result['primary_accounts'] = [
-                a.dn for a in lgroup.primary_accounts.all() ]
+            a.dn for a in lgroup.primary_accounts.all()]
         result['secondary_accounts'] = [
-                a.dn for a in lgroup.secondary_accounts.all() ]
+            a.dn for a in lgroup.secondary_accounts.all()]
         return result
 
 trace.attach(trace.trace(logger), GlobalDataStore)

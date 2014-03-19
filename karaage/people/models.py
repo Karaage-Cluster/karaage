@@ -21,14 +21,14 @@ import warnings
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.core.urlresolvers import reverse
-from django.conf import settings
 from jsonfield import JSONField
 
 from model_utils import FieldTracker
 
 from karaage.common.models import CHANGE
 from karaage.common.constants import TITLES, STATES, COUNTRIES
-from karaage.people.managers import ActivePersonManager, DeletedPersonManager, LeaderManager, PersonManager
+from karaage.people.managers import ActivePersonManager, DeletedPersonManager
+from karaage.people.managers import LeaderManager, PersonManager
 
 from karaage.common import log, is_admin
 
@@ -49,31 +49,38 @@ class Person(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
-    saml_id = models.CharField(max_length=200, null=True, blank=True, unique=True, editable=False)
+    saml_id = models.CharField(
+        max_length=200, null=True, blank=True, unique=True, editable=False)
     position = models.CharField(max_length=200, null=True, blank=True)
     telephone = models.CharField(max_length=200, null=True, blank=True)
     mobile = models.CharField(max_length=200, null=True, blank=True)
     department = models.CharField(max_length=200, null=True, blank=True)
     supervisor = models.CharField(max_length=100, null=True, blank=True)
     institute = models.ForeignKey('institutes.Institute')
-    title = models.CharField(choices=TITLES, max_length=10, null=True, blank=True)
+    title = models.CharField(
+        choices=TITLES, max_length=10, null=True, blank=True)
     address = models.CharField(max_length=200, null=True, blank=True)
     city = models.CharField(max_length=100, null=True, blank=True)
     postcode = models.CharField(max_length=8, null=True, blank=True)
-    state = models.CharField(choices=STATES, max_length=4, null=True, blank=True)
-    country = models.CharField(max_length=2, choices=COUNTRIES, null=True, blank=True)
+    state = models.CharField(
+        choices=STATES, max_length=4, null=True, blank=True)
+    country = models.CharField(
+        max_length=2, choices=COUNTRIES, null=True, blank=True)
     website = models.URLField(null=True, blank=True)
     fax = models.CharField(max_length=50, null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
-    approved_by = models.ForeignKey('self', related_name='user_approver', null=True, blank=True)
-    deleted_by = models.ForeignKey('self', related_name='user_deletor', null=True, blank=True)
+    approved_by = models.ForeignKey(
+        'self', related_name='user_approver', null=True, blank=True)
+    deleted_by = models.ForeignKey(
+        'self', related_name='user_deletor', null=True, blank=True)
     date_approved = models.DateField(null=True, blank=True)
     date_deleted = models.DateField(null=True, blank=True)
     last_usage = models.DateField(null=True, blank=True)
     expires = models.DateField(null=True, blank=True)
     is_systemuser = models.BooleanField(default=False)
     login_enabled = models.BooleanField(default=True)
-    legacy_ldap_password = models.CharField(max_length=128, null=True, blank=True)
+    legacy_ldap_password = models.CharField(
+        max_length=128, null=True, blank=True)
     objects = PersonManager()
     active = ActivePersonManager()
     deleted = DeletedPersonManager()
@@ -117,7 +124,8 @@ class Person(AbstractBaseUser):
             log(None, self, 2, 'Created')
         for field in self._tracker.changed():
             if field != "password":
-                log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
+                log(None, self, 2,
+                    'Changed %s to %s' % (field,  getattr(self, field)))
 
         # has username changed?
         self._tracker.has_changed("username")
@@ -126,8 +134,8 @@ class Person(AbstractBaseUser):
             if old_username is not None:
                 from karaage.datastores import global_set_person_username
                 global_set_person_username(self, old_username, self.username)
-                log(None, self, 2, 'Renamed %s to %s'
-                        % (old_username, self.username))
+                log(None, self, 2,
+                    'Renamed %s to %s' % (old_username, self.username))
 
         # update the datastore
         from karaage.datastores import global_save_person
@@ -154,13 +162,19 @@ class Person(AbstractBaseUser):
             new_institute = self.institute
             if old_institute_pk is not None:
                 old_institute = Institute.objects.get(pk=old_institute_pk)
-                from karaage.datastores import machine_category_remove_account_from_institute
-                for account in self.account_set.filter(date_deleted__isnull=True):
-                    machine_category_remove_account_from_institute(account, old_institute)
+                from karaage.datastores \
+                    import machine_category_remove_account_from_institute
+                for account in self.account_set \
+                        .filter(date_deleted__isnull=True):
+                    machine_category_remove_account_from_institute(
+                        account, old_institute)
             if new_institute is not None:
-                from karaage.datastores import machine_category_add_account_to_institute
-                for account in self.account_set.filter(date_deleted__isnull=True):
-                    machine_category_add_account_to_institute(account, new_institute)
+                from karaage.datastores \
+                    import machine_category_add_account_to_institute
+                for account in self.account_set \
+                        .filter(date_deleted__isnull=True):
+                    machine_category_add_account_to_institute(
+                        account, new_institute)
 
         if self._password is not None:
             from karaage.datastores import global_set_person_password
@@ -209,28 +223,32 @@ class Person(AbstractBaseUser):
         return self.is_admin
 
     def has_module_perms(self, app_label):
-        "Does the user have permissions to view the app `app_label`? (depreciated)"
-        warnings.warn('Person.has_module_perms obsolete (get)', DeprecationWarning)
+        "(depreciated)"
+        warnings.warn(
+            'Person.has_module_perms obsolete (get)', DeprecationWarning)
         raise RuntimeError("Do not use")
         return True
 
     @property
     def user(self):
         "(depreciated)"
-        warnings.warn('Person.user obsolete (get)', DeprecationWarning)
+        warnings.warn(
+            'Person.user obsolete (get)', DeprecationWarning)
         raise RuntimeError("Do not use")
         return self
 
     def get_profile(self):
         "(depreciated)"
-        warnings.warn('Person.get_profile() obsolete (get)', DeprecationWarning)
+        warnings.warn(
+            'Person.get_profile() obsolete (get)', DeprecationWarning)
         raise RuntimeError("Do not use")
         return self
 
     @property
     def is_staff(self):
         "Is the user a member of staff? (depreciated)"
-        warnings.warn('Person.has_module_perms obsolete (get)', DeprecationWarning)
+        warnings.warn(
+            'Person.has_module_perms obsolete (get)', DeprecationWarning)
         raise RuntimeError("Do not use")
         return self.is_admin
 
@@ -266,17 +284,23 @@ class Person(AbstractBaseUser):
             if person in self.institute.delegates.all():
                 return True
 
-        # Institute delegate==person can view people in projects that are a member of institute
-        if Project.objects.filter(group__members=self.id).filter(institute__delegates=person):
+        # Institute delegate==person can view people in projects that are a
+        # member of institute
+        if Project.objects.filter(group__members=self.id) \
+                .filter(institute__delegates=person):
             return True
 
         # person can view people in projects they belong to
-        tmp = Project.objects.filter(group__members=self.id).filter(group__members=person.id).filter(is_active=True)
+        tmp = Project.objects.filter(group__members=self.id) \
+            .filter(group__members=person.id) \
+            .filter(is_active=True)
         if tmp.count() > 0:
             return True
 
         # Leader==person can view people in projects they lead
-        tmp = Project.objects.filter(group__members=self.id).filter(leaders=person.id).filter(is_active=True)
+        tmp = Project.objects.filter(group__members=self.id) \
+            .filter(leaders=person.id) \
+            .filter(is_active=True)
         if tmp.count() > 0:
             return True
         return False
@@ -291,7 +315,8 @@ class Person(AbstractBaseUser):
 
     def has_account(self, machine_category):
         ua = self.account_set.all()
-        ua = ua.filter(machine_category=machine_category, date_deleted__isnull=True)
+        ua = ua.filter(
+            machine_category=machine_category, date_deleted__isnull=True)
         if ua.count() != 0:
             return True
         return False
@@ -383,12 +408,14 @@ class Group(models.Model):
     """Groups represent collections of people, these objects can be
     expressed externally in a datastore."""
     name = models.CharField(max_length=255, unique=True)
-    foreign_id = models.CharField(max_length=255, null=True, unique=True,
-                                  help_text='The foreign identifier from the datastore.')
+    foreign_id = models.CharField(
+        max_length=255, null=True, unique=True,
+        help_text='The foreign identifier from the datastore.')
     members = models.ManyToManyField(Person, related_name='groups')
     description = models.TextField(null=True, blank=True)
-    extra_data = JSONField(default={},
-                           help_text='Datastore specific values should be stored in this field.')
+    extra_data = JSONField(
+        default={},
+        help_text='Datastore specific values should be stored in this field.')
 
     _tracker = FieldTracker()
 
@@ -475,13 +502,16 @@ def _add_person_to_group(person, group):
         for account in a_list:
             machine_category_add_account_to_software(account, software)
 
+
 def _remove_person_from_group(person, group):
     """ Call datastores after removing a person from a group. """
     from karaage.datastores import global_remove_person_from_group
     from karaage.datastores import machine_category_remove_account_from_group
     from karaage.datastores import machine_category_remove_account_from_project
-    from karaage.datastores import machine_category_remove_account_from_institute
-    from karaage.datastores import machine_category_remove_account_from_software
+    from karaage.datastores \
+        import machine_category_remove_account_from_institute
+    from karaage.datastores \
+        import machine_category_remove_account_from_software
 
     a_list = list(person.account_set.filter(date_deleted__isnull=True))
     global_remove_person_from_group(person, group)
@@ -497,11 +527,14 @@ def _remove_person_from_group(person, group):
         for account in a_list:
             machine_category_remove_account_from_software(account, software)
 
-def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
+
+def _members_changed(
+        sender, instance, action, reverse, model, pk_set, **kwargs):
     """
     Hook that executes whenever the group members are changed.
     """
-    #print "'%s','%s','%s','%s','%s'"%(instance, action, reverse, model, pk_set)
+    #print "'%s','%s','%s','%s','%s'" \
+    # %(instance, action, reverse, model, pk_set)
 
     if action == "post_add":
         if not reverse:
@@ -521,14 +554,18 @@ def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs)
         if not reverse:
             group = instance
             for person in model.objects.filter(pk__in=pk_set):
-                log(None, person, CHANGE, "Removed person from group %s" % group)
-                log(None, group, CHANGE, "Removed person %s from group" % person)
+                log(None, person, CHANGE,
+                    "Removed person from group %s" % group)
+                log(None, group, CHANGE,
+                    "Removed person %s from group" % person)
                 _remove_person_from_group(person, group)
         else:
             person = instance
             for group in model.objects.filter(pk__in=pk_set):
-                log(None, person, CHANGE, "Removed person from group %s" % group)
-                log(None, group, CHANGE, "Removed person %s from group" % person)
+                log(None, person, CHANGE,
+                    "Removed person from group %s" % group)
+                log(None, group, CHANGE,
+                    "Removed person %s from group" % person)
                 _remove_person_from_group(person, group)
 
     elif action == "pre_clear":
@@ -538,13 +575,16 @@ def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs)
             group = instance
             log(None, group, CHANGE, "Removed all people from group")
             for person in group.members.all():
-                log(None, group, CHANGE, "Removed person %s from group" % person)
+                log(None, group, CHANGE,
+                    "Removed person %s from group" % person)
                 _remove_person_from_group(person, group)
         else:
             person = instance
             log(None, person, CHANGE, "Removed person from all groups")
             for group in person.groups.all():
-                log(None, group, CHANGE, "Removed person %s from group" % person)
+                log(None, group, CHANGE,
+                    "Removed person %s from group" % person)
                 _remove_person_from_group(person, group)
 
-models.signals.m2m_changed.connect(_members_changed, sender=Group.members.through)
+models.signals.m2m_changed.connect(
+    _members_changed, sender=Group.members.through)

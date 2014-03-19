@@ -22,7 +22,6 @@ from django.template import RequestContext
 from django.http import HttpResponseBadRequest
 
 from karaage.common.decorators import login_required
-from karaage.software.models import SoftwareLicense
 from karaage.people.models import Person
 from karaage.applications.models import SoftwareApplication
 import karaage.applications.forms as forms
@@ -41,11 +40,13 @@ class StateIntroduction(base.State):
                 if action in request.POST:
                     return action
             link, is_secret = base.get_email_link(application)
-            return render_to_response('applications/software_introduction.html',
-                    {'actions': actions, 'application': application, 'auth': auth,
-                    'link': link, 'is_secret': is_secret },
-                    context_instance=RequestContext(request))
-        return super(StateIntroduction, self).view(request, application, label, auth, actions)
+            return render_to_response(
+                'applications/software_introduction.html',
+                {'actions': actions, 'application': application, 'auth': auth,
+                    'link': link, 'is_secret': is_secret},
+                context_instance=RequestContext(request))
+        return super(StateIntroduction, self).view(
+            request, application, label, auth, actions)
 
 
 class StateWaitingForAdmin(states.StateWaitingForApproval):
@@ -69,22 +70,28 @@ def get_application_state_machine():
     Open = states.TransitionOpen(on_success='O')
 
     state_machine = base.StateMachine()
-    state_machine.add_state(StateIntroduction(), 'O',
-            { 'cancel': 'R',
-                'submit':  states.TransitionSubmit(on_success='K', on_error="R")})
-    state_machine.add_state(StateWaitingForAdmin(), 'K',
-            { 'cancel': 'R',
-                'approve': states.TransitionApprove(on_password_needed='R', on_password_ok='C', on_error="R")})
-    state_machine.add_state(states.StateCompleted(), 'C',
-            {})
-    state_machine.add_state(states.StateDeclined(), 'R',
-            { 'reopen': Open,  })
+    state_machine.add_state(
+        StateIntroduction(), 'O',
+        {'cancel': 'R',
+            'submit':  states.TransitionSubmit(on_success='K', on_error="R")})
+    state_machine.add_state(
+        StateWaitingForAdmin(), 'K',
+        {'cancel': 'R',
+            'approve': states.TransitionApprove(
+                on_password_needed='R', on_password_ok='C', on_error="R")})
+    state_machine.add_state(
+        states.StateCompleted(), 'C',
+        {})
+    state_machine.add_state(
+        states.StateDeclined(), 'R',
+        {'reopen': Open, })
     state_machine.set_first_state(Open)
     return state_machine
 
 
 def register():
-    base.setup_application_type(SoftwareApplication, get_application_state_machine())
+    base.setup_application_type(
+        SoftwareApplication, get_application_state_machine())
 
 
 @login_required

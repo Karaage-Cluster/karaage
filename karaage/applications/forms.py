@@ -26,9 +26,11 @@ from django.utils.safestring import mark_safe
 
 from captcha.fields import CaptchaField
 
-from karaage.applications.models import Application, ProjectApplication, SoftwareApplication, Applicant
+from karaage.applications.models import ProjectApplication, SoftwareApplication
+from karaage.applications.models import Applicant
 from karaage.people.models import Person
-from karaage.people.utils import validate_username_for_new_person, UsernameException
+from karaage.people.utils import validate_username_for_new_person
+from karaage.people.utils import UsernameException
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.common import get_current_person
@@ -68,7 +70,8 @@ def _clean_email(email):
 
 
 class StartApplicationForm(forms.Form):
-    application_type = forms.ChoiceField(choices=APP_CHOICES, widget=forms.RadioSelect())
+    application_type = forms.ChoiceField(
+        choices=APP_CHOICES, widget=forms.RadioSelect())
 
 
 class ApplicantForm(forms.ModelForm):
@@ -80,15 +83,17 @@ class ApplicantForm(forms.ModelForm):
                    + " and has a max length of %s." %
                    settings.USERNAME_MAX_LENGTH))
     telephone = forms.RegexField(
-            "^[0-9a-zA-Z\.( )+-]+$", required=True, label=u"Office Telephone",
-            help_text=u"Used for emergency contact and password reset service.",
-            error_messages={'invalid':
-            'Telephone number may only contain digits, letter, hyphens, spaces, braces,  and the plus sign.'})
+        "^[0-9a-zA-Z\.( )+-]+$", required=True, label=u"Office Telephone",
+        help_text=u"Used for emergency contact and password reset service.",
+        error_messages={
+            'invalid': 'Telephone number may only contain digits, letter, '
+            'hyphens, spaces, braces,  and the plus sign.'})
     mobile = forms.RegexField(
-            "^[0-9a-zA-Z( )+-]+$",
-            required=False,
-            error_messages={'invalid':
-            'Telephone number may only contain digits, letter, hyphens, spaces, braces,  and the plus sign.'})
+        "^[0-9a-zA-Z( )+-]+$",
+        required=False,
+        error_messages={
+            'invalid': 'Telephone number may only contain digits, letter, '
+            'hyphens, spaces, braces,  and the plus sign.'})
 
     class Meta:
         model = Applicant
@@ -116,15 +121,18 @@ class ApplicantForm(forms.ModelForm):
         email = self.cleaned_data['email']
         users = Person.objects.filter(email__exact=email)
         if users.count() > 0:
-            raise forms.ValidationError(u'An account with this email already exists. Please email %s' % settings.ACCOUNTS_EMAIL)
+            raise forms.ValidationError(
+                u'An account with this email already exists. Please email %s'
+                % settings.ACCOUNTS_EMAIL)
         _clean_email(email)
         return email
 
 
 class UserApplicantForm(ApplicantForm):
     institute = forms.ModelChoiceField(
-            queryset=Institute.active.filter(Q(saml_entityid="") | Q(saml_entityid__isnull=True)),
-            required = True)
+        queryset=Institute.active.filter(
+            Q(saml_entityid="") | Q(saml_entityid__isnull=True)),
+        required=True)
 
     def save(self, commit=True):
         applicant = super(UserApplicantForm, self).save(commit=commit)
@@ -149,15 +157,20 @@ class SAMLApplicantForm(UserApplicantForm):
 
 
 class CommonApplicationForm(forms.ModelForm):
-    aup = forms.BooleanField(error_messages={'required': 'You must accept to proceed.'})
-    application_type = forms.ChoiceField(choices=APP_CHOICES, widget=forms.RadioSelect())
+    aup = forms.BooleanField(
+        error_messages={'required': 'You must accept to proceed.'})
+    application_type = forms.ChoiceField(
+        choices=APP_CHOICES, widget=forms.RadioSelect())
 
     def __init__(self, *args, **kwargs):
         super(CommonApplicationForm, self).__init__(*args, **kwargs)
         aup_url = getattr(settings, 'AUP_URL', None)
         if aup_url is None:
             aup_url = reverse('kg_aup')
-        self.fields['aup'].label = mark_safe(u'I have read and agree to the <a href="%s" target="_blank">Acceptable Use Policy</a>' % aup_url)
+        self.fields['aup'].label = mark_safe(
+            u'I have read and agree to the '
+            u'<a href="%s" target="_blank">Acceptable Use Policy</a>'
+            % aup_url)
 
     class Meta:
         model = ProjectApplication
@@ -165,9 +178,18 @@ class CommonApplicationForm(forms.ModelForm):
 
 
 class NewProjectApplicationForm(forms.ModelForm):
-    name = forms.CharField(label="Project Title", widget=forms.TextInput(attrs={'size': 60}))
-    description = forms.CharField(max_length=1000, widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}))
-    additional_req = forms.CharField(label="Additional requirements", widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), help_text=u"Do you have any special requirements?", required=False)
+    name = forms.CharField(
+        label="Project Title", widget=forms.TextInput(attrs={'size': 60}))
+    description = forms.CharField(
+        max_length=1000,
+        widget=forms.Textarea(attrs={
+            'class': 'vLargeTextField', 'rows': 10, 'cols': 40}))
+    additional_req = forms.CharField(
+        label="Additional requirements",
+        widget=forms.Textarea(attrs={
+            'class': 'vLargeTextField', 'rows': 10, 'cols': 40}),
+        help_text=u"Do you have any special requirements?",
+        required=False)
 
     def __init__(self, *args, **kwargs):
         super(NewProjectApplicationForm, self).__init__(*args, **kwargs)
@@ -175,7 +197,8 @@ class NewProjectApplicationForm(forms.ModelForm):
 
     class Meta:
         model = ProjectApplication
-        fields = ['name', 'description', 'additional_req', 'machine_categories']
+        fields = [
+            'name', 'description', 'additional_req', 'machine_categories']
 
 
 class ExistingProjectApplicationForm(forms.ModelForm):
@@ -236,14 +259,18 @@ class AdminInviteUserApplicationForm(forms.ModelForm):
 
 class UnauthenticatedInviteUserApplicationForm(forms.Form):
     email = forms.EmailField()
-    captcha = CaptchaField(label=u'CAPTCHA', help_text=u"Please enter the text displayed in the image above.")
+    captcha = CaptchaField(
+        label=u'CAPTCHA',
+        help_text=u"Please enter the text displayed in the image above.")
 
     def clean_email(self):
         email = self.cleaned_data['email']
 
         query = Person.active.filter(email=email)
         if query.count() > 0:
-            raise forms.ValidationError(u'E-Mail address is already in use. Do you already have an account?')
+            raise forms.ValidationError(
+                u'E-Mail address is already in use. '
+                u'Do you already have an account?')
 
         _clean_email(email)
         return email
@@ -252,15 +279,22 @@ class UnauthenticatedInviteUserApplicationForm(forms.Form):
 def ApproveProjectFormGenerator(application, auth):
     if application.project is None:
         # new project
-        include_fields = ['machine_categories', 'additional_req', 'needs_account']
+        include_fields = [
+            'machine_categories', 'additional_req', 'needs_account']
     else:
         # existing project
-        include_fields = ['make_leader', 'needs_account']
+        include_fields = [
+            'make_leader', 'needs_account']
 
     class ApproveProjectForm(forms.ModelForm):
         if application.project is None:
             # new project
-            additional_req = forms.CharField(label="Additional requirements", widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), help_text=u"Do you have any special requirements?", required=False)
+            additional_req = forms.CharField(
+                label="Additional requirements",
+                widget=forms.Textarea(attrs={
+                    'class': 'vLargeTextField', 'rows': 10, 'cols': 40}),
+                help_text=u"Do you have any special requirements?",
+                required=False)
 
         class Meta:
             model = ProjectApplication
@@ -268,8 +302,10 @@ def ApproveProjectFormGenerator(application, auth):
 
         def __init__(self, *args, **kwargs):
             super(ApproveProjectForm, self).__init__(*args, **kwargs)
-            self.fields['needs_account'].label = u"Does this person require a cluster account?"
-            self.fields['needs_account'].help_text = u"Will this person be working on the project?"
+            self.fields['needs_account'].label = \
+                u"Does this person require a cluster account?"
+            self.fields['needs_account'].help_text = \
+                u"Will this person be working on the project?"
             if application.project is None:
                 self.fields['machine_categories'].required = True
 
@@ -280,7 +316,8 @@ def AdminApproveProjectFormGenerator(application, auth):
     parent = ApproveProjectFormGenerator(application, auth)
     if application.project is None:
         # new project
-        include_fields = ['pid', 'machine_categories', 'additional_req', 'needs_account']
+        include_fields = [
+            'pid', 'machine_categories', 'additional_req', 'needs_account']
     else:
         # existing project
         include_fields = ['make_leader', 'needs_account']
@@ -288,10 +325,17 @@ def AdminApproveProjectFormGenerator(application, auth):
     class AdminApproveProjectForm(parent):
         if application.project is None:
             # new project
-            additional_req = forms.CharField(label="Additional requirements", widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), help_text=u"Do you have any special requirements?", required=False)
-            pid = forms.RegexField("^%s$" % settings.PROJECT_VALIDATION_RE, required=False,
-                                  label='PID', help_text='Leave blank for auto generation',
-                                  error_messages={'invalid': settings.PROJECT_VALIDATION_ERROR_MSG})
+            additional_req = forms.CharField(
+                label="Additional requirements",
+                widget=forms.Textarea(attrs={
+                    'class': 'vLargeTextField', 'rows': 10, 'cols': 40}),
+                help_text=u"Do you have any special requirements?",
+                required=False)
+            pid = forms.RegexField(
+                "^%s$" % settings.PROJECT_VALIDATION_RE, required=False,
+                label='PID', help_text='Leave blank for auto generation',
+                error_messages={
+                    'invalid': settings.PROJECT_VALIDATION_ERROR_MSG})
 
         class Meta:
             model = ProjectApplication
@@ -351,10 +395,11 @@ class PersonSetPassword(forms.Form):
 
 class PersonVerifyPassword(forms.Form):
     """
-    A form that lets a user verify his old password and updates it on all datastores.
+    A form that lets a user verify his old password and updates it on all
+    datastores.
     """
-    password = forms.CharField(label="Existing password",
-                                    widget=forms.PasswordInput)
+    password = forms.CharField(
+        label="Existing password", widget=forms.PasswordInput)
 
     def __init__(self, person, *args, **kwargs):
         self.person = person
@@ -362,7 +407,8 @@ class PersonVerifyPassword(forms.Form):
 
     def clean_password(self):
         password = self.cleaned_data['password']
-        person = Person.objects.authenticate(username=self.person.username, password=password)
+        person = Person.objects.authenticate(
+            username=self.person.username, password=password)
 
         if person is None:
             raise forms.ValidationError(u"Password is incorrect.")
@@ -381,9 +427,11 @@ class PersonVerifyPassword(forms.Form):
             self.person.save()
         return self.person
 
+
 class ApplicantReplace(forms.Form):
-    replace_applicant = ajax_select.fields.AutoCompleteSelectField('person',
-            required=True, help_text="Do not set unless absolutely positive sure.")
+    replace_applicant = ajax_select.fields.AutoCompleteSelectField(
+        'person', required=True,
+        help_text="Do not set unless absolutely positive sure.")
 
     def __init__(self, application, *args, **kwargs):
         self.application = application
