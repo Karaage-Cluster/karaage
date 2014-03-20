@@ -32,7 +32,7 @@ import sys
 from csv import DictReader
 from django.core import exceptions
 from django.core.management.base import BaseCommand
-from django.utils.translation import ugettext as _
+from django.core.validators import validate_email
 
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
@@ -43,21 +43,6 @@ import django.db.transaction
 import tldap.transaction
 
 RE_VALID_USERNAME = re.compile('[\w.@+-]+$')
-
-EMAIL_RE = re.compile(
-    # dot-atom
-    r"(^[-!#$%&'*+/=?^_`{}|~0-9A-Z]+(\.[-!#$%&'*+/=?^_`{}|~0-9A-Z]+)*"
-
-    # quoted-string
-    r'|^"([\001-\010\013\014\016-\037!#-\[\]-\177]|\\[\001-\011\013\014\016-\177])*"'
-
-    # domain
-    r')@(?:[A-Z0-9-]+\.)+[A-Z]{2,6}$', re.IGNORECASE)
-
-
-def is_valid_email(value):
-    if not EMAIL_RE.search(value):
-        raise exceptions.ValidationError(_('Enter a valid e-mail address.'))
 
 
 class Command(BaseCommand):
@@ -114,7 +99,7 @@ username,password,short_name,full_name,email,institute,project"""
                 fail = True
 
             try:
-                is_valid_email(user['email'])
+                validate_email(user['email'])
             except exceptions.ValidationError:
                 sys.stderr.write(
                     "Error: E-mail address '%s' is invalid.\n" % user['email'])
