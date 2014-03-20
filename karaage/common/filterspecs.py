@@ -126,15 +126,20 @@ class DateFilter(object):
         today_str = today.strftime('%Y-%m-%d')
 
         self.links = (
-            ('Any date', {}),
-            ('Today', {'%s__year' % self.name: str(today.year),
-                       '%s__month' % self.name: str(today.month),
-                       '%s__day' % self.name: str(today.day)}),
-            ('Past 7 days', {'%s__gte' % self.name: one_week_ago.strftime('%Y-%m-%d'),
-                             '%s__lte' % self.name: today_str}),
-            ('This month', {'%s__year' % self.name: str(today.year),
-                            '%s__month' % self.name: str(today.month)}),
-            ('This year', {'%s__year' % self.name: str(today.year)})
+            ('Any date',
+                {}),
+            ('Today', {
+                '%s__year' % self.name: str(today.year),
+                '%s__month' % self.name: str(today.month),
+                '%s__day' % self.name: str(today.day)}),
+            ('Past 7 days', {
+                '%s__gte' % self.name: one_week_ago.strftime('%Y-%m-%d'),
+                '%s__lte' % self.name: today_str}),
+            ('This month', {
+                '%s__year' % self.name: str(today.year),
+                '%s__month' % self.name: str(today.month)}),
+            ('This year', {
+                '%s__year' % self.name: str(today.year)})
         )
 
     def choices(self):
