@@ -35,14 +35,14 @@ from karaage.projects.models import Project
 def admin_index(request):
     newest_users = Person.objects.order_by('-date_approved', '-id')
     newest_users = newest_users.filter(date_approved__isnull=False)
-    newest_users = newest_users.select_related()[:5],
+    newest_users = newest_users.select_related()[:5]
 
     newest_projects = Project.objects.order_by('-date_approved')
     newest_projects = newest_projects.filter(date_approved__isnull=False)
     newest_projects = newest_projects.filter(is_active=True)
-    newest_projects = newest_projects.select_related()[:5],
+    newest_projects = newest_projects.select_related()[:5]
 
-    recent_actions = request.user.logentry_set.all()[:10],
+    recent_actions = request.user.logentry_set.all()[:10]
 
     var = {
         'newest_users': newest_users,
