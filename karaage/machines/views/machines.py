@@ -28,6 +28,7 @@ from karaage.machines.forms import MachineForm
 from karaage.common.decorators import admin_required, login_required
 import karaage.common as util
 
+
 @login_required
 def machine_detail(request, machine_id):
     machine = get_object_or_404(Machine, pk=machine_id)
@@ -35,6 +36,7 @@ def machine_detail(request, machine_id):
         'machines/machine_detail.html',
         {'machine': machine},
         context_instance=RequestContext(request))
+
 
 @admin_required
 def machine_create(request):
@@ -44,7 +46,11 @@ def machine_create(request):
             machine = form.save()
             return HttpResponseRedirect(machine.get_absolute_url())
 
-    return render_to_response('machines/machine_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'machines/machine_form.html',
+        locals(),
+        context_instance=RequestContext(request))
+
 
 @admin_required
 def machine_edit(request, machine_id):
@@ -56,7 +62,11 @@ def machine_edit(request, machine_id):
             machine = form.save()
             return HttpResponseRedirect(machine.get_absolute_url())
 
-    return render_to_response('machines/machine_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'machines/machine_form.html',
+        locals(),
+        context_instance=RequestContext(request))
+
 
 @admin_required
 def machine_password(request, machine_id):
@@ -71,13 +81,18 @@ def machine_password(request, machine_id):
         {'machine': machine, 'password': password},
         context_instance=RequestContext(request))
 
+
 @admin_required
 def machine_logs(request, machine_id):
     obj = get_object_or_404(Machine, pk=machine_id)
     breadcrumbs = []
-    breadcrumbs.append( ("Machines", reverse("kg_machine_category_list")) )
-    breadcrumbs.append( (unicode(obj.category), reverse("kg_machine_category_detail", args=[obj.category.pk])) )
-    breadcrumbs.append( (unicode(obj), reverse("kg_machine_detail", args=[obj.pk])) )
+    breadcrumbs.append(
+        ("Machines", reverse("kg_machine_category_list")))
+    breadcrumbs.append(
+        (unicode(obj.category),
+            reverse("kg_machine_category_detail", args=[obj.category.pk])))
+    breadcrumbs.append(
+        (unicode(obj), reverse("kg_machine_detail", args=[obj.pk])))
     return util.log_list(request, breadcrumbs, obj)
 
 
@@ -85,10 +100,15 @@ def machine_logs(request, machine_id):
 def machine_add_comment(request, machine_id):
     obj = get_object_or_404(Machine, pk=machine_id)
     breadcrumbs = []
-    breadcrumbs.append( ("Machines", reverse("kg_machine_category_list")) )
-    breadcrumbs.append( (unicode(obj.category), reverse("kg_machine_category_detail", args=[obj.category.pk])) )
-    breadcrumbs.append( (unicode(obj), reverse("kg_machine_detail", args=[obj.pk])) )
+    breadcrumbs.append(
+        ("Machines", reverse("kg_machine_category_list")))
+    breadcrumbs.append(
+        (unicode(obj.category),
+            reverse("kg_machine_category_detail", args=[obj.category.pk])))
+    breadcrumbs.append(
+        (unicode(obj), reverse("kg_machine_detail", args=[obj.pk])))
     return util.add_comment(request, breadcrumbs, obj)
+
 
 @login_required
 def category_list(request):
@@ -121,17 +141,18 @@ def category_list(request):
         {'terms': terms, 'page': page},
         context_instance=RequestContext(request))
 
+
 @admin_required
 def category_create(request):
     from karaage.common.create_update import create_object
-    return create_object(request,
-            model=MachineCategory)
+    return create_object(request, model=MachineCategory)
+
 
 @admin_required
 def category_edit(request, category_id):
     from karaage.common.create_update import update_object
-    return update_object(request,
-            object_id=category_id, model=MachineCategory)
+    return update_object(request, object_id=category_id, model=MachineCategory)
+
 
 @login_required
 def category_detail(request, category_id):
@@ -140,6 +161,7 @@ def category_detail(request, category_id):
         'machines/machinecategory_detail.html',
         {'machine_category': machine_category, },
         context_instance=RequestContext(request))
+
 
 @admin_required
 def category_accounts(request, category_id):
@@ -150,21 +172,27 @@ def category_accounts(request, category_id):
         {'machine_category': machine_category, 'accounts': accounts},
         context_instance=RequestContext(request))
 
+
 @admin_required
 def category_projects(request, category_id):
     machine_category = get_object_or_404(MachineCategory, pk=category_id)
-    project_list = Project.objects.filter(projectquota__machine_category=machine_category)
+    project_list = Project.objects.filter(
+        projectquota__machine_category=machine_category)
     return render_to_response(
         'machines/machinecategory_projects.html',
         {'machine_category': machine_category, 'project_list': project_list},
         context_instance=RequestContext(request))
 
+
 @admin_required
 def category_logs(request, category_id):
     obj = get_object_or_404(MachineCategory, pk=category_id)
     breadcrumbs = []
-    breadcrumbs.append( ("Machines", reverse("kg_machine_category_list")) )
-    breadcrumbs.append( (unicode(obj), reverse("kg_machine_category_detail", args=[obj.pk])) )
+    breadcrumbs.append(
+        ("Machines", reverse("kg_machine_category_list")))
+    breadcrumbs.append(
+        (unicode(obj),
+            reverse("kg_machine_category_detail", args=[obj.pk])))
     return util.log_list(request, breadcrumbs, obj)
 
 
@@ -172,7 +200,8 @@ def category_logs(request, category_id):
 def category_add_comment(request, category_id):
     obj = get_object_or_404(MachineCategory, pk=category_id)
     breadcrumbs = []
-    breadcrumbs.append( ("Machines", reverse("kg_machine_category_list")) )
-    breadcrumbs.append( (unicode(obj), reverse("kg_machine_category_detail", args=[obj.pk])) )
+    breadcrumbs.append(
+        ("Machines", reverse("kg_machine_category_list")))
+    breadcrumbs.append(
+        (unicode(obj), reverse("kg_machine_category_detail", args=[obj.pk])))
     return util.add_comment(request, breadcrumbs, obj)
-

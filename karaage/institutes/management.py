@@ -19,7 +19,8 @@
 Creates the default Site object.
 """
 
-# Shouldn't really be here but need somewhere that isn't managed by south and will execute.
+# Shouldn't really be here but need somewhere that isn't managed by south and
+# will execute.
 from django.db.models import signals
 from django.contrib.sites.models import Site
 from django.contrib.sites import models as site_app

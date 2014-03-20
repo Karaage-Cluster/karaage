@@ -40,12 +40,10 @@ def get_disk_quota(username, machine_name=None):
     machine_category = _get_machine_category(machine_name)
     try:
         ua = Account.objects.get(
-                username=username,
-                machine_category=machine_category,
-                date_deleted__isnull=True)
+            username=username,
+            machine_category=machine_category,
+            date_deleted__isnull=True)
     except Account.DoesNotExist:
         return 'User account not found'
-        
+
     return ua.get_disk_quota() * 1048576
-
-

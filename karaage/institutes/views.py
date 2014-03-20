@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import datetime
-
 from django.forms.util import ErrorList
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
@@ -29,8 +27,10 @@ from karaage.common import is_admin
 from karaage.common.filterspecs import Filter, FilterBar
 from karaage.common.decorators import admin_required, login_required
 import karaage.common as util
-from karaage.institutes.models import Institute, InstituteQuota, InstituteDelegate
-from karaage.institutes.forms import InstituteForm, InstituteQuotaForm, DelegateForm
+from karaage.institutes.models import Institute, InstituteQuota, \
+    InstituteDelegate
+from karaage.institutes.forms import InstituteForm, InstituteQuotaForm, \
+    DelegateForm
 
 
 @login_required
@@ -39,9 +39,10 @@ def profile_institutes(request):
     person = request.user
     institute_list = person.delegate_for.all()
 
-    return render_to_response('institutes/profile_institutes.html',
-            {'person': person, 'institute_list': institute_list },
-            context_instance=RequestContext(request))
+    return render_to_response(
+        'institutes/profile_institutes.html',
+        {'person': person, 'institute_list': institute_list},
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -49,9 +50,15 @@ def institute_detail(request, institute_id):
 
     institute = get_object_or_404(Institute, pk=institute_id)
     if not institute.can_view(request):
-        return HttpResponseForbidden('<h1>Access Denied</h1><p>You do not have permission to view details about this institute.</p>')
+        return HttpResponseForbidden(
+            '<h1>Access Denied</h1>'
+            '<p>You do not have permission to view details'
+            'about this institute.</p>')
 
-    return render_to_response('institutes/institute_detail.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'institutes/institute_detail.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -61,7 +68,10 @@ def institute_verbose(request, institute_id):
     from karaage.datastores import machine_category_get_institute_details
     institute_details = machine_category_get_institute_details(institute)
 
-    return render_to_response('institutes/institute_verbose.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'institutes/institute_verbose.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -69,14 +79,17 @@ def institute_list(request):
 
     institute_list = Institute.objects.all()
     if not is_admin(request):
-        institute_list = institute_list.filter(is_active=True, delegates=request.user)
+        institute_list = institute_list.filter(
+            is_active=True, delegates=request.user)
 
     if 'active' in request.REQUEST:
-        institute_list = institute_list.filter(is_active=int(request.GET['active']))
+        institute_list = institute_list.filter(
+            is_active=int(request.GET['active']))
 
     terms = ""
     if 'search' in request.REQUEST:
-        institute_list = institute_list.filter(name__icontains=request.GET['search'])
+        institute_list = institute_list.filter(
+            name__icontains=request.GET['search'])
         terms = request.GET['search']
 
     filter_list = []
@@ -94,7 +107,9 @@ def institute_list(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         page = paginator.page(paginator.num_pages)
 
-    return render_to_response('institutes/institute_list.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'institutes/institute_list.html', locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -107,7 +122,8 @@ def add_edit_institute(request, institute_id=None):
         institute = None
         flag = 1
 
-    DelegateFormSet = inlineformset_factory(Institute, InstituteDelegate, form=DelegateForm, extra=3)
+    DelegateFormSet = inlineformset_factory(
+        Institute, InstituteDelegate, form=DelegateForm, extra=3)
 
     if request.method == 'POST':
         form = InstituteForm(request.POST, instance=institute)
@@ -116,7 +132,8 @@ def add_edit_institute(request, institute_id=None):
         if form.is_valid() and delegate_formset.is_valid():
             institute = form.save()
             if flag == 1:
-                delegate_formset = DelegateFormSet(request.POST, instance=institute)
+                delegate_formset = DelegateFormSet(
+                    request.POST, instance=institute)
                 delegate_formset.is_valid()
             delegate_formset.save()
             return HttpResponseRedirect(institute.get_absolute_url())
@@ -130,14 +147,16 @@ def add_edit_institute(request, institute_id=None):
 
     return render_to_response(
         'institutes/institute_form.html',
-        {'institute': institute, 'form': form, 'media': media, 'delegate_formset': delegate_formset},
+        {'institute': institute, 'form': form,
+            'media': media, 'delegate_formset': delegate_formset},
         context_instance=RequestContext(request))
+
 
 @admin_required
 def institute_quota_edit(request, institutequota_id):
     from karaage.common.create_update import update_object
-    return update_object(request,
-            object_id=institutequota_id, model=InstituteQuota)
+    return update_object(
+        request, object_id=institutequota_id, model=InstituteQuota)
 
 
 @admin_required
@@ -153,19 +172,20 @@ def institutequota_add(request, institute_id):
         if form.is_valid():
             mc = form.cleaned_data['machine_category']
             conflicting = InstituteQuota.objects.filter(
-                institute=institute,machine_category=mc)
+                institute=institute, machine_category=mc)
 
             if conflicting.count() >= 1:
-                form._errors["machine_category"] = ErrorList(["Cap already exists with this machine category"])
+                form._errors["machine_category"] = \
+                    ErrorList([
+                        "Cap already exists with this machine category"])
             else:
                 institute_chunk = form.save()
-                new_cap = institute_chunk.cap
                 return HttpResponseRedirect(institute.get_absolute_url())
 
     return render_to_response(
-            'institutes/institutequota_form.html',
-            { 'form': form, 'institute': institute, },
-            context_instance=RequestContext(request))
+        'institutes/institutequota_form.html',
+        {'form': form, 'institute': institute, },
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -179,16 +199,20 @@ def institutequota_edit(request, institutequota_id):
         if form.is_valid():
             mc = form.cleaned_data['machine_category']
             if old_mc.pk != mc.pk:
-                form._errors["machine_category"] = ErrorList(["Please don't change the machine category; it confuses me"])
+                form._errors["machine_category"] = \
+                    ErrorList([
+                        "Please don't change the machine category; "
+                        "it confuses me"])
             else:
                 institute_chunk = form.save()
-                return HttpResponseRedirect(institute_chunk.institute.get_absolute_url())
+                return HttpResponseRedirect(
+                    institute_chunk.institute.get_absolute_url())
 
     return render_to_response(
-            'institutes/institutequota_form.html',
-            { 'form': form, 'institute': institute_chunk.institute,
-                'object': institute_chunk },
-            context_instance=RequestContext(request))
+        'institutes/institutequota_form.html',
+        {'form': form, 'institute': institute_chunk.institute,
+            'object': institute_chunk},
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -198,17 +222,23 @@ def institutequota_delete(request, institutequota_id):
 
     if request.method == 'POST':
         institute_chunk.delete()
-        return HttpResponseRedirect(institute_chunk.institute.get_absolute_url())
+        return HttpResponseRedirect(
+            institute_chunk.institute.get_absolute_url())
 
-    return render_to_response('institutes/institutequota_delete_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'institutes/institutequota_delete_form.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
 def institute_logs(request, institute_id):
     obj = get_object_or_404(Institute, pk=institute_id)
     breadcrumbs = []
-    breadcrumbs.append( ("Institutes", reverse("kg_institute_list")) )
-    breadcrumbs.append( (unicode(obj), reverse("kg_institute_detail", args=[obj.pk])) )
+    breadcrumbs.append(
+        ("Institutes", reverse("kg_institute_list")))
+    breadcrumbs.append(
+        (unicode(obj), reverse("kg_institute_detail", args=[obj.pk])))
     return util.log_list(request, breadcrumbs, obj)
 
 
@@ -216,6 +246,8 @@ def institute_logs(request, institute_id):
 def add_comment(request, institute_id):
     obj = get_object_or_404(Institute, pk=institute_id)
     breadcrumbs = []
-    breadcrumbs.append( ("Institutes", reverse("kg_institute_list")) )
-    breadcrumbs.append( (unicode(obj), reverse("kg_institute_detail", args=[obj.pk])) )
+    breadcrumbs.append(
+        ("Institutes", reverse("kg_institute_list")))
+    breadcrumbs.append(
+        (unicode(obj), reverse("kg_institute_detail", args=[obj.pk])))
     return util.add_comment(request, breadcrumbs, obj)

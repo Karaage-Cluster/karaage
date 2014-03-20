@@ -16,7 +16,6 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
-import warnings
 
 from django.db import models
 from django.conf import settings
@@ -26,13 +25,18 @@ from jsonfield import JSONField
 from model_utils import FieldTracker
 
 from karaage.people.models import Person, Group
-from karaage.machines.managers import MachineCategoryManager, MachineManager, ActiveMachineManager
-from karaage.common import log, new_random_token
+from karaage.machines.managers import MachineCategoryManager
+from karaage.machines.managers import MachineManager, ActiveMachineManager
+from karaage.common import log
+
 
 class MachineCategory(models.Model):
-    DATASTORES = [ (i,i) for i in settings.MACHINE_CATEGORY_DATASTORES.keys() ]
+    DATASTORES = [(i, i) for i in settings.MACHINE_CATEGORY_DATASTORES.keys()]
     name = models.CharField(max_length=100, unique=True)
-    datastore = models.CharField(max_length=255, choices=DATASTORES, help_text="Modifying this value on existing categories will affect accounts created under the old datastore")
+    datastore = models.CharField(
+        max_length=255, choices=DATASTORES,
+        help_text="Modifying this value on existing categories will affect "
+        "accounts created under the old datastore")
     objects = MachineCategoryManager()
 
     _tracker = FieldTracker()
@@ -63,7 +67,8 @@ class MachineCategory(models.Model):
         if created:
             log(None, self, 2, 'Created')
         for field in self._tracker.changed():
-            log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
+            log(None, self, 2,
+                'Changed %s to %s' % (field,  getattr(self, field)))
 
         # check if datastore changed
         if self._tracker.has_changed("datastore"):
@@ -91,7 +96,8 @@ class Machine(AbstractBaseUser):
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
     pbs_server_host = models.CharField(max_length=50, null=True, blank=True)
-    mem_per_core = models.IntegerField(help_text="In GB", null=True, blank=True)
+    mem_per_core = models.IntegerField(
+        help_text="In GB", null=True, blank=True)
     objects = MachineManager()
     active = ActiveMachineManager()
     scaling_factor = models.IntegerField(default=1)
@@ -109,10 +115,14 @@ class Machine(AbstractBaseUser):
         for field in self._tracker.changed():
             if field == "password":
                 log(None, self, 2, 'Changed %s' % (field))
-                log(None, self.category, 2, 'Machine %s: Changed %s' % (self, field))
+                log(None, self.category, 2,
+                    'Machine %s: Changed %s' % (self, field))
             else:
-                log(None, self, 2, 'Changed %s to %s' % (field,  getattr(self, field)))
-                log(None, self.category, 2, 'Machine %s: Changed %s to %s' % (self, field,  getattr(self, field)))
+                log(None, self, 2,
+                    'Changed %s to %s' % (field,  getattr(self, field)))
+                log(None, self.category, 2,
+                    'Machine %s: Changed %s to %s'
+                    % (self, field,  getattr(self, field)))
 
     def delete(self, *args, **kwargs):
         # delete the object
@@ -134,17 +144,20 @@ class Machine(AbstractBaseUser):
 class Account(models.Model):
     person = models.ForeignKey(Person)
     username = models.CharField(max_length=255)
-    foreign_id = models.CharField(max_length=255, null=True, unique=True,
-                                  help_text='The foreign identifier from the datastore.')
+    foreign_id = models.CharField(
+        max_length=255, null=True, unique=True,
+        help_text='The foreign identifier from the datastore.')
     machine_category = models.ForeignKey(MachineCategory)
-    default_project = models.ForeignKey('projects.Project', null=True, blank=True)
+    default_project = models.ForeignKey(
+        'projects.Project', null=True, blank=True)
     date_created = models.DateField()
     date_deleted = models.DateField(null=True, blank=True)
     disk_quota = models.IntegerField(null=True, blank=True, help_text="In GB")
     shell = models.CharField(max_length=50)
     login_enabled = models.BooleanField(default=True)
-    extra_data = JSONField(default={},
-                           help_text='Datastore specific values should be stored in this field.')
+    extra_data = JSONField(
+        default={},
+        help_text='Datastore specific values should be stored in this field.')
 
     _tracker = FieldTracker()
 
@@ -179,7 +192,8 @@ class Account(models.Model):
         return ua
 
     def project_list(self):
-        return self.person.projects.filter(projectquota__machine_category=self.machine_category)
+        return self.person.projects.filter(
+            projectquota__machine_category=self.machine_category)
 
     def save(self, *args, **kwargs):
         created = self.pk is None
@@ -194,15 +208,21 @@ class Account(models.Model):
                 'Account %s: Created on %s' % (self, self.machine_category))
         for field in self._tracker.changed():
             if field != "password":
-                log(None, self.person, 2, 'Account %s: Changed %s to %s' % (self, field,  getattr(self, field)))
-                log(None, self.machine_category, 2, 'Account %s: Changed %s to %s' % (self, field,  getattr(self, field)))
+                log(None, self.person, 2,
+                    'Account %s: Changed %s to %s'
+                    % (self, field,  getattr(self, field)))
+                log(None, self.machine_category, 2,
+                    'Account %s: Changed %s to %s'
+                    % (self, field,  getattr(self, field)))
 
         # check if machine_category changed
         moved = False
         if self._tracker.has_changed('machine_category_id'):
-            old_machine_category_pk = self._tracker.previous('machine_category_id')
+            old_machine_category_pk = self._tracker.previous(
+                'machine_category_id')
             if old_machine_category_pk is not None:
-                old_machine_category = MachineCategory.objects.get(pk=old_machine_category_pk)
+                old_machine_category = MachineCategory.objects.get(
+                    pk=old_machine_category_pk)
                 old_username = self._tracker.previous('username')
 
                 new_machine_category = self.machine_category
@@ -214,15 +234,19 @@ class Account(models.Model):
 
                 from karaage.datastores import machine_category_delete_account
                 machine_category_delete_account(self)
-                log(None, self.person, 2, 'Account %s: Removed account' % self)
-                log(None, self.machine_category, 2, 'Account %s: Removed account' % self)
+                log(None, self.person, 2,
+                    'Account %s: Removed account' % self)
+                log(None, self.machine_category, 2,
+                    'Account %s: Removed account' % self)
 
                 # set new values again
                 self.machine_category = new_machine_category
                 self.username = new_username
 
-                log(None, self.person, 2, 'Account %s: Added account' % self)
-                log(None, self.machine_category, 2, 'Account %s: Added account' % self)
+                log(None, self.person, 2,
+                    'Account %s: Added account' % self)
+                log(None, self.machine_category, 2,
+                    'Account %s: Added account' % self)
 
                 moved = True
 
@@ -232,8 +256,10 @@ class Account(models.Model):
             if old_username is not None:
                 new_username = self.username
                 if self.date_deleted is None and not moved:
-                    from karaage.datastores import machine_category_set_account_username
-                    machine_category_set_account_username(self, old_username, new_username)
+                    from karaage.datastores \
+                        import machine_category_set_account_username
+                    machine_category_set_account_username(
+                        self, old_username, new_username)
                 log(None, self.person, 2,
                     'Account %s: Changed username from %s to %s' %
                     (self, old_username, new_username))
@@ -243,7 +269,6 @@ class Account(models.Model):
 
         # check if deleted status changed
         if self._tracker.has_changed('date_deleted'):
-            old_date_deleted = self._tracker.previous('date_deleted')
             if self.date_deleted is not None:
                 # account is deactivated
                 from karaage.datastores import machine_category_delete_account
@@ -270,21 +295,22 @@ class Account(models.Model):
             machine_category_save_account(self)
 
             if self._password is not None:
-                from karaage.datastores import machine_category_set_account_password
+                from karaage.datastores \
+                    import machine_category_set_account_password
                 machine_category_set_account_password(self, self._password)
                 log(None, self.person, 2,
-                        'Account %s: Changed Password' % self)
+                    'Account %s: Changed Password' % self)
                 log(None, self.machine_category, 2,
-                        'Account %s: Changed Password' % self)
+                    'Account %s: Changed Password' % self)
                 self._password = None
     save.alters_data = True
 
     def delete(self):
         # delete the object
         log(None, self.person, 2,
-                'Account %s: Deleted' % self)
+            'Account %s: Deleted' % self)
         log(None, self.machine_category, 2,
-                'Account %s: Deleted' % self)
+            'Account %s: Deleted' % self)
         super(Account, self).delete()
         if self.date_deleted is None:
             # delete the datastore
@@ -318,7 +344,8 @@ class Account(models.Model):
         if self.disk_quota:
             return self.disk_quota
 
-        iq = self.person.institute.institutequota_set.get(machine_category=self.machine_category)
+        iq = self.person.institute.institutequota_set.get(
+            machine_category=self.machine_category)
         return iq.disk_quota
 
     def loginShell(self):
@@ -344,7 +371,8 @@ class Account(models.Model):
 
 def _remove_group(group, person):
     # if removing default project from person, then break link first
-    for ua in person.account_set.filter(date_deleted__isnull=True, default_project__isnull=False):
+    for ua in person.account_set.filter(
+            date_deleted__isnull=True, default_project__isnull=False):
         # Does the default_project for ua belong to this group?
         count = group.project_set.filter(pk=ua.default_project.pk).count()
         # If yes, deactivate the ua
@@ -353,11 +381,13 @@ def _remove_group(group, person):
             ua.save()
 
 
-def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
+def _members_changed(
+        sender, instance, action, reverse, model, pk_set, **kwargs):
     """
     Hook that executes whenever the group members are changed.
     """
-    #print "'%s','%s','%s','%s','%s'"%(instance, action, reverse, model, pk_set)
+    #print "'%s','%s','%s','%s','%s'" \
+    #   % (instance, action, reverse, model, pk_set)
     if action == "post_remove":
         if not reverse:
             group = instance
@@ -381,4 +411,5 @@ def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs)
                 _remove_group(group, person)
 
 
-models.signals.m2m_changed.connect(_members_changed, sender=Group.members.through)
+models.signals.m2m_changed.connect(
+    _members_changed, sender=Group.members.through)

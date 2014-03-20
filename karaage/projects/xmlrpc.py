@@ -41,7 +41,8 @@ def get_project_members(machine, project_id):
     Returns list of usernames given a project id
     """
     try:
-        project = Project.objects.get(pid=project_id, projectquota__machine_category=machine.category)
+        project = Project.objects.get(
+            pid=project_id, projectquota__machine_category=machine.category)
     except Project.DoesNotExist:
         return 'Project not found'
 
@@ -55,7 +56,9 @@ def get_projects(machine):
     Returns list of project ids
     """
 
-    return [x.pid for x in Project.active.filter(projectquota__machine_category=machine.category)]
+    query = Project.active.filter(
+        projectquota__machine_category=machine.category)
+    return [x.pid for x in query]
 
 
 @xmlrpc_func(returns='string', args=['string', 'string', 'string'])
@@ -67,9 +70,9 @@ def get_project(username, proj, machine_name=None):
     machine_category = _get_machine_category(machine_name)
     try:
         account = Account.objects.get(
-                username=username,
-                machine_category=machine_category,
-                date_deleted__isnull=True)
+            username=username,
+            machine_category=machine_category,
+            date_deleted__isnull=True)
     except Account.DoesNotExist:
         return "User '%s' not found" % username
     if proj is None:
@@ -105,18 +108,20 @@ def project_under_quota(project_id, machine_name=None):
     """
     Returns True if project is under quota
     """
-    
+
     machine_category = _get_machine_category(machine_name)
     try:
         project = Project.objects.get(pid=project_id)
     except Project.DoesNotExist:
         return 'Project not found'
-        
-    project_chunk, created = ProjectQuota.objects.get_or_create(project=project, machine_category=machine_category)
+
+    project_chunk, created = \
+        ProjectQuota.objects.get_or_create(
+            project=project, machine_category=machine_category)
 
     if project_chunk.is_over_quota():
         return False
-    
+
     return True
 
 
@@ -131,9 +136,9 @@ def showquota(username, machine_name=None):
 
     try:
         u_a = Account.objects.get(
-                username=username,
-                machine_category=machine_category,
-                date_deleted__isnull=True)
+            username=username,
+            machine_category=machine_category,
+            date_deleted__isnull=True)
     except:
         return -1, 'Account not found'
 
@@ -143,13 +148,14 @@ def showquota(username, machine_name=None):
         return -1, 'Default Project not found'
 
     p_l = []
-    for project_chunk in ProjectQuota.objects.filter(project__is_active=True, machine_category=machine_category):
+    query = ProjectQuota.objects.filter(
+        project__is_active=True, machine_category=machine_category)
+    for project_chunk in query:
         project = project_chunk.project
 
         is_default = False
         if project == d_p:
             is_default = True
-
 
         try:
             mpots = str(float(project_chunk.get_mpots()))
@@ -162,11 +168,10 @@ def showquota(username, machine_name=None):
             cap = 0
 
         p_l.append([
-                project.pid, 
-                mpots,
-                cap,
-                is_default,
-                ])
-
+            project.pid,
+            mpots,
+            cap,
+            is_default,
+            ])
 
     return 0, p_l

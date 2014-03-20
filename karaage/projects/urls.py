@@ -18,15 +18,16 @@
 from django.conf.urls import patterns, url, include
 from django.conf import settings
 
-from karaage.projects.models import Project
-
-urlpatterns = patterns('karaage.projects.views',
+urlpatterns = patterns(
+    'karaage.projects.views',
     url(r'^$', 'project_list', name='kg_project_list'),
     url(r'^add/$', 'add_edit_project', name='kg_project_add'),
     url(r'^no_users/$', 'no_users', name='kg_empty_projects_list'),
 
-    url(r'^quota/(?P<projectquota_id>\d+)/$', 'projectquota_edit', name='kg_projectquota_edit'),
-    url(r'^quota/(?P<projectquota_id>\d+)/delete/$', 'projectquota_delete', name='kg_projectquota_delete'),
+    url(r'^quota/(?P<projectquota_id>\d+)/$',
+        'projectquota_edit', name='kg_projectquota_edit'),
+    url(r'^quota/(?P<projectquota_id>\d+)/delete/$',
+        'projectquota_delete', name='kg_projectquota_delete'),
 
     url(r'^(?P<project_id>%s)/$' % settings.PROJECT_VALIDATION_RE,
         'project_detail', name='kg_project_detail'),
@@ -36,8 +37,8 @@ urlpatterns = patterns('karaage.projects.views',
         'add_edit_project', name='kg_project_edit'),
     url(r'^(?P<project_id>%s)/delete/$' % settings.PROJECT_VALIDATION_RE,
         'delete_project', name='kg_project_delete'),
-    url(r'^(?P<project_id>%s)/remove_user/(?P<username>%s)/$' % (settings.USERNAME_VALIDATION_RE,
-                                                                 settings.PROJECT_VALIDATION_RE),
+    url(r'^(?P<project_id>%s)/remove_user/(?P<username>%s)/$'
+        % (settings.USERNAME_VALIDATION_RE, settings.PROJECT_VALIDATION_RE),
         'remove_user', name='kg_remove_project_member'),
     url(r'^(?P<project_id>%s)/logs/$' % settings.PROJECT_VALIDATION_RE,
         'project_logs', name='kg_project_logs'),
@@ -47,10 +48,12 @@ urlpatterns = patterns('karaage.projects.views',
         'projectquota_add', name='kg_projectquota_add'),
 )
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^projects/', include(urlpatterns)),
 )
 
-profile_urlpatterns = patterns('karaage.projects.views',
+profile_urlpatterns = patterns(
+    'karaage.projects.views',
     url(r'^projects/$', 'profile_projects', name='kg_profile_projects'),
 )

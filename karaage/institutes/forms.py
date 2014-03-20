@@ -37,7 +37,7 @@ class InstituteForm(forms.ModelForm):
     def clean_name(self):
         name = self.cleaned_data['name']
         try:
-            project = Project.objects.get(pid=name)
+            Project.objects.get(pid=name)
             raise forms.ValidationError(u'Institute name already in system')
         except Project.DoesNotExist:
             return name
@@ -51,7 +51,8 @@ class InstituteQuotaForm(forms.ModelForm):
 
 
 class DelegateForm(forms.ModelForm):
-    person = ajax_select.fields.AutoCompleteSelectField('person', required=True)
+    person = ajax_select.fields.AutoCompleteSelectField(
+        'person', required=True)
 
     class Meta:
         model = InstituteDelegate

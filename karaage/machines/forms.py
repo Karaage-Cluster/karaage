@@ -23,15 +23,16 @@ from django.conf import settings
 from karaage.people.utils import validate_username_for_new_account
 from karaage.people.utils import check_username_for_new_account
 from karaage.people.utils import UsernameException
-from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory, Machine, Account
 
 import ajax_select.fields
 
+
 class MachineForm(forms.ModelForm):
     class Meta:
         model = Machine
-        fields = ('name', 'no_cpus', 'no_nodes', 'type', 'category',
+        fields = (
+            'name', 'no_cpus', 'no_nodes', 'type', 'category',
             'start_date', 'end_date', 'pbs_server_host',
             'mem_per_core', 'scaling_factor')
 
@@ -48,8 +49,10 @@ class AdminAccountForm(forms.ModelForm):
         help_text=((settings.USERNAME_VALIDATION_ERROR_MSG +
                     " and has a max length of %s.")
                    % settings.USERNAME_MAX_LENGTH))
-    machine_category = forms.ModelChoiceField(queryset=MachineCategory.objects.all(), initial=1)
-    default_project = ajax_select.fields.AutoCompleteSelectField('project', required=True)
+    machine_category = forms.ModelChoiceField(
+        queryset=MachineCategory.objects.all(), initial=1)
+    default_project = ajax_select.fields.AutoCompleteSelectField(
+        'project', required=True)
     shell = forms.ChoiceField(choices=settings.SHELLS)
 
     def __init__(self, person, **kwargs):
@@ -73,7 +76,8 @@ class AdminAccountForm(forms.ModelForm):
 
         query = self.person.projects.filter(pk=default_project.pk)
         if query.count() == 0:
-            raise forms.ValidationError(u'Person does not belong to default project.')
+            raise forms.ValidationError(
+                u'Person does not belong to default project.')
 
         return default_project
 
@@ -86,9 +90,11 @@ class AdminAccountForm(forms.ModelForm):
         default_project = data['default_project']
         machine_category = data['machine_category']
 
-        query = default_project.projectquota_set.filter(machine_category=machine_category)
+        query = default_project.projectquota_set.filter(
+            machine_category=machine_category)
         if query.count() == 0:
-            raise forms.ValidationError(u'Default project not in machine category.')
+            raise forms.ValidationError(
+                u'Default project not in machine category.')
 
         if 'username' not in data:
             return data
@@ -112,7 +118,9 @@ class AdminAccountForm(forms.ModelForm):
 
     class Meta:
         model = Account
-        fields = ('username', 'machine_category', 'default_project', 'disk_quota', 'shell')
+        fields = (
+            'username', 'machine_category',
+            'default_project', 'disk_quota', 'shell')
 
 
 class UserAccountForm(forms.ModelForm):
@@ -124,4 +132,5 @@ class UserAccountForm(forms.ModelForm):
 
 
 class AddProjectForm(forms.Form):
-    project = ajax_select.fields.AutoCompleteSelectField('project', required=True, label='Add to existing project')
+    project = ajax_select.fields.AutoCompleteSelectField(
+        'project', required=True, label='Add to existing project')

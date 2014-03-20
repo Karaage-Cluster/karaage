@@ -41,6 +41,7 @@ class LookupChannel(ajax_select.LookupChannel):
         if not is_admin(request):
             raise PermissionDenied
 
+
 class ProjectLookup(LookupChannel):
     model = Project
 
@@ -50,8 +51,8 @@ class ProjectLookup(LookupChannel):
             in the LookupChannel class definition
         """
         return Project.objects.filter(
-                Q(pid__icontains=q) |
-                Q(name__icontains=q)
+            Q(pid__icontains=q) |
+            Q(name__icontains=q)
         )
 
     def get_result(self, obj):

@@ -19,7 +19,6 @@ from django.forms.util import ErrorList
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib import messages
@@ -30,10 +29,12 @@ from karaage.common.filterspecs import Filter, FilterBar
 from karaage.common.decorators import admin_required, login_required
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
-from karaage.machines.models import MachineCategory, Account
+from karaage.machines.models import Account
 from karaage.projects.models import Project, ProjectQuota
-from karaage.projects.forms import ProjectForm, UserProjectForm, ProjectQuotaForm, AddPersonForm
-from karaage.projects.utils import get_new_pid, add_user_to_project, remove_user_from_project
+from karaage.projects.forms import ProjectForm, UserProjectForm, \
+    ProjectQuotaForm, AddPersonForm
+from karaage.projects.utils import get_new_pid, add_user_to_project, \
+    remove_user_from_project
 import karaage.common as util
 
 
@@ -45,12 +46,14 @@ def profile_projects(request):
     leader_project_list = []
 
     if person.is_leader():
-        leader_project_list = Project.objects.filter(leaders=person, is_active=True)
+        leader_project_list = Project.objects.filter(
+            leaders=person, is_active=True)
 
-    return render_to_response('projects/profile_projects.html',
-            {'person': person, 'project_list': project_list,
-                'leader_project_list': leader_project_list},
-            context_instance=RequestContext(request))
+    return render_to_response(
+        'projects/profile_projects.html',
+        {'person': person, 'project_list': project_list,
+            'leader_project_list': leader_project_list},
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -89,13 +92,18 @@ def add_edit_project(request, project_id=None):
             project.activate(approved_by)
             form.save_m2m()
             if flag == 1:
-                messages.success(request, "Project '%s' created succesfully" % project)
+                messages.success(
+                    request, "Project '%s' created succesfully" % project)
             else:
-                messages.success(request, "Project '%s' edited succesfully" % project)
+                messages.success(
+                    request, "Project '%s' edited succesfully" % project)
 
             return HttpResponseRedirect(project.get_absolute_url())
 
-    return render_to_response('projects/project_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'projects/project_form.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -103,11 +111,13 @@ def delete_project(request, project_id):
 
     project = get_object_or_404(Project, pid=project_id)
 
-    query = Account.objects.filter(date_deleted__isnull=True, default_project=project)
+    query = Account.objects.filter(
+        date_deleted__isnull=True, default_project=project)
 
     error = None
     if query.count() > 0:
-        error = "There are accounts that use this project as the default_project."
+        error = "There are accounts that use this project " \
+            "as the default_project."
 
     elif request.method == 'POST':
         deleted_by = request.user
@@ -117,9 +127,10 @@ def delete_project(request, project_id):
 
     del query
 
-    return render_to_response('projects/project_confirm_delete.html',
-            { 'project': project, 'error': error },
-            context_instance=RequestContext(request))
+    return render_to_response(
+        'projects/project_confirm_delete.html',
+        {'project': project, 'error': error},
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -136,12 +147,15 @@ def project_detail(request, project_id):
         if form.is_valid():
             person = form.cleaned_data['person']
             add_user_to_project(person, project)
-            messages.success(request, "User '%s' was added to %s succesfully" % (person, project))
+            messages.success(
+                request,
+                "User '%s' was added to %s succesfully" % (person, project))
             return HttpResponseRedirect(project.get_absolute_url())
 
-    return render_to_response('projects/project_detail.html',
-                              {'project': project, 'form': form},
-                              context_instance=RequestContext(request))
+    return render_to_response(
+        'projects/project_detail.html',
+        {'project': project, 'form': form},
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -151,7 +165,10 @@ def project_verbose(request, project_id):
     from karaage.datastores import machine_category_get_project_details
     project_details = machine_category_get_project_details(project)
 
-    return render_to_response('projects/project_verbose.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'projects/project_verbose.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -163,7 +180,7 @@ def project_list(request, queryset=None, template_name=None, paginate=True):
         project_list = queryset
 
     if template_name is None:
-        template_name='projects/project_list.html'
+        template_name = 'projects/project_list.html'
 
     project_list = project_list.select_related()
 
@@ -171,16 +188,23 @@ def project_list(request, queryset=None, template_name=None, paginate=True):
         project_list = project_list.filter(group__members=request.user)
 
     if 'institute' in request.REQUEST:
-        project_list = project_list.filter(institute=int(request.GET['institute']))
+        project_list = project_list.filter(
+            institute=int(request.GET['institute']))
 
     if 'status' in request.REQUEST:
-        project_list = project_list.filter(is_active=int(request.GET['status']))
+        project_list = project_list.filter(
+            is_active=int(request.GET['status']))
 
     if 'search' in request.REQUEST:
         terms = request.REQUEST['search'].lower()
         query = Q()
         for term in terms.split(' '):
-            query = Q(pid__icontains=term) | Q(name__icontains=term) | Q(description__icontains=term) | Q(leaders__short_name__icontains=term) | Q(leaders__full_name__icontains=term) | Q(institute__name__icontains=term)
+            query = Q(pid__icontains=term)
+            query = query | Q(name__icontains=term)
+            query = query | Q(description__icontains=term)
+            query = query | Q(leaders__short_name__icontains=term)
+            query = query | Q(leaders__full_name__icontains=term)
+            query = query | Q(institute__name__icontains=term)
         project_list = project_list.filter(query).distinct()
     else:
         terms = ""
@@ -207,9 +231,10 @@ def project_list(request, queryset=None, template_name=None, paginate=True):
         page = paginator.page(paginator.num_pages)
 
     return render_to_response(
-            template_name,
-            {'page': page, 'filter_bar': filter_bar, 'project_list': project_list, 'terms': terms},
-            context_instance=RequestContext(request))
+        template_name,
+        {'page': page, 'filter_bar': filter_bar,
+            'project_list': project_list, 'terms': terms},
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -222,21 +247,27 @@ def remove_user(request, project_id, username):
         if not request.user in project.leaders.all():
             return HttpResponseForbidden('<h1>Access Denied</h1>')
 
-    query = person.account_set.filter(date_deleted__isnull=True, default_project=project)
+    query = person.account_set.filter(
+        date_deleted__isnull=True, default_project=project)
 
     error = None
     if query.count() > 0:
-        error = "The person has accounts that use this project as the default_project."
+        error = "The person has accounts that use this project " \
+            "as the default_project."
 
     elif request.method == 'POST':
         remove_user_from_project(person, project)
-        messages.success(request, "User '%s' removed succesfully from project %s" % (person, project.pid))
+        messages.success(
+            request,
+            "User '%s' removed succesfully from project %s"
+            % (person, project.pid))
         return HttpResponseRedirect(project.get_absolute_url())
 
     del query
 
-    return render_to_response('projects/remove_user_confirm.html',
-        { 'project': project, 'person': person, 'error': error, },
+    return render_to_response(
+        'projects/remove_user_confirm.html',
+        {'project': project, 'person': person, 'error': error, },
         context_instance=RequestContext(request))
 
 
@@ -255,8 +286,10 @@ def no_users(request):
 def project_logs(request, project_id):
     obj = get_object_or_404(Project, pid=project_id)
     breadcrumbs = []
-    breadcrumbs.append( ("Projects", reverse("kg_project_list")) )
-    breadcrumbs.append( (unicode(obj.pid), reverse("kg_project_detail", args=[obj.pid])) )
+    breadcrumbs.append(
+        ("Projects", reverse("kg_project_list")))
+    breadcrumbs.append(
+        (unicode(obj.pid), reverse("kg_project_detail", args=[obj.pid])))
     return util.log_list(request, breadcrumbs, obj)
 
 
@@ -264,8 +297,10 @@ def project_logs(request, project_id):
 def add_comment(request, project_id):
     obj = get_object_or_404(Project, pid=project_id)
     breadcrumbs = []
-    breadcrumbs.append( ("Projects", reverse("kg_project_list")) )
-    breadcrumbs.append( (unicode(obj.pid), reverse("kg_project_detail", args=[obj.pid])) )
+    breadcrumbs.append(
+        ("Projects", reverse("kg_project_list")))
+    breadcrumbs.append(
+        (unicode(obj.pid), reverse("kg_project_detail", args=[obj.pid])))
     return util.add_comment(request, breadcrumbs, obj)
 
 
@@ -282,16 +317,21 @@ def projectquota_add(request, project_id):
         if form.is_valid():
             mc = form.cleaned_data['machine_category']
             conflicting = ProjectQuota.objects.filter(
-                project=project,machine_category=mc)
+                project=project, machine_category=mc)
 
             if conflicting.count() >= 1:
-                form._errors["machine_category"] = ErrorList(["Cap already exists with this machine category"])
+                form._errors["machine_category"] = \
+                    ErrorList(
+                        ["Cap already exists with this machine category"])
             else:
                 project_chunk = form.save()
                 new_cap = project_chunk.cap
                 return HttpResponseRedirect(project.get_absolute_url())
 
-    return render_to_response('projects/projectquota_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'projects/projectquota_form.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -305,12 +345,18 @@ def projectquota_edit(request, projectquota_id):
         if form.is_valid():
             mc = form.cleaned_data['machine_category']
             if old_mc.pk != mc.pk:
-                form._errors["machine_category"] = ErrorList(["Please don't change the machine category; it confuses me"])
+                form._errors["machine_category"] = ErrorList([
+                    "Please don't change the machine category; "
+                    "it confuses me"])
             else:
                 project_chunk = form.save()
-                return HttpResponseRedirect(project_chunk.project.get_absolute_url())
+                return HttpResponseRedirect(
+                    project_chunk.project.get_absolute_url())
 
-    return render_to_response('projects/projectquota_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'projects/projectquota_form.html',
+        locals(),
+        context_instance=RequestContext(request))
 
 
 @admin_required
@@ -322,4 +368,7 @@ def projectquota_delete(request, projectquota_id):
         project_chunk.delete()
         return HttpResponseRedirect(project_chunk.project.get_absolute_url())
 
-    return render_to_response('projects/projectquota_delete_form.html', locals(), context_instance=RequestContext(request))
+    return render_to_response(
+        'projects/projectquota_delete_form.html',
+        locals(),
+        context_instance=RequestContext(request))

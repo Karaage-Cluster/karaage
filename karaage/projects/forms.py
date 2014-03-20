@@ -16,33 +16,43 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django import forms
-from django.contrib.admin.widgets import AdminDateWidget, FilteredSelectMultiple
+from django.contrib.admin.widgets import AdminDateWidget
 from django.conf import settings
 import datetime
 
 import ajax_select.fields
 
-from karaage.people.models import Person
 from karaage.institutes.models import Institute
-from karaage.machines.models import MachineCategory
 from karaage.projects.models import Project, ProjectQuota
 
 
 class ProjectForm(forms.ModelForm):
-    pid = forms.RegexField("^%s$" % settings.PROJECT_VALIDATION_RE, required=False,
-                          label='PID', help_text='Leave blank for auto generation',
-                          error_messages={'invalid': settings.PROJECT_VALIDATION_ERROR_MSG})
-    name = forms.CharField(label='Project Title', widget=forms.TextInput(attrs={'size': 60}))
-    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), required=False)
+    pid = forms.RegexField(
+        "^%s$" % settings.PROJECT_VALIDATION_RE, required=False,
+        label='PID', help_text='Leave blank for auto generation',
+        error_messages={'invalid': settings.PROJECT_VALIDATION_ERROR_MSG})
+    name = forms.CharField(
+        label='Project Title', widget=forms.TextInput(attrs={'size': 60}))
+    description = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'vLargeTextField', 'rows': 10, 'cols': 40}),
+        required=False)
     institute = forms.ModelChoiceField(queryset=Institute.active.all())
-    additional_req = forms.CharField(widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), required=False)
-    leaders = ajax_select.fields.AutoCompleteSelectMultipleField('person', required=False)
-    start_date = forms.DateField(widget=AdminDateWidget, initial=datetime.datetime.today)
+    additional_req = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'vLargeTextField', 'rows': 10, 'cols': 40}),
+        required=False)
+    leaders = ajax_select.fields.AutoCompleteSelectMultipleField(
+        'person', required=False)
+    start_date = forms.DateField(
+        widget=AdminDateWidget, initial=datetime.datetime.today)
     end_date = forms.DateField(widget=AdminDateWidget, required=False)
 
     class Meta:
         model = Project
-        fields = ('pid', 'name', 'institute', 'leaders', 'description', 'start_date', 'end_date', 'additional_req')
+        fields = (
+            'pid', 'name', 'institute', 'leaders', 'description',
+            'start_date', 'end_date', 'additional_req')
 
     def __init__(self, *args, **kwargs):
         # Make PID field read only if we are editing a project
@@ -50,7 +60,8 @@ class ProjectForm(forms.ModelForm):
         instance = getattr(self, 'instance', None)
         if instance and instance.pid:
             self.fields['pid'].widget.attrs['readonly'] = True
-            self.fields['pid'].help_text = "You can't change the PID of an existing project"
+            self.fields['pid'].help_text = \
+                "You can't change the PID of an existing project"
 
     def clean_pid(self):
         pid = self.cleaned_data['pid']
@@ -62,9 +73,15 @@ class ProjectForm(forms.ModelForm):
 
 
 class UserProjectForm(forms.ModelForm):
-    name = forms.CharField(label='Project Title', widget=forms.TextInput(attrs={'size': 60}))
-    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}))
-    additional_req = forms.CharField(widget=forms.Textarea(attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}), required=False)
+    name = forms.CharField(
+        label='Project Title', widget=forms.TextInput(attrs={'size': 60}))
+    description = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'vLargeTextField', 'rows': 10, 'cols': 40}))
+    additional_req = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'vLargeTextField', 'rows': 10, 'cols': 40}),
+        required=False)
 
     class Meta:
         model = Project
@@ -72,7 +89,8 @@ class UserProjectForm(forms.ModelForm):
 
 
 class AddPersonForm(forms.Form):
-    person = ajax_select.fields.AutoCompleteSelectField('person', required=True, label='Add user to project')
+    person = ajax_select.fields.AutoCompleteSelectField(
+        'person', required=True, label='Add user to project')
 
 
 class ProjectQuotaForm(forms.ModelForm):
@@ -80,5 +98,3 @@ class ProjectQuotaForm(forms.ModelForm):
     class Meta:
         model = ProjectQuota
         fields = ('machine_category', 'cap')
-
-

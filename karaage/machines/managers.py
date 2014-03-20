@@ -15,15 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+from django.conf import settings
 from django.db import models
-import datetime
-
 from django.contrib.auth.models import BaseUserManager
 
 
 class MachineCategoryManager(models.Manager):
     def get_default(self):
-        from django.conf import settings
         machine_category = self.get(pk=settings.DEFAULT_MC)
         return machine_category
 
@@ -41,5 +39,5 @@ class MachineManager(BaseUserManager):
 
 class ActiveMachineManager(MachineManager):
     def get_query_set(self):
-        today = datetime.datetime.today()
-        return super(ActiveMachineManager, self).get_query_set().filter(end_date__isnull=True)
+        return super(ActiveMachineManager, self) \
+            .get_query_set().filter(end_date__isnull=True)
