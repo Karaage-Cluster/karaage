@@ -90,35 +90,6 @@ def get_project(username, proj, machine_name=None):
 
 
 @permission_required()
-@xmlrpc_func(returns='int', args=['string', 'string'])
-def change_default_project(user, project):
-    """
-    Change default project
-    """
-    person = user
-    try:
-        project = Project.objects.get(pid=project, projectquota__machine_category=machine.category)
-    except Project.DoesNotExist:
-        return -1, "Project %s does not exist" % project
-
-    if not person in project.group.members.all():
-        return -2, "User %s not a member of project %s" % (user, project.pid)
-
-    account = Account.objects.get(
-            person=person,
-            username=username,
-            machine_category=machine.category,
-            date_deleted__isnull=True)
-
-    account.default_project = project
-    account.save()
-
-    log(user.user, user, 2, 'Changed default project to %s' % project.pid)
-
-    return 0, "Default project changed"
-
-
-@permission_required()
 @xmlrpc_func(returns='list')
 def get_users_projects(user):
     """
