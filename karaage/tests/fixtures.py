@@ -24,7 +24,9 @@ try:
     from factory.fuzzy import FuzzyText, FuzzyChoice, FuzzyDecimal
     import factory
 except ImportError:
-    raise ImportError("factory_boy is required, either install from a package or using \'pip install -e .[tests]\'")
+    raise ImportError(
+        "factory_boy is required, "
+        "either install from a package or using \'pip install -e .[tests]\'")
 
 from karaage.projects.utils import add_user_to_project
 import karaage.institutes.models
@@ -53,6 +55,7 @@ class InstituteFactory(DjangoModelFactory):
 
     name = FuzzyLowerText(prefix='inst-')
 
+
 class InstituteQuotaFactory(DjangoModelFactory):
     FACTORY_FOR = karaage.institutes.models.InstituteQuota
     FACTORY_DJANGO_GET_OR_CREATE = ('institute', 'machine_category')
@@ -79,7 +82,8 @@ class PersonFactory(DjangoModelFactory):
     email = factory.LazyAttribute(
         lambda a: '{0}@example.com'.format(a.username[:62]).lower())
     institute = factory.LazyAttribute(
-        lambda a: InstituteFactory(name=FuzzyLowerText(prefix='%s-inst-' % a.username)))
+        lambda a: InstituteFactory(
+            name=FuzzyLowerText(prefix='%s-inst-' % a.username)))
 
 
 class ProjectFactory(DjangoModelFactory):
@@ -91,7 +95,8 @@ class ProjectFactory(DjangoModelFactory):
     institute = factory.SubFactory(InstituteFactory)
     is_approved = True
     approved_by = factory.LazyAttribute(
-        lambda a: PersonFactory(username=FuzzyLowerText(prefix='%s-acc-' % a.pid)))
+        lambda a: PersonFactory(
+            username=FuzzyLowerText(prefix='%s-acc-' % a.pid)))
     is_active = True
 
 

@@ -96,7 +96,7 @@ class PersonTestCase(IntegrationTestCase):
         # test that members can see other people in own project
 #        print "--------------------------------------------------------------"
         project = Project.objects.get(pid="TestProject1")
-        project.group.members=[2,3]
+        project.group.members = [2, 3]
 
         test_object = Project.objects.get(pid="TestProject1")
         self.do_permission_tests(test_object, {

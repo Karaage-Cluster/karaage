@@ -22,7 +22,8 @@ from django.conf import settings
 from django.core.management import call_command
 
 from captcha.models import CaptchaStore
-from karaage.applications.models import Application, Applicant, ProjectApplication
+from karaage.applications.models import Application, Applicant
+from karaage.applications.models import ProjectApplication
 
 
 def set_admin():
@@ -60,18 +61,22 @@ class UserApplicationTestCase(TestCase):
             'captcha_1': captcha_text,
         }
 
-        response = self.client.post(reverse('kg_application_new'), form_data, follow=True)
+        response = self.client.post(
+            reverse('kg_application_new'), form_data, follow=True)
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('index'))
+        self.failUnlessEqual(
+            response.redirect_chain[0][0],
+            'http://testserver' + reverse('index'))
         token = Application.objects.get().secret_token
         self.assertEquals(len(mail.outbox), 1)
-        self.assertTrue(mail.outbox[0].subject.startswith('TestOrg invitation'))
+        self.assertTrue(
+            mail.outbox[0].subject.startswith('TestOrg invitation'))
         self.assertEquals(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL)
         self.assertEquals(mail.outbox[0].to[0], 'jim.bob@example.com')
 
         # SUBMIT APPLICANT DETAILS
         form_data = {
-            'title' : 'Mr',
+            'title': 'Mr',
             'short_name': 'Jim',
             'full_name': 'Jim Bob',
             'position': 'Researcher',
@@ -82,9 +87,18 @@ class UserApplicationTestCase(TestCase):
             'next': 'string',
         }
 
-        response = self.client.post(reverse('kg_application_unauthenticated', args=[token,'O','applicant']), form_data, follow=True)
+        response = self.client.post(
+            reverse(
+                'kg_application_unauthenticated',
+                args=[token, 'O', 'applicant']),
+            form_data, follow=True)
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_unauthenticated', args=[token,'O','project']))
+        self.failUnlessEqual(
+            response.redirect_chain[0][0],
+            'http://testserver'
+            + reverse(
+                'kg_application_unauthenticated',
+                args=[token, 'O', 'project']))
 
         # SUBMIT PROJECT DETAILS
         form_data = {
@@ -97,31 +111,45 @@ class UserApplicationTestCase(TestCase):
             'submit': 'string',
             }
 
-        response = self.client.post(reverse('kg_application_unauthenticated', args=[token,'O','project']), form_data, follow=True)
-        self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_unauthenticated', args=[token,'L']))
+        response = self.client.post(
+            reverse('kg_application_unauthenticated',
+                    args=[token, 'O', 'project']),
+            form_data, follow=True)
+        self.failUnlessEqual(
+            response.redirect_chain[0][0],
+            'http://testserver'
+            + reverse('kg_application_unauthenticated', args=[token, 'L']))
         self.failUnlessEqual(response.status_code, 200)
         applicant = Applicant.objects.get(username='jimbob')
         application = applicant.applications.all()[0]
-        self.failUnlessEqual(application.state, ProjectApplication.WAITING_FOR_LEADER)
+        self.failUnlessEqual(
+            application.state,
+            ProjectApplication.WAITING_FOR_LEADER)
         self.assertEquals(len(mail.outbox), 2)
         self.assertTrue(mail.outbox[1].subject.startswith('TestOrg request'))
         self.assertEquals(mail.outbox[1].from_email, settings.ACCOUNTS_EMAIL)
         self.assertEquals(mail.outbox[1].to[0], 'leader@example.com')
 
         # LEADER LOGS IN TO APPROVE
-        logged_in = self.client.login(username='kgtestuser1', password='aq12ws')
+        logged_in = self.client.login(
+            username='kgtestuser1', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
 
         # LEADER GET DETAILS
-        response = self.client.get(reverse('kg_application_detail', args=[application.pk,'L']))
+        response = self.client.get(
+            reverse('kg_application_detail', args=[application.pk, 'L']))
         self.failUnlessEqual(response.status_code, 200)
 
         # LEADER GET DECLINE PAGE
-        response = self.client.get(reverse('kg_application_detail', args=[application.pk,'L','decline']))
+        response = self.client.get(
+            reverse('kg_application_detail',
+                    args=[application.pk, 'L', 'decline']))
         self.failUnlessEqual(response.status_code, 200)
 
         # LEADER GET APPROVE PAGE
-        response = self.client.get(reverse('kg_application_detail', args=[application.pk,'L','approve']))
+        response = self.client.get(
+            reverse('kg_application_detail',
+                    args=[application.pk, 'L', 'approve']))
         self.failUnlessEqual(response.status_code, 200)
 
         # LEADER APPROVE
@@ -130,9 +158,15 @@ class UserApplicationTestCase(TestCase):
             'additional_req': 'Meow',
             'needs_account': False,
             }
-        response = self.client.post(reverse('kg_application_detail', args=[application.pk,'L','approve']), form_data, follow=True)
+        response = self.client.post(
+            reverse('kg_application_detail',
+                    args=[application.pk, 'L', 'approve']),
+            form_data, follow=True)
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_detail', args=[application.pk,'K']))
+        self.failUnlessEqual(
+            response.redirect_chain[0][0],
+            'http://testserver'
+            + reverse('kg_application_detail', args=[application.pk, 'K']))
         application = Application.objects.get(pk=application.id)
         self.failUnlessEqual(application.state, Application.WAITING_FOR_ADMIN)
         self.assertEquals(len(mail.outbox), 3)
@@ -144,15 +178,20 @@ class UserApplicationTestCase(TestCase):
         self.failUnlessEqual(logged_in, True)
 
         # ADMIN GET DETAILS
-        response = self.client.get(reverse('kg_application_detail', args=[application.pk,'K']))
+        response = self.client.get(
+            reverse('kg_application_detail', args=[application.pk, 'K']))
         self.failUnlessEqual(response.status_code, 200)
 
         # ADMIN GET DECLINE PAGE
-        response = self.client.get(reverse('kg_application_detail', args=[application.pk,'K','decline']))
+        response = self.client.get(
+            reverse('kg_application_detail',
+                    args=[application.pk, 'K', 'decline']))
         self.failUnlessEqual(response.status_code, 200)
 
         # ADMIN GET APPROVE PAGE
-        response = self.client.get(reverse('kg_application_detail', args=[application.pk,'K','approve']))
+        response = self.client.get(
+            reverse('kg_application_detail',
+                    args=[application.pk, 'K', 'approve']))
         self.failUnlessEqual(response.status_code, 200)
 
         # ADMIN APPROVE
@@ -161,9 +200,15 @@ class UserApplicationTestCase(TestCase):
             'additional_req': 'Woof',
             'needs_account': False,
             }
-        response = self.client.post(reverse('kg_application_detail', args=[application.pk,'K','approve']), form_data, follow=True)
+        response = self.client.post(
+            reverse('kg_application_detail',
+                    args=[application.pk, 'K', 'approve']),
+            form_data, follow=True)
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_detail', args=[application.pk,'P']))
+        self.failUnlessEqual(
+            response.redirect_chain[0][0],
+            'http://testserver'
+            + reverse('kg_application_detail', args=[application.pk, 'P']))
         application = Application.objects.get(pk=application.id)
         self.failUnlessEqual(application.state, ProjectApplication.PASSWORD)
         self.assertEquals(len(mail.outbox), 4)
@@ -171,7 +216,8 @@ class UserApplicationTestCase(TestCase):
         set_no_admin()
 
         # APPLICANT GET PASSWORD
-        response = self.client.get(reverse('kg_application_unauthenticated', args=[token,'P']))
+        response = self.client.get(
+            reverse('kg_application_unauthenticated', args=[token, 'P']))
         self.failUnlessEqual(response.status_code, 200)
 
         # APPLICANT SET PASSWORD
@@ -181,19 +227,28 @@ class UserApplicationTestCase(TestCase):
             'submit': 'string',
             }
 
-        response = self.client.post(reverse('kg_application_unauthenticated', args=[token,'P']), form_data, follow=True)
+        response = self.client.post(
+            reverse('kg_application_unauthenticated',
+                    args=[token, 'P']), form_data, follow=True)
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_unauthenticated', args=[token,'C']))
+        self.failUnlessEqual(
+            response.redirect_chain[0][0],
+            'http://testserver'
+            + reverse('kg_application_unauthenticated', args=[token, 'C']))
 
         # APPLICANT GET COMPLETE
-        response = self.client.get(reverse('kg_application_unauthenticated', args=[token,'C']))
+        response = self.client.get(
+            reverse('kg_application_unauthenticated', args=[token, 'C']))
         self.failUnlessEqual(response.status_code, 200)
 
         # APPLICANT SET ARCHIVE
         form_data = {
             'archive': 'string',
             }
-        response = self.client.post(reverse('kg_application_unauthenticated', args=[token,'C']), form_data, follow=False)
+        response = self.client.post(
+            reverse('kg_application_unauthenticated',
+                    args=[token, 'C']),
+            form_data, follow=False)
         # applicant not allowed to do this
         self.failUnlessEqual(response.status_code, 400)
         self.client.logout()
@@ -202,14 +257,21 @@ class UserApplicationTestCase(TestCase):
         set_admin()
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
-        response = self.client.post(reverse('kg_application_detail', args=[application.pk,'C']), form_data, follow=True)
+        response = self.client.post(
+            reverse('kg_application_detail',
+                    args=[application.pk, 'C']),
+            form_data, follow=True)
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_detail', args=[application.pk,'A']))
+        self.failUnlessEqual(
+            response.redirect_chain[0][0],
+            'http://testserver'
+            + reverse('kg_application_detail', args=[application.pk, 'A']))
         self.client.logout()
         set_no_admin()
 
         # APPLICANT GET ARCHIVE
-        response = self.client.get(reverse('kg_application_unauthenticated', args=[token,'A']))
+        response = self.client.get(
+            reverse('kg_application_unauthenticated', args=[token, 'A']))
         self.failUnlessEqual(response.status_code, 200)
 
 
@@ -240,18 +302,22 @@ class ProjectApplicationTestCase(TestCase):
             'captcha_1': captcha_text,
         }
 
-        response = self.client.post(reverse('kg_application_new'), form_data, follow=True)
+        response = self.client.post(
+            reverse('kg_application_new'), form_data, follow=True)
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('index'))
+        self.failUnlessEqual(
+            response.redirect_chain[0][0],
+            'http://testserver' + reverse('index'))
         token = Application.objects.get().secret_token
         self.assertEquals(len(mail.outbox), 1)
-        self.assertTrue(mail.outbox[0].subject.startswith('TestOrg invitation'))
+        self.assertTrue(
+            mail.outbox[0].subject.startswith('TestOrg invitation'))
         self.assertEquals(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL)
         self.assertEquals(mail.outbox[0].to[0], 'jim.bob@example.com')
 
         # SUBMIT APPLICANT DETAILS
         form_data = {
-            'title' : 'Mr',
+            'title': 'Mr',
             'short_name': 'Jim',
             'full_name': 'Jim Bob',
             'position': 'Researcher',
@@ -262,9 +328,16 @@ class ProjectApplicationTestCase(TestCase):
             'next': 'string',
         }
 
-        response = self.client.post(reverse('kg_application_unauthenticated', args=[token,'O','applicant']), form_data, follow=True)
+        response = self.client.post(
+            reverse('kg_application_unauthenticated',
+                    args=[token, 'O', 'applicant']),
+            form_data, follow=True)
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_unauthenticated', args=[token,'O','project']))
+        self.failUnlessEqual(
+            response.redirect_chain[0][0],
+            'http://testserver'
+            + reverse('kg_application_unauthenticated',
+                      args=[token, 'O', 'project']))
 
         # SUBMIT PROJECT DETAILS
         form_data = {
@@ -278,31 +351,44 @@ class ProjectApplicationTestCase(TestCase):
             'submit': 'string',
             }
 
-        response = self.client.post(reverse('kg_application_unauthenticated', args=[token,'O','project']), form_data, follow=True)
+        response = self.client.post(
+            reverse('kg_application_unauthenticated',
+                    args=[token, 'O', 'project']),
+            form_data, follow=True)
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_unauthenticated', args=[token,'D']))
+        self.failUnlessEqual(
+            response.redirect_chain[0][0],
+            'http://testserver'
+            + reverse('kg_application_unauthenticated', args=[token, 'D']))
         applicant = Applicant.objects.get(username='jimbob')
         application = applicant.applications.all()[0]
-        self.failUnlessEqual(application.state, ProjectApplication.WAITING_FOR_DELEGATE)
+        self.failUnlessEqual(
+            application.state, ProjectApplication.WAITING_FOR_DELEGATE)
         self.assertEquals(len(mail.outbox), 2)
         self.assertTrue(mail.outbox[1].subject.startswith('TestOrg request'))
         self.assertEquals(mail.outbox[1].from_email, settings.ACCOUNTS_EMAIL)
         self.assertEquals(mail.outbox[1].to[0], 'leader@example.com')
 
         # DELEGATE LOGS IN TO APPROVE
-        logged_in = self.client.login(username='kgtestuser1', password='aq12ws')
+        logged_in = self.client.login(
+            username='kgtestuser1', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
 
         # DELEGATE GET DETAILS
-        response = self.client.get(reverse('kg_application_detail', args=[application.pk,'D']))
+        response = self.client.get(
+            reverse('kg_application_detail', args=[application.pk, 'D']))
         self.failUnlessEqual(response.status_code, 200)
 
         # DELEGATE GET DECLINE PAGE
-        response = self.client.get(reverse('kg_application_detail', args=[application.pk,'D','decline']))
+        response = self.client.get(
+            reverse('kg_application_detail',
+                    args=[application.pk, 'D', 'decline']))
         self.failUnlessEqual(response.status_code, 200)
 
         # DELEGATE GET APPROVE PAGE
-        response = self.client.get(reverse('kg_application_detail', args=[application.pk,'D','approve']))
+        response = self.client.get(
+            reverse('kg_application_detail',
+                    args=[application.pk, 'D', 'approve']))
         self.failUnlessEqual(response.status_code, 200)
 
         # DELEGATE APPROVE
@@ -311,9 +397,15 @@ class ProjectApplicationTestCase(TestCase):
             'needs_account': False,
             'machine_categories': [1],
             }
-        response = self.client.post(reverse('kg_application_detail', args=[application.pk,'D','approve']), form_data, follow=True)
+        response = self.client.post(
+            reverse('kg_application_detail',
+                    args=[application.pk, 'D', 'approve']),
+            form_data, follow=True)
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_detail', args=[application.pk,'K']))
+        self.failUnlessEqual(
+            response.redirect_chain[0][0],
+            'http://testserver'
+            + reverse('kg_application_detail', args=[application.pk, 'K']))
         application = Application.objects.get(pk=application.id)
         self.failUnlessEqual(application.state, Application.WAITING_FOR_ADMIN)
         self.assertEquals(len(mail.outbox), 3)
@@ -325,15 +417,20 @@ class ProjectApplicationTestCase(TestCase):
         self.failUnlessEqual(logged_in, True)
 
         # ADMIN GET DETAILS
-        response = self.client.get(reverse('kg_application_detail', args=[application.pk,'K']))
+        response = self.client.get(
+            reverse('kg_application_detail', args=[application.pk, 'K']))
         self.failUnlessEqual(response.status_code, 200)
 
         # ADMIN GET DECLINE PAGE
-        response = self.client.get(reverse('kg_application_detail', args=[application.pk,'K','decline']))
+        response = self.client.get(
+            reverse('kg_application_detail',
+                    args=[application.pk, 'K', 'decline']))
         self.failUnlessEqual(response.status_code, 200)
 
         # ADMIN GET APPROVE PAGE
-        response = self.client.get(reverse('kg_application_detail', args=[application.pk,'K','approve']))
+        response = self.client.get(
+            reverse('kg_application_detail',
+                    args=[application.pk, 'K', 'approve']))
         self.failUnlessEqual(response.status_code, 200)
 
         # ADMIN APPROVE
@@ -342,9 +439,15 @@ class ProjectApplicationTestCase(TestCase):
             'needs_account': False,
             'machine_categories': [1],
             }
-        response = self.client.post(reverse('kg_application_detail', args=[application.pk,'K','approve']), form_data, follow=True)
+        response = self.client.post(
+            reverse('kg_application_detail',
+                    args=[application.pk, 'K', 'approve']),
+            form_data, follow=True)
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_detail', args=[application.pk,'P']))
+        self.failUnlessEqual(
+            response.redirect_chain[0][0],
+            'http://testserver'
+            + reverse('kg_application_detail', args=[application.pk, 'P']))
         application = Application.objects.get(pk=application.id)
         self.failUnlessEqual(application.state, ProjectApplication.PASSWORD)
         self.assertEquals(len(mail.outbox), 4)
@@ -352,7 +455,8 @@ class ProjectApplicationTestCase(TestCase):
         set_no_admin()
 
         # APPLICANT GET PASSWORD
-        response = self.client.get(reverse('kg_application_unauthenticated', args=[token,'P']))
+        response = self.client.get(
+            reverse('kg_application_unauthenticated', args=[token, 'P']))
         self.failUnlessEqual(response.status_code, 200)
 
         # APPLICANT SET PASSWORD
@@ -362,19 +466,27 @@ class ProjectApplicationTestCase(TestCase):
             'submit': 'string',
             }
 
-        response = self.client.post(reverse('kg_application_unauthenticated', args=[token,'P']), form_data, follow=True)
+        response = self.client.post(
+            reverse('kg_application_unauthenticated', args=[token, 'P']),
+            form_data, follow=True)
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_unauthenticated', args=[token,'C']))
+        self.failUnlessEqual(
+            response.redirect_chain[0][0],
+            'http://testserver'
+            + reverse('kg_application_unauthenticated', args=[token, 'C']))
 
         # APPLICANT GET COMPLETE
-        response = self.client.get(reverse('kg_application_unauthenticated', args=[token,'C']))
+        response = self.client.get(
+            reverse('kg_application_unauthenticated', args=[token, 'C']))
         self.failUnlessEqual(response.status_code, 200)
 
         # APPLICANT SET ARCHIVE
         form_data = {
             'archive': 'string',
             }
-        response = self.client.post(reverse('kg_application_unauthenticated', args=[token,'C']), form_data, follow=False)
+        response = self.client.post(
+            reverse('kg_application_unauthenticated', args=[token, 'C']),
+            form_data, follow=False)
         # applicant not allowed to do this
         self.failUnlessEqual(response.status_code, 400)
         self.client.logout()
@@ -383,12 +495,18 @@ class ProjectApplicationTestCase(TestCase):
         set_admin()
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.failUnlessEqual(logged_in, True)
-        response = self.client.post(reverse('kg_application_detail', args=[application.pk,'C']), form_data, follow=True)
+        response = self.client.post(
+            reverse('kg_application_detail', args=[application.pk, 'C']),
+            form_data, follow=True)
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('kg_application_detail', args=[application.pk,'A']))
+        self.failUnlessEqual(
+            response.redirect_chain[0][0],
+            'http://testserver'
+            + reverse('kg_application_detail', args=[application.pk, 'A']))
         self.client.logout()
         set_no_admin()
 
         # APPLICANT GET ARCHIVE
-        response = self.client.get(reverse('kg_application_unauthenticated', args=[token,'A']))
+        response = self.client.get(
+            reverse('kg_application_unauthenticated', args=[token, 'A']))
         self.failUnlessEqual(response.status_code, 200)

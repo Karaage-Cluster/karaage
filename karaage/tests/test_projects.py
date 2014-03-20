@@ -25,6 +25,7 @@ from karaage.projects.models import Project
 from karaage.machines.models import Account
 from karaage.tests.integration import IntegrationTestCase
 
+
 class ProjectTestCase(IntegrationTestCase):
 
     def setUp(self):
@@ -55,10 +56,12 @@ class ProjectTestCase(IntegrationTestCase):
 
         self.assertEqual(project.is_active, True)
         self.assertEqual(project.date_approved, datetime.date.today())
-        self.assertEqual(project.approved_by, Person.objects.get(username='kgsuper'))
+        self.assertEqual(
+            project.approved_by,
+            Person.objects.get(username='kgsuper'))
         self.assertEqual(project.pid, 'pExam0001')
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
-        self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())    
+        self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())
         lgroup = self._datastore._groups().get(cn=project.pid)
         self.assertEqual(lgroup.cn, project.pid)
 
@@ -85,7 +88,9 @@ class ProjectTestCase(IntegrationTestCase):
 
         self.assertEqual(project.is_active, True)
         self.assertEqual(project.date_approved, datetime.date.today())
-        self.assertEqual(project.approved_by, Person.objects.get(username='kgsuper'))
+        self.assertEqual(
+            project.approved_by,
+            Person.objects.get(username='kgsuper'))
         self.assertEqual(project.pid, 'Enrico')
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
         self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())
@@ -93,7 +98,9 @@ class ProjectTestCase(IntegrationTestCase):
         self.assertEqual(lgroup.cn, project.pid)
 
     def test_add_remove_user_to_project(self):
-        self.assertRaises(self._datastore._account.DoesNotExist, self._datastore._accounts().get, pk='kgtestuser2')
+        self.assertRaises(
+            self._datastore._account.DoesNotExist,
+            self._datastore._accounts().get, pk='kgtestuser2')
 
         # login
         self.client.login(username='kgsuper', password='aq12ws')
@@ -101,13 +108,18 @@ class ProjectTestCase(IntegrationTestCase):
         # get project details
         project = Project.objects.get(pid='TestProject1')
         self.assertEqual(project.group.members.count(), 1)
-        response = self.client.get(reverse('kg_project_detail', args=[project.pid]))
+        response = self.client.get(
+            reverse('kg_project_detail', args=[project.pid]))
         self.failUnlessEqual(response.status_code, 200)
-        self.assertRaises(self._datastore._account.DoesNotExist, self._datastore._accounts().get, pk='kgtestuser2')
+        self.assertRaises(
+            self._datastore._account.DoesNotExist,
+            self._datastore._accounts().get, pk='kgtestuser2')
 
         # add kgtestuser2 to project
         new_user = Person.objects.get(username='kgtestuser2')
-        response = self.client.post(reverse('kg_project_detail', args=[project.pid]), { 'person': new_user.id} )
+        response = self.client.post(
+            reverse('kg_project_detail', args=[project.pid]),
+            {'person': new_user.id})
         self.failUnlessEqual(response.status_code, 302)
         project = Project.objects.get(pid='TestProject1')
         self.assertEqual(project.group.members.count(), 2)
@@ -117,14 +129,19 @@ class ProjectTestCase(IntegrationTestCase):
 
         # remove user
         for account in new_user.account_set.all():
-            account.default_project=None
+            account.default_project = None
             account.save()
-        response = self.client.post(reverse('kg_remove_project_member', args=[project.pid, new_user.username]))
+        response = self.client.post(
+            reverse('kg_remove_project_member',
+                    args=[project.pid, new_user.username]))
         self.failUnlessEqual(response.status_code, 302)
         project = Project.objects.get(pid='TestProject1')
         self.assertEqual(project.group.members.count(), 1)
         lgroup = self._datastore._groups().get(cn=project.pid)
-        self.assertRaises(self._datastore._account.DoesNotExist, lgroup.secondary_accounts.get, pk='kgtestuser2')
+        self.assertRaises(
+            self._datastore._account.DoesNotExist,
+            lgroup.secondary_accounts.get,
+            pk='kgtestuser2')
 
     def test_delete_project(self):
 
@@ -132,12 +149,13 @@ class ProjectTestCase(IntegrationTestCase):
 
         project = Project.objects.get(pid='TestProject1')
         for account in Account.objects.filter(default_project=project):
-            account.default_project=None
+            account.default_project = None
             account.save()
 
         self.assertEqual(project.is_active, True)
 
-        response = self.client.post(reverse('kg_project_delete', args=[project.pid]))
+        response = self.client.post(
+            reverse('kg_project_delete', args=[project.pid]))
         self.failUnlessEqual(response.status_code, 302)
 
         project = Project.objects.get(pid='TestProject1')
@@ -145,7 +163,9 @@ class ProjectTestCase(IntegrationTestCase):
         self.assertEqual(project.is_active, False)
         self.assertEqual(project.group.members.count(), 0)
         self.assertEqual(project.date_deleted, datetime.date.today())
-        self.assertEqual(project.deleted_by, Person.objects.get(username='kgsuper'))
+        self.assertEqual(
+            project.deleted_by,
+            Person.objects.get(username='kgsuper'))
 
     def test_change_default(self):
         pass
@@ -155,10 +175,12 @@ class ProjectTestCase(IntegrationTestCase):
         self.assertEqual(project.is_active, True)
         self.assertEqual(project.name, 'Test Project 1')
         self.assertTrue(Person.objects.get(pk=1) in project.leaders.all())
-        self.assertTrue(Person.objects.get(pk=3) in project.group.members.all())
+        self.assertTrue(
+            Person.objects.get(pk=3) in project.group.members.all())
 
         self.client.login(username='kgsuper', password='aq12ws')
-        response = self.client.get(reverse('kg_project_edit', args=['TestProject1']))
+        response = self.client.get(
+            reverse('kg_project_edit', args=['TestProject1']))
         self.failUnlessEqual(response.status_code, 200)
 
         form_data = {
@@ -169,8 +191,10 @@ class ProjectTestCase(IntegrationTestCase):
             'start_date': project.start_date,
         }
 
-        response = self.client.post(reverse('kg_project_edit', args=['TestProject1']), form_data)
-        self.failUnlessEqual(response.status_code, 302)   
+        response = self.client.post(
+            reverse('kg_project_edit', args=['TestProject1']),
+            form_data)
+        self.failUnlessEqual(response.status_code, 302)
         project = Project.objects.get(pid='TestProject1')
         self.assertEqual(project.is_active, True)
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())

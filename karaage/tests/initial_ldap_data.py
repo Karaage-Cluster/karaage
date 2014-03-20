@@ -17,8 +17,6 @@
 
 """ Test LDAP Data"""
 
-from django.conf import settings
-
 GROUP_DN = 'ou=Group, dc=python-ldap,dc=org'
 ACCOUNT_DN = 'ou=Account, dc=python-ldap,dc=org'
 PEOPLE_DN = 'ou=People, dc=python-ldap,dc=org'

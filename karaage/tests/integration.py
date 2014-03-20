@@ -16,12 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.core.management import call_command
 from django.test import TestCase
 from tldap.test import slapd
 
 from karaage.tests.initial_ldap_data import test_ldif
-from karaage.datastores import _MACHINE_CATEGORY_DATASTORES, _GLOBAL_DATASTORES
+from karaage.datastores import _MACHINE_CATEGORY_DATASTORES
 from karaage.datastores.ldap import MachineCategoryDataStore, GlobalDataStore
 
 
@@ -61,7 +60,8 @@ class IntegrationTestCase(TestCase):
         self.__ldap_server = server
         self.mc_ldap_datastore = MachineCategoryDataStore(self.LDAP_CONFIG)
         self.global_ldap_datastore = GlobalDataStore(self.GLOBAL_LDAP_CONFIG)
-        _MACHINE_CATEGORY_DATASTORES[self.ldap_datastore] = [self.mc_ldap_datastore]
+        _MACHINE_CATEGORY_DATASTORES[self.ldap_datastore] \
+            = [self.mc_ldap_datastore]
         # NOTE (RS) this is currently disabled because it causes test
         # failures.
         # _GLOBAL_DATASTORES.append(self.global_ldap_datastore)

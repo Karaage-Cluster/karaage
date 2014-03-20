@@ -3,10 +3,11 @@ from karaage.conf.defaults import *
 from os import uname
 
 AJAX_LOOKUP_CHANNELS = {
-    'person' : ( 'karaage.people.lookups', 'PersonLookup'),
-    'group' : ( 'karaage.people.lookups', 'GroupLookup'),
-    'project' : ( 'karaage.projects.lookups', 'ProjectLookup'),
+    'person': ('karaage.people.lookups', 'PersonLookup'),
+    'group': ('karaage.people.lookups', 'GroupLookup'),
+    'project': ('karaage.projects.lookups', 'ProjectLookup'),
 }
+
 
 class InvalidString(str):
     def __mod__(self, other):
@@ -27,7 +28,8 @@ LOGGING = {
     'disable_existing_loggers': True,
     'formatters': {
         'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+            'format': '%(levelname)s %(asctime)s '
+            '%(module)s %(process)d %(thread)d %(message)s'
         },
         'simple': {
             'format': '%(levelname)s %(message)s'
@@ -38,7 +40,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.NullHandler',
         },
-        'console':{
+        'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
@@ -60,9 +62,9 @@ LOGGING = {
 # DATASTORES
 
 MACHINE_CATEGORY_DATASTORES = {
-    'ldap' : [
+    'ldap': [
     ],
-    'dummy' : [
+    'dummy': [
     ],
 }
 
@@ -72,12 +74,12 @@ ACCOUNTS_ORG_NAME = 'TestOrg'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'karaage.db',            # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'karaage.db',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
     }
 }
 
@@ -88,7 +90,7 @@ LDAP = {
         'USER': 'cn=Manager,dc=python-ldap,dc=org',
         'PASSWORD': 'password',
         'USE_TLS': False,
-        'TLS_CA' : None,
+        'TLS_CA': None,
     }
 }
 

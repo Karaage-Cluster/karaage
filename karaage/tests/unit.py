@@ -18,7 +18,9 @@
 try:
     from mock import Mock
 except ImportError:
-    raise ImportError("mock is required, either install from a package or using \'pip install -e .[tests]\'")
+    raise ImportError(
+        "mock is required, "
+        "either install from a package or using \'pip install -e .[tests]\'")
 from django.test import TestCase
 
 from karaage.datastores import _MACHINE_CATEGORY_DATASTORES

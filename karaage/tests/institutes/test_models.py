@@ -79,8 +79,8 @@ class InstituteTestCase(UnitTestCase):
         # Test during initial creation of the institute
         self.resetDatastore()
         institute = Institute.objects.create(group=group1)
-        institute_quota = InstituteQuota(machine_category=self.machine_category,
-                                         institute=institute)
+        institute_quota = InstituteQuota(
+            machine_category=self.machine_category, institute=institute)
         institute.save()
         self.assertEqual(
             self.datastore.method_calls,
