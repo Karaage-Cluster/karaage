@@ -17,7 +17,7 @@
 
 from django_xmlrpc.decorators import xmlrpc_func, permission_required
 
-from karaage.projects.models import Project
+from karaage.projects.models import Project, ProjectQuota
 from karaage.machines.models import MachineCategory, Machine, Account
 from karaage.common import log
 from karaage.common.decorators import xmlrpc_machine_required
