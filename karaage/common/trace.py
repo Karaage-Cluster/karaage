@@ -4,7 +4,8 @@
 #  This code may be used pursuant to the MIT License.
 ######################################################################
 
-# Source: http://code.activestate.com/recipes/577551-trace-decorator-for-debugging/
+# Source:
+# http://code.activestate.com/recipes/577551-trace-decorator-for-debugging/
 
 """This package provides facilities to attach decorators to classes or
 modules (possibly recursively).  A tracing decorator is provided for
@@ -72,17 +73,21 @@ MethodTypes = tuple(set((
     types.UnboundMethodType
 )))
 
+
 class _C(object):
     @classmethod
-    def classMethod(klass): pass
+    def classMethod(klass):
+        pass
     classMethodType = type(classMethod)
 
     @staticmethod
-    def staticMethod(): pass
+    def staticMethod():
+        pass
     staticMethodType = type(staticMethod)
 
     @property
-    def propertyMethod(self): pass
+    def propertyMethod(self):
+        pass
 
 ClassMethodType = _C.classMethodType
 StaticMethodType = _C.staticMethodType
@@ -108,17 +113,21 @@ __all__ = (
     'trace'
 )
 
+
 ######################################################################
 #  Utility functions
 ######################################################################
 
 MAX_SIZE = 320
+
+
 def chop(value):
     s = repr(value)
     if len(s) > MAX_SIZE:
         return s[:MAX_SIZE] + '...' + s[-1]
     else:
         return s
+
 
 def loggable(obj):
     """Return "True" if the obj implements the minimum Logger API
@@ -127,22 +136,26 @@ def loggable(obj):
     if isinstance(obj, logging.getLoggerClass()):
         return True
     else:
-        return ( inspect.isclass(obj) and
-                 inspect.ismethod(getattr(obj, 'debug', None)) and
-                 inspect.ismethod(getattr(obj, 'isEnabledFor', None)) and
-                 inspect.ismethod(getattr(obj, 'setLevel', None)) )
+        return (inspect.isclass(obj) and
+                inspect.ismethod(getattr(obj, 'debug', None)) and
+                inspect.ismethod(getattr(obj, 'isEnabledFor', None)) and
+                inspect.ismethod(getattr(obj, 'setLevel', None)))
+
 
 ######################################################################
 #  LoggerFactory Property
 ######################################################################
 
 _logger_factory = logging
+
+
 def getLoggerFactory():
     """Retrieve the current factory object for creating loggers.
     The default is to use the logging module.
     """
     global _logger_factory
     return _logger_factory
+
 
 def setLoggerFactory(factory):
     """Set a factory object for creating loggers.  This object must
@@ -154,6 +167,7 @@ def setLoggerFactory(factory):
     global _logger_factory
     _logger_factory = factory
 
+
 ######################################################################
 #  class PrependLoggerFactory
 ######################################################################
@@ -164,7 +178,7 @@ class PrependLoggerFactory(object):
     user specified prefix prepended to the name of the logger to
     instantiate.
     """
-    def __init__(self, prefix = 'trace'):
+    def __init__(self, prefix='trace'):
         """Construct a new "PrependLoggerFactory" instance that
         prepends the value \var{prefix} to the name of each
         logger to be created by this class.
@@ -176,12 +190,14 @@ class PrependLoggerFactory(object):
         """The value to prefix to each logger created by this factory.
         """
         return self.__prefix
+
     @prefix.setter
     def prefix(self, value):
         self.__prefix = value.strip('.')
 
     def getLogger(self, name):
         return logging.getLogger('.'.join((self.__prefix, name)))
+
 
 ######################################################################
 #  class ThreadLocal
@@ -202,6 +218,7 @@ class ThreadLocal(object):
                 return self.__vars[thread.get_ident()]
             except KeyError:
                 return self.__init
+
     @value.setter
     def value(self, value):
         with self.__lock:
@@ -211,10 +228,12 @@ class ThreadLocal(object):
     def initialValue(self):
         with self.__lock:
             return self.__init
+
     @initialValue.setter
     def initialValue(self, value):
         with self.__lock:
             self.__init = value
+
 
 ######################################################################
 #  Formatter functions
@@ -225,9 +244,12 @@ def _formatter_self(name, value):
     """
     __mname = value.__module__
     if __mname != '__main__':
-        return '%s = <%s.%s object at 0x%x>' % (name, __mname, value.__class__.__name__, id(value))
+        return '%s = <%s.%s object at 0x%x>' \
+            % (name, __mname, value.__class__.__name__, id(value))
     else:
-        return '%s = <%s object at 0x%x>' % (name, value.__class__.__name__, id(value))
+        return '%s = <%s object at 0x%x>' \
+            % (name, value.__class__.__name__, id(value))
+
 
 def _formatter_class(name, value):
     """Format the "klass" variable and value on class methods.
@@ -238,10 +260,12 @@ def _formatter_class(name, value):
     else:
         return "%s = <type '%s'>" % (name, value.__name__)
 
+
 def _formatter_named(name, value):
     """Format a named parameter and its value.
     """
     return '%s = %s' % (name, chop(value))
+
 
 def _formatter_defaults(name, value):
     return '[%s = %s]' % (name, chop(value))
@@ -253,24 +277,26 @@ af_default = _formatter_defaults
 af_unnamed = chop
 af_keyword = _formatter_named
 
+
 def getFormatter(name):
     """Return the named formatter function.  See the function
     "setFormatter" for details.
     """
-    if name in ( 'self', 'instance', 'this' ):
+    if name in ('self', 'instance', 'this'):
         return af_self
     elif name == 'class':
         return af_class
-    elif name in ( 'named', 'param', 'parameter' ):
+    elif name in ('named', 'param', 'parameter'):
         return af_named
-    elif name in ( 'default', 'optional' ):
+    elif name in ('default', 'optional'):
         return af_default
-    elif name in ( 'anonymous', 'arbitrary', 'unnamed' ):
-        return af_anonymous
-    elif name in ( 'keyword', 'pair', 'pairs' ):
+#    elif name in ('anonymous', 'arbitrary', 'unnamed'):
+#        return af_anonymous
+    elif name in ('keyword', 'pair', 'pairs'):
         return af_keyword
     else:
         raise ValueError('unknown trace formatter %r' % name)
+
 
 def setFormatter(name, func):
     """Replace the formatter function used by the trace decorator to
@@ -303,22 +329,22 @@ def setFormatter(name, func):
       corresponding to an anonymous value.
     * if \var{func} is "None" then the default formatter will be used.
     """
-    if name in ( 'self', 'instance', 'this' ):
+    if name in ('self', 'instance', 'this'):
         global af_self
         af_self = _formatter_self if func is None else func
     elif name == 'class':
         global af_class
         af_class = _formatter_class if func is None else func
-    elif name in ( 'named', 'param', 'parameter' ):
+    elif name in ('named', 'param', 'parameter'):
         global af_named
         af_named = _formatter_named if func is None else func
-    elif name in ( 'default', 'optional' ):
+    elif name in ('default', 'optional'):
         global af_default
         af_default = _formatter_defaults if func is None else func
-    elif name in ( 'anonymous', 'arbitrary', 'unnamed' ):
+    elif name in ('anonymous', 'arbitrary', 'unnamed'):
         global af_anonymous
         af_anonymous = chop if func is None else func
-    elif name in ( 'keyword', 'pair', 'pairs' ):
+    elif name in ('keyword', 'pair', 'pairs'):
         global af_keyword
         af_keyword = _formatter_named if func is None else func
     else:
@@ -385,7 +411,7 @@ __builtins = (
 __builtin_defaults = {
     '""': "",
     '-1': -1,
-    '0' : 0,
+    '0': 0,
     '0666': 0666,
     'False': False,
     'None': None,
@@ -395,6 +421,8 @@ __builtin_defaults = {
 }
 
 __builtin_functions = None
+
+
 def __lookup_builtin(name):
     """Lookup the parameter name and default parameter values for
     builtin functions.
@@ -412,21 +440,25 @@ def __lookup_builtin(name):
                     try:
                         defaults[param] = __builtin_defaults[value]
                     except KeyError:
-                        raise ValueError( 'builtin function %s: parameter %s: unknown default %r' % ( name, param, value ) )
+                        raise ValueError(
+                            'builtin function %s: parameter %s: '
+                            'unknown default %r' % (name, param, value))
                 params.append(param)
-            builtins[name] = ( params, defaults )
+            builtins[name] = (params, defaults)
         __builtin_functions = builtins
 
     try:
         params, defaults = __builtin_functions[name]
     except KeyError:
         params, defaults = tuple(), dict()
-        __builtin_functions[name] = ( params, defaults )
-        print >>sys.stderr, "Warning: builtin function %r is missing prototype" % name
-    return ( len(params), params, defaults )
+        __builtin_functions[name] = (params, defaults)
+        print >>sys.stderr, \
+            "Warning: builtin function %r is missing prototype" % name
+    return (len(params), params, defaults)
 
 _ = ThreadLocal()
 _.initialValue = False
+
 
 def trace(_name):
     """Function decorator that logs function entry and exit details.
@@ -460,22 +492,37 @@ def trace(_name):
                 params.update(__kwds)
                 params.update(zip(co_varnames, __argv))
 
-                position = [ positional(n, params.pop(n)) for n in co_varnames[:len(__argv)] ]
-                defaults = [ af_default(n, params.pop(n)) for n in co_varnames[len(__argv):] ]
-                nameless = ( af_unnamed(v) for v in __argv[co_argcount:] )
-                keywords = ( af_keyword(n, params[n]) for n in sorted(params.keys()) )
+                position = [
+                    positional(n, params.pop(n))
+                    for n in co_varnames[:len(__argv)]
+                ]
+                defaults = [
+                    af_default(n, params.pop(n))
+                    for n in co_varnames[len(__argv):]
+                ]
+                nameless = (
+                    af_unnamed(v) for v in __argv[co_argcount:]
+                )
+                keywords = (
+                    af_keyword(n, params[n]) for n in sorted(params.keys())
+                )
 
-                params = ', '.join(filter(None, chain(position, defaults, nameless, keywords)))
+                params = ', '.join(
+                    filter(None, chain(
+                        position,
+                        defaults,
+                        nameless,
+                        keywords)))
                 # params = params.replace(', [', '[, ').replace('][, ', ', ')
 
-                enter = [ pre_enter ]
+                enter = [pre_enter]
                 if params:
                     enter.append(' ')
                     enter.append(params)
                     enter.append(' ')
                 enter.append(')')
 
-                leave = [ pre_leave ]
+                leave = [pre_leave]
 
                 try:
                     logger.debug(''.join(enter))
@@ -495,7 +542,8 @@ def trace(_name):
                         leave.append(type.__name__)
                         if value.args:
                             leave.append('(')
-                            leave.append(', '.join(chop(v) for v in value.args))
+                            leave.append(
+                                ', '.join(chop(v) for v in value.args))
                             leave.append(')')
                         else:
                             leave.append('()')
@@ -515,7 +563,7 @@ def trace(_name):
         #  decorator
         ####
 
-        __self  = False
+        __self = False
         __klass = False
         __rewrap = lambda x: x
         if type(_func) in FunctionTypes:
@@ -530,13 +578,13 @@ def trace(_name):
                 __klass = True
             else:
                 __cname = _func.im_class.__name__
-                __self  = True
+                __self = True
             _func = _func.im_func
         else:
             # other callables are not supported yet.
             return _func
         __module = _func.__module__
-        __fname  = _func.__name__
+        __fname = _func.__name__
 
         # Do not wrap initialization and conversion methods.
         if __fname in ('__init__', '__new__', '__repr__', '__str__'):
@@ -551,7 +599,6 @@ def trace(_name):
         if __cname is not None:
             __fqfn.append(__cname)
             __fqfn.append('.')
-        __fqcn = ''.join(__fqfn)
         __fqfn.append(__fname)
         __fqfn = ''.join(__fqfn)
 
@@ -562,14 +609,16 @@ def trace(_name):
         elif isinstance(_name, basestring):
             logger = getLoggerFactory().getLogger(_name)
         else:
-            raise ValueError('invalid object %r: must be a function, a method, a string or an object that implements the Logger API' % _name)
+            raise ValueError(
+                'invalid object %r: must be a function, a method, '
+                'a string or an object that implements the Logger API' % _name)
 
-        pre_enter = [ '>>> ' ]
+        pre_enter = ['>>> ']
         pre_enter.append(__fqfn)
         pre_enter.append('(')
         pre_enter = ''.join(pre_enter)
 
-        pre_leave = [ '<<< ' ]
+        pre_leave = ['<<< ']
         pre_leave.append(__fqfn)
         pre_leave = ''.join(pre_leave)
 
@@ -586,20 +635,21 @@ def trace(_name):
         try:
             code = _func.func_code
         except AttributeError:
-            co_argcount , \
-            co_varnames , \
-            co_defaults = __lookup_builtin(_func.__name__)
+            co_argcount, co_varnames, co_defaults = \
+                __lookup_builtin(_func.__name__)
         else:
             co_argcount = code.co_argcount
             co_varnames = code.co_varnames[:co_argcount]
             if _func.func_defaults:
-                co_defaults = dict(zip(co_varnames[-len(_func.func_defaults):], _func.func_defaults))
+                co_defaults = dict(
+                    zip(co_varnames[-len(_func.func_defaults):],
+                        _func.func_defaults))
             else:
                 co_defaults = dict()
             if __klass:
                 __klass = co_varnames[0]
             if __self:
-                __self  = co_varnames[0]
+                __self = co_varnames[0]
         return __rewrap(wraps(_func)(wrapper))
 
     ####
@@ -611,6 +661,7 @@ def trace(_name):
         return decorator(_name)
     else:
         return decorator
+
 
 ######################################################################
 #  attach: apply decorator to a class or module
@@ -626,23 +677,28 @@ def attachToProperty(decorator, klass, k, prop_attr, prop_decorator):
     # to assume the original value of the associated attribute.
     return prop_decorator(value)
 
-def attachToClass(decorator, klass, recursive = True):
+
+def attachToClass(decorator, klass, recursive=True):
     for k, v in klass.__dict__.iteritems():
         t = type(v)
-        if t is types.FunctionType or t is ClassMethodType:
+        if isinstance(v, types.FunctionType) or t is ClassMethodType:
             setattr(klass, k, decorator(getattr(klass, k)))
         elif t is StaticMethodType:
             setattr(klass, k, staticmethod(decorator(getattr(klass, k))))
         elif t is PropertyType:
             value = getattr(klass, k)
-            value = attachToProperty(decorator, klass, k, value.fget, value.getter)
-            value = attachToProperty(decorator, klass, k, value.fset, value.setter)
-            value = attachToProperty(decorator, klass, k, value.fdel, value.deleter)
+            value = attachToProperty(
+                decorator, klass, k, value.fget, value.getter)
+            value = attachToProperty(
+                decorator, klass, k, value.fset, value.setter)
+            value = attachToProperty(
+                decorator, klass, k, value.fdel, value.deleter)
             setattr(klass, k, value)
         elif recursive and inspect.isclass(v):
             attachToClass(decorator, v, recursive)
 
-def attach(decorator, obj, recursive = True):
+
+def attach(decorator, obj, recursive=True):
     """attach(decorator, class_or_module[, recursive = True])
 
     Utility to attach a \val{decorator} to the \val{obj} instance.
@@ -663,6 +719,7 @@ def attach(decorator, obj, recursive = True):
     elif inspect.isclass(obj):
         attachToClass(decorator, obj, recursive)
 
+
 ######################################################################
 #  class TraceMetaClass
 ######################################################################
@@ -672,8 +729,9 @@ class TraceMetaClass(type):
     methods, static method and class methods of the class.
     """
     def __new__(meta, className, bases, classDict):
-        klass = super(TraceMetaClass, meta).__new__(meta, className, bases, classDict)
-        if classDict.has_key('__logger__'):
+        klass = super(TraceMetaClass, meta) \
+            .__new__(meta, className, bases, classDict)
+        if '__logger__' in classDict:
             hook = trace(classDict['__logger__'])
         else:
             hook = trace
@@ -681,7 +739,7 @@ class TraceMetaClass(type):
         return klass
 
 if __name__ == '__main__':
-    logging.basicConfig(level = logging.DEBUG)
+    logging.basicConfig(level=logging.DEBUG)
     logger = logging.root
 
     class Test(object):
@@ -697,9 +755,11 @@ if __name__ == '__main__':
             pass
 
         __test = None
+
         @property
         def test(self):
             return self.__test
+
         @test.setter
         def test(self, value):
             self.__test = value
@@ -724,9 +784,11 @@ if __name__ == '__main__':
             pass
 
         __test = None
+
         @property
         def test(self):
             return self.__test
+
         @test.setter
         def test(self, value):
             self.__test = value
@@ -747,11 +809,13 @@ if __name__ == '__main__':
     print str(test)
 
     @trace(logger)
-    def test(x, y, z = True):
+    def test(x, y, z=True):
         a = x + y
         b = x * y
-        if z: return a
-        else: return b
+        if z:
+            return a
+        else:
+            return b
 
     test(5, 5)
     test(5, 5, False)
@@ -767,9 +831,9 @@ if __name__ == '__main__':
     test(5)
     test(5, 5)
     test(5, 5, False)
-    test(5, 5, False, name = 10)
+    test(5, 5, False, name=10)
 
-    test( *xrange(50) )
+    test(*xrange(50))
 
     assert test.__doc__ == 'Simple test\n        '
     assert test.__name__ == 'test'
