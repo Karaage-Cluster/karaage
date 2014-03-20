@@ -323,7 +323,8 @@ class Person(AbstractBaseUser):
 
     def get_account(self, machine_category):
         try:
-            return self.account_set.get(machine_category=machine_category, date_deleted__isnull=True)
+            return self.account_set.get(
+                machine_category=machine_category, date_deleted__isnull=True)
         except:
             return None
 
