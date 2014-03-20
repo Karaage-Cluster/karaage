@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
@@ -11,7 +10,6 @@ class Migration(SchemaMigration):
         # Removing M2M table for field users on 'Project'
         db.delete_table('project_users')
 
-
     def backwards(self, orm):
         # Adding M2M table for field users on 'Project'
         db.create_table('project_users', (
@@ -20,7 +18,6 @@ class Migration(SchemaMigration):
             ('person', models.ForeignKey(orm[u'people.person'], null=False))
         ))
         db.create_unique('project_users', ['project_id', 'person_id'])
-
 
     models = {
         u'auth.group': {

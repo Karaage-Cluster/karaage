@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import DataMigration
-from django.db import models
 
 
 class Migration(DataMigration):
     depends_on = (
-            ('projects', '0017_auto__add_unique_project_pid'),
+        ('projects', '0017_auto__add_unique_project_pid'),
     )
 
     def forwards(self, orm):
@@ -25,7 +23,6 @@ class Migration(DataMigration):
                     else:
                         log.object_id = project.pk
                         log.save()
-
 
     def backwards(self, orm):
         if not db.dry_run:

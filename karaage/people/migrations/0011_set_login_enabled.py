@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-import datetime
-from south.db import db
 from south.v2 import DataMigration
-from django.db import models
 from karaage.datastores import get_machine_category_test_datastore
+
 
 class Migration(DataMigration):
 
@@ -22,7 +20,7 @@ class Migration(DataMigration):
                     # one exists, assume it is the same person.
                     p = datastore._accounts().get(uid=person.user.username)
                     person.login_enabled = not p.is_locked()
-                except datastore._account.DoesNotExist, e:
+                except datastore._account.DoesNotExist:
                     # If we cannot find LDAP entry, assume this is because person
                     # has no access.
                     print "+++", person.user.username
@@ -31,7 +29,6 @@ class Migration(DataMigration):
             else:
                 # No - Account is deleted, obviously logins should be disabled.
                 person.login_enabled = False
-
 
             # Save the updates to the person
             person.save()

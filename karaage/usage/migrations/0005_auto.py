@@ -1,23 +1,18 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+
 
 class Migration(SchemaMigration):
-    
+
     def forwards(self, orm):
-        
         # Adding index on 'CPUJob', fields ['date']
         db.create_index('cpu_job', ['date'])
-    
-    
+
     def backwards(self, orm):
-        
         # Removing index on 'CPUJob', fields ['date']
         db.delete_index('cpu_job', ['date'])
-    
-    
+
     models = {
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -218,5 +213,5 @@ class Migration(SchemaMigration):
             'modules': ('django.db.models.fields.TextField', [], {})
         }
     }
-    
+
     complete_apps = ['usage']

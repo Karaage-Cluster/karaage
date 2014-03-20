@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import DataMigration
-from django.db import models
 from karaage.datastores import get_machine_category_test_datastore
+
 
 class Migration(DataMigration):
 
@@ -32,7 +31,8 @@ class Migration(DataMigration):
             if last_uid is None or obj.uidNumber > last_uid:
                 last_uid = obj.uidNumber
         if last_uid is not None:
-            entry, created = orm['methods.counters'].objects.get_or_create(name="uidNumber", defaults = { 'count': last_uid + 1 })
+            entry, created = orm['methods.counters'].objects.get_or_create(
+                name="uidNumber", defaults={'count': last_uid + 1})
             if not created:
                 entry.count = last_uid + 1
                 entry.save()
@@ -42,7 +42,8 @@ class Migration(DataMigration):
             if last_gid is None or obj.gidNumber > last_gid:
                 last_gid = obj.gidNumber
         if last_gid is not None:
-            entry, created = orm['methods.counters'].objects.get_or_create(name="gidNumber", defaults = { 'count': last_gid + 1 })
+            entry, created = orm['methods.counters'].objects.get_or_create(
+                name="gidNumber", defaults={'count': last_gid + 1})
             if not created:
                 entry.count = last_gid + 1
                 entry.save()

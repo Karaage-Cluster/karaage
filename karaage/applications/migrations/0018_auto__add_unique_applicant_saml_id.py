@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -11,11 +9,9 @@ class Migration(SchemaMigration):
         # Adding unique constraint on 'Applicant', fields ['saml_id']
         db.create_unique(u'applications_applicant', ['saml_id'])
 
-
     def backwards(self, orm):
         # Removing unique constraint on 'Applicant', fields ['saml_id']
         db.delete_unique(u'applications_applicant', ['saml_id'])
-
 
     models = {
         u'applications.applicant': {

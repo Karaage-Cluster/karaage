@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -31,7 +29,6 @@ class Migration(SchemaMigration):
 
         # Deleting model 'TaskCacheForMachineCategory'
         db.delete_table('cache_taskcacheformachinecategory')
-
 
     def backwards(self, orm):
         # Adding model 'TaskCacheForProject'
@@ -94,7 +91,6 @@ class Migration(SchemaMigration):
 
         # Adding unique constraint on 'TaskCacheForMachineCategory', fields ['date', 'start', 'end', 'machine_category']
         db.create_unique('cache_taskcacheformachinecategory', ['date', 'start', 'end', 'machine_category_id'])
-
 
     models = {
         u'institutes.institute': {

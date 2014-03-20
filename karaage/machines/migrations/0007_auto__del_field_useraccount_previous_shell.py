@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -11,13 +9,11 @@ class Migration(SchemaMigration):
         # Deleting field 'UserAccount.previous_shell'
         db.delete_column('user_account', 'previous_shell')
 
-
     def backwards(self, orm):
         # Adding field 'UserAccount.previous_shell'
         db.add_column('user_account', 'previous_shell',
                       self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True),
                       keep_default=False)
-
 
     models = {
         'auth.group': {

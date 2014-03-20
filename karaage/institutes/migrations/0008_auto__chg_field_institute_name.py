@@ -6,13 +6,11 @@ from south.v2 import SchemaMigration
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-
         # Changing field 'Institute.name'
         db.alter_column('institute', 'name', self.gf(
             'django.db.models.fields.CharField')(unique=True, max_length=255))
 
     def backwards(self, orm):
-
         # Changing field 'Institute.name'
         db.alter_column('institute', 'name', self.gf(
             'django.db.models.fields.CharField')(max_length=100, unique=True))

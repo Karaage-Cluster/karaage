@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-import datetime
-from south.db import db
 from south.v2 import DataMigration
-from django.db import models
 
 from karaage.datastores import get_machine_category_test_datastore
+
 
 class Migration(DataMigration):
 
@@ -33,7 +31,6 @@ class Migration(DataMigration):
             else:
                 # No - Account is deleted, obviously no legacy password
                 person.legacy_ldap_password = None
-
 
             # Save the updates to the person
             person.save()

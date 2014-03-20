@@ -2,7 +2,6 @@
 import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 from django.contrib.auth.hashers import make_password
 
 
@@ -20,14 +19,12 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now),
                       keep_default=False)
 
-
     def backwards(self, orm):
         # Deleting field 'Machine.password'
         db.delete_column('machine', 'password')
 
         # Deleting field 'Machine.last_login'
         db.delete_column('machine', 'last_login')
-
 
     models = {
         u'institutes.institute': {

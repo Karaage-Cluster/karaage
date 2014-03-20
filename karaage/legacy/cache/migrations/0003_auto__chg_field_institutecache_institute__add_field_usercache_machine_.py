@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -16,14 +14,12 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['machines.MachineCategory']),
                       keep_default=False)
 
-
     def backwards(self, orm):
 
         # Changing field 'InstituteCache.institute'
         db.alter_column(u'cache_institutecache', 'institute_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.Institute']))
         # Deleting field 'UserCache.machine_category'
         db.delete_column(u'cache_usercache', 'machine_category_id')
-
 
     models = {
         u'auth.group': {

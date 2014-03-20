@@ -1,22 +1,17 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
         # Deleting field 'Project.leader'
         db.delete_column('project', 'leader_id')
 
-
     def backwards(self, orm):
-        
         # Adding field 'Project.leader'
         db.add_column('project', 'leader', self.gf('django.db.models.fields.related.ForeignKey')(default=1, related_name='leader', to=orm['people.Person']), keep_default=False)
-
 
     models = {
         'auth.group': {

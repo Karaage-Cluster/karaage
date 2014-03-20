@@ -1,11 +1,9 @@
 # encoding: utf-8
-import datetime
-from south.db import db
 from south.v2 import DataMigration
-from django.db import models
+
 
 class Migration(DataMigration):
-    
+
     def forwards(self, orm):
         for institute in orm.Institute.objects.iterator():
             if institute.delegate:
@@ -16,11 +14,10 @@ class Migration(DataMigration):
                 inst_del.save()
             for sub in institute.sub_delegates.iterator():
                 orm.InstituteDelegate.objects.get_or_create(person=institute.delegate, institute=institute)
-    
-    
+
     def backwards(self, orm):
         raise RuntimeError("Cannot reverse this migration.")
-    
+
     models = {
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -106,5 +103,5 @@ class Migration(DataMigration):
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
         }
     }
-    
+
     complete_apps = ['people']

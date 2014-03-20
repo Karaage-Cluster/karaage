@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import DataMigration
-from django.db import models
+
 
 class Migration(DataMigration):
 
@@ -67,8 +66,7 @@ class Migration(DataMigration):
                 'make_leader': src.make_leader,
             }
             src.delete()
-            dst = orm.UserApplication.objects.create(**values)
-
+            orm.UserApplication.objects.create(**values)
 
     models = {
         u'admin.logentry': {

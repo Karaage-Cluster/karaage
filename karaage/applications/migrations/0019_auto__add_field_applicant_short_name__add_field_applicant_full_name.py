@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -18,14 +16,12 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.CharField')(max_length=60, null=True),
                       keep_default=False)
 
-
     def backwards(self, orm):
         # Deleting field 'Applicant.short_name'
         db.delete_column(u'applications_applicant', 'short_name')
 
         # Deleting field 'Applicant.full_name'
         db.delete_column(u'applications_applicant', 'full_name')
-
 
     models = {
         u'applications.applicant': {

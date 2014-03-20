@@ -1,11 +1,9 @@
 # encoding: utf-8
-import datetime
-from south.db import db
 from south.v2 import DataMigration
-from django.db import models
+
 
 class Migration(DataMigration):
-    
+
     def forwards(self, orm):
         from django.conf import settings
         if hasattr(settings, 'ACCOUNT_DATASTORES'):
@@ -16,10 +14,10 @@ class Migration(DataMigration):
                     continue
                 mc.datastore = datastore
                 mc.save()
-            
+
     def backwards(self, orm):
         pass
-    
+
     models = {
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -156,5 +154,5 @@ class Migration(DataMigration):
             'users': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['people.Person']", 'null': 'True', 'blank': 'True'})
         }
     }
-    
+
     complete_apps = ['machines']

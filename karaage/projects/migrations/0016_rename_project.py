@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
     depends_on = (
-            ('machines', '0016_auto__del_field_account_default_project'),
-            ('cache', '0009_auto__del_field_projectcache_project__chg_field_projectcache_project_t'),
-            ('applications', '0024_auto__del_field_projectapplication_project'),
-            ('usage', '0010_auto__del_field_cpujob_project'),
+        ('machines', '0016_auto__del_field_account_default_project'),
+        ('cache', '0009_auto__del_field_projectcache_project__chg_field_projectcache_project_t'),
+        ('applications', '0024_auto__del_field_projectapplication_project'),
+        ('usage', '0010_auto__del_field_cpujob_project'),
     )
 
     def forwards(self, orm):
@@ -38,7 +36,6 @@ class Migration(SchemaMigration):
 
         # Adding unique constraint on 'ProjectQuota', fields ['project_tmp', 'machine_category']
         db.create_unique('project_quota', ['project_tmp_id', 'machine_category_id'])
-
 
     models = {
         u'contenttypes.contenttype': {

@@ -2,11 +2,10 @@
 import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models, connection
+from django.db import connection
 
 
 class Migration(SchemaMigration):
-
     # Migrations that must run *before* we update the person model and remove the
     # user FK.
 
@@ -76,7 +75,6 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.BooleanField')(default=False),
                       keep_default=False)
 
-
         # Changing field 'Person.user'
         db.alter_column('person', 'user_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], unique=True, null=True))
 
@@ -112,7 +110,6 @@ class Migration(SchemaMigration):
 
         # Deleting field 'Person.is_admin'
         db.delete_column('person', 'is_admin')
-
 
         # Changing field 'Person.user'
         db.alter_column('person', 'user_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], unique=True))

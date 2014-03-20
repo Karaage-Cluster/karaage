@@ -1,23 +1,17 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+
 
 class Migration(SchemaMigration):
-    
     def forwards(self, orm):
-        
         # Adding field 'Applicant.email_verified'
         db.add_column('applications_applicant', 'email_verified', self.gf('django.db.models.fields.BooleanField')(default=False, blank=True), keep_default=False)
-    
-    
+
     def backwards(self, orm):
-        
         # Deleting field 'Applicant.email_verified'
         db.delete_column('applications_applicant', 'email_verified')
-    
-    
+
     models = {
         'applications.applicant': {
             'Meta': {'object_name': 'Applicant'},
@@ -183,5 +177,5 @@ class Migration(SchemaMigration):
             'users': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['people.Person']", 'null': 'True', 'blank': 'True'})
         }
     }
-    
+
     complete_apps = ['applications']

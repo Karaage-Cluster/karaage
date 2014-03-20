@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import DataMigration
-from django.db import models
+
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
         for project in orm.Project.objects.iterator():
             if not db.dry_run:
-                group,c = orm['people.group'].objects.get_or_create(name=project.pid)
+                group, c = orm['people.group'].objects.get_or_create(name=project.pid)
                 group.members = project.users.iterator()
                 project.group = group
                 project.save()

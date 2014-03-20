@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 import datetime
-from south.db import db
 from south.v2 import DataMigration
-from django.db import models
 
-import datetime
 from karaage.common import new_random_token
+
 
 class Migration(DataMigration):
 
@@ -14,9 +12,9 @@ class Migration(DataMigration):
             content_type = orm['contenttypes.contenttype'].objects.get(app_label='people', model='Person')
             try:
                 dst = orm.SoftwareApplication.objects.get(
-                        object_id=src.person.pk,
-                        content_type=content_type,
-                        software_license=src.software_license)
+                    object_id=src.person.pk,
+                    content_type=content_type,
+                    software_license=src.software_license)
             except orm.SoftwareApplication.MultipleObjectsReturned:
                 dst = orm.SoftwareApplication()
                 dst.object_id = src.person.pk

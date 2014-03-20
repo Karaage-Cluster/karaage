@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -29,7 +27,6 @@ class Migration(SchemaMigration):
 
         # Adding unique constraint on 'MachineCategoryCache', fields ['date', 'start', 'end', 'machine_category']
         db.create_unique(u'cache_machinecategorycache', ['date', 'start', 'end', 'machine_category_id'])
-
 
         # Changing field 'ProjectCache.cpu_hours'
         db.alter_column(u'cache_projectcache', 'cpu_hours', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=30, decimal_places=2))
@@ -61,7 +58,6 @@ class Migration(SchemaMigration):
 
         # Deleting model 'MachineCategoryCache'
         db.delete_table(u'cache_machinecategorycache')
-
 
         # Changing field 'ProjectCache.cpu_hours'
         db.alter_column(u'cache_projectcache', 'cpu_hours', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=30, decimal_places=2))

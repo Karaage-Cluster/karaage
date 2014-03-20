@@ -1,8 +1,7 @@
 # encoding: utf-8
-import datetime
-from south.db import db
 from south.v2 import DataMigration
-from django.db import models, connection
+from django.db import connection
+
 
 class Migration(DataMigration):
 
@@ -40,11 +39,9 @@ class Migration(DataMigration):
             unknown_user.user.delete()
         if unknown_project:
             unknown_project.delete()
-        
 
     def backwards(self, orm):
         raise RuntimeError("Cannot reverse this migration.")
-
 
     models = {
         'auth.group': {

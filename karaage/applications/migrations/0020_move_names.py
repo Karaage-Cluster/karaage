@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
-from south.db import db
 from south.v2 import DataMigration
-from django.db import models
+
 
 class Migration(DataMigration):
 
@@ -11,7 +9,7 @@ class Migration(DataMigration):
         for applicant in orm.applicant.objects.iterator():
             applicant.short_name = applicant.first_name
             applicant.full_name = u"%s %s" % (
-                    applicant.first_name, applicant.last_name)
+                applicant.first_name, applicant.last_name)
             applicant.save()
 
     def backwards(self, orm):
@@ -25,7 +23,6 @@ class Migration(DataMigration):
             applicant.first_name = first_name
             applicant.last_name = last_name
             applicant.save()
-
 
     models = {
         u'applications.applicant': {

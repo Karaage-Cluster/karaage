@@ -1,23 +1,18 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+
 
 class Migration(SchemaMigration):
-    
+
     def forwards(self, orm):
-        
         # Deleting field 'Project.is_expertise'
         db.delete_column('project', 'is_expertise')
-    
-    
+
     def backwards(self, orm):
-        
         # Adding field 'Project.is_expertise'
         db.add_column('project', 'is_expertise', self.gf('django.db.models.fields.BooleanField')(default=False, blank=True), keep_default=False)
-    
-    
+
     models = {
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -127,5 +122,5 @@ class Migration(SchemaMigration):
             'users': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['people.Person']", 'null': 'True', 'blank': 'True'})
         }
     }
-    
+
     complete_apps = ['projects']

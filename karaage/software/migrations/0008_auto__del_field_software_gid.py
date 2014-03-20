@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -11,13 +9,11 @@ class Migration(SchemaMigration):
         # Deleting field 'SoftwarePackage.gid'
         db.delete_column('software_package', 'gid')
 
-
     def backwards(self, orm):
         # Adding field 'SoftwarePackage.gid'
         db.add_column('software_package', 'gid',
                       self.gf('django.db.models.fields.IntegerField')(null=True, blank=True),
                       keep_default=False)
-
 
     models = {
         u'auth.group': {

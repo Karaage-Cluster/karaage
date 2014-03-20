@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -19,11 +17,9 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'common', ['Comment'])
 
-
     def backwards(self, orm):
         # Deleting model 'Comment'
         db.delete_table('comments')
-
 
     models = {
         u'contenttypes.contenttype': {

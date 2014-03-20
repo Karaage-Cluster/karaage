@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -14,14 +12,12 @@ class Migration(SchemaMigration):
         # Adding unique constraint on 'MachineCategory', fields ['name']
         db.create_unique('machine_category', ['name'])
 
-
     def backwards(self, orm):
         # Removing unique constraint on 'MachineCategory', fields ['name']
         db.delete_unique('machine_category', ['name'])
 
         # Removing unique constraint on 'Machine', fields ['name']
         db.delete_unique('machine', ['name'])
-
 
     models = {
         u'institutes.institute': {

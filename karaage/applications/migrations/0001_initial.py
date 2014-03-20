@@ -1,13 +1,12 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
 
+
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
         # Adding model 'Application'
         db.create_table('applications_application', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -81,9 +80,7 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('applications', ['Applicant'])
 
-
     def backwards(self, orm):
-        
         # Deleting model 'Application'
         db.delete_table('applications_application')
 
@@ -101,7 +98,6 @@ class Migration(SchemaMigration):
 
         # Deleting model 'Applicant'
         db.delete_table('applications_applicant')
-
 
     models = {
         'applications.applicant': {

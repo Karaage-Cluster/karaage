@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-import datetime
-from south.db import db
 from south.v2 import DataMigration
-from django.db import models
 from karaage.datastores import get_machine_category_test_datastore
+
 
 class Migration(DataMigration):
 
@@ -22,7 +20,7 @@ class Migration(DataMigration):
                 if not account.shell:
                     account.shell = "/bin/bash"
                 account.save()
-            except datastore._account.DoesNotExist, e:
+            except datastore._account.DoesNotExist:
                 print "+++", account.username
                 pass
 

@@ -1,23 +1,18 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+
 
 class Migration(SchemaMigration):
-    
+
     def forwards(self, orm):
-        
         # Adding field 'SoftwareVersion.last_used'
         db.add_column('software_version', 'last_used', self.gf('django.db.models.fields.DateField')(null=True, blank=True), keep_default=False)
-    
-    
+
     def backwards(self, orm):
-        
         # Deleting field 'SoftwareVersion.last_used'
         db.delete_column('software_version', 'last_used')
-    
-    
+
     models = {
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -168,5 +163,5 @@ class Migration(SchemaMigration):
             'version': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         }
     }
-    
+
     complete_apps = ['software']

@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
 
     depends_on = (
-            ('applications', '0027_move_software_requests'),
+        ('applications', '0027_move_software_requests'),
     )
 
     def forwards(self, orm):
@@ -27,7 +25,6 @@ class Migration(SchemaMigration):
             ('software_license', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['software.SoftwareLicense'])),
         ))
         db.send_create_signal(u'software', ['SoftwareAccessRequest'])
-
 
     models = {
         u'contenttypes.contenttype': {

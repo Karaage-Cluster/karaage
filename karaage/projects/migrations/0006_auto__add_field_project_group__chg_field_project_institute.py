@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -17,14 +15,12 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['people.Group']),
                       keep_default=False)
 
-
         # Changing field 'Project.institute'
         db.alter_column('project', 'institute_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['institutes.Institute']))
 
     def backwards(self, orm):
         # Deleting field 'Project.group'
         db.delete_column('project', 'group_id')
-
 
         # Changing field 'Project.institute'
         db.alter_column('project', 'institute_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.Institute']))

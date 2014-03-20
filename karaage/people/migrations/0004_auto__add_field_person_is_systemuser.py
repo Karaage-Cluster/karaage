@@ -1,22 +1,17 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
         # Adding field 'Person.is_systemuser'
         db.add_column('person', 'is_systemuser', self.gf('django.db.models.fields.BooleanField')(default=False, blank=True), keep_default=False)
 
-
     def backwards(self, orm):
-        
         # Deleting field 'Person.is_systemuser'
         db.delete_column('person', 'is_systemuser')
-
 
     models = {
         'auth.group': {

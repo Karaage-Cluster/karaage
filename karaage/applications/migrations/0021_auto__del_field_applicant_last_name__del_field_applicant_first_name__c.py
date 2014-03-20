@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -13,7 +11,6 @@ class Migration(SchemaMigration):
 
         # Deleting field 'Applicant.first_name'
         db.delete_column(u'applications_applicant', 'first_name')
-
 
         # Changing field 'Applicant.short_name'
         db.alter_column(u'applications_applicant', 'short_name', self.gf('django.db.models.fields.CharField')(max_length=30))
@@ -31,7 +28,6 @@ class Migration(SchemaMigration):
         db.add_column(u'applications_applicant', 'first_name',
                       self.gf('django.db.models.fields.CharField')(max_length=30, null=True, blank=True),
                       keep_default=False)
-
 
         # Changing field 'Applicant.short_name'
         db.alter_column(u'applications_applicant', 'short_name', self.gf('django.db.models.fields.CharField')(max_length=30, null=True))

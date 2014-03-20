@@ -1,13 +1,12 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
 
+
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
         # Adding model 'SoftwareCategory'
         db.create_table('software_category', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -64,9 +63,7 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('software', ['SoftwareLicenseAgreement'])
 
-
     def backwards(self, orm):
-        
         # Deleting model 'SoftwareCategory'
         db.delete_table('software_category')
 
@@ -84,7 +81,6 @@ class Migration(SchemaMigration):
 
         # Deleting model 'SoftwareLicenseAgreement'
         db.delete_table('software_license_agreement')
-
 
     models = {
         'auth.group': {

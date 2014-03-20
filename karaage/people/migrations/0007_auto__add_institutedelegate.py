@@ -1,13 +1,11 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+
 
 class Migration(SchemaMigration):
-    
+
     def forwards(self, orm):
-        
         # Adding model 'InstituteDelegate'
         db.create_table('people_institutedelegate', (
             ('institute', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.Institute'])),
@@ -16,14 +14,11 @@ class Migration(SchemaMigration):
             ('send_email', self.gf('django.db.models.fields.BooleanField')(default=False, blank=True)),
         ))
         db.send_create_signal('people', ['InstituteDelegate'])
-    
-    
+
     def backwards(self, orm):
-        
         # Deleting model 'InstituteDelegate'
         db.delete_table('people_institutedelegate')
-    
-    
+
     models = {
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -109,5 +104,5 @@ class Migration(SchemaMigration):
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
         }
     }
-    
+
     complete_apps = ['people']

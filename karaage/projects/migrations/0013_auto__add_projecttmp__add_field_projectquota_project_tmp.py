@@ -42,7 +42,6 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.ProjectTmp'], null=True),
                       keep_default=False)
 
-
     def backwards(self, orm):
         # Deleting model 'ProjectTmp'
         db.delete_table(u'projects_projecttmp')
@@ -52,7 +51,6 @@ class Migration(SchemaMigration):
 
         # Deleting field 'ProjectQuota.project_tmp'
         db.delete_column('project_quota', 'project_tmp_id')
-
 
     models = {
         u'institutes.institute': {

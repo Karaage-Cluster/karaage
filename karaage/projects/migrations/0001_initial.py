@@ -1,13 +1,12 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
 
+
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
         # Adding model 'Project'
         db.create_table('project', (
             ('pid', self.gf('django.db.models.fields.CharField')(max_length=50, primary_key=True)),
@@ -46,9 +45,7 @@ class Migration(SchemaMigration):
         ))
         db.create_unique('project_machine_categories', ['project_id', 'machinecategory_id'])
 
-
     def backwards(self, orm):
-        
         # Deleting model 'Project'
         db.delete_table('project')
 
@@ -57,7 +54,6 @@ class Migration(SchemaMigration):
 
         # Removing M2M table for field machine_categories on 'Project'
         db.delete_table('project_machine_categories')
-
 
     models = {
         'auth.group': {

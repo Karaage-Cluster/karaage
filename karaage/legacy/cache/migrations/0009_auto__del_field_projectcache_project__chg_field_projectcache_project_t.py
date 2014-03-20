@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -11,12 +9,10 @@ class Migration(SchemaMigration):
         # Deleting field 'ProjectCache.project'
         db.delete_column(u'cache_projectcache', 'project_id')
 
-
         # Changing field 'ProjectCache.project_tmp'
         db.alter_column(u'cache_projectcache', 'project_tmp_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.ProjectTmp']))
         # Deleting field 'PersonCache.project'
         db.delete_column(u'cache_personcache', 'project_id')
-
 
         # Changing field 'PersonCache.project_tmp'
         db.alter_column(u'cache_personcache', 'project_tmp_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.ProjectTmp']))
@@ -27,14 +23,12 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.Project']),
                       keep_default=False)
 
-
         # Changing field 'ProjectCache.project_tmp'
         db.alter_column(u'cache_projectcache', 'project_tmp_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.ProjectTmp'], null=True))
         # Adding field 'PersonCache.project'
         db.add_column(u'cache_personcache', 'project',
                       self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.Project']),
                       keep_default=False)
-
 
         # Changing field 'PersonCache.project_tmp'
         db.alter_column(u'cache_personcache', 'project_tmp_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.ProjectTmp'], null=True))

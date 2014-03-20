@@ -1,19 +1,16 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
 
+
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
         # Removing M2M table for field user_applications on 'ProjectApplication'
         db.delete_table('applications_projectapplication_user_applications')
 
-
     def backwards(self, orm):
-        
         # Adding M2M table for field user_applications on 'ProjectApplication'
         db.create_table('applications_projectapplication_user_applications', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
@@ -21,7 +18,6 @@ class Migration(SchemaMigration):
             ('userapplication', models.ForeignKey(orm['applications.userapplication'], null=False))
         ))
         db.create_unique('applications_projectapplication_user_applications', ['projectapplication_id', 'userapplication_id'])
-
 
     models = {
         'applications.applicant': {

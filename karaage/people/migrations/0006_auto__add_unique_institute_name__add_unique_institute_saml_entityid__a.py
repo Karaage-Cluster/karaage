@@ -1,13 +1,12 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+
 
 class Migration(SchemaMigration):
-    
+
     def forwards(self, orm):
-        
+
         # Adding unique constraint on 'Institute', fields ['name']
         db.create_unique('institute', ['name'])
 
@@ -16,10 +15,8 @@ class Migration(SchemaMigration):
 
         # Adding unique constraint on 'Person', fields ['saml_id']
         db.create_unique('person', ['saml_id'])
-    
-    
+
     def backwards(self, orm):
-        
         # Removing unique constraint on 'Institute', fields ['name']
         db.delete_unique('institute', ['name'])
 
@@ -28,8 +25,7 @@ class Migration(SchemaMigration):
 
         # Removing unique constraint on 'Person', fields ['saml_id']
         db.delete_unique('person', ['saml_id'])
-    
-    
+
     models = {
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -107,5 +103,5 @@ class Migration(SchemaMigration):
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
         }
     }
-    
+
     complete_apps = ['people']

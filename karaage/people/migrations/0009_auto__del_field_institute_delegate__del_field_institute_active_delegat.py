@@ -1,13 +1,12 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
 
+
 class Migration(SchemaMigration):
-    
+
     def forwards(self, orm):
-        
         # Deleting field 'Institute.delegate'
         db.delete_column('institute', 'delegate_id')
 
@@ -16,10 +15,8 @@ class Migration(SchemaMigration):
 
         # Removing M2M table for field sub_delegates on 'Institute'
         db.delete_table('institute_sub_delegates')
-    
-    
+
     def backwards(self, orm):
-        
         # Adding field 'Institute.delegate'
         db.add_column('institute', 'delegate', self.gf('django.db.models.fields.related.ForeignKey')(related_name='delegate', null=True, to=orm['people.Person'], blank=True), keep_default=False)
 
@@ -33,8 +30,7 @@ class Migration(SchemaMigration):
             ('person', models.ForeignKey(orm['people.person'], null=False))
         ))
         db.create_unique('institute_sub_delegates', ['institute_id', 'person_id'])
-    
-    
+
     models = {
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -117,5 +113,5 @@ class Migration(SchemaMigration):
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
         }
     }
-    
+
     complete_apps = ['people']

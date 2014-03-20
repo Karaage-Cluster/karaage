@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -20,7 +18,6 @@ class Migration(SchemaMigration):
         # Adding unique constraint on 'MachineCache', fields ['date', 'start', 'machine', 'end']
         db.create_unique(u'cache_machinecache', ['date', 'start', 'machine_id', 'end'])
 
-
     def backwards(self, orm):
         # Removing unique constraint on 'MachineCache', fields ['date', 'start', 'machine', 'end']
         db.delete_unique(u'cache_machinecache', ['date', 'start', 'machine_id', 'end'])
@@ -33,7 +30,6 @@ class Migration(SchemaMigration):
 
         # Removing unique constraint on 'ProjectCache', fields ['date', 'start', 'machine_category', 'end', 'project']
         db.delete_unique(u'cache_projectcache', ['date', 'start', 'machine_category_id', 'end', 'project_id'])
-
 
     models = {
         u'cache.institutecache': {

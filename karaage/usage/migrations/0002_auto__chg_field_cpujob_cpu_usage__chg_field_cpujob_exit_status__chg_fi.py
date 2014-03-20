@@ -1,13 +1,11 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
         # Changing field 'CPUJob.cpu_usage'
         db.alter_column('cpu_job', 'cpu_usage', self.gf('django.db.models.fields.BigIntegerField')(null=True, blank=True))
 
@@ -41,9 +39,7 @@ class Migration(SchemaMigration):
         # Changing field 'CPUJob.cores'
         db.alter_column('cpu_job', 'cores', self.gf('django.db.models.fields.BigIntegerField')(null=True, blank=True))
 
-
     def backwards(self, orm):
-        
         # Changing field 'CPUJob.cpu_usage'
         db.alter_column('cpu_job', 'cpu_usage', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True))
 
@@ -76,7 +72,6 @@ class Migration(SchemaMigration):
 
         # Changing field 'CPUJob.cores'
         db.alter_column('cpu_job', 'cores', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True))
-
 
     models = {
         'auth.group': {

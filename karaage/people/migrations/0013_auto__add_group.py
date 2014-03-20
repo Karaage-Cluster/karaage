@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
@@ -24,14 +23,12 @@ class Migration(SchemaMigration):
         ))
         db.create_unique(u'people_group_members', ['group_id', 'person_id'])
 
-
     def backwards(self, orm):
         # Deleting model 'Group'
         db.delete_table(u'people_group')
 
         # Removing M2M table for field members on 'Group'
         db.delete_table('people_group_members')
-
 
     models = {
         u'auth.group': {

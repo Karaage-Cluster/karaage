@@ -1,13 +1,11 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
         # Adding field 'Application.content_type'
         db.add_column('applications_application', 'content_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contenttypes.ContentType'], null=True, blank=True), keep_default=False)
 
@@ -20,9 +18,7 @@ class Migration(SchemaMigration):
         # Deleting field 'UserApplication.content_type'
         db.delete_column('applications_userapplication', 'content_type_id')
 
-
     def backwards(self, orm):
-        
         # Deleting field 'Application.content_type'
         db.delete_column('applications_application', 'content_type_id')
 
@@ -34,7 +30,6 @@ class Migration(SchemaMigration):
 
         # Adding field 'UserApplication.content_type'
         db.add_column('applications_userapplication', 'content_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contenttypes.ContentType'], null=True, blank=True), keep_default=False)
-
 
     models = {
         'applications.applicant': {

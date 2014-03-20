@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-
         # Changing field 'Application.state'
         db.alter_column(u'applications_application', 'state', self.gf('django.db.models.fields.CharField')(max_length=5))
         # Adding field 'ProjectApplication.make_leader'
@@ -20,7 +17,6 @@ class Migration(SchemaMigration):
         db.add_column(u'applications_projectapplication', 'pid',
                       self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True),
                       keep_default=False)
-
 
         # Changing field 'ProjectApplication.institute'
         db.alter_column(u'applications_projectapplication', 'institute_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['institutes.Institute'], null=True))
@@ -37,7 +33,6 @@ class Migration(SchemaMigration):
 
         # Deleting field 'ProjectApplication.pid'
         db.delete_column(u'applications_projectapplication', 'pid')
-
 
         # User chose to not deal with backwards NULL issues for 'ProjectApplication.institute'
         raise RuntimeError("Cannot reverse this migration. 'ProjectApplication.institute' and its values cannot be restored.")

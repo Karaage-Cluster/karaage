@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
-import datetime
-from south.db import db
 from south.v2 import DataMigration
-from django.db import models
+
 
 class Migration(DataMigration):
-
     # CPUJob.project is optional and be None
 
     depends_on = (
-            ('projects', '0014_move_projects'),
+        ('projects', '0014_move_projects'),
     )
 
     def forwards(self, orm):

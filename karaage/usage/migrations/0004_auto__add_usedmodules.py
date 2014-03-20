@@ -1,13 +1,12 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
 
+
 class Migration(SchemaMigration):
-    
+
     def forwards(self, orm):
-        
         # Adding model 'UsedModules'
         db.create_table('usage_usedmodules', (
             ('date_added', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
@@ -23,17 +22,14 @@ class Migration(SchemaMigration):
             ('softwareversion', models.ForeignKey(orm['software.softwareversion'], null=False))
         ))
         db.create_unique('cpu_job_software', ['cpujob_id', 'softwareversion_id'])
-    
-    
+
     def backwards(self, orm):
-        
         # Deleting model 'UsedModules'
         db.delete_table('usage_usedmodules')
 
         # Removing M2M table for field software on 'CPUJob'
         db.delete_table('cpu_job_software')
-    
-    
+
     models = {
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -234,5 +230,5 @@ class Migration(SchemaMigration):
             'modules': ('django.db.models.fields.TextField', [], {})
         }
     }
-    
+
     complete_apps = ['usage']

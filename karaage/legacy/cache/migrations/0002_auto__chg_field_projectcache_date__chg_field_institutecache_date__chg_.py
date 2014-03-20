@@ -1,13 +1,11 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+
 
 class Migration(SchemaMigration):
-    
+
     def forwards(self, orm):
-        
         # Changing field 'ProjectCache.date'
         db.alter_column('cache_projectcache', 'date', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True))
 
@@ -19,10 +17,8 @@ class Migration(SchemaMigration):
 
         # Changing field 'MachineCache.date'
         db.alter_column('cache_machinecache', 'date', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True))
-    
-    
+
     def backwards(self, orm):
-        
         # Changing field 'ProjectCache.date'
         db.alter_column('cache_projectcache', 'date', self.gf('django.db.models.fields.DateField')())
 
@@ -34,8 +30,7 @@ class Migration(SchemaMigration):
 
         # Changing field 'MachineCache.date'
         db.alter_column('cache_machinecache', 'date', self.gf('django.db.models.fields.DateField')())
-    
-    
+
     models = {
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -202,5 +197,5 @@ class Migration(SchemaMigration):
             'users': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['people.Person']", 'null': 'True', 'blank': 'True'})
         }
     }
-    
+
     complete_apps = ['cache']

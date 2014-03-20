@@ -1,13 +1,11 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
         # Adding model 'Queue'
         db.create_table('queue', (
             ('name', self.gf('django.db.models.fields.CharField')(max_length=50, primary_key=True)),
@@ -44,15 +42,12 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('usage', ['CPUJob'])
 
-
     def backwards(self, orm):
-        
         # Deleting model 'Queue'
         db.delete_table('queue')
 
         # Deleting model 'CPUJob'
         db.delete_table('cpu_job')
-
 
     models = {
         'auth.group': {

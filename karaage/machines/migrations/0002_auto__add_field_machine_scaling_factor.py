@@ -1,23 +1,18 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+
 
 class Migration(SchemaMigration):
-    
+
     def forwards(self, orm):
-        
         # Adding field 'Machine.scaling_factor'
         db.add_column('machine', 'scaling_factor', self.gf('django.db.models.fields.IntegerField')(default=1), keep_default=False)
-    
-    
+
     def backwards(self, orm):
-        
         # Deleting field 'Machine.scaling_factor'
         db.delete_column('machine', 'scaling_factor')
-    
-    
+
     models = {
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -146,5 +141,5 @@ class Migration(SchemaMigration):
             'users': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['people.Person']", 'null': 'True', 'blank': 'True'})
         }
     }
-    
+
     complete_apps = ['machines']

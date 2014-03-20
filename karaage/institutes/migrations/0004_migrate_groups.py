@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import DataMigration
-from django.db import models
 
 from karaage.datastores import get_machine_category_test_datastore
+
 
 class Migration(DataMigration):
 
@@ -26,7 +25,7 @@ class Migration(DataMigration):
                     lgroup = datastore._groups().create(gidNumber=institute.gid, cn=name)
 
             if not db.dry_run:
-                group,c = orm['people.group'].objects.get_or_create(name=lgroup.cn)
+                group, c = orm['people.group'].objects.get_or_create(name=lgroup.cn)
                 institute.group = group
                 institute.save()
 

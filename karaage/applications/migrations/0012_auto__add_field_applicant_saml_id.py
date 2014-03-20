@@ -1,22 +1,17 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
         # Adding field 'Applicant.saml_id'
         db.add_column('applications_applicant', 'saml_id', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True), keep_default=False)
 
-
     def backwards(self, orm):
-        
         # Deleting field 'Applicant.saml_id'
         db.delete_column('applications_applicant', 'saml_id')
-
 
     models = {
         'applications.applicant': {

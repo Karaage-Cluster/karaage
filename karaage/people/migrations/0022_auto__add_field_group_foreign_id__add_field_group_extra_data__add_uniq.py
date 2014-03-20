@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -29,7 +27,6 @@ class Migration(SchemaMigration):
         # Changing field 'Group.extra_data'
         db.alter_column(u'people_group', 'extra_data', self.gf('jsonfield.fields.JSONField')())
 
-
     def backwards(self, orm):
         # Deleting field 'Group.foreign_id'
         db.delete_column(u'people_group', 'foreign_id')
@@ -39,7 +36,6 @@ class Migration(SchemaMigration):
 
         # Changing field 'Group.extra_data'
         db.alter_column(u'people_group', 'extra_data', self.gf('jsonfield.fields.JSONField')(null=True))
-
 
     models = {
         u'institutes.institute': {

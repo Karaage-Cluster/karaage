@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -11,13 +9,11 @@ class Migration(SchemaMigration):
         # Deleting field 'Applicant.password'
         db.delete_column(u'applications_applicant', 'password')
 
-
     def backwards(self, orm):
         # Adding field 'Applicant.password'
         db.add_column(u'applications_applicant', 'password',
                       self.gf('django.db.models.fields.CharField')(max_length=128, null=True, blank=True),
                       keep_default=False)
-
 
     models = {
         u'applications.applicant': {

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models, connection
+from django.db import connection
 
 
 class Migration(SchemaMigration):
@@ -25,8 +24,9 @@ class Migration(SchemaMigration):
         django_comment_flags_exists = ('django_comment_flags' in
                                        connection.introspection.get_table_list(cursor))
 
-        db.alter_column('django_admin_log', 'person_id',
-                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person']))
+        db.alter_column(
+            'django_admin_log', 'person_id',
+            self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person']))
 
         if django_comments_exists:
             db.alter_column('django_comments', 'person_id',
@@ -49,7 +49,6 @@ class Migration(SchemaMigration):
 
         # Deleting field 'Person.user'
         db.delete_column('person', 'user_id')
-
 
         # Changing field 'Person.username'
         db.alter_column('person', 'username', self.gf('django.db.models.fields.CharField')(unique=True, max_length=30))
@@ -85,8 +84,9 @@ class Migration(SchemaMigration):
                           self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User']),
                           keep_default=False)
 
-        db.alter_column('django_admin_log', 'person_id',
-                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person'], null=True))
+        db.alter_column(
+            'django_admin_log', 'person_id',
+            self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person'], null=True))
         if django_comments_exists:
             db.alter_column('django_comments', 'person_id',
                             self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.person'], null=True))
@@ -98,7 +98,6 @@ class Migration(SchemaMigration):
         db.add_column('person', 'user',
                       self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], unique=True, null=True),
                       keep_default=False)
-
 
         # Changing field 'Person.username'
         db.alter_column('person', 'username', self.gf('django.db.models.fields.CharField')(unique=True, max_length=30, null=True))

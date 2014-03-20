@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-import datetime
-from south.db import db
 from south.v2 import DataMigration
-from django.db import models, connection
+from django.db import connection
+
 
 class Migration(DataMigration):
 
@@ -19,7 +18,7 @@ class Migration(DataMigration):
             person.password = person.user.password
             person.short_name = person.user.first_name
             person.full_name = u"%s %s" % (
-                    person.user.first_name, person.user.last_name)
+                person.user.first_name, person.user.last_name)
             person.last_login = person.user.last_login
             person.is_active = person.user.is_active
             person.is_admin = person.user.is_staff
@@ -43,7 +42,7 @@ class Migration(DataMigration):
         for person in orm.person.objects.filter(user__isnull=True):
             assert person.username
             person.user, _ = orm['auth.user'].objects.get_or_create(
-                    username=person.username)
+                username=person.username)
             if person.email is None:
                 person.user.email = ""
             else:
@@ -73,7 +72,6 @@ class Migration(DataMigration):
             for obj in orm['comments.commentflag'].objects.iterator():
                 obj.user = obj.person.user
                 obj.save()
-
 
     models = {
         u'admin.logentry': {

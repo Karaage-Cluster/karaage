@@ -1,13 +1,12 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
 
+
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
         # Adding M2M table for field leaders on 'Project'
         db.create_table('project_leaders', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
@@ -16,12 +15,9 @@ class Migration(SchemaMigration):
         ))
         db.create_unique('project_leaders', ['project_id', 'person_id'])
 
-
     def backwards(self, orm):
-        
         # Removing M2M table for field leaders on 'Project'
         db.delete_table('project_leaders')
-
 
     models = {
         'auth.group': {

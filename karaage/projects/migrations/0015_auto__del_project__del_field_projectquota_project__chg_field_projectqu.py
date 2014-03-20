@@ -8,10 +8,10 @@ from django.db import models
 class Migration(SchemaMigration):
 
     depends_on = (
-            ('applications', '0023_move_projects'),
-            ('usage', '0009_move_projects'),
-            ('cache', '0008_move_projects'),
-            ('machines', '0015_move_projects'),
+        ('applications', '0023_move_projects'),
+        ('usage', '0009_move_projects'),
+        ('cache', '0008_move_projects'),
+        ('machines', '0015_move_projects'),
     )
 
     def forwards(self, orm):
@@ -27,12 +27,10 @@ class Migration(SchemaMigration):
         # Deleting field 'ProjectQuota.project'
         db.delete_column('project_quota', 'project_id')
 
-
         # Changing field 'ProjectQuota.project_tmp'
         db.alter_column('project_quota', 'project_tmp_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.ProjectTmp']))
         # Adding unique constraint on 'ProjectQuota', fields ['project_tmp', 'machine_category']
         db.create_unique('project_quota', ['project_tmp_id', 'machine_category_id'])
-
 
     def backwards(self, orm):
         # Removing unique constraint on 'ProjectQuota', fields ['project_tmp', 'machine_category']
@@ -71,12 +69,10 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.Project']),
                       keep_default=False)
 
-
         # Changing field 'ProjectQuota.project_tmp'
         db.alter_column('project_quota', 'project_tmp_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.ProjectTmp'], null=True))
         # Adding unique constraint on 'ProjectQuota', fields ['project', 'machine_category']
         db.create_unique('project_quota', ['project_id', 'machine_category_id'])
-
 
     models = {
         u'institutes.institute': {

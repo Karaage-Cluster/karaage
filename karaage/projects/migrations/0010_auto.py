@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
@@ -11,7 +10,6 @@ class Migration(SchemaMigration):
         # Removing M2M table for field machine_categories on 'Project'
         db.delete_table('project_machine_categories')
 
-
     def backwards(self, orm):
         # Adding M2M table for field machine_categories on 'Project'
         db.create_table('project_machine_categories', (
@@ -20,7 +18,6 @@ class Migration(SchemaMigration):
             ('machinecategory', models.ForeignKey(orm[u'machines.machinecategory'], null=False))
         ))
         db.create_unique('project_machine_categories', ['project_id', 'machinecategory_id'])
-
 
     models = {
         u'institutes.institute': {

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -20,7 +18,6 @@ class Migration(SchemaMigration):
         if not db.dry_run:
             # For permissions to work properly after migrating
             orm['contenttypes.contenttype'].objects.filter(app_label='machines', model='account').update(name='user account', model='useraccount')
-
 
     models = {
         u'auth.group': {

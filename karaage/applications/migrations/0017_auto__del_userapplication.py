@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -13,7 +11,6 @@ class Migration(SchemaMigration):
         if not db.dry_run:
             orm['contenttypes.contenttype'].objects.filter(app_label='applications', model='userapplication').delete()
 
-
     def backwards(self, orm):
         # Adding model 'UserApplication'
         db.create_table(u'applications_userapplication', (
@@ -23,7 +20,6 @@ class Migration(SchemaMigration):
             ('needs_account', self.gf('django.db.models.fields.BooleanField')(default=True)),
         ))
         db.send_create_signal(u'applications', ['UserApplication'])
-
 
     models = {
         u'applications.applicant': {

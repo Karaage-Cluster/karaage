@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -11,13 +9,11 @@ class Migration(SchemaMigration):
         # Deleting field 'ProjectApplication.project'
         db.delete_column(u'applications_projectapplication', 'project_id')
 
-
     def backwards(self, orm):
         # Adding field 'ProjectApplication.project'
         db.add_column(u'applications_projectapplication', 'project',
                       self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.Project'], null=True, blank=True),
                       keep_default=False)
-
 
     models = {
         u'applications.applicant': {

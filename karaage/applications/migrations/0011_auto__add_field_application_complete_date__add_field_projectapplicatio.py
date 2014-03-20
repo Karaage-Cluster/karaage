@@ -1,28 +1,23 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
         # Adding field 'Application.complete_date'
         db.add_column('applications_application', 'complete_date', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True), keep_default=False)
 
         # Adding field 'ProjectApplication.project'
         db.add_column('applications_projectapplication', 'project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.Project'], null=True, blank=True), keep_default=False)
 
-
     def backwards(self, orm):
-        
         # Deleting field 'Application.complete_date'
         db.delete_column('applications_application', 'complete_date')
 
         # Deleting field 'ProjectApplication.project'
         db.delete_column('applications_projectapplication', 'project_id')
-
 
     models = {
         'applications.applicant': {

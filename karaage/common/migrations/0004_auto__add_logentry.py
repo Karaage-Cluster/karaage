@@ -1,25 +1,21 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
 
     depends_on = (
-            ('admin', '0004_auto__del_logentry'),
+        ('admin', '0004_auto__del_logentry'),
     )
 
     def forwards(self, orm):
         if not db.dry_run:
             orm['contenttypes.contenttype'].objects.filter(app_label='admin', model='logentry').update(app_label="common")
 
-
     def backwards(self, orm):
         if not db.dry_run:
             orm['contenttypes.contenttype'].objects.filter(app_label='common', model='logentry').update(app_label="admin")
-
 
     models = {
         u'common.comment': {
