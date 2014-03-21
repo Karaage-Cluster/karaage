@@ -55,7 +55,7 @@ setup(
     version = version,
     url = 'https://github.com/Karaage-Cluster/karaage',
     author = 'Brian May',
-    author_email = 'brian@vpac.org',
+    author_email = 'brian@v3.org.au',
     description = 'Collection of Django apps to manage a clusters',
     packages = packages,
     license = "GPL3+",
