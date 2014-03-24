@@ -33,6 +33,7 @@ class ProjectTestCase(UnitTestCase):
             institute=institute)
 
         project.full_clean()
+        project.save()
         self.assertEqual(project.name, 'Test')
         self.assertEqual(project.pid, 'test')
         self.assertEqual(project.institute, institute)
@@ -53,11 +54,19 @@ class ProjectTestCase(UnitTestCase):
         # Max length
         person = ProjectFactory(pid="a" * 255)
         person.full_clean()
+        person.save()
+        self.assertEqual(person.pid, "a" * 255)
 
         # Name is too long
         person = ProjectFactory(pid="a" * 256)
         with assert_raises:
             person.full_clean()
+
+    def test_new_pid(self):
+        person = ProjectFactory(pid=None)
+        person.full_clean()
+        person.save()
+        self.assertEqual(person.pid, 'pinst0001')
 
     def test_change_group(self):
         """Check that when changing an projects group, old accounts are
