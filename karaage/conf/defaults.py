@@ -269,6 +269,9 @@ USERNAME_VALIDATION_ERROR_MSG = u'Usernames can only contain letters, ' \
     u'numbers and underscores'
 USERNAME_MAX_LENGTH = 255
 
+# The method used to generate new project ID's
+PID_AUTOGENERATION_FN = 'karaage.projects.utils.get_new_pid'
+
 # RE for validing a project.
 PROJECT_VALIDATION_RE = '[-\w]+'
 

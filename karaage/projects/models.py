@@ -15,10 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.db import models
-
 import datetime
 
+from django.conf import settings
+from django.db import models
+from django.utils.module_loading import import_by_path
 from model_utils import FieldTracker
 
 from karaage.people.models import Person, Group
@@ -31,7 +32,7 @@ from karaage.common.models import CHANGE
 
 
 class Project(models.Model):
-    pid = models.CharField(max_length=255, unique=True)
+    pid = models.CharField(max_length=255, unique=True, blank=True)
     name = models.CharField(max_length=200)
     group = models.ForeignKey(Group)
     institute = models.ForeignKey(Institute)
@@ -57,6 +58,8 @@ class Project(models.Model):
 
     _tracker = FieldTracker()
 
+    get_new_pid = import_by_path(settings.PID_AUTOGENERATION_FN)
+
     class Meta:
         ordering = ['pid']
         db_table = 'project'
@@ -70,6 +73,10 @@ class Project(models.Model):
 
     def save(self, *args, **kwargs):
         created = self.pk is None
+
+        # if no PID generate one
+        if not self.pid:
+            self.pid = self.get_new_pid()
 
         # set group if not already set
         if self.group_id is None:

@@ -33,7 +33,7 @@ from karaage.machines.models import Account
 from karaage.projects.models import Project, ProjectQuota
 from karaage.projects.forms import ProjectForm, UserProjectForm, \
     ProjectQuotaForm, AddPersonForm
-from karaage.projects.utils import get_new_pid, add_user_to_project, \
+from karaage.projects.utils import add_user_to_project, \
     remove_user_from_project
 import karaage.common as util
 
@@ -77,17 +77,7 @@ def add_edit_project(request, project_id=None):
 
     if request.method == 'POST':
         if form.is_valid():
-            project = form.save(commit=False)
-            if project_id is not None:
-                # if project is being edited, project_id cannot change, so we
-                # should always use the value supplied on the URL.
-                project.pid = project_id
-            elif not project.pid:
-                # if project was being created, did the user give a project_id
-                # we should use? If not, then we have to generate one
-                # ourselves.
-                project.pid = get_new_pid(project.institute)
-            project.save()
+            project = form.save()
             approved_by = request.user
             project.activate(approved_by)
             form.save_m2m()
