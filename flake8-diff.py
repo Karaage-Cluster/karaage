@@ -155,6 +155,7 @@ def main():
     exit_status = 0
     revision = None
     if args.changed:
+        revision = git_current_rev()
         files = list_changed_files()
     else:
         files = list_all_files()
