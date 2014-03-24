@@ -235,9 +235,8 @@ class ProjectApplication(Application):
         person = self.applicant
         if self.project is None:
             assert self.institute is not None
-            from karaage.projects.utils import get_new_pid
             project = Project(
-                pid=self.pid or get_new_pid(self.institute),
+                pid=self.pid,
                 name=self.name,
                 description=self.description,
                 institute=self.institute,

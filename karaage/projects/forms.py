@@ -15,12 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django import forms
-from django.contrib.admin.widgets import AdminDateWidget
-from django.conf import settings
 import datetime
 
 import ajax_select.fields
+from django import forms
+from django.contrib.admin.widgets import AdminDateWidget
+from django.conf import settings
 
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project, ProjectQuota
@@ -61,13 +61,22 @@ class ProjectForm(forms.ModelForm):
         # Make PID field read only if we are editing a project
         super(ProjectForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
-        if instance and instance.pid:
+        if instance and instance.id:
             self.fields['pid'].widget.attrs['readonly'] = True
             self.fields['pid'].help_text = \
                 "You can't change the PID of an existing project"
 
     def clean_pid(self):
         pid = self.cleaned_data['pid']
+        instance = getattr(self, 'instance', None)
+        if instance.id and pid:
+            if instance and pid != instance.pid:
+                raise forms.ValidationError(
+                    u'Project ID\'s are not allowed to be changed.')
+        elif instance.id:
+            # If the instance exists default to the existing pid
+            pid = instance.pid
+
         try:
             Institute.objects.get(name=pid)
             raise forms.ValidationError(u'Project ID not available')

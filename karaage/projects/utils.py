@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from karaage.projects.models import Project
 from karaage.machines.models import Account
 
 
@@ -30,11 +29,14 @@ def remove_user_from_project(person, project):
     project.group.members.remove(person)
 
 
-def get_new_pid(institute):
+def get_new_pid(project):
     """ Return a new Project ID
     Keyword arguments:
     institute_id -- Institute id
     """
+    from karaage.projects.models import Project
+    institute = project.institute
+
     number = '0001'
     prefix = 'p%s' % institute.name.replace(' ', '')[:4]
 
