@@ -91,7 +91,7 @@ class ProjectFactory(DjangoModelFactory):
     FACTORY_DJANGO_GET_OR_CREATE = ('pid',)
 
     pid = FuzzyLowerText(prefix='proj-')
-    name = factory.LazyAttribute(lambda a: a.pid.title())
+    name = factory.LazyAttribute(lambda a: a.pid.title()[:200])
     institute = factory.SubFactory(InstituteFactory)
     is_approved = True
     approved_by = factory.LazyAttribute(

@@ -28,8 +28,11 @@ from karaage.projects.models import Project, ProjectQuota
 
 class ProjectForm(forms.ModelForm):
     pid = forms.RegexField(
-        "^%s$" % settings.PROJECT_VALIDATION_RE, required=False,
-        label='PID', help_text='Leave blank for auto generation',
+        "^%s$" % settings.PROJECT_VALIDATION_RE,
+        max_length=settings.PROJECT_ID_MAX_LENGTH,
+        required=False,
+        label='PID',
+        help_text='Leave blank for auto generation',
         error_messages={'invalid': settings.PROJECT_VALIDATION_ERROR_MSG})
     name = forms.CharField(
         label='Project Title', widget=forms.TextInput(attrs={'size': 60}))

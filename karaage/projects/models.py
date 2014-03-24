@@ -31,7 +31,7 @@ from karaage.common.models import CHANGE
 
 
 class Project(models.Model):
-    pid = models.CharField(max_length=50, unique=True)
+    pid = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=200)
     group = models.ForeignKey(Group)
     institute = models.ForeignKey(Institute)

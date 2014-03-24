@@ -272,6 +272,9 @@ USERNAME_MAX_LENGTH = 255
 # RE for validing a project.
 PROJECT_VALIDATION_RE = '[-\w]+'
 
+# Max length of a project identifier
+PROJECT_ID_MAX_LENGTH = 255
+
 # Error to display if project validation failed.
 PROJECT_VALIDATION_ERROR_MSG = u'Project names can only contain letters, ' \
     u'numbers and underscores'
