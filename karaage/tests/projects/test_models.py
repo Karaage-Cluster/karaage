@@ -16,13 +16,15 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.core import exceptions as django_exceptions
-from django.test import TestCase
+import mock
 
-from karaage.projects.models import Project
-from karaage.tests.fixtures import ProjectFactory, InstituteFactory
+from karaage.tests.unit import UnitTestCase
+from karaage.projects.models import Project, ProjectQuota
+from karaage.tests.fixtures import (ProjectFactory, InstituteFactory,
+                                    GroupFactory, simple_account)
 
 
-class ProjectTestCase(TestCase):
+class ProjectTestCase(UnitTestCase):
     def test_minimum_create(self):
         institute = InstituteFactory()
         project = Project.objects.create(
@@ -56,3 +58,40 @@ class ProjectTestCase(TestCase):
         person = ProjectFactory(pid="a" * 256)
         with assert_raises:
             person.full_clean()
+
+    def test_change_group(self):
+        """Check that when changing an projects group, old accounts are
+        removed from the project and new ones are added.
+
+        """
+        account1 = simple_account(machine_category=self.machine_category)
+        group1 = GroupFactory()
+        group1.add_person(account1.person)
+        institute = InstituteFactory()
+
+        # Test during initial creation of the project
+        self.resetDatastore()
+        project = Project.objects.create(group=group1, institute=institute)
+        project_quota = ProjectQuota(
+            machine_category=self.machine_category, project=project)
+        project.save()
+        self.assertEqual(
+            self.datastore.method_calls,
+            [mock.call.add_account_to_project(account1, project)])
+
+        # Test changing an existing projects group
+        account2 = simple_account(machine_category=self.machine_category)
+        project = project_quota.project
+        self.resetDatastore()
+        group2 = GroupFactory()
+        group2.add_person(account2.person)
+        project.group = group2
+        project.save()
+        self.assertEqual(
+            self.datastore.method_calls,
+            [mock.call.save_group(group2),
+             mock.call.add_account_to_group(account2, group2),
+             # old accounts are removed
+             mock.call.remove_account_from_project(account1, project),
+             # new accounts are added
+             mock.call.add_account_to_project(account2, project)])
