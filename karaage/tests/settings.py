@@ -89,7 +89,8 @@ LDAP = {
         'URI': 'ldap://localhost:38911/',
         'USER': 'cn=Manager,dc=python-ldap,dc=org',
         'PASSWORD': 'password',
-        'USE_TLS': False,
+        'REQUIRE_TLS': False,
+        'START_TLS ': False,
         'TLS_CA': None,
     }
 }

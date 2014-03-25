@@ -216,7 +216,8 @@ Configuring Karaage to use LDAP
                   'URI': 'ldap://localhost',
                   'USER': 'cn=admin,dc=example,dc=org',
                   'PASSWORD': 'XXXXXXXX',
-                  'USE_TLS': False,
+                  'REQUIRE_TLS': False,
+                  'START_TLS ': False,
                   'TLS_CA' : None,
              }
         }
