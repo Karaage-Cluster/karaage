@@ -1,3 +1,63 @@
+karaage3 (3.0.9-1) unstable; urgency=low
+
+  [ Russell Sim ]
+  * Increase max length of institute identifier to 255
+  * Increase max length of account username to 255
+  * Increase the max length of group name to 255
+  * Increase the max username length to 255
+  * Increase application username length to 255
+
+  [ Brian May ]
+  * Don't use shell=True
+  * Allow displaying of all errors.
+
+  [ Russell Sim ]
+  * Fixed bug with incorrect mixin declaration
+
+  [ Brian May ]
+  * Fix pep8 issues.
+  * Institute graphs report unused space
+  * Fix undefined variables.
+  * Add test to change group in related objects.
+
+  [ Russell Sim ]
+  * Fix failure when using cracklib
+  * Moved test packages out of the install section
+  * Added unit test base class
+  * Better testing of institutional group changes
+  * New logging API
+
+  [ Brian May ]
+  * Use python logging.
+  * Move project_trend_graph to projects directory.
+  * Fix PEP8 issues.
+  * Check if userapplication content type exists.
+  * Fix PEP8 issues.
+  * Add missing import.
+  * Fix PEP8 issues.
+  * Fix error referencing DoesNotExist.
+  * Add missing import.
+  * Fix PEP8 issues.
+  * Add missing import.
+  * Remove change_default_project xmlrpc function.
+  * Fix more pep8 issues.
+  * PEP8 fixes.
+  * More PEP8 fixes.
+  * PEP8 fixes.
+  * Fix PEP8 issues in migrations.
+  * PEP8 issue solved.
+  * PEP8 issue solved.
+  * Fix breakage introduced in PEP8 cleanup
+  * Use django's validate_email function.
+  * Update authors.
+
+  [ Russell Sim ]
+  * Fixed flake8 check
+  * Increase project pid to 255
+  * Better testing of project group changes
+
+ -- Brian May <bam@debian.org>  Tue, 25 Mar 2014 13:27:56 +1100
+
 karaage3 (3.0.8-1) unstable; urgency=low
 
   * Remove REMOTE_USER middleware from karaage.middleware.auth.
