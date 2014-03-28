@@ -1,3 +1,9 @@
+karaage (2.7.11-1) unstable; urgency=low
+
+  * Fix problem with latest ajax-selects adding people to groups.
+
+ -- Brian May <bam@debian.org>  Fri, 28 Mar 2014 15:28:37 +1100
+
 karaage (2.7.10-1) unstable; urgency=low
 
   * Use correct hash function.
