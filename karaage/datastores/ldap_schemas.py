@@ -180,7 +180,7 @@ class ds389_person(methods.baseMixin):
     ]
 
     class Meta:
-        base_dn_setting = "LDAP_ACCOUNT_BASE"
+        base_dn_setting = "LDAP_PERSON_BASE"
         object_classes = set(['top'])
         search_classes = set(['person'])
         pk = 'uid'
