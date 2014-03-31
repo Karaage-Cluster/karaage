@@ -167,6 +167,9 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # setting the attribute urlconf on the incoming HttpRequest object.
 ROOT_URLCONF = 'karaage.conf.urls'
 
+# The URL where requests are redirected for login, especially when
+# using the login_required() decorator.
+LOGIN_URL = 'kg_profile_login'
 
 # The absolute path to the directory where collectstatic will collect static
 # files for deployment.

@@ -37,11 +37,7 @@ def admin_required(function=None):
             raise PermissionDenied
         return True
 
-    actual_decorator = user_passes_test(
-        check_perms,
-        login_url="kg_profile_login",
-        redirect_field_name="next"
-    )
+    actual_decorator = user_passes_test(check_perms)
     if function:
         return actual_decorator(function)
     return actual_decorator
@@ -61,11 +57,7 @@ def login_required(function=None):
             raise PermissionDenied
         return True
 
-    actual_decorator = user_passes_test(
-        check_perms,
-        login_url="kg_profile_login",
-        redirect_field_name="next"
-    )
+    actual_decorator = user_passes_test(check_perms)
     if function:
         return actual_decorator(function)
     return actual_decorator
@@ -89,11 +81,7 @@ def usage_required(function=None):
             return True
         return False
 
-    actual_decorator = user_passes_test(
-        check_perms,
-        login_url="kg_profile_login",
-        redirect_field_name="next"
-    )
+    actual_decorator = user_passes_test(check_perms)
     if function:
         return actual_decorator(function)
     return actual_decorator
