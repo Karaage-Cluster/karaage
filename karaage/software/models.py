@@ -60,11 +60,6 @@ class Software(models.Model):
     def save(self, *args, **kwargs):
         created = self.pk is None
 
-        # set group if not already set
-        if self.group_id is None:
-            name = str(self.name.lower().replace(' ', ''))
-            self.group, _ = Group.objects.get_or_create(name=name)
-
         # save the object
         super(Software, self).save(*args, **kwargs)
 
