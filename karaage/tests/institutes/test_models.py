@@ -79,9 +79,13 @@ class InstituteTestCase(UnitTestCase):
         # Test during initial creation of the institute
         self.resetDatastore()
         institute = Institute.objects.create(group=group1)
+        institute_quota = InstituteQuota.objects.create(
+            machine_category=self.machine_category, institute=institute,
+            quota=100)
         self.assertEqual(
             self.datastore.method_calls,
-            [mock.call.add_account_to_institute(account1, institute)])
+            [mock.call.save_institute(institute),
+             mock.call.add_account_to_institute(account1, institute)])
 
         # Test changing an existing institutions group
         account2 = simple_account(institute=institute,
@@ -95,7 +99,16 @@ class InstituteTestCase(UnitTestCase):
             self.datastore.method_calls,
             [mock.call.save_group(group2),
              mock.call.add_account_to_group(account2, group2),
+             mock.call.save_institute(institute),
              # old accounts are removed
              mock.call.remove_account_from_institute(account1, institute),
              # new accounts are added
              mock.call.add_account_to_institute(account2, institute)])
+
+        # Test deleting project quota
+        self.resetDatastore()
+        institute_quota.delete()
+        self.assertEqual(
+            self.datastore.method_calls,
+            [mock.call.remove_account_from_institute(account2, institute),
+             mock.call.delete_institute(institute)])

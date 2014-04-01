@@ -72,9 +72,12 @@ class ProjectTestCase(UnitTestCase):
         # Test during initial creation of the project
         self.resetDatastore()
         project = Project.objects.create(group=group1, institute=institute)
+        project_quota = ProjectQuota.objects.create(
+            machine_category=self.machine_category, project=project)
         self.assertEqual(
             self.datastore.method_calls,
-            [mock.call.add_account_to_project(account1, project)])
+            [mock.call.save_project(project),
+             mock.call.add_account_to_project(account1, project)])
 
         # Test changing an existing projects group
         account2 = simple_account(machine_category=self.machine_category)
@@ -87,7 +90,16 @@ class ProjectTestCase(UnitTestCase):
             self.datastore.method_calls,
             [mock.call.save_group(group2),
              mock.call.add_account_to_group(account2, group2),
+             mock.call.save_project(project),
              # old accounts are removed
              mock.call.remove_account_from_project(account1, project),
              # new accounts are added
              mock.call.add_account_to_project(account2, project)])
+
+        # Test deleting project quota
+        self.resetDatastore()
+        project_quota.delete()
+        self.assertEqual(
+            self.datastore.method_calls,
+            [mock.call.remove_account_from_project(account2, project),
+             mock.call.delete_project(project)])
