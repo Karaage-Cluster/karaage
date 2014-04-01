@@ -46,9 +46,7 @@ fi
 
 db_get karaage/run_migrations
 if [ "$RET" = "true" ]; then
-    dpkg-trigger karaage-migrations
+    kg-manage migrate
 fi
-db_reset karaage/run_migrations
-
 
 exit 0
