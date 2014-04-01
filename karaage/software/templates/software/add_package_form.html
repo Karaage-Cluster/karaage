@@ -5,6 +5,11 @@
 {% block title %}Edit Software{% endblock %}
 
 
+{% block extrahead %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>
+{% endblock %}
+
+
 {% block breadcrumbs %}
 <div class="breadcrumbs">
     <a href='{% url "index" %}'>Home</a>&nbsp;›
@@ -25,6 +30,7 @@
     {{ form.non_field_errors }}
     <fieldset class="module aligned ()">
         {% inlineformfield form.name form.category %}
+        {% formfield form.group_name %}
         {% formfield form.description %}
         {% formfield form.academic_only %}
         {% formfield form.restricted %}
@@ -45,4 +51,19 @@
         <input type="submit" value="Save" class="default" />
     </div>
 </form>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    var name = $("#id_name")
+    var lastValue = name.val();
+    name.on('change keyup paste mouseup', function() {
+        if (name.val() != lastValue) {
+            lastValue = name.val()
+            newValue = lastValue.split(" ").join("").toLowerCase()
+            $("#id_group_name").val(newValue)
+        }
+    })
+})
+</script>
+
 {% endblock %}

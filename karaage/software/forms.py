@@ -16,7 +16,9 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django import forms
+from django.conf import settings
 
+from karaage.people.models import Group
 from karaage.machines.models import Machine
 from karaage.software.models import SoftwareCategory, Software
 from karaage.software.models import SoftwareVersion, SoftwareLicense
@@ -51,6 +53,11 @@ class SoftwareForm(forms.Form):
 
 
 class AddPackageForm(SoftwareForm):
+    group_name = forms.RegexField(
+        "^%s$" % settings.GROUP_VALIDATION_RE,
+        required=True,
+        error_messages=
+        {'invalid': settings.GROUP_VALIDATION_ERROR_MSG})
     version = forms.CharField()
     module = forms.CharField(required=False)
     machines = forms.ModelMultipleChoiceField(queryset=Machine.active.all())
@@ -73,7 +80,11 @@ class AddPackageForm(SoftwareForm):
     def save(self, software=None):
         data = self.cleaned_data
 
-        software = super(AddPackageForm, self).save()
+        software = Software()
+        name = self.cleaned_data['group_name']
+        software.group, _ = Group.objects.get_or_create(name=name)
+
+        software = super(AddPackageForm, self).save(software)
 
         version = SoftwareVersion(
             software=software,
