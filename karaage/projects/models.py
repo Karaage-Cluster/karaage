@@ -71,11 +71,6 @@ class Project(models.Model):
     def save(self, *args, **kwargs):
         created = self.pk is None
 
-        # set group if not already set
-        if self.group_id is None:
-            name = self.pid
-            self.group, _ = Group.objects.get_or_create(name=name)
-
         # save the object
         super(Project, self).save(*args, **kwargs)
 

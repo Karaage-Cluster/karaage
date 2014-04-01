@@ -27,7 +27,7 @@ from django.core.urlresolvers import reverse
 from karaage.common.filterspecs import Filter, FilterBar
 
 from karaage.common.decorators import admin_required, login_required
-from karaage.people.models import Person
+from karaage.people.models import Person, Group
 from karaage.institutes.models import Institute
 from karaage.machines.models import Account
 from karaage.projects.models import Project, ProjectQuota
@@ -87,6 +87,7 @@ def add_edit_project(request, project_id=None):
                 # we should use? If not, then we have to generate one
                 # ourselves.
                 project.pid = get_new_pid(project.institute)
+                project.group, _ = Group.objects.get_or_create(name=project.pid)
             project.save()
             approved_by = request.user
             project.activate(approved_by)

@@ -22,6 +22,7 @@ import datetime
 
 import ajax_select.fields
 
+from karaage.people.models import Group
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project, ProjectQuota
 
@@ -60,11 +61,20 @@ class ProjectForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         # Make PID field read only if we are editing a project
         super(ProjectForm, self).__init__(*args, **kwargs)
-        instance = getattr(self, 'instance', None)
-        if instance and instance.pid:
+        instance = self.instance
+        if instance.pid:
             self.fields['pid'].widget.attrs['readonly'] = True
             self.fields['pid'].help_text = \
                 "You can't change the PID of an existing project"
+        if instance.group_id is None:
+            self.fields['group_name'] = forms.RegexField(
+                "^%s$" % settings.GROUP_VALIDATION_RE,
+                required=False,
+                error_messages=
+                {'invalid': settings.GROUP_VALIDATION_ERROR_MSG})
+            index = self.fields.keyOrder.index("pid")
+            self.fields.keyOrder.remove("group_name")
+            self.fields.keyOrder.insert(index+1, "group_name")
 
     def clean_pid(self):
         pid = self.cleaned_data['pid']
@@ -73,6 +83,27 @@ class ProjectForm(forms.ModelForm):
             raise forms.ValidationError(u'Project ID not available')
         except Institute.DoesNotExist:
             return pid
+
+    def clean_group_name(self):
+        pid = self.cleaned_data['pid']
+        group_name = self.cleaned_data['group_name']
+
+        if pid and not group_name:
+            raise forms.ValidationError(
+                u'If PID given, then group is required.')
+        if not pid and group_name:
+            raise forms.ValidationError(
+                u'If PID not given, then group must be left empty.')
+        return group_name
+
+    def save(self, commit=True):
+        project = super(ProjectForm, self).save(commit=False)
+        if project.group_id is None:
+            name = self.cleaned_data['project_name']
+            project.group, _ = Group.objects.get_or_create(name=name)
+        if commit:
+            project.save()
+        return project
 
 
 class UserProjectForm(forms.ModelForm):
