@@ -41,30 +41,6 @@ def FuzzyLowerText(*args, **kwargs):
     return FuzzyText(*args, **kwargs)
 
 
-class MachineCategoryFactory(DjangoModelFactory):
-    FACTORY_FOR = karaage.machines.models.MachineCategory
-    FACTORY_DJANGO_GET_OR_CREATE = ('name',)
-
-    name = FuzzyLowerText(prefix='mc-')
-    datastore = 'dummy'
-
-
-class InstituteFactory(DjangoModelFactory):
-    FACTORY_FOR = karaage.institutes.models.Institute
-    FACTORY_DJANGO_GET_OR_CREATE = ('name',)
-
-    name = FuzzyLowerText(prefix='inst-')
-
-
-class InstituteQuotaFactory(DjangoModelFactory):
-    FACTORY_FOR = karaage.institutes.models.InstituteQuota
-    FACTORY_DJANGO_GET_OR_CREATE = ('institute', 'machine_category')
-
-    institute = factory.SubFactory(InstituteFactory)
-    machine_category = factory.SubFactory(MachineCategoryFactory)
-    quota = FuzzyDecimal(0.0, 999.0)
-
-
 class GroupFactory(DjangoModelFactory):
     FACTORY_FOR = karaage.people.models.Group
     FACTORY_DJANGO_GET_OR_CREATE = ('name',)
@@ -84,6 +60,31 @@ class PersonFactory(DjangoModelFactory):
     institute = factory.LazyAttribute(
         lambda a: InstituteFactory(
             name=FuzzyLowerText(prefix='%s-inst-' % a.username)))
+
+
+class MachineCategoryFactory(DjangoModelFactory):
+    FACTORY_FOR = karaage.machines.models.MachineCategory
+    FACTORY_DJANGO_GET_OR_CREATE = ('name',)
+
+    name = FuzzyLowerText(prefix='mc-')
+    datastore = 'dummy'
+
+
+class InstituteFactory(DjangoModelFactory):
+    FACTORY_FOR = karaage.institutes.models.Institute
+    FACTORY_DJANGO_GET_OR_CREATE = ('name',)
+
+    name = FuzzyLowerText(prefix='inst-')
+    group = factory.SubFactory(GroupFactory)
+
+
+class InstituteQuotaFactory(DjangoModelFactory):
+    FACTORY_FOR = karaage.institutes.models.InstituteQuota
+    FACTORY_DJANGO_GET_OR_CREATE = ('institute', 'machine_category')
+
+    institute = factory.SubFactory(InstituteFactory)
+    machine_category = factory.SubFactory(MachineCategoryFactory)
+    quota = FuzzyDecimal(0.0, 999.0)
 
 
 class ProjectFactory(DjangoModelFactory):
