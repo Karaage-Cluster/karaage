@@ -221,13 +221,31 @@ class ProjectQuota(models.Model):
         for field in self._tracker.changed():
             log(None, self.project, 2, 'Quota %s: Changed %s to %s' %
                 (self.machine_category, field,  getattr(self, field)))
+
         from karaage.datastores import machine_category_save_project
         machine_category_save_project(self.project)
+
+        if created:
+            from karaage.datastores \
+                import machine_category_add_account_to_project
+            project = self.project
+            for account in Account.objects.filter(
+                    person__groups=project.group, date_deleted__isnull=True):
+                machine_category_add_account_to_project(account, project)
 
     def delete(self, *args, **kwargs):
         log(None, self.project, 2, 'Quota %s: Deleted' %
             (self.machine_category))
+
+        from karaage.datastores \
+            import machine_category_remove_account_from_project
+        project = self.project
+        for account in Account.objects.filter(
+                person__groups=project.group, date_deleted__isnull=True):
+            machine_category_remove_account_from_project(account, project)
+
         super(ProjectQuota, self).delete(*args, **kwargs)
+
         from karaage.datastores import machine_category_delete_project
         machine_category_delete_project(self.project, self.machine_category)
 

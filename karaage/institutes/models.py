@@ -171,10 +171,27 @@ class InstituteQuota(models.Model):
         from karaage.datastores import machine_category_save_institute
         machine_category_save_institute(self.institute)
 
+        if created:
+            from karaage.datastores \
+                import machine_category_add_account_to_institute
+            institute = self.institute
+            for account in Account.objects.filter(
+                    person__groups=institute.group, date_deleted__isnull=True):
+                machine_category_add_account_to_institute(account, institute)
+
     def delete(self, *args, **kwargs):
         log(None, self.institute, 2, 'Quota %s: Deleted' %
             (self.machine_category))
+
+        from karaage.datastores \
+            import machine_category_remove_account_from_institute
+        institute = self.institute
+        for account in Account.objects.filter(
+                person__groups=institute.group, date_deleted__isnull=True):
+            machine_category_remove_account_from_institute(account, institute)
+
         super(InstituteQuota, self).delete(*args, **kwargs)
+
         from karaage.datastores import machine_category_delete_institute
         machine_category_delete_institute(
             self.institute, self.machine_category)
