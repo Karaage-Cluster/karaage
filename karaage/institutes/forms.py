@@ -16,7 +16,9 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django import forms
+from django.conf import settings
 
+from karaage.people.models import Group
 from karaage.institutes.models import Institute, InstituteQuota
 from karaage.institutes.models import InstituteDelegate
 from karaage.projects.models import Project
@@ -24,6 +26,18 @@ import ajax_select.fields
 
 
 class InstituteForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(InstituteForm, self).__init__(*args, **kwargs)
+        if self.instance.group_id is None:
+            self.fields['group_name'] = forms.RegexField(
+                "^%s$" % settings.GROUP_VALIDATION_RE,
+                required=True,
+                error_messages=
+                {'invalid': settings.GROUP_VALIDATION_ERROR_MSG})
+            index = self.fields.keyOrder.index("name")
+            self.fields.keyOrder.remove("group_name")
+            self.fields.keyOrder.insert(index+1, "group_name")
 
     def clean_saml_entityid(self):
         if self.cleaned_data['saml_entityid'] == "":
@@ -41,6 +55,15 @@ class InstituteForm(forms.ModelForm):
             raise forms.ValidationError(u'Institute name already in system')
         except Project.DoesNotExist:
             return name
+
+    def save(self, commit=True):
+        institute = super(InstituteForm, self).save(commit=False)
+        if institute.group_id is None:
+            name = self.cleaned_data['group_name']
+            institute.group, _ = Group.objects.get_or_create(name=name)
+        if commit:
+            institute.save()
+        return institute
 
 
 class InstituteQuotaForm(forms.ModelForm):
