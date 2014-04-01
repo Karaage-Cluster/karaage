@@ -17,11 +17,12 @@
 # You should have received a copy of the GNU General Public License
 # along with django-tldap  If not, see <http://www.gnu.org/licenses/>.
 
-from setuptools import setup, find_packages
+from setuptools import setup
 import os
 
 with open('VERSION.txt', 'r') as f:
     version = f.readline().strip()
+
 
 def fullsplit(path, result=None):
     """
@@ -41,7 +42,8 @@ packages = []
 for dirpath, dirnames, filenames in os.walk("karaage"):
     # Ignore dirnames that start with '.'
     for i, dirname in enumerate(dirnames):
-        if dirname.startswith('.'): del dirnames[i]
+        if dirname.startswith('.'):
+            del dirnames[i]
     if filenames:
         packages.append('.'.join(fullsplit(dirpath)))
 
@@ -51,34 +53,39 @@ tests_require = [
 ]
 
 setup(
-    name = "karaage",
-    version = version,
-    url = 'https://github.com/Karaage-Cluster/karaage',
-    author = 'Brian May',
-    author_email = 'brian@v3.org.au',
-    description = 'Collection of Django apps to manage a clusters',
-    packages = packages,
-    license = "GPL3+",
-    long_description = open('README.rst').read(),
-    classifiers = [
+    name="karaage",
+    version=version,
+    url='https://github.com/Karaage-Cluster/karaage',
+    author='Brian May',
+    author_email='brian@v3.org.au',
+    description='Collection of Django apps to manage a clusters',
+    packages=packages,
+    license="GPL3+",
+    long_description=open('README.rst').read(),
+    classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Framework :: Django",
         "Intended Audience :: Developers",
         "Intended Audience :: System Administrators",
-        "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+        "License :: OSI Approved :: GNU General Public "
+            "License v3 or later (GPLv3+)",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
-    keywords = "karaage cluster user administration",
-    package_data = {
-        '': [ '*.css', '*.html', '*.js', '*.png', '*.gif', '*.map', '*.txt' ],
+    keywords="karaage cluster user administration",
+    package_data={
+        '': ['*.css', '*.html', '*.js', '*.png', '*.gif', '*.map', '*.txt'],
     },
-    scripts = [ 'sbin/kg_set_secret_key', 'sbin/kg-manage', 'sbin/kg-daily-cleanup' ],
-    data_files=[
-        ('/etc/karaage', [ 'conf/global_settings.py', ]),
+    scripts=[
+        'sbin/kg_set_secret_key',
+        'sbin/kg-manage',
+        'sbin/kg-daily-cleanup',
     ],
-    install_requires = [
+    data_files=[
+        ('/etc/karaage', ['conf/global_settings.py', ]),
+    ],
+    install_requires=[
         "python > 2.4",
         "Django >= 1.6",
         "South >= 0.7",
