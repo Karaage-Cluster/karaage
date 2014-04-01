@@ -162,19 +162,13 @@ class Person(AbstractBaseUser):
             new_institute = self.institute
             if old_institute_pk is not None:
                 old_institute = Institute.objects.get(pk=old_institute_pk)
-                from karaage.datastores \
-                    import machine_category_remove_account_from_institute
-                for account in self.account_set \
-                        .filter(date_deleted__isnull=True):
-                    machine_category_remove_account_from_institute(
-                        account, old_institute)
+                from karaage.datastores import remove_accounts_from_institute
+                query = self.account_set
+                remove_accounts_from_institute(query, old_institute)
             if new_institute is not None:
-                from karaage.datastores \
-                    import machine_category_add_account_to_institute
-                for account in self.account_set \
-                        .filter(date_deleted__isnull=True):
-                    machine_category_add_account_to_institute(
-                        account, new_institute)
+                from karaage.datastores import add_accounts_to_institute
+                query = self.account_set
+                add_accounts_to_institute(query, new_institute)
 
         if self._password is not None:
             from karaage.datastores import global_set_person_password
@@ -484,49 +478,39 @@ class Group(models.Model):
 def _add_person_to_group(person, group):
     """ Call datastores after adding a person to a group. """
     from karaage.datastores import global_add_person_to_group
-    from karaage.datastores import machine_category_add_account_to_group
-    from karaage.datastores import machine_category_add_account_to_project
-    from karaage.datastores import machine_category_add_account_to_institute
-    from karaage.datastores import machine_category_add_account_to_software
+    from karaage.datastores import add_accounts_to_group
+    from karaage.datastores import add_accounts_to_project
+    from karaage.datastores import add_accounts_to_institute
+    from karaage.datastores import add_accounts_to_software
 
-    a_list = list(person.account_set.filter(date_deleted__isnull=True))
+    a_list = person.account_set
     global_add_person_to_group(person, group)
-    for account in a_list:
-        machine_category_add_account_to_group(account, group)
+    add_accounts_to_group(a_list, group)
     for project in group.project_set.all():
-        for account in a_list:
-            machine_category_add_account_to_project(account, project)
+        add_accounts_to_project(a_list, project)
     for institute in group.institute_set.all():
-        for account in a_list:
-            machine_category_add_account_to_institute(account, institute)
+        add_accounts_to_institute(a_list, institute)
     for software in group.software_set.all():
-        for account in a_list:
-            machine_category_add_account_to_software(account, software)
+        add_accounts_to_software(a_list, software)
 
 
 def _remove_person_from_group(person, group):
     """ Call datastores after removing a person from a group. """
     from karaage.datastores import global_remove_person_from_group
-    from karaage.datastores import machine_category_remove_account_from_group
-    from karaage.datastores import machine_category_remove_account_from_project
-    from karaage.datastores \
-        import machine_category_remove_account_from_institute
-    from karaage.datastores \
-        import machine_category_remove_account_from_software
+    from karaage.datastores import remove_accounts_from_group
+    from karaage.datastores import remove_accounts_from_project
+    from karaage.datastores import remove_accounts_from_institute
+    from karaage.datastores import remove_accounts_from_software
 
-    a_list = list(person.account_set.filter(date_deleted__isnull=True))
+    a_list = person.account_set
     global_remove_person_from_group(person, group)
-    for account in a_list:
-        machine_category_remove_account_from_group(account, group)
+    remove_accounts_from_group(a_list, group)
     for project in group.project_set.all():
-        for account in a_list:
-            machine_category_remove_account_from_project(account, project)
+        remove_accounts_from_project(a_list, project)
     for institute in group.institute_set.all():
-        for account in a_list:
-            machine_category_remove_account_from_institute(account, institute)
+        remove_accounts_from_institute(a_list, institute)
     for software in group.software_set.all():
-        for account in a_list:
-            machine_category_remove_account_from_software(account, software)
+        remove_accounts_from_software(a_list, software)
 
 
 def _members_changed(

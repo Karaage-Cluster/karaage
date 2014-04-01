@@ -104,17 +104,13 @@ class Project(models.Model):
             new_group = self.group
             if old_group_pk is not None:
                 old_group = Group.objects.get(pk=old_group_pk)
-                from karaage.datastores \
-                    import machine_category_remove_account_from_project
-                for account in Account.objects.filter(
-                        person__groups=old_group, date_deleted__isnull=True):
-                    machine_category_remove_account_from_project(account, self)
+                from karaage.datastores import remove_accounts_from_project
+                query = Account.objects.filter(person__groups=old_group)
+                remove_accounts_from_project(query, self)
             if new_group is not None:
-                from karaage.datastores \
-                    import machine_category_add_account_to_project
-                for account in Account.objects.filter(
-                        person__groups=new_group, date_deleted__isnull=True):
-                    machine_category_add_account_to_project(account, self)
+                from karaage.datastores import add_accounts_to_project
+                query = Account.objects.filter(person__groups=new_group)
+                add_accounts_to_project(query, self)
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
@@ -130,11 +126,9 @@ class Project(models.Model):
         old_group_pk = self._tracker.previous("group_id")
         if old_group_pk is not None:
             old_group = Group.objects.get(pk=old_group_pk)
-            from karaage.datastores \
-                import machine_category_remove_account_from_project
-            for account in Account.objects.filter(
-                    person__groups=old_group, date_deleted__isnull=True):
-                machine_category_remove_account_from_project(account, self)
+            from karaage.datastores import remove_accounts_from_project
+            query = Account.objects.filter(person__groups=old_group)
+            remove_accounts_from_project(query, self)
 
         # update the datastore
         from karaage.datastores import machine_category_delete_project
@@ -226,23 +220,17 @@ class ProjectQuota(models.Model):
         machine_category_save_project(self.project)
 
         if created:
-            from karaage.datastores \
-                import machine_category_add_account_to_project
-            project = self.project
-            for account in Account.objects.filter(
-                    person__groups=project.group, date_deleted__isnull=True):
-                machine_category_add_account_to_project(account, project)
+            from karaage.datastores import add_accounts_to_project
+            query = Account.objects.filter(person__groups=self.project.group)
+            add_accounts_to_project(query, self.project)
 
     def delete(self, *args, **kwargs):
         log(None, self.project, 2, 'Quota %s: Deleted' %
             (self.machine_category))
 
-        from karaage.datastores \
-            import machine_category_remove_account_from_project
-        project = self.project
-        for account in Account.objects.filter(
-                person__groups=project.group, date_deleted__isnull=True):
-            machine_category_remove_account_from_project(account, project)
+        from karaage.datastores import remove_accounts_from_project
+        query = Account.objects.filter(person__groups=self.project.group)
+        remove_accounts_from_project(query, self.project)
 
         super(ProjectQuota, self).delete(*args, **kwargs)
 
