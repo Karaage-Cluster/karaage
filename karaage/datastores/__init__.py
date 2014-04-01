@@ -249,6 +249,13 @@ def machine_category_remove_account_from_group(account, group):
 
 def machine_category_add_account_to_project(account, project):
     """ Add account to project. """
+
+    # check institute is in account.machine_category
+    mc = account.machine_category
+    c = project.projectquota_set.filter(machine_category=mc).count()
+    if c == 0:
+        return
+
     for datastore in _get_machine_category_datastores(
             account.machine_category):
         datastore.add_account_to_project(account, project)
@@ -256,6 +263,13 @@ def machine_category_add_account_to_project(account, project):
 
 def machine_category_remove_account_from_project(account, project):
     """ Remove account from project. """
+
+    # check institute is in account.machine_category
+    mc = account.machine_category
+    c = project.projectquota_set.filter(machine_category=mc).count()
+    if c == 0:
+        return
+
     for datastore in _get_machine_category_datastores(
             account.machine_category):
         datastore.remove_account_from_project(account, project)
@@ -263,15 +277,27 @@ def machine_category_remove_account_from_project(account, project):
 
 def machine_category_add_account_to_institute(account, institute):
     """ Add account to institute. """
-    for datastore in _get_machine_category_datastores(
-            account.machine_category):
+
+    # check institute is in account.machine_category
+    mc = account.machine_category
+    c = institute.institutequota_set.filter(machine_category=mc).count()
+    if c == 0:
+        return
+
+    for datastore in _get_machine_category_datastores(mc):
         datastore.add_account_to_institute(account, institute)
 
 
 def machine_category_remove_account_from_institute(account, institute):
     """ Remove account from institute. """
-    for datastore in _get_machine_category_datastores(
-            account.machine_category):
+
+    # check institute is in account.machine_category
+    mc = account.machine_category
+    c = institute.institutequota_set.filter(machine_category=mc).count()
+    if c == 0:
+        return
+
+    for datastore in _get_machine_category_datastores(mc):
         datastore.remove_account_from_institute(account, institute)
 
 
