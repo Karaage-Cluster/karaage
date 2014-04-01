@@ -168,6 +168,15 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 ROOT_URLCONF = 'karaage.conf.urls'
 
 
+# The absolute path to the directory where collectstatic will collect static
+# files for deployment.
+STATIC_ROOT = '/var/lib/karaage/static'
+
+
+# URL to use when referring to static files located in STATIC_ROOT.
+STATIC_URL = '/kgadmin_media/'
+
+
 ###
 ### AJAX SETTINGS
 ###

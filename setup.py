@@ -74,7 +74,7 @@ setup(
     package_data = {
         '': [ '*.css', '*.html', '*.js', '*.png', '*.gif', '*.map', '*.txt' ],
     },
-    scripts = [ 'sbin/kg_set_secret_key' ],
+    scripts = [ 'sbin/kg_set_secret_key', 'sbin/kg-manage', 'sbin/kg-daily-cleanup' ],
     data_files=[
         ('/etc/karaage', [ 'conf/global_settings.py', ]),
     ],

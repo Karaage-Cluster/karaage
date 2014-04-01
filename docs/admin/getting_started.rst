@@ -192,9 +192,9 @@ Initial setup
 
     (do not use kg-manage createsuperuser, that doesn't exist.)
 
-#.  Setup cron job. Edit the /etc/cron.d/karaage3-admin file::
+#.  Setup cron job. Edit the /etc/cron.d/python-karaage file::
 
-        10 1 * * * www-data /usr/sbin/kg-daily-cleanup
+        10 1 * * * www-data /usr/bin/kg-daily-cleanup
 
 #.  Setup symlink in apache conf.
 
