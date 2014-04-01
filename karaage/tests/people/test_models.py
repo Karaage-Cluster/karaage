@@ -20,12 +20,12 @@ from django.test import TestCase
 
 from karaage.institutes.models import Institute
 from karaage.people.models import Person, Group
-from karaage.tests.fixtures import PersonFactory
+from karaage.tests.fixtures import PersonFactory, InstituteFactory
 
 
 class PersonTestCase(TestCase):
     def test_minimum_create(self):
-        institute = Institute.objects.create()
+        institute = InstituteFactory()
         person = Person.objects.create(
             username='mchagr',
             password='test',

@@ -20,7 +20,7 @@ import mock
 
 from karaage.tests.unit import UnitTestCase
 from karaage.people.models import Group
-from karaage.institutes.models import Institute, InstituteQuota
+from karaage.institutes.models import InstituteQuota
 from karaage.tests.fixtures import (InstituteFactory, simple_account,
                                     GroupFactory)
 
@@ -28,26 +28,12 @@ from karaage.tests.fixtures import (InstituteFactory, simple_account,
 class InstituteTestCase(UnitTestCase):
 
     def test_add(self):
-        institute = Institute.objects.create(name='TestInstitute54')
-        self.assertEqual(
-            institute.group.name,
-            'testinstitute54')
-        self.assertEqual(
-            institute.group.name,
-            institute.name.lower().replace(' ', ''))
-
-    def test_add_spaces(self):
-        institute = Institute.objects.create(name='Test Institute 60')
-        self.assertEqual(
-            institute.group.name,
-            'testinstitute60')
-        self.assertEqual(
-            institute.group.name,
-            institute.name.lower().replace(' ', ''))
+        InstituteFactory(name='TestInstitute54')
 
     def test_add_existing_name(self):
-        Group.objects.get_or_create(name='testinstitute27')
-        institute = Institute.objects.create(name='Test Institute 27')
+        group, _ = Group.objects.get_or_create(name='testinstitute27')
+        institute = InstituteFactory(
+            name='Test Institute 27', group=group)
         self.assertEqual(
             institute.group.name,
             'testinstitute27')
@@ -78,7 +64,7 @@ class InstituteTestCase(UnitTestCase):
 
         # Test during initial creation of the institute
         self.resetDatastore()
-        institute = Institute.objects.create(group=group1)
+        institute = InstituteFactory(group=group1)
         institute_quota = InstituteQuota.objects.create(
             machine_category=self.machine_category, institute=institute,
             quota=100)
