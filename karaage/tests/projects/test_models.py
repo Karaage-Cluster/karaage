@@ -72,16 +72,12 @@ class ProjectTestCase(UnitTestCase):
         # Test during initial creation of the project
         self.resetDatastore()
         project = Project.objects.create(group=group1, institute=institute)
-        project_quota = ProjectQuota(
-            machine_category=self.machine_category, project=project)
-        project.save()
         self.assertEqual(
             self.datastore.method_calls,
             [mock.call.add_account_to_project(account1, project)])
 
         # Test changing an existing projects group
         account2 = simple_account(machine_category=self.machine_category)
-        project = project_quota.project
         self.resetDatastore()
         group2 = GroupFactory()
         group2.add_person(account2.person)

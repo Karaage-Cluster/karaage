@@ -79,9 +79,6 @@ class InstituteTestCase(UnitTestCase):
         # Test during initial creation of the institute
         self.resetDatastore()
         institute = Institute.objects.create(group=group1)
-        institute_quota = InstituteQuota(
-            machine_category=self.machine_category, institute=institute)
-        institute.save()
         self.assertEqual(
             self.datastore.method_calls,
             [mock.call.add_account_to_institute(account1, institute)])
@@ -89,7 +86,6 @@ class InstituteTestCase(UnitTestCase):
         # Test changing an existing institutions group
         account2 = simple_account(institute=institute,
                                   machine_category=self.machine_category)
-        institute = institute_quota.institute
         self.resetDatastore()
         group2 = GroupFactory()
         group2.add_person(account2.person)
