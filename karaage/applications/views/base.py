@@ -209,11 +209,6 @@ class StateMachine(object):
     # PRIVATE METHODS #
     ###################
     @staticmethod
-    def _log(request, application, flag, message):
-        """ Log a message for this application. """
-        log(request.user, application.application_ptr, flag, message)
-
-    @staticmethod
     def _authenticate(request, application):
         """ Check the authentication of the current user. """
         if not request.user.is_authenticated():
@@ -246,7 +241,7 @@ class StateMachine(object):
             application.save()
 
             # log details
-            self._log(request, application, 2, "state: %s" % state.name)
+            log.change(application.application_ptr, "state: %s" % state.name)
 
             # redirect to this new state
             url = get_url(request, application, auth)

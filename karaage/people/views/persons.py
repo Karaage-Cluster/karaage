@@ -308,8 +308,8 @@ def bounced_email(request, username):
         messages.success(
             request,
             "%s's account has been locked and emails have been sent" % person)
-        common.log(
-            request.user, person, 2,
+        common.log.change(
+            person,
             'Emails sent to project leaders and account locked')
         for ua in person.account_set.all():
             ua.change_shell(ua.previous_shell)

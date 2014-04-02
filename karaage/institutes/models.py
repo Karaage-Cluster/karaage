@@ -51,10 +51,10 @@ class Institute(models.Model):
         super(Institute, self).save(*args, **kwargs)
 
         if created:
-            log(None, self, 2, 'Created')
+            log.add(self, 'Created')
         for field in self._tracker.changed():
-            log(None, self, 2, 'Changed %s to %s'
-                               % (field,  getattr(self, field)))
+            log.change(self, 'Changed %s to %s'
+                       % (field,  getattr(self, field)))
 
         # update the datastore
         from karaage.datastores import machine_category_save_institute
@@ -77,7 +77,7 @@ class Institute(models.Model):
 
     def delete(self, *args, **kwargs):
         # delete the object
-        log(None, self, 3, 'Deleted')
+        log.delete(self, 'Deleted')
         super(Institute, self).delete(*args, **kwargs)
 
         # update datastore associations
@@ -150,10 +150,13 @@ class InstituteQuota(models.Model):
         super(InstituteQuota, self).save(*args, **kwargs)
 
         if created:
-            log(None, self.institute, 2, 'Quota %s: Created' %
-                (self.machine_category))
+            log.add(
+                self.institute,
+                'Quota %s: Created' % (self.machine_category))
         for field in self._tracker.changed():
-            log(None, self.institute, 2, 'Quota %s: Changed %s to %s' %
+            log.change(
+                self.institute,
+                'Quota %s: Changed %s to %s' %
                 (self.machine_category, field,  getattr(self, field)))
 
         from karaage.datastores import machine_category_save_institute
@@ -165,8 +168,9 @@ class InstituteQuota(models.Model):
             add_accounts_to_institute(query, self.institute)
 
     def delete(self, *args, **kwargs):
-        log(None, self.institute, 2, 'Quota %s: Deleted' %
-            (self.machine_category))
+        log.delete(
+            self.institute,
+            'Quota %s: Deleted' % (self.machine_category))
 
         from karaage.datastores import remove_accounts_from_institute
         query = Account.objects.filter(person__groups=self.institute.group)
@@ -206,11 +210,14 @@ class InstituteDelegate(models.Model):
         super(InstituteDelegate, self).save(*args, **kwargs)
 
         for field in self._tracker.changed():
-            log(None, self.institute, 2, 'Delegate %s: Changed %s to %s' %
+            log.change(
+                self.institute,
+                'Delegate %s: Changed %s to %s' %
                 (self.person, field,  getattr(self, field)))
 
     def delete(self, *args, **kwargs):
         super(InstituteDelegate, self).delete(*args, **kwargs)
 
-        log(None, self.institute, 2, 'Delegate %s: Deleted' %
-            (self.person))
+        log.delete(
+            self.institute,
+            'Delegate %s: Deleted' % (self.person))

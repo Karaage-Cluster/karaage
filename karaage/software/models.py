@@ -64,10 +64,10 @@ class Software(models.Model):
         super(Software, self).save(*args, **kwargs)
 
         if created:
-            log(None, self, 2, 'Created')
+            log.add(self, 'Created')
         for field in self._tracker.changed():
-            log(None, self, 2, 'Changed %s to %s'
-                               % (field,  getattr(self, field)))
+            log.change(self, 'Changed %s to %s'
+                       % (field,  getattr(self, field)))
 
         # update the datastore
         from karaage.datastores import machine_category_save_software
@@ -91,7 +91,7 @@ class Software(models.Model):
 
     def delete(self, *args, **kwargs):
         # delete the object
-        log(None, self, 3, 'Deleted')
+        log.delete(self, 'Deleted')
         super(Software, self).delete(*args, **kwargs)
 
         # update datastore associations

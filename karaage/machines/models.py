@@ -65,10 +65,10 @@ class MachineCategory(models.Model):
         super(MachineCategory, self).save(*args, **kwargs)
 
         if created:
-            log(None, self, 2, 'Created')
+            log.add(self, 'Created')
         for field in self._tracker.changed():
-            log(None, self, 2,
-                'Changed %s to %s' % (field,  getattr(self, field)))
+            log.change(
+                self, 'Changed %s to %s' % (field,  getattr(self, field)))
 
         # check if datastore changed
         if self._tracker.has_changed("datastore"):
@@ -79,7 +79,7 @@ class MachineCategory(models.Model):
 
     def delete(self):
         # delete the object
-        log(None, self, 3, 'Deleted')
+        log.delete(self, 'Deleted')
         super(MachineCategory, self).delete()
         from karaage.datastores import set_mc_datastore
         old_datastore = self._datastore
@@ -111,23 +111,27 @@ class Machine(AbstractBaseUser):
         super(Machine, self).save(*args, **kwargs)
 
         if created:
-            log(None, self, 2, 'Created')
+            log.add(self, 'Created')
+            log.add(self.category, 'Machine %s: Created' % self)
         for field in self._tracker.changed():
             if field == "password":
-                log(None, self, 2, 'Changed %s' % (field))
-                log(None, self.category, 2,
+                log.change(self, 'Changed %s' % (field))
+                log.change(
+                    self.category,
                     'Machine %s: Changed %s' % (self, field))
             else:
-                log(None, self, 2,
+                log.change(
+                    self,
                     'Changed %s to %s' % (field,  getattr(self, field)))
-                log(None, self.category, 2,
+                log.change(
+                    self.category,
                     'Machine %s: Changed %s to %s'
                     % (self, field,  getattr(self, field)))
 
     def delete(self, *args, **kwargs):
         # delete the object
-        log(None, self, 3, 'Deleted')
-        log(None, self.category, 3, 'Deleted machine %s' % self)
+        log.delete(self, 'Deleted')
+        log.delete(self.category, 'Machine %s: Deleted' % self)
         super(Machine, self).delete(*args, **kwargs)
 
     class Meta:
@@ -202,16 +206,20 @@ class Account(models.Model):
         super(Account, self).save(*args, **kwargs)
 
         if created:
-            log(None, self.person, 1,
+            log.add(
+                self.person,
                 'Account %s: Created on %s' % (self, self.machine_category))
-            log(None, self.machine_category, 1,
+            log.add(
+                self.machine_category,
                 'Account %s: Created on %s' % (self, self.machine_category))
         for field in self._tracker.changed():
             if field != "password":
-                log(None, self.person, 2,
+                log.change(
+                    self.person,
                     'Account %s: Changed %s to %s'
                     % (self, field,  getattr(self, field)))
-                log(None, self.machine_category, 2,
+                log.change(
+                    self.machine_category,
                     'Account %s: Changed %s to %s'
                     % (self, field,  getattr(self, field)))
 
@@ -234,18 +242,22 @@ class Account(models.Model):
 
                 from karaage.datastores import machine_category_delete_account
                 machine_category_delete_account(self)
-                log(None, self.person, 2,
+                log.change(
+                    self.person,
                     'Account %s: Removed account' % self)
-                log(None, self.machine_category, 2,
+                log.change(
+                    self.machine_category,
                     'Account %s: Removed account' % self)
 
                 # set new values again
                 self.machine_category = new_machine_category
                 self.username = new_username
 
-                log(None, self.person, 2,
+                log.change(
+                    self.person,
                     'Account %s: Added account' % self)
-                log(None, self.machine_category, 2,
+                log.change(
+                    self.machine_category,
                     'Account %s: Added account' % self)
 
                 moved = True
@@ -260,10 +272,12 @@ class Account(models.Model):
                         import machine_category_set_account_username
                     machine_category_set_account_username(
                         self, old_username, new_username)
-                log(None, self.person, 2,
+                log.change(
+                    self.person,
                     'Account %s: Changed username from %s to %s' %
                     (self, old_username, new_username))
-                log(None, self.machine_category, 2,
+                log.change(
+                    self.machine_category,
                     'Account %s: Changed username from %s to %s' %
                     (self, old_username, new_username))
 
@@ -273,16 +287,20 @@ class Account(models.Model):
                 # account is deactivated
                 from karaage.datastores import machine_category_delete_account
                 machine_category_delete_account(self)
-                log(None, self.person, 3,
+                log.delete(
+                    self.person,
                     'Account %s: Deactivated account' % self)
-                log(None, self.machine_category, 3,
+                log.delete(
+                    self.machine_category,
                     'Account %s: Deactivated account' % self)
                 # deleted
             else:
                 # account is reactivated
-                log(None, self.person, 3,
+                log.add(
+                    self.person,
                     'Account %s: Activated' % self)
-                log(None, self.machine_category, 3,
+                log.add(
+                    self.machine_category,
                     'Account %s: Activated' % self)
 
         # makes sense to lock non-existant account
@@ -298,19 +316,19 @@ class Account(models.Model):
                 from karaage.datastores \
                     import machine_category_set_account_password
                 machine_category_set_account_password(self, self._password)
-                log(None, self.person, 2,
+                log.change(
+                    self.person,
                     'Account %s: Changed Password' % self)
-                log(None, self.machine_category, 2,
+                log.change(
+                    self.machine_category,
                     'Account %s: Changed Password' % self)
                 self._password = None
     save.alters_data = True
 
     def delete(self):
         # delete the object
-        log(None, self.person, 2,
-            'Account %s: Deleted' % self)
-        log(None, self.machine_category, 2,
-            'Account %s: Deleted' % self)
+        log.delete(self.person, 'Account %s: Deleted' % self)
+        log.delete(self.machine_category, 'Account %s: Deleted' % self)
         super(Account, self).delete()
         if self.date_deleted is None:
             # delete the datastore
