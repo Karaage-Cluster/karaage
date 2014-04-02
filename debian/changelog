@@ -1,3 +1,16 @@
+karaage3 (3.0.10-1) unstable; urgency=low
+
+  * Add migration to resize applicant.username.
+  * Fix typo in in 389 support.
+  * Update LDAP settings for latest TLDAP.
+  * Move kg-manage and kg-daily-cleanup from karaage-admin.
+  * Fix issue with datastore methods being called incorrectly.
+  * Validate group name for new institutes.
+  * Validate group name for new software.
+  * Update logging calls.
+
+ -- Brian May <bam@debian.org>  Wed, 02 Apr 2014 14:05:37 +1100
+
 karaage3 (3.0.9-1) unstable; urgency=low
 
   [ Russell Sim ]
