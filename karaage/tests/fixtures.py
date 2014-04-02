@@ -29,6 +29,7 @@ except ImportError:
         "either install from a package or using \'pip install -e .[tests]\'")
 
 from karaage.projects.utils import add_user_to_project
+import karaage.applications.models
 import karaage.institutes.models
 import karaage.machines.models
 import karaage.people.models
@@ -129,6 +130,26 @@ class SoftwareFactory(DjangoModelFactory):
 
     name = FuzzyLowerText(prefix='soft-')
     group = factory.SubFactory(GroupFactory)
+
+
+class ApplicationFactory(DjangoModelFactory):
+    FACTORY_FOR = karaage.applications.models.Application
+
+    applicant = factory.SubFactory(PersonFactory)
+
+
+class ProjectApplicationFactory(ApplicationFactory):
+    FACTORY_FOR = karaage.applications.models.ProjectApplication
+
+
+class NewProjectApplicationFactory(ProjectApplicationFactory):
+    name = FuzzyLowerText(prefix='projectapplication-')
+    description = FuzzyText()
+    institute = factory.SubFactory(InstituteFactory)
+
+
+class ExistingProjectApplicationFactory(ProjectApplicationFactory):
+    project = factory.SubFactory(ProjectFactory)
 
 
 def simple_account(institute=None, machine_category=None):

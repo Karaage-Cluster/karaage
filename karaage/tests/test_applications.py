@@ -24,6 +24,7 @@ from django.core.management import call_command
 from captcha.models import CaptchaStore
 from karaage.applications.models import Application, Applicant
 from karaage.applications.models import ProjectApplication
+from karaage.tests import fixtures
 
 
 def set_admin():
@@ -510,3 +511,34 @@ class ProjectApplicationTestCase(TestCase):
         response = self.client.get(
             reverse('kg_application_unauthenticated', args=[token, 'A']))
         self.failUnlessEqual(response.status_code, 200)
+
+    def _test_project_approval(self, application):
+        admin = fixtures.PersonFactory(username='admin')
+        admin.is_admin = True
+        admin.save()
+        application.approve(admin)
+
+    def _test_project_make_leader(self, application):
+        self._test_project_approval(application)
+        if application.make_leader:
+            self.assertIn(application.applicant,
+                          application.project.leaders.all())
+        else:
+            self.assertNotIn(application.applicant,
+                             application.project.leaders.all())
+
+    def test_new_project_make_leader(self, make_leader=True):
+        application = fixtures.ExistingProjectApplicationFactory()
+        application.make_leader = make_leader
+        self._test_project_make_leader(application)
+
+    def test_new_project_make_leader_false(self):
+        self.test_new_project_make_leader(make_leader=False)
+
+    def test_existing_project_make_leader(self, make_leader=True):
+        application = fixtures.NewProjectApplicationFactory()
+        application.make_leader = make_leader
+        self._test_project_make_leader(application)
+
+    def test_existing_project_make_leader_false(self):
+        self.test_existing_project_make_leader(make_leader=False)
