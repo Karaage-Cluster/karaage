@@ -122,14 +122,15 @@ class Application(models.Model):
         super(Application, self).save(*args, **kwargs)
 
         if created:
-            log(None, self, 2, 'Created')
+            log.add(self, 'Created')
         for field in self._tracker.changed():
-            log(None, self, 2,
+            log.change(
+                self,
                 'Changed %s to %s' % (field,  getattr(self, field)))
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
-        log(None, self, 3, 'Deleted')
+        log.delete(self, 'Deleted')
         super(Application, self).delete(*args, **kwargs)
 
     def get_object(self):

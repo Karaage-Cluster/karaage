@@ -104,8 +104,6 @@ def add_project(request, username):
             messages.success(
                 request,
                 "User '%s' was added to %s succesfully" % (person, project))
-            common.log(
-                request.user, project, 2, '%s added to project' % person)
             return HttpResponseRedirect(person.get_absolute_url())
 
     return render_to_response(
@@ -205,7 +203,4 @@ def make_default(request, account_id, project_id):
     account.default_project = project
     account.save()
     messages.success(request, "Default project changed succesfully")
-    common.log(
-        request.user, account.person, 2,
-        'Changed default project to %s' % project.pid)
     return HttpResponseRedirect(redirect)

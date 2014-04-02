@@ -45,7 +45,7 @@ class Command(BaseCommand):
                     mail_admins(
                         'Locked expired user %s' % p,
                         message, fail_silently=False)
-                    log(p.user, p, 2, 'Account auto expired')
+                    log.change(p, 'Account auto expired')
                     if verbose >= 1:
                         print "Locked account for %s - %s" % (p.username, p)
             except:

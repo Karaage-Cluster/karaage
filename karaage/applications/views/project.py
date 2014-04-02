@@ -563,8 +563,9 @@ class StateApplicantEnteringDetails(StateWithSteps):
                         old_applicant = application.applicant
                         application.applicant = new_person
                         application.save()
-                        log(request.user, application.application_ptr,
-                            1, "Stolen application from %s" % old_applicant)
+                        log.change(
+                            application.application_ptr,
+                            "Stolen application from %s" % old_applicant)
                         messages.success(
                             request,
                             "Stolen application from %s" % old_applicant)

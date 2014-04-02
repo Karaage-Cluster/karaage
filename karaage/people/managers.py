@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from karaage.common import log
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth import authenticate
 
@@ -42,8 +41,6 @@ class PersonManager(BaseUserManager):
             )
         person.set_password(password)
         person.save()
-
-        log(None, person, 1, 'Created person')
         return person
 
     def create_user(

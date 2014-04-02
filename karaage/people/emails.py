@@ -58,7 +58,8 @@ def send_bounced_warning(person):
                 send_mail(
                     subject.replace('\n', ''), body,
                     settings.ACCOUNTS_EMAIL, [to_email])
-                log(None, leader, 2,
+                log.change(
+                    leader,
                     'Sent email about bounced emails from %s' % person)
 
 

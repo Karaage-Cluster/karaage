@@ -80,6 +80,7 @@ def get_current_person():
 
 class log():
     def __init__(self, user, object, flag, message):
+        raise RuntimeError("meow")
         warnings.warn("Calling karaage.common.log directly has been"
                       " deprecated. You should use the API "
                       "log.(add|change|field_change|delete|comment)",

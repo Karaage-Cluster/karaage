@@ -25,7 +25,6 @@ from jsonfield import JSONField
 
 from model_utils import FieldTracker
 
-from karaage.common.models import CHANGE
 from karaage.common.constants import TITLES, STATES, COUNTRIES
 from karaage.people.managers import ActivePersonManager, DeletedPersonManager
 from karaage.people.managers import LeaderManager, PersonManager
@@ -121,10 +120,11 @@ class Person(AbstractBaseUser):
         super(Person, self).save(*args, **kwargs)
 
         if created:
-            log(None, self, 2, 'Created')
+            log.add(self, 'Created')
         for field in self._tracker.changed():
             if field != "password":
-                log(None, self, 2,
+                log.change(
+                    self,
                     'Changed %s to %s' % (field,  getattr(self, field)))
 
         # has username changed?
@@ -134,7 +134,8 @@ class Person(AbstractBaseUser):
             if old_username is not None:
                 from karaage.datastores import global_set_person_username
                 global_set_person_username(self, old_username, self.username)
-                log(None, self, 2,
+                log.change(
+                    self,
                     'Renamed %s to %s' % (old_username, self.username))
 
         # update the datastore
@@ -176,13 +177,13 @@ class Person(AbstractBaseUser):
             for ua in self.account_set.filter(date_deleted__isnull=True):
                 ua.set_password(self._password)
                 ua.save()
-            log(None, self, 2, 'Changed Password')
+            log.change(self, 'Changed Password')
             self._password = None
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
         # delete the object
-        log(None, self, 3, 'Deleted')
+        log.delete(self, 'Deleted')
         super(Person, self).delete(*args, **kwargs)
 
         # update the datastore
@@ -430,7 +431,7 @@ class Group(models.Model):
         super(Group, self).save(*args, **kwargs)
 
         if created:
-            log(None, self, 2, 'Created')
+            log.add(self, 'Created')
         for field in self._tracker.changed():
             log.field_change(self, field=field, new_value=getattr(self, field))
 
@@ -441,7 +442,7 @@ class Group(models.Model):
             global_set_group_name(self, old_name, new_name)
             from karaage.datastores import machine_category_set_group_name
             machine_category_set_group_name(self, old_name, new_name)
-            log(None, self, 2, "Renamed group")
+            log.chnage(self, "Renamed group")
 
         # update the datastore
         from karaage.datastores import global_save_group
@@ -456,7 +457,7 @@ class Group(models.Model):
             _remove_person_from_group(person, self)
 
         # delete the object
-        log(None, self, 3, 'Deleted')
+        log.delete(self, 'Deleted')
         super(Group, self).delete(*args, **kwargs)
 
         # update the datastore
@@ -525,32 +526,28 @@ def _members_changed(
         if not reverse:
             group = instance
             for person in model.objects.filter(pk__in=pk_set):
-                log(None, person, CHANGE, "Added person to group %s" % group)
-                log(None, group, CHANGE, "Added person %s to group" % person)
+                log.change(person, "Added person to group %s" % group)
+                log.change(group, "Added person %s to group" % person)
                 _add_person_to_group(person, group)
         else:
             person = instance
             for group in model.objects.filter(pk__in=pk_set):
-                log(None, person, CHANGE, "Added person to group %s" % group)
-                log(None, group, CHANGE, "Added person %s to group" % person)
+                log.change(person, "Added person to group %s" % group)
+                log.change(group, "Added person %s to group" % person)
                 _add_person_to_group(person, group)
 
     elif action == "post_remove":
         if not reverse:
             group = instance
             for person in model.objects.filter(pk__in=pk_set):
-                log(None, person, CHANGE,
-                    "Removed person from group %s" % group)
-                log(None, group, CHANGE,
-                    "Removed person %s from group" % person)
+                log.change(person, "Removed person from group %s" % group)
+                log.change(group, "Removed person %s from group" % person)
                 _remove_person_from_group(person, group)
         else:
             person = instance
             for group in model.objects.filter(pk__in=pk_set):
-                log(None, person, CHANGE,
-                    "Removed person from group %s" % group)
-                log(None, group, CHANGE,
-                    "Removed person %s from group" % person)
+                log.change(person, "Removed person from group %s" % group)
+                log.change(group, "Removed person %s from group" % person)
                 _remove_person_from_group(person, group)
 
     elif action == "pre_clear":
@@ -558,17 +555,15 @@ def _members_changed(
         # we won't see what groups need to be removed.
         if not reverse:
             group = instance
-            log(None, group, CHANGE, "Removed all people from group")
+            log.change(group, "Removed all people from group")
             for person in group.members.all():
-                log(None, group, CHANGE,
-                    "Removed person %s from group" % person)
+                log.change(group, "Removed person %s from group" % person)
                 _remove_person_from_group(person, group)
         else:
             person = instance
-            log(None, person, CHANGE, "Removed person from all groups")
+            log.change(person, "Removed person from all groups")
             for group in person.groups.all():
-                log(None, group, CHANGE,
-                    "Removed person %s from group" % person)
+                log.change(group, "Removed person %s from group" % person)
                 _remove_person_from_group(person, group)
 
 models.signals.m2m_changed.connect(

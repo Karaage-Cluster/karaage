@@ -140,7 +140,6 @@ def add_package(request):
 
         if form.is_valid():
             software = form.save()
-            log(request.user, software, 1, "Added")
             return HttpResponseRedirect(software.get_absolute_url())
     else:
         form = AddPackageForm()
@@ -205,7 +204,7 @@ def add_license(request, software_id):
     if request.method == 'POST':
         if form.is_valid():
             l = form.save()
-            log(request.user, software, 1, "license: %s added" % l)
+            log.add(software, "license: %s added" % l)
             return HttpResponseRedirect(software.get_absolute_url())
 
     return render_to_response(
@@ -246,7 +245,7 @@ def delete_version(request, version_id):
 
     if request.method == 'POST':
         version.delete()
-        log(request.user, version.software, 3, 'Deleted version: %s' % version)
+        log.delete(version.software, 'Deleted version: %s' % version)
 
         messages.success(
             request, "Version '%s' was deleted succesfully" % version)
@@ -321,12 +320,6 @@ def remove_member(request, software_id, person_id):
 
     if request.method == 'POST':
         person.remove_group(software.group)
-
-        log(request.user, software, 3,
-            'Removed %s from group' % person)
-        log(request.user, person, 3,
-            'Removed from software group %s' % software)
-
         messages.success(request, "User '%s' removed successfuly" % person)
 
         return HttpResponseRedirect(software.get_absolute_url())
@@ -449,7 +442,7 @@ def join_package(request, software_id):
         approved = False
 
         if not approved and not software.restricted:
-            log(request.user, software, 1, "Approved join (not restricted)")
+            log.add(software, "Approved join (not restricted)")
             approved = True
 
         if not approved:
@@ -458,8 +451,7 @@ def join_package(request, software_id):
                 if isinstance(response, HttpResponse):
                     return response
                 elif bool(response):
-                    log(request.user, software, 1,
-                        "Approved join by %s" % hook.__module__)
+                    log.add(software, "Approved join by %s" % hook.__module__)
                     approved = True
                     break
 
