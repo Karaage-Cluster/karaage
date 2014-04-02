@@ -16,10 +16,12 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
+import re
 
 from django.core.management import call_command
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.core import mail
 
 from karaage.people.models import Person
 from karaage.institutes.models import Institute, InstituteDelegate
@@ -415,3 +417,87 @@ class PersonTestCase(IntegrationTestCase):
             {'project': 'test2', 'project-add': 'true'})
         self.failUnlessEqual(response.status_code, 200)
         self.assertEqual(person.project_set.count(), 2)
+
+    def test_password_reset_by_self(self):
+        logged_in = self.client.login(
+            username='kgtestuser1', password='aq12ws')
+        self.failUnlessEqual(logged_in, True)
+
+        # send request
+        url = reverse("kg_profile_reset")
+        done_url = reverse("kg_profile_reset_done")
+        response = self.client.post(url, follow=True)
+        self.failUnlessEqual(response.status_code, 200)
+        self.failUnlessEqual(response.redirect_chain[0][0],
+                             'http://testserver' + done_url)
+
+        # check email
+        self.assertEquals(len(mail.outbox), 1)
+        message = mail.outbox[0]
+        self.failUnlessEqual(message.subject, "TestOrg Password change")
+        url = re.search("(?P<url>https?://[^\s]+)", message.body).group("url")
+        self.assertTrue(
+            url.startswith("https://example.com/users/persons/reset/"))
+        url = url[25:]
+
+        # get password reset page
+        response = self.client.get(url)
+        self.failUnlessEqual(response.status_code, 200)
+
+        # send new password
+        form_data = {
+            'new_password1': 'q1w2e3r4',
+            'new_password2': 'q1w2e3r4',
+        }
+        done_url = reverse("password_reset_complete")
+        response = self.client.post(url, form_data, follow=True)
+        self.failUnlessEqual(response.status_code, 200)
+        self.failUnlessEqual(response.redirect_chain[0][0],
+                             'http://testserver' + done_url)
+
+        # test new password
+        logged_in = self.client.login(
+            username='kgtestuser1', password='q1w2e3r4')
+        self.failUnlessEqual(logged_in, True)
+
+    def test_password_reset_by_admin(self):
+        logged_in = self.client.login(username='kgsuper', password='aq12ws')
+        self.failUnlessEqual(logged_in, True)
+
+        # send request
+        url = reverse("kg_person_reset", args=["kgtestuser1"])
+        done_url = reverse("kg_person_reset_done", args=["kgtestuser1"])
+        response = self.client.post(url, follow=True)
+        self.failUnlessEqual(response.status_code, 200)
+        self.failUnlessEqual(response.redirect_chain[0][0],
+                             'http://testserver' + done_url)
+        self.client.logout()
+
+        # check email
+        self.assertEquals(len(mail.outbox), 1)
+        message = mail.outbox[0]
+        self.failUnlessEqual(message.subject, "TestOrg Password change")
+        url = re.search("(?P<url>https?://[^\s]+)", message.body).group("url")
+        self.assertTrue(
+            url.startswith("https://example.com/users/persons/reset/"))
+        url = url[25:]
+
+        # get password reset page
+        response = self.client.get(url)
+        self.failUnlessEqual(response.status_code, 200)
+
+        # send new password
+        form_data = {
+            'new_password1': 'q1w2e3r4',
+            'new_password2': 'q1w2e3r4',
+        }
+        done_url = reverse("password_reset_complete")
+        response = self.client.post(url, form_data, follow=True)
+        self.failUnlessEqual(response.status_code, 200)
+        self.failUnlessEqual(response.redirect_chain[0][0],
+                             'http://testserver' + done_url)
+
+        # test new password
+        logged_in = self.client.login(
+            username='kgtestuser1', password='q1w2e3r4')
+        self.failUnlessEqual(logged_in, True)
