@@ -73,13 +73,13 @@ def get_email_link(application):
     # don't use secret_token unless we have to
     if (application.content_type.model == 'person' and
             application.applicant.has_usable_password()):
-        url = '%s/applications/%d/' % (
-            settings.REGISTRATION_BASE_URL, application.pk)
+        url = reverse('kg_application_detail', args=[application.pk])
         is_secret = False
     else:
-        url = '%s/applications/%s/' % (
-            settings.REGISTRATION_BASE_URL, application.secret_token)
+        url = reverse('kg_application_unauthenticated',
+                      args=[application.secret_token])
         is_secret = True
+    url = '%s%s' % (settings.REGISTRATION_BASE_URL, url)
     return url, is_secret
 
 
