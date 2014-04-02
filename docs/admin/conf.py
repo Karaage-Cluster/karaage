@@ -214,8 +214,14 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'karaage', u'Karaage Admin Documentation',
-     [u'Brian May'], 1)
+    ('index', 'karaage',
+        u'Karaage Admin Documentation', [u'Brian May'], 8),
+    ('cmd/kg-daily-cleanup', 'kg-daily-cleanup',
+        u'Cleanup for Karaage', [u'Brian May'], 8),
+    ('cmd/kg-manage', 'kg-manage',
+        u'Management for Karaage', [u'Brian May'], 8),
+    ('cmd/kg-set-secret-key', 'kg_set_secret_key',
+        u'Set secret key for Karaage', [u'Brian May'], 8),
 ]
 
 # If true, show URL addresses after external links.

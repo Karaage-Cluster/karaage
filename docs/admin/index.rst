@@ -20,6 +20,7 @@ Contents:
    upgrading
    datastores
    tasks
+   cmd
    glossary
 
 Indices and tables

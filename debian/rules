@@ -7,6 +7,7 @@
 .PHONY: override_dh_auto_build
 override_dh_auto_build:
 	PYTHONPATH=. sphinx-build -b html -d docs/admin/.build/.doctrees -N docs/admin docs/admin/.build/admin
+	PYTHONPATH=. sphinx-build -b man -d docs/admin/.build/.doctrees -N docs/admin docs/admin/.build/man
 	PYTHONPATH=. sphinx-build -b html -d docs/user/.build/.doctrees -N docs/user docs/user/.build/user
 	PYTHONPATH=. sphinx-build -b html -d docs/programmer/.build/.doctrees -N docs/programmer docs/programmer/.build/programmer
 	dh_auto_build
