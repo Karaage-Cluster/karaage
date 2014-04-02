@@ -248,12 +248,13 @@ class ProjectApplication(Application):
                 + datetime.timedelta(days=365),
                 )
             project.save()
-            project.leaders.add(person)
             for mc in self.machine_categories.all():
                 project.projectquota_set.create(machine_category=mc)
             project.activate(approved_by)
             self.project = project
             self.save()
+        if self.make_leader:
+            self.project.leaders.add(person)
         if self.needs_account:
             for pc in self.project.projectquota_set.all():
                 if not person.has_account(pc.machine_category):

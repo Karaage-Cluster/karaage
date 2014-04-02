@@ -842,6 +842,7 @@ def new_application(request):
 
                 application = ProjectApplication()
                 application.applicant = applicant
+                application.make_leader = True
                 application.save()
 
                 state_machine = get_application_state_machine()
@@ -861,6 +862,7 @@ def new_application(request):
 
                 application = ProjectApplication()
                 application.applicant = person
+                application.make_leader = True
                 application.save()
 
                 state_machine = get_application_state_machine()
