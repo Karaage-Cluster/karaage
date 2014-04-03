@@ -23,10 +23,14 @@ import getpass
 import os
 import sys
 from optparse import make_option
+import re
+
 from django.core import exceptions
 from django.core.management.base import BaseCommand
 from django.core.validators import validate_email
-from karaage.people.models import Person
+from django.conf import settings
+
+from karaage.people.models import Person, Group
 from karaage.institutes.models import Institute
 from karaage.people.utils import validate_username_for_new_person
 from karaage.people.utils import UsernameException
@@ -101,6 +105,7 @@ class Command(BaseCommand):
                 except UsernameException, e:
                     sys.stderr.write("%s\n" % e)
                     username = None
+                    print
                     continue
 
             # Get an email
@@ -125,11 +130,13 @@ class Command(BaseCommand):
                         sys.stderr.write(
                             "Error: Your passwords didn't match.\n")
                         password = None
+                        print
                         continue
                 if password.strip() == '':
                     sys.stderr.write(
                         "Error: Blank passwords aren't allowed.\n")
                     password = None
+                    print
                     continue
                 break
 
@@ -144,32 +151,47 @@ class Command(BaseCommand):
                 else:
                     break
 
-            if Institute.objects.count() == 0:
+            group_re = re.compile(r'^%s$' % settings.GROUP_VALIDATION_RE)
+            while 1:
                 if not institute_name:
-                    print "No Institutes in system will create one now"
-                while 1:
-                    if not institute_name:
-                        institute_name = raw_input('New Institute Name: ')
+                    if Institute.objects.count() > 0:
+                        print "Choose an existing institute for new superuser."
+                        print "Alternatively enter a new name to create one."
+                        print
+                        print "Valid choices are:"
+                        for i in Institute.active.all():
+                            print i
+                        print
                     else:
-                        break
-                institute = Institute.objects.create(
-                    name=institute_name, is_active=True)
-            else:
-                if not institute_name:
-                    print "Choose an existing institute for new superuser:"
-                    print "Valid choices are:"
-                    for i in Institute.active.all():
-                        print i
-                while 1:
-                    if not institute_name:
-                        institute_name = raw_input('Institute Name: ')
-                    try:
-                        institute = Institute.objects.get(name=institute_name)
-                    except Institute.DoesNotExist:
-                        sys.stderr.write("Error: Institute does not exist\n")
-                        institute_name = None
-                        continue
+                        print "No Institutes in system, will create one now."
+                        print
+
+                    institute_name = raw_input('Institute Name: ')
+
+                if not re.search(group_re, institute_name):
+                    sys.stderr.write(
+                        "%s\n" % settings.GROUP_VALIDATION_ERROR_MSG)
+                    institute_name = None
+                    print
+                    continue
+                else:
                     break
+
+            try:
+                institute = Institute.objects.get(name=institute_name)
+                print "Using existing institute %s" % institute
+
+            except Institute.DoesNotExist:
+                group, c = Group.objects.get_or_create(name=institute_name)
+                if c:
+                    print "Created new group %s" % group
+                else:
+                    print "Using existing group %s" % group
+
+                institute = Institute.objects.create(
+                    name=institute_name, group=group, is_active=True)
+
+                print "Created new institute %s" % institute
 
         except KeyboardInterrupt:
             sys.stderr.write("\nOperation cancelled.\n")
