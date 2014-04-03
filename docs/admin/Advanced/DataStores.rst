@@ -29,13 +29,18 @@ This is a dictionary of :
 This means if you have multiple machine categories you can store account
 details in more than one location. (advanced)
 
-Eg. Machine Category 1 stores accounts in LDAP Machine Category 2 stores
-accounts in Files
+Eg. Machine Category 1 stores accounts in LDAP. Machine Category 2 stores
+accounts in Files.
 
-NOTE: \* This needs to use the same backend as personal type \*
-Currently no way to use different LDAPs for different !MachineCategories
-as no way to specify different settings ### Institute Create a group per
-institute
+NOTE:
+
+*  This needs to use the same backend as personal type.
+*  Currently no way to use different LDAPs for different MachineCategories
+   as no way to specify different settings.
+
+Institute
+~~~~~~~~~
+Create a group per institute.
 
 By default karaage will create a group per institute. The GID number is
 stored in the DB and linked against the group. This means you can change
@@ -60,8 +65,11 @@ Create a group per software
 
 By default karaage will create a group per software package. The GID
 number is stored in the DB and linked against the group. This means you
-can change the name of the group if needed. SOFTWARE\_DATASTORE ##
+can change the name of the group if needed. SOFTWARE\_DATASTORE
+
+
 Datastore backends
+------------------
 
 OpenLDAP (Default)
 ~~~~~~~~~~~~~~~~~~
@@ -94,7 +102,7 @@ Settings: (Note for some use LDAP Data store as they are compatible)
     INSTITUTE_DATASTORE = 'karaage.datastore.institutes.ldap_datastore'
     SOFTWARE_DATASTORE = 'karaage.datastore.software.ldap_datastore'
 
-Required setting
+Required setting:
 
 ::
 
@@ -121,7 +129,7 @@ Sore data in /etc/passwd files
 
 NOTE: This is not fully implemented
 
-Settings
+Settings:
 
 ::
 
