@@ -95,7 +95,7 @@ setup(
         "django-ajax-selects >= 1.1.3",
         "django_jsonfield >= 0.9.12",
         "django-model-utils >= 2.0.0",
-        "django-tldap >= 0.2.9",
+        "django-tldap >= 0.2.16",
         "django-xmlrpc >= 0.1",
         "django_celery",
         "django_model_utils >= 2.0.0",
