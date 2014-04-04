@@ -1,7 +1,0 @@
-{% extends "people/person_list_filtered.html" %}
-{% load paginator %}
-
-
-{% block list_content %}
-{% gen_table page.object_list people/struggling_table.html %}
-{% endblock %}
