@@ -102,6 +102,8 @@ setup(
         "django_model_utils >= 2.0.0",
         "matplotlib",
         "django-pipeline",
+        "django-tables2",
+        "django-filter",
     ],
     tests_require=tests_require,
     extras_require={

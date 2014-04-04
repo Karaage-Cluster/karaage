@@ -17,25 +17,58 @@
 
 import datetime
 
+import django_tables2 as tables
+from django_tables2.utils import A
+import django_filters
+
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import QueryDict
 from django.contrib import messages
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
-from django.db.models import Q
 from django.conf import settings
 
-from karaage.common.filterspecs import Filter, FilterBar, DateFilter
 from karaage.common.decorators import admin_required, login_required
 from karaage.people.models import Person
 from karaage.people.emails import send_bounced_warning
 from karaage.people.emails import send_reset_password_email
 from karaage.people.forms import AddPersonForm, AdminPersonForm
 from karaage.people.forms import AdminPasswordChangeForm
-from karaage.institutes.models import Institute
 
 import karaage.common as common
+
+
+class PersonFilter(django_filters.FilterSet):
+    username = django_filters.CharFilter(lookup_type="icontains")
+    full_name = django_filters.CharFilter(lookup_type="icontains")
+    email = django_filters.CharFilter(lookup_type="icontains")
+    no_last_usage = django_filters.BooleanFilter(name="last_usage__isnull")
+    begin_last_usage = django_filters.DateFilter(
+        name="last_usage", lookup_type="gte")
+    end_last_usage = django_filters.DateFilter(
+        name="last_usage", lookup_type="lte")
+    begin_date_approved = django_filters.DateFilter(
+        name="date_approved", lookup_type="gte")
+    end_date_approved = django_filters.DateFilter(
+        name="date_approved", lookup_type="lte")
+
+    class Meta:
+        model = Person
+        fields = ("username", "full_name", "email", "institute",
+                  "is_active", "is_admin", "login_enabled")
+
+
+class PersonTable(tables.Table):
+    username = tables.LinkColumn(
+        'kg_person_detail', args=[A('username')])
+    institute = tables.LinkColumn(
+        'kg_institute_detail', args=[A('institute.pk')])
+
+    class Meta:
+        model = Person
+        fields = ("username", "full_name", "institute",
+                  "is_active", "is_admin", "last_usage", "date_approved")
 
 
 def _add_edit_user(request, form_class, username):
@@ -81,105 +114,59 @@ def edit_user(request, username):
 
 
 @login_required
-def user_list(request, queryset=None, template=None, context=None):
+def user_list(request, queryset=None, title=None):
     if queryset is None:
-        queryset = Person.objects.select_related()
-
-    if template is None:
-        template = "people/person_list.html"
+        queryset = Person.objects.all()
 
     if not common.is_admin(request):
         queryset = queryset.filter(pk=request.user.pk)
 
-    user_list = queryset
+    queryset = queryset.select_related()
 
-    if 'institute' in request.REQUEST:
-        user_list = user_list.filter(institute=int(request.GET['institute']))
+    filter = PersonFilter(request.GET, queryset=queryset)
 
-    if 'status' in request.REQUEST:
-        user_list = user_list.filter(is_active=int(request.GET['status']))
+    table = PersonTable(filter)
+    tables.RequestConfig(request).configure(table)
 
-    params = dict(request.GET.items())
-    m_params = dict(
-        [(str(k), str(v)) for k, v in params.items()
-            if k.startswith('date_approved__')])
-    user_list = user_list.filter(**m_params)
+    spec = []
+    for name, value in filter.form.cleaned_data.iteritems():
+        if value is not None and value != "":
+            name = name.replace('_', ' ').capitalize()
+            spec.append((name, value))
 
-    if 'search' in request.REQUEST:
-        terms = request.REQUEST['search'].lower()
-        query = Q()
-        for term in terms.split(' '):
-            q = Q(username__icontains=term)
-            q = q | Q(short_name__icontains=term)
-            q = q | Q(full_name__icontains=term)
-            q = q | Q(comment__icontains=term)
-            query = query & q
-
-        user_list = user_list.filter(query)
-    else:
-        terms = ""
-
-    filter_list = []
-    filter_list.append(Filter(request, 'status', {1: 'Active', 0: 'Deleted'}))
-    filter_list.append(Filter(request, 'institute', Institute.active.all()))
-    filter_list.append(DateFilter(request, 'date_approved'))
-    filter_bar = FilterBar(request, filter_list)
-
-    page_no = request.GET.get('page')
-    paginator = Paginator(user_list, 50)
-    try:
-        page = paginator.page(page_no)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        page = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        page = paginator.page(paginator.num_pages)
-
-    new_context = {}
-    if context is not None:
-        new_context.update(context)
-
-    new_context.update(
-        {'page': page, 'filter_bar': filter_bar, 'terms': terms}
-    )
+    context = {
+        'table': table,
+        'filter': filter,
+        'spec': spec,
+        'title': title or "Person list",
+    }
 
     return render_to_response(
-        template, new_context,
+        "people/person_list.html", context,
         context_instance=RequestContext(request))
 
 
 @admin_required
 def locked_list(request):
 
-    person_list = Person.active.all()
-    ids = []
-    for p in person_list:
-        if p.is_locked():
-            ids.append(p.id)
-
-    persons = Person.objects.filter(id__in=ids)
-    context = {'title': 'Locked'}
-    return user_list(
-        request, persons, "people/person_list_filtered.html", context)
+    result = QueryDict("", mutable=True)
+    result['login_enabled'] = False
+    url = reverse('kg_person_list') + "?" + result.urlencode()
+    return HttpResponseRedirect(url)
 
 
 @admin_required
 def struggling(request):
-
     today = datetime.date.today()
     days30 = today - datetime.timedelta(days=30)
 
-    persons = Person.objects.select_related()
-    persons = persons.filter(date_deleted__isnull=True)
-    persons = persons.filter(date_approved__lt=days30)
-    persons = persons.filter(last_usage__isnull=True)
-    persons = persons.order_by('-date_approved')
-
-    context = {'title': 'Struggling'}
-
-    return user_list(
-        request, persons, "people/person_struggling.html", context)
+    result = QueryDict("", mutable=True)
+    result['is_active'] = True
+    result['begin_date_approved'] = days30
+    result['no_last_usage'] = True
+    result['sort'] = "-date_approved"
+    url = reverse('kg_person_list') + "?" + result.urlencode()
+    return HttpResponseRedirect(url)
 
 
 @admin_required

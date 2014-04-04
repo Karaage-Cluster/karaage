@@ -134,9 +134,7 @@ def delete_account(request, account_id):
 def no_project_list(request):
     persons = Person.active.filter(
         groups__project__isnull=True, account__isnull=False)
-    context = {'title': 'No projects'}
-    return user_list(
-        request, persons, "people/person_list_filtered.html", context)
+    return user_list(request, persons, 'No projects')
 
 
 @admin_required
@@ -145,9 +143,7 @@ def no_default_list(request):
         account__isnull=False,
         account__default_project__isnull=True,
         account__date_deleted__isnull=True)
-    context = {'title': 'No default projects'}
-    return user_list(
-        request, persons, "people/person_list_filtered.html", context)
+    return user_list(request, persons, 'No default projects')
 
 
 @admin_required
@@ -161,9 +157,7 @@ def no_account_list(request):
                     person_id_list.append(u.id)
 
     persons = Person.objects.filter(id__in=person_id_list)
-    context = {'title': 'No accounts'}
-    return user_list(
-        request, persons, "people/person_list_filtered.html", context)
+    return user_list(request, persons, 'No accounts')
 
 
 @admin_required
@@ -181,9 +175,7 @@ def wrong_default_list(request):
                     wrong.append(u.id)
 
     persons = Person.objects.filter(id__in=wrong)
-    context = {'title': 'Wrong default projects'}
-    return user_list(
-        request, persons, "people/person_list_filtered.html", context)
+    return user_list(request, persons, 'Wrong default projects')
 
 
 @login_required
