@@ -74,6 +74,7 @@ INSTALLED_APPS = (
     'captcha',
     'ajax_select',
     'jsonfield',
+    'django_tables2',
     'djcelery',
     'tldap.methods',
     'karaage.common',
