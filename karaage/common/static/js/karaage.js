@@ -16,4 +16,31 @@ $( document ).ready(function() {
             next = next.next();
         }
     })
+
+    dialog = $( "#dialog-modal" ).dialog({
+        autoOpen: false,
+        height: 480,
+        width: 400,
+        modal: true,
+        buttons: {
+            "ok": function() {
+                $( "#dialog-modal" ).submit();
+            },
+            "cancel": function() {
+                $( this ).dialog( "close" );
+            },
+        },
+    });
+
+    dialog.keyup(function (event) {
+        if (event.keyCode == 13) {
+            $( "#dialog-modal" ).submit();
+            event.preventDefault();
+        }
+    });
+
+    $( "#opener" ).click(function() {
+        dialog.dialog( "open" );
+    });
+
 })
