@@ -362,7 +362,7 @@ class StateStepProject(base.State):
         resp = {}
         if 'leader' in request.POST:
             leader = Person.objects.get(pk=request.POST['leader'])
-            project_list = leader.leaders.filter(is_active=True)
+            project_list = leader.leads.filter(is_active=True)
             resp['project_list'] = [(p.pk, unicode(p)) for p in project_list]
 
         elif 'terms' in request.POST:
@@ -376,7 +376,7 @@ class StateStepProject(base.State):
                 resp['project_list'] = []
             leader_list = Person.active.filter(
                 institute=application.applicant.institute,
-                leaders__is_active=True).distinct()
+                leads__is_active=True).distinct()
             if len(terms) >= 3:
                 query = Q()
                 for term in terms.split(' '):
