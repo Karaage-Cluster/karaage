@@ -1,8 +1,17 @@
-{% extends "list.html" %}
+{% extends "main.html" %}
+{% load render_table from django_tables2 %}
+{% load forms %}
+{% load staticfiles %}
 
+
+{% block extrastyle %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="{% static "css/forms.css" %}" />
+{% endblock %}
 
 {% block title %}People{% endblock %}
-{% block short_title %}Person List{% endblock %}
 
 
 {% block breadcrumbs %}
@@ -13,12 +22,61 @@
 {% endblock %}
 
 
-{% block actions %}
-{% if is_admin %}
-<div class="object-tools">
-    <ul>
-        <li><a class="addlink" href="{% url 'kg_person_add' %}">Add person</a></li>
-    </ul>
+{% block content %}
+<div id="content-main">
+    <div class="toolbar">
+        <button id="opener">Filter</button>
+        {% for key, value in filter.form.cleaned_data.iteritems %}
+            {% if value %}
+                {{ key }} = {{ value }},
+            {% endif %}
+        {% endfor %}
+        {% if is_admin %}
+        <div class="object-tools">
+            <ul>
+                <li><a class="addlink" href="{% url 'kg_person_add' %}">Add person</a></li>
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+    <form action="" id="dialog-modal" class="empty-form" title="Filter" method="get" class="hidden">
+        {% form_as_div filter.form %}
+    </form>
+    <div class="module clear">
+        <h2>Person List</h2>
+        {% render_table table %}
+    </div>
 </div>
-{% endif %}
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+    dialog = $( "#dialog-modal" ).dialog({
+        autoOpen: false,
+        height: 480,
+        width: 400,
+        modal: true,
+        buttons: {
+            "ok": function() {
+                $( "#dialog-modal" ).submit();
+            },
+            "cancel": function() {
+                $( this ).dialog( "close" );
+            },
+        },
+    });
+
+    dialog.keyup(function (event) {
+        if (event.keyCode == 13) {
+            $( "#dialog-modal" ).submit();
+            event.preventDefault();
+        }
+    });
+
+    $( "#opener" ).click(function() {
+        dialog.dialog( "open" );
+    });
+
+});
+</script>
 {% endblock %}
