@@ -205,12 +205,10 @@ class AdminGroupForm(forms.Form):
 
         if self.instance is None:
             group = Group()
-            group.name = data['name']
-
         else:
             group = self.instance
-            group.change_name(data['name'])
 
+        group.name = data['name']
         group.description = data['description']
         group.save()
 
