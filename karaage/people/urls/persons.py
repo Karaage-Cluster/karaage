@@ -18,17 +18,12 @@
 from django.conf.urls import patterns, url, include
 from django.conf import settings
 
-from karaage.people.models import Person
 from karaage.people.forms import SetPasswordForm
 
 
 urlpatterns = patterns(
     'karaage.people.views.persons',
     url(r'^$', 'user_list', name='kg_person_list'),
-    url(r'^deleted/$', 'user_list',
-        {'queryset': Person.deleted.all()}),
-    url(r'^last_used/$', 'user_list',
-        {'queryset': Person.active.order_by('last_usage')}),
     url(r'^struggling/$', 'struggling', name='kg_person_struggling'),
     url(r'^locked/$', 'locked_list', name='kg_person_locked'),
 
