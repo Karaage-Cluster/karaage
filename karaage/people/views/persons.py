@@ -17,25 +17,56 @@
 
 import datetime
 
+import django_tables2 as tables
+from django_tables2.utils import A
+import django_filters
+
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib import messages
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
-from django.db.models import Q
 from django.conf import settings
 
-from karaage.common.filterspecs import Filter, FilterBar, DateFilter
 from karaage.common.decorators import admin_required, login_required
 from karaage.people.models import Person
 from karaage.people.emails import send_bounced_warning
 from karaage.people.emails import send_reset_password_email
 from karaage.people.forms import AddPersonForm, AdminPersonForm
 from karaage.people.forms import AdminPasswordChangeForm
-from karaage.institutes.models import Institute
 
 import karaage.common as common
+
+
+class PersonFilter(django_filters.FilterSet):
+    username = django_filters.CharFilter(lookup_type="icontains")
+    full_name = django_filters.CharFilter(lookup_type="icontains")
+    email = django_filters.CharFilter(lookup_type="icontains")
+    begin_last_usage = django_filters.DateFilter(
+        name="last_usage", lookup_type="gte")
+    end_last_usage = django_filters.DateFilter(
+        name="last_usage", lookup_type="lte")
+    begin_date_approved = django_filters.DateFilter(
+        name="date_approved", lookup_type="gte")
+    end_date_approved = django_filters.DateFilter(
+        name="date_approved", lookup_type="lte")
+
+    class Meta:
+        model = Person
+        fields = ("username", "full_name", "email", "institute",
+                  "is_active", "is_admin")
+
+
+class PersonTable(tables.Table):
+    username = tables.LinkColumn(
+        'kg_person_detail', args=[A('username')])
+    institute = tables.LinkColumn(
+        'kg_institute_detail', args=[A('institute.pk')])
+
+    class Meta:
+        model = Person
+        fields = ("username", "full_name", "email", "institute",
+                  "is_active", "is_admin", "last_usage", "date_approved")
 
 
 def _add_edit_user(request, form_class, username):
@@ -91,57 +122,23 @@ def user_list(request, queryset=None, template=None, context=None):
     if not common.is_admin(request):
         queryset = queryset.filter(pk=request.user.pk)
 
-    user_list = queryset
+    filter = PersonFilter(request.GET, queryset=queryset)
 
-    if 'institute' in request.REQUEST:
-        user_list = user_list.filter(institute=int(request.GET['institute']))
-
-    if 'status' in request.REQUEST:
-        user_list = user_list.filter(is_active=int(request.GET['status']))
-
-    params = dict(request.GET.items())
-    m_params = dict(
-        [(str(k), str(v)) for k, v in params.items()
-            if k.startswith('date_approved__')])
-    user_list = user_list.filter(**m_params)
-
-    if 'search' in request.REQUEST:
-        terms = request.REQUEST['search'].lower()
-        query = Q()
-        for term in terms.split(' '):
-            q = Q(username__icontains=term)
-            q = q | Q(short_name__icontains=term)
-            q = q | Q(full_name__icontains=term)
-            q = q | Q(comment__icontains=term)
-            query = query & q
-
-        user_list = user_list.filter(query)
-    else:
-        terms = ""
-
-    filter_list = []
-    filter_list.append(Filter(request, 'status', {1: 'Active', 0: 'Deleted'}))
-    filter_list.append(Filter(request, 'institute', Institute.active.all()))
-    filter_list.append(DateFilter(request, 'date_approved'))
-    filter_bar = FilterBar(request, filter_list)
-
-    page_no = request.GET.get('page')
-    paginator = Paginator(user_list, 50)
-    try:
-        page = paginator.page(page_no)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        page = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        page = paginator.page(paginator.num_pages)
+    table = PersonTable(filter)
+    tables.RequestConfig(request).configure(table)
 
     new_context = {}
     if context is not None:
         new_context.update(context)
 
+    spec = []
+    for name, value in filter.form.cleaned_data.iteritems():
+        if value is not None and value != "":
+            name = name.replace('_', ' ').capitalize()
+            spec.append((name, value))
+
     new_context.update(
-        {'page': page, 'filter_bar': filter_bar, 'terms': terms}
+        {'table': table, 'filter': filter, 'spec': spec}
     )
 
     return render_to_response(
