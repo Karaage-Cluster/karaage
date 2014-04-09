@@ -19,6 +19,7 @@ fi
 # fi
 
 
+export PYTHONPATH="$PWD"
 cd tests
 ./manage.py test -v 2 $TESTS
 if [ ! $? -eq 0 ]
