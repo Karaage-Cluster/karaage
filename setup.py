@@ -50,6 +50,7 @@ for dirpath, dirnames, filenames in os.walk("karaage"):
 tests_require = [
     "factory_boy",
     "mock",
+    "cracklib",
 ]
 
 setup(
