@@ -144,11 +144,10 @@ class AdminPasswordChangeForm(forms.Form):
         widget=forms.PasswordInput(),
         label=u'New Password (again)')
 
-    def clean(self):
+    def clean_new2(self):
         password1 = self.cleaned_data.get('new1')
         password2 = self.cleaned_data.get('new2')
-        old_password = self.cleaned_data.get('old', None)
-        return validate_password(password1, password2, old_password)
+        return validate_password(password1, password2)
 
     def save(self, person):
         data = self.cleaned_data
@@ -158,6 +157,12 @@ class AdminPasswordChangeForm(forms.Form):
 
 class PasswordChangeForm(AdminPasswordChangeForm):
     old = forms.CharField(widget=forms.PasswordInput(), label='Old password')
+
+    def clean_new2(self):
+        password1 = self.cleaned_data.get('new1')
+        password2 = self.cleaned_data.get('new2')
+        old_password = self.cleaned_data.get('old', None)
+        return validate_password(password1, password2, old_password)
 
     def clean_old(self):
         person = get_current_person()
