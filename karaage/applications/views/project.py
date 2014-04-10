@@ -78,7 +78,7 @@ class StateWithSteps(base.State):
         """ Process the view request at the current step. """
 
         # if the user is not the applicant, the steps don't apply.
-        if not auth['is_applicant'] or auth['is_admin']:
+        if not auth['is_applicant']:
             return super(StateWithSteps, self).view(
                 request, application, label, auth, actions)
 
