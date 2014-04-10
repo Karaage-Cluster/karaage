@@ -113,6 +113,10 @@ LOGGING = {
         },
     },
     'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
         'django_file': {
             'level': 'WARNING',
             'class': 'logging.FileHandler',
@@ -145,6 +149,11 @@ LOGGING = {
 #        },
     },
     'loggers': {
+        '': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
         'django': {
             'handlers': ['django_file'],
             'level': 'DEBUG',
