@@ -1,3 +1,30 @@
+karaage3 (3.0.11-1) unstable; urgency=low
+
+  [ Brian May ]
+  * Fix replaces/breaks headers.
+  * Test password reset procedure.
+  * Add documentation for CLI commands.
+  * Correct copyright statement.
+
+  [ Kieran Spear ]
+  * Use named URLs in get_email_link
+  * Don't hardcode login_url in login_required decorator
+
+  [ Brian May ]
+  * Fix migration errors during upgrades from 2.7.
+  * Update kgcreatesuperuser command:
+  * Use new TLDAP check_password method.
+  * Fix application errors selecting projects.
+  * Fix error saving group.
+  * Fix errors changing passwords.
+  * Test password change forms.
+  * Ensure errors are emailed.
+  * If applicant is admin let them edit application.
+  * Use autocomplete to select leader/project.
+  * Add "make leader" field to project select form.
+
+ -- Brian May <bam@debian.org>  Thu, 10 Apr 2014 14:52:16 +1000
+
 karaage3 (3.0.10-1) unstable; urgency=low
 
   * Add migration to resize applicant.username.
