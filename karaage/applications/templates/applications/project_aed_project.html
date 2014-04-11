@@ -62,6 +62,14 @@
 
             <div id="selected_project">
             </div>
+
+            <div>
+                {% if application.make_leader %}
+                <p>Request to become project leader.</p>
+                {% else %}
+                <p>Request to become ordinary member of project.</p>
+                {% endif %}
+            </div>
         </div>
 
         {% application_actions %}
