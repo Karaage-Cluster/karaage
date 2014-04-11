@@ -261,13 +261,18 @@ table p {
 }
 
 .yes {
-    padding-left: 16px;
+    padding: 0 0 0 16px;
     background: url(../img/icon-yes.gif) 0 .25em no-repeat;
 }
 
 .no {
-    padding-left: 16px;
+    padding: 0 0 0 16px;
     background: url(../img/icon-no.gif) 0 .25em no-repeat;
+}
+
+.locked {
+    padding: 5px 0 5px 16px;
+    background: url(../img/lock.png) 0 .25em no-repeat;
 }
 
 
@@ -706,11 +711,6 @@ div.breadcrumbs {
 }
 
 /* OTHER */
-
-.locked {
-    color: #AAA;
-    text-decoration:line-through;
-}
 
 .graph_key_red { background-color: red; }
 .graph_key_blue { background-color: blue; }
