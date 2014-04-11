@@ -83,6 +83,7 @@ INSTALLED_APPS = (
     'karaage.legacy.pbsmoab',
     'karaage.emails',
     'karaage.applications',
+    'pipeline',
 )
 
 # List of locations of the template source files searched by
@@ -179,6 +180,35 @@ STATIC_ROOT = '/var/lib/karaage/static'
 # URL to use when referring to static files located in STATIC_ROOT.
 STATIC_URL = '/kgadmin_media/'
 
+###
+### DJANGO PIPELINE
+###
+
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+PIPELINE_EMBED_PATH = r'img/|images/'
+PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.csstidy.CSSTidyCompressor'
+PIPELINE_CSS = {
+    'karaage': {
+        'source_filenames': (
+            'css/*.css',
+            'ajax_select/css/ajax_select.css',
+        ),
+        'output_filename': 'min.css',
+        'variant': 'datauri',
+    },
+}
+PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.slimit.SlimItCompressor'
+PIPELINE_JS = {
+    'karaage': {
+        'source_filenames': (
+            'js/jquery-1.11.0.js',
+            'js/jquery-ui-1.10.4.js',
+            'js/*.js',
+            'ajax_select/js/ajax_select.js',
+        ),
+        'output_filename': 'min.js',
+    }
+}
 
 ###
 ### AJAX SETTINGS
