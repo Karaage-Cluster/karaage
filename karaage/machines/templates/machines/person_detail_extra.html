@@ -16,13 +16,11 @@
             <tr>
                 <td>
                     {% if account.date_deleted %}
-                    <img alt="Not Active" src="{{ STATIC_URL }}img/icon-no.gif" title="Not Active"/>
+                    <span class="no">No</span>
+                    {% elif account.is_locked %}
+                    <span class="locked">Locked</span>
                     {% else %}
-                    {% if account.is_locked %}
-                    <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
-                    {% else %}
-                    <img alt="Active" src="{{ STATIC_URL }}img/icon-yes.gif" title="Active"/>
-                    {% endif %}
+                    <span class="yes">Yes</span>
                     {% endif %}
                 </td>
                 <td>{{ account.username }}</td>
@@ -57,7 +55,7 @@
             <td>{% for leader in p.leaders.all %}<a href="{{ leader.get_absolute_url }}">{{ leader }}, </a>{% endfor %}</td>
             <td>
                 {% ifequal p account.default_project %}
-                    <img alt="1" src="{{ STATIC_URL }}img/icon-yes.gif"/>
+                    <span class="yes">Yes</span>
                 {% else %}
                     {% if is_admin %}
                     <form action="{% url 'kg_account_set_default' account.id p.pid %}" method="post">
@@ -65,7 +63,7 @@
                         <input type="submit" value="Make Default"/></input>
                     </form>
                     {% else %}
-                    <img alt="1" src="{{ STATIC_URL }}img/icon-no.gif"/>
+                    <span class="no">No</span>
                     {% endif %}
                 {% endifequal %}
             </td>

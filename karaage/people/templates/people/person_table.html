@@ -16,13 +16,11 @@
             <td>{{ person.email|urlize }}</td>
             <td>
                 {% if not person.is_active %}
-                <img src="{{ STATIC_URL }}img/icon-no.gif" alt="inactive" />
+                <span class="no">No</span>
+                {% elif person.is_locked %}
+                <span class="locked">Locked</span>
                 {% else %}
-                {% if person.is_locked %}
-                <img src="{{ STATIC_URL }}img/lock.png" alt="locked" />
-                {% else %}
-                <img src="{{ STATIC_URL }}img/icon-yes.gif" alt="active" />
-                {% endif %}
+                <span class="yes">Yes</span>
                 {% endif %}
             </td>
             <td>{{ person.last_usage }}</td>
