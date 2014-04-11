@@ -25,13 +25,11 @@
             <tr>
                 <td>
                     {% if account.date_deleted %}
-                    <img alt="Not Active" src="{{ STATIC_URL }}img/icon-no.gif" title="Not Active"/>
+                    <span class="no">No</span>
+                    {% elif account.is_locked %}
+                    <span class="locked">Locked</span>
                     {% else %}
-                    {% if account.is_locked %}
-                    <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
-                    {% else %}
-                    <img alt="Active" src="{{ STATIC_URL }}img/icon-yes.gif" title="Active"/>
-                    {% endif %}
+                    <span class="yes">Yes</span>
                     {% endif %}
                 </td>
                 <td>{{ account.username }}</td>
