@@ -238,3 +238,7 @@ ACCOUNTS_ORG_NAME = 'Example'
 #
 # EMAIL_MATCH_TYPE="include"
 # EMAIL_MATCH_LIST=["@vpac.org$", "@v3.org.au$", "^tux@.*au$"]
+
+# Django Pipeline configuration
+PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.csstidy.CSSTidyCompressor'
+PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.slimit.SlimItCompressor'

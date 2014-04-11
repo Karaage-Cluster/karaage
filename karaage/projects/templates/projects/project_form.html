@@ -20,11 +20,6 @@
 {% endblock %}
 
 
-{% block extrahead %}
-{{ form.media }}
-{% endblock %}
-
-
 {% block content %}
 <form method="post" action=".">{% csrf_token %}
     {% load forms %}
