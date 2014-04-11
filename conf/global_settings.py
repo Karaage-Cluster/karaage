@@ -3,8 +3,8 @@
 # Globally defined Karaage settings
 # These settings will be used for karaage-admin and karaage-registration.
 
-# Some of these values have sensible defaults. Settings that don't have a sensible
-# default must be configured manually.
+# Some of these values have sensible defaults. Settings that don't have a
+# sensible default must be configured manually.
 
 # Other Django settings are also possible, this list is not a comprehensive
 # list of all settings.
@@ -34,7 +34,7 @@
 # caches and password reset emails with links to malicious hosts by submitting
 # requests with a fake HTTP Host header, which is possible even under many
 # seemingly-safe web server configurations.
-ALLOWED_HOSTS = [ "www.example.org" ]
+ALLOWED_HOSTS = ["www.example.org"]
 
 # Whether to use a secure cookie for the session cookie. If this is set to
 # True, the cookie will be marked as “secure,” which means browsers may ensure
@@ -61,12 +61,12 @@ MANAGERS = ADMINS
 # dictionary containing the options for an individual database.
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
         'ATOMIC_REQUESTS': True,
     }
 }
@@ -106,7 +106,8 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+            'format': '%(levelname)s %(asctime)s "
+                "%(module)s %(process)d %(thread)d %(message)s'
         },
         'simple': {
             'format': '%(levelname)s %(message)s'
@@ -232,7 +233,7 @@ ACCOUNTS_ORG_NAME = 'Example'
 # then the email address must match one of the RE entries in EMAIL_MATCH_LIST.
 # If "exclude" then then email address must not match of the the RE entries in
 # EMAIL_MATCH_LIST.
-# 
+#
 # default: allow any email address
 #
 # EMAIL_MATCH_TYPE="include"
