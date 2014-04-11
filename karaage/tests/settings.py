@@ -123,6 +123,7 @@ REGISTRATION_BASE_URL = 'https://example.com/users'
 
 SECRET_KEY = '5hvhpe6gv2t5x4$3dtq(w2v#vg@)sx4p3r_@wv%l41g!stslc*'
 
+STATIC_ROOT = 'tmp/static'
 STATIC_URL = "/static/"
 
 import os.path

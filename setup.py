@@ -101,6 +101,7 @@ setup(
         "django_celery",
         "django_model_utils >= 2.0.0",
         "matplotlib",
+        "django-pipeline",
     ],
     tests_require=tests_require,
     extras_require={

@@ -19,6 +19,10 @@ then
 fi
 echo -e "\n\n"
 
+echo "STATIC FILES"
+echo "############################"
+./manage.py collectstatic --settings=karaage.tests.settings -v 2 --noinput
+
 echo "TESTS"
 echo "############################"
 ./manage.py test --settings=karaage.tests.settings -v 2 $TESTS
