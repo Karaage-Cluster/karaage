@@ -206,7 +206,7 @@ class ExistingProjectApplicationForm(forms.ModelForm):
 
     class Meta:
         model = ProjectApplication
-        fields = ['project', 'make_leader']
+        fields = ['project']
 
 
 class LeaderInviteUserApplicationForm(forms.ModelForm):
