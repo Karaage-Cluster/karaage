@@ -453,7 +453,6 @@ class StateStepProject(base.State):
                 project_forms["existing"] = (
                     form_models["existing"](instance=application))
                 application.project = None
-                application.make_leader = False
             if at != 'P':
                 # new project form was not displayed
                 project_forms["new"] = form_models["new"](instance=application)
