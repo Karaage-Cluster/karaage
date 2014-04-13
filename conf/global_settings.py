@@ -220,7 +220,7 @@ ACCOUNTS_ORG_NAME = 'Example'
 #
 # default:  ALLOW_REGISTRATIONS = False
 #
-# ALLOW_REGISTRATIONS = False
+# ALLOW_REGISTRATIONS = True
 
 # Do we allow any logged in user to access all usage information?
 #
