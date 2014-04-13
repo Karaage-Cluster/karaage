@@ -26,6 +26,19 @@ urlpatterns = patterns(
     url(r'^lookup/', include('ajax_select.urls')),
 )
 
+
+import re
+from django.conf import settings
+
+if settings.DEBUG_SERVE_STATIC:
+    urlpatterns += patterns(
+        '',
+        url(r'^%s(?P<path>.*)$' % re.escape(settings.STATIC_URL.lstrip('/')),
+            'django.views.static.serve',
+            {'document_root': settings.STATIC_ROOT}),
+    )
+
+
 for urls in get_urls("urlpatterns"):
     urlpatterns += urls
     del urls

@@ -45,6 +45,11 @@ DEBUG = False
 # want to set that to take advantage of this setting.
 TEMPLATE_DEBUG = True
 
+# For debugging purposes, ensure that static files are served when DEBUG=False,
+# used for testing django-pipeline. Should never be set to True on production
+# box or for normal debugging.
+DEBUG_SERVE_STATIC = False
+
 # Do not change: The model to use to represent a Django user.
 #
 # If false, administrators can log in but don't get any special access. Used
