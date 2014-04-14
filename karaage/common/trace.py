@@ -52,6 +52,7 @@ attach(trace(logger), PostDecorate)
 
 You can also attach a decorator to an existing module.
 """
+from __future__ import absolute_import
 
 import inspect
 import logging
