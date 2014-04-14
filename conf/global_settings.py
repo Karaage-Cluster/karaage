@@ -120,34 +120,39 @@ LOGGING = {
         },
         'django_file': {
             'level': 'WARNING',
-            'class': 'logging.FileHandler',
+            'class': 'karaage.common.logging.FileHandler',
             'filename': '/var/log/karaage/django.log',
             'formatter': 'verbose',
+            'owner': ['www-data', 'www-data'],
         },
         'karaage_file': {
             'level': 'WARNING',
-            'class': 'logging.FileHandler',
+            'class': 'karaage.common.logging.FileHandler',
             'filename': '/var/log/karaage/karaage.log',
             'formatter': 'verbose',
+            'owner': ['www-data', 'www-data'],
         },
-#        'ldap_file': {
-#            'level': 'DEBUG',
-#            'class': 'logging.FileHandler',
-#            'filename': '/var/log/karaage/ldap.log',
-#            'formatter': 'verbose',
-#        },
-#        'gold_file': {
-#            'level': 'DEBUG',
-#            'class': 'logging.FileHandler',
-#            'filename': '/var/log/karaage/gold.log',
-#            'formatter': 'verbose',
-#       },
-#       'slurm_file': {
-#            'level': 'DEBUG',
-#            'class': 'logging.FileHandler',
-#            'filename': '/var/log/karaage/slurm.log',
-#            'formatter': 'verbose',
-#        },
+        #'ldap_file': {
+        #    'level': 'DEBUG',
+        #    'class': 'karaage.common.logging.FileHandler',
+        #    'filename': '/var/log/karaage/ldap.log',
+        #    'formatter': 'verbose',
+        #    'owner': ['www-data', 'www-data'],
+        #},
+        #'gold_file': {
+        #    'level': 'DEBUG',
+        #    'class': 'karaage.common.logging.FileHandler',
+        #    'filename': '/var/log/karaage/gold.log',
+        #    'formatter': 'verbose',
+        #    'owner': ['www-data', 'www-data'],
+        #},
+        #'slurm_file': {
+        #    'level': 'DEBUG',
+        #    'class': 'karaage.common.logging.FileHandler',
+        #    'filename': '/var/log/karaage/slurm.log',
+        #    'formatter': 'verbose',
+        #    'owner': ['www-data', 'www-data'],
+        #},
     },
     'loggers': {
         '': {
@@ -165,21 +170,21 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
-#        'karaage.datastores.ldap': {
-#            'handlers': ['ldap_file'],
-#            'level': 'DEBUG',
-#            'propagate': True,
-#        },
-#        'karaage.datastores.gold': {
-#            'handlers': ['gold_file'],
-#            'level': 'DEBUG',
-#            'propagate': True,
-#        },
-#        'karaage.datastores.slurm': {
-#            'handlers': ['slurm_file'],
-#            'level': 'DEBUG',
-#            'propagate': True,
-#        },
+        #'karaage.datastores.ldap': {
+        #    'handlers': ['ldap_file'],
+        #    'level': 'DEBUG',
+        #    'propagate': True,
+        #},
+        #'karaage.datastores.gold': {
+        #    'handlers': ['gold_file'],
+        #    'level': 'DEBUG',
+        #    'propagate': True,
+        #},
+        #'karaage.datastores.slurm': {
+        #    'handlers': ['slurm_file'],
+        #    'level': 'DEBUG',
+        #    'propagate': True,
+        #},
     },
 }
 
