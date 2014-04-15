@@ -765,10 +765,10 @@ def get_applicant_from_email(email):
     return applicant, existing_person
 
 
-def _send_invitation(request, project, invite_form):
+def _send_invitation(request, project):
     """ The logged in project leader OR administrator wants to invite somebody.
     """
-    form = invite_form(request.POST or None)
+    form = forms.InviteUserApplicationForm(request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
 
@@ -783,8 +783,7 @@ def _send_invitation(request, project, invite_form):
 
             application = form.save(commit=False)
             application.applicant = applicant
-            if project is not None:
-                application.project = project
+            application.project = project
             application.save()
             state_machine = get_application_state_machine()
             response = state_machine.start(request, application)
@@ -801,23 +800,19 @@ def send_invitation(request, project_id=None):
     """ The logged in project leader wants to invite somebody to their project.
     """
 
-    if is_admin(request):
-        project = None
-        if project_id is not None:
-            project = get_object_or_404(Project, pid=project_id)
-        form = forms.AdminInviteUserApplicationForm
-    else:
-        person = request.user
+    project = None
+    if project_id is not None:
         project = get_object_or_404(Project, pid=project_id)
 
-        if project_id is None:
-            return HttpResponseBadRequest("<h1>Bad Request</h1>")
+    if not is_admin(request):
+        person = request.user
 
+        if project is None:
+            return HttpResponseBadRequest("<h1>Bad Request</h1>")
         if person not in project.leaders.all():
             return HttpResponseBadRequest("<h1>Bad Request</h1>")
-        form = forms.LeaderInviteUserApplicationForm
 
-    return _send_invitation(request, project, form)
+    return _send_invitation(request, project)
 
 
 def new_application(request):

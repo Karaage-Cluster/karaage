@@ -209,47 +209,19 @@ class ExistingProjectApplicationForm(forms.ModelForm):
         fields = ['project']
 
 
-class LeaderInviteUserApplicationForm(forms.ModelForm):
+class InviteUserApplicationForm(forms.ModelForm):
     email = forms.EmailField()
 
     def __init__(self, *args, **kwargs):
         self.cleaned_data = None
         self.fields = None
-        super(LeaderInviteUserApplicationForm, self).__init__(*args, **kwargs)
+        super(InviteUserApplicationForm, self).__init__(*args, **kwargs)
         self.fields['email'].required = True
         self.fields['header_message'].required = True
 
     class Meta:
         model = ProjectApplication
         fields = ['email', 'make_leader', 'header_message']
-
-    def clean_email(self):
-        email = self.cleaned_data['email']
-        _clean_email(email)
-        return email
-
-    def clean_project(self):
-        project = self.cleaned_data['project']
-        person = get_current_person()
-        if project is not None:
-            if not person in project.leaders.all():
-                raise forms.ValidationError(u'You must be the project leader.')
-        return project
-
-
-class AdminInviteUserApplicationForm(forms.ModelForm):
-    email = forms.EmailField()
-
-    def __init__(self, *args, **kwargs):
-        self.cleaned_data = None
-        self.fields = None
-        super(AdminInviteUserApplicationForm, self).__init__(*args, **kwargs)
-        self.fields['email'].required = True
-        self.fields['header_message'].required = True
-
-    class Meta:
-        model = ProjectApplication
-        fields = ['email', 'project', 'make_leader', 'header_message']
 
     def clean_email(self):
         email = self.cleaned_data['email']

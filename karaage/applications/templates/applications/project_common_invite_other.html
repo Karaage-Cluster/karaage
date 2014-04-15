@@ -18,6 +18,14 @@
 <div class="module">
     <h2>Send invitation</h2>
     <form method="post" action=".">{% csrf_token %}
+        {% if project %}
+            <p>You will be inviting a new applicant to join the project
+            '{{ project }}'.</p>
+        {% else %}
+            <p>You will be inviting a new applicant to join and select
+            a project.</p>
+        {% endif %}
+
         {% form_as_div form %}
 
         <p>Please confirm you want to start a new application.</p>
