@@ -6,7 +6,7 @@
 {% elif application.created_by != receiver %}{{ application.created_by }} has invited you to {{ application.info }}.
 {% else %}You have started a new application to {{ application.info }}.
 {% endif %}
-{% if message %}{{ application.header_message }}
+{% if application.header_message %}{{ application.header_message }}
 
 {% endif %}To create your account and also an account on the cluster if you choose please visit
 {{ link }}
