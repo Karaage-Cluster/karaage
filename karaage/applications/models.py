@@ -144,7 +144,6 @@ class Application(models.Model):
         return self
 
     def reopen(self):
-        self.created_by = get_current_person()
         self.submitted_date = None
         self.complete_date = None
         self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
