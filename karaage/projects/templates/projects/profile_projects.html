@@ -7,6 +7,13 @@
 
 
 {% block profile_content %}
+{% if delegate_project_list %}
+<div class="module">
+    <h2>Projects in my institutes</h2>
+    {% gen_table delegate_project_list %}
+</div>
+{% endif %}
+
 {% if leader_project_list %}
 <div class="module">
     <h2>Projects I lead or manage</h2>

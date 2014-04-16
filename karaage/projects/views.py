@@ -43,15 +43,16 @@ def profile_projects(request):
 
     person = request.user
     project_list = person.projects.all()
-    leader_project_list = []
 
-    if person.is_leader():
-        leader_project_list = Project.objects.filter(
-            leaders=person, is_active=True)
+    delegate_project_list = Project.objects.filter(
+        institute__delegates=person, is_active=True)
+    leader_project_list = Project.objects.filter(
+        leaders=person, is_active=True)
 
     return render_to_response(
         'projects/profile_projects.html',
         {'person': person, 'project_list': project_list,
+            'delegate_project_list': delegate_project_list,
             'leader_project_list': leader_project_list},
         context_instance=RequestContext(request))
 
@@ -69,9 +70,7 @@ def add_edit_project(request, project_id=None):
     if util.is_admin(request):
         form = ProjectForm(instance=project, data=request.POST or None)
     else:
-        if project is None:
-            return HttpResponseForbidden('<h1>Access Denied</h1>')
-        if not request.user in project.leaders.all():
+        if not project.can_edit(request):
             return HttpResponseForbidden('<h1>Access Denied</h1>')
         form = UserProjectForm(instance=project, data=request.POST or None)
 
@@ -154,7 +153,8 @@ def project_detail(request, project_id):
 
     return render_to_response(
         'projects/project_detail.html',
-        {'project': project, 'form': form},
+        {'project': project, 'form': form,
+            'can_edit': project.can_edit(request)},
         context_instance=RequestContext(request))
 
 
@@ -185,7 +185,10 @@ def project_list(request, queryset=None, template_name=None, paginate=True):
     project_list = project_list.select_related()
 
     if not util.is_admin(request):
-        project_list = project_list.filter(group__members=request.user)
+        project_list = Project.objects.filter(
+            Q(leaders=request.user, is_active=True) |
+            Q(institute__delegates=request.user, is_active=True) |
+            Q(group__members=request.user, is_active=True)).distinct()
 
     if 'institute' in request.REQUEST:
         project_list = project_list.filter(
@@ -243,9 +246,8 @@ def remove_user(request, project_id, username):
     project = get_object_or_404(Project, pid=project_id)
     person = get_object_or_404(Person, username=username)
 
-    if not util.is_admin(request):
-        if not request.user in project.leaders.all():
-            return HttpResponseForbidden('<h1>Access Denied</h1>')
+    if not project.can_edit(request):
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     query = person.account_set.filter(
         date_deleted__isnull=True, default_project=project)
@@ -268,6 +270,59 @@ def remove_user(request, project_id, username):
     return render_to_response(
         'projects/remove_user_confirm.html',
         {'project': project, 'person': person, 'error': error, },
+        context_instance=RequestContext(request))
+
+
+@login_required
+def grant_leader(request, project_id, username):
+    project = get_object_or_404(Project, pid=project_id)
+    person = get_object_or_404(Person, username=username)
+
+    if not project.can_edit(request):
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
+
+    if project.group.members.filter(pk=person.pk).count() == 0:
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
+
+    if request.method == 'POST':
+        if project.leaders.filter(pk=person.pk).count() == 0:
+            project.leaders.add(person)
+            messages.success(
+                request,
+                "User '%s' granted leader rights for project %s"
+                % (person, project.pid))
+        return HttpResponseRedirect(project.get_absolute_url())
+
+    return render_to_response(
+        'projects/grant_leader.html',
+        {'project': project, 'person': person, },
+        context_instance=RequestContext(request))
+
+
+@login_required
+def revoke_leader(request, project_id, username):
+    project = get_object_or_404(Project, pid=project_id)
+    person = get_object_or_404(Person, username=username)
+
+    if not project.can_edit(request):
+        return HttpResponseForbidden('<h1>Access Denied</h1>')
+
+    error = None
+    if request.user == person:
+        error = "Cannot revoke self."
+
+    elif request.method == 'POST':
+        if project.leaders.filter(pk=person.pk).count() > 0:
+            project.leaders.remove(person)
+            messages.success(
+                request,
+                "User '%s' revoked leader rights for project %s"
+                % (person, project.pid))
+        return HttpResponseRedirect(project.get_absolute_url())
+
+    return render_to_response(
+        'projects/revoke_leader.html',
+        {'project': project, 'person': person, 'error': error},
         context_instance=RequestContext(request))
 
 

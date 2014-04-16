@@ -33,10 +33,21 @@
             {% if not project.is_active and not requestor %}
             <tr><td colspan="2">Deleted by {{ project.deleted_by }} on {{ project.date_deleted }}</td></tr>
             {% endif %}
+            {% if project.leaders %}
             <tr>
                 <th>Leaders:</th>
-                <td>{% for l in project.leaders.all %}<a href="{{ l.get_absolute_url }}">{{ l }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+                <td><ul>
+                    {% for l in project.leaders.all %}
+                    <li>
+                        <a href="{{ l.get_absolute_url }}">{{ l }}</a><br/>
+                        {% if l != request.user and can_edit %}
+                        <a href="{% url 'kg_revoke_leader' project.pid l.username %}" class="deletelink">Revoke</a>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul></td>
             </tr>
+            {% endif %}
             <tr><th>Institute:</th><td><a href="{{ project.institute.get_absolute_url }}">{{ project.institute }}</a></td></tr>
 
 
@@ -81,7 +92,7 @@
                     <li><a href="{% url 'kg_project_edit' project.pid %}" class="changelink">Edit</a></li>
                     {% if project.is_active %}<li><a href="{% url 'kg_project_delete' project.pid %}" class="deletelink">Delete project</a></li>{% endif %}
                 {% else %}
-                    {% if project.is_active and request.user in project.leaders.all %}
+                    {% if can_edit %}
                         <li><a href="{% url 'kg_project_edit' project.pid %}" class="changelink">Edit</a></li>
                     {% endif %}
                 {% endif %}
@@ -143,7 +154,7 @@
                     {% if is_admin %}
                     <th>Last Usage</th>
                     {% endif %}
-                    {% if is_admin or request.user in project.leaders.all %}
+                    {% if can_edit %}
                     <th></th>
                     {% endif %}
                 </tr>
@@ -172,8 +183,13 @@
                     {% if is_admin %}
                     <td>{{ person.last_usage }}</td>
                     {% endif %}
-                    {% if is_admin or request.user in project.leaders.all %}
-                    <td><a href="{% url 'kg_remove_project_member' project.pid person.username %}" class="deletelink">Remove</a></td>
+                    {% if can_edit %}
+                    <td>
+                        <a href="{% url 'kg_remove_project_member' project.pid person.username %}" class="deletelink">Remove</a>
+                        {% if person not in project.leaders.all %}
+                        <a href="{% url 'kg_grant_leader' project.pid person.username %}" class="addlink">Grant leader</a>
+                        {% endif %}
+                    </td>
                     {% endif %}
                 </tr>
                 {% endfor %}

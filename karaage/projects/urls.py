@@ -40,6 +40,12 @@ urlpatterns = patterns(
     url(r'^(?P<project_id>%s)/remove_user/(?P<username>%s)/$'
         % (settings.USERNAME_VALIDATION_RE, settings.PROJECT_VALIDATION_RE),
         'remove_user', name='kg_remove_project_member'),
+    url(r'^(?P<project_id>%s)/grant/(?P<username>%s)/$'
+        % (settings.USERNAME_VALIDATION_RE, settings.PROJECT_VALIDATION_RE),
+        'grant_leader', name='kg_grant_leader'),
+    url(r'^(?P<project_id>%s)/revoke/(?P<username>%s)/$'
+        % (settings.USERNAME_VALIDATION_RE, settings.PROJECT_VALIDATION_RE),
+        'revoke_leader', name='kg_revoke_leader'),
     url(r'^(?P<project_id>%s)/logs/$' % settings.PROJECT_VALIDATION_RE,
         'project_logs', name='kg_project_logs'),
     url(r'^(?P<project_id>%s)/add_comment/$' % settings.PROJECT_VALIDATION_RE,

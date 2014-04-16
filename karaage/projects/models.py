@@ -171,6 +171,38 @@ class Project(models.Model):
 
         return False
 
+    # Can user view this self record?
+    def can_edit(self, request):
+        # The same as can_view, except normal project members cannot edit
+        person = request.user
+
+        if not person.is_authenticated():
+            return False
+
+        if is_admin(request):
+            return True
+
+        if not self.is_active:
+            return False
+
+        if not person.is_active:
+            return False
+
+        if person.is_locked():
+            return False
+
+        # Institute delegate==person can edit any member of institute
+        if self.institute.is_active:
+            if person in self.institute.delegates.all():
+                return True
+
+        # Leader==person can edit projects they lead
+        tmp = self.leaders.filter(pk=person.pk)
+        if tmp.count() > 0:
+            return True
+
+        return False
+
     def activate(self, approved_by):
         if self.is_active is True:
             return

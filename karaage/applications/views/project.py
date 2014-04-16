@@ -19,7 +19,7 @@
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.core.urlresolvers import reverse
 from django.contrib import messages
@@ -804,13 +804,15 @@ def send_invitation(request, project_id=None):
     if project_id is not None:
         project = get_object_or_404(Project, pid=project_id)
 
-    if not is_admin(request):
-        person = request.user
+    if project is None:
 
-        if project is None:
-            return HttpResponseBadRequest("<h1>Bad Request</h1>")
-        if person not in project.leaders.all():
-            return HttpResponseBadRequest("<h1>Bad Request</h1>")
+        if not is_admin(request):
+            return HttpResponseForbidden('<h1>Access Denied</h1>')
+
+    else:
+
+        if not project.can_edit(request):
+            return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     return _send_invitation(request, project)
 

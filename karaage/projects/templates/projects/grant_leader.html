@@ -1,0 +1,31 @@
+{% extends "forms.html" %}
+
+
+{% block title %}Grant Leader{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_project_list' %}">Projects</a>&nbsp;›
+    <a href="{% url 'kg_project_detail' project.pid %}">{{ project.pid }}</a>&nbsp;›
+    Grant leader
+</div>
+{% endblock %}
+
+
+{% block content %}
+{% if error %}
+    <h1>Cannot grant leader rights</h1>
+    <p>{{ error }}</p>
+{% else %}
+    <h1>Are you sure?</h1>
+    <p>Are you sure you want to grant {{ person }} to have leader rights to project "{{ project }}"? </p>
+    <form method="post" action=".">{% csrf_token %}
+        <div>
+            <input type="hidden" name="post" value="yes" />
+            <input type="submit" value="Yes, I'm sure" />
+        </div>
+    </form>
+{% endif %}
+{% endblock %}
