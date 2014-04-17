@@ -22,7 +22,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
 
-from karaage.projects.tables import ProjectFilter, ProjectTable
+from karaage.projects.tables import ProjectTable
 from karaage.projects.models import Project
 from karaage.machines.tables import MachineTable, MachineCategoryTable
 from karaage.machines.tables import AccountTable
