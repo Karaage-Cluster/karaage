@@ -1,4 +1,5 @@
 {% extends "main.html" %}
+{% load render_table from django_tables2 %}
 
 
 {% block title %}Machine Accounts{% endblock %}
@@ -17,44 +18,8 @@
 {% block content %}
 <div id="content-main">
     <div class="module">
-        <h2>Users Accounts</h2>
-        <h4>Total user accounts: {{ accounts|length }}</h4>
-        {% if accounts %}
-        <table cellspacing="0">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Person</th>
-                    <th>Username</th>
-                    <th>Default Project</th>
-                    <th>Date Created</th>
-                    <th>Date Deleted</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for account in accounts %}
-                <tr>
-                    <td>
-                        {% if account.date_deleted %}
-                        <img alt="Not Active" src="{{ STATIC_URL }}img/icon-no.gif" title="Not Active"/>
-                        {% else %}
-                        {% if account.is_locked %}
-                        <img alt="locked" src="{{ STATIC_URL }}img/lock.png"/>
-                        {% else %}
-                        <img alt="Active" src="{{ STATIC_URL }}img/icon-yes.gif" title="Active"/>
-                        {% endif %}
-                        {% endif %}
-                    </td>
-                    <td><a href="{{ account.person.get_absolute_url }}">{{ account.person }}</a></td>
-                    <td>{{ account.username }}</td>
-                    <td>{% if account.default_project %}<a href="{{ account.default_project.get_absolute_url }}">{{ account.default_project }}</a>{% else %}No project{% endif %}</td>
-                    <td>{{ account.date_created }}</td>
-                    <td>{{ account.date_deleted }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% endif %}
+        <h2>Accounts in {{ machine_category }}</h2>
+        {% render_table table %}
     </div>
 </div>
 {% endblock %}
