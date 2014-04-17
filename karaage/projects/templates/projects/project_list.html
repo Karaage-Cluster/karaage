@@ -1,8 +1,9 @@
-{% extends "list.html" %}
+{% extends "main.html" %}
+{% load render_table from django_tables2 %}
+{% load forms %}
 
 
 {% block title %}Projects{% endblock %}
-{% block short_title %}Project List{% endblock %}
 
 
 {% block breadcrumbs %}<div class="breadcrumbs">
@@ -11,12 +12,27 @@
 {% endblock %}
 
 
-{% block actions %}
-{% if is_admin %}
-<div class="object-tools">
-    <ul>
-        <li><a class="addlink" href="{% url 'kg_project_add' %}">Add project</a></li>
-    </ul>
+{% block content %}
+<div id="content-main">
+    <div class="toolbar">
+        <button id="opener">Filter</button>
+        {% for key, value in spec %}
+            {{ key }} = {{ value }}{% if not forloop.last %}, {% else %}.{% endif %}
+        {% endfor %}
+        {% if is_admin %}
+        <div class="object-tools">
+            <ul>
+                <li><a class="addlink" href="{% url 'kg_project_add' %}">Add project</a></li>
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+    <div class="module clear">
+        <h2>{{ title }}</h2>
+        {% render_table table %}
+    </div>
+    <form action="" id="dialog-modal" title="Filter" method="get">
+        {% form_as_div filter.form %}
+    </form>
 </div>
-{% endif %}
 {% endblock %}
