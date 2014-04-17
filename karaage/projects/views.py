@@ -15,20 +15,21 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import django_tables2 as tables
+from django_tables2.utils import A
+import django_filters
+
 from django.forms.util import ErrorList
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.db.models import Q
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 
-from karaage.common.filterspecs import Filter, FilterBar
-
 from karaage.common.decorators import admin_required, login_required
 from karaage.people.models import Person
-from karaage.institutes.models import Institute
+from karaage.people.tables import PeopleColumn
 from karaage.machines.models import Account
 from karaage.projects.models import Project, ProjectQuota
 from karaage.projects.forms import ProjectForm, UserProjectForm, \
@@ -36,6 +37,28 @@ from karaage.projects.forms import ProjectForm, UserProjectForm, \
 from karaage.projects.utils import get_new_pid, add_user_to_project, \
     remove_user_from_project
 import karaage.common as util
+
+
+class ProjectFilter(django_filters.FilterSet):
+    pid = django_filters.CharFilter(lookup_type="icontains", label="PID")
+    name = django_filters.CharFilter(lookup_type="icontains")
+
+    class Meta:
+        model = Project
+        fields = ('pid', 'name', 'institute', 'is_approved', 'is_active')
+
+
+class ProjectTable(tables.Table):
+    pid = tables.LinkColumn(
+        'kg_project_detail', args=[A('pk')], verbose_name="PID")
+    institute = tables.LinkColumn(
+        'kg_institute_detail', args=[A('institute.pk')])
+    leaders = PeopleColumn(orderable=False)
+
+    class Meta:
+        model = Project
+        fields = ('pid', 'name', 'institute',
+                  'leaders', 'active', 'last_usage')
 
 
 @login_required
@@ -172,71 +195,37 @@ def project_verbose(request, project_id):
 
 
 @login_required
-def project_list(request, queryset=None, template_name=None, paginate=True):
+def project_list(request, queryset=None):
 
     if queryset is None:
-        project_list = Project.objects.all()
-    else:
-        project_list = queryset
-
-    if template_name is None:
-        template_name = 'projects/project_list.html'
-
-    project_list = project_list.select_related()
+        queryset = Project.objects.all()
 
     if not util.is_admin(request):
-        project_list = Project.objects.filter(
+        queryset = queryset.filter(
             Q(leaders=request.user, is_active=True) |
             Q(institute__delegates=request.user, is_active=True) |
             Q(group__members=request.user, is_active=True)).distinct()
 
-    if 'institute' in request.REQUEST:
-        project_list = project_list.filter(
-            institute=int(request.GET['institute']))
+    queryset = queryset.select_related()
 
-    if 'status' in request.REQUEST:
-        project_list = project_list.filter(
-            is_active=int(request.GET['status']))
+    filter = ProjectFilter(request.GET, queryset=queryset)
+    table = ProjectTable(filter)
+    tables.RequestConfig(request).configure(table)
 
-    if 'search' in request.REQUEST:
-        terms = request.REQUEST['search'].lower()
-        query = Q()
-        for term in terms.split(' '):
-            query = Q(pid__icontains=term)
-            query = query | Q(name__icontains=term)
-            query = query | Q(description__icontains=term)
-            query = query | Q(leaders__short_name__icontains=term)
-            query = query | Q(leaders__full_name__icontains=term)
-            query = query | Q(institute__name__icontains=term)
-        project_list = project_list.filter(query).distinct()
-    else:
-        terms = ""
-
-    filter_list = []
-    filter_list.append(Filter(request, 'status', {1: 'Active', 0: 'Deleted'}))
-    filter_list.append(Filter(request, 'institute', Institute.active.all()))
-    filter_bar = FilterBar(request, filter_list)
-
-    page_no = request.GET.get('page')
-    if paginate:
-        paginator = Paginator(project_list, 50)
-    else:
-        paginator = Paginator(project_list, 100000)
-
-    # If page request (9999) is out of range, deliver last page of results.
-    try:
-        page = paginator.page(page_no)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        page = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        page = paginator.page(paginator.num_pages)
+    spec = []
+    for name, value in filter.form.cleaned_data.iteritems():
+        if value is not None and value != "":
+            name = name.replace('_', ' ').capitalize()
+            spec.append((name, value))
 
     return render_to_response(
-        template_name,
-        {'page': page, 'filter_bar': filter_bar,
-            'project_list': project_list, 'terms': terms},
+        'projects/project_list.html',
+        {
+            'table': table,
+            'filter': filter,
+            'spec': spec,
+            'title': "Project list",
+        },
         context_instance=RequestContext(request))
 
 
