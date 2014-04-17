@@ -1,9 +1,9 @@
-{% extends "list.html" %}
+{% extends "main.html" %}
 {% load url from future %}
+{% load render_table from django_tables2 %}
 
 
 {% block title %}Machine Categories{% endblock %}
-{% block short_title %}Machine Category List{% endblock %}
 
 
 {% block breadcrumbs %}
@@ -13,31 +13,19 @@
 {% endblock %}
 
 
-{% block actions %}
-{% if is_admin %}
-<div class="object-tools">
-    <ul>
-        <li><a class="addlink" href="{% url 'kg_machine_category_add' %}">Add machine category</a></li>
-        <li><a class="addlink" href="{% url 'kg_machine_add' %}">Add machine</a></li>
-    </ul>
+{% block content %}
+<div id="content-main">
+    <div class="module clear">
+        <h2>Machine Category List</h2>
+        {% render_table table %}
+        {% if is_admin %}
+        <div class="object-tools">
+            <ul>
+                <li><a class="addlink" href="{% url 'kg_machine_category_add' %}">Add machine category</a></li>
+                <li><a class="addlink" href="{% url 'kg_machine_add' %}">Add machine</a></li>
+            </ul>
+        </div>
+        {% endif %}
+    </div>
 </div>
-{% endif %}
-{% endblock %}
-
-
-{% block list_content %}
-<table>
-    <thead>
-        <tr>
-            <th>Machine Category Name</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for c in page.object_list %}
-        <tr>
-            <td><a href="{% url 'kg_machine_category_detail' c.pk %}">{{ c }}</a></td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
 {% endblock %}
