@@ -23,9 +23,9 @@
 
         <h3>{{ project }}
             {% if project.is_active and project.is_approved %}
-            <img alt="Active" src="{{ STATIC_URL }}img/icon_success.gif"/>
+            <span class="yes"></span>
             {% else %}
-            <img alt="Not Active" src="{{ STATIC_URL }}img/icon_error.gif"/>
+            <span class="no"></span>
             {% endif %}
         </h3>
 
