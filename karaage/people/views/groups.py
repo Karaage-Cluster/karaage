@@ -15,13 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import django_tables2 as tables
+from django_tables2.columns.linkcolumn import BaseLinkColumn
+from django_tables2.utils import A
+import django_filters
+
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db.models import Q
+from django.utils.safestring import mark_safe
 
 from karaage.common.decorators import admin_required
 from karaage.people.models import Person, Group
@@ -30,38 +34,57 @@ from karaage.people.forms import AddGroupMemberForm
 import karaage.common as util
 
 
+class GroupFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(lookup_type="icontains")
+    description = django_filters.CharFilter(lookup_type="icontains")
+
+    class Meta:
+        model = Group
+        fields = ("name", "description")
+
+
+class PeopleColumn(BaseLinkColumn):
+    def render(self, value):
+        people = []
+        for person in value.all():
+            url = reverse("kg_person_detail", args=[person.username])
+            link = self.render_link(url, text=unicode(person))
+            people.append(link)
+        return mark_safe(", ".join(people))
+
+
+class GroupTable(tables.Table):
+    name = tables.LinkColumn(
+        'kg_group_detail', args=[A('name')])
+    members = PeopleColumn(orderable=False)
+
+    class Meta:
+        model = Group
+        fields = ("name", "description")
+
+
 @admin_required
-def group_list(request, queryset=None):
-    if queryset is None:
-        queryset = Group.objects.select_related()
+def group_list(request):
+    queryset = Group.objects.select_related()
 
-    group_list = queryset
+    filter = GroupFilter(request.GET, queryset=queryset)
+    table = GroupTable(filter)
+    tables.RequestConfig(request).configure(table)
 
-    if 'search' in request.REQUEST:
-        terms = request.REQUEST['search'].lower()
-        query = Q()
-        for term in terms.split(' '):
-            q = Q(name__icontains=term) | Q(description__icontains=term)
-            query = query & q
-
-        group_list = group_list.filter(query)
-    else:
-        terms = ""
-
-    page_no = request.GET.get('page')
-    paginator = Paginator(group_list, 50)
-    try:
-        page = paginator.page(page_no)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        page = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        page = paginator.page(paginator.num_pages)
+    spec = []
+    for name, value in filter.form.cleaned_data.iteritems():
+        if value is not None and value != "":
+            name = name.replace('_', ' ').capitalize()
+            spec.append((name, value))
 
     return render_to_response(
         'people/group_list.html',
-        {'page': page, 'terms': terms},
+        {
+            'table': table,
+            'filter': filter,
+            'spec': spec,
+            'title': "Group list",
+        },
         context_instance=RequestContext(request))
 
 
