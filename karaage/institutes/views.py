@@ -15,18 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import django_tables2 as tables
+
 from django.forms.util import ErrorList
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.core.urlresolvers import reverse
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.forms.models import inlineformset_factory
 
 from karaage.common import is_admin
-from karaage.common.filterspecs import Filter, FilterBar
 from karaage.common.decorators import admin_required, login_required
 import karaage.common as util
+from karaage.institutes.tables import InstituteTable, InstituteFilter
 from karaage.institutes.models import Institute, InstituteQuota, \
     InstituteDelegate
 from karaage.institutes.forms import InstituteForm, InstituteQuotaForm, \
@@ -77,38 +78,29 @@ def institute_verbose(request, institute_id):
 @login_required
 def institute_list(request):
 
-    institute_list = Institute.objects.all()
+    queryset = Institute.objects.all()
     if not is_admin(request):
-        institute_list = institute_list.filter(
+        queryset = institute_list.filter(
             is_active=True, delegates=request.user)
 
-    if 'active' in request.REQUEST:
-        institute_list = institute_list.filter(
-            is_active=int(request.GET['active']))
+    filter = InstituteFilter(request.GET, queryset=queryset)
+    table = InstituteTable(filter)
+    tables.RequestConfig(request).configure(table)
 
-    terms = ""
-    if 'search' in request.REQUEST:
-        institute_list = institute_list.filter(
-            name__icontains=request.GET['search'])
-        terms = request.GET['search']
-
-    filter_list = []
-    filter_list.append(Filter(request, 'active', {1: 'Yes', 0: 'No'}))
-    filter_bar = FilterBar(request, filter_list)
-
-    page_no = request.GET.get('page')
-    paginator = Paginator(institute_list, 50)
-    try:
-        page = paginator.page(page_no)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        page = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        page = paginator.page(paginator.num_pages)
+    spec = []
+    for name, value in filter.form.cleaned_data.iteritems():
+        if value is not None and value != "":
+            name = name.replace('_', ' ').capitalize()
+            spec.append((name, value))
 
     return render_to_response(
-        'institutes/institute_list.html', locals(),
+        'institutes/institute_list.html',
+        {
+            'table': table,
+            'filter': filter,
+            'spec': spec,
+            'title': "Institute list",
+        },
         context_instance=RequestContext(request))
 
 
