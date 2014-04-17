@@ -15,14 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import django_tables2 as tables
+
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render_to_response
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
-from django.db.models import Q
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
+from karaage.projects.tables import ProjectFilter, ProjectTable
 from karaage.projects.models import Project
+from karaage.machines.tables import MachineTable, MachineCategoryTable
+from karaage.machines.tables import AccountTable
 from karaage.machines.models import Machine, MachineCategory
 from karaage.machines.forms import MachineForm
 from karaage.common.decorators import admin_required, login_required
@@ -112,33 +115,14 @@ def machine_add_comment(request, machine_id):
 
 @login_required
 def category_list(request):
-    category_list = MachineCategory.objects.all()
+    queryset = MachineCategory.objects.all()
 
-    if 'search' in request.REQUEST:
-        terms = request.REQUEST['search'].lower()
-        query = Q()
-        for term in terms.split(' '):
-            q = Q(name=term) | Q(machine__name=term)
-            query = query & q
-
-        category_list = category_list.filter(query)
-    else:
-        terms = ""
-
-    page = request.GET.get('page')
-    paginator = Paginator(category_list, 50)
-    try:
-        page = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        page = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        page = paginator.page(paginator.num_pages)
+    table = MachineCategoryTable(queryset)
+    tables.RequestConfig(request).configure(table)
 
     return render_to_response(
         'machines/machinecategory_list.html',
-        {'terms': terms, 'page': page},
+        {'table': table},
         context_instance=RequestContext(request))
 
 
@@ -157,30 +141,43 @@ def category_edit(request, category_id):
 @login_required
 def category_detail(request, category_id):
     machine_category = get_object_or_404(MachineCategory, pk=category_id)
+
+    queryset = machine_category.machine_set.all()
+    table = MachineTable(queryset)
+    tables.RequestConfig(request).configure(table)
+
     return render_to_response(
         'machines/machinecategory_detail.html',
-        {'machine_category': machine_category, },
+        {'machine_category': machine_category, 'table': table},
         context_instance=RequestContext(request))
 
 
 @admin_required
 def category_accounts(request, category_id):
     machine_category = get_object_or_404(MachineCategory, pk=category_id)
-    accounts = machine_category.account_set.filter(date_deleted__isnull=True)
+
+    queryset = machine_category.account_set.all()
+    table = AccountTable(queryset)
+    tables.RequestConfig(request).configure(table)
+
     return render_to_response(
         'machines/machinecategory_accounts.html',
-        {'machine_category': machine_category, 'accounts': accounts},
+        {'machine_category': machine_category, 'table': table},
         context_instance=RequestContext(request))
 
 
 @admin_required
 def category_projects(request, category_id):
     machine_category = get_object_or_404(MachineCategory, pk=category_id)
-    project_list = Project.objects.filter(
+
+    queryset = Project.objects.filter(
         projectquota__machine_category=machine_category)
+    table = ProjectTable(queryset)
+    tables.RequestConfig(request).configure(table)
+
     return render_to_response(
         'machines/machinecategory_projects.html',
-        {'machine_category': machine_category, 'project_list': project_list},
+        {'machine_category': machine_category, 'table': table},
         context_instance=RequestContext(request))
 
 
