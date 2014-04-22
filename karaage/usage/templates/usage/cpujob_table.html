@@ -21,7 +21,11 @@
         {% for u in object_list %}
         <tr>
             <td><a href="{{ u.get_absolute_url }}">{{ u.jobid }}</a></td>
-            <td><a href="{{ u.account.person.get_absolute_url }}">{{ u.account.person }}</a></td>
+            <td>
+                {% if u.account.person %}
+                <a href="{{ u.account.person.get_absolute_url }}">{{ u.account.person }}</a>
+                {% endif %}
+            </td>
             <td>{{ u.account }}</td>
             <td><a href="{{ u.project.get_absolute_url }}">{{ u.project.pid }}</a></td>
             <td><a href="{{ u.machine.get_absolute_url }}">{{ u.machine }}</a></td>

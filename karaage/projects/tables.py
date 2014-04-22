@@ -17,12 +17,24 @@
 
 import django_tables2 as tables
 from django_tables2.utils import A
+from django_tables2.columns.linkcolumn import BaseLinkColumn
 import django_filters
+
 from django.utils.safestring import mark_safe
+from django.core.urlresolvers import reverse
 
 from .models import Project
-
 from karaage.people.tables import PeopleColumn
+
+
+class ProjectColumn(BaseLinkColumn):
+    def __init__(self, *args, **kwargs):
+        super(ProjectColumn, self).__init__(*args, empty_values=(), **kwargs)
+
+    def render(self, value):
+        url = reverse('kg_project_detail', args=[value.pid])
+        link = self.render_link(url, text=unicode(value.pid))
+        return link
 
 
 class ProjectFilter(django_filters.FilterSet):

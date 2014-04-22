@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import django_tables2 as tables
 import datetime
 from decimal import Decimal
 from celery.task import Task
@@ -28,17 +29,16 @@ from django.conf import settings
 from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.template.defaultfilters import dictsortreversed
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.cache import cache
 
 from karaage.common.decorators import admin_required, usage_required
-from karaage.common.filterspecs import Filter, FilterBar, DateFilter
 from karaage.people.models import Person
 from karaage.institutes.models import Institute, InstituteQuota
 from karaage.projects.models import Project, ProjectQuota
-from karaage.machines.models import Account, MachineCategory, Machine
-from karaage.usage.models import CPUJob, Queue
+from karaage.machines.models import Account, MachineCategory
+from karaage.usage.models import CPUJob
 from karaage.usage.forms import UsageSearchForm
+from karaage.usage.tables import CPUJobFilter, CPUJobTable
 import karaage.usage.models as models
 import karaage.usage.graphs as graphs
 import karaage.usage.tasks as tasks
@@ -815,73 +815,24 @@ def job_list(request):
     if not getattr(settings, 'USAGE_IS_PUBLIC', False):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
-    job_list = CPUJob.objects.select_related()
+    queryset = CPUJob.objects.select_related()
 
-    if 'person' in request.REQUEST:
-        job_list = job_list.filter(
-            account__person__username=request.GET['person'])
+    filter = CPUJobFilter(request.GET, queryset=queryset)
+    table = CPUJobTable(filter.qs)
+    tables.RequestConfig(request).configure(table)
 
-    if 'machine' in request.REQUEST:
-        job_list = job_list.filter(
-            machine__id=int(request.GET['machine']))
-
-    if 'machine_category' in request.REQUEST:
-        # we must do two separate queries here, otherwise mysql takes
-        # ages and uses a lot of disk space.
-        machines = Machine.objects.filter(
-            category=int(request.GET['machine_category']))
-        job_list = job_list.filter(machine__in=machines)
-
-    if 'queue' in request.REQUEST:
-        job_list = job_list.filter(queue=request.GET['queue'])
-
-    if 'software' in request.REQUEST:
-        job_list = job_list.filter(
-            software__software__id=int(request.GET['software']))
-
-    if 'account' in request.REQUEST:
-        job_list = job_list.filter(account__pk=int(request.GET['account']))
-
-    if 'project' in request.REQUEST:
-        job_list = job_list.filter(project__pid=request.GET['project'])
-
-    params = dict(request.GET.items())
-    m_params = dict(
-        [(str(k), str(v)) for k, v in params.items() if k.startswith('date__')]
-    )
-    job_list = job_list.filter(**m_params)
-
-    if 'search' in request.REQUEST:
-        terms = request.REQUEST['search'].lower()
-        query = Q()
-        for term in terms.split(' '):
-            q = Q(jobid=term)
-            q = q | Q(account__person__username__icontains=term)
-            q = q | Q(project__pid__icontains=term)
-            query = query & q
-
-        job_list = job_list.filter(query)
-    else:
-        terms = ""
-
-    filter_list = []
-    filter_list.append(DateFilter(request, 'date'))
-    filter_list.append(Filter(request, 'machine', Machine.objects.all()))
-    filter_list.append(Filter(request, 'queue', Queue.objects.all()))
-    filter_bar = FilterBar(request, filter_list)
-
-    page_no = request.GET.get('page')
-    paginator = Paginator(job_list, 50)
-    try:
-        page = paginator.page(page_no)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        page = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        page = paginator.page(paginator.num_pages)
+    spec = []
+    for name, value in filter.form.cleaned_data.iteritems():
+        if value is not None and value != "":
+            name = name.replace('_', ' ').capitalize()
+            spec.append((name, value))
 
     return render_to_response(
         'usage/job_list.html',
-        {'page': page, 'filter_bar': filter_bar, 'terms': terms},
+        {
+            'table': table,
+            'filter': filter,
+            'spec': spec,
+            'title': "Job list",
+        },
         context_instance=RequestContext(request))
