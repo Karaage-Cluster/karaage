@@ -15,26 +15,24 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import django_tables2 as tables
 import datetime
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse
-from django.db.models import Q
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db.models import Count, Sum
 from django.template.defaultfilters import wordwrap
 
-from karaage.common.filterspecs import Filter, FilterBar, DateFilter
 from karaage.common.decorators import admin_required, login_required
 from karaage.software.models import SoftwareCategory, Software, SoftwareVersion
 from karaage.software.models import SoftwareLicense, SoftwareLicenseAgreement
 from karaage.software.forms import AddPackageForm, LicenseForm
 from karaage.software.forms import SoftwareVersionForm
+from karaage.software.tables import SoftwareFilter, SoftwareTable
 from karaage.people.models import Person
-from karaage.machines.models import Machine
 from karaage.common import get_date_range, log
 import karaage.common as util
 
@@ -54,56 +52,25 @@ def software_list(request):
     if not util.is_admin(request):
         return join_package_list(request)
 
-    software_list = Software.objects.all()
+    queryset = Software.objects.all().select_related()
+    filter = SoftwareFilter(request.GET, queryset=queryset)
+    table = SoftwareTable(filter.qs)
+    tables.RequestConfig(request).configure(table)
 
-    if 'category' in request.REQUEST:
-        software_list = software_list.filter(
-            category=int(request.GET['category']))
-    if 'machine' in request.REQUEST:
-        software_list = software_list.filter(
-            softwareversion__machines=int(request.GET['machine']))
-
-    params = dict(request.GET.items())
-    m_params = dict(
-        [(str(k), str(v)) for k, v in params.items()
-            if k.startswith('softwareversion__last_used_')])
-    software_list = software_list.filter(**m_params).distinct()
-
-    if 'search' in request.REQUEST:
-        terms = request.REQUEST['search'].lower()
-        query = Q()
-        for term in terms.split(' '):
-            q = Q(name__icontains=term)
-            q = q | Q(description__icontains=term)
-            q = q | Q(homepage__icontains=term)
-            query = query & q
-
-        software_list = software_list.filter(query)
-    else:
-        terms = ""
-
-    filter_list = []
-    filter_list.append(
-        Filter(request, 'category', SoftwareCategory.objects.all()))
-    filter_list.append(Filter(request, 'machine', Machine.objects.all()))
-    filter_list.append(DateFilter(request, 'softwareversion__last_used'))
-
-    filter_bar = FilterBar(request, filter_list)
-
-    page_no = request.GET.get('page')
-    paginator = Paginator(software_list, 50)
-    try:
-        page = paginator.page(page_no)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        page = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        page = paginator.page(paginator.num_pages)
+    spec = []
+    for name, value in filter.form.cleaned_data.iteritems():
+        if value is not None and value != "":
+            name = name.replace('_', ' ').capitalize()
+            spec.append((name, value))
 
     return render_to_response(
         'software/software_list.html',
-        locals(),
+        {
+            'table': table,
+            'filter': filter,
+            'spec': spec,
+            'title': "Software list",
+        },
         context_instance=RequestContext(request))
 
 
