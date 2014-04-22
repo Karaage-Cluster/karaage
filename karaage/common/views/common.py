@@ -15,10 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import django_tables2 as tables
+
 from django.conf import settings
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -27,6 +28,7 @@ from django.http import HttpResponseRedirect
 from karaage.common import is_admin
 from karaage.common.decorators import admin_required
 from karaage.common.models import LogEntry
+from karaage.common.tables import LogEntryFilter, LogEntryTable
 from karaage.people.models import Person, Group
 from karaage.projects.models import Project
 
@@ -118,36 +120,26 @@ def search(request):
 
 @admin_required
 def log_list(request):
-    log_list = LogEntry.objects.all()
+    queryset = LogEntry.objects.all()
 
-    if 'search' in request.REQUEST:
-        terms = request.REQUEST['search'].lower()
-        query = Q()
-        for term in terms.split(' '):
-            q = Q(user__username__iexact=term)
-            q = q | Q(object_repr__iexact=term)
-            q = q | Q(change_message__icontains=term)
-            query = query & q
+    filter = LogEntryFilter(request.GET, queryset=queryset)
+    table = LogEntryTable(filter.qs)
+    tables.RequestConfig(request).configure(table)
 
-        log_list = log_list.filter(query)
-    else:
-        terms = ""
-
-    paginator = Paginator(log_list, 50)
-
-    page = request.GET.get('page')
-    try:
-        page = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        page = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        page = paginator.page(paginator.num_pages)
+    spec = []
+    for name, value in filter.form.cleaned_data.iteritems():
+        if value is not None and value != "":
+            name = name.replace('_', ' ').capitalize()
+            spec.append((name, value))
 
     return render_to_response(
         'common/log_list.html',
-        {'page': page, 'short': False, 'terms': terms},
+        {
+            'table': table,
+            'filter': filter,
+            'spec': spec,
+            'title': "Institute list",
+        },
         context_instance=RequestContext(request))
 
 

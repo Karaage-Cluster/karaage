@@ -19,13 +19,13 @@ import datetime
 import importlib
 import warnings
 
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http import QueryDict
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
-from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
-from django.db.models import Q
+from django.core.urlresolvers import reverse
+from django.contrib.contenttypes.models import ContentType
 
 from karaage.middleware.threadlocals import get_current_user
 from karaage.common.forms import CommentForm
@@ -123,45 +123,11 @@ def new_random_token():
 
 
 def log_list(request, breadcrumbs, obj):
-    log_list = LogEntry.objects.filter(
-        content_type=ContentType.objects.get_for_model(obj.__class__),
-        object_id=obj.pk
-    )
-
-    if 'search' in request.REQUEST:
-        terms = request.REQUEST['search'].lower()
-        query = Q()
-        for term in terms.split(' '):
-            q = Q(user__username__iexact=term)
-            q = q | Q(object_repr__iexact=term)
-            q = q | Q(change_message__icontains=term)
-            query = query & q
-
-        log_list = log_list.filter(query)
-    else:
-        terms = ""
-
-    paginator = Paginator(log_list, 50)
-
-    page = request.GET.get('page')
-    try:
-        page = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        page = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        page = paginator.page(paginator.num_pages)
-
-    return render_to_response(
-        'common/log_list.html',
-        {
-            'short': True, 'obj': obj,
-            'page': page,
-            'breadcrumbs': breadcrumbs,
-            'terms': terms,
-        },
-        context_instance=RequestContext(request))
+    result = QueryDict("", mutable=True)
+    result['content_type'] = ContentType.objects.get_for_model(obj).pk
+    result['object_id'] = obj.pk
+    url = reverse('kg_log_list') + "?" + result.urlencode()
+    return HttpResponseRedirect(url)
 
 
 def add_comment(request, breadcrumbs, obj):
