@@ -112,3 +112,6 @@ class LogEntry(models.Model):
 
     def is_deletion(self):
         return self.action_flag == DELETION
+
+    def is_comment(self):
+        return self.action_flag == COMMENT
