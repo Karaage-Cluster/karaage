@@ -741,10 +741,6 @@ div.breadcrumbs {
     width: 100px;
 }
 
-#menu.ui-menu > .ui-menu-item > a {
-    background-color: #bbb;
-}
-
 .ui-menu {
     width: 200px;
 }
@@ -765,52 +761,6 @@ div.breadcrumbs {
 
 .toolbar .object-tools {
     float: right;
-}
-
-/* PAGINATOR */
-
-.paginator {
-    font-size: 11px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    line-height: 22px;
-    margin: 0;
-    border-top: 1px solid #ddd;
-}
-
-.paginator a:link, .paginator a:visited {
-    padding: 2px 6px;
-    border: solid 1px #ccc;
-    background: white;
-    text-decoration: none;
-}
-
-.paginator a.showall {
-    padding: 0 !important;
-    border: none !important;
-}
-
-.paginator a.showall:hover {
-    color: #036 !important;
-    background: transparent !important;
-}
-
-.paginator .end {
-    border-width: 2px !important;
-    margin-right: 6px;
-}
-
-.paginator .this-page {
-    padding: 2px 6px;
-    font-weight: bold;
-    font-size: 13px;
-    vertical-align: top;
-}
-
-.paginator a:hover {
-    color: white;
-    background: #5b80b2;
-    border-color: #036;
 }
 
 /* django-tables pagination */
