@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import django_tables2 as tables
 import datetime
 from decimal import Decimal
 from celery.task import Task
@@ -39,6 +40,7 @@ from karaage.projects.models import Project, ProjectQuota
 from karaage.machines.models import Account, MachineCategory, Machine
 from karaage.usage.models import CPUJob, Queue
 from karaage.usage.forms import UsageSearchForm
+from karaage.usage.tables import CPUJobFilter, CPUJobTable
 import karaage.usage.models as models
 import karaage.usage.graphs as graphs
 import karaage.usage.tasks as tasks
@@ -815,7 +817,28 @@ def job_list(request):
     if not getattr(settings, 'USAGE_IS_PUBLIC', False):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
-    job_list = CPUJob.objects.select_related()
+    queryset = CPUJob.objects.select_related()
+
+    filter = CPUJobFilter(request.GET, queryset=queryset)
+    table = CPUJobTable(filter)
+    tables.RequestConfig(request).configure(table)
+
+    spec = []
+    for name, value in filter.form.cleaned_data.iteritems():
+        if value is not None and value != "":
+            name = name.replace('_', ' ').capitalize()
+            spec.append((name, value))
+
+    return render_to_response(
+        'usage/job_list.html',
+        {
+            'table': table,
+            'filter': filter,
+            'spec': spec,
+            'title': "Job list",
+        },
+        context_instance=RequestContext(request))
+
 
     if 'person' in request.REQUEST:
         job_list = job_list.filter(
