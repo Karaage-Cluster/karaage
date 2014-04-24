@@ -63,20 +63,6 @@ AUTH_USER_MODEL = 'people.Person'
 # * an application configuration class, or a package containing a
 # * application.
 INSTALLED_APPS = (
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.humanize',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django_xmlrpc',
-    'south',
-    'captcha',
-    'ajax_select',
-    'jsonfield',
-    'django_tables2',
-    'djcelery',
-    'tldap.methods',
     'karaage.common',
     'karaage.legacy.admin',
     'karaage.people',
@@ -89,7 +75,21 @@ INSTALLED_APPS = (
     'karaage.legacy.pbsmoab',
     'karaage.emails',
     'karaage.applications',
+    'django_xmlrpc',
+    'south',
+    'captcha',
+    'ajax_select',
+    'jsonfield',
+    'django_tables2',
+    'djcelery',
+    'tldap.methods',
     'pipeline',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.humanize',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
 )
 
 # List of locations of the template source files searched by
