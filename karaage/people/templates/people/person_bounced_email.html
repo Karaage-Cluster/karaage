@@ -1,4 +1,5 @@
 {% extends "main.html" %}
+{% load render_table from django_tables2 %}
 
 
 {% block title %}Bounced Email{% endblock %}
@@ -18,7 +19,7 @@
 <div id="content-main">
     <p>Submitting this form will send an email to all the <b>active</b> project leaders below and also lock the account</p>
 
-    {% gen_table person.project_set.all %}
+    {% render_table leader_list %}
 
     <form action="." method="post">{% csrf_token %}
         <div>

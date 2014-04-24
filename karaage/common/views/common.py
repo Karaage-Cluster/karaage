@@ -29,25 +29,38 @@ from karaage.common import is_admin
 from karaage.common.decorators import admin_required
 from karaage.common.models import LogEntry
 from karaage.common.tables import LogEntryFilter, LogEntryTable
+from karaage.people.tables import PersonTable, GroupTable
 from karaage.people.models import Person, Group
+from karaage.projects.tables import ProjectTable
 from karaage.projects.models import Project
 
 
 @admin_required
 def admin_index(request):
-    newest_users = Person.objects.order_by('-date_approved', '-id')
-    newest_users = newest_users.filter(date_approved__isnull=False)
-    newest_users = newest_users.select_related()[:5]
+    config = tables.RequestConfig(request, paginate={"per_page": 5})
+
+    newest_people = Person.objects.order_by('-date_approved', '-id')
+    newest_people = newest_people.filter(date_approved__isnull=False)
+    newest_people = newest_people.select_related()
+    newest_people = PersonTable(
+        newest_people, orderable=False, prefix="people-")
+    config.configure(newest_people)
 
     newest_projects = Project.objects.order_by('-date_approved')
     newest_projects = newest_projects.filter(date_approved__isnull=False)
     newest_projects = newest_projects.filter(is_active=True)
-    newest_projects = newest_projects.select_related()[:5]
+    newest_projects = newest_projects.select_related()
+    newest_projects = ProjectTable(
+        newest_projects, orderable=False, prefix="projects-")
+    config.configure(newest_projects)
 
-    recent_actions = request.user.logentry_set.all()[:10]
+    recent_actions = LogEntry.objects.order_by('-action_time', '-id')
+    recent_actions = LogEntryTable(
+        recent_actions, orderable=False, prefix="actions-")
+    config.configure(recent_actions)
 
     var = {
-        'newest_users': newest_users,
+        'newest_people': newest_people,
         'newest_projects': newest_projects,
         'recent_actions': recent_actions,
     }
@@ -64,6 +77,7 @@ def index(request):
 
 @admin_required
 def search(request):
+    config = tables.RequestConfig(request, paginate={"per_page": 5})
 
     if 'sitesearch' in request.GET and request.GET['sitesearch'].strip() != "":
         people_list = Person.objects.all()
@@ -74,7 +88,7 @@ def search(request):
         siteterms = new_data['sitesearch'].lower()
         term_list = siteterms.split(' ')
 
-        # users
+        # people
         query = Q()
         for term in term_list:
             q = Q(username__icontains=term)
@@ -84,6 +98,8 @@ def search(request):
             query = query & q
 
         people_list = people_list.filter(query).distinct()
+        people_list = PersonTable(people_list, prefix="people-")
+        config.configure(people_list)
 
         # groups
         query = Q()
@@ -92,6 +108,8 @@ def search(request):
             query = query & q
 
         group_list = group_list.filter(query)
+        group_list = GroupTable(group_list, prefix="group-")
+        config.configure(group_list)
 
          # projects
         query = Q()
@@ -104,11 +122,8 @@ def search(request):
             query = query & q
 
         project_list = project_list.filter(query).distinct()
-
-        empty = False
-
-        if not (people_list or group_list or project_list):
-            empty = True
+        project_list = ProjectTable(project_list, prefix="project-")
+        config.configure(project_list)
 
         return render_to_response(
             'common/site_search.html',

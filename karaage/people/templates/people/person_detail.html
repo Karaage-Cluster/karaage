@@ -1,5 +1,6 @@
 {% extends "main.html" %}
 {% load url from future %}
+{% load render_table from django_tables2 %}
 
 
 {% block title %}Person{% endblock %}
@@ -42,7 +43,7 @@
             <tr>
               <th>Institutes:</th>
               <td>
-                  <a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a><br/>
+                <a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a><br/>
                 {% for institute in person.institutes.all %}
                 <a href="{{ institute.get_absolute_url }}">{{ institute }}</a>
                 {% if not forloop.last %}, {% endif %}
@@ -156,21 +157,18 @@
         {% endif %}
     </div>
 
-    {% if person.leads.all %}
     <div class="module">
         <h2>Leader of Projects</h2>
-        {% gen_table person.leads.all %}
+        {% render_table leader_project_list %}
     </div>
-    {% endif %}
+
+    <div class="module">
+        <h2>Delegate of Institutes</h2>
+        {% render_table delegate_institute_list %}
+    </div>
+
 
     {% for_each_app_include "person_detail_extra.html" %}
-
-    {% if person.softwarelicenseagreement_set.all and is_admin %}
-    <div class="module">
-        <h2>Software</h2>
-        {% gen_table person.softwarelicenseagreement_set.all %}
-    </div>
-    {% endif %}
 
     {% if is_admin %}
     <div class="module">

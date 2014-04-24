@@ -30,6 +30,7 @@ from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.template.defaultfilters import dictsortreversed
 from django.core.cache import cache
+from django.http import QueryDict
 
 from karaage.common.decorators import admin_required, usage_required
 from karaage.people.models import Person
@@ -469,48 +470,11 @@ def project_usage(request, project_id, machine_category_id):
 
 @admin_required
 def unknown_usage(request):
-    showall = request.REQUEST.get('showall', False)
-    project_list = Project.objects.all()
-    person_list = Person.objects.all()
-
-    if request.method == 'POST':
-
-        try:
-            project_s = Project.objects.get(pid=request.POST['project'])
-        except Project.DoesNotExist:
-            project_s = False
-        try:
-            person = Person.objects.get(pk=request.POST['person'])
-        except Person.DoesNotExist:
-            person = False
-
-        if request.POST.getlist('uid'):
-            jobs = CPUJob.objects.filter(id__in=request.POST.getlist('uid'))
-        else:
-            jobs = []
-        if project_s:
-            for job in jobs:
-                job.project = project_s
-                job.save()
-
-        if person:
-            for job in jobs:
-                machine_category = job.machine.category
-                ua = person.get_account(machine_category)
-                if ua:
-                    job.account = ua
-                    job.save()
-
-    usage_list = CPUJob.objects.filter(
-        Q(project__isnull=True) | Q(account__isnull=True))
-
-    if not showall:
-        year_ago = datetime.date.today() - datetime.timedelta(days=365)
-        usage_list = usage_list.filter(date__gte=year_ago)
-
-    return render_to_response(
-        'usage/unknown_usage.html', locals(),
-        context_instance=RequestContext(request))
+    result = QueryDict("", mutable=True)
+    result['unknown_usage'] = True
+    result['sort'] = "-date"
+    url = reverse('kg_usage_job_list') + "?" + result.urlencode()
+    return HttpResponseRedirect(url)
 
 
 @usage_required

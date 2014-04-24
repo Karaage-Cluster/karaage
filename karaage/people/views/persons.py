@@ -34,6 +34,9 @@ from karaage.people.emails import send_bounced_warning
 from karaage.people.emails import send_reset_password_email
 from karaage.people.forms import AddPersonForm, AdminPersonForm
 from karaage.people.forms import AdminPasswordChangeForm
+from karaage.projects.models import Project
+from karaage.projects.tables import ProjectTable
+from karaage.institutes.tables import InstituteTable
 
 import karaage.common as common
 
@@ -154,6 +157,8 @@ def delete_user(request, username):
 
 @login_required
 def user_detail(request, username):
+    config = tables.RequestConfig(request, paginate={"per_page": 5})
+
     person = get_object_or_404(Person, username=username)
     if not person.can_view(request):
         return HttpResponseForbidden(
@@ -161,8 +166,17 @@ def user_detail(request, username):
             '<p>You do not have permission to view details '
             'about this user.</p>')
 
-    my_projects = person.projects.all()
-    my_pids = [p.pid for p in my_projects]
+    leader_project_list = Project.objects.filter(
+        leaders=person, is_active=True)
+    leader_project_list = ProjectTable(
+        leader_project_list, prefix="leader-")
+    config.configure(leader_project_list)
+
+    delegate_institute_list = person.delegate_for.all()
+    delegate_institute_list = delegate_institute_list.select_related()
+    delegate_institute_list = InstituteTable(
+        delegate_institute_list, prefix="delegate")
+    config.configure(delegate_institute_list)
 
     return render_to_response(
         'people/person_detail.html', locals(),
@@ -269,6 +283,15 @@ def bounced_email(request, username):
             ua.change_shell(ua.previous_shell)
             ua.change_shell(settings.BOUNCED_SHELL)
         return HttpResponseRedirect(person.get_absolute_url())
+
+    leader_list = Person.objects \
+        .filter(
+            groups__members=person,
+            groups__project__is_active=True) \
+        .filter(is_active=True)
+
+    leader_list = PersonTable(
+        leader_list, prefix="leader-")
 
     return render_to_response(
         'people/person_bounced_email.html',

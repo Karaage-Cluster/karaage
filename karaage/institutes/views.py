@@ -17,6 +17,7 @@
 
 import django_tables2 as tables
 
+from django.db.models import Q
 from django.forms.util import ErrorList
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
@@ -32,22 +33,40 @@ from karaage.institutes.models import Institute, InstituteQuota, \
     InstituteDelegate
 from karaage.institutes.forms import InstituteForm, InstituteQuotaForm, \
     DelegateForm
+from karaage.people.models import Person
+from karaage.people.tables import PersonTable
+from karaage.projects.tables import ProjectTable
 
 
 @login_required
 def profile_institutes(request):
+    config = tables.RequestConfig(request, paginate={"per_page": 5})
 
     person = request.user
-    institute_list = person.delegate_for.all()
+
+    my_institute_list = Institute.objects.filter(
+        Q(pk=person.institute_id) | Q(group__members=person))
+    my_institute_list = my_institute_list.select_related()
+    my_institute_list = InstituteTable(my_institute_list, prefix="mine")
+    config.configure(my_institute_list)
+
+    delegate_institute_list = person.delegate_for.all()
+    delegate_institute_list = delegate_institute_list.select_related()
+    delegate_institute_list = InstituteTable(
+        delegate_institute_list, prefix="delegate")
+    config.configure(delegate_institute_list)
 
     return render_to_response(
         'institutes/profile_institutes.html',
-        {'person': person, 'institute_list': institute_list},
+        {'person': person,
+            'my_institute_list': my_institute_list,
+            'delegate_institute_list': delegate_institute_list},
         context_instance=RequestContext(request))
 
 
 @login_required
 def institute_detail(request, institute_id):
+    config = tables.RequestConfig(request, paginate={"per_page": 5})
 
     institute = get_object_or_404(Institute, pk=institute_id)
     if not institute.can_view(request):
@@ -55,6 +74,16 @@ def institute_detail(request, institute_id):
             '<h1>Access Denied</h1>'
             '<p>You do not have permission to view details'
             'about this institute.</p>')
+
+    project_list = institute.project_set.select_related()
+    project_list = ProjectTable(project_list, prefix="project-")
+    config.configure(project_list)
+
+    person_list = Person.objects.filter(
+        Q(institute__pk=institute_id) | Q(groups__institute=institute_id))
+    person_list = person_list.select_related()
+    person_list = PersonTable(person_list, prefix="person-")
+    config.configure(person_list)
 
     return render_to_response(
         'institutes/institute_detail.html',

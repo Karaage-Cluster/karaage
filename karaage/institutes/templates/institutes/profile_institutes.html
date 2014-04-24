@@ -1,5 +1,6 @@
 {% extends "common/profile_base.html" %}
 {% load url from future %}
+{% load render_table from django_tables2 %}
 
 
 {% block title %}Institutes - My profile{% endblock %}
@@ -9,35 +10,11 @@
 {% block profile_content %}
 <div class="module">
     <h2>My Institutes</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Delegate(s)</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            {% with i=person.institute %}
-            <tr>
-                <td>{{ i.name }}</td>
-                <td>{% for delegate in i.delegates.all %}{{ delegate }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
-            </tr>
-            {% endwith %}
-            {% for i in person.institutes.all %}
-            <tr>
-                <td>{{ i.name }}</td>
-                <td>{% for delegate in i.delegates.all %}{{ delegate }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% render_table my_institute_list %}
 </div>
 
-{% if institute_list %}
 <div class="module">
     <h2>Delegate for</h2>
-    {% gen_table institute_list %}
+    {% render_table delegate_institute_list %}
 </div>
-{% endif %}
 {% endblock %}

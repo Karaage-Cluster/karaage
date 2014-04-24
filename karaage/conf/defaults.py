@@ -350,3 +350,8 @@ ADMIN_REQUIRED = False
 # If false, administrators can log in but don't get any special access. Used
 # for karaage-registration.
 ADMIN_IGNORED = False
+
+# Available formatting that can be used for displaying datetime fields on
+# templates.
+SHORT_DATE_FORMAT = "Y-m-d"
+SHORT_DATETIME_FORMAT = "Y-m-d H:m"

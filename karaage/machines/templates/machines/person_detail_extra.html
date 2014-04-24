@@ -41,9 +41,9 @@
                 <th>Institute</th>
                 <th>Leaders</th>
                 <th>Default</th>
-                {% if is_admin %}{% ifnotequal p account.default_project %}
+                {% if is_admin %}
                 <th></th>
-                {% endifnotequal %}{% endif %}
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -67,11 +67,13 @@
                     {% endif %}
                 {% endifequal %}
             </td>
-            {% if is_admin %}{% ifnotequal p account.default_project %}
+            {% if is_admin %}
             <td>
+                {% ifnotequal p account.default_project %}
                 <a href="{% url 'kg_remove_project_member' p.pid person.username %}" class="deletelink">Remove</a>
+                {% endifnotequal %}
             </td>
-            {% endifnotequal %}{% endif %}
+            {% endif %}
         </tr>
         {% endfor %}
         </tbody>

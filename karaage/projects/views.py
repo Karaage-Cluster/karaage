@@ -39,14 +39,24 @@ import karaage.common as util
 
 @login_required
 def profile_projects(request):
+    config = tables.RequestConfig(request, paginate={"per_page": 5})
 
     person = request.user
     project_list = person.projects.all()
+    project_list = ProjectTable(project_list, prefix="mine-")
+    config.configure(project_list)
 
     delegate_project_list = Project.objects.filter(
         institute__delegates=person, is_active=True)
+    delegate_project_list = ProjectTable(
+        delegate_project_list, prefix="delegate-")
+    config.configure(delegate_project_list)
+
     leader_project_list = Project.objects.filter(
         leaders=person, is_active=True)
+    leader_project_list = ProjectTable(
+        leader_project_list, prefix="leader-")
+    config.configure(leader_project_list)
 
     return render_to_response(
         'projects/profile_projects.html',

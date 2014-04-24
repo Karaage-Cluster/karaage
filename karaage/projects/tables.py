@@ -1,3 +1,5 @@
+# coding: utf-8
+
 # Copyright 2007-2014 VPAC
 #
 # This file is part of Karaage.
@@ -32,9 +34,12 @@ class ProjectColumn(BaseLinkColumn):
         super(ProjectColumn, self).__init__(*args, empty_values=(), **kwargs)
 
     def render(self, value):
-        url = reverse('kg_project_detail', args=[value.pid])
-        link = self.render_link(url, text=unicode(value.pid))
-        return link
+        if value is not None:
+            url = reverse('kg_project_detail', args=[value.pid])
+            link = self.render_link(url, text=unicode(value.pid))
+            return link
+        else:
+            return "—"
 
 
 class ProjectFilter(django_filters.FilterSet):

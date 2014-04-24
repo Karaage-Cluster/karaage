@@ -19,14 +19,30 @@ import django_tables2 as tables
 from django_tables2.utils import A
 import django_filters
 
+from django.db.models import Q
+
 from .models import CPUJob
 from karaage.projects.tables import ProjectColumn
+
+
+class UnknownUsageFilter(django_filters.BooleanFilter):
+
+    def filter(self, qs, value):
+        if value is not None:
+            if value:
+                qs = qs.filter(
+                    Q(project__isnull=True) | Q(account__isnull=True))
+            else:
+                qs = qs.filter(
+                    Q(project__isnull=False) & Q(account__isnull=False))
+        return qs
 
 
 class CPUJobFilter(django_filters.FilterSet):
     person = django_filters.CharFilter(name="account__person__username")
     account = django_filters.CharFilter(name="account__pk")
     project = django_filters.CharFilter(name="project__pid")
+    unknown_usage = UnknownUsageFilter()
 
     class Meta:
         model = CPUJob
@@ -36,11 +52,13 @@ class CPUJobFilter(django_filters.FilterSet):
 class CPUJobTable(tables.Table):
     jobid = tables.LinkColumn('kg_usage_job_detail', args=[A('jobid')])
     project = ProjectColumn()
-    person = tables.LinkColumn('kg_person_detail', args=[A('person.username')])
+    person = tables.LinkColumn(
+        'kg_person_detail', accessor="account.person",
+        args=[A('account.person.username')])
     machine = tables.LinkColumn('kg_machine_detail', args=[A('machine.pk')])
 
     class Meta:
         model = CPUJob
-        fields = ('jobid', 'account.person', 'project', 'machine', 'date',
+        fields = ('jobid', 'person', 'project', 'machine', 'date',
                   'queue', 'cpu_usage', 'cores', 'vmem',
                   'wait_time', 'est_wall_time', 'act_wall_time')

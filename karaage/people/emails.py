@@ -44,23 +44,22 @@ def send_bounced_warning(person):
     context = CONTEXT.copy()
     context['person'] = person
 
-    for project in person.project_set.all():
-        if project.is_active:
-            context['project'] = project
-            for leader in project.leaders.all():
-                context['receiver'] = leader
+    for project in person.project_set.filter(is_active=True):
+        context['project'] = project
+        for leader in project.leaders.filter(is_active=True):
+            context['receiver'] = leader
 
-                to_email = leader.email
-                subject = render_to_string(
-                    'people/emails/bounced_email_subject.txt', context)
-                body = render_to_string(
-                    'people/emails/bounced_email_body.txt', context)
-                send_mail(
-                    subject.replace('\n', ''), body,
-                    settings.ACCOUNTS_EMAIL, [to_email])
-                log.change(
-                    leader,
-                    'Sent email about bounced emails from %s' % person)
+            to_email = leader.email
+            subject = render_to_string(
+                'people/emails/bounced_email_subject.txt', context)
+            body = render_to_string(
+                'people/emails/bounced_email_body.txt', context)
+            send_mail(
+                subject.replace('\n', ''), body,
+                settings.ACCOUNTS_EMAIL, [to_email])
+            log.change(
+                leader,
+                'Sent email about bounced emails from %s' % person)
 
 
 def send_reset_password_email(person):

@@ -1,4 +1,5 @@
 {% extends "main.html" %}
+{% load render_table from django_tables2 %}
 
 
 {% block title %}Search{% endblock %}
@@ -14,31 +15,20 @@
 
 {% block content %}
 <div id="content-main">
-
-    {% if empty %}
-    <p>Search returned no results</p>
-    {% endif %}
-
-    {% if people_list %}
     <div class="module">
     <h2>People</h2>
-    {% gen_table people_list %}
+    {% render_table people_list %}
     </div>
-    {% endif %}
 
-    {% if group_list %}
     <div class="module">
     <h2>Groups</h2>
-    {% gen_table group_list %}
+    {% render_table group_list %}
     </div>
-    {% endif %}
 
-    {% if project_list %}
     <div class="module">
     <h2>Projects</h2>
-    {% gen_table project_list %}
+    {% render_table project_list %}
     </div>
-    {% endif %}
 </div>
 {% endblock %}
  

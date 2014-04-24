@@ -1,6 +1,7 @@
 {% extends "forms.html" %}
 {% load forms %}
 {% load applications %}
+{% load render_table from django_tables2 %}
 
 
 {% block title %}Approve Application{% endblock %}
@@ -37,9 +38,8 @@
         <h3>Similar People</h3>
         <form method="post" action=".">{% csrf_token %}
             <p>Please check that the applicant isn't an existing user.</p>
-            {% if application.applicant.similar_people %}
-            {% gen_table application.applicant.similar_people %}
-            {% endif %}
+            {% get_similar_people_table  application.applicant as table %}
+            {% render_table table %}
             {% if 'duplicate' in actions %}
             <input type="submit" name="duplicate" value="Is existing user" class="button" />
             {% endif %}

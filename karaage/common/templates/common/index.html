@@ -1,5 +1,6 @@
 {% extends "main.html" %}
 {% load url from future %}
+{% load render_table from django_tables2 %}
 {% block title %}Home{% endblock %}
 
 
@@ -11,13 +12,13 @@
     {% if is_admin %}
 
     <div class="module">
-        <h2>Newest Users</h2>
-        {% gen_table newest_users %}
+        <h2>Newest People</h2>
+        {% render_table newest_people %}
     </div>
 
     <div class="module">
         <h2>Newest Projects</h2>
-        {% gen_table newest_projects %}
+        {% render_table newest_projects %}
     </div>
 
     {% else %}
@@ -40,7 +41,7 @@
     {% if is_admin %}
     <div class="module">
         <h2>Recent Actions</h2>
-        {% gen_table recent_actions %}
+        {% render_table recent_actions %}
         <div class="object-tools">
             <ul>
                 <li><a href="{% url "kg_log_list" %}">View All</a></li>

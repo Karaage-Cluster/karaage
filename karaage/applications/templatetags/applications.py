@@ -17,9 +17,13 @@
 
 """ Application specific tags. """
 
+import django_tables2 as tables
+
 from karaage.applications.views.base import get_state_machine
 from django import template
 register = template.Library()
+
+from karaage.people.tables import PersonTable
 
 
 @register.simple_tag(takes_context=True)
@@ -93,3 +97,12 @@ class ApplicationActionsPlus(template.Node):
         })
         output = nodelist.render(new_context)
         return output
+
+
+@register.assignment_tag(takes_context=True)
+def get_similar_people_table(context, applicant):
+    queryset = applicant.similar_people()
+    table = PersonTable(queryset)
+    config = tables.RequestConfig(context['request'], paginate={"per_page": 5})
+    config.configure(table)
+    return table

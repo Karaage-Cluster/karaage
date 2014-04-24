@@ -66,9 +66,16 @@ def application_list(request):
 @login_required
 def profile_application_list(request):
     """ a logged in user wants to see all his pending applications. """
+    config = tables.RequestConfig(request, paginate={"per_page": 5})
+
     person = request.user
     my_applications = Application.objects.get_for_applicant(person)
+    my_applications = ApplicationTable(my_applications, prefix="mine-")
+    config.configure(my_applications)
+
     requires_attention = Application.objects.requires_attention(request)
+    requires_attention = ApplicationTable(requires_attention, prefix="attn-")
+    config.configure(requires_attention)
 
     return render_to_response(
         'applications/profile_applications.html',

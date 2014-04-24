@@ -19,7 +19,7 @@ import django_tables2 as tables
 from django_tables2.utils import A
 import django_filters
 
-from .models import Software
+from .models import Software, SoftwareLicenseAgreement
 
 
 class SoftwareFilter(django_filters.FilterSet):
@@ -46,3 +46,17 @@ class SoftwareTable(tables.Table):
         model = Software
         fields = ('name', 'description', 'group', 'category',
                   'softwareversion__last_used')
+
+
+class SoftwareLicenseAgreementTable(tables.Table):
+    software = tables.LinkColumn(
+        'kg_software_detail', accessor="license.software",
+        args=[A('license.software.pk')])
+    license = tables.LinkColumn(
+        'kg_software_license_detail', args=[A('license.pk')])
+    person = tables.LinkColumn(
+        'kg_person_detail', args=[A('person.username')])
+
+    class Meta:
+        model = SoftwareLicenseAgreement
+        fields = ("software", "license", "person", "date")

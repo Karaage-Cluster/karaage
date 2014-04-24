@@ -1,5 +1,6 @@
 {% extends "main.html" %}
 {% load url from future %}
+{% load render_table from django_tables2 %}
 
 
 {% block title %}Institute{% endblock %}
@@ -84,19 +85,15 @@
         {% endif %}
     </div>
 
-    {% if institute.project_set.select_related %}
     <div class="module">
         <h2>Projects</h2>
-        {% gen_table institute.project_set.select_related %}
+        {% render_table project_list %}
     </div>
-    {% endif %}
 
-    {% if institute.group.members.select_related %}
     <div class="module">
     <h2>People</h2>
-        {% gen_table institute.group.members.select_related %}
+        {% render_table person_list %}
     </div>
-    {% endif %}
 
     {% for_each_app_include "institute_detail_extra.html" %}
 
