@@ -138,18 +138,12 @@ class GlobalDataStore(base.GlobalDataStore):
 
     def remove_person_from_group(self, person, group):
         """ Remove person from group. """
-        # don't do anything if no DN configured
-        if self._person is None:
-            return
         lgroup = self._groups().get(cn=group.name)
         person = self._people().get(uid=person.username)
         lgroup.secondary_people.remove(person)
 
     def get_person_details(self, person):
         """ Get the person details. """
-        # don't do anything if no DN configured
-        if self._person is None:
-            return {}
         result = {}
         try:
             luser = self._people().get(uid=person.username)
@@ -165,7 +159,6 @@ class GlobalDataStore(base.GlobalDataStore):
 
     def person_exists(self, username):
         """ Account's details were changed. """
-        # don't do anything if no DN configured
         try:
             self._people().get(uid=username)
             return True
