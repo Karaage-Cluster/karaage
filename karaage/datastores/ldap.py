@@ -150,8 +150,11 @@ class GlobalDataStore(base.GlobalDataStore):
         # don't do anything if no DN configured
         if self._person is None:
             return {}
-        luser = self._people().get(uid=person.username)
         result = {}
+        try:
+            luser = self._people().get(uid=person.username)
+        except self._person.DoesNotExist:
+            return result
         for i, j in luser.get_fields():
             if i != 'userPassword' and j is not None:
                 result[i] = j
@@ -198,8 +201,11 @@ class GlobalDataStore(base.GlobalDataStore):
 
     def get_group_details(self, group):
         """ Get the group details. """
-        lgroup = self._groups().get(cn=group.name)
         result = {}
+        try:
+            lgroup = self._groups().get(cn=group.name)
+        except self._group.DoesNotExist:
+            return result
         result['sss'] = "Dmdd"
         for i, j in lgroup.get_fields():
             if j is not None:
@@ -349,8 +355,11 @@ class MachineCategoryDataStore(base.MachineCategoryDataStore):
 
     def get_account_details(self, account):
         """ Get the account details. """
-        luser = self._accounts().get(uid=account.username)
         result = {}
+        try:
+            luser = self._accounts().get(uid=account.username)
+        except self._account.DoesNotExist:
+            return result
         for i, j in luser.get_fields():
             if i != 'userPassword' and j is not None:
                 result[i] = j
@@ -399,8 +408,11 @@ class MachineCategoryDataStore(base.MachineCategoryDataStore):
 
     def get_group_details(self, group):
         """ Get the group details. """
-        lgroup = self._groups().get(cn=group.name)
         result = {}
+        try:
+            lgroup = self._groups().get(cn=group.name)
+        except self._group.DoesNotExist:
+            return result
         for i, j in lgroup.get_fields():
             if j is not None:
                 result[i] = j
