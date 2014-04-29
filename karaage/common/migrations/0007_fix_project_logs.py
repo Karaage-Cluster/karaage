@@ -10,7 +10,10 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         if not db.dry_run:
-            ct = orm['contenttypes.contenttype'].objects.get(app_label='projects', model='project')
+            try:
+                ct = orm['contenttypes.contenttype'].objects.get(app_label='projects', model='project')
+            except orm['contenttypes.contenttype'].DoesNotExist:
+                return
             for log in orm.logentry.objects.filter(content_type=ct).iterator():
                 try:
                     int(log.object_id)
@@ -26,7 +29,10 @@ class Migration(DataMigration):
 
     def backwards(self, orm):
         if not db.dry_run:
-            ct = orm['contenttypes.contenttype'].objects.get(app_label='projects', model='project')
+            try:
+                ct = orm['contenttypes.contenttype'].objects.get(app_label='projects', model='project')
+            except orm['contenttypes.contenttype'].DoesNotExist:
+                return
             for log in orm.logentry.objects.filter(content_type=ct).iterator():
                 try:
                     int(log.object_id)
