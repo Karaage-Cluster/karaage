@@ -58,7 +58,7 @@ class AccountTable(tables.Table):
 
     def render_active(self, record):
         if record.date_deleted is not None:
-            html = '<span class="no">No</span>'
+            html = '<span class="no">Deleted</span>'
         elif not record.login_enabled:
             html = '<span class="locked">Locked</span>'
         else:

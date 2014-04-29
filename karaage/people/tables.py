@@ -57,15 +57,26 @@ class PersonFilter(django_filters.FilterSet):
 
 
 class PersonTable(tables.Table):
+    active = tables.Column(
+        empty_values=(), order_by=('date_deleted', '-login_enabled'))
     username = tables.LinkColumn(
         'kg_person_detail', args=[A('username')])
     institute = tables.LinkColumn(
         'kg_institute_detail', args=[A('institute.pk')])
 
+    def render_active(self, record):
+        if record.date_deleted is not None:
+            html = '<span class="no">Deleted</span>'
+        elif not record.login_enabled:
+            html = '<span class="locked">Locked</span>'
+        else:
+            html = '<span class="yes">Yes</span>'
+        return mark_safe(html)
+
     class Meta:
         model = Person
-        fields = ("username", "full_name", "institute",
-                  "is_active", "is_admin", "last_usage", "date_approved")
+        fields = ("active", "username", "full_name", "institute",
+                  "is_admin", "last_usage", "date_approved")
 
 
 class GroupFilter(django_filters.FilterSet):
