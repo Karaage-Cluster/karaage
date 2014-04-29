@@ -146,7 +146,9 @@
 
                 {% else %}
 
-                    {% if is_admin and not person.is_active %}
+                    {% if is_admin %}
+                    <li><a href="{% url 'kg_person_logs' person.username %}">Logs</a></li>
+                    <li><a href="{% url 'kg_person_verbose' person.username %}">Verbose</a></li>
                     <li><a href="activate/">Activate</a></li>
                     {% endif %}
 
