@@ -108,8 +108,8 @@
             <tr><th>Approved by:</th><td>{{ person.approved_by }}</td></tr>
             <tr><th>Date Approved:</th><td>{{ person.date_approved|date }}</td></tr>
             {% if person.deleted_by %}
-            <tr><td>Deleted by:</td><td>{{ person.deleted_by }}</td></tr>
-            <tr><td>Date Deleted:</td><td>{{ person.date_deleted|date }}</td></tr>
+            <tr><th>Deleted by:</th><td>{{ person.deleted_by }}</td></tr>
+            <tr><th>Date Deleted:</th><td>{{ person.date_deleted|date }}</td></tr>
             {% endif %}
             <tr><th>Username:</th><td>{{ person.username }}</td></tr>
             {% if person.saml_id %}
