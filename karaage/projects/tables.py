@@ -61,7 +61,9 @@ class ProjectTable(tables.Table):
 
     def render_is_active(self, record):
         if not record.is_active:
-            html = '<span class="no">No</span>'
+            html = '<span class="no">Deleted</span>'
+        elif not record.is_approved:
+            html = '<span class="no">Not approved</span>'
         else:
             html = '<span class="yes">Yes</span>'
         return mark_safe(html)

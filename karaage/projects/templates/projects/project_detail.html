@@ -22,16 +22,26 @@
         <h2>Project Details</h2>
 
         <h3>{{ project }}
-            {% if project.is_active and project.is_approved %}
-            <span class="yes"></span>
-            {% else %}
-            <span class="no"></span>
-            {% endif %}
         </h3>
 
         <table class="keyvalue">
-            {% if not project.is_active and not requestor %}
-            <tr><td colspan="2">Deleted by {{ project.deleted_by }} on {{ project.date_deleted }}</td></tr>
+            <tr>
+                <th>Active</th>
+                <td>
+                    {% if not project.is_active %}
+                    <span class="no">Deleted</span>
+                    {% elif not project.is_approved %}
+                    <span class="no">Not approved</span>
+                    {% else %}
+                    <span class="yes">Yes</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% if not project.is_active %}
+            <tr>
+                <th>Deleted</th>
+                <td>Deleted by {{ project.deleted_by }} on {{ project.date_deleted }}</td>
+            </tr>
             {% endif %}
             {% if project.leaders %}
             <tr>

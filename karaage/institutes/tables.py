@@ -40,7 +40,7 @@ class InstituteTable(tables.Table):
 
     def render_is_active(self, record):
         if not record.is_active:
-            html = '<span class="no">No</span>'
+            html = '<span class="no">Deleted</span>'
         else:
             html = '<span class="yes">Yes</span>'
         return mark_safe(html)

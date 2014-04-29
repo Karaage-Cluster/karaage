@@ -21,20 +21,23 @@
     <div class="module">
         <h2>Person</h2>
 
-        <h3>
-            {% if person.title %}{{ person.title }}{% endif %} {{ person }}
-            {% if not person.is_active %}
-            <span class="no">(Inactive)</span>
-            {% elif person.is_locked %}
-            <span class="locked">(Locked)</span>
-            {% else %}
-            <span class="yes"></span>
-            {% endif %}
-        </h3>
+        <h3>{% if person.title %}{{ person.title }}{% endif %} {{ person }}</h3>
 
         <table class="keyvalue">
+            <tr>
+                <th>Active</th>
+                <td>
+                    {% if not person.is_active %}
+                    <span class="no">Deleted</span>
+                    {% elif person.is_locked %}
+                    <span class="locked">Locked</span>
+                    {% else %}
+                    <span class="yes">Yes</span>
+                    {% endif %}
+                </td>
+            </tr>
             {% if person.deleted_by %}
-            <tr><td colspan="2">Deleted by {{ person.deleted_by }} on {{ person.date_deleted }}</td></tr>
+            <tr><th>Deleted</th><td>Deleted by {{ person.deleted_by }} on {{ person.date_deleted }}</td></tr>
             {% endif %}
             <tr><th>Email:</th><td>{{ person.email|urlize }}</td></tr>
             <tr><th>Position:</th><td>{{ person.position|default:"" }}</td></tr>
