@@ -14,15 +14,3 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
-
-from django.db import models
-
-
-class EmailTemplate(models.Model):
-    name = models.CharField(max_length=100, help_text="Do not change")
-    description = models.CharField(max_length=200)
-    subject = models.CharField(max_length=100)
-    body = models.TextField(help_text="DONT PAY MUCH ATTENTION TO THIS - Variables available:<br/>{{ requester }} - person requesting<br/>{{ reciever }} - person receiving the email<br/>{{ project }} - project<br/>{{ site }} - link to site")
-
-    def __unicode__(self):
-        return self.name
