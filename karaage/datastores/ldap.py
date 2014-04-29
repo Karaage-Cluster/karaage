@@ -199,7 +199,6 @@ class GlobalDataStore(base.GlobalDataStore):
             lgroup = self._groups().get(cn=group.name)
         except self._group.DoesNotExist:
             return result
-        result['sss'] = "Dmdd"
         for i, j in lgroup.get_fields():
             if j is not None:
                 result[i] = j
