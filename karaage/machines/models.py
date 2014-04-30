@@ -325,6 +325,9 @@ class Account(models.Model):
                 self._password = None
     save.alters_data = True
 
+    def can_view(self, request):
+        return self.person.can_view(request)
+
     def delete(self):
         # delete the object
         log.delete(self.person, 'Account %s: Deleted' % self)

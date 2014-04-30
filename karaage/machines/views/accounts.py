@@ -17,7 +17,7 @@
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 
@@ -60,6 +60,22 @@ def add_account(request, username=None):
     return render_to_response(
         'machines/account_form.html',
         {'form': form, 'person': person, 'account': account},
+        context_instance=RequestContext(request))
+
+
+@login_required
+def account_detail(request, account_id):
+    account = get_object_or_404(Account, pk=account_id)
+
+    if not account.can_view(request):
+        return HttpResponseForbidden(
+            '<h1>Access Denied</h1>'
+            '<p>You do not have permission to view details '
+            'about this account.</p>')
+
+    return render_to_response(
+        'machines/account_detail.html',
+        {'account': account},
         context_instance=RequestContext(request))
 
 

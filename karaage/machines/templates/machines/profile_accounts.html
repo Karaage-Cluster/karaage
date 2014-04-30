@@ -7,49 +7,18 @@
 
 
 {% block profile_content %}
-{% for account in accounts %}
+{% load machines %}
+{% load render_table from django_tables2 %}
+{% get_account_table accounts as table %}
 <div class="module">
-    <h2>{{ account.machine_category }} Account</h2>
-
-    <table cellspacing="0">
-        <thead>
-            <tr>
-                <th>Active</th>
-                <th>Username</th>
-                <th>Date Created</th>
-                <th>Date Deleted</th>
-                <th>Shell</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>
-                    {% if account.date_deleted %}
-                    <span class="no">Deleted</span>
-                    {% elif account.is_locked %}
-                    <span class="locked">Locked</span>
-                    {% else %}
-                    <span class="yes">Yes</span>
-                    {% endif %}
-                </td>
-                <td>{{ account.username }}</td>
-                <td>{{ account.date_created|date }}</td>
-                <td>{{ account.date_deleted|date }}</td>
-                <td>{{ account.loginShell }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    {% for_each_app_include "account_detail_extra.html" %}
+    <h2>Accounts</h2>
+    {% render_table table %}
 
     <div class="object-tools">
         <ul>
-            <li><a href="{% url 'kg_account_edit' account.pk %}" class="changelink">Edit Account</a></li>
-            {% for_each_app_include "account_detail_tools.html" %}
             {% for_each_app_include "profile_account_detail_tools.html" %}
         </ul>
     </div>
-
 </div>
-{% endfor %}
+
 {% endblock %}

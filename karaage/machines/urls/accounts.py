@@ -24,6 +24,8 @@ urlpatterns = patterns(
         'add_account', name='kg_account_add'),
     url(r'^add_project/(?P<username>%s)/$' % settings.USERNAME_VALIDATION_RE,
         'add_project', name='kg_account_add_project'),
+    url(r'^(?P<account_id>\d+)/$', 'account_detail',
+        name='kg_account_detail'),
     url(r'^(?P<account_id>\d+)/edit/$', 'edit_account',
         name='kg_account_edit'),
     url(r'^(?P<account_id>\d+)/delete/$', 'delete_account',

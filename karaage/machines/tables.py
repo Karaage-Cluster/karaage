@@ -53,6 +53,8 @@ class AccountTable(tables.Table):
         empty_values=(), order_by=('date_deleted', '-login_enabled'))
     person = tables.LinkColumn(
         'kg_person_detail', args=[A('person.username')])
+    username = tables.LinkColumn(
+        'kg_account_detail', args=[A('pk')], verbose_name="Account")
     default_project = tables.LinkColumn(
         'kg_project_detail', args=[A('default_project.pid')])
 
@@ -67,5 +69,5 @@ class AccountTable(tables.Table):
 
     class Meta:
         model = Account
-        fields = ("active", "person", "username",
+        fields = ("active", "username", "person",
                   "default_project", "date_created", "date_deleted")
