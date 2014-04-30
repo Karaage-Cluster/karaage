@@ -80,9 +80,10 @@ def account_detail(request, account_id):
 
 
 @login_required
-def edit_account(request, account_id=None):
+def edit_account(request, account_id):
+    account = get_object_or_404(Account, pk=account_id)
+
     if common.is_admin(request):
-        account = get_object_or_404(Account, pk=account_id)
         person = account.person
         username = account.username
         form = AdminAccountForm(
@@ -90,7 +91,12 @@ def edit_account(request, account_id=None):
             instance=account, person=person, initial={'username': username})
     else:
         person = request.user
-        account = get_object_or_404(Account, pk=account_id, person=person)
+        if not account.person != person:
+            return HttpResponseForbidden(
+                '<h1>Access Denied</h1>'
+                '<p>You do not have permission to edit details '
+                'of this account.</p>')
+
         form = UserAccountForm(
             data=request.POST or None, instance=account)
 

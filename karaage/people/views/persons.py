@@ -164,7 +164,7 @@ def user_detail(request, username):
         return HttpResponseForbidden(
             '<h1>Access Denied</h1>'
             '<p>You do not have permission to view details '
-            'about this user.</p>')
+            'about this person.</p>')
 
     leader_project_list = Project.objects.filter(
         leaders=person, is_active=True)
