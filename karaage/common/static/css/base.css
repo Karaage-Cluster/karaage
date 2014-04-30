@@ -776,9 +776,10 @@ div.breadcrumbs {
 .pagination li {
     display: inline;
     padding: 2px 6px;
+    margin: 2px;
 }
 
-.pagination li.next, .pagination li.previous {
+.pagination li.link {
     border: solid 1px #ccc;
     background: white;
     text-decoration: none;
