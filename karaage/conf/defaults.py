@@ -354,4 +354,4 @@ ADMIN_IGNORED = False
 # Available formatting that can be used for displaying datetime fields on
 # templates.
 SHORT_DATE_FORMAT = "Y-m-d"
-SHORT_DATETIME_FORMAT = "Y-m-d H:m"
+SHORT_DATETIME_FORMAT = "Y-m-d H:i"
