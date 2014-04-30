@@ -36,6 +36,16 @@
                     {% endif %}
                 </td>
             </tr>
+            <tr>
+                <th>Is Admin:</th>
+                <td>
+                    {% if not person.is_admin %}
+                    <span class="no">No</span>
+                    {% else %}
+                    <span class="yes">Yes</span>
+                    {% endif %}
+                </td>
+            </tr>
             {% if person.deleted_by %}
             <tr><th>Deleted:</th><td>Deleted by {{ person.deleted_by }} on {{ person.date_deleted }}</td></tr>
             {% endif %}
