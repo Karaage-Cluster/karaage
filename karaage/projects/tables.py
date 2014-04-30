@@ -29,6 +29,26 @@ from .models import Project
 from karaage.people.tables import PeopleColumn
 
 
+class ActiveFilter(django_filters.ChoiceFilter):
+
+    def __init__(self, *args, **kwargs):
+        choices = [
+            ('', 'Unknown'),
+            ('deleted', 'Deleted'),
+            ('yes', 'Yes'),
+        ]
+
+        super(ActiveFilter, self).__init__(*args, choices=choices, **kwargs)
+
+    def filter(self, qs, value):
+        if value == "deleted":
+            qs = qs.filter(is_active=False)
+        elif value == "yes":
+            qs = qs.filter(is_active=True)
+
+        return qs
+
+
 class ProjectColumn(BaseLinkColumn):
     def __init__(self, *args, **kwargs):
         super(ProjectColumn, self).__init__(*args, empty_values=(), **kwargs)
@@ -45,10 +65,11 @@ class ProjectColumn(BaseLinkColumn):
 class ProjectFilter(django_filters.FilterSet):
     pid = django_filters.CharFilter(lookup_type="icontains", label="PID")
     name = django_filters.CharFilter(lookup_type="icontains")
+    active = ActiveFilter()
 
     class Meta:
         model = Project
-        fields = ('pid', 'name', 'institute', 'is_approved', 'is_active')
+        fields = ('pid', 'name', 'institute', 'is_approved', 'active')
 
 
 class ProjectTable(tables.Table):

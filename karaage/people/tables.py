@@ -26,6 +26,29 @@ from django.utils.safestring import mark_safe
 from .models import Person, Group
 
 
+class ActiveFilter(django_filters.ChoiceFilter):
+
+    def __init__(self, *args, **kwargs):
+        choices = [
+            ('', 'Unknown'),
+            ('deleted', 'Deleted'),
+            ('locked', 'Locked'),
+            ('yes', 'Yes'),
+        ]
+
+        super(ActiveFilter, self).__init__(*args, choices=choices, **kwargs)
+
+    def filter(self, qs, value):
+        if value == "deleted":
+            qs = qs.filter(date_deleted__isnull=False)
+        elif value == "locked":
+            qs = qs.filter(date_deleted__isnull=True, login_enabled=False)
+        elif value == "yes":
+            qs = qs.filter(date_deleted__isnull=True, login_enabled=True)
+
+        return qs
+
+
 class PeopleColumn(BaseLinkColumn):
     def render(self, value):
         people = []
@@ -37,6 +60,7 @@ class PeopleColumn(BaseLinkColumn):
 
 
 class PersonFilter(django_filters.FilterSet):
+    active = ActiveFilter()
     username = django_filters.CharFilter(lookup_type="icontains")
     full_name = django_filters.CharFilter(lookup_type="icontains")
     email = django_filters.CharFilter(lookup_type="icontains")
@@ -52,8 +76,8 @@ class PersonFilter(django_filters.FilterSet):
 
     class Meta:
         model = Person
-        fields = ("username", "full_name", "email", "institute",
-                  "is_active", "is_admin", "login_enabled")
+        fields = ("active", "username", "full_name", "email", "institute",
+                  "is_admin", )
 
 
 class PersonTable(tables.Table):

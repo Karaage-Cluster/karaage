@@ -25,12 +25,33 @@ from .models import Institute
 from karaage.people.tables import PeopleColumn
 
 
+class ActiveFilter(django_filters.ChoiceFilter):
+
+    def __init__(self, *args, **kwargs):
+        choices = [
+            ('', 'Unknown'),
+            ('deleted', 'Deleted'),
+            ('yes', 'Yes'),
+        ]
+
+        super(ActiveFilter, self).__init__(*args, choices=choices, **kwargs)
+
+    def filter(self, qs, value):
+        if value == "deleted":
+            qs = qs.filter(is_active=False)
+        elif value == "yes":
+            qs = qs.filter(is_active=True)
+
+        return qs
+
+
 class InstituteFilter(django_filters.FilterSet):
+    active = ActiveFilter()
     name = django_filters.CharFilter(lookup_type="icontains")
 
     class Meta:
         model = Institute
-        fields = ('name', 'is_active')
+        fields = ('name', 'active')
 
 
 class InstituteTable(tables.Table):
