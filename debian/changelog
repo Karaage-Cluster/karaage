@@ -1,3 +1,57 @@
+karaage3 (3.0.12-1) unstable; urgency=low
+
+  [ Brian May ]
+  * Remove unused file.
+  * Fix PEP8 issues in initial config.
+  * Update jquery.
+  * Remove make_leader option from applicant from.
+  * Don't set make_leader to False for new projects.
+  * Display if this application has make_leader set.
+  * Use python-pipeline to compress css and js files.
+  * Fix display of icons.
+  * Remove Javascript global variables.
+  * New setting for debuging django-pipeline.
+  * Change commented out value of ALLOW_REGISTRATIONS.
+  * Create log files owned by www-data user.
+  * Fix: Include header message in invitation.
+  * Don't reset created_by on reopening application.
+  * Simplify invite process.
+  * Grant leader/revoke leader operations.
+
+  [ Kieran Spear ]
+  * Honour 'make_leader' for application approval
+
+  [ Brian May ]
+  * Use css style, instead of direct icon reference.
+  * Use django-filter and django-tables2 for people.
+  * Use django-filter and django-tables2 for institutes.
+  * Use django-filter and django-tables2 for projects.
+  * Use django-filter and django-tables2 for machines.
+  * Use django-filter/django-tables2 for applications.
+  * Use django-filter/django-tables2 for software.
+  * Use django-filter/django-tables2 for logs.
+  * Use django-filter/django-tables2 for usage.
+  * Remove obsolete cruft.
+  * Sort order of INSTALLED_APPS.
+  * Replace gen_table with django_tables.
+  * Use th instead of td for table headings.
+  * Show exta buttons for inactive people.
+  * datastores get_*_details don't error if not found.
+  * Remove legacy code; self._person is always defined.
+  * Remove legacy db table.
+  * Fix migration error.
+  * Active column for people.
+  * More work on active/status indication.
+  * Remove debugging.
+  * Simplify account display.
+  * Tidy code.
+  * Tweak filters.
+  * Improvements to pagination.
+  * Use correct format specifier for minutes.
+  * Show if person is admin or not in details page.
+
+ -- Brian May <bam@debian.org>  Thu, 01 May 2014 10:11:30 +1000
+
 karaage3 (3.0.11-1) unstable; urgency=low
 
   [ Brian May ]
