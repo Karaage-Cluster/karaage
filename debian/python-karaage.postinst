@@ -49,6 +49,7 @@ if [ "$1" = "configure" ]; then
     if [ "$RET" = "true" ]; then
         kg-manage migrate
     fi
+    dpkg-trigger karaage-static
 fi
 
 exit 0
