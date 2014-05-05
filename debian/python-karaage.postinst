@@ -44,9 +44,11 @@ fi
 
 #DEBHELPER#
 
-db_get karaage/run_migrations
-if [ "$RET" = "true" ]; then
-    kg-manage migrate
+if [ "$1" = "configure" ]; then
+    db_get karaage/run_migrations
+    if [ "$RET" = "true" ]; then
+        kg-manage migrate
+    fi
 fi
 
 exit 0
