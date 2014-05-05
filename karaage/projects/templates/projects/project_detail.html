@@ -76,7 +76,6 @@
             <tr><th>End Date:</th><td>{{ project.end_date|date }}</td></tr>
             {% endif %}
             <tr><th>Approved:</th><td>{% yes_no project.is_approved %}</td></tr>
-            <tr><th>Active:</th><td>{% yes_no project.is_active %}</td></tr>
             <tr><th>Categories:</th><td>{% for pq in project.projectquota_set.all %}<a href='{% url 'kg_machine_category_detail' pq.machine_category.pk %}'>{{ pq.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
             {% if is_admin %}
             <tr class="hidden-link"><td colspan="2"><a href="#">More....</a></td></tr>
