@@ -1,3 +1,14 @@
+karaage3 (3.0.13-1) unstable; urgency=low
+
+  * Specify python/debian mappings.
+  * Update migrations threshold.
+  * Remove duplicate active row.
+  * Fix incorrect link.
+  * Don't migrate if configure not called.
+  * Triggers for static files.
+
+ -- Brian May <bam@debian.org>  Mon, 05 May 2014 13:33:11 +1000
+
 karaage3 (3.0.12-1) unstable; urgency=low
 
   [ Brian May ]
