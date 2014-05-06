@@ -20,41 +20,42 @@
 <div id="content-main">
     <div class="module">
         <h2>Account Details</h2>
-
-        <table class="keyvalue">
-            <tr>
-                <th>Active:</th>
-                <td>
-                    {% if account.date_deleted %}
-                    <span class="no">Deleted</span>
-                    {% elif account.is_locked %}
-                    <span class="locked">Locked</span>
-                    {% else %}
-                    <span class="yes">Yes</span>
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>Username:</th>
-                <td>{{ account.username }}</td>
-            </tr>
-            <tr>
-                <th>Machine Category:</th>
-                <td><a href="{% url 'kg_machine_category_detail' account.machine_category.pk %}">{{ account.machine_category }}</a></td>
-            </tr>
-            <tr>
-                <th>Date Created:</th>
-                <td>{{ account.date_created|date }}</td>
-            </tr>
-            <tr>
-                <th>Date Deleted:</th>
-                <td>{{ account.date_deleted|date }}</td>
-            </tr>
-            <tr>
-                <th>Shell:</th>
-                <td>{{ account.shell }}</td>
-            </tr>
-        </table>
+        <div class="table-container">
+            <table class="keyvalue">
+                <tr>
+                    <th>Active:</th>
+                    <td>
+                        {% if account.date_deleted %}
+                        <span class="no">Deleted</span>
+                        {% elif account.is_locked %}
+                        <span class="locked">Locked</span>
+                        {% else %}
+                        <span class="yes">Yes</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Username:</th>
+                    <td>{{ account.username }}</td>
+                </tr>
+                <tr>
+                    <th>Machine Category:</th>
+                    <td><a href="{% url 'kg_machine_category_detail' account.machine_category.pk %}">{{ account.machine_category }}</a></td>
+                </tr>
+                <tr>
+                    <th>Date Created:</th>
+                    <td>{{ account.date_created|date }}</td>
+                </tr>
+                <tr>
+                    <th>Date Deleted:</th>
+                    <td>{{ account.date_deleted|date }}</td>
+                </tr>
+                <tr>
+                    <th>Shell:</th>
+                    <td>{{ account.shell }}</td>
+                </tr>
+            </table>
+        </div>
 
         <div class="object-tools">
             <ul>

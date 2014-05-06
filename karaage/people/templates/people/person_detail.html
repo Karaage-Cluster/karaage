@@ -22,114 +22,115 @@
         <h2>Person</h2>
 
         <h3>{% if person.title %}{{ person.title }}{% endif %} {{ person }}</h3>
-
-        <table class="keyvalue">
-            <tr>
-                <th>Active:</th>
-                <td>
-                    {% if not person.is_active %}
-                    <span class="no">Deleted</span>
-                    {% elif person.is_locked %}
-                    <span class="locked">Locked</span>
-                    {% else %}
-                    <span class="yes">Yes</span>
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>Admin:</th>
-                <td>
-                    {% if not person.is_admin %}
-                    <span class="no">No</span>
-                    {% else %}
-                    <span class="yes">Yes</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% if person.deleted_by %}
-            <tr><th>Deleted:</th><td>Deleted by {{ person.deleted_by }} on {{ person.date_deleted }}</td></tr>
-            {% endif %}
-            <tr><th>Email:</th><td>{{ person.email|urlize }}</td></tr>
-            <tr><th>Position:</th><td>{{ person.position|default:"" }}</td></tr>
-            <tr><th>Department:</th><td>{{ person.department|default:"" }}</td></tr>
-            <tr><th>Supervisor:</th><td>{{ person.supervisor|default:"" }}</td></tr>
-            <tr>
-              <th>Institutes:</th>
-              <td>
-                <a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a><br/>
-                {% for institute in person.institutes.all %}
-                <a href="{{ institute.get_absolute_url }}">{{ institute }}</a>
-                {% if not forloop.last %}, {% endif %}
-                {% endfor %}
-              </td>
-            </tr>
-
-            <tr>
-              <th>Phone:</th>
-              <td>{{ person.telephone|default:"" }}</td>
-            </tr>
-
-            {% if person.mobile %}
-            <tr>
-              <th>Mobile:</th><td>{{ person.mobile|default:"" }}</td>
-            </tr>
-            {% endif %}
-
-            <tr>
-              <th>Groups:</th>
-              <td>
-                {% for group in person.groups.all %}
-                {% if is_admin %}
-                <a href="{{ group.get_absolute_url }}">{{ group }}</a>
-                {% else %}
-                {{ group }}
+        <div class="table-container">
+            <table class="keyvalue">
+                <tr>
+                    <th>Active:</th>
+                    <td>
+                        {% if not person.is_active %}
+                        <span class="no">Deleted</span>
+                        {% elif person.is_locked %}
+                        <span class="locked">Locked</span>
+                        {% else %}
+                        <span class="yes">Yes</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Admin:</th>
+                    <td>
+                        {% if not person.is_admin %}
+                        <span class="no">No</span>
+                        {% else %}
+                        <span class="yes">Yes</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% if person.deleted_by %}
+                <tr><th>Deleted:</th><td>Deleted by {{ person.deleted_by }} on {{ person.date_deleted }}</td></tr>
                 {% endif %}
-                {% if not forloop.last %}, {% endif %}
-                {% endfor %}
-              </td>
-            </tr>
+                <tr><th>Email:</th><td>{{ person.email|urlize }}</td></tr>
+                <tr><th>Position:</th><td>{{ person.position|default:"" }}</td></tr>
+                <tr><th>Department:</th><td>{{ person.department|default:"" }}</td></tr>
+                <tr><th>Supervisor:</th><td>{{ person.supervisor|default:"" }}</td></tr>
+                <tr>
+                  <th>Institutes:</th>
+                  <td>
+                    <a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a><br/>
+                    {% for institute in person.institutes.all %}
+                    <a href="{{ institute.get_absolute_url }}">{{ institute }}</a>
+                    {% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                  </td>
+                </tr>
 
-            <tr>
-              <th>Projects:</th>
-              <td>
-                {% for project in person.projects.all %}
-                <a href="{{ project.get_absolute_url }}">{{ project }}</a>
-                {% if not forloop.last %}, {% endif %}
-                {% endfor %}
-              </td>
-            </tr>
+                <tr>
+                  <th>Phone:</th>
+                  <td>{{ person.telephone|default:"" }}</td>
+                </tr>
 
-            <tr>
-              <th>Software:</th>
-              <td>
-                {% for software in person.software.all %}
-                <a href="{{ software.get_absolute_url }}">{{ software }}</a>
-                {% if not forloop.last %}, {% endif %}
-                {% endfor %}
-              </td>
-            </tr>
-            <tr class="hidden-link">
-              <td colspan="2">
-                <a href="#">More....</a>
-              </td>
-            </tr>
-            <tr><th>Fax:</th><td>{{ person.fax }}</td></tr>
-            <tr><th>Address:</th><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>
-            <tr><th>Country:</th><td>{{ person.get_country_display|default:"" }}</td></tr>
-            {% if is_admin %}
-            <tr><th>Comment:</th><td>{{ person.comment|default:"" }}</td></tr>
-            <tr><th>Approved by:</th><td>{{ person.approved_by }}</td></tr>
-            <tr><th>Date Approved:</th><td>{{ person.date_approved|date }}</td></tr>
-            {% if person.deleted_by %}
-            <tr><th>Deleted by:</th><td>{{ person.deleted_by }}</td></tr>
-            <tr><th>Date Deleted:</th><td>{{ person.date_deleted|date }}</td></tr>
-            {% endif %}
-            <tr><th>Username:</th><td>{{ person.username }}</td></tr>
-            {% if person.saml_id %}
-            <tr><td>SAML ID:</td><td>{{ person.saml_id }}</td></tr>
-            {% endif %}
-            {% endif %}
-        </table>
+                {% if person.mobile %}
+                <tr>
+                  <th>Mobile:</th><td>{{ person.mobile|default:"" }}</td>
+                </tr>
+                {% endif %}
+
+                <tr>
+                  <th>Groups:</th>
+                  <td>
+                    {% for group in person.groups.all %}
+                    {% if is_admin %}
+                    <a href="{{ group.get_absolute_url }}">{{ group }}</a>
+                    {% else %}
+                    {{ group }}
+                    {% endif %}
+                    {% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                  </td>
+                </tr>
+
+                <tr>
+                  <th>Projects:</th>
+                  <td>
+                    {% for project in person.projects.all %}
+                    <a href="{{ project.get_absolute_url }}">{{ project }}</a>
+                    {% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                  </td>
+                </tr>
+
+                <tr>
+                  <th>Software:</th>
+                  <td>
+                    {% for software in person.software.all %}
+                    <a href="{{ software.get_absolute_url }}">{{ software }}</a>
+                    {% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                  </td>
+                </tr>
+                <tr class="hidden-link">
+                  <td colspan="2">
+                    <a href="#">More....</a>
+                  </td>
+                </tr>
+                <tr><th>Fax:</th><td>{{ person.fax }}</td></tr>
+                <tr><th>Address:</th><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>
+                <tr><th>Country:</th><td>{{ person.get_country_display|default:"" }}</td></tr>
+                {% if is_admin %}
+                <tr><th>Comment:</th><td>{{ person.comment|default:"" }}</td></tr>
+                <tr><th>Approved by:</th><td>{{ person.approved_by }}</td></tr>
+                <tr><th>Date Approved:</th><td>{{ person.date_approved|date }}</td></tr>
+                {% if person.deleted_by %}
+                <tr><th>Deleted by:</th><td>{{ person.deleted_by }}</td></tr>
+                <tr><th>Date Deleted:</th><td>{{ person.date_deleted|date }}</td></tr>
+                {% endif %}
+                <tr><th>Username:</th><td>{{ person.username }}</td></tr>
+                {% if person.saml_id %}
+                <tr><td>SAML ID:</td><td>{{ person.saml_id }}</td></tr>
+                {% endif %}
+                {% endif %}
+            </table>
+        </div>
         {% if person.is_active or is_admin %}
         <div class="object-tools">
             <ul>

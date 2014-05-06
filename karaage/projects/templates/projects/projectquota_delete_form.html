@@ -18,20 +18,22 @@
 {% block content %}
 <div class="module">
     <h2>Project Caps/quota</h2>
-    <table>
-        <thead>
-        <tr>
-            <th>Machine Category</th>
-            <th>Quota</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>{{ project_chunk.machine_category }}</td>
-            <td>{{ project_chunk.get_cap }}</td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="table-container">
+        <table>
+            <thead>
+            <tr>
+                <th>Machine Category</th>
+                <th>Quota</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{ project_chunk.machine_category }}</td>
+                <td>{{ project_chunk.get_cap }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <form method="post" action=".">{% csrf_token %}

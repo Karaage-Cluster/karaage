@@ -13,11 +13,13 @@
 
     {% if saml_session %}
         <p>You have an established SAML session.</p>
-        <table>
-            {% for key,value in attrs.iteritems %}
-            <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
-            {% endfor %}
-        </table>
+        <div class="table-container">
+            <table>
+                {% for key,value in attrs.iteritems %}
+                <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
+                {% endfor %}
+            </table>
+        </div>
         <div id="saml_login_fields">
             <form method="post" action=".">{% csrf_token %}
                 <input type="submit" name="logout" value="SAML Logout" />

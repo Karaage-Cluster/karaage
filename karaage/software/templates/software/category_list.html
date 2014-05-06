@@ -17,20 +17,22 @@
 <div id="content-main">
     <div class="module">
         <h2>Software categories</h2>
-        <table cellspacing="0">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for c in category_list %}
-                <tr>
-                    <td><a href="{{ c.id }}/edit/">{{ c.name }}</a></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-container">
+            <table cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in category_list %}
+                    <tr>
+                        <td><a href="{{ c.id }}/edit/">{{ c.name }}</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% if is_admin %}
         <div class="object-tools">
             <ul>

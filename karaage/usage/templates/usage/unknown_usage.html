@@ -20,8 +20,8 @@
     <div class="module">
         <h2>Unknown Usage {% if not showall %} ( in the past 365 days ) <a href="?showall=true"></a>Show all{% endif %}</h2>
 
-        <form action="." method="post">{% csrf_token %}
-            <table cellspacing="0">
+        <div class="table-container">
+            <table>
                 <thead>
                     <tr>
                         <th></th>
@@ -59,7 +59,9 @@
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
 
+        <form action="." method="post">{% csrf_token %}
             <div class="form-row">
                 <label for="id_project">Project:</label>
                 <select class="vNullSelectField" id="id_project" name="project" size="1">

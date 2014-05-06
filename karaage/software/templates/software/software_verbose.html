@@ -23,13 +23,15 @@
         <h2>Software details - {{name}}</h2>
         {% for a in details %}
         <h3>{{a.datastore}}</h3>
-        <table class="keyvalue">
-            {% for i,j in a.iteritems %}
-                <tr>
-                    <th>{{ i }}</th><td>{{ j }}</td>
-               </tr>
-            {% endfor %}
-        </table>
+        <div class="table-container">
+            <table class="keyvalue">
+                {% for i,j in a.iteritems %}
+                    <tr>
+                        <th>{{ i }}</th><td>{{ j }}</td>
+                   </tr>
+                {% endfor %}
+            </table>
+        </div>
         {% empty %}
         <p>No datastores.</p>
         {% endfor %}

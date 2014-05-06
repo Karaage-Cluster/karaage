@@ -34,11 +34,13 @@
             </ul>
             {% endif %}
             <p>You have an established SAML session.</p>
-            <table>
-                {% for key,value in attrs.iteritems %}
-                <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
-                {% endfor %}
-            </table>
+            <div class="table-container">
+                <table class="keyvalue">
+                    {% for key,value in attrs.iteritems %}
+                    <tr><th>{{ key }}</th><td>{{ value }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
             <p>If you continue and click Register, then your details, including
             your email address, will be replaced by those above and you will be
             able to log in using SAML. {% if attrs.email != application.applicant.email %}

@@ -40,48 +40,50 @@
     <div class="module">
         <h2>Institutes</h2>
         <img class="float-right middle" src="{{ institutes_graph.graph_url }}"/>
-        <table>
-            <thead>
-                <tr>
-                    <th>Institute</th>
-                    <th>CPU Time</th>
-                    <th>No. Jobs</th>
-                    <th>Actual</th>
-                    <th>Quota</th>
-                    <th>Difference</th>
-                    <th>% quota used</th>
-                </tr>
-            </thead>
-            <tfoot>
-                <tr>
-                    <td>Total</td>
-                    <td>{{ total|timeformat }}</td>
-                    <td>{{ total_jobs|intcomma }}</td>
-                </tr>
-            </tfoot>
-            <tbody>
-                {% for i in i_list|dictsortreversed:"usage" %}
-                <tr>
-                    <td><a href="{% url 'kg_usage_institute' machine_category.pk i.institute.id %}{% url_with_param start=start end=end %}">{{ i.institute.name }}</a> </td>
-                    <td class="right">{{ i.usage|timeformat }}</td>
-                    <td class="right">{{ i.jobs|intcomma }}</td>
-                    <td class="right">{{ i.percent|floatformat:"2" }}</td>
-                    <td class="right">{{ i.quota }}</td>
-                    <td class="right {{ i.class }}">{{ i.diff|floatformat:"2" }}</td>
-                    <td class="right {{ i.class }}">{{ i.p_used|floatformat:"2" }}</td>
-                </tr>
-                {% endfor %}
-                <tr>
-                    <td>Unused</td>
-                    <td class="right">{{ unused.usage|timeformat }}</td>
-                    <td class="right"> </td>
-                    <td class="right">{{ unused.percent|floatformat:"2" }}</td>
-                    <td class="right"> </td>
-                    <td class="right {{ unused.class }}">{{ unused.diff|floatformat:"2" }}</td>
-                    <td> </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Institute</th>
+                        <th>CPU Time</th>
+                        <th>No. Jobs</th>
+                        <th>Actual</th>
+                        <th>Quota</th>
+                        <th>Difference</th>
+                        <th>% quota used</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <td>Total</td>
+                        <td>{{ total|timeformat }}</td>
+                        <td>{{ total_jobs|intcomma }}</td>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    {% for i in i_list|dictsortreversed:"usage" %}
+                    <tr>
+                        <td><a href="{% url 'kg_usage_institute' machine_category.pk i.institute.id %}{% url_with_param start=start end=end %}">{{ i.institute.name }}</a> </td>
+                        <td class="right">{{ i.usage|timeformat }}</td>
+                        <td class="right">{{ i.jobs|intcomma }}</td>
+                        <td class="right">{{ i.percent|floatformat:"2" }}</td>
+                        <td class="right">{{ i.quota }}</td>
+                        <td class="right {{ i.class }}">{{ i.diff|floatformat:"2" }}</td>
+                        <td class="right {{ i.class }}">{{ i.p_used|floatformat:"2" }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td>Unused</td>
+                        <td class="right">{{ unused.usage|timeformat }}</td>
+                        <td class="right"> </td>
+                        <td class="right">{{ unused.percent|floatformat:"2" }}</td>
+                        <td class="right"> </td>
+                        <td class="right {{ unused.class }}">{{ unused.diff|floatformat:"2" }}</td>
+                        <td> </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <p><a href="{{ institutes_graph.data_url }}">data</a></p>
         <br class="clear"/>
     </div>
@@ -89,24 +91,26 @@
     <div class="module">
         <h2>Machines</h2>
         <img class="float-right" src="{{ machines_graph.graph_url }}"/>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>CPU Time</th>
-                    <th>No. Jobs</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for m in m_list %}
-                <tr>
-                    <td>{{ m.machine }}</td>
-                    <td class="right">{{ m.usage|timeformat }}</td>
-                    <td class="right">{{ m.jobs|intcomma }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>CPU Time</th>
+                        <th>No. Jobs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in m_list %}
+                    <tr>
+                        <td>{{ m.machine }}</td>
+                        <td class="right">{{ m.usage|timeformat }}</td>
+                        <td class="right">{{ m.jobs|intcomma }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         <p><a href="{{ machines_graph.data_url }}">data</a></p>
         <br class="clear"/>
     </div>

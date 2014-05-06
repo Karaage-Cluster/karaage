@@ -24,74 +24,76 @@
         <h3>{{ project }}
         </h3>
 
-        <table class="keyvalue">
-            <tr>
-                <th>Active:</th>
-                <td>
-                    {% if not project.is_active %}
-                    <span class="no">Deleted</span>
-                    {% elif not project.is_approved %}
-                    <span class="no">Not approved</span>
-                    {% else %}
-                    <span class="yes">Yes</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% if not project.is_active %}
-            <tr>
-                <th>Deleted:</th>
-                <td>Deleted by {{ project.deleted_by }} on {{ project.date_deleted }}</td>
-            </tr>
-            {% endif %}
-            {% if project.leaders %}
-            <tr>
-                <th>Leaders:</th>
-                <td><ul>
-                    {% for l in project.leaders.all %}
-                    <li>
-                        <a href="{{ l.get_absolute_url }}">{{ l }}</a><br/>
-                        {% if l != request.user and can_edit %}
-                        <a href="{% url 'kg_revoke_leader' project.pid l.username %}" class="deletelink">Revoke</a>
+        <div class="table-container">
+            <table class="keyvalue">
+                <tr>
+                    <th>Active:</th>
+                    <td>
+                        {% if not project.is_active %}
+                        <span class="no">Deleted</span>
+                        {% elif not project.is_approved %}
+                        <span class="no">Not approved</span>
+                        {% else %}
+                        <span class="yes">Yes</span>
                         {% endif %}
-                    </li>
-                    {% endfor %}
-                </ul></td>
-            </tr>
-            {% endif %}
-            <tr><th>Institute:</th><td><a href="{{ project.institute.get_absolute_url }}">{{ project.institute }}</a></td></tr>
+                    </td>
+                </tr>
+                {% if not project.is_active %}
+                <tr>
+                    <th>Deleted:</th>
+                    <td>Deleted by {{ project.deleted_by }} on {{ project.date_deleted }}</td>
+                </tr>
+                {% endif %}
+                {% if project.leaders %}
+                <tr>
+                    <th>Leaders:</th>
+                    <td><ul>
+                        {% for l in project.leaders.all %}
+                        <li>
+                            <a href="{{ l.get_absolute_url }}">{{ l }}</a><br/>
+                            {% if l != request.user and can_edit %}
+                            <a href="{% url 'kg_revoke_leader' project.pid l.username %}" class="deletelink">Revoke</a>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul></td>
+                </tr>
+                {% endif %}
+                <tr><th>Institute:</th><td><a href="{{ project.institute.get_absolute_url }}">{{ project.institute }}</a></td></tr>
 
 
-            {% if is_admin %}
-            <tr><th>Group:</th><td><a href="{{ project.group.get_absolute_url }}">{{ project.group }}</a></td></tr>
-            {% else %}
-            <tr><th>Group:</th><td>{{ project.group }}</td></tr>
-            {% endif %}
+                {% if is_admin %}
+                <tr><th>Group:</th><td><a href="{{ project.group.get_absolute_url }}">{{ project.group }}</a></td></tr>
+                {% else %}
+                <tr><th>Group:</th><td>{{ project.group }}</td></tr>
+                {% endif %}
 
-            <tr><th>Description:</th><td>{{ project.description|linebreaks }}</td></tr>
-            {% if is_admin %}
-            <tr><th>Last Usage:</th><td>{% if project.last_usage %}{{ project.last_usage|date }} ({{ project.last_usage|timesince }}){% else %}No usage{% endif %}</td></tr>
-            {% endif %}
-            <tr><th>Start Date:</th><td>{{ project.start_date|date }}</td></tr>
-            {% if project.end_date %}
-            <tr><th>End Date:</th><td>{{ project.end_date|date }}</td></tr>
-            {% endif %}
-            <tr><th>Approved:</th><td>{% yes_no project.is_approved %}</td></tr>
-            <tr><th>Categories:</th><td>{% for pq in project.projectquota_set.all %}<a href='{% url 'kg_machine_category_detail' pq.machine_category.pk %}'>{{ pq.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
-            {% if is_admin %}
-            <tr class="hidden-link"><td colspan="2"><a href="#">More....</a></td></tr>
-            <tr><th>Additional Req:</th><td>{{ project.additional_req|linebreaks }}</td></tr>
-            {% if project.approved_by %}
-            <tr><th>Approved by:</th><td><a href="{{ project.approved_by.get_absolute_url }}">{{ project.approved_by }}</a></td></tr>
-            {% endif %}
-            {% if project.date_approved %}
-            <tr><th>Date Approved:</th><td>{{ project.date_approved|date }}</td></tr>
-            {% endif %}
-            {% if project.deleted_by %}
-            <tr><th>Deleted by:</th><td><a href="{{ project.deleted_by.get_absolute_url }}">{{ project.deleted_by }}</a></td></tr>
-            <tr><th>Date Deleted:</th><td>{{ project.date_deleted|date }}</td></tr>
-            {% endif %}
-            {% endif %}
-        </table>
+                <tr><th>Description:</th><td>{{ project.description|linebreaks }}</td></tr>
+                {% if is_admin %}
+                <tr><th>Last Usage:</th><td>{% if project.last_usage %}{{ project.last_usage|date }} ({{ project.last_usage|timesince }}){% else %}No usage{% endif %}</td></tr>
+                {% endif %}
+                <tr><th>Start Date:</th><td>{{ project.start_date|date }}</td></tr>
+                {% if project.end_date %}
+                <tr><th>End Date:</th><td>{{ project.end_date|date }}</td></tr>
+                {% endif %}
+                <tr><th>Approved:</th><td>{% yes_no project.is_approved %}</td></tr>
+                <tr><th>Categories:</th><td>{% for pq in project.projectquota_set.all %}<a href='{% url 'kg_machine_category_detail' pq.machine_category.pk %}'>{{ pq.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
+                {% if is_admin %}
+                <tr class="hidden-link"><td colspan="2"><a href="#">More....</a></td></tr>
+                <tr><th>Additional Req:</th><td>{{ project.additional_req|linebreaks }}</td></tr>
+                {% if project.approved_by %}
+                <tr><th>Approved by:</th><td><a href="{{ project.approved_by.get_absolute_url }}">{{ project.approved_by }}</a></td></tr>
+                {% endif %}
+                {% if project.date_approved %}
+                <tr><th>Date Approved:</th><td>{{ project.date_approved|date }}</td></tr>
+                {% endif %}
+                {% if project.deleted_by %}
+                <tr><th>Deleted by:</th><td><a href="{{ project.deleted_by.get_absolute_url }}">{{ project.deleted_by }}</a></td></tr>
+                <tr><th>Date Deleted:</th><td>{{ project.date_deleted|date }}</td></tr>
+                {% endif %}
+                {% endif %}
+            </table>
+        </div>
 
         <div class="object-tools">
             <ul>

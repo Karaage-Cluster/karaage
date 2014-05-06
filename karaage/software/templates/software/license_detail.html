@@ -18,42 +18,44 @@
 {% block content %}
 <div id="content-main">
     <div class="module">
-        <h2>Software License</h2>
+        <h2>Software License Details</h2>
 
-        <table class="keyvalue">
-            <tbody>
-                <tr>
-                    <th>Software</th>
-                    <td><a href="{% url 'kg_software_detail' l.software.pk %}">{{ l.software }}</a></td>
-                </tr>
-                <tr>
-                    <th>Current</th>
-                    {% with l.software.get_current_license as current %}
-                    {% if current == l %}
-                    <td>Current license</td.>
-                    {% else %}
-                    <td>Out of date license.</td>
+        <div class="table-container">
+            <table class="keyvalue">
+                <tbody>
+                    <tr>
+                        <th>Software</th>
+                        <td><a href="{% url 'kg_software_detail' l.software.pk %}">{{ l.software }}</a></td>
+                    </tr>
+                    <tr>
+                        <th>Current</th>
+                        {% with l.software.get_current_license as current %}
+                        {% if current == l %}
+                        <td>Current license</td.>
+                        {% else %}
+                        <td>Out of date license.</td>
+                        {% endif %}
+                        {% endwith %}
+                    </tr>
+                    {% if l.version %}
+                    <tr>
+                        <th>Version</th>
+                        <td>{{ l.version }}</td>
+                    </tr>
                     {% endif %}
-                    {% endwith %}
-                </tr>
-                {% if l.version %}
-                <tr>
-                    <th>Version</th>
-                    <td>{{ l.version }}</td>
-                </tr>
-                {% endif %}
-                {% if l.date %}
-                <tr>
-                    <th>Date</th>
-                    <td>{{ l.date|date }}</td>
-                </tr>
-                {% endif %}
-                <tr>
-                    <th>Text</th>
-                    <td>{{ l.text|safe|linebreaks }}</td>
-                </tr>
-            <tbody>
-        </table>
+                    {% if l.date %}
+                    <tr>
+                        <th>Date</th>
+                        <td>{{ l.date|date }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <th>Text</th>
+                        <td>{{ l.text|safe|linebreaks }}</td>
+                    </tr>
+                <tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}

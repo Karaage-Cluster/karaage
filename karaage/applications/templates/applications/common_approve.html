@@ -24,13 +24,15 @@
     <p>The following request is awaiting for {{ authorised_text }} to approve it:</p>
     <div>
         <h3>Applicant Details</h3>
-        <table class="keyvalue">
-            <tr><th>Short name:</th><td>{{ application.applicant.get_short_name }}</td></tr>
-            <tr><th>Full name:</th><td>{{ application.applicant.get_full_name }}</td></tr>
-            <tr><th>Institute:</th><td>{{ application.applicant.institute }}</td></tr>
-            <tr><th>Username:</th><td>{{ application.applicant.username }}</td></tr>
-            <tr><th>Email:</th><td>{{ application.applicant.email|urlize }}</td></tr>
-        </table>
+        <div class="table-container">
+            <table class="keyvalue">
+                <tr><th>Short name:</th><td>{{ application.applicant.get_short_name }}</td></tr>
+                <tr><th>Full name:</th><td>{{ application.applicant.get_full_name }}</td></tr>
+                <tr><th>Institute:</th><td>{{ application.applicant.institute }}</td></tr>
+                <tr><th>Username:</th><td>{{ application.applicant.username }}</td></tr>
+                <tr><th>Email:</th><td>{{ application.applicant.email|urlize }}</td></tr>
+            </table>
+        </div>
     </div>
 
     {% if application.content_type.model == 'applicant' %}

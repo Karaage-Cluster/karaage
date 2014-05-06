@@ -20,26 +20,28 @@
     <div class="module">
         <h2>Institutes</h2>
         <h3>{{ institute }}</h3>
-        <table class="keyvalue">
-            <tr>
-                <th>Active:</th>
-                <td>
-                    {% if not institute.is_active %}
-                    <span class="no">Deleted</span>
-                    {% else %}
-                    <span class="yes">Yes</span>
-                    {% endif %}
-                </td>
-            </tr>
-            <tr><th>Delegate(s):</th><td>{% for delegate in institute.delegates.all %}<a href="{{ delegate.get_absolute_url }}">{{ delegate }}</a>, {% endfor %}</td></tr>
-            {% if is_admin %}
-            <tr><th>Group:</th><td><a href="{{ institute.group.get_absolute_url }}">{{ institute.group }}</a></td></tr>
-            {% endif %}
-            {% if institute.saml_entityid %}
-            <tr><th>SAML entityID:</th><td>{{ institute.saml_entityid }}</td></tr>
-            {% endif %}
-            <tr><th>Categories:</th><td>{% for iq in institute.institutequota_set.all %}<a href='{% url 'kg_machine_category_detail' iq.machine_category.pk %}'>{{ iq.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
-        </table>
+        <div class="table-container">
+            <table class="keyvalue">
+                <tr>
+                    <th>Active:</th>
+                    <td>
+                        {% if not institute.is_active %}
+                        <span class="no">Deleted</span>
+                        {% else %}
+                        <span class="yes">Yes</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr><th>Delegate(s):</th><td>{% for delegate in institute.delegates.all %}<a href="{{ delegate.get_absolute_url }}">{{ delegate }}</a>, {% endfor %}</td></tr>
+                {% if is_admin %}
+                <tr><th>Group:</th><td><a href="{{ institute.group.get_absolute_url }}">{{ institute.group }}</a></td></tr>
+                {% endif %}
+                {% if institute.saml_entityid %}
+                <tr><th>SAML entityID:</th><td>{{ institute.saml_entityid }}</td></tr>
+                {% endif %}
+                <tr><th>Categories:</th><td>{% for iq in institute.institutequota_set.all %}<a href='{% url 'kg_machine_category_detail' iq.machine_category.pk %}'>{{ iq.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
+            </table>
+        </div>
 
         {% is_for_each_app_include_empty "project_detail_tools.html" as is_empty %}
         {% if is_admin or not is_empty %}
@@ -59,31 +61,33 @@
     <div class="module">
         <h2>Caps and quotas</h2>
         {% if institute.institutequota_set.all %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Machine Category</th>
-                    <th>Quota</th>
-                    <th>Cap (mPoTS)</th>
-                    {% if is_admin %}
-                    <th></th><th></th>
-                    {% endif %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for iq in institute.institutequota_set.all %}
-                <tr>
-                    <td><a href='{% url 'kg_machine_category_detail' iq.machine_category.pk %}'>{{ iq.machine_category }}</a></td>
-                    <td>{{ iq.quota }}</td>
-                    <td>{{ iq.get_cap }}</td>
-                    {% if is_admin %}
-                    <td><a class="changelink" href="{% url 'kg_institutequota_edit' iq.pk %}">edit</a></td>
-                    <td><a class="deletelink" href="{% url 'kg_institutequota_delete' iq.pk %}">Remove</a></td>
-                    {% endif %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Machine Category</th>
+                        <th>Quota</th>
+                        <th>Cap (mPoTS)</th>
+                        {% if is_admin %}
+                        <th></th><th></th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for iq in institute.institutequota_set.all %}
+                    <tr>
+                        <td><a href='{% url 'kg_machine_category_detail' iq.machine_category.pk %}'>{{ iq.machine_category }}</a></td>
+                        <td>{{ iq.quota }}</td>
+                        <td>{{ iq.get_cap }}</td>
+                        {% if is_admin %}
+                        <td><a class="changelink" href="{% url 'kg_institutequota_edit' iq.pk %}">edit</a></td>
+                        <td><a class="deletelink" href="{% url 'kg_institutequota_delete' iq.pk %}">Remove</a></td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% endif %}
         {% if is_admin %}
         <div class="object-tools">

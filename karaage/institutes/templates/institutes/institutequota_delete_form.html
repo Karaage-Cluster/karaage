@@ -18,22 +18,24 @@
 {% block content %}
 <div class="module">
     <h2>Institute Caps/quota</h2>
-    <table>
-        <thead>
-        <tr>
-            <th>Machine Category</th>
-            <th>Quota</th>
-            <th>Cap (mPoTS)</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>{{ institute_chunk.machine_category }}</td>
-            <td>{{ institute_chunk.quota }}</td>
-            <td>{{ institute_chunk.get_cap }}</td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="table-container">
+        <table>
+            <thead>
+            <tr>
+                <th>Machine Category</th>
+                <th>Quota</th>
+                <th>Cap (mPoTS)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{ institute_chunk.machine_category }}</td>
+                <td>{{ institute_chunk.quota }}</td>
+                <td>{{ institute_chunk.get_cap }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <form method="post" action=".">{% csrf_token %}

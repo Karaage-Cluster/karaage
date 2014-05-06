@@ -11,24 +11,26 @@
 <div class="module">
     <h2>Personal</h2>
 
-    <table class="keyvalue">
-        <tr><th>Username:</th><td>{{ person.username }}</td></tr>
-        <tr><th>Email:</th><td>{{ person.email|urlize }}</td></tr>
-        <tr><th>Position:</th><td>{{ person.position|default:"" }}</td></tr>
-        <tr><th>Department:</th><td>{{ person.department|default:"" }}</td></tr>
-        <tr>
-            <th>Institutes:</th>
-            <td>{{ person.institute }}<br/>
-                {% for institute in person.institutes.all %}{{institute}}
-                {% if not forloop.last %}, {% endif %}
-                {% endfor %}
-            </td>
-        </tr>
-        {% if person.telephone %}<tr><th>Phone:</th><td>{{ person.telephone|default:"" }}</td></tr>{% endif %}
-        {% if person.mobile %}<tr><th>Mobile:</th><td>{{ person.mobile|default:"" }}</td></tr>{% endif %}
-        {% if person.fax %}<tr><th>Fax:</th><td>{{ person.fax }}</td></tr>{% endif %}
-        {% if person.address %}<tr><th>Address:</th><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>{% endif %}
-    </table>
+    <div class="table-container">
+        <table class="keyvalue">
+            <tr><th>Username:</th><td>{{ person.username }}</td></tr>
+            <tr><th>Email:</th><td>{{ person.email|urlize }}</td></tr>
+            <tr><th>Position:</th><td>{{ person.position|default:"" }}</td></tr>
+            <tr><th>Department:</th><td>{{ person.department|default:"" }}</td></tr>
+            <tr>
+                <th>Institutes:</th>
+                <td>{{ person.institute }}<br/>
+                    {% for institute in person.institutes.all %}{{institute}}
+                    {% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+            </tr>
+            {% if person.telephone %}<tr><th>Phone:</th><td>{{ person.telephone|default:"" }}</td></tr>{% endif %}
+            {% if person.mobile %}<tr><th>Mobile:</th><td>{{ person.mobile|default:"" }}</td></tr>{% endif %}
+            {% if person.fax %}<tr><th>Fax:</th><td>{{ person.fax }}</td></tr>{% endif %}
+            {% if person.address %}<tr><th>Address:</th><td>{{ person.address|linebreaksbr|default:"" }}</td></tr>{% endif %}
+        </table>
+    </div>
 
     <div class="object-tools">
         <ul>

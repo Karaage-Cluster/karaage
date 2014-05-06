@@ -19,10 +19,12 @@
 
     <div class="module">
         <h2>Details</h2>
-        <table class="keyvalue">
-            <tr><th>Name:</th><td>{{ group.name }}</td></tr>
-            <tr><th>Description:</th><td>{{ group.description }}</td></tr>
-        </table>
+        <div class="table-container">
+            <table class="keyvalue">
+                <tr><th>Name:</th><td>{{ group.name }}</td></tr>
+                <tr><th>Description:</th><td>{{ group.description }}</td></tr>
+            </table>
+        </div>
 
         {% if is_admin %}
         <div class="object-tools">
@@ -39,55 +41,59 @@
     {% if group.software_set.all or group.institute_set.all or group.project_set.all %}
     <div class="module">
         <h2>Used by</h2>
-        <table>
-            <thead>
-                <tr><th>Type</th><th>Link</th></tr>
-            </thead>
-            <tbody>
-                {% for software in group.software_set.all %}
-                <tr>
-                    <td>Software</td>
-                    <td><a href="{{ software.get_absolute_url }}">{{ software }}</td></a>
-                </tr>
-                {% endfor %}
-                {% for institute in group.institute_set.all %}
-                <tr>
-                    <td>Institute</td>
-                    <td><a href="{{ institute.get_absolute_url }}">{{ institute }}</a></td>
-                </tr>
-                {% endfor %}
-                {% for project in group.project_set.all %}
-                <tr>
-                    <td>Project</td>
-                    <td><a href="{{ project.get_absolute_url }}">{{ project }}</a></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Type</th><th>Link</th></tr>
+                </thead>
+                <tbody>
+                    {% for software in group.software_set.all %}
+                    <tr>
+                        <td>Software</td>
+                        <td><a href="{{ software.get_absolute_url }}">{{ software }}</td></a>
+                    </tr>
+                    {% endfor %}
+                    {% for institute in group.institute_set.all %}
+                    <tr>
+                        <td>Institute</td>
+                        <td><a href="{{ institute.get_absolute_url }}">{{ institute }}</a></td>
+                    </tr>
+                    {% endfor %}
+                    {% for project in group.project_set.all %}
+                    <tr>
+                        <td>Project</td>
+                        <td><a href="{{ project.get_absolute_url }}">{{ project }}</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
     {% endif %}
 
     <div class="module">
         <h2>Members</h2>
         {% if group.members.all %}
-        <table cellspacing="0">
-            <thead>
-                <tr><th>Username</th><th>Full Name</th>{% if is_admin %}<th></th>{% endif %}</tr>
-            </thead>
-            <tbody>
-            {% for member in group.members.all %}
-            <tr>
-                <td><a href="{{ member.get_absolute_url }}">{{ member.username }}</a></td>
-                <td>{{ member.get_full_name }}</td>
-                {% if is_admin %}
-                <td>
-                    <div><a href="{% url 'kg_group_remove_person' group.name member.username %}" class="deletelink">Delete</a></li>
-                </td>
-                {% endif %}
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Username</th><th>Full Name</th>{% if is_admin %}<th></th>{% endif %}</tr>
+                </thead>
+                <tbody>
+                {% for member in group.members.all %}
+                <tr>
+                    <td><a href="{{ member.get_absolute_url }}">{{ member.username }}</a></td>
+                    <td>{{ member.get_full_name }}</td>
+                    {% if is_admin %}
+                    <td>
+                        <div><a href="{% url 'kg_group_remove_person' group.name member.username %}" class="deletelink">Delete</a></li>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% else %}
         <p>No members</p>
         {% endif %}

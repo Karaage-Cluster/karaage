@@ -23,18 +23,20 @@
     <form method="post" action=".">{% csrf_token %}
         {% if status %}
             <p>You are already registered in the system.</p>
-            <table class="keyvalue">
-                <tr><th>Username:</th><td>{{ application.applicant.username }}</td></tr>
-                <tr><th>Short name:</th><td>{{ application.applicant.get_short_name }}</td></tr>
-                <tr><th>Full name:</th><td>{{ application.applicant.get_full_name }}</td></tr>
-                <tr><th>Institute:</th><td>{% if application.applicant.institute %}<a href="{{ application.applicant.institute.get_absolute_url }}">{{ application.applicant.institute }}</a>{% else %}None{% endif %}</td></tr>
-                {% if application.applicant.position %}<tr><th>Position:</th><td>{{ application.applicant.position }}</td></tr>{% endif %}
-                {% if application.applicant.telephone %}<tr><th>Phone:</th><td>{{ application.applicant.telephone }}</td></tr>{% endif %}
-                {% if application.applicant.mobile %}<tr><th>Mobile:</th><td>{{ application.applicant.mobile }}</td></tr>{% endif %}
-                {% if application.applicant.department %}<tr><th>Department:</th><td>{{ application.applicant.department }}</td></tr>{% endif %}
-                {% if application.applicant.supervisor %}<tr><th>Supervisor:</th><td>{{ application.applicant.supervisor }}</td></tr>{% endif %}
-                {% if application.applicant.fax %}<tr><th>Fax:</th><td>{{ application.applicant.fax }}</td></tr>{% endif %}
-            </table>
+            <div class="table-container">
+                <table class="keyvalue">
+                    <tr><th>Username:</th><td>{{ application.applicant.username }}</td></tr>
+                    <tr><th>Short name:</th><td>{{ application.applicant.get_short_name }}</td></tr>
+                    <tr><th>Full name:</th><td>{{ application.applicant.get_full_name }}</td></tr>
+                    <tr><th>Institute:</th><td>{% if application.applicant.institute %}<a href="{{ application.applicant.institute.get_absolute_url }}">{{ application.applicant.institute }}</a>{% else %}None{% endif %}</td></tr>
+                    {% if application.applicant.position %}<tr><th>Position:</th><td>{{ application.applicant.position }}</td></tr>{% endif %}
+                    {% if application.applicant.telephone %}<tr><th>Phone:</th><td>{{ application.applicant.telephone }}</td></tr>{% endif %}
+                    {% if application.applicant.mobile %}<tr><th>Mobile:</th><td>{{ application.applicant.mobile }}</td></tr>{% endif %}
+                    {% if application.applicant.department %}<tr><th>Department:</th><td>{{ application.applicant.department }}</td></tr>{% endif %}
+                    {% if application.applicant.supervisor %}<tr><th>Supervisor:</th><td>{{ application.applicant.supervisor }}</td></tr>{% endif %}
+                    {% if application.applicant.fax %}<tr><th>Fax:</th><td>{{ application.applicant.fax }}</td></tr>{% endif %}
+                </table>
+            </div>
         {% else %}
             <p>Any changes to the following will affect all you applications. You currently have the following applications open.</p>
             <ol>

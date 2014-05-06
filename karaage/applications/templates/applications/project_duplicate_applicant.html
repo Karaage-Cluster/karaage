@@ -21,12 +21,14 @@
 <p>The following applicant in this application has been declared a duplicate:</p>
 <div class="module">
     <h2>Applicant Details</h2>
-    <table>
-        <tr><td>Name:</td><td>{{ application.applicant }}</td></tr>
-        <tr><td>Institute:</td><td>{{ application.applicant.institute }}</td></tr>
-        <tr><td>Username:</td><td>{{ application.applicant.username }}</td></tr>
-        <tr><td>Email:</td><td>{{ application.applicant.email|urlize }}</td></tr>
-    </table>
+    <div class="table-container">
+        <table class="keyvalue">
+            <tr><th>Name:</th><td>{{ application.applicant }}</td></tr>
+            <tr><th>Institute:</th><td>{{ application.applicant.institute }}</td></tr>
+            <tr><th>Username:</th><td>{{ application.applicant.username }}</td></tr>
+            <tr><th>Email:</th><td>{{ application.applicant.email|urlize }}</td></tr>
+        </table>
+    </div>
 </div>
 
 {% if application.content_type.model == 'applicant' %}

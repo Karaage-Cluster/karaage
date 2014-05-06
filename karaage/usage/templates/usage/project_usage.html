@@ -31,43 +31,45 @@
 
     <div class="module">
         <h2>Users</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>CPU Time</th>
-                    <th>No. Jobs</th>
-                    <th>% of project</th>
-                    <th>Colour</th>
-                </tr>
-            </thead>
-            {% if usage_list %}
-            <tbody>
-                {% for u in usage_list %}
-                <tr>
-                <td><a href="{{ u.person.get_absolute_url }}">{{ u.person }}</a></td>
-                <td class="right">{{ u.usage|timeformat }}</td>
-                <td class="right">{{ u.jobs|intcomma }}</td>
-                <td class="right">{{ u.percent|floatformat:"2" }}%</td>
-                <td class="graph_key_{{ u.colour }}">{{ u.colour }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td>Total</td>
-                    <td class="right">{{ total|timeformat }}</td>
-                    <td class="right">{{ total_jobs|intcomma }}</td>
-                </tr>
-            </tfoot>
-            {% else %}
-            <tbody>
-                <tr>
-                    <td colspan="4">No usage for that time period</td>
-                </tr>
-            </tbody>
-            {% endif %}
-        </table>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>CPU Time</th>
+                        <th>No. Jobs</th>
+                        <th>% of project</th>
+                        <th>Colour</th>
+                    </tr>
+                </thead>
+                {% if usage_list %}
+                <tbody>
+                    {% for u in usage_list %}
+                    <tr>
+                    <td><a href="{{ u.person.get_absolute_url }}">{{ u.person }}</a></td>
+                    <td class="right">{{ u.usage|timeformat }}</td>
+                    <td class="right">{{ u.jobs|intcomma }}</td>
+                    <td class="right">{{ u.percent|floatformat:"2" }}%</td>
+                    <td class="graph_key_{{ u.colour }}">{{ u.colour }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>Total</td>
+                        <td class="right">{{ total|timeformat }}</td>
+                        <td class="right">{{ total_jobs|intcomma }}</td>
+                    </tr>
+                </tfoot>
+                {% else %}
+                <tbody>
+                    <tr>
+                        <td colspan="4">No usage for that time period</td>
+                    </tr>
+                </tbody>
+                {% endif %}
+            </table>
+        </div>
     </div>
     <img src="{{ graph.graph_url }}"/>
 </div>

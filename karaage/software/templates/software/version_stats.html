@@ -22,34 +22,36 @@
     <p>{% date_filter start end %}</p>
     <div class="module">
         <h2>Users</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>CPU Time</th>
-                    <th>No. Jobs</th>
-                </tr>
-            </thead>
-            {% comment %}
-            <tfoot>
-                <tr>
-                    <td>Total</td>
-                    <td>{{ total|timeformat }}</td>
-                    <td>{{ total_jobs|intcomma }}</td>
-                </tr>
-            </tfoot>
-            {% endcomment %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>CPU Time</th>
+                        <th>No. Jobs</th>
+                    </tr>
+                </thead>
+                {% comment %}
+                <tfoot>
+                    <tr>
+                        <td>Total</td>
+                        <td>{{ total|timeformat }}</td>
+                        <td>{{ total_jobs|intcomma }}</td>
+                    </tr>
+                </tfoot>
+                {% endcomment %}
 
-            <tbody>
-                {% for person in person_stats|dictsortreversed:"usage" %}
-                <tr>
-                    <td><a href="{{ person.get_absolute_url }}">{{ person }}</a></td>
-                    <td class="right">{{ person.usage|timeformat }}</td>
-                    <td class="right">{{ person.jobs|intcomma }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                <tbody>
+                    {% for person in person_stats|dictsortreversed:"usage" %}
+                    <tr>
+                        <td><a href="{{ person.get_absolute_url }}">{{ person }}</a></td>
+                        <td class="right">{{ person.usage|timeformat }}</td>
+                        <td class="right">{{ person.jobs|intcomma }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}

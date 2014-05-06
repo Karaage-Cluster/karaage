@@ -17,12 +17,14 @@
 <div class="module">
     <h2>User already in system</h2>
     <p>A user with this email address ({{ person.email }}) already exists in the system.</p>
-    <table class="keyvalue">
-        <tr><th>Name:</th><td>{{ person }}</td></tr>
-        <tr><th>Position:</th><td>{{ person.position|default:"" }}</td></tr>
-        <tr><th>Department:</th><td>{{ person.department|default:"" }}</td></tr>
-        <tr><th>Institute:</th><td><a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a></td></tr>
-    </table>
+    <div class="table-container">
+        <table class="keyvalue">
+            <tr><th>Name:</th><td>{{ person }}</td></tr>
+            <tr><th>Position:</th><td>{{ person.position|default:"" }}</td></tr>
+            <tr><th>Department:</th><td>{{ person.department|default:"" }}</td></tr>
+            <tr><th>Institute:</th><td><a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a></td></tr>
+        </table>
+    </div>
 
     <p>Do you want to to continue with the person?</p>
     <form method="post" action=".">{% csrf_token %}

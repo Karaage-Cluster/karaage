@@ -17,25 +17,27 @@
     <div class="module">
         <h2>Restricted Software</h2>
         {% if software_list %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Software</th><th>Description</th><th>Status</th>
-                    <tr>
-                </thead>
-                <tbody>
-                    {% for s in software_list %}
-                    <tr>
-                        <td><a href="{% url 'kg_software_detail' s.software.id %}">{{ s.software }}</a></td>
-                        <td>{{ s.software.description|truncatewords:"20" }}</td>
-                        <td>
-                            {% if s.accepted %}<p class="strong">- accepted {{ s.accepted_date|date }}</p>{% endif %}
-                            {% if s.pending %}<p class="strong">- Request pending</p>{% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Software</th><th>Description</th><th>Status</th>
+                        <tr>
+                    </thead>
+                    <tbody>
+                        {% for s in software_list %}
+                        <tr>
+                            <td><a href="{% url 'kg_software_detail' s.software.id %}">{{ s.software }}</a></td>
+                            <td>{{ s.software.description|truncatewords:"20" }}</td>
+                            <td>
+                                {% if s.accepted %}<p class="strong">- accepted {{ s.accepted_date|date }}</p>{% endif %}
+                                {% if s.pending %}<p class="strong">- Request pending</p>{% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         {% else %}
             <p>No restricted software currently available.</p>
         {% endif %}

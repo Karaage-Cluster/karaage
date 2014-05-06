@@ -49,43 +49,47 @@
 
         <div>
             <h3>Application Details</h3>
-            <table class="keyvalue">
-                {% if is_admin %}
-                <tr><th>Secret Token:</th><td>{{ application.secret_token }}</td></tr>
-                {% endif %}
-                <tr><th>Expires:</th><td>{{ application.expires }}</td></tr>
-                <tr><th>Created by:</th><td>{{ application.created_by }}</td></tr>
-                <tr><th>Created date:</th><td>{{ application.created_date }}</td></tr>
-                <tr><th>Submitted date:</th><td>{{ application.submitted_date }}</td></tr>
-                <tr><th>Complete date:</th><td>{{ application.complete_date }}</td></tr>
-            </table>
+            <div class="table-container">
+                <table class="keyvalue">
+                    {% if is_admin %}
+                    <tr><th>Secret Token:</th><td>{{ application.secret_token }}</td></tr>
+                    {% endif %}
+                    <tr><th>Expires:</th><td>{{ application.expires }}</td></tr>
+                    <tr><th>Created by:</th><td>{{ application.created_by }}</td></tr>
+                    <tr><th>Created date:</th><td>{{ application.created_date }}</td></tr>
+                    <tr><th>Submitted date:</th><td>{{ application.submitted_date }}</td></tr>
+                    <tr><th>Complete date:</th><td>{{ application.complete_date }}</td></tr>
+                </table>
+            </div>
         </div>
 
         <div>
             <h3>Applicant Details</h3>
-            <table class="keyvalue">
-                {% if application.content_type.model == 'applicant' %}
-                <tr><th>Applicant type:</th><td>New applicant {% if is_admin %}<a href="{% url 'kg_applicant_edit' application.applicant.pk %}">[edit]</a>{% endif %}</td>
-                <tr><th>Username:</th><td>{{ application.applicant.username }}</td></tr>
-                {% elif application.content_type.model == 'person' %}
-                <tr><th>Applicant type:</th><td>Existing person</td>
-                <tr><th>Username:</th><td><a href="{% url 'kg_person_detail' application.applicant.username %}">{{ application.applicant.username }}</a></td></tr>
-                {% else %}
-                <tr><th>Applicant type:</th><td>Unknown {{ application.content_type.model }}</td>
-                <tr><th>Username:</th><td>{{ application.applicant.username }}</td></tr>
-                {% endif %}
+            <div class="table-container">
+                <table class="keyvalue">
+                    {% if application.content_type.model == 'applicant' %}
+                    <tr><th>Applicant type:</th><td>New applicant {% if is_admin %}<a href="{% url 'kg_applicant_edit' application.applicant.pk %}">[edit]</a>{% endif %}</td>
+                    <tr><th>Username:</th><td>{{ application.applicant.username }}</td></tr>
+                    {% elif application.content_type.model == 'person' %}
+                    <tr><th>Applicant type:</th><td>Existing person</td>
+                    <tr><th>Username:</th><td><a href="{% url 'kg_person_detail' application.applicant.username %}">{{ application.applicant.username }}</a></td></tr>
+                    {% else %}
+                    <tr><th>Applicant type:</th><td>Unknown {{ application.content_type.model }}</td>
+                    <tr><th>Username:</th><td>{{ application.applicant.username }}</td></tr>
+                    {% endif %}
 
-                <tr><th>Short name:</th><td>{{ application.applicant.get_short_name }}</td></tr>
-                <tr><th>Full name:</th><td>{{ application.applicant.get_full_name }}</td></tr>
-                <tr><th>Email:</th><td>{{ application.applicant.email|urlize }}</td></tr>
-                <tr><th>Institute:</th><td>{% if application.applicant.institute %}<a href="{{ application.applicant.institute.get_absolute_url }}">{{ application.applicant.institute }}</a>{% else %}None{% endif %}</td></tr>
-                {% if application.applicant.position %}<tr><th>Position:</th><td>{{ application.applicant.position }}</td></tr>{% endif %}
-                {% if application.applicant.telephone %}<tr><th>Phone:</th><td>{{ application.applicant.telephone }}</td></tr>{% endif %}
-                {% if application.applicant.mobile %}<tr><th>Mobile:</th><td>{{ application.applicant.mobile }}</td></tr>{% endif %}
-                {% if application.applicant.department %}<tr><th>Department:</th><td>{{ application.applicant.department }}</td></tr>{% endif %}
-                {% if application.applicant.supervisor %}<tr><th>Supervisor:</th><td>{{ application.applicant.supervisor }}</td></tr>{% endif %}
-                {% if application.applicant.fax %}<tr><th>Fax:</th><td>{{ application.applicant.fax }}</td></tr>{% endif %}
-            </table>
+                    <tr><th>Short name:</th><td>{{ application.applicant.get_short_name }}</td></tr>
+                    <tr><th>Full name:</th><td>{{ application.applicant.get_full_name }}</td></tr>
+                    <tr><th>Email:</th><td>{{ application.applicant.email|urlize }}</td></tr>
+                    <tr><th>Institute:</th><td>{% if application.applicant.institute %}<a href="{{ application.applicant.institute.get_absolute_url }}">{{ application.applicant.institute }}</a>{% else %}None{% endif %}</td></tr>
+                    {% if application.applicant.position %}<tr><th>Position:</th><td>{{ application.applicant.position }}</td></tr>{% endif %}
+                    {% if application.applicant.telephone %}<tr><th>Phone:</th><td>{{ application.applicant.telephone }}</td></tr>{% endif %}
+                    {% if application.applicant.mobile %}<tr><th>Mobile:</th><td>{{ application.applicant.mobile }}</td></tr>{% endif %}
+                    {% if application.applicant.department %}<tr><th>Department:</th><td>{{ application.applicant.department }}</td></tr>{% endif %}
+                    {% if application.applicant.supervisor %}<tr><th>Supervisor:</th><td>{{ application.applicant.supervisor }}</td></tr>{% endif %}
+                    {% if application.applicant.fax %}<tr><th>Fax:</th><td>{{ application.applicant.fax }}</td></tr>{% endif %}
+                </table>
+            </div>
         </div>
 
         {% if application.content_type.model == 'applicant' %}
