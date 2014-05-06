@@ -362,13 +362,11 @@ input[type=text], input[type=password], textarea, select, .vTextField {
     width: 100%;
 }
 
-.module p, .module ul, .module h3, .module h4, .module dl, .module pre, .module form, .module table, .module .object-tools {
+.module p, .module ul, .module h3, .module h4, .module dl, .module pre, .module form, .module .table-container, .module .object-tools {
     margin: 0 4px 2px 4px;
 }
 
 .module table {
-    width: 99%;
-    width: calc(100% - 8px);
 }
 
 .module blockquote {
