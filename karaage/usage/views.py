@@ -33,7 +33,6 @@ from django.core.cache import cache
 from django.http import QueryDict
 
 from karaage.common.decorators import admin_required, usage_required
-from karaage.people.models import Person
 from karaage.institutes.models import Institute, InstituteQuota
 from karaage.projects.models import Project, ProjectQuota
 from karaage.machines.models import Account, MachineCategory
