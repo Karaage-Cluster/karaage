@@ -18,7 +18,8 @@
 {% block content %}
 <div id="content-main">
     <div class="module">
-        <h2>{{ machine_category.name }}</h2>
+        <h2>Machine Category Details</h2>
+        <h3>{{ machine_category.name }}</h3>
         {% render_table table %}
         {% if is_admin %}
         <div class="object-tools">
