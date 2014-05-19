@@ -83,34 +83,7 @@ RHEL 6 installation
 
         service slapd restart
 
-#.  Create the file with the following contents in ``/tmp/ppolicy.ldif``::
-
-        dn: dc=example,dc=org
-        objectClass: top
-        objectClass: domain
-
-        dn: ou=Accounts,dc=example,dc=org
-        objectClass: organizationalUnit
-
-        dn: ou=Groups,dc=example,dc=org
-        objectClass: organizationalUnit
-
-        dn: ou=policies,dc=example,dc=org
-        objectClass: organizationalUnit
-
-        dn: cn=default,ou=policies,dc=example,dc=org
-        objectClass: top
-        objectClass: device
-        objectClass: pwdPolicy
-        pwdAttribute: 2.5.4.35
-
-#.  Import with the following command:
-
-    .. code-block:: bash
-
-        ldapadd -x -H ldapi:///  -D cn=admin,dc=example,dc=org -W < /tmp/ppolicy2.ldif
-
-#.  Create the file with the following contents in ``/tmp/ppolicy2.ldif``::
+#.  Create the file with the following contents in ``/tmp/ppolicy1.ldif``::
 
         dn: cn=module,cn=config
         objectClass: olcModuleList
@@ -132,7 +105,34 @@ RHEL 6 installation
 
     .. code-block:: bash
 
-        ldapadd -Y EXTERNAL -H ldapi:///  < /tmp/ppolicy.ldif
+        ldapadd -x -H ldapi:///  -D cn=admin,dc=example,dc=org -W < /tmp/ppolicy1.ldif
+
+#.  Create the file with the following contents in ``/tmp/ppolicy2.ldif``::
+
+        dn: dc=example,dc=org
+        objectClass: top
+        objectClass: domain
+
+        dn: ou=Accounts,dc=example,dc=org
+        objectClass: organizationalUnit
+
+        dn: ou=Groups,dc=example,dc=org
+        objectClass: organizationalUnit
+
+        dn: ou=policies,dc=example,dc=org
+        objectClass: organizationalUnit
+
+        dn: cn=default,ou=policies,dc=example,dc=org
+        objectClass: top
+        objectClass: device
+        objectClass: pwdPolicy
+        pwdAttribute: userPassword
+
+#.  Import with the following command:
+
+    .. code-block:: bash
+
+        ldapadd -Y EXTERNAL -H ldapi:///  < /tmp/ppolicy2.ldif
 
 .. todo::
 
@@ -155,30 +155,7 @@ Debian installation
 
     Enter XXXXXXXX when prompted for administrator's password.
 
-#.  Create the file with the following contents in ``/tmp/ppolicy.ldif``::
-
-        dn: ou=Accounts,dc=example,dc=org
-        objectClass: organizationalUnit
-
-        dn: ou=Groups,dc=example,dc=org
-        objectClass: organizationalUnit
-
-        dn: ou=policies,dc=example,dc=org
-        objectClass: organizationalUnit
-
-        dn: cn=default,ou=policies,dc=example,dc=org
-        objectClass: top
-        objectClass: device
-        objectClass: pwdPolicy
-        pwdAttribute: 2.5.4.35
-
-#.  Import with the following command:
-
-    .. code-block:: bash
-
-        ldapadd -x -H ldapi:///  -D cn=admin,dc=example,dc=org -W < /tmp/ppolicy.ldif
-
-#.  Create the file with the following contents in ``/tmp/ppolicy2.ldif``::
+#.  Create the file with the following contents in ``/tmp/ppolicy1.ldif``::
 
         dn: cn=module,cn=config
         objectClass: olcModuleList
@@ -194,7 +171,30 @@ Debian installation
 
     .. code-block:: bash
 
-        ldapadd -Y EXTERNAL -H ldapi:///  < /tmp/ppolicy2.ldif
+        ldapadd -Y EXTERNAL -H ldapi:///  < /tmp/ppolicy1.ldif
+
+#.  Create the file with the following contents in ``/tmp/ppolicy2.ldif``::
+
+        dn: ou=Accounts,dc=example,dc=org
+        objectClass: organizationalUnit
+
+        dn: ou=Groups,dc=example,dc=org
+        objectClass: organizationalUnit
+
+        dn: ou=policies,dc=example,dc=org
+        objectClass: organizationalUnit
+
+        dn: cn=default,ou=policies,dc=example,dc=org
+        objectClass: top
+        objectClass: device
+        objectClass: pwdPolicy
+        pwdAttribute: userPassword
+
+#.  Import with the following command:
+
+    .. code-block:: bash
+
+        ldapadd -x -H ldapi:///  -D cn=admin,dc=example,dc=org -W < /tmp/ppolicy2.ldif
 
 .. todo::
 
