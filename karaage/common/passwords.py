@@ -44,8 +44,11 @@ except (OSError, ValueError), e:
     _assert_password = assert_password_simple
 
 
-def assert_strong_password(password, old_password=None):
+def assert_strong_password(username, password, old_password=None):
     """Raises ValueError if the password isn't strong.
 
     Returns the password otherwise."""
+    if username is not None and username in password:
+        raise ValueError("Password contains username")
+
     return _assert_password(password, old_password)

@@ -222,16 +222,16 @@ def password_change(request, username):
     person = get_object_or_404(Person, username=username)
 
     if request.POST:
-        form = AdminPasswordChangeForm(request.POST)
+        form = AdminPasswordChangeForm(data=request.POST, person=person)
 
         if form.is_valid():
-            form.save(person)
+            form.save()
             messages.success(request, "Password changed successfully")
             if person.is_locked():
                 person.unlock()
             return HttpResponseRedirect(person.get_absolute_url())
     else:
-        form = AdminPasswordChangeForm()
+        form = AdminPasswordChangeForm(person=person)
 
     return render_to_response(
         'people/person_password.html',
