@@ -355,7 +355,7 @@ class PersonSetPassword(forms.Form):
     def clean_new_password2(self):
         password1 = self.cleaned_data.get('new_password1')
         password2 = self.cleaned_data.get('new_password2')
-        return validate_password(password1, password2)
+        return validate_password(self.person.username, password1, password2)
 
     def save(self, commit=True):
         self.person.set_password(self.cleaned_data['new_password1'])

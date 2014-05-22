@@ -115,9 +115,10 @@ class AddPersonForm(AdminPersonForm):
         return username
 
     def clean_password2(self):
+        username = self.cleaned_data.get('username')
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
-        return validate_password(password1, password2)
+        return validate_password(username, password1, password2)
 
     def save(self):
         data = self.cleaned_data
@@ -144,13 +145,19 @@ class AdminPasswordChangeForm(forms.Form):
         widget=forms.PasswordInput(),
         label=u'New Password (again)')
 
+    def __init__(self, person, *args, **kwargs):
+        self.person = person
+        super(AdminPasswordChangeForm, self).__init__(*args, **kwargs)
+
     def clean_new2(self):
+        username = self.person.username
         password1 = self.cleaned_data.get('new1')
         password2 = self.cleaned_data.get('new2')
-        return validate_password(password1, password2)
+        return validate_password(username, password1, password2)
 
-    def save(self, person):
+    def save(self):
         data = self.cleaned_data
+        person = self.person
         person.set_password(data['new1'])
         person.save()
 
@@ -159,16 +166,15 @@ class PasswordChangeForm(AdminPasswordChangeForm):
     old = forms.CharField(widget=forms.PasswordInput(), label='Old password')
 
     def clean_new2(self):
+        username = self.person.username
         password1 = self.cleaned_data.get('new1')
         password2 = self.cleaned_data.get('new2')
         old_password = self.cleaned_data.get('old', None)
-        return validate_password(password1, password2, old_password)
+        return validate_password(username, password1, password2, old_password)
 
     def clean_old(self):
-        person = get_current_person()
-
         person = Person.objects.authenticate(
-            username=person.username,
+            username=self.person.username,
             password=self.cleaned_data['old'])
         if person is None:
             raise forms.ValidationError(u'Your old password was incorrect')
@@ -180,7 +186,7 @@ class SetPasswordForm(BaseSetPasswordForm):
 
     def clean_new_password1(self):
         password1 = self.cleaned_data.get('new_password1')
-        return validate_password(password1)
+        return validate_password(self.user.username, password1)
 
 
 class AdminGroupForm(forms.Form):

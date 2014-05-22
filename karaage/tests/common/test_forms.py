@@ -24,42 +24,53 @@ from karaage.common import forms
 class FormsTestCase(TestCase):
 
     def test_validate_password(self):
+        username = "somebody"
+
         good_password = 'ephiikee0eef2Gae'
         bad_password = 'test'
         old_password = 'JaicaeyaivahD9ph'
 
         # Long enough.
-        res = forms.validate_password(good_password)
+        res = forms.validate_password(username, good_password)
         self.assertEqual(res, good_password)
 
         # Passwords match.
-        res = forms.validate_password(good_password, good_password)
+        res = forms.validate_password(
+            username, good_password, good_password)
         self.assertEqual(res, good_password)
 
         # New password is different to old password.
-        res = forms.validate_password(good_password, old_password=old_password)
+        res = forms.validate_password(
+            username, good_password, old_password=old_password)
         self.assertEqual(res, good_password)
 
         # New password is different to old password, passwords match.
-        res = forms.validate_password(good_password,
-                                      good_password,
-                                      old_password=old_password)
+        res = forms.validate_password(
+            username, good_password, good_password, old_password=old_password)
         self.assertEqual(res, good_password)
 
         assert_raises = self.assertRaises(django_forms.ValidationError)
 
         # Too short.
         with assert_raises:
-            forms.validate_password(bad_password)
+            forms.validate_password(username, bad_password)
+
+        # password contains username
+        with assert_raises:
+            forms.validate_password(
+                username, "2222" + username + "1111")
 
         # Passwords don't match.
         with assert_raises:
-            forms.validate_password(good_password, good_password + 'diff')
+            forms.validate_password(
+                username, good_password, good_password + 'diff')
 
         # New password is the same as old password.
         with assert_raises:
-            forms.validate_password(good_password, old_password=good_password)
+            forms.validate_password(
+                username, good_password, old_password=good_password)
 
         # Second password isn't blank.
         with assert_raises:
-            forms.validate_password(good_password, '')
+            forms.validate_password(
+                username, good_password, '')

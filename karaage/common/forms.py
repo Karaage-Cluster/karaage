@@ -24,19 +24,21 @@ from karaage.common.models import LogEntry, COMMENT
 from .passwords import assert_strong_password
 
 
-def validate_password(password1, password2=None, old_password=None):
+def validate_password(username, password1, password2=None, old_password=None):
+    if password1 is None:
+        raise forms.ValidationError(
+            u"The two password fields didn't match.")
+    if password1 != password2:
+        raise forms.ValidationError(
+            u"The two password fields didn't match.")
     try:
-        assert_strong_password(password1, old_password)
+        assert_strong_password(username, password1, old_password)
     except ValueError, e:
         raise forms.ValidationError(
             u'Your password was found to be insecure: %s. '
             'A good password has a combination of letters '
             '(uppercase, lowercase), numbers and is at least 8 '
             'characters long.' % str(e))
-    if password1 and password2 is not None:
-        if password1 != password2:
-            raise forms.ValidationError(
-                u"The two password fields didn't match.")
     return password1
 
 

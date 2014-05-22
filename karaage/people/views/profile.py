@@ -200,14 +200,14 @@ def password_change(request):
     person = request.user
 
     if request.POST:
-        form = PasswordChangeForm(request.POST)
+        form = PasswordChangeForm(data=request.POST, person=person)
 
         if form.is_valid():
-            form.save(person)
+            form.save()
             messages.success(request, "Password changed successfully")
             return HttpResponseRedirect(reverse('kg_profile'))
     else:
-        form = PasswordChangeForm()
+        form = PasswordChangeForm(person=person)
 
     return render_to_response(
         'common/profile_password.html',

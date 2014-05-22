@@ -16,7 +16,6 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.test import TestCase
-from mock import patch
 
 import karaage.people.forms as forms
 import karaage.tests.fixtures as fixtures
@@ -125,20 +124,20 @@ class AdminPasswordChangeFormTestCase(TestCase):
             'username': person.username,
             'new1': 'wai5bixa8Igohxa',
             'new2': 'wai5bixa8Igohxa'}
-        return valid_change
+        return person, valid_change
 
     def test_valid_data(self):
-        form_data = self._valid_change()
-        form = forms.AdminPasswordChangeForm(data=form_data)
+        person, form_data = self._valid_change()
+        form = forms.AdminPasswordChangeForm(data=form_data, person=person)
         self.assertEqual(form.is_valid(), True, form.errors.items())
         self.assertEqual(form.cleaned_data['new1'], 'wai5bixa8Igohxa')
         self.assertEqual(form.cleaned_data['new2'], 'wai5bixa8Igohxa')
 
     def test_password_short(self):
-        form_data = self._valid_change()
+        person, form_data = self._valid_change()
         form_data['new1'] = 'abc'
         form_data['new2'] = 'abc'
-        form = forms.AdminPasswordChangeForm(data=form_data)
+        form = forms.AdminPasswordChangeForm(data=form_data, person=person)
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
@@ -150,10 +149,10 @@ class AdminPasswordChangeFormTestCase(TestCase):
                 u'and is at least 8 characters long.'])])
 
     def test_password_simple(self):
-        form_data = self._valid_change()
+        person, form_data = self._valid_change()
         form_data['new1'] = 'qwerty'
         form_data['new2'] = 'qwerty'
-        form = forms.AdminPasswordChangeForm(data=form_data)
+        form = forms.AdminPasswordChangeForm(data=form_data, person=person)
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
@@ -165,9 +164,9 @@ class AdminPasswordChangeFormTestCase(TestCase):
                 u'and is at least 8 characters long.'])])
 
     def test_password_mismatch(self):
-        form_data = self._valid_change()
+        person, form_data = self._valid_change()
         form_data['new2'] = '!invalid!'
-        form = forms.AdminPasswordChangeForm(data=form_data)
+        form = forms.AdminPasswordChangeForm(data=form_data, person=person)
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
@@ -187,66 +186,56 @@ class PasswordChangeFormTestCase(TestCase):
 
     def test_valid_data(self):
         person, form_data = self._valid_change()
-        with patch('karaage.people.forms.get_current_person') as function:
-            function.return_value = person
-            form = forms.PasswordChangeForm(data=form_data)
-            self.assertEqual(form.is_valid(), True, form.errors.items())
-            self.assertEqual(form.cleaned_data['new1'], 'wai5bixa8Igohxa')
-            self.assertEqual(form.cleaned_data['new2'], 'wai5bixa8Igohxa')
+        form = forms.PasswordChangeForm(data=form_data, person=person)
+        self.assertEqual(form.is_valid(), True, form.errors.items())
+        self.assertEqual(form.cleaned_data['new1'], 'wai5bixa8Igohxa')
+        self.assertEqual(form.cleaned_data['new2'], 'wai5bixa8Igohxa')
 
     def test_password_old_password_wrong(self):
         person, form_data = self._valid_change()
         form_data['old'] = 'abc'
-        with patch('karaage.people.forms.get_current_person') as function:
-            function.return_value = person
-            form = forms.PasswordChangeForm(data=form_data)
-            self.assertEqual(form.is_valid(), False)
-            self.assertEqual(
-                form.errors.items(),
-                [('old', [
-                    u'Your old password was incorrect'])])
+        form = forms.PasswordChangeForm(data=form_data, person=person)
+        self.assertEqual(form.is_valid(), False)
+        self.assertEqual(
+            form.errors.items(),
+            [('old', [
+                u'Your old password was incorrect'])])
 
     def test_password_short(self):
         person, form_data = self._valid_change()
         form_data['new1'] = 'abc'
         form_data['new2'] = 'abc'
-        with patch('karaage.people.forms.get_current_person') as function:
-            function.return_value = person
-            form = forms.PasswordChangeForm(data=form_data)
-            self.assertEqual(form.is_valid(), False)
-            self.assertEqual(
-                form.errors.items(),
-                [('new2', [
-                    u'Your password was found to be insecure: '
-                    u'it is WAY too short. '
-                    u'A good password has a combination of '
-                    u'letters (uppercase, lowercase), numbers '
-                    u'and is at least 8 characters long.'])])
+        form = forms.PasswordChangeForm(data=form_data, person=person)
+        self.assertEqual(form.is_valid(), False)
+        self.assertEqual(
+            form.errors.items(),
+            [('new2', [
+                u'Your password was found to be insecure: '
+                u'it is WAY too short. '
+                u'A good password has a combination of '
+                u'letters (uppercase, lowercase), numbers '
+                u'and is at least 8 characters long.'])])
 
     def test_password_simple(self):
         person, form_data = self._valid_change()
         form_data['new1'] = 'qwerty'
         form_data['new2'] = 'qwerty'
-        with patch('karaage.people.forms.get_current_person') as function:
-            function.return_value = person
-            form = forms.PasswordChangeForm(data=form_data)
-            self.assertEqual(form.is_valid(), False)
-            self.assertEqual(
-                form.errors.items(),
-                [('new2', [
-                    u'Your password was found to be insecure: '
-                    u'it is based on a dictionary word. '
-                    u'A good password has a combination of '
-                    u'letters (uppercase, lowercase), numbers '
-                    u'and is at least 8 characters long.'])])
+        form = forms.PasswordChangeForm(data=form_data, person=person)
+        self.assertEqual(form.is_valid(), False)
+        self.assertEqual(
+            form.errors.items(),
+            [('new2', [
+                u'Your password was found to be insecure: '
+                u'it is based on a dictionary word. '
+                u'A good password has a combination of '
+                u'letters (uppercase, lowercase), numbers '
+                u'and is at least 8 characters long.'])])
 
     def test_password_mismatch(self):
         person, form_data = self._valid_change()
         form_data['new2'] = '!invalid!'
-        with patch('karaage.people.forms.get_current_person') as function:
-            function.return_value = person
-            form = forms.PasswordChangeForm(data=form_data)
-            self.assertEqual(form.is_valid(), False)
-            self.assertEqual(
-                form.errors.items(),
-                [('new2', [u'The two password fields didn\'t match.'])])
+        form = forms.PasswordChangeForm(data=form_data, person=person)
+        self.assertEqual(form.is_valid(), False)
+        self.assertEqual(
+            form.errors.items(),
+            [('new2', [u'The two password fields didn\'t match.'])])
