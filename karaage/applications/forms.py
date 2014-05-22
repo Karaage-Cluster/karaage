@@ -33,7 +33,6 @@ from karaage.people.utils import validate_username_for_new_person
 from karaage.people.utils import UsernameException
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
-from karaage.common import get_current_person
 from karaage.common.forms import validate_password
 
 
