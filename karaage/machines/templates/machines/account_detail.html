@@ -112,7 +112,7 @@
                 {% if is_admin %}
                 <td>
                     {% ifnotequal p account.default_project %}
-                    <a href="{% url 'kg_remove_project_member' p.pid person.username %}" class="deletelink">Remove</a>
+                    <a href="{% url 'kg_remove_project_member' p.pid account.person.username %}" class="deletelink">Remove</a>
                     {% endifnotequal %}
                 </td>
                 {% endif %}
