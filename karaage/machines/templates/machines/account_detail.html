@@ -99,7 +99,7 @@
                     {% ifequal p account.default_project %}
                         <span class="yes">Yes</span>
                     {% else %}
-                        {% if is_admin %}
+                        {% if can_edit %}
                         <form action="{% url 'kg_account_set_default' account.id p.pid %}" method="post">
                             {% csrf_token %}
                             <input type="submit" value="Make Default"/></input>

@@ -18,6 +18,7 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseBadRequest
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 
@@ -203,19 +204,27 @@ def wrong_default_list(request):
 
 @login_required
 def make_default(request, account_id, project_id):
-    if common.is_admin(request):
-        account = get_object_or_404(Account, pk=account_id)
-        redirect = account.get_absolute_url()
-    else:
-        account = get_object_or_404(
-            Account, pk=account_id, person=request.user)
-        redirect = reverse("kg_profile_projects")
+    account = get_object_or_404(Account, pk=account_id)
+    redirect = reverse('kg_account_detail', args=[account.pk])
 
-    project = get_object_or_404(Project, pid=project_id)
+    if not account.can_edit(request):
+        return HttpResponseForbidden(
+            '<h1>Access Denied</h1>'
+            '<p>You do not have permission to edit details '
+            'of this account.</p>')
+
+    try:
+        project = account.person.projects.get(pid=project_id)
+    except Project.DoesNotExist:
+        return HttpResponseForbidden(
+            '<h1>Access Denied</h1>'
+            '<p>Person owning account is not in this project.</p>')
+
     if request.method != 'POST':
-        return HttpResponseRedirect(redirect)
+        return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
     account.default_project = project
     account.save()
     messages.success(request, "Default project changed succesfully")
+
     return HttpResponseRedirect(redirect)
