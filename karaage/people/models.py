@@ -255,16 +255,17 @@ class Person(AbstractBaseUser):
         if not person.is_authenticated():
             return False
 
-        # staff members can view everything
-        if is_admin(request):
-            return True
-
-        # ensure person making request isn't locked.
+        # ensure person making request isn't deleted.
         if not person.is_active:
             return False
 
+        # ensure person making request isn't locked.
         if person.is_locked():
             return False
+
+        # staff members can view everything
+        if is_admin(request):
+            return True
 
         # we don't allow people to see inactive accounts.
         if not self.is_active:

@@ -327,24 +327,51 @@ class Account(models.Model):
     save.alters_data = True
 
     def can_view(self, request):
+        # if user not authenticated, no access
         if not request.user.is_authenticated():
             return False
+
+        # ensure person making request isn't deleted.
+        if not request.user.is_active:
+            return False
+
+        # ensure person making request isn't locked.
+        if request.user.is_locked():
+            return False
+
+        # if user is admin, full access
         if is_admin(request):
             return True
+
+        # ensure this account is not locked
+        if self.is_locked():
+            return False
+
+        # ensure this account is not deleted
         if self.date_deleted is not None:
             return False
-        return self.person.can_view(request)
+
+        # ensure person owning account isn't locked.
+        if self.person.is_locked():
+            return False
+
+        # ensure person owning account isn't deleted.
+        if not self.person.is_active:
+            return False
+
+        return True
 
     def can_edit(self, request):
-        if not request.user.is_authenticated():
+        # if we can't view this account, we can't edit it either
+        if not self.can_view(request):
             return False
-        if is_admin(request):
-            return True
-        if self.date_deleted is not None:
-            return False
-        if self.person == request.user:
-            return True
-        return False
+
+        if not is_admin(request):
+            # if not admin, ensure we are the person being altered
+            if self.person != request.user:
+                return False
+
+        return True
 
     def delete(self):
         # delete the object
