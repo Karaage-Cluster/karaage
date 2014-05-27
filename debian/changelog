@@ -1,3 +1,19 @@
+karaage3 (3.0.14-1) unstable; urgency=low
+
+  * Put all tables inside table-container.
+  * Remove calc from css.
+  * Make headings more consistant.
+  * Update depends.
+  * Remove legacy stuff.
+  * Update LDAP documentation.
+  * Fix uninitialized is_admin value.
+  * Remove unneeded import.
+  * Ensure username is not included in the password.
+  * Revert "Use named URLs in get_email_link"
+  * Fix account permissions.
+
+ -- Brian May <bam@debian.org>  Tue, 27 May 2014 13:41:06 +1000
+
 karaage3 (3.0.13-1) unstable; urgency=low
 
   * Specify python/debian mappings.
