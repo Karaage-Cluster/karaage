@@ -75,13 +75,19 @@ def account_detail(request, account_id):
 
     return render_to_response(
         'machines/account_detail.html',
-        {'account': account},
+        {'account': account, 'can_edit': account.can_edit(request)},
         context_instance=RequestContext(request))
 
 
 @login_required
 def edit_account(request, account_id):
     account = get_object_or_404(Account, pk=account_id)
+
+    if not account.can_edit(request):
+        return HttpResponseForbidden(
+            '<h1>Access Denied</h1>'
+            '<p>You do not have permission to edit details '
+            'of this account.</p>')
 
     if common.is_admin(request):
         person = account.person
@@ -91,12 +97,7 @@ def edit_account(request, account_id):
             instance=account, person=person, initial={'username': username})
     else:
         person = request.user
-        if not account.person != person:
-            return HttpResponseForbidden(
-                '<h1>Access Denied</h1>'
-                '<p>You do not have permission to edit details '
-                'of this account.</p>')
-
+        assert account.person == person
         form = UserAccountForm(
             data=request.POST or None, instance=account)
 

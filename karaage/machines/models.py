@@ -27,7 +27,7 @@ from model_utils import FieldTracker
 from karaage.people.models import Person, Group
 from karaage.machines.managers import MachineCategoryManager
 from karaage.machines.managers import MachineManager, ActiveMachineManager
-from karaage.common import log
+from karaage.common import log, is_admin
 
 
 class MachineCategory(models.Model):
@@ -326,7 +326,24 @@ class Account(models.Model):
     save.alters_data = True
 
     def can_view(self, request):
+        if not request.user.is_authenticated():
+            return False
+        if is_admin(request):
+            return True
+        if self.date_deleted is not None:
+            return False
         return self.person.can_view(request)
+
+    def can_edit(self, request):
+        if not request.user.is_authenticated():
+            return False
+        if is_admin(request):
+            return True
+        if self.date_deleted is not None:
+            return False
+        if self.person == request.user:
+            return True
+        return False
 
     def delete(self):
         # delete the object
