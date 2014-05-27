@@ -20,6 +20,7 @@ import datetime
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
+from django.core.urlresolvers import reverse
 from jsonfield import JSONField
 
 from model_utils import FieldTracker
@@ -177,7 +178,7 @@ class Account(models.Model):
         return '%s/%s' % (self.username, self.machine_category.name)
 
     def get_absolute_url(self):
-        return self.person.get_absolute_url()
+        return reverse('kg_account_detail', args=[self.pk])
 
     @classmethod
     def create(cls, person, default_project, machine_category):
