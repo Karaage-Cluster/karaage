@@ -87,7 +87,6 @@ setup(
         ('/etc/karaage', ['conf/global_settings.py', ]),
     ],
     install_requires=[
-        "python > 2.4",
         "Django >= 1.6",
         "South >= 0.7",
         "python-alogger >= 2.0",
