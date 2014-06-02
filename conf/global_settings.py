@@ -207,6 +207,13 @@ ACCOUNTS_ORG_NAME = 'Example'
 #
 # REGISTRATION_BASE_URL = 'https://accounts.example.org/users'
 
+# Admin base URL - Used in email templates
+# Uncomment to override default
+#
+# default: ADMIN_BASE_URL = 'https://<hostname>/kgadmin'
+#
+# ADMIN_BASE_URL = 'https://accounts.example.org/kgadmin'
+
 # Is Shibboleth supported?
 #
 # default: SHIB_SUPPORTED = False

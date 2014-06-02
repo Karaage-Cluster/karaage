@@ -36,13 +36,14 @@ def render_email(name, context):
     return subject, body
 
 
-def send_request_email(authorised_text, authorised_persons, application):
+def send_request_email(
+        authorised_text, authorised_persons, application,
+        link, is_secret):
     """Sends an email to admin asking to approve user application"""
     context = CONTEXT.copy()
     context['requester'] = application.applicant
-    context['link'] = (
-        '%s/applications/%d/'
-        % (settings.REGISTRATION_BASE_URL, application.pk))
+    context['link'] = link
+    context['is_secret'] = is_secret
     context['application'] = application
     context['authorised_text'] = authorised_text
 

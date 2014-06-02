@@ -341,6 +341,10 @@ TRAINING_ACCOUNT_PREFIX = 'train'
 from socket import getfqdn
 REGISTRATION_BASE_URL = 'https://%s/users' % getfqdn()
 
+# Admin base URL - Used in email templates.
+from socket import getfqdn
+ADMIN_BASE_URL = 'https://%s/kgadmin' % getfqdn()
+
 # Do we allow anonymous users to request accounts?
 ALLOW_REGISTRATIONS = False
 

@@ -68,8 +68,23 @@ def get_url(request, application, auth, label=None):
     return url
 
 
+def get_admin_email_link(application):
+    """ Retrieve a link that can be emailed to the administrator. """
+    url = '%s/applications/%d/' % (settings.ADMIN_BASE_URL, application.pk)
+    is_secret = False
+    return url, is_secret
+
+
+def get_registration_email_link(application):
+    """ Retrieve a link that can be emailed to the logged other users. """
+    url = '%s/applications/%d/' % (
+        settings.REGISTRATION_BASE_URL, application.pk)
+    is_secret = False
+    return url, is_secret
+
+
 def get_email_link(application):
-    """ Retrieve a link that can be emailed to the user. """
+    """ Retrieve a link that can be emailed to the applicant. """
     # don't use secret_token unless we have to
     if (application.content_type.model == 'person' and
             application.applicant.has_usable_password()):

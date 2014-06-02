@@ -8,5 +8,9 @@ This application is now waiting for {{ authorised_text }} to process the applica
 Please visit the {{ org_name }} account management site at {{ link }} for more
 information and to accept or decline this request.
 
+{% if is_secret %}This URL must remain secret, do not give it to anybody else. Please
+make sure nobody is already logged into Karaage from your computer before using it.
+{% else %}If you are not already logged in you will be required to log in before using this link.
+{% endif %}
 
 {% include "emails/email_footer.txt" %}{% endautoescape %}

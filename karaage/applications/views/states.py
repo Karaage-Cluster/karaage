@@ -73,10 +73,16 @@ class StateWaitingForApproval(base.State):
     def enter_state(self, request, application):
         """ This is becoming the new current state. """
         authorised_persons = self.get_authorised_persons(application)
+        link, is_secret = self.get_request_email_link(application)
         emails.send_request_email(
             self.authorised_text,
             authorised_persons,
-            application)
+            application,
+            link, is_secret)
+
+    def get_request_email_link(self, application):
+        link, is_secret = base.get_registration_email_link(application)
+        return link, is_secret
 
     def view(self, request, application, label, auth, actions):
         """ Django view method. """

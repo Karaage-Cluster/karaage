@@ -636,6 +636,10 @@ class StateWaitingForAdmin(states.StateWaitingForApproval):
         return forms.AdminApproveProjectFormGenerator(
             application, auth)
 
+    def get_request_email_link(self, application):
+        link, is_secret = base.get_admin_email_link(application)
+        return link, is_secret
+
 
 class StateDuplicateApplicant(base.State):
     """ Somebody has declared application is existing user. """
