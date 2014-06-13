@@ -38,7 +38,7 @@ import karaage.software.models
 
 
 def FuzzyLowerText(*args, **kwargs):
-    if not 'chars' in kwargs:
+    if 'chars' not in kwargs:
         kwargs['chars'] = 'abcdefghijklmnopqrstuvwxyz'
     return FuzzyText(*args, **kwargs)
 
