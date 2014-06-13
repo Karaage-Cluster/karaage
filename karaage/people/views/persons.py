@@ -59,7 +59,7 @@ def _add_edit_user(request, form_class, username):
                     request, "User '%s' was edited succesfully" % person)
                 assert person is not None
             else:
-                #Add
+                # add
                 person = form.save()
                 messages.success(
                     request, "User '%s' was created succesfully" % person)
