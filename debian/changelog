@@ -1,3 +1,19 @@
+karaage3 (3.0.15-1) unstable; urgency=low
+
+  * Fix account detail page for admin.
+  * Change get_absolute_url for accounts.
+  * Paranoid security checks.
+  * Allow users to change default project.
+  * Remove depends on python.
+  * Ensure admin request emails have correct link.
+  * PEP8 improvement.
+  * Fix PEP8 issue in comment.
+  * Remove non-PEP8 compliant whitespace.
+  * Support searching multiple directories for gold.
+  * Display more project application details.
+
+ -- Brian May <brian@microcomaustralia.com.au>  Tue, 17 Jun 2014 14:26:03 +1000
+
 karaage3 (3.0.14-1) unstable; urgency=low
 
   * Put all tables inside table-container.
