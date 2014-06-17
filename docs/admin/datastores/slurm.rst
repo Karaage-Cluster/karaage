@@ -10,7 +10,7 @@ Edit DATASTORES in /etc/karaage/global_settings.py:
 .. code-block:: bash
 
    DATASTORES = {
-       'ldap' : [
+       'ldap': [
            {
                'DESCRIPTION': 'Default LDAP datastore',
                ...
@@ -23,7 +23,7 @@ Edit DATASTORES in /etc/karaage/global_settings.py:
                'NULL_PROJECT': 'default',
            },
        ],
-       'dummy' : [
+       'dummy': [
        ],
    }
 

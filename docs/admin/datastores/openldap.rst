@@ -223,7 +223,7 @@ Configuring Karaage to use LDAP
         }
 
         MACHINE_CATEGORY_DATASTORES = {
-             'ldap' : [
+             'ldap': [
                   {
                         'DESCRIPTION': 'LDAP datastore',
                         'ENGINE': 'karaage.datastores.ldap.AccountDataStore',
@@ -238,7 +238,7 @@ Configuring Karaage to use LDAP
                         'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
                   },
              ],
-             'dummy' : [
+             'dummy': [
              ],
         }
 
