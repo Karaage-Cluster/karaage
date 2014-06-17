@@ -17,6 +17,7 @@
 
 """ Gold datastore. """
 
+import os.path
 import subprocess
 import csv
 import logging
@@ -73,16 +74,31 @@ class GoldDataStore(base.MachineCategoryDataStore):
         else:
             return value
 
+    def _get_command(self, command):
+        path = None
+        split_path = self._path.split(":")
+        for d in split_path:
+            tmp_path = os.path.join(d, command[0])
+            if os.path.isfile(tmp_path) and os.access(tmp_path, os.X_OK):
+                path = tmp_path
+                break
+        if path is None:
+            raise RuntimeError(
+                "Cannot find %s in %s" % (command[0], split_path))
+
+        cmd = []
+        cmd.extend(self._prefix)
+        cmd.append(path)
+        cmd.extend(command[1:])
+        logger.debug("Cmd %s" % command)
+        return cmd
+
     def _call(self, command, ignore_errors=None):
         """ Call remote command with logging. """
         if ignore_errors is None:
             ignore_errors = []
-        cmd = []
-        cmd.extend(self._prefix)
-        cmd.append("%s/%s" % (self._path, command[0]))
-        cmd.extend(command[1:])
-        command = cmd
 
+        command = self._get_command(command)
         logger.debug("Cmd %s" % command)
         null = open('/dev/null', 'w')
         retcode = subprocess.call(command, stdout=null, stderr=null)
@@ -103,13 +119,7 @@ class GoldDataStore(base.MachineCategoryDataStore):
 
     def _read_output(self, command):
         """ Read CSV delimited input from Gold. """
-        cmd = []
-        cmd.extend(self._prefix)
-        cmd.append("%s/%s" % (self._path, command[0]))
-        cmd.extend(command[1:])
-        command = cmd
-
-        logger.debug("Cmd %s" % command)
+        command = self._get_command(command)
         null = open('/dev/null', 'w')
         process = subprocess.Popen(
             command, stdout=subprocess.PIPE, stderr=null)

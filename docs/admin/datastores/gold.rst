@@ -20,7 +20,7 @@ Edit DATASTORES in /etc/karaage/global_settings.py:
                'DESCRIPTION': 'Default Gold datastore',
                'ENGINE': 'karaage.datastores.gold.GoldDataStore',
                'PREFIX': [],
-               'PATH': '/usr/local/gold/bin',
+               'PATH': '/usr/local/gold/bin:/usr/local/gold/sbin',
                'NULL_PROJECT': 'default',
            },
        ],
