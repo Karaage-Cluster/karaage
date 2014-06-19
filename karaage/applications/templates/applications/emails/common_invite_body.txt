@@ -13,9 +13,9 @@
 
 {% if is_secret %}This URL must remain secret, do not give it to anybody else. Please
 make sure nobody is already logged into Karaage from your computer before using it.
+
+This link will expire in 7 days.
 {% else %}If you are not already logged in you will be required to log in before using this link.
 {% endif %}
-This link will expire in 7 days.
-
 
 {% include "emails/email_footer.txt" %}{% endautoescape %}
