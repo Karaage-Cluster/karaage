@@ -255,10 +255,26 @@ class ProjectApplication(Application):
         if self.make_leader:
             self.project.leaders.add(person)
         if self.needs_account:
+            found_pc = False
             for pc in self.project.projectquota_set.all():
+                found_pc = True
                 if not person.has_account(pc.machine_category):
+                    log.add(
+                        self.application_ptr,
+                        'Created account on machine category %s'
+                        % pc.machine_category)
                     Account.create(person, self.project, pc.machine_category)
                     created_account = True
+                else:
+                    log.change(
+                        self.application_ptr,
+                        'Account on machine category %s already exists'
+                        % pc.machine_category)
+            if not found_pc:
+                log.change(
+                    self.application_ptr,
+                    'No project quotas found; no accounts created '
+                    'despite being requested')
         self.project.group.members.add(person)
         return created_person, created_account
     approve.alters_data = True
