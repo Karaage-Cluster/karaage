@@ -86,5 +86,38 @@
         </div>
     </div>
 
+    <div class="module">
+        <h2>Institutes</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Institute</th>
+                        <th>CPU Time</th>
+                        <th>No. Jobs</th>
+                    </tr>
+                </thead>
+                {% comment %}
+                <tfoot>
+                    <tr>
+                        <td>Total</td>
+                        <td class="right">{{ total|timeformat }}</td>
+                        <td class="right">{{ total_jobs|intcomma }}</td>
+                    </tr>
+                </tfoot>
+                {% endcomment %}
+                <tbody>
+                    {% for institute in institute_stats|dictsortreversed:"usage" %}
+                    <tr>
+                        <td><a href="{% url 'kg_institute_detail' institute.pk %}">{{ institute }}</a></td>
+                        <td class="right">{{ institute.usage|timeformat }}</td>
+                        <td class="right">{{ institute.jobs|intcomma }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
 {% endblock %}

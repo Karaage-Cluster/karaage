@@ -33,6 +33,7 @@ from karaage.software.forms import AddPackageForm, LicenseForm
 from karaage.software.forms import SoftwareVersionForm
 from karaage.software.tables import SoftwareFilter, SoftwareTable
 from karaage.people.models import Person
+from karaage.institutes.models import Institute
 from karaage.common import get_date_range, log
 import karaage.common as util
 
@@ -311,18 +312,24 @@ def software_stats(request, software_id):
         .annotate(jobs=Count('cpujob'), usage=Sum('cpujob__cpu_usage')) \
         .filter(usage__isnull=False)
     version_totaljobs = version_stats.aggregate(Sum('jobs'))['jobs__sum']
-    #version_totalusage = version_stats.aggregate(Sum('usage'))
+    # version_totalusage = version_stats.aggregate(Sum('usage'))
     person_stats = Person.objects \
         .filter(account__cpujob__software__software=software,
                 account__cpujob__date__range=(start, end)) \
         .annotate(jobs=Count('account__cpujob'),
                   usage=Sum('account__cpujob__cpu_usage'))
+    institute_stats = Institute.objects \
+        .filter(person__account__cpujob__software__software=software,
+                person__account__cpujob__date__range=(start, end)) \
+        .annotate(jobs=Count('person__account__cpujob'),
+                  usage=Sum('person__account__cpujob__cpu_usage'))
 
     context = {
         'software': software,
         'version_stats': version_stats,
         'version_totaljobs': version_totaljobs,
         'person_stats': person_stats,
+        'institute_stats': institute_stats,
         'start': start,
         'end': end,
         'querystring': querystring,
@@ -344,10 +351,16 @@ def version_stats(request, version_id):
                 account__cpujob__date__range=(start, end)) \
         .annotate(jobs=Count('account__cpujob'),
                   usage=Sum('account__cpujob__cpu_usage'))
+    institute_stats = Institute.objects \
+        .filter(person__account__cpujob__software=version,
+                person__account__cpujob__date__range=(start, end)) \
+        .annotate(jobs=Count('person__account__cpujob'),
+                  usage=Sum('person__account__cpujob__cpu_usage'))
 
     context = {
         'version': version,
         'person_stats': person_stats,
+        'institute_stats': institute_stats,
         'start': start,
         'end': end,
         'querystring': querystring,
