@@ -52,12 +52,13 @@
     </div>
 
     <div class="module">
-        <h2>Users</h2>
+        <h2>People</h2>
         <div class="table-container">
             <table>
                 <thead>
                     <tr>
-                        <th>User</th>
+                        <th>Person</th>
+                        <th>Institute</th>
                         <th>CPU Time</th>
                         <th>No. Jobs</th>
                     </tr>
@@ -74,7 +75,8 @@
                 <tbody>
                     {% for person in person_stats|dictsortreversed:"usage" %}
                     <tr>
-                        <td><a href="{{ person.get_absolute_url }}">{{ person }}</a></td>
+                        <td><a href="{% url 'kg_person_detail' person.username %}">{{ person }}</a></td>
+                        <td><a href="{% url 'kg_institute_detail' person.institute.pk %}">{{ person.institute }}</a></td>
                         <td class="right">{{ person.usage|timeformat }}</td>
                         <td class="right">{{ person.jobs|intcomma }}</td>
                     </tr>
