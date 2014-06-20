@@ -5,7 +5,7 @@ This utility script should be run daily to clean up certain karaage data.
 Description
 -----------
 
-Running this command in the same as running the following commands by hand:
+Running this command is the same as running the following commands by hand:
 
 .. code-block:: bash
 
