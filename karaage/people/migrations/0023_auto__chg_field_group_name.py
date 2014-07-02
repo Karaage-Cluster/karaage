@@ -8,58 +8,58 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
 
         # Changing field 'Group.name'
-        db.alter_column(u'people_group', 'name', self.gf(
+        db.alter_column('people_group', 'name', self.gf(
             'django.db.models.fields.CharField')(unique=True, max_length=255))
 
     def backwards(self, orm):
 
         # Changing field 'Group.name'
-        db.alter_column(u'people_group', 'name', self.gf(
+        db.alter_column('people_group', 'name', self.gf(
             'django.db.models.fields.CharField')(max_length=100, unique=True))
 
     models = {
-        u'institutes.institute': {
+        'institutes.institute': {
             'Meta': {'ordering': "['name']", 'object_name': 'Institute', 'db_table': "'institute'"},
-            'delegates': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'delegate'", 'to': u"orm['people.Person']", 'through': u"orm['institutes.InstituteDelegate']", 'blank': 'True', 'symmetrical': 'False', 'null': 'True'}),
-            'group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Group']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'delegates': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'delegate'", 'to': "orm['people.Person']", 'through': u"orm['institutes.InstituteDelegate']", 'blank': 'True', 'symmetrical': 'False', 'null': 'True'}),
+            'group': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['people.Group']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'}),
             'saml_entityid': ('django.db.models.fields.CharField', [], {'max_length': '200', 'unique': 'True', 'null': 'True', 'blank': 'True'})
         },
-        u'institutes.institutedelegate': {
+        'institutes.institutedelegate': {
             'Meta': {'object_name': 'InstituteDelegate', 'db_table': "'institutedelegate'"},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['institutes.Institute']"}),
-            'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['people.Person']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['institutes.Institute']"}),
+            'person': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['people.Person']"}),
             'send_email': ('django.db.models.fields.BooleanField', [], {})
         },
-        u'people.group': {
+        'people.group': {
             'Meta': {'ordering': "['name']", 'unique_together': "(('name', 'foreign_id'),)", 'object_name': 'Group'},
             'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'extra_data': ('jsonfield.fields.JSONField', [], {'default': '{}'}),
             'foreign_id': ('django.db.models.fields.CharField', [], {'max_length': '255', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'members': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'groups'", 'symmetrical': 'False', 'to': u"orm['people.Person']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'members': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'groups'", 'symmetrical': 'False', 'to': "orm['people.Person']"}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'})
         },
-        u'people.person': {
+        'people.person': {
             'Meta': {'ordering': "['full_name', 'short_name']", 'object_name': 'Person', 'db_table': "'person'"},
             'address': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
-            'approved_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'user_approver'", 'null': 'True', 'to': u"orm['people.Person']"}),
+            'approved_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'user_approver'", 'null': 'True', 'to': "orm['people.Person']"}),
             'city': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'comment': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'country': ('django.db.models.fields.CharField', [], {'max_length': '2', 'null': 'True', 'blank': 'True'}),
             'date_approved': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'date_deleted': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'deleted_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'user_deletor'", 'null': 'True', 'to': u"orm['people.Person']"}),
+            'deleted_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'user_deletor'", 'null': 'True', 'to': "orm['people.Person']"}),
             'department': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'null': 'True', 'db_index': 'True'}),
             'expires': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'fax': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'full_name': ('django.db.models.fields.CharField', [], {'max_length': '60'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['institutes.Institute']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['institutes.Institute']"}),
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'is_admin': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_systemuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
