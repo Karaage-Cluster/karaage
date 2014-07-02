@@ -39,7 +39,7 @@ def validate_password(username, password1, password2=None, old_password=None):
     # Now we can check password1
     try:
         assert_strong_password(username, password1, old_password)
-    except ValueError, e:
+    except ValueError as e:
         raise forms.ValidationError(six.u(
             'Your password was found to be insecure: %s. '
             'A good password has a combination of letters '
