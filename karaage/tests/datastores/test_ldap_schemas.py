@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
+
 from karaage.tests.integration import IntegrationTestCase
 from karaage.tests.fixtures import PersonFactory
 
@@ -31,5 +33,6 @@ class openldapPersonTestCase(IntegrationTestCase):
         ldap = self.global_ldap_datastore._people()
         self.global_ldap_datastore.save_person(person)
         ldap_person = ldap.get(uid=person.username)
-        self.assertEqual(ldap_person.displayName,
-                         u'%s (%s)' % (person.full_name, person.institute))
+        self.assertEqual(
+            ldap_person.displayName,
+            six.u('%s (%s)') % (person.full_name, person.institute))

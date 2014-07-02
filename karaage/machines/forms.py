@@ -16,6 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
+import six
 
 from django import forms
 from django.conf import settings
@@ -44,7 +45,7 @@ class MachineCategoryForm(forms.ModelForm):
 
 class AdminAccountForm(forms.ModelForm):
     username = forms.CharField(
-        label=u"Requested username",
+        label=six.u("Requested username"),
         max_length=settings.USERNAME_MAX_LENGTH,
         help_text=((settings.USERNAME_VALIDATION_ERROR_MSG +
                     " and has a max length of %s.")
@@ -77,7 +78,7 @@ class AdminAccountForm(forms.ModelForm):
         query = self.person.projects.filter(pk=default_project.pk)
         if query.count() == 0:
             raise forms.ValidationError(
-                u'Person does not belong to default project.')
+                six.u('Person does not belong to default project.'))
 
         return default_project
 
@@ -94,7 +95,7 @@ class AdminAccountForm(forms.ModelForm):
             machine_category=machine_category)
         if query.count() == 0:
             raise forms.ValidationError(
-                u'Default project not in machine category.')
+                six.u('Default project not in machine category.'))
 
         if 'username' not in data:
             return data

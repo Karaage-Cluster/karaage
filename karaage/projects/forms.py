@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
+
 from django import forms
 from django.contrib.admin.widgets import AdminDateWidget
 from django.conf import settings
@@ -70,7 +72,7 @@ class ProjectForm(forms.ModelForm):
         pid = self.cleaned_data['pid']
         try:
             Institute.objects.get(name=pid)
-            raise forms.ValidationError(u'Project ID not available')
+            raise forms.ValidationError(six.u('Project ID not available'))
         except Institute.DoesNotExist:
             return pid
 

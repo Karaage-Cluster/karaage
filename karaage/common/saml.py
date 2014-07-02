@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
+
 from django.conf import settings
 from django import forms
 from karaage.institutes.models import Institute
@@ -72,7 +74,8 @@ def logout_url(request):
 def add_saml_data(person, request):
     attrs, error = parse_attributes(request)
     person.short_name = attrs['first_name']
-    person.full_name = u"%s %s" % (attrs['first_name'], attrs['last_name'])
+    person.full_name = six.u("%s %s") % (
+        attrs['first_name'], attrs['last_name'])
     person.email = attrs['email']
     person.saml_id = attrs['persistent_id']
     person.telephone = attrs.get('telephone', None)

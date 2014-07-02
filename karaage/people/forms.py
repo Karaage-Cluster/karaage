@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
+
 import ajax_select.fields
 from django import forms
 from django.conf import settings
@@ -39,8 +41,10 @@ class PersonForm(forms.ModelForm):
 #    department = forms.CharField(required=False)
 #    supervisor = forms.CharField(required=False)
     telephone = forms.RegexField(
-        "^[0-9a-zA-Z\.( )+-]+$", required=True, label=u"Office Telephone",
-        help_text=u"Used for emergency contact and password reset service.",
+        "^[0-9a-zA-Z\.( )+-]+$", required=True,
+        label=six.u("Office Telephone"),
+        help_text=six.u(
+            "Used for emergency contact and password reset service."),
         error_messages={
             'invalid': 'Telephone number may only contain digits, letter, '
                        'hyphens, spaces, braces,  and the plus sign.'})
@@ -52,7 +56,9 @@ class PersonForm(forms.ModelForm):
                        'hyphens, spaces, braces,  and the plus sign.'})
     fax = forms.CharField(required=False)
     address = forms.CharField(
-        label=u"Mailing Address", required=False, widget=forms.Textarea())
+        label=six.u("Mailing Address"),
+        required=False,
+        widget=forms.Textarea())
     country = forms.ChoiceField(
         choices=COUNTRIES, initial='AU', required=False)
 
@@ -89,22 +95,22 @@ class AdminPersonForm(PersonForm):
 class AddPersonForm(AdminPersonForm):
     project = forms.ModelChoiceField(
         queryset=Project.objects.all(),
-        label=u"Default Project", required=False)
+        label=six.u("Default Project"), required=False)
     needs_account = forms.BooleanField(
-        required=False, label=u"Do you require a cluster account",
-        help_text=u"eg. Will you be working on the project yourself")
+        required=False, label=six.u("Do you require a cluster account"),
+        help_text=six.u("eg. Will you be working on the project yourself"))
     username = forms.CharField(
-        label=u"Requested username",
+        label=six.u("Requested username"),
         max_length=settings.USERNAME_MAX_LENGTH,
         help_text=(settings.USERNAME_VALIDATION_ERROR_MSG
                    + " and has a max length of %s."
                    % settings.USERNAME_MAX_LENGTH))
     password1 = forms.CharField(
         widget=forms.PasswordInput(render_value=False),
-        label=u'Password')
+        label=six.u('Password'))
     password2 = forms.CharField(
         widget=forms.PasswordInput(render_value=False),
-        label=u'Password (again)')
+        label=six.u('Password (again)'))
 
     def clean_username(self):
         username = self.cleaned_data['username']
@@ -140,10 +146,10 @@ class AddPersonForm(AdminPersonForm):
 class AdminPasswordChangeForm(forms.Form):
     new1 = forms.CharField(
         widget=forms.PasswordInput(),
-        label=u'New Password')
+        label=six.u('New Password'))
     new2 = forms.CharField(
         widget=forms.PasswordInput(),
-        label=u'New Password (again)')
+        label=six.u('New Password (again)'))
 
     def __init__(self, person, *args, **kwargs):
         self.person = person
@@ -177,7 +183,8 @@ class PasswordChangeForm(AdminPasswordChangeForm):
             username=self.person.username,
             password=self.cleaned_data['old'])
         if person is None:
-            raise forms.ValidationError(u'Your old password was incorrect')
+            raise forms.ValidationError(
+                six.u('Your old password was incorrect'))
 
         return self.cleaned_data['old']
 

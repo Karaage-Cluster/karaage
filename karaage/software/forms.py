@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
+
 from django import forms
 from django.conf import settings
 
@@ -73,7 +75,7 @@ class AddPackageForm(SoftwareForm):
                 or data['license_date'] \
                 or data['license_text']:
             raise forms.ValidationError(
-                u'You must specify all fields in the license section')
+                six.u('You must specify all fields in the license section'))
 
         return data
 

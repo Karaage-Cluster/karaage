@@ -18,6 +18,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 """ Default Karaage Settings. """
+import six
 
 ###
 ### DJANGO SETTINGS
@@ -313,8 +314,9 @@ SHIB_ATTRIBUTE_MAP = {
 USERNAME_VALIDATION_RE = '[-\w]+'
 
 # Error to display if username validation failed.
-USERNAME_VALIDATION_ERROR_MSG = u'Usernames can only contain letters, ' \
-    u'numbers and underscores'
+USERNAME_VALIDATION_ERROR_MSG = six.u(
+    'Usernames can only contain letters, '
+    'numbers and underscores')
 USERNAME_MAX_LENGTH = 255
 
 # RE for validing a project.
@@ -324,15 +326,17 @@ PROJECT_VALIDATION_RE = '[-\w]+'
 PROJECT_ID_MAX_LENGTH = 255
 
 # Error to display if project validation failed.
-PROJECT_VALIDATION_ERROR_MSG = u'Project names can only contain letters, ' \
-    u'numbers and underscores'
+PROJECT_VALIDATION_ERROR_MSG = six.u(
+    'Project names can only contain letters, '
+    'numbers and underscores')
 
 # RE for validing a group id.
 GROUP_VALIDATION_RE = '[-\w]+'
 
 # Error to display if group validation failed.
-GROUP_VALIDATION_ERROR_MSG = u'Group names can only contain letters, ' \
-    u'numbers and underscores'
+GROUP_VALIDATION_ERROR_MSG = six.u(
+    'Group names can only contain letters, '
+    'numbers and underscores')
 
 # Used for lock_training_accounts and unlock_training_accounts commands.
 TRAINING_ACCOUNT_PREFIX = 'train'

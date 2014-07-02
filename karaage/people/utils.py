@@ -16,6 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import re
+import six
 
 from django.conf import settings
 
@@ -49,9 +50,9 @@ def validate_username(username):
     # Check username looks ok
 
     if not username.islower():
-        raise UsernameInvalid(u'Username must be all lowercase')
+        raise UsernameInvalid(six.u('Username must be all lowercase'))
     if len(username) < 2:
-        raise UsernameInvalid(u'Username must be at least 2 characters')
+        raise UsernameInvalid(six.u('Username must be at least 2 characters'))
     if not username_re.search(username):
         raise UsernameInvalid(settings.USERNAME_VALIDATION_ERROR_MSG)
 
@@ -73,32 +74,32 @@ def validate_username_for_new_person(username):
 
     count = Person.objects.filter(username__exact=username).count()
     if count >= 1:
-        raise UsernameTaken(
-            u'The username is already taken. Please choose another. '
-            u'If this was the name of your old account please email %s'
+        raise UsernameTaken(six.u(
+            'The username is already taken. Please choose another. '
+            'If this was the name of your old account please email %s')
             % settings.ACCOUNTS_EMAIL)
 
     # Check for existing accounts
 
     count = Account.objects.filter(username__exact=username).count()
     if count >= 1:
-        raise UsernameTaken(
-            u'The username is already taken. Please choose another. '
-            u'If this was the name of your old account please email %s'
+        raise UsernameTaken(six.u(
+            'The username is already taken. Please choose another. '
+            'If this was the name of your old account please email %s')
             % settings.ACCOUNTS_EMAIL)
 
     # Check person datastore, in case username created outside Karaage.
 
     if global_person_exists(username):
         raise UsernameTaken(
-            u'Username is already in external personal datastore.')
+            six.u('Username is already in external personal datastore.'))
 
     # Check account datastore, in case username created outside Karaage.
 
     for mc in MachineCategory.objects.all():
         if machine_category_account_exists(username, mc):
             raise UsernameTaken(
-                u'Username is already in external account datastore.')
+                six.u('Username is already in external account datastore.'))
 
     return username
 
@@ -123,9 +124,9 @@ def validate_username_for_new_account(person, username):
     query = Person.objects.filter(username__exact=username)
     count = query.exclude(pk=person.pk).count()
     if count >= 1:
-        raise UsernameTaken(
-            u'The username is already taken. Please choose another. '
-            u'If this was the name of your old account please email %s'
+        raise UsernameTaken(six.u(
+            'The username is already taken. Please choose another. '
+            'If this was the name of your old account please email %s')
             % settings.ACCOUNTS_EMAIL)
 
     # Check for existing accounts not belonging to this person
@@ -133,9 +134,9 @@ def validate_username_for_new_account(person, username):
     query = Account.objects.filter(username__exact=username)
     count = query.exclude(person__pk=person.pk).count()
     if count >= 1:
-        raise UsernameTaken(
-            u'The username is already taken. Please choose another. '
-            'If this was the name of your old account please email %s'
+        raise UsernameTaken(six.u(
+            'The username is already taken. Please choose another. '
+            'If this was the name of your old account please email %s')
             % settings.ACCOUNTS_EMAIL)
 
     # Check person datastore, in case username created outside Karaage.
@@ -145,7 +146,7 @@ def validate_username_for_new_account(person, username):
     count = query.filter(pk=person.pk).count()
     if count == 0 and global_person_exists(username):
         raise UsernameTaken(
-            u'Username is already in external personal datastore.')
+            six.u('Username is already in external personal datastore.'))
 
 
 def check_username_for_new_account(person, username, machine_category):
@@ -164,12 +165,12 @@ def check_username_for_new_account(person, username, machine_category):
 
     if query.count() > 0:
         raise UsernameTaken(
-            u'Username already in use on machine category %s.'
+            six.u('Username already in use on machine category %s.')
             % machine_category)
 
     if machine_category_account_exists(username, machine_category):
         raise UsernameTaken(
-            u'Username is already in datastore for machine category %s.'
+            six.u('Username is already in datastore for machine category %s.')
             % machine_category)
 
     return username
@@ -194,7 +195,7 @@ def validate_username_for_rename_person(username, person):
         .exclude(pk=person.pk).count()
     if count >= 1:
         raise UsernameTaken(
-            u'The username is already taken by an existing person.')
+            six.u('The username is already taken by an existing person.'))
 
     # Check for existing accounts not owned by person.
     # If there is a conflicting account owned by person it doesn't matter.
@@ -203,13 +204,13 @@ def validate_username_for_rename_person(username, person):
         .exclude(person=person).count()
     if count >= 1:
         raise UsernameTaken(
-            u'The username is already taken by an existing account.')
+            six.u('The username is already taken by an existing account.'))
 
     # Check person datastore, in case username created outside Karaage.
 
     if global_person_exists(username):
         raise UsernameTaken(
-            u'Username is already in external personal datastore.')
+            six.u('Username is already in external personal datastore.'))
 
     # Check account datastore, in case username created outside Karaage.
 
@@ -223,4 +224,4 @@ def validate_username_for_rename_person(username, person):
             date_deleted__isnull=True).count()
         if count == 0 and machine_category_account_exists(username, mc):
             raise UsernameTaken(
-                u'Username is already in external account datastore.')
+                six.u('Username is already in external account datastore.'))

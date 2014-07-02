@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
 import datetime
 import warnings
 
@@ -420,7 +421,7 @@ class Group(models.Model):
         ordering = ['name']
 
     def __unicode__(self):
-        return u"%s" % self.name
+        return six.u("%s") % self.name
 
     def get_absolute_url(self):
         return reverse('kg_group_detail', kwargs={'group_name': self.name})

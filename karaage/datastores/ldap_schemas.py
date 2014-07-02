@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
+
 import tldap.schemas as schemas
 import tldap.schemas.rfc
 import tldap.schemas.ds389
@@ -31,7 +33,7 @@ class kPersonMixin(object):
         # using parameter required for tldap 0.2.13 and earlier
         # delete when tldap 0.2.14 released.
         full_name = getattr(self, "fullName", None)
-        self.displayName = u'%s (%s)' % (full_name, self.o)
+        self.displayName = six.u('%s (%s)') % (full_name, self.o)
 
 
 class kAccountMixin(object):
@@ -43,8 +45,8 @@ class kAccountMixin(object):
         if full_name is None:
             full_name = "%s %s" % (self.givenName, self.sn)
 
-        self.displayName = u'%s (%s)' % (full_name, self.o)
-        self.gecos = u'%s (%s)' % (full_name, self.o)
+        self.displayName = six.u('%s (%s)') % (full_name, self.o)
+        self.gecos = six.u('%s (%s)') % (full_name, self.o)
 
 
 ############

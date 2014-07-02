@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
+
 from django.db import models
 from django.db.models import Q
 from django.db.models.fields import FieldDoesNotExist
@@ -84,8 +86,9 @@ class Application(models.Model):
     applicant = generic.GenericForeignKey()
     header_message = models.TextField(
         'Message', null=True, blank=True,
-        help_text=u"Message displayed at top of application form "
-        u"for the invitee and also in invitation email")
+        help_text=six.u(
+            "Message displayed at top of application form "
+            "for the invitee and also in invitation email"))
     _class = models.CharField(max_length=100, editable=False)
 
     objects = ApplicationManager()
@@ -198,8 +201,9 @@ class ProjectApplication(Application):
     join an existing project. """
     # common properties
     needs_account = models.BooleanField(
-        u"Do you need a personal cluster account?",
-        help_text=u"Required if you will be working on the project yourself.",
+        six.u("Do you need a personal cluster account?"),
+        help_text=six.u(
+            "Required if you will be working on the project yourself."),
         default=True)
     make_leader = models.BooleanField(
         help_text="Make this person a project leader", default=False)
@@ -221,11 +225,11 @@ class ProjectApplication(Application):
 
     def info(self):
         if self.project is not None:
-            return u"join project '%s'" % self.project.pid
+            return six.u("join project '%s'") % self.project.pid
         elif self.name:
-            return u"create project '%s'" % self.name
+            return six.u("create project '%s'") % self.name
         else:
-            return u"create/join a project"
+            return six.u("create/join a project")
 
     def approve(self, approved_by):
         created_person, created_account = \
@@ -319,7 +323,7 @@ class SoftwareApplication(Application):
     objects = ApplicationManager()
 
     def info(self):
-        return u"access to %s" % self.software_license.software
+        return six.u("access to %s") % self.software_license.software
 
     def authenticate(self, person):
         auth = {}

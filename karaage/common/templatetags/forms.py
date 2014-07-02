@@ -14,6 +14,9 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
+
+import six
+
 from django.template import Library
 from django import template
 
@@ -65,7 +68,8 @@ class FormFieldNode(template.Node):
         if widget_class_name == 'checkboxinput':
             label_class_names.append('vCheckboxLabel')
 
-        class_str = label_class_names and u' '.join(label_class_names) or u''
+        class_str = label_class_names and \
+            six.u(' ').join(label_class_names) or u''
 
         context.push()
         context.push()

@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
+
 from django.db.models import Q
 from django.core.exceptions import PermissionDenied
 from django.utils.html import escape
@@ -66,10 +68,10 @@ class ProjectLookup(LookupChannel):
         """
         (HTML) formatted item for display in the dropdown
         """
-        return escape(u"%s" % (obj))
+        return escape(six.u("%s") % (obj))
 
     def format_item_display(self, obj):
         """
         (HTML) formatted item for displaying item in the selected deck area
         """
-        return escape(u"%s" % (obj))
+        return escape(six.u("%s") % (obj))

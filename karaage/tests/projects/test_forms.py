@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
+
 from django.test import TestCase
 
 from karaage.projects.forms import ProjectForm
@@ -54,6 +56,7 @@ class ProjectFormTestCase(TestCase):
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
-            [('pid',
-              [u'Project names can only contain letters,'
-               u' numbers and underscores'])])
+            [('pid', [six.u(
+              'Project names can only contain letters,'
+              ' numbers and underscores')])]
+        )

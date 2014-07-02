@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
+
 from django import forms
 from django.conf import settings
 
@@ -52,7 +54,8 @@ class InstituteForm(forms.ModelForm):
         name = self.cleaned_data['name']
         try:
             Project.objects.get(pid=name)
-            raise forms.ValidationError(u'Institute name already in system')
+            raise forms.ValidationError(
+                six.u('Institute name already in system'))
         except Project.DoesNotExist:
             return name
 

@@ -40,8 +40,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Karaage'
-copyright = u'2014, VPAC'
+project = 'Karaage'
+copyright = '2014, VPAC'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -184,8 +184,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'Karaage.tex', u'Karaage Programmer Documentation',
-   u'Brian May', 'manual'),
+    ('index', 'Karaage.tex', 'Karaage Programmer Documentation',
+        'Brian May', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -214,8 +214,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'karaage', u'Karaage Programmer Documentation',
-     [u'Brian May'], 1)
+    ('index', 'karaage', 'Karaage Programmer Documentation',
+        ['Brian May'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -228,9 +228,10 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'Karaage', u'Karaage Programmer Documentation',
-   u'Brian May', 'Karaage', 'Karaage is a cluster account management tool.',
-   'Miscellaneous'),
+    ('index', 'Karaage', 'Karaage Programmer Documentation',
+        'Brian May', 'Karaage',
+        'Karaage is a cluster account management tool.',
+        'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.
@@ -246,10 +247,10 @@ texinfo_documents = [
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'Karaage Programmer Documentation'
-epub_author = u'Brian May'
-epub_publisher = u'Brian May'
-epub_copyright = u'2014, Brian May'
+epub_title = 'Karaage Programmer Documentation'
+epub_author = 'Brian May'
+epub_publisher = 'Brian May'
+epub_copyright = '2014, Brian May'
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.

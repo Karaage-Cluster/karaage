@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
 import re
 import ajax_select.fields
 
@@ -76,14 +77,16 @@ class StartApplicationForm(forms.Form):
 class ApplicantForm(forms.ModelForm):
     username = forms.RegexField(
         "^%s$" % settings.USERNAME_VALIDATION_RE,
-        label=u"Requested username",
+        label=six.u("Requested username"),
         max_length=settings.USERNAME_MAX_LENGTH,
         help_text=(settings.USERNAME_VALIDATION_ERROR_MSG
                    + " and has a max length of %s." %
                    settings.USERNAME_MAX_LENGTH))
     telephone = forms.RegexField(
-        "^[0-9a-zA-Z\.( )+-]+$", required=True, label=u"Office Telephone",
-        help_text=u"Used for emergency contact and password reset service.",
+        "^[0-9a-zA-Z\.( )+-]+$", required=True,
+        label=six.u("Office Telephone"),
+        help_text=six.u(
+            "Used for emergency contact and password reset service."),
         error_messages={
             'invalid': 'Telephone number may only contain digits, letter, '
             'hyphens, spaces, braces,  and the plus sign.'})
@@ -121,7 +124,9 @@ class ApplicantForm(forms.ModelForm):
         users = Person.objects.filter(email__exact=email)
         if users.count() > 0:
             raise forms.ValidationError(
-                u'An account with this email already exists. Please email %s'
+                six.u(
+                    'An account with this email already exists. '
+                    'Please email %s')
                 % settings.ACCOUNTS_EMAIL)
         _clean_email(email)
         return email
@@ -166,9 +171,9 @@ class CommonApplicationForm(forms.ModelForm):
         aup_url = getattr(settings, 'AUP_URL', None)
         if aup_url is None:
             aup_url = reverse('kg_aup')
-        self.fields['aup'].label = mark_safe(
-            u'I have read and agree to the '
-            u'<a href="%s" target="_blank">Acceptable Use Policy</a>'
+        self.fields['aup'].label = mark_safe(six.u(
+            'I have read and agree to the '
+            '<a href="%s" target="_blank">Acceptable Use Policy</a>')
             % aup_url)
 
     class Meta:
@@ -187,7 +192,7 @@ class NewProjectApplicationForm(forms.ModelForm):
         label="Additional requirements",
         widget=forms.Textarea(attrs={
             'class': 'vLargeTextField', 'rows': 10, 'cols': 40}),
-        help_text=u"Do you have any special requirements?",
+        help_text=six.u("Do you have any special requirements?"),
         required=False)
 
     def __init__(self, *args, **kwargs):
@@ -231,17 +236,17 @@ class InviteUserApplicationForm(forms.ModelForm):
 class UnauthenticatedInviteUserApplicationForm(forms.Form):
     email = forms.EmailField()
     captcha = CaptchaField(
-        label=u'CAPTCHA',
-        help_text=u"Please enter the text displayed in the image above.")
+        label=six.u('CAPTCHA'),
+        help_text=six.u("Please enter the text displayed in the image above."))
 
     def clean_email(self):
         email = self.cleaned_data['email']
 
         query = Person.active.filter(email=email)
         if query.count() > 0:
-            raise forms.ValidationError(
-                u'E-Mail address is already in use. '
-                u'Do you already have an account?')
+            raise forms.ValidationError(six.u(
+                'E-Mail address is already in use. '
+                'Do you already have an account?'))
 
         _clean_email(email)
         return email
@@ -264,7 +269,7 @@ def ApproveProjectFormGenerator(application, auth):
                 label="Additional requirements",
                 widget=forms.Textarea(attrs={
                     'class': 'vLargeTextField', 'rows': 10, 'cols': 40}),
-                help_text=u"Do you have any special requirements?",
+                help_text=six.u("Do you have any special requirements?"),
                 required=False)
 
         class Meta:
@@ -274,9 +279,9 @@ def ApproveProjectFormGenerator(application, auth):
         def __init__(self, *args, **kwargs):
             super(ApproveProjectForm, self).__init__(*args, **kwargs)
             self.fields['needs_account'].label = \
-                u"Does this person require a cluster account?"
+                six.u("Does this person require a cluster account?")
             self.fields['needs_account'].help_text = \
-                u"Will this person be working on the project?"
+                six.u("Will this person be working on the project?")
             if application.project is None:
                 self.fields['machine_categories'].required = True
 
@@ -300,7 +305,7 @@ def AdminApproveProjectFormGenerator(application, auth):
                 label="Additional requirements",
                 widget=forms.Textarea(attrs={
                     'class': 'vLargeTextField', 'rows': 10, 'cols': 40}),
-                help_text=u"Do you have any special requirements?",
+                help_text=six.u("Do you have any special requirements?"),
                 required=False)
             pid = forms.RegexField(
                 "^%s$" % settings.PROJECT_VALIDATION_RE, required=False,
@@ -318,12 +323,14 @@ def AdminApproveProjectFormGenerator(application, auth):
                 return pid
             try:
                 Institute.objects.get(name=pid)
-                raise forms.ValidationError(u'Project ID already in system')
+                raise forms.ValidationError(
+                    six.u('Project ID already in system'))
             except Institute.DoesNotExist:
                 pass
             try:
                 Project.objects.get(pid=pid)
-                raise forms.ValidationError(u'Project ID already in system')
+                raise forms.ValidationError(
+                    six.u('Project ID already in system'))
             except Project.DoesNotExist:
                 pass
             return pid
@@ -343,9 +350,9 @@ class PersonSetPassword(forms.Form):
     A form that lets a user change set his/her password without entering the
     old password
     """
-    new_password1 = forms.CharField(label=u"New password",
+    new_password1 = forms.CharField(label=six.u("New password"),
                                     widget=forms.PasswordInput)
-    new_password2 = forms.CharField(label=u"New password confirmation",
+    new_password2 = forms.CharField(label=six.u("New password confirmation"),
                                     widget=forms.PasswordInput)
 
     def __init__(self, person, *args, **kwargs):
@@ -382,12 +389,12 @@ class PersonVerifyPassword(forms.Form):
             username=self.person.username, password=password)
 
         if person is None:
-            raise forms.ValidationError(u"Password is incorrect.")
+            raise forms.ValidationError(six.u("Password is incorrect."))
 
         assert person == self.person
 
         if not person.is_active or person.is_locked():
-            raise forms.ValidationError(u"Person is locked.")
+            raise forms.ValidationError(six.u("Person is locked."))
 
         return password
 

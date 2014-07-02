@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
+
 from django.test import TestCase
 from django.conf import settings
 
@@ -56,8 +58,10 @@ class AdminAccountFormTestCase(TestCase):
         self.assertEqual(
             form.errors.items(),
             [('username',
-              [(u'Usernames can only contain '
-                u'letters, numbers and underscores')])])
+              [(six.u(
+                  'Usernames can only contain '
+                  'letters, numbers and underscores'))])]
+        )
 
     def test_upper_username(self):
         form_data = self._valid_form_data()
@@ -69,7 +73,8 @@ class AdminAccountFormTestCase(TestCase):
         self.assertEqual(
             form.errors.items(),
             [('username',
-              [u'Username must be all lowercase'])])
+              [six.u('Username must be all lowercase')])]
+        )
 
     def test_long_username(self):
         form_data = self._valid_form_data()
@@ -81,5 +86,7 @@ class AdminAccountFormTestCase(TestCase):
         self.assertEqual(
             form.errors.items(),
             [('username',
-              [u'Ensure this value has at '
-               u'most 255 characters (it has 400).'])])
+              [six.u(
+                  'Ensure this value has at '
+                   'most 255 characters (it has 400).')])]
+        )
