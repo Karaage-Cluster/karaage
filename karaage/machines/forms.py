@@ -65,7 +65,7 @@ class AdminAccountForm(forms.ModelForm):
         username = self.cleaned_data['username']
         try:
             validate_username_for_new_account(self.person, username)
-        except UsernameException, e:
+        except UsernameException as e:
             raise forms.ValidationError(e.args[0])
         return username
 
@@ -106,7 +106,7 @@ class AdminAccountForm(forms.ModelForm):
             try:
                 check_username_for_new_account(
                     self.person, username, machine_category)
-            except UsernameException, e:
+            except UsernameException as e:
                 raise forms.ValidationError(e.args[0])
 
         return data

@@ -39,7 +39,7 @@ class ProjectTestCase(IntegrationTestCase):
 
         self.client.login(username='kgsuper', password='aq12ws')
         response = self.client.get(reverse('kg_project_add'))
-        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         form_data = {
             'name': 'Test Project 4',
@@ -50,7 +50,7 @@ class ProjectTestCase(IntegrationTestCase):
         }
 
         response = self.client.post(reverse('kg_project_add'), form_data)
-        self.failUnlessEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         project = Project.objects.get(name='Test Project 4')
 
@@ -70,7 +70,7 @@ class ProjectTestCase(IntegrationTestCase):
 
         self.client.login(username='kgsuper', password='aq12ws')
         response = self.client.get(reverse('kg_project_add'))
-        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         form_data = {
             'pid': "Enrico",
@@ -82,7 +82,7 @@ class ProjectTestCase(IntegrationTestCase):
         }
 
         response = self.client.post(reverse('kg_project_add'), form_data)
-        self.failUnlessEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         project = Project.objects.get(pid="Enrico")
 
@@ -110,7 +110,7 @@ class ProjectTestCase(IntegrationTestCase):
         self.assertEqual(project.group.members.count(), 1)
         response = self.client.get(
             reverse('kg_project_detail', args=[project.pid]))
-        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertRaises(
             self._datastore._account.DoesNotExist,
             self._datastore._accounts().get, pk='kgtestuser2')
@@ -120,7 +120,7 @@ class ProjectTestCase(IntegrationTestCase):
         response = self.client.post(
             reverse('kg_project_detail', args=[project.pid]),
             {'person': new_user.id})
-        self.failUnlessEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         project = Project.objects.get(pid='TestProject1')
         self.assertEqual(project.group.members.count(), 2)
         lgroup = self._datastore._groups().get(cn=project.pid)
@@ -134,7 +134,7 @@ class ProjectTestCase(IntegrationTestCase):
         response = self.client.post(
             reverse('kg_remove_project_member',
                     args=[project.pid, new_user.username]))
-        self.failUnlessEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         project = Project.objects.get(pid='TestProject1')
         self.assertEqual(project.group.members.count(), 1)
         lgroup = self._datastore._groups().get(cn=project.pid)
@@ -156,7 +156,7 @@ class ProjectTestCase(IntegrationTestCase):
 
         response = self.client.post(
             reverse('kg_project_delete', args=[project.pid]))
-        self.failUnlessEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         project = Project.objects.get(pid='TestProject1')
 
@@ -181,7 +181,7 @@ class ProjectTestCase(IntegrationTestCase):
         self.client.login(username='kgsuper', password='aq12ws')
         response = self.client.get(
             reverse('kg_project_edit', args=['TestProject1']))
-        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         form_data = {
             'name': 'Test Project 1 was 4',
@@ -194,7 +194,7 @@ class ProjectTestCase(IntegrationTestCase):
         response = self.client.post(
             reverse('kg_project_edit', args=['TestProject1']),
             form_data)
-        self.failUnlessEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         project = Project.objects.get(pid='TestProject1')
         self.assertEqual(project.is_active, True)
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())

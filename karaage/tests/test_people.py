@@ -44,14 +44,14 @@ class PersonTestCase(IntegrationTestCase):
 
     def do_permission_tests(self, test_object, users):
         for user_id in users:
-#            print "can user '%d' access '%s'?"%(user_id, test_object)
+            # print("can user '%d' access '%s'?"%(user_id, test_object))
             person = Person.objects.get(id=user_id)
             request = FakeRequest(person)
             result = test_object.can_view(request)
             expected_result = users[user_id]
-#            print "---> got:'%s' expected:'%s'"%(result, expected_result)
-            self.failUnlessEqual(result, expected_result)
-#            print
+            # print("---> got:'%s' expected:'%s'"%(result, expected_result))
+            self.assertEqual(result, expected_result)
+            # print()
 
     def test_permissions(self):
         test_object = Project.objects.get(pid="TestProject1")
@@ -96,7 +96,7 @@ class PersonTestCase(IntegrationTestCase):
 
         # add user 2 to project
         # test that members can see other people in own project
-#        print "--------------------------------------------------------------"
+        # print("------------------------------------------------------------")
         project = Project.objects.get(pid="TestProject1")
         project.group.members = [2, 3]
 
@@ -143,7 +143,7 @@ class PersonTestCase(IntegrationTestCase):
         # change institute of all people
         # Test institute leader can access people in project despite not being
         # institute leader for these people.
-#        print "--------------------------------------------------------------"
+        # print("------------------------------------------------------------")
         Person.objects.all().update(institute=2)
         #Institute.objects.filter(pk=2).update(delegate=2,active_delegate=2)
         InstituteDelegate.objects.get_or_create(
@@ -198,9 +198,9 @@ class PersonTestCase(IntegrationTestCase):
         project = Project.objects.get(pid='TestProject1')
         p_users = project.group.members.count()
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
-        self.failUnlessEqual(logged_in, True)
+        self.assertEqual(logged_in, True)
         response = self.client.get(reverse('kg_person_add'))
-        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         form_data = {
             'title': 'Mr',
@@ -221,7 +221,7 @@ class PersonTestCase(IntegrationTestCase):
         }
 
         response = self.client.post(reverse('kg_person_add'), form_data)
-        self.failUnlessEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         self.assertEqual(Person.objects.count(), users + 1)
         users = users + 1
@@ -239,10 +239,10 @@ class PersonTestCase(IntegrationTestCase):
         project = Project.objects.get(pid='TestProject1')
         project.group.members.count()
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
-        self.failUnlessEqual(logged_in, True)
+        self.assertEqual(logged_in, True)
         response = self.client.get(reverse('kg_person_add'))
 
-        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         form_data = {
             'title': 'Mr',
@@ -261,7 +261,7 @@ class PersonTestCase(IntegrationTestCase):
         }
 
         response = self.client.post(reverse('kg_person_add'), form_data)
-        self.failUnlessEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         self.assertEqual(Person.objects.count(), users+1)
         users = users + 1
@@ -270,21 +270,21 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(person.username, 'samtest2')
         # Try adding it again - Should fail
         response = self.client.post(reverse('kg_person_add'), form_data)
-        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_admin_update_person(self):
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
-        self.failUnlessEqual(logged_in, True)
+        self.assertEqual(logged_in, True)
 
         person = Person.objects.get(username='kgtestuser3')
         luser = self._datastore._accounts().get(uid='kgtestuser3')
-        self.failUnlessEqual(person.mobile, '')
-        self.failUnlessEqual(luser.gidNumber, 500)
-        self.failUnlessEqual(luser.o, 'Example')
-        self.failUnlessEqual(luser.gecos, 'Test User3 (Example)')
+        self.assertEqual(person.mobile, '')
+        self.assertEqual(luser.gidNumber, 500)
+        self.assertEqual(luser.o, 'Example')
+        self.assertEqual(luser.gecos, 'Test User3 (Example)')
         response = self.client.get(
             reverse('kg_person_edit', args=['kgtestuser3']))
-        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         form_data = {
             'title': 'Mr',
@@ -300,14 +300,14 @@ class PersonTestCase(IntegrationTestCase):
         }
         response = self.client.post(
             reverse('kg_person_edit', args=['kgtestuser3']), form_data)
-        self.failUnlessEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         person = Person.objects.get(username='kgtestuser3')
         luser = self._datastore._accounts().get(uid='kgtestuser3')
-        self.failUnlessEqual(person.mobile, '555666')
-        self.failUnlessEqual(luser.gidNumber, 501)
-        self.failUnlessEqual(luser.o, 'OtherInst')
-        self.failUnlessEqual(luser.gecos, 'Test User3 (OtherInst)')
+        self.assertEqual(person.mobile, '555666')
+        self.assertEqual(luser.gidNumber, 501)
+        self.assertEqual(luser.o, 'OtherInst')
+        self.assertEqual(luser.gecos, 'Test User3 (OtherInst)')
 
     def test_delete_activate_person(self):
         self.client.login(username='kgsuper', password='aq12ws')
@@ -321,11 +321,11 @@ class PersonTestCase(IntegrationTestCase):
 
         response = self.client.get(
             reverse('kg_person_delete', args=[person.username]))
-        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         # Test deleting
         response = self.client.post(
             reverse('kg_person_delete', args=[person.username]))
-        self.failUnlessEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         person = Person.objects.get(username='kgtestuser3')
 
@@ -334,7 +334,7 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(person.account_set.count(), 1)
         self.assertEqual(person.account_set.all()[0].date_deleted,
                          datetime.date.today())
-        self.failUnlessRaises(
+        self.assertRaises(
             self._datastore._account.DoesNotExist,
             self._datastore._accounts().get,
             uid='kgtestuser3')
@@ -342,7 +342,7 @@ class PersonTestCase(IntegrationTestCase):
         # Test activating
         response = self.client.post(
             reverse('kg_person_activate', args=[person.username]))
-        self.failUnlessEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         person = Person.objects.get(username='kgtestuser3')
         self.assertEqual(person.is_active, True)
 
@@ -355,7 +355,7 @@ class PersonTestCase(IntegrationTestCase):
 
         response = self.client.post(
             '/%susers/accounts/delete/%i/' % (settings.BASE_URL, ua.id))
-        self.failUnlessEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         person = Person.objects.get(pk=Person.objects.count())
         ua = person.account_set.all()[0]
@@ -385,7 +385,7 @@ class PersonTestCase(IntegrationTestCase):
         response = self.client.post(
             reverse('kg_account_set_default', args=[ua.id, project.pid]))
 
-        self.failUnlessEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         person = Person.objects.get(pk=Person.objects.count())
         ua = person.account_set.all()[0]
@@ -415,26 +415,26 @@ class PersonTestCase(IntegrationTestCase):
         response = self.client.post(
             reverse('kg_person_detail', args=[person.username]),
             {'project': 'test2', 'project-add': 'true'})
-        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(person.project_set.count(), 2)
 
     def test_password_reset_by_self(self):
         logged_in = self.client.login(
             username='kgtestuser1', password='aq12ws')
-        self.failUnlessEqual(logged_in, True)
+        self.assertEqual(logged_in, True)
 
         # send request
         url = reverse("kg_profile_reset")
         done_url = reverse("kg_profile_reset_done")
         response = self.client.post(url, follow=True)
-        self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.redirect_chain[0][0],
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.redirect_chain[0][0],
                              'http://testserver' + done_url)
 
         # check email
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
         message = mail.outbox[0]
-        self.failUnlessEqual(message.subject, "TestOrg Password change")
+        self.assertEqual(message.subject, "TestOrg Password change")
         url = re.search("(?P<url>https?://[^\s]+)", message.body).group("url")
         self.assertTrue(
             url.startswith("https://example.com/users/persons/reset/"))
@@ -442,7 +442,7 @@ class PersonTestCase(IntegrationTestCase):
 
         # get password reset page
         response = self.client.get(url)
-        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         # send new password
         form_data = {
@@ -451,32 +451,32 @@ class PersonTestCase(IntegrationTestCase):
         }
         done_url = reverse("password_reset_complete")
         response = self.client.post(url, form_data, follow=True)
-        self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.redirect_chain[0][0],
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.redirect_chain[0][0],
                              'http://testserver' + done_url)
 
         # test new password
         logged_in = self.client.login(
             username='kgtestuser1', password='q1w2e3r4')
-        self.failUnlessEqual(logged_in, True)
+        self.assertEqual(logged_in, True)
 
     def test_password_reset_by_admin(self):
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
-        self.failUnlessEqual(logged_in, True)
+        self.assertEqual(logged_in, True)
 
         # send request
         url = reverse("kg_person_reset", args=["kgtestuser1"])
         done_url = reverse("kg_person_reset_done", args=["kgtestuser1"])
         response = self.client.post(url, follow=True)
-        self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.redirect_chain[0][0],
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.redirect_chain[0][0],
                              'http://testserver' + done_url)
         self.client.logout()
 
         # check email
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
         message = mail.outbox[0]
-        self.failUnlessEqual(message.subject, "TestOrg Password change")
+        self.assertEqual(message.subject, "TestOrg Password change")
         url = re.search("(?P<url>https?://[^\s]+)", message.body).group("url")
         self.assertTrue(
             url.startswith("https://example.com/users/persons/reset/"))
@@ -484,7 +484,7 @@ class PersonTestCase(IntegrationTestCase):
 
         # get password reset page
         response = self.client.get(url)
-        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         # send new password
         form_data = {
@@ -493,11 +493,11 @@ class PersonTestCase(IntegrationTestCase):
         }
         done_url = reverse("password_reset_complete")
         response = self.client.post(url, form_data, follow=True)
-        self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.redirect_chain[0][0],
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.redirect_chain[0][0],
                              'http://testserver' + done_url)
 
         # test new password
         logged_in = self.client.login(
             username='kgtestuser1', password='q1w2e3r4')
-        self.failUnlessEqual(logged_in, True)
+        self.assertEqual(logged_in, True)

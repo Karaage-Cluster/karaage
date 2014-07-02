@@ -39,6 +39,7 @@ from karaage.institutes.models import Institute
 from karaage.common import log, is_admin
 
 import json
+import six
 
 
 def _get_applicant_from_saml(request):
@@ -409,7 +410,7 @@ class StateStepProject(base.State):
 
         project_forms = {}
 
-        for key, form in form_models.iteritems():
+        for key, form in six.iteritems(form_models):
             project_forms[key] = form(
                 request.POST or None, instance=application)
 

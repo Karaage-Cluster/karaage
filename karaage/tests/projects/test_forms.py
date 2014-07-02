@@ -56,7 +56,9 @@ class ProjectFormTestCase(TestCase):
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
-            [('pid', [six.u(
-              'Project names can only contain letters,'
-              ' numbers and underscores')])]
+            dict.items({
+                'pid': [six.u(
+                    'Project names can only contain letters,'
+                    ' numbers and underscores')]
+            })
         )

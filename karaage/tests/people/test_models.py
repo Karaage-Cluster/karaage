@@ -18,7 +18,6 @@
 from django.core import exceptions as django_exceptions
 from django.test import TestCase
 
-from karaage.institutes.models import Institute
 from karaage.people.models import Person, Group
 from karaage.tests.fixtures import PersonFactory, InstituteFactory
 

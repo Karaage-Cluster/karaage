@@ -53,11 +53,16 @@ attach(trace(logger), PostDecorate)
 You can also attach a decorator to an existing module.
 """
 from __future__ import absolute_import
+from __future__ import print_function
 
+import six
 import inspect
 import logging
 import sys
-import thread
+try:
+    import _thread as thread
+except ImportError:
+    import thread
 import types
 
 from functools import wraps
@@ -413,7 +418,7 @@ __builtin_defaults = {
     '""': "",
     '-1': -1,
     '0': 0,
-    '0666': 0666,
+    '0666': 0o666,
     'False': False,
     'None': None,
     'True': True,
@@ -453,8 +458,9 @@ def __lookup_builtin(name):
     except KeyError:
         params, defaults = tuple(), dict()
         __builtin_functions[name] = (params, defaults)
-        print >>sys.stderr, \
-            "Warning: builtin function %r is missing prototype" % name
+        print(
+            "Warning: builtin function %r is missing prototype" % name,
+            file=sys.stderr)
     return (len(params), params, defaults)
 
 _ = ThreadLocal()
@@ -680,7 +686,7 @@ def attachToProperty(decorator, klass, k, prop_attr, prop_decorator):
 
 
 def attachToClass(decorator, klass, recursive=True):
-    for k, v in klass.__dict__.iteritems():
+    for k, v in six.iteritems(klass.__dict__):
         t = type(v)
         if isinstance(v, types.FunctionType) or t is ClassMethodType:
             setattr(klass, k, decorator(getattr(klass, k)))
@@ -807,7 +813,7 @@ if __name__ == '__main__':
     test.test = 1
     assert 1 == test.test
     test.method()
-    print str(test)
+    print(str(test))
 
     @trace(logger)
     def test(x, y, z=True):
@@ -841,4 +847,4 @@ if __name__ == '__main__':
 
     myzip = trace('main')(zip)
     for i, j in myzip(xrange(5), xrange(5, 10)):
-        print i, j
+        print(i, j)

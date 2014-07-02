@@ -27,7 +27,6 @@ from karaage.machines.models import MachineCategory, Account
 from karaage.projects.managers import ActiveProjectManager
 from karaage.projects.managers import DeletedProjectManager
 from karaage.common import log, is_admin
-from karaage.common.models import CHANGE
 
 
 class Project(models.Model):

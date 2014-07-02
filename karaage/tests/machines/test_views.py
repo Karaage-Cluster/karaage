@@ -47,11 +47,11 @@ class AccountTestCase(TestCase):
             }
         self.client.login(username='kgsuper', password='aq12ws')
         response = self.client.post(reverse('kg_person_add'), form_data)
-        self.failUnlessEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         person = Person.objects.get(username='kgsuper')
-        self.failUnlessEqual(person.short_name, 'Super')
-        self.failUnlessEqual(person.full_name, 'Super User')
+        self.assertEqual(person.short_name, 'Super')
+        self.assertEqual(person.full_name, 'Super User')
 
     def test_add_account(self):
         project = Project.objects.get(pk=1)
@@ -60,7 +60,7 @@ class AccountTestCase(TestCase):
 
         response = self.client.get(
             reverse('kg_account_add', args=['samtest2']))
-        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         form_data = {
             'username': person.username,
@@ -71,7 +71,7 @@ class AccountTestCase(TestCase):
 
         response = self.client.post(
             reverse('kg_account_add', args=['samtest2']), form_data)
-        self.failUnlessEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         person = Person.objects.get(username="samtest2")
         self.assertTrue(person.has_account(MachineCategory.objects.get(pk=1)))
 
@@ -88,7 +88,7 @@ class AccountTestCase(TestCase):
             }
         response = self.client.post(
             reverse('kg_account_add', args=['samtest2']), form_data)
-        self.failUnlessEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         response = self.client.post(
             reverse('kg_account_add', args=['samtest2']), form_data)
@@ -119,7 +119,7 @@ class AccountTestCase(TestCase):
             }
         response = self.client.post(
             reverse('kg_account_add', args=['samtest2']), form_data)
-        self.failUnlessEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         form_data = {
             'username': person.username,
@@ -140,7 +140,7 @@ class AccountTestCase(TestCase):
 
         response = self.client.get(reverse('kg_account_add',
                                            args=['samtest2']))
-        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         form_data = {
             'username': person.username,
@@ -151,25 +151,25 @@ class AccountTestCase(TestCase):
 
         response = self.client.post(
             reverse('kg_account_add', args=['samtest2']), form_data)
-        self.failUnlessEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         person = Person.objects.get(username='samtest2')
         ua = person.get_account(MachineCategory.objects.get(pk=1))
-        self.failUnlessEqual(person.is_locked(), False)
-        self.failUnlessEqual(ua.loginShell(), '/bin/bash')
+        self.assertEqual(person.is_locked(), False)
+        self.assertEqual(ua.loginShell(), '/bin/bash')
 
         response = self.client.post(
             reverse('kg_person_lock', args=['samtest2']))
         person = Person.objects.get(username='samtest2')
         ua = person.get_account(MachineCategory.objects.get(pk=1))
-        self.failUnlessEqual(person.is_locked(), True)
-        self.failUnlessEqual(ua.loginShell(), '/bin/bash')
+        self.assertEqual(person.is_locked(), True)
+        self.assertEqual(ua.loginShell(), '/bin/bash')
 
         response = self.client.post(
             reverse('kg_person_unlock', args=['samtest2']))
         person = Person.objects.get(username='samtest2')
         ua = person.get_account(MachineCategory.objects.get(pk=1))
-        self.failUnlessEqual(person.is_locked(), False)
-        self.failUnlessEqual(ua.loginShell(), '/bin/bash')
+        self.assertEqual(person.is_locked(), False)
+        self.assertEqual(ua.loginShell(), '/bin/bash')
 
 
 class MachineTestCase(TestCase):
@@ -194,7 +194,7 @@ class MachineTestCase(TestCase):
         from karaage.cache.usage import get_machine_category_usage
         cache = get_machine_category_usage(mc, start.date(), end.date())
         available_time = cache.available_time
-        self.failUnlessEqual(available_time, expected_time)
+        self.assertEqual(available_time, expected_time)
 
     def no_test_available_time(self):
         mc1 = MachineCategory.objects.get(pk=1)

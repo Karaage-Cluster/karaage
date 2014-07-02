@@ -18,6 +18,7 @@
 import datetime
 import importlib
 import warnings
+import six
 
 from django.http import QueryDict
 from django.template import RequestContext
@@ -116,10 +117,10 @@ def new_random_token():
         randrange = random.SystemRandom().randrange
     else:
         randrange = random.randrange
-    MAX_KEY = 18446744073709551616L     # 2 << 63
+    MAX_KEY = 18446744073709551616     # 2 << 63
 
-    string = "%s%s" % (randrange(0, MAX_KEY), settings.SECRET_KEY)
-    return sha1(string).hexdigest()
+    string = six.u("%s%s") % (randrange(0, MAX_KEY), settings.SECRET_KEY)
+    return sha1(string.encode("ascii")).hexdigest()
 
 
 def log_list(request, breadcrumbs, obj):
