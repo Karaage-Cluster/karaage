@@ -39,7 +39,7 @@ try:
     _assert_password('thaeliez4niore0U')
 except ImportError:
     _assert_password = assert_password_simple
-except (OSError, ValueError), e:
+except (OSError, ValueError) as e:
     LOG.warning("Cracklib misconfigured: %s", str(e))
     _assert_password = assert_password_simple
 
