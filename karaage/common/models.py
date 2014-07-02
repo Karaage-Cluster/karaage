@@ -18,6 +18,8 @@
 from __future__ import unicode_literals
 from __future__ import absolute_import
 
+import six
+
 from django.conf import settings
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
@@ -56,7 +58,7 @@ class LogEntryManager(models.Manager):
             user_id=user_id,
             content_type_id=ContentType.objects.get_for_model(obj).pk,
             object_id=obj.pk,
-            object_repr=unicode(obj),
+            object_repr=six.text_type(obj),
             action_flag=flag,
             change_message=message)
 

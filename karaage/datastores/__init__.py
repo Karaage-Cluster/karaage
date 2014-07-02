@@ -17,6 +17,8 @@
 
 """ Common hooks for all datastores. """
 
+import six
+
 from django.conf import settings
 import django.utils
 
@@ -46,7 +48,7 @@ def _init_datastores():
         cls = _lookup(config['ENGINE'])
         assert issubclass(cls, GlobalDataStore)
         _GLOBAL_DATASTORES.append(cls(config))
-    for name, array in settings.MACHINE_CATEGORY_DATASTORES.iteritems():
+    for name, array in six.iteritems(settings.MACHINE_CATEGORY_DATASTORES):
         _MACHINE_CATEGORY_DATASTORES[name] = []
         for config in array:
             cls = _lookup(config['ENGINE'])
