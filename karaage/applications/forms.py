@@ -114,7 +114,7 @@ class ApplicantForm(forms.ModelForm):
         if username:
             try:
                 validate_username_for_new_person(username)
-            except UsernameException, e:
+            except UsernameException as e:
                 raise forms.ValidationError(e.args[0])
 
             return username

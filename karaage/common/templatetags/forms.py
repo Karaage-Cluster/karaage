@@ -69,7 +69,7 @@ class FormFieldNode(template.Node):
             label_class_names.append('vCheckboxLabel')
 
         class_str = label_class_names and \
-            six.u(' ').join(label_class_names) or u''
+            six.u(' ').join(label_class_names) or six.u('')
 
         context.push()
         context.push()

@@ -54,12 +54,14 @@ class AddPersonFormTestCase(TestCase):
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
-            [('password2', [six.u(
-                'Your password was found to be insecure: '
-                'it is WAY too short. '
-                'A good password has a combination of '
-                'letters (uppercase, lowercase), numbers '
-                'and is at least 8 characters long.')])]
+            dict.items({
+                'password2': [six.u(
+                    'Your password was found to be insecure: '
+                    'it is WAY too short. '
+                    'A good password has a combination of '
+                    'letters (uppercase, lowercase), numbers '
+                    'and is at least 8 characters long.')]
+            })
         )
 
     def test_password_simple(self):
@@ -70,12 +72,14 @@ class AddPersonFormTestCase(TestCase):
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
-            [('password2', [six.u(
-                'Your password was found to be insecure: '
-                'it is based on a dictionary word. '
-                'A good password has a combination of '
-                'letters (uppercase, lowercase), numbers '
-                'and is at least 8 characters long.')])]
+            dict.items({
+                'password2': [six.u(
+                    'Your password was found to be insecure: '
+                    'it is based on a dictionary word. '
+                    'A good password has a combination of '
+                    'letters (uppercase, lowercase), numbers '
+                    'and is at least 8 characters long.')]
+            })
         )
 
     def test_password_mismatch(self):
@@ -85,7 +89,9 @@ class AddPersonFormTestCase(TestCase):
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
-            [('password2', [six.u('The two password fields didn\'t match.')])]
+            dict.items({
+                'password2': [six.u('The two password fields didn\'t match.')]
+            })
         )
 
     def test_invalid_username(self):
@@ -95,9 +101,11 @@ class AddPersonFormTestCase(TestCase):
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
-            [('username', [six.u(
-                'Usernames can only contain '
-                'letters, numbers and underscores')])]
+            dict.items({
+                'username': [six.u(
+                    'Usernames can only contain '
+                    'letters, numbers and underscores')]
+            })
         )
 
     def test_upper_username(self):
@@ -107,8 +115,9 @@ class AddPersonFormTestCase(TestCase):
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
-            [('username',
-              [six.u('Username must be all lowercase')])]
+            dict.items({
+                'username': [six.u('Username must be all lowercase')]
+            })
         )
 
     def test_long_username(self):
@@ -118,9 +127,11 @@ class AddPersonFormTestCase(TestCase):
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
-            [('username', [six.u(
-              'Ensure this value has at most '
-              '255 characters (it has 400).')])]
+            dict.items({
+                'username': [six.u(
+                    'Ensure this value has at most '
+                    '255 characters (it has 400).')]
+            })
         )
 
 
@@ -149,12 +160,14 @@ class AdminPasswordChangeFormTestCase(TestCase):
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
-            [('new2', [six.u(
-                'Your password was found to be insecure: '
-                'it is WAY too short. '
-                'A good password has a combination of '
-                'letters (uppercase, lowercase), numbers '
-                'and is at least 8 characters long.')])]
+            dict.items({
+                'new2': [six.u(
+                    'Your password was found to be insecure: '
+                    'it is WAY too short. '
+                    'A good password has a combination of '
+                    'letters (uppercase, lowercase), numbers '
+                    'and is at least 8 characters long.')]
+            })
         )
 
     def test_password_simple(self):
@@ -165,12 +178,14 @@ class AdminPasswordChangeFormTestCase(TestCase):
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
-            [('new2', [six.u(
-                'Your password was found to be insecure: '
-                'it is based on a dictionary word. '
-                'A good password has a combination of '
-                'letters (uppercase, lowercase), numbers '
-                'and is at least 8 characters long.')])]
+            dict.items({
+                'new2': [six.u(
+                    'Your password was found to be insecure: '
+                    'it is based on a dictionary word. '
+                    'A good password has a combination of '
+                    'letters (uppercase, lowercase), numbers '
+                    'and is at least 8 characters long.')]
+            })
         )
 
     def test_password_mismatch(self):
@@ -180,7 +195,9 @@ class AdminPasswordChangeFormTestCase(TestCase):
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
-            [('new2', [six.u('The two password fields didn\'t match.')])]
+            dict.items({
+                'new2': [six.u('The two password fields didn\'t match.')]
+            })
         )
 
 
@@ -209,8 +226,9 @@ class PasswordChangeFormTestCase(TestCase):
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
-            [('old', [
-                six.u('Your old password was incorrect')])]
+            dict.items({
+                'old': [six.u('Your old password was incorrect')]
+            })
         )
 
     def test_password_short(self):
@@ -221,12 +239,14 @@ class PasswordChangeFormTestCase(TestCase):
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
-            [('new2', [six.u(
-                'Your password was found to be insecure: '
-                'it is WAY too short. '
-                'A good password has a combination of '
-                'letters (uppercase, lowercase), numbers '
-                'and is at least 8 characters long.')])]
+            dict.items({
+                'new2': [six.u(
+                    'Your password was found to be insecure: '
+                    'it is WAY too short. '
+                    'A good password has a combination of '
+                    'letters (uppercase, lowercase), numbers '
+                    'and is at least 8 characters long.')]
+            })
         )
 
     def test_password_simple(self):
@@ -237,12 +257,15 @@ class PasswordChangeFormTestCase(TestCase):
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
-            [('new2', [six.u(
-                'Your password was found to be insecure: '
-                'it is based on a dictionary word. '
-                'A good password has a combination of '
-                'letters (uppercase, lowercase), numbers '
-                'and is at least 8 characters long.')])])
+            dict.items({
+                'new2': [six.u(
+                    'Your password was found to be insecure: '
+                    'it is based on a dictionary word. '
+                    'A good password has a combination of '
+                    'letters (uppercase, lowercase), numbers '
+                    'and is at least 8 characters long.')]
+            })
+        )
 
     def test_password_mismatch(self):
         person, form_data = self._valid_change()
@@ -251,5 +274,7 @@ class PasswordChangeFormTestCase(TestCase):
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
-            [('new2', [six.u('The two password fields didn\'t match.')])]
+            dict.items({
+                'new2': [six.u('The two password fields didn\'t match.')]
+            })
         )

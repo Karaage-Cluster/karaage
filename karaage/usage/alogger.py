@@ -54,7 +54,7 @@ def parse_logs(log_list, date, machine_name, log_type):
             data = log_to_dict(line, log_type)
         except ValueError:
             output.append("Error reading line")
-        except Exception, e:
+        except Exception:
             skip = skip + 1
             continue
 
@@ -169,7 +169,7 @@ def parse_logs(log_list, date, machine_name, log_type):
             else:
                 updated += 1
 
-        except Exception, e:
+        except Exception as e:
             output.append("Failed to insert a line  - %s" % e)
             fail = fail + 1
             continue
