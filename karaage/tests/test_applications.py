@@ -46,7 +46,7 @@ class UserApplicationTestCase(TestCase):
     def test_register_account(self):
         set_no_admin()
 
-        self.assertEquals(len(mail.outbox), 0)
+        self.assertEqual(len(mail.outbox), 0)
         response = self.client.get(reverse('kg_application_new'))
         self.failUnlessEqual(response.status_code, 200)
         a = response.content.find('name="captcha_0" type="hidden" value="')+38
@@ -69,11 +69,11 @@ class UserApplicationTestCase(TestCase):
             response.redirect_chain[0][0],
             'http://testserver' + reverse('index'))
         token = Application.objects.get().secret_token
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
         self.assertTrue(
             mail.outbox[0].subject.startswith('TestOrg invitation'))
-        self.assertEquals(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL)
-        self.assertEquals(mail.outbox[0].to[0], 'jim.bob@example.com')
+        self.assertEqual(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL)
+        self.assertEqual(mail.outbox[0].to[0], 'jim.bob@example.com')
 
         # SUBMIT APPLICANT DETAILS
         form_data = {
@@ -126,10 +126,10 @@ class UserApplicationTestCase(TestCase):
         self.failUnlessEqual(
             application.state,
             ProjectApplication.WAITING_FOR_LEADER)
-        self.assertEquals(len(mail.outbox), 2)
+        self.assertEqual(len(mail.outbox), 2)
         self.assertTrue(mail.outbox[1].subject.startswith('TestOrg request'))
-        self.assertEquals(mail.outbox[1].from_email, settings.ACCOUNTS_EMAIL)
-        self.assertEquals(mail.outbox[1].to[0], 'leader@example.com')
+        self.assertEqual(mail.outbox[1].from_email, settings.ACCOUNTS_EMAIL)
+        self.assertEqual(mail.outbox[1].to[0], 'leader@example.com')
 
         # LEADER LOGS IN TO APPROVE
         logged_in = self.client.login(
@@ -170,7 +170,7 @@ class UserApplicationTestCase(TestCase):
             + reverse('kg_application_detail', args=[application.pk, 'K']))
         application = Application.objects.get(pk=application.id)
         self.failUnlessEqual(application.state, Application.WAITING_FOR_ADMIN)
-        self.assertEquals(len(mail.outbox), 3)
+        self.assertEqual(len(mail.outbox), 3)
         self.client.logout()
 
         # ADMIN LOGS IN TO APPROVE
@@ -212,7 +212,7 @@ class UserApplicationTestCase(TestCase):
             + reverse('kg_application_detail', args=[application.pk, 'P']))
         application = Application.objects.get(pk=application.id)
         self.failUnlessEqual(application.state, ProjectApplication.PASSWORD)
-        self.assertEquals(len(mail.outbox), 4)
+        self.assertEqual(len(mail.outbox), 4)
         self.client.logout()
         set_no_admin()
 
@@ -287,7 +287,7 @@ class ProjectApplicationTestCase(TestCase):
     def test_register_account(self):
         set_no_admin()
 
-        self.assertEquals(len(mail.outbox), 0)
+        self.assertEqual(len(mail.outbox), 0)
         response = self.client.get(reverse('kg_application_new'))
         self.failUnlessEqual(response.status_code, 200)
         a = response.content.find('name="captcha_0" type="hidden" value="')+38
@@ -310,11 +310,11 @@ class ProjectApplicationTestCase(TestCase):
             response.redirect_chain[0][0],
             'http://testserver' + reverse('index'))
         token = Application.objects.get().secret_token
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
         self.assertTrue(
             mail.outbox[0].subject.startswith('TestOrg invitation'))
-        self.assertEquals(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL)
-        self.assertEquals(mail.outbox[0].to[0], 'jim.bob@example.com')
+        self.assertEqual(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL)
+        self.assertEqual(mail.outbox[0].to[0], 'jim.bob@example.com')
 
         # SUBMIT APPLICANT DETAILS
         form_data = {
@@ -365,10 +365,10 @@ class ProjectApplicationTestCase(TestCase):
         application = applicant.applications.all()[0]
         self.failUnlessEqual(
             application.state, ProjectApplication.WAITING_FOR_DELEGATE)
-        self.assertEquals(len(mail.outbox), 2)
+        self.assertEqual(len(mail.outbox), 2)
         self.assertTrue(mail.outbox[1].subject.startswith('TestOrg request'))
-        self.assertEquals(mail.outbox[1].from_email, settings.ACCOUNTS_EMAIL)
-        self.assertEquals(mail.outbox[1].to[0], 'leader@example.com')
+        self.assertEqual(mail.outbox[1].from_email, settings.ACCOUNTS_EMAIL)
+        self.assertEqual(mail.outbox[1].to[0], 'leader@example.com')
 
         # DELEGATE LOGS IN TO APPROVE
         logged_in = self.client.login(
@@ -409,7 +409,7 @@ class ProjectApplicationTestCase(TestCase):
             + reverse('kg_application_detail', args=[application.pk, 'K']))
         application = Application.objects.get(pk=application.id)
         self.failUnlessEqual(application.state, Application.WAITING_FOR_ADMIN)
-        self.assertEquals(len(mail.outbox), 3)
+        self.assertEqual(len(mail.outbox), 3)
         self.client.logout()
 
         # ADMIN LOGS IN TO APPROVE
@@ -451,7 +451,7 @@ class ProjectApplicationTestCase(TestCase):
             + reverse('kg_application_detail', args=[application.pk, 'P']))
         application = Application.objects.get(pk=application.id)
         self.failUnlessEqual(application.state, ProjectApplication.PASSWORD)
-        self.assertEquals(len(mail.outbox), 4)
+        self.assertEqual(len(mail.outbox), 4)
         self.client.logout()
         set_no_admin()
 
