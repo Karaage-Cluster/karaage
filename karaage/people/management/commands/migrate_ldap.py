@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
 import optparse
 
 from django.core.management.base import BaseCommand
@@ -60,7 +59,6 @@ class Command(BaseCommand):
             # no changes rquired for people.
             account_base_dn = machine_category_datastore._accounts(
                 ).get_base_dn()
-            split_account_base_dn = tldap.dn.str2dn(account_base_dn)
 
             for p in global_datastore._people().filter(
                     objectClass='posixAccount'):
@@ -74,12 +72,14 @@ class Command(BaseCommand):
                         setattr(new_person, i, value)
 
                 if options['dry_run']:
-                    print("would move account from "
+                    print(
+                        "would move account from "
                         "%s to %s" % (p.dn, account_base_dn))
                     print("would create person for %s" % p.dn)
                 else:
                     # move account from person to accounts
-                    print("moving account from "
+                    print(
+                        "moving account from "
                         "%s to %s" % (p.dn, account_base_dn))
                     p.rename(new_base_dn=account_base_dn)
 
