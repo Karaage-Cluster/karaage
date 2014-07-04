@@ -16,13 +16,12 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
-import ldif
-import ldap.dn
 import optparse
 
 from django.core.management.base import BaseCommand
 import django.db.transaction
 import tldap.transaction
+import tldap.dn
 
 from karaage.machines.models import Account
 from karaage.datastores import get_global_test_datastore
@@ -35,11 +34,11 @@ class Command(BaseCommand):
 
     option_list = BaseCommand.option_list + (
         optparse.make_option(
-            '--ldif',
+            '--dry-run',
             action='store_true',
-            dest='ldif',
+            dest='dry_run',
             default=False,
-            help='Don\'t change anything, output ldif of what needs '
+            help='Don\'t change anything, output what needs '
             'to change instead.'),
         )
 
@@ -56,15 +55,12 @@ class Command(BaseCommand):
         assert isinstance(
             machine_category_datastore, dldap.MachineCategoryDataStore)
 
-        if options['ldif']:
-            ldif_writer = ldif.LDIFWriter(sys.stdout)
-
         if global_datastore is not None:
             # we have to move accounts to the account_base.
             # no changes rquired for people.
             account_base_dn = machine_category_datastore._accounts(
                 ).get_base_dn()
-            split_account_base_dn = ldap.dn.str2dn(account_base_dn)
+            split_account_base_dn = tldap.dn.str2dn(account_base_dn)
 
             for p in global_datastore._people().filter(
                     objectClass='posixAccount'):
@@ -77,36 +73,18 @@ class Command(BaseCommand):
                         value = getattr(p, i)
                         setattr(new_person, i, value)
 
-                if options['ldif']:
-                    # calculate fully qualified new DN.
-                    split_dn = ldap.dn.str2dn(p.dn)
-                    tmp = []
-                    tmp.append(split_dn[0])
-                    tmp.extend(split_account_base_dn)
-                    new_dn = ldap.dn.dn2str(tmp)
-
-                    # we can do move in ldif, so delete and add
-                    entry = {'changetype': ['delete']}
-                    ldif_writer.unparse(p.dn, entry)
-
-                    # write person entry
-                    if new_person.pwdAttribute is None:
-                        new_person.pwdAttribute = 'userPassword'
-                    new_person.unparse(
-                        ldif_writer, None,
-                        {'changetype': ['add']})
-
-                    # write account entry
-                    if p.pwdAttribute is None:
-                        p.pwdAttribute = 'userPassword'
-                    p.unparse(
-                        ldif_writer, new_dn,
-                        {'changetype': ['add']})
+                if options['dry_run']:
+                    print("would move account from "
+                        "%s to %s" % (p.dn, account_base_dn))
+                    print("would create person for %s" % p.dn)
                 else:
                     # move account from person to accounts
-                    print "moving account and creating person for %s" % p.dn
+                    print("moving account from "
+                        "%s to %s" % (p.dn, account_base_dn))
                     p.rename(new_base_dn=account_base_dn)
+
                     # write person entry, if not already existing
+                    print("creating person for %s" % p.dn)
                     try:
                         new_person.save()
                     except machine_category_datastore._account.AlreadyExists:
@@ -121,9 +99,8 @@ class Command(BaseCommand):
                 ua = Account.objects.filter(
                     username=p.uid, date_deleted__isnull=True)
                 if ua.count() == 0 and 'posixAccount' not in p.objectClass:
-                    if options['ldif']:
-                        entry = {'changetype': ['delete']}
-                        ldif_writer.unparse(p.dn, entry)
+                    if options['dry-run']:
+                        print("would delete %s" % p.dn)
                     else:
-                        print "deleting %s" % p.dn
+                        print("deleting %s" % p.dn)
                         p.delete()
