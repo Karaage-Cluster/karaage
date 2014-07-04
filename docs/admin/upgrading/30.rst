@@ -254,7 +254,7 @@ Install on test server
 
     .. code-block:: bash
 
-        kg-manage update_ldap --ldif
+        kg-manage update_ldap --dry-run
 
     These need to be run before the upgrade can be considered complete, however
     there is no hurry just yet. If you make the changes now, some operations on your
@@ -331,7 +331,7 @@ Install on production server
 
     .. code-block:: bash
 
-        kg-manage update_ldap --ldif
+        kg-manage update_ldap --dry-run
 
     Make the LDAP changes if happy:
 
