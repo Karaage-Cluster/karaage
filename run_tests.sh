@@ -10,6 +10,7 @@ else
     TESTS="karaage"
 fi
 
+echo ""
 echo "FLAKE8"
 echo "############################"
 ./flake8-diff.py --changed --verbose
@@ -19,13 +20,24 @@ then
 fi
 echo -e "\n\n"
 
+echo ""
 echo "STATIC FILES"
 echo "############################"
 ./manage.py collectstatic --settings=karaage.tests.settings -v 2 --noinput
 
-echo "TESTS"
+echo ""
+echo "TESTS - Python 2"
 echo "############################"
-./manage.py test --settings=karaage.tests.settings -v 2 $TESTS
+python2 ./manage.py test --settings=karaage.tests.settings -v 2 $TESTS
+if [ ! $? -eq 0 ]
+then
+    RETURN=1
+fi
+
+echo ""
+echo "TESTS - Python 3"
+echo "############################"
+python3 ./manage.py test --settings=karaage.tests.settings -v 2 $TESTS
 if [ ! $? -eq 0 ]
 then
     RETURN=1
