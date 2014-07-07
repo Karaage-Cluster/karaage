@@ -1,8 +1,14 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
+PREFIX2 = debian/python-karaage
+PREFIX3 = debian/python3-karaage
+PREFIXC = debian/karaage3-common
+
+export PYBUILD_NAME=karaage
+
 %:
-	dh $@ --with python2,sphinxdoc
+	dh $@ --with python2,python3,sphinxdoc --buildsystem=pybuild
 
 .PHONY: override_dh_auto_build
 override_dh_auto_build:
@@ -15,6 +21,35 @@ override_dh_auto_build:
 .PHONY: override_dh_clean
 override_dh_clean:
 	dh_clean
+	rm -rf tmp
 	rm -rf docs/admin/.build docs/admin/_build
 	rm -rf docs/user/.build docs/user/_build
 	rm -rf docs/programmer/.build docs/programmer/_build
+
+.PHONY: override_dh_auto_test
+override_dh_auto_test:
+	./run_tests.sh
+
+.PHONY: override_dh_install
+override_dh_install:
+	dh_install
+	
+	mkdir -p $(PREFIXC)/etc/karaage3
+	set -e; for f in global_settings.py; do \
+		mv $(PREFIX2)/etc/karaage3/$$f $(PREFIXC)/etc/karaage3; \
+		rm $(PREFIX3)/etc/karaage3/$$f; \
+	done
+	
+	mkdir -p $(PREFIX2)/usr/share/python-karaage/bin
+	mkdir -p $(PREFIX3)/usr/share/python3-karaage/bin
+	mkdir -p $(PREFIXC)/usr/bin
+	set -e; for f in kg-manage kg-daily-cleanup; do \
+		mv $(PREFIX2)/usr/bin/$$f $(PREFIX2)/usr/share/python-karaage/bin; \
+		mv $(PREFIX3)/usr/bin/$$f $(PREFIX3)/usr/share/python3-karaage/bin; \
+		chmod +x $(PREFIX2)/usr/share/python-karaage/bin/$$f; \
+		chmod +x $(PREFIX3)/usr/share/python3-karaage/bin/$$f; \
+		cp debian/bin/$$f $(PREFIXC)/usr/bin; \
+	done
+	
+	rm $(PREFIX2)/usr/bin/kg_set_secret_key
+	mv $(PREFIX3)/usr/bin/kg_set_secret_key $(PREFIXC)/usr/bin

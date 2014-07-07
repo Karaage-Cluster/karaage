@@ -8,6 +8,14 @@ if [ "$1" = "configure" ]; then
         kg_set_secret_key
     fi
 
+    if test -f /etc/karaage/global_settings.py && [ -n "$2" ]  && dpkg --compare-versions "$2" lt 3.1.0;
+    then
+        if ! test -f /etc/karaage3/global_settings.py
+        then
+            cp /etc/karaage/global_settings.py /etc/karaage3/global_settings.py
+        fi
+    fi
+
     for i in /var/www/.matplotlib \
              /var/www/.kgmatplotlib
     do
@@ -22,7 +30,10 @@ if [ "$1" = "configure" ]; then
              /var/cache/karaage/graphs/institutes \
              /var/cache/karaage/graphs/i_trends \
              /var/cache/karaage/graphs/trends \
-             /var/cache/karaage/graphs/machines
+             /var/cache/karaage/graphs/machines \
+             /var/log/karaage \
+             /var/cache/karaage/graphs \
+             /var/cache/karaage/matplotlib
     do
         if dpkg-statoverride --list $i >/dev/null 2>&1
         then
@@ -30,9 +41,9 @@ if [ "$1" = "configure" ]; then
         fi
     done
 
-    for i in /var/log/karaage \
-             /var/cache/karaage/graphs \
-             /var/cache/karaage/matplotlib
+    for i in /var/log/karaage3 \
+             /var/cache/karaage3/graphs \
+             /var/cache/karaage3/matplotlib
     do
         # only do something when no setting exists
         if ! dpkg-statoverride --list $i >/dev/null 2>&1
@@ -43,13 +54,3 @@ if [ "$1" = "configure" ]; then
 fi
 
 #DEBHELPER#
-
-if [ "$1" = "configure" ]; then
-    db_get karaage/run_migrations
-    if [ "$RET" = "true" ]; then
-        kg-manage migrate
-    fi
-    dpkg-trigger karaage-static
-fi
-
-exit 0

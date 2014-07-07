@@ -1,0 +1,14 @@
+#!/bin/sh
+
+EXE="kg-manage"
+
+if test -x /usr/bin/python2.7 && test -e /usr/share/python-karaage/bin/$EXE
+then
+    exec python2.7 /usr/share/python-karaage/bin/$EXE "$@"
+elif test -x /usr/bin/python3 && test -e /usr/share/python3-karaage/bin/$EXE
+then
+    exec python3 /usr/share/python3-karaage/bin/$EXE "$@"
+else
+    echo "Cannot find installed version of $EXE." >&2
+    exit 1
+fi

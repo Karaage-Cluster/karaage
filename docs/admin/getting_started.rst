@@ -107,18 +107,9 @@ Initial setup
 
     .. code-block:: bash
 
-        apt-get install karaage3-admin
-        apt-get install karaage3-registration
+        apt-get install karaage3
         apt-get install python-mysql.connector
         apt-get install libapache2-mod-wsgi
-
-    If you have disabled installing recommended packages by default, you will
-    need to install these packages by hand:
-
-    .. code-block:: bash
-
-        apt-get install rabbitmq-server
-        apt-get install python-karaage-celery
 
 #.  Karaage, by default, requires a https connection. While this default can be
     changed, this is not advisable on a production system.
@@ -149,13 +140,13 @@ Initial setup
 
     #.  Test by loading both ``http://accounts.example.org/`` and ``https://accounts.example.org/`` in your browser.
 
-#.  Run kg_set_secret_key, this will automatically set SECRET_KEY inside /etc/karaage/global_settings.py
+#.  Run kg_set_secret_key, this will automatically set SECRET_KEY inside /etc/karaage3/global_settings.py
 
     .. code-block:: bash
 
          kg_set_secret_key
 
-#.  Edit the DATABASES setting in /etc/karaage/global_settings.py:
+#.  Edit the DATABASES setting in /etc/karaage3/global_settings.py:
 
     .. code-block:: python
 
@@ -171,10 +162,10 @@ Initial setup
               }
          }
 
-#.  Add ALLOWED_HOSTS = [ "hostname" ] to /etc/karaage/global_settings.py.
+#.  Add ALLOWED_HOSTS = [ "hostname" ] to /etc/karaage3/global_settings.py.
     Replace hostname with the visible hostname of your server.
 
-#.  Update other settings in /etc/karaage/global_settings.py as required.
+#.  Update other settings in /etc/karaage3/global_settings.py as required.
 
 #.  Create DB tables:
 
@@ -182,7 +173,7 @@ Initial setup
 
         kg-manage syncdb --noinput
         kg-manage migrate --all
-        service python-karaage-celery restart
+        service karaage3-celery restart
 
 #.  Create a karaage superuser:
 
@@ -200,8 +191,8 @@ Initial setup
 
     .. code-block:: bash
 
-        ln -s /etc/karaage/kgadmin-apache.conf /etc/apache2/conf.d
-        ln -s /etc/karaage/kgreg-apache.conf /etc/apache2/conf.d
+        ln -s /etc/karaage3/kgadmin-apache.conf /etc/apache2/conf.d
+        ln -s /etc/karaage3/kgreg-apache.conf /etc/apache2/conf.d
         service apache2 reload
 
 #.  Test. You should now be able to go to http://hostname/kgadmin/
