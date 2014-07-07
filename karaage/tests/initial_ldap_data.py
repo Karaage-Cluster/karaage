@@ -133,4 +133,4 @@ test_ldif = [
     'description: TestProject1',
     'memberUid: kgtestuser3',
     '',
-    ]
+]

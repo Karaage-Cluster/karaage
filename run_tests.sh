@@ -13,7 +13,8 @@ fi
 echo ""
 echo "FLAKE8"
 echo "############################"
-./flake8-diff.py --changed --verbose
+flake8 --ignore=E501 --filename="migrations" .
+flake8 --ignore=F403 --exclude="migrations" .
 if [ ! $? -eq 0 ]
 then
     RETURN=1

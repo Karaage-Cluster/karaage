@@ -58,8 +58,7 @@ class AddPackageForm(SoftwareForm):
     group_name = forms.RegexField(
         "^%s$" % settings.GROUP_VALIDATION_RE,
         required=True,
-        error_messages=
-        {'invalid': settings.GROUP_VALIDATION_ERROR_MSG})
+        error_messages={'invalid': settings.GROUP_VALIDATION_ERROR_MSG})
     version = forms.CharField()
     module = forms.CharField(required=False)
     machines = forms.ModelMultipleChoiceField(queryset=Machine.active.all())
@@ -103,7 +102,7 @@ class AddPackageForm(SoftwareForm):
                 version=data['license_version'],
                 date=data['license_date'],
                 text=data['license_text'],
-                )
+            )
             software.save()
 
         return software
@@ -116,5 +115,6 @@ class LicenseForm(forms.ModelForm):
 
 
 class SoftwareVersionForm(forms.ModelForm):
+
     class Meta:
         model = SoftwareVersion

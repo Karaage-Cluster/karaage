@@ -40,6 +40,7 @@ from karaage.software.models import SoftwareLicenseAgreement
 
 
 class ApplicationManager(models.Manager):
+
     def get_for_applicant(self, person):
         query = self.get_queryset()
         query = query.filter(content_type__model="person", object_id=person.pk)
@@ -65,6 +66,7 @@ class ApplicationManager(models.Manager):
 
 @python_2_unicode_compatible
 class Application(models.Model):
+
     """ Generic application for anything. """
     WAITING_FOR_ADMIN = 'K'
     COMPLETED = 'C'
@@ -131,7 +133,7 @@ class Application(models.Model):
         for field in self._tracker.changed():
             log.change(
                 self,
-                'Changed %s to %s' % (field,  getattr(self, field)))
+                'Changed %s to %s' % (field, getattr(self, field)))
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
@@ -251,7 +253,7 @@ class ProjectApplication(Application):
                 start_date=datetime.datetime.today(),
                 end_date=datetime.datetime.today()
                 + datetime.timedelta(days=365),
-                )
+            )
             project.save()
             for mc in self.machine_categories.all():
                 project.projectquota_set.create(machine_category=mc)
@@ -365,6 +367,7 @@ class SoftwareApplication(Application):
 
 @python_2_unicode_compatible
 class Applicant(models.Model):
+
     """ A person who has completed an application however is not yet officially
     registered on the system yet. """
     email = models.EmailField(unique=True)
@@ -470,7 +473,7 @@ class Applicant(models.Model):
             'fax': self.fax,
             'saml_id': self.saml_id,
             'approved_by': approved_by,
-            }
+        }
         person = Person.objects.create_user(**data)
 
         for application in self.applications.all():

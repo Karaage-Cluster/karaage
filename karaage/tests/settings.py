@@ -114,7 +114,7 @@ GRAPH_URL = '/media/graphs/'
 
 INTERNAL_IPS = (
     '127.0.0.1',
-    )
+)
 
 AUP_URL = 'http://example.com/aup.html'
 

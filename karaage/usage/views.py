@@ -189,7 +189,7 @@ def index(request, machine_category_id):
     total = mc_cache.cpu_time
     total_jobs = mc_cache.no_jobs
     available_time = mc_cache.available_time
-    avg_cpus = available_time / (60*24*24) / ((end-start).days + 1)
+    avg_cpus = available_time / (60 * 24 * 24) / ((end - start).days + 1)
 
     for m_cache in models.MachineCache.objects.filter(
             machine__category=machine_category,
@@ -499,7 +499,7 @@ def search(request):
             end_str = end.strftime('%Y-%m-%d')
             if terms:
 
-            # search for projects
+                # search for projects
                 query = Q()
                 for term in terms.split(' '):
                     q = Q(pid__icontains=term) | Q(name__icontains=term)

@@ -365,7 +365,6 @@ def _gen_project_trend_graph(project,
                              end,
                              machine_category,
                              force_overwrite=False):
-
     """Generates a bar graph for a project
 
     Keyword arguments:
@@ -422,7 +421,7 @@ def _gen_project_trend_graph(project,
         for row in query.iterator():
             csv_writer.writerow([
                 row['account__username'],
-                row['date'], row['cpu_usage__sum']/3600.00
+                row['date'], row['cpu_usage__sum'] / 3600.00
             ])
 
             account = row['account']
@@ -618,7 +617,7 @@ def _gen_trend_graph(start, end, machine_category,
         csv_writer = csv.writer(csv_file)
         for row in query.iterator():
             csv_writer.writerow([
-                row['date'], row['cpu_usage__sum']/3600.00
+                row['date'], row['cpu_usage__sum'] / 3600.00
             ])
 
             date = row['date']
@@ -700,7 +699,7 @@ def _gen_institute_trend_graph(institute,
         csv_writer = csv.writer(csv_file)
         for row in query.iterator():
             csv_writer.writerow([
-                row['date'], row['cpu_usage__sum']/3600.00
+                row['date'], row['cpu_usage__sum'] / 3600.00
             ])
 
             date = row['date']

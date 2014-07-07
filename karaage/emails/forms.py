@@ -78,7 +78,7 @@ class BulkEmailForm(EmailForm):
                 if person.email not in email_list:
                     ctx = Context({
                         'receiver': person,
-                        })
+                    })
                     subject = subject_t.render(ctx)
                     body = body_t.render(ctx)
                     emails.append(

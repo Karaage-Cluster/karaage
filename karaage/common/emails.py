@@ -25,7 +25,7 @@ from django.conf import settings
 CONTEXT = {
     'org_email': settings.ACCOUNTS_EMAIL,
     'org_name': settings.ACCOUNTS_ORG_NAME,
-    }
+}
 
 
 def send_mail(subject, message, from_email, recipient_list):

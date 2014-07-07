@@ -56,7 +56,7 @@ class Institute(models.Model):
             log.add(self, 'Created')
         for field in self._tracker.changed():
             log.change(self, 'Changed %s to %s'
-                       % (field,  getattr(self, field)))
+                       % (field, getattr(self, field)))
 
         # update the datastore
         from karaage.datastores import machine_category_save_institute
@@ -160,7 +160,7 @@ class InstituteQuota(models.Model):
             log.change(
                 self.institute,
                 'Quota %s: Changed %s to %s' %
-                (self.machine_category, field,  getattr(self, field)))
+                (self.machine_category, field, getattr(self, field)))
 
         from karaage.datastores import machine_category_save_institute
         machine_category_save_institute(self.institute)
@@ -216,7 +216,7 @@ class InstituteDelegate(models.Model):
             log.change(
                 self.institute,
                 'Delegate %s: Changed %s to %s' %
-                (self.person, field,  getattr(self, field)))
+                (self.person, field, getattr(self, field)))
 
     def delete(self, *args, **kwargs):
         super(InstituteDelegate, self).delete(*args, **kwargs)

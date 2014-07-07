@@ -31,6 +31,7 @@ from karaage.tests.integration import IntegrationTestCase
 
 
 class FakeRequest(object):
+
     def __init__(self, person):
         self.user = person
 
@@ -56,7 +57,8 @@ class PersonTestCase(IntegrationTestCase):
     def test_permissions(self):
         test_object = Project.objects.get(pid="TestProject1")
         self.do_permission_tests(test_object, {
-            1: True,    # person 1 can view: person's institute delegate, project leader
+            1: True,    # person 1 can view: person's institute delegate,
+                        #                    project leader
             2: False,   # person 2 cannot view
             3: True,    # person 3 can view: project member
             4: True,    # person 4 can view: is_staff
@@ -64,7 +66,8 @@ class PersonTestCase(IntegrationTestCase):
 
         test_object = Person.objects.get(id=1)
         self.do_permission_tests(test_object, {
-            1: True,    # person 1 can view: self, project member, person's institute delegate
+            1: True,    # person 1 can view: self, project member,
+                        #                    person's institute delegate
             2: False,   # person 2 cannot view
             3: False,   # person 3 cannot view
             4: True,    # person 4 can view: is_staff, institute delegate
@@ -80,7 +83,8 @@ class PersonTestCase(IntegrationTestCase):
 
         test_object = Person.objects.get(id=3)
         self.do_permission_tests(test_object, {
-            1: True,    # person 1 can view: person's institute delegate, project leader
+            1: True,    # person 1 can view: person's institute delegate,
+                        # project leader
             2: False,   # person 2 cannot view
             3: True,    # person 3 can view: self, project member
             4: True,    # person 4 can view: is_staff
@@ -110,7 +114,8 @@ class PersonTestCase(IntegrationTestCase):
 
         test_object = Person.objects.get(id=1)
         self.do_permission_tests(test_object, {
-            1: True,    # person 1 can view:  self, project member, delegate of institute
+            1: True,    # person 1 can view: self, project member,
+                        #                    delegate of institute
             2: False,   # person 2 cannot view
             3: False,   # person 3 cannot view
             4: True,    # person 4 can view: is_staff
@@ -118,7 +123,8 @@ class PersonTestCase(IntegrationTestCase):
 
         test_object = Person.objects.get(id=2)
         self.do_permission_tests(test_object, {
-            1: True,    # person 1 can view: person's institute delegate, project leader
+            1: True,    # person 1 can view: person's institute delegate,
+                        #                    project leader
             2: True,    # person 2 can view: self
             3: True,    # person 3 can view: project member
             4: True,    # person 4 can view: is_staff
@@ -126,7 +132,8 @@ class PersonTestCase(IntegrationTestCase):
 
         test_object = Person.objects.get(id=3)
         self.do_permission_tests(test_object, {
-            1: True,    # person 1 can view: person's institute delegate, project leader
+            1: True,    # person 1 can view: person's institute delegate,
+                        #                    project leader
             2: True,    # person 2 can view: project member
             3: True,    # person 3 can view: self, project member
             4: True,    # person 4 can view: is_staff
@@ -145,7 +152,7 @@ class PersonTestCase(IntegrationTestCase):
         # institute leader for these people.
         # print("------------------------------------------------------------")
         Person.objects.all().update(institute=2)
-        #Institute.objects.filter(pk=2).update(delegate=2,active_delegate=2)
+        # Institute.objects.filter(pk=2).update(delegate=2,active_delegate=2)
         InstituteDelegate.objects.get_or_create(
             institute=Institute.objects.get(id=2),
             person=Person.objects.get(id=2),
@@ -156,7 +163,8 @@ class PersonTestCase(IntegrationTestCase):
         test_object = Project.objects.get(pid="TestProject1")
         self.do_permission_tests(test_object, {
             1: True,    # person 1 can view: person's institute delegate
-            2: True,    # person 2 can view: project member, person's institute delegate, project leader
+            2: True,    # person 2 can view: project member, person's
+                        #                    institute delegate, project leader
             3: True,    # person 3 can view: project member
             4: True,    # person 4 can view: is_staff
         })
@@ -172,7 +180,8 @@ class PersonTestCase(IntegrationTestCase):
         test_object = Person.objects.get(id=2)
         self.do_permission_tests(test_object, {
             1: True,    # person 1 can view: project's institute leader
-            2: True,    # person 2 can view: self, person's institute delegate, project leader
+            2: True,    # person 2 can view: self, person's institute delegate,
+                        #                    project leader
             3: True,    # person 3 can view: project member
             4: True,    # person 4 can view: is_staff
         })
@@ -180,7 +189,8 @@ class PersonTestCase(IntegrationTestCase):
         test_object = Person.objects.get(id=3)
         self.do_permission_tests(test_object, {
             1: True,    # person 1 can view: project's institute leader
-            2: True,    # person 2 can view: project member, person's institute delegate, project leader
+            2: True,    # person 2 can view: project member, person's institute
+                        #                    delegate, project leader
             3: True,    # person 3 can view: self, project member
             4: True,    # person 4 can view: is_staff
         })
@@ -229,7 +239,7 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(person.is_active, True)
         self.assertEqual(person.username, 'samtest')
         self.assertEqual(Account.objects.count(), 2)
-        self.assertEqual(project.group.members.count(), p_users+1)
+        self.assertEqual(project.group.members.count(), p_users + 1)
         luser = self._datastore._accounts().get(uid='samtest')
         self.assertEqual(luser.givenName, 'Sam')
         self.assertEqual(luser.homeDirectory, '/vpac/TestProject1/samtest')
@@ -263,7 +273,7 @@ class PersonTestCase(IntegrationTestCase):
         response = self.client.post(reverse('kg_person_add'), form_data)
         self.assertEqual(response.status_code, 302)
 
-        self.assertEqual(Person.objects.count(), users+1)
+        self.assertEqual(Person.objects.count(), users + 1)
         users = users + 1
         person = Person.objects.get(pk=users)
         self.assertEqual(person.is_active, True)
@@ -429,7 +439,7 @@ class PersonTestCase(IntegrationTestCase):
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.redirect_chain[0][0],
-                             'http://testserver' + done_url)
+                         'http://testserver' + done_url)
 
         # check email
         self.assertEqual(len(mail.outbox), 1)
@@ -453,7 +463,7 @@ class PersonTestCase(IntegrationTestCase):
         response = self.client.post(url, form_data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.redirect_chain[0][0],
-                             'http://testserver' + done_url)
+                         'http://testserver' + done_url)
 
         # test new password
         logged_in = self.client.login(
@@ -470,7 +480,7 @@ class PersonTestCase(IntegrationTestCase):
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.redirect_chain[0][0],
-                             'http://testserver' + done_url)
+                         'http://testserver' + done_url)
         self.client.logout()
 
         # check email
@@ -495,7 +505,7 @@ class PersonTestCase(IntegrationTestCase):
         response = self.client.post(url, form_data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.redirect_chain[0][0],
-                             'http://testserver' + done_url)
+                         'http://testserver' + done_url)
 
         # test new password
         logged_in = self.client.login(

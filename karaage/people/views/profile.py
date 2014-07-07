@@ -62,7 +62,7 @@ def login(request, username=None):
         'form': form,
         'next': redirect_to,
         'error': error,
-        }, context_instance=RequestContext(request))
+    }, context_instance=RequestContext(request))
 
 
 def saml_login(request):

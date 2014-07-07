@@ -44,7 +44,7 @@ class AccountTestCase(TestCase):
             'password1': 'Exaiquouxei0',
             'password2': 'Exaiquouxei0',
             'needs_account': False,
-            }
+        }
         self.client.login(username='kgsuper', password='aq12ws')
         response = self.client.post(reverse('kg_person_add'), form_data)
         self.assertEqual(response.status_code, 302)
@@ -67,7 +67,7 @@ class AccountTestCase(TestCase):
             'shell': '/bin/bash',
             'machine_category': 1,
             'default_project': 1,
-            }
+        }
 
         response = self.client.post(
             reverse('kg_account_add', args=['samtest2']), form_data)
@@ -85,7 +85,7 @@ class AccountTestCase(TestCase):
             'shell': '/bin/bash',
             'machine_category': 1,
             'default_project': 1,
-            }
+        }
         response = self.client.post(
             reverse('kg_account_add', args=['samtest2']), form_data)
         self.assertEqual(response.status_code, 302)
@@ -101,7 +101,7 @@ class AccountTestCase(TestCase):
             'shell': '/bin/bash',
             'machine_category': 1,
             'default_project': 1,
-            }
+        }
         response = self.client.post(
             reverse('kg_account_add', args=['samtest2']), form_data)
         self.assertContains(
@@ -116,7 +116,7 @@ class AccountTestCase(TestCase):
             'shell': '/bin/bash',
             'machine_category': 1,
             'default_project': 1,
-            }
+        }
         response = self.client.post(
             reverse('kg_account_add', args=['samtest2']), form_data)
         self.assertEqual(response.status_code, 302)
@@ -126,7 +126,7 @@ class AccountTestCase(TestCase):
             'shell': '/bin/bash',
             'machine_category': 2,
             'default_project': 1,
-            }
+        }
 
         response = self.client.post(
             reverse('kg_account_add', args=['samtest2']), form_data)
@@ -147,7 +147,7 @@ class AccountTestCase(TestCase):
             'shell': '/bin/bash',
             'machine_category': 1,
             'default_project': 1,
-            }
+        }
 
         response = self.client.post(
             reverse('kg_account_add', args=['samtest2']), form_data)
@@ -203,25 +203,25 @@ class MachineTestCase(TestCase):
             machine.category = mc1
             machine.save()
 
-        day = 60*60*24
+        day = 60 * 60 * 24
         today = datetime.datetime.now()
 
         end = today - datetime.timedelta(days=20)
         start = today - datetime.timedelta(days=30)
-        self.do_availablity_test(start, end, mc1, 8050*day*11, 8050)
+        self.do_availablity_test(start, end, mc1, 8050 * day * 11, 8050)
 
         start = today - datetime.timedelta(days=99)
         end = today - datetime.timedelta(days=90)
-        self.do_availablity_test(start, end, mc1, 40*day*10, 40)
+        self.do_availablity_test(start, end, mc1, 40 * day * 10, 40)
 
         start = today - datetime.timedelta(days=85)
         end = today - datetime.timedelta(days=76)
-        self.do_availablity_test(start, end, mc1, 45*day*10, 45)
+        self.do_availablity_test(start, end, mc1, 45 * day * 10, 45)
 
         start = today - datetime.timedelta(days=35)
         end = today - datetime.timedelta(days=16)
-        self.do_availablity_test(start, end, mc1, 6042*day*20, 6042)
+        self.do_availablity_test(start, end, mc1, 6042 * day * 20, 6042)
 
         start = today - datetime.timedelta(days=20)
         end = today - datetime.timedelta(days=20)
-        self.do_availablity_test(start, end, mc1, 8050*day, 8050)
+        self.do_availablity_test(start, end, mc1, 8050 * day, 8050)

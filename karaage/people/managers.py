@@ -20,6 +20,7 @@ from django.contrib.auth import authenticate
 
 
 class PersonManager(BaseUserManager):
+
     def authenticate(self, username, password):
         return authenticate(username=username, password=password)
 
@@ -31,14 +32,14 @@ class PersonManager(BaseUserManager):
             institute, password, is_admin, **extra_fields):
         """Creates a new active person. """
 
-        #Create Person
+        # Create Person
         person = self.model(
             username=username, email=email,
             short_name=short_name, full_name=full_name,
             is_admin=is_admin, is_active=True,
             institute=institute,
             **extra_fields
-            )
+        )
         person.set_password(password)
         person.save()
         return person
@@ -65,6 +66,7 @@ class PersonManager(BaseUserManager):
 
 
 class ActivePersonManager(PersonManager):
+
     def get_query_set(self):
         return super(ActivePersonManager, self) \
             .get_query_set() \
@@ -73,6 +75,7 @@ class ActivePersonManager(PersonManager):
 
 
 class DeletedPersonManager(PersonManager):
+
     def get_query_set(self):
         return super(DeletedPersonManager, self) \
             .get_query_set() \
@@ -80,6 +83,7 @@ class DeletedPersonManager(PersonManager):
 
 
 class LeaderManager(PersonManager):
+
     def get_query_set(self):
         leader_ids = []
         query = super(LeaderManager, self).get_query_set()

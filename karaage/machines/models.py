@@ -72,7 +72,7 @@ class MachineCategory(models.Model):
             log.add(self, 'Created')
         for field in self._tracker.changed():
             log.change(
-                self, 'Changed %s to %s' % (field,  getattr(self, field)))
+                self, 'Changed %s to %s' % (field, getattr(self, field)))
 
         # check if datastore changed
         if self._tracker.has_changed("datastore"):
@@ -127,11 +127,11 @@ class Machine(AbstractBaseUser):
             else:
                 log.change(
                     self,
-                    'Changed %s to %s' % (field,  getattr(self, field)))
+                    'Changed %s to %s' % (field, getattr(self, field)))
                 log.change(
                     self.category,
                     'Machine %s: Changed %s to %s'
-                    % (self, field,  getattr(self, field)))
+                    % (self, field, getattr(self, field)))
 
     def delete(self, *args, **kwargs):
         # delete the object
@@ -223,11 +223,11 @@ class Account(models.Model):
                 log.change(
                     self.person,
                     'Account %s: Changed %s to %s'
-                    % (self, field,  getattr(self, field)))
+                    % (self, field, getattr(self, field)))
                 log.change(
                     self.machine_category,
                     'Account %s: Changed %s to %s'
-                    % (self, field,  getattr(self, field)))
+                    % (self, field, getattr(self, field)))
 
         # check if machine_category changed
         moved = False
@@ -457,7 +457,7 @@ def _members_changed(
     """
     Hook that executes whenever the group members are changed.
     """
-    #print "'%s','%s','%s','%s','%s'" \
+    # print "'%s','%s','%s','%s','%s'" \
     #   % (instance, action, reverse, model, pk_set)
     if action == "post_remove":
         if not reverse:

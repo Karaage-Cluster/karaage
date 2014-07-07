@@ -206,6 +206,6 @@ class Command(BaseCommand):
             'short_name': short_name,
             'full_name': full_name,
             'institute': institute,
-            }
+        }
         Person.objects.create_superuser(**data)
         print "Karaage Superuser created successfully."

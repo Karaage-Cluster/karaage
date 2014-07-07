@@ -73,7 +73,7 @@ def get_application_state_machine():
     state_machine.add_state(
         StateIntroduction(), 'O',
         {'cancel': 'R',
-            'submit':  states.TransitionSubmit(on_success='K', on_error="R")})
+            'submit': states.TransitionSubmit(on_success='K', on_error="R")})
     state_machine.add_state(
         StateWaitingForAdmin(), 'K',
         {'cancel': 'R',

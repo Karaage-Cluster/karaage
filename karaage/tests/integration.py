@@ -56,7 +56,7 @@ class IntegrationTestCase(TestCase):
         server = slapd.Slapd()
         server.set_port(38911)
         server.start()
-        server.ldapadd("\n".join(test_ldif)+"\n")
+        server.ldapadd("\n".join(test_ldif) + "\n")
         self.__ldap_server = server
         self.mc_ldap_datastore = MachineCategoryDataStore(self.LDAP_CONFIG)
         self.global_ldap_datastore = GlobalDataStore(self.GLOBAL_LDAP_CONFIG)

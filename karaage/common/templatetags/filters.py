@@ -33,27 +33,27 @@ def timeformat(value):
         return '%ss' % intcomma(int(value))
     # less than 1 hour
     elif value < 3600:
-        v = int(value/60)
+        v = int(value / 60)
         return '%sm' % intcomma(v)
     # less than 1 day
-    #elif value < 86400:
+    # elif value < 86400:
     #    v = int(value/3600)
     #    return '%sh' % intcomma(v)
     # less than a month
-    #elif value < 2592000:
+    # elif value < 2592000:
     #    v = int(value/86400)
     #    return '%sd' % intcomma(v)
     # less than 1 year
-    #elif value < 31104000:
+    # elif value < 31104000:
     #    v = int(value/2592000)
     #    return '%smonth' % intcomma(v)
     else:
-        v = int(value/3600)
+        v = int(value / 3600)
         return '%sh' % intcomma(v)
 
 
 @register.filter
 def fileformat(kilobytes):
     if kilobytes:
-        return filesizeformat(kilobytes*1024)
+        return filesizeformat(kilobytes * 1024)
     return None

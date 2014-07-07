@@ -59,7 +59,9 @@ def _get_applicant_from_saml(request):
 
 
 class StateWithSteps(base.State):
+
     """ A state that has a number of steps to complete. """
+
     def __init__(self):
         self._first_step = None
         self._steps = {}
@@ -103,12 +105,12 @@ class StateWithSteps(base.State):
         step_actions = {}
         if 'cancel' in actions:
             step_actions['cancel'] = "state:cancel"
-        if 'submit' in actions and position == len(self._order)-1:
+        if 'submit' in actions and position == len(self._order) - 1:
             step_actions['submit'] = "state:submit"
         if position > 0:
-            step_actions['prev'] = self._order[position-1]
-        if position < len(self._order)-1:
-            step_actions['next'] = self._order[position+1]
+            step_actions['prev'] = self._order[position - 1]
+        if position < len(self._order) - 1:
+            step_actions['next'] = self._order[position + 1]
 
         # process the request
         if request.method == "GET":
@@ -150,12 +152,15 @@ class StateWithSteps(base.State):
 
 
 class Step(object):
+
     """ A single step in a StateWithStep state. """
+
     def view(self, request, application, label, auth, actions):
         return NotImplementedError()
 
 
 class StateStepIntroduction(Step):
+
     """ Invitation has been sent to applicant. """
     name = "Read introduction"
 
@@ -180,6 +185,7 @@ class StateStepIntroduction(Step):
 
 
 class StateStepShibboleth(Step):
+
     """ Invitation has been sent to applicant. """
     name = "Invitation sent"
 
@@ -302,6 +308,7 @@ class StateStepShibboleth(Step):
 
 
 class StateStepApplicant(Step):
+
     """ Application is open and user is can edit it."""
     name = "Open"
 
@@ -356,6 +363,7 @@ class StateStepApplicant(Step):
 
 
 class StateStepProject(base.State):
+
     """ Applicant is able to choose the project for the application. """
     name = "Choose project"
 
@@ -597,6 +605,7 @@ class StateApplicantEnteringDetails(StateWithSteps):
 
 
 class StateWaitingForLeader(states.StateWaitingForApproval):
+
     """ We need the leader to provide approval. """
     name = "Waiting for leader"
     authorised_text = "a project leader"
@@ -609,6 +618,7 @@ class StateWaitingForLeader(states.StateWaitingForApproval):
 
 
 class StateWaitingForDelegate(states.StateWaitingForApproval):
+
     """ We need the delegate to provide approval. """
     name = "Waiting for delegate"
     authorised_text = "an institute delegate"
@@ -622,6 +632,7 @@ class StateWaitingForDelegate(states.StateWaitingForApproval):
 
 
 class StateWaitingForAdmin(states.StateWaitingForApproval):
+
     """ We need the administrator to provide approval. """
     name = "Waiting for administrator"
     authorised_text = "an administrator"
@@ -643,6 +654,7 @@ class StateWaitingForAdmin(states.StateWaitingForApproval):
 
 
 class StateDuplicateApplicant(base.State):
+
     """ Somebody has declared application is existing user. """
     name = "Duplicate Applicant"
 
@@ -683,12 +695,15 @@ class StateDuplicateApplicant(base.State):
 
 
 class StateArchived(states.StateCompleted):
+
     """ This application is archived. """
     name = "Archived"
 
 
 class TransitionSplit(base.Transition):
+
     """ A transition after application submitted. """
+
     def __init__(self, on_existing_project, on_new_project, on_error):
         super(TransitionSplit, self).__init__()
         self._on_existing_project = on_existing_project
@@ -714,7 +729,7 @@ def get_application_state_machine():
     state_machine.add_state(
         StateApplicantEnteringDetails(), 'O',
         {'cancel': 'R', 'reopen': Open, 'duplicate': 'DUP',
-            'submit':  states.TransitionSubmit(
+            'submit': states.TransitionSubmit(
                 on_success=Split, on_error="R")})
     state_machine.add_state(
         StateWaitingForLeader(), 'L',
@@ -858,16 +873,16 @@ def new_application(request):
             context_instance=RequestContext(request))
     else:
         if request.method == 'POST':
-                person = request.user
+            person = request.user
 
-                application = ProjectApplication()
-                application.applicant = person
-                application.save()
+            application = ProjectApplication()
+            application.applicant = person
+            application.save()
 
-                state_machine = get_application_state_machine()
-                response = state_machine.start(
-                    request, application, {'is_applicant': True})
-                return response
+            state_machine = get_application_state_machine()
+            response = state_machine.start(
+                request, application, {'is_applicant': True})
+            return response
         return render_to_response(
             'applications/project_common_invite_authenticated.html',
             {},

@@ -440,7 +440,7 @@ def join_package(request, software_id):
                 person=person,
                 license=software_license,
                 date=datetime.datetime.today(),
-                )
+            )
             person.add_group(software.group)
             messages.success(request, "Approved access to %s." % software)
             return HttpResponseRedirect(reverse('kg_profile_software'))

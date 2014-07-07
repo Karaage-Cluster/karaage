@@ -39,7 +39,7 @@ class Command(BaseCommand):
             default=False,
             help='Don\'t change anything, output what needs '
             'to change instead.'),
-        )
+    )
 
     @django.db.transaction.commit_on_success
     @tldap.transaction.commit_on_success
@@ -58,7 +58,7 @@ class Command(BaseCommand):
             # we have to move accounts to the account_base.
             # no changes rquired for people.
             account_base_dn = machine_category_datastore._accounts(
-                ).get_base_dn()
+            ).get_base_dn()
 
             for p in global_datastore._people().filter(
                     objectClass='posixAccount'):

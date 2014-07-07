@@ -40,7 +40,8 @@ urlpatterns = patterns(
 
     url(r'^(?P<machine_category_id>\d+)/institute/(?P<institute_id>\d+)/$',
         'institute_usage', name='kg_usage_institute'),
-    url(r'^(?P<machine_category_id>\d+)/institute/(?P<institute_id>\d+)/users/$',
+    url(r'^(?P<machine_category_id>\d+)/institute/'
+        r'(?P<institute_id>\d+)/users/$',
         'institute_users', name='kg_usage_users'),
     url(r'^(?P<machine_category_id>\d+)/projects/(?P<project_id>%s)/$'
         % settings.PROJECT_VALIDATION_RE,

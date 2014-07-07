@@ -35,11 +35,11 @@ from karaage.common.forms import validate_password
 
 
 class PersonForm(forms.ModelForm):
-#    title = forms.ChoiceField(choices=TITLES, required=False)
-#    position = forms.CharField(required=False)
-#    email = forms.EmailField()
-#    department = forms.CharField(required=False)
-#    supervisor = forms.CharField(required=False)
+    #    title = forms.ChoiceField(choices=TITLES, required=False)
+    #    position = forms.CharField(required=False)
+    #    email = forms.EmailField()
+    #    department = forms.CharField(required=False)
+    #    supervisor = forms.CharField(required=False)
     telephone = forms.RegexField(
         "^[0-9a-zA-Z\.( )+-]+$", required=True,
         label=six.u("Office Telephone"),
@@ -234,6 +234,7 @@ class AdminGroupForm(forms.Form):
 
 
 class AddGroupMemberForm(forms.Form):
+
     """ Add a user to a group form """
     person = ajax_select.fields.AutoCompleteSelectField(
         'person', required=True, label="Add person")

@@ -80,6 +80,7 @@ MethodTypes = tuple(set((
 
 
 class _C(object):
+
     @classmethod
     def classMethod(klass):
         pass
@@ -177,11 +178,13 @@ def setLoggerFactory(factory):
 ######################################################################
 
 class PrependLoggerFactory(object):
+
     """This is a convenience class for creating new loggers for the
     "trace" decorator.  All loggers created via this class will have a
     user specified prefix prepended to the name of the logger to
     instantiate.
     """
+
     def __init__(self, prefix='trace'):
         """Construct a new "PrependLoggerFactory" instance that
         prepends the value \var{prefix} to the name of each
@@ -208,8 +211,10 @@ class PrependLoggerFactory(object):
 ######################################################################
 
 class ThreadLocal(object):
+
     """Instances of this class provide a thread-local variable.
     """
+
     def __init__(self):
         self.__lock = thread.allocate_lock()
         self.__vars = dict()
@@ -437,10 +442,10 @@ def __lookup_builtin(name):
         for proto in __builtins:
             pos = proto.find('(')
             name, params, defaults = proto[:pos], list(), dict()
-            for param in proto[pos+1:-1].split(','):
+            for param in proto[pos + 1:-1].split(','):
                 pos = param.find('=')
                 if not pos < 0:
-                    param, value = param[:pos], param[pos+1:]
+                    param, value = param[:pos], param[pos + 1:]
                     try:
                         defaults[param] = __builtin_defaults[value]
                     except KeyError:
@@ -730,6 +735,7 @@ def attach(decorator, obj, recursive=True):
 ######################################################################
 
 class TraceMetaClass(type):
+
     """Metaclass to automatically attach the 'trace' decorator to all
     methods, static method and class methods of the class.
     """
@@ -780,6 +786,7 @@ if __name__ == '__main__':
     test.method()
 
     class Test(object):
+
         @classmethod
         def classMethod(klass):
             pass

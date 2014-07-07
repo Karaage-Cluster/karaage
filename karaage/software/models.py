@@ -70,7 +70,7 @@ class Software(models.Model):
             log.add(self, 'Created')
         for field in self._tracker.changed():
             log.change(self, 'Changed %s to %s'
-                       % (field,  getattr(self, field)))
+                       % (field, getattr(self, field)))
 
         # update the datastore
         from karaage.datastores import machine_category_save_software

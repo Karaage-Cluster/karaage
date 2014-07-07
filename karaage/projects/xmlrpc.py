@@ -171,6 +171,6 @@ def showquota(username, machine_name=None):
             mpots,
             cap,
             is_default,
-            ])
+        ])
 
     return 0, p_l

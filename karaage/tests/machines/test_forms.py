@@ -25,6 +25,7 @@ from karaage.tests.fixtures import simple_account
 
 
 class AdminAccountFormTestCase(TestCase):
+
     def setUp(self):
         super(AdminAccountFormTestCase, self).setUp()
         self.account = simple_account()
@@ -35,7 +36,7 @@ class AdminAccountFormTestCase(TestCase):
             'machine_category': self.account.machine_category.id,
             'default_project': self.account.default_project.id,
             'shell': settings.DEFAULT_SHELL,
-            }
+        }
         return data
 
     def test_valid_data(self):

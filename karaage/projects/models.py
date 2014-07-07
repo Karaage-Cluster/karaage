@@ -84,7 +84,7 @@ class Project(models.Model):
             log.add(self, 'Created')
         for field in self._tracker.changed():
             log.change(self, 'Changed %s to %s'
-                       % (field,  getattr(self, field)))
+                       % (field, getattr(self, field)))
 
         # has pid changed?
         self._tracker.has_changed("pid")
@@ -250,7 +250,7 @@ class ProjectQuota(models.Model):
             log.change(
                 self.project,
                 'Quota %s: Changed %s to %s' %
-                (self.machine_category, field,  getattr(self, field)))
+                (self.machine_category, field, getattr(self, field)))
 
         from karaage.datastores import machine_category_save_project
         machine_category_save_project(self.project)
@@ -297,7 +297,7 @@ def _leaders_changed(
     """
     Hook that executes whenever the group members are changed.
     """
-    #print("'%s','%s','%s','%s','%s'"
+    # print("'%s','%s','%s','%s','%s'"
     #   %(instance, action, reverse, model, pk_set))
 
     if action == "post_add":

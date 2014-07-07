@@ -24,6 +24,7 @@ from karaage.tests.fixtures import ProjectFactory
 
 
 class ProjectFormTestCase(TestCase):
+
     def setUp(self):
         super(ProjectFormTestCase, self).setUp()
         self.project = ProjectFactory()
@@ -37,7 +38,7 @@ class ProjectFormTestCase(TestCase):
             'additional_req': self.project.additional_req,
             'start_date': self.project.start_date,
             'end_date': self.project.end_date
-            }
+        }
         return data
 
     def test_valid_data(self):

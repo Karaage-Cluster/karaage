@@ -21,7 +21,7 @@
 import six
 
 ###
-### DJANGO SETTINGS
+# DJANGO SETTINGS
 ###
 
 # A boolean that turns on/off debug mode.
@@ -184,7 +184,8 @@ SESSION_COOKIE_SECURE = True
 
 # Whether to expire the session when the user closes their browser. See
 # `Browser-length sessions vs. persistent sessions
-# <https://docs.djangoproject.com/en/dev/topics/http/sessions/#browser-length-vs-persistent-sessions>`_.
+# <https://docs.djangoproject.com/en/dev/topics/http/sessions/
+# browser-length-vs-persistent-sessions>`_.
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # A string representing the full Python import path to your root URLconf. For
@@ -205,7 +206,7 @@ STATIC_ROOT = '/var/lib/karaage/static'
 STATIC_URL = '/kgadmin_media/'
 
 ###
-### DJANGO PIPELINE
+# DJANGO PIPELINE
 ###
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
@@ -235,7 +236,7 @@ PIPELINE_JS = {
 }
 
 ###
-### AJAX SETTINGS
+# AJAX SETTINGS
 ###
 
 # Channels for django-ajax-selects.
@@ -250,7 +251,7 @@ AJAX_SELECT_BOOTSTRAP = True
 
 
 ##
-## XMLRPC
+# XMLRPC
 ##
 
 # List of all XMLRPC methods that we support.
@@ -276,7 +277,7 @@ except ImportError:
     pass
 
 ###
-### KARAAGE SETTINGS
+# KARAAGE SETTINGS
 ###
 
 # If True, force overwritting existing graphs when generating graphs.
@@ -335,7 +336,7 @@ SHIB_ATTRIBUTE_MAP = {
     "HTTP_GIVENNAME": (True, "first_name"),
     "HTTP_SN": (True, "last_name"),
     "HTTP_TELEPHONENUMBER": (False, "telephone"),
-    }
+}
 
 # RE for validing a username.
 USERNAME_VALIDATION_RE = '[-\w]+'

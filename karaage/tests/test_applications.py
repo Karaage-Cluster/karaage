@@ -49,8 +49,9 @@ class UserApplicationTestCase(TestCase):
         self.assertEqual(len(mail.outbox), 0)
         response = self.client.get(reverse('kg_application_new'))
         self.assertEqual(response.status_code, 200)
-        a = response.content.find(b'name="captcha_0" type="hidden" value="')+38
-        b = a+40
+        a = response.content.find(
+            b'name="captcha_0" type="hidden" value="') + 38
+        b = a + 40
         hash_ = response.content[a:b].decode("ascii")
 
         captcha_text = CaptchaStore.objects.get(hashkey=hash_).response
@@ -110,7 +111,7 @@ class UserApplicationTestCase(TestCase):
             'additional_req': 'Meow',
             'needs_account': False,
             'submit': 'string',
-            }
+        }
 
         response = self.client.post(
             reverse('kg_application_unauthenticated',
@@ -158,7 +159,7 @@ class UserApplicationTestCase(TestCase):
             'make_leader': False,
             'additional_req': 'Meow',
             'needs_account': False,
-            }
+        }
         response = self.client.post(
             reverse('kg_application_detail',
                     args=[application.pk, 'L', 'approve']),
@@ -200,7 +201,7 @@ class UserApplicationTestCase(TestCase):
             'make_leader': False,
             'additional_req': 'Woof',
             'needs_account': False,
-            }
+        }
         response = self.client.post(
             reverse('kg_application_detail',
                     args=[application.pk, 'K', 'approve']),
@@ -226,7 +227,7 @@ class UserApplicationTestCase(TestCase):
             'new_password1': "Exaiquouxei0",
             'new_password2': "Exaiquouxei0",
             'submit': 'string',
-            }
+        }
 
         response = self.client.post(
             reverse('kg_application_unauthenticated',
@@ -245,7 +246,7 @@ class UserApplicationTestCase(TestCase):
         # APPLICANT SET ARCHIVE
         form_data = {
             'archive': 'string',
-            }
+        }
         response = self.client.post(
             reverse('kg_application_unauthenticated',
                     args=[token, 'C']),
@@ -290,8 +291,9 @@ class ProjectApplicationTestCase(TestCase):
         self.assertEqual(len(mail.outbox), 0)
         response = self.client.get(reverse('kg_application_new'))
         self.assertEqual(response.status_code, 200)
-        a = response.content.find(b'name="captcha_0" type="hidden" value="')+38
-        b = a+40
+        a = response.content.find(
+            b'name="captcha_0" type="hidden" value="') + 38
+        b = a + 40
         hash_ = response.content[a:b].decode("ascii")
 
         captcha_text = CaptchaStore.objects.get(hashkey=hash_).response
@@ -350,7 +352,7 @@ class ProjectApplicationTestCase(TestCase):
             'needs_account': False,
             'machine_categories': [1],
             'submit': 'string',
-            }
+        }
 
         response = self.client.post(
             reverse('kg_application_unauthenticated',
@@ -397,7 +399,7 @@ class ProjectApplicationTestCase(TestCase):
             'additional_req': 'Meow',
             'needs_account': False,
             'machine_categories': [1],
-            }
+        }
         response = self.client.post(
             reverse('kg_application_detail',
                     args=[application.pk, 'D', 'approve']),
@@ -439,7 +441,7 @@ class ProjectApplicationTestCase(TestCase):
             'additional_req': 'Woof',
             'needs_account': False,
             'machine_categories': [1],
-            }
+        }
         response = self.client.post(
             reverse('kg_application_detail',
                     args=[application.pk, 'K', 'approve']),
@@ -465,7 +467,7 @@ class ProjectApplicationTestCase(TestCase):
             'new_password1': "Exaiquouxei0",
             'new_password2': "Exaiquouxei0",
             'submit': 'string',
-            }
+        }
 
         response = self.client.post(
             reverse('kg_application_unauthenticated', args=[token, 'P']),
@@ -484,7 +486,7 @@ class ProjectApplicationTestCase(TestCase):
         # APPLICANT SET ARCHIVE
         form_data = {
             'archive': 'string',
-            }
+        }
         response = self.client.post(
             reverse('kg_application_unauthenticated', args=[token, 'C']),
             form_data, follow=False)

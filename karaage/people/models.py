@@ -128,7 +128,7 @@ class Person(AbstractBaseUser):
             if field != "password":
                 log.change(
                     self,
-                    'Changed %s to %s' % (field,  getattr(self, field)))
+                    'Changed %s to %s' % (field, getattr(self, field)))
 
         # has username changed?
         self._tracker.has_changed("username")
@@ -406,6 +406,7 @@ class Person(AbstractBaseUser):
 
 @python_2_unicode_compatible
 class Group(models.Model):
+
     """Groups represent collections of people, these objects can be
     expressed externally in a datastore."""
     name = models.CharField(max_length=255, unique=True)
@@ -524,7 +525,7 @@ def _members_changed(
     """
     Hook that executes whenever the group members are changed.
     """
-    #print "'%s','%s','%s','%s','%s'" \
+    # print "'%s','%s','%s','%s','%s'" \
     # %(instance, action, reverse, model, pk_set)
 
     if action == "post_add":
