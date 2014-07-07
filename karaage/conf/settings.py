@@ -1,4 +1,5 @@
 from karaage.conf.defaults import *
 
-execfile("/etc/karaage/global_settings.py")
+exec(open("/etc/karaage3/global_settings.py", "rb").read())
+
 DEFAULT_FROM_EMAIL = ACCOUNTS_EMAIL
