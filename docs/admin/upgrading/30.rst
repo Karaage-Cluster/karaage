@@ -124,9 +124,9 @@ Install on test server
     .. code-block:: bash
 
         service apache2 stop
-        service python-karaage-celery stop
+        service karaage3-celery stop
 
-#.  Check the following settings are in /etc/karaage/global_settings.py. The
+#.  Check the following settings are in /etc/karaage3/global_settings.py. The
     mysql server should refer to the *new* database you created above, the LDAP
     server should refer to your production server.
 
@@ -248,7 +248,7 @@ Install on test server
     .. code-block:: bash
 
         service apache2 start
-        service python-karaage-celery start
+        service karaage3-celery start
 
 #.  You can run the following command to check what LDAP changes are required:
 
@@ -273,41 +273,26 @@ Install on production server
     system. After you pass this point, it will still be possible to revert,
     only it will be slightly harder, as you have to undo the following steps.
 
-#.  Move /etc/karaage to temp place:
-
-    .. code-block:: bash
-
-        mv /etc/karaage /etc/karaage.old
-
-#.  Make a complete copy of /etc/karaage from test box to production box. Check
-    /etc/karaage/global_settings.py and ensure database and LDAP references are
+#.  Make a complete copy of /etc/karaage3 from test box to production box. Check
+    /etc/karaage3/global_settings.py and ensure database and LDAP references are
     still correct for the production box.
 
 #.  Install the latest packages on your production box:
 
     .. code-block:: bash
 
-        apt-get install karaage3-admin
-        apt-get install karaage3-registration
+        apt-get install karaage3
         apt-get install python-mysql.connector
         apt-get install libapache2-mod-wsgi
 
     If prompted to replace config files, say No, unless you know what you are
     doing.
 
-    If you have disabled installing recommended packages by default, you will
-    need to install these packages by hand:
-
-    .. code-block:: bash
-
-        apt-get install rabbitmq-server
-        apt-get install python-karaage-celery
-
 #.  Test production box and make sure everything is working.
 
 #.  (optional) If you require people to be recorded in LDAP:
 
-    #.  Add the following to ``/etc/karaage/global_settings.py``:
+    #.  Add the following to ``/etc/karaage3/global_settings.py``:
 
         .. code-block:: python
 
