@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+. /usr/share/debconf/confmodule
+
+#DEBHELPER#
+
+if [ "$1" = "configure" ]; then
+    db_get karaage/run_migrations
+    if [ "$RET" = "true" ]; then
+        kg-manage migrate
+    fi
+    dpkg-trigger karaage-static
+fi
+
+exit 0
