@@ -76,7 +76,6 @@ FunctionTypes = tuple(set((
 MethodTypes = tuple(set((
     types.BuiltinMethodType,
     types.MethodType,
-    types.UnboundMethodType
 )))
 
 
@@ -104,7 +103,6 @@ CallableTypes = tuple(set((
     types.FunctionType,
     types.BuiltinMethodType,
     types.MethodType,
-    types.UnboundMethodType,
     ClassMethodType
 )))
 
