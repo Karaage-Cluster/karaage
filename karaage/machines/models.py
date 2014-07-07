@@ -21,6 +21,8 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
 from django.core.urlresolvers import reverse
+from django.utils.encoding import python_2_unicode_compatible
+
 from jsonfield import JSONField
 
 from model_utils import FieldTracker
@@ -31,6 +33,7 @@ from karaage.machines.managers import MachineManager, ActiveMachineManager
 from karaage.common import log, is_admin
 
 
+@python_2_unicode_compatible
 class MachineCategory(models.Model):
     DATASTORES = [(i, i) for i in settings.MACHINE_CATEGORY_DATASTORES.keys()]
     name = models.CharField(max_length=100, unique=True)
@@ -52,7 +55,7 @@ class MachineCategory(models.Model):
         verbose_name_plural = 'machine categories'
         db_table = 'machine_category'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     @models.permalink
@@ -88,6 +91,7 @@ class MachineCategory(models.Model):
     delete.alters_data = True
 
 
+@python_2_unicode_compatible
 class Machine(AbstractBaseUser):
     name = models.CharField(max_length=50, unique=True)
     no_cpus = models.IntegerField()
@@ -138,7 +142,7 @@ class Machine(AbstractBaseUser):
     class Meta:
         db_table = 'machine'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     @models.permalink
@@ -146,6 +150,7 @@ class Machine(AbstractBaseUser):
         return ('kg_machine_detail', [self.id])
 
 
+@python_2_unicode_compatible
 class Account(models.Model):
     person = models.ForeignKey(Person)
     username = models.CharField(max_length=255)
@@ -174,7 +179,7 @@ class Account(models.Model):
         ordering = ['person', ]
         db_table = 'account'
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s/%s' % (self.username, self.machine_category.name)
 
     def get_absolute_url(self):

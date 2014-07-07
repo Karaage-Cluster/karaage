@@ -24,6 +24,7 @@ from django.db.models.related import RelatedObject
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.conf import settings
+from django.utils.encoding import python_2_unicode_compatible
 
 import datetime
 
@@ -62,6 +63,7 @@ class ApplicationManager(models.Manager):
         return self.get_queryset().filter(query)
 
 
+@python_2_unicode_compatible
 class Application(models.Model):
     """ Generic application for anything. """
     WAITING_FOR_ADMIN = 'K'
@@ -95,11 +97,11 @@ class Application(models.Model):
 
     _tracker = FieldTracker()
 
-    def __unicode__(self):
+    def __str__(self):
         return "Application #%s" % self.id
 
     def info(self):
-        return unicode(self)
+        return six.text_type(self)
 
     def get_type(self):
         return self._class
@@ -361,6 +363,7 @@ class SoftwareApplication(Application):
         return created_person
 
 
+@python_2_unicode_compatible
 class Applicant(models.Model):
     """ A person who has completed an application however is not yet officially
     registered on the system yet. """
@@ -394,7 +397,7 @@ class Applicant(models.Model):
         max_length=200, null=True, blank=True, editable=False, unique=True)
     applications = generic.GenericRelation(Application)
 
-    def __unicode__(self):
+    def __str__(self):
         full_name = self.get_full_name()
         if full_name:
             return full_name

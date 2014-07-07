@@ -16,6 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 
 from model_utils import FieldTracker
 
@@ -25,6 +26,7 @@ from karaage.machines.models import Account, MachineCategory
 from karaage.institutes.managers import ActiveInstituteManager
 
 
+@python_2_unicode_compatible
 class Institute(models.Model):
     name = models.CharField(max_length=255, unique=True)
     delegates = models.ManyToManyField(
@@ -93,7 +95,7 @@ class Institute(models.Model):
         machine_category_delete_institute(self)
     delete.alters_data = True
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     @models.permalink
@@ -131,6 +133,7 @@ class Institute(models.Model):
             yield iq.machine_category
 
 
+@python_2_unicode_compatible
 class InstituteQuota(models.Model):
     institute = models.ForeignKey(Institute)
     machine_category = models.ForeignKey(MachineCategory)
@@ -182,7 +185,7 @@ class InstituteQuota(models.Model):
         machine_category_delete_institute(
             self.institute, self.machine_category)
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s - %s' % (self.institute, self.machine_category)
 
     def get_absolute_url(self):

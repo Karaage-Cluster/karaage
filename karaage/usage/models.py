@@ -19,6 +19,7 @@ import datetime
 import decimal
 
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 
 from karaage.machines.models import Account, Machine, MachineCategory
 from karaage.projects.models import Project
@@ -28,6 +29,7 @@ from karaage.people.models import Person
 from karaage.institutes.models import Institute
 
 
+@python_2_unicode_compatible
 class Queue(models.Model):
     name = models.CharField(max_length=50, primary_key=True)
     description = models.CharField(max_length=200, blank=True, null=True)
@@ -35,10 +37,11 @@ class Queue(models.Model):
     class Meta:
         db_table = 'queue'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
+@python_2_unicode_compatible
 class CPUJob(models.Model):
     account = models.ForeignKey(Account, blank=True, null=True)
     username = models.CharField(max_length=50, blank=True, null=True)
@@ -69,7 +72,7 @@ class CPUJob(models.Model):
         ordering = ['-date']
         db_table = 'cpu_job'
 
-    def __unicode__(self):
+    def __str__(self):
         if self.jobid:
             return self.jobid
         return ('%s - %s - %s - %s'

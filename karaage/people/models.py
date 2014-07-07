@@ -22,6 +22,7 @@ import warnings
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.core.urlresolvers import reverse
+from django.utils.encoding import python_2_unicode_compatible
 from jsonfield import JSONField
 
 from model_utils import FieldTracker
@@ -41,6 +42,7 @@ from karaage.common import log, is_admin
 # A locked person is a person who has not been deleted but is not allowed
 # access for some reason.
 
+@python_2_unicode_compatible
 class Person(AbstractBaseUser):
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(null=True, db_index=True)
@@ -100,7 +102,7 @@ class Person(AbstractBaseUser):
         ordering = ['full_name', 'short_name']
         db_table = 'person'
 
-    def __unicode__(self):
+    def __str__(self):
         name = self.get_full_name()
         if not name:
             name = "No Name"
@@ -402,6 +404,7 @@ class Person(AbstractBaseUser):
         return Institute.objects.filter(group__members=self)
 
 
+@python_2_unicode_compatible
 class Group(models.Model):
     """Groups represent collections of people, these objects can be
     expressed externally in a datastore."""
@@ -420,7 +423,7 @@ class Group(models.Model):
     class Meta:
         ordering = ['name']
 
-    def __unicode__(self):
+    def __str__(self):
         return six.u("%s") % self.name
 
     def get_absolute_url(self):

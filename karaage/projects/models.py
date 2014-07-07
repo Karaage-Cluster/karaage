@@ -16,6 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 
 import datetime
 
@@ -29,6 +30,7 @@ from karaage.projects.managers import DeletedProjectManager
 from karaage.common import log, is_admin
 
 
+@python_2_unicode_compatible
 class Project(models.Model):
     pid = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=200)
@@ -60,7 +62,7 @@ class Project(models.Model):
         ordering = ['pid']
         db_table = 'project'
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s - %s' % (self.pid, self.name)
 
     @models.permalink
