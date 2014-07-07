@@ -53,10 +53,10 @@ class Command(BaseCommand):
             elif confirm == 'no':
                 return sys.exit(0)
             else:
-                print "Please enter yes or no"
+                print("Please enter yes or no")
 
         project.pid = new
         project.save()
-        print "Changed pid on project"
+        print("Changed pid on project")
 
-        print "Done"
+        print("Done")

@@ -47,6 +47,6 @@ class Command(BaseCommand):
                         message, fail_silently=False)
                     log.change(p, 'Account auto expired')
                     if verbose >= 1:
-                        print "Locked account for %s - %s" % (p.username, p)
+                        print("Locked account for %s - %s" % (p.username, p))
             except:
-                print "Failed to lock %s" % p
+                print("Failed to lock %s" % p)

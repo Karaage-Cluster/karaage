@@ -38,6 +38,6 @@ class Command(BaseCommand):
             try:
                 person.lock()
                 if verbose > 1:
-                    print "Locked %s" % person.username
+                    print("Locked %s" % person.username)
             except:
-                print "Failed to lock %s" % person
+                print("Failed to lock %s" % person)

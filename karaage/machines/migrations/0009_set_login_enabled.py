@@ -22,7 +22,7 @@ class Migration(DataMigration):
                 except datastore._account.DoesNotExist:
                     # If we cannot find LDAP entry, assume this is because account
                     # has no access.
-                    print "+++", ua.username
+                    print("+++", ua.username)
                     ua.login_enabled = False
 
             else:

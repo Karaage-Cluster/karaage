@@ -45,9 +45,9 @@ class Command(BaseCommand):
 
         try:
             validate_username_for_rename_person(new, person)
-        except UsernameInvalid, e:
+        except UsernameInvalid as e:
             raise CommandError(e.args[0])
-        except UsernameTaken, e:
+        except UsernameTaken as e:
             raise CommandError(e.args[0])
 
         while 1:
@@ -59,15 +59,15 @@ class Command(BaseCommand):
             elif confirm == 'no':
                 return sys.exit(0)
             else:
-                print "Please enter yes or no"
+                print("Please enter yes or no")
 
         for account in person.account_set.filter(date_deleted__isnull=True):
             account.username = new
             account.save()
-            print "Changed username on %s account" % account.machine_category
+            print("Changed username on %s account" % account.machine_category)
 
         person.username = new
         person.save()
-        print "Changed username on person"
+        print("Changed username on person")
 
-        print "Done"
+        print("Done")

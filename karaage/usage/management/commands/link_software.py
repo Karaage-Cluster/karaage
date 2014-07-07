@@ -89,15 +89,15 @@ class Command(BaseCommand):
                     software, created = Software.objects.get_or_create(
                         name=package_name)
                     if created and verbose > 0:
-                        print "Created new Software software %s" % software
+                        print("Created new Software software %s" % software)
                     sv, created = SoftwareVersion.objects.get_or_create(
                         software=software, version=version_name)
                     if created and verbose > 0:
-                        print "Created new Software version %s" % sv
+                        print("Created new Software version %s" % sv)
                     sv.module = module
                     sv.save()
                 if verbose > 1:
-                    print "Adding %s to %s" % (sv, job.jobid)
+                    print("Adding %s to %s" % (sv, job.jobid))
                 job.software.add(sv)
                 sv.machines.add(job.machine)
                 if not sv.last_used or job.date > sv.last_used:

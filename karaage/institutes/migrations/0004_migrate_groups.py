@@ -18,10 +18,10 @@ class Migration(DataMigration):
                 lgroup = datastore._groups().get(gidNumber=institute.gid)
             except datastore._group.DoesNotExist:
                 try:
-                    print "+++ get by name", institute.name, institute.gid
+                    print("+++ get by name", institute.name, institute.gid)
                     lgroup = datastore._groups().get(cn=name)
                 except datastore._group.DoesNotExist:
-                    print "+++ create", institute.name, institute.gid
+                    print("+++ create", institute.name, institute.gid)
                     lgroup = datastore._groups().create(gidNumber=institute.gid, cn=name)
 
             if not db.dry_run:

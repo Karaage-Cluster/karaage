@@ -21,7 +21,7 @@ class Migration(DataMigration):
                     account.shell = "/bin/bash"
                 account.save()
             except datastore._account.DoesNotExist:
-                print "+++", account.username
+                print("+++", account.username)
                 pass
 
     def backwards(self, orm):

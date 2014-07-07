@@ -102,10 +102,10 @@ class Command(BaseCommand):
                 try:
                     validate_username_for_new_person(username)
                     break
-                except UsernameException, e:
+                except UsernameException as e:
                     sys.stderr.write("%s\n" % e)
                     username = None
-                    print
+                    print('')
                     continue
 
             # Get an email
@@ -117,7 +117,7 @@ class Command(BaseCommand):
                 except exceptions.ValidationError:
                     sys.stderr.write(
                         "Error: That e-mail address is invalid.\n")
-                    print
+                    print('')
                     email = None
                 else:
                     break
@@ -131,13 +131,13 @@ class Command(BaseCommand):
                         sys.stderr.write(
                             "Error: Your passwords didn't match.\n")
                         password = None
-                        print
+                        print('')
                         continue
                 if password.strip() == '':
                     sys.stderr.write(
                         "Error: Blank passwords aren't allowed.\n")
                     password = None
-                    print
+                    print('')
                     continue
                 break
 
@@ -156,17 +156,19 @@ class Command(BaseCommand):
             while 1:
                 if not institute_name:
                     if Institute.objects.count() > 0:
-                        print "Choose an existing institute for new superuser."
-                        print "Alternatively enter a new name to create one."
-                        print
-                        print "Valid choices are:"
-                        print
+                        print(
+                            "Choose an existing institute "
+                            "for new superuser.")
+                        print("Alternatively enter a new name to create one.")
+                        print("")
+                        print("Valid choices are:")
+                        print("")
                         for i in Institute.active.all():
-                            print "* %s" % i
+                            print("* %s" % i)
                         print
                     else:
-                        print "No Institutes in system, will create one now."
-                        print
+                        print("No Institutes in system, will create one now.")
+                        print('')
 
                     institute_name = raw_input('Institute Name: ')
 
@@ -174,26 +176,26 @@ class Command(BaseCommand):
                     sys.stderr.write(
                         "%s\n" % settings.GROUP_VALIDATION_ERROR_MSG)
                     institute_name = None
-                    print
+                    print('')
                     continue
                 else:
                     break
 
             try:
                 institute = Institute.objects.get(name=institute_name)
-                print "Using existing institute %s." % institute
+                print("Using existing institute %s." % institute)
 
             except Institute.DoesNotExist:
                 group, c = Group.objects.get_or_create(name=institute_name)
                 if c:
-                    print "Created new group %s." % group
+                    print("Created new group %s." % group)
                 else:
-                    print "Using existing group %s." % group
+                    print("Using existing group %s." % group)
 
                 institute = Institute.objects.create(
                     name=institute_name, group=group, is_active=True)
 
-                print "Created new institute %s." % institute
+                print("Created new institute %s." % institute)
 
         except KeyboardInterrupt:
             sys.stderr.write("\nOperation cancelled.\n")
@@ -208,4 +210,4 @@ class Command(BaseCommand):
             'institute': institute,
         }
         Person.objects.create_superuser(**data)
-        print "Karaage Superuser created successfully."
+        print("Karaage Superuser created successfully.")

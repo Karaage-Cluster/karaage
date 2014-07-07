@@ -43,7 +43,7 @@ class Command(BaseCommand):
         with tldap.transaction.commit_on_success(using=using):
 
             if verbose > 0:
-                print "Processing %s" % using
+                print("Processing %s" % using)
 
             user_dn = connection.settings_dict['LDAP_ACCOUNT_BASE']
             group_dn = connection.settings_dict['LDAP_GROUP_BASE']
@@ -56,14 +56,14 @@ class Command(BaseCommand):
             v, c = query.get_or_create(dn=user_dn)
             if verbose > 0:
                 if c:
-                    print "Added " + user_dn
+                    print("Added " + user_dn)
                 else:
-                    print user_dn + " already exists."
+                    print(user_dn + " already exists.")
 
             query = ou.objects.using(using).base_dn(group_base_dn)
             v, c = query.get_or_create(dn=group_dn)
             if verbose > 0:
                 if c:
-                    print "Added " + group_dn
+                    print("Added " + group_dn)
                 else:
-                    print group_dn + " already exists."
+                    print(group_dn + " already exists.")

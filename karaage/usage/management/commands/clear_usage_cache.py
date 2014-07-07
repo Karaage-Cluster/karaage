@@ -29,17 +29,17 @@ class Command(BaseCommand):
         verbose = int(options.get('verbosity'))
         import karaage.usage.models as models
         if verbose > 1:
-            print "Clearing project cache"
+            print("Clearing project cache")
         models.ProjectCache.objects.all().delete()
         if verbose > 1:
-            print "Clearing institute cache"
+            print("Clearing institute cache")
         models.InstituteCache.objects.all().delete()
         if verbose > 1:
-            print "Clearing user cache"
+            print("Clearing user cache")
         models.PersonCache.objects.all().delete()
         if verbose > 1:
-            print "Clearing machine cache"
+            print("Clearing machine cache")
         models.MachineCache.objects.all().delete()
         if verbose > 1:
-            print "Clearing machine category cache"
+            print("Clearing machine category cache")
         models.MachineCategoryCache.objects.all().delete()

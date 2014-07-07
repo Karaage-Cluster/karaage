@@ -30,12 +30,12 @@ class Command(BaseCommand):
         verbose = int(options.get('verbosity'))
 
         if verbose > 1:
-            print "Cleaning all graphs"
+            print("Cleaning all graphs")
 
         for dirpath, dirnames, filenames in os.walk(GRAPH_BASE_DIR):
             for name in dirnames:
                 path = os.path.join(dirpath, name)
                 if verbose > 1:
-                    print "Cleaning %s" % path
+                    print("Cleaning %s" % path)
                 shutil.rmtree(path)
             break

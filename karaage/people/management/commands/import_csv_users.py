@@ -68,7 +68,7 @@ username,password,short_name,full_name,email,institute,project"""
             fail = False
 
             if verbosity >= 1:
-                print "Attempting to import user '%s'" % user['username']
+                print("Attempting to import user '%s'" % user['username'])
 
             if 'username' not in user:
                 sys.stderr.write("Error: Failed to find username column.\n")
@@ -145,15 +145,15 @@ username,password,short_name,full_name,email,institute,project"""
 
             user['password1'] = user['password']
             person = Person.objects.create_user(**user)
-            print "Successfully added user '%s'" % person
+            print("Successfully added user '%s'" % person)
             if project:
                 add_user_to_project(person, project)
 
             success += 1
 
-        print ''
-        print 'Added:   %s' % success
-        print 'Skipped: %s' % skip
-        print 'Failed:  %s' % fail_count
+        print('')
+        print('Added:   %s' % success)
+        print('Skipped: %s' % skip)
+        print('Failed:  %s' % fail_count)
 
         sys.exit(0)
