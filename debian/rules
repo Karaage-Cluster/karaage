@@ -1,8 +1,10 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
+export PYBUILD_NAME=karaage
+
 %:
-	dh $@ --with python2,sphinxdoc
+	dh $@ --with python2,python3,sphinxdoc --buildsystem=pybuild
 
 .PHONY: override_dh_auto_build
 override_dh_auto_build:
@@ -15,6 +17,8 @@ override_dh_auto_build:
 .PHONY: override_dh_clean
 override_dh_clean:
 	dh_clean
-	rm -rf docs/admin/.build docs/admin/_build
-	rm -rf docs/user/.build docs/user/_build
-	rm -rf docs/programmer/.build docs/programmer/_build
+	rm -rf tmp
+
+.PHONY: override_dh_auto_test
+override_dh_auto_test:
+	./run_tests.sh

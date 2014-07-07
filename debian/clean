@@ -1,1 +1,8 @@
 *.egg-info/*
+docs/admin/.build
+docs/admin/_build
+docs/user/.build
+docs/user/_build
+docs/programmer/.build
+docs/programmer/_build
+
