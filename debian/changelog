@@ -1,3 +1,28 @@
+karaage3 (3.1.0-1) unstable; urgency=low
+
+  [ Brian May ]
+  * Update software usage statistics.
+  * Per institute software usage statistics.
+  * Verbose logging when creating application accounts
+  * Change link expiry text in emails.
+
+  [ Andrew Spiers ]
+  * Fix typo in kg-daily-cleanup.rst
+
+  [ Brian May ]
+  * userPassword should be text, not binary.
+  * Fix strings for Python 3.2.
+  * Make all strings in migrations "normal" strings.
+  * Fix migrate_ldap operation.
+  * Fix PEP8 issues.
+  * Fix Python 3 compatability issues.
+  * Fix __unicode__ methods for Python 3.
+  * Python 3 tests.
+  * Python3 tracing change.
+  * Disable usage / south stuff if not available.
+
+ -- Brian May <bam@debian.org>  Mon, 07 Jul 2014 15:04:55 +1000
+
 karaage3 (3.0.15-1) unstable; urgency=low
 
   * Fix account detail page for admin.

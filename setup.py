@@ -84,7 +84,7 @@ setup(
         'sbin/kg-daily-cleanup',
     ],
     data_files=[
-        ('/etc/karaage', ['conf/global_settings.py', ]),
+        ('/etc/karaage3', ['conf/global_settings.py', ]),
     ],
     install_requires=[
         "Django >= 1.6",

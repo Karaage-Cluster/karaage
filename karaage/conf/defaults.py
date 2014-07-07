@@ -115,7 +115,7 @@ except ImportError:
 
 # Allow administrator to override templates.
 TEMPLATE_DIRS = (
-    "/etc/karaage/templates",
+    "/etc/karaage3/templates",
 )
 
 # A tuple of callables that are used to populate the context in
@@ -199,7 +199,7 @@ LOGIN_URL = 'kg_profile_login'
 
 # The absolute path to the directory where collectstatic will collect static
 # files for deployment.
-STATIC_ROOT = '/var/lib/karaage/static'
+STATIC_ROOT = '/var/lib/karaage3/static'
 
 
 # URL to use when referring to static files located in STATIC_ROOT.
@@ -284,10 +284,10 @@ except ImportError:
 GRAPH_DEBUG = False
 
 # Where should graphs be saved?
-GRAPH_ROOT = '/var/cache/karaage/graphs'
+GRAPH_ROOT = '/var/cache/karaage3/graphs'
 
 # Temporary directory for matplotlib.
-GRAPH_TMP = '/var/cache/karaage/matplotlib'
+GRAPH_TMP = '/var/cache/karaage3/matplotlib'
 
 # URL where graphs can be found.
 GRAPH_URL = '/karaage_graphs/'
