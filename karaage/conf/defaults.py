@@ -70,19 +70,19 @@ INSTALLED_APPS = (
     'karaage.machines',
     'karaage.institutes',
     'karaage.projects',
-    'karaage.usage',
+    # 'karaage.usage',
     'karaage.legacy.cache',
     'karaage.software',
     'karaage.legacy.pbsmoab',
     'karaage.emails',
     'karaage.applications',
     'django_xmlrpc',
-    'south',
+    # 'south',
     'captcha',
     'ajax_select',
     'jsonfield',
     'django_tables2',
-    'djcelery',
+    # 'djcelery',
     'tldap.methods',
     'pipeline',
     'django.contrib.contenttypes',
@@ -92,6 +92,23 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 )
+
+# South not yet available for Python 3
+try:
+    import importlib
+    importlib.import_module('south')
+    INSTALLED_APPS += ('south',)
+except ImportError:
+    pass
+
+# djcelery not yet available for Python 3
+try:
+    import importlib
+    importlib.import_module('djcelery')
+    INSTALLED_APPS += ('karaage.usage', 'djcelery',)
+except ImportError:
+    pass
+
 
 # List of locations of the template source files searched by
 # django.template.loaders.filesystem.Loader, in search order.
@@ -238,7 +255,7 @@ AJAX_SELECT_BOOTSTRAP = True
 
 # List of all XMLRPC methods that we support.
 XMLRPC_METHODS = (
-    ('karaage.usage.xmlrpc.parse_usage', 'parse_usage',),
+    # ('karaage.usage.xmlrpc.parse_usage', 'parse_usage',),
     ('karaage.machines.xmlrpc.get_disk_quota', 'get_disk_quota',),
     ('karaage.projects.xmlrpc.get_project', 'get_project',),
     ('karaage.projects.xmlrpc.get_project_members', 'get_project_members',),
@@ -247,6 +264,16 @@ XMLRPC_METHODS = (
     ('karaage.projects.xmlrpc.project_under_quota', 'project_under_quota',),
     ('karaage.projects.xmlrpc.showquota', 'showquota',),
 )
+
+# djcelery not yet available for Python 3
+try:
+    import importlib
+    importlib.import_module('djcelery')
+    XMLRPC_METHODS += (
+        ('karaage.usage.xmlrpc.parse_usage', 'parse_usage',),
+    )
+except ImportError:
+    pass
 
 ###
 ### KARAAGE SETTINGS
