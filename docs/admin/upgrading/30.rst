@@ -134,7 +134,7 @@ Install on test server
 
         DATABASES = {
             'default': {
-                'ENGINE': 'django.db.backends.mysql',
+                'ENGINE': 'mysql.connector.django',
                 'NAME': 'karaage3',
                 'USER': 'karaage3',
                 'PASSWORD': 'YYYYYYYY',
@@ -289,7 +289,7 @@ Install on production server
 
         apt-get install karaage3-admin
         apt-get install karaage3-registration
-        apt-get install python-mysqldb
+        apt-get install python-mysql.connector
         apt-get install libapache2-mod-wsgi
 
     If prompted to replace config files, say No, unless you know what you are

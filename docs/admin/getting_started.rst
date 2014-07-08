@@ -109,7 +109,7 @@ Initial setup
 
         apt-get install karaage3-admin
         apt-get install karaage3-registration
-        apt-get install python-mysqldb
+        apt-get install python-mysql.connector
         apt-get install libapache2-mod-wsgi
 
     If you have disabled installing recommended packages by default, you will
@@ -161,7 +161,7 @@ Initial setup
 
          DATABASES = {
               'default': {
-                    'ENGINE': 'django.db.backends.mysql',
+                    'ENGINE': 'mysql.connector.django',
                     'NAME': 'karaage',
                     'USER': 'karaage',
                     'PASSWORD': 'YYYYYYYY',
