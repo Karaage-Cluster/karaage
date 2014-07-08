@@ -391,3 +391,9 @@ ADMIN_IGNORED = False
 # templates.
 SHORT_DATE_FORMAT = "Y-m-d"
 SHORT_DATETIME_FORMAT = "Y-m-d H:i"
+
+# Work around for south not working with mysql-connector-python
+# https://groups.google.com/forum/m/#!topic/south-users/hrxwgimaYy8
+SOUTH_DATABASE_ADAPTERS = {
+    'default': 'south.db.mysql'
+}
