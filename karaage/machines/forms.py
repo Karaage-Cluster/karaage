@@ -41,6 +41,7 @@ class MachineForm(forms.ModelForm):
 class MachineCategoryForm(forms.ModelForm):
     class Meta:
         model = MachineCategory
+        fields = ['name', 'datastore']
 
 
 class AdminAccountForm(forms.ModelForm):

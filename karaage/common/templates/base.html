@@ -3,6 +3,7 @@
 <head>
 <title>{% block title %}{% endblock %}&nbsp;|&nbsp;{% block site_name_title %}{% endblock %}</title>
 {% load compressed %}
+{% load firstof from future %}
 {% compressed_css 'karaage' %}
 {% compressed_js 'karaage' %}
 <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% endblock %}" />
@@ -27,7 +28,7 @@
         <div id="user-tools">
             {% trans 'Welcome,' %}
             {% if user.is_active %}
-            <strong>{% filter force_escape %}{% firstof user.get_short_name user.username %}{% endfilter %}</strong>.
+            <strong>{% firstof user.get_short_name user.username %}</strong>.
             {% else %}
             <strong>{% trans 'Guest' %}</strong>
             {% endif %}

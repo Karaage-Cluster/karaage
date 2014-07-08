@@ -112,9 +112,11 @@ class LicenseForm(forms.ModelForm):
 
     class Meta:
         model = SoftwareLicense
+        fields = ['software', 'version', 'date', 'text']
 
 
 class SoftwareVersionForm(forms.ModelForm):
 
     class Meta:
         model = SoftwareVersion
+        fields = ['software', 'version', 'machines', 'module', 'last_used']

@@ -99,6 +99,12 @@ class ApplicantForm(forms.ModelForm):
 
     class Meta:
         model = Applicant
+        fields = [
+            'email', 'username', 'title',
+            'short_name', 'full_name', 'institute', 'department',
+            'position', 'telephone', 'mobile', 'supervisor',
+            'address', 'city', 'postcode', 'country', 'fax',
+        ]
 
     def __init__(self, *args, **kwargs):
         super(ApplicantForm, self).__init__(*args, **kwargs)

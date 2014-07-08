@@ -38,6 +38,6 @@ class MachineManager(BaseUserManager):
 
 
 class ActiveMachineManager(MachineManager):
-    def get_query_set(self):
+    def get_queryset(self):
         return super(ActiveMachineManager, self) \
-            .get_query_set().filter(end_date__isnull=True)
+            .get_queryset().filter(end_date__isnull=True)

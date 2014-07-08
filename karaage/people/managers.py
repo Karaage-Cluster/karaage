@@ -24,8 +24,8 @@ class PersonManager(BaseUserManager):
     def authenticate(self, username, password):
         return authenticate(username=username, password=password)
 
-    def get_query_set(self):
-        return super(PersonManager, self).get_query_set().select_related()
+    def get_queryset(self):
+        return super(PersonManager, self).get_queryset().select_related()
 
     def _create_user(
             self, username, email, short_name, full_name,
@@ -67,26 +67,26 @@ class PersonManager(BaseUserManager):
 
 class ActivePersonManager(PersonManager):
 
-    def get_query_set(self):
+    def get_queryset(self):
         return super(ActivePersonManager, self) \
-            .get_query_set() \
+            .get_queryset() \
             .select_related() \
             .filter(is_active=True, is_systemuser=False)
 
 
 class DeletedPersonManager(PersonManager):
 
-    def get_query_set(self):
+    def get_queryset(self):
         return super(DeletedPersonManager, self) \
-            .get_query_set() \
+            .get_queryset() \
             .filter(is_active=False)
 
 
 class LeaderManager(PersonManager):
 
-    def get_query_set(self):
+    def get_queryset(self):
         leader_ids = []
-        query = super(LeaderManager, self).get_query_set()
+        query = super(LeaderManager, self).get_queryset()
         query = query.filter(is_active=True)
         for l in query:
             if l.is_leader():
