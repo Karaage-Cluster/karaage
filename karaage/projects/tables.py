@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
+
 import django_tables2 as tables
 from django_tables2.utils import A
 from django_tables2.columns.linkcolumn import BaseLinkColumn
@@ -56,7 +58,7 @@ class ProjectColumn(BaseLinkColumn):
     def render(self, value):
         if value is not None:
             url = reverse('kg_project_detail', args=[value.pid])
-            link = self.render_link(url, text=unicode(value.pid))
+            link = self.render_link(url, text=six.text_type(value.pid))
             return link
         else:
             return "—"

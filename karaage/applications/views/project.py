@@ -372,13 +372,14 @@ class StateStepProject(base.State):
         if 'leader' in request.POST:
             leader = Person.objects.get(pk=request.POST['leader'])
             project_list = leader.leads.filter(is_active=True)
-            resp['project_list'] = [(p.pk, unicode(p)) for p in project_list]
+            resp['project_list'] = \
+                [(p.pk, six.text_type(p)) for p in project_list]
 
         elif 'terms' in request.POST:
             terms = request.POST['terms'].lower()
             try:
                 project = Project.active.get(pid__icontains=terms)
-                resp['project_list'] = [(project.pk, unicode(project))]
+                resp['project_list'] = [(project.pk, six.text_type(project))]
             except Project.DoesNotExist:
                 resp['project_list'] = []
             except Project.MultipleObjectsReturned:
@@ -795,7 +796,7 @@ def _send_invitation(request, project):
             email = form.cleaned_data['email']
             applicant, existing_person = get_applicant_from_email(email)
 
-            if existing_person and not 'existing' in request.POST:
+            if existing_person and 'existing' not in request.POST:
                 return render_to_response(
                     'applications/project_common_invite_existing.html',
                     {'form': form, 'person': applicant},

@@ -488,7 +488,7 @@ def search(request):
 
             project_query = Project.objects.all()
             institute_query = Institute.objects.all()
-            #person_list = Person.objects.all()
+            # person_list = Person.objects.all()
 
             terms = data['terms'].lower()
 

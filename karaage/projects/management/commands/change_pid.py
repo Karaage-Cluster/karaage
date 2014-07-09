@@ -23,6 +23,11 @@ import sys
 import django.db.transaction
 import tldap.transaction
 
+try:
+    input = raw_input
+except NameError:
+    pass
+
 
 class Command(BaseCommand):
     help = 'Change a pid for a project and all accounts for that project'
@@ -46,7 +51,7 @@ class Command(BaseCommand):
             raise CommandError(settings.PROJECT_VALIDATION_ERROR_MSG)
 
         while True:
-            confirm = raw_input(
+            confirm = input(
                 'Change project "%s" to "%s (yes,no): ' % (old, new))
             if confirm == 'yes':
                 break

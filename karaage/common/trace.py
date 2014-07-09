@@ -616,7 +616,7 @@ def trace(_name):
             logger = getLoggerFactory().getLogger(__fqfn)
         elif loggable(_name):
             logger = _name
-        elif isinstance(_name, basestring):
+        elif isinstance(_name, six.string_types):
             logger = getLoggerFactory().getLogger(_name)
         else:
             raise ValueError(
@@ -845,11 +845,11 @@ if __name__ == '__main__':
     test(5, 5, False)
     test(5, 5, False, name=10)
 
-    test(*xrange(50))
+    test(*range(50))
 
     assert test.__doc__ == 'Simple test\n        '
     assert test.__name__ == 'test'
 
     myzip = trace('main')(zip)
-    for i, j in myzip(xrange(5), xrange(5, 10)):
+    for i, j in myzip(range(5), range(5, 10)):
         print(i, j)

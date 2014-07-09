@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
 import django_tables2 as tables
 
 from django.core.urlresolvers import reverse
@@ -73,7 +74,7 @@ def _add_edit_group(request, form_class, group_name):
                 messages.success(
                     request, "Group '%s' was edited succesfully" % group)
             else:
-                #Add
+                # add
                 group = form.save()
                 messages.success(
                     request, "Group '%s' was created succesfully" % group)
@@ -154,7 +155,7 @@ def group_logs(request, group_name):
     breadcrumbs.append(
         ("Groups", reverse("kg_group_list")))
     breadcrumbs.append(
-        (unicode(obj), reverse("kg_group_detail", args=[obj.name])))
+        (six.text_type(obj), reverse("kg_group_detail", args=[obj.name])))
     return util.log_list(request, breadcrumbs, obj)
 
 
@@ -165,7 +166,7 @@ def add_comment(request, group_name):
     breadcrumbs.append(
         ("Groups", reverse("kg_group_list")))
     breadcrumbs.append(
-        (unicode(obj), reverse("kg_group_detail", args=[obj.name])))
+        (six.text_type(obj), reverse("kg_group_detail", args=[obj.name])))
     return util.add_comment(request, breadcrumbs, obj)
 
 

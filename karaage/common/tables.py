@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
+
 import django_tables2 as tables
 from django_tables2.utils import A
 from django_tables2.columns.linkcolumn import BaseLinkColumn
@@ -39,7 +41,7 @@ class ObjectColumn(BaseLinkColumn):
             return "none: %s" % record.object_repr
 
         url = obj.get_absolute_url()
-        link = self.render_link(url, text=unicode(obj))
+        link = self.render_link(url, text=six.text_type(obj))
         return link
 
 

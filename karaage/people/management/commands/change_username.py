@@ -23,6 +23,11 @@ import sys
 import django.db.transaction
 import tldap.transaction
 
+try:
+    input = raw_input
+except NameError:
+    pass
+
 
 class Command(BaseCommand):
     help = 'Change a username for a person and all accounts for that person'
@@ -51,7 +56,7 @@ class Command(BaseCommand):
             raise CommandError(e.args[0])
 
         while 1:
-            confirm = raw_input(
+            confirm = input(
                 'Change person "%s" and accounts to "%s (yes,no): '
                 % (old, new))
             if confirm == 'yes':

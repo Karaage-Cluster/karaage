@@ -35,8 +35,8 @@ class InstituteForm(forms.ModelForm):
             self.fields['group_name'] = forms.RegexField(
                 "^%s$" % settings.GROUP_VALIDATION_RE,
                 required=True,
-                error_messages=
-                {'invalid': settings.GROUP_VALIDATION_ERROR_MSG})
+                error_messages={
+                    'invalid': settings.GROUP_VALIDATION_ERROR_MSG})
             index = self.fields.keyOrder.index("name")
             self.fields.keyOrder.remove("group_name")
             self.fields.keyOrder.insert(index + 1, "group_name")

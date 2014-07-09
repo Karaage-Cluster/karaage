@@ -64,10 +64,10 @@ class SoftwareTestCase(UnitTestCase):
         # software a group if none is given. This will be fixed in
         # https://code.vpac.org/gerrit/#/c/852/
         #
-        #self.resetDatastore()
-        #software.group = None
-        #software.save()
-        #self.assertEqual(
+        # self.resetDatastore()
+        # software.group = None
+        # software.save()
+        # self.assertEqual(
         #    self.datastore.method_calls,
         #    [mock.call.save_software(software),
         #     # old accounts are removed

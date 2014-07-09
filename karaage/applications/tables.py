@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
+
 import django_tables2 as tables
 from django_tables2.utils import A
 from django_tables2.columns.linkcolumn import BaseLinkColumn
@@ -32,7 +34,7 @@ class ApplicantColumn(BaseLinkColumn):
     def render(self, value):
         if isinstance(value, Person):
             url = reverse("kg_person_detail", args=[value.username])
-            link = self.render_link(url, text=unicode(value))
+            link = self.render_link(url, text=six.text_type(value))
             return mark_safe(link)
         else:
             return value.email

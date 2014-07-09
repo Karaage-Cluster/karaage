@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
 import django_tables2 as tables
 
 from django.forms.util import ErrorList
@@ -319,7 +320,7 @@ def project_logs(request, project_id):
     breadcrumbs.append(
         ("Projects", reverse("kg_project_list")))
     breadcrumbs.append(
-        (unicode(obj.pid), reverse("kg_project_detail", args=[obj.pid])))
+        (six.text_type(obj.pid), reverse("kg_project_detail", args=[obj.pid])))
     return util.log_list(request, breadcrumbs, obj)
 
 
@@ -330,7 +331,7 @@ def add_comment(request, project_id):
     breadcrumbs.append(
         ("Projects", reverse("kg_project_list")))
     breadcrumbs.append(
-        (unicode(obj.pid), reverse("kg_project_detail", args=[obj.pid])))
+        (six.text_type(obj.pid), reverse("kg_project_detail", args=[obj.pid])))
     return util.add_comment(request, breadcrumbs, obj)
 
 

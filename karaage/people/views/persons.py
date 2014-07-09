@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
 import datetime
 
 import django_tables2 as tables
@@ -306,7 +307,7 @@ def person_logs(request, username):
     breadcrumbs.append(
         ("People", reverse("kg_person_list")))
     breadcrumbs.append(
-        (unicode(obj), reverse("kg_person_detail", args=[obj.username])))
+        (six.text_type(obj), reverse("kg_person_detail", args=[obj.username])))
     return common.log_list(request, breadcrumbs, obj)
 
 
@@ -317,7 +318,7 @@ def add_comment(request, username):
     breadcrumbs.append(
         ("People", reverse("kg_person_list")))
     breadcrumbs.append(
-        (unicode(obj), reverse("kg_person_detail", args=[obj.username])))
+        (six.text_type(obj), reverse("kg_person_detail", args=[obj.username])))
     return common.add_comment(request, breadcrumbs, obj)
 
 
