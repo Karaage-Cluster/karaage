@@ -67,7 +67,7 @@ class CommentForm(forms.ModelForm):
     def save(self, request):
         log = super(CommentForm, self).save(commit=False)
         log.content_object = self.obj
-        log.object_repr = unicode(self.obj)
+        log.object_repr = six.text_type(self.obj)
         log.action_flag = COMMENT
         log.user = request.user
         log.save()

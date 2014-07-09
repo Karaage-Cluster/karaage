@@ -17,6 +17,8 @@
 
 """ This file shows the project application views using a state machine. """
 
+import six
+
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
@@ -372,13 +374,14 @@ class StateStepProject(base.State):
         if 'leader' in request.POST:
             leader = Person.objects.get(pk=request.POST['leader'])
             project_list = leader.leads.filter(is_active=True)
-            resp['project_list'] = [(p.pk, unicode(p)) for p in project_list]
+            resp['project_list'] = \
+                [(p.pk, six.text_type(p)) for p in project_list]
 
         elif 'terms' in request.POST:
             terms = request.POST['terms'].lower()
             try:
                 project = Project.active.get(pid__icontains=terms)
-                resp['project_list'] = [(project.pk, unicode(project))]
+                resp['project_list'] = [(project.pk, six.text_type(project))]
             except Project.DoesNotExist:
                 resp['project_list'] = []
             except Project.MultipleObjectsReturned:

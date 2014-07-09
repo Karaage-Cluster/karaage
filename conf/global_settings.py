@@ -9,9 +9,9 @@
 # Other Django settings are also possible, this list is not a comprehensive
 # list of all settings.
 
-###
-### Django settings
-###
+#
+# Django settings
+#
 
 # A boolean that turns on/off debug mode.
 #
@@ -132,27 +132,27 @@ LOGGING = {
             'formatter': 'verbose',
             'owner': ['www-data', 'www-data'],
         },
-        #'ldap_file': {
-        #    'level': 'DEBUG',
-        #    'class': 'karaage.common.logging.FileHandler',
-        #    'filename': '/var/log/karaage/ldap.log',
-        #    'formatter': 'verbose',
-        #    'owner': ['www-data', 'www-data'],
-        #},
-        #'gold_file': {
-        #    'level': 'DEBUG',
-        #    'class': 'karaage.common.logging.FileHandler',
-        #    'filename': '/var/log/karaage/gold.log',
-        #    'formatter': 'verbose',
-        #    'owner': ['www-data', 'www-data'],
-        #},
-        #'slurm_file': {
-        #    'level': 'DEBUG',
-        #    'class': 'karaage.common.logging.FileHandler',
-        #    'filename': '/var/log/karaage/slurm.log',
-        #    'formatter': 'verbose',
-        #    'owner': ['www-data', 'www-data'],
-        #},
+        # 'ldap_file': {
+        #     'level': 'DEBUG',
+        #     'class': 'karaage.common.logging.FileHandler',
+        #     'filename': '/var/log/karaage/ldap.log',
+        #     'formatter': 'verbose',
+        #     'owner': ['www-data', 'www-data'],
+        # },
+        # 'gold_file': {
+        #     'level': 'DEBUG',
+        #     'class': 'karaage.common.logging.FileHandler',
+        #     'filename': '/var/log/karaage/gold.log',
+        #     'formatter': 'verbose',
+        #     'owner': ['www-data', 'www-data'],
+        # },
+        # 'slurm_file': {
+        #     'level': 'DEBUG',
+        #     'class': 'karaage.common.logging.FileHandler',
+        #     'filename': '/var/log/karaage/slurm.log',
+        #     'formatter': 'verbose',
+        #     'owner': ['www-data', 'www-data'],
+        # },
     },
     'loggers': {
         '': {
@@ -170,28 +170,28 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
-        #'karaage.datastores.ldap': {
-        #    'handlers': ['ldap_file'],
-        #    'level': 'DEBUG',
-        #    'propagate': True,
-        #},
-        #'karaage.datastores.gold': {
-        #    'handlers': ['gold_file'],
-        #    'level': 'DEBUG',
-        #    'propagate': True,
-        #},
-        #'karaage.datastores.slurm': {
-        #    'handlers': ['slurm_file'],
-        #    'level': 'DEBUG',
-        #    'propagate': True,
-        #},
+        # 'karaage.datastores.ldap': {
+        #     'handlers': ['ldap_file'],
+        #     'level': 'DEBUG',
+        #     'propagate': True,
+        # },
+        # 'karaage.datastores.gold': {
+        #     'handlers': ['gold_file'],
+        #     'level': 'DEBUG',
+        #     'propagate': True,
+        # },
+        # 'karaage.datastores.slurm': {
+        #     'handlers': ['slurm_file'],
+        #     'level': 'DEBUG',
+        #     'propagate': True,
+        # },
     },
 }
 
 
-###
-### Karaage settings
-###
+#
+# Karaage settings
+#
 
 # Users are advised to contact this address if having problems.
 # This is also used as the from address in outgoing emails.

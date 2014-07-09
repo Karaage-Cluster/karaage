@@ -38,6 +38,11 @@ from karaage.people.utils import UsernameException
 import django.db.transaction
 import tldap.transaction
 
+try:
+    input = raw_input
+except NameError:
+    pass
+
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
@@ -96,7 +101,7 @@ class Command(BaseCommand):
                     if default_username:
                         input_msg += \
                             ' (Leave blank to use %r)' % default_username
-                    username = raw_input(input_msg + ': ')
+                    username = input(input_msg + ': ')
                     if default_username and username == '':
                         username = default_username
                 try:
@@ -111,7 +116,7 @@ class Command(BaseCommand):
             # Get an email
             while 1:
                 if not email:
-                    email = raw_input('E-mail address: ')
+                    email = input('E-mail address: ')
                 try:
                     validate_email(email)
                 except exceptions.ValidationError:
@@ -143,12 +148,12 @@ class Command(BaseCommand):
 
             while 1:
                 if not short_name:
-                    short_name = raw_input('Short Name: ')
+                    short_name = input('Short Name: ')
                 else:
                     break
             while 1:
                 if not full_name:
-                    full_name = raw_input('Full Name: ')
+                    full_name = input('Full Name: ')
                 else:
                     break
 
@@ -170,7 +175,7 @@ class Command(BaseCommand):
                         print("No Institutes in system, will create one now.")
                         print('')
 
-                    institute_name = raw_input('Institute Name: ')
+                    institute_name = input('Institute Name: ')
 
                 if not re.search(group_re, institute_name):
                     sys.stderr.write(

@@ -118,7 +118,7 @@ def edit_account(request, account_id):
 def add_project(request, username):
     person = get_object_or_404(Person, username=username)
 
-    #Add to project form
+    # Add to project form
     form = AddProjectForm(request.POST or None)
     if request.method == 'POST':
         # Post means adding this user to a project

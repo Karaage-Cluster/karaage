@@ -111,7 +111,7 @@ def search(request):
         group_list = GroupTable(group_list, prefix="group-")
         config.configure(group_list)
 
-         # projects
+        # projects
         query = Q()
         for term in term_list:
             q = Q(pid__icontains=term)
