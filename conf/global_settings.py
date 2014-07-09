@@ -9,9 +9,9 @@
 # Other Django settings are also possible, this list is not a comprehensive
 # list of all settings.
 
-###
-### Django settings
-###
+#
+# Django settings
+#
 
 # A boolean that turns on/off debug mode.
 #
@@ -189,9 +189,9 @@ LOGGING = {
 }
 
 
-###
-### Karaage settings
-###
+#
+# Karaage settings
+#
 
 # Users are advised to contact this address if having problems.
 # This is also used as the from address in outgoing emails.
