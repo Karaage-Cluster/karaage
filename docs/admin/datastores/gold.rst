@@ -6,7 +6,7 @@ Adding Gold
 
 First configure the LDAP datastore. See :doc:`openldap`.
 
-Edit DATASTORES in /etc/karaage/global_settings.py:
+Edit DATASTORES in /etc/karaage3/settings.py:
 
 .. code-block:: bash
 

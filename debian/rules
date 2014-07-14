@@ -35,7 +35,7 @@ override_dh_install:
 	dh_install
 	
 	mkdir -p $(PREFIXC)/etc/karaage3
-	set -e; for f in global_settings.py; do \
+	set -e; for f in settings.py; do \
 		mv $(PREFIX2)/etc/karaage3/$$f $(PREFIXC)/etc/karaage3; \
 		rm $(PREFIX3)/etc/karaage3/$$f; \
 	done

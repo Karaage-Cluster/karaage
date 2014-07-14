@@ -140,13 +140,13 @@ Initial setup
 
     #.  Test by loading both ``http://accounts.example.org/`` and ``https://accounts.example.org/`` in your browser.
 
-#.  Run kg_set_secret_key, this will automatically set SECRET_KEY inside /etc/karaage3/global_settings.py
+#.  Run kg_set_secret_key, this will automatically set SECRET_KEY inside /etc/karaage3/settings.py
 
     .. code-block:: bash
 
          kg_set_secret_key
 
-#.  Edit the DATABASES setting in /etc/karaage3/global_settings.py:
+#.  Edit the DATABASES setting in /etc/karaage3/settings.py:
 
     .. code-block:: python
 
@@ -162,10 +162,10 @@ Initial setup
               }
          }
 
-#.  Add ALLOWED_HOSTS = [ "hostname" ] to /etc/karaage3/global_settings.py.
+#.  Add ALLOWED_HOSTS = [ "hostname" ] to /etc/karaage3/settings.py.
     Replace hostname with the visible hostname of your server.
 
-#.  Update other settings in /etc/karaage3/global_settings.py as required.
+#.  Update other settings in /etc/karaage3/settings.py as required.
 
 #.  Create DB tables:
 

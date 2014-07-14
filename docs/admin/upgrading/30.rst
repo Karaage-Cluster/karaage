@@ -126,7 +126,7 @@ Install on test server
         service apache2 stop
         service karaage3-celery stop
 
-#.  Check the following settings are in /etc/karaage3/global_settings.py. The
+#.  Check the following settings are in /etc/karaage3/settings.py. The
     mysql server should refer to the *new* database you created above, the LDAP
     server should refer to your production server.
 
@@ -274,7 +274,7 @@ Install on production server
     only it will be slightly harder, as you have to undo the following steps.
 
 #.  Make a complete copy of /etc/karaage3 from test box to production box. Check
-    /etc/karaage3/global_settings.py and ensure database and LDAP references are
+    /etc/karaage3/settings.py and ensure database and LDAP references are
     still correct for the production box.
 
 #.  Install the latest packages on your production box:
@@ -292,7 +292,7 @@ Install on production server
 
 #.  (optional) If you require people to be recorded in LDAP:
 
-    #.  Add the following to ``/etc/karaage3/global_settings.py``:
+    #.  Add the following to ``/etc/karaage3/settings.py``:
 
         .. code-block:: python
 

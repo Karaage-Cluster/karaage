@@ -1,7 +1,7 @@
 kg_set_secret_key
 =================
 This command is use for reseting the secret key in
-``/etc/karaage/global_settings.py``.
+``/etc/karaage3/settings.py``.
 
 Description
 -----------

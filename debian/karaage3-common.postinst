@@ -10,9 +10,9 @@ if [ "$1" = "configure" ]; then
 
     if test -f /etc/karaage/global_settings.py && [ -n "$2" ]  && dpkg --compare-versions "$2" lt 3.1.0;
     then
-        if ! test -f /etc/karaage3/global_settings.py
+        if ! test -f /etc/karaage3/settings.py
         then
-            cp /etc/karaage/global_settings.py /etc/karaage3/global_settings.py
+            cp /etc/karaage/global_settings.py /etc/karaage3/settings.py
         fi
     fi
 

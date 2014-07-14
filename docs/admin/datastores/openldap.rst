@@ -205,7 +205,7 @@ Debian installation
 
 Configuring Karaage to use LDAP
 -------------------------------
-#.  Add the following to ``/etc/karaage/global_settings.py``:
+#.  Add the following to ``/etc/karaage3/settings.py``:
 
     .. code-block:: python
 
@@ -243,7 +243,7 @@ Configuring Karaage to use LDAP
         }
 
 #.  (optional) If you require people to be recorded in LDAP, add the following
-    to ``/etc/karaage/global_settings.py``:
+    to ``/etc/karaage3/settings.py``:
 
     .. code-block:: python
 
