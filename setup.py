@@ -84,7 +84,7 @@ setup(
         'sbin/kg-daily-cleanup',
     ],
     data_files=[
-        ('/etc/karaage3', ['conf/global_settings.py', ]),
+        ('/etc/karaage3', ['conf/settings.py', ]),
     ],
     install_requires=[
         "Django >= 1.6",
@@ -95,7 +95,7 @@ setup(
         "django-ajax-selects >= 1.1.3",
         "django_jsonfield >= 0.9.12",
         "django-model-utils >= 2.0.0",
-        "django-tldap >= 0.2.16",
+        "python-tldap >= 0.3.3",
         "django-xmlrpc >= 0.1",
         "django_celery",
         "django_model_utils >= 2.0.0",

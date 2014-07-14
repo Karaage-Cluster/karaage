@@ -84,6 +84,7 @@ INSTALLED_APPS = (
     'django_tables2',
     # 'djcelery',
     'tldap.methods',
+    'tldap.django',
     'pipeline',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
