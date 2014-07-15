@@ -1,4 +1,4 @@
-karaage3 (3.1.0-1) unstable; urgency=low
+karaage3 (3.1.0-1) UNRELEASED; urgency=low
 
   [ Brian May ]
   * Update software usage statistics.
@@ -20,8 +20,21 @@ karaage3 (3.1.0-1) unstable; urgency=low
   * Python 3 tests.
   * Python3 tracing change.
   * Disable usage / south stuff if not available.
+  * Fix *all* PEP8 issues.
+  * More Python3 syntax errors fixed.
+  * Fix double quoted strings in migrations.
+  * Remove depreciated warnings.
+  * Fix Python3 PEP8 errors.
+  * Recommend mysql.connector.django over mysqldb.
+  * Redo Debian packaging.
+  * Support TLDAP 0.3.3
+  * Rename global_settings.py to settings.py
+  * Copy and adapt file from django-xmlrpc.
+  * Fix copyright declaration.
+  * Declare Python 3 compatable.
+  * Split usage stuff into kgusage.
 
- -- Brian May <bam@debian.org>  Mon, 07 Jul 2014 15:04:55 +1000
+ -- Brian May <brian@microcomaustralia.com.au>  Tue, 15 Jul 2014 11:58:44 +1000
 
 karaage3 (3.0.15-1) unstable; urgency=low
 
