@@ -69,18 +69,6 @@ Description: Collection of Django apps to manage a cluster
  Online documentation for Karaage can be found at
  https://karaage.readthedocs.org/en/latest/
 
-Package: karaage3-celery
-Replaces: python-karaage-celery (<< 3.1.0)
-Breaks: python-karaage-celery (<< 3.1.0)
-Architecture: all
-Depends: ${misc:Depends}, python-karaage (>= 3.1.0)
-Recommends: rabbitmq-server
-Description: Celery server for karaage
- Karaage is a cluster account management tool. It can manage users and projects
- in a cluster and can store the data in various backends.
- .
- This package starts the celery server required by karaaage.
-
 Package: karaage3-doc
 Replaces: python-karaage-doc (<< 3.1.0)
 Breaks: python-karaage-doc (<< 3.1.0)
@@ -100,14 +88,6 @@ Architecture: all
 Priority: extra
 Description: Collection of Django apps to manage a cluster
  Package to pull in all required components of Karaage.
-
-Package: python-karaage-celery
-Depends: karaage3-celery, ${misc:Depends}
-Architecture: all
-Priority: extra
-Section: oldlibs
-Description: Collection of Django apps to manage a cluster
- This is a dummy package to aid switching to python-karaage
 
 Package: python-karaage-doc
 Depends: karaage3-doc, ${misc:Depends}
