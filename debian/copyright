@@ -1,30 +1,31 @@
-This package was debianized by Sam Morrison
- on Fri, 19 March 2010 11:15:10 +1000.
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: karaage
+Upstream-Contact: Brian May <bam@debian.org>
+Source: https://github.com/Karaage-Cluster/karaage/
 
-It was downloaded from http://trac.vpac.org/karaage/
+Files: *
+Copyright: 2007-2014 VPAC
+License: LGPL-3+
 
-Upstream Author:
+Files: debian/*
+Copyright: 2007-2014 VPAC
+License: LGPL-3+
 
-    Sam Morrison <sam@vpac.org>
-
-Copyright:
-
-    Copyright (C) 2007-2010 Sam Morrison
-
-License:
-
-   This package is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3 of the License, or
-   (at your option) any later version.
-
-   This package is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this package; if not, see .
-
-On Debian systems, the complete text of the GNU General
-Public License can be found in `/usr/share/common-licenses/GPL-3'.
+License: LGPL-3+
+ Karaage is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ .
+ Karaage is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+ .
+ You should have received a copy of the GNU Lesser General Public License
+ along with Karaage in the COPYING and COPYING.LESSER files.
+ If not, see <http://www.gnu.org/licenses/>.
+ .
+ On Debian systems, the full text of the GNU General Public
+ License version 3 can be found in the file
+ `/usr/share/common-licenses/LGPL-3'.

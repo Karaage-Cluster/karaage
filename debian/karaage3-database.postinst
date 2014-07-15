@@ -5,11 +5,25 @@
 #DEBHELPER#
 
 if [ "$1" = "configure" ]; then
-    db_get karaage/run_migrations
-    if [ "$RET" = "true" ]; then
-        kg-manage migrate
+    dpkg-trigger karaage-database
+fi
+
+if [ "$1" = "triggered" ]; then
+    if [ "$2" = "karaage-database" ]; then
+        if kg-manage migrate --list | grep -q "( )" > /dev/null; then
+            db_fset karaage/run_migrations seen "false"
+            db_input high karaage/run_migrations || true
+            db_go
+
+            db_get karaage/run_migrations
+            if [ "$RET" = "true" ]; then
+                kg-manage migrate
+            else
+                db_input high karaage/no_migrations || true
+                db_go
+            fi
+        fi
     fi
-    dpkg-trigger karaage-static
 fi
 
 exit 0
