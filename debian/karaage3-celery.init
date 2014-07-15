@@ -39,6 +39,15 @@ if [ "$ENABLED" != "true" ]; then
     exit 0
 fi
 
+# if karaage not configured to use djcelery, just exit
+export DJANGO_SETTINGS_MODULE="karaage.conf.settings"
+if ! python -c "from django.conf import settings; exit('djcelery' not in settings.INSTALLED_APPS);"
+then
+    echo "karaage is not configured to use djcelery; not starting" >&2
+    exit 0
+fi
+unset DJANGO_SETTINGS_MODULE
+
 
 CELERYD_PID_FILE=${CELERYD_PID_FILE:-${CELERYD_PIDFILE:-$DEFAULT_PID_FILE}}
 CELERYD_LOG_FILE=${CELERYD_LOG_FILE:-${CELERYD_LOGFILE:-$DEFAULT_LOG_FILE}}
@@ -112,7 +121,6 @@ restart_workers () {
                            --cmd="$CELERYD"                 \
                            $CELERYD_OPTS
 }
-
 
 
 case "$1" in
