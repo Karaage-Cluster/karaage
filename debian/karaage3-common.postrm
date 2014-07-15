@@ -4,7 +4,7 @@ if [ "$1" = "purge" ]
 then
     for i in /var/log/karaage \
              /var/cache/karaage/graphs \
-             /var/cache/karaage/matplotlib
+             /var/cache/karaage/matplotlib \
              /var/log/karaage3 \
              /var/cache/karaage3/graphs \
              /var/cache/karaage3/matplotlib
