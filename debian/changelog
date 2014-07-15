@@ -1,0 +1,5 @@
+karaage3-usage (3.1.0-1) unstable; urgency=low
+
+  * Initial release. Split from Karaage3.
+
+ -- Brian May <bam@debian.org>  Tue, 15 Jul 2014 09:52:30 +1000

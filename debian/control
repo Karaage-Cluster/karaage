@@ -1,0 +1,48 @@
+Source: karaage3-usage
+Section: python
+Priority: optional
+Maintainer: Brian May <bam@debian.org>
+Build-Depends: debhelper (>=8.1.0), dh-python,
+ python-all (>= 2.6.6-3~), python-setuptools, python-karaage, python-django,
+ python-flake8,
+# python3-all, python-setuptools, python3-karaage, python3-django,
+# python3-flake8,
+Standards-Version: 3.9.5
+Homepage: https://github.com/Karaage-Cluster/karaage-usage
+Vcs-Git: git://github.com/Karaage-Cluster/karaage-usage
+Vcs-Browser: https://github.com/Karaage-Cluster/karaage-usage
+X-Python-Version: >= 2.6
+
+Package: python-kgusage
+Architecture: all
+Depends: ${misc:Depends}, ${python:Depends}
+Description: Usage information for Karaage.
+ Karaage is an open source collection of Django apps to manage a clusters.
+ This package provides the plugins that keep track of usage information.
+
+#Package: python3-kgusage
+#Architecture: all
+#Depends: ${misc:Depends}, ${python:Depends}
+#Description: Usage information for Karaage.
+# Karaage is an open source collection of Django apps to manage a clusters.
+# This package provides the plugins that keep track of usage information.
+
+Package: karaage3-celery
+Replaces: python-karaage-celery (<< 3.1.0)
+Breaks: python-karaage-celery (<< 3.1.0)
+Architecture: all
+Depends: ${misc:Depends}, python-karaage
+Recommends: rabbitmq-server
+Description: Celery server for karaage
+ Karaage is a cluster account management tool. It can manage users and projects
+ in a cluster and can store the data in various backends.
+ .
+ This package starts the celery server required by karaaage.
+
+Package: python-karaage-celery
+Depends: karaage3-celery, ${misc:Depends}
+Architecture: all
+Priority: extra
+Section: oldlibs
+Description: Collection of Django apps to manage a cluster
+ This is a dummy package to aid switching to python-karaage

@@ -1,0 +1,4 @@
+include *.rst
+include *.txt
+include *.py
+include MANIFEST.in
