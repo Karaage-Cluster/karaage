@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+. /usr/share/debconf/confmodule
+
+#DEBHELPER#
+
+dpkg-trigger karaage-database
+exit 0
