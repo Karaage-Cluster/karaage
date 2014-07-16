@@ -143,7 +143,7 @@ def usage_index(request):
     result = gen_machine_category_cache(request, start, end)
     if result is not None:
         return render_to_response(
-            'usage/progress.html',
+            'usage_jobs/progress.html',
             {'task_id': result.task_id},
             context_instance=RequestContext(request))
 
@@ -156,7 +156,7 @@ def usage_index(request):
         })
 
     return render_to_response(
-        'usage/mc_list.html', locals(),
+        'usage_jobs/mc_list.html', locals(),
         context_instance=RequestContext(request))
 
 
@@ -176,7 +176,7 @@ def index(request, machine_category_id):
         request, start, end, machine_category)
     if result is not None:
         return render_to_response(
-            'usage/progress.html',
+            'usage_jobs/progress.html',
             {'task_id': result.task_id},
             context_instance=RequestContext(request))
 
@@ -271,7 +271,7 @@ def index(request, machine_category_id):
         start, end, machine_category)
 
     return render_to_response(
-        'usage/usage_institute_list.html', locals(),
+        'usage_jobs/usage_institute_list.html', locals(),
         context_instance=RequestContext(request))
 
 
@@ -290,7 +290,7 @@ def institute_usage(request, institute_id, machine_category_id):
         request, start, end, machine_category)
     if result is not None:
         return render_to_response(
-            'usage/progress.html',
+            'usage_jobs/progress.html',
             {'task_id': result.task_id},
             context_instance=RequestContext(request))
 
@@ -298,7 +298,7 @@ def institute_usage(request, institute_id, machine_category_id):
         request, start, end, institute, machine_category)
     if result is not None:
         return render_to_response(
-            'usage/progress.html',
+            'usage_jobs/progress.html',
             {'task_id': result.task_id},
             context_instance=RequestContext(request))
 
@@ -390,7 +390,7 @@ def institute_usage(request, institute_id, machine_category_id):
         institute, start, end, machine_category)
 
     return render_to_response(
-        'usage/usage_institute_detail.html', locals(),
+        'usage_jobs/usage_institute_detail.html', locals(),
         context_instance=RequestContext(request))
 
 
@@ -414,7 +414,7 @@ def project_usage(request, project_id, machine_category_id):
         request, start, end, machine_category)
     if result is not None:
         return render_to_response(
-            'usage/progress.html',
+            'usage_jobs/progress.html',
             {'task_id': result.task_id},
             context_instance=RequestContext(request))
 
@@ -422,7 +422,7 @@ def project_usage(request, project_id, machine_category_id):
         request, start, end, project, machine_category)
     if result is not None:
         return render_to_response(
-            'usage/progress.html',
+            'usage_jobs/progress.html',
             {'task_id': result.task_id},
             context_instance=RequestContext(request))
 
@@ -464,7 +464,7 @@ def project_usage(request, project_id, machine_category_id):
         project, start, end, machine_category)
 
     return render_to_response(
-        'usage/project_usage.html', locals(),
+        'usage_jobs/project_usage.html', locals(),
         context_instance=RequestContext(request))
 
 
@@ -551,7 +551,7 @@ def search(request):
         form = UsageSearchForm(initial=initial)
 
     return render_to_response(
-        'usage/search.html', locals(),
+        'usage_jobs/search.html', locals(),
         context_instance=RequestContext(request))
 
 
@@ -570,7 +570,7 @@ def top_users(request, machine_category_id):
         request, start, end, machine_category)
     if result is not None:
         return render_to_response(
-            'usage/progress.html',
+            'usage_jobs/progress.html',
             {'task_id': result.task_id},
             context_instance=RequestContext(request))
 
@@ -599,7 +599,7 @@ def top_users(request, machine_category_id):
     person_percent = (person_total / available_time) * 100
 
     return render_to_response(
-        'usage/top_users.html', locals(),
+        'usage_jobs/top_users.html', locals(),
         context_instance=RequestContext(request))
 
 
@@ -617,7 +617,7 @@ def institute_trends(request, machine_category_id):
         request, start, end, machine_category)
     if result is not None:
         return render_to_response(
-            'usage/progress.html',
+            'usage_jobs/progress.html',
             {'task_id': result.task_id},
             context_instance=RequestContext(request))
 
@@ -625,7 +625,7 @@ def institute_trends(request, machine_category_id):
         start, end, machine_category)
 
     return render_to_response(
-        'usage/institute_trends.html', locals(),
+        'usage_jobs/institute_trends.html', locals(),
         context_instance=RequestContext(request))
 
 
@@ -643,7 +643,7 @@ def institute_users(request, machine_category_id, institute_id):
         request, start, end, machine_category)
     if result is not None:
         return render_to_response(
-            'usage/progress.html',
+            'usage_jobs/progress.html',
             {'task_id': result.task_id},
             context_instance=RequestContext(request))
 
@@ -683,7 +683,7 @@ def institute_users(request, machine_category_id, institute_id):
         person_percent = 0
 
     return render_to_response(
-        'usage/institute_users.html', locals(),
+        'usage_jobs/institute_users.html', locals(),
         context_instance=RequestContext(request))
 
 
@@ -717,7 +717,7 @@ def core_report(request, machine_category_id):
 #    graph = g.bar_chart(data, x_labels, max_y, bar_width=50).get_url()
 
     return render_to_response(
-        'usage/core_report.html', locals(),
+        'usage_jobs/core_report.html', locals(),
         context_instance=RequestContext(request))
 
 
@@ -756,7 +756,7 @@ def mem_report(request, machine_category_id):
 #    graph = g.bar_chart(data, x_labels, max_y, bar_width=50).get_url()
 
     return render_to_response(
-        'usage/mem_report.html', locals(),
+        'usage_jobs/mem_report.html', locals(),
         context_instance=RequestContext(request))
 
 
@@ -769,7 +769,7 @@ def job_detail(request, jobid):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     return render_to_response(
-        'usage/job_detail.html',
+        'usage_jobs/job_detail.html',
         {'job': job},
         context_instance=RequestContext(request))
 
@@ -792,7 +792,7 @@ def job_list(request):
             spec.append((name, value))
 
     return render_to_response(
-        'usage/job_list.html',
+        'usage_jobs/job_list.html',
         {
             'table': table,
             'filter': filter,
