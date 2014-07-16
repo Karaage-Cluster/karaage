@@ -16,6 +16,7 @@ however you will have to adapt from this documentation.
 * You want to OpenLDAP with ppolicy support, on the same server.
 * You have a Debian Wheezy server already setup for Karaage.
 * You will be installing all components on a single system.
+* You are upgrading to Karaage 3.1.
 
 
 Installation
@@ -173,7 +174,6 @@ Initial setup
 
         kg-manage syncdb --noinput
         kg-manage migrate --all
-        service karaage3-celery restart
 
 #.  Create a karaage superuser:
 
@@ -203,3 +203,34 @@ Data stores
 So far you have not configured any external datastores. Karaage will work,
 however probably won't do anything useful. See the next section to configure
 datastores (:doc:`datastores`).
+
+
+Karaage-usage
+-------------
+Karaage-usage is an external plugin that provides usage graphs and statistics
+for cluster systems. It is not enabled by default. To enable it:
+
+#.  Install the extra required package:
+
+    .. code-block:: bash
+
+        apt-get install python-kgusage
+
+#.  Add the following to /etc/karaage3/settings.py:
+
+    .. code-block:: python
+
+        PLUGINS = [
+            'kgusage.apps.Jobs',
+        ]
+
+#.   Run the database migrations, restart apache, and install the celery
+     deaemon.
+
+     .. code-block:: bash
+
+        kg-manage migrate --all
+        service apache2 reload
+        apt-get install karaage3-celery
+
+#.  Check to ensure the celery daemon is running.
