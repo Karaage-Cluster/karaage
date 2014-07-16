@@ -17,19 +17,44 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from setuptools import setup, find_packages
+from setuptools import setup
+import os
 
 with open('VERSION.txt', 'r') as f:
     version = f.readline().strip()
 
+
+def fullsplit(path, result=None):
+    """
+    Split a pathname into components (the opposite of os.path.join) in a
+    platform-neutral way.
+    """
+    if result is None:
+        result = []
+    head, tail = os.path.split(path)
+    if head == '':
+        return [tail] + result
+    if head == path:
+        return result
+    return fullsplit(head, [tail] + result)
+
+packages = []
+for dirpath, dirnames, filenames in os.walk("kgusage"):
+    # Ignore dirnames that start with '.'
+    for i, dirname in enumerate(dirnames):
+        if dirname.startswith('.'):
+            del dirnames[i]
+    if filenames:
+        packages.append('.'.join(fullsplit(dirpath)))
+
 setup(
-    name="karaage-admin",
+    name="karaage-usage",
     version=version,
     url='https://github.com/Karaage-Cluster/karaage',
     author='Brian May',
     author_email='brian@v3.org.au',
     description='Usage information for Karaage',
-    packages=find_packages(),
+    packages=packages,
     license="GPL3+",
     long_description=open('README.rst').read(),
     classifiers=[
@@ -43,6 +68,9 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules"
     ],
     keywords="karaage cluster user administration",
+    package_data={
+        '': ['*.css', '*.html', '*.js', '*.png', '*.gif', '*.map', '*.txt'],
+    },
     install_requires=[
         "django_celery",
         "django-filter",
