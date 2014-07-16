@@ -41,10 +41,10 @@ from karaage.common import get_date_range
 from .models import CPUJob
 from .forms import UsageSearchForm
 from .tables import CPUJobFilter, CPUJobTable
-import kgusage.jobs.models as models
-import kgusage.jobs.graphs as graphs
-import kgusage.jobs.tasks as tasks
-import kgusage.jobs.usage as usage
+import kgusage.usage_jobs.models as models
+import kgusage.usage_jobs.graphs as graphs
+import kgusage.usage_jobs.tasks as tasks
+import kgusage.usage_jobs.usage as usage
 
 LOCK_EXPIRE = 60 * 60  # Lock expires in 1 hour
 

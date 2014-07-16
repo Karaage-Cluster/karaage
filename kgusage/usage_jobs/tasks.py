@@ -39,8 +39,8 @@ from karaage.projects.models import Project
 from .models import CPUJob
 from .models import InstituteCache, ProjectCache, PersonCache
 from .models import MachineCache, MachineCategoryCache
-import kgusage.jobs.usage as usage
-import kgusage.jobs.graphs as graphs
+import kgusage.usage_jobs.usage as usage
+import kgusage.usage_jobs.graphs as graphs
 
 # app.conf.update(CELERYD_HIJACK_ROOT_LOGGER = False)
 

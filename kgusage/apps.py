@@ -18,8 +18,8 @@
 
 class Jobs(object):
     plugin = "karaage3"
-    module = "kgusage.jobs"
+    module = "kgusage.usage_jobs"
     requires = ("djcelery",)
     xmlrpc_methods = (
-        ('kgusage.jobs.xmlrpc.parse_usage', 'parse_usage',),
+        ('kgusage.usage_jobs.xmlrpc.parse_usage', 'parse_usage',),
     )
