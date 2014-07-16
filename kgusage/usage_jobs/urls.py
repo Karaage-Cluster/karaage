@@ -53,7 +53,7 @@ urlpatterns = patterns(
 
 urlpatterns = patterns(
     '',
-    url(r'^usage/', include(urlpatterns)),
+    url(r'^usage/jobs/', include(urlpatterns)),
 )
 
 if settings.DEBUG:
