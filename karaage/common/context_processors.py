@@ -23,7 +23,6 @@ from karaage.common import is_admin, get_hooks
 def common(request):
     """ Set context with common variables. """
     ctx = {}
-    ctx['GRAPH_URL'] = settings.GRAPH_URL
     ctx['SHIB_SUPPORTED'] = settings.SHIB_SUPPORTED
     ctx['org_name'] = settings.ACCOUNTS_ORG_NAME
     ctx['accounts_email'] = settings.ACCOUNTS_EMAIL

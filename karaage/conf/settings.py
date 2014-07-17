@@ -1,26 +1,26 @@
-from karaage.conf.defaults import *
+# -*- coding: utf-8 -*-
+#
+# Copyright 2007-2014 VPAC
+#
+# This file is part of Karaage.
+#
+# Karaage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Karaage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-PLUGINS = []
+from .defaults import *
 
 exec(open("/etc/karaage3/settings.py", "rb").read())
 
-DEFAULT_FROM_EMAIL = ACCOUNTS_EMAIL
-
-
-def load_plugins(plugins):
-    global INSTALLED_APPS
-    global XMLRPC_METHODS
-
-    import importlib
-    for plugin in plugins:
-        module_name, descriptor_name = plugin.rsplit(".", 1)
-        module = importlib.import_module(module_name)
-        descriptor = getattr(module, descriptor_name)
-        assert descriptor.plugin == "karaage3"
-
-        INSTALLED_APPS = (descriptor.module,) + descriptor.requires \
-            + INSTALLED_APPS
-
-        XMLRPC_METHODS = descriptor.xmlrpc_methods + XMLRPC_METHODS
-
-load_plugins(PLUGINS)
+import sys
+from .process import post_process
+post_process(sys.modules[__name__])

@@ -63,7 +63,7 @@ AUTH_USER_MODEL = 'people.Person'
 #
 # * an application configuration class, or a package containing a
 # * application.
-INSTALLED_APPS = (
+KARAAGE_APPS = (
     'karaage.common',
     'karaage.legacy.admin',
     'karaage.people',
@@ -76,6 +76,9 @@ INSTALLED_APPS = (
     'karaage.legacy.pbsmoab',
     'karaage.emails',
     'karaage.applications',
+)
+
+INSTALLED_APPS = (
     'django_xmlrpc',
     # 'south',
     'captcha',
@@ -262,17 +265,8 @@ XMLRPC_METHODS = (
 # KARAAGE SETTINGS
 ###
 
-# If True, force overwritting existing graphs when generating graphs.
-GRAPH_DEBUG = False
-
-# Where should graphs be saved?
-GRAPH_ROOT = '/var/cache/karaage3/graphs'
-
-# Temporary directory for matplotlib.
-GRAPH_TMP = '/var/cache/karaage3/matplotlib'
-
-# URL where graphs can be found.
-GRAPH_URL = '/karaage_graphs/'
+# DIRECTORY FOR TEMP FILES
+TMP_DIR = "/var/cache/karaage3/"
 
 # Default machine category, used by legacy XMLRPC when client doesn't specify
 # a machine name.
@@ -379,3 +373,6 @@ SHORT_DATETIME_FORMAT = "Y-m-d H:i"
 SOUTH_DATABASE_ADAPTERS = {
     'default': 'south.db.mysql'
 }
+
+# List of Karaage plugins
+PLUGINS = []

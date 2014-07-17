@@ -2,12 +2,6 @@
 from karaage.conf.defaults import *
 from os import uname
 
-AJAX_LOOKUP_CHANNELS = {
-    'person': ('karaage.people.lookups', 'PersonLookup'),
-    'group': ('karaage.people.lookups', 'GroupLookup'),
-    'project': ('karaage.projects.lookups', 'ProjectLookup'),
-}
-
 
 class InvalidString(str):
     def __mod__(self, other):
@@ -108,9 +102,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 TIME_ZONE = 'Australia/Melbourne'
 LANGUAGE_CODE = 'en-au'
 
-GRAPH_ROOT = 'tmp/graphs'
-GRAPH_TMP = 'tmp/matplotlib'
-GRAPH_URL = '/media/graphs/'
+TMP_DIR = 'tmp'
 
 INTERNAL_IPS = (
     '127.0.0.1',
@@ -131,3 +123,7 @@ TEST_MODULE_ROOT = os.path.dirname(os.path.realpath(__file__))
 FIXTURE_DIRS = (os.path.join(TEST_MODULE_ROOT),)
 
 ENABLE_CRACKLIB = False
+
+import sys
+from karaage.conf.process import post_process
+post_process(sys.modules[__name__])
