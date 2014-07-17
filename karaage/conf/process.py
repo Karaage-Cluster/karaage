@@ -17,42 +17,29 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import importlib
+from karaage.plugins import BasePlugin
+
 
 def add_plugin(namespace, plugin_name, django_apps, depends):
 
-    import importlib
     module_name, descriptor_name = plugin_name.rsplit(".", 1)
     module = importlib.import_module(module_name)
     descriptor = getattr(module, descriptor_name)
-    assert descriptor.plugin == "karaage3"
+    assert issubclass(descriptor, BasePlugin)
 
-    try:
-        value = descriptor.depends
-    except:
-        pass
-    else:
-        depends.extend(value)
+    value = descriptor.depends
+    depends.extend(value)
 
-    try:
-        value = descriptor.module
-    except:
-        pass
-    else:
-        django_apps.append(value)
+    value = descriptor.module
+    assert value is not None
+    django_apps.append(value)
 
-    try:
-        value = descriptor.django_apps
-    except:
-        pass
-    else:
-        django_apps.extend(value)
+    value = descriptor.django_apps
+    django_apps.extend(value)
 
-    try:
-        value = descriptor.xmlrpc_methods
-    except:
-        pass
-    else:
-        namespace.XMLRPC_METHODS += value
+    value = descriptor.xmlrpc_methods
+    namespace.XMLRPC_METHODS += value
 
     for key, value in descriptor.settings.items():
         try:
