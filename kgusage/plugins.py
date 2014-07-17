@@ -15,9 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+from karaage.plugins import BasePlugin
 
-class Jobs(object):
-    plugin = "karaage3"
+
+class Jobs(BasePlugin):
     module = "kgusage.usage_jobs"
     django_apps = ("djcelery",)
     xmlrpc_methods = (
