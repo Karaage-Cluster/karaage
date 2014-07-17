@@ -19,8 +19,8 @@ import django_tables2 as tables
 from django import template
 
 from karaage.machines.models import Machine
-from karaage.usage.models import CPUJob
-from karaage.usage.tables import CPUJobTable
+from ..models import CPUJob
+from ..tables import CPUJobTable
 
 register = template.Library()
 
