@@ -31,7 +31,7 @@ Package: karaage3-celery
 Replaces: python-karaage-celery (<< 3.1.0)
 Breaks: python-karaage-celery (<< 3.1.0)
 Architecture: all
-Depends: ${misc:Depends}, python-karaage
+Depends: ${misc:Depends}, python-karaage, python-amqp | python-amqplib
 Recommends: rabbitmq-server
 Description: Celery server for karaage
  Karaage is a cluster account management tool. It can manage users and projects
