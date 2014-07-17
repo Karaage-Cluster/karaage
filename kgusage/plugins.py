@@ -26,7 +26,7 @@ class Jobs(BasePlugin):
     )
     settings = {
         'GRAPH_DEBUG': True,
-        'GRAPH_ROOT': 'usage_jobs/graphs',
+        'GRAPH_ROOT': 'graphs',
         'GRAPH_TMP': 'usage_jobs/matplotlib',
         'GRAPH_URL': '/karaage_graphs/',
     }
