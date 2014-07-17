@@ -19,7 +19,13 @@
 class Jobs(object):
     plugin = "karaage3"
     module = "kgusage.usage_jobs"
-    requires = ("djcelery",)
+    django_apps = ("djcelery",)
     xmlrpc_methods = (
         ('kgusage.usage_jobs.xmlrpc.parse_usage', 'parse_usage',),
     )
+    settings = {
+        'GRAPH_DEBUG': True,
+        'GRAPH_ROOT': 'usage_jobs/graphs',
+        'GRAPH_TMP': 'usage_jobs/matplotlib',
+        'GRAPH_URL': '/karaage_graphs/',
+    }

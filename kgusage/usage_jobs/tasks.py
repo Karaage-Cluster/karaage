@@ -16,12 +16,14 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf import settings
+import os.path
+GRAPH_TMP = os.path.join(settings.TMP_DIR, settings.GRAPH_TMP)
+GRAPH_ROOT = os.path.join(settings.TMP_DIR, settings.GRAPH_ROOT)
 
 import datetime
 import csv
-import os.path
 import os
-os.environ['MPLCONFIGDIR'] = settings.GRAPH_TMP
+os.environ['MPLCONFIGDIR'] = GRAPH_TMP
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -377,8 +379,8 @@ def _gen_project_trend_graph(project,
     """
     filename = graphs.get_project_trend_graph_filename(
         project, start, end, machine_category)
-    csv_filename = os.path.join(settings.GRAPH_ROOT, filename + '.csv')
-    png_filename = os.path.join(settings.GRAPH_ROOT, filename + '.png')
+    csv_filename = os.path.join(GRAPH_ROOT, filename + '.csv')
+    png_filename = os.path.join(GRAPH_ROOT, filename + '.png')
 
     _check_directory_exists(csv_filename)
     _check_directory_exists(png_filename)
@@ -488,8 +490,8 @@ def _gen_institute_graph(start, end, machine_category,
     """ Pie chart comparing institutes usage. """
     filename = graphs.get_institute_graph_filename(
         start, end, machine_category)
-    csv_filename = os.path.join(settings.GRAPH_ROOT, filename + '.csv')
-    png_filename = os.path.join(settings.GRAPH_ROOT, filename + '.png')
+    csv_filename = os.path.join(GRAPH_ROOT, filename + '.csv')
+    png_filename = os.path.join(GRAPH_ROOT, filename + '.png')
 
     _check_directory_exists(csv_filename)
     _check_directory_exists(png_filename)
@@ -534,8 +536,8 @@ def _gen_machine_graph(start, end, machine_category,
                        force_overwrite=False):
     """ Pie chart comparing machines usage. """
     filename = graphs.get_machine_graph_filename(start, end, machine_category)
-    csv_filename = os.path.join(settings.GRAPH_ROOT, filename + '.csv')
-    png_filename = os.path.join(settings.GRAPH_ROOT, filename + '.png')
+    csv_filename = os.path.join(GRAPH_ROOT, filename + '.csv')
+    png_filename = os.path.join(GRAPH_ROOT, filename + '.png')
 
     _check_directory_exists(csv_filename)
     _check_directory_exists(png_filename)
@@ -575,8 +577,8 @@ def _gen_trend_graph(start, end, machine_category,
                      force_overwrite=False):
     """ Total trend graph for machine category. """
     filename = graphs.get_trend_graph_filename(start, end, machine_category)
-    csv_filename = os.path.join(settings.GRAPH_ROOT, filename + '.csv')
-    png_filename = os.path.join(settings.GRAPH_ROOT, filename + '.png')
+    csv_filename = os.path.join(GRAPH_ROOT, filename + '.csv')
+    png_filename = os.path.join(GRAPH_ROOT, filename + '.png')
 
     _check_directory_exists(csv_filename)
     _check_directory_exists(png_filename)
@@ -656,8 +658,8 @@ def _gen_institute_trend_graph(institute,
     """ Institute trend graph for machine category. """
     filename = graphs.get_institute_trend_graph_filename(
         institute, start, end, machine_category)
-    csv_filename = os.path.join(settings.GRAPH_ROOT, filename + '.csv')
-    png_filename = os.path.join(settings.GRAPH_ROOT, filename + '.png')
+    csv_filename = os.path.join(GRAPH_ROOT, filename + '.csv')
+    png_filename = os.path.join(GRAPH_ROOT, filename + '.png')
 
     _check_directory_exists(csv_filename)
     _check_directory_exists(png_filename)
