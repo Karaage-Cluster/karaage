@@ -33,7 +33,9 @@ if [ "$1" = "configure" ]; then
              /var/cache/karaage/graphs/machines \
              /var/log/karaage \
              /var/cache/karaage/graphs \
-             /var/cache/karaage/matplotlib
+             /var/cache/karaage/matplotlib \
+             /var/cache/karaage3/graphs \
+             /var/cache/karaage3/matplotlib
     do
         if dpkg-statoverride --list $i >/dev/null 2>&1
         then
@@ -42,8 +44,7 @@ if [ "$1" = "configure" ]; then
     done
 
     for i in /var/log/karaage3 \
-             /var/cache/karaage3/graphs \
-             /var/cache/karaage3/matplotlib
+             /var/cache/karaage3
     do
         # only do something when no setting exists
         if ! dpkg-statoverride --list $i >/dev/null 2>&1
