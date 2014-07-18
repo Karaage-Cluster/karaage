@@ -1,7 +1,5 @@
 #!/bin/sh -e
 
-. /usr/share/debconf/confmodule
-
 if [ "$1" = "configure" ]; then
     for i in /var/log/karaage3-celery
     do
