@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import os.path
 import urlparse
 
 from .dirs import GRAPH_URL
@@ -41,7 +42,7 @@ def get_project_trend_graph_filename(project,
                                      machine_category):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
-    filename = urlparse.urljoin(
+    filename = os.path.join(
         "projects",
         "%s_%s_%s_%i" % (
             project.pid, start_str, end_str, machine_category.id)
@@ -52,7 +53,7 @@ def get_project_trend_graph_filename(project,
 def get_institute_graph_filename(start, end, machine_category):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
-    filename = urlparse.urljoin(
+    filename = os.path.join(
         "institutes",
         "%s_%s_%i" % (
             start_str, end_str, machine_category.id)
@@ -63,7 +64,7 @@ def get_institute_graph_filename(start, end, machine_category):
 def get_machine_graph_filename(start, end, machine_category):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
-    filename = urlparse.urljoin(
+    filename = os.path.join(
         "machines",
         "%s_%s_%i" % (
             start_str, end_str, machine_category.id)
@@ -74,7 +75,7 @@ def get_machine_graph_filename(start, end, machine_category):
 def get_trend_graph_filename(start, end, machine_category):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
-    filename = urlparse.urljoin(
+    filename = os.path.join(
         "trends",
         "%s_%s_%i" % (
             start_str, end_str, machine_category.id)
@@ -87,7 +88,7 @@ def get_institute_trend_graph_filename(institute,
                                        machine_category):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
-    filename = urlparse.urljoin(
+    filename = os.path.join(
         "i_trends",
         "%s_%s_%s_%i" % (
             institute.name.replace(' ', '').replace('/', '-').lower(),

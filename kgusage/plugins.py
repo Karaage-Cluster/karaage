@@ -26,6 +26,6 @@ class Jobs(BasePlugin):
     )
     settings = {
         'GRAPH_DEBUG': False,
-        'GRAPH_DIR': 'usage_jobs',
-        'GRAPH_TMP': 'usage_jobs',
+        'GRAPH_DIR': 'usage_jobs/',
+        'GRAPH_TMP': 'usage_jobs/',
     }
