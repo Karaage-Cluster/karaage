@@ -15,14 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf import settings
-import os.path
-GRAPH_TMP = os.path.join(settings.TMP_DIR, settings.GRAPH_TMP)
-GRAPH_ROOT = os.path.join(settings.TMP_DIR, settings.GRAPH_ROOT)
+from .dirs import GRAPH_TMP, GRAPH_ROOT
 
 import datetime
 import csv
 import os
+import os.path
 os.environ['MPLCONFIGDIR'] = GRAPH_TMP
 import matplotlib
 matplotlib.use('Agg')
@@ -31,6 +29,7 @@ import matplotlib.dates as mdates
 
 from djcelery.app import app
 
+from django.conf import settings
 from django.db.models import Sum, Count
 from django.db import transaction, IntegrityError
 

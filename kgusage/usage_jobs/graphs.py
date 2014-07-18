@@ -15,8 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import os.path
-from django.conf import settings
+import urlparse
+
+from .dirs import GRAPH_URL
 
 
 def get_colour(index):
@@ -40,7 +41,7 @@ def get_project_trend_graph_filename(project,
                                      machine_category):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
-    filename = os.path.join(
+    filename = urlparse.urljoin(
         "projects",
         "%s_%s_%s_%i" % (
             project.pid, start_str, end_str, machine_category.id)
@@ -51,7 +52,7 @@ def get_project_trend_graph_filename(project,
 def get_institute_graph_filename(start, end, machine_category):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
-    filename = os.path.join(
+    filename = urlparse.urljoin(
         "institutes",
         "%s_%s_%i" % (
             start_str, end_str, machine_category.id)
@@ -62,7 +63,7 @@ def get_institute_graph_filename(start, end, machine_category):
 def get_machine_graph_filename(start, end, machine_category):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
-    filename = os.path.join(
+    filename = urlparse.urljoin(
         "machines",
         "%s_%s_%i" % (
             start_str, end_str, machine_category.id)
@@ -73,7 +74,7 @@ def get_machine_graph_filename(start, end, machine_category):
 def get_trend_graph_filename(start, end, machine_category):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
-    filename = os.path.join(
+    filename = urlparse.urljoin(
         "trends",
         "%s_%s_%i" % (
             start_str, end_str, machine_category.id)
@@ -86,7 +87,7 @@ def get_institute_trend_graph_filename(institute,
                                        machine_category):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
-    filename = os.path.join(
+    filename = urlparse.urljoin(
         "i_trends",
         "%s_%s_%s_%i" % (
             institute.name.replace(' ', '').replace('/', '-').lower(),
@@ -106,8 +107,8 @@ def get_project_trend_graph_url(project,
     filename = get_project_trend_graph_filename(
         project, start, end, machine_category)
     urls = {
-        'graph_url': os.path.join(settings.GRAPH_URL, filename + ".png"),
-        'data_url': os.path.join(settings.GRAPH_URL, filename + ".csv"),
+        'graph_url': urlparse.urljoin(GRAPH_URL, filename + ".png"),
+        'data_url': urlparse.urljoin(GRAPH_URL, filename + ".csv"),
     }
 
     return urls
@@ -118,8 +119,8 @@ def get_institute_graph_url(start, end, machine_category):
 
     filename = get_institute_graph_filename(start, end, machine_category)
     urls = {
-        'graph_url': os.path.join(settings.GRAPH_URL, filename + ".png"),
-        'data_url': os.path.join(settings.GRAPH_URL, filename + ".csv"),
+        'graph_url': urlparse.urljoin(GRAPH_URL, filename + ".png"),
+        'data_url': urlparse.urljoin(GRAPH_URL, filename + ".csv"),
     }
 
     return urls
@@ -130,8 +131,8 @@ def get_machine_graph_url(start, end, machine_category):
 
     filename = get_machine_graph_filename(start, end, machine_category)
     urls = {
-        'graph_url': os.path.join(settings.GRAPH_URL, filename + ".png"),
-        'data_url': os.path.join(settings.GRAPH_URL, filename + ".csv"),
+        'graph_url': urlparse.urljoin(GRAPH_URL, filename + ".png"),
+        'data_url': urlparse.urljoin(GRAPH_URL, filename + ".csv"),
     }
 
     return urls
@@ -142,8 +143,8 @@ def get_trend_graph_url(start, end, machine_category):
 
     filename = get_trend_graph_filename(start, end, machine_category)
     urls = {
-        'graph_url': os.path.join(settings.GRAPH_URL, filename + ".png"),
-        'data_url': os.path.join(settings.GRAPH_URL, filename + ".csv"),
+        'graph_url': urlparse.urljoin(GRAPH_URL, filename + ".png"),
+        'data_url': urlparse.urljoin(GRAPH_URL, filename + ".csv"),
     }
 
     return urls
@@ -157,8 +158,8 @@ def get_institute_trend_graph_url(institute,
     filename = get_institute_trend_graph_filename(
         institute, start, end, machine_category)
     urls = {
-        'graph_url': os.path.join(settings.GRAPH_URL, filename + ".png"),
-        'data_url': os.path.join(settings.GRAPH_URL, filename + ".csv"),
+        'graph_url': urlparse.urljoin(GRAPH_URL, filename + ".png"),
+        'data_url': urlparse.urljoin(GRAPH_URL, filename + ".csv"),
     }
 
     return urls

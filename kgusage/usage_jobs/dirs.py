@@ -15,17 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from karaage.plugins import BasePlugin
+from django.conf import settings
+import os.path
+import urlparse
 
-
-class Jobs(BasePlugin):
-    module = "kgusage.usage_jobs"
-    django_apps = ("djcelery",)
-    xmlrpc_methods = (
-        ('kgusage.usage_jobs.xmlrpc.parse_usage', 'parse_usage',),
-    )
-    settings = {
-        'GRAPH_DEBUG': False,
-        'GRAPH_DIR': 'usage_jobs',
-        'GRAPH_TMP': 'usage_jobs',
-    }
+GRAPH_TMP = os.path.join(settings.TMP_DIR, settings.GRAPH_TMP)
+GRAPH_ROOT = os.path.join(settings.FILES_DIR, settings.GRAPH_DIR)
+GRAPH_URL = urlparse.urljoin(settings.FILES_URL, settings.GRAPH_DIR)

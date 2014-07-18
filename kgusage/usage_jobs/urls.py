@@ -55,14 +55,3 @@ urlpatterns = patterns(
     '',
     url(r'^usage/jobs/', include(urlpatterns)),
 )
-
-if settings.DEBUG:
-    import os.path
-    GRAPH_ROOT = os.path.join(settings.TMP_DIR, settings.GRAPH_ROOT)
-
-    urlpatterns += patterns(
-        '',
-        url(r'^karaage_graphs/(?P<path>.*)$',
-            'django.views.static.serve',
-            {'document_root': GRAPH_ROOT}),
-    )
