@@ -7,7 +7,7 @@
     notifempty
     create 640 www-data www-data
     postrotate
-        [ -e /etc/init.d/python-karaage-celery ] && service python-karaage-celery restart > /dev/null
+        [ -e /etc/init.d/karaage3-celery ] && service karaage3-celery restart > /dev/null 2>&1
     endscript
     su www-data www-data
 }
