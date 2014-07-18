@@ -1,7 +1,5 @@
 #!/bin/sh -e
 
-. /usr/share/debconf/confmodule
-
 apache_force_reload() {
     if apache2ctl configtest 2>/dev/null; then
         #invoke-rc.d apache2 force-reload || true

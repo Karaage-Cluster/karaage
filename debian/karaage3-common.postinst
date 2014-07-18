@@ -1,7 +1,5 @@
 #!/bin/sh -e
 
-. /usr/share/debconf/confmodule
-
 if [ "$1" = "configure" ]; then
     # The following only on a new install
     if [ "$2" = "" ]; then
