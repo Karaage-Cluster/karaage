@@ -110,7 +110,6 @@ Initial setup
 
         apt-get install karaage3
         apt-get install python-mysql.connector
-        apt-get install libapache2-mod-wsgi
 
 #.  Karaage, by default, requires a https connection. While this default can be
     changed, this is not advisable on a production system.
@@ -186,14 +185,6 @@ Initial setup
 #.  Setup cron job. Edit the /etc/cron.d/python-karaage file::
 
         10 1 * * * www-data /usr/bin/kg-daily-cleanup
-
-#.  Setup symlink in apache conf.
-
-    .. code-block:: bash
-
-        ln -s /etc/karaage3/kgadmin-apache.conf /etc/apache2/conf.d
-        ln -s /etc/karaage3/kgreg-apache.conf /etc/apache2/conf.d
-        service apache2 reload
 
 #.  Test. You should now be able to go to http://hostname/kgadmin/
 

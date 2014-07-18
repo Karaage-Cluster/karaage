@@ -198,7 +198,7 @@ STATIC_ROOT = '/var/lib/karaage3/static'
 
 
 # URL to use when referring to static files located in STATIC_ROOT.
-STATIC_URL = '/kgadmin_media/'
+STATIC_URL = '/kgstatic/'
 
 ###
 # DJANGO PIPELINE
@@ -266,7 +266,13 @@ XMLRPC_METHODS = (
 ###
 
 # DIRECTORY FOR TEMP FILES
-TMP_DIR = "/var/cache/karaage3/"
+TMP_DIR = "/var/cache/karaage3/tmp/"
+
+# DIRECTORY FOR SHARED FILES
+FILES_DIR = "/var/cache/karaage3/files/"
+
+# URL FOR SHARED FILES
+FILES_URL = "/kgfiles/"
 
 # Default machine category, used by legacy XMLRPC when client doesn't specify
 # a machine name.

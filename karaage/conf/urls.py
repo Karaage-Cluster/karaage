@@ -38,6 +38,13 @@ if settings.DEBUG_SERVE_STATIC:
             {'document_root': settings.STATIC_ROOT}),
     )
 
+    urlpatterns += patterns(
+        '',
+        url(r'^%s(?P<path>.*)$' % re.escape(settings.FILES_URL.lstrip('/')),
+            'django.views.static.serve',
+            {'document_root': settings.FILES_DIR}),
+    )
+
 
 for urls in get_urls("urlpatterns"):
     urlpatterns += urls

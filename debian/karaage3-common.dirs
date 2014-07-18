@@ -1,2 +1,4 @@
 /var/log/karaage3
-/var/cache/karaage3
+/var/lib/karaage3
+/var/cache/karaage3/tmp
+/var/cache/karaage3/files

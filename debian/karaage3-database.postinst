@@ -2,11 +2,11 @@
 
 . /usr/share/debconf/confmodule
 
-#DEBHELPER#
-
-if [ "$1" = "configure" ]; then
+if [ "$1" = "configure" -a "$2" = "" ]; then
     dpkg-trigger karaage-database
 fi
+
+#DEBHELPER#
 
 if [ "$1" = "triggered" ]; then
     if [ "$2" = "karaage-database" ]; then

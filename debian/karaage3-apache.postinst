@@ -1,0 +1,38 @@
+#!/bin/sh -e
+
+. /usr/share/debconf/confmodule
+
+apache_force_reload() {
+    if apache2ctl configtest 2>/dev/null; then
+        #invoke-rc.d apache2 force-reload || true
+        # use "restart" as a workaround for bug #558608
+        invoke-rc.d apache2 restart || true
+    else
+        echo "Your apache2 configuration is broken, please fix it and restart apache2 manually."
+    fi
+}
+
+if [ "$1" = "configure" ]; then
+    if [ -x /usr/sbin/a2enconf ] ; then
+        # apache 2.4
+        a2enconf karaage-2.4
+        apache_force_reload
+    else
+        # apache 2.2
+        ln -sf ../conf-available/karaage-2.2.conf /etc/apache2/conf.d/karaage-2.2.conf
+        apache_force_reload
+    fi
+
+    if [ "$2" = "" ]; then
+        dpkg-trigger karaage-static
+    fi
+fi
+
+#DEBHELPER#
+
+if [ "$1" = "triggered" ]; then
+    if [ "$2" = "karaage-static" ]; then
+        python2.7 /usr/lib/python2.7/dist-packages/django/bin/django-admin.py \
+            collectstatic --settings=karaage.conf.settings --noinput
+    fi
+fi

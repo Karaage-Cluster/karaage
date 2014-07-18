@@ -161,7 +161,6 @@ Installing Karaage3
 
         apt-get install karaage3
         apt-get install python-mysql.connector
-        apt-get install libapache2-mod-wsgi
 
 #.  Check the following settings are in /etc/karaage3/settings.py. The
     mysql server should refer to the *new* database you created above, the LDAP

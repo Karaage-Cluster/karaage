@@ -67,6 +67,20 @@ Description: Collection of Django apps to manage a cluster
  .
  Online documentation for Karaage can be found at
  https://karaage.readthedocs.org/en/latest/
+ .
+ This package ensures the database is automatically migrated, as required.
+
+Package: karaage3-apache
+Architecture: all
+Depends: ${misc:Depends}, python-karaage (>= 3.1.0), libapache2-mod-wsgi
+Description: Collection of Django apps to manage a cluster
+ Karaage is a cluster account management tool. It can manage users and projects
+ in a cluster and can store the data in various backends.
+ .
+ Online documentation for Karaage can be found at
+ https://karaage.readthedocs.org/en/latest/
+ .
+ This package contains the Apache configuration.
 
 Package: karaage3-doc
 Replaces: python-karaage-doc (<< 3.1.0)
@@ -81,8 +95,7 @@ Description: Collection of Django apps to manage a cluster
  This package contains the documentation.
 
 Package: karaage3
-Depends: karaage3-database, karaage3-doc, ${misc:Depends}
-Recommends: karaage3-admin, karaage3-registration
+Depends: karaage3-database, karaage3-doc, karaage3-apache, ${misc:Depends}
 Suggests: python-kgusage
 Architecture: all
 Priority: extra
