@@ -15,6 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import logging
+logger = logging.getLogger(__name__)
+
 from .dirs import GRAPH_TMP, GRAPH_ROOT
 
 import datetime
@@ -49,7 +52,6 @@ import kgusage.usage_jobs.graphs as graphs
 @app.task()
 def gen_machine_category_cache(start, end):
     current = gen_machine_category_cache
-    logger = current.get_logger()
 
     logger.info("gen_machine_category_cache")
 
@@ -90,7 +92,6 @@ def gen_cache_for_machine_category(start, end, machine_category_pk):
     machine_category = MachineCategory.objects.get(pk=machine_category_pk)
 
     current = gen_machine_category_cache
-    logger = current.get_logger()
 
     total = 6
     i = 0
@@ -153,7 +154,6 @@ def gen_cache_for_project(start, end, project_pk, machine_category_pk):
     machine_category = MachineCategory.objects.get(pk=machine_category_pk)
 
     current = gen_cache_for_project
-    logger = current.get_logger()
     total = 1
     i = 0
 
@@ -173,7 +173,6 @@ def gen_cache_for_institute(start, end, institute_pk, machine_category_pk):
     machine_category = MachineCategory.objects.get(pk=machine_category_pk)
 
     current = gen_cache_for_institute
-    logger = current.get_logger()
     total = 1
     i = 0
 
@@ -192,7 +191,6 @@ def gen_cache_for_all_institutes(start, end, machine_category_pk):
     machine_category = MachineCategory.objects.get(pk=machine_category_pk)
 
     current = gen_cache_for_all_institutes
-    logger = current.get_logger()
     total = len(machine_category.institutequota_set.all())
     i = 0
 
