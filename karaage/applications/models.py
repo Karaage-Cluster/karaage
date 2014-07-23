@@ -181,13 +181,13 @@ class Application(models.Model):
         self.save()
     decline.alters_data = True
 
-    def check(self):
+    def check_valid(self):
         errors = []
 
         if self.applicant is None:
             errors.append("Applicant not set.")
         elif self.content_type.model == 'applicant':
-            errors.extend(self.applicant.check())
+            errors.extend(self.applicant.check_valid())
 
         return errors
 
@@ -306,8 +306,8 @@ class ProjectApplication(Application):
 
         return auth
 
-    def check(self):
-        errors = super(ProjectApplication, self).check()
+    def check_valid(self):
+        errors = super(ProjectApplication, self).check_valid()
 
         if self.project is None:
             if not self.name:
@@ -338,8 +338,8 @@ class SoftwareApplication(Application):
 
         return auth
 
-    def check(self):
-        errors = super(SoftwareApplication, self).check()
+    def check_valid(self):
+        errors = super(SoftwareApplication, self).check_valid()
 
         if self.content_type.model != 'person':
             errors.append("Applicant not already registered person.")
@@ -417,7 +417,7 @@ class Applicant(models.Model):
         """ Get the abbreviated name of the person. """
         return self.short_name
 
-    def check(self):
+    def check_valid(self):
         errors = []
 
         if not self.username:

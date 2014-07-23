@@ -155,7 +155,7 @@ class TransitionSubmit(base.Transition):
 
         # Check for serious errors in submission.
         # Should only happen in rare circumstances.
-        errors = application.check()
+        errors = application.check_valid()
         if len(errors) > 0:
             for error in errors:
                 messages.error(request, error)
@@ -178,7 +178,7 @@ class TransitionApprove(base.Transition):
         """ Retrieve the next state. """
         # Check for serious errors in submission.
         # Should only happen in rare circumstances.
-        errors = application.check()
+        errors = application.check_valid()
         if len(errors) > 0:
             for error in errors:
                 messages.error(request, error)
