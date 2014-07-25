@@ -73,6 +73,8 @@ Description: Collection of Django apps to manage a cluster
 Package: karaage3-apache
 Architecture: all
 Depends: ${misc:Depends}, python-karaage (>= 3.1.0), libapache2-mod-wsgi, apache2
+Breaks: karaage3-admin, karaage3-registration
+Replaces: karaage3-admin, karaage3-registration
 Description: Collection of Django apps to manage a cluster
  Karaage is a cluster account management tool. It can manage users and projects
  in a cluster and can store the data in various backends.
