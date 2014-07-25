@@ -80,7 +80,6 @@ KARAAGE_APPS = (
 
 INSTALLED_APPS = (
     'django_xmlrpc',
-    # 'south',
     'captcha',
     'ajax_select',
     'jsonfield',
@@ -96,13 +95,17 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 )
 
-# South not yet available for Python 3
-try:
-    import importlib
-    importlib.import_module('south')
+# South not available for Python 3+ or Django 1.7+
+import sys
+import django
+if sys.version_info < (3, 0) and django.VERSION < (1, 7):
     INSTALLED_APPS += ('south',)
-except ImportError:
-    pass
+
+    # Work around for south not working with mysql-connector-python
+    # https://groups.google.com/forum/m/#!topic/south-users/hrxwgimaYy8
+    SOUTH_DATABASE_ADAPTERS = {
+        'default': 'south.db.mysql'
+    }
 
 
 # List of locations of the template source files searched by
@@ -373,12 +376,6 @@ ADMIN_IGNORED = False
 # templates.
 SHORT_DATE_FORMAT = "Y-m-d"
 SHORT_DATETIME_FORMAT = "Y-m-d H:i"
-
-# Work around for south not working with mysql-connector-python
-# https://groups.google.com/forum/m/#!topic/south-users/hrxwgimaYy8
-SOUTH_DATABASE_ADAPTERS = {
-    'default': 'south.db.mysql'
-}
 
 # List of Karaage plugins
 PLUGINS = []
