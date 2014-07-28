@@ -72,12 +72,6 @@ class XmlrpcTestCase(TestCase):
         call_command('loaddata', 'karaage_data', **{'verbosity': 0})
         self.server = self.get_server_proxy()
 
-#    FIXME
-#    def test_project_under_quota(self):
-#        server = self.server
-#        server.project_under_quota("TestProject1")
-#        server.project_under_quota("TestProject1", "tango")
-
     def test_get_disk_quota(self):
         server = self.server
 

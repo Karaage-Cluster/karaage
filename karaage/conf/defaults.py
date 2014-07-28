@@ -259,7 +259,6 @@ XMLRPC_METHODS = (
     ('karaage.projects.xmlrpc.get_project_members', 'get_project_members',),
     ('karaage.projects.xmlrpc.get_projects', 'get_projects',),
     ('karaage.projects.xmlrpc.get_users_projects', 'get_users_projects',),
-    ('karaage.projects.xmlrpc.project_under_quota', 'project_under_quota',),
     ('karaage.projects.xmlrpc.showquota', 'showquota',),
 )
 

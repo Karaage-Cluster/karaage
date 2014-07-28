@@ -109,29 +109,6 @@ def get_users_projects(user):
     return 0, [x.pid for x in projects]
 
 
-@xmlrpc_func(returns='boolean', args=['string', 'string'])
-def project_under_quota(project_id, machine_name=None):
-    """
-    Returns True if project is under quota
-    """
-
-    machine_category = _get_machine_category(machine_name)
-    try:
-        project = Project.objects.get(pid=project_id)
-    except Project.DoesNotExist:
-        return 'Project not found'
-
-    project_chunk, created = \
-        ProjectQuota.objects.get_or_create(
-            project=project, machine_category=machine_category)
-
-    # FIXME: broken, broken, and more broken.
-    if project_chunk.is_over_quota():
-        return False
-
-    return True
-
-
 @xmlrpc_func(returns='int, list', args=['string', 'string'])
 def showquota(username, machine_name=None):
     """
@@ -163,8 +140,7 @@ def showquota(username, machine_name=None):
         if project == d_p:
             is_default = True
 
-        # FIXME
-        # mpots = str(float(project_chunk.get_mpots()))
+        # Is this needed?
         mpots = 0
 
         cap = str(float(project_chunk.get_cap()))
