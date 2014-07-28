@@ -45,7 +45,7 @@ def get_project_members(machine, project_id):
     except Project.DoesNotExist:
         return 'Project not found'
 
-    return [x.user.username for x in project.group.members.all()]
+    return [x.username for x in project.group.members.all()]
 
 
 @xmlrpc_machine_required()
@@ -61,7 +61,7 @@ def get_projects(machine):
 
 
 @xmlrpc_func(returns='string', args=['string', 'string', 'string'])
-def get_project(username, proj, machine_name=None):
+def get_project(username, project, machine_name=None):
     """
     Used in the submit filter to make sure user is in project
     """
@@ -73,22 +73,29 @@ def get_project(username, proj, machine_name=None):
             machine_category=machine_category,
             date_deleted__isnull=True)
     except Account.DoesNotExist:
-        return "User '%s' not found" % username
-    if proj is None:
+        return "Account '%s' not found" % username
+
+    if project is None:
         project = account.default_project
     else:
         try:
-            project = Project.objects.get(pid=proj)
+            project = Project.objects.get(pid=project)
         except Project.DoesNotExist:
             project = account.default_project
-    if project:
-        if account.person in project.group.members.all():
-            return project.pid
-        else:
-            if account.person in account.default_project.group.members.all():
-                return account.default_project.pid
 
-    return "None"
+    if project is None:
+        return "None"
+
+    if account.person not in project.group.members.all():
+        project = account.default_project
+
+    if project is None:
+        return "None"
+
+    if account.person not in project.group.members.all():
+        return "None"
+
+    return project.pid
 
 
 @permission_required()
@@ -118,6 +125,7 @@ def project_under_quota(project_id, machine_name=None):
         ProjectQuota.objects.get_or_create(
             project=project, machine_category=machine_category)
 
+    # FIXME: broken, broken, and more broken.
     if project_chunk.is_over_quota():
         return False
 
@@ -138,13 +146,12 @@ def showquota(username, machine_name=None):
             username=username,
             machine_category=machine_category,
             date_deleted__isnull=True)
-    except:
+    except Account.DoesNotExist:
         return -1, 'Account not found'
 
-    try:
-        d_p = u_a.default_project
-    except:
-        return -1, 'Default Project not found'
+    d_p = u_a.default_project
+    if d_p is None:
+        return -1, 'Default Project not set'
 
     p_l = []
     query = ProjectQuota.objects.filter(
@@ -156,15 +163,11 @@ def showquota(username, machine_name=None):
         if project == d_p:
             is_default = True
 
-        try:
-            mpots = str(float(project_chunk.get_mpots()))
-        except:
-            mpots = 0
+        # FIXME
+        # mpots = str(float(project_chunk.get_mpots()))
+        mpots = 0
 
-        try:
-            cap = str(float(project_chunk.get_cap()))
-        except:
-            cap = 0
+        cap = str(float(project_chunk.get_cap()))
 
         p_l.append([
             project.pid,
