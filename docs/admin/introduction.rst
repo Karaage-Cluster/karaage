@@ -17,20 +17,18 @@ Features
 * Usage reporting. Report on a per institute, per project or per user for CPU usage.
 * Track usage of software and versions. Keep track of what software (and version) and type of jobs a user is running.
 
-.. index:: Karaage; Karaage-admin
-
-karaage-admin
--------------
-Admin portal for cluster administrators (karaage-admin).
+Admin access
+------------
+When an administrator logs into karaage, they can do the following:
 
 * See/modify information about all users/projects/institutes/applications/usage etc.
 * Many changes are logged.
+* Anything a normal user can.
 
-.. index:: Karaage; Karaage-registration
-
-karaage-registration
---------------------
-User portal for cluster account holders (karaage-registration).
+User access
+-----------
+When a normal user logs into Karaage (or an administrator), they can do the
+following.
 
 Allows users to:
 

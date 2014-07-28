@@ -47,7 +47,7 @@ karaage3 (3.1.0-1) UNRELEASED; urgency=low
   * Make all strings in migrations "normal" strings.
   * Fix migrate_ldap operation.
   * Fix PEP8 issues.
-  * Fix Python 3 compatability issues.
+  * Fix Python 3 compatibility issues.
   * Fix __unicode__ methods for Python 3.
   * Python 3 tests.
   * Python3 tracing change.
@@ -63,7 +63,7 @@ karaage3 (3.1.0-1) UNRELEASED; urgency=low
   * Rename global_settings.py to settings.py
   * Copy and adapt file from django-xmlrpc.
   * Fix copyright declaration.
-  * Declare Python 3 compatable.
+  * Declare Python 3 compatible.
   * Split usage stuff into kgusage.
   * Fix Debian packaging issues.
   * Update documentation.
@@ -79,14 +79,14 @@ karaage3 (3.1.0-1) UNRELEASED; urgency=low
   * Don't import debconf everywhere.
   * Simplify apache2.2 config.
   * Rename check() to check_valid().
-  * karaage3-apache supercedes old packages.
+  * karaage3-apache replaces old packages.
   * Disable django-south if not available.
   * Silence Django 1.7 upgrade warnings.
   * Add south to build depends.
   * Fix XMLRPC and add tests.
   * Remove legacy project_under_quota function.
 
- -- Brian May <brian@microcomaustralia.com.au>  Mon, 28 Jul 2014 15:03:20 +1000
+ -- Brian May <bam@debian.org>  Mon, 28 Jul 2014 15:03:20 +1000
 
 karaage3 (3.0.15-1) unstable; urgency=low
 
@@ -98,17 +98,17 @@ karaage3 (3.0.15-1) unstable; urgency=low
   * Ensure admin request emails have correct link.
   * PEP8 improvement.
   * Fix PEP8 issue in comment.
-  * Remove non-PEP8 compliant whitespace.
+  * Remove non-PEP8 compliant white space.
   * Support searching multiple directories for gold.
   * Display more project application details.
 
- -- Brian May <brian@microcomaustralia.com.au>  Tue, 17 Jun 2014 14:26:03 +1000
+ -- Brian May <bam@debian.org>  Tue, 17 Jun 2014 14:26:03 +1000
 
 karaage3 (3.0.14-1) unstable; urgency=low
 
   * Put all tables inside table-container.
   * Remove calc from css.
-  * Make headings more consistant.
+  * Make headings more consistent.
   * Update depends.
   * Remove legacy stuff.
   * Update LDAP documentation.

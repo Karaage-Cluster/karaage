@@ -11,11 +11,11 @@ apache_force_reload() {
 }
 
 if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
-    if [ -x /usr/sbin/a2enconf ] ; then
+    if [ -e /usr/share/apache2/apache2-maintscript-helper ] ; then
         # apache 2.4
-        a2disconf karaage-2.4
-        apache_force_reload
-    else
+        . /usr/share/apache2/apache2-maintscript-helper
+        apache2_invoke disconf karaage-2.4.conf
+    elif  dpkg-query -f '${Version}'  -W 'apache2.2-common' > /dev/null 2>&1 ; then
         # apache 2.2
         rm /etc/apache2/conf.d/karaage-2.2.conf
         apache_force_reload
