@@ -33,8 +33,60 @@ karaage3 (3.1.0-1) UNRELEASED; urgency=low
   * Fix copyright declaration.
   * Declare Python 3 compatible.
   * Split usage stuff into kgusage.
+  * Update software usage statistics.
+  * Per institute software usage statistics.
+  * Verbose logging when creating application accounts
+  * Change link expiry text in emails.
 
- -- Brian May <bam@debian.org>  Tue, 15 Jul 2014 11:58:44 +1000
+  [ Andrew Spiers ]
+  * Fix typo in kg-daily-cleanup.rst
+
+  [ Brian May ]
+  * userPassword should be text, not binary.
+  * Fix strings for Python 3.2.
+  * Make all strings in migrations "normal" strings.
+  * Fix migrate_ldap operation.
+  * Fix PEP8 issues.
+  * Fix Python 3 compatability issues.
+  * Fix __unicode__ methods for Python 3.
+  * Python 3 tests.
+  * Python3 tracing change.
+  * Disable usage / south stuff if not available.
+  * Fix *all* PEP8 issues.
+  * More Python3 syntax errors fixed.
+  * Fix double quoted strings in migrations.
+  * Remove depreciated warnings.
+  * Fix Python3 PEP8 errors.
+  * Recommend mysql.connector.django over mysqldb.
+  * Redo Debian packaging.
+  * Support TLDAP 0.3.3
+  * Rename global_settings.py to settings.py
+  * Copy and adapt file from django-xmlrpc.
+  * Fix copyright declaration.
+  * Declare Python 3 compatable.
+  * Split usage stuff into kgusage.
+  * Fix Debian packaging issues.
+  * Update documentation.
+  * Update plugin API.
+  * Fix directory name in comment.
+  * Change permissions for all of /var/cache/karaage3.
+  * Don't run migrations unless Karaage is configured.
+  * More changes to plugin API.
+  * Add missing dpkg triggers.
+  * Conceal stderr output from init.d script.
+  * Apache2.2 and 2.4 autoconfiguration. (Closes: #201)
+  * Depend on apache2.
+  * Don't import debconf everywhere.
+  * Simplify apache2.2 config.
+  * Rename check() to check_valid().
+  * karaage3-apache supercedes old packages.
+  * Disable django-south if not available.
+  * Silence Django 1.7 upgrade warnings.
+  * Add south to build depends.
+  * Fix XMLRPC and add tests.
+  * Remove legacy project_under_quota function.
+
+ -- Brian May <brian@microcomaustralia.com.au>  Mon, 28 Jul 2014 15:03:20 +1000
 
 karaage3 (3.0.15-1) unstable; urgency=low
 
