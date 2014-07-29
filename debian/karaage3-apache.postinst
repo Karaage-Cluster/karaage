@@ -14,10 +14,10 @@ if [ "$1" = "configure" ]; then
     if [ -e /usr/share/apache2/apache2-maintscript-helper ] ; then
         # apache 2.4
         . /usr/share/apache2/apache2-maintscript-helper
-        apache2_invoke enconf karaage-2.4.conf
+        apache2_invoke enconf karaage3-apache.conf
     elif  dpkg-query -f '${Version}'  -W 'apache2.2-common' > /dev/null 2>&1 ; then
         # apache 2.2
-        ln -sf ../conf-available/karaage-2.2.conf /etc/apache2/conf.d/karaage-2.2.conf
+        ln -sf ../conf-available/karaage3-apache.conf /etc/apache2/conf.d/karaage3-apache.conf
         apache_force_reload
     fi
 

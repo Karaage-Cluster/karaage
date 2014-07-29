@@ -44,10 +44,8 @@ override_dh_install:
 	done
 	
 	mkdir -p $(PREFIXA)/etc/apache2/conf-available
-	set -e; for f in karaage-2.2.conf karaage-2.4.conf; do \
-		mv $(PREFIX2)/etc/apache2/conf-available/$$f $(PREFIXA)/etc/apache2/conf-available/; \
-		rm $(PREFIX3)/etc/apache2/conf-available/$$f; \
-	done
+	mv $(PREFIX2)/etc/apache2/conf-available/karaage3-apache.conf $(PREFIXA)/etc/apache2/conf-available/;
+	rm $(PREFIX3)/etc/apache2/conf-available/karaage3-apache.conf;
 	
 	mkdir -p $(PREFIX2)/usr/share/python-karaage/bin
 	mkdir -p $(PREFIX3)/usr/share/python3-karaage/bin
