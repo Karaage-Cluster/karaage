@@ -4,7 +4,7 @@
 PREFIX2 = debian/python-karaage
 PREFIX3 = debian/python3-karaage
 PREFIXC = debian/karaage3-common
-PREFIXA = debian/karaage3-apache
+PREFIXA = debian/karaage3-wsgi
 
 export PYBUILD_NAME=karaage
 
@@ -44,8 +44,8 @@ override_dh_install:
 	done
 	
 	mkdir -p $(PREFIXA)/etc/apache2/conf-available
-	mv $(PREFIX2)/etc/apache2/conf-available/karaage3-apache.conf $(PREFIXA)/etc/apache2/conf-available/;
-	rm $(PREFIX3)/etc/apache2/conf-available/karaage3-apache.conf;
+	mv $(PREFIX2)/etc/apache2/conf-available/karaage3-wsgi.conf $(PREFIXA)/etc/apache2/conf-available/;
+	rm $(PREFIX3)/etc/apache2/conf-available/karaage3-wsgi.conf;
 	
 	mkdir -p $(PREFIX2)/usr/share/python-karaage/bin
 	mkdir -p $(PREFIX3)/usr/share/python3-karaage/bin

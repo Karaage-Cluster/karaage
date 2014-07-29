@@ -70,7 +70,7 @@ Description: Collection of Django apps to manage a cluster
  .
  This package ensures the database is automatically migrated, as required.
 
-Package: karaage3-apache
+Package: karaage3-wsgi
 Architecture: all
 Depends: ${misc:Depends}, python-karaage (>= 3.1.0), libapache2-mod-wsgi, apache2
 Breaks: karaage3-admin, karaage3-registration
@@ -97,7 +97,7 @@ Description: Collection of Django apps to manage a cluster
  This package contains the documentation.
 
 Package: karaage3
-Depends: karaage3-database, karaage3-doc, karaage3-apache, ${misc:Depends}
+Depends: karaage3-database, karaage3-doc, karaage3-wsgi, ${misc:Depends}
 Suggests: python-kgusage
 Architecture: all
 Priority: extra

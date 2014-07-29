@@ -88,7 +88,7 @@ setup(
         ('/etc/karaage3',
             ['conf/settings.py', 'conf/karaage.wsgi', ]),
         ('/etc/apache2/conf-available',
-            ['conf/karaage3-apache.conf', ]),
+            ['conf/karaage3-wsgi.conf', ]),
     ],
     install_requires=[
         "Django >= 1.6",
