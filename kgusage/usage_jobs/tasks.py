@@ -25,6 +25,8 @@ import csv
 import os
 import os.path
 os.environ['MPLCONFIGDIR'] = GRAPH_TMP
+os.environ['CELERY_LOADER'] = 'djcelery.loaders.DjangoLoader'
+
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
