@@ -3,7 +3,7 @@
 Upgrading from 3.0.x to 3.1.x
 =============================
 
-#. Upgrade packages.
+#. Upgrade packages. Run the following commands:
 
    .. code-block:: bash
 
@@ -13,7 +13,13 @@ Upgrading from 3.0.x to 3.1.x
 #. Merge in changes from `/etc/karaage/global_settings.py` into
    `/etc/karaage3/settings.py`. Or just copy the file should be sufficient.
 
-#. If required, add the following to `/etc/karaage3/settings.py`:
+#. If required, install kgusage. Run the following command:
+
+   .. code-block:: bash
+
+       apt-get install python-kgusage
+
+   Add the following to `/etc/karaage3/settings.py`:
 
    .. code-block:: python
 
@@ -21,11 +27,18 @@ Upgrading from 3.0.x to 3.1.x
             'kgusage.plugins.Jobs',
         ]
 
+   Restart karaage3-celery:
+
    .. code-block:: bash
 
        service karaage3-celery restart
 
 #. Otherwise purge karaage3-celery if kgusage not required.
+
+#. Any old Apache configuration might conflict with the new Apache
+   configuration.  Apache 2.2 in Wheezy uses
+   `/etc/apache2/conf.d/karaage-wsgi.conf`. Any other configuration files may
+   be obsolete and should be deleted (or moved elsewehere).
 
 #. Run the database migrations, restart apache, and install the celery
    deaemon.
@@ -35,18 +48,19 @@ Upgrading from 3.0.x to 3.1.x
         kg-manage migrate --all
         service apache2 reload
 
-#.  Clean cruft.
+#.  Remove old package that might cause problems.
 
     .. code-block:: bash
 
         dpkg --purge python-karaage-celery
-        rm -rf /var/cache/karaage
-        rm -rf /var/log/karaage
 
-#.  Other dummy packages can be removed too. This is optional.
+#.  Old packages and files can be removed. This is optional.
 
     .. code-block:: bash
 
         dpkg --purge karaage3-admin
         dpkg --purge karaage3-registration
         dpkg --purge python-karaage-doc
+        rm -rf /etc/karaage
+        rm -rf /var/log/karaage
+        rm -rf /var/cache/karaage
