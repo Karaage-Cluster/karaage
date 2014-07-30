@@ -33,38 +33,6 @@ karaage3 (3.1.0-1) UNRELEASED; urgency=low
   * Fix copyright declaration.
   * Declare Python 3 compatible.
   * Split usage stuff into kgusage.
-  * Update software usage statistics.
-  * Per institute software usage statistics.
-  * Verbose logging when creating application accounts
-  * Change link expiry text in emails.
-
-  [ Andrew Spiers ]
-  * Fix typo in kg-daily-cleanup.rst
-
-  [ Brian May ]
-  * userPassword should be text, not binary.
-  * Fix strings for Python 3.2.
-  * Make all strings in migrations "normal" strings.
-  * Fix migrate_ldap operation.
-  * Fix PEP8 issues.
-  * Fix Python 3 compatibility issues.
-  * Fix __unicode__ methods for Python 3.
-  * Python 3 tests.
-  * Python3 tracing change.
-  * Disable usage / south stuff if not available.
-  * Fix *all* PEP8 issues.
-  * More Python3 syntax errors fixed.
-  * Fix double quoted strings in migrations.
-  * Remove depreciated warnings.
-  * Fix Python3 PEP8 errors.
-  * Recommend mysql.connector.django over mysqldb.
-  * Redo Debian packaging.
-  * Support TLDAP 0.3.3
-  * Rename global_settings.py to settings.py
-  * Copy and adapt file from django-xmlrpc.
-  * Fix copyright declaration.
-  * Declare Python 3 compatible.
-  * Split usage stuff into kgusage.
   * Fix Debian packaging issues.
   * Update documentation.
   * Update plugin API.
@@ -74,19 +42,29 @@ karaage3 (3.1.0-1) UNRELEASED; urgency=low
   * More changes to plugin API.
   * Add missing dpkg triggers.
   * Conceal stderr output from init.d script.
-  * Apache2.2 and 2.4 autoconfiguration. (Closes: #201)
+  * Apache2.2 and 2.4 autoconfiguration.
   * Depend on apache2.
   * Don't import debconf everywhere.
   * Simplify apache2.2 config.
   * Rename check() to check_valid().
-  * karaage3-apache replaces old packages.
+  * karaage3-apache supercedes old packages.
   * Disable django-south if not available.
   * Silence Django 1.7 upgrade warnings.
   * Add south to build depends.
   * Fix XMLRPC and add tests.
   * Remove legacy project_under_quota function.
+  * Update changelog.
+  * Add build depends on flake8.
+  * Fix lintian issues and other problems.
+  * Make tests optional.
+  * Combine apache config files into one.
+  * Rename karaage3-apache to karaage3-wsgi.
+  * Move non-py files to common package.
+  * Add lintian override for karaage3-wsgi.
+  * Add lintian overrides for karaage3-database.
+  * Modify Apache2.2 test.
 
- -- Brian May <bam@debian.org>  Mon, 28 Jul 2014 15:03:20 +1000
+ -- Brian May <bam@debian.org>  Wed, 30 Jul 2014 11:26:00 +1000
 
 karaage3 (3.0.15-1) unstable; urgency=low
 
