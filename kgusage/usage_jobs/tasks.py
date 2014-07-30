@@ -15,17 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import logging
-logger = logging.getLogger(__name__)
-
 from .dirs import GRAPH_TMP, GRAPH_ROOT
 
-import datetime
-import csv
 import os
 import os.path
 os.environ['MPLCONFIGDIR'] = GRAPH_TMP
 os.environ['CELERY_LOADER'] = 'djcelery.loaders.DjangoLoader'
+
+import logging
+logger = logging.getLogger(__name__)
+
+import csv
+import datetime
 
 import matplotlib
 matplotlib.use('Agg')
