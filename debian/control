@@ -25,6 +25,8 @@ Package: karaage3-common
 Architecture: all
 Depends: ${misc:Depends}, ${python:Depends}, csstidy, slimit
 Recommends: python-karaage | python3-karaage
+Breaks: python-karaage (<< 3.1.0)
+Replaces: python-karaage (<< 3.1.0)
 Description: Collection of Django apps to manage a cluster
  Karaage is a cluster account management tool. It can manage users and projects
  in a cluster and can store the data in various backends.

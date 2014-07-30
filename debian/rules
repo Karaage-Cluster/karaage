@@ -60,3 +60,21 @@ override_dh_install:
 	
 	rm $(PREFIX2)/usr/bin/kg_set_secret_key
 	mv $(PREFIX3)/usr/bin/kg_set_secret_key $(PREFIXC)/usr/bin
+
+override_dh_python3:
+	dh_python3
+	find debian/python3-karaage/usr/lib/python3/dist-packages/ -type f -not -name '*.py' | \
+	(while read file; do \
+		relname=$${file##debian/python3-karaage/usr/lib/python3/dist-packages/}; \
+		reldirname=$$(dirname $$relname); \
+		mkdir -p debian/karaage3-common/usr/share/karaage3-common/$$reldirname; \
+		mv $$file debian/karaage3-common/usr/share/karaage3-common/$$reldirname/; \
+		ln -sf /usr/share/karaage3-common/$$relname $$file; \
+		if test -e debian/python-karaage/usr/share/pyshared/$$relname; then \
+		    rm debian/python-karaage/usr/share/pyshared/$$relname; \
+		    ln -sf /usr/share/karaage3-common/$$relname debian/python-karaage/usr/share/pyshared/$$relname; \
+		else \
+		    rm debian/python-karaage/usr/lib/python2.7/dist-packages/$$relname; \
+		    ln -sf /usr/share/karaage3-common/$$relname debian/python-karaage/usr/lib/python2.7/dist-packages/$$relname; \
+		fi \
+	done)
