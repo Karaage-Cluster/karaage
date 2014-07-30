@@ -15,7 +15,7 @@ if [ "$1" = "configure" ]; then
         # apache 2.4
         . /usr/share/apache2/apache2-maintscript-helper
         apache2_invoke enconf karaage3-wsgi.conf
-    elif  dpkg-query -f '${Version}'  -W 'apache2.2-common' > /dev/null 2>&1 ; then
+    elif command -v apache2 > /dev/null && apache2 -v | sed -n 's/^Server version: //p' | grep -q 'Apache/2.2'; then
         # apache 2.2
         ln -sf ../conf-available/karaage3-wsgi.conf /etc/apache2/conf.d/karaage3-wsgi.conf
         apache_force_reload
