@@ -390,3 +390,7 @@ SILENCED_SYSTEM_CHECKS = [
     # BooleanField does not have a default value
     '1_6.W002',
 ]
+
+# Required for djcelery to work properly. Has no effect otherwise.
+import os
+os.environ.setdefault('CELERY_LOADER', 'djcelery.loaders.DjangoLoader')
