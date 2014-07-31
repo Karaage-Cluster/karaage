@@ -93,7 +93,7 @@ def gen_machine_category_cache(start, end):
 def gen_cache_for_machine_category(start, end, machine_category_pk):
     machine_category = MachineCategory.objects.get(pk=machine_category_pk)
 
-    current = gen_machine_category_cache
+    current = gen_cache_for_machine_category
 
     total = 6
     i = 0
