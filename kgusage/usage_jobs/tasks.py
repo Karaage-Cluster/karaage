@@ -20,7 +20,6 @@ from .dirs import GRAPH_TMP, GRAPH_ROOT
 import os
 import os.path
 os.environ['MPLCONFIGDIR'] = GRAPH_TMP
-os.environ['CELERY_LOADER'] = 'djcelery.loaders.DjangoLoader'
 
 import logging
 logger = logging.getLogger(__name__)
