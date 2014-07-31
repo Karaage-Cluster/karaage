@@ -190,7 +190,8 @@ def index(request, machine_category_id):
     total = mc_cache.cpu_time
     total_jobs = mc_cache.no_jobs
     available_time = mc_cache.available_time
-    avg_cpus = available_time / (60 * 24 * 24) / ((end - start).days + 1)
+    total_time = ((end - start).days + 1) * 24 * 60 * 60
+    avg_cpus = available_time / total_time
 
     for m_cache in models.MachineCache.objects.filter(
             machine__category=machine_category,
