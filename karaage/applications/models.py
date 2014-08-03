@@ -36,7 +36,6 @@ from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory, Account
-from karaage.software.models import SoftwareLicenseAgreement
 
 
 class ApplicationManager(models.Manager):
@@ -318,51 +317,6 @@ class ProjectApplication(Application):
                     "New project application with no institute")
 
         return errors
-
-
-class SoftwareApplication(Application):
-    type = "software"
-    software_license = models.ForeignKey('software.SoftwareLicense')
-
-    objects = ApplicationManager()
-
-    def info(self):
-        return six.u("access to %s") % self.software_license.software
-
-    def authenticate(self, person):
-        auth = {}
-
-        auth['is_applicant'] = False
-        if person == self.applicant:
-            auth['is_applicant'] = True
-
-        return auth
-
-    def check_valid(self):
-        errors = super(SoftwareApplication, self).check_valid()
-
-        if self.content_type.model != 'person':
-            errors.append("Applicant not already registered person.")
-
-        return errors
-
-    def approve(self, approved_by):
-        created_person = super(SoftwareApplication, self).approve(approved_by)
-
-        try:
-            sla = SoftwareLicenseAgreement.objects.get(
-                person=self.applicant,
-                license=self.software_license,
-            )
-        except SoftwareLicenseAgreement.DoesNotExist:
-            sla = SoftwareLicenseAgreement()
-            sla.person = self.applicant
-            sla.license = self.software_license
-            sla.date = datetime.datetime.today()
-            sla.save()
-
-        self.software_license.software.group.add_person(self.applicant)
-        return created_person
 
 
 @python_2_unicode_compatible

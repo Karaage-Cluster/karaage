@@ -16,7 +16,6 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import karaage.applications.models as models
-import karaage.applications.views.software as software
 
 
 def context(request):
@@ -31,14 +30,3 @@ def context(request):
             my_applications.count() + requires_attention.count()
         )
     return ctx
-
-
-def approve_join_software(request, software_license):
-    return software.new_application(request, software_license)
-
-
-def is_approve_join_software_pending(request, software_license):
-    person = request.user
-    query = models.SoftwareApplication.objects.get_for_applicant(person)
-    query = query.filter(software_license=software_license)
-    return query.count() > 0

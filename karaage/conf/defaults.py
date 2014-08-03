@@ -72,7 +72,7 @@ KARAAGE_APPS = (
     'karaage.projects',
     'karaage.legacy.usage',
     'karaage.legacy.cache',
-    'karaage.software',
+    'karaage.legacy.software',
     'karaage.legacy.pbsmoab',
     'karaage.emails',
     'karaage.applications',

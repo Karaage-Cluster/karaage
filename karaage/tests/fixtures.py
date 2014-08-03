@@ -34,7 +34,6 @@ import karaage.institutes.models
 import karaage.machines.models
 import karaage.people.models
 import karaage.projects.models
-import karaage.software.models
 
 
 def FuzzyLowerText(*args, **kwargs):
@@ -122,14 +121,6 @@ class AccountFactory(DjangoModelFactory):
     date_created = factory.LazyAttribute(lambda a: datetime.datetime.today())
     default_project = factory.SubFactory(ProjectFactory)
     shell = FuzzyChoice(settings.SHELLS)
-
-
-class SoftwareFactory(DjangoModelFactory):
-    FACTORY_FOR = karaage.software.models.Software
-    FACTORY_DJANGO_GET_OR_CREATE = ('name',)
-
-    name = FuzzyLowerText(prefix='soft-')
-    group = factory.SubFactory(GroupFactory)
 
 
 class ApplicationFactory(DjangoModelFactory):

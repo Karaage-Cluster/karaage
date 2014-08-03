@@ -27,7 +27,7 @@ from django.utils.safestring import mark_safe
 
 from captcha.fields import CaptchaField
 
-from karaage.applications.models import ProjectApplication, SoftwareApplication
+from karaage.applications.models import ProjectApplication
 from karaage.applications.models import Applicant
 from karaage.people.models import Person
 from karaage.people.utils import validate_username_for_new_person
@@ -342,13 +342,6 @@ def AdminApproveProjectFormGenerator(application, auth):
             return pid
 
     return AdminApproveProjectForm
-
-
-class ApproveSoftwareForm(forms.ModelForm):
-
-    class Meta:
-        model = SoftwareApplication
-        fields = []
 
 
 class PersonSetPassword(forms.Form):

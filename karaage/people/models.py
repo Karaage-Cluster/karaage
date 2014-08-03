@@ -488,7 +488,6 @@ def _add_person_to_group(person, group):
     from karaage.datastores import add_accounts_to_group
     from karaage.datastores import add_accounts_to_project
     from karaage.datastores import add_accounts_to_institute
-    from karaage.datastores import add_accounts_to_software
 
     a_list = person.account_set
     global_add_person_to_group(person, group)
@@ -497,8 +496,6 @@ def _add_person_to_group(person, group):
         add_accounts_to_project(a_list, project)
     for institute in group.institute_set.all():
         add_accounts_to_institute(a_list, institute)
-    for software in group.software_set.all():
-        add_accounts_to_software(a_list, software)
 
 
 def _remove_person_from_group(person, group):
@@ -507,7 +504,6 @@ def _remove_person_from_group(person, group):
     from karaage.datastores import remove_accounts_from_group
     from karaage.datastores import remove_accounts_from_project
     from karaage.datastores import remove_accounts_from_institute
-    from karaage.datastores import remove_accounts_from_software
 
     a_list = person.account_set
     global_remove_person_from_group(person, group)
@@ -516,8 +512,6 @@ def _remove_person_from_group(person, group):
         remove_accounts_from_project(a_list, project)
     for institute in group.institute_set.all():
         remove_accounts_from_institute(a_list, institute)
-    for software in group.software_set.all():
-        remove_accounts_from_software(a_list, software)
 
 
 def _members_changed(
