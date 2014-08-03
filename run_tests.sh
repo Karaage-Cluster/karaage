@@ -24,12 +24,12 @@ echo -e "\n\n"
 echo ""
 echo "STATIC FILES"
 echo "############################"
-./manage.py collectstatic --settings=karaage.tests.settings -v 2 --noinput
+./manage.py collectstatic --settings=kgusage.tests.settings -v 2 --noinput
 
 echo ""
 echo "TESTS - Python 2"
 echo "############################"
-python2 ./manage.py test --settings=karaage.tests.settings -v 2 $TESTS
+python2 ./manage.py test --settings=kgusage.tests.settings -v 2 $TESTS
 if [ ! $? -eq 0 ]
 then
     RETURN=1
@@ -38,7 +38,7 @@ fi
 #echo ""
 #echo "TESTS - Python 3"
 #echo "############################"
-#python3 ./manage.py test --settings=karaage.tests.settings -v 2 $TESTS
+#python3 ./manage.py test --settings=kgusage.tests.settings -v 2 $TESTS
 #if [ ! $? -eq 0 ]
 #then
 #    RETURN=1

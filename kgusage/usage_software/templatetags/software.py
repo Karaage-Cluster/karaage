@@ -15,22 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from karaage.plugins import BasePlugin
+""" Application specific tags. """
+
+import django_tables2 as tables
+
+from django import template
+register = template.Library()
+
+from ..tables import SoftwareLicenseAgreementTable
 
 
-class Jobs(BasePlugin):
-    module = "kgusage.usage_jobs"
-    django_apps = ("djcelery",)
-    xmlrpc_methods = (
-        ('kgusage.usage_jobs.xmlrpc.parse_usage', 'parse_usage',),
-    )
-    settings = {
-        'GRAPH_DEBUG': False,
-        'GRAPH_DIR': 'usage_jobs/',
-        'GRAPH_TMP': 'usage_jobs/',
-    }
-    depends = ("kgusage.plugins.Software",)
-
-
-class Software(BasePlugin):
-    module = "kgusage.usage_software"
+@register.assignment_tag(takes_context=True)
+def get_software_license_agreement_table(context, queryset):
+    table = SoftwareLicenseAgreementTable(queryset)
+    config = tables.RequestConfig(context['request'], paginate={"per_page": 5})
+    config.configure(table)
+    return table

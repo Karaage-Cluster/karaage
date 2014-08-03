@@ -15,22 +15,16 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from karaage.plugins import BasePlugin
+from .models import SoftwareApplication
+from .views.applications import new_application
 
 
-class Jobs(BasePlugin):
-    module = "kgusage.usage_jobs"
-    django_apps = ("djcelery",)
-    xmlrpc_methods = (
-        ('kgusage.usage_jobs.xmlrpc.parse_usage', 'parse_usage',),
-    )
-    settings = {
-        'GRAPH_DEBUG': False,
-        'GRAPH_DIR': 'usage_jobs/',
-        'GRAPH_TMP': 'usage_jobs/',
-    }
-    depends = ("kgusage.plugins.Software",)
+def approve_join_software(request, software_license):
+    return new_application(request, software_license)
 
 
-class Software(BasePlugin):
-    module = "kgusage.usage_software"
+def is_approve_join_software_pending(request, software_license):
+    person = request.user
+    query = SoftwareApplication.objects.get_for_applicant(person)
+    query = query.filter(software_license=software_license)
+    return query.count() > 0

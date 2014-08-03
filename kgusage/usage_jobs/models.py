@@ -23,10 +23,10 @@ from django.utils.encoding import python_2_unicode_compatible
 
 from karaage.machines.models import Account, Machine, MachineCategory
 from karaage.projects.models import Project
-from karaage.software.models import SoftwareVersion
-
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
+
+from kgusage.usage_software.models import SoftwareVersion
 
 
 @python_2_unicode_compatible

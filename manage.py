@@ -2,6 +2,6 @@
 import os
 from django.core import management
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'karaage.conf.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'kgusage.conf.settings'
 if __name__ == "__main__":
     management.execute_from_command_line()

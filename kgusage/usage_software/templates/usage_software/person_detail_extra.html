@@ -1,0 +1,10 @@
+{% load render_table from django_tables2 %}
+{% load software %}
+
+{% if is_admin %}
+<div class="module">
+    <h2>Software Agreements</h2>
+    {% get_software_license_agreement_table person.softwarelicenseagreement_set.all as table %}
+    {% render_table table %}
+</div>
+{% endif %}

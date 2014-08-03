@@ -1,4 +1,4 @@
-# Copyright 2007-2014 VPAC
+# Copyright 2014 The University of Melbourne
 #
 # This file is part of Karaage.
 #
@@ -15,22 +15,22 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from karaage.plugins import BasePlugin
+try:
+    from factory.django import DjangoModelFactory
+    import factory
+except ImportError:
+    raise ImportError(
+        "factory_boy is required, "
+        "either install from a package or using \'pip install -e .[tests]\'")
+
+from karaage.tests.fixtures import FuzzyLowerText, GroupFactory
+
+from kgusage.usage_software.models import Software
 
 
-class Jobs(BasePlugin):
-    module = "kgusage.usage_jobs"
-    django_apps = ("djcelery",)
-    xmlrpc_methods = (
-        ('kgusage.usage_jobs.xmlrpc.parse_usage', 'parse_usage',),
-    )
-    settings = {
-        'GRAPH_DEBUG': False,
-        'GRAPH_DIR': 'usage_jobs/',
-        'GRAPH_TMP': 'usage_jobs/',
-    }
-    depends = ("kgusage.plugins.Software",)
+class SoftwareFactory(DjangoModelFactory):
+    FACTORY_FOR = Software
+    FACTORY_DJANGO_GET_OR_CREATE = ('name',)
 
-
-class Software(BasePlugin):
-    module = "kgusage.usage_software"
+    name = FuzzyLowerText(prefix='soft-')
+    group = factory.SubFactory(GroupFactory)

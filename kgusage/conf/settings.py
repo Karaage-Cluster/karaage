@@ -15,22 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from karaage.plugins import BasePlugin
+from karaage.conf.defaults import *  # NOQA
 
+exec(open("/etc/karaage3/settings.py", "rb").read())
 
-class Jobs(BasePlugin):
-    module = "kgusage.usage_jobs"
-    django_apps = ("djcelery",)
-    xmlrpc_methods = (
-        ('kgusage.usage_jobs.xmlrpc.parse_usage', 'parse_usage',),
-    )
-    settings = {
-        'GRAPH_DEBUG': False,
-        'GRAPH_DIR': 'usage_jobs/',
-        'GRAPH_TMP': 'usage_jobs/',
-    }
-    depends = ("kgusage.plugins.Software",)
+PLUGINS = [
+    'kgusage.plugins.Jobs',
+]
 
-
-class Software(BasePlugin):
-    module = "kgusage.usage_software"
+import sys
+from karaage.conf.process import post_process
+post_process(sys.modules[__name__])
