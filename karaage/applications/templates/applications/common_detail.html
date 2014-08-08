@@ -28,14 +28,14 @@
             <p>Application process:</p>
             {% application_state application %}
 
-            {% if auth.can_approve %}
+            {% if roles.can_approve %}
             <p><b>As you are {{ authorised_text }}, please Approve or Decline this request.</b></p>
             {% endif %}
 
-            {% if auth.can_approve or is_admin %}
+            {% if roles.can_approve or is_admin %}
             <div class="object-tools">
                 <ul>
-                    {% if auth.can_approve %}
+                    {% if roles.can_approve %}
                     <li><a href="{% url 'kg_application_detail' application.id application.state 'approve' %}" class="yeslink">Approve</a></li>
                     <li><a href="{% url 'kg_application_detail' application.id application.state 'decline' %}" class="nolink">Decline</a></li>
                     {% endif %}

@@ -1,1 +1,1 @@
-{% autoescape off %}{{ org_name }} declined {{ application.info }}{% endautoescape %}
+{% autoescape off %}{{ org_name }} declined: {{ application.info }}{% endautoescape %}

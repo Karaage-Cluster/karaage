@@ -31,17 +31,17 @@ from karaage.applications.models import Application
 import karaage.common as common
 
 
-def get_url(request, application, auth, label=None):
+def get_url(request, application, roles, label=None):
     """ Retrieve a link that will work for the current user. """
     args = []
     if label is not None:
         args.append(label)
 
     # don't use secret_token unless we have to
-    if auth['is_admin']:
+    if 'is_admin' in roles:
         # Administrators can access anything without secrets
         require_secret = False
-    elif not auth['is_applicant']:
+    elif not 'is_applicant' in roles:
         # we never give secrets to anybody but the applicant
         require_secret = False
     elif not request.user.is_authenticated():
@@ -124,19 +124,16 @@ class StateMachine(object):
         state, _ = self._states[application.state]
         return state
 
-    def start(self, request, application, auth_override=None):
+    def start(self, request, application, extra_roles=None):
         """ Continue the state machine at first state. """
         # Get the authentication of the current user
-        auth = self._authenticate(request, application)
-        if auth_override is not None:
-            auth.update(auth_override)
+        roles = self._get_roles_for_request(request, application)
+        if extra_roles is not None:
+            roles.update(extra_roles)
 
         # Ensure current user is authenticated. If user isn't applicant,
         # leader, delegate or admin, they probably shouldn't be here.
-        if (not auth['is_applicant'] and
-                not auth['is_leader'] and
-                not auth['is_delegate'] and
-                not auth['is_admin']):
+        if 'is_authorised' not in roles:
             return HttpResponseForbidden('<h1>Access Denied</h1>')
 
         # Sanity check
@@ -144,29 +141,26 @@ class StateMachine(object):
             raise RuntimeError("First state not set.")
 
         # Go to first state.
-        return self._next(request, application, auth, self._first_state)
+        return self._next(request, application, roles, self._first_state)
 
     def process(
             self, request, application,
-            expected_state, label, auth_override=None):
+            expected_state, label, extra_roles=None):
         """ Process the view request at the current state. """
 
         # Get the authentication of the current user
-        auth = self._authenticate(request, application)
-        if auth_override is not None:
-            auth.update(auth_override)
+        roles = self._get_roles_for_request(request, application)
+        if extra_roles is not None:
+            roles.update(extra_roles)
 
         # Ensure current user is authenticated. If user isn't applicant,
         # leader, delegate or admin, they probably shouldn't be here.
-        if (not auth['is_applicant'] and
-                not auth['is_leader'] and
-                not auth['is_delegate'] and
-                not auth['is_admin']):
+        if 'is_authorised' not in roles:
             return HttpResponseForbidden('<h1>Access Denied</h1>')
 
         # If user didn't supply state on URL, redirect to full URL.
         if expected_state is None:
-            url = get_url(request, application, auth, label)
+            url = get_url(request, application, roles, label)
             return HttpResponseRedirect(url)
 
         # Check that the current state is valid.
@@ -183,7 +177,7 @@ class StateMachine(object):
                     "Discarding request and jumping to current state.")
             # note we discard the label, it probably isn't relevant for new
             # state
-            url = get_url(request, application, auth)
+            url = get_url(request, application, roles)
             return HttpResponseRedirect(url)
 
         # Get the current state for this application
@@ -193,14 +187,14 @@ class StateMachine(object):
         if request.method == "GET":
             # if method is GET, state does not ever change.
             response = state.view(
-                request, application, label, auth, actions.keys())
+                request, application, label, roles, actions.keys())
             assert isinstance(response, HttpResponse)
             return response
 
         elif request.method == "POST":
             # if method is POST, it can return a HttpResponse or a string
             response = state.view(
-                request, application, label, auth, actions.keys())
+                request, application, label, roles, actions.keys())
             if isinstance(response, HttpResponse):
                 # If it returned a HttpResponse, state not changed, just
                 # display
@@ -214,7 +208,7 @@ class StateMachine(object):
                         % (response, state))
                 next_state_key = actions[response]
                 # Go to the next state
-                return self._next(request, application, auth, next_state_key)
+                return self._next(request, application, roles, next_state_key)
 
         else:
             # Shouldn't happen, user did something weird
@@ -224,26 +218,24 @@ class StateMachine(object):
     # PRIVATE METHODS #
     ###################
     @staticmethod
-    def _authenticate(request, application):
+    def _get_roles_for_request(request, application):
         """ Check the authentication of the current user. """
-        if not request.user.is_authenticated():
-            return {
-                'is_applicant': False, 'is_leader': False,
-                'is_delegate': False, 'is_admin': common.is_admin(request),
-            }
-        person = request.user
-        auth = application.authenticate(person)
-        auth["is_admin"] = common.is_admin(request)
-        return auth
+        roles = application.get_roles_for_person(request.user)
 
-    def _next(self, request, application, auth, state_key):
+        if common.is_admin(request):
+            roles.add("is_admin")
+            roles.add('is_authorised')
+
+        return roles
+
+    def _next(self, request, application, roles, state_key):
         """ Continue the state machine at given state. """
         # we only support state changes for POST requests
         if request.method == "POST":
             # If next state is a transition, process it
             while isinstance(state_key, Transition):
                 state_key = state_key.get_next_state(
-                    request, application, auth)
+                    request, application, roles)
 
             # lookup next state
             if state_key not in self._states:
@@ -259,7 +251,7 @@ class StateMachine(object):
             log.change(application.application_ptr, "state: %s" % state.name)
 
             # redirect to this new state
-            url = get_url(request, application, auth)
+            url = get_url(request, application, roles)
             return HttpResponseRedirect(url)
         else:
             return HttpResponseBadRequest("<h1>Bad Request</h1>")
@@ -276,7 +268,7 @@ class State(object):
         """ This is becoming the new current state. """
         pass
 
-    def view(self, request, application, label, auth, actions):
+    def view(self, request, application, label, roles, actions):
         """ Django view method. We provide a default detail view for
         applications. """
 
@@ -292,7 +284,7 @@ class State(object):
             tmp_actions.append("cancel")
         if 'duplicate' in actions:
             tmp_actions.append("duplicate")
-        if 'archive' in actions and auth['is_admin']:
+        if 'archive' in actions and 'is_admin' in roles:
             tmp_actions.append("archive")
         actions = tmp_actions
 
@@ -303,7 +295,7 @@ class State(object):
                 'application': application,
                 'actions': actions,
                 'state': self.name,
-                'auth': auth})
+                'roles': roles})
             return render_to_response(
                 'applications/common_detail.html',
                 context,
@@ -322,7 +314,7 @@ class Transition(object):
     def __init__(self):
         pass
 
-    def get_next_state(self, request, application, auth):
+    def get_next_state(self, request, application, roles):
         """ Retrieve the next state. """
         raise NotImplementedError()
 

@@ -1,1 +1,1 @@
-{% autoescape off %}{{ org_name }} request for {{ application.info }}{% endautoescape %}
+{% autoescape off %}{{ org_name }} request: {{ application.info }}{% endautoescape %}

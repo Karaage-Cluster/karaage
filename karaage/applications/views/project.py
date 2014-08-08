@@ -77,19 +77,19 @@ class StateWithSteps(base.State):
         self._steps[step_id] = step
         self._order.append(step_id)
 
-    def view(self, request, application, label, auth, actions):
+    def view(self, request, application, label, roles, actions):
         """ Process the view request at the current step. """
 
         # if the user is not the applicant, the steps don't apply.
-        if not auth['is_applicant']:
+        if 'is_applicant' not in roles:
             return super(StateWithSteps, self).view(
-                request, application, label, auth, actions)
+                request, application, label, roles, actions)
 
         # was label supplied?
         if label is None:
             # no label given, find first step and redirect to it.
             this_id = self._order[0]
-            url = base.get_url(request, application, auth, this_id)
+            url = base.get_url(request, application, roles, this_id)
             return HttpResponseRedirect(url)
         else:
             # label was given, get the step position and id for it
@@ -116,13 +116,13 @@ class StateWithSteps(base.State):
         if request.method == "GET":
             # if GET request, state changes are not allowed
             response = this_step.view(
-                request, application, this_id, auth, step_actions.keys())
+                request, application, this_id, roles, step_actions.keys())
             assert isinstance(response, HttpResponse)
             return response
         elif request.method == "POST":
             # if POST request, state changes are allowed
             response = this_step.view(
-                request, application, this_id, auth, step_actions.keys())
+                request, application, this_id, roles, step_actions.keys())
             assert response is not None
 
             # If it was a HttpResponse, just return it
@@ -140,7 +140,7 @@ class StateWithSteps(base.State):
                 if action.startswith("state:"):
                     return action[6:]
                 else:
-                    url = base.get_url(request, application, auth, action)
+                    url = base.get_url(request, application, roles, action)
                     return HttpResponseRedirect(url)
 
         # We only understand GET or POST requests
@@ -155,7 +155,7 @@ class Step(object):
 
     """ A single step in a StateWithStep state. """
 
-    def view(self, request, application, label, auth, actions):
+    def view(self, request, application, label, roles, actions):
         return NotImplementedError()
 
 
@@ -164,7 +164,7 @@ class StateStepIntroduction(Step):
     """ Invitation has been sent to applicant. """
     name = "Read introduction"
 
-    def view(self, request, application, label, auth, actions):
+    def view(self, request, application, label, roles, actions):
         """ Django view method. """
         if application.content_type.model == 'applicant':
             if not application.applicant.email_verified:
@@ -178,7 +178,7 @@ class StateStepIntroduction(Step):
             'applications/project_aed_introduction.html',
             {
                 'actions': actions,
-                'application': application, 'auth': auth,
+                'application': application, 'roles': roles,
                 'link': link, 'is_secret': is_secret,
             },
             context_instance=RequestContext(request))
@@ -189,7 +189,7 @@ class StateStepShibboleth(Step):
     """ Invitation has been sent to applicant. """
     name = "Invitation sent"
 
-    def view(self, request, application, label, auth, actions):
+    def view(self, request, application, label, roles, actions):
         """ Django view method. """
         status = None
         applicant = application.applicant
@@ -250,7 +250,7 @@ class StateStepShibboleth(Step):
 
                     # if institute supports shibboleth, redirect back here via
                     # shibboleth, otherwise redirect directly back he.
-                    url = base.get_url(request, application, auth, label)
+                    url = base.get_url(request, application, roles, label)
                     if institute.saml_entityid is not None:
                         url = saml.build_shib_url(
                             request, url, institute.saml_entityid)
@@ -270,7 +270,7 @@ class StateStepShibboleth(Step):
                             applicant, request)
                         applicant.save()
 
-                        url = base.get_url(request, application, auth, label)
+                        url = base.get_url(request, application, roles, label)
                         return HttpResponseRedirect(url)
                     else:
                         return HttpResponseBadRequest("<h1>Bad Request</h1>")
@@ -302,7 +302,7 @@ class StateStepShibboleth(Step):
         return render_to_response(
             'applications/project_aed_shibboleth.html',
             {'form': form, 'done': done, 'status': status,
-                'actions': actions, 'auth': auth, 'application': application,
+                'actions': actions, 'roles': roles, 'application': application,
                 'attrs': attrs, 'saml_session': saml_session, },
             context_instance=RequestContext(request))
 
@@ -312,7 +312,7 @@ class StateStepApplicant(Step):
     """ Application is open and user is can edit it."""
     name = "Open"
 
-    def view(self, request, application, label, auth, actions):
+    def view(self, request, application, label, roles, actions):
         """ Django view method. """
         # Get the appropriate form
         status = None
@@ -357,7 +357,7 @@ class StateStepApplicant(Step):
             {
                 'form': form,
                 'application': application,
-                'status': status, 'actions': actions, 'auth': auth,
+                'status': status, 'actions': actions, 'roles': roles,
             },
             context_instance=RequestContext(request))
 
@@ -404,7 +404,7 @@ class StateStepProject(base.State):
 
         return resp
 
-    def view(self, request, application, label, auth, actions):
+    def view(self, request, application, label, roles, actions):
         """ Django view method. """
         if 'ajax' in request.POST:
             resp = self.handle_ajax(request, application)
@@ -513,7 +513,7 @@ class StateStepProject(base.State):
         return render_to_response(
             'applications/project_aed_project.html',
             {'forms': project_forms, 'project': project,
-                'actions': actions, 'auth': auth,
+                'actions': actions, 'roles': roles,
                 'application': application, },
             context_instance=RequestContext(request))
 
@@ -529,12 +529,12 @@ class StateApplicantEnteringDetails(StateWithSteps):
         self.add_step(StateStepApplicant(), 'applicant')
         self.add_step(StateStepProject(), 'project')
 
-    def view(self, request, application, label, auth, actions):
+    def view(self, request, application, label, roles, actions):
         """ Process the view request at the current step. """
 
         # if user is logged and and not applicant, steal the
         # application
-        if auth['is_applicant']:
+        if 'is_applicant' in roles:
             # if we got this far, then we either we are logged in as applicant,
             # or we know the secret for this application.
 
@@ -578,7 +578,7 @@ class StateApplicantEnteringDetails(StateWithSteps):
                         messages.success(
                             request,
                             "Stolen application from %s" % old_applicant)
-                        url = base.get_url(request, application, auth, label)
+                        url = base.get_url(request, application, roles, label)
                         return HttpResponseRedirect(url)
                     else:
                         return render_to_response(
@@ -588,21 +588,21 @@ class StateApplicantEnteringDetails(StateWithSteps):
                             context_instance=RequestContext(request))
 
         # if the user is the leader, show him the leader specific page.
-        if (auth['is_leader'] or auth['is_delegate']) \
-                and not auth['is_admin'] \
-                and not auth['is_applicant']:
+        if ('is_leader' in roles or 'is_delegate' in roles) \
+                and 'is_admin' not in roles \
+                and 'is_applicant' not in roles:
             actions = ['reopen']
             if 'reopen' in request.POST:
                 return 'reopen'
             return render_to_response(
                 'applications/project_aed_for_leader.html',
                 {'application': application,
-                    'actions': actions, 'auth': auth, },
+                    'actions': actions, 'roles': roles, },
                 context_instance=RequestContext(request))
 
         # otherwise do the default behaviour for StateWithSteps
         return super(StateApplicantEnteringDetails, self) \
-            .view(request, application, label, auth, actions)
+            .view(request, application, label, roles, actions)
 
 
 class StateWaitingForLeader(states.StateWaitingForApproval):
@@ -614,8 +614,8 @@ class StateWaitingForLeader(states.StateWaitingForApproval):
     def get_authorised_persons(self, application):
         return application.project.leaders.filter(is_active=True)
 
-    def get_approve_form(self, request, application, auth):
-        return forms.ApproveProjectFormGenerator(application, auth)
+    def get_approve_form(self, request, application, roles):
+        return forms.ApproveProjectFormGenerator(application, roles)
 
 
 class StateWaitingForDelegate(states.StateWaitingForApproval):
@@ -628,8 +628,8 @@ class StateWaitingForDelegate(states.StateWaitingForApproval):
         return application.institute.delegates \
             .filter(institutedelegate__send_email=True)
 
-    def get_approve_form(self, request, application, auth):
-        return forms.ApproveProjectFormGenerator(application, auth)
+    def get_approve_form(self, request, application, roles):
+        return forms.ApproveProjectFormGenerator(application, roles)
 
 
 class StateWaitingForAdmin(states.StateWaitingForApproval):
@@ -641,13 +641,13 @@ class StateWaitingForAdmin(states.StateWaitingForApproval):
     def get_authorised_persons(self, application):
         return Person.objects.filter(is_admin=True)
 
-    def check_authorised(self, request, application, auth):
+    def check_authorised(self, request, application, roles):
         """ Check the person's authorization. """
-        return auth['is_admin']
+        return 'is_admin' in roles
 
-    def get_approve_form(self, request, application, auth):
+    def get_approve_form(self, request, application, roles):
         return forms.AdminApproveProjectFormGenerator(
-            application, auth)
+            application, roles)
 
     def get_request_email_link(self, application):
         link, is_secret = base.get_admin_email_link(application)
@@ -665,12 +665,12 @@ class StateDuplicateApplicant(base.State):
             Person.objects.filter(is_admin=True),
             application)
 
-    def view(self, request, application, label, auth, actions):
+    def view(self, request, application, label, roles, actions):
         # if not admin, don't allow reopen
-        if not auth['is_admin']:
+        if 'is_admin' not in roles:
             if 'reopen' in actions:
                 actions.remove('reopen')
-        if label is None and auth['is_admin']:
+        if label is None and 'is_admin' in roles:
             form = forms.ApplicantReplace(
                 data=request.POST or None,
                 application=application)
@@ -689,10 +689,10 @@ class StateDuplicateApplicant(base.State):
             return render_to_response(
                 'applications/project_duplicate_applicant.html',
                 {'application': application, 'form': form,
-                    'actions': actions, 'auth': auth, },
+                    'actions': actions, 'roles': roles, },
                 context_instance=RequestContext(request))
         return super(StateDuplicateApplicant, self).view(
-            request, application, label, auth, actions)
+            request, application, label, roles, actions)
 
 
 class StateArchived(states.StateCompleted):
@@ -711,7 +711,7 @@ class TransitionSplit(base.Transition):
         self._on_new_project = on_new_project
         self._on_error = on_error
 
-    def get_next_state(self, request, application, auth):
+    def get_next_state(self, request, application, roles):
         """ Retrieve the next state. """
         # Do we need to wait for leader or delegate approval?
         if application.project is None:
@@ -848,6 +848,8 @@ def new_application(request):
             {},
             context_instance=RequestContext(request))
 
+    roles = set(['is_applicant', 'is_authorised'])
+
     if not request.user.is_authenticated():
         form = forms.UnauthenticatedInviteUserApplicationForm(
             request.POST or None)
@@ -862,8 +864,7 @@ def new_application(request):
                 application.save()
 
                 state_machine = get_application_state_machine()
-                state_machine.start(
-                    request, application, {'is_applicant': True})
+                state_machine.start(request, application, roles)
                 # we do not show unauthenticated users the application at this
                 # stage.
                 url = reverse('index')
@@ -881,8 +882,7 @@ def new_application(request):
             application.save()
 
             state_machine = get_application_state_machine()
-            response = state_machine.start(
-                request, application, {'is_applicant': True})
+            response = state_machine.start(request, application, roles)
             return response
         return render_to_response(
             'applications/project_common_invite_authenticated.html',

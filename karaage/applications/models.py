@@ -190,6 +190,15 @@ class Application(models.Model):
 
         return errors
 
+    def get_roles_for_person(self, person):
+        roles = set()
+
+        if person == self.applicant:
+            roles.add('is_applicant')
+            roles.add('is_authorised')
+
+        return roles
+
 
 class ProjectApplication(Application):
     type = "project"
@@ -286,24 +295,20 @@ class ProjectApplication(Application):
         return created_person, created_account
     approve.alters_data = True
 
-    def authenticate(self, person):
-        auth = {}
+    def get_roles_for_person(self, person):
+        roles = super(ProjectApplication, self).get_roles_for_person(person)
 
-        auth['is_applicant'] = False
-        if person == self.applicant:
-            auth['is_applicant'] = True
-
-        auth['is_leader'] = False
         if self.project is not None:
             if person in self.project.leaders.all():
-                auth['is_leader'] = True
+                roles.add('is_leader')
+                roles.add('is_authorised')
 
-        auth['is_delegate'] = False
         if self.institute is not None:
             if person in self.institute.delegates.all():
-                auth['is_delegate'] = True
+                roles.add('is_delegate')
+                roles.add('is_authorised')
 
-        return auth
+        return roles
 
     def check_valid(self):
         errors = super(ProjectApplication, self).check_valid()

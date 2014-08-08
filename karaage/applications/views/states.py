@@ -36,7 +36,7 @@ class TransitionOpen(base.Transition):
         super(TransitionOpen, self).__init__()
         self._on_success = on_success
 
-    def get_next_state(self, request, application, auth):
+    def get_next_state(self, request, application, roles):
         """ Retrieve the next state. """
         application.reopen()
         link, is_secret = base.get_email_link(application)
@@ -58,10 +58,10 @@ class StateWaitingForApproval(base.State):
     def get_authorised_persons(self, application):
         raise NotImplementedError()
 
-    def get_approve_form(self, request, application, auth):
+    def get_approve_form(self, request, application, roles):
         raise NotImplementedError()
 
-    def check_authorised(self, request, application, auth):
+    def check_can_approve(self, request, application, roles):
         """ Check the person's authorization. """
         try:
             authorised_persons = self.get_authorised_persons(application)
@@ -84,11 +84,13 @@ class StateWaitingForApproval(base.State):
         link, is_secret = base.get_registration_email_link(application)
         return link, is_secret
 
-    def view(self, request, application, label, auth, actions):
+    def view(self, request, application, label, roles, actions):
         """ Django view method. """
-        if self.check_authorised(request, application, auth):
-            auth['can_approve'] = True
-        if label == "approve" and auth['can_approve']:
+        if self.check_can_approve(request, application, roles):
+            can_approve = True
+        else:
+            can_approve = False
+        if label == "approve" and can_approve:
             tmp_actions = []
             if 'approve' in actions:
                 tmp_actions.append("approve")
@@ -96,7 +98,7 @@ class StateWaitingForApproval(base.State):
                 tmp_actions.append("duplicate")
             actions = tmp_actions
             application_form = self.get_approve_form(
-                request, application, auth)
+                request, application, roles)
             form = application_form(request.POST or None, instance=application)
             if request.method == 'POST':
                 if 'duplicate' in request.POST:
@@ -108,9 +110,9 @@ class StateWaitingForApproval(base.State):
                 self.template_approve,
                 {'application': application, 'form': form,
                     'authorised_text': self.authorised_text,
-                    'actions': actions, 'auth': auth},
+                    'actions': actions, 'roles': roles},
                 context_instance=RequestContext(request))
-        elif label == "decline" and auth['can_approve']:
+        elif label == "decline" and can_approve:
             actions = ['cancel']
             if request.method == 'POST':
                 form = EmailForm(request.POST)
@@ -135,13 +137,13 @@ class StateWaitingForApproval(base.State):
                 self.template_decline,
                 {'application': application, 'form': form,
                     'authorised_text': self.authorised_text,
-                    'actions': actions, 'auth': auth},
+                    'actions': actions, 'roles': roles},
                 context_instance=RequestContext(request))
         self.context = {
             'authorised_text': self.authorised_text,
         }
         return super(StateWaitingForApproval, self).view(
-            request, application, label, auth, actions)
+            request, application, label, roles, actions)
 
 
 class TransitionSubmit(base.Transition):
@@ -150,7 +152,7 @@ class TransitionSubmit(base.Transition):
         self._on_success = on_success
         self._on_error = on_error
 
-    def get_next_state(self, request, application, auth):
+    def get_next_state(self, request, application, roles):
         """ Retrieve the next state. """
 
         # Check for serious errors in submission.
@@ -174,7 +176,7 @@ class TransitionApprove(base.Transition):
         self._on_password_ok = on_password_ok
         self._on_error = on_error
 
-    def get_next_state(self, request, application, auth):
+    def get_next_state(self, request, application, roles):
         """ Retrieve the next state. """
         # Check for serious errors in submission.
         # Should only happen in rare circumstances.
@@ -203,9 +205,9 @@ class StatePassword(base.State):
     """ This application is completed and processed. """
     name = "Password"
 
-    def view(self, request, application, label, auth, actions):
+    def view(self, request, application, label, roles, actions):
         """ Django view method. """
-        if label is None and auth['is_applicant']:
+        if label is None and 'is_applicant' in roles:
             assert application.content_type.model == 'person'
             if application.applicant.has_usable_password():
                 form = forms.PersonVerifyPassword(
@@ -229,10 +231,10 @@ class StatePassword(base.State):
             return render_to_response(
                 'applications/common_password.html',
                 {'application': application, 'form': form,
-                    'actions': actions, 'auth': auth, 'type': form_type},
+                    'actions': actions, 'roles': roles, 'type': form_type},
                 context_instance=RequestContext(request))
         return super(StatePassword, self).view(
-            request, application, label, auth, actions)
+            request, application, label, roles, actions)
 
 
 class StateCompleted(base.State):
@@ -248,16 +250,17 @@ class StateDeclined(base.State):
         """ This is becoming the new current state. """
         application.decline()
 
-    def view(self, request, application, label, auth, actions):
+    def view(self, request, application, label, roles, actions):
         """ Django view method. """
-        if label is None and auth['is_applicant'] and not auth['is_admin']:
+        if label is None and \
+                'is_applicant' in roles and 'is_admin' not in roles:
             # applicant, admin, leader can reopen an application
             if 'reopen' in request.POST:
                 return 'reopen'
             return render_to_response(
                 'applications/common_declined.html',
                 {'application': application,
-                    'actions': actions, 'auth': auth},
+                    'actions': actions, 'roles': roles},
                 context_instance=RequestContext(request))
         return super(StateDeclined, self).view(
-            request, application, label, auth, actions)
+            request, application, label, roles, actions)
