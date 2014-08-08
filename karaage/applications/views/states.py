@@ -87,10 +87,8 @@ class StateWaitingForApproval(base.State):
     def view(self, request, application, label, roles, actions):
         """ Django view method. """
         if self.check_can_approve(request, application, roles):
-            can_approve = True
-        else:
-            can_approve = False
-        if label == "approve" and can_approve:
+            roles.add('can_approve')
+        if label == "approve" and 'can_approve' in roles:
             tmp_actions = []
             if 'approve' in actions:
                 tmp_actions.append("approve")
@@ -112,7 +110,7 @@ class StateWaitingForApproval(base.State):
                     'authorised_text': self.authorised_text,
                     'actions': actions, 'roles': roles},
                 context_instance=RequestContext(request))
-        elif label == "decline" and can_approve:
+        elif label == "decline" and 'can_approve' in roles:
             actions = ['cancel']
             if request.method == 'POST':
                 form = EmailForm(request.POST)
