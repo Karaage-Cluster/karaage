@@ -201,20 +201,7 @@ class SoftwareApplication(Application):
         db_table = 'software_application'
 
     def info(self):
-        return six.u("access to %s") % self.software_license.software
-
-    def authenticate(self, person):
-        auth = {}
-
-        # makes no sense for software applications, but required.
-        auth['is_leader'] = False
-        auth['is_delegate'] = False
-
-        auth['is_applicant'] = False
-        if person == self.applicant:
-            auth['is_applicant'] = True
-
-        return auth
+        return six.u("access software %s") % self.software_license.software
 
     def check_valid(self):
         errors = super(SoftwareApplication, self).check_valid()

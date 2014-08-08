@@ -34,20 +34,21 @@ class StateIntroduction(base.State):
     """ Invitation has been sent to applicant. """
     name = "Read introduction"
 
-    def view(self, request, application, label, auth, actions):
+    def view(self, request, application, label, roles, actions):
         """ Django view method. """
-        if label is None and auth['is_applicant'] and not auth['is_admin']:
+        if label is None and \
+                'is_applicant' in roles and 'is_admin' not in roles:
             for action in actions:
                 if action in request.POST:
                     return action
             link, is_secret = base.get_email_link(application)
             return render_to_response(
                 'applications/software_introduction.html',
-                {'actions': actions, 'application': application, 'auth': auth,
-                    'link': link, 'is_secret': is_secret},
+                {'actions': actions, 'application': application,
+                    'roles': roles, 'link': link, 'is_secret': is_secret},
                 context_instance=RequestContext(request))
         return super(StateIntroduction, self).view(
-            request, application, label, auth, actions)
+            request, application, label, roles, actions)
 
 
 class StateWaitingForAdmin(states.StateWaitingForApproval):
@@ -58,11 +59,11 @@ class StateWaitingForAdmin(states.StateWaitingForApproval):
     def get_authorised_persons(self, application):
         return Person.objects.filter(is_admin=True)
 
-    def check_authorised(self, request, application, auth):
+    def check_can_approve(self, request, application, roles):
         """ Check the person's authorization. """
-        return auth['is_admin']
+        return 'is_admin' in roles
 
-    def get_approve_form(self, request, application, auth):
+    def get_approve_form(self, request, application, roles):
         return ApproveSoftwareForm
 
 

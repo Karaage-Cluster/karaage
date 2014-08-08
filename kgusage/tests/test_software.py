@@ -141,8 +141,9 @@ class SoftwareApplicationTestCase(TestCase):
             'http://testserver'
             + reverse('kg_application_detail', args=[application.pk, 'O']))
         self.assertEqual(len(mail.outbox), 1)
-        self.assertTrue(
-            mail.outbox[0].subject.startswith('TestOrg invitation'))
+        self.assertEqual(
+            mail.outbox[0].subject,
+            'TestOrg invitation: access software windows')
         self.assertEqual(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL)
         self.assertEqual(mail.outbox[0].to[0], 'leader@example.com')
 
@@ -161,8 +162,8 @@ class SoftwareApplicationTestCase(TestCase):
             + reverse('kg_application_detail', args=[application.pk, 'K']))
 
         self.assertEqual(len(mail.outbox), 2)
-        self.assertTrue(
-            mail.outbox[1].subject == 'TestOrg request for access to windows')
+        self.assertEqual(
+            mail.outbox[1].subject, 'TestOrg request: access software windows')
         self.assertEqual(mail.outbox[1].from_email, settings.ACCOUNTS_EMAIL)
         self.assertEqual(mail.outbox[1].to[0], 'sam@vpac.org')
 
@@ -206,6 +207,9 @@ class SoftwareApplicationTestCase(TestCase):
         application = Application.objects.get(pk=application.id)
         self.assertEqual(application.state, SoftwareApplication.COMPLETED)
         self.assertEqual(len(mail.outbox), 3)
+        self.assertEqual(
+            mail.outbox[2].subject,
+            'TestOrg approved: access software windows')
         self.assertEqual(mail.outbox[2].from_email, settings.ACCOUNTS_EMAIL)
         self.assertEqual(mail.outbox[2].to[0], 'leader@example.com')
         self.client.logout()
