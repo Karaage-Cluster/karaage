@@ -77,7 +77,8 @@ setup(
     ],
     keywords="karaage cluster user administration",
     package_data={
-        '': ['*.css', '*.html', '*.js', '*.png', '*.gif', '*.map', '*.txt'],
+        '': ['*.css', '*.html', '*.js', '*.png', '*.gif', '*.map', '*.txt',
+             '*.json'],
     },
     scripts=[
         'sbin/kg_set_secret_key',
