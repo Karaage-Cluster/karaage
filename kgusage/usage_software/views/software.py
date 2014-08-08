@@ -34,6 +34,8 @@ from karaage.institutes.models import Institute
 from karaage.common import get_date_range, log
 import karaage.common as util
 
+from karaage.applications.tables import ApplicationTable
+
 from ..models import SoftwareCategory, Software, SoftwareVersion
 from ..models import SoftwareLicense, SoftwareLicenseAgreement
 from ..models import SoftwareApplication
@@ -83,10 +85,47 @@ def software_list(request):
 
 @login_required
 def software_detail(request, software_id):
-    if not util.is_admin(request):
-        return join_package(request, software_id)
-
     software = get_object_or_404(Software, pk=software_id)
+    software_license = software.get_current_license()
+    person = request.user
+    license_agreements = SoftwareLicenseAgreement.objects \
+        .filter(person=person, license=software_license)
+    agreement = None
+    if license_agreements.count() > 0:
+        agreement = license_agreements.latest()
+
+    # we only list applications for current software license
+
+    applications = SoftwareApplication.objects.filter(
+        software_license__software=software_license)
+    applications = applications.exclude(state='C')
+    applications_table = ApplicationTable(applications)
+    config = tables.RequestConfig(request, paginate={"per_page": 5})
+    config.configure(applications_table)
+
+    open_applications = SoftwareApplication.objects.get_for_applicant(person)
+    open_applications = open_applications.filter(
+        software_license=software_license)
+
+    if agreement is None and software_license is not None \
+            and len(open_applications) == 0 and request.method == 'POST':
+
+        if software.restricted and not util.is_admin(request):
+            log.add(software, "New application created for %s" % request.user)
+            return new_application(request, software_license)
+
+        SoftwareLicenseAgreement.objects.create(
+            person=person,
+            license=software_license,
+            date=datetime.datetime.today(),
+        )
+        person.add_group(software.group)
+        log.add(
+            software,
+            "Approved join (not restricted) for %s" % request.user)
+        messages.success(request, "Approved access to %s." % software)
+        return HttpResponseRedirect(reverse('kg_profile_software'))
+
     return render_to_response(
         'usage_software/software_detail.html',
         locals(),
@@ -403,49 +442,6 @@ def join_package_list(request):
 
     return render_to_response(
         'usage_software/add_package_list.html',
-        locals(),
-        context_instance=RequestContext(request))
-
-
-@login_required
-def join_package(request, software_id):
-
-    software = get_object_or_404(Software, pk=software_id)
-    software_license = software.get_current_license()
-    person = request.user
-    license_agreements = SoftwareLicenseAgreement.objects \
-        .filter(person=person, license=software_license)
-    agreement = None
-    if license_agreements.count() > 0:
-        agreement = license_agreements.latest()
-
-    pending = False
-    query = SoftwareApplication.objects.get_for_applicant(person)
-    query = query.filter(software_license=software_license)
-    if query.count() > 0:
-        pending = True
-
-    if agreement is None and software_license is not None \
-            and not pending and request.method == 'POST':
-
-        if software.restricted:
-            log.add(software, "New application created for %s" % request.user)
-            return new_application(request, software_license)
-
-        SoftwareLicenseAgreement.objects.create(
-            person=person,
-            license=software_license,
-            date=datetime.datetime.today(),
-        )
-        person.add_group(software.group)
-        log.add(
-            software,
-            "Approved join (not restricted) for %s" % request.user)
-        messages.success(request, "Approved access to %s." % software)
-        return HttpResponseRedirect(reverse('kg_profile_software'))
-
-    return render_to_response(
-        'usage_software/accept_license.html',
         locals(),
         context_instance=RequestContext(request))
 

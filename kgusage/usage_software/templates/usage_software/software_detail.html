@@ -1,4 +1,5 @@
 {% extends "main.html" %}
+{% load render_table from django_tables2 %}
 {% load url from future %}
 
 
@@ -45,6 +46,65 @@
         </div>
         {% endif %}
     </div>
+
+    {% if software_license %}
+    <div class="module">
+        <h2>Current End User License Agreement</h2>
+
+        <div class="table-container">
+            <table class="keyvalue">
+                {% if software_license.version %}
+                <tr><th>Version:</th><td>{{ software_license.version }}</td></tr>
+                <tr><th>Date:</th><td>{{ software_license.date }}</td></tr>
+                {% endif %}
+                <tr>
+                    <th>Text:</th>
+                    <td>
+                        {{ software_license.text|safe|linebreaks }}
+                        <a href="{% url 'kg_software_license_txt' software.pk %}">[Print version]</a>
+                    </td>
+                </tr>
+                {% if open_applications %}
+                <tr><th>Applications:</th><td>
+                    {% for application in open_applications %}
+                    <a href='{% url 'kg_application_detail' application.pk %}'>{{application}}</a>
+                    {% endfor %}
+                </td></tr>
+                {% endif %}
+                {% if agreement %}
+                <tr><th>Accepted:</th><td>Approved on {{ agreement.date }}.</td></tr>
+                {% endif %}
+            </table>
+        </div>
+
+        {% if software.restricted and not agreement %}
+        <p class="errornote">NOTE: This software is restricted and requires admin approval. You will receive notification via email once your request has been processed</p>
+        {% endif %}
+
+        {% if not agreement and not open_applications %}
+            <h3>Accept</h3>
+            <p>By clicking on 'I accept' you are agreeing to the conditions above.</p>
+
+            <form action="." method="post">{% csrf_token %}
+                <div class="submit-row">
+                    <input type="submit" value="I accept"/>
+                </div>
+            </form>
+            {% if failed %}
+            <p class="errornote">The attempt to gain admin approval has failed.
+            Please contact {{ accounts_email }} for help.</p>
+            {% endif %}
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if is_admin %}
+    {% if applications %}
+    <div class="module clear">
+        <h2>Pending Applications</h2>
+        {% render_table applications_table %}
+    </div>
+    {% endif %}
 
     <div class="module">
         <h2>Versions</h2>
@@ -159,7 +219,6 @@
 
     {% for_each_app_include "software_detail_extra.html" %}
 
-    {% if is_admin %}
     <div class="module">
         <h2>Comments</h2>
         {% comments software %}
