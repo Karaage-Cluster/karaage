@@ -36,9 +36,12 @@ import karaage.common as util
 
 from ..models import SoftwareCategory, Software, SoftwareVersion
 from ..models import SoftwareLicense, SoftwareLicenseAgreement
+from ..models import SoftwareApplication
 from ..forms import AddPackageForm, LicenseForm
 from ..forms import SoftwareVersionForm
 from ..tables import SoftwareFilter, SoftwareTable
+
+from .applications import new_application
 
 
 @login_required
@@ -391,10 +394,11 @@ def join_package_list(request):
             data['accepted'] = True
             data['accepted_date'] = la.date
 
-        license = software.get_current_license()
-        for hook in util.get_hooks('is_approve_join_software_pending'):
-            if hook(request, license):
-                data['pending'] = True
+        software_license = software.get_current_license()
+        query = SoftwareApplication.objects.get_for_applicant(person)
+        query = query.filter(software_license=software_license)
+        if query.count() > 0:
+            data['pending'] = True
         software_list.append(data)
 
     return render_to_response(
@@ -416,42 +420,29 @@ def join_package(request, software_id):
         agreement = license_agreements.latest()
 
     pending = False
-    for hook in util.get_hooks('is_approve_join_software_pending'):
-        if hook(request, software_license):
-            pending = True
+    query = SoftwareApplication.objects.get_for_applicant(person)
+    query = query.filter(software_license=software_license)
+    if query.count() > 0:
+        pending = True
 
-    failed = False
     if agreement is None and software_license is not None \
             and not pending and request.method == 'POST':
-        approved = False
 
-        if not approved and not software.restricted:
-            log.add(software, "Approved join (not restricted)")
-            approved = True
+        if software.restricted:
+            log.add(software, "New application created for %s" % request.user)
+            return new_application(request, software_license)
 
-        if not approved:
-            for hook in util.get_hooks('approve_join_software'):
-                response = hook(request, software_license)
-                if isinstance(response, HttpResponse):
-                    return response
-                elif bool(response):
-                    log.add(software, "Approved join by %s" % hook.__module__)
-                    approved = True
-                    break
-
-        if approved:
-            raise RuntimeError("MEOW")
-            SoftwareLicenseAgreement.objects.create(
-                person=person,
-                license=software_license,
-                date=datetime.datetime.today(),
-            )
-            person.add_group(software.group)
-            messages.success(request, "Approved access to %s." % software)
-            return HttpResponseRedirect(reverse('kg_profile_software'))
-        else:
-            failed = True
-            messages.error(request, "Failed granting access to %s." % software)
+        SoftwareLicenseAgreement.objects.create(
+            person=person,
+            license=software_license,
+            date=datetime.datetime.today(),
+        )
+        person.add_group(software.group)
+        log.add(
+            software,
+            "Approved join (not restricted) for %s" % request.user)
+        messages.success(request, "Approved access to %s." % software)
+        return HttpResponseRedirect(reverse('kg_profile_software'))
 
     return render_to_response(
         'usage_software/accept_license.html',
