@@ -8,7 +8,7 @@
 {% else %}
 <ol>
     <li {% if application.state = 'O' %}class='selected'{% endif %}>Applicant enter details.
-    {% if auth.is_applicant %}
+    {% if roles.is_applicant %}
         <ol>
             <li>Introduction.</li>
             <li>Shiboleth authentication (if supported).</li>

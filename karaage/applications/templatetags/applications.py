@@ -30,7 +30,7 @@ from karaage.people.tables import PersonTable
 def application_state(context, application):
     """ Render current state of application, verbose. """
     new_context = template.context.Context({
-        'auth': context['auth'],
+        'roles': context['roles'],
         'org_name': context['org_name'],
         'application': application,
     })
@@ -44,7 +44,7 @@ def application_state(context, application):
 def application_request(context, application):
     """ Render current detail of application, verbose. """
     new_context = template.context.Context({
-        'auth': context['auth'],
+        'roles': context['roles'],
         'org_name': context['org_name'],
         'application': application,
     })
@@ -66,7 +66,7 @@ def application_simple_state(context, application):
 def application_actions(context):
     """ Render actions available. """
     return {
-        'auth': context['auth'],
+        'roles': context['roles'],
         'actions': context['actions'],
         'extra': "",
     }
@@ -91,7 +91,7 @@ class ApplicationActionsPlus(template.Node):
         nodelist = template.loader.get_template(
             'applications/common_actions.html')
         new_context = template.context.Context({
-            'auth': context['auth'],
+            'roles': context['roles'],
             'extra': extra,
             'actions': context['actions'],
         })

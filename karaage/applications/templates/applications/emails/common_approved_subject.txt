@@ -1,1 +1,1 @@
-{% autoescape off %}{{ org_name }} approved {{ application.info }}{% endautoescape %}
+{% autoescape off %}{{ org_name }} approved: {{ application.info }}{% endautoescape %}
