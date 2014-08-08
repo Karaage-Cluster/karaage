@@ -59,7 +59,7 @@ def profile_software(request):
 @login_required
 def software_list(request):
     if not util.is_admin(request):
-        return join_package_list(request)
+        return _software_list_non_admin(request)
 
     queryset = Software.objects.all().select_related()
     filter = SoftwareFilter(request.GET, queryset=queryset)
@@ -80,6 +80,35 @@ def software_list(request):
             'spec': spec,
             'title': "Software list",
         },
+        context_instance=RequestContext(request))
+
+
+@login_required
+def _software_list_non_admin(request):
+
+    person = request.user
+
+    query = Software.objects.filter(softwarelicense__isnull=False).distinct()
+    software_list = []
+    for software in query:
+        data = {'software': software}
+        license_agreements = SoftwareLicenseAgreement.objects.filter(
+            person=person, license__software=software)
+        if license_agreements.count() > 0:
+            la = license_agreements.latest()
+            data['accepted'] = True
+            data['accepted_date'] = la.date
+
+        software_license = software.get_current_license()
+        query = SoftwareApplication.objects.get_for_applicant(person)
+        query = query.filter(software_license=software_license)
+        if query.count() > 0:
+            data['pending'] = True
+        software_list.append(data)
+
+    return render_to_response(
+        'usage_software/add_package_list.html',
+        locals(),
         context_instance=RequestContext(request))
 
 
@@ -414,35 +443,6 @@ def version_stats(request, version_id):
     return render_to_response(
         'usage_software/version_stats.html',
         context,
-        context_instance=RequestContext(request))
-
-
-@login_required
-def join_package_list(request):
-
-    person = request.user
-
-    query = Software.objects.filter(softwarelicense__isnull=False).distinct()
-    software_list = []
-    for software in query:
-        data = {'software': software}
-        license_agreements = SoftwareLicenseAgreement.objects.filter(
-            person=person, license__software=software)
-        if license_agreements.count() > 0:
-            la = license_agreements.latest()
-            data['accepted'] = True
-            data['accepted_date'] = la.date
-
-        software_license = software.get_current_license()
-        query = SoftwareApplication.objects.get_for_applicant(person)
-        query = query.filter(software_license=software_license)
-        if query.count() > 0:
-            data['pending'] = True
-        software_list.append(data)
-
-    return render_to_response(
-        'usage_software/add_package_list.html',
-        locals(),
         context_instance=RequestContext(request))
 
 
