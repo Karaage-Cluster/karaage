@@ -101,12 +101,6 @@ import django
 if sys.version_info < (3, 0) and django.VERSION < (1, 7):
     INSTALLED_APPS += ('south',)
 
-    # Work around for south not working with mysql-connector-python
-    # https://groups.google.com/forum/m/#!topic/south-users/hrxwgimaYy8
-    SOUTH_DATABASE_ADAPTERS = {
-        'default': 'south.db.mysql'
-    }
-
 
 # List of locations of the template source files searched by
 # django.template.loaders.filesystem.Loader, in search order.
