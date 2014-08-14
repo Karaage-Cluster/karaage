@@ -17,7 +17,8 @@
 
 from django.conf import settings
 
-from karaage.common import is_admin, get_hooks
+from karaage.common import is_admin
+from karaage.applications.models import Application
 
 
 def common(request):
@@ -28,8 +29,12 @@ def common(request):
     ctx['accounts_email'] = settings.ACCOUNTS_EMAIL
     ctx['is_admin'] = is_admin(request)
 
-    for hook in get_hooks("context"):
-        context = hook(request)
-        ctx.update(context)
+    if request.user.is_authenticated():
+        person = request.user
+        my_applications = Application.objects.get_for_applicant(person)
+        requires_attention = Application.objects.requires_attention(request)
 
+        ctx['pending_applications'] = (
+            my_applications.count() + requires_attention.count()
+        )
     return ctx

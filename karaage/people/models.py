@@ -58,7 +58,7 @@ class Person(AbstractBaseUser):
     mobile = models.CharField(max_length=200, null=True, blank=True)
     department = models.CharField(max_length=200, null=True, blank=True)
     supervisor = models.CharField(max_length=100, null=True, blank=True)
-    institute = models.ForeignKey('institutes.Institute')
+    institute = models.ForeignKey('karaage.Institute')
     title = models.CharField(
         choices=TITLES, max_length=10, null=True, blank=True)
     address = models.CharField(max_length=200, null=True, blank=True)
@@ -101,6 +101,7 @@ class Person(AbstractBaseUser):
         verbose_name_plural = 'people'
         ordering = ['full_name', 'short_name']
         db_table = 'person'
+        app_label = 'karaage'
 
     def __str__(self):
         name = self.get_full_name()
@@ -423,6 +424,8 @@ class Group(models.Model):
 
     class Meta:
         ordering = ['name']
+        db_table = 'people_group'
+        app_label = 'karaage'
 
     def __str__(self):
         return six.u("%s") % self.name

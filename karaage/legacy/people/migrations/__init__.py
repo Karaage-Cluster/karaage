@@ -14,21 +14,3 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
-
-from django.conf.urls import patterns, url, include
-
-from karaage.common import get_urls
-
-profile_urlpatterns = patterns('')
-for urls in get_urls("profile_urlpatterns"):
-    profile_urlpatterns += urls
-    del urls
-
-urlpatterns = patterns(
-    '',
-    url(r'^profile/', include(profile_urlpatterns)),
-)
-
-for urls in get_urls("urlpatterns"):
-    urlpatterns += urls
-    del urls

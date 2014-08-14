@@ -45,6 +45,7 @@ class Institute(models.Model):
     class Meta:
         ordering = ['name']
         db_table = 'institute'
+        app_label = 'karaage'
 
     def save(self, *args, **kwargs):
         created = self.pk is None
@@ -146,6 +147,7 @@ class InstituteQuota(models.Model):
     class Meta:
         db_table = 'institute_quota'
         unique_together = ('institute', 'machine_category')
+        app_label = 'karaage'
 
     def save(self, *args, **kwargs):
         created = self.pk is None
@@ -208,6 +210,7 @@ class InstituteDelegate(models.Model):
 
     class Meta:
         db_table = 'institutedelegate'
+        app_label = 'karaage'
 
     def save(self, *args, **kwargs):
         super(InstituteDelegate, self).save(*args, **kwargs)

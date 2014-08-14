@@ -55,7 +55,7 @@ DEBUG_SERVE_STATIC = False
 #
 # If false, administrators can log in but don't get any special access. Used
 # for karaage-registration.
-AUTH_USER_MODEL = 'people.Person'
+AUTH_USER_MODEL = 'karaage.Person'
 
 # Do not change: A tuple of strings designating all applications that are
 # enabled in this Django installation. Each string should be a dotted Python
@@ -64,18 +64,7 @@ AUTH_USER_MODEL = 'people.Person'
 # * an application configuration class, or a package containing a
 # * application.
 KARAAGE_APPS = (
-    'karaage.common',
-    'karaage.legacy.admin',
-    'karaage.people',
-    'karaage.machines',
-    'karaage.institutes',
-    'karaage.projects',
-    'karaage.legacy.usage',
-    'karaage.legacy.cache',
-    'karaage.legacy.software',
-    'karaage.legacy.pbsmoab',
-    'karaage.emails',
-    'karaage.applications',
+    'karaage',
 )
 
 INSTALLED_APPS = (
@@ -99,6 +88,21 @@ INSTALLED_APPS = (
 import sys
 import django
 if sys.version_info < (3, 0) and django.VERSION < (1, 7):
+    KARAAGE_APPS += (
+        'karaage.legacy.common',
+        'karaage.legacy.admin',
+        'karaage.legacy.people',
+        'karaage.legacy.machines',
+        'karaage.legacy.institutes',
+        'karaage.legacy.projects',
+        'karaage.legacy.usage',
+        'karaage.legacy.cache',
+        'karaage.legacy.software',
+        'karaage.legacy.pbsmoab',
+        'karaage.legacy.emails',
+        'karaage.legacy.applications',
+    )
+
     INSTALLED_APPS += ('south',)
 
 

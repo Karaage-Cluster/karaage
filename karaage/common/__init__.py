@@ -35,7 +35,7 @@ from karaage.common.models import (LogEntry, ADDITION, CHANGE,
 
 
 from django.template import add_to_builtins
-add_to_builtins('karaage.common.templatetags.karaage_tags')
+add_to_builtins('karaage.templatetags.karaage_tags')
 
 
 def get_date_range(request, default_start=None, default_end=None):

@@ -98,6 +98,10 @@ class Application(models.Model):
 
     _tracker = FieldTracker()
 
+    class Meta:
+        db_table = 'applications_application'
+        app_label = 'karaage'
+
     def __str__(self):
         return "Application #%s" % self.id
 
@@ -235,6 +239,10 @@ class ProjectApplication(Application):
 
     objects = ApplicationManager()
 
+    class Meta:
+        db_table = 'applications_projectapplication'
+        app_label = 'karaage'
+
     def info(self):
         if self.project is not None:
             return six.u("join project '%s'") % self.project.pid
@@ -358,6 +366,10 @@ class Applicant(models.Model):
     saml_id = models.CharField(
         max_length=200, null=True, blank=True, editable=False, unique=True)
     applications = generic.GenericRelation(Application)
+
+    class Meta:
+        db_table = 'applications_applicant'
+        app_label = 'karaage'
 
     def __str__(self):
         full_name = self.get_full_name()

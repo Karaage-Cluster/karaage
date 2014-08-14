@@ -16,15 +16,15 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf import settings
-from django.conf.urls import patterns, url, include
-
-urlpatterns = patterns(
-    '',
-    url(r'^persons/', include('karaage.people.urls.persons')),
-    url(r'^groups/', include('karaage.people.urls.groups')),
-)
+from django.conf.urls import patterns, url
 
 profile_urlpatterns = patterns(
+    'karaage.common.views.profile',
+    url(r'^$', 'profile', name='kg_profile'),
+    url(r'^logout/$', 'logout', name='kg_profile_logout'),
+)
+
+profile_urlpatterns += patterns(
     'karaage.people.views.profile',
     url(r'^personal/$', 'profile_personal', name='kg_profile_personal'),
     url(r'^edit/$', 'edit_profile', name='kg_profile_edit'),

@@ -54,6 +54,7 @@ class MachineCategory(models.Model):
     class Meta:
         verbose_name_plural = 'machine categories'
         db_table = 'machine_category'
+        app_label = 'karaage'
 
     def __str__(self):
         return self.name
@@ -141,6 +142,7 @@ class Machine(AbstractBaseUser):
 
     class Meta:
         db_table = 'machine'
+        app_label = 'karaage'
 
     def __str__(self):
         return self.name
@@ -159,7 +161,7 @@ class Account(models.Model):
         help_text='The foreign identifier from the datastore.')
     machine_category = models.ForeignKey(MachineCategory)
     default_project = models.ForeignKey(
-        'projects.Project', null=True, blank=True)
+        'karaage.Project', null=True, blank=True)
     date_created = models.DateField()
     date_deleted = models.DateField(null=True, blank=True)
     disk_quota = models.IntegerField(null=True, blank=True, help_text="In GB")
@@ -178,6 +180,7 @@ class Account(models.Model):
     class Meta:
         ordering = ['person', ]
         db_table = 'account'
+        app_label = 'karaage'
 
     def __str__(self):
         return '%s/%s' % (self.username, self.machine_category.name)

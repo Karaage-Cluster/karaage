@@ -15,20 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import patterns, url, include
 
-from karaage.common import get_urls
-
-profile_urlpatterns = patterns('')
-for urls in get_urls("profile_urlpatterns"):
-    profile_urlpatterns += urls
-    del urls
-
-urlpatterns = patterns(
-    '',
-    url(r'^profile/', include(profile_urlpatterns)),
-)
-
-for urls in get_urls("urlpatterns"):
-    urlpatterns += urls
-    del urls
+from karaage.common.models import LogEntry  # NOQA
+from karaage.people.models import Person, Group  # NOQA
+from karaage.institutes.models import Institute  # NOQA
+from karaage.institutes.models import InstituteQuota, InstituteDelegate  # NOQA
+from karaage.machines.models import MachineCategory, Machine, Account  # NOQA
+from karaage.applications.models import Application, ProjectApplication  # NOQA
+from karaage.applications.models import Applicant  # NOQA

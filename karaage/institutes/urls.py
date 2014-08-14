@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import patterns, url, include
+from django.conf.urls import patterns, url
 
 urlpatterns = patterns(
     'karaage.institutes.views',
@@ -40,11 +40,6 @@ urlpatterns = patterns(
     url(r'^(?P<institute_id>[-.\w]+)/add_comment/$',
         'add_comment', name='kg_institute_add_comment'),
 
-)
-
-urlpatterns = patterns(
-    '',
-    url(r'^institutes/', include(urlpatterns)),
 )
 
 profile_urlpatterns = patterns(

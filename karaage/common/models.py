@@ -81,6 +81,7 @@ class LogEntry(models.Model):
         verbose_name = _('log entry')
         verbose_name_plural = _('log entries')
         db_table = 'admin_log'
+        app_label = 'karaage'
         ordering = ('-action_time', '-pk')
 
     def __repr__(self):

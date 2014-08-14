@@ -15,14 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import patterns, url, include
+from django.conf.urls import patterns, url
 
 urlpatterns = patterns(
     'karaage.emails.views',
     url(r'^$', 'send_email', name='kg_emails_index'),
-)
-
-urlpatterns = patterns(
-    '',
-    url(r'^emails/', include(urlpatterns)),
 )

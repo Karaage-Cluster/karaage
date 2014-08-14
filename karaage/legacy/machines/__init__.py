@@ -14,19 +14,3 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
-
-import karaage.applications.models as models
-
-
-def context(request):
-    ctx = {}
-    if request.user.is_authenticated():
-        person = request.user
-        my_applications = models.Application.objects.get_for_applicant(person)
-        requires_attention = \
-            models.Application.objects.requires_attention(request)
-
-        ctx['pending_applications'] = (
-            my_applications.count() + requires_attention.count()
-        )
-    return ctx

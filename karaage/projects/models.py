@@ -61,6 +61,7 @@ class Project(models.Model):
     class Meta:
         ordering = ['pid']
         db_table = 'project'
+        app_label = 'karaage'
 
     def __str__(self):
         return '%s - %s' % (self.pid, self.name)
@@ -276,6 +277,7 @@ class ProjectQuota(models.Model):
 
     class Meta:
         db_table = 'project_quota'
+        app_label = 'karaage'
         unique_together = ('project', 'machine_category')
 
     def get_cap(self):
