@@ -5,6 +5,10 @@ from south.v2 import SchemaMigration
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ('projects', '0018_auto__chg_field_project_pid'),
+    )
+
     def forwards(self, orm):
         db.rename_column('cache_projectcache', 'project_tmp_id', 'project_id')
         db.rename_column('cache_personcache', 'project_tmp_id', 'project_id')

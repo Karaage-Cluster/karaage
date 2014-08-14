@@ -159,7 +159,7 @@ class Migration(SchemaMigration):
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
         },
         'projects.projecttmp': {
-            'Meta': {'ordering': "['pid']", 'object_name': 'ProjectTmp', 'db_table': "'project'"},
+            'Meta': {'object_name': 'ProjectTmp'},
             'additional_req': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'approved_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'project_approver_tmp'", 'null': 'True', 'to': "orm['people.Person']"}),
             'date_approved': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
