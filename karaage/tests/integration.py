@@ -56,6 +56,9 @@ class IntegrationTestCase(TestCase):
         server = slapd.Slapd()
         server.set_port(38911)
         server.start()
+
+        self.addCleanup(self.cleanup)
+
         server.ldapadd("\n".join(test_ldif) + "\n")
         self.__ldap_server = server
         self.mc_ldap_datastore = MachineCategoryDataStore(self.LDAP_CONFIG)
@@ -66,8 +69,7 @@ class IntegrationTestCase(TestCase):
         # failures.
         # _GLOBAL_DATASTORES.append(self.global_ldap_datastore)
 
-    def tearDown(self):
-        super(IntegrationTestCase, self).tearDown()
+    def cleanup(self):
         self.__ldap_server.stop()
         _MACHINE_CATEGORY_DATASTORES[self.ldap_datastore] = []
         # _GLOBAL_DATASTORES.remove(self.global_ldap_datastore)
