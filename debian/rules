@@ -1,0 +1,16 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+export PYBUILD_NAME=kgapplications
+
+%:
+	dh $@ --with python2 --buildsystem=pybuild
+
+.PHONY: override_dh_clean
+override_dh_clean:
+	dh_clean
+	rm -rf tmp
+
+.PHONY: override_dh_auto_test
+override_dh_auto_test:
+	./run_tests.sh
