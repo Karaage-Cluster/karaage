@@ -5,6 +5,10 @@ from south.v2 import SchemaMigration
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ('people', '0001_initial'),
+    )
+
     def forwards(self, orm):
         # Adding model 'MachineCategory'
         db.create_table('machine_category', (
