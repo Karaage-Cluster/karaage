@@ -21,5 +21,3 @@ from karaage.people.models import Person, Group  # NOQA
 from karaage.institutes.models import Institute  # NOQA
 from karaage.institutes.models import InstituteQuota, InstituteDelegate  # NOQA
 from karaage.machines.models import MachineCategory, Machine, Account  # NOQA
-from karaage.applications.models import Application, ProjectApplication  # NOQA
-from karaage.applications.models import Applicant  # NOQA

@@ -41,6 +41,9 @@ def add_plugin(namespace, plugin_name, django_apps, depends):
     value = descriptor.xmlrpc_methods
     namespace.XMLRPC_METHODS += value
 
+    value = descriptor.template_context_processors
+    namespace.TEMPLATE_CONTEXT_PROCESSORS += value
+
     for key, value in descriptor.settings.items():
         try:
             getattr(namespace, key)

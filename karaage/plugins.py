@@ -22,3 +22,4 @@ class BasePlugin(object):
     depends = ()
     xmlrpc_methods = ()
     settings = {}
+    template_context_processors = ()

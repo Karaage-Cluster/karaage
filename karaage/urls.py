@@ -26,7 +26,6 @@ urlpatterns = patterns(
     url(r'^captcha/', include('captcha.urls')),
     url(r'^lookup/', include('ajax_select.urls')),
 
-    url(r'^applications/', include('karaage.applications.urls')),
     url(r'^emails/', include('karaage.emails.urls')),
     url(r'^institutes/', include('karaage.institutes.urls')),
     url(r'^projects/', include('karaage.projects.urls')),
@@ -64,7 +63,6 @@ def _load_profile_urls():
     import importlib
     global profile_urlpatterns
     modules = [
-        'karaage.applications.urls',
         'karaage.institutes.urls',
         'karaage.projects.urls',
         'karaage.people.urls',
