@@ -13,6 +13,9 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         if not db.dry_run:
             orm['contenttypes.contenttype'].objects.filter(app_label='applications').update(app_label='kgapplications')
+        db.send_create_signal(u'kgapplications', ['Application'])
+        db.send_create_signal(u'kgapplications', ['ProjectApplication'])
+        db.send_create_signal(u'kgapplications', ['Applicant'])
         return
 
         # Adding model 'Application'
