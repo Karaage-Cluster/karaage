@@ -12,6 +12,12 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         if not db.dry_run:
             orm['contenttypes.contenttype'].objects.filter(app_label='software').update(app_label='kgsoftware')
+        db.send_create_signal('kgsoftware', ['SoftwareCategory'])
+        db.send_create_signal('kgsoftware', ['Software'])
+        db.send_create_signal('kgsoftware', ['SoftwareVersion'])
+        db.send_create_signal('kgsoftware', ['SoftwareLicense'])
+        db.send_create_signal('kgsoftware', ['SoftwareLicenseAgreement'])
+        db.send_create_signal('kgsoftware', ['SoftwareApplication'])
         return
 
         # Adding model 'SoftwareCategory'
@@ -19,12 +25,12 @@ class Migration(SchemaMigration):
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
         ))
-        db.send_create_signal('usage_software', ['SoftwareCategory'])
+        db.send_create_signal('kgsoftware', ['SoftwareCategory'])
 
         # Adding model 'Software'
         db.create_table('software', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['usage_software.SoftwareCategory'], null=True, blank=True)),
+            ('category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['kgsoftware.SoftwareCategory'], null=True, blank=True)),
             ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=200)),
             ('description', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
             ('group', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.Group'], null=True, blank=True)),
@@ -33,23 +39,23 @@ class Migration(SchemaMigration):
             ('academic_only', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('restricted', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
-        db.send_create_signal('usage_software', ['Software'])
+        db.send_create_signal('kgsoftware', ['Software'])
 
         # Adding model 'SoftwareVersion'
         db.create_table('software_version', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('software', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['usage_software.Software'])),
+            ('software', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['kgsoftware.Software'])),
             ('version', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('module', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
             ('last_used', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
         ))
-        db.send_create_signal('usage_software', ['SoftwareVersion'])
+        db.send_create_signal('kgsoftware', ['SoftwareVersion'])
 
         # Adding M2M table for field machines on 'SoftwareVersion'
         m2m_table_name = db.shorten_name('software_version_machines')
         db.create_table(m2m_table_name, (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('softwareversion', models.ForeignKey(orm['usage_software.softwareversion'], null=False)),
+            ('softwareversion', models.ForeignKey(orm['kgsoftware.softwareversion'], null=False)),
             ('machine', models.ForeignKey(orm['machines.machine'], null=False))
         ))
         db.create_unique(m2m_table_name, ['softwareversion_id', 'machine_id'])
@@ -57,28 +63,28 @@ class Migration(SchemaMigration):
         # Adding model 'SoftwareLicense'
         db.create_table('software_license', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('software', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['usage_software.Software'])),
+            ('software', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['kgsoftware.Software'])),
             ('version', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
             ('date', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
             ('text', self.gf('django.db.models.fields.TextField')()),
         ))
-        db.send_create_signal('usage_software', ['SoftwareLicense'])
+        db.send_create_signal('kgsoftware', ['SoftwareLicense'])
 
         # Adding model 'SoftwareLicenseAgreement'
         db.create_table('software_license_agreement', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('person', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['people.Person'])),
-            ('license', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['usage_software.SoftwareLicense'])),
+            ('license', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['kgsoftware.SoftwareLicense'])),
             ('date', self.gf('django.db.models.fields.DateField')()),
         ))
-        db.send_create_signal('usage_software', ['SoftwareLicenseAgreement'])
+        db.send_create_signal('kgsoftware', ['SoftwareLicenseAgreement'])
 
         # Adding model 'SoftwareApplication'
         db.create_table('software_application', (
             ('application_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['applications.Application'], unique=True, primary_key=True)),
-            ('software_license', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['usage_software.SoftwareLicense'])),
+            ('software_license', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['kgsoftware.SoftwareLicense'])),
         ))
-        db.send_create_signal('usage_software', ['SoftwareApplication'])
+        db.send_create_signal('kgsoftware', ['SoftwareApplication'])
 
 
     def backwards(self, orm):
@@ -215,10 +221,10 @@ class Migration(SchemaMigration):
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'}),
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
         },
-        'usage_software.software': {
+        'kgsoftware.software': {
             'Meta': {'ordering': "['name']", 'object_name': 'Software', 'db_table': "'software'"},
             'academic_only': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['usage_software.SoftwareCategory']", 'null': 'True', 'blank': 'True'}),
+            'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['kgsoftware.SoftwareCategory']", 'null': 'True', 'blank': 'True'}),
             'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'group': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['people.Group']", 'null': 'True', 'blank': 'True'}),
             'homepage': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
@@ -227,40 +233,40 @@ class Migration(SchemaMigration):
             'restricted': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'tutorial_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
         },
-        'usage_software.softwareapplication': {
+        'kgsoftware.softwareapplication': {
             'Meta': {'object_name': 'SoftwareApplication', 'db_table': "'software_application'", '_ormbases': ['applications.Application']},
             'application_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['applications.Application']", 'unique': 'True', 'primary_key': 'True'}),
-            'software_license': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['usage_software.SoftwareLicense']"})
+            'software_license': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['kgsoftware.SoftwareLicense']"})
         },
-        'usage_software.softwarecategory': {
+        'kgsoftware.softwarecategory': {
             'Meta': {'ordering': "['name']", 'object_name': 'SoftwareCategory', 'db_table': "'software_category'"},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        'usage_software.softwarelicense': {
+        'kgsoftware.softwarelicense': {
             'Meta': {'ordering': "['-version']", 'object_name': 'SoftwareLicense', 'db_table': "'software_license'"},
             'date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'software': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['usage_software.Software']"}),
+            'software': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['kgsoftware.Software']"}),
             'text': ('django.db.models.fields.TextField', [], {}),
             'version': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'})
         },
-        'usage_software.softwarelicenseagreement': {
+        'kgsoftware.softwarelicenseagreement': {
             'Meta': {'object_name': 'SoftwareLicenseAgreement', 'db_table': "'software_license_agreement'"},
             'date': ('django.db.models.fields.DateField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'license': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['usage_software.SoftwareLicense']"}),
+            'license': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['kgsoftware.SoftwareLicense']"}),
             'person': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['people.Person']"})
         },
-        'usage_software.softwareversion': {
+        'kgsoftware.softwareversion': {
             'Meta': {'ordering': "['-version']", 'object_name': 'SoftwareVersion', 'db_table': "'software_version'"},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'last_used': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'machines': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['machines.Machine']", 'symmetrical': 'False'}),
             'module': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'software': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['usage_software.Software']"}),
+            'software': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['kgsoftware.Software']"}),
             'version': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         }
     }
 
-    complete_apps = ['usage_software']
+    complete_apps = ['kgsoftware']
