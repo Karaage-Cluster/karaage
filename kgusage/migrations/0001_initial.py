@@ -11,7 +11,16 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         if not db.dry_run:
-            orm['contenttypes.contenttype'].objects.filter(app_label='usage').update(app_label='usage_jobs')
+            orm['contenttypes.contenttype'].objects.filter(app_label='usage').update(app_label='kgusage')
+            orm['contenttypes.contenttype'].objects.filter(app_label='usage_jobs').update(app_label='kgusage')
+        db.send_create_signal('kgusage', ['Queue'])
+        db.send_create_signal('kgusage', ['CPUJob'])
+        db.send_create_signal('kgusage', ['UsedModules'])
+        db.send_create_signal('kgusage', ['InstituteCache'])
+        db.send_create_signal('kgusage', ['ProjectCache'])
+        db.send_create_signal('kgusage', ['PersonCache'])
+        db.send_create_signal('kgusage', ['MachineCategoryCache'])
+        db.send_create_signal('kgusage', ['MachineCache'])
         return
 
         # Adding model 'Queue'
@@ -19,7 +28,7 @@ class Migration(SchemaMigration):
             ('name', self.gf('django.db.models.fields.CharField')(max_length=50, primary_key=True)),
             ('description', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
         ))
-        db.send_create_signal('usage_jobs', ['Queue'])
+        db.send_create_signal('kgusage', ['Queue'])
 
         # Adding model 'CPUJob'
         db.create_table('cpu_job', (
@@ -29,7 +38,7 @@ class Migration(SchemaMigration):
             ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.Project'], null=True, blank=True)),
             ('machine', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['machines.Machine'], null=True, blank=True)),
             ('date', self.gf('django.db.models.fields.DateField')(db_index=True, null=True, blank=True)),
-            ('queue', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['usage_jobs.Queue'], null=True, blank=True)),
+            ('queue', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['kgusage.Queue'], null=True, blank=True)),
             ('cpu_usage', self.gf('django.db.models.fields.BigIntegerField')(null=True, blank=True)),
             ('mem', self.gf('django.db.models.fields.BigIntegerField')(null=True, blank=True)),
             ('vmem', self.gf('django.db.models.fields.BigIntegerField')(null=True, blank=True)),
@@ -48,12 +57,12 @@ class Migration(SchemaMigration):
             ('exit_status', self.gf('django.db.models.fields.BigIntegerField')(null=True, blank=True)),
             ('jobname', self.gf('django.db.models.fields.CharField')(max_length=256, null=True, blank=True)),
         ))
-        db.send_create_signal('usage_jobs', ['CPUJob'])
+        db.send_create_signal('kgusage', ['CPUJob'])
 
         # Adding M2M table for field software on 'CPUJob'
         db.create_table('cpu_job_software', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('cpujob', models.ForeignKey(orm['usage_jobs.cpujob'], null=False)),
+            ('cpujob', models.ForeignKey(orm['kgusage.cpujob'], null=False)),
             ('softwareversion', models.ForeignKey(orm['software.softwareversion'], null=False))
         ))
         db.create_unique('cpu_job_software', ['cpujob_id', 'softwareversion_id'])
@@ -64,7 +73,7 @@ class Migration(SchemaMigration):
             ('date_added', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
             ('modules', self.gf('django.db.models.fields.TextField')()),
         ))
-        db.send_create_signal('usage_jobs', ['UsedModules'])
+        db.send_create_signal('kgusage', ['UsedModules'])
 
         # Adding model 'InstituteCache'
         db.create_table('cache_institutecache', (
@@ -77,7 +86,7 @@ class Migration(SchemaMigration):
             ('institute', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['institutes.Institute'])),
             ('machine_category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['machines.MachineCategory'])),
         ))
-        db.send_create_signal('usage_jobs', ['InstituteCache'])
+        db.send_create_signal('kgusage', ['InstituteCache'])
 
         # Adding unique constraint on 'InstituteCache', fields ['date', 'start', 'end', 'institute', 'machine_category']
         db.create_unique('cache_institutecache', ['date', 'start', 'end', 'institute_id', 'machine_category_id'])
@@ -93,7 +102,7 @@ class Migration(SchemaMigration):
             ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.Project'])),
             ('machine_category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['machines.MachineCategory'])),
         ))
-        db.send_create_signal('usage_jobs', ['ProjectCache'])
+        db.send_create_signal('kgusage', ['ProjectCache'])
 
         # Adding unique constraint on 'ProjectCache', fields ['date', 'start', 'end', 'project', 'machine_category']
         db.create_unique('cache_projectcache', ['date', 'start', 'end', 'project_id', 'machine_category_id'])
@@ -110,7 +119,7 @@ class Migration(SchemaMigration):
             ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.Project'])),
             ('machine_category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['machines.MachineCategory'])),
         ))
-        db.send_create_signal('usage_jobs', ['PersonCache'])
+        db.send_create_signal('kgusage', ['PersonCache'])
 
         # Adding unique constraint on 'PersonCache', fields ['date', 'start', 'end', 'person', 'project', 'machine_category']
         db.create_unique('cache_personcache', ['date', 'start', 'end', 'person_id', 'project_id', 'machine_category_id'])
@@ -126,7 +135,7 @@ class Migration(SchemaMigration):
             ('machine_category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['machines.MachineCategory'])),
             ('available_time', self.gf('django.db.models.fields.DecimalField')(max_digits=30, decimal_places=2)),
         ))
-        db.send_create_signal('usage_jobs', ['MachineCategoryCache'])
+        db.send_create_signal('kgusage', ['MachineCategoryCache'])
 
         # Adding unique constraint on 'MachineCategoryCache', fields ['date', 'start', 'end', 'machine_category']
         db.create_unique('cache_machinecategorycache', ['date', 'start', 'end', 'machine_category_id'])
@@ -141,7 +150,7 @@ class Migration(SchemaMigration):
             ('no_jobs', self.gf('django.db.models.fields.IntegerField')()),
             ('machine', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['machines.Machine'])),
         ))
-        db.send_create_signal('usage_jobs', ['MachineCache'])
+        db.send_create_signal('kgusage', ['MachineCache'])
 
         # Adding unique constraint on 'MachineCache', fields ['date', 'start', 'end', 'machine']
         db.create_unique('cache_machinecache', ['date', 'start', 'end', 'machine_id'])
@@ -149,7 +158,7 @@ class Migration(SchemaMigration):
 
     def backwards(self, orm):
         if not db.dry_run:
-            orm['contenttypes.contenttype'].objects.filter(app_label='usage_jobs').update(app_label='usage')
+            orm['contenttypes.contenttype'].objects.filter(app_label='kgusage').update(app_label='usage')
         return
 
         # Removing unique constraint on 'MachineCache', fields ['date', 'start', 'end', 'machine']
@@ -212,7 +221,7 @@ class Migration(SchemaMigration):
             'person': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['people.Person']"}),
             'send_email': ('django.db.models.fields.BooleanField', [], {})
         },
-        'usage_jobs.cpujob': {
+        'kgusage.cpujob': {
             'Meta': {'ordering': "['-date']", 'object_name': 'CPUJob', 'db_table': "'cpu_job'"},
             'account': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['machines.Account']", 'null': 'True', 'blank': 'True'}),
             'act_wall_time': ('django.db.models.fields.BigIntegerField', [], {'null': 'True', 'blank': 'True'}),
@@ -234,13 +243,13 @@ class Migration(SchemaMigration):
             'mem': ('django.db.models.fields.BigIntegerField', [], {'null': 'True', 'blank': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['projects.Project']", 'null': 'True', 'blank': 'True'}),
             'qtime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'queue': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['usage_jobs.Queue']", 'null': 'True', 'blank': 'True'}),
+            'queue': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['kgusage.Queue']", 'null': 'True', 'blank': 'True'}),
             'software': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['software.SoftwareVersion']", 'null': 'True', 'blank': 'True'}),
             'start': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'username': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'vmem': ('django.db.models.fields.BigIntegerField', [], {'null': 'True', 'blank': 'True'})
         },
-        'usage_jobs.institutecache': {
+        'kgusage.institutecache': {
             'Meta': {'unique_together': "(('date', 'start', 'end', 'institute', 'machine_category'),)", 'object_name': 'InstituteCache', 'db_table': "'cache_institutecache'"},
             'cpu_time': ('django.db.models.fields.DecimalField', [], {'max_digits': '30', 'decimal_places': '2'}),
             'date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -251,7 +260,7 @@ class Migration(SchemaMigration):
             'no_jobs': ('django.db.models.fields.IntegerField', [], {}),
             'start': ('django.db.models.fields.DateField', [], {})
         },
-        'usage_jobs.machinecache': {
+        'kgusage.machinecache': {
             'Meta': {'unique_together': "(('date', 'start', 'end', 'machine'),)", 'object_name': 'MachineCache', 'db_table': "'cache_machinecache'"},
             'cpu_time': ('django.db.models.fields.DecimalField', [], {'max_digits': '30', 'decimal_places': '2'}),
             'date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -261,7 +270,7 @@ class Migration(SchemaMigration):
             'no_jobs': ('django.db.models.fields.IntegerField', [], {}),
             'start': ('django.db.models.fields.DateField', [], {})
         },
-        'usage_jobs.machinecategorycache': {
+        'kgusage.machinecategorycache': {
             'Meta': {'unique_together': "(('date', 'start', 'end', 'machine_category'),)", 'object_name': 'MachineCategoryCache', 'db_table': "'cache_machinecategorycache'"},
             'available_time': ('django.db.models.fields.DecimalField', [], {'max_digits': '30', 'decimal_places': '2'}),
             'cpu_time': ('django.db.models.fields.DecimalField', [], {'max_digits': '30', 'decimal_places': '2'}),
@@ -272,7 +281,7 @@ class Migration(SchemaMigration):
             'no_jobs': ('django.db.models.fields.IntegerField', [], {}),
             'start': ('django.db.models.fields.DateField', [], {})
         },
-        'usage_jobs.personcache': {
+        'kgusage.personcache': {
             'Meta': {'unique_together': "(('date', 'start', 'end', 'person', 'project', 'machine_category'),)", 'object_name': 'PersonCache', 'db_table': "'cache_personcache'"},
             'cpu_time': ('django.db.models.fields.DecimalField', [], {'max_digits': '30', 'decimal_places': '2'}),
             'date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -284,7 +293,7 @@ class Migration(SchemaMigration):
             'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['projects.Project']"}),
             'start': ('django.db.models.fields.DateField', [], {})
         },
-        'usage_jobs.projectcache': {
+        'kgusage.projectcache': {
             'Meta': {'unique_together': "(('date', 'start', 'end', 'project', 'machine_category'),)", 'object_name': 'ProjectCache', 'db_table': "'cache_projectcache'"},
             'cpu_time': ('django.db.models.fields.DecimalField', [], {'max_digits': '30', 'decimal_places': '2'}),
             'date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -295,12 +304,12 @@ class Migration(SchemaMigration):
             'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['projects.Project']"}),
             'start': ('django.db.models.fields.DateField', [], {})
         },
-        'usage_jobs.queue': {
+        'kgusage.queue': {
             'Meta': {'object_name': 'Queue', 'db_table': "'queue'"},
             'description': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'primary_key': 'True'})
         },
-        'usage_jobs.usedmodules': {
+        'kgusage.usedmodules': {
             'Meta': {'object_name': 'UsedModules'},
             'date_added': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'jobid': ('django.db.models.fields.CharField', [], {'max_length': '100', 'primary_key': 'True'}),
@@ -444,4 +453,4 @@ class Migration(SchemaMigration):
         },
     }
 
-    complete_apps = ['usage_jobs']
+    complete_apps = ['kgusage']
