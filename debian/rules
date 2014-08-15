@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
-export PYBUILD_NAME=kgusage
+export PYBUILD_NAME=kgsoftware
 
 %:
 	dh $@ --with python2 --buildsystem=pybuild
