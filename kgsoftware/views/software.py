@@ -51,7 +51,7 @@ def profile_software(request):
     person = request.user
     agreement_list = person.softwarelicenseagreement_set.all()
     return render_to_response(
-        'usage_software/profile_software.html',
+        'kgsoftware/profile_software.html',
         {'person': person, 'agreement_list': agreement_list},
         context_instance=RequestContext(request))
 
@@ -73,7 +73,7 @@ def software_list(request):
             spec.append((name, value))
 
     return render_to_response(
-        'usage_software/software_list.html',
+        'kgsoftware/software_list.html',
         {
             'table': table,
             'filter': filter,
@@ -107,7 +107,7 @@ def _software_list_non_admin(request):
         software_list.append(data)
 
     return render_to_response(
-        'usage_software/add_package_list.html',
+        'kgsoftware/add_package_list.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -156,7 +156,7 @@ def software_detail(request, software_id):
         return HttpResponseRedirect(reverse('kg_profile_software'))
 
     return render_to_response(
-        'usage_software/software_detail.html',
+        'kgsoftware/software_detail.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -169,7 +169,7 @@ def software_verbose(request, software_id):
     package_details = machine_category_get_software_details(software)
 
     return render_to_response(
-        'usage_software/software_verbose.html',
+        'kgsoftware/software_verbose.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -187,7 +187,7 @@ def add_package(request):
         form = AddPackageForm()
 
     return render_to_response(
-        'usage_software/add_package_form.html',
+        'kgsoftware/add_package_form.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -233,7 +233,7 @@ def add_comment(request, software_id):
 def license_detail(request, license_id):
     l = get_object_or_404(SoftwareLicense, pk=license_id)
     return render_to_response(
-        'usage_software/license_detail.html',
+        'kgsoftware/license_detail.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -250,7 +250,7 @@ def add_license(request, software_id):
             return HttpResponseRedirect(software.get_absolute_url())
 
     return render_to_response(
-        'usage_software/license_form.html',
+        'kgsoftware/license_form.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -267,7 +267,7 @@ def edit_license(request, license_id):
             return HttpResponseRedirect(software.get_absolute_url())
 
     return render_to_response(
-        'usage_software/license_form.html',
+        'kgsoftware/license_form.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -294,7 +294,7 @@ def delete_version(request, version_id):
         return HttpResponseRedirect(version.get_absolute_url())
 
     return render_to_response(
-        'usage_software/version_confirm_delete.html',
+        'kgsoftware/version_confirm_delete.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -310,7 +310,7 @@ def add_version(request, software_id):
             return HttpResponseRedirect(software.get_absolute_url())
 
     return render_to_response(
-        'usage_software/version_form.html',
+        'kgsoftware/version_form.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -327,7 +327,7 @@ def edit_version(request, version_id):
             return HttpResponseRedirect(software.get_absolute_url())
 
     return render_to_response(
-        'usage_software/version_form.html',
+        'kgsoftware/version_form.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -336,7 +336,7 @@ def edit_version(request, version_id):
 def category_list(request):
     category_list = SoftwareCategory.objects.all()
     return render_to_response(
-        'usage_software/category_list.html',
+        'kgsoftware/category_list.html',
         {'category_list': category_list},
         context_instance=RequestContext(request))
 
@@ -367,7 +367,7 @@ def remove_member(request, software_id, person_id):
         return HttpResponseRedirect(software.get_absolute_url())
 
     return render_to_response(
-        'usage_software/person_confirm_remove.html',
+        'kgsoftware/person_confirm_remove.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -409,7 +409,7 @@ def software_stats(request, software_id):
         'querystring': querystring,
     }
     return render_to_response(
-        'usage_software/software_stats.html',
+        'kgsoftware/software_stats.html',
         context,
         context_instance=RequestContext(request))
 
@@ -441,7 +441,7 @@ def version_stats(request, version_id):
     }
 
     return render_to_response(
-        'usage_software/version_stats.html',
+        'kgsoftware/version_stats.html',
         context,
         context_instance=RequestContext(request))
 

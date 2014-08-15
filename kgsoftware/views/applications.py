@@ -43,7 +43,7 @@ class StateIntroduction(base.State):
                     return action
             link, is_secret = base.get_email_link(application)
             return render_to_response(
-                'applications/software_introduction.html',
+                'kgapplications/software_introduction.html',
                 {'actions': actions, 'application': application,
                     'roles': roles, 'link': link, 'is_secret': is_secret},
                 context_instance=RequestContext(request))
