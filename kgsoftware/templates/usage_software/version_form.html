@@ -1,0 +1,36 @@
+{% extends "forms.html" %}
+{% load url from future %}
+
+
+{% block title %}Edit Software Version{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_software_list' %}">Software</a>&nbsp;›
+    <a href="{% url 'kg_software_detail' software.pk %}">{{ software }}</a>&nbsp;›
+    {% if version %}
+        Edit Software Version
+    {% else %}
+        Create Software Version
+    {% endif %}
+</div>
+{% endblock %}
+
+
+{% block content %}
+<form method="post" action=".">{% csrf_token %}
+    {% load forms %}
+    <fieldset class="aligned ()">
+        <input type="hidden" name="software" value="{{ software.id }}" />
+        {% formfield form.version %}
+        {% formfield form.module %}
+        {% formfield form.machines %}
+    </fieldset>
+
+    <div class="submit-row">
+        <input type="submit" value="Save" class="default" />
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% if application.state = 'A' %}
+<ul><li>Application is Archived.</li></ul>
+{% elif application.state = 'R' %}
+<ul><li>Application was cancelled or declined.</li></ul>
+{% else %}
+<ol>
+    <li {% if application.state = 'O' %}class='selected'{% endif %}>Applicant Introduction. </li>
+    <li {% if application.state = 'K' %}class='selected'{% endif %}>Administrator approval.</li>
+    <li {% if application.state = 'C' %}class='selected'{% endif %}>Application complete.</li>
+</ol>
+{% endif %}

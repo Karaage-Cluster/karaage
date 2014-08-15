@@ -1,0 +1,233 @@
+{% extends "main.html" %}
+{% load render_table from django_tables2 %}
+{% load url from future %}
+
+
+{% block title %}Software{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    <a href="../">Software</a>&nbsp;›
+    {{ software }}
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+    <div class="module">
+        <h2>Software Details</h2>
+        <h3>{{ software }}</h3>
+        <div class="table-container">
+            <table class="keyvalue">
+                {% if software.category %}<tr><th>Category:</th><td><a href="{% url 'kg_software_list' %}?category={{ software.category.id }}">{{ software.category }}</a></td></tr>{% endif %}
+                <tr><th>Description:</th><td>{{ software.description }}</td></tr>
+                <tr><th>Homepage:</th><td>{{ software.homepage|urlize }}</td></tr>
+                <tr><th>Tutorial:</th><td>{{ software.tutorial_url|urlize }}</td></tr>
+                {% if software.group %}
+                <tr><th>Group:</th><td><a href="{{ software.group.get_absolute_url }}">{{ software.group }}</a></td></tr>
+                {% endif %}
+                <tr><th>Restricted:</th><td>{% yes_no software.restricted %}</td></tr>
+            </table>
+        </div>
+        {% if is_admin %}
+        <div class="object-tools">
+            <ul>
+                <li><a href="{% url 'kg_software_edit' software.id %}" class="changelink">Edit</a></li>
+                <li><a href="{% url 'kg_software_delete' software.id %}" class="deletelink">Delete</a></li>
+                <li><a href="{% url 'kg_software_add_version' software.id %}" class="addlink">Add Version</a></li>
+                <li><a href="{% url 'kg_software_add_license' software.id %}" class="addlink">Add License</a></li>
+                <li><a href="{% url 'kg_software_logs' software.id %}">Logs</a></li>
+                <li><a href="{% url 'kg_software_verbose' software.id %}">Verbose</a></li>
+                <li><a href="{% url 'kg_software_stats' software.id %}">Statistics</a></li>
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if software_license %}
+    <div class="module">
+        <h2>Current End User License Agreement</h2>
+
+        <div class="table-container">
+            <table class="keyvalue">
+                {% if software_license.version %}
+                <tr><th>Version:</th><td>{{ software_license.version }}</td></tr>
+                <tr><th>Date:</th><td>{{ software_license.date }}</td></tr>
+                {% endif %}
+                <tr>
+                    <th>Text:</th>
+                    <td>
+                        {{ software_license.text|safe|linebreaks }}
+                        <a href="{% url 'kg_software_license_txt' software.pk %}">[Print version]</a>
+                    </td>
+                </tr>
+                {% if open_applications %}
+                <tr><th>Applications:</th><td>
+                    {% for application in open_applications %}
+                    <a href='{% url 'kg_application_detail' application.pk %}'>{{application}}</a>
+                    {% endfor %}
+                </td></tr>
+                {% endif %}
+                {% if agreement %}
+                <tr><th>Accepted:</th><td>Approved on {{ agreement.date }}.</td></tr>
+                {% endif %}
+            </table>
+        </div>
+
+        {% if software.restricted and not agreement %}
+        <p class="errornote">NOTE: This software is restricted and requires admin approval. You will receive notification via email once your request has been processed</p>
+        {% endif %}
+
+        {% if not agreement and not open_applications %}
+            <h3>Accept</h3>
+            <p>By clicking on 'I accept' you are agreeing to the conditions above.</p>
+
+            <form action="." method="post">{% csrf_token %}
+                <div class="submit-row">
+                    <input type="submit" value="I accept"/>
+                </div>
+            </form>
+            {% if failed %}
+            <p class="errornote">The attempt to gain admin approval has failed.
+            Please contact {{ accounts_email }} for help.</p>
+            {% endif %}
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if is_admin %}
+    {% if applications %}
+    <div class="module clear">
+        <h2>Pending Applications</h2>
+        {% render_table applications_table %}
+    </div>
+    {% endif %}
+
+    <div class="module">
+        <h2>Versions</h2>
+        <div class="table-container">
+            <table cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Version</th>
+                        <th>Module</th>
+                        <th>Machines</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for version in software.softwareversion_set.select_related %}
+                    <tr>
+                        <td>{{ version.version }}</td>
+                        <td>{{ version.module }}</td>
+                        <td>
+                            {% for m in version.machines.all %}
+                                    <a href="{{ m.get_absolute_url }}">{{ m }}</a>
+                            {% endfor %}
+                        </td>
+                        {% if is_admin %}
+                        <td><a href="{% url 'kg_software_version_edit' version.id %}" class="changelink">Edit</a></td>
+                        <td><a href="{% url 'kg_software_version_delete' version.id %}" class="deletelink">Delete</a></td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if software.softwarelicense_set.all %}
+    <div class="module">
+        <h2>Licenses</h2>
+        <div class="table-container">
+            <table cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Version</th>
+                        <th>Date</th>
+                        <th colspan="3"></th>
+                        <th>Users</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for license in software.softwarelicense_set.all %}
+                    <tr>
+                        <td>{{ license.version }}</td>
+                        <td>{{ license.date|date }}</td>
+                        <td><a href="{% url 'kg_software_license_detail' license.id %}">view</a></td>
+                        <td>{% if is_admin %}<a href="{% url 'kg_software_license_edit' license.id %}" class="changelink">Edit</a>{% endif %}</td>
+                        <td>{% if is_admin %}<a href="{% url 'kg_software_license_delete' license.id %}" class="deletelink">Delete</a>{% endif %}</td>
+                        <td>
+                            <table cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Person</th>
+                                        <th>Date Accepted</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for a in license.softwarelicenseagreement_set.select_related %}
+                                    <tr>
+                                        <td><a href="{{ a.person.get_absolute_url }}">{{ a.person }}</a></td>
+                                        <td>{{ a.date }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if software.get_group_members %}
+    <div class="module">
+        <h2>Group members</h2>
+        <div class="table-container">
+            <table cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>username</th>
+                        <th>Person</th>
+                        {% if is_admin %}
+                        <th></th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for person in software.get_group_members %}
+                    <tr>
+                        <td>{{ person.username }}</td>
+                        <td><a href="{{ person.get_absolute_url }}">{{ person }}</a></td>
+                        {% if is_admin %}
+                        <td><a href="{% url 'kg_software_remove_person' software.id person.id %}" class="deletelink">Remove</a></td>
+                        {% endif %}
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    {% for_each_app_include "software_detail_extra.html" %}
+
+    <div class="module">
+        <h2>Comments</h2>
+        {% comments software %}
+        <div class="object-tools">
+            <ul>
+                <li><a href="{% url 'kg_software_add_comment' software.pk %}" class="addlink">Add comment</a></li>
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
