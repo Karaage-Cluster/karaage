@@ -297,7 +297,7 @@ class State(object):
                 'state': self.name,
                 'roles': roles})
             return render_to_response(
-                'applications/common_detail.html',
+                'kgapplications/common_detail.html',
                 context,
                 context_instance=RequestContext(request))
         elif request.method == "POST":

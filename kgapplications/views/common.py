@@ -57,7 +57,7 @@ def application_list(request):
             spec.append((name, value))
 
     return render_to_response(
-        "applications/application_list.html",
+        "kgapplications/application_list.html",
         {
             'table': table,
             'filter': filter,
@@ -82,7 +82,7 @@ def profile_application_list(request):
     config.configure(requires_attention)
 
     return render_to_response(
-        'applications/profile_applications.html',
+        'kgapplications/profile_applications.html',
         {
             'person': request.user,
             'my_applications': my_applications,
@@ -103,7 +103,7 @@ def applicant_edit(request, applicant_id):
             return HttpResponseRedirect(reverse('kg_application_list'))
 
     return render_to_response(
-        'applications/applicant_form.html',
+        'kgapplications/applicant_form.html',
         {'form': form}, context_instance=RequestContext(request))
 
 

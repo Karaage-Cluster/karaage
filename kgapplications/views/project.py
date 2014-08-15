@@ -173,7 +173,7 @@ class StateStepIntroduction(Step):
                 return action
         link, is_secret = base.get_email_link(application)
         return render_to_response(
-            'applications/project_aed_introduction.html',
+            'kgapplications/project_aed_introduction.html',
             {
                 'actions': actions,
                 'application': application, 'roles': roles,
@@ -298,7 +298,7 @@ class StateStepShibboleth(Step):
 
         # render the page
         return render_to_response(
-            'applications/project_aed_shibboleth.html',
+            'kgapplications/project_aed_shibboleth.html',
             {'form': form, 'done': done, 'status': status,
                 'actions': actions, 'roles': roles, 'application': application,
                 'attrs': attrs, 'saml_session': saml_session, },
@@ -351,7 +351,7 @@ class StateStepApplicant(Step):
 
         # Render the response
         return render_to_response(
-            'applications/project_aed_applicant.html',
+            'kgapplications/project_aed_applicant.html',
             {
                 'form': form,
                 'application': application,
@@ -509,7 +509,7 @@ class StateStepProject(base.State):
 
         # render the response
         return render_to_response(
-            'applications/project_aed_project.html',
+            'kgapplications/project_aed_project.html',
             {'forms': project_forms, 'project': project,
                 'actions': actions, 'roles': roles,
                 'application': application, },
@@ -580,7 +580,7 @@ class StateApplicantEnteringDetails(StateWithSteps):
                         return HttpResponseRedirect(url)
                     else:
                         return render_to_response(
-                            'applications/project_aed_steal.html',
+                            'kgapplications/project_aed_steal.html',
                             {'application': application, 'person': new_person,
                                 'reason': reason, 'details': details, },
                             context_instance=RequestContext(request))
@@ -593,7 +593,7 @@ class StateApplicantEnteringDetails(StateWithSteps):
             if 'reopen' in request.POST:
                 return 'reopen'
             return render_to_response(
-                'applications/project_aed_for_leader.html',
+                'kgapplications/project_aed_for_leader.html',
                 {'application': application,
                     'actions': actions, 'roles': roles, },
                 context_instance=RequestContext(request))
@@ -685,7 +685,7 @@ class StateDuplicateApplicant(base.State):
                     return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
             return render_to_response(
-                'applications/project_duplicate_applicant.html',
+                'kgapplications/project_duplicate_applicant.html',
                 {'application': application, 'form': form,
                     'actions': actions, 'roles': roles, },
                 context_instance=RequestContext(request))
@@ -796,7 +796,7 @@ def _send_invitation(request, project):
 
             if existing_person and 'existing' not in request.POST:
                 return render_to_response(
-                    'applications/project_common_invite_existing.html',
+                    'kgapplications/project_common_invite_existing.html',
                     {'form': form, 'person': applicant},
                     context_instance=RequestContext(request))
 
@@ -809,7 +809,7 @@ def _send_invitation(request, project):
             return response
 
     return render_to_response(
-        'applications/project_common_invite_other.html',
+        'kgapplications/project_common_invite_other.html',
         {'form': form, 'project': project, },
         context_instance=RequestContext(request))
 
@@ -838,11 +838,11 @@ def send_invitation(request, project_id=None):
 
 def new_application(request):
     """ A new application by a user to start a new project. """
-    # Note default applications/index.html will display error if user logged
+    # Note default kgapplications/index.html will display error if user logged
     # in.
     if not settings.ALLOW_REGISTRATIONS:
         return render_to_response(
-            'applications/project_common_disabled.html',
+            'kgapplications/project_common_disabled.html',
             {},
             context_instance=RequestContext(request))
 
@@ -868,7 +868,7 @@ def new_application(request):
                 url = reverse('index')
                 return HttpResponseRedirect(url)
         return render_to_response(
-            'applications/project_common_invite_unauthenticated.html',
+            'kgapplications/project_common_invite_unauthenticated.html',
             {'form': form, },
             context_instance=RequestContext(request))
     else:
@@ -883,6 +883,6 @@ def new_application(request):
             response = state_machine.start(request, application, roles)
             return response
         return render_to_response(
-            'applications/project_common_invite_authenticated.html',
+            'kgapplications/project_common_invite_authenticated.html',
             {},
             context_instance=RequestContext(request))

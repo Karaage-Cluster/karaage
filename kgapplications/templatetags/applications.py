@@ -36,7 +36,7 @@ def application_state(context, application):
         'application': application,
     })
     nodelist = template.loader.get_template(
-        'applications/%s_common_state.html' % application.type)
+        'kgapplications/%s_common_state.html' % application.type)
     output = nodelist.render(new_context)
     return output
 
@@ -50,7 +50,7 @@ def application_request(context, application):
         'application': application,
     })
     nodelist = template.loader.get_template(
-        'applications/%s_common_request.html' % application.type)
+        'kgapplications/%s_common_request.html' % application.type)
     output = nodelist.render(new_context)
     return output
 
@@ -63,7 +63,8 @@ def application_simple_state(context, application):
     return state.name
 
 
-@register.inclusion_tag('applications/common_actions.html', takes_context=True)
+@register.inclusion_tag(
+    'kgapplications/common_actions.html', takes_context=True)
 def application_actions(context):
     """ Render actions available. """
     return {
@@ -90,7 +91,7 @@ class ApplicationActionsPlus(template.Node):
     def render(self, context):
         extra = self.nodelist.render(context)
         nodelist = template.loader.get_template(
-            'applications/common_actions.html')
+            'kgapplications/common_actions.html')
         new_context = template.context.Context({
             'roles': context['roles'],
             'extra': extra,

@@ -52,8 +52,8 @@ class StateWaitingForApproval(base.State):
     """ We need the somebody to provide approval. """
     name = "Waiting for X"
     authorised_text = "X"
-    template_approve = "applications/common_approve.html"
-    template_decline = "applications/common_decline.html"
+    template_approve = "kgapplications/common_approve.html"
+    template_decline = "kgapplications/common_decline.html"
 
     def get_authorised_persons(self, application):
         raise NotImplementedError()
@@ -227,7 +227,7 @@ class StatePassword(base.State):
                             return action
                     return HttpResponseBadRequest("<h1>Bad Request</h1>")
             return render_to_response(
-                'applications/common_password.html',
+                'kgapplications/common_password.html',
                 {'application': application, 'form': form,
                     'actions': actions, 'roles': roles, 'type': form_type},
                 context_instance=RequestContext(request))
@@ -256,7 +256,7 @@ class StateDeclined(base.State):
             if 'reopen' in request.POST:
                 return 'reopen'
             return render_to_response(
-                'applications/common_declined.html',
+                'kgapplications/common_declined.html',
                 {'application': application,
                     'actions': actions, 'roles': roles},
                 context_instance=RequestContext(request))

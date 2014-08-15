@@ -27,11 +27,11 @@ def render_email(name, context):
     context.update(CONTEXT)
     subject = render_to_string(
         ['emails/%s_subject.txt' % name,
-            'applications/emails/%s_subject.txt' % name],
+            'kgapplications/emails/%s_subject.txt' % name],
         context).replace('\n', '')
     body = render_to_string(
         ['emails/%s_body.txt' % name,
-            'applications/emails/%s_body.txt' % name],
+            'kgapplications/emails/%s_body.txt' % name],
         context)
     return subject, body
 
