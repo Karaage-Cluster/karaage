@@ -16,8 +16,9 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 
-from karaage.common.models import LogEntry  # NOQA
-from karaage.people.models import Person, Group  # NOQA
-from karaage.institutes.models import Institute  # NOQA
-from karaage.institutes.models import InstituteQuota, InstituteDelegate  # NOQA
-from karaage.machines.models import MachineCategory, Machine, Account  # NOQA
+import karaage.common.models  # NOQA
+import karaage.people.models  # NOQA
+import karaage.projects.models  # NOQA
+import karaage.institutes.models  # NOQA
+import karaage.institutes.models  # NOQA
+import karaage.machines.models  # NOQA

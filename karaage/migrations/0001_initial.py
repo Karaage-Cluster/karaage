@@ -22,9 +22,9 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         if not db.dry_run:
-            apps = ['admin', 'applications', 'cache', 'common', 'emails',
+            apps = ['admin', 'cache', 'common', 'emails',
                     'institutes', 'machines', 'pbsmoab', 'people', 'projects',
-                    'software', 'usage']
+                    ]
             orm['contenttypes.contenttype'].objects \
                 .filter(app_label__in=apps).update(app_label='karaage')
 
