@@ -19,7 +19,7 @@ from django.conf.urls import patterns, url, include
 from django.conf import settings
 
 urlpatterns = patterns(
-    'kgusage.usage_jobs.views',
+    'kgusage.views',
     url(r'^$', 'usage_index', name='kg_usage_list'),
 
     url(r'^unknown/$', 'unknown_usage', name='kg_usage_unknown'),

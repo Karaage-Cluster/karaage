@@ -19,7 +19,7 @@ from karaage.conf.defaults import *  # NOQA
 from karaage.tests.defaults import *  # NOQA
 
 PLUGINS = [
-    'kgusage.plugins.Jobs',
+    'kgusage.plugin',
 ]
 
 import sys

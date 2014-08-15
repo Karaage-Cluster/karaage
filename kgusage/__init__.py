@@ -14,3 +14,19 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
+
+from karaage.plugins import BasePlugin
+
+
+class plugin(BasePlugin):
+    module = "kgusage"
+    django_apps = ("djcelery",)
+    xmlrpc_methods = (
+        ('kgusage.xmlrpc.parse_usage', 'parse_usage',),
+    )
+    settings = {
+        'GRAPH_DEBUG': False,
+        'GRAPH_DIR': 'kgusage/',
+        'GRAPH_TMP': 'kgusage/',
+    }
+    depends = ("kgsoftware.plugin",)

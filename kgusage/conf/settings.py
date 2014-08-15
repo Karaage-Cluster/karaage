@@ -20,7 +20,7 @@ from karaage.conf.defaults import *  # NOQA
 exec(open("/etc/karaage3/settings.py", "rb").read())
 
 PLUGINS = [
-    'kgusage.plugins.Jobs',
+    'kgusage.plugin',
 ]
 
 import sys

@@ -26,7 +26,7 @@ from karaage.projects.models import Project
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
 
-from kgusage.usage_software.models import SoftwareVersion
+from kgsoftware.models import SoftwareVersion
 
 
 @python_2_unicode_compatible
