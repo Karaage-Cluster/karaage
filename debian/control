@@ -3,10 +3,10 @@ Section: python
 Priority: optional
 Maintainer: Brian May <bam@debian.org>
 Build-Depends: debhelper (>=8.1.0), dh-python,
- python-all (>= 2.6.6-3~), python-setuptools, python-karaage, python-django,
- python-flake8,
- python3-all, python-setuptools, python3-karaage, python3-django,
- python3-flake8,
+ python-all (>= 2.6.6-3~), python-setuptools, python-django, python-flake8,
+ python-karaage,
+ python3-all, python3-setuptools, python3-django, python3-flake8,
+ python3-karaage,
 Standards-Version: 3.9.5
 Homepage: https://github.com/Karaage-Cluster/karaage-usage
 Vcs-Git: git://github.com/Karaage-Cluster/karaage-usage

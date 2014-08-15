@@ -73,11 +73,6 @@ setup(
         '': ['*.css', '*.html', '*.js', '*.png', '*.gif', '*.map', '*.txt'],
     },
     install_requires=[
-        "django_celery",
-        "django-filter",
-        "django-tables2",
-        "django-xmlrpc >= 0.1",
         'karaage >= 3.1.0',
-        "matplotlib",
     ],
 )
