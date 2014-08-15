@@ -212,7 +212,7 @@ for cluster systems. It is not enabled by default. To enable it:
     .. code-block:: python
 
         PLUGINS = [
-            'kgusage.plugins.Jobs',
+            'kgusage.plugin',
         ]
 
 #.   Run the database migrations, restart apache, and install the celery
