@@ -4,7 +4,7 @@
 export PYBUILD_NAME=kgusage
 
 %:
-	dh $@ --with python2 --buildsystem=pybuild
+	dh $@ --with python2,python3 --buildsystem=pybuild
 
 .PHONY: override_dh_clean
 override_dh_clean:
