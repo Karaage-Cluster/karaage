@@ -132,14 +132,6 @@ class MachineCategoryDataStore(object):
         """ Remove account from institute. """
         return
 
-    def add_account_to_software(self, account, software):
-        """ Add account to software. """
-        return
-
-    def remove_account_from_software(self, account, software):
-        """ Remove account from software. """
-        return
-
     def account_exists(self, username):
         """ Does the account exist? """
         return False
@@ -202,20 +194,4 @@ class MachineCategoryDataStore(object):
 
     def get_institute_details(self, institute):
         """ Get institute's details. """
-        return {}
-
-    ############
-    # SOFTWARE #
-    ############
-
-    def save_software(self, software):
-        """ Software was saved. """
-        return
-
-    def delete_software(self, software):
-        """ Software was deleted. """
-        return
-
-    def get_software_details(self, software):
-        """ Get software's details. """
         return {}

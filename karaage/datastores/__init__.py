@@ -277,20 +277,6 @@ def machine_category_remove_account_from_institute(account, institute):
         datastore.remove_account_from_institute(account, institute)
 
 
-def machine_category_add_account_to_software(account, software):
-    """ Add account to software. """
-    for datastore in _get_machine_category_datastores(
-            account.machine_category):
-        datastore.add_account_to_software(account, software)
-
-
-def machine_category_remove_account_from_software(account, software):
-    """ Remove account from software. """
-    for datastore in _get_machine_category_datastores(
-            account.machine_category):
-        datastore.remove_account_from_software(account, software)
-
-
 def machine_category_account_exists(username, machine_category):
     """ Does the account exist??? """
     for datastore in _get_machine_category_datastores(machine_category):
@@ -431,36 +417,6 @@ def machine_category_get_institute_details(institute):
     return result
 
 
-############
-# Software #
-############
-
-def machine_category_save_software(software):
-    """ An institute has been saved. """
-    for machine_category in _get_machine_categorys():
-        for datastore in _get_machine_category_datastores(machine_category):
-            datastore.save_software(software)
-
-
-def machine_category_delete_software(software):
-    """ An institute has been deleted. """
-    for machine_category in _get_machine_categorys():
-        for datastore in _get_machine_category_datastores(machine_category):
-            datastore.delete_software(software)
-
-
-def machine_category_get_software_details(software):
-    """ Get details for this user. """
-    result = {}
-    for machine_category in _get_machine_categorys():
-        result[machine_category.name] = []
-        for datastore in _get_machine_category_datastores(machine_category):
-            value = datastore.get_software_details(software)
-            value['datastore'] = datastore.config['DESCRIPTION']
-            result[machine_category.name].append(value)
-    return result
-
-
 ######################################################################
 # OTHER                                                              #
 ######################################################################
@@ -521,24 +477,6 @@ def remove_accounts_from_institute(accounts_query, institute):
 
     for account in query:
         machine_category_remove_account_from_institute(account, institute)
-
-
-def add_accounts_to_software(accounts_query, software):
-    """ Add accounts to software. """
-
-    query = accounts_query.filter(date_deleted__isnull=True)
-
-    for account in query:
-        machine_category_add_account_to_software(account, software)
-
-
-def remove_accounts_from_software(accounts_query, software):
-    """ Remove accounts from software. """
-
-    query = accounts_query.filter(date_deleted__isnull=True)
-
-    for account in query:
-        machine_category_remove_account_from_software(account, software)
 
 
 ###################
