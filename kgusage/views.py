@@ -85,7 +85,7 @@ def synchronise(func):
     """ If task already queued, running, or finished, don't restart. """
     def inner(request, *args):
         lock_id = '%s-%s-built-%s' % (
-            datetime.date.today(), func.func_name,
+            datetime.date.today(), func.__name__,
             ",".join([str(a) for a in args]))
 
         if cache.add(lock_id, 'true', LOCK_EXPIRE):
