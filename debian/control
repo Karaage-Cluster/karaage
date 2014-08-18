@@ -74,7 +74,7 @@ Description: Collection of Django apps to manage a cluster
 
 Package: karaage3-wsgi
 Architecture: all
-Depends: ${misc:Depends}, python-karaage (>= 3.1.0), libapache2-mod-wsgi, apache2
+Depends: ${misc:Depends}, python-karaage (>= 3.1.0), libapache2-mod-wsgi | libapache2-mod-wsgi-py3, apache2
 Breaks: karaage3-admin (<< 3.1.0), karaage3-registration (<< 3.1.0)
 Replaces: karaage3-admin (<< 3.1.0), karaage3-registration (<< 3.1.0)
 Description: Collection of Django apps to manage a cluster
