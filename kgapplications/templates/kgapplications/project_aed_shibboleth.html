@@ -36,7 +36,7 @@
             <p>You have an established SAML session.</p>
             <div class="table-container">
                 <table class="keyvalue">
-                    {% for key,value in attrs.iteritems %}
+                    {% for key,value in attrs.items %}
                     <tr><th>{{ key }}</th><td>{{ value }}</td></tr>
                     {% endfor %}
                 </table>
