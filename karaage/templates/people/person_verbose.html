@@ -24,7 +24,7 @@
         <h3>{{a.datastore}}</h3>
         <div class="table-container">
             <table class="keyvalue">
-                {% for i,j in a.iteritems %}
+                {% for i,j in a.items %}
                     <tr>
                         <th>{{ i }}</th><td>{{ j }}</td>
                    </tr>
@@ -35,14 +35,14 @@
     </div>
 
     {% for account in account_details %}
-    {% for name, details in account.iteritems %}
+    {% for name, details in account.items %}
     <div class="module">
         <h2>Account details - {{ name }}</h2>
         {% for a in details %}
         <h3>{{ a.datastore }}</h3>
         <div class="table-container">
             <table class="keyvalue">
-                {% for i,j in a.iteritems %}
+                {% for i,j in a.items %}
                     <tr>
                         <th>{{ i }}</th><td>{{ j }}</td>
                    </tr>

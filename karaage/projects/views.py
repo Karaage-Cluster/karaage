@@ -200,7 +200,7 @@ def project_list(request, queryset=None):
     tables.RequestConfig(request).configure(table)
 
     spec = []
-    for name, value in filter.form.cleaned_data.iteritems():
+    for name, value in six.iteritems(filter.form.cleaned_data):
         if value is not None and value != "":
             name = name.replace('_', ' ').capitalize()
             spec.append((name, value))

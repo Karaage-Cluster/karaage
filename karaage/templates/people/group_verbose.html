@@ -24,7 +24,7 @@
         <h3>{{a.datastore}}</h3>
         <div class="table-container">
             <table class="keyvalue">
-                {% for i,j in a.iteritems %}
+                {% for i,j in a.items %}
                     <tr>
                         <th>{{ i }}</th><td>{{ j }}</td>
                    </tr>
@@ -34,14 +34,14 @@
         {% endfor %}
     </div>
 
-    {% for name, details in machine_category_group_details.iteritems %}
+    {% for name, details in machine_category_group_details.items %}
     <div class="module">
         <h2>Group details - {{name}}</h2>
         {% for a in details %}
         <h3>{{a.datastore}}</h3>
         <div class="table-container">
             <table class="keyvalue">
-                {% for i,j in a.iteritems %}
+                {% for i,j in a.items %}
                     <tr>
                         <th>{{ i }}</th><td>{{ j }}</td>
                    </tr>

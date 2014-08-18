@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import six
+
 import django_tables2 as tables
 
 from django.conf import settings
@@ -142,7 +144,7 @@ def log_list(request):
     tables.RequestConfig(request).configure(table)
 
     spec = []
-    for name, value in filter.form.cleaned_data.iteritems():
+    for name, value in six.iteritems(filter.form.cleaned_data):
         if value is not None and value != "":
             name = name.replace('_', ' ').capitalize()
             spec.append((name, value))

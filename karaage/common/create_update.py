@@ -1,3 +1,5 @@
+import six
+
 from django.forms.models import ModelFormMetaclass, ModelForm
 from django.template import RequestContext, loader
 from django.http import Http404, HttpResponse, HttpResponseRedirect
@@ -13,7 +15,7 @@ def apply_extra_context(extra_context, context):
     Adds items from extra_context dict to context.  If a value in extra_context
     is callable, then it is called and the result is added to context.
     """
-    for key, value in extra_context.iteritems():
+    for key, value in six.iteritems(extra_context):
         if callable(value):
             context[key] = value()
         else:
