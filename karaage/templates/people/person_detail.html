@@ -133,7 +133,14 @@
         {% if person.is_active or is_admin %}
         <div class="object-tools">
             <ul>
+
+                {% if person.is_active and is_admin %}
+                <li><a href="{% url 'kg_account_add' person.username %}" class="addlink">Add account</a></li>
+                <li><a href="{% url 'kg_account_add_project' person.username %}" class="addlink">Add project</a></li>
+                {% endif %}
+
                 {% for_each_app_include "person_detail_tools.html" %}
+
                 {% if person.is_active %}
 
                     {% if is_admin %}
@@ -182,6 +189,13 @@
         {% render_table delegate_institute_list %}
     </div>
 
+    {% load machines %}
+    {% load render_table from django_tables2 %}
+    {% get_account_table person.account_set.all as table %}
+    <div class="module">
+        <h2>Accounts</h2>
+        {% render_table table %}
+    </div>
 
     {% for_each_app_include "person_detail_extra.html" %}
 

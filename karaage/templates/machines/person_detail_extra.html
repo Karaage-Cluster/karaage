@@ -1,7 +1,0 @@
-{% load machines %}
-{% load render_table from django_tables2 %}
-{% get_account_table person.account_set.all as table %}
-<div class="module">
-    <h2>Accounts</h2>
-    {% render_table table %}
-</div>
