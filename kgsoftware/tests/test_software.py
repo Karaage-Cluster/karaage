@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import mock
 from django.test import TestCase
 from django.core import mail
 from django.core.urlresolvers import reverse
@@ -23,7 +22,6 @@ from django.conf import settings
 from django.core.management import call_command
 
 from karaage.people.models import Group
-from karaage.tests.unit import UnitTestCase
 from karaage.tests.fixtures import GroupFactory, simple_account
 
 from kgapplications.models import Application
@@ -34,56 +32,26 @@ from ..models import SoftwareApplication
 from .fixtures import SoftwareFactory
 
 
-class SoftwareTestCase(UnitTestCase):
+class SoftwareTestCase(TestCase):
 
     def test_change_group(self):
         """Check that when changing an software group, old accounts are
         removed from the software and new ones are added.
 
         """
-        account1 = simple_account(machine_category=self.machine_category)
+        account1 = simple_account()
         group1 = GroupFactory()
         group1.add_person(account1.person)
 
         # Test during initial creation of the software
-        self.resetDatastore()
         software = SoftwareFactory(group=group1)
-        self.assertEqual(
-            self.datastore.method_calls,
-            [mock.call.save_software(software),
-                mock.call.add_account_to_software(account1, software)])
 
         # Test changing an existing software group
-        account2 = simple_account(machine_category=self.machine_category)
-        self.resetDatastore()
+        account2 = simple_account()
         group2 = GroupFactory()
         group2.add_person(account2.person)
         software.group = group2
         software.save()
-        self.assertEqual(
-            self.datastore.method_calls,
-            [mock.call.save_group(group2),
-             mock.call.add_account_to_group(account2, group2),
-             mock.call.save_software(software),
-             # old accounts are removed
-             mock.call.remove_account_from_software(account1, software),
-             # new accounts are added
-             mock.call.add_account_to_software(account2, software)])
-
-        # Test removing the group
-        #
-        # Test is currently broken, as the save() operation will give the
-        # software a group if none is given. This will be fixed in
-        # https://code.vpac.org/gerrit/#/c/852/
-        #
-        # self.resetDatastore()
-        # software.group = None
-        # software.save()
-        # self.assertEqual(
-        #    self.datastore.method_calls,
-        #    [mock.call.save_software(software),
-        #     # old accounts are removed
-        #     mock.call.remove_account_from_software(account2, software)])
 
 
 def set_admin():

@@ -162,19 +162,6 @@ def software_detail(request, software_id):
 
 
 @admin_required
-def software_verbose(request, software_id):
-    software = get_object_or_404(Software, pk=software_id)
-
-    from karaage.datastores import machine_category_get_software_details
-    package_details = machine_category_get_software_details(software)
-
-    return render_to_response(
-        'kgsoftware/software_verbose.html',
-        locals(),
-        context_instance=RequestContext(request))
-
-
-@admin_required
 def add_package(request):
 
     if request.method == 'POST':

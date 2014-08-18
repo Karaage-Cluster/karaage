@@ -24,7 +24,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from model_utils import FieldTracker
 
 from karaage.people.models import Person, Group
-from karaage.machines.models import Machine, Account
+from karaage.machines.models import Machine
 from karaage.common import log
 
 from kgapplications.models import Application, ApplicationManager
@@ -76,24 +76,6 @@ class Software(models.Model):
             log.change(self, 'Changed %s to %s'
                        % (field, getattr(self, field)))
 
-        # update the datastore
-        from karaage.datastores import machine_category_save_software
-        machine_category_save_software(self)
-
-        # has group changed?
-        if self._tracker.has_changed("group_id"):
-            old_group_pk = self._tracker.previous("group_id")
-            new_group = self.group
-            if old_group_pk is not None:
-                old_group = Group.objects.get(pk=old_group_pk)
-                from karaage.datastores import remove_accounts_from_software
-                query = Account.objects.filter(person__groups=old_group)
-                remove_accounts_from_software(query, self)
-            if new_group is not None:
-                from karaage.datastores import add_accounts_to_software
-                query = Account.objects.filter(person__groups=new_group)
-                add_accounts_to_software(query, self)
-
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
@@ -101,17 +83,6 @@ class Software(models.Model):
         log.delete(self, 'Deleted')
         super(Software, self).delete(*args, **kwargs)
 
-        # update datastore associations
-        old_group_pk = self._tracker.previous("group_id")
-        if old_group_pk is not None:
-            old_group = Group.objects.get(pk=old_group_pk)
-            from karaage.datastores import remove_accounts_from_software
-            query = Account.objects.filter(person__groups=old_group)
-            remove_accounts_from_software(query, self)
-
-        # update the datastore
-        from karaage.datastores import global_delete_software
-        global_delete_software(self)
     delete.alters_data = True
 
     def __str__(self):
@@ -230,65 +201,3 @@ class SoftwareApplication(Application):
         if self.software_license.software.group is not None:
             self.software_license.software.group.add_person(self.applicant)
         return created_person
-
-
-def _add_person_to_group(person, group):
-    """ Call datastores after adding a person to a group. """
-    from karaage.datastores import add_accounts_to_software
-
-    a_list = person.account_set
-    for software in group.software_set.all():
-        add_accounts_to_software(a_list, software)
-
-
-def _remove_person_from_group(person, group):
-    """ Call datastores after removing a person from a group. """
-    from karaage.datastores import remove_accounts_from_software
-
-    a_list = person.account_set
-    for software in group.software_set.all():
-        remove_accounts_from_software(a_list, software)
-
-
-def _members_changed(
-        sender, instance, action, reverse, model, pk_set, **kwargs):
-    """
-    Hook that executes whenever the group members are changed.
-    """
-    # print "'%s','%s','%s','%s','%s'" \
-    # %(instance, action, reverse, model, pk_set)
-
-    if action == "post_add":
-        if not reverse:
-            group = instance
-            for person in model.objects.filter(pk__in=pk_set):
-                _add_person_to_group(person, group)
-        else:
-            person = instance
-            for group in model.objects.filter(pk__in=pk_set):
-                _add_person_to_group(person, group)
-
-    elif action == "post_remove":
-        if not reverse:
-            group = instance
-            for person in model.objects.filter(pk__in=pk_set):
-                _remove_person_from_group(person, group)
-        else:
-            person = instance
-            for group in model.objects.filter(pk__in=pk_set):
-                _remove_person_from_group(person, group)
-
-    elif action == "pre_clear":
-        # This has to occur in pre_clear, not post_clear, as otherwise
-        # we won't see what groups need to be removed.
-        if not reverse:
-            group = instance
-            for person in group.members.all():
-                _remove_person_from_group(person, group)
-        else:
-            person = instance
-            for group in person.groups.all():
-                _remove_person_from_group(person, group)
-
-models.signals.m2m_changed.connect(
-    _members_changed, sender=Group.members.through)

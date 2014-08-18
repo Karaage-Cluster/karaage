@@ -37,8 +37,6 @@ urlpatterns = patterns(
         'software_edit', name='kg_software_edit'),
     url(r'^(?P<software_id>\d+)/delete/$',
         'software_delete', name='kg_software_delete'),
-    url(r'^(?P<software_id>\d+)/verbose/$',
-        'software_verbose', name='kg_software_verbose'),
     url(r'^(?P<software_id>\d+)/stats/$',
         'software_stats', name='kg_software_stats'),
     url(r'^(?P<software_id>\d+)/logs/$',
