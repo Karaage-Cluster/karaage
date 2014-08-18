@@ -53,5 +53,5 @@ urlpatterns = patterns(
 
 urlpatterns = patterns(
     '',
-    url(r'^usage/jobs/', include(urlpatterns)),
+    url(r'^usage/', include(urlpatterns)),
 )
