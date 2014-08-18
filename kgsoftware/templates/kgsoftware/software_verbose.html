@@ -18,14 +18,14 @@
 {% block content %}
 <div id="content-main">
 
-    {% for name, details in package_details.iteritems %}
+    {% for name, details in package_details.items %}
     <div class="module">
         <h2>Software details - {{name}}</h2>
         {% for a in details %}
         <h3>{{a.datastore}}</h3>
         <div class="table-container">
             <table class="keyvalue">
-                {% for i,j in a.iteritems %}
+                {% for i,j in a.items %}
                     <tr>
                         <th>{{ i }}</th><td>{{ j }}</td>
                    </tr>
