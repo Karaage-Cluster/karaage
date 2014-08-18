@@ -24,6 +24,7 @@ os.environ['MPLCONFIGDIR'] = GRAPH_TMP
 import logging
 logger = logging.getLogger(__name__)
 
+import six
 import csv
 import datetime
 
@@ -436,7 +437,7 @@ def _gen_project_trend_graph(project,
 
             data[account][date] = row['cpu_usage__sum']
 
-    for account, dates in data.iteritems():
+    for account, dates in six.iteritems(data):
         start = t_start
         end = t_end
         while start <= end:

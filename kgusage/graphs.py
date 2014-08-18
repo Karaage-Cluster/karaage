@@ -16,7 +16,10 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import os.path
-import urlparse
+try:
+    import urlparse
+except ImportError:
+    import urllib.parse as urlparse
 
 from .dirs import GRAPH_URL
 

@@ -17,7 +17,10 @@
 
 from django.conf import settings
 import os.path
-import urlparse
+try:
+    import urlparse
+except ImportError:
+    import urllib.parse as urlparse
 
 GRAPH_TMP = os.path.join(settings.TMP_DIR, settings.GRAPH_TMP)
 GRAPH_ROOT = os.path.join(settings.FILES_DIR, settings.GRAPH_DIR)
