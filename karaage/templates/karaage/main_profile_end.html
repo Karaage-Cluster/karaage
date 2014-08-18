@@ -1,5 +1,0 @@
-{% if user.is_authenticated %}
-<li><a href="{% url 'kg_profile_logout' %}">Log Out</a></li>
-{% else %}
-<li><a href="{% url 'kg_profile_login' %}">Log In</a></li>
-{% endif %}

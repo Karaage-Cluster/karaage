@@ -27,7 +27,11 @@
     <h2>Profile links</h2>
     <ul>
         {% for_each_app_include "main_profile.html" %}
-        {% for_each_app_include "main_profile_end.html" %}
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'kg_profile_logout' %}">Log Out</a></li>
+        {% else %}
+        <li><a href="{% url 'kg_profile_login' %}">Log In</a></li>
+        {% endif %}
     </ul>
   </div>
   {% block sidebar_extra %}
