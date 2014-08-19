@@ -1,4 +1,4 @@
-karaage3 (3.1.0-1) UNRELEASED; urgency=low
+karaage3 (3.1.0-1) unstable; urgency=low
 
   [ Brian May ]
   * Update software usage statistics.
