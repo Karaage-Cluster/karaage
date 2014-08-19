@@ -1,3 +1,31 @@
+karaage3 (3.1.1-1) unstable; urgency=low
+
+  * Update documentation.
+  * Fix formatting.
+  * djcelery kludge.
+  * Split software out into plugin in karaagee-usage.
+  * Fix copyright.
+  * Use roles in applications.
+  * Fix project application specific wording.
+  * Make sure we include *.json files.
+  * Fix faulty role checks.
+  * Remove Django South hack.
+  * Make sure we kill the LDAP server after test fails.
+  * Fix migration errors.
+  * Turn karaage into one Django app.
+  * Fix management commands.
+  * Split applications into kgapplications.
+  * Update documentation.
+  * Fix migration issues.
+  * libapache2-mod-wsgi-py3 should be sufficient.
+  * Remove python2 specific use of iteritems.
+  * Remove software specific datastores.
+  * Combine templates.
+  * Cleanup links.
+  * Fix release tag.
+
+ -- Brian May <brian@microcomaustralia.com.au>  Tue, 19 Aug 2014 15:52:41 +1000
+
 karaage3 (3.1.0-1) unstable; urgency=low
 
   [ Brian May ]
