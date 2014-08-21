@@ -17,14 +17,14 @@ X-Python-Version: >= 2.6
 
 Package: python-kgusage
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}
+Depends: ${misc:Depends}, ${python:Depends}, python-karaage (>= 3.1.1)
 Description: Usage information for Karaage.
  Karaage is an open source collection of Django apps to manage a clusters.
  This package provides the plugin that keep track of usage information.
 
 Package: python3-kgusage
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}
+Depends: ${misc:Depends}, ${python:Depends}, python3-karaage (>= 3.1.1)
 Description: Usage information for Karaage.
  Karaage is an open source collection of Django apps to manage a clusters.
  This package provides the plugin that keep track of usage information.

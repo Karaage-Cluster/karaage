@@ -76,7 +76,7 @@ setup(
         "django-filter",
         "django-tables2",
         "django-xmlrpc >= 0.1",
-        "karaage >= 3.1.0",
+        "karaage >= 3.1.1",
         "karaage-software",
         "matplotlib",
     ],
