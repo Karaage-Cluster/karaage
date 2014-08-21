@@ -1,6 +1,6 @@
 karaage3-usage (3.1.1-1) unstable; urgency=low
 
-  * Split software out into seperate package.
+  * Split software out into separate package.
 
  -- Brian May <bam@debian.org>  Tue, 19 Aug 2014 15:48:11 +1000
 
