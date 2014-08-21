@@ -125,7 +125,7 @@
             </thead>
             <tbody>
                 {% for pc in project.projectquota_set.all %}
-                <tr class="{% cycle row1,row2 %}">
+                <tr>
                     <td>{{ pc.machine_category }}</td>
                     <td>{{ pc.get_cap }}</td>
                     {% if is_admin %}
@@ -169,7 +169,7 @@
             </thead>
             <tbody>
                 {% for person in project.group.members.select_related %}
-                <tr class="{% cycle row1,row2 %}">
+                <tr>
                     {% if user.is_authenticated %}
                     <td><a href="{{ person.get_absolute_url }}">{{ person.username }}</a></td>
                     {% endif %}
