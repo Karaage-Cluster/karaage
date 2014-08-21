@@ -73,6 +73,6 @@ setup(
         '': ['*.css', '*.html', '*.js', '*.png', '*.gif', '*.map', '*.txt'],
     },
     install_requires=[
-        'karaage >= 3.1.0',
+        'karaage >= 3.1.1',
     ],
 )
