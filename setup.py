@@ -47,6 +47,10 @@ for dirpath, dirnames, filenames in os.walk("kgapplications"):
     if filenames:
         packages.append('.'.join(fullsplit(dirpath)))
 
+tests_require = [
+    "factory_boy",
+]
+
 setup(
     name="karaage-applications",
     version=version,
@@ -75,4 +79,6 @@ setup(
     install_requires=[
         'karaage >= 3.1.1',
     ],
+    tests_require=tests_require,
+    extras_require={'tests': tests_require},
 )
