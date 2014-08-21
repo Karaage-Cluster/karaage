@@ -15,14 +15,17 @@ class Migration(DataMigration):
             if ua.date_deleted is None:
                 # Yes - Account is active.
                 try:
-                    # Try to find LDAP entry with same name as person username. If
-                    # one exists, assume it is the same person.
+                    # Try to find LDAP entry with same name as person username.
+                    # If one exists, assume it is the same person.
                     p = datastore._accounts().get(uid=ua.username)
                     ua.login_enabled = not p.is_locked()
                 except datastore._account.DoesNotExist:
-                    # If we cannot find LDAP entry, assume this is because account
-                    # has no access.
-                    print("+++", ua.username)
+                    # If we cannot find LDAP entry, assume this is because
+                    # account has no access.
+                    print(
+                        "+++ account username=%s has no ldap entry; "
+                        "disabling logins"
+                        % ua.username)
                     ua.login_enabled = False
 
             else:
