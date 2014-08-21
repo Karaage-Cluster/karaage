@@ -93,7 +93,7 @@ setup(
     ],
     install_requires=[
         "Django >= 1.6",
-        "South >= 0.7",
+        "South >= 1.0",
         "python-alogger >= 2.0",
         "django-xmlrpc >= 0.1",
         "django-simple-captcha",
