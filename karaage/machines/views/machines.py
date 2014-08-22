@@ -130,13 +130,17 @@ def category_list(request):
 @admin_required
 def category_create(request):
     from karaage.common.create_update import create_object
-    return create_object(request, model=MachineCategory)
+    return create_object(
+        request, model=MachineCategory,
+        template_name="machines/machinecategory_form.html")
 
 
 @admin_required
 def category_edit(request, category_id):
     from karaage.common.create_update import update_object
-    return update_object(request, object_id=category_id, model=MachineCategory)
+    return update_object(
+        request, object_id=category_id, model=MachineCategory,
+        template_name="machines/machinecategory_form.html")
 
 
 @login_required
