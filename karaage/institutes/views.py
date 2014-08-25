@@ -58,7 +58,7 @@ def profile_institutes(request):
     config.configure(delegate_institute_list)
 
     return render_to_response(
-        'institutes/profile_institutes.html',
+        'karaage/institutes/profile_institutes.html',
         {'person': person,
             'my_institute_list': my_institute_list,
             'delegate_institute_list': delegate_institute_list},
@@ -87,7 +87,7 @@ def institute_detail(request, institute_id):
     config.configure(person_list)
 
     return render_to_response(
-        'institutes/institute_detail.html',
+        'karaage/institutes/institute_detail.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -100,7 +100,7 @@ def institute_verbose(request, institute_id):
     institute_details = machine_category_get_institute_details(institute)
 
     return render_to_response(
-        'institutes/institute_verbose.html',
+        'karaage/institutes/institute_verbose.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -124,7 +124,7 @@ def institute_list(request):
             spec.append((name, value))
 
     return render_to_response(
-        'institutes/institute_list.html',
+        'karaage/institutes/institute_list.html',
         {
             'table': table,
             'filter': filter,
@@ -168,7 +168,7 @@ def add_edit_institute(request, institute_id=None):
         media = media + dform.media
 
     return render_to_response(
-        'institutes/institute_form.html',
+        'karaage/institutes/institute_form.html',
         {'institute': institute, 'form': form,
             'media': media, 'delegate_formset': delegate_formset},
         context_instance=RequestContext(request))
@@ -198,7 +198,7 @@ def institutequota_add(request, institute_id):
                 return HttpResponseRedirect(institute.get_absolute_url())
 
     return render_to_response(
-        'institutes/institutequota_form.html',
+        'karaage/institutes/institutequota_form.html',
         {'form': form, 'institute': institute, },
         context_instance=RequestContext(request))
 
@@ -224,7 +224,7 @@ def institutequota_edit(request, institutequota_id):
                     institute_chunk.institute.get_absolute_url())
 
     return render_to_response(
-        'institutes/institutequota_form.html',
+        'karaage/institutes/institutequota_form.html',
         {'form': form, 'institute': institute_chunk.institute,
             'object': institute_chunk},
         context_instance=RequestContext(request))
@@ -241,7 +241,7 @@ def institutequota_delete(request, institutequota_id):
             institute_chunk.institute.get_absolute_url())
 
     return render_to_response(
-        'institutes/institutequota_delete_form.html',
+        'karaage/institutes/institutequota_delete_form.html',
         locals(),
         context_instance=RequestContext(request))
 
