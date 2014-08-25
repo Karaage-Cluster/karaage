@@ -20,8 +20,6 @@ from django.conf import settings
 
 from karaage.common.emails import CONTEXT, send_mail
 
-TEMPLATE_DIRS = ['emails/', 'applications/emails/']
-
 
 def render_email(name, context):
     context.update(CONTEXT)
