@@ -60,7 +60,7 @@ def profile_projects(request):
     config.configure(leader_project_list)
 
     return render_to_response(
-        'projects/profile_projects.html',
+        'karaage/projects/profile_projects.html',
         {'person': person, 'project_list': project_list,
             'delegate_project_list': delegate_project_list,
             'leader_project_list': leader_project_list},
@@ -110,7 +110,7 @@ def add_edit_project(request, project_id=None):
             return HttpResponseRedirect(project.get_absolute_url())
 
     return render_to_response(
-        'projects/project_form.html',
+        'karaage/projects/project_form.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -137,7 +137,7 @@ def delete_project(request, project_id):
     del query
 
     return render_to_response(
-        'projects/project_confirm_delete.html',
+        'karaage/projects/project_confirm_delete.html',
         {'project': project, 'error': error},
         context_instance=RequestContext(request))
 
@@ -162,7 +162,7 @@ def project_detail(request, project_id):
             return HttpResponseRedirect(project.get_absolute_url())
 
     return render_to_response(
-        'projects/project_detail.html',
+        'karaage/projects/project_detail.html',
         {'project': project, 'form': form,
             'can_edit': project.can_edit(request)},
         context_instance=RequestContext(request))
@@ -176,7 +176,7 @@ def project_verbose(request, project_id):
     project_details = machine_category_get_project_details(project)
 
     return render_to_response(
-        'projects/project_verbose.html',
+        'karaage/projects/project_verbose.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -206,7 +206,7 @@ def project_list(request, queryset=None):
             spec.append((name, value))
 
     return render_to_response(
-        'projects/project_list.html',
+        'karaage/projects/project_list.html',
         {
             'table': table,
             'filter': filter,
@@ -244,7 +244,7 @@ def remove_user(request, project_id, username):
     del query
 
     return render_to_response(
-        'projects/remove_user_confirm.html',
+        'karaage/projects/remove_user_confirm.html',
         {'project': project, 'person': person, 'error': error, },
         context_instance=RequestContext(request))
 
@@ -270,7 +270,7 @@ def grant_leader(request, project_id, username):
         return HttpResponseRedirect(project.get_absolute_url())
 
     return render_to_response(
-        'projects/grant_leader.html',
+        'karaage/projects/grant_leader.html',
         {'project': project, 'person': person, },
         context_instance=RequestContext(request))
 
@@ -297,7 +297,7 @@ def revoke_leader(request, project_id, username):
         return HttpResponseRedirect(project.get_absolute_url())
 
     return render_to_response(
-        'projects/revoke_leader.html',
+        'karaage/projects/revoke_leader.html',
         {'project': project, 'person': person, 'error': error},
         context_instance=RequestContext(request))
 
@@ -360,7 +360,7 @@ def projectquota_add(request, project_id):
                 return HttpResponseRedirect(project.get_absolute_url())
 
     return render_to_response(
-        'projects/projectquota_form.html',
+        'karaage/projects/projectquota_form.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -385,7 +385,7 @@ def projectquota_edit(request, projectquota_id):
                     project_chunk.project.get_absolute_url())
 
     return render_to_response(
-        'projects/projectquota_form.html',
+        'karaage/projects/projectquota_form.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -400,6 +400,6 @@ def projectquota_delete(request, projectquota_id):
         return HttpResponseRedirect(project_chunk.project.get_absolute_url())
 
     return render_to_response(
-        'projects/projectquota_delete_form.html',
+        'karaage/projects/projectquota_delete_form.html',
         locals(),
         context_instance=RequestContext(request))
