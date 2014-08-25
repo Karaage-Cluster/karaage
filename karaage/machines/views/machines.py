@@ -37,7 +37,7 @@ import karaage.common as util
 def machine_detail(request, machine_id):
     machine = get_object_or_404(Machine, pk=machine_id)
     return render_to_response(
-        'machines/machine_detail.html',
+        'karaage/machines/machine_detail.html',
         {'machine': machine},
         context_instance=RequestContext(request))
 
@@ -51,7 +51,7 @@ def machine_create(request):
             return HttpResponseRedirect(machine.get_absolute_url())
 
     return render_to_response(
-        'machines/machine_form.html',
+        'karaage/machines/machine_form.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -67,7 +67,7 @@ def machine_edit(request, machine_id):
             return HttpResponseRedirect(machine.get_absolute_url())
 
     return render_to_response(
-        'machines/machine_form.html',
+        'karaage/machines/machine_form.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -81,7 +81,7 @@ def machine_password(request, machine_id):
         machine.set_password(password)
         machine.save()
     return render_to_response(
-        'machines/machine_password.html',
+        'karaage/machines/machine_password.html',
         {'machine': machine, 'password': password},
         context_instance=RequestContext(request))
 
@@ -122,7 +122,7 @@ def category_list(request):
     tables.RequestConfig(request).configure(table)
 
     return render_to_response(
-        'machines/machinecategory_list.html',
+        'karaage/machines/machinecategory_list.html',
         {'table': table},
         context_instance=RequestContext(request))
 
@@ -132,7 +132,7 @@ def category_create(request):
     from karaage.common.create_update import create_object
     return create_object(
         request, model=MachineCategory,
-        template_name="machines/machinecategory_form.html")
+        template_name="karaage/machines/machinecategory_form.html")
 
 
 @admin_required
@@ -140,7 +140,7 @@ def category_edit(request, category_id):
     from karaage.common.create_update import update_object
     return update_object(
         request, object_id=category_id, model=MachineCategory,
-        template_name="machines/machinecategory_form.html")
+        template_name="karaage/machines/machinecategory_form.html")
 
 
 @login_required
@@ -152,7 +152,7 @@ def category_detail(request, category_id):
     tables.RequestConfig(request).configure(table)
 
     return render_to_response(
-        'machines/machinecategory_detail.html',
+        'karaage/machines/machinecategory_detail.html',
         {'machine_category': machine_category, 'table': table},
         context_instance=RequestContext(request))
 
@@ -166,7 +166,7 @@ def category_accounts(request, category_id):
     tables.RequestConfig(request).configure(table)
 
     return render_to_response(
-        'machines/machinecategory_accounts.html',
+        'karaage/machines/machinecategory_accounts.html',
         {'machine_category': machine_category, 'table': table},
         context_instance=RequestContext(request))
 
@@ -181,7 +181,7 @@ def category_projects(request, category_id):
     tables.RequestConfig(request).configure(table)
 
     return render_to_response(
-        'machines/machinecategory_projects.html',
+        'karaage/machines/machinecategory_projects.html',
         {'machine_category': machine_category, 'table': table},
         context_instance=RequestContext(request))
 

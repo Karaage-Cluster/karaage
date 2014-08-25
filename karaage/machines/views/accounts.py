@@ -38,7 +38,7 @@ def profile_accounts(request):
     person = request.user
     accounts = person.account_set.filter(date_deleted__isnull=True)
     return render_to_response(
-        'machines/profile_accounts.html',
+        'karaage/machines/profile_accounts.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -59,7 +59,7 @@ def add_account(request, username=None):
             return HttpResponseRedirect(person.get_absolute_url())
 
     return render_to_response(
-        'machines/account_form.html',
+        'karaage/machines/account_form.html',
         {'form': form, 'person': person, 'account': account},
         context_instance=RequestContext(request))
 
@@ -75,7 +75,7 @@ def account_detail(request, account_id):
             'about this account.</p>')
 
     return render_to_response(
-        'machines/account_detail.html',
+        'karaage/machines/account_detail.html',
         {'account': account, 'can_edit': account.can_edit(request)},
         context_instance=RequestContext(request))
 
@@ -109,7 +109,7 @@ def edit_account(request, account_id):
             return HttpResponseRedirect(person.get_absolute_url())
 
     return render_to_response(
-        'machines/account_form.html',
+        'karaage/machines/account_form.html',
         {'form': form, 'person': person, 'account': account},
         context_instance=RequestContext(request))
 
@@ -131,7 +131,7 @@ def add_project(request, username):
             return HttpResponseRedirect(person.get_absolute_url())
 
     return render_to_response(
-        'machines/person_add_project.html',
+        'karaage/machines/person_add_project.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -149,7 +149,7 @@ def delete_account(request, account_id):
         return HttpResponseRedirect(account.get_absolute_url())
 
     return render_to_response(
-        'machines/account_confirm_delete.html',
+        'karaage/machines/account_confirm_delete.html',
         locals(),
         context_instance=RequestContext(request))
 
