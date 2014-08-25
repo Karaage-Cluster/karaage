@@ -47,7 +47,7 @@ def group_list(request):
             spec.append((name, value))
 
     return render_to_response(
-        'people/group_list.html',
+        'karaage/people/group_list.html',
         {
             'table': table,
             'filter': filter,
@@ -84,7 +84,7 @@ def _add_edit_group(request, form_class, group_name):
         form = GroupForm(instance=group)
 
     return render_to_response(
-        'people/group_form.html',
+        'karaage/people/group_form.html',
         {'group': group, 'form': form},
         context_instance=RequestContext(request))
 
@@ -116,7 +116,7 @@ def delete_group(request, group_name):
         return HttpResponseRedirect(reverse("kg_group_list"))
 
     return render_to_response(
-        'people/group_confirm_delete.html',
+        'karaage/people/group_confirm_delete.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -127,7 +127,7 @@ def group_detail(request, group_name):
     form = AddGroupMemberForm(instance=group)
 
     return render_to_response(
-        'people/group_detail.html',
+        'karaage/people/group_detail.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -143,7 +143,7 @@ def group_verbose(request, group_name):
     machine_category_group_details = machine_category_get_group_details(group)
 
     return render_to_response(
-        'people/group_verbose.html',
+        'karaage/people/group_verbose.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -182,7 +182,7 @@ def add_group_member(request, group_name):
         form = AddGroupMemberForm(instance=group)
 
     return render_to_response(
-        'people/group_add_member.html',
+        'karaage/people/group_add_member.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -206,6 +206,6 @@ def remove_group_member(request, group_name, username):
         return HttpResponseRedirect(group.get_absolute_url())
 
     return render_to_response(
-        'people/group_remove_member.html',
+        'karaage/people/group_remove_member.html',
         locals(),
         context_instance=RequestContext(request))

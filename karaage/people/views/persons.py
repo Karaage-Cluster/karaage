@@ -69,7 +69,7 @@ def _add_edit_user(request, form_class, username):
             return HttpResponseRedirect(person.get_absolute_url())
 
     return render_to_response(
-        'people/person_form.html',
+        'karaage/people/person_form.html',
         {'person': person, 'form': form},
         context_instance=RequestContext(request))
 
@@ -113,7 +113,7 @@ def user_list(request, queryset=None, title=None):
     }
 
     return render_to_response(
-        "people/person_list.html", context,
+        "karaage/people/person_list.html", context,
         context_instance=RequestContext(request))
 
 
@@ -152,7 +152,7 @@ def delete_user(request, username):
         return HttpResponseRedirect(person.get_absolute_url())
 
     return render_to_response(
-        'people/person_confirm_delete.html', locals(),
+        'karaage/people/person_confirm_delete.html', locals(),
         context_instance=RequestContext(request))
 
 
@@ -180,7 +180,7 @@ def user_detail(request, username):
     config.configure(delegate_institute_list)
 
     return render_to_response(
-        'people/person_detail.html', locals(),
+        'karaage/people/person_detail.html', locals(),
         context_instance=RequestContext(request))
 
 
@@ -198,7 +198,7 @@ def user_verbose(request, username):
         account_details.append(details)
 
     return render_to_response(
-        'people/person_verbose.html', locals(),
+        'karaage/people/person_verbose.html', locals(),
         context_instance=RequestContext(request))
 
 
@@ -213,7 +213,7 @@ def activate(request, username):
             reverse('kg_person_password', args=[person.username]))
 
     return render_to_response(
-        'people/person_reactivate.html',
+        'karaage/people/person_reactivate.html',
         {'person': person},
         context_instance=RequestContext(request))
 
@@ -235,7 +235,7 @@ def password_change(request, username):
         form = AdminPasswordChangeForm(person=person)
 
     return render_to_response(
-        'people/person_password.html',
+        'karaage/people/person_password.html',
         {'person': person, 'form': form},
         context_instance=RequestContext(request))
 
@@ -250,7 +250,7 @@ def lock_person(request, username):
         return HttpResponseRedirect(person.get_absolute_url())
 
     return render_to_response(
-        'people/person_confirm_lock.html',
+        'karaage/people/person_confirm_lock.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -263,7 +263,7 @@ def unlock_person(request, username):
         messages.success(request, "%s's account has been unlocked" % person)
         return HttpResponseRedirect(person.get_absolute_url())
     return render_to_response(
-        'people/person_confirm_unlock.html',
+        'karaage/people/person_confirm_unlock.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -295,7 +295,7 @@ def bounced_email(request, username):
         leader_list, prefix="leader-")
 
     return render_to_response(
-        'people/person_bounced_email.html',
+        'karaage/people/person_bounced_email.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -344,7 +344,7 @@ def password_request(request, username):
         'person': person,
     }
     return render_to_response(
-        'people/person_password_request.html',
+        'karaage/people/person_password_request.html',
         var,
         context_instance=RequestContext(request))
 
@@ -356,6 +356,6 @@ def password_request_done(request, username):
         'person': person,
     }
     return render_to_response(
-        'people/person_password_request_done.html',
+        'karaage/people/person_password_request_done.html',
         var,
         context_instance=RequestContext(request))

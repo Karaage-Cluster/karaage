@@ -58,7 +58,7 @@ def login(request, username=None):
     else:
         form = LoginForm(initial={'username': username})
 
-    return render_to_response('people/profile_login.html', {
+    return render_to_response('karaage/people/profile_login.html', {
         'form': form,
         'next': redirect_to,
         'error': error,
@@ -102,7 +102,7 @@ def saml_login(request):
                     "we do not know your shibboleth id."
 
     return render_to_response(
-        'people/profile_login_saml.html',
+        'karaage/people/profile_login_saml.html',
         {'form': form, 'error': error, 'saml_session': saml_session, },
         context_instance=RequestContext(request))
 
@@ -156,7 +156,7 @@ def saml_details(request):
         person = request.user
 
     return render_to_response(
-        'people/profile_saml.html',
+        'karaage/people/profile_saml.html',
         {'attrs': attrs, 'saml_session': saml_session, 'person': person, },
         context_instance=RequestContext(request))
 
@@ -171,7 +171,7 @@ def profile_personal(request):
     start, end = common.get_date_range(request)
 
     return render_to_response(
-        'people/profile_personal.html',
+        'karaage/people/profile_personal.html',
         locals(),
         context_instance=RequestContext(request))
 
@@ -189,7 +189,7 @@ def edit_profile(request):
             return HttpResponseRedirect(person.get_absolute_url())
 
     return render_to_response(
-        'people/profile_edit.html',
+        'karaage/people/profile_edit.html',
         {'person': person, 'form': form},
         context_instance=RequestContext(request))
 
