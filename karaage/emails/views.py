@@ -46,5 +46,5 @@ def send_email(request):
                 return HttpResponseRedirect(reverse('index'))
 
     return render_to_response(
-        'emails/send_email_form.html', locals(),
+        'karaage/emails/send_email_form.html', locals(),
         context_instance=RequestContext(request))

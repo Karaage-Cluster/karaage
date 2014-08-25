@@ -27,12 +27,12 @@ from karaage.common.emails import CONTEXT, send_mail
 
 def render_email(name, context):
     subject = render_to_string(
-        ['emails/%s_subject.txt' % name,
+        ['karaage/emails/%s_subject.txt' % name,
             'people/emails/%s_subject.txt' % name],
         context)
     subject = subject.replace('\n', '')
     body = render_to_string(
-        ['emails/%s_body.txt' % name,
+        ['karaage/emails/%s_body.txt' % name,
             'people/emails/%s_body.txt' % name],
         context)
     return subject, body
