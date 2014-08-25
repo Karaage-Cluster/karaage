@@ -15,4 +15,4 @@ This link will expire in 7 days.
 {% else %}If you are not already logged in you will be required to log in before using this link.
 {% endif %}
 
-{% include "emails/email_footer.txt" %}{% endautoescape %}
+{% include "karaage/emails/email_footer.txt" %}{% endautoescape %}
