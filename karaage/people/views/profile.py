@@ -210,7 +210,7 @@ def password_change(request):
         form = PasswordChangeForm(person=person)
 
     return render_to_response(
-        'common/profile_password.html',
+        'karaage/common/profile_password.html',
         {'person': person, 'form': form},
         context_instance=RequestContext(request))
 
@@ -230,7 +230,7 @@ def password_request(request):
         'person': person,
     }
     return render_to_response(
-        'common/profile_password_request.html',
+        'karaage/common/profile_password_request.html',
         var,
         context_instance=RequestContext(request))
 
@@ -242,6 +242,6 @@ def password_request_done(request):
         'person': person,
     }
     return render_to_response(
-        'common/profile_password_request_done.html',
+        'karaage/common/profile_password_request_done.html',
         var,
         context_instance=RequestContext(request))

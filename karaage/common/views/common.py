@@ -67,14 +67,15 @@ def admin_index(request):
         'recent_actions': recent_actions,
     }
     return render_to_response(
-        'common/index.html', var, context_instance=RequestContext(request))
+        'karaage/common/index.html', var,
+        context_instance=RequestContext(request))
 
 
 def index(request):
     if settings.ADMIN_REQUIRED or is_admin(request):
         return admin_index(request)
     return render_to_response(
-        'common/index.html', context_instance=RequestContext(request))
+        'karaage/common/index.html', context_instance=RequestContext(request))
 
 
 @admin_required
@@ -128,7 +129,7 @@ def search(request):
         config.configure(project_list)
 
         return render_to_response(
-            'common/site_search.html',
+            'karaage/common/site_search.html',
             locals(),
             context_instance=RequestContext(request))
     else:
@@ -150,7 +151,7 @@ def log_list(request):
             spec.append((name, value))
 
     return render_to_response(
-        'common/log_list.html',
+        'karaage/common/log_list.html',
         {
             'table': table,
             'filter': filter,
@@ -165,11 +166,11 @@ def misc(request):
     from karaage.common.simple import direct_to_template
     return direct_to_template(
         request,
-        template='common/misc_detail.html')
+        template='karaage/common/misc_detail.html')
 
 
 def aup(request):
     from karaage.common.simple import direct_to_template
     return direct_to_template(
         request,
-        template='common/aup_detail.html')
+        template='karaage/common/aup_detail.html')

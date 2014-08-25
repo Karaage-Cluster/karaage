@@ -140,7 +140,7 @@ def add_comment(request, breadcrumbs, obj):
         return HttpResponseRedirect(obj.get_absolute_url())
 
     return render_to_response(
-        'common/add_comment.html',
+        'karaage/common/add_comment.html',
         {
             'form': form, 'obj': obj,
             'breadcrumbs': breadcrumbs,

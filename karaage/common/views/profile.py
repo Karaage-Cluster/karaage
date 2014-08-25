@@ -28,7 +28,7 @@ from karaage.common.decorators import login_required
 def profile(request):
     person = request.user
     return render_to_response(
-        'common/profile.html',
+        'karaage/common/profile.html',
         locals(),
         context_instance=RequestContext(request))
 

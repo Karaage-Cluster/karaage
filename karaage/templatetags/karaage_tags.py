@@ -88,7 +88,7 @@ def url_with_param(parser, token):
     return url_with_param_node(copy, nopage, qschanges)
 
 
-@register.inclusion_tag('common/comments.html', takes_context=True)
+@register.inclusion_tag('karaage/common/comments.html', takes_context=True)
 def comments(context, obj):
     """ Render comments for obj. """
     content_type = ContentType.objects.get_for_model(obj.__class__)
@@ -189,7 +189,8 @@ class SearchFormNode(template.Node):
         self.post_url = post_url
 
     def render(self, context):
-        template_obj = template.loader.get_template('common/search_form.html')
+        template_obj = template.loader.get_template(
+            'karaage/common/search_form.html')
         context.push()
         context['post_url'] = self.post_url
         output = template_obj.render(context)
