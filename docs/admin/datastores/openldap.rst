@@ -234,6 +234,7 @@ Configuring Karaage to use LDAP
                         'DEFAULT_PRIMARY_GROUP': "dummy",
                         'HOME_DIRECTORY': "/home/%(uid)s",
                         'LOCKED_SHELL': "/usr/local/sbin/locked",
+                        'NUMBER_SCHEME': 'default',
                         'LDAP_ACCOUNT_BASE': 'ou=Accounts,dc=example,dc=org',
                         'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
                   },
@@ -254,8 +255,9 @@ Configuring Karaage to use LDAP
                     'LDAP': 'default',
                     'PERSON': 'karaage.datastores.ldap_schemas.openldap_person',
                     'GROUP': 'karaage.datastores.ldap_schemas.openldap_person_group',
+                    'NUMBER_SCHEME': 'global',
                     'LDAP_PERSON_BASE': 'ou=People,dc=example,dc=org',
-                    'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
+                    'LDAP_GROUP_BASE': 'ou=People_Groups,dc=example,dc=org',
               },
         ]
 

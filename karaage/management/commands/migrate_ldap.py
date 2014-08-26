@@ -20,8 +20,10 @@ import optparse
 from django.core.management.base import BaseCommand
 import django.db.transaction
 import tldap.transaction
-import tldap.dn
+from tldap.dn import dn2str, str2dn
+from tldap.schemas.rfc import organizationalUnit
 
+from karaage.people.models import Group
 from karaage.machines.models import Account
 from karaage.datastores import get_global_test_datastore
 from karaage.datastores import get_machine_category_test_datastore
@@ -41,6 +43,25 @@ class Command(BaseCommand):
             'to change instead.'),
     )
 
+    def create_base(self, datastore, key):
+        if key in datastore._settings:
+            create_dn = datastore._settings[key]
+        else:
+            connection = tldap.connections[datastore._using]
+            create_dn = connection.settings_dict[key]
+
+        base_dn = dn2str(str2dn(create_dn)[1:])
+
+        _, c = organizationalUnit.objects.using(
+            using=datastore._using, settings=datastore._settings) \
+            .base_dn(base_dn) \
+            .get_or_create(dn=create_dn)
+
+        if c:
+            print("Created %s" % create_dn)
+        else:
+            print("Base already exists %s" % create_dn)
+
     @django.db.transaction.commit_on_success
     @tldap.transaction.commit_on_success
     def handle(self, **options):
@@ -53,6 +74,11 @@ class Command(BaseCommand):
             "ldap", 0)
         assert isinstance(
             machine_category_datastore, dldap.MachineCategoryDataStore)
+
+        self.create_base(global_datastore, 'LDAP_PERSON_BASE')
+        self.create_base(global_datastore, 'LDAP_GROUP_BASE')
+        self.create_base(machine_category_datastore, 'LDAP_ACCOUNT_BASE')
+        self.create_base(machine_category_datastore, 'LDAP_GROUP_BASE')
 
         if global_datastore is not None:
             # we have to move accounts to the account_base.
@@ -90,6 +116,14 @@ class Command(BaseCommand):
                     except machine_category_datastore._account.AlreadyExists:
                         pass
 
+            # Ensure all groups exist, as required.
+            for group in Group.objects.iterator():
+                print("updating group %s members (people)" % group)
+                group.save()
+
+                for person in group.members.filter(is_active=True):
+                    global_datastore.add_person_to_group(person, group)
+
         else:
             # people not in LDAP, delete people without accounts.
 
@@ -104,3 +138,14 @@ class Command(BaseCommand):
                     else:
                         print("deleting %s" % p.dn)
                         p.delete()
+
+# not needed.
+#        for group in Group.objects.iterator():
+#            print("updating group %s members (accounts)" % group)
+#            accounts = Account.objects \
+#                .filter(person__groups=group, machine_category__pk=1,
+#                    date_deleted__isnull=True)
+#            for account in accounts.iterator():
+#                print account
+#                machine_category_datastore.add_account_to_group(
+#                    account, group)
