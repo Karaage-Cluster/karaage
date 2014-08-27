@@ -1,3 +1,18 @@
+karaage3 (3.1.2-1) unstable; urgency=low
+
+  * Remove odd,even row classes.
+  * Fix broken templates.
+  * Move emails template directories.
+  * Move people template directories.
+  * Move machines template directories
+  * Move project template directories
+  * Move institutes template directories.
+  * Move common template directories
+  * Ensure migrate_ldap works properly with groups.
+  * Fix display of institute in migration.
+
+ -- Brian May <bam@debian.org>  Wed, 27 Aug 2014 13:23:28 +1000
+
 karaage3 (3.1.1-1) unstable; urgency=low
 
   * Update documentation.
@@ -24,7 +39,7 @@ karaage3 (3.1.1-1) unstable; urgency=low
   * Cleanup links.
   * Fix release tag.
 
- -- Brian May <brian@microcomaustralia.com.au>  Tue, 19 Aug 2014 15:52:41 +1000
+ -- Brian May <bam@debian.org>  Tue, 19 Aug 2014 15:52:41 +1000
 
 karaage3 (3.1.0-1) unstable; urgency=low
 
