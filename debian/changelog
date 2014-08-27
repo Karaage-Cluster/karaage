@@ -1,3 +1,10 @@
+karaage3-software (3.1.1-1) unstable; urgency=low
+
+  * Update python-karaage build depends.
+  * Fix links to templates.
+
+ -- Brian May <bam@debian.org>  Wed, 27 Aug 2014 13:39:59 +1000
+
 karaage3-software (3.1.0-1) unstable; urgency=low
 
   * Initial release. Split from Karaage3.
