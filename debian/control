@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Brian May <bam@debian.org>
 Build-Depends: debhelper (>=8.1.0), dh-python,
  python-all (>= 2.6.6-3~), python-setuptools, python-django, python-flake8,
- python-karaage (>= 3.1.1), python-kgapplications, python-factory-boy,
+ python-karaage (>= 3.1.2), python-kgapplications, python-factory-boy,
  python3-all, python3-setuptools, python3-django, python3-flake8,
  python3-karaage (>= 3.1.2), python3-kgapplications, python3-factory-boy
 Standards-Version: 3.9.5
