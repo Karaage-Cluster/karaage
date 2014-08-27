@@ -4,9 +4,9 @@ Priority: optional
 Maintainer: Brian May <bam@debian.org>
 Build-Depends: debhelper (>=8.1.0), dh-python,
  python-all (>= 2.6.6-3~), python-setuptools, python-django, python-flake8,
- python-karaage (>= 3.1.1), python-factory-boy,
+ python-karaage (>= 3.1.2), python-factory-boy,
  python3-all, python3-setuptools, python3-django, python3-flake8,
- python3-karaage (>= 3.1.1), python3-factory-boy,
+ python3-karaage (>= 3.1.2), python3-factory-boy,
 Standards-Version: 3.9.5
 Homepage: https://github.com/Karaage-Cluster/karaage-usage
 Vcs-Git: git://github.com/Karaage-Cluster/karaage-usage
@@ -22,7 +22,7 @@ Description: Usage information for Karaage.
 
 Package: python3-kgapplications
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, python3-karaage (>= 3.1.1)
+Depends: ${misc:Depends}, ${python:Depends}, python3-karaage (>= 3.1.2)
 Description: Usage information for Karaage.
  Karaage is an open source collection of Django apps to manage a clusters.
  This package provides the plugin for user applications.
