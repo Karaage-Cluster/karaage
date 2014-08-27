@@ -1,3 +1,10 @@
+karaage3-applications (3.1.2-1) unstable; urgency=low
+
+  * Fix links to templates.
+  * Remove obsolete variable.
+
+ -- Brian May <bam@debian.org>  Wed, 27 Aug 2014 13:34:04 +1000
+
 karaage3-applications (3.1.1-1) unstable; urgency=low
 
   * Python 3.2 fixes.
