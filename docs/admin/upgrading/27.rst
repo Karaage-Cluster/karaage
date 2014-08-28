@@ -319,9 +319,22 @@ restoring LDAP from the backup.
 
 #.  (optional) If you require people to be recorded in LDAP:
 
-    #.  Add the following to ``/etc/karaage3/settings.py``:
+    #.  Add/modify the following to ``/etc/karaage3/settings.py``:
 
         .. code-block:: python
+            MACHINE_CATEGORY_DATASTORES = {
+                'ldap' : [
+                    {
+                        ...
+                        'OLD_ACCOUNT_BASE': 'ou=People,dc=example,dc=org',
+                        'OLD_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
+                        'LDAP_ACCOUNT_BASE': 'ou=Accounts,dc=example,dc=org',
+                        'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
+                    },
+                ],
+                'dummy' : [
+                ],
+            }
 
             GLOBAL_DATASTORES = [
                   {
@@ -343,13 +356,13 @@ restoring LDAP from the backup.
 
     .. code-block:: bash
 
-        kg-manage update_ldap --dry-run
+        kg-manage migrate_ldap --dry-run
 
     Make the LDAP changes if happy:
 
     .. code-block:: bash
 
-        kg-manage update_ldap
+        kg-manage migrate_ldap
 
 #.  Test production box and make sure everything is working.
 
