@@ -23,6 +23,8 @@ import tldap.transaction
 from tldap.dn import dn2str, str2dn
 from tldap.schemas.rfc import organizationalUnit
 
+from karaage.people.models import Person
+from karaage.machines.models import Account, MachineCategory
 from karaage.datastores import get_global_test_datastore
 from karaage.datastores import get_machine_category_test_datastore
 import karaage.datastores.ldap as dldap
@@ -73,16 +75,27 @@ class Command(BaseCommand):
     def handle(self, **options):
         dry_run = options['dry_run']
 
+        # recurse through every datastore
+        for mc in MachineCategory.objects.all():
+            self.handle_machine_category(mc, dry_run)
+
+    def handle_machine_category(self, mc, dry_run):
+        # if datastore name is not ldap, we are not interested
+        if mc.datastore != "ldap":
+            return
+
+        # retreive the LDAP datastores
         try:
             global_datastore = get_global_test_datastore(0)
             assert isinstance(global_datastore, dldap.GlobalDataStore)
         except IndexError:
             global_datastore = None
         machine_category_datastore = get_machine_category_test_datastore(
-            "ldap", 0)
+            mc.datastore, 0)
         assert isinstance(
             machine_category_datastore, dldap.MachineCategoryDataStore)
 
+        # create the base dn
         if global_datastore is not None:
             self.create_base(
                 global_datastore, 'LDAP_PERSON_BASE', dry_run)
@@ -94,8 +107,7 @@ class Command(BaseCommand):
         self.create_base(
             machine_category_datastore, 'LDAP_GROUP_BASE', dry_run)
 
-        # we have to move accounts to the account_base.
-        # no changes required for people.
+        # get the base dn
         try:
             old_account_dn = self.get_base(
                 machine_category_datastore, 'OLD_ACCOUNT_BASE')
@@ -105,17 +117,12 @@ class Command(BaseCommand):
             print("OLD_* settings not defined, nothing to do, exiting.")
             return
 
-        old_account_dn = dn2str(str2dn(old_account_dn))
-        old_group_dn = dn2str(str2dn(old_group_dn))
-
         if global_datastore is not None:
             # we need to keep the people
             person_base_dn = self.get_base(
                 global_datastore, 'LDAP_PERSON_BASE')
-            person_base_dn = dn2str(str2dn(person_base_dn))
             pgroup_base_dn = self.get_base(
                 global_datastore, 'LDAP_GROUP_BASE')
-            pgroup_base_dn = dn2str(str2dn(pgroup_base_dn))
         else:
             # we need to destroy the people and keep the accounts
             person_base_dn = None
@@ -123,12 +130,21 @@ class Command(BaseCommand):
 
         account_base_dn = self.get_base(
             machine_category_datastore, 'LDAP_ACCOUNT_BASE')
-        account_base_dn = dn2str(str2dn(account_base_dn))
-
         agroup_base_dn = self.get_base(
             machine_category_datastore, 'LDAP_GROUP_BASE')
+
+        # normalize dn, so we can compare
+        old_account_dn = dn2str(str2dn(old_account_dn))
+        old_group_dn = dn2str(str2dn(old_group_dn))
+
+        account_base_dn = dn2str(str2dn(account_base_dn))
         agroup_base_dn = dn2str(str2dn(agroup_base_dn))
 
+        if global_datastore is not None:
+            person_base_dn = dn2str(str2dn(person_base_dn))
+            pgroup_base_dn = dn2str(str2dn(pgroup_base_dn))
+
+        # sanity check
         assert pgroup_base_dn != agroup_base_dn
         assert person_base_dn != account_base_dn
 
@@ -153,20 +169,27 @@ class Command(BaseCommand):
                             "%s to %s" % (p.dn, account_base_dn))
                         p.rename(new_base_dn=account_base_dn)
 
+                # get username for person
+                account = Account.objects.get(
+                    username=p.uid, machine_category=mc)
+                person = Person.objects.get(account=account)
+                uid = person.username
+
                 if global_datastore is not None:
                     # Create person, if required.  This is better then calling
                     # person.save() as we get the password too.
                     try:
-                        dst = global_datastore._people().get(uid=p.uid)
+                        dst = global_datastore._people().get(uid=uid)
                         if 'posixAccount' in dst.objectClass:
                             if dry_run:
                                 print(
-                                    "Would copy person %s to %s"
+                                    "Would copy account %s to person %s"
                                     % (p.dn, person_base_dn))
                             else:
                                 print(
                                     "Unexpected account exists, not copying "
-                                    "person %s to %s" % (p.dn, person_base_dn))
+                                    "account %s to person %s"
+                                    % (p.dn, person_base_dn))
 
                     except global_datastore._person.DoesNotExist:
                         new_person = global_datastore._create_person()
@@ -177,12 +200,12 @@ class Command(BaseCommand):
 
                         if dry_run:
                             print(
-                                "Would copy person %s to %s"
+                                "Would copy account %s to person %s"
                                 % (p.dn, person_base_dn))
                         else:
                             new_person.save()
                             print(
-                                "Copying person %s to %s"
+                                "Copying account %s to person %s"
                                 % (p.dn, new_person.dn))
             else:
                 # this wasn't an account, it was a person
@@ -202,7 +225,7 @@ class Command(BaseCommand):
                             p.rename(new_base_dn=person_base_dn)
                 else:
                     # person not required, delete
-                    if options['dry-run']:
+                    if dry_run:
                         print("Would delete %s" % p.dn)
                     else:
                         print("Deleting %s" % p.dn)
@@ -250,7 +273,7 @@ class Command(BaseCommand):
 
             if delete:
                 # group not required, delete
-                if options['dry-run']:
+                if dry_run:
                     print("Would delete %s" % g.dn)
                 else:
                     print("Deleting %s" % g.dn)
