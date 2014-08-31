@@ -132,54 +132,6 @@ class Command(BaseCommand):
         assert pgroup_base_dn != agroup_base_dn
         assert person_base_dn != account_base_dn
 
-        # process groups
-        for g in machine_category_datastore._groups() \
-                .base_dn(old_group_dn):
-
-            delete = True
-
-            if global_datastore is not None:
-                try:
-                    global_datastore._groups().get(cn=g.cn)
-                    delete = False
-                except global_datastore._group.DoesNotExist:
-                    new_group = global_datastore._create_group()
-                    for i, _ in new_group.get_fields():
-                        if i != "objectClass":
-                            value = getattr(g, i)
-                            setattr(new_group, i, value)
-
-                    if dry_run:
-                        print("Would copy group %s to %s"
-                              % (g.dn, agroup_base_dn))
-                    else:
-                        new_group.save()
-                        print("Copying group %s to %s" % (g.dn, new_group.dn))
-
-            try:
-                machine_category_datastore._groups().get(cn=g.cn)
-                delete = False
-            except machine_category_datastore._group.DoesNotExist:
-                new_group = machine_category_datastore._create_group()
-                for i, _ in new_group.get_fields():
-                    if i != "objectClass":
-                        value = getattr(g, i)
-                        setattr(new_group, i, value)
-
-                if dry_run:
-                    print("Would copy group %s to %s" % (g.dn, agroup_base_dn))
-                else:
-                    new_group.save()
-                    print("Copying group %s to %s" % (g.dn, new_group.dn))
-
-            if delete:
-                # group not required, delete
-                if options['dry-run']:
-                    print("Would delete %s" % g.dn)
-                else:
-                    print("Deleting %s" % g.dn)
-                    g.delete()
-
         # process accounts
         for p in machine_category_datastore._accounts() \
                 .base_dn(old_account_dn) \
@@ -255,3 +207,51 @@ class Command(BaseCommand):
                     else:
                         print("Deleting %s" % p.dn)
                         p.delete()
+
+        # process groups
+        for g in machine_category_datastore._groups() \
+                .base_dn(old_group_dn):
+
+            delete = True
+
+            if global_datastore is not None:
+                try:
+                    global_datastore._groups().get(cn=g.cn)
+                    delete = False
+                except global_datastore._group.DoesNotExist:
+                    new_group = global_datastore._create_group()
+                    for i, _ in new_group.get_fields():
+                        if i != "objectClass":
+                            value = getattr(g, i)
+                            setattr(new_group, i, value)
+
+                    if dry_run:
+                        print("Would copy group %s to %s"
+                              % (g.dn, agroup_base_dn))
+                    else:
+                        new_group.save()
+                        print("Copying group %s to %s" % (g.dn, new_group.dn))
+
+            try:
+                machine_category_datastore._groups().get(cn=g.cn)
+                delete = False
+            except machine_category_datastore._group.DoesNotExist:
+                new_group = machine_category_datastore._create_group()
+                for i, _ in new_group.get_fields():
+                    if i != "objectClass":
+                        value = getattr(g, i)
+                        setattr(new_group, i, value)
+
+                if dry_run:
+                    print("Would copy group %s to %s" % (g.dn, agroup_base_dn))
+                else:
+                    new_group.save()
+                    print("Copying group %s to %s" % (g.dn, new_group.dn))
+
+            if delete:
+                # group not required, delete
+                if options['dry-run']:
+                    print("Would delete %s" % g.dn)
+                else:
+                    print("Deleting %s" % g.dn)
+                    g.delete()
