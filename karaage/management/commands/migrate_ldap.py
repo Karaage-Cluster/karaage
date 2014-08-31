@@ -162,11 +162,11 @@ class Command(BaseCommand):
                             if dry_run:
                                 print(
                                     "Would copy person %s to %s"
-                                    % (g.dn, person_base_dn))
+                                    % (p.dn, person_base_dn))
                             else:
                                 print(
                                     "Unexpected account exists, not copying "
-                                    "person %s to %s" % (g.dn, person_base_dn))
+                                    "person %s to %s" % (p.dn, person_base_dn))
 
                     except global_datastore._person.DoesNotExist:
                         new_person = global_datastore._create_person()
