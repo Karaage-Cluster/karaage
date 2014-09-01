@@ -29,9 +29,7 @@ import tldap.manager
 
 class kPersonMixin(object):
     @classmethod
-    def pre_save(cls, self, using=None):
-        # using parameter required for tldap 0.2.13 and earlier
-        # delete when tldap 0.2.14 released.
+    def pre_save(cls, self):
         full_name = getattr(self, "fullName", None)
         if full_name is None:
             full_name = "%s %s" % (self.givenName, self.sn)
@@ -41,9 +39,7 @@ class kPersonMixin(object):
 
 class kAccountMixin(object):
     @classmethod
-    def pre_save(cls, self, using=None):
-        # using parameter required for tldap 0.2.13 and earlier
-        # delete when tldap 0.2.14 released.
+    def pre_save(cls, self):
         full_name = getattr(self, "fullName", None)
         if full_name is None:
             full_name = "%s %s" % (self.givenName, self.sn)
