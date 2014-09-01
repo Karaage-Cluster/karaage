@@ -322,6 +322,7 @@ restoring LDAP from the backup.
     #.  Add/modify the following to ``/etc/karaage3/settings.py``:
 
         .. code-block:: python
+
             MACHINE_CATEGORY_DATASTORES = {
                 'ldap' : [
                     {
