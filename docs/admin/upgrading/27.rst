@@ -368,10 +368,17 @@ restoring LDAP from the backup.
 #.  Test production box and make sure everything is working.
 
 
-Karaage-usage
--------------
-Karaage-usage is an external plugin that provides usage graphs and statistics
-for cluster systems. It is not enabled by default. To enable it:
+Plugins
+-------
+There are a number of plugins for Karaage that are not enabled by default.
+
+* karaage-applications: application process for karaage.
+* karaage-software: keep track of software.
+* karaage-usage: keep track of usage.
+
+Karaage-usage requires karaage-applications and karaage-software, and will
+automatically pull in the required dependancies. It is an external plugin that
+provides usage graphs and statistics for cluster systems. To enable it:
 
 #.  Install the extra required package:
 
@@ -414,3 +421,10 @@ Karaage no longer requires a dedicated account for kg-pbs-logger. Rather it uses
     in the previous step.
 
 #.  Test.
+
+
+Other changes:
+--------------
+
+*   Check that remote services that access Karaage work. For example, with
+    torque_submitfilter, you need to update the Karaage URL to ``/karaage/``.

@@ -10,10 +10,14 @@ Upgrading from 3.0.x to 3.1.x
         apt-get update
         apt-get install karaage3
 
+   If asked if you want to run to run migrations, so No. This will happen
+   later.
+
 #. Merge in changes from `/etc/karaage/global_settings.py` into
    `/etc/karaage3/settings.py`. Or just copy the file should be sufficient.
 
-#. If required, install kgusage. Run the following command:
+#. If required, install Karaage plugins. For example, for karaage-usage, run
+   the following command:
 
    .. code-block:: bash
 
@@ -64,3 +68,10 @@ Upgrading from 3.0.x to 3.1.x
         rm -rf /etc/karaage
         rm -rf /var/log/karaage
         rm -rf /var/cache/karaage
+
+
+Other changes:
+--------------
+
+*   Check that remote services that access Karaage work. For example, with
+    torque_submitfilter, you need to update the Karaage URL to ``/karaage/``.
