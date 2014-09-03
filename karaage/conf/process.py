@@ -47,13 +47,8 @@ def add_plugin(namespace, plugin_name, django_apps, depends):
     for key, value in descriptor.settings.items():
         try:
             getattr(namespace, key)
-            raise RuntimeError(
-                'setting %s already exists error adding %s'
-                % (key, plugin_name))
         except AttributeError:
-            pass
-
-        setattr(namespace, key, value)
+            setattr(namespace, key, value)
 
 
 def load_plugins(namespace, plugins):
