@@ -13,8 +13,8 @@ Upgrading from 3.0.x to 3.1.x
    If asked if you want to run to run migrations, so No. This will happen
    later.
 
-#. Merge in changes from `/etc/karaage/global_settings.py` into
-   `/etc/karaage3/settings.py`. Or just copy the file should be sufficient.
+#. Merge in changes from ``/etc/karaage/global_settings.py`` into
+   ``/etc/karaage3/settings.py``. Or just copy the file should be sufficient.
 
 #. If required, install Karaage plugins. For example, for karaage-usage, run
    the following command:
@@ -23,7 +23,7 @@ Upgrading from 3.0.x to 3.1.x
 
        apt-get install python-kgusage
 
-   Add the following to `/etc/karaage3/settings.py`:
+   Add the :setting:`PLUGINS` to ``/etc/karaage3/settings.py``:
 
    .. code-block:: python
 
@@ -41,7 +41,7 @@ Upgrading from 3.0.x to 3.1.x
 
 #. Any old Apache configuration might conflict with the new Apache
    configuration.  Apache 2.2 in Wheezy uses
-   `/etc/apache2/conf.d/karaage-wsgi.conf`. Any other configuration files may
+   ``/etc/apache2/conf.d/karaage-wsgi.conf``. Any other configuration files may
    be obsolete and should be deleted (or moved elsewehere).
 
 #. Run the database migrations, restart apache, and install the celery

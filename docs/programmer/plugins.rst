@@ -9,13 +9,16 @@ change this name.
 
 Configuring a plugin
 --------------------
+.. py:module:: karaage.plugins
+
 A plugin needs to provide a plugin class that is derived from the
-:py:class:`BasePlugin` class.
+:py:class:`BasePlugin` class. It is configured with the
+:setting:`PLUGINS` setting.
 
 .. py:class:: BasePlugin
 
    Base class used for defining Karaage specific settings used to define
-   plugins in Karaaage
+   plugins in Karaaage.
 
 Here is an example, taken from the karaage-usage pugin:
 
@@ -42,17 +45,19 @@ The following attributes can be set:
 
 .. py:attribute:: BasePlugin.module
 
-   The python module for the Django app. This will be added to
-   ``INSTALLED_APPS`` Django configuration.
+   The python module for the Django app. This will be added to the
+   :setting:`django:INSTALLED_APPS` Django setting.
 
 .. py:attribute:: BasePlugin.django_apps
 
    A typle list of extra Django apps that are required for this plugin to work
-   correctly.
+   correctly. This will be added to the  :setting:`django:INSTALLED_APPS`
+   setting.
 
 .. py:attribute:: BasePlugin.xmlrpc_methods
 
-   A tuple list of extra methods to add to the ``XMLRPC_METHODS`` setting.
+   A tuple list of extra methods to add to the :setting:`XMLRPC_METHODS`
+   setting.
 
 .. py:attribute:: BasePlugin.settings
 

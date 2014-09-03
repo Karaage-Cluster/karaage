@@ -17,11 +17,10 @@ Contents:
 
    introduction
    getting_started
-   customizing
-   upgrading
    datastores
+   upgrading
    tasks
-   cmd
+   ref
    glossary
 
 Indices and tables

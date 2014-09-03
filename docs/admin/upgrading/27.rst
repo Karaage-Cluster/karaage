@@ -43,9 +43,10 @@ Backup various things on production box. Some of the following steps
 aren't strictly required, however recommended to guarantee no data lose
 will occur during the upgrade.
 
-#.  Backup /etc/karaage and everything under this directory.
+#.  Backup ``/etc/karaage`` and everything under this directory.
 
-#.  Backup /etc/ldap or /etc/openldap and everything under this directory.
+#.  Backup ``/etc/ldap`` or ``/etc/openldap`` and everything under this
+    directory.
 
 #.  Dump mysql database on production box.
 
@@ -77,13 +78,13 @@ upgrading to 3.0.
 Check MySQL server config
 -------------------------
 
-#.  (optional) Create a /root/.my.cnf file containing::
+#.  (optional) Create a ``/root/.my.cnf`` file containing::
 
         [client]
         user            = root
         password        = XXXXXXXX
 
-#.  Create a /etc/mysql/conf.d/karaage.cnf file containing::
+#.  Create a ``/etc/mysql/conf.d/karaage.cnf`` file containing::
 
         [mysqld]
         character_set_server=utf8
@@ -165,9 +166,10 @@ Installing Karaage3
         apt-get install karaage3
         apt-get install python-mysql.connector
 
-#.  Check the following settings are in /etc/karaage3/settings.py. The
-    mysql server should refer to the *new* database you created above, the LDAP
-    server should refer to your production server.
+#.  Check the :setting:`DATABASES` and :setting:`LDAP` settings are in
+    ``/etc/karaage3/settings.py``. The mysql server should refer to the *new*
+    database you created above, the LDAP server should refer to your production
+    server.
 
     .. code-block:: python
 
@@ -216,7 +218,7 @@ Installing Karaage3
             ],
         }
 
-    The values given for LDAP_ACCOUNT_BASE and LDAP_GROUP_BASE should
+    The values given for ``LDAP_ACCOUNT_BASE`` and ``LDAP_GROUP_BASE`` should
     correspond with your existing LDAP data.
 
     .. warning::
@@ -253,7 +255,8 @@ Installing Karaage3
             mysql> use karaage3
             mysql> show table status
 
-    #.  If not all tables are using innodb and utf8, this can be corrected with the following script:
+    #.  If not all tables are using innodb and utf8, this can be corrected with
+        the following script:
 
         .. code-block:: bash
 
@@ -283,7 +286,8 @@ Installing Karaage3
 
     #.  Ensure mysql data is correct without any obvious signs of problems.
 
-#. If you have any other datastores, configure them now (:doc:`/datastores`).
+#. If you have any other datastores, configure them now. See
+   :doc:`/datastores`.
 
 #.  Restart karaage processes.
 
@@ -292,19 +296,21 @@ Installing Karaage3
         service apache2 start
         service karaage3-celery start
 
-#.  You can run the following command to check what LDAP changes are required:
+#.  You can run the :djadmin:`migrate_ldap` command to check what LDAP changes
+    are required:
 
     .. code-block:: bash
 
-        kg-manage update_ldap --dry-run
+        kg-manage migrate_ldap --dry-run
 
-    These need to be run before the upgrade can be considered complete, however
-    there is no hurry just yet. If you make the changes now, some operations on your
-    production box may not work correctly until after you upgrade.
+    If you are happy, repeat without the :djadminopt:`--dry-run` option.
 
-#.  Test. You should now be able to go to http://hostname/kgadmin/.  Apply any
-    local customizations you need to have a fully operational system now.  Do
-    not continue if you are not completely happy.
+    This need to be run before the upgrade can be considered complete, however
+    most things should still work without doing this change.
+
+#.  Test. You should now be able to go to ``http://hostname/kgadmin/``.  Apply
+    any local customizations you need to have a fully operational system now.
+    Do not continue if you are not completely happy.
 
 
 Final server configuration
@@ -319,7 +325,8 @@ restoring LDAP from the backup.
 
 #.  (optional) If you require people to be recorded in LDAP:
 
-    #.  Add/modify the following to ``/etc/karaage3/settings.py``:
+    #.  Add/modify the :setting:`MACHINE_CATEGORY_DATASTORES` and
+        :setting:`GLOBAL_DATASTORES` to ``/etc/karaage3/settings.py``:
 
         .. code-block:: python
 
@@ -350,8 +357,19 @@ restoring LDAP from the backup.
                   },
             ]
 
-    #.  You may need to reconfigure clients to use ou=People,dc=example,dc=org
-        or ou=Accounts,dc=example,dc=org depending on requirements.
+    #.  You may need to reconfigure clients.
+
+        *  If :term:`people <person>` require access to service even if they
+           don’t have an account (rare).
+
+           ``ou=People,dc=example,dc=org`` and
+           ``ou=People_Groups,dc=example,dc=org``
+
+        *   If people only should get access with an :term:`account` (most
+            common):
+
+           ``ou=Accounts,dc=example,dc=org`` and
+           ``ou=People_Groups,dc=example,dc=org``
 
 #.  Run the following commands to check what LDAP changes are required:
 
@@ -386,7 +404,7 @@ provides usage graphs and statistics for cluster systems. To enable it:
 
         apt-get install python-kgusage
 
-#.  Add the following to /etc/karaage3/settings.py:
+#.  Add the following to ``/etc/karaage3/settings.py``:
 
     .. code-block:: python
 
@@ -408,7 +426,8 @@ provides usage graphs and statistics for cluster systems. To enable it:
 You may need to update PBS/slurm logging to talk correctly to Karaage.  Only do
 this if kg-pbs-logger was previously configured.
 
-Karaage no longer requires a dedicated account for kg-pbs-logger. Rather it uses the machine entry. For every machine:
+Karaage no longer requires a dedicated account for kg-pbs-logger. Rather it
+uses the machine entry. For every machine:
 
 #.  (optional) Delete the dedicated account that was previously used for authenticating this system.
 

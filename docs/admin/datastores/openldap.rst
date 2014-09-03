@@ -153,7 +153,7 @@ Debian installation
         apt-get install slapd
         apt-get install ldap-utils
 
-    Enter XXXXXXXX when prompted for administrator's password.
+    Enter XXXXXXXX when prompted for administrator’s password.
 
 #.  Create the file with the following contents in ``/tmp/ppolicy1.ldif``::
 
@@ -205,7 +205,8 @@ Debian installation
 
 Configuring Karaage to use LDAP
 -------------------------------
-#.  Add the following to ``/etc/karaage3/settings.py``:
+#.  Add the :setting:`LDAP` and :setting:`MACHINE_CATEGORY_DATASTORES` settings
+    to ``/etc/karaage3/settings.py``:
 
     .. code-block:: python
 
@@ -243,8 +244,8 @@ Configuring Karaage to use LDAP
              ],
         }
 
-#.  (optional) If you require people to be recorded in LDAP, add the following
-    to ``/etc/karaage3/settings.py``:
+#.  (optional) If you require people to be recorded in LDAP, add the
+    :setting:`GLOBAL_DATASTORES` setting to ``/etc/karaage3/settings.py``:
 
     .. code-block:: python
 
@@ -262,7 +263,8 @@ Configuring Karaage to use LDAP
         ]
 
     For best results the base settings should be different for the
-    ``GLOBAL_DATASTORE`` and the ``MACHINE_CATEGORY_DATASTORE`` settings.
+    :setting:`GLOBAL_DATASTORES` and the :setting:`MACHINE_CATEGORY_DATASTORES`
+    settings.
 
 #.  Reload apache.
 

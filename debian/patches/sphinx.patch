@@ -1,0 +1,31 @@
+Index: karaage/docs/admin/conf.py
+===================================================================
+--- karaage.orig/docs/admin/conf.py	2014-09-04 10:18:03.500531864 +1000
++++ karaage/docs/admin/conf.py	2014-09-04 11:42:32.191736497 +1000
+@@ -302,6 +302,6 @@
+ extensions += ["sphinx.ext.intersphinx"]
+ intersphinx_mapping = {
+     'django': (
+-        'https://docs.djangoproject.com/en/1.7/',
+-        'https://docs.djangoproject.com/en/1.7/_objects/'),
++        '/usr/share/doc/python-django-doc/html/',
++        None),
+ }
+Index: karaage/docs/programmer/conf.py
+===================================================================
+--- karaage.orig/docs/programmer/conf.py	2014-09-04 11:29:58.137153249 +1000
++++ karaage/docs/programmer/conf.py	2014-09-04 11:38:25.093445634 +1000
+@@ -296,9 +296,9 @@
+ extensions += ["sphinx.ext.intersphinx"]
+ intersphinx_mapping = {
+     'karaage': (
+-        'https://karaage.readthedocs.org/en/latest/',
+-        None),
++        '/usr/share/doc/karaage3-doc/admin/',
++        '../admin/.build/admin/objects.inv'),
+     'django': (
+-        'https://docs.djangoproject.com/en/1.7/',
+-        'https://docs.djangoproject.com/en/1.7/_objects/'),
++        '/usr/share/doc/python-django-doc/html/',
++        None),
+ }

@@ -1,6 +1,6 @@
 Getting Started
 ===============
-This section is for administrators who don't already have Karaage installed and
+This section is for administrators who don’t already have Karaage installed and
 wish to get started for the first time.
 
 If you do have an older version of Karaage already installed, please see the
@@ -67,13 +67,13 @@ MySQL server installation
     this documentation, we will assume you used XXXXXXXX. Do not use XXXXXXXX
     for your password on a production system.
 
-#.  (optional) Create a /root/.my.cnf file containing::
+#.  (optional) Create a ``/root/.my.cnf`` file containing::
 
         [client]
         user            = root
         password        = XXXXXXXX
 
-#.  Create a /etc/mysql/conf.d/karaage.cnf file containing::
+#.  Create a ``/etc/mysql/conf.d/karaage.cnf`` file containing::
 
         [mysqld]
         character_set_server=utf8
@@ -115,8 +115,9 @@ Initial setup
     changed, this is not advisable on a production system.
 
     #.  Setup Apache to support secure https connections. Changes should be
-        made to the `/etc/apache2/sites-available/default-ssl`.  Read the comments
-        in this file. For more details on what changes are required, see the `Apache howto
+        made to the `/etc/apache2/sites-available/default-ssl`.  Read the
+        comments in this file. For more details on what changes are required,
+        see the `Apache howto
         <http://httpd.apache.org/docs/current/ssl/ssl_howto.html>`_.
 
     #.  Connections to http should be redirected to https.  Please replace the
@@ -130,7 +131,7 @@ Initial setup
         For more information on this step,
         see the `Apache wiki <https://wiki.apache.org/httpd/RedirectSSL>`_.
 
-    #.  Enable default-ssl with the following commands:
+    #.  Enable ``default-ssl`` with the following commands:
 
         .. code-block:: bash
 
@@ -138,15 +139,17 @@ Initial setup
             a2ensite default-ssl.
             service apache2 restart
 
-    #.  Test by loading both ``http://accounts.example.org/`` and ``https://accounts.example.org/`` in your browser.
+    #.  Test by loading both ``http://accounts.example.org/`` and
+        ``https://accounts.example.org/`` in your browser.
 
-#.  Run kg_set_secret_key, this will automatically set SECRET_KEY inside /etc/karaage3/settings.py
+#.  Run :doc:`/ref/cmd/kg-set-secret-key`, this will automatically set
+    :setting:`SECRET_KEY` inside ``/etc/karaage3/settings.py``:
 
     .. code-block:: bash
 
          kg_set_secret_key
 
-#.  Edit the DATABASES setting in /etc/karaage3/settings.py:
+#.  Edit the :setting:`DATABASES` setting in ``/etc/karaage3/settings.py``:
 
     .. code-block:: python
 
@@ -162,10 +165,16 @@ Initial setup
               }
          }
 
-#.  Add ALLOWED_HOSTS = [ "hostname" ] to /etc/karaage3/settings.py.
+#.  Add the :setting:`ALLOWED_HOSTS` setting in ``/etc/karaage3/settings.py``:
+    
+    .. code-block:: python
+
+       ALLOWED_HOSTS = [ "hostname" ] to ``/etc/karaage3/settings.py``.
+
     Replace hostname with the visible hostname of your server.
 
-#.  Update other settings in /etc/karaage3/settings.py as required.
+#.  Update other settings in ``/etc/karaage3/settings.py`` as required. See
+    comments in this file and :doc:`/ref/settings`.
 
 #.  Create DB tables:
 
@@ -174,25 +183,25 @@ Initial setup
         kg-manage syncdb --noinput
         kg-manage migrate --all
 
-#.  Create a karaage superuser:
+#.  Create a karaage superuser using :djadmin:`kgcreatesuperuser`:
 
     .. code-block:: bash
 
         kg-manage kgcreatesuperuser
 
-    (do not use kg-manage createsuperuser, that doesn't exist.)
+    (do not use kg-manage createsuperuser, that doesn’t exist.)
 
-#.  Setup cron job. Edit the /etc/cron.d/python-karaage file::
+#.  Setup cron job. Edit the ``/etc/cron.d/python-karaage file``::
 
         10 1 * * * www-data /usr/bin/kg-daily-cleanup
 
-#.  Test. You should now be able to go to http://hostname/kgadmin/
+#.  Test. You should now be able to go to ``http://hostname/kgadmin/``.
 
 
 Data stores
 -----------
 So far you have not configured any external datastores. Karaage will work,
-however probably won't do anything useful. See the next section to configure
+however probably won’t do anything useful. See the next section to configure
 datastores (:doc:`datastores`).
 
 
@@ -207,7 +216,7 @@ for cluster systems. It is not enabled by default. To enable it:
 
         apt-get install python-kgusage
 
-#.  Add the following to /etc/karaage3/settings.py:
+#.  Add the :setting:`PLUGINS` setting to ``/etc/karaage3/settings.py``:
 
     .. code-block:: python
 

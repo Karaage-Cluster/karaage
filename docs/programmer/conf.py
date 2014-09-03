@@ -285,3 +285,20 @@ epub_copyright = '2014, Brian May'
 
 # Allow duplicate toc entries.
 # epub_tocdup = True
+
+# Add any Sphinx extension module names here, as strings. They can be
+# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
+import sys
+from os.path import abspath, dirname, join
+sys.path.append(abspath(join(dirname(dirname(__file__)), "ext")))
+
+extensions += ["djangodocs"]
+extensions += ["sphinx.ext.intersphinx"]
+intersphinx_mapping = {
+    'karaage': (
+        'https://karaage.readthedocs.org/en/latest/',
+        None),
+    'django': (
+        'https://docs.djangoproject.com/en/1.7/',
+        'https://docs.djangoproject.com/en/1.7/_objects/'),
+}

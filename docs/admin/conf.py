@@ -15,7 +15,6 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-# sys.path.insert(0, os.path.abspath('.'))
 
 # -- General configuration ----------------------------------------------------
 
@@ -217,11 +216,11 @@ latex_documents = [
 man_pages = [
     ('index', 'karaage',
         'Karaage Admin Documentation', [u'Brian May'], 8),
-    ('cmd/kg-daily-cleanup', 'kg-daily-cleanup',
+    ('ref/cmd/kg-daily-cleanup', 'kg-daily-cleanup',
         'Cleanup for Karaage', [u'Brian May'], 8),
-    ('cmd/kg-manage', 'kg-manage',
+    ('ref/cmd/kg-manage', 'kg-manage',
         'Management for Karaage', [u'Brian May'], 8),
-    ('cmd/kg-set-secret-key', 'kg_set_secret_key',
+    ('ref/cmd/kg-set-secret-key', 'kg_set_secret_key',
         'Set secret key for Karaage', [u'Brian May'], 8),
 ]
 
@@ -292,3 +291,17 @@ epub_copyright = '2014, Brian May'
 
 # Allow duplicate toc entries.
 # epub_tocdup = True
+
+# Add any Sphinx extension module names here, as strings. They can be
+# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
+import sys
+from os.path import abspath, dirname, join
+sys.path.append(abspath(join(dirname(dirname(__file__)), "ext")))
+
+extensions += ["djangodocs"]
+extensions += ["sphinx.ext.intersphinx"]
+intersphinx_mapping = {
+    'django': (
+        'https://docs.djangoproject.com/en/1.7/',
+        'https://docs.djangoproject.com/en/1.7/_objects/'),
+}
