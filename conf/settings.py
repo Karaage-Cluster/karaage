@@ -222,9 +222,9 @@ ACCOUNTS_ORG_NAME = 'Example'
 
 # Path to AUP policy. Note that setting this will not disable the Karaage
 # default page, it might be better to replace the AUP with a file in
-# /etc/karaage3/templates/aup.html if required.
+# the templates directory ``karaage/common/aup-detail.html`` if required.
 #
-# default: Django template
+# default: Django template ``karaage/common/aup-detail.html``
 #
 # AUP_URL = "https://site.example.org/users/aup/"
 

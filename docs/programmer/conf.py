@@ -285,3 +285,20 @@ epub_copyright = '2014, Brian May'
 
 # Allow duplicate toc entries.
 # epub_tocdup = True
+
+# Add any Sphinx extension module names here, as strings. They can be
+# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
+extensions += ["sphinx.ext.intersphinx"]
+intersphinx_mapping = {
+    'django': (
+        'https://docs.djangoproject.com/en/1.7/',
+        'https://docs.djangoproject.com/en/1.7/_objects/'),
+}
+
+
+def setup(app):
+    app.add_crossref_type(
+        directivename="setting",
+        rolename="setting",
+        indextemplate="pair: %s; setting",
+    )

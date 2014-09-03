@@ -42,17 +42,19 @@ The following attributes can be set:
 
 .. py:attribute:: BasePlugin.module
 
-   The python module for the Django app. This will be added to
-   ``INSTALLED_APPS`` Django configuration.
+   The python module for the Django app. This will be added to the
+   :setting:`django:INSTALLED_APPS` Django setting.
 
 .. py:attribute:: BasePlugin.django_apps
 
    A typle list of extra Django apps that are required for this plugin to work
-   correctly.
+   correctly. This will be added to the  :setting:`django:INSTALLED_APPS`
+   setting.
 
 .. py:attribute:: BasePlugin.xmlrpc_methods
 
-   A tuple list of extra methods to add to the ``XMLRPC_METHODS`` setting.
+   A tuple list of extra methods to add to the :setting:`XMLRPC_METHODS`
+   setting.
 
 .. py:attribute:: BasePlugin.settings
 

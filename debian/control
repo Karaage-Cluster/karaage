@@ -107,7 +107,7 @@ Description: Collection of Django apps to manage a cluster
  Package to pull in all required components of Karaage.
 
 Package: python-karaage-doc
-Depends: karaage3-doc, ${misc:Depends}
+Depends: karaage3-doc, python-django-doc, ${misc:Depends}
 Architecture: all
 Priority: extra
 Section: oldlibs
