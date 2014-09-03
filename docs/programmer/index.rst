@@ -16,6 +16,7 @@ Contents:
 
    architecture
    contributing
+   plugins
 
 
 Indices and tables

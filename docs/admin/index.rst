@@ -17,6 +17,7 @@ Contents:
 
    introduction
    getting_started
+   customizing
    upgrading
    datastores
    tasks
