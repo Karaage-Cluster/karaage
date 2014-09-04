@@ -18,6 +18,7 @@ Contents:
    introduction
    getting_started
    datastores
+   plugins
    upgrading
    tasks
    ref

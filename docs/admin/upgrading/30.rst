@@ -16,26 +16,8 @@ Upgrading from 3.0.x to 3.1.x
 #. Merge in changes from ``/etc/karaage/global_settings.py`` into
    ``/etc/karaage3/settings.py``. Or just copy the file should be sufficient.
 
-#. If required, install Karaage plugins. For example, for karaage-usage, run
-   the following command:
-
-   .. code-block:: bash
-
-       apt-get install python-kgusage
-
-   Add the :setting:`PLUGINS` to ``/etc/karaage3/settings.py``:
-
-   .. code-block:: python
-
-        PLUGINS = [
-            'kgusage.plugin',
-        ]
-
-   Restart karaage3-celery:
-
-   .. code-block:: bash
-
-       service karaage3-celery restart
+#. If required, install Karaage plugins. See :doc:`/plugins` for more
+   information.
 
 #. Otherwise purge karaage3-celery if kgusage not required.
 

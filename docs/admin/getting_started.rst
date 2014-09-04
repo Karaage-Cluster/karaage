@@ -206,32 +206,6 @@ however probably won’t do anything useful. See the next section to configure
 datastores (:doc:`datastores`).
 
 
-Karaage-usage
--------------
-Karaage-usage is an external plugin that provides usage graphs and statistics
-for cluster systems. It is not enabled by default. To enable it:
-
-#.  Install the extra required package:
-
-    .. code-block:: bash
-
-        apt-get install python-kgusage
-
-#.  Add the :setting:`PLUGINS` setting to ``/etc/karaage3/settings.py``:
-
-    .. code-block:: python
-
-        PLUGINS = [
-            'kgusage.plugin',
-        ]
-
-#.   Run the database migrations, restart apache, and install the celery
-     deaemon.
-
-     .. code-block:: bash
-
-        kg-manage migrate --all
-        service apache2 reload
-        apt-get install karaage3-celery
-
-#.  Check to ensure the celery daemon is running.
+Plugins
+-------
+For information on configuring additional plugins, see :doc:`plugins`.

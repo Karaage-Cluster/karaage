@@ -286,8 +286,8 @@ Installing Karaage3
 
     #.  Ensure mysql data is correct without any obvious signs of problems.
 
-#. If you have any other datastores, configure them now. See
-   :doc:`/datastores`.
+#.  If you have any other datastores, configure them now. See
+    :doc:`/datastores`.
 
 #.  Restart karaage processes.
 
@@ -383,51 +383,21 @@ restoring LDAP from the backup.
 
         kg-manage migrate_ldap
 
+#.  If required, install Karaage plugins. See :doc:`/plugins` for more
+    information.
+
 #.  Test production box and make sure everything is working.
 
 
-Plugins
--------
-There are a number of plugins for Karaage that are not enabled by default.
-
-* karaage-applications: application process for karaage.
-* karaage-software: keep track of software.
-* karaage-usage: keep track of usage.
-
-Karaage-usage requires karaage-applications and karaage-software, and will
-automatically pull in the required dependancies. It is an external plugin that
-provides usage graphs and statistics for cluster systems. To enable it:
-
-#.  Install the extra required package:
-
-    .. code-block:: bash
-
-        apt-get install python-kgusage
-
-#.  Add the following to ``/etc/karaage3/settings.py``:
-
-    .. code-block:: python
-
-        PLUGINS = [
-            'kgusage.plugin',
-        ]
-
-#.   Run the database migrations, restart apache, and install the celery
-     deaemon.
-
-     .. code-block:: bash
-
-        kg-manage migrate --all
-        service apache2 reload
-        apt-get install karaage3-celery
-
-#.  Check to ensure the celery daemon is running.
+Other changes:
+--------------
+Check that remote services that access Karaage work. For example, with
+torque_submitfilter, you need to update the Karaage URL to ``/karaage/``.
 
 You may need to update PBS/slurm logging to talk correctly to Karaage.  Only do
-this if kg-pbs-logger was previously configured.
-
-Karaage no longer requires a dedicated account for kg-pbs-logger. Rather it
-uses the machine entry. For every machine:
+this if kg-pbs-logger was previously configured.  Karaage no longer requires a
+dedicated account for kg-pbs-logger. Rather it uses the machine entry. For
+every machine:
 
 #.  (optional) Delete the dedicated account that was previously used for authenticating this system.
 
@@ -439,11 +409,3 @@ uses the machine entry. For every machine:
     machine name in karaage, and for ``ws_password`` use the password obtained
     in the previous step.
 
-#.  Test.
-
-
-Other changes:
---------------
-
-*   Check that remote services that access Karaage work. For example, with
-    torque_submitfilter, you need to update the Karaage URL to ``/karaage/``.
