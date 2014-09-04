@@ -16,54 +16,58 @@ The core Karaage defines the following db models in the
 
 .. py:class:: Institute
 
-   Represents an institute for a user.
+   Represents an :term:`institute` for a :term:`person`.
 
 .. py:class:: InstituteQuota
 
-   Represents the quota for a machine category for an institute.
+   Represents the quota for a :term:`machine category` for an :term:`institute`.
 
 .. py:class:: InstituteDelegate
 
-   Represents a delegate for an institute with extra attributes.
+   Represents an :term:`institute delegate` for an :term:`institute` with extra
+   attributes.
 
 .. py:class:: MachineCategory
 
-   Represents a machine category. Each machine category in Karaage in
+   Represents a :term:`machine category`. Each machine category in Karaage in
    considered distinct with its own data stores and monitoring.
 
 .. py:class:: Machine
 
-   Represents an individual machine or cluster in a machine category.
+   Represents an individual :term:`machine` or cluster in a :term:`machine
+   category`.
 
 .. py:class:: Account
 
-   Represents an account for a particular person on a particular machine
-   category.
+   Represents an :term:`account` for a particular :term:`person` on a
+   particular :term:`machine category`.
 
 .. py:class:: Person
 
-   Represents a person who may have one or more accounts. A person is global
-   across all machine categories.
+   Represents a :term:`person` who may have one or more :term:`accounts
+   <account>`. A person is global across all :term:`machine categories <machine
+   category>`.
 
 .. py:class:: Group
 
-   Represents a group of people. A group is global accross all machine
-   categories.
+   Represents a :term:`group` of :term:`people <person>`. A group is global
+   accross all :term:`machine categories <machine category>`.
 
 .. py:class:: Project
 
-   Represents a project for a set of machine categories. A project is
-   considered global, although is only active on given machine categories.
+   Represents a :term:`karaage:project` for a set of :term:`machine categories <machine
+   category>`. A project is considered global, although is only active on given
+   machine categories.
 
 .. py:class:: ProjectQuota
 
-   Represents the quota for a project on a particular machine category.  If
-   there is no :py:class:`ProjectQuota` for a particular project on a
-   particular machine category, then the project is not active on that machine
-   category.
+   Represents the quota for a :term:`karaage:project` on a particular :term:`machine
+   category`.  If there is no :py:class:`ProjectQuota` for a particular project
+   on a particular machine category, then the project is not active on that
+   machine category.
 
-Karaage Applications
---------------------
+Karaage Applications plugin
+---------------------------
 .. py:module:: kgapplications.models
 
 Karaage Applications is a plugin that defines additional functionality
@@ -85,8 +89,8 @@ used for applications. It defines the following db models in the
    :py:class:`karaage.models.Person` entry.
 
 
-Karaage Software
-----------------
+Karaage Software plugin
+-----------------------
 .. py:module:: kgsoftware.models
 
 Karaage Software is a plugin that defines additional functionality
@@ -123,8 +127,8 @@ used for tracking software. It defines the following db models in the
    applications to access restricted software.
 
 
-Karaage Usage
---------------
+Karaage Usage plugin
+--------------------
 Karaage Usage is a plugin that defines additional functionality
 used for tracking cluster usage. It may get rewritten in the future, and
 you should not rely on anything remaining the same.

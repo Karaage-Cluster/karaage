@@ -115,13 +115,14 @@ Initial setup
     changed, this is not advisable on a production system.
 
     #.  Setup Apache to support secure https connections. Changes should be
-        made to the `/etc/apache2/sites-available/default-ssl`.  Read the
+        made to the ``/etc/apache2/sites-available/default-ssl``.  Read the
         comments in this file. For more details on what changes are required,
         see the `Apache howto
         <http://httpd.apache.org/docs/current/ssl/ssl_howto.html>`_.
 
     #.  Connections to http should be redirected to https.  Please replace the
-        `/etc/apache2/sites-available/default` file entirely with the following::
+        ``/etc/apache2/sites-available/default`` file entirely with the
+        following::
 
             <VirtualHost *:80>
                 ServerName accounts.example.org
