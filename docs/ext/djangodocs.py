@@ -53,7 +53,7 @@ def setup(app):
         indextemplate="pair: %s; django-admin command-line option",
         parse_node=parse_django_adminopt_node,
     )
-    app.add_config_value('django_next_version', '0.0', True)
+    app.add_config_value('karaage_next_version', '0.0', True)
     app.add_directive('versionadded', VersionDirective)
     app.add_directive('versionchanged', VersionDirective)
     app.add_builder(DjangoStandaloneHTMLBuilder)
@@ -208,7 +208,7 @@ class VersionDirective(Directive):
         node = addnodes.versionmodified()
         ret.append(node)
 
-        if self.arguments[0] == env.config.django_next_version:
+        if self.arguments[0] == env.config.karaage_next_version:
             node['version'] = "Development version"
         else:
             node['version'] = self.arguments[0]
