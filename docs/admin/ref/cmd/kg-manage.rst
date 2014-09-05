@@ -58,7 +58,8 @@ migrate_ldap
 
 .. django-admin-option:: --dry-run
 
-   Don't make any of the changes, display what would be done instead.
+   Don't make any of the changes, display what would be done instead. Note the
+   base dn objects will always be created.
 
 change_username
 ~~~~~~~~~~~~~~~

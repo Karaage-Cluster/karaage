@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 from south.v2 import DataMigration
-from karaage.datastores import get_machine_category_test_datastore
+from karaage.datastores import get_kg27_datastore
 
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        try:
-            datastore = get_machine_category_test_datastore("ldap", 0)
-        except KeyError:
+        datastore = get_kg27_datastore()
+        if datastore is None:
             return
         for person in orm.person.objects.iterator():
             # check if the account is active or deleted

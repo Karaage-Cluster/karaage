@@ -371,6 +371,16 @@ The settings for each datastore will vary depending on the value of
 ``ENGINE`` supplied. For more information, see :doc:`/datastores`.
 
 
+.. setting:: KG27_DATASTORE
+
+KG27_DATASTORE
+~~~~~~~~~~~~~~
+Default: ``None``
+
+Datastore used for upgrades from Karaage 2.7. For more information, see
+:doc:`\upgrading`.
+
+
 .. setting:: LDAP
 
 LDAP

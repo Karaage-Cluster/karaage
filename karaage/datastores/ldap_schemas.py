@@ -104,10 +104,7 @@ class openldap_account(methods.baseMixin):
     class Meta:
         base_dn_setting = "LDAP_ACCOUNT_BASE"
         object_classes = set(['top'])
-        search_classes = set(['person'])
-        # above is a hack required to upgrade to Karaage 3.0, should be the
-        # following:
-        # search_classes = set([ 'posixAccount' ])
+        search_classes = set(['posixAccount'])
         pk = 'uid'
 
     managed_by = tldap.manager.ManyToOneDescriptor(
@@ -117,6 +114,42 @@ class openldap_account(methods.baseMixin):
     manager_of = tldap.manager.OneToManyDescriptor(
         this_key='dn',
         linked_cls='karaage.datastores.ldap_schemas.openldap_account',
+        linked_key='manager')
+    unixHomeDirectory = tldap.manager.AliasDescriptor("homeDirectory")
+
+
+class openldap_kg27(methods.baseMixin):
+
+    schema_list = [
+        schemas.rfc.person,
+        schemas.rfc.organizationalPerson,
+        schemas.rfc.inetOrgPerson,
+        schemas.rfc.posixAccount,
+        schemas.rfc.shadowAccount,
+        schemas.rfc.pwdPolicy,
+    ]
+
+    mixin_list = [
+        methods.common.personMixin,
+        methods.common.accountMixin,
+        methods.pwdpolicy.pwdPolicyMixin,
+        kAccountMixin,
+    ]
+
+    class Meta:
+        base_dn_setting = "LDAP_ACCOUNT_BASE"
+        object_classes = set(['top'])
+        # this will find people and accounts
+        search_classes = set(['person'])
+        pk = 'uid'
+
+    managed_by = tldap.manager.ManyToOneDescriptor(
+        this_key='manager',
+        linked_cls='karaage.datastores.ldap_schemas.openldap_kg27',
+        linked_key='dn')
+    manager_of = tldap.manager.OneToManyDescriptor(
+        this_key='dn',
+        linked_cls='karaage.datastores.ldap_schemas.openldap_kg27',
         linked_key='manager')
     unixHomeDirectory = tldap.manager.AliasDescriptor("homeDirectory")
 
@@ -158,6 +191,28 @@ class openldap_account_group(methods.baseMixin):
     secondary_accounts = tldap.manager.ManyToManyDescriptor(
         this_key='memberUid',
         linked_cls=openldap_account, linked_key='uid', linked_is_p=False,
+        related_name="secondary_groups")
+
+
+class openldap_kg27_group(methods.baseMixin):
+
+    schema_list = [schemas.rfc.posixGroup]
+    mixin_list = [methods.common.groupMixin]
+
+    class Meta:
+        base_dn_setting = "LDAP_GROUP_BASE"
+        object_classes = set(['top'])
+        search_classes = set(['posixGroup'])
+        pk = 'cn'
+
+    # accounts
+    primary_accounts = tldap.manager.OneToManyDescriptor(
+        this_key='gidNumber',
+        linked_cls=openldap_kg27, linked_key='gidNumber',
+        related_name="primary_group")
+    secondary_accounts = tldap.manager.ManyToManyDescriptor(
+        this_key='memberUid',
+        linked_cls=openldap_kg27, linked_key='uid', linked_is_p=False,
         related_name="secondary_groups")
 
 
@@ -217,10 +272,7 @@ class ds389_account(methods.baseMixin):
     class Meta:
         base_dn_setting = "LDAP_ACCOUNT_BASE"
         object_classes = set(['top'])
-        search_classes = set(['person'])
-        # above is a hack required to upgrade to Karaage 3.0, should be the
-        # following:
-        # search_classes = set([ 'posixAccount' ])
+        search_classes = set(['posixAccount'])
         pk = 'uid'
 
     managed_by = tldap.manager.ManyToOneDescriptor(
@@ -230,6 +282,41 @@ class ds389_account(methods.baseMixin):
     manager_of = tldap.manager.OneToManyDescriptor(
         this_key='dn',
         linked_cls='karaage.datastores.ldap_schemas.ds389_account',
+        linked_key='manager')
+    unixHomeDirectory = tldap.manager.AliasDescriptor("homeDirectory")
+
+
+class ds389_kg27(methods.baseMixin):
+
+    schema_list = [
+        schemas.rfc.person,
+        schemas.rfc.organizationalPerson,
+        schemas.rfc.inetOrgPerson,
+        schemas.rfc.posixAccount,
+        schemas.rfc.shadowAccount,
+        schemas.ds389.passwordObject,
+    ]
+
+    mixin_list = [
+        methods.common.personMixin,
+        methods.common.accountMixin,
+        methods.ds389.passwordObjectMixin,
+        kAccountMixin,
+    ]
+
+    class Meta:
+        base_dn_setting = "LDAP_ACCOUNT_BASE"
+        object_classes = set(['top'])
+        search_classes = set(['person'])
+        pk = 'uid'
+
+    managed_by = tldap.manager.ManyToOneDescriptor(
+        this_key='manager',
+        linked_cls='karaage.datastores.ldap_schemas.ds389_kg27',
+        linked_key='dn')
+    manager_of = tldap.manager.OneToManyDescriptor(
+        this_key='dn',
+        linked_cls='karaage.datastores.ldap_schemas.ds389_kg27',
         linked_key='manager')
     unixHomeDirectory = tldap.manager.AliasDescriptor("homeDirectory")
 
@@ -271,4 +358,26 @@ class ds389_account_group(methods.baseMixin):
     secondary_accounts = tldap.manager.ManyToManyDescriptor(
         this_key='memberUid',
         linked_cls=ds389_account, linked_key='uid', linked_is_p=False,
+        related_name="secondary_groups")
+
+
+class ds389_kg27_group(methods.baseMixin):
+
+    schema_list = [schemas.rfc.posixGroup]
+    mixin_list = [methods.common.groupMixin]
+
+    class Meta:
+        base_dn_setting = "LDAP_GROUP_BASE"
+        object_classes = set(['top'])
+        search_classes = set(['posixGroup'])
+        pk = 'cn'
+
+    # accounts
+    primary_accounts = tldap.manager.OneToManyDescriptor(
+        this_key='gidNumber',
+        linked_cls=ds389_kg27, linked_key='gidNumber',
+        related_name="primary_group")
+    secondary_accounts = tldap.manager.ManyToManyDescriptor(
+        this_key='memberUid',
+        linked_cls=ds389_kg27, linked_key='uid', linked_is_p=False,
         related_name="secondary_groups")
