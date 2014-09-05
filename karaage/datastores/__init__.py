@@ -27,6 +27,7 @@ from karaage.machines.models import MachineCategory
 
 _GLOBAL_DATASTORES = []
 _MACHINE_CATEGORY_DATASTORES = {}
+_KG27_DATASTORE = None
 
 
 def _lookup(cls):
@@ -43,6 +44,9 @@ def _lookup(cls):
 
 def _init_datastores():
     """ Initialize all datastores. """
+    global _GLOBAL_DATASTORES
+    global _MACHINE_CATEGORY_DATASTORES
+    global _KG27_DATASTORE
     array = settings.GLOBAL_DATASTORES
     for config in array:
         cls = _lookup(config['ENGINE'])
@@ -54,14 +58,21 @@ def _init_datastores():
             cls = _lookup(config['ENGINE'])
             assert issubclass(cls, MachineCategoryDataStore)
             _MACHINE_CATEGORY_DATASTORES[name].append(cls(config))
+    if settings.KG27_DATASTORE is not None:
+        config = settings.KG27_DATASTORE
+        cls = _lookup(config['ENGINE'])
+        assert issubclass(cls, MachineCategoryDataStore)
+        _KG27_DATASTORE = cls(config)
 
 
 def _get_global_datastores():
+    global _GLOBAL_DATASTORES
     return _GLOBAL_DATASTORES
 
 
 def _get_machine_category_datastores(machine_category):
     """ Get the datastores for machine category. """
+    global _MACHINE_CATEGORY_DATASTORES
     name = machine_category.datastore
     return _MACHINE_CATEGORY_DATASTORES[name]
 
@@ -72,6 +83,7 @@ def _get_machine_categorys():
 
 def get_global_test_datastore(number=None):
     """ For testing only. Do not use. """
+    global _GLOBAL_DATASTORES
     if number is None:
         number = settings.LDAP_TEST_DATASTORE_N
     datastores = _GLOBAL_DATASTORES
@@ -80,12 +92,19 @@ def get_global_test_datastore(number=None):
 
 def get_machine_category_test_datastore(name=None, number=None):
     """ For testing only. Do not use. """
+    global _MACHINE_CATEGORY_DATASTORES
     if name is None:
         name = settings.LDAP_TEST_DATASTORE
     if number is None:
         number = settings.LDAP_TEST_DATASTORE_N
     datastores = _MACHINE_CATEGORY_DATASTORES[name]
     return datastores[number]
+
+
+def get_kg27_datastore():
+    """ For upgrade only. Do not use. """
+    global _KG27_DATASTORE
+    return _KG27_DATASTORE
 
 # Initialize data stores
 _init_datastores()
