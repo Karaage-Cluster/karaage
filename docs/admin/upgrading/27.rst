@@ -166,10 +166,11 @@ Installing Karaage3
         apt-get install karaage3
         apt-get install python-mysql.connector
 
-#.  Check the :setting:`DATABASES` and :setting:`LDAP` settings are in
-    ``/etc/karaage3/settings.py``. The mysql server should refer to the *new*
-    database you created above, the LDAP server should refer to your production
-    server.
+#.  Check the :setting:`DATABASES`, :setting:`LDAP`,
+    :setting:`MACHINE_CATEGORY_DATASTORES` and :setting:`KG27_DATASTORE`
+    settings in ``/etc/karaage3/settings.py``. The mysql server should refer to
+    the *new* database you created above, the LDAP server should refer to your
+    production server.
 
     .. code-block:: python
 
@@ -210,7 +211,7 @@ Installing Karaage3
                     'HOME_DIRECTORY': "/home/%(uid)s",
                     'LOCKED_SHELL': "/usr/local/sbin/locked",
                     'NUMBER_SCHEME': 'default',
-                    'LDAP_ACCOUNT_BASE': 'ou=People,dc=example,dc=org',
+                    'LDAP_ACCOUNT_BASE': 'ou=Accounts,dc=example,dc=org',
                     'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
                 },
             ],
@@ -218,13 +219,23 @@ Installing Karaage3
             ],
         }
 
-    The values given for ``LDAP_ACCOUNT_BASE`` and ``LDAP_GROUP_BASE`` should
-    correspond with your existing LDAP data.
+        KG27_DATASTORE = {
+            'DESCRIPTION': 'LDAP datastore',
+            'ENGINE': 'karaage.datastores.ldap.MachineCategoryDataStore',
+            'LDAP': 'default',
+            'ACCOUNT': 'karaage.datastores.ldap_schemas.openldap_kg27',
+            'GROUP': 'karaage.datastores.ldap_schemas.openldap_kg27_group',
+            'PRIMARY_GROUP': "institute",
+            'DEFAULT_PRIMARY_GROUP': "dummy",
+            'HOME_DIRECTORY': "/home/%(uid)s",
+            'LOCKED_SHELL': "/usr/local/sbin/locked",
+            'NUMBER_SCHEME': 'default',
+            'LDAP_ACCOUNT_BASE': 'ou=People,dc=example,dc=org',
+            'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
+        }
 
-    .. warning::
-
-        You must call the ldap datastore 'ldap' otherwise the migrations will
-        fail to retrieve LDAP information correctly.
+    The values given for ``LDAP_ACCOUNT_BASE`` and ``LDAP_GROUP_BASE`` in
+    :setting:`KG27_DATASTORE` should correspond with your existing LDAP data.
 
     .. warning::
 
@@ -232,6 +243,21 @@ Installing Karaage3
         migration step. The migrations reference LDAP information if it is
         available. If it is not available, the database may end up with
         incorrect information.
+
+#.  (optional) If you require people to be recorded in LDAP:
+
+        GLOBAL_DATASTORES = [
+              {
+                    'DESCRIPTION': 'LDAP datastore',
+                    'ENGINE': 'karaage.datastores.ldap.GlobalDataStore',
+                    'LDAP': 'default',
+                    'PERSON': 'karaage.datastores.ldap_schemas.openldap_person',
+                    'GROUP': 'karaage.datastores.ldap_schemas.openldap_person_group',
+                    'NUMBER_SCHEME': 'global',
+                    'LDAP_PERSON_BASE': 'ou=People,dc=example,dc=org',
+                    'LDAP_GROUP_BASE': 'ou=People_Groups,dc=example,dc=org',
+              },
+        ]
 
 #.  Migrate DB tables:
 
@@ -323,54 +349,6 @@ be possible to revert, only it will be slightly harder, as you have to undo the
 following steps. Once you proceed past this point, reverting may require
 restoring LDAP from the backup.
 
-#.  (optional) If you require people to be recorded in LDAP:
-
-    #.  Add/modify the :setting:`MACHINE_CATEGORY_DATASTORES` and
-        :setting:`GLOBAL_DATASTORES` to ``/etc/karaage3/settings.py``:
-
-        .. code-block:: python
-
-            MACHINE_CATEGORY_DATASTORES = {
-                'ldap' : [
-                    {
-                        ...
-                        'OLD_ACCOUNT_BASE': 'ou=People,dc=example,dc=org',
-                        'OLD_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
-                        'LDAP_ACCOUNT_BASE': 'ou=Accounts,dc=example,dc=org',
-                        'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
-                    },
-                ],
-                'dummy' : [
-                ],
-            }
-
-            GLOBAL_DATASTORES = [
-                  {
-                        'DESCRIPTION': 'LDAP datastore',
-                        'ENGINE': 'karaage.datastores.ldap.GlobalDataStore',
-                        'LDAP': 'default',
-                        'PERSON': 'karaage.datastores.ldap_schemas.openldap_person',
-                        'GROUP': 'karaage.datastores.ldap_schemas.openldap_person_group',
-                        'NUMBER_SCHEME': 'global',
-                        'LDAP_PERSON_BASE': 'ou=People,dc=example,dc=org',
-                        'LDAP_GROUP_BASE': 'ou=People_Groups,dc=example,dc=org',
-                  },
-            ]
-
-    #.  You may need to reconfigure clients.
-
-        *  If :term:`people <person>` require access to service even if they
-           don’t have an account (rare).
-
-           ``ou=People,dc=example,dc=org`` and
-           ``ou=People_Groups,dc=example,dc=org``
-
-        *   If people only should get access with an :term:`account` (most
-            common):
-
-           ``ou=Accounts,dc=example,dc=org`` and
-           ``ou=People_Groups,dc=example,dc=org``
-
 #.  Run the following commands to check what LDAP changes are required:
 
     .. code-block:: bash
@@ -408,4 +386,18 @@ every machine:
 #.  Update ``/etc/karaage/pbs-logger.cfg`` and for ``ws_username`` use the
     machine name in karaage, and for ``ws_password`` use the password obtained
     in the previous step.
+
+#.  You may need to reconfigure LDAP clients.
+
+    *  If :term:`people <person>` require access to service even if they
+       don’t have an account (rare).
+
+       ``ou=People,dc=example,dc=org`` and
+       ``ou=People_Groups,dc=example,dc=org``
+
+    *  If people only should get access with an :term:`account` (most
+       common):
+
+      ``ou=Accounts,dc=example,dc=org`` and
+      ``ou=People_Groups,dc=example,dc=org``
 

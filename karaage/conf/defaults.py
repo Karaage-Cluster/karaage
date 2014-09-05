@@ -314,6 +314,9 @@ MACHINE_CATEGORY_DATASTORES = {
     ],
 }
 
+# List of old Karaage 2.7 LDAP datastores.
+KG27_DATASTORE = None
+
 # Can any logged in user access the usage information?
 USAGE_IS_PUBLIC = True
 

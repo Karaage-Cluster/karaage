@@ -2,15 +2,14 @@
 from south.db import db
 from south.v2 import DataMigration
 
-from karaage.datastores import get_machine_category_test_datastore
+from karaage.datastores import get_kg27_datastore
 
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        try:
-            datastore = get_machine_category_test_datastore("ldap", 0)
-        except KeyError:
+        datastore = get_kg27_datastore()
+        if datastore is None:
             return
         for software in orm.SoftwarePackage.objects.iterator():
             if software.gid is None:
@@ -29,9 +28,8 @@ class Migration(DataMigration):
                         person.groups.add(group)
 
     def backwards(self, orm):
-        try:
-            datastore = get_machine_category_test_datastore("ldap", 0)
-        except KeyError:
+        datastore = get_kg27_datastore()
+        if datastore is None:
             return
         for software in orm.SoftwarePackage.objects.iterator():
             lgroup = datastore._groups().get(cn=software.group.name)
