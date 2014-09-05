@@ -88,4 +88,11 @@ def load_plugins(namespace, plugins):
 
 
 def post_process(namespace):
+    http_host = namespace.HTTP_HOST
+    for i, host in enumerate(namespace.ALLOWED_HOSTS):
+        namespace.ALLOWED_HOSTS[i] = host % {'HOST': http_host}
+    namespace.REGISTRATION_BASE_URL = \
+        namespace.REGISTRATION_BASE_URL % {'HOST': http_host}
+    namespace.ADMIN_BASE_URL = \
+        namespace.ADMIN_BASE_URL % {'HOST': http_host}
     load_plugins(namespace, namespace.PLUGINS)

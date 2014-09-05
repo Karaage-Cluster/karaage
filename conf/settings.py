@@ -29,12 +29,24 @@
 #
 # DEBUG = True
 
+# FQDN host, used in default settings for :setting:`ALLOWED_HOSTS`,
+# :setting:`REGISTRATION_BASE_URL`, and :setting:`ADMIN_BASE_URL`.
+#
+# default: HTTP_HOST = FQDN hostname
+#
+# HTTP_HOST = "localhost"
+
 # A list of strings representing the host/domain names that this Django site
 # can serve. This is a security measure to prevent an attacker from poisoning
 # caches and password reset emails with links to malicious hosts by submitting
 # requests with a fake HTTP Host header, which is possible even under many
 # seemingly-safe web server configurations.
-ALLOWED_HOSTS = ["www.example.org"]
+#
+# %(HOST) will be substituted with the HTTP_HOST setting.
+#
+# default: ALLOWED_HOSTS = ["%(HOST)s"]
+#
+# ALLOWED_HOSTS = ["www.example.org"]
 
 # Whether to use a secure cookie for the session cookie. If this is set to
 # True, the cookie will be marked as “secure,” which means browsers may ensure
@@ -203,14 +215,18 @@ ACCOUNTS_ORG_NAME = 'Example'
 # Registration base URL - Used in email templates
 # Uncomment to override default
 #
-# default: REGISTRATION_BASE_URL = 'https://<hostname>/users'
+# %(HOST) will be substituted with the HTTP_HOST setting.
+#
+# default: REGISTRATION_BASE_URL = 'https://%(HOST)s/users'
 #
 # REGISTRATION_BASE_URL = 'https://accounts.example.org/users'
 
 # Admin base URL - Used in email templates
 # Uncomment to override default
 #
-# default: ADMIN_BASE_URL = 'https://<hostname>/kgadmin'
+# %(HOST) will be substituted with the HTTP_HOST setting.
+#
+# default: ADMIN_BASE_URL = 'https://%(HOST)s/kgadmin'
 #
 # ADMIN_BASE_URL = 'https://accounts.example.org/kgadmin'
 

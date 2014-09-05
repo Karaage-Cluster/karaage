@@ -10,6 +10,17 @@ Any Django settings can be used, although it is recommended only to
 modify the settings described in this section.
 
 
+.. setting:: HTTP_HOST
+
+HTTP_HOST
+~~~~~~~~~
+Default: FQDN hostname
+
+FQDN host, used in default settings for :setting:`ALLOWED_HOSTS`,
+:setting:`REGISTRATION_BASE_URL`, and :setting:`ADMIN_BASE_URL`.
+
+Not a Django setting, but listed here regardless.
+
 .. setting:: DEBUG
 
 DEBUG
@@ -33,13 +44,15 @@ See :setting:`django:DEBUG`.
 
 ALLOWED_HOSTS
 ~~~~~~~~~~~~~
-Default: ``[]`` (Empty list)
+Default: ``['%(HOST)']``
 
 A list of strings representing the host/domain names that this Django site can
 serve. This is a security measure to prevent an attacker from poisoning caches
 and password reset emails with links to malicious hosts by submitting requests
 with a fake HTTP ``Host`` header, which is possible even under many
 seemingly-safe web server configurations.
+
+``%(HOST)`` will be substituted with the :setting:`HTTP_HOST` setting.
 
 See :setting:`django:ALLOWED_HOSTS`.
 
@@ -242,18 +255,21 @@ This organisation name, used in outgoing emails.
 
 REGISTRATION_BASE_URL
 ~~~~~~~~~~~~~~~~~~~~~
-Default: ``'https://<hostname>/users'``
+Default: ``'https://%(HOST)s/users'``
 
 Registration base URL - Used in email templates.
 
+``%(HOST)`` will be substituted with the :setting:`HTTP_HOST` setting.
 
 .. setting:: ADMIN_BASE_URL
 
 ADMIN_BASE_URL
 ~~~~~~~~~~~~~~
-Default: ``'https://<hostname>/kgadmin'``
+Default: ``'https://%(HOST)s/kgadmin'``
 
 Admin base URL - Used in email templates.
+
+``%(HOST)`` will be substituted with the :setting:`HTTP_HOST` setting.
 
 
 .. setting:: SHIB_SUPPORTED

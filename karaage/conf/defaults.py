@@ -20,6 +20,9 @@
 """ Default Karaage Settings. """
 import six
 
+from socket import getfqdn
+HTTP_HOST = getfqdn()
+
 ###
 # DJANGO SETTINGS
 ###
@@ -201,6 +204,13 @@ STATIC_ROOT = '/var/lib/karaage3/static'
 # URL to use when referring to static files located in STATIC_ROOT.
 STATIC_URL = '/kgstatic/'
 
+# A list of strings representing the host/domain names that this Django site
+# can serve. This is a security measure to prevent an attacker from poisoning
+# caches and password reset emails with links to malicious hosts by submitting
+# requests with a fake HTTP Host header, which is possible even under many
+# seemingly-safe web server configurations.
+ALLOWED_HOSTS = ["%(HOST)s"]
+
 ###
 # DJANGO PIPELINE
 ###
@@ -352,12 +362,10 @@ GROUP_VALIDATION_ERROR_MSG = six.u(
 TRAINING_ACCOUNT_PREFIX = 'train'
 
 # Registration base URL - Used in email templates.
-from socket import getfqdn
-REGISTRATION_BASE_URL = 'https://%s/users' % getfqdn()
+REGISTRATION_BASE_URL = 'https://%(HOST)s/users'
 
 # Admin base URL - Used in email templates.
-from socket import getfqdn
-ADMIN_BASE_URL = 'https://%s/kgadmin' % getfqdn()
+ADMIN_BASE_URL = 'https://%(HOST)s/kgadmin'
 
 # Do we allow anonymous users to request accounts?
 ALLOW_REGISTRATIONS = False
