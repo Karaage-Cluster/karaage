@@ -25,6 +25,7 @@ from tldap.schemas.rfc import organizationalUnit
 
 from karaage.people.models import Person
 from karaage.machines.models import Account, MachineCategory
+from karaage.datastores import get_kg27_datastore
 from karaage.datastores import get_global_test_datastore
 from karaage.datastores import get_machine_category_test_datastore
 import karaage.datastores.ldap as dldap
@@ -51,8 +52,7 @@ class Command(BaseCommand):
             base_dn = connection.settings_dict[key]
         return base_dn
 
-    def create_base(self, datastore, key, dry_run):
-        create_dn = self.get_base(datastore, key)
+    def create_base(self, datastore, create_dn):
         base_dn = dn2str(str2dn(create_dn)[1:])
 
         try:
@@ -61,14 +61,11 @@ class Command(BaseCommand):
                 .base_dn(base_dn) \
                 .get(dn=create_dn)
         except organizationalUnit.DoesNotExist:
-            if dry_run:
-                print("Would create %s" % create_dn)
-            else:
-                print("Creating %s" % create_dn)
-                organizationalUnit.objects.using(
-                    using=datastore._using, settings=datastore._settings) \
-                    .base_dn(base_dn) \
-                    .create(dn=create_dn)
+            print("Creating %s" % create_dn)
+            organizationalUnit.objects.using(
+                using=datastore._using, settings=datastore._settings) \
+                .base_dn(base_dn) \
+                .create(dn=create_dn)
 
     @django.db.transaction.commit_on_success
     @tldap.transaction.commit_on_success
@@ -82,9 +79,16 @@ class Command(BaseCommand):
     def handle_machine_category(self, mc, dry_run):
         # if datastore name is not ldap, we are not interested
         if mc.datastore != "ldap":
+            print(
+                "machine category %s datastore %s is not LDAP; nothing to do"
+                % (mc, mc.datastore))
             return
 
         # retreive the LDAP datastores
+        kg27_datastore = get_kg27_datastore()
+        if kg27_datastore is None:
+            print("KG27_DATASTORE not set; nothing to do")
+            return
         try:
             global_datastore = get_global_test_datastore(0)
             assert isinstance(global_datastore, dldap.GlobalDataStore)
@@ -95,27 +99,9 @@ class Command(BaseCommand):
         assert isinstance(
             machine_category_datastore, dldap.MachineCategoryDataStore)
 
-        # create the base dn
-        if global_datastore is not None:
-            self.create_base(
-                global_datastore, 'LDAP_PERSON_BASE', dry_run)
-            self.create_base(
-                global_datastore, 'LDAP_GROUP_BASE', dry_run)
-
-        self.create_base(
-            machine_category_datastore, 'LDAP_ACCOUNT_BASE', dry_run)
-        self.create_base(
-            machine_category_datastore, 'LDAP_GROUP_BASE', dry_run)
-
         # get the base dn
-        try:
-            old_account_dn = self.get_base(
-                machine_category_datastore, 'OLD_ACCOUNT_BASE')
-            old_group_dn = self.get_base(
-                machine_category_datastore, 'OLD_GROUP_BASE')
-        except KeyError:
-            print("OLD_* settings not defined, nothing to do, exiting.")
-            return
+        kg27_account_dn = self.get_base(kg27_datastore, 'LDAP_ACCOUNT_BASE')
+        kg27_group_dn = self.get_base(kg27_datastore, 'LDAP_GROUP_BASE')
 
         if global_datastore is not None:
             # we need to keep the people
@@ -133,114 +119,111 @@ class Command(BaseCommand):
         agroup_base_dn = self.get_base(
             machine_category_datastore, 'LDAP_GROUP_BASE')
 
-        # normalize dn, so we can compare
-        old_account_dn = dn2str(str2dn(old_account_dn))
-        old_group_dn = dn2str(str2dn(old_group_dn))
-
-        account_base_dn = dn2str(str2dn(account_base_dn))
-        agroup_base_dn = dn2str(str2dn(agroup_base_dn))
-
+        # create the base dn
+        # note we do this even if --dry-run given, as otherwise
+        # we get confused if dn doesn't exist
         if global_datastore is not None:
-            person_base_dn = dn2str(str2dn(person_base_dn))
-            pgroup_base_dn = dn2str(str2dn(pgroup_base_dn))
+            self.create_base(global_datastore, person_base_dn)
+            self.create_base(global_datastore, pgroup_base_dn)
+
+        self.create_base(machine_category_datastore, account_base_dn)
+        self.create_base(machine_category_datastore, agroup_base_dn)
 
         # sanity check
         assert pgroup_base_dn != agroup_base_dn
         assert person_base_dn != account_base_dn
 
-        # process accounts
-        for p in machine_category_datastore._accounts() \
-                .base_dn(old_account_dn) \
-                .filter(objectClass='posixAccount'):
+        # process kg27 people/accounts
+        for p in kg27_datastore._accounts() \
+                .base_dn(kg27_account_dn):
 
+            # get LDAP username
+            luid = p.uid
+
+            # if this is an account, copy to new place
             if 'posixAccount' in p.objectClass:
                 # this was an account; then there was no person in LDAP
 
-                # move account to correct place
-                if old_account_dn != account_base_dn:
-                    if dry_run:
-                        print(
-                            "Would move account from "
-                            "%s to %s" % (p.dn, account_base_dn))
-                    else:
-                        # move account from person to accounts
-                        print(
-                            "Moving account from "
-                            "%s to %s" % (p.dn, account_base_dn))
-                        p.rename(new_base_dn=account_base_dn)
-
-                # get username for person
-                account = Account.objects.get(
-                    username=p.uid, machine_category=mc)
-                person = Person.objects.get(account=account)
-                uid = person.username
-
-                if global_datastore is not None:
-                    # Create person, if required.  This is better then calling
-                    # person.save() as we get the password too.
-                    try:
-                        dst = global_datastore._people().get(uid=uid)
-                        if 'posixAccount' in dst.objectClass:
-                            if dry_run:
-                                print(
-                                    "Would copy account %s to person %s"
-                                    % (p.dn, person_base_dn))
-                            else:
-                                print(
-                                    "Unexpected account exists, not copying "
-                                    "account %s to person %s"
-                                    % (p.dn, person_base_dn))
-
-                    except global_datastore._person.DoesNotExist:
-                        new_person = global_datastore._create_person()
-                        for i, _ in new_person.get_fields():
-                            if i != "objectClass":
-                                value = getattr(p, i)
-                                setattr(new_person, i, value)
-
+                # copy account to correct place
+                try:
+                    dst = machine_category_datastore._accounts().get(uid=luid)
+                    if 'posixAccount' not in dst.objectClass:
+                        # This shouldn't normally ever happen.
                         if dry_run:
                             print(
-                                "Would copy account %s to person %s"
-                                % (p.dn, person_base_dn))
+                                "Conflicting person exists, would delete "
+                                "person %s " % dst.dn)
                         else:
-                            new_person.save()
                             print(
-                                "Copying account %s to person %s"
-                                % (p.dn, new_person.dn))
-            else:
-                # this wasn't an account, it was a person
+                                "Conflicting person exists, deleting "
+                                "person %s " % dst.dn)
+                            dst.delete()
+                        raise machine_category_datastore._person.DoesNotExist
+                except machine_category_datastore._account.DoesNotExist:
+                    new_account = machine_category_datastore._create_account()
+                    for i, _ in new_account.get_fields():
+                        if i != "objectClass":
+                            value = getattr(p, i)
+                            setattr(new_account, i, value)
 
-                if global_datastore is not None:
-                    # move person if required
-                    if old_account_dn != person_base_dn:
+                    if dry_run:
+                        print(
+                            "Would copy account %s to account %s"
+                            % (p.dn, account_base_dn))
+                    else:
+                        new_account.save()
+                        print(
+                            "Copying account %s to account %s"
+                            % (p.dn, new_account.dn))
+
+            # get username for associated person
+            account = Account.objects.get(
+                username=p.uid, machine_category=mc)
+            person = Person.objects.get(account=account)
+            puid = person.username
+
+            # all kg27 entries are persons, copy person to correct place
+            if global_datastore is not None:
+                # Create person, if required.  This is better then calling
+                # person.save() as we get the password too.
+                try:
+                    dst = global_datastore._people().get(uid=puid)
+                    if 'posixAccount' in dst.objectClass:
                         if dry_run:
                             print(
-                                "Would move person from "
-                                "%s to %s" % (p.dn, person_base_dn))
+                                "Conflicting account exists, would delete "
+                                "account %s " % dst.dn)
                         else:
-                            # move account from person to accounts
                             print(
-                                "Moving person from "
-                                "%s to %s" % (p.dn, person_base_dn))
-                            p.rename(new_base_dn=person_base_dn)
-                else:
-                    # person not required, delete
+                                "Conflicting account exists, deleting "
+                                "account %s " % dst.dn)
+                            dst.delete()
+                        raise global_datastore._person.DoesNotExist
+
+                except global_datastore._person.DoesNotExist:
+                    new_person = global_datastore._create_person()
+                    for i, _ in new_person.get_fields():
+                        if i != "objectClass":
+                            value = getattr(p, i)
+                            setattr(new_person, i, value)
+
                     if dry_run:
-                        print("Would delete %s" % p.dn)
+                        print(
+                            "Would copy account %s to person %s"
+                            % (p.dn, person_base_dn))
                     else:
-                        print("Deleting %s" % p.dn)
-                        p.delete()
+                        new_person.save()
+                        print(
+                            "Copying account %s to person %s"
+                            % (p.dn, new_person.dn))
 
         # process groups
-        for g in machine_category_datastore._groups() \
-                .base_dn(old_group_dn):
-
-            delete = True
+        for g in kg27_datastore._groups() \
+                .base_dn(kg27_group_dn):
 
             if global_datastore is not None:
                 try:
                     global_datastore._groups().get(cn=g.cn)
-                    delete = False
                 except global_datastore._group.DoesNotExist:
                     new_group = global_datastore._create_group()
                     for i, _ in new_group.get_fields():
@@ -250,14 +233,13 @@ class Command(BaseCommand):
 
                     if dry_run:
                         print("Would copy group %s to %s"
-                              % (g.dn, agroup_base_dn))
+                              % (g.dn, pgroup_base_dn))
                     else:
                         new_group.save()
                         print("Copying group %s to %s" % (g.dn, new_group.dn))
 
             try:
                 machine_category_datastore._groups().get(cn=g.cn)
-                delete = False
             except machine_category_datastore._group.DoesNotExist:
                 new_group = machine_category_datastore._create_group()
                 for i, _ in new_group.get_fields():
@@ -270,11 +252,3 @@ class Command(BaseCommand):
                 else:
                     new_group.save()
                     print("Copying group %s to %s" % (g.dn, new_group.dn))
-
-            if delete:
-                # group not required, delete
-                if dry_run:
-                    print("Would delete %s" % g.dn)
-                else:
-                    print("Deleting %s" % g.dn)
-                    g.delete()
