@@ -378,7 +378,10 @@ KG27_DATASTORE
 Default: ``None``
 
 Datastore used for upgrades from Karaage 2.7. For more information, see
-:doc:`\upgrading`.
+:doc:`/upgrading`.
+
+This datastore is never written to, unless you have used the same settings for
+:setting:`GLOBAL_DATASTORES` or :setting:`MACHINE_CATEGORY_DATASTORES`.
 
 
 .. setting:: LDAP

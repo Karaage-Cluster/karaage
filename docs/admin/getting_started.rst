@@ -17,6 +17,8 @@ however you will have to adapt from this documentation.
 * You have a Debian Wheezy server already setup for Karaage.
 * You will be installing all components on a single system.
 * You are upgrading to Karaage 3.1.
+* The visible hostname is ``www.example.org``. This will have to be
+  changed as required.
 
 
 Installation
@@ -64,8 +66,8 @@ MySQL server installation
 
     This should ask for a password for the root mysql user. Make sure this is a
     secure password. You can use makepasswd if you want. For the purpose of
-    this documentation, we will assume you used XXXXXXXX. Do not use XXXXXXXX
-    for your password on a production system.
+    this documentation, we will assume you used ``XXXXXXXX``. Do not use
+    ``XXXXXXXX`` for your password on a production system.
 
 #.  (optional) Create a ``/root/.my.cnf`` file containing::
 
@@ -98,7 +100,7 @@ MySQL server installation
         mysql> GRANT ALL PRIVILEGES ON karaage.* TO 'karaage'@'localhost';
 
     You will use the values you set, later, in the karaage settings. Do not use
-    YYYYYYYY on a production system.
+    ``YYYYYYYY`` on a production system.
 
 
 Initial setup
@@ -114,6 +116,9 @@ Initial setup
 #.  Karaage, by default, requires a https connection. While this default can be
     changed, this is not advisable on a production system.
 
+    In the following steps, replace ``www.example.org`` with the visible
+    hostname of your server.
+
     #.  Setup Apache to support secure https connections. Changes should be
         made to the ``/etc/apache2/sites-available/default-ssl``.  Read the
         comments in this file. For more details on what changes are required,
@@ -125,8 +130,8 @@ Initial setup
         following::
 
             <VirtualHost *:80>
-                ServerName accounts.example.org
-                Redirect permanent / https://accounts.example.org/
+                ServerName www.example.org
+                Redirect permanent / https://www.example.org/
             </VirtualHost>
 
         For more information on this step,
@@ -140,8 +145,8 @@ Initial setup
             a2ensite default-ssl.
             service apache2 restart
 
-    #.  Test by loading both ``http://accounts.example.org/`` and
-        ``https://accounts.example.org/`` in your browser.
+    #.  Test by loading both ``http://www.example.org/`` and
+        ``https://www.example.org/`` in your browser.
 
 #.  Run :doc:`/ref/cmd/kg-set-secret-key`, this will automatically set
     :setting:`SECRET_KEY` inside ``/etc/karaage3/settings.py``:
@@ -166,13 +171,13 @@ Initial setup
               }
          }
 
-#.  Add the :setting:`ALLOWED_HOSTS` setting in ``/etc/karaage3/settings.py``:
+#.  Add the :setting:`HTTP_HOST` setting in ``/etc/karaage3/settings.py``:
     
     .. code-block:: python
 
-       ALLOWED_HOSTS = [ "hostname" ] to ``/etc/karaage3/settings.py``.
+       HTTP_HOST = "www.example.org"
 
-    Replace hostname with the visible hostname of your server.
+    Replace ``www.example.org`` with the visible hostname of your server.
 
 #.  Update other settings in ``/etc/karaage3/settings.py`` as required. See
     comments in this file and :doc:`/ref/settings`.
@@ -190,13 +195,11 @@ Initial setup
 
         kg-manage kgcreatesuperuser
 
-    (do not use kg-manage createsuperuser, that doesn’t exist.)
-
 #.  Setup cron job. Edit the ``/etc/cron.d/python-karaage file``::
 
         10 1 * * * www-data /usr/bin/kg-daily-cleanup
 
-#.  Test. You should now be able to go to ``http://hostname/kgadmin/``.
+#.  Test. You should now be able to go to ``http://www.example.org/kgadmin/``.
 
 
 Data stores
