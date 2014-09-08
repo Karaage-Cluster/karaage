@@ -74,6 +74,9 @@ class Command(BaseCommand):
 
         # recurse through every datastore
         for mc in MachineCategory.objects.all():
+            print("")
+            print("Processing %s" % mc)
+            print("==========================================================")
             self.handle_machine_category(mc, dry_run)
 
     def handle_machine_category(self, mc, dry_run):
