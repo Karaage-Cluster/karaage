@@ -41,7 +41,7 @@ Glossary
       Group, but this depends on the data stores used.
 
     project
-      A list of :term:`people <person>` who share the common goal.
+      A list of :term:`people <person>` who share a common goal.
 
     project leader
       A person who manages a :term:`project`, and can allow new user's to use

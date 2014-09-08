@@ -246,6 +246,8 @@ Installing Karaage3
 
 #.  (optional) If you require people to be recorded in LDAP:
 
+    .. code-block:: python
+
         GLOBAL_DATASTORES = [
               {
                     'DESCRIPTION': 'LDAP datastore',
