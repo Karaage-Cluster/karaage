@@ -61,6 +61,10 @@ migrate_ldap
    Don't make any of the changes, display what would be done instead. Note the
    base dn objects will always be created.
 
+.. django-admin-option:: --delete
+
+   Delete old records that are no longer used.
+
 change_username
 ~~~~~~~~~~~~~~~
 .. django-admin:: change_username

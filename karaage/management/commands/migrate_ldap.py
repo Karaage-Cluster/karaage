@@ -31,6 +31,12 @@ from karaage.datastores import get_machine_category_test_datastore
 import karaage.datastores.ldap as dldap
 
 
+def _EQ(dn1, dn2):
+    dn1 = dn2str(str2dn(dn1)).lower()
+    dn2 = dn2str(str2dn(dn2)).lower()
+    return dn1 == dn2
+
+
 class Command(BaseCommand):
     help = "Run migrations on the LDAP database."
 
@@ -42,6 +48,12 @@ class Command(BaseCommand):
             default=False,
             help='Don\'t change anything, output what needs '
             'to change instead.'),
+        optparse.make_option(
+            '--delete',
+            action='store_true',
+            dest='delete',
+            default=False,
+            help='Delete records that are no longer used.'),
     )
 
     def get_base(self, datastore, key):
@@ -70,6 +82,7 @@ class Command(BaseCommand):
     @django.db.transaction.commit_on_success
     @tldap.transaction.commit_on_success
     def handle(self, **options):
+        delete = options['delete']
         dry_run = options['dry_run']
 
         # recurse through every datastore
@@ -77,9 +90,9 @@ class Command(BaseCommand):
             print("")
             print("Processing %s" % mc)
             print("==========================================================")
-            self.handle_machine_category(mc, dry_run)
+            self.handle_machine_category(mc, delete, dry_run)
 
-    def handle_machine_category(self, mc, dry_run):
+    def handle_machine_category(self, mc, delete, dry_run):
         # if datastore name is not ldap, we are not interested
         if mc.datastore != "ldap":
             print(
@@ -140,6 +153,8 @@ class Command(BaseCommand):
         for p in kg27_datastore._accounts() \
                 .base_dn(kg27_account_dn):
 
+            delete_this = delete
+
             # if this is an account, copy to new place
             if 'posixAccount' in p.objectClass:
                 # this was an account; then there was no person in LDAP
@@ -147,7 +162,11 @@ class Command(BaseCommand):
                 # copy account to correct place
                 try:
                     dst = machine_category_datastore._accounts().get(uid=p.uid)
+                    if _EQ(p.dn, dst.dn):
+                        delete_this = False
                     if 'posixAccount' not in dst.objectClass:
+                        delete_this = False
+
                         # This shouldn't normally ever happen.
                         if dry_run:
                             print(
@@ -192,7 +211,10 @@ class Command(BaseCommand):
                 # person.save() as we get the password too.
                 try:
                     dst = global_datastore._people().get(uid=uid)
+                    if _EQ(p.dn, dst.dn):
+                        delete_this = False
                     if 'posixAccount' in dst.objectClass:
+                        delete_this = False
                         if dry_run:
                             print(
                                 "Conflicting account exists, would delete "
@@ -221,13 +243,24 @@ class Command(BaseCommand):
                             "Copying account %s to person %s"
                             % (p.dn, new_person.dn))
 
+            if delete_this:
+                if dry_run:
+                    print("Would delete %s" % p.dn)
+                else:
+                    print("deleting %s" % p.dn)
+                    p.delete()
+
         # process groups
         for g in kg27_datastore._groups() \
                 .base_dn(kg27_group_dn):
 
+            delete_this = delete
+
             if global_datastore is not None:
                 try:
-                    global_datastore._groups().get(cn=g.cn)
+                    dst = global_datastore._groups().get(cn=g.cn)
+                    if _EQ(g.dn, dst.dn):
+                        delete_this = False
                 except global_datastore._group.DoesNotExist:
                     new_group = global_datastore._create_group()
                     for i, _ in new_group.get_fields():
@@ -243,7 +276,9 @@ class Command(BaseCommand):
                         print("Copying group %s to %s" % (g.dn, new_group.dn))
 
             try:
-                machine_category_datastore._groups().get(cn=g.cn)
+                dst = machine_category_datastore._groups().get(cn=g.cn)
+                if _EQ(g.dn, dst.dn):
+                    delete_this = False
             except machine_category_datastore._group.DoesNotExist:
                 new_group = machine_category_datastore._create_group()
                 for i, _ in new_group.get_fields():
@@ -256,3 +291,10 @@ class Command(BaseCommand):
                 else:
                     new_group.save()
                     print("Copying group %s to %s" % (g.dn, new_group.dn))
+
+            if delete_this:
+                if dry_run:
+                    print("Would delete %s" % g.dn)
+                else:
+                    print("deleting %s" % g.dn)
+                    g.delete()

@@ -327,9 +327,12 @@ Installing Karaage3
 
     .. code-block:: bash
 
-        kg-manage migrate_ldap --dry-run
+        kg-manage migrate_ldap --delete --dry-run
 
     If you are happy, repeat without the :djadminopt:`--dry-run` option.
+
+    You may want to consider not using the :djadminopt:`--delete` option if you
+    are still using the old data.
 
     This need to be run before the upgrade can be considered complete, however
     most things should still work without doing this change.
