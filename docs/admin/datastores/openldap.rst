@@ -32,17 +32,21 @@ RHEL 6 installation
 
         slappasswd
 
-    Enter XXXXXXXX twice. This should output an encrypted password starting with XXXXXXXX. Copy that into the clipboard.
+    Enter ``XXXXXXXX`` twice. This should output an encrypted password starting
+    with ``XXXXXXXX``. Copy that into the clipboard.
 
-    The result for XXXXXXXX is {SSHA}4bxi0+aXeYvv2TGT10VWUIwcaynqBbxH (do not use this value).
+    The result for ``XXXXXXXX`` is ``{SSHA}4bxi0+aXeYvv2TGT10VWUIwcaynqBbxH``
+    (do not use this value).
 
-#.  Edit ``olcDatabase={2}bdb.ldif``, and update/add the following values. Do not change anything else::
+#.  Edit ``olcDatabase={2}bdb.ldif``, and update/add the following values. Do
+    not change anything else::
 
         olcSuffix: dc=example,dc=org
         olcRootDN: cn=admin,dc=example,dc=org
         olcRootPW: {SSHA}4bxi0+aXeYvv2TGT10VWUIwcaynqBbxH
 
-#.  Edit ``olcDatabase={1}monitor.ldif``, and update update the admin DN. Do not change anything else::
+#.  Edit ``olcDatabase={1}monitor.ldif``, and update update the admin DN. Do
+    not change anything else::
 
         olcAccess: {0}to *  by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=externa
          l,cn=auth" read  by dn.base="cn=admin,dc=example,dc=org" read  by * none
@@ -75,7 +79,6 @@ RHEL 6 installation
 #.  Edit ``/etc/sysconfig/ldap``::
 
         SLAPD_LDAPS=yes
-
 
 #.  Restart LDAP server.
 
@@ -153,7 +156,7 @@ Debian installation
         apt-get install slapd
         apt-get install ldap-utils
 
-    Enter XXXXXXXX when prompted for administrator’s password.
+    Enter ``XXXXXXXX`` when prompted for administrator’s password.
 
 #.  Create the file with the following contents in ``/tmp/ppolicy1.ldif``::
 
@@ -274,5 +277,5 @@ Configuring Karaage to use LDAP
         service python-karaage-celery restart
 
 #.  Log into web interface and add a machine category that references the ldap
-    datastore. This should automatically populate LDAP with any entries you have
-    created.
+    datastore. This should automatically populate LDAP with any entries you
+    have created.
