@@ -84,6 +84,7 @@ setup(
         'sbin/kg_set_secret_key',
         'sbin/kg-manage',
         'sbin/kg-daily-cleanup',
+        'sbin/kg-migrate-south',
     ],
     data_files=[
         ('/etc/karaage3',

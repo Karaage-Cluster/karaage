@@ -50,6 +50,8 @@ override_dh_install:
 	mkdir -p $(PREFIX2)/usr/share/python-karaage/bin
 	mkdir -p $(PREFIX3)/usr/share/python3-karaage/bin
 	mkdir -p $(PREFIXC)/usr/bin
+	
+	# python dependent scripts
 	set -e; for f in kg-manage kg-daily-cleanup; do \
 		mv $(PREFIX2)/usr/bin/$$f $(PREFIX2)/usr/share/python-karaage/bin; \
 		mv $(PREFIX3)/usr/bin/$$f $(PREFIX3)/usr/share/python3-karaage/bin; \
@@ -58,8 +60,11 @@ override_dh_install:
 		cp debian/bin/$$f $(PREFIXC)/usr/bin; \
 	done
 	
-	rm $(PREFIX2)/usr/bin/kg_set_secret_key
-	mv $(PREFIX3)/usr/bin/kg_set_secret_key $(PREFIXC)/usr/bin
+	# python independent scripts
+	set -e; for f in kg_set_secret_key kg-migrate-south; do \
+	    rm $(PREFIX2)/usr/bin/$$f; \
+	    mv $(PREFIX3)/usr/bin/$$f $(PREFIXC)/usr/bin; \
+	done
 
 override_dh_python3:
 	dh_python3

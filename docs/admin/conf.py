@@ -222,6 +222,8 @@ man_pages = [
         'Management for Karaage', [u'Brian May'], 8),
     ('ref/cmd/kg-set-secret-key', 'kg_set_secret_key',
         'Set secret key for Karaage', [u'Brian May'], 8),
+    ('ref/cmd/kg-migrate-south', 'kg-migrate-south',
+        'Run South migrations for Karaage', [u'Brian May'], 8),
 ]
 
 # If true, show URL addresses after external links.
