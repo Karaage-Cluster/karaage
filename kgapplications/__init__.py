@@ -19,7 +19,7 @@ from karaage.plugins import BasePlugin
 
 
 class plugin(BasePlugin):
-    module = "kgapplications"
+    name = "kgapplications"
     template_context_processors = ("kgapplications.context_processor",)
 
 
