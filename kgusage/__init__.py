@@ -19,7 +19,7 @@ from karaage.plugins import BasePlugin
 
 
 class plugin(BasePlugin):
-    module = "kgusage"
+    name = "kgusage"
     django_apps = ("djcelery",)
     xmlrpc_methods = (
         ('kgusage.xmlrpc.parse_usage', 'parse_usage',),
