@@ -1,3 +1,11 @@
+karaage3-usage (3.1.2-1) unstable; urgency=low
+
+  * Fix spelling mistake.
+  * Update python-karaage build depends.
+  * Add Django 1.7 migrations.
+
+ -- Brian May <bam@debian.org>  Wed, 10 Sep 2014 13:15:01 +1000
+
 karaage3-usage (3.1.1-1) unstable; urgency=low
 
   * Split software out into separate package.
