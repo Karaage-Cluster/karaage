@@ -27,7 +27,7 @@ Here is an example, taken from the karaage-usage pugin:
    from karaage.plugins import BasePlugin
 
     class plugin(BasePlugin):
-        module = "kgusage"
+        name = "kgusage"
         django_apps = ("djcelery",)
         xmlrpc_methods = (
             ('kgusage.xmlrpc.parse_usage', 'parse_usage',),
@@ -43,7 +43,7 @@ The ``module`` value is required, all other attributes are optional.
 
 The following attributes can be set:
 
-.. py:attribute:: BasePlugin.module
+.. py:attribute:: BasePlugin.name
 
    The python module for the Django app. This will be added to the
    :setting:`django:INSTALLED_APPS` Django setting.

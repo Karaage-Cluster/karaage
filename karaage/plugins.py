@@ -17,7 +17,7 @@
 
 
 class BasePlugin(object):
-    module = None
+    name = None
     django_apps = ()
     depends = ()
     xmlrpc_methods = ()

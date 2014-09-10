@@ -31,7 +31,10 @@ def add_plugin(namespace, plugin_name, django_apps, depends):
     value = descriptor.depends
     depends.extend(value)
 
-    value = descriptor.module
+    value = descriptor.name
+    if value is None:
+        # backward compatibility only, to be deleted
+        value = descriptor.module
     assert value is not None
     django_apps.append(value)
 
