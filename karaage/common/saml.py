@@ -85,9 +85,13 @@ def add_saml_data(person, request):
     return person
 
 
-_queryset = Institute.active.filter(saml_entityid__isnull=False)
-_queryset = _queryset.exclude(saml_entityid="")
-
-
 class SAMLInstituteForm(forms.Form):
-    institute = forms.ModelChoiceField(queryset=_queryset, required=True)
+    institute = forms.ModelChoiceField(queryset=None, required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(SAMLInstituteForm, self).__init__(*args, **kwargs)
+
+        queryset = Institute.active.filter(saml_entityid__isnull=False)
+        queryset = queryset.exclude(saml_entityid="")
+
+        self.fields['institute'].queryset = queryset
