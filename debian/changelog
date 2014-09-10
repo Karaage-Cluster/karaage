@@ -1,3 +1,10 @@
+karaage3-software (3.1.2-1) unstable; urgency=low
+
+  * Fix version dependency.
+  * Add Django 1.7 migrations.
+
+ -- Brian May <bam@debian.org>  Wed, 10 Sep 2014 13:08:38 +1000
+
 karaage3-software (3.1.1-1) unstable; urgency=low
 
   * Update python-karaage build depends.
