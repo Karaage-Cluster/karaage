@@ -29,7 +29,7 @@ from .models import SoftwareApplication
 
 
 class SoftwareForm(forms.Form):
-    category = forms.ModelChoiceField(queryset=SoftwareCategory.objects.all())
+    category = forms.ModelChoiceField(queryset=None)
     name = forms.CharField()
     description = forms.CharField(required=False, widget=forms.Textarea())
     homepage = forms.URLField(required=False)
@@ -37,6 +37,10 @@ class SoftwareForm(forms.Form):
     academic_only = forms.BooleanField(required=False)
     restricted = forms.BooleanField(required=False,
                                     help_text="Will require admin approval")
+
+    def __init__(self, *args, **kwargs):
+        super(SoftwareForm, self).__init__(*args, **kwargs)
+        self.fields['project'].queryset = SoftwareCategory.objects.all()
 
     def save(self, software=None):
         data = self.cleaned_data
@@ -63,10 +67,14 @@ class AddPackageForm(SoftwareForm):
         error_messages={'invalid': settings.GROUP_VALIDATION_ERROR_MSG})
     version = forms.CharField()
     module = forms.CharField(required=False)
-    machines = forms.ModelMultipleChoiceField(queryset=Machine.active.all())
+    machines = forms.ModelMultipleChoiceField(queryset=None)
     license_version = forms.CharField(required=False)
     license_date = forms.DateField(required=False)
     license_text = forms.CharField(required=False, widget=forms.Textarea())
+
+    def __init__(self, *args, **kwargs):
+        super(AddPackageForm, self).__init__(*args, **kwargs)
+        self.fields['machines'].queryset = Machine.active.all()
 
     def clean(self):
 
