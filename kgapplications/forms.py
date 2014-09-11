@@ -139,10 +139,12 @@ class ApplicantForm(forms.ModelForm):
 
 
 class UserApplicantForm(ApplicantForm):
-    institute = forms.ModelChoiceField(
-        queryset=Institute.active.filter(
-            Q(saml_entityid="") | Q(saml_entityid__isnull=True)),
-        required=True)
+    institute = forms.ModelChoiceField(queryset=None, required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(UserApplicantForm, self).__init__(*args, **kwargs)
+        self.fields['institute'].queryset = Institute.active.filter(
+            Q(saml_entityid="") | Q(saml_entityid__isnull=True))
 
     def save(self, commit=True):
         applicant = super(UserApplicantForm, self).save(commit=commit)
@@ -212,7 +214,11 @@ class NewProjectApplicationForm(forms.ModelForm):
 
 
 class ExistingProjectApplicationForm(forms.ModelForm):
-    project = forms.ModelChoiceField(queryset=Project.active.all())
+    project = forms.ModelChoiceField(queryset=None)
+
+    def __init__(self, *args, **kwargs):
+        super(ExistingProjectApplicationForm, self).__init__(*args, **kwargs)
+        self.fields['project'].queryset = Project.active.all()
 
     class Meta:
         model = ProjectApplication
