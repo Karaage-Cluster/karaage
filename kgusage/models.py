@@ -93,6 +93,9 @@ class UsedModules(models.Model):
     date_added = models.DateField(auto_now_add=True)
     modules = models.TextField()
 
+    class Meta:
+        db_table = 'usage_usedmodules'
+
 
 class UsageCache(models.Model):
     date = models.DateField(editable=False, auto_now_add=True)
