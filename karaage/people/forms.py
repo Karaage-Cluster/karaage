@@ -72,7 +72,7 @@ class PersonForm(forms.ModelForm):
 
 
 class AdminPersonForm(PersonForm):
-    institute = forms.ModelChoiceField(queryset=Institute.active.all())
+    institute = forms.ModelChoiceField(queryset=None)
     comment = forms.CharField(widget=forms.Textarea(), required=False)
     expires = forms.DateField(widget=AdminDateWidget, required=False)
     is_admin = forms.BooleanField(
@@ -82,6 +82,10 @@ class AdminPersonForm(PersonForm):
         help_text="Designates that this user is a system process, "
                   "not a person.",
         required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(AdminPersonForm, self).__init__(*args, **kwargs)
+        self.fields['institute'].queryset = Institute.active.all()
 
     class Meta:
         model = Person
@@ -94,7 +98,7 @@ class AdminPersonForm(PersonForm):
 
 class AddPersonForm(AdminPersonForm):
     project = forms.ModelChoiceField(
-        queryset=Project.objects.all(),
+        queryset=None,
         label=six.u("Default Project"), required=False)
     needs_account = forms.BooleanField(
         required=False, label=six.u("Do you require a cluster account"),
@@ -111,6 +115,10 @@ class AddPersonForm(AdminPersonForm):
     password2 = forms.CharField(
         widget=forms.PasswordInput(render_value=False),
         label=six.u('Password (again)'))
+
+    def __init__(self, *args, **kwargs):
+        super(AddPersonForm, self).__init__(*args, **kwargs)
+        self.fields['project'].queryset = Project.objects.all()
 
     def clean_username(self):
         username = self.cleaned_data['username']
