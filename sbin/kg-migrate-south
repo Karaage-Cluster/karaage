@@ -1,5 +1,4 @@
 #!/bin/sh
-
 set -ex
 
 TMPDIR=$(mktemp -d)
@@ -11,11 +10,5 @@ virtualenv --system-site-packages "$TMPDIR"
 pip install django==1.6.5
 pip install south
 
-if test -x /usr/share/python-karaage/bin/kg-manage
-then
-    /usr/share/python-karaage/bin/kg-manage migrate --all "$@"
-else
-    kg-manage migrate --all "$@"
-fi
-
-touch /etc/karaage3/south_migrations_complete
+CMD="$(command -v kg-manage)"
+python "$CMD" migrate "$@"
