@@ -19,7 +19,7 @@
 
 from karaage.datastores import base
 
-import django.utils
+import importlib
 import logging
 import karaage.common.trace as trace
 logger = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ def _lookup(cls):
     """ Lookup module.class. """
     if isinstance(cls, str):
         module_name, _, name = cls.rpartition(".")
-        module = django.utils.importlib.import_module(module_name)
+        module = importlib.import_module(module_name)
         try:
             cls = getattr(module, name)
         except AttributeError:

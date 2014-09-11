@@ -18,9 +18,9 @@
 """ Common hooks for all datastores. """
 
 import six
+import importlib
 
 from django.conf import settings
-import django.utils
 
 from .base import GlobalDataStore, MachineCategoryDataStore
 from karaage.machines.models import MachineCategory
@@ -34,7 +34,7 @@ def _lookup(cls):
     """ Lookup module.class. """
     if isinstance(cls, str):
         module_name, _, name = cls.rpartition(".")
-        module = django.utils.importlib.import_module(module_name)
+        module = importlib.import_module(module_name)
         try:
             cls = getattr(module, name)
         except AttributeError:
