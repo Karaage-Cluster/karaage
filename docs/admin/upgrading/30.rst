@@ -26,12 +26,24 @@ Upgrading from 3.0.x to 3.1.x
    ``/etc/apache2/conf.d/karaage-wsgi.conf``. Any other configuration files may
    be obsolete and should be deleted (or moved elsewehere).
 
-#. Run the database migrations, restart apache, and install the celery
-   deaemon.
+#. Run the database migrations and restart apache.
+
+   If you have upgraded Django to 1.7 you will need to run south migrations
+   first. Running this command is perfectly safe from Django 1.6, however not
+   required. This must be run before running Django 1.7 migrations however.
 
    .. code-block:: bash
 
-        kg-manage migrate --all
+        apt-get install virtualenv         # Debian Jessie only
+        apt-get install python-virtualenv  # Debian Wheezy only
+        kg-migrate-south
+
+   Regardless of what version of Django you have installed, continue and
+   run the native migrations.
+
+   .. code-block:: bash
+
+        kg-manage migrate
         service apache2 reload
 
 #.  Remove old package that might cause problems.

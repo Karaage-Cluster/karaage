@@ -261,14 +261,24 @@ Installing Karaage3
               },
         ]
 
-#.  Migrate DB tables:
+#. Migrate DB tables.
 
-    .. code-block:: bash
+   If you have upgraded Django to 1.7 you will need to run south migrations
+   first. Running this command is perfectly safe from Django 1.6, however not
+   required. This must be run before running Django 1.7 migrations however.
 
-        kg-manage migrate --all
+   .. code-block:: bash
 
-    Some of these migrations may take some time to complete. Do not proceed
-    if there are any errors.
+        apt-get install virtualenv         # Debian Jessie only
+        apt-get install python-virtualenv  # Debian Wheezy only
+        kg-migrate-south
+
+   Regardless of what version of Django you have installed, continue and
+   run the native migrations.
+
+   .. code-block:: bash
+
+        kg-manage migrate
 
 #.  Check mysql data is correct.
 

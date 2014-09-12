@@ -19,7 +19,7 @@ Standards-Version: 3.9.5
 Homepage: https://github.com/Karaage-Cluster/karaage
 Vcs-Git: git://github.com/Karaage-Cluster/karaage
 Vcs-Browser: https://github.com/Karaage-Cluster/karaage
-X-Python-Version: >= 2.6
+X-Python-Version: >= 2.7
 
 Package: karaage3-common
 Architecture: all

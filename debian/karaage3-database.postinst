@@ -8,24 +8,74 @@ fi
 
 #DEBHELPER#
 
+test_configured() {
+    export DJANGO_SETTINGS_MODULE="karaage.conf.settings"
+    python - <<END
+from django.conf import settings;
+d=getattr(settings,'DATABASES',{});
+if 'default' not in d:
+    exit(1)
+if d['default']['ENGINE'] == 'django.db.backends.dummy':
+    exit(1)
+exit(0)
+END
+    RC="$?"
+    unset DJANGO_SETTINGS_MODULE
+    return "$RC"
+}
+
 if [ "$1" = "triggered" ]; then
     if [ "$2" = "karaage-database" ]; then
-        export DJANGO_SETTINGS_MODULE="karaage.conf.settings"
-        if ! python -c "from django.conf import settings; d=getattr(settings,'DATABASES',None); exit(d is None)"; then
-            if kg-manage migrate --list | grep "( )" > /dev/null; then
+        if test_configured; then
+            # karaage is configured
+
+            # create temp file
+            TMPFILE=$(mktemp)
+            trap "rm -f -- '$TMPFILE'" EXIT HUP INT TERM
+
+            # save output of migrate to temp file
+            kgmanage=$(command -v kg-manage)
+            python "$kgmanage" migrate --list > "$TMPFILE"
+
+            # guess what we need to do
+            if grep "( )" "$TMPFILE" > /dev/null; then
+                # There are unapplied South migrations + and we are still running
+                # Django 1.6.
                 db_fset karaage/run_migrations seen "false"
                 db_input high karaage/run_migrations || true
                 db_go
 
                 db_get karaage/run_migrations
                 if [ "$RET" = "true" ]; then
-                    kg-manage migrate
+                    python "$kgmanage" migrate --all
+                else
+                    db_input high karaage/no_migrations || true
+                    db_go
+                fi
+
+            elif ! grep "\[X\]"  "$TMPFILE" > /dev/null; then
+                # no Django 1.7 migrations applied, don't do anything
+                true
+
+            elif grep "\[ \]" "$TMPFILE" > /dev/null; then
+                # There are unapplied Django 1.7 migrations and we are running
+                # Django 1.7
+                db_fset karaage/run_migrations seen "false"
+                db_input high karaage/run_migrations || true
+                db_go
+
+                db_get karaage/run_migrations
+                if [ "$RET" = "true" ]; then
+                    "$kgmanage" migrate
                 else
                     db_input high karaage/no_migrations || true
                     db_go
                 fi
             fi
+        else
+            echo "Karaage is not configured; not running migrations."
         fi
+
     fi
 fi
 
