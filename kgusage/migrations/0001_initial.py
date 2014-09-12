@@ -149,6 +149,7 @@ class Migration(migrations.Migration):
                 ('modules', models.TextField()),
             ],
             options={
+                'db_table': 'usage_usedmodules',
             },
             bases=(models.Model,),
         ),
