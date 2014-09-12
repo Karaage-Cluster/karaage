@@ -1,12 +1,12 @@
 #!/bin/sh
 shell_code=''' '
 # shell code
-if command -v python3 > /dev/null && test -e /usr/share/python3-karaage
-then
-    exec python3 "$0" "$@"
-elif command -v python2.7 > /dev/null && test -e /usr/share/python-karaage
+if command -v python2.7 > /dev/null && test -e /usr/share/python-karaage
 then
     exec python2.7 "$0" "$@"
+elif command -v python3 > /dev/null && test -e /usr/share/python3-karaage
+then
+    exec python3 "$0" "$@"
 else
     echo "Cannot find installed version of karaage." >&2
     exit 1
