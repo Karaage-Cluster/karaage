@@ -1,3 +1,11 @@
+karaage3 (3.1.4-1) unstable; urgency=low
+
+  * Updates to fix Django 1.7 issues.
+  * Django 1.7 should really work now, however upgrade from earlier versions
+    not yet documented.
+
+ -- Brian May <bam@debian.org>  Mon, 15 Sep 2014 11:11:41 +1000
+
 karaage3 (3.1.3-1) unstable; urgency=low
 
   * Rewrite migrate_ldap.
