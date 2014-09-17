@@ -11,7 +11,7 @@ Standards-Version: 3.9.5
 Homepage: https://github.com/Karaage-Cluster/karaage-usage
 Vcs-Git: git://github.com/Karaage-Cluster/karaage-usage
 Vcs-Browser: https://github.com/Karaage-Cluster/karaage-usage
-X-Python-Version: >= 2.6
+X-Python-Version: >= 2.7
 
 Package: python-kgapplications
 Architecture: all
