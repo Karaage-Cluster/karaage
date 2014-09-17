@@ -15,6 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+# Django 1.6 Hack: Ensure tldap.django gets initialised.
+import django
+if django.VERSION < (1, 7):
+    import tldap.django  # NOQA
 
 # threadlocals middleware
 try:
