@@ -1,13 +1,33 @@
-.. index:: pair: machine; adding
-
 Adding machines
 ---------------
 
-To add a machine, you need a machine category first. See the :doc:`/datastores`
-section. Then you can add machines to this machine category.
+To add a machine, you need a machine category first.
 
-#. Under the machines section, click 'Add machine' button.
+.. index:: pair: machine category; adding
+
+Creating Machine Category
+=========================
+
+A :term:`machine category` uses a :term:`data store`. This should already be
+defined, as per instructions in the :doc:`/datastores` section.
+
+#. Login to Karaage as administrator.
+#. Select ``machines`` in the menu on the left.
+#. Select ``Add machine category`` in the action bar.
+#. Type in the name and select a datastore.
+#. Select save.
+
+.. index:: pair: machine; adding
+
+Adding a Machine
+================
+
+You can add a :term:`machine` to a :term:`machine category`.
+
+#. Login to Karaage as administrator.
+#. Select ``machines`` in the menu on the left.
+#. Select ``Add machine`` in the action bar.
 #. After creating the machine, you may need to assign it a a password. Click
    the password button to generate a new password automatically.
-#. If/when setting up django-pbs-logger, make sure if connects to Karaage using
-   the machine name and the password you were given above.
+#. If/when setting up django-pbs-logger, make sure if connects to Karaage
+   using the machine name and the password you were given above.

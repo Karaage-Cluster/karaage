@@ -382,8 +382,8 @@ restoring LDAP from the backup.
 #.  Test production box and make sure everything is working.
 
 
-Other changes:
---------------
+Other changes
+-------------
 Check that remote services that access Karaage work. For example, with
 torque_submitfilter, you need to update the Karaage URL to ``/karaage/``.
 

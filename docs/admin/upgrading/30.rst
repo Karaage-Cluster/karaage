@@ -64,8 +64,8 @@ Upgrading from 3.0.x to 3.1.x
         rm -rf /var/cache/karaage
 
 
-Other changes:
---------------
+Other changes
+-------------
 
 *   Check that remote services that access Karaage work. For example, with
     torque_submitfilter, you need to update the Karaage URL to ``/karaage/``.

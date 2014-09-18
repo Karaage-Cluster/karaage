@@ -46,6 +46,12 @@ shell
 
     Enter python shell for administration. See :djadmin:`django:shell`.
 
+migrate
+~~~~~~~
+.. django-admin:: migrate
+
+    Run migrations on database. See :djadmin:`django:migrate`.
+
 
 Karaage Core
 ------------

@@ -19,8 +19,8 @@ Contents:
    getting_started
    datastores
    plugins
-   upgrading
    tasks
+   upgrading
    ref
    glossary
 
