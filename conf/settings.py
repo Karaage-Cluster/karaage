@@ -73,7 +73,7 @@ MANAGERS = ADMINS
 # dictionary containing the options for an individual database.
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.',
+        'ENGINE': 'django.db.backends.dummy',
         'NAME': '',
         'USER': '',
         'PASSWORD': '',
