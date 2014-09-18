@@ -1,3 +1,12 @@
+karaage3 (3.1.5-1) unstable; urgency=low
+
+  * Fix karaage3-database upgrade.
+    * Make work with Django 1.7
+  * Fix crash if no defined HTTP session with Django 1.6.
+  * We should fully support Django 1.7 now.
+
+ -- Brian May <bam@debian.org>  Thu, 18 Sep 2014 09:06:19 +1000
+
 karaage3 (3.1.4-1) unstable; urgency=low
 
   * Updates to fix Django 1.7 issues.
