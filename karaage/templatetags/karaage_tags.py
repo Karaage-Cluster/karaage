@@ -18,6 +18,7 @@ import datetime
 import os.path
 from decimal import Decimal
 
+import django
 from django import template
 from django.conf import settings
 from django.http import QueryDict
@@ -207,6 +208,18 @@ def divide(a, b):
         return ''
 
 
+def get_app_labels():
+    if django.VERSION < (1, 7):
+        for app in settings.INSTALLED_APPS:
+            _, _, label = app.rpartition(".")
+            if label is not None:
+                yield label
+    else:
+        from django.apps import apps
+        for config in apps.get_app_configs():
+            yield config.label
+
+
 class ForEachAppIncludeNode(template.Node):
 
     def __init__(self, template_name):
@@ -216,19 +229,17 @@ class ForEachAppIncludeNode(template.Node):
         template_name = self.template_name.resolve(context)
 
         result = []
-        for app in settings.INSTALLED_APPS:
-            _, _, directory = app.rpartition(".")
-            if directory is not None:
-                template_path = os.path.join(directory, template_name)
-                try:
-                    template_obj = template.loader.get_template(template_path)
-                except template.TemplateDoesNotExist:
-                    pass
-                else:
-                    context.push()
-                    output = template_obj.render(context)
-                    result.append(output)
-                    context.pop()
+        for label in get_app_labels():
+            template_path = os.path.join(label, template_name)
+            try:
+                template_obj = template.loader.get_template(template_path)
+            except template.TemplateDoesNotExist:
+                pass
+            else:
+                context.push()
+                output = template_obj.render(context)
+                result.append(output)
+                context.pop()
 
         return "".join(result)
 
@@ -245,13 +256,11 @@ def for_each_app_include(parser, token):
 
 @register.assignment_tag()
 def is_for_each_app_include_empty(template_name):
-    for app in settings.INSTALLED_APPS:
-        _, _, directory = app.rpartition(".")
-        if directory is not None:
-            template_path = os.path.join(directory, template_name)
-            try:
-                template.loader.get_template(template_path)
-                return False
-            except template.TemplateDoesNotExist:
-                pass
+    for label in get_app_labels():
+        template_path = os.path.join(label, template_name)
+        try:
+            template.loader.get_template(template_path)
+            return False
+        except template.TemplateDoesNotExist:
+            pass
     return True
