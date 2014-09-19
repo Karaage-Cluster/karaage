@@ -17,6 +17,7 @@ Contents:
    architecture
    contributing
    plugins
+   ../glossary
 
 
 Indices and tables

@@ -1,5 +1,5 @@
 """
-Sphinx plugins for Django documentation.
+Sphinx plugins for Karaage documentation. Copied from Django.
 """
 import json
 import os
@@ -56,7 +56,7 @@ def setup(app):
     app.add_config_value('karaage_next_version', '0.0', True)
     app.add_directive('versionadded', VersionDirective)
     app.add_directive('versionchanged', VersionDirective)
-    app.add_builder(DjangoStandaloneHTMLBuilder)
+    app.add_builder(KaraageStandaloneHTMLBuilder)
 
     # register the snippet directive
     app.add_directive('snippet', SnippetWithFilename)
@@ -221,9 +221,9 @@ class VersionDirective(Directive):
         return ret
 
 
-class DjangoHTMLTranslator(SmartyPantsHTMLTranslator):
+class KaraageHTMLTranslator(SmartyPantsHTMLTranslator):
     """
-    Django-specific reST to HTML tweaks.
+    Karaage-specific reST to HTML tweaks.
     """
 
     # Don't use border=1, which docutils does by default.
@@ -270,8 +270,8 @@ class DjangoHTMLTranslator(SmartyPantsHTMLTranslator):
     # that work.
     #
     version_text = {
-        'versionchanged': 'Changed in Django %s',
-        'versionadded': 'New in Django %s',
+        'versionchanged': 'Changed in Karaage %s',
+        'versionadded': 'New in Karaage %s',
     }
 
     def visit_versionmodified(self, node):
@@ -335,7 +335,7 @@ def parse_django_adminopt_node(env, sig, signode):
     return firstname
 
 
-class DjangoStandaloneHTMLBuilder(StandaloneHTMLBuilder):
+class KaraageStandaloneHTMLBuilder(StandaloneHTMLBuilder):
     """
     Subclass to add some extra things we need.
     """
@@ -343,7 +343,7 @@ class DjangoStandaloneHTMLBuilder(StandaloneHTMLBuilder):
     name = 'djangohtml'
 
     def finish(self):
-        super(DjangoStandaloneHTMLBuilder, self).finish()
+        super(KaraageStandaloneHTMLBuilder, self).finish()
         self.info(bold("writing templatebuiltins.js..."))
         xrefs = self.env.domaindata["std"]["objects"]
         templatebuiltins = {

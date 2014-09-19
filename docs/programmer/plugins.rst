@@ -7,8 +7,18 @@ For the purposes of this document, we assume the plugin is called kgplugin, and
 defines a Django app with a python module called ``kgplugin``. You should
 change this name.
 
-Configuring a plugin
---------------------
+Settings
+--------
+.. setting:: PLUGINS
+
+PLUGINS
+~~~~~~~
+Default: ``[]`` (Empty list)
+
+A list of classes that define Karaage plugins.
+
+Creating a plugin
+-----------------
 .. py:module:: karaage.plugins
 
 A plugin needs to provide a plugin class that is derived from the
@@ -19,6 +29,11 @@ A plugin needs to provide a plugin class that is derived from the
 
    Base class used for defining Karaage specific settings used to define
    plugins in Karaaage.
+
+   .. versionchanged:: 3.1.5
+ 
+      BasePlugin is derived from :py:class:`django.apps.AppConfig` if Django
+      1.7 is detected.
 
 Here is an example, taken from the karaage-usage pugin:
 
@@ -47,6 +62,12 @@ The following attributes can be set:
 
    The python module for the Django app. This will be added to the
    :setting:`django:INSTALLED_APPS` Django setting.
+
+   .. versionchanged:: 3.1.5
+
+   If Django 1.7 is detected, the plugin class is added to
+   :setting:`django:INSTALLED_APPS`, not this value. This setting is used
+   by Django to locate the module.
 
 .. py:attribute:: BasePlugin.django_apps
 

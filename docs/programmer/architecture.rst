@@ -55,13 +55,13 @@ The core Karaage defines the following db models in the
 
 .. py:class:: Project
 
-   Represents a :term:`karaage:project` for a set of :term:`machine categories <machine
+   Represents a :term:`project` for a set of :term:`machine categories <machine
    category>`. A project is considered global, although is only active on given
    machine categories.
 
 .. py:class:: ProjectQuota
 
-   Represents the quota for a :term:`karaage:project` on a particular :term:`machine
+   Represents the quota for a :term:`project` on a particular :term:`machine
    category`.  If there is no :py:class:`ProjectQuota` for a particular project
    on a particular machine category, then the project is not active on that
    machine category.
