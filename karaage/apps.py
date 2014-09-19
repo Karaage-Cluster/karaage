@@ -14,19 +14,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
-
-import django
-if django.VERSION < (1, 7):
-    parent = object
-else:
-    from django.apps import AppConfig
-    parent = AppConfig
+from django.apps import AppConfig
 
 
-class BasePlugin(parent):
-    name = None
-    django_apps = ()
-    depends = ()
-    xmlrpc_methods = ()
-    settings = {}
-    template_context_processors = ()
+class Karaage(AppConfig):
+    name = 'karaage'

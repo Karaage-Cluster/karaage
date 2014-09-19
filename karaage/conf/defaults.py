@@ -66,9 +66,15 @@ AUTH_USER_MODEL = 'karaage.Person'
 #
 # * an application configuration class, or a package containing a
 # * application.
-KARAAGE_APPS = (
-    'karaage',
-)
+import django
+if django.VERSION < (1, 7):
+    KARAAGE_APPS = (
+        'karaage',
+    )
+else:
+    KARAAGE_APPS = (
+        'karaage.apps.Karaage',
+    )
 
 INSTALLED_APPS = (
     'django_xmlrpc',
@@ -89,7 +95,6 @@ INSTALLED_APPS = (
 
 # South not available for Python 3+ or Django 1.7+
 import sys
-import django
 if sys.version_info < (3, 0) and django.VERSION < (1, 7):
     KARAAGE_APPS += (
         'karaage.legacy.common',
