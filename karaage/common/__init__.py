@@ -20,6 +20,7 @@ import importlib
 import warnings
 import six
 
+import django
 from django.http import QueryDict
 from django.template import RequestContext
 from django.shortcuts import render_to_response
@@ -156,27 +157,35 @@ def is_admin(request):
     return request.user.is_admin
 
 
+def get_app_modules(name):
+    if django.VERSION < (1, 7):
+        for app in settings.INSTALLED_APPS:
+            try:
+                module_name = app + "." + name
+                module = importlib.import_module(module_name)
+                yield module
+            except ImportError:
+                pass
+    else:
+        from django.apps import apps
+        for config in apps.get_app_configs():
+            try:
+                module_name = config.name + "." + name
+                module = importlib.import_module(module_name)
+                yield module
+            except ImportError:
+                pass
+
+
 def get_hooks(name):
-    for app in settings.INSTALLED_APPS:
-        try:
-            module_name = app + ".hooks"
-            module = importlib.import_module(module_name)
-        except ImportError:
-            pass
-        else:
-            function = getattr(module, name, None)
-            if function is not None:
-                yield function
+    for module in get_app_modules("hooks"):
+        function = getattr(module, name, None)
+        if function is not None:
+            yield function
 
 
 def get_urls(name):
-    for app in settings.INSTALLED_APPS:
-        try:
-            module_name = app + ".urls"
-            module = importlib.import_module(module_name)
-        except ImportError:
-            pass
-        else:
-            urls = getattr(module, name, None)
-            if urls is not None:
-                yield urls
+    for module in get_app_modules("urls"):
+        urls = getattr(module, name, None)
+        if urls is not None:
+            yield urls

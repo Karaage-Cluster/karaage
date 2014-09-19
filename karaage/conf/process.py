@@ -18,6 +18,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import importlib
+import django
 from karaage.plugins import BasePlugin
 
 
@@ -31,12 +32,12 @@ def add_plugin(namespace, plugin_name, django_apps, depends):
     value = descriptor.depends
     depends.extend(value)
 
-    value = descriptor.name
-    if value is None:
-        # backward compatibility only, to be deleted
-        value = descriptor.module
-    assert value is not None
-    django_apps.append(value)
+    if django.VERSION < (1, 7):
+        value = descriptor.name
+        assert value is not None
+        django_apps.append(value)
+    else:
+        django_apps.append(plugin_name)
 
     value = descriptor.django_apps
     django_apps.extend(value)
