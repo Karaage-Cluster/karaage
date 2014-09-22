@@ -85,12 +85,39 @@ class Command(BaseCommand):
         delete = options['delete']
         dry_run = options['dry_run']
 
+        self.handle_global(delete, dry_run)
+
         # recurse through every datastore
         for mc in MachineCategory.objects.all():
             print("")
             print("Processing %s" % mc)
             print("==========================================================")
             self.handle_machine_category(mc, delete, dry_run)
+
+    def handle_global(self, delete, dry_run):
+        try:
+            global_datastore = get_global_test_datastore(0)
+            assert isinstance(global_datastore, dldap.GlobalDataStore)
+        except IndexError:
+            global_datastore = None
+
+        if global_datastore is not None:
+            # we need to keep the people
+            person_base_dn = self.get_base(
+                global_datastore, 'LDAP_PERSON_BASE')
+            pgroup_base_dn = self.get_base(
+                global_datastore, 'LDAP_GROUP_BASE')
+        else:
+            # we need to destroy the people and keep the accounts
+            person_base_dn = None
+            pgroup_base_dn = None
+
+        # create the base dn
+        # note we do this even if --dry-run given, as otherwise
+        # we get confused if dn doesn't exist
+        if global_datastore is not None:
+            self.create_base(global_datastore, person_base_dn)
+            self.create_base(global_datastore, pgroup_base_dn)
 
     def handle_machine_category(self, mc, delete, dry_run):
         # if datastore name is not ldap, we are not interested
@@ -138,10 +165,6 @@ class Command(BaseCommand):
         # create the base dn
         # note we do this even if --dry-run given, as otherwise
         # we get confused if dn doesn't exist
-        if global_datastore is not None:
-            self.create_base(global_datastore, person_base_dn)
-            self.create_base(global_datastore, pgroup_base_dn)
-
         self.create_base(machine_category_datastore, account_base_dn)
         self.create_base(machine_category_datastore, agroup_base_dn)
 
