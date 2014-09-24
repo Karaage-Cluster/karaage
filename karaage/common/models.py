@@ -67,7 +67,7 @@ class LogEntryManager(models.Manager):
 class LogEntry(models.Model):
     action_time = models.DateTimeField(_('action time'), auto_now_add=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
-    content_type = models.ForeignKey(ContentType, blank=True, null=True)
+    content_type = models.ForeignKey(ContentType)
     object_id = models.TextField(_('object id'), blank=True, null=True)
     content_object = generic.GenericForeignKey(ct_field="content_type",
                                                fk_field="object_id")
