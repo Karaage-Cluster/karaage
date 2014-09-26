@@ -270,6 +270,7 @@ def _gen_machine_cache(start, end):
     query = CPUJob.objects.filter(date__range=(start, end))
     query = query.values('machine')
     query = query.annotate(usage=Sum('cpu_usage'), jobs=Count('id'))
+    query = query.order_by()
 
     for data in query.iterator():
         data['usage'] = data['usage'] or 0
@@ -292,6 +293,7 @@ def _gen_institute_cache(start, end, machine_category):
     )
     query = query.values('project__institute')
     query = query.annotate(usage=Sum('cpu_usage'), jobs=Count('id'))
+    query = query.order_by()
 
     for data in query.iterator():
         data['usage'] = data['usage'] or 0
@@ -315,6 +317,7 @@ def _gen_project_cache(start, end, machine_category):
     )
     query = query.values('project')
     query = query.annotate(usage=Sum('cpu_usage'), jobs=Count('id'))
+    query = query.order_by()
 
     for data in query.iterator():
         data['usage'] = data['usage'] or 0
@@ -338,6 +341,7 @@ def _gen_person_cache(start, end, machine_category):
     )
     query = query.values('project', 'account__person')
     query = query.annotate(usage=Sum('cpu_usage'), jobs=Count('id'))
+    query = query.order_by()
 
     for data in query.iterator():
         data['usage'] = data['usage'] or 0
