@@ -658,10 +658,13 @@ class StateDuplicateApplicant(base.State):
     name = "Duplicate Applicant"
 
     def enter_state(self, request, application):
+        authorised_persons = Person.objects.filter(is_admin=True)
+        link, is_secret = base.get_registration_email_link(application)
         emails.send_request_email(
             "an administrator",
-            Person.objects.filter(is_admin=True),
-            application)
+            authorised_persons,
+            application,
+            link, is_secret)
 
     def view(self, request, application, label, roles, actions):
         # if not admin, don't allow reopen
