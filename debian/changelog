@@ -1,3 +1,12 @@
+karaage3 (3.1.6-1) unstable; urgency=low
+
+  * More Django 1.7 updates.
+  * Django 1.6 should continue to work. For now.
+  * migrate_ldap always creates global DN in ldap if required.
+  * Fix problems with logentry migrations.
+
+ -- Brian May <bam@debian.org>  Tue, 30 Sep 2014 15:50:08 +1000
+
 karaage3 (3.1.5-1) unstable; urgency=low
 
   * Fix karaage3-database upgrade.
