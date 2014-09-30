@@ -1,3 +1,10 @@
+karaage3-applications (3.1.5-1) unstable; urgency=low
+
+  * Fix error when declaring duplicate applicant.
+  * We require Python >= 2.7.
+
+ -- Brian May <bam@debian.org>  Tue, 30 Sep 2014 15:54:13 +1000
+
 karaage3-applications (3.1.4-1) unstable; urgency=low
 
   * Django 1.7 fixes.
