@@ -23,7 +23,7 @@ Upgrading from 3.0.x to 3.1.x
 
 #. Any old Apache configuration might conflict with the new Apache
    configuration.  Apache 2.2 in Wheezy uses
-   ``/etc/apache2/conf.d/karaage-wsgi.conf``. Any other configuration files may
+   ``/etc/apache2/conf.d/karaage3-wsgi.conf``. Any other configuration files may
    be obsolete and should be deleted (or moved elsewehere).
 
 #. Run the database migrations and restart apache.
@@ -61,6 +61,7 @@ Upgrading from 3.0.x to 3.1.x
         dpkg --purge python-karaage-doc
         rm -rf /etc/karaage
         rm -rf /var/log/karaage
+        rm -rf /var/log/karaage3-celery
         rm -rf /var/cache/karaage
 
 
