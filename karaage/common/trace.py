@@ -138,7 +138,7 @@ def loggable(obj):
     """Return "True" if the obj implements the minimum Logger API
     required by the 'trace' decorator.
     """
-    if isinstance(obj, logging.getLoggerClass()):
+    if isinstance(obj, logging.Logger):
         return True
     else:
         return (inspect.isclass(obj) and
