@@ -80,9 +80,20 @@ class GoldDataStoreBase(base.MachineCategoryDataStore):
         split_path = self._path.split(":")
         for d in split_path:
             tmp_path = os.path.join(d, command[0])
-            if os.path.isfile(tmp_path) and os.access(tmp_path, os.X_OK):
-                path = tmp_path
-                break
+
+            if len(self._prefix) == 0:
+                # short cut process if no prefix
+                if os.path.isfile(tmp_path) and os.access(tmp_path, os.X_OK):
+                    break
+            else:
+                # don't short cut process
+                cmd = []
+                cmd.extend(self._prefix)
+                cmd.extend(["test", "-x", tmp_path])
+                result = subprocess.call(cmd)
+                if result == 0:
+                    path = tmp_path
+                    break
         if path is None:
             raise RuntimeError(
                 "Cannot find %s in %s" % (command[0], split_path))
