@@ -624,7 +624,7 @@ class StateWaitingForDelegate(states.StateWaitingForApproval):
 
     def get_authorised_persons(self, application):
         return application.institute.delegates \
-            .filter(institutedelegate__send_email=True)
+            .filter(institutedelegate__send_email=True, is_active=True)
 
     def get_approve_form(self, request, application, roles):
         return forms.ApproveProjectFormGenerator(application, roles)
@@ -637,7 +637,7 @@ class StateWaitingForAdmin(states.StateWaitingForApproval):
     authorised_text = "an administrator"
 
     def get_authorised_persons(self, application):
-        return Person.objects.filter(is_admin=True)
+        return Person.objects.filter(is_admin=True, is_active=True)
 
     def check_authorised(self, request, application, roles):
         """ Check the person's authorization. """
