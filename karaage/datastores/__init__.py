@@ -19,6 +19,7 @@
 
 import six
 import importlib
+import types
 
 from django.conf import settings
 
@@ -42,6 +43,13 @@ def _lookup(cls):
     return(cls)
 
 
+def _get_datastore(cls, expected, config):
+    assert isinstance(cls, types.FunctionType) or issubclass(cls, expected)
+    ds = cls(config)
+    assert isinstance(ds, expected)
+    return ds
+
+
 def _init_datastores():
     """ Initialize all datastores. """
     global _GLOBAL_DATASTORES
@@ -50,19 +58,19 @@ def _init_datastores():
     array = settings.GLOBAL_DATASTORES
     for config in array:
         cls = _lookup(config['ENGINE'])
-        assert issubclass(cls, GlobalDataStore)
-        _GLOBAL_DATASTORES.append(cls(config))
+        ds = _get_datastore(cls, GlobalDataStore, config)
+        _GLOBAL_DATASTORES.append(ds)
     for name, array in six.iteritems(settings.MACHINE_CATEGORY_DATASTORES):
         _MACHINE_CATEGORY_DATASTORES[name] = []
         for config in array:
             cls = _lookup(config['ENGINE'])
-            assert issubclass(cls, MachineCategoryDataStore)
-            _MACHINE_CATEGORY_DATASTORES[name].append(cls(config))
+            ds = _get_datastore(cls, MachineCategoryDataStore, config)
+            _MACHINE_CATEGORY_DATASTORES[name].append(ds)
     if settings.KG27_DATASTORE is not None:
         config = settings.KG27_DATASTORE
         cls = _lookup(config['ENGINE'])
-        assert issubclass(cls, MachineCategoryDataStore)
-        _KG27_DATASTORE = cls(config)
+        ds = _get_datastore(cls, MachineCategoryDataStore, config)
+        _KG27_DATASTORE = ds
 
 
 def _get_global_datastores():

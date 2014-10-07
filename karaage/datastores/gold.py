@@ -27,11 +27,12 @@ logger = logging.getLogger(__name__)
 from karaage.datastores import base
 
 
-class GoldDataStore(base.MachineCategoryDataStore):
+class GoldDataStoreBase(base.MachineCategoryDataStore):
     """ Gold datastore. """
+    version = None
 
     def __init__(self, config):
-        super(GoldDataStore, self).__init__(config)
+        super(GoldDataStoreBase, self).__init__(config)
         self._prefix = config.get('PREFIX', [])
         self._path = config.get('PATH', "/usr/local/gold/bin")
         self._null_project = config.get('NULL_PROJECT', "default")
@@ -158,6 +159,21 @@ class GoldDataStore(base.MachineCategoryDataStore):
         logger.debug("<-- Returned: %d (good)" % (retcode))
         return results
 
+    def check_version(self):
+        assert self.version is not None
+
+        cmd = ["goldsh", "System", "Query", "--raw"]
+        results = self._read_output(cmd)
+
+        for row in results:
+            if row['Name'] != "Moab Accounting Manager":
+                continue
+            if row['Version'] == self.version:
+                logger.info("Found gold version %s" % self.version)
+                return True
+            else:
+                return False
+
     def get_user(self, username):
         """ Get the user details from Gold. """
         cmd = ["glsuser", "-u", username, "--raw"]
@@ -193,9 +209,12 @@ class GoldDataStore(base.MachineCategoryDataStore):
 
         return results
 
+    def _get_project_cmd(self, projectname):
+        raise NotImplementedError()
+
     def get_project(self, projectname):
         """ Get the project details from Gold. """
-        cmd = ["glsproject", "-p", projectname, "--raw"]
+        cmd = self._get_project_cmd(projectname)
         results = self._read_output(cmd)
 
         if len(results) == 0:
@@ -244,6 +263,12 @@ class GoldDataStore(base.MachineCategoryDataStore):
             project_list.append(bal["Name"])
         return project_list
 
+    def _create_user(self, username, default_project_name):
+        raise NotImplementedError()
+
+    def _set_user_default_project(self, username, default_project_name):
+        raise NotImplementedError()
+
     def _save_account(self, account, username):
         """ Called when account is created/updated. With username override. """
 
@@ -262,16 +287,10 @@ class GoldDataStore(base.MachineCategoryDataStore):
 
             if ds_user is None:
                 # create user if doesn't exist
-                self._call([
-                    "gmkuser", "-A",
-                    "-p", default_project_name,
-                    "-u", username])
+                self._create_user(username, default_project_name)
             else:
                 # or just set default project
-                self._call([
-                    "gchuser",
-                    "-p", default_project_name,
-                    "-u", username])
+                self._set_user_default_project(username, default_project_name)
 
             # update user meta information
             self._call([
@@ -285,9 +304,7 @@ class GoldDataStore(base.MachineCategoryDataStore):
 
             # add rest of projects user belongs to
             for project in account.person.projects.all():
-                self._call(
-                    ["gchproject", "--add-user", username, "-p", project.pid],
-                    ignore_errors=[74])
+                self.add_account_to_project(account, project)
         else:
             # date_deleted is not set, user should not exist
             logger.debug("account is not active")
@@ -327,22 +344,11 @@ class GoldDataStore(base.MachineCategoryDataStore):
 
     def add_account_to_project(self, account, project):
         """ Add account to project. """
-        username = account.username
-        projectname = project.pid
-        self._call([
-            "gchproject",
-            "--add-user", username,
-            "-p", projectname],
-            ignore_errors=[74])
+        raise NotImplementedError()
 
     def remove_account_from_project(self, account, project):
         """ Remove account from project. """
-        username = account.username
-        projectname = project.pid
-        self._call([
-            "gchproject",
-            "--del-users", username,
-            "-p", projectname])
+        raise NotImplementedError()
 
     def account_exists(self, username):
         """ Does the account exist? """
@@ -368,6 +374,15 @@ class GoldDataStore(base.MachineCategoryDataStore):
         """ Group was renamed. """
         pass
 
+    def _create_project(self, pid):
+        raise NotImplementedError()
+
+    def _set_project(self, pid, description, institute):
+        raise NotImplementedError()
+
+    def _delete_project(self, pid):
+        raise NotImplementedError()
+
     def save_project(self, project):
         """ Called when project is saved/updated. """
         pid = project.pid
@@ -380,25 +395,17 @@ class GoldDataStore(base.MachineCategoryDataStore):
             logger.debug("project is active")
             ds_project = self.get_project(pid)
             if ds_project is None:
-                self._call(["gmkproject", "-p", pid, "-u", "MEMBERS"])
+                self._create_project(pid)
 
             # update project meta information
             name = self._truncate(project.name, 40)
-            self._call([
-                "gchproject",
-                "-d", self._filter_string(name),
-                "-p", pid])
-            self._call([
-                "gchproject",
-                "-X", "Organization=%s"
-                % self._filter_string(project.institute.name),
-                "-p", pid])
+            self._set_project(pid, name, project.institute)
         else:
             # project is deleted
             logger.debug("project is not active")
             ds_project = self.get_project(pid)
             if ds_project is not None:
-                self._call(["grmproject", "-p", pid])
+                self._delete_project(pid)
 
         return
 
@@ -410,7 +417,7 @@ class GoldDataStore(base.MachineCategoryDataStore):
 
         ds_project = self.get_project(pid)
         if ds_project is not None:
-            self._call(["grmproject", "-p", pid])
+            self._delete_project(pid)
 
         return
 
@@ -462,4 +469,127 @@ class GoldDataStore(base.MachineCategoryDataStore):
         return
 
 
-trace.attach(trace.trace(logger), GoldDataStore)
+class GoldDataStore71(GoldDataStoreBase):
+    version = "7.1"
+
+    def _get_project_cmd(self, projectname):
+        cmd = ["glsproject", "-p", projectname, "--raw"]
+        return cmd
+
+    def _create_user(self, username, default_project_name):
+        self._call([
+            "gmkuser", "-A",
+            "-p", default_project_name,
+            "-u", username])
+
+    def _set_user_default_project(self, username, default_project_name):
+        self._call([
+            "gchuser",
+            "-p", default_project_name,
+            "-u", username])
+
+    def add_account_to_project(self, account, project):
+        """ Add account to project. """
+        username = account.username
+        projectname = project.pid
+        self._call([
+            "gchproject",
+            "--add-user", username,
+            "-p", projectname],
+            ignore_errors=[74])
+
+    def remove_account_from_project(self, account, project):
+        """ Remove account from project. """
+        username = account.username
+        projectname = project.pid
+        self._call([
+            "gchproject",
+            "--del-users", username,
+            "-p", projectname])
+
+    def _create_project(self, pid):
+        self._call(["gmkproject", "-p", pid, "-u", "MEMBERS"])
+
+    def _set_project(self, pid, description, institute):
+        self._call([
+            "gchproject",
+            "-d", self._filter_string(description),
+            "-p", pid])
+        self._call([
+            "gchproject",
+            "-X", "Organization=%s"
+            % self._filter_string(institute.name),
+            "-p", pid])
+
+    def _delete_project(self, pid):
+        self._call(["grmproject", "-p", pid])
+
+
+class GoldDataStore72(GoldDataStoreBase):
+    version = "7.2"
+
+    def _get_project_cmd(self, projectname):
+        cmd = ["glsaccount", "-a", projectname, "--raw"]
+        return cmd
+
+    def _create_user(self, username, default_project_name):
+        self._call([
+            "gmkuser", "-A",
+            "-a", default_project_name,
+            "-u", username])
+
+    def _set_user_default_project(self, username, default_project_name):
+        self._call([
+            "gchuser",
+            "-a", default_project_name,
+            "-u", username])
+
+    def add_account_to_project(self, account, project):
+        """ Add account to project. """
+        username = account.username
+        projectname = project.pid
+        self._call([
+            "gchaccount",
+            "--add-user", username,
+            "-a", projectname],
+            ignore_errors=[74])
+
+    def remove_account_from_project(self, account, project):
+        """ Remove account from project. """
+        username = account.username
+        projectname = project.pid
+        self._call([
+            "gchaccount",
+            "--del-users", username,
+            "-a", projectname])
+
+    def _create_project(self, pid):
+        self._call(["gmkaccount", "-a", pid, "-u", "MEMBERS"])
+
+    def _set_project(self, pid, description, institute):
+        self._call([
+            "gchaccount",
+            "-d", self._filter_string(description),
+            "-a", pid])
+        self._call([
+            "gchaccount",
+            "-X", "Organization=%s"
+            % self._filter_string(institute.name),
+            "-a", pid])
+
+    def _delete_project(self, pid):
+        self._call(["grmaccount", "-a", pid])
+
+
+def GoldDataStore(config):
+    ds = GoldDataStore71(config)
+    if ds.check_version():
+        return ds
+    ds = GoldDataStore72(config)
+    if ds.check_version():
+        return ds
+    raise RuntimeError("We do not support this version of Gold")
+
+trace.attach(trace.trace(logger), GoldDataStoreBase)
+trace.attach(trace.trace(logger), GoldDataStore71)
+trace.attach(trace.trace(logger), GoldDataStore72)
