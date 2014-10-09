@@ -14,11 +14,11 @@ Edit the :setting:`MACHINE_CATEGORY_DATASTORES` setting in
    MACHINE_CATEGORY_DATASTORES = {
        'ldap': [
            {
-               'DESCRIPTION': 'Default LDAP datastore',
+               'DESCRIPTION': 'LDAP datastore',
                ...
            },
            {
-               'DESCRIPTION': 'Default MAM datastore',
+               'DESCRIPTION': 'MAM datastore',
                'ENGINE': 'karaage.datastores.mam.MamDataStore',
                'PREFIX': [],
                'PATH': '/usr/local/mam/bin:/usr/local/mam/sbin',

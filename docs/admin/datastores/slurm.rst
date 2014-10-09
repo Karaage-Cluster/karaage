@@ -13,11 +13,11 @@ Edit the :setting:`MACHINE_CATEGORY_DATASTORES` setting in
    MACHINE_CATEGORY_DATASTORES = {
        'ldap': [
            {
-               'DESCRIPTION': 'Default LDAP datastore',
+               'DESCRIPTION': 'LDAP datastore',
                ...
            },
            {
-               'DESCRIPTION': 'Default Slurm datastore',
+               'DESCRIPTION': 'Slurm datastore',
                'ENGINE': 'karaage.datastores.slurm.SlurmDataStore',
                'PREFIX': [ "sudo", "-uslurm" ],
                'PATH': "/usr/local/slurm/latest/bin/sacctmgr",
