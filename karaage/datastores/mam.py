@@ -84,6 +84,7 @@ class MamDataStoreBase(base.MachineCategoryDataStore):
             if len(self._prefix) == 0:
                 # short cut process if no prefix
                 if os.path.isfile(tmp_path) and os.access(tmp_path, os.X_OK):
+                    path = tmp_path
                     break
             else:
                 # don't short cut process
