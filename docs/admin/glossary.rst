@@ -18,7 +18,7 @@ Glossary
 
     data store
       A list of external databases that we should link to and update
-      automatically.  Supported databases include LDAP, Gold, and Slurm.
+      automatically.  Supported databases include LDAP, MAM, and Slurm.
 
     global data store
       A :term:`data store` for storing global data.  The global datastores are

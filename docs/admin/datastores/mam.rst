@@ -1,8 +1,8 @@
 .. index:: pair: data store; gold
 .. index:: see:mam;gold
 
-Adding Gold
-===========
+Adding MOAB Account Manager
+===========================
 
 First configure the LDAP datastore. See :doc:`openldap`.
 
@@ -18,10 +18,10 @@ Edit the :setting:`MACHINE_CATEGORY_DATASTORES` setting in
                ...
            },
            {
-               'DESCRIPTION': 'Default Gold datastore',
-               'ENGINE': 'karaage.datastores.gold.GoldDataStore',
+               'DESCRIPTION': 'Default MAM datastore',
+               'ENGINE': 'karaage.datastores.mam.MamDataStore',
                'PREFIX': [],
-               'PATH': '/usr/local/gold/bin:/usr/local/gold/sbin',
+               'PATH': '/usr/local/mam/bin:/usr/local/mam/sbin',
                'NULL_PROJECT': 'default',
            },
        ],
