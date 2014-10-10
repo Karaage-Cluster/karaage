@@ -1,3 +1,9 @@
+karaage3-applications (3.1.6-1) unstable; urgency=low
+
+  * Don't email deleted admin or institute delegates.
+
+ -- Brian May <bam@debian.org>  Fri, 10 Oct 2014 14:15:31 +1100
+
 karaage3-applications (3.1.5-1) unstable; urgency=low
 
   * Fix error when declaring duplicate applicant.
