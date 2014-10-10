@@ -151,10 +151,10 @@ LOGGING = {
         #     'formatter': 'verbose',
         #     'owner': ['www-data', 'www-data'],
         # },
-        # 'gold_file': {
+        # 'mam_file': {
         #     'level': 'DEBUG',
         #     'class': 'karaage.common.logging.FileHandler',
-        #     'filename': '/var/log/karaage3/gold.log',
+        #     'filename': '/var/log/karaage3/mam.log',
         #     'formatter': 'verbose',
         #     'owner': ['www-data', 'www-data'],
         # },
@@ -187,8 +187,8 @@ LOGGING = {
         #     'level': 'DEBUG',
         #     'propagate': True,
         # },
-        # 'karaage.datastores.gold': {
-        #     'handlers': ['gold_file'],
+        # 'karaage.datastores.mam': {
+        #     'handlers': ['mam_file'],
         #     'level': 'DEBUG',
         #     'propagate': True,
         # },
