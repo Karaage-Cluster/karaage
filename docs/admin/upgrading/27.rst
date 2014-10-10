@@ -394,6 +394,17 @@ every machine:
 
 #.  (optional) Delete the dedicated account that was previously used for authenticating this system.
 
+#.  If using MAM, edit the :setting:`MACHINE_CATEGORY_DATASTORES` setting in
+    ``/etc/karaage3/settings.py``:
+
+    .. code-block:: python
+
+           {
+               'DESCRIPTION': 'MAM datastore',
+               'ENGINE': 'karaage.datastores.mam.MamDataStore',
+               ...
+           }
+
 #.  Navigate to machine entry in admin website.
 
 #.  Click password button to reset the password.
@@ -415,4 +426,3 @@ every machine:
 
       ``ou=Accounts,dc=example,dc=org`` and
       ``ou=People_Groups,dc=example,dc=org``
-

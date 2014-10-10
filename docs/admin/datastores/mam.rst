@@ -9,7 +9,7 @@ First configure the LDAP datastore. See :doc:`openldap`.
 Edit the :setting:`MACHINE_CATEGORY_DATASTORES` setting in
 ``/etc/karaage3/settings.py``:
 
-.. code-block:: bash
+.. code-block:: python
 
    MACHINE_CATEGORY_DATASTORES = {
        'ldap': [
