@@ -1,3 +1,10 @@
+karaage3 (3.1.7-1) unstable; urgency=low
+
+  * Fix various MAM issues.
+  * Support MAM 2.7.
+
+ -- Brian May <bam@debian.org>  Fri, 10 Oct 2014 14:45:05 +1100
+
 karaage3 (3.1.6-1) unstable; urgency=low
 
   * More Django 1.7 updates.
