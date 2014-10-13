@@ -216,8 +216,6 @@ latex_documents = [
 man_pages = [
     ('index', 'karaage',
         'Karaage Admin Documentation', [u'Brian May'], 8),
-    ('ref/cmd/kg-daily-cleanup', 'kg-daily-cleanup',
-        'Cleanup for Karaage', [u'Brian May'], 8),
     ('ref/cmd/kg-manage', 'kg-manage',
         'Management for Karaage', [u'Brian May'], 8),
     ('ref/cmd/kg-set-secret-key', 'kg_set_secret_key',

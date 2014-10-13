@@ -195,9 +195,10 @@ Initial setup
 
         kg-manage kgcreatesuperuser
 
-#.  Setup cron job. Edit the ``/etc/cron.d/python-karaage file``::
+#.  Setup cron job to automatically start :djadmin:`daily_cleanup`. Edit the
+    ``/etc/cron.d/python-karaage file``::
 
-        10 1 * * * www-data /usr/bin/kg-daily-cleanup
+        10 1 * * * www-data /usr/bin/kg-manage daily_cleanup
 
 #.  Test. You should now be able to go to ``http://www.example.org/kgadmin/``.
 

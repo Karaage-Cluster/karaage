@@ -52,7 +52,7 @@ override_dh_install:
 	mkdir -p $(PREFIXC)/usr/bin
 	
 	# python dependent scripts
-	set -e; for f in kg-manage kg-daily-cleanup; do \
+	set -e; for f in kg-manage; do \
 		mv $(PREFIX2)/usr/bin/$$f $(PREFIX2)/usr/share/python-karaage/bin; \
 		mv $(PREFIX3)/usr/bin/$$f $(PREFIX3)/usr/share/python3-karaage/bin; \
 		chmod +x $(PREFIX2)/usr/share/python-karaage/bin/$$f; \

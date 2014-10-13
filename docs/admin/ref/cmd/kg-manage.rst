@@ -28,12 +28,6 @@ To get help on a particular command, run the following:
 Django
 ------
 
-clearsessions
-~~~~~~~~~~~~~
-.. django-admin:: clearsessions
-
-    Clean out expired sessions. See :djadmin:`django:clearsessions`.
-
 dbshell
 ~~~~~~~
 .. django-admin:: dbshell
@@ -101,6 +95,8 @@ lock_expired
 
     Automatically lock expired accounts.
 
+    Called automatically by :djadmin:`daily_cleanup`.
+
 lock_training_accounts
 ~~~~~~~~~~~~~~~~~~~~~~
 .. django-admin:: lock_training_accounts
@@ -119,6 +115,16 @@ change_pid
 
     Change a PID for a project.
 
+daily_cleanup
+~~~~~~~~~~~~~
+.. django-admin:: daily_cleanup
+
+   Daily cleanup for Karaage, should be called by cron job. This will
+   automatically call all other applicable cleanup commands.
+
+   The exact commands executed depends on which plugins are configured.
+   By default, will call :djadmin:`lock_expired`.
+
 
 Karaage Applications Plugin
 ---------------------------
@@ -129,6 +135,7 @@ application_cleanup
 
     Cleanup complete/old applications.
 
+    Called automatically by :djadmin:`daily_cleanup`.
 
 
 Karaage Usage Plugin
@@ -140,14 +147,20 @@ clear_usage_cache
 
     Delete the usage cache.
 
+    Called automatically by :djadmin:`daily_cleanup`.
+
 clear_usage_graphs
 ~~~~~~~~~~~~~~~~~~
 .. django-admin:: clear_usage_graphs
 
     Delete the usagee graphs.
 
+    Called automatically by :djadmin:`daily_cleanup`.
+
 link_software
 ~~~~~~~~~~~~~
 .. django-admin:: link_software
 
     Automatically link software in usage table.
+
+    Called automatically by :djadmin:`daily_cleanup`.
