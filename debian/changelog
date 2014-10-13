@@ -1,3 +1,10 @@
+karaage3 (3.1.8-1) unstable; urgency=low
+
+  * Fix daily cleanup. Work properly with plugins.
+  * Test daily cleanup.
+
+ -- Brian May <bam@debian.org>  Mon, 13 Oct 2014 14:53:52 +1100
+
 karaage3 (3.1.7-1) unstable; urgency=low
 
   * Fix various MAM issues.
