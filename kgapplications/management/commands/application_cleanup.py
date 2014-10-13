@@ -23,7 +23,7 @@ import tldap.transaction
 class Command(BaseCommand):
     help = "Regular cleanup of application db models."
 
-    @django.db.transaction.commit_on_success
+    @django.db.transaction.atomic
     @tldap.transaction.commit_on_success
     def handle(self, **options):
         from django.db.models import Count
