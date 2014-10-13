@@ -79,7 +79,7 @@ class Command(BaseCommand):
                 .base_dn(base_dn) \
                 .create(dn=create_dn)
 
-    @django.db.transaction.commit_on_success
+    @django.db.transaction.atomic
     @tldap.transaction.commit_on_success
     def handle(self, **options):
         delete = options['delete']

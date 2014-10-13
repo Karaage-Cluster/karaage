@@ -33,7 +33,7 @@ class Command(BaseCommand):
     help = 'Change a username for a person and all accounts for that person'
     args = '<old username> <new username>'
 
-    @django.db.transaction.commit_on_success
+    @django.db.transaction.atomic
     @tldap.transaction.commit_on_success
     def handle(self, *args, **options):
         if len(args) != 2:

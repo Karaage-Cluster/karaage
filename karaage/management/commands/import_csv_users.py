@@ -50,7 +50,7 @@ class Command(BaseCommand):
 username,password,short_name,full_name,email,institute,project"""
     args = "csvfile"
 
-    @django.db.transaction.commit_on_success
+    @django.db.transaction.atomic
     @tldap.transaction.commit_on_success
     def handle(self, csvfile, **options):
         verbosity = int(options.get('verbosity', 1))

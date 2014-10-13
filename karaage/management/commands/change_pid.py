@@ -33,7 +33,7 @@ class Command(BaseCommand):
     help = 'Change a pid for a project and all accounts for that project'
     args = '<old pid> <new pid>'
 
-    @django.db.transaction.commit_on_success
+    @django.db.transaction.atomic
     @tldap.transaction.commit_on_success
     def handle(self, *args, **options):
         if len(args) != 2:

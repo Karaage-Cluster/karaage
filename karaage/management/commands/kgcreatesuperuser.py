@@ -55,7 +55,7 @@ class Command(BaseCommand):
     )
     help = 'Used to create a karaage superuser.'
 
-    @django.db.transaction.commit_on_success
+    @django.db.transaction.atomic
     @tldap.transaction.commit_on_success
     def handle(self, *args, **options):
 

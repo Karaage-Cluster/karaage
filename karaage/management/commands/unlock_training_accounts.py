@@ -27,7 +27,7 @@ import tldap.transaction
 class Command(BaseCommand):
     help = "Unlock all training accounts"
 
-    @django.db.transaction.commit_on_success
+    @django.db.transaction.atomic
     @tldap.transaction.commit_on_success
     def handle(self, **options):
         verbose = int(options.get('verbosity'))
