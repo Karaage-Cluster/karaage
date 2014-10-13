@@ -1,1 +1,1 @@
-#10 1 * * * www-data /usr/bin/kg-daily-cleanup
+#10 1 * * * www-data /usr/bin/kg-manage daily_cleanup
