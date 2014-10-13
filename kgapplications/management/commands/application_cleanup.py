@@ -27,7 +27,7 @@ class Command(BaseCommand):
     @tldap.transaction.commit_on_success
     def handle(self, **options):
         from django.db.models import Count
-        from karaage.applications.models import Application, Applicant
+        from ...models import Application, Applicant
         import datetime
         now = datetime.datetime.now()
 

@@ -22,6 +22,9 @@ class plugin(BasePlugin):
     name = "kgapplications"
     template_context_processors = ("kgapplications.context_processor",)
 
+    def ready(self):
+        from . import signals  # NOQA
+
 
 def context_processor(request):
     """ Set context with common variables. """
