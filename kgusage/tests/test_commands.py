@@ -15,21 +15,23 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from karaage.plugins import BasePlugin
+from django.test import TestCase
+from django.core.management import call_command
+
+from mock import Mock
+
+from karaage.signals import daily_cleanup
 
 
-class plugin(BasePlugin):
-    name = "kgusage"
-    django_apps = ("djcelery",)
-    xmlrpc_methods = (
-        ('kgusage.xmlrpc.parse_usage', 'parse_usage',),
-    )
-    settings = {
-        'GRAPH_DEBUG': False,
-        'GRAPH_DIR': 'kgusage/',
-        'GRAPH_TMP': 'kgusage/',
-    }
-    depends = ("kgsoftware.plugin",)
+class CommandsTestCase(TestCase):
 
-    def ready(self):
-        from . import signals  # NOQA
+    def test_daily_cleanup(self):
+        callback = Mock()
+        daily_cleanup.connect(callback)
+
+        try:
+            call_command('daily_cleanup')
+        finally:
+            daily_cleanup.disconnect(daily_cleanup)
+
+        self.assertEqual(callback.call_count, 1)

@@ -20,8 +20,9 @@ from django.conf import settings
 from optparse import make_option
 import datetime
 
-from karaage.usage.models import CPUJob, UsedModules
-from karaage.software.models import SoftwareVersion, Software
+from kgsoftware.models import SoftwareVersion, Software
+
+from ...models import CPUJob, UsedModules
 
 
 class Command(BaseCommand):

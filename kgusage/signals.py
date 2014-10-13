@@ -15,21 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from karaage.plugins import BasePlugin
+from django.core import management
+from django.dispatch import receiver
+
+from karaage.signals import daily_cleanup
 
 
-class plugin(BasePlugin):
-    name = "kgusage"
-    django_apps = ("djcelery",)
-    xmlrpc_methods = (
-        ('kgusage.xmlrpc.parse_usage', 'parse_usage',),
-    )
-    settings = {
-        'GRAPH_DEBUG': False,
-        'GRAPH_DIR': 'kgusage/',
-        'GRAPH_TMP': 'kgusage/',
-    }
-    depends = ("kgsoftware.plugin",)
-
-    def ready(self):
-        from . import signals  # NOQA
+@receiver(daily_cleanup)
+def daily_cleanup(sender, **kwargs):
+    management.call_command('clear_usage_cache')
+    management.call_command('clear_usage_graphs')
+    management.call_command('link_software', all=True)

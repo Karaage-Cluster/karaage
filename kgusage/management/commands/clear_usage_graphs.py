@@ -16,11 +16,10 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.core.management.base import BaseCommand
-from django.conf import settings
 import os
 import shutil
 
-GRAPH_BASE_DIR = settings.GRAPH_ROOT
+from kgusage.dirs import GRAPH_ROOT
 
 
 class Command(BaseCommand):
@@ -32,7 +31,7 @@ class Command(BaseCommand):
         if verbose > 1:
             print("Cleaning all graphs")
 
-        for dirpath, dirnames, filenames in os.walk(GRAPH_BASE_DIR):
+        for dirpath, dirnames, filenames in os.walk(GRAPH_ROOT):
             for name in dirnames:
                 path = os.path.join(dirpath, name)
                 if verbose > 1:
