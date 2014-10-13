@@ -177,13 +177,6 @@ def get_app_modules(name):
                 pass
 
 
-def get_hooks(name):
-    for module in get_app_modules("hooks"):
-        function = getattr(module, name, None)
-        if function is not None:
-            yield function
-
-
 def get_urls(name):
     for module in get_app_modules("urls"):
         urls = getattr(module, name, None)
