@@ -584,8 +584,9 @@ def top_users(request, machine_category_id):
 
     person_total, person_total_jobs = 0, 0
 
-    query = models.PersonCache.objects.filter(start=start, end=end)
-    query = query.filter(machine_category=machine_category)
+    query = models.PersonCache.objects.filter(
+        date=datetime.date.today(), start=start, end=end,
+        machine_category=machine_category)
 
     for u in query.order_by('-cpu_time')[:count]:
         if u.cpu_time:
@@ -663,10 +664,11 @@ def institute_users(request, machine_category_id, institute_id):
 
     person_list = []
 
-    query = models.PersonCache.objects.filter(start=start, end=end)
-    query = query.filter(machine_category=machine_category)
-    query = query.filter(person__institute=institute)
-    query = query.filter(no_jobs__gt=0)
+    query = models.PersonCache.objects.filter(
+        date=datetime.date.today(), start=start, end=end,
+        machine_category=machine_category,
+        person__institute=institute,
+        no_jobs__gt=0)
 
     person_total, person_total_jobs = 0, 0
     for u in query.order_by('-cpu_time'):
