@@ -55,8 +55,95 @@ Installation
     wget http://code.vpac.org/centos/vpac.repo -O /etc/yum.repos.d/vpac.repo
 
 
-MySQL server installation
--------------------------
+Apache Configuration
+--------------------
+
+Karaage, by default, requires a https connection. While this default can be
+changed, this is not advisable on a production system.
+
+In the following steps, replace ``www.example.org`` with the visible hostname
+of your server.
+
+#.  Install apache2.
+
+    .. code-block:: bash
+
+        apt-get install apache2
+
+#.  Generate a SSL private key, a CSR.
+
+    .. code-block:: bash
+
+        cd /etc/apache2/ssl
+        openssl genrsa -des3 -out www_privatekey.pem 2048
+        chmod 700 www_privatekey.pem
+        openssl req -new -key www_privatekey.pem -out www_csr.pem -sha256
+
+#.      Submit www_csr.pem to a CA, and get it signed. Copy resultant
+        certificate into ``www_cert.pem``. Check this file is sha256:
+
+        .. code-block:: bash
+
+            openssl x509 -text -noout -in www_cert.pem
+
+        You should see the following text::
+
+            Signature Algorithm: sha256WithRSAEncryption.
+
+        You may need an intermediate certificate too. Copy this into
+        ``www_intermediate.pem``.
+
+#.      Setup Apache to support secure https connections. Changes should be
+        made to ``/etc/apache2/sites-available/default-ssl``::
+
+            SSLCertificateFile /etc/apache2/ssl/www_cert.pem
+            SSLCertificateKeyFile /etc/apache2/ssl/www_privatekey.pem
+            SSLCertificateChainFile /etc/apache2/ssl/www_intermediate.pem
+
+        For more details on what changes are required, see the `Apache howto
+        <http://httpd.apache.org/docs/current/ssl/ssl_howto.html>`_.
+
+#.      Connections to http should be redirected to https.  Please replace the
+        ``/etc/apache2/sites-available/default`` file entirely with the
+        following::
+
+            <VirtualHost *:80>
+                ServerName www.example.org
+                Redirect permanent / https://www.example.org/
+            </VirtualHost>
+
+        For more information on this step,
+        see the `Apache wiki <https://wiki.apache.org/httpd/RedirectSSL>`_.
+
+#.      (optional) It is recommended that you change the following settings in
+        ``/etc/apache2/mods-enabled/ssl.conf`` to make SSL more secure by
+        disabling insecure protocols and ciphers::
+
+           SSLProtocol all -SSLv2 -SSLv3
+           SSLCipherSuite ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
+
+        Note however that the ``SSLProtocol`` will break IE6, and the
+        ``SSLCipherSuite`` setting will break IE on XP. For more information on
+        securing Apache, see the `Mozilla website
+        <https://wiki.mozilla.org/Security/Server_Side_TLS>`_.
+
+#.      Enable ``default-ssl`` with the following commands:
+
+        .. code-block:: bash
+
+            a2enmod ssl
+            a2ensite default-ssl.
+            service apache2 restart
+
+#.      Test by loading both ``http://www.example.org/`` and
+        ``https://www.example.org/`` in your browser.
+
+#.      Test website with `SSL Test
+        <https://www.ssllabs.com/ssltest/index.html>`_.
+
+
+MySQL configuration
+-------------------
 
 #.  Run the following commands:
 
@@ -112,41 +199,6 @@ Initial setup
 
         apt-get install karaage3
         apt-get install python-mysql.connector
-
-#.  Karaage, by default, requires a https connection. While this default can be
-    changed, this is not advisable on a production system.
-
-    In the following steps, replace ``www.example.org`` with the visible
-    hostname of your server.
-
-    #.  Setup Apache to support secure https connections. Changes should be
-        made to the ``/etc/apache2/sites-available/default-ssl``.  Read the
-        comments in this file. For more details on what changes are required,
-        see the `Apache howto
-        <http://httpd.apache.org/docs/current/ssl/ssl_howto.html>`_.
-
-    #.  Connections to http should be redirected to https.  Please replace the
-        ``/etc/apache2/sites-available/default`` file entirely with the
-        following::
-
-            <VirtualHost *:80>
-                ServerName www.example.org
-                Redirect permanent / https://www.example.org/
-            </VirtualHost>
-
-        For more information on this step,
-        see the `Apache wiki <https://wiki.apache.org/httpd/RedirectSSL>`_.
-
-    #.  Enable ``default-ssl`` with the following commands:
-
-        .. code-block:: bash
-
-            a2enmod ssl
-            a2ensite default-ssl.
-            service apache2 restart
-
-    #.  Test by loading both ``http://www.example.org/`` and
-        ``https://www.example.org/`` in your browser.
 
 #.  Run :doc:`/ref/cmd/kg-set-secret-key`, this will automatically set
     :setting:`SECRET_KEY` inside ``/etc/karaage3/settings.py``:
