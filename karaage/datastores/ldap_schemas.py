@@ -27,6 +27,12 @@ import tldap.methods.ds389
 import tldap.manager
 
 
+def _a(string):
+    """ Force string to ASCII only characters. """
+    string = ''.join(c for c in string if ord(c) > 31 and ord(c) < 127)
+    return string
+
+
 class kPersonMixin(object):
     @classmethod
     def pre_save(cls, self):
@@ -45,7 +51,7 @@ class kAccountMixin(object):
             full_name = "%s %s" % (self.givenName, self.sn)
 
         self.displayName = six.u('%s (%s)') % (full_name, self.o)
-        self.gecos = six.u('%s (%s)') % (full_name, self.o)
+        self.gecos = _a(six.u('%s (%s)') % (full_name, self.o))
 
 
 ############
