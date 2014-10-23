@@ -22,7 +22,7 @@ Description: Usage information for Karaage.
 
 Package: python3-kgapplications
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, python3-karaage (>= 3.1.2)
+Depends: ${misc:Depends}, ${python3:Depends}, python3-karaage (>= 3.1.2)
 Description: Usage information for Karaage.
  Karaage is an open source collection of Django apps to manage a clusters.
  This package provides the plugin for user applications.
