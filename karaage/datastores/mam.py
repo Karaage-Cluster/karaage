@@ -21,10 +21,41 @@ import os.path
 import subprocess
 import csv
 import logging
+import sys
+
 import karaage.common.trace as trace
 logger = logging.getLogger(__name__)
 
 from karaage.datastores import base
+
+
+if sys.version_info < (3, 0):
+    # Python2: csv module does not support unicode, we must use byte strings.
+
+    def _input_csv(csv_data):
+        for line in csv_data:
+            assert isinstance(line, bytes)
+            yield line
+
+    def _output_csv(csv_line):
+        for i, column in enumerate(csv_line):
+            csv_line[i] = column.decode("ascii", errors='ignore')
+            assert isinstance(csv_line[i], unicode)  # NOQA
+
+else:
+    # Python3: csv module does support unicode, we must use strings everywhere,
+    # not byte strings
+
+    def _input_csv(unicode_csv_data):
+        for line in unicode_csv_data:
+            assert isinstance(line, bytes)
+            line = line.decode("ascii", errors='ignore')
+            assert isinstance(line, str)
+            yield line
+
+    def _output_csv(csv_line):
+        for column in csv_line:
+            assert isinstance(column, str)
 
 
 class MamDataStoreBase(base.MachineCategoryDataStore):
@@ -139,7 +170,7 @@ class MamDataStoreBase(base.MachineCategoryDataStore):
         null.close()
 
         results = []
-        reader = csv.reader(process.stdout, delimiter="|")
+        reader = csv.reader(_input_csv(process.stdout), delimiter="|")
 
         try:
             headers = reader.next()
@@ -149,6 +180,8 @@ class MamDataStoreBase(base.MachineCategoryDataStore):
             headers = []
 
         for row in reader:
+            _output_csv(row)
+
             logger.debug("<-- row %s" % row)
             this_row = {}
 
