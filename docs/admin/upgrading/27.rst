@@ -154,7 +154,51 @@ Installing Karaage3
 
     #.  Check data in karaage3 looks correct, before proceeding.
 
-#.  If uncertain of upgrade, setup a test system.  Read the steps in
+#.  Check mysql data is correct.
+
+    #.  Connect to mysql database:
+
+        .. code-block:: bash
+
+            mysql karaage3
+
+    #.  Ensure all tables in database are using innodb and utf8 encoding::
+
+            mysql> use karaage3
+            mysql> show table status
+
+    #.  If not all tables are using innodb and utf8, this can be corrected with
+        the following script:
+
+        .. code-block:: bash
+
+            #!/bin/sh
+            set -x
+
+            DBNAME="karaage3"
+            USERNAME="karaage3"
+            PASSWORD="YYYYYYYY"
+
+            for i in $(mysql -B -N -e "SHOW TABLES" -u$USERNAME -p$PASSWORD $DBNAME); do
+                mysql -B -N -e "SET foreign_key_checks = 0; ALTER TABLE $i ENGINE=InnoDB;" -u$USERNAME -p$PASSWORD $DBNAME
+                mysql -B -N -e "SET foreign_key_checks = 0; ALTER TABLE $i CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci" -u$USERNAME -p$PASSWORD $DBNAME
+            done
+
+    #.  The above can also be done manually. For every table that is not
+        innodb, convert it with::
+
+            mysql> ALTER TABLE table_name ENGINE=InnoDB;
+
+        For every table that is not utf8, convert it with::
+
+            mysql> ALTER TABLE table_name CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci
+
+        Some of these conversions may take some time to complete, especially
+        for the cpujob table.
+
+    #.  Ensure mysql data is correct without any obvious signs of problems.
+
+#.  (optional) If uncertain of upgrade, setup a test system.  Read the steps in
     :doc:`/getting_started`. Do not set up any data stores yet. These steps
     will instruct you to install a mysql database, which isn't essential,
     however does help ensure karaage is working correctly at this point.
@@ -292,35 +336,6 @@ Installing Karaage3
 
             mysql> use karaage3
             mysql> show table status
-
-    #.  If not all tables are using innodb and utf8, this can be corrected with
-        the following script:
-
-        .. code-block:: bash
-
-            #!/bin/sh
-            set -x
-
-            DBNAME="karaage3"
-            USERNAME="karaage3"
-            PASSWORD="YYYYYYYY"
-
-            for i in $(mysql -B -N -e "SHOW TABLES" -u$USERNAME -p$PASSWORD $DBNAME); do
-                mysql -B -N -e "SET foreign_key_checks = 0; ALTER TABLE $i ENGINE=InnoDB;" -u$USERNAME -p$PASSWORD $DBNAME
-                mysql -B -N -e "SET foreign_key_checks = 0; ALTER TABLE $i CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci" -u$USERNAME -p$PASSWORD $DBNAME
-            done
-
-    #.  The above can also be done manually. For every table that is not
-        innodb, convert it with::
-
-            mysql> ALTER TABLE table_name ENGINE=InnoDB;
-
-        For every table that is not utf8, convert it with::
-
-            mysql> ALTER TABLE table_name CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci
-
-        Some of these conversions may take some time to complete, especially
-        for the cpujob table.
 
     #.  Ensure mysql data is correct without any obvious signs of problems.
 
