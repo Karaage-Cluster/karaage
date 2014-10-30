@@ -24,7 +24,7 @@ from .alogger import parse_logs
 
 
 @xmlrpc_machine_required()
-@xmlrpc_func(returns='string', args=['string', 'date', 'string', 'string'])
+@xmlrpc_func(returns='string', args=['array', 'date', 'string', 'string'])
 def parse_usage(machine, usage, date, machine_name, log_type):
     """
     Parses usage

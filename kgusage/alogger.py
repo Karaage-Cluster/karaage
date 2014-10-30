@@ -17,6 +17,8 @@
 
 from __future__ import absolute_import
 
+import json
+
 from math import ceil
 import logging
 logger = logging.getLogger(__name__)
@@ -24,7 +26,7 @@ logger = logging.getLogger(__name__)
 from karaage.machines.models import Machine, Account
 from karaage.projects.models import Project
 
-from alogger import log_to_dict
+from alogger import get_parser
 
 from .models import CPUJob, Queue
 
@@ -47,14 +49,21 @@ def parse_logs(log_list, date, machine_name, log_type):
     except Machine.DoesNotExist:
         return "ERROR: Couldn't find machine named: %s" % machine_name
 
+    if log_type != "alogger":
+        parser = get_parser(log_type)
+
     # Process each line
-    for line in log_list:
-        line_no = line_no + 1
-        try:
-            data = log_to_dict(line, log_type)
-        except ValueError:
-            output.append("Error reading line")
-        except Exception:
+    for line_no, line in enumerate(log_list):
+        if log_type == "alogger":
+            data = json.loads(line)
+        else:
+            try:
+                data = parser.line_to_dict(line)
+            except ValueError:
+                output.append("%d: Error reading line" % line_no)
+                continue
+
+        if data is None:
             skip = skip + 1
             continue
 
@@ -67,54 +76,42 @@ def parse_logs(log_list, date, machine_name, log_type):
             # Couldn't find user account - Assign to user None
             account = None
             output.append(
-                "Couldn't find user account for username=%s and "
-                "machine category=%s. Assigned to None"
-                % (data['user'], machine.category.name))
+                "%d: Couldn't find user account for username=%s and "
+                "machine category=%s. Assigned to None."
+                % (line_no, data['user'], machine.category.name))
             fail = fail + 1
+            continue
+
         except Account.MultipleObjectsReturned:
             account = None
             output.append(
-                "Username %s has multiple active accounts on "
-                "machine category %s. Assigned to None"
-                % (data['user'], machine.category.name))
+                "%d: Username %s has multiple active accounts on "
+                "machine category %s. Assigned to None."
+                % (line_no, data['user'], machine.category.name))
             fail = fail + 1
+            continue
 
-        if 'project' in data:
-            try:
-                project = Project.objects.get(pid=data['project'])
-            except Project.DoesNotExist:
-                output.append(
-                    "Couldn't find specified project %s, using default project"
-                    % data['project'])
-                fail = fail + 1
+        if 'project' not in data:
+            output.append(
+                "%d: Project not given." % line_no)
+            fail = fail + 1
+            continue
 
-                try:
-                    project = account.default_project
-                except:
-                    output.append(
-                        "Couldn't find default project %s, using None"
-                        % account.default_project)
-                    project = None
+        try:
+            project = Project.objects.get(pid=data['project'])
+        except Project.DoesNotExist:
+            output.append(
+                "%d: Couldn't find specified project %s"
+                % (line_no, data['project']))
+            fail = fail + 1
+            continue
 
-        else:
-            try:
-                project = account.default_project
-            except:
-                # Couldn't find project - Assign to None
-                output.append(
-                    "Couldn't find default project for "
-                    "username=%s and machine category=%s"
-                    % (data['user'], machine.category.name))
-                project = None
-                fail += 1
-
-        if project is not None and account is not None:
-
-            if account.person not in project.group.members.all():
-                output.append(
-                    "%s is not in project %s, cpu usage: %s"
-                    % (account.person, project, data['cpu_usage']))
-                fail += 1
+        if account.person not in project.group.members.all():
+            output.append(
+                "%d: %s is not in project %s, cpu usage: %s"
+                % (line_no, account.person, project, data['cpu_usage']))
+            fail = fail + 1
+            continue
 
         # Everything is good so add entry
         queue, created = Queue.objects.get_or_create(name=data['queue'])
@@ -164,15 +161,15 @@ def parse_logs(log_list, date, machine_name, log_type):
             cpujob.list_pvmem = data['list_pvmem']
             cpujob.save()
 
-            if created:
-                count += 1
-            else:
-                updated += 1
-
         except Exception as e:
-            output.append("Failed to insert a line  - %s" % e)
+            output.append("%d: Failed to insert a line  - %s" % (line_no, e))
             fail = fail + 1
             continue
+
+        if created:
+            count += 1
+        else:
+            updated += 1
 
     summary = (
         'Inserted : %i\nUpdated  : %i\nFailed   : %i\nSkiped   : %i'
