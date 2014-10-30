@@ -21,6 +21,7 @@ import datetime
 from karaage.common.decorators import xmlrpc_machine_required
 
 from .alogger import parse_logs
+from .models import UsedModules
 
 
 @xmlrpc_machine_required()
@@ -35,3 +36,23 @@ def parse_usage(machine, usage, date, machine_name, log_type):
     date = datetime.date(int(year), int(month), int(day))
 
     return parse_logs(usage, date, machine_name, log_type)
+
+
+@xmlrpc_machine_required()
+@xmlrpc_func(returns='string', args=['string', 'array', 'string'])
+def add_modules_used(machine, jobid, modules, date):
+    year, month, day = date.split('-')
+    date = datetime.date(int(year), int(month), int(day))
+
+    try:
+        um = UsedModules.objects.get(jobid=jobid)
+    except UsedModules.DoesNotExist:
+        um = UsedModules()
+        um.jobid = jobid
+        um.date_added = date
+
+    assert ":" not in modules
+    um.modules = ":".join(modules)
+    um.save()
+
+    return True

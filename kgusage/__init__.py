@@ -23,6 +23,7 @@ class plugin(BasePlugin):
     django_apps = ("djcelery",)
     xmlrpc_methods = (
         ('kgusage.xmlrpc.parse_usage', 'parse_usage',),
+        ('kgusage.xmlrpc.add_modules_used', 'add_modules_used',),
     )
     settings = {
         'GRAPH_DEBUG': False,
