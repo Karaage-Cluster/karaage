@@ -1,3 +1,9 @@
+karaage3-applications (3.1.8-1) unstable; urgency=low
+
+  * Fix python3 depends.
+
+ -- Brian May <bam@debian.org>  Thu, 30 Oct 2014 14:45:12 +1100
+
 karaage3-applications (3.1.7-1) unstable; urgency=low
 
   * Fix daily cleanup.
