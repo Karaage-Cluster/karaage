@@ -1,3 +1,12 @@
+karaage3 (3.1.9-1) unstable; urgency=low
+
+  * Documentation: update apache configuration.
+  * Python3 fixes.
+  * UTF8 related fixes.
+  * Updates to upgrade documentation.
+
+ -- Brian May <bam@debian.org>  Thu, 30 Oct 2014 14:14:41 +1100
+
 karaage3 (3.1.8-1) unstable; urgency=low
 
   * Fix daily cleanup. Work properly with plugins.
