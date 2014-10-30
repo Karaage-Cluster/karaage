@@ -144,7 +144,7 @@ class SlurmDataStore(base.MachineCategoryDataStore):
         null.close()
 
         results = []
-        reader = csv.reader(_input_csv(process.stdout), delimiter="|")
+        reader = csv.reader(_input_csv(process.stdout), delimiter=str("|"))
 
         try:
             headers = reader.next()
@@ -167,6 +167,7 @@ class SlurmDataStore(base.MachineCategoryDataStore):
 
             results.append(this_row)
 
+        process.stdout.close()
         retcode = process.wait()
         if retcode != 0:
             logger.error("<-- Cmd %s returned %d (error)" % (command, retcode))
