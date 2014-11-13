@@ -265,3 +265,9 @@ datastores (:doc:`datastores`).
 Plugins
 -------
 For information on configuring additional plugins, see :doc:`plugins`.
+
+
+Cluster tools
+-------------
+If installing Karaage on a cluster, you may want to install the cluster tools,
+see :doc:`cluster`.
