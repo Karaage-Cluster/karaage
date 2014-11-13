@@ -8,7 +8,7 @@ apache_force_reload() {
         # use "restart" as a workaround for bug #558608
         invoke-rc.d apache2 restart || true
     else
-        echo "Your apache2 configuration is broken, please fix it and restart apache2 manually."
+        echo "Your apache2 configuration is broken, please fix it and restart apache2 manually." >&2
     fi
 }
 
