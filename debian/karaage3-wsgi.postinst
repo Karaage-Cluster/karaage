@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+#DEBHELPER#
+
 apache_force_reload() {
     if apache2ctl configtest 2>/dev/null; then
         #invoke-rc.d apache2 force-reload || true
@@ -25,8 +27,6 @@ if [ "$1" = "configure" ]; then
         dpkg-trigger karaage-static
     fi
 fi
-
-#DEBHELPER#
 
 if [ "$1" = "triggered" ]; then
     if [ "$2" = "karaage-static" ]; then
