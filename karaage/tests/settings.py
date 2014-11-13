@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 from karaage.conf.defaults import *  # NOQA
-from karaage.tests.defaults import *  # NOQA
+from .defaults import *  # NOQA
 
 import sys
 from karaage.conf.process import post_process
