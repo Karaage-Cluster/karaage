@@ -19,6 +19,7 @@ Contents:
    getting_started
    datastores
    plugins
+   cluster
    tasks
    upgrading
    ref
