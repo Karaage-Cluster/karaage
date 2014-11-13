@@ -75,7 +75,7 @@ of your server.
     .. code-block:: bash
 
         cd /etc/apache2/ssl
-        openssl genrsa -des3 -out www_privatekey.pem 2048
+        openssl genrsa -out www_privatekey.pem 2048
         chmod 700 www_privatekey.pem
         openssl req -new -key www_privatekey.pem -out www_csr.pem -sha256
 
