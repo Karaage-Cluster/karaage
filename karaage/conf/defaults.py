@@ -18,9 +18,14 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 """ Default Karaage Settings. """
+from importlib import import_module
+import os
+from socket import getfqdn
+import sys
+
+import django
 import six
 
-from socket import getfqdn
 HTTP_HOST = getfqdn()
 
 ###
@@ -66,15 +71,9 @@ AUTH_USER_MODEL = 'karaage.Person'
 #
 # * an application configuration class, or a package containing a
 # * application.
-import django
-if django.VERSION < (1, 7):
-    KARAAGE_APPS = (
-        'karaage',
-    )
-else:
-    KARAAGE_APPS = (
-        'karaage.apps.Karaage',
-    )
+KARAAGE_APPS = (
+    'karaage.apps.Karaage',
+)
 
 INSTALLED_APPS = (
     'django_xmlrpc',
@@ -93,26 +92,18 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 )
 
-# South not available for Python 3+ or Django 1.7+
-import sys
-if sys.version_info < (3, 0) and django.VERSION < (1, 7):
-    KARAAGE_APPS += (
-        'karaage.legacy.common',
-        'karaage.legacy.admin',
-        'karaage.legacy.people',
-        'karaage.legacy.machines',
-        'karaage.legacy.institutes',
-        'karaage.legacy.projects',
-        'karaage.legacy.usage',
-        'karaage.legacy.cache',
-        'karaage.legacy.software',
-        'karaage.legacy.pbsmoab',
-        'karaage.legacy.emails',
-        'karaage.legacy.applications',
-    )
-
-    INSTALLED_APPS += ('south',)
-
+# These optional apps are used in a dev environment
+for dotted_path in [
+    'django_extensions',
+    'sslserver',
+]:
+    try:
+        import_module(dotted_path)
+        INSTALLED_APPS += (
+            dotted_path,
+        )
+    except ImportError:
+        pass
 
 # List of locations of the template source files searched by
 # django.template.loaders.filesystem.Loader, in search order.
@@ -339,7 +330,7 @@ SHIB_ATTRIBUTE_MAP = {
 }
 
 # RE for validing a username.
-USERNAME_VALIDATION_RE = '[-\w]+'
+USERNAME_VALIDATION_RE = r'[-\w]+'
 
 # Error to display if username validation failed.
 USERNAME_VALIDATION_ERROR_MSG = six.u(
@@ -348,7 +339,7 @@ USERNAME_VALIDATION_ERROR_MSG = six.u(
 USERNAME_MAX_LENGTH = 255
 
 # RE for validing a project.
-PROJECT_VALIDATION_RE = '[-\w]+'
+PROJECT_VALIDATION_RE = r'[-\w]+'
 
 # Max length of a project identifier
 PROJECT_ID_MAX_LENGTH = 255
@@ -359,7 +350,7 @@ PROJECT_VALIDATION_ERROR_MSG = six.u(
     'numbers and underscores')
 
 # RE for validing a group id.
-GROUP_VALIDATION_RE = '[-\w]+'
+GROUP_VALIDATION_RE = r'[-\w]+'
 
 # Error to display if group validation failed.
 GROUP_VALIDATION_ERROR_MSG = six.u(
@@ -406,5 +397,4 @@ SILENCED_SYSTEM_CHECKS = [
 ]
 
 # Required for djcelery to work properly. Has no effect otherwise.
-import os
 os.environ.setdefault('CELERY_LOADER', 'djcelery.loaders.DjangoLoader')
