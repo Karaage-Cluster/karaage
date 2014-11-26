@@ -76,7 +76,7 @@ setup(
         "django-ajax-selects >= 1.1.3",
         "django_jsonfield >= 0.9.12",
         "django-model-utils >= 2.0.0",
-        "django-pipeline",
+        "django-pipeline>=1.4",
         "django-tables2",
         "django-filter",
         # karaage cluster project packages
