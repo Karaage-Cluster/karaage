@@ -81,4 +81,9 @@ setup(
     ],
     tests_require=tests_require,
     extras_require={'tests': tests_require},
+    entry_points = {
+        'karaage.apps': [
+            'kgapplications.plugin = kgapplications:plugin',
+        ],
+    },
 )
