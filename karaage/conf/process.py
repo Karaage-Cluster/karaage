@@ -19,6 +19,7 @@
 
 import importlib
 import django
+import pkg_resources
 from karaage.plugins import BasePlugin
 
 
@@ -71,20 +72,20 @@ def load_plugins(namespace, plugins):
     installed_apps = []
     done = set()
 
-    for app in namespace.KARAAGE_APPS:
-        if app not in done:
-            installed_apps.append(app)
-            done.add(app)
-
-    for app in django_apps:
-        if app not in done:
-            installed_apps.append(app)
-            done.add(app)
-
-    for app in namespace.INSTALLED_APPS:
-        if app not in done:
-            installed_apps.append(app)
-            done.add(app)
+    for apps in [
+        (
+            entry_point.name
+            for entry_point
+            in pkg_resources.iter_entry_points('karaage.apps')
+        ),
+        namespace.KARAAGE_APPS,
+        django_apps,
+        namespace.INSTALLED_APPS,
+    ]:
+        for app in apps:
+            if app not in done:
+                installed_apps.append(app)
+                done.add(app)
 
     namespace.INSTALLED_APPS = installed_apps
 
