@@ -74,6 +74,7 @@ setup(
         "django-xmlrpc >= 0.1",
         "django-simple-captcha",
         "django-ajax-selects >= 1.1.3",
+        "django-audit-log >= 0.5.0",
         "django_jsonfield >= 0.9.12",
         "django-model-utils >= 2.0.0",
         "django-pipeline>=1.4",
