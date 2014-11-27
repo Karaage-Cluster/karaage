@@ -63,12 +63,13 @@ RHEL 6 installation
         dn: cn=config
         changetype: modify
         replace: olcTLSCertificateFile
-        olcTLSCertificateFile: /etc/ssl/private/hostcert.pem
+        olcTLSCertificateFile: /etc/ssl/private/www_cert.pem
         -
         replace: olcTLSCertificatekeyFile
-        olcTLSCertificatekeyFile: /etc/ssl/private/hostkey.pem
-
-    Any intermediate certicates need to be listed with ``olcTLSCACertificatePath``.
+        olcTLSCertificatekeyFile: /etc/ssl/private/www_privatekey.pem
+        -
+        replace: olcTLSCACertificatePath
+        olcTLSCACertificatePath: /etc/ssl/private/www_intermediate.pem
 
 #.  Import with the following command:
 
@@ -155,6 +156,7 @@ Debian installation
 
         apt-get install slapd
         apt-get install ldap-utils
+        addgroup openldap ssl-cert
 
     Enter ``XXXXXXXX`` when prompted for administrator’s password.
 
@@ -163,28 +165,51 @@ Debian installation
         dn: cn=module,cn=config
         objectClass: olcModuleList
         cn: module
-        olcModulepath: /usr/lib64/openldap/
+        olcModulepath: /usr/lib/ldap/
         olcModuleload: ppolicy.la
 
-        dn: olcOverlay=ppolicy,olcDatabase={2}bdb,cn=config
+        dn: olcOverlay=ppolicy,olcDatabase={1}hdb,cn=config
         objectClass: olcPPolicyConfig
         olcPPolicyDefault: cn=default,ou=policies,dc=example,dc=org
+
+#.  Create the file with the following contents in ``/tmp/ldapssl.ldif``::
+
+        dn: cn=config
+        changetype: modify
+        replace: olcTLSCertificateFile
+        olcTLSCertificateFile: /etc/ssl/private/www_combined.pem
+        -
+        replace: olcTLSCertificatekeyFile
+        olcTLSCertificatekeyFile: /etc/ssl/private/www_privatekey.pem
+        -
+        replace: olcTLSCACertificatePath
+        olcTLSCACertificatePath: /etc/ssl/private/www_intermediate.pem
+
+    .. note::
+
+        The ``olcTLSCACertificatePath`` by itself should be sufficient for
+        specifying the intermediate certificate. Tests on Debian wheezy show
+        this is not the case, hence ``olcTLSCertificateFile`` specifies
+        ``www_combined.pem`` instead of ``www_cert.pem`` which would be the
+        correct value to use.
 
 #.  Import with the following command:
 
     .. code-block:: bash
 
+        ldapadd -Y EXTERNAL -H ldapi:/// < /etc/ldap/schema/ppolicy.ldif
         ldapadd -Y EXTERNAL -H ldapi:///  < /tmp/ppolicy1.ldif
+        ldapadd -Y EXTERNAL -H ldapi:///  < /tmp/ldapssl.ldif
 
 #.  Create the file with the following contents in ``/tmp/ppolicy2.ldif``::
+
+        dn: ou=policies,dc=example,dc=org
+        objectClass: organizationalUnit
 
         dn: ou=Accounts,dc=example,dc=org
         objectClass: organizationalUnit
 
         dn: ou=Groups,dc=example,dc=org
-        objectClass: organizationalUnit
-
-        dn: ou=policies,dc=example,dc=org
         objectClass: organizationalUnit
 
         dn: cn=default,ou=policies,dc=example,dc=org
@@ -203,8 +228,6 @@ Debian installation
 
     REPLICATION
 
-    SSL
-
 
 Configuring Karaage to use LDAP
 -------------------------------
@@ -220,8 +243,8 @@ Configuring Karaage to use LDAP
                   'URI': 'ldap://localhost',
                   'USER': 'cn=admin,dc=example,dc=org',
                   'PASSWORD': 'XXXXXXXX',
-                  'REQUIRE_TLS': False,
-                  'START_TLS ': False,
+                  'REQUIRE_TLS': True,
+                  'START_TLS ': True,
                   'TLS_CA' : None,
              }
         }
@@ -230,7 +253,7 @@ Configuring Karaage to use LDAP
              'ldap': [
                   {
                         'DESCRIPTION': 'LDAP datastore',
-                        'ENGINE': 'karaage.datastores.ldap.AccountDataStore',
+                        'ENGINE': 'karaage.datastores.ldap.MachineCategoryDataStore',
                         'LDAP': 'default',
                         'ACCOUNT': 'karaage.datastores.ldap_schemas.openldap_account',
                         'GROUP': 'karaage.datastores.ldap_schemas.openldap_account_group',
@@ -279,3 +302,9 @@ Configuring Karaage to use LDAP
 #.  Log into web interface and add a machine category that references the ldap
     datastore. This should automatically populate LDAP with any entries you
     have created.
+
+#.  Add missing LDAP entries:
+
+    .. code-block:: bash
+
+        kg-manage migrate_ldap

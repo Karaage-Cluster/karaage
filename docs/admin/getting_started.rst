@@ -35,7 +35,7 @@ Installation
 
         wget http://code.vpac.org/debian/vpac-debian-key.gpg -O - | apt-key add -
 
-#.  Create a /etc/apt/sources.list.d/vpac.list containing::
+#.  Create a ``/etc/apt/sources.list.d/vpac.list`` containing::
 
         deb     http://code.vpac.org/debian  wheezy main
         deb-src http://code.vpac.org/debian  wheezy main
@@ -55,28 +55,17 @@ Installation
     wget http://code.vpac.org/centos/vpac.repo -O /etc/yum.repos.d/vpac.repo
 
 
-Apache Configuration
---------------------
-
-Karaage, by default, requires a https connection. While this default can be
-changed, this is not advisable on a production system.
-
-In the following steps, replace ``www.example.org`` with the visible hostname
-of your server.
-
-#.  Install apache2.
-
-    .. code-block:: bash
-
-        apt-get install apache2
+SSL certificate
+---------------
+You should create a signed SSL certificate for Apache and LDAP.
 
 #.  Generate a SSL private key, a CSR.
 
     .. code-block:: bash
 
-        cd /etc/apache2/ssl
+        cd /etc/ssl/private
         openssl genrsa -out www_privatekey.pem 2048
-        chmod 700 www_privatekey.pem
+        chmod 640 www_privatekey.pem
         openssl req -new -key www_privatekey.pem -out www_csr.pem -sha256
 
 #.      Submit www_csr.pem to a CA, and get it signed. Copy resultant
@@ -93,12 +82,40 @@ of your server.
         You may need an intermediate certificate too. Copy this into
         ``www_intermediate.pem``.
 
+#.  Join certificate with intermediate (required for some versions of slapd):
+
+    .. code-block:: bash
+
+        cd /etc/ssl/private
+        cat www_cert.pem www_intermediate.pem > www_combined.pem
+
+#.  Setup the permissions:
+
+    .. code-block:: bash
+
+        cd /etc/ssl/private
+        chown root:ssl-cert www_*.pem
+
+Apache Configuration
+--------------------
+Karaage, by default, requires a https connection. While this default can be
+changed, this is not advisable on a production system.
+
+In the following steps, replace ``www.example.org`` with the visible hostname
+of your server.
+
+#.  Install apache2.
+
+    .. code-block:: bash
+
+        apt-get install apache2
+
 #.      Setup Apache to support secure https connections. Changes should be
         made to ``/etc/apache2/sites-available/default-ssl``::
 
-            SSLCertificateFile /etc/apache2/ssl/www_cert.pem
-            SSLCertificateKeyFile /etc/apache2/ssl/www_privatekey.pem
-            SSLCertificateChainFile /etc/apache2/ssl/www_intermediate.pem
+            SSLCertificateFile /etc/ssl/private/www_cert.pem
+            SSLCertificateKeyFile /etc/ssl/private/www_privatekey.pem
+            SSLCertificateChainFile /etc/ssl/private/www_intermediate.pem
 
         For more details on what changes are required, see the `Apache howto
         <http://httpd.apache.org/docs/current/ssl/ssl_howto.html>`_.
@@ -120,7 +137,7 @@ of your server.
         disabling insecure protocols and ciphers::
 
            SSLProtocol all -SSLv2 -SSLv3
-           SSLCipherSuite ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
+           SSLCipherSuite ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA
 
         Note however that the ``SSLProtocol`` will break IE6, and the
         ``SSLCipherSuite`` setting will break IE on XP. For more information on
@@ -200,13 +217,6 @@ Initial setup
         apt-get install karaage3
         apt-get install python-mysql.connector
 
-#.  Run :doc:`/ref/cmd/kg-set-secret-key`, this will automatically set
-    :setting:`SECRET_KEY` inside ``/etc/karaage3/settings.py``:
-
-    .. code-block:: bash
-
-         kg_set_secret_key
-
 #.  Edit the :setting:`DATABASES` setting in ``/etc/karaage3/settings.py``:
 
     .. code-block:: python
@@ -238,8 +248,7 @@ Initial setup
 
     .. code-block:: bash
 
-        kg-manage syncdb --noinput
-        kg-manage migrate --all
+        kg-manage migrate
 
 #.  Create a karaage superuser using :djadmin:`kgcreatesuperuser`:
 
@@ -248,11 +257,11 @@ Initial setup
         kg-manage kgcreatesuperuser
 
 #.  Setup cron job to automatically start :djadmin:`daily_cleanup`. Edit the
-    ``/etc/cron.d/python-karaage file``::
+    ``/etc/cron.d/karaage3-database file``::
 
         10 1 * * * www-data /usr/bin/kg-manage daily_cleanup
 
-#.  Test. You should now be able to go to ``http://www.example.org/kgadmin/``.
+#.  Test. You should now be able to go to ``http://www.example.org/karaage/``.
 
 
 Data stores
