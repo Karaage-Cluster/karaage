@@ -35,7 +35,7 @@ Installation
 
         wget http://code.vpac.org/debian/vpac-debian-key.gpg -O - | apt-key add -
 
-#.  Create a /etc/apt/sources.list.d/vpac.list containing::
+#.  Create a ``/etc/apt/sources.list.d/vpac.list`` containing::
 
         deb     http://code.vpac.org/debian  wheezy main
         deb-src http://code.vpac.org/debian  wheezy main
@@ -120,7 +120,7 @@ of your server.
         disabling insecure protocols and ciphers::
 
            SSLProtocol all -SSLv2 -SSLv3
-           SSLCipherSuite ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
+           SSLCipherSuite ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA
 
         Note however that the ``SSLProtocol`` will break IE6, and the
         ``SSLCipherSuite`` setting will break IE on XP. For more information on
@@ -200,13 +200,6 @@ Initial setup
         apt-get install karaage3
         apt-get install python-mysql.connector
 
-#.  Run :doc:`/ref/cmd/kg-set-secret-key`, this will automatically set
-    :setting:`SECRET_KEY` inside ``/etc/karaage3/settings.py``:
-
-    .. code-block:: bash
-
-         kg_set_secret_key
-
 #.  Edit the :setting:`DATABASES` setting in ``/etc/karaage3/settings.py``:
 
     .. code-block:: python
@@ -238,8 +231,7 @@ Initial setup
 
     .. code-block:: bash
 
-        kg-manage syncdb --noinput
-        kg-manage migrate --all
+        kg-manage migrate
 
 #.  Create a karaage superuser using :djadmin:`kgcreatesuperuser`:
 
@@ -248,11 +240,11 @@ Initial setup
         kg-manage kgcreatesuperuser
 
 #.  Setup cron job to automatically start :djadmin:`daily_cleanup`. Edit the
-    ``/etc/cron.d/python-karaage file``::
+    ``/etc/cron.d/karaage3-database file``::
 
         10 1 * * * www-data /usr/bin/kg-manage daily_cleanup
 
-#.  Test. You should now be able to go to ``http://www.example.org/kgadmin/``.
+#.  Test. You should now be able to go to ``http://www.example.org/karaage/``.
 
 
 Data stores

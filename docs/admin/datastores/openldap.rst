@@ -163,7 +163,7 @@ Debian installation
         dn: cn=module,cn=config
         objectClass: olcModuleList
         cn: module
-        olcModulepath: /usr/lib64/openldap/
+        olcModulepath: /usr/lib/ldap/
         olcModuleload: ppolicy.la
 
         dn: olcOverlay=ppolicy,olcDatabase={2}bdb,cn=config
@@ -230,7 +230,7 @@ Configuring Karaage to use LDAP
              'ldap': [
                   {
                         'DESCRIPTION': 'LDAP datastore',
-                        'ENGINE': 'karaage.datastores.ldap.AccountDataStore',
+                        'ENGINE': 'karaage.datastores.ldap.MachineCategoryDataStore',
                         'LDAP': 'default',
                         'ACCOUNT': 'karaage.datastores.ldap_schemas.openldap_account',
                         'GROUP': 'karaage.datastores.ldap_schemas.openldap_account_group',
