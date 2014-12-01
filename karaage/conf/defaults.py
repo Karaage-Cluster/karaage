@@ -26,7 +26,14 @@ import sys
 import django
 import six
 
-HTTP_HOST = getfqdn()
+LOGNAME = os.getlogin()
+FQDN = getfqdn()
+
+HTTP_HOST = FQDN
+
+# Users are advised to contact this address if having problems.
+# This is also used as the from address in outgoing emails.
+ACCOUNTS_EMAIL = '{}@{}'.format(LOGNAME, FQDN)
 
 ###
 # DJANGO SETTINGS
@@ -428,7 +435,7 @@ DATABASES = {
             'KARAAGE_DB_ENGINE', 'django.db.backends.dummy',
         ),
         'NAME': os.environ.get(
-            'KARAAGE_DB_NAME', os.getlogin(),
+            'KARAAGE_DB_NAME', LOGNAME,
         ),
         'USER': os.environ.get(
             'KARAAGE_DB_USER', os.getlogin(),
