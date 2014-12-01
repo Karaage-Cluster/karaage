@@ -233,6 +233,7 @@ ALLOWED_HOSTS = ["%(HOST)s"]
 # DJANGO PIPELINE
 ###
 
+PIPELINE_ENABLED = env_is_true('DJANGO_PIPELINE_ENABLED', '1')
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
 STATICFILES_FINDERS = (
