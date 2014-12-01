@@ -22,6 +22,7 @@ from setuptools import find_packages, setup
 
 
 tests_require = [
+    "django-extensions",
     "factory_boy",
     "mock",
     "cracklib",
