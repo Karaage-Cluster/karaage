@@ -2,10 +2,10 @@
 <html {% if LANGUAGE_CODE %}lang="{{ LANGUAGE_CODE|default:"en-us" }}"{% endif %} {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
 <title>{% block title %}{% endblock %}&nbsp;|&nbsp;{% block site_name_title %}{% endblock %}</title>
-{% load compressed %}
+{% load pipeline %}
 {% load firstof from future %}
-{% compressed_css 'karaage' %}
-{% compressed_js 'karaage' %}
+{% stylesheet 'karaage' %}
+{% javascript 'karaage' %}
 <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% endblock %}" />
 {% block extrastyle %}{% endblock %}
 {% block extrahead %}{% endblock %}
