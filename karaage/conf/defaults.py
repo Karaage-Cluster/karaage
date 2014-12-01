@@ -26,6 +26,18 @@ import sys
 import django
 import six
 
+TRUE_STRINGS = [
+    '1',
+    'yes',
+    'y',
+    'on',
+    'true',
+    't',
+]
+
+def env_is_true(name, default):
+    return os.environ.get(name, default).strip().lower() in TRUE_STRINGS
+
 LOGNAME = os.getlogin()
 FQDN = getfqdn()
 
@@ -53,7 +65,7 @@ ACCOUNTS_ORG_NAME = 'Example'
 # display a detailed traceback, including a lot of metadata about your
 # environment, such as all the currently defined Django settings (from
 # settings.py).
-DEBUG = False
+DEBUG = env_is_true('KARAAGE_DEBUG', '0')
 
 # A boolean that turns on/off template debug mode. If this is True, the fancy
 # error page will display a detailed report for any exception raised during
@@ -185,16 +197,7 @@ X_FRAME_OPTIONS = 'DENY'
 # Whether to use a secure cookie for the session cookie. If this is set to
 # True, the cookie will be marked as “secure,” which means browsers may ensure
 # that the cookie is only sent under an HTTPS connection.
-SESSION_COOKIE_SECURE = os.environ.get(
-    'SESSION_COOKIE_SECURE', '1',
-).lower().strip() in [
-    '1',
-    'yes',
-    'y',
-    'on',
-    'true',
-    't',
-]
+SESSION_COOKIE_SECURE = env_is_true('SESSION_COOKIE_SECURE', '1')
 
 # Whether to expire the session when the user closes their browser. See
 # `Browser-length sessions vs. persistent sessions

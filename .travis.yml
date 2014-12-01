@@ -8,9 +8,10 @@ python:
 env:
         global:
                 - KARAAGE_SECRET_KEY='d4-5vjhge@3r8t#*)+s8z-z0l!_sy94ol!m6k259qeskd4k+u7'
+                - KARAAGE_DEBUG='True'
         matrix:
-                - KARAAGE_DB_ENGINE=django.db.backends.mysql
-                - KARAAGE_DB_ENGINE=django.db.backends.postgresql_psycopg2
+                - KARAAGE_DB_ENGINE='django.db.backends.mysql'
+                - KARAAGE_DB_ENGINE='django.db.backends.postgresql_psycopg2'
 
 before_install:
         - sudo apt-get update -qq
