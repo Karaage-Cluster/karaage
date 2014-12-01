@@ -16,6 +16,7 @@ env:
 before_install:
         - sudo apt-get update -qq
         - sudo apt-get install -qq libcrack2-dev csstidy slapd
+        - sudo service slapd stop
         - sudo apt-get build-dep -qq python-cracklib
 
 install:
