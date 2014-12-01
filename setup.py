@@ -74,6 +74,7 @@ setup(
         ),
     ],
     install_requires=[
+        "cssmin",
         "Django >= 1.7",
         "django-xmlrpc >= 0.1",
         "django-simple-captcha",
