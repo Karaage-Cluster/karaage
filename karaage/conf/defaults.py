@@ -175,7 +175,16 @@ X_FRAME_OPTIONS = 'DENY'
 # Whether to use a secure cookie for the session cookie. If this is set to
 # True, the cookie will be marked as “secure,” which means browsers may ensure
 # that the cookie is only sent under an HTTPS connection.
-SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = os.environ.get(
+    'SESSION_COOKIE_SECURE', '1',
+).lower().strip() in [
+    '1',
+    'yes',
+    'y',
+    'on',
+    'true',
+    't',
+]
 
 # Whether to expire the session when the user closes their browser. See
 # `Browser-length sessions vs. persistent sessions
@@ -212,6 +221,13 @@ ALLOWED_HOSTS = ["%(HOST)s"]
 ###
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'pipeline.finders.PipelineFinder',
+)
+
 PIPELINE_EMBED_PATH = r'img/|images/'
 PIPELINE_CSS_COMPRESSOR = None
 PIPELINE_CSS = {
@@ -397,4 +413,35 @@ SILENCED_SYSTEM_CHECKS = [
 ]
 
 # Required for djcelery to work properly. Has no effect otherwise.
-os.environ.setdefault('CELERY_LOADER', 'djcelery.loaders.DjangoLoader')
+os.environ.get('CELERY_LOADER', 'djcelery.loaders.DjangoLoader')
+
+# A secret key for a particular Django installation. This is used to provide
+# cryptographic signing, and should be set to a unique, unpredictable value.
+SECRET_KEY = os.environ.get('KARAAGE_SECRET_KEY', '')
+
+# A dictionary containing the settings for all databases to be used with
+# Django. It is a nested dictionary whose contents maps database aliases to a
+# dictionary containing the options for an individual database.
+DATABASES = {
+    'default': {
+        'ENGINE': os.environ.get(
+            'KARAAGE_DB_ENGINE', 'django.db.backends.dummy',
+        ),
+        'NAME': os.environ.get(
+            'KARAAGE_DB_NAME', os.getlogin(),
+        ),
+        'USER': os.environ.get(
+            'KARAAGE_DB_USER', os.getlogin(),
+        ),
+        'PASSWORD': os.environ.get(
+            'KARAAGE_DB_PASSWORD', '',
+        ),
+        'HOST': os.environ.get(
+            'KARAAGE_DB_HOST', '',
+        ),
+        'PORT': os.environ.get(
+            'KARAAGE_DB_PORT', '',
+        ),
+        'ATOMIC_REQUESTS': True,
+    }
+}

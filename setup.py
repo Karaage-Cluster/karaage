@@ -25,6 +25,9 @@ tests_require = [
     "factory_boy",
     "mock",
     "cracklib",
+    "django-behave",
+    "selenium",
+    "selenium-page-adapter",
 ]
 
 setup(
