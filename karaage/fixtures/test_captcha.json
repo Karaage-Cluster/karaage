@@ -1,0 +1,12 @@
+[
+    {
+        "fields": {
+            "challenge": "",
+            "expiration": "2014-11-28T20:34:00",
+            "hashkey": "1",
+            "response": ""
+        },
+        "model": "captcha.captchastore",
+        "pk": 1
+    }
+]

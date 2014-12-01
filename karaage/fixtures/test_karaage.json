@@ -1,0 +1,158 @@
+[
+    {
+        "fields": {
+            "group": 1,
+            "is_active": true,
+            "name": "VLSCI",
+            "saml_entityid": null
+        },
+        "model": "karaage.institute",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "institute": 1,
+            "person": 1,
+            "send_email": true
+        },
+        "model": "karaage.institutedelegate",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "cap": null,
+            "disk_quota": null,
+            "institute": 1,
+            "machine_category": 1,
+            "quota": "100.00"
+        },
+        "model": "karaage.institutequota",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "date_created": "2010-04-30",
+            "date_deleted": null,
+            "default_project": 1,
+            "disk_quota": null,
+            "extra_data": {},
+            "foreign_id": null,
+            "login_enabled": true,
+            "machine_category": 1,
+            "person": 1,
+            "shell": "/bin/bash",
+            "username": "1"
+        },
+        "model": "karaage.account",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "category": 1,
+            "end_date": "2014-08-01",
+            "last_login": "2014-11-04T17:50:31",
+            "mem_per_core": null,
+            "name": "bruce",
+            "no_cpus": 1088,
+            "no_nodes": 135,
+            "password": "!iMnh4ng5VxEUsIJFsM5z8ZQlgffTLSelbcfIBTLP",
+            "pbs_server_host": "",
+            "scaling_factor": 1,
+            "start_date": "2010-03-25",
+            "type": "SGI"
+        },
+        "model": "karaage.machine",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "datastore": "dummy",
+            "name": "VLSCI"
+        },
+        "model": "karaage.machinecategory",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "description": "Dummy group used for upgrades.",
+            "extra_data": {},
+            "foreign_id": null,
+            "members": [],
+            "name": "1"
+        },
+        "model": "karaage.group",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "address": null,
+            "approved_by": null,
+            "city": null,
+            "comment": null,
+            "country": null,
+            "date_approved": null,
+            "date_deleted": null,
+            "deleted_by": null,
+            "department": null,
+            "email": "karaage@test.com",
+            "expires": null,
+            "fax": null,
+            "full_name": "Karaage Dev",
+            "institute": 1,
+            "is_active": true,
+            "is_admin": true,
+            "is_systemuser": false,
+            "last_login": "2014-11-20T14:50:48",
+            "last_usage": null,
+            "legacy_ldap_password": null,
+            "login_enabled": true,
+            "mobile": null,
+            "password": "pbkdf2_sha256$12000$YXeGsYxh73z9$VU3stIeFEW6hWGKWhu8WCYWDunbYriHzMSZadjl3Ze4=",
+            "position": null,
+            "postcode": null,
+            "saml_id": null,
+            "short_name": "Karaage",
+            "state": null,
+            "supervisor": null,
+            "telephone": null,
+            "title": null,
+            "username": "1",
+            "website": null
+        },
+        "model": "karaage.person",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "additional_req": "",
+            "approved_by": 1,
+            "date_approved": "2010-08-05",
+            "date_deleted": "2013-08-29",
+            "deleted_by": null,
+            "description": "",
+            "end_date": null,
+            "group": 1,
+            "institute": 1,
+            "is_active": false,
+            "is_approved": true,
+            "last_usage": null,
+            "leaders": [
+                1
+            ],
+            "name": "backup",
+            "pid": "1",
+            "start_date": "2010-04-30"
+        },
+        "model": "karaage.project",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "cap": null,
+            "machine_category": 1,
+            "project": 1
+        },
+        "model": "karaage.projectquota",
+        "pk": 1
+    }
+]

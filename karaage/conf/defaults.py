@@ -35,6 +35,9 @@ HTTP_HOST = FQDN
 # This is also used as the from address in outgoing emails.
 ACCOUNTS_EMAIL = '{}@{}'.format(LOGNAME, FQDN)
 
+# This organisation name, used in outgoing emails.
+ACCOUNTS_ORG_NAME = 'Example'
+
 ###
 # DJANGO SETTINGS
 ###
