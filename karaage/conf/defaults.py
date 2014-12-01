@@ -266,6 +266,10 @@ PIPELINE_JS = {
     }
 }
 
+# Django Pipeline configuration
+PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.csstidy.CSSTidyCompressor'
+PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.slimit.SlimItCompressor'
+
 ###
 # AJAX SETTINGS
 ###
