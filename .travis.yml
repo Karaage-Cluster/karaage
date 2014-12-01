@@ -20,6 +20,7 @@ before_install:
 
 install:
         - pip install --allow-external python-crack --allow-unverified python-crack --allow-external mysql-connector-python -r requirements.txt -r test-requirements.txt mysql-connector-python psycopg2
+        - python setup.py develop
 
 script:
         - kg-manage test -v3 karaage
