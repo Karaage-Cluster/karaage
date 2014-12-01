@@ -21,6 +21,7 @@ from django.utils.encoding import python_2_unicode_compatible
 import datetime
 
 from model_utils import FieldTracker
+
 from audit_log.models.managers import AuditLog
 
 from karaage.people.models import Person, Group
@@ -240,6 +241,8 @@ class ProjectQuota(models.Model):
     machine_category = models.ForeignKey(MachineCategory)
 
     _tracker = FieldTracker()
+
+    audit_log = AuditLog()
 
     def save(self, *args, **kwargs):
         created = self.pk is None
