@@ -145,7 +145,6 @@ USE_I18N = False
 
 # A tuple of middleware classes to use.
 MIDDLEWARE_CLASSES = (
-    'audit_log.middleware.UserLoggingMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
