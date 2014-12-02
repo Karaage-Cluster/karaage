@@ -9,9 +9,18 @@ from schemes.models import Scheme
 
 class Allocation(models.Model):
     grant = models.ForeignKey(Grant)
+    period = models.ForeignKey(AllocationPeriod)
     project = models.ForeignKey(Project)
     resource_pool = models.ForeignKey(ResourcePool)
     quantity = models.FloatField()
+
+    audit_log = AuditLog()
+
+
+class AllocationPeriod(models.Model):
+    name = models.CharField(max_length=255)
+    start = models.DateTimeField()
+    end = models.DateTimeField()
 
     audit_log = AuditLog()
 
