@@ -22,6 +22,9 @@ try:
 except ImportError:
     import urllib.parse as urlparse
 
-GRAPH_TMP = os.path.join(settings.TMP_DIR, settings.GRAPH_TMP)
-GRAPH_ROOT = os.path.join(settings.FILES_DIR, settings.GRAPH_DIR)
-GRAPH_URL = urlparse.urljoin(settings.FILES_URL, settings.GRAPH_DIR)
+GRAPH_TMP = os.path.join(
+    settings.TMP_DIR, getattr(settings, 'GRAPH_TMP', 'kgusage')
+)
+GRAPH_DIR = getattr(settings, 'GRAPH_DIR', 'kgusage')
+GRAPH_ROOT = os.path.join(settings.FILES_DIR, GRAPH_DIR)
+GRAPH_URL = urlparse.urljoin(settings.FILES_URL, GRAPH_DIR)
