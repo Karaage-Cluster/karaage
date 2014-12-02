@@ -20,6 +20,8 @@ from django.utils.encoding import python_2_unicode_compatible
 
 from model_utils import FieldTracker
 
+from audit_log.models.managers import AuditLog
+
 from karaage.common import log, is_admin
 from karaage.people.models import Person, Group
 from karaage.machines.models import Account, MachineCategory
@@ -32,7 +34,7 @@ class Institute(models.Model):
     delegates = models.ManyToManyField(
         Person, related_name='delegate_for',
         blank=True, null=True, through='InstituteDelegate')
-    group = models.ForeignKey(Group)
+    group = models.ForeignKey('karaage.Group')
     saml_entityid = models.CharField(
         max_length=200,
         null=True, blank=True, unique=True)
@@ -41,6 +43,8 @@ class Institute(models.Model):
     active = ActiveInstituteManager()
 
     _tracker = FieldTracker()
+
+    audit_log = AuditLog()
 
     class Meta:
         ordering = ['name']
@@ -136,13 +140,15 @@ class Institute(models.Model):
 
 @python_2_unicode_compatible
 class InstituteQuota(models.Model):
-    institute = models.ForeignKey(Institute)
-    machine_category = models.ForeignKey(MachineCategory)
+    institute = models.ForeignKey('karaage.Institute')
+    machine_category = models.ForeignKey('karaage.MachineCategory')
     quota = models.DecimalField(max_digits=5, decimal_places=2)
     cap = models.IntegerField(null=True, blank=True)
     disk_quota = models.IntegerField(null=True, blank=True)
 
     _tracker = FieldTracker()
+
+    audit_log = AuditLog()
 
     class Meta:
         db_table = 'institute_quota'
@@ -202,11 +208,13 @@ class InstituteQuota(models.Model):
 
 
 class InstituteDelegate(models.Model):
-    person = models.ForeignKey(Person)
-    institute = models.ForeignKey(Institute)
+    person = models.ForeignKey('karaage.Person')
+    institute = models.ForeignKey('karaage.Institute')
     send_email = models.BooleanField()
 
     _tracker = FieldTracker()
+
+    audit_log = AuditLog()
 
     class Meta:
         db_table = 'institutedelegate'
