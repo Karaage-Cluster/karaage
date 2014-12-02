@@ -36,6 +36,25 @@ DELETION = 3
 COMMENT = 4
 
 
+class Usage(models.Manager):
+    account = models.ForeignKey('karaage.Account')
+    allocation = models.ForeignKey('karaage.Allocation')
+    grant = models.ForeignKey('karaage.Grant')
+    institute = models.ForeignKey('karaage.Institute')
+    machine = models.ForeignKey('karaage.Machine')
+    project = models.ForeignKey('karaage.Project')
+    resource = models.ForeignKey('karaage.Resource')
+    resource_pool = models.ForeignKey('karaage.ResourcePool', null=True)
+    scheme = models.ForeignKey('karaage.Scheme')
+    count = models.IntegerField()
+    created = models.DateTimeField(auto_now_add=True)
+    description = models.CharField(max_length=255)
+    quantity = models.FloatField(null=True)
+    range_start = models.DateTimeField()
+    range_end = models.DateTimeField()
+    used = models.FloatField()
+
+
 class LogEntryManager(models.Manager):
 
     def log_action(self, user_id, content_type_id, object_id,
