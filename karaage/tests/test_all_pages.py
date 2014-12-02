@@ -35,6 +35,7 @@ def make_test_get_function(name, url, url_pattern):
 
 
 class TestAllPages(TestCase):
+
     """Discover all URLs, do a HTTP GET and confirm 200 OK and no DB changes."""
 
     fixtures = [
@@ -52,19 +53,20 @@ class TestAllPages(TestCase):
 
 urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
 
+
 def add_test_methods(testcase, urlpatterns):
     # loop through every URL pattern
     for index, (func, regex, url_name) in enumerate(
         extract_views_from_urlpatterns(urlpatterns)
     ):
-        url_pattern = simplify_regex(regex)
+        url_pattern = unicode(simplify_regex(regex))
         name = '_'.join(
             [
                 'test',
                 '%.4d' % index,
             ] + slugify(
-                url_pattern.replace('/', '_') or 'root'
-            ).replace('_', ' ').split(),
+                url_pattern.replace(u'/', u'_') or u'root'
+            ).replace(u'_', u' ').split(),
         )
         url = re.sub('<[\w_]+>', '1', url_pattern)
         # bail out if we don't know how to visit this URL properly
