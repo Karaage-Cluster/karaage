@@ -11,3 +11,4 @@ django-xmlrpc==0.1.5
 python-alogger==2.2.3
 python-tldap==0.3.8
 six==1.8.0
+slimit==0.8.1

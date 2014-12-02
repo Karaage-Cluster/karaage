@@ -87,6 +87,8 @@ setup(
         # karaage cluster project packages
         "python-alogger >= 2.0",
         "python-tldap >= 0.3.3",
+        "six",
+        "slimit>=0.8.1",
     ],
     tests_require=tests_require,
     extras_require={
