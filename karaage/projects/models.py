@@ -34,8 +34,8 @@ from karaage.common import log, is_admin
 class Project(models.Model):
     pid = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=200)
-    group = models.ForeignKey(Group)
-    institute = models.ForeignKey(Institute)
+    group = models.ForeignKey('karaage.Group')
+    institute = models.ForeignKey('karaage.Institute')
     leaders = models.ManyToManyField(Person, related_name='leads')
     description = models.TextField(null=True, blank=True)
     is_approved = models.BooleanField(default=False)
@@ -44,11 +44,11 @@ class Project(models.Model):
     additional_req = models.TextField(null=True, blank=True)
     is_active = models.BooleanField(default=False)
     approved_by = models.ForeignKey(
-        Person, related_name='project_approver',
+        'karaage.Person', related_name='project_approver',
         null=True, blank=True, editable=False)
     date_approved = models.DateField(null=True, blank=True, editable=False)
     deleted_by = models.ForeignKey(
-        Person, related_name='project_deletor',
+        'karaage.Person', related_name='project_deletor',
         null=True, blank=True, editable=False)
     date_deleted = models.DateField(null=True, blank=True, editable=False)
     last_usage = models.DateField(null=True, blank=True, editable=False)
@@ -232,9 +232,9 @@ class Project(models.Model):
 
 
 class ProjectQuota(models.Model):
-    project = models.ForeignKey(Project)
+    project = models.ForeignKey('karaage.Project')
     cap = models.IntegerField(null=True, blank=True)
-    machine_category = models.ForeignKey(MachineCategory)
+    machine_category = models.ForeignKey('karaage.MachineCategory')
 
     _tracker = FieldTracker()
 

@@ -98,7 +98,7 @@ class Machine(AbstractBaseUser):
     no_cpus = models.IntegerField()
     no_nodes = models.IntegerField()
     type = models.CharField(max_length=100)
-    category = models.ForeignKey(MachineCategory)
+    category = models.ForeignKey('karaage.MachineCategory')
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
     pbs_server_host = models.CharField(max_length=50, null=True, blank=True)
@@ -154,12 +154,12 @@ class Machine(AbstractBaseUser):
 
 @python_2_unicode_compatible
 class Account(models.Model):
-    person = models.ForeignKey(Person)
+    person = models.ForeignKey('karaage.Person')
     username = models.CharField(max_length=255)
     foreign_id = models.CharField(
         max_length=255, null=True, unique=True,
         help_text='The foreign identifier from the datastore.')
-    machine_category = models.ForeignKey(MachineCategory)
+    machine_category = models.ForeignKey('karaage.MachineCategory')
     default_project = models.ForeignKey(
         'karaage.Project', null=True, blank=True)
     date_created = models.DateField()
