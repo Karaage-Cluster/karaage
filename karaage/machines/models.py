@@ -25,8 +25,6 @@ from django.utils.encoding import python_2_unicode_compatible
 
 from jsonfield import JSONField
 
-from audit_log.models.managers import AuditLog
-
 from model_utils import FieldTracker
 
 from karaage.people.models import Person, Group
@@ -46,8 +44,6 @@ class MachineCategory(models.Model):
     objects = MachineCategoryManager()
 
     _tracker = FieldTracker()
-
-    audit_log = AuditLog()
 
     def __init__(self, *args, **kwargs):
         super(MachineCategory, self).__init__(*args, **kwargs)
@@ -176,8 +172,6 @@ class Account(models.Model):
         help_text='Datastore specific values should be stored in this field.')
 
     _tracker = FieldTracker()
-
-    audit_log = AuditLog()
 
     def __init__(self, *args, **kwargs):
         super(Account, self).__init__(*args, **kwargs)
@@ -493,23 +487,3 @@ def _members_changed(
 
 models.signals.m2m_changed.connect(
     _members_changed, sender=Group.members.through)
-
-
-class ResourcePool(models.Model):
-    name = models.CharField(max_length=255)
-
-    audit_log = AuditLog()
-
-
-class Resource(models.Model):
-    machine = models.ForeignKey('karaage.Machine')
-    resource_pool = models.ForeignKey('karaage.ResourcePool')
-    scaling_factor = models.FloatField()
-    RESOURCE_TYPES = (
-        ('SLURM (CPU)', 'SLURM (CPU)'),
-        ('SLURM (Memory)', 'SLURM (Memory)'),
-        ('GPFS', 'GPFS')
-    )
-    resource_type = models.CharField(max_length=255, choices=RESOURCE_TYPES)
-
-    audit_log = AuditLog()
