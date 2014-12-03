@@ -78,6 +78,8 @@ def add_test_methods(testcase, urlpatterns):
                 in [
                     '<app_label>',
                     '<model>',
+                    '<key>',
+                    '<token>',
                     '/tasks/',
                     '/usage/',
                     '/captcha/',

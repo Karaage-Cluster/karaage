@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+from karaage.conf.defaults import *
+
 
 class InvalidString(str):
     def __mod__(self, other):
@@ -22,10 +24,10 @@ class InvalidString(str):
         raise TemplateSyntaxError(
             "Undefined variable or unknown value for: \"%s\"" % other)
 
-TEMPLATE_STRING_IF_INVALID = InvalidString("%s")
+#TEMPLATE_STRING_IF_INVALID = InvalidString("%s")
 
 DEBUG = True
-PIPELINE_ENABLED = True
+PIPELINE_ENABLED = False
 TEMPLATE_DEBUG = DEBUG
 SHIB_SUPPORTED = False
 SOUTH_TESTS_MIGRATE = False

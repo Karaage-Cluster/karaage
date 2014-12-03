@@ -7,6 +7,7 @@ python:
 
 env:
         global:
+                - DJANGO_SETTINGS_MODULE='karaage.tests.settings'
                 - KARAAGE_SECRET_KEY='d4-5vjhge@3r8t#*)+s8z-z0l!_sy94ol!m6k259qeskd4k+u7'
                 - KARAAGE_DEBUG='True'
                 - DJANGO_PIPELINE_ENABLED='False'
@@ -28,7 +29,7 @@ install:
 script:
         - kg-manage test -v3 karaage
 
-after_success:
+after_script:
         - codecov
 
 notifications:
