@@ -57,6 +57,17 @@ class Usage(models.Model):
     used = models.FloatField()
 
 
+@python_2_unicode_compatible
+class PublicNotes(models.Model):
+    note = models.TextField()
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    def __str__(self):
+        return self.note
+
+
 class LogEntryManager(models.Manager):
 
     def log_action(self, user_id, content_type_id, object_id,
