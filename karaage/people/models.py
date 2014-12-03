@@ -46,6 +46,11 @@ from karaage.common import log, is_admin
 
 @python_2_unicode_compatible
 class Person(AbstractBaseUser):
+    projects = models.ManyToManyField(
+        'karaage.Project',
+        through='karage.ProjectMembership',
+        through_fields=('person', 'project'),
+    )
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(null=True, db_index=True)
     short_name = models.CharField(max_length=30)
@@ -410,6 +415,13 @@ class Person(AbstractBaseUser):
 
 
 @python_2_unicode_compatible
+class ProjectMembership(models.Model):
+    person = models.ForeignKey('karaage.Person')
+    project = models.ForeignKey('karaage.Project')
+    is_project_supervisor = models.BooleanField(default=False)
+    is_project_leader = models.BooleanField(default=False)
+    is_default_project = models.BooleanField(default=False)
+    is_primary_contact = models.BooleanField(default=False)
 class Group(models.Model):
 
     """Groups represent collections of people, these objects can be
