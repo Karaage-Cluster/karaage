@@ -19,6 +19,7 @@ before_install:
         - sudo apt-get install -qq libcrack2-dev csstidy slapd
         - sudo service slapd stop
         - sudo apt-get build-dep -qq python-cracklib
+        - pip install codecov
 
 install:
         - pip install --allow-external python-crack --allow-unverified python-crack --allow-external mysql-connector-python -r requirements.txt -r test-requirements.txt mysql-connector-python psycopg2 mysqlclient
@@ -26,6 +27,9 @@ install:
 
 script:
         - kg-manage test -v3 karaage
+
+after_success:
+        - codecov
 
 notifications:
         flowdock:
