@@ -2,16 +2,12 @@ from django.db import models
 
 from audit_log.models.managers import AuditLog
 
-from projects.models import Project
-from resources.models import ResourcePool
-from schemes.models import Scheme
-
 
 class Allocation(models.Model):
-    grant = models.ForeignKey(Grant)
-    period = models.ForeignKey(AllocationPeriod)
-    project = models.ForeignKey(Project)
-    resource_pool = models.ForeignKey(ResourcePool)
+    grant = models.ForeignKey('karaage.Grant')
+    period = models.ForeignKey('karaage.AllocationPeriod')
+    project = models.ForeignKey('karaage.Project')
+    resource_pool = models.ForeignKey('karaage.ResourcePool')
     quantity = models.FloatField()
 
     audit_log = AuditLog()
@@ -26,8 +22,8 @@ class AllocationPeriod(models.Model):
 
 
 class Grant(models.Model):
-    project = models.ForeignKey(Project)
-    scheme = models.ForeignKey(Scheme)
+    project = models.ForeignKey('karaage.Project')
+    scheme = models.ForeignKey('karaage.Scheme')
     description = models.CharField(max_length=255)
     date = models.DateField()
     begins = models.DateField()
