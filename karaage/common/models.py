@@ -36,7 +36,8 @@ DELETION = 3
 COMMENT = 4
 
 
-class Usage(models.Manager):
+@python_2_unicode_compatible
+class Usage(models.Model):
     account = models.ForeignKey('karaage.Account')
     allocation = models.ForeignKey('karaage.Allocation')
     grant = models.ForeignKey('karaage.Grant')
