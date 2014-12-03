@@ -31,7 +31,7 @@ def make_test_get_function(name, url, url_pattern):
                 url,
             ),
         )
-    test_get.__name__ = name
+    test_get.__name__ = str(name)
     return test_get
 
 
