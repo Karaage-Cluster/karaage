@@ -375,3 +375,13 @@ def _leaders_changed(
 
 models.signals.m2m_changed.connect(
     _leaders_changed, sender=Project.leaders.through)
+
+
+@python_2_unicode_compatible
+class ProjectLevel(models.Model):
+    level = models.CharField(max_length=255)
+
+    audit_log = AuditLog()
+
+    def __str__(self):
+        return self.name
