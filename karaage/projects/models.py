@@ -44,6 +44,9 @@ class Project(models.Model):
     start_date = models.DateField(default=datetime.datetime.today)
     end_date = models.DateField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
+    # TODO: Work out whether to leave research_category in this model or move
+    # it elsewhere.
+    # research_category = models.CharField(max_length=255)
     is_active = models.BooleanField(default=False)
     approved_by = models.ForeignKey(
         'karaage.Person', related_name='project_approver',
