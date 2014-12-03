@@ -42,6 +42,7 @@ class Usage(models.Manager):
     grant = models.ForeignKey('karaage.Grant')
     institute = models.ForeignKey('karaage.Institute')
     machine = models.ForeignKey('karaage.Machine')
+    person = models.ForeignKey('karaage.Person')
     project = models.ForeignKey('karaage.Project')
     resource = models.ForeignKey('karaage.Resource')
     resource_pool = models.ForeignKey('karaage.ResourcePool', null=True)
