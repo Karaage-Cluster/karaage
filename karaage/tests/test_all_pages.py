@@ -1,5 +1,5 @@
 """Test all pages render (without exceptions) using Selenium."""
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import re
 import unittest
@@ -8,6 +8,7 @@ from django.conf import settings
 from django.contrib.admindocs.views import simplify_regex
 from django.test import TestCase
 from django.utils.text import slugify
+from django.utils.encoding import smart_text
 
 from django_extensions.management.commands.show_urls import \
     extract_views_from_urlpatterns
@@ -59,7 +60,7 @@ def add_test_methods(testcase, urlpatterns):
     for index, (func, regex, url_name) in enumerate(
         extract_views_from_urlpatterns(urlpatterns)
     ):
-        url_pattern = unicode(simplify_regex(regex))
+        url_pattern = smart_text(simplify_regex(regex))
         name = '_'.join(
             [
                 'test',
