@@ -425,6 +425,9 @@ class ProjectMembership(models.Model):
     is_default_project = models.BooleanField(default=False)
     is_primary_contact = models.BooleanField(default=False)
 
+    def __str__(self):
+        return '{} @ {}'.format(self.person, self.project)
+
 
 @python_2_unicode_compatible
 class CareerLevel(models.Model):

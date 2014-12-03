@@ -56,6 +56,9 @@ class Usage(models.Model):
     range_end = models.DateTimeField()
     used = models.FloatField()
 
+    def __str__(self):
+        return self.description
+
 
 @python_2_unicode_compatible
 class PublicNotes(models.Model):
