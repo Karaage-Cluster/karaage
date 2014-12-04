@@ -1,0 +1,6 @@
+[run]
+branch = True
+omit =
+	*/site-packages/*
+	*/migrations/*.py
+	*/south_migrations/*.py

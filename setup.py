@@ -63,16 +63,17 @@ setup(
         'sbin/kg-manage',
         'sbin/kg-migrate-south',
     ],
-    data_files=[
-        (
-            '/etc/karaage3',
-            ['conf/settings.py', 'conf/karaage.wsgi'],
-        ),
-        (
-            '/etc/apache2/conf-available',
-            ['conf/karaage3-wsgi.conf'],
-        ),
-    ],
+    # XXX: disabled data files for testing
+    #data_files=[
+    #    (
+    #        '/etc/karaage3',
+    #        ['conf/settings.py', 'conf/karaage.wsgi'],
+    #    ),
+    #    (
+    #        '/etc/apache2/conf-available',
+    #        ['conf/karaage3-wsgi.conf'],
+    #    ),
+    #],
     install_requires=[
         "cssmin",
         "Django >= 1.7",
@@ -90,6 +91,7 @@ setup(
         "six",
         "slimit>=0.8.1",
     ],
+    #test_suite='setuptest.setuptest.SetupTestSuite',
     tests_require=tests_require,
     extras_require={
         'tests': tests_require,
