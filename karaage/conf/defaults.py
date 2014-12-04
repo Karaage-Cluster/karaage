@@ -38,7 +38,7 @@ TRUE_STRINGS = [
 def env_is_true(name, default):
     return os.environ.get(name, default).strip().lower() in TRUE_STRINGS
 
-LOGNAME = os.getlogin()
+LOGNAME = os.environ['LOGNAME']
 FQDN = getfqdn()
 
 HTTP_HOST = FQDN

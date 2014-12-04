@@ -23,6 +23,13 @@ import pkg_resources
 from karaage.plugins import BasePlugin
 
 
+def registered_karaage_apps():
+    return [
+        entry_point.name
+        for entry_point
+        in pkg_resources.iter_entry_points('karaage.apps')
+    ]
+
 def add_plugin(namespace, plugin_name, django_apps, depends):
 
     module_name, descriptor_name = plugin_name.rsplit(".", 1)
@@ -73,11 +80,7 @@ def load_plugins(namespace, plugins):
     done = set()
 
     for apps in [
-        (
-            entry_point.name
-            for entry_point
-            in pkg_resources.iter_entry_points('karaage.apps')
-        ),
+        registered_karaage_apps(),
         namespace.KARAAGE_APPS,
         django_apps,
         namespace.INSTALLED_APPS,

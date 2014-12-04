@@ -37,10 +37,12 @@ class FakeRequest(object):
 
 
 class PersonTestCase(IntegrationTestCase):
+    fixtures = [
+        'karaage_data.json',
+    ]
 
     def setUp(self):
         super(PersonTestCase, self).setUp()
-        call_command('loaddata', 'karaage_data', **{'verbosity': 0})
         self._datastore = self.mc_ldap_datastore
 
     def do_permission_tests(self, test_object, users):
