@@ -27,6 +27,8 @@ from jsonfield import JSONField
 
 from model_utils import FieldTracker
 
+from audit_log.models.managers import AuditLog
+
 from karaage.people.models import Group
 from karaage.machines.managers import MachineCategoryManager
 from karaage.machines.managers import MachineManager, ActiveMachineManager
@@ -44,6 +46,8 @@ class MachineCategory(models.Model):
     objects = MachineCategoryManager()
 
     _tracker = FieldTracker()
+
+    audit_log = AuditLog()
 
     def __init__(self, *args, **kwargs):
         super(MachineCategory, self).__init__(*args, **kwargs)
@@ -172,6 +176,8 @@ class Account(models.Model):
         help_text='Datastore specific values should be stored in this field.')
 
     _tracker = FieldTracker()
+
+    audit_log = AuditLog()
 
     def __init__(self, *args, **kwargs):
         super(Account, self).__init__(*args, **kwargs)

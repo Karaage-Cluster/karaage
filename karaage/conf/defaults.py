@@ -139,6 +139,7 @@ TEMPLATE_DIRS = (
 # RequestContext. These callables take a request object as their argument and
 # return a dictionary of items to be merged into the context.
 TEMPLATE_CONTEXT_PROCESSORS = (
+    'audit_log.middleware.UserLoggingMiddleware',
     'django.core.context_processors.request',
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',

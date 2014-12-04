@@ -21,6 +21,7 @@ from django.utils.encoding import python_2_unicode_compatible
 import datetime
 
 from model_utils import FieldTracker
+from audit_log.models.managers import AuditLog
 
 from karaage.people.models import Person, Group
 from karaage.institutes.models import Institute
@@ -60,6 +61,8 @@ class Project(models.Model):
     deleted = DeletedProjectManager()
 
     _tracker = FieldTracker()
+
+    audit_log = AuditLog()
 
     class Meta:
         ordering = ['pid']
@@ -240,6 +243,8 @@ class ProjectQuota(models.Model):
     machine_category = models.ForeignKey('karaage.MachineCategory')
 
     _tracker = FieldTracker()
+
+    audit_log = AuditLog()
 
     def save(self, *args, **kwargs):
         created = self.pk is None
