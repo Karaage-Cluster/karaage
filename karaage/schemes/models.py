@@ -17,7 +17,7 @@ class DeletedSchemeManager(models.Manager):
 
 
 class Scheme(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True)
     description = models.CharField(max_length=200, null=False, blank=True)
     opened = models.DateField()
     closed = models.DateField(null=True, blank=True)
@@ -27,3 +27,6 @@ class Scheme(models.Model):
     deleted = DeletedSchemeManager()
 
     audit_log = AuditLog()
+
+    class Meta:
+        ordering = ['name']

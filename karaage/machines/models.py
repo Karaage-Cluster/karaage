@@ -496,20 +496,36 @@ models.signals.m2m_changed.connect(
 
 
 class ResourcePool(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
 
     audit_log = AuditLog()
+
+    class Meta:
+        ordering = ['name']
 
 
 class Resource(models.Model):
+
+    class ResourceType:
+        SLURM_CPU = 'slurm_cpu'
+        SLURM_MEM = 'slurm_mem'
+        GPFS = 'gpfs'
+
+    RESOURCE_TYPE_CHOICES = [
+        (ResourceType.SLURM_CPU, 'Slurm (CPU)'),
+        (ResourceType.SLURM_MEM, 'Slurm (MEM)'),
+        (ResourceType.GPFS, 'GPFS'),
+    ]
+
     machine = models.ForeignKey('karaage.Machine')
     resource_pool = models.ForeignKey('karaage.ResourcePool')
     scaling_factor = models.FloatField()
-    RESOURCE_TYPES = (
-        ('SLURM (CPU)', 'SLURM (CPU)'),
-        ('SLURM (Memory)', 'SLURM (Memory)'),
-        ('GPFS', 'GPFS')
+    resource_type = models.CharField(
+        max_length=255,
+        choices=RESOURCE_TYPE_CHOICES,
     )
-    resource_type = models.CharField(max_length=255, choices=RESOURCE_TYPES)
 
     audit_log = AuditLog()
+
+    class Meta:
+        ordering = ['resource_type']

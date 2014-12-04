@@ -59,16 +59,24 @@ class Usage(models.Model):
     def __str__(self):
         return self.description
 
+    class Meta:
+        # Not using ordering so database planner is free to pick the
+        # rows as they come.
+        pass
 
 @python_2_unicode_compatible
 class PublicNotes(models.Model):
     note = models.TextField()
+    when = models.DateTimeField()
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
     def __str__(self):
         return self.note
+
+    class Meta:
+        ordering = ['-when']
 
 
 class LogEntryManager(models.Manager):

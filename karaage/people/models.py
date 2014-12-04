@@ -51,7 +51,7 @@ class Person(AbstractBaseUser):
         through='karage.ProjectMembership',
         through_fields=('person', 'project'),
     )
-    career_level = models.ForeignKey('karaage.CareerLevel')
+    career_level = models.ForeignKey('karaage.CareerLevel', null=True)
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(null=True, db_index=True)
     short_name = models.CharField(max_length=30)
@@ -436,7 +436,10 @@ class CareerLevel(models.Model):
     audit_log = AuditLog()
 
     def __str__(self):
-        return self.name
+        return self.level
+
+    class Meta:
+        ordering = ['level']
 
 
 @python_2_unicode_compatible

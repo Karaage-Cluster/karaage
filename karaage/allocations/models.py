@@ -12,6 +12,14 @@ class Allocation(models.Model):
 
     audit_log = AuditLog()
 
+    class Meta:
+        ordering = [
+            '-period__end',
+            '-grant__expires',
+            '-project__end_date',
+            'project__name',
+        ]
+
 
 class AllocationPeriod(models.Model):
     name = models.CharField(max_length=255)
@@ -19,6 +27,12 @@ class AllocationPeriod(models.Model):
     end = models.DateTimeField()
 
     audit_log = AuditLog()
+
+    class Meta:
+        ordering = [
+            '-end',
+            'name',
+        ]
 
 
 class Grant(models.Model):
@@ -30,3 +44,11 @@ class Grant(models.Model):
     expires = models.DateField()
 
     audit_log = AuditLog()
+
+    class Meta:
+        ordering = [
+            '-expires',
+            '-project__end_date',
+            'project__name',
+            'description',
+        ]

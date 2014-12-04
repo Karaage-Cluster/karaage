@@ -384,4 +384,7 @@ class ProjectLevel(models.Model):
     audit_log = AuditLog()
 
     def __str__(self):
-        return self.name
+        return self.level
+
+    class Meta:
+        ordering = ['level']
