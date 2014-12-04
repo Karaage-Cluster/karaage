@@ -449,7 +449,7 @@ DATABASES = {
             'KARAAGE_DB_NAME', LOGNAME,
         ),
         'USER': os.environ.get(
-            'KARAAGE_DB_USER', os.getlogin(),
+            'KARAAGE_DB_USER', LOGNAME,
         ),
         'PASSWORD': os.environ.get(
             'KARAAGE_DB_PASSWORD', '',
