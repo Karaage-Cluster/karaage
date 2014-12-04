@@ -1,0 +1,32 @@
+language: python
+
+python:
+        - '2.7'
+        - '3.3'
+        - '3.4'
+
+env:
+        global:
+                - KARAAGE_SECRET_KEY='d4-5vjhge@3r8t#*)+s8z-z0l!_sy94ol!m6k259qeskd4k+u7'
+                - KARAAGE_DEBUG='True'
+                - DJANGO_PIPELINE_ENABLED='False'
+        matrix:
+                - KARAAGE_DB_ENGINE='django.db.backends.mysql'
+                - KARAAGE_DB_ENGINE='django.db.backends.postgresql_psycopg2'
+
+before_install:
+        - sudo apt-get update -qq
+        - sudo apt-get install -qq libcrack2-dev csstidy slapd
+        - sudo service slapd stop
+        - sudo apt-get build-dep -qq python-cracklib
+
+install:
+        - pip install --allow-external python-crack --allow-unverified python-crack --allow-external mysql-connector-python -r requirements.txt -r test-requirements.txt mysql-connector-python psycopg2 mysqlclient
+        - python setup.py develop
+
+script:
+        - kg-manage test -v3 karaage
+
+notifications:
+        flowdock:
+                secure: NLWhZq2aD3ewRciEzJVcIeWKKaBt34loZqWITiI+XA3vyUkyW7BSo46ssZMPEfepdCu4ASiXJOwdMy0IummtW3WMSVjIpZ9OUUJX20inR0yk1YxaQ2kZdDGuFe/aSP3usFX3Bz6o1ufme3LwLQXhrKt79uI6r2JOz4VnK4nZE3k=

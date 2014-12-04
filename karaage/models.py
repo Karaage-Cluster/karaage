@@ -20,7 +20,6 @@ import karaage.common.models  # NOQA
 import karaage.people.models  # NOQA
 import karaage.projects.models  # NOQA
 import karaage.institutes.models  # NOQA
-import karaage.institutes.models  # NOQA
 import karaage.machines.models  # NOQA
 import karaage.allocations.models  # NOQA
 import karaage.schemes.models  # NOQA

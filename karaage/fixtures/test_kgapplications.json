@@ -1,0 +1,61 @@
+[
+    {
+        "fields": {
+            "address": "",
+            "city": "",
+            "country": null,
+            "department": "Mathematics and Statistics",
+            "email": "DECLINED.luser@unimelb.edu.au",
+            "email_verified": false,
+            "fax": "",
+            "full_name": "Looser User",
+            "institute": 1,
+            "mobile": "",
+            "position": "",
+            "postcode": "",
+            "saml_id": null,
+            "short_name": "(L)user ",
+            "supervisor": "",
+            "telephone": "",
+            "title": "Dr",
+            "username": "1"
+        },
+        "model": "kgapplications.applicant",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "_class": "projectapplication",
+            "complete_date": null,
+            "content_type": [
+                "kgapplications",
+                "applicant"
+            ],
+            "created_by": 1,
+            "created_date": "2014-11-04T17:22:36",
+            "expires": "2010-12-22T11:12:27",
+            "header_message": "",
+            "object_id": 1,
+            "secret_token": "27e889413e2d302b9b2a66c63b208962a3788730",
+            "state": "C",
+            "submitted_date": "2010-12-15T16:38:01"
+        },
+        "model": "kgapplications.application",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "additional_req": null,
+            "description": null,
+            "institute": null,
+            "machine_categories": [],
+            "make_leader": true,
+            "name": "",
+            "needs_account": true,
+            "pid": null,
+            "project": 1
+        },
+        "model": "kgapplications.projectapplication",
+        "pk": 1
+    }
+]

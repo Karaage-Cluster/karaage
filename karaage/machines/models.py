@@ -25,11 +25,9 @@ from django.utils.encoding import python_2_unicode_compatible
 
 from jsonfield import JSONField
 
-from audit_log.models.managers import AuditLog
-
 from model_utils import FieldTracker
 
-from karaage.people.models import Person, Group
+from karaage.people.models import Group
 from karaage.machines.managers import MachineCategoryManager
 from karaage.machines.managers import MachineManager, ActiveMachineManager
 from karaage.common import log, is_admin
@@ -46,8 +44,6 @@ class MachineCategory(models.Model):
     objects = MachineCategoryManager()
 
     _tracker = FieldTracker()
-
-    audit_log = AuditLog()
 
     def __init__(self, *args, **kwargs):
         super(MachineCategory, self).__init__(*args, **kwargs)
@@ -176,8 +172,6 @@ class Account(models.Model):
         help_text='Datastore specific values should be stored in this field.')
 
     _tracker = FieldTracker()
-
-    audit_log = AuditLog()
 
     def __init__(self, *args, **kwargs):
         super(Account, self).__init__(*args, **kwargs)
@@ -491,10 +485,6 @@ def _members_changed(
                 _remove_group(group, person)
 
 
-models.signals.m2m_changed.connect(
-    _members_changed, sender=Group.members.through)
-
-
 class ResourcePool(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
@@ -529,3 +519,7 @@ class Resource(models.Model):
 
     class Meta:
         ordering = ['resource_type']
+
+
+models.signals.m2m_changed.connect(
+    _members_changed, sender=Group.members.through)

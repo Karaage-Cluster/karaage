@@ -38,7 +38,15 @@ class TestAllPages(TestCase):
     """Discover all URLs, do a HTTP GET and confirm 200 OK and no DB changes."""
 
     fixtures = [
-        'test.json',
+        fixture
+        for (app, fixture)
+        in [
+            ('karaage.apps.Karaage', 'test_karaage.json'),
+            ('kgapplications.plugin', 'test_kgapplications.json'),
+            ('kgsoftware.plugin', 'test_kgsoftware.json'),
+            ('kgusage.plugin', 'test_kgusage.json'),
+        ]
+        if app in settings.INSTALLED_APPS
     ]
 
 

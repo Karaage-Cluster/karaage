@@ -22,9 +22,13 @@ from setuptools import find_packages, setup
 
 
 tests_require = [
+    "django-extensions",
     "factory_boy",
     "mock",
     "cracklib",
+    "django-behave",
+    "selenium",
+    "selenium-page-adapter",
 ]
 
 setup(
@@ -70,11 +74,12 @@ setup(
         ),
     ],
     install_requires=[
+        "cssmin",
         "Django >= 1.7",
+        "django-audit-log>=0.5.1",
         "django-xmlrpc >= 0.1",
         "django-simple-captcha",
         "django-ajax-selects >= 1.1.3",
-        "django-audit-log >= 0.5.0",
         "django_jsonfield >= 0.9.12",
         "django-model-utils >= 2.0.0",
         "django-pipeline>=1.4",
@@ -83,6 +88,8 @@ setup(
         # karaage cluster project packages
         "python-alogger >= 2.0",
         "python-tldap >= 0.3.3",
+        "six",
+        "slimit>=0.8.1",
     ],
     tests_require=tests_require,
     extras_require={
