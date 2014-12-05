@@ -39,7 +39,7 @@ COMMENT = 4
 @python_2_unicode_compatible
 class Usage(models.Model):
     account = models.ForeignKey('karaage.Account')
-    allocation = models.ForeignKey('karaage.Allocation')
+    allocation_pool = models.ForeignKey('karaage.AllocationPool')
     grant = models.ForeignKey('karaage.Grant')
     institute = models.ForeignKey('karaage.Institute')
     machine = models.ForeignKey('karaage.Machine')
