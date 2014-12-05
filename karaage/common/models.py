@@ -63,6 +63,7 @@ class Usage(models.Model):
     quantity = models.FloatField(null=True)
     range_start = models.DateTimeField()
     range_end = models.DateTimeField()
+    raw_used = models.FloatField()
     used = models.FloatField()
 
     def __str__(self):

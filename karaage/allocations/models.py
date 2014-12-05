@@ -1,7 +1,7 @@
 from django.db import models
 
 from audit_log.models.managers import AuditLog
-
+from django.utils.functional import cached_property
 
 class Grant(models.Model):
     project = models.ForeignKey('karaage.Project')
@@ -22,11 +22,31 @@ class Grant(models.Model):
         ]
 
 
+class AllocationPoolQuerySet(models.QuerySet):
+    def with_quantities(self):
+        return self.annotate(
+            allocated=models.Sum('allocation__quantity'),
+            used=models.Sum('usage__used'),
+            raw_used=models.Sum('usage__raw_used'),
+        )
+
+
 class AllocationPool(models.Model):
     grant = models.ForeignKey('karaage.Grant')
     period = models.ForeignKey('karaage.AllocationPeriod')
     resource_pool = models.ForeignKey('karaage.ResourcePool')
 
+    @cached_property
+    def allocated(self):
+        return self.allocations_set.aggregate(a=models.Sum('allocated'))['a']
+    @cached_property
+    def used(self):
+        return self.usage_set.aggregate(u=models.Sum('used'))['u']
+    @cached_property
+    def raw_used(self):
+        return self.usage_set.aggregate(r=models.Sum('raw_used'))['r']
+
+    objects = AllocationPoolQuerySet.as_manager()
     audit_log = AuditLog()
 
     class Meta:
