@@ -41,13 +41,22 @@ class Usage(models.Model):
     account = models.ForeignKey('karaage.Account')
     allocation_pool = models.ForeignKey('karaage.AllocationPool')
     grant = models.ForeignKey('karaage.Grant')
-    institute = models.ForeignKey('karaage.Institute')
+    person_institute = models.ForeignKey(
+        'karaage.Institute',
+        related_name='person_institute',
+    )
+    project_institute = models.ForeignKey(
+        'karaage.Institute',
+        related_name='project_institute',
+    )
     machine = models.ForeignKey('karaage.Machine')
     person = models.ForeignKey('karaage.Person')
     project = models.ForeignKey('karaage.Project')
     resource = models.ForeignKey('karaage.Resource')
     resource_pool = models.ForeignKey('karaage.ResourcePool', null=True)
     scheme = models.ForeignKey('karaage.Scheme')
+    person_project_level = models.ForeignKey('karaage.ProjectLevel')
+    person_career_level = models.ForeignKey('karaage.CareerLevel')
     count = models.IntegerField()
     created = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=255)
