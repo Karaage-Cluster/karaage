@@ -71,6 +71,7 @@ class PublicNotes(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
+    person = models.ForeignKey('karaage.Person')
 
     def __str__(self):
         return self.note
