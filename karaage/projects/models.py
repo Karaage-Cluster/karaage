@@ -37,7 +37,7 @@ from karaage.common import log, is_admin
 class Project(MPTTModel):
     pid = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=200)
-    group = models.ForeignKey('karaage.Group')
+    group = models.OneToOneField('karaage.Group')
     institute = models.ForeignKey('karaage.Institute')
     leaders = models.ManyToManyField(Person, related_name='leads')
     description = models.TextField(null=True, blank=True)

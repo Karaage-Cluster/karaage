@@ -416,6 +416,14 @@ class Person(AbstractBaseUser):
 
 @python_2_unicode_compatible
 class ProjectMembership(models.Model):
+
+    """
+    Mapping between projects and people with details about their project role.
+
+    TODO: Automatic update project membership using signals from Group.members,
+    using defaults defined below.
+    """
+
     person = models.ForeignKey('karaage.Person')
     project = models.ForeignKey('karaage.Project')
     project_level = models.ForeignKey('karaage.ProjectLevel')
@@ -444,8 +452,13 @@ class CareerLevel(models.Model):
 @python_2_unicode_compatible
 class Group(models.Model):
 
-    """Groups represent collections of people, these objects can be
-    expressed externally in a datastore."""
+    """
+    Groups represent collections of people, these objects can be
+    expressed externally in a datastore.
+
+    Groups here are replicated to clusters as posix groups (/etc/groups) with
+    their associated members.
+    """
     name = models.CharField(max_length=255, unique=True)
     foreign_id = models.CharField(
         max_length=255, null=True, unique=True,
