@@ -32,9 +32,45 @@ class AllocationPoolQuerySet(models.QuerySet):
 
 
 class AllocationPool(models.Model):
+
+    """
+    Grouping of resources allocated to a grant (project).
+
+    AllocationMode='capped' is not supported yet, until a demonstratted need is
+    shown (and optionally that we can use an array of foreign key to relate from
+    Usage to AllocationPool to avoid the M2M join table).
+
+    TODO: User documentation of the allocation behaviour with concrete examples.
+    """
+
+    class AllocationMode:
+        PRIVATE = 'private'
+        SHARED = 'shared'
+        # CAPPED = 'capped'
+
+    ALLOCATION_MODE_CHOICES = [
+        (
+            AllocationMode.PRIVATE,
+            'Private (this project only)',
+        ),
+        (
+            AllocationMode.SHARED,
+            'Shared (this project and all sub-projects)',
+        ),
+        # (
+        #     AllocationMode.CAPPED,
+        #     'Capped (use parent allocation up to this amount)',
+        # ),
+    ]
+
     grant = models.ForeignKey('karaage.Grant')
     period = models.ForeignKey('karaage.AllocationPeriod')
     resource_pool = models.ForeignKey('karaage.ResourcePool')
+    allocation_mode = models.CharField(
+        max_length=20,
+        choices=ALLOCATION_MODE_CHOICES,
+        default=AllocationMode.PRIVATE,
+    )
 
     @cached_property
     def allocated(self):

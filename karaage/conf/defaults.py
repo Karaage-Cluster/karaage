@@ -112,6 +112,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'mptt',
 )
 
 # These optional apps are used in a dev environment

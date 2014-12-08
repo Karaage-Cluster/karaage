@@ -39,28 +39,36 @@ COMMENT = 4
 @python_2_unicode_compatible
 class Usage(models.Model):
     account = models.ForeignKey('karaage.Account')
-    allocation_pool = models.ForeignKey('karaage.AllocationPool')
-    grant = models.ForeignKey('karaage.Grant')
+    allocation_pool = models.ForeignKey('karaage.AllocationPool', null=True)
+    grant = models.ForeignKey('karaage.Grant', null=True)
     person_institute = models.ForeignKey(
         'karaage.Institute',
         related_name='person_institute',
+        null=True,
     )
     project_institute = models.ForeignKey(
         'karaage.Institute',
         related_name='project_institute',
     )
     machine = models.ForeignKey('karaage.Machine')
-    person = models.ForeignKey('karaage.Person')
-    project = models.ForeignKey('karaage.Project')
+    person = models.ForeignKey('karaage.Person', null=True)
+    submitted_project = models.ForeignKey(
+        'karaage.Project',
+        related_name='submitted_usage',
+    )
+    allocated_project = models.ForeignKey(
+        'karaage.Project',
+        related_name='allocated_usage',
+        null=True,
+    )
     resource = models.ForeignKey('karaage.Resource')
     resource_pool = models.ForeignKey('karaage.ResourcePool', null=True)
-    scheme = models.ForeignKey('karaage.Scheme')
+    scheme = models.ForeignKey('karaage.Scheme', null=True)
     person_project_level = models.ForeignKey('karaage.ProjectLevel')
     person_career_level = models.ForeignKey('karaage.CareerLevel')
-    count = models.IntegerField()
+    count = models.PositiveIntegerField()
     created = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=255)
-    quantity = models.FloatField(null=True)
     range_start = models.DateTimeField()
     range_end = models.DateTimeField()
     raw_used = models.FloatField()

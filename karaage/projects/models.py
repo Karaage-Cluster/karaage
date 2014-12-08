@@ -18,6 +18,8 @@
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
+from mptt.models import MPTTModel, TreeForeignKey
+
 import datetime
 
 from model_utils import FieldTracker
@@ -32,7 +34,7 @@ from karaage.common import log, is_admin
 
 
 @python_2_unicode_compatible
-class Project(models.Model):
+class Project(MPTTModel):
     pid = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=200)
     group = models.ForeignKey('karaage.Group')
@@ -59,6 +61,7 @@ class Project(models.Model):
     objects = models.Manager()
     active = ActiveProjectManager()
     deleted = DeletedProjectManager()
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
 
     _tracker = FieldTracker()
 
@@ -68,6 +71,9 @@ class Project(models.Model):
         ordering = ['pid']
         db_table = 'project'
         app_label = 'karaage'
+
+    class MPTTMeta:
+         order_insertion_by = ['pid']
 
     def __str__(self):
         return '%s - %s' % (self.pid, self.name)
