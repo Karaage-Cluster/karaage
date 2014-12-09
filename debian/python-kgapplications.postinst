@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+#DEBHELPER#
+
+dpkg-trigger karaage-database
+exit 0

@@ -1,0 +1,5 @@
+django-extensions==1.4.8
+factory-boy==2.4.1
+mock==1.0.1
+cracklib==2.8.19
+django-factory==0.11

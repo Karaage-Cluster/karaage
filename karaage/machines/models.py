@@ -27,7 +27,9 @@ from jsonfield import JSONField
 
 from model_utils import FieldTracker
 
-from karaage.people.models import Person, Group
+from audit_log.models.managers import AuditLog
+
+from karaage.people.models import Group
 from karaage.machines.managers import MachineCategoryManager
 from karaage.machines.managers import MachineManager, ActiveMachineManager
 from karaage.common import log, is_admin
@@ -44,6 +46,8 @@ class MachineCategory(models.Model):
     objects = MachineCategoryManager()
 
     _tracker = FieldTracker()
+
+    audit_log = AuditLog()
 
     def __init__(self, *args, **kwargs):
         super(MachineCategory, self).__init__(*args, **kwargs)
@@ -98,7 +102,7 @@ class Machine(AbstractBaseUser):
     no_cpus = models.IntegerField()
     no_nodes = models.IntegerField()
     type = models.CharField(max_length=100)
-    category = models.ForeignKey(MachineCategory)
+    category = models.ForeignKey('karaage.MachineCategory')
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
     pbs_server_host = models.CharField(max_length=50, null=True, blank=True)
@@ -154,12 +158,12 @@ class Machine(AbstractBaseUser):
 
 @python_2_unicode_compatible
 class Account(models.Model):
-    person = models.ForeignKey(Person)
+    person = models.ForeignKey('karaage.Person')
     username = models.CharField(max_length=255)
     foreign_id = models.CharField(
         max_length=255, null=True, unique=True,
         help_text='The foreign identifier from the datastore.')
-    machine_category = models.ForeignKey(MachineCategory)
+    machine_category = models.ForeignKey('karaage.MachineCategory')
     default_project = models.ForeignKey(
         'karaage.Project', null=True, blank=True)
     date_created = models.DateField()
@@ -172,6 +176,8 @@ class Account(models.Model):
         help_text='Datastore specific values should be stored in this field.')
 
     _tracker = FieldTracker()
+
+    audit_log = AuditLog()
 
     def __init__(self, *args, **kwargs):
         super(Account, self).__init__(*args, **kwargs)
@@ -483,6 +489,42 @@ def _members_changed(
             person = instance
             for group in person.groups.all():
                 _remove_group(group, person)
+
+
+class ResourcePool(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    audit_log = AuditLog()
+
+    class Meta:
+        ordering = ['name']
+
+
+class Resource(models.Model):
+
+    class ResourceType:
+        SLURM_CPU = 'slurm_cpu'
+        SLURM_MEM = 'slurm_mem'
+        GPFS = 'gpfs'
+
+    RESOURCE_TYPE_CHOICES = [
+        (ResourceType.SLURM_CPU, 'Slurm (CPU)'),
+        (ResourceType.SLURM_MEM, 'Slurm (MEM)'),
+        (ResourceType.GPFS, 'GPFS'),
+    ]
+
+    machine = models.ForeignKey('karaage.Machine')
+    resource_pool = models.ForeignKey('karaage.ResourcePool')
+    scaling_factor = models.FloatField()
+    resource_type = models.CharField(
+        max_length=255,
+        choices=RESOURCE_TYPE_CHOICES,
+    )
+
+    audit_log = AuditLog()
+
+    class Meta:
+        ordering = ['resource_type']
 
 
 models.signals.m2m_changed.connect(

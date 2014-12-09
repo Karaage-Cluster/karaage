@@ -1,0 +1,81 @@
+{% extends "forms.html" %}
+{% load forms %}
+{% load applications %}
+{% load render_table from django_tables2 %}
+
+
+{% block title %}Approve Application{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_application_list' %}">Applications</a>&nbsp;›
+    <a href='{% url 'kg_application_detail' application.pk %}'>{{ application }}</a>&nbsp;›
+    Approve
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="module">
+    <h2>Approve Application</h2>
+
+    <p>The following request is awaiting for {{ authorised_text }} to approve it:</p>
+    <div>
+        <h3>Applicant Details</h3>
+        <div class="table-container">
+            <table class="keyvalue">
+                <tr><th>Short name:</th><td>{{ application.applicant.get_short_name }}</td></tr>
+                <tr><th>Full name:</th><td>{{ application.applicant.get_full_name }}</td></tr>
+                <tr><th>Institute:</th><td>{{ application.applicant.institute }}</td></tr>
+                <tr><th>Username:</th><td>{{ application.applicant.username }}</td></tr>
+                <tr><th>Email:</th><td>{{ application.applicant.email|urlize }}</td></tr>
+            </table>
+        </div>
+    </div>
+
+    {% if application.content_type.model == 'applicant' %}
+    <div>
+        <h3>Similar People</h3>
+        <form method="post" action=".">{% csrf_token %}
+            <p>Please check that the applicant isn't an existing user.</p>
+            {% get_similar_people_table  application.applicant as table %}
+            {% render_table table %}
+            {% if 'duplicate' in actions %}
+            <input type="submit" name="duplicate" value="Is existing user" class="button" />
+            {% endif %}
+        </form>
+    </div>
+    {% endif %}
+
+    {% application_request application %}
+
+    <div>
+        <h3>Confirm</h3>
+        <p>{{ application.applicant }} will receive an email once their application has been processed.</p>
+        <br />
+        {% if form.fields %}
+        <p>Please amend the following to suit.</p>
+        {% endif %}
+
+        <form method="post" action=".">{% csrf_token %}
+            <div>
+                {% load forms %}
+                {% if form.errors or form.non_field_errors %}
+                <p class="errornote">Please correct the error(s) below.</p>
+                {% endif %}
+
+                <fieldset class="aligned ()">
+                    {{ form.non_field_errors }}
+                    {% form_as_div form %}
+                </fieldset>
+            </div>
+
+            {% application_actions_plus %}
+            <a href="{% url 'kg_application_detail' application.id application.state 'decline' %}" class="deletelink float-left">Decline</a>
+            {% end_application_actions %}
+        </form>
+    </div>
+</div>
+{% endblock %}

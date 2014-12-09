@@ -1,0 +1,65 @@
+{% extends "forms.html" %}
+{% load forms %}
+{% load applications %}
+
+
+{% block title %}Introduction{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_application_list' %}">Applications</a>&nbsp;›
+    {{ application }}&nbsp;›
+    Introduction
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="module">
+    <h1>1. Application Introduction</h1>
+
+    {% if application.applicant.get_short_name %}
+    <p>Hi {{ application.applicant.get_short_name }},</p>
+    {% endif %}
+
+    <p>You have opened an application to access the following {{ org_name }} software:</p>
+    <blockquote>
+        <p>
+        Software: {{ application.software_license.software }}<br/>
+        Version: {{ application.software_license.version }}<br/>
+        License: {{ application.software_license.text|linebreaks }}</br/>
+        </p>
+    </blockquote>
+
+    <p>An application at {{ org_name }} requires completing the following steps:</p>
+
+    {% application_state application %}
+
+    <p>In submitting this application, you have agreed to the license terms and conditions. <b>If you do not agree with these
+        conditions, click cancel (below) and cancel this application immediately.</b>
+    </p>
+
+    <p>You may return to this application at any time to check on its status.
+    Please save the following URL for future use.</p>
+
+    <p>{{ link }}</p>
+
+    {% if is_secret %}
+    <p><b>This URL must remain secret, do not give it to anybody else. Please
+    make sure nobody is already logged into Karaage from your computer before using it.</b></p>
+    {% else %}
+    <p><b>If you are not already logged in you will be required to log in before using this link.</b></p>
+    {% endif %}
+
+    <p>Thank you</p>
+
+    <form method="post" action=".">{% csrf_token %}
+        {% application_actions %}
+    </form>
+</div>
+{% endblock %}
+
+
+

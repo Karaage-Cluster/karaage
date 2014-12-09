@@ -30,6 +30,7 @@ echo "############################"
 echo ""
 echo "TESTS - Python 2"
 echo "############################"
+pip2 install -r ./requirements-tests.txt
 python2 ./manage.py test --settings=karaage.tests.settings -v 2 $TESTS
 if [ ! $? -eq 0 ]
 then
@@ -39,6 +40,7 @@ fi
 echo ""
 echo "TESTS - Python 3"
 echo "############################"
+pip3 install -r ./requirements-tests.txt
 python3 ./manage.py test --settings=karaage.tests.settings -v 2 $TESTS
 if [ ! $? -eq 0 ]
 then

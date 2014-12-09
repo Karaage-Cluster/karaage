@@ -22,13 +22,17 @@ from setuptools import find_packages, setup
 
 
 tests_require = [
+    "django-extensions",
     "factory_boy",
     "mock",
     "cracklib",
+    "django-behave",
+    "selenium",
+    "selenium-page-adapter",
 ]
 
 setup(
-    name="karaage",
+    name="karaage4",
     version=open('VERSION.txt', 'r').readline().strip(),
     url='https://github.com/Karaage-Cluster/karaage',
     author='Brian May',
@@ -59,35 +63,62 @@ setup(
         'sbin/kg-manage',
         'sbin/kg-migrate-south',
     ],
-    data_files=[
-        (
-            '/etc/karaage3',
-            ['conf/settings.py', 'conf/karaage.wsgi'],
-        ),
-        (
-            '/etc/apache2/conf-available',
-            ['conf/karaage3-wsgi.conf'],
-        ),
-    ],
+    # XXX: disabled data files for testing
+    #data_files=[
+    #    (
+    #        '/etc/karaage3',
+    #        ['conf/settings.py', 'conf/karaage.wsgi'],
+    #    ),
+    #    (
+    #        '/etc/apache2/conf-available',
+    #        ['conf/karaage3-wsgi.conf'],
+    #    ),
+    #],
     install_requires=[
+        "cssmin",
         "Django >= 1.7",
+        "django-audit-log>=0.5.1",
         "django-xmlrpc >= 0.1",
         "django-simple-captcha",
         "django-ajax-selects >= 1.1.3",
         "django_jsonfield >= 0.9.12",
         "django-model-utils >= 2.0.0",
+        "django-mptt>=0.6.1",
         "django-pipeline>=1.4",
         "django-tables2",
         "django-filter",
         # karaage cluster project packages
         "python-alogger >= 2.0",
         "python-tldap >= 0.3.3",
+        "six",
+        "slimit>=0.8.1",
     ],
+    #test_suite='setuptest.setuptest.SetupTestSuite',
     tests_require=tests_require,
     extras_require={
         'tests': tests_require,
         'crack': [
             # TODO: python-crack ?
+        ],
+        'applications': [
+            # TODO: merge kgapplications
+        ],
+        'software': [
+            "[applications]",
+        ],
+        'usage': [
+            "[software]",
+            "django_celery",
+            "django-filter",
+            "django-xmlrpc >= 0.1",
+            "matplotlib",
+        ],
+    },
+    entry_points = {
+        'karaage.apps': [
+            'kgapplications.plugin = kgapplications:plugin [applications]',
+            'kgusage.plugin = kgusage:plugin [usage]',
+            'kgsoftware.plugin = kgsoftware:plugin [software]',
         ],
     },
 )

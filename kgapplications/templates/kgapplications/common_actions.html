@@ -1,0 +1,25 @@
+<div class="submit-row">
+    {{ extra }}
+    {% if 'cancel' in actions %}
+    <input type="submit" name="cancel" value="Decline/Cancel Application" class="deletelink" />
+    {% endif %}
+    {% if 'reopen' in actions %}
+    <input type="submit" name="reopen" value="Reopen" class="button" />
+    {% endif %}
+    {% if 'prev' in actions %}
+    <input type="submit" name="prev" value="<< Previous" class="button" />
+    {% endif %}
+    {% if 'next' in actions %}
+    <input type="submit" name="next" value="Next >>" class="button default" />
+    {% endif %}
+    {% if 'submit' in actions %}
+    <input type="submit" name="submit" value="Submit" class="button default" />
+    {% endif %}
+    {% if 'approve' in actions %}
+    <input type="submit" name="approve" value="Approve" class="button default" />
+    {% endif %}
+    {% if 'archive' in actions %}
+    <input type="submit" name="archive" value="Archive" class="button default" />
+    {% endif %}
+</div>
+

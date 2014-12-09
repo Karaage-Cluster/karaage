@@ -21,7 +21,7 @@ from __future__ import absolute_import
 import six
 
 from django.conf import settings
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -34,6 +34,68 @@ ADDITION = 1
 CHANGE = 2
 DELETION = 3
 COMMENT = 4
+
+
+@python_2_unicode_compatible
+class Usage(models.Model):
+    account = models.ForeignKey('karaage.Account')
+    allocation_pool = models.ForeignKey('karaage.AllocationPool', null=True)
+    grant = models.ForeignKey('karaage.Grant', null=True)
+    person_institute = models.ForeignKey(
+        'karaage.Institute',
+        related_name='person_institute',
+        null=True,
+    )
+    project_institute = models.ForeignKey(
+        'karaage.Institute',
+        related_name='project_institute',
+    )
+    machine = models.ForeignKey('karaage.Machine')
+    person = models.ForeignKey('karaage.Person', null=True)
+    submitted_project = models.ForeignKey(
+        'karaage.Project',
+        related_name='submitted_usage',
+    )
+    allocated_project = models.ForeignKey(
+        'karaage.Project',
+        related_name='allocated_usage',
+        null=True,
+    )
+    resource = models.ForeignKey('karaage.Resource')
+    resource_pool = models.ForeignKey('karaage.ResourcePool', null=True)
+    scheme = models.ForeignKey('karaage.Scheme', null=True)
+    person_project_level = models.ForeignKey('karaage.ProjectLevel')
+    person_career_level = models.ForeignKey('karaage.CareerLevel')
+    count = models.PositiveIntegerField()
+    created = models.DateTimeField(auto_now_add=True)
+    description = models.CharField(max_length=255)
+    range_start = models.DateTimeField()
+    range_end = models.DateTimeField()
+    raw_used = models.FloatField()
+    used = models.FloatField()
+
+    def __str__(self):
+        return self.description
+
+    class Meta:
+        # Not using ordering so database planner is free to pick the
+        # rows as they come.
+        pass
+
+@python_2_unicode_compatible
+class PublicNotes(models.Model):
+    note = models.TextField()
+    when = models.DateTimeField()
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    person = models.ForeignKey('karaage.Person')
+
+    def __str__(self):
+        return self.note
+
+    class Meta:
+        ordering = ['-when']
 
 
 class LogEntryManager(models.Manager):
@@ -69,8 +131,7 @@ class LogEntry(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
     content_type = models.ForeignKey(ContentType)
     object_id = models.TextField(_('object id'), blank=True, null=True)
-    content_object = generic.GenericForeignKey(ct_field="content_type",
-                                               fk_field="object_id")
+    content_object = GenericForeignKey('content_type', 'object_id')
     object_repr = models.CharField(_('object repr'), max_length=200)
     action_flag = models.PositiveSmallIntegerField(_('action flag'))
     change_message = models.TextField(_('change message'), blank=True)

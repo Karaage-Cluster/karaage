@@ -37,9 +37,6 @@ class InstituteForm(forms.ModelForm):
                 required=True,
                 error_messages={
                     'invalid': settings.GROUP_VALIDATION_ERROR_MSG})
-            index = self.fields.keyOrder.index("name")
-            self.fields.keyOrder.remove("group_name")
-            self.fields.keyOrder.insert(index + 1, "group_name")
 
     def clean_saml_entityid(self):
         if self.cleaned_data['saml_entityid'] == "":

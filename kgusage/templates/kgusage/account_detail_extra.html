@@ -1,0 +1,7 @@
+{% load usage %}
+{% load render_table from django_tables2 %}
+{% get_account_recent_usage account as usage_list %}
+<div class="module">
+    <h2>Latest Usage</h2>
+    {% render_table usage_list %}
+</div>
