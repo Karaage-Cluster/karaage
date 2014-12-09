@@ -66,18 +66,44 @@ This document will be updated for Karaage 4 soon.
 Installation
 ------------
 
+To install Karaage from PyPi without any optional plugins::
+
+        $ pip install karaage
+
+To install with all optional plugins::
+
+        $ pip install karaage[applications,usage,software]
+
+Plugins
+-------
+
 karaage-usage
 ^^^^^^^^^^^^^
 
-The karaage-usage plugin provides monitoring of usage information admin
-and can be installed from PyPi::
+.. todo:: Write paragraph about what the usage plugin does.
 
-    $ pip install 'karaage[software]'
+The karaage-usage plugin provides monitoring of usage information, 
+install with::
+
+    $ pip install 'karaage[usage]'
 
 karaage-applications
-The karaage-applications plugin can be installed from PyPi::
+^^^^^^^^^^^^^^^^^^^^
+
+.. todo:: Write paragraph about what the applications plugin does.
+
+The karaage-applications plugin, install with::
 
     $ pip install 'karaage[applications]'
+
+karaage-software
+^^^^^^^^^^^^^^^^
+
+.. todo:: Write paragraph about what the software plugin does.
+
+The karaage-software plugin, install with::
+
+    $ pip install 'karaage[software]'
 
 Contact
 -------
