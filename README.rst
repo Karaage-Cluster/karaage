@@ -68,11 +68,11 @@ Installation
 
 To install Karaage from PyPi without any optional plugins::
 
-        $ pip install karaage
+        $ pip install karaage4
 
 To install with all optional plugins::
 
-        $ pip install karaage[applications,usage,software]
+        $ pip install karaage4[applications,usage,software]
 
 Plugins
 -------
@@ -85,7 +85,7 @@ karaage-usage
 The karaage-usage plugin provides monitoring of usage information, 
 install with::
 
-    $ pip install 'karaage[usage]'
+    $ pip install 'karaage4[usage]'
 
 karaage-applications
 ^^^^^^^^^^^^^^^^^^^^
@@ -94,7 +94,7 @@ karaage-applications
 
 The karaage-applications plugin, install with::
 
-    $ pip install 'karaage[applications]'
+    $ pip install 'karaage4[applications]'
 
 karaage-software
 ^^^^^^^^^^^^^^^^
@@ -103,7 +103,7 @@ karaage-software
 
 The karaage-software plugin, install with::
 
-    $ pip install 'karaage[software]'
+    $ pip install 'karaage4[software]'
 
 Contact
 -------
