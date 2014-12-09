@@ -1,0 +1,12 @@
+{% load usage %}
+{% load render_table from django_tables2 %}
+{% get_software_recent_usage software as usage_list %}
+<div class="module">
+    <h2>Latest Usage</h2>
+    {% render_table usage_list %}
+    <div class="object-tools">
+        <ul>
+            <li><a href="{% url 'kg_usage_job_list' %}{% url_with_param software=software.id %}">Display all jobs</a></li>
+        </ul>
+    </div>
+</div>

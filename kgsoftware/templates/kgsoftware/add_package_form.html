@@ -1,0 +1,64 @@
+{% extends "forms.html" %}
+{% load url from future %}
+
+
+{% block title %}Edit Software{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_software_list' %}">Software</a>&nbsp;›
+    {% if software %}
+        <a href="{% url 'kg_software_detail' software.pk %}">{{ software }}</a>&nbsp;›
+        Edit
+    {% else %}
+        Create Software
+    {% endif %}
+</div>
+{% endblock %}
+
+
+{% block content %}
+<form method="post" action=".">{% csrf_token %}
+    {% load forms %}
+    {{ form.non_field_errors }}
+    <fieldset class="module aligned ()">
+        {% inlineformfield form.name form.category %}
+        {% formfield form.group_name %}
+        {% formfield form.description %}
+        {% formfield form.academic_only %}
+        {% formfield form.restricted %}
+        {% inlineformfield form.homepage form.tutorial_url %}
+    </fieldset>
+    <fieldset class="module aligned ()">
+        <h2>Version Info</h2>
+        {% inlineformfield form.version form.module %}
+        {% formfield form.machines %}
+    </fieldset>
+    <fieldset class="module aligned ()">
+        <h2>License Info</h2>
+        {% inlineformfield form.license_version form.license_date %}
+        {% formfield form.license_text %}
+    </fieldset>
+
+    <div class="submit-row">
+        <input type="submit" value="Save" class="default" />
+    </div>
+</form>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    var name = $("#id_name")
+    var lastValue = name.val();
+    name.on('change keyup paste mouseup', function() {
+        if (name.val() != lastValue) {
+            lastValue = name.val()
+            newValue = lastValue.split(" ").join("").toLowerCase()
+            $("#id_group_name").val(newValue)
+        }
+    })
+})
+</script>
+
+{% endblock %}

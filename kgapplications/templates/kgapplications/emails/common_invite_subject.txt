@@ -1,0 +1,1 @@
+{% autoescape off %}{{ org_name }} invitation: {{ application.info }}{% endautoescape %}

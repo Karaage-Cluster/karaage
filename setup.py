@@ -32,7 +32,7 @@ tests_require = [
 ]
 
 setup(
-    name="karaage",
+    name="karaage4",
     version=open('VERSION.txt', 'r').readline().strip(),
     url='https://github.com/Karaage-Cluster/karaage',
     author='Brian May',
@@ -99,6 +99,26 @@ setup(
         'tests': tests_require,
         'crack': [
             # TODO: python-crack ?
+        ],
+        'applications': [
+            # TODO: merge kgapplications
+        ],
+        'software': [
+            "[applications]",
+        ],
+        'usage': [
+            "[software]",
+            "django_celery",
+            "django-filter",
+            "django-xmlrpc >= 0.1",
+            "matplotlib",
+        ],
+    },
+    entry_points = {
+        'karaage.apps': [
+            'kgapplications.plugin = kgapplications:plugin [applications]',
+            'kgusage.plugin = kgusage:plugin [usage]',
+            'kgsoftware.plugin = kgsoftware:plugin [software]',
         ],
     },
 )

@@ -1,0 +1,72 @@
+{% extends "main.html" %}
+{% load humanize %}
+{% load filters %}
+
+{% block title %}Processing{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    Usage
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+    <div id="progressbar"></div>
+    <div id="message"></div>
+</div>
+
+<script type="text/javascript">
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+$.ajaxSetup({
+    crossDomain: false, // obviates need for sameOrigin test
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type)) {
+            xhr.setRequestHeader("X-CSRFToken", $.jCookie("csrftoken"));
+        }
+    }
+});
+
+$(document).ready(function(){
+    $("#progressbar").progressbar({ value: 0, });
+    $("#message").text("Please wait")
+
+    var interval = setInterval(function() {
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            cache: false,
+            data: {
+                task_id: "{{ task_id|escapejs }}"
+            }
+        })
+        .done(function(data, textStatus, jqXHR) {
+            if (data.ready) {
+                clearInterval(interval);
+                $("#progressbar").progressbar( "option", "value", 100)
+                $("#message").text("done.")
+                location.reload(true)
+            } else if (data.info != null) {
+                var info=data.info
+                $("#progressbar").progressbar( "option", "value", info.completed/info.total*100)
+                $("#message").text("please wait: " + info.message + ". " + info.completed + " tasks out of " + info.total + " finished.")
+            }
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+            clearInterval(interval);
+            $("#progressbar").progressbar( "option", "value", false )
+            $("#message").text("Error "+errorThrown)
+        })
+    }, 1000);
+});
+</script>
+
+{% endblock %}
+

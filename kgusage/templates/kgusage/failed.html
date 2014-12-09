@@ -1,0 +1,23 @@
+{% extends "main.html" %}
+{% load humanize %}
+{% load filters %}
+
+{% block title %}Processing{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    Usage
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+    <h1>Failed</h1>
+    <p>The background task failed. Please reload to retry, or contact support if problem persists.</p>
+</div>
+
+{% endblock %}
+
