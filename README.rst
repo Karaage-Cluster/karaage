@@ -26,3 +26,10 @@ and can be installed from PyPi:
 
 .. code:: bash
         pip install 'karaage[software]'
+
+karaage-applications
+====================
+The karaage-applications plugin can be installed from PyPi:
+
+.. code:: bash
+        pip install 'karaage[applications]'

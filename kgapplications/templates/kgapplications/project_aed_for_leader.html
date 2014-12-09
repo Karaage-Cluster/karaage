@@ -1,0 +1,34 @@
+{% extends "main.html" %}
+{% load forms %}
+{% load applications %}
+
+
+{% block title %}Application{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_application_list' %}">Applications</a>&nbsp;›
+    {{ application }}
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+    <div class="module">
+        <h2>Application</h2>
+
+        <form method="post" action=".">{% csrf_token %}
+            <p>The applicant is still completing this application. Come back later.</p>
+            <p>Application process:</p>
+            {% application_state application %}
+            {% application_actions %}
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+
+

@@ -1,0 +1,39 @@
+{% extends "forms.html" %}
+
+
+{% block title %}Start Application{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_application_list' %}">Applications</a>&nbsp;›
+    Start application
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="module">
+    <h2>User already in system</h2>
+    <p>A user with this email address ({{ person.email }}) already exists in the system.</p>
+    <div class="table-container">
+        <table class="keyvalue">
+            <tr><th>Name:</th><td>{{ person }}</td></tr>
+            <tr><th>Position:</th><td>{{ person.position|default:"" }}</td></tr>
+            <tr><th>Department:</th><td>{{ person.department|default:"" }}</td></tr>
+            <tr><th>Institute:</th><td><a href="{{ person.institute.get_absolute_url }}">{{ person.institute }}</a></td></tr>
+        </table>
+    </div>
+
+    <p>Do you want to to continue with the person?</p>
+    <form method="post" action=".">{% csrf_token %}
+        {% for field in form %}{{ field.as_hidden }}
+        {% endfor %}
+        <div>
+            <input type="hidden" name="existing" value="yes" />
+            <input type="submit" value="Yes, I'm sure" />
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -5,6 +5,12 @@ karaage3-software (3.1.4-1) unstable; urgency=low
 
  -- Brian May <bam@debian.org>  Thu, 30 Oct 2014 14:53:04 +1100
 
+karaage3-applications (3.1.8-1) unstable; urgency=low
+
+  * Fix python3 depends.
+
+ -- Brian May <bam@debian.org>  Thu, 30 Oct 2014 14:45:12 +1100
+
 karaage3 (3.1.9-1) unstable; urgency=low
 
   * Documentation: update apache configuration.
@@ -22,6 +28,13 @@ karaage3-usage (3.1.5-1) unstable; urgency=low
 
  -- Brian May <bam@debian.org>  Thu, 16 Oct 2014 13:18:26 +1100
 
+karaage3-applications (3.1.7-1) unstable; urgency=low
+
+  * Fix daily cleanup.
+  * Remove depreciated decorator.
+
+ -- Brian May <bam@debian.org>  Thu, 16 Oct 2014 13:02:45 +1100
+
 karaage3 (3.1.8-1) unstable; urgency=low
 
   * Fix daily cleanup. Work properly with plugins.
@@ -35,6 +48,12 @@ karaage3 (3.1.7-1) unstable; urgency=low
   * Support MAM 2.7.
 
  -- Brian May <bam@debian.org>  Fri, 10 Oct 2014 14:45:05 +1100
+
+karaage3-applications (3.1.6-1) unstable; urgency=low
+
+  * Don't email deleted admin or institute delegates.
+
+ -- Brian May <bam@debian.org>  Fri, 10 Oct 2014 14:15:31 +1100
 
 karaage3 (3.1.6-1) unstable; urgency=low
 
@@ -51,6 +70,13 @@ karaage3-usage (3.1.4-1) unstable; urgency=low
   * We require Python >= 2.7.
 
  -- Brian May <bam@debian.org>  Tue, 30 Sep 2014 16:08:51 +1000
+
+karaage3-applications (3.1.5-1) unstable; urgency=low
+
+  * Fix error when declaring duplicate applicant.
+  * We require Python >= 2.7.
+
+ -- Brian May <bam@debian.org>  Tue, 30 Sep 2014 15:54:13 +1000
 
 karaage3 (3.1.5-1) unstable; urgency=low
 
@@ -75,6 +101,12 @@ karaage3-software (3.1.3-2) unstable; urgency=low
 
  -- Brian May <bam@debian.org>  Mon, 15 Sep 2014 11:40:07 +1000
 
+karaage3-applications (3.1.4-1) unstable; urgency=low
+
+  * Django 1.7 fixes.
+
+ -- Brian May <bam@debian.org>  Mon, 15 Sep 2014 11:31:15 +1000
+
 karaage3 (3.1.4-1) unstable; urgency=low
 
   * Updates to fix Django 1.7 issues.
@@ -98,6 +130,13 @@ karaage3-software (3.1.2-1) unstable; urgency=low
 
  -- Brian May <bam@debian.org>  Wed, 10 Sep 2014 13:08:38 +1000
 
+karaage3-applications (3.1.3-1) unstable; urgency=low
+
+  * Fix version dependencies.
+  * Add Django 1.7 migrations.
+
+ -- Brian May <bam@debian.org>  Wed, 10 Sep 2014 12:48:50 +1000
+
 karaage3 (3.1.3-1) unstable; urgency=low
 
   * Rewrite migrate_ldap.
@@ -107,6 +146,13 @@ karaage3 (3.1.3-1) unstable; urgency=low
   * Django 1.7 should work, however not yet recommended for production use.
 
  -- Brian May <bam@debian.org>  Tue, 09 Sep 2014 13:52:25 +1000
+
+karaage3-applications (3.1.2-1) unstable; urgency=low
+
+  * Fix links to templates.
+  * Remove obsolete variable.
+
+ -- Brian May <bam@debian.org>  Wed, 27 Aug 2014 13:34:04 +1000
 
 karaage3 (3.1.2-1) unstable; urgency=low
 
@@ -122,6 +168,12 @@ karaage3 (3.1.2-1) unstable; urgency=low
   * Fix display of institute in migration.
 
  -- Brian May <bam@debian.org>  Wed, 27 Aug 2014 13:23:28 +1000
+
+karaage3-applications (3.1.1-1) unstable; urgency=low
+
+  * Python 3.2 fixes.
+
+ -- Brian May <bam@debian.org>  Thu, 21 Aug 2014 14:31:14 +1000
 
 karaage3 (3.1.1-1) unstable; urgency=low
 
@@ -235,6 +287,12 @@ karaage3-software (3.1.1-1) unstable; urgency=low
  -- Brian May <bam@debian.org>  Wed, 27 Aug 2014 13:39:59 +1000
 
 karaage3-software (3.1.0-1) unstable; urgency=low
+
+  * Initial release. Split from Karaage3.
+
+ -- Brian May <bam@debian.org>  Tue, 15 Jul 2014 09:52:30 +1000
+
+karaage3-applications (3.1.0-1) unstable; urgency=low
 
   * Initial release. Split from Karaage3.
 

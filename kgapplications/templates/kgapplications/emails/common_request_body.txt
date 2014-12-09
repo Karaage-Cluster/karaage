@@ -1,0 +1,18 @@
+{% autoescape off %}Hello {{ receiver.get_short_name }},
+
+
+{{ application.applicant }} is requesting to {{ application.info }}.
+
+This application is now waiting for {{ authorised_text }} to process the application.
+
+Please visit the {{ org_name }} account management site at {{ link }} for more
+information and to accept or decline this request.
+
+{% if is_secret %}This URL must remain secret, do not give it to anybody else. Please
+make sure nobody is already logged into Karaage from your computer before using it.
+
+This link will expire in 7 days.
+{% else %}If you are not already logged in you will be required to log in before using this link.
+{% endif %}
+
+{% include "karaage/emails/email_footer.txt" %}{% endautoescape %}
