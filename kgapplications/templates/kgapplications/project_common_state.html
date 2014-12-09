@@ -1,0 +1,46 @@
+{% if application.state = 'A' %}
+<ul><li>Application is Archived.</li></ul>
+{% elif application.state = 'DUP' %}
+<ul><li>Applicant is already a registered user. The system administrator will
+    have to resolve this. Or the application can be cancelled.</li></ul>
+{% elif application.state = 'R' %}
+<ul><li>Application was cancelled or declined.</li></ul>
+{% else %}
+<ol>
+    <li {% if application.state = 'O' %}class='selected'{% endif %}>Applicant enter details.
+    {% if 'is_applicant' in roles %}
+        <ol>
+            <li>Introduction.</li>
+            <li>Shiboleth authentication (if supported).</li>
+            <li>Enter applicant details (if required).</li>
+            <li>Enter project details.</li>
+        </ol>
+    {% endif %}
+    </li>
+
+    {% if application.state = 'L' %}
+    <li class='selected'>Project leader approval.</li>
+    {% elif application.state = 'D' %}
+    <li class='selected'>Institute delegate approval.</li>
+    {% elif application.project %}
+    <li>Project leader approval.</li>
+    {% elif application.name %}
+    <li>Institute delegate approval.</li>
+    {% else %}
+    <li>Project leader/Institute delegate approval.</li>
+    {% endif %}
+
+    <li {% if application.state = 'K' %}class='selected'{% endif %}>Administrator approval.</li>
+    <li {% if application.state = 'P' %}class='selected'{% endif %}>Set password for new accounts.</li>
+    <li {% if application.state = 'C' %}class='selected'{% endif %}>Application complete.</li>
+</ol>
+
+{% if application.state = 'C' %}
+{% elif application.state = 'A' %}
+{% elif application.state = 'R' %}
+{% else %}
+{% if application.needs_account %}
+<p>A computer account on the {{ org_name }} clusters will be made for {{ application.applicant }} if they does not already have one.</p>
+{% endif %}
+{% endif %}
+{% endif %}

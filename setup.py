@@ -77,11 +77,13 @@ setup(
     install_requires=[
         "cssmin",
         "Django >= 1.7",
+        "django-audit-log>=0.5.1",
         "django-xmlrpc >= 0.1",
         "django-simple-captcha",
         "django-ajax-selects >= 1.1.3",
         "django_jsonfield >= 0.9.12",
         "django-model-utils >= 2.0.0",
+        "django-mptt>=0.6.1",
         "django-pipeline>=1.4",
         "django-tables2",
         "django-filter",
@@ -97,6 +99,26 @@ setup(
         'tests': tests_require,
         'crack': [
             # TODO: python-crack ?
+        ],
+        'applications': [
+            # TODO: merge kgapplications
+        ],
+        'software': [
+            "[applications]",
+        ],
+        'usage': [
+            "[software]",
+            "django_celery",
+            "django-filter",
+            "django-xmlrpc >= 0.1",
+            "matplotlib",
+        ],
+    },
+    entry_points = {
+        'karaage.apps': [
+            'kgapplications.plugin = kgapplications:plugin [applications]',
+            'kgusage.plugin = kgusage:plugin [usage]',
+            'kgsoftware.plugin = kgsoftware:plugin [software]',
         ],
     },
 )

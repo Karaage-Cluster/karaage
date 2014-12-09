@@ -18,9 +18,12 @@
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
+from mptt.models import MPTTModel, TreeForeignKey
+
 import datetime
 
 from model_utils import FieldTracker
+from audit_log.models.managers import AuditLog
 
 from karaage.people.models import Person, Group
 from karaage.institutes.models import Institute
@@ -31,10 +34,10 @@ from karaage.common import log, is_admin
 
 
 @python_2_unicode_compatible
-class Project(models.Model):
+class Project(MPTTModel):
     pid = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=200)
-    group = models.ForeignKey('karaage.Group')
+    group = models.OneToOneField('karaage.Group')
     institute = models.ForeignKey('karaage.Institute')
     leaders = models.ManyToManyField(Person, related_name='leads')
     description = models.TextField(null=True, blank=True)
@@ -42,6 +45,9 @@ class Project(models.Model):
     start_date = models.DateField(default=datetime.datetime.today)
     end_date = models.DateField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
+    # TODO: Work out whether to leave research_category in this model or move
+    # it elsewhere.
+    # research_category = models.CharField(max_length=255)
     is_active = models.BooleanField(default=False)
     approved_by = models.ForeignKey(
         'karaage.Person', related_name='project_approver',
@@ -55,13 +61,19 @@ class Project(models.Model):
     objects = models.Manager()
     active = ActiveProjectManager()
     deleted = DeletedProjectManager()
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
 
     _tracker = FieldTracker()
+
+    audit_log = AuditLog()
 
     class Meta:
         ordering = ['pid']
         db_table = 'project'
         app_label = 'karaage'
+
+    class MPTTMeta:
+         order_insertion_by = ['pid']
 
     def __str__(self):
         return '%s - %s' % (self.pid, self.name)
@@ -238,6 +250,8 @@ class ProjectQuota(models.Model):
 
     _tracker = FieldTracker()
 
+    audit_log = AuditLog()
+
     def save(self, *args, **kwargs):
         created = self.pk is None
 
@@ -366,3 +380,16 @@ def _leaders_changed(
 
 models.signals.m2m_changed.connect(
     _leaders_changed, sender=Project.leaders.through)
+
+
+@python_2_unicode_compatible
+class ProjectLevel(models.Model):
+    level = models.CharField(max_length=255)
+
+    audit_log = AuditLog()
+
+    def __str__(self):
+        return self.level
+
+    class Meta:
+        ordering = ['level']

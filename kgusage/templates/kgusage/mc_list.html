@@ -1,0 +1,41 @@
+{% extends "main.html" %}
+{% load humanize %}
+{% load filters %}
+
+{% block title %}Machine Category List{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    Usage
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+    <h2>Usage {{ start|date }} - {{ end|date }}</h2>
+    <p>{% date_filter start end %}</p>
+
+    <div class="object-tools">
+        <ul>
+            <li><a href="{% url 'kg_usage_job_list' %}{% url_with_param date__gte=start date__lte=end %}">All Jobs</a></li>
+            <li><a class="viewsitelink" href="{% url 'kg_usage_search' %}{% url_with_param start=start end=end %}">Advanced Search</a></li>
+        </ul>
+    </div>
+
+    {% for mc in mc_list %}
+    <div class="module">
+        <h2>{{ mc.obj }}</h2>
+        <img src="{{ mc.graph.graph_url }}"/>
+        <p><a href="{{ mc.graph.data_url }}">data</a></p>
+        <div class="object-tools">
+            <ul>
+                <li><a href='{% url 'kg_usage_mc' mc.obj.pk %}{% url_with_param start=start end=end %}'>Details</a></li>
+            </ul>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

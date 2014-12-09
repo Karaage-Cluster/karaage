@@ -126,8 +126,3 @@ Description: Collection of Django apps to manage a cluster
 
 Package: karaage3-registration
 Depends: karaage3-wsgi, ${misc:Depends}
-Architecture: all
-Priority: extra
-Section: oldlibs
-Description: Collection of Django apps to manage a cluster
- This is a dummy package to aid switching to karaage3-wsgi.

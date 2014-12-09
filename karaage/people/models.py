@@ -26,6 +26,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from jsonfield import JSONField
 
 from model_utils import FieldTracker
+from audit_log.models.managers import AuditLog
 
 from karaage.common.constants import TITLES, STATES, COUNTRIES
 from karaage.people.managers import ActivePersonManager, DeletedPersonManager
@@ -44,6 +45,12 @@ from karaage.common import log, is_admin
 
 @python_2_unicode_compatible
 class Person(AbstractBaseUser):
+    projects = models.ManyToManyField(
+        'karaage.Project',
+        through='karage.ProjectMembership',
+        through_fields=('person', 'project'),
+    )
+    career_level = models.ForeignKey('karaage.CareerLevel', null=True)
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(null=True, db_index=True)
     short_name = models.CharField(max_length=30)
@@ -92,6 +99,8 @@ class Person(AbstractBaseUser):
     REQUIRED_FIELDS = ['email', 'short_name', 'full_name', 'institute']
 
     _tracker = FieldTracker()
+
+    audit_log = AuditLog()
 
     def __init__(self, *args, **kwargs):
         super(Person, self).__init__(*args, **kwargs)
@@ -406,10 +415,50 @@ class Person(AbstractBaseUser):
 
 
 @python_2_unicode_compatible
+class ProjectMembership(models.Model):
+
+    """
+    Mapping between projects and people with details about their project role.
+
+    TODO: Automatic update project membership using signals from Group.members,
+    using defaults defined below.
+    """
+
+    person = models.ForeignKey('karaage.Person')
+    project = models.ForeignKey('karaage.Project')
+    project_level = models.ForeignKey('karaage.ProjectLevel')
+    is_project_supervisor = models.BooleanField(default=False)
+    is_project_leader = models.BooleanField(default=False)
+    is_default_project = models.BooleanField(default=False)
+    is_primary_contact = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '{} @ {}'.format(self.person, self.project)
+
+
+@python_2_unicode_compatible
+class CareerLevel(models.Model):
+    level = models.CharField(max_length=255)
+
+    audit_log = AuditLog()
+
+    def __str__(self):
+        return self.level
+
+    class Meta:
+        ordering = ['level']
+
+
+@python_2_unicode_compatible
 class Group(models.Model):
 
-    """Groups represent collections of people, these objects can be
-    expressed externally in a datastore."""
+    """
+    Groups represent collections of people, these objects can be
+    expressed externally in a datastore.
+
+    Groups here are replicated to clusters as posix groups (/etc/groups) with
+    their associated members.
+    """
     name = models.CharField(max_length=255, unique=True)
     foreign_id = models.CharField(
         max_length=255, null=True, unique=True,
@@ -421,6 +470,8 @@ class Group(models.Model):
         help_text='Datastore specific values should be stored in this field.')
 
     _tracker = FieldTracker()
+
+    audit_log = AuditLog()
 
     class Meta:
         ordering = ['name']

@@ -1,0 +1,130 @@
+{% extends "main.html" %}
+{% load url from future %}
+{% load applications %}
+{% load render_table from django_tables2 %}
+
+
+{% block title %}Application{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_application_list' %}">Applications</a>&nbsp;›
+    {{ application }}
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+    <div class="module">
+        <h2>Application Details</h2>
+        <p>{{ application.applicant }} has requested to <b>{{ application.info }}</b></p>
+
+        <div>
+            <h3>Current Status</h3>
+
+            <p>Application process:</p>
+            {% application_state application %}
+
+            {% if 'can_approve' in roles %}
+            <p><b>As you are {{ authorised_text }}, please Approve or Decline this request.</b></p>
+            {% endif %}
+
+            {% if 'can_approve' in roles or is_admin %}
+            <div class="object-tools">
+                <ul>
+                    {% if 'can_approve' in roles %}
+                    <li><a href="{% url 'kg_application_detail' application.id application.state 'approve' %}" class="yeslink">Approve</a></li>
+                    <li><a href="{% url 'kg_application_detail' application.id application.state 'decline' %}" class="nolink">Decline</a></li>
+                    {% endif %}
+                    {% if is_admin %}
+                    <li><a href="{% url 'kg_application_logs' application.pk %}">Logs</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+
+        <div>
+            <h3>Application Details</h3>
+            <div class="table-container">
+                <table class="keyvalue">
+                    {% if is_admin %}
+                    <tr><th>Secret Token:</th><td>{{ application.secret_token }}</td></tr>
+                    {% endif %}
+                    <tr><th>Expires:</th><td>{{ application.expires }}</td></tr>
+                    <tr><th>Created by:</th><td>{{ application.created_by }}</td></tr>
+                    <tr><th>Created date:</th><td>{{ application.created_date }}</td></tr>
+                    <tr><th>Submitted date:</th><td>{{ application.submitted_date }}</td></tr>
+                    <tr><th>Complete date:</th><td>{{ application.complete_date }}</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div>
+            <h3>Applicant Details</h3>
+            <div class="table-container">
+                <table class="keyvalue">
+                    {% if application.content_type.model == 'applicant' %}
+                    <tr><th>Applicant type:</th><td>New applicant {% if is_admin %}<a href="{% url 'kg_applicant_edit' application.applicant.pk %}">[edit]</a>{% endif %}</td>
+                    <tr><th>Username:</th><td>{{ application.applicant.username }}</td></tr>
+                    {% elif application.content_type.model == 'person' %}
+                    <tr><th>Applicant type:</th><td>Existing person</td>
+                    <tr><th>Username:</th><td><a href="{% url 'kg_person_detail' application.applicant.username %}">{{ application.applicant.username }}</a></td></tr>
+                    {% else %}
+                    <tr><th>Applicant type:</th><td>Unknown {{ application.content_type.model }}</td>
+                    <tr><th>Username:</th><td>{{ application.applicant.username }}</td></tr>
+                    {% endif %}
+
+                    <tr><th>Short name:</th><td>{{ application.applicant.get_short_name }}</td></tr>
+                    <tr><th>Full name:</th><td>{{ application.applicant.get_full_name }}</td></tr>
+                    <tr><th>Email:</th><td>{{ application.applicant.email|urlize }}</td></tr>
+                    <tr><th>Institute:</th><td>{% if application.applicant.institute %}<a href="{{ application.applicant.institute.get_absolute_url }}">{{ application.applicant.institute }}</a>{% else %}None{% endif %}</td></tr>
+                    {% if application.applicant.position %}<tr><th>Position:</th><td>{{ application.applicant.position }}</td></tr>{% endif %}
+                    {% if application.applicant.telephone %}<tr><th>Phone:</th><td>{{ application.applicant.telephone }}</td></tr>{% endif %}
+                    {% if application.applicant.mobile %}<tr><th>Mobile:</th><td>{{ application.applicant.mobile }}</td></tr>{% endif %}
+                    {% if application.applicant.department %}<tr><th>Department:</th><td>{{ application.applicant.department }}</td></tr>{% endif %}
+                    {% if application.applicant.supervisor %}<tr><th>Supervisor:</th><td>{{ application.applicant.supervisor }}</td></tr>{% endif %}
+                    {% if application.applicant.fax %}<tr><th>Fax:</th><td>{{ application.applicant.fax }}</td></tr>{% endif %}
+                </table>
+            </div>
+        </div>
+
+        {% if application.content_type.model == 'applicant' %}
+        <div>
+            <h3>Similar People</h3>
+            <form method="post" action=".">{% csrf_token %}
+                <p>Please check that the applicant isn't an existing user.</p>
+                {% get_similar_people_table  application.applicant as table %}
+                {% render_table table %}
+                {% if 'duplicate' in actions %}
+                <input type="submit" name="duplicate" value="Is existing user" class="button" />
+                {% endif %}
+            </form>
+        </div>
+        {% endif %}
+
+        {% application_request application %}
+
+        {% if is_admin %}
+        <div>
+            <h3>Comments</h3>
+            {% comments application.application_ptr %}
+            {% if is_admin %}
+            <div class="object-tools">
+                <ul>
+                    <li><a href="{% url 'kg_application_add_comment' application.pk %}" class="addlink">Add comment</a></li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <form method="post" action=".">{% csrf_token %}
+            {% application_actions %}
+        </form>
+    </div>
+</div>
+{% endblock %}

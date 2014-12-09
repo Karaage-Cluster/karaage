@@ -1,0 +1,26 @@
+{% extends "main.html" %}
+
+
+{% block title %}Start Application{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_application_list' %}">Applications</a>&nbsp;›
+    Start application
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+    <div class="module">
+        <h2>Registrations disabled</h2>
+        <p>Registrations are disabled. To gain access you will need to be invited.</p>
+        <p>Please email {{ accounts_email }} for more information</p>
+    </div>
+</div>
+{% endblock %}
+
+

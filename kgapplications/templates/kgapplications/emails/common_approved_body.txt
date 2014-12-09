@@ -1,0 +1,17 @@
+{% autoescape off %}Hello {{ receiver.get_short_name }},
+
+
+Your {{ org_name }} application to {{ application.info }} has been approved.
+
+{% if created_person or created_account %}Please setup your password by visiting
+{% else %}Please access details of the application by visiting
+{% endif %}{{ link }}
+
+{% if is_secret %}This URL must remain secret, do not give it to anybody else. Please
+make sure nobody is already logged into Karaage from your computer before using it.
+
+This link will expire in 7 days.
+{% else %}If you are not already logged in you will be required to log in before using this link.
+{% endif %}
+
+{% include "karaage/emails/email_footer.txt" %}{% endautoescape %}

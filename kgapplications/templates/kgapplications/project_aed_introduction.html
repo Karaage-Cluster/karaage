@@ -1,0 +1,65 @@
+{% extends "forms.html" %}
+{% load forms %}
+{% load applications %}
+
+
+{% block title %}Step 1: Introduction{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_application_list' %}">Applications</a>&nbsp;›
+    {{ application }}&nbsp;›
+    Step 1: Introduction
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="module">
+    <h2>1. Application Introduction</h2>
+
+    {% if application.applicant.get_short_name %}
+    <p>Hi {{ application.applicant.get_short_name }},</p>
+    {% endif %}
+
+    {% if application.project %}
+    {% if application.created_by == application.applicant %}
+    <p>You have opened an application to join the following {{ org_name }} project:</p>
+    {% else %}
+    <p>{{ application.created_by }} has invited you to join the following {{ org_name }} project:</p>
+    {% endif %}
+    <blockquote>
+        <p>Project ID: {{ application.project.pid }}<br/>Title: {{ application.project.name }}</p>
+    </blockquote>
+    {% else %}
+        <p>You have started a new application. This will proceed with the following steps.</p>
+    {% endif %}
+
+    <p>An application at {{ org_name }} requires completing the following steps:</p>
+
+    {% application_state application %}
+
+    <p>You may return to this application at any time to check on its status.
+    Please save the following URL for future use.</p>
+
+    <p>{{ link }}</p>
+
+    {% if is_secret %}
+    <p><b>This URL must remain secret, do not give it to anybody else. Please
+    make sure nobody is already logged into Karaage from your computer before using it.</b></p>
+    {% else %}
+    <p><b>If you are not already logged in you will be required to log in before using this link.</b></p>
+    {% endif %}
+
+    <p>Thank you</p>
+
+    <form method="post" action=".">{% csrf_token %}
+        {% application_actions %}
+    </form>
+</div>
+{% endblock %}
+
+
+

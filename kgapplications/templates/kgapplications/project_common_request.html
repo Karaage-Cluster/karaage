@@ -1,0 +1,40 @@
+{% if application.project %}
+<div>
+    <h3>Existing Project Details</h3>
+    <div class="table-container">
+        <table class="keyvalue">
+            <tr><th>Project:</th><td><a href='{% url 'kg_project_detail' application.project.pid %}'>{{ application.project }}</a></td></tr>
+            <tr><th>Institute:</th><td>{{ application.project.institute }}</td></tr>
+            <tr><th>Description:</th><td>{{ application.project.description|linebreaks }}</td></tr>
+            <tr><th>Additional requirements:</th><td>{{ application.project.additional_req|linebreaks }}</td></tr>
+            <tr><th>Needs account:</th><td>{% yes_no application.needs_account %}</td></tr>
+            <tr><th>Make leader:</th><td>{% yes_no application.make_leader %}</td></tr>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if application.name %}
+<div>
+    <h3>New Project Details</h3>
+    <div class="table-container">
+        <table class="keyvalue">
+            <tr><th>Name:</th><td>{{ application.name }}</td></tr>
+            <tr><th>Institute:</th><td>{{ application.institute }}</td></tr>
+            <tr><th>Description:</th><td>{{ application.description|linebreaks }}</td></tr>
+            <tr><th>Additional requirements:</th><td>{{ application.additional_req|linebreaks }}</td></tr>
+            <tr>
+                <th>Machine Categories:</th>
+                <td>
+                    {% for mc in application.machine_categories.all %}
+                    <a href='{% url 'kg_machine_category_detail' mc.pk %}'>{{ mc }}</a>{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr><th>PID:</th><td>{{ application.pid }}</td></tr>
+            <tr><th>Needs account:</th><td>{% yes_no application.needs_account %}</td></tr>
+            <tr><th>Make leader:</th><td>{% yes_no application.make_leader %}</td></tr>
+        </table>
+    </div>
+</div>
+{% endif %}
