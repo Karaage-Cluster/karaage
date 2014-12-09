@@ -100,8 +100,11 @@ setup(
         'crack': [
             # TODO: python-crack ?
         ],
+        'applications': [
+            # TODO: merge kgapplications
+        ],
         'software': [
-            # TODO: merge kgsoftware
+            "[applications]",
         ],
         'usage': [
             "[software]",
@@ -114,6 +117,7 @@ setup(
     entry_points = {
         'karaage.apps': [
             'kgusage.plugin = kgusage:plugin [usage]',
+            'kgsoftware.plugin = kgsoftware:plugin [software]',
         ],
     },
 )

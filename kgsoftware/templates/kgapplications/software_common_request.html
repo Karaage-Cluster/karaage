@@ -1,0 +1,11 @@
+<h3>Software License Details</h3>
+<div class="table-container">
+    <table class="keyvalue">
+        <tr>
+            <th>Software:</th>
+            <td><a href="{% url 'kg_software_detail' application.software_license.software.pk %}">{{ application.software_license.software }}</a></td>
+        </tr>
+        <tr><th>Version:</th><td>{{ application.software_license.version }}</td></tr>
+        <tr><th>Text:</th><td>{{ application.software_license.text|linebreaks }}</td></tr>
+    </table>
+</div>

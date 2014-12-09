@@ -18,3 +18,11 @@ and can be installed from PyPi:
 
 .. code:: bash
         pip install 'karaage[usage]'
+
+karaage-software
+================
+The karaage-software plugin provides software management capabilities 
+and can be installed from PyPi:
+
+.. code:: bash
+        pip install 'karaage[software]'
