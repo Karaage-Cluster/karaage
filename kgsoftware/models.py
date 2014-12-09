@@ -48,10 +48,10 @@ class SoftwareCategory(models.Model):
 
 @python_2_unicode_compatible
 class Software(models.Model):
-    category = models.ForeignKey(SoftwareCategory, blank=True, null=True)
+    category = models.ForeignKey('kgsoftware.SoftwareCategory', blank=True, null=True)
     name = models.CharField(max_length=200, unique=True)
     description = models.TextField(blank=True, null=True)
-    group = models.ForeignKey(Group, blank=True, null=True)
+    group = models.ForeignKey('karaage.Group', blank=True, null=True)
     homepage = models.URLField(blank=True, null=True)
     tutorial_url = models.URLField(blank=True, null=True)
     academic_only = models.BooleanField(default=False)
@@ -110,7 +110,7 @@ class Software(models.Model):
 
 @python_2_unicode_compatible
 class SoftwareVersion(models.Model):
-    software = models.ForeignKey(Software)
+    software = models.ForeignKey('kgsoftware.Software')
     version = models.CharField(max_length=100)
     machines = models.ManyToManyField(Machine)
     module = models.CharField(max_length=100, blank=True, null=True)
@@ -135,7 +135,7 @@ class SoftwareVersion(models.Model):
 
 
 class SoftwareLicense(models.Model):
-    software = models.ForeignKey(Software)
+    software = models.ForeignKey('kgsoftware.Software')
     version = models.CharField(max_length=100, blank=True, null=True)
     date = models.DateField(blank=True, null=True)
     text = models.TextField()
@@ -154,8 +154,8 @@ class SoftwareLicense(models.Model):
 
 
 class SoftwareLicenseAgreement(models.Model):
-    person = models.ForeignKey(Person)
-    license = models.ForeignKey(SoftwareLicense)
+    person = models.ForeignKey('karaage.Person')
+    license = models.ForeignKey('kgsoftware.SoftwareLicense')
     date = models.DateField()
 
     class Meta:
@@ -165,7 +165,7 @@ class SoftwareLicenseAgreement(models.Model):
 
 class SoftwareApplication(Application):
     type = "software"
-    software_license = models.ForeignKey(SoftwareLicense)
+    software_license = models.ForeignKey('kgsoftware.SoftwareLicense')
 
     objects = ApplicationManager()
 

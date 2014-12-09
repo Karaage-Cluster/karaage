@@ -190,7 +190,7 @@ def software_edit(request, software_id):
 def software_delete(request, software_id):
     from karaage.common.create_update import delete_object
     return delete_object(
-        request, post_delete_redirect=reverse('software_list'),
+        request, post_delete_redirect=reverse('kg_software_list'),
         object_id=software_id, model=Software)
 
 
@@ -441,4 +441,4 @@ def license_txt(request, software_id):
 
     return HttpResponse(
         wordwrap(software_license.text, 80),
-        mimetype="text/plain")
+        content_type="text/plain")

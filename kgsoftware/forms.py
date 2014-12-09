@@ -40,7 +40,7 @@ class SoftwareForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(SoftwareForm, self).__init__(*args, **kwargs)
-        self.fields['project'].queryset = SoftwareCategory.objects.all()
+        self.fields['category'].queryset = SoftwareCategory.objects.all()
 
     def save(self, software=None):
         data = self.cleaned_data
