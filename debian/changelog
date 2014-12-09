@@ -7,6 +7,14 @@ karaage3 (3.1.9-1) unstable; urgency=low
 
  -- Brian May <bam@debian.org>  Thu, 30 Oct 2014 14:14:41 +1100
 
+karaage3-usage (3.1.5-1) unstable; urgency=low
+
+  * Fix daily cleanup.
+  * Remove depreciated decorator.
+  * Fix duplicate results from cache.
+
+ -- Brian May <bam@debian.org>  Thu, 16 Oct 2014 13:18:26 +1100
+
 karaage3 (3.1.8-1) unstable; urgency=low
 
   * Fix daily cleanup. Work properly with plugins.
@@ -30,6 +38,13 @@ karaage3 (3.1.6-1) unstable; urgency=low
 
  -- Brian May <bam@debian.org>  Tue, 30 Sep 2014 15:50:08 +1000
 
+karaage3-usage (3.1.4-1) unstable; urgency=low
+
+  * Fix queries under postgresql. Don't sort when using group by.
+  * We require Python >= 2.7.
+
+ -- Brian May <bam@debian.org>  Tue, 30 Sep 2014 16:08:51 +1000
+
 karaage3 (3.1.5-1) unstable; urgency=low
 
   * Fix karaage3-database upgrade.
@@ -39,6 +54,14 @@ karaage3 (3.1.5-1) unstable; urgency=low
 
  -- Brian May <bam@debian.org>  Thu, 18 Sep 2014 09:06:19 +1000
 
+karaage3-usage (3.1.3-1) unstable; urgency=low
+
+  * Django 1.7 fixes.
+  * usage_usedmodules db table name was wrong. Fixed. Upgrades from earlier
+    3.1.x versions may need manual correction.
+
+ -- Brian May <bam@debian.org>  Mon, 15 Sep 2014 11:49:24 +1000
+
 karaage3 (3.1.4-1) unstable; urgency=low
 
   * Updates to fix Django 1.7 issues.
@@ -46,6 +69,14 @@ karaage3 (3.1.4-1) unstable; urgency=low
     not yet documented.
 
  -- Brian May <bam@debian.org>  Mon, 15 Sep 2014 11:11:41 +1000
+
+karaage3-usage (3.1.2-1) unstable; urgency=low
+
+  * Fix spelling mistake.
+  * Update python-karaage build depends.
+  * Add Django 1.7 migrations.
+
+ -- Brian May <bam@debian.org>  Wed, 10 Sep 2014 13:15:01 +1000
 
 karaage3 (3.1.3-1) unstable; urgency=low
 
@@ -99,6 +130,12 @@ karaage3 (3.1.1-1) unstable; urgency=low
   * Fix release tag.
 
  -- Brian May <bam@debian.org>  Tue, 19 Aug 2014 15:52:41 +1000
+
+karaage3-usage (3.1.1-1) unstable; urgency=low
+
+  * Split software out into separate package.
+
+ -- Brian May <bam@debian.org>  Tue, 19 Aug 2014 15:48:11 +1000
 
 karaage3 (3.1.0-1) unstable; urgency=low
 
@@ -167,6 +204,12 @@ karaage3 (3.1.0-1) unstable; urgency=low
   * Modify Apache2.2 test.
 
  -- Brian May <bam@debian.org>  Wed, 30 Jul 2014 11:26:00 +1000
+
+karaage3-usage (3.1.0-1) unstable; urgency=low
+
+  * Initial release. Split from Karaage3.
+
+ -- Brian May <bam@debian.org>  Tue, 15 Jul 2014 09:52:30 +1000
 
 karaage3 (3.0.15-1) unstable; urgency=low
 

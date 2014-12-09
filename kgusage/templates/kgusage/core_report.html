@@ -1,0 +1,67 @@
+{% extends "main.html" %}
+{% load url from future %}
+{% load humanize %}
+{% load filters %}
+
+
+{% block title %}Core Report{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_usage_list' %}">Usage</a>&nbsp;›
+    <a href="{% url 'kg_usage_mc' machine_category.pk %}">{{ machine_category }}</a>&nbsp;›
+    Core Report
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main"><h2>{{ start|date }} - {{ end|date }}</h2>
+    <p>{% date_filter start end %}</p>
+    <div class="module">
+        <div class="table-container">
+            <table summary="">
+                <thead>
+                    <tr>
+                        <th>Cores</th>
+                        <th>1</th>
+                        <th>2-4</th>
+                        <th>5-8</th>
+                        <th>9-16</th>
+                        <th>17-32</th>
+                        <th>33-64</th>
+                        <th>65-128</th>
+                        <th>128+</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Total</td>
+                        <td>{{ core_1|intcomma }}</td>
+                        <td>{{ core_2_4|intcomma }}</td>
+                        <td>{{ core_5_8|intcomma }}</td>
+                        <td>{{ core_9_16|intcomma }}</td>
+                        <td>{{ core_17_32|intcomma }}</td>
+                        <td>{{ core_33_64|intcomma }}</td>
+                        <td>{{ core_65_128|intcomma }}</td>
+                        <td>{{ core_128|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Percent</td>
+                        <td>{% divide core_1 total %}%</td>
+                        <td>{% divide core_2_4 total %}%</td>
+                        <td>{% divide core_5_8 total %}%</td>
+                        <td>{% divide core_9_16 total %}%</td>
+                        <td>{% divide core_17_32 total %}%</td>
+                        <td>{% divide core_33_64 total %}%</td>
+                        <td>{% divide core_65_128 total %}%</td>
+                        <td>{% divide core_128 total %}%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

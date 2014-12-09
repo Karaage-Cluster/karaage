@@ -100,5 +100,20 @@ setup(
         'crack': [
             # TODO: python-crack ?
         ],
+        'software': [
+            # TODO: merge kgsoftware
+        ],
+        'usage': [
+            "[software]",
+            "django_celery",
+            "django-filter",
+            "django-xmlrpc >= 0.1",
+            "matplotlib",
+        ],
+    },
+    entry_points = {
+        'karaage.apps': [
+            'kgusage.plugin = kgusage:plugin [usage]',
+        ],
     },
 )
