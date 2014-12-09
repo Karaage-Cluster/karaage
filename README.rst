@@ -72,12 +72,12 @@ karaage-usage
 The karaage-usage plugin provides monitoring of usage information admin
 and can be installed from PyPi::
 
-        $ pip install 'karaage[software]'
+    $ pip install 'karaage[software]'
 
 karaage-applications
 The karaage-applications plugin can be installed from PyPi::
 
-        $ pip install 'karaage[applications]'
+    $ pip install 'karaage[applications]'
 
 Contact
 -------
