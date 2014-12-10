@@ -28,6 +28,8 @@ class AllocationPoolQuerySet(models.QuerySet):
             allocated=models.Sum('allocation__quantity'),
             used=models.Sum('usage__used'),
             raw_used=models.Sum('usage__raw_used'),
+            # TODO: used_percent= \
+            # 100 * Sum('allocation__quantity')) / Sum('usage__used')
         )
 
 
@@ -81,6 +83,9 @@ class AllocationPool(models.Model):
     @cached_property
     def raw_used(self):
         return self.usage_set.aggregate(r=models.Sum('raw_used'))['r']
+    @cached_property
+    def used_percent(self):
+        return 100.0 * self.used / self.allocated
 
     objects = AllocationPoolQuerySet.as_manager()
     audit_log = AuditLog()
@@ -95,6 +100,7 @@ class AllocationPool(models.Model):
 
 
 class Allocation(models.Model):
+    name = models.CharField(max_length=100)
     allocation_pool = models.ForeignKey('karaage.AllocationPool')
     quantity = models.FloatField()
 
