@@ -40,6 +40,8 @@ COMMENT = 4
 class Usage(models.Model):
     account = models.ForeignKey('karaage.Account')
     allocation_pool = models.ForeignKey('karaage.AllocationPool', null=True)
+    allocation_period = models.ForeignKey('karaage.AllocationPeriod', null=True)
+    content_type = models.ForeignKey('contenttypes.ContentType')
     grant = models.ForeignKey('karaage.Grant', null=True)
     person_institute = models.ForeignKey(
         'karaage.Institute',

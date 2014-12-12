@@ -35,11 +35,36 @@ from karaage.common import log, is_admin
 
 @python_2_unicode_compatible
 class Project(MPTTModel):
+
+    class AllocationMode:
+        PRIVATE = 'private'
+        SHARED = 'shared'
+        # CAPPED = 'capped'
+
+    ALLOCATION_MODE_CHOICES = [
+        (
+            AllocationMode.PRIVATE,
+            'Private (this project only)',
+        ),
+        (
+            AllocationMode.SHARED,
+            'Shared (this project and all sub-projects)',
+        ),
+        # (
+        #     AllocationMode.CAPPED,
+        #     'Capped (use parent allocation up to this amount)',
+        # ),
+    ]
+
+    allocation_mode = models.CharField(
+        max_length=20,
+        choices=ALLOCATION_MODE_CHOICES,
+        default=AllocationMode.PRIVATE,
+    )
     pid = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=200)
     group = models.OneToOneField('karaage.Group')
     institute = models.ForeignKey('karaage.Institute')
-    leaders = models.ManyToManyField(Person, related_name='leads')
     description = models.TextField(null=True, blank=True)
     is_approved = models.BooleanField(default=False)
     start_date = models.DateField(default=datetime.datetime.today)
@@ -180,8 +205,10 @@ class Project(MPTTModel):
                 return True
 
         # Leader==person can view projects they lead
-        tmp = self.leaders.filter(pk=person.pk)
-        if tmp.count() > 0:
+        if self.projectmembership_set.filter(
+            person=person,
+            is_leader=True,
+        ).exists():
             return True
 
         # person can view own projects
@@ -217,8 +244,10 @@ class Project(MPTTModel):
                 return True
 
         # Leader==person can edit projects they lead
-        tmp = self.leaders.filter(pk=person.pk)
-        if tmp.count() > 0:
+        if self.projectmembership_set.filter(
+            person=person,
+            is_leader=True,
+        ).exists():
             return True
 
         return False
@@ -312,80 +341,6 @@ class ProjectQuota(models.Model):
         if iq.cap is not None:
             return iq.cap
         return iq.quota * 1000
-
-
-def _leaders_changed(
-        sender, instance, action, reverse, model, pk_set, **kwargs):
-    """
-    Hook that executes whenever the group members are changed.
-    """
-    # print("'%s','%s','%s','%s','%s'"
-    #   %(instance, action, reverse, model, pk_set))
-
-    if action == "post_add":
-        if not reverse:
-            project = instance
-            for person in model.objects.filter(pk__in=pk_set):
-                log.change(
-                    person,
-                    "Added person to project %s leaders" % project)
-                log.change(
-                    project,
-                    "Added person %s to project leaders" % person)
-        else:
-            person = instance
-            for project in model.objects.filter(pk__in=pk_set):
-                log.change(
-                    person,
-                    "Added person to project %s leaders" % project)
-                log.change(
-                    project,
-                    "Added person %s to project leaders" % person)
-
-    elif action == "post_remove":
-        if not reverse:
-            project = instance
-            for person in model.objects.filter(pk__in=pk_set):
-                log.change(
-                    person,
-                    "Removed person from project %s leaders" % project)
-                log.change(
-                    project,
-                    "Removed person %s from project leaders" % person)
-        else:
-            person = instance
-            for project in model.objects.filter(pk__in=pk_set):
-                log.change(
-                    person,
-                    "Removed person from project %s leaders" % project)
-                log.change(
-                    project,
-                    "Removed person %s from project leaders" % person)
-
-    elif action == "pre_clear":
-        # This has to occur in pre_clear, not post_clear, as otherwise
-        # we won't see what project leaders need to be removed.
-        if not reverse:
-            project = instance
-            log.change(
-                project,
-                "Removed all project leaders")
-            for person in project.leaders.all():
-                log.change(
-                    project,
-                    "Removed person %s from project leaders" % person)
-        else:
-            person = instance
-            log.change(
-                person,
-                "Removed person from all project leaders")
-            for project in person.leads.all():
-                log.change(
-                    project,
-                    "Removed person %s from project leaders" % person)
-
-models.signals.m2m_changed.connect(
-    _leaders_changed, sender=Project.leaders.through)
 
 
 @python_2_unicode_compatible
