@@ -61,7 +61,13 @@ class Project(MPTTModel):
     objects = models.Manager()
     active = ActiveProjectManager()
     deleted = DeletedProjectManager()
+
+    # MPTT fields
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+    lft = models.PositiveIntegerField(db_index=True, editable=False)
+    rght = models.PositiveIntegerField(db_index=True, editable=False)
+    tree_id = models.PositiveIntegerField(db_index=True, editable=False)
+    level = models.PositiveIntegerField(db_index=True, editable=False)
 
     _tracker = FieldTracker()
 
