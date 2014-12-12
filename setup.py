@@ -104,10 +104,10 @@ setup(
             # TODO: merge kgapplications
         ],
         'software': [
-            "[applications]",
+            "karaage4[applications]",
         ],
         'usage': [
-            "[software]",
+            "karaage4[software]",
             "django_celery",
             "django-filter",
             "django-xmlrpc >= 0.1",

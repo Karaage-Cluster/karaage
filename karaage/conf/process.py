@@ -24,11 +24,15 @@ from karaage.plugins import BasePlugin
 
 
 def registered_karaage_apps():
-    return [
-        entry_point.name
-        for entry_point
-        in pkg_resources.iter_entry_points('karaage.apps')
-    ]
+    apps = []
+    for entry_point in pkg_resources.iter_entry_points('karaage.apps'):
+        try:
+            entry_point.load()
+        except (ImportError, pkg_resources.DistributionNotFound):
+            continue # dependencies for the entry point not satisfied
+        apps.append(entry_point.name)
+    return apps
+
 
 def add_plugin(namespace, plugin_name, django_apps, depends):
 
