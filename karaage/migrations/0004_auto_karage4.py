@@ -147,7 +147,7 @@ class Migration(migrations.Migration):
             name='CareerLevelAuditLogEntry',
             fields=[
                 ('id', models.IntegerField(db_index=True, verbose_name='ID', blank=True, auto_created=True)),
-                ('level', models.CharField(max_length=255)),
+                ('level', models.CharField(max_length=255, blank=False, null=True)),
                 ('action_id', models.AutoField(primary_key=True, serialize=False)),
                 ('action_date', models.DateTimeField(editable=False, default=django.utils.timezone.now)),
                 ('action_type', models.CharField(editable=False, max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')])),
@@ -326,7 +326,7 @@ class Migration(migrations.Migration):
                 ('action_type', models.CharField(editable=False, max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')])),
                 ('action_user', audit_log.models.fields.LastUserField(editable=False, related_name='_person_audit_log_entry', null=True, to='karaage.PersonAuditLogEntry')),
                 ('approved_by', models.ForeignKey(null=True, blank=True, related_name='_auditlog_user_approver', to='karaage.Person')),
-                ('career_level', models.ForeignKey(null=True, to='karaage.CareerLevel')),
+                ('career_level', models.ForeignKey(null=True, blank=False, to='karaage.CareerLevel')),
                 ('deleted_by', models.ForeignKey(null=True, blank=True, related_name='_auditlog_user_deletor', to='karaage.Person')),
                 ('institute', models.ForeignKey(to='karaage.Institute')),
             ],
@@ -409,7 +409,7 @@ class Migration(migrations.Migration):
                 ('is_primary_contact', models.BooleanField(default=False)),
                 ('person', models.ForeignKey(to='karaage.Person')),
                 ('project', models.ForeignKey(to='karaage.Project')),
-                ('project_level', models.ForeignKey(to='karaage.ProjectLevel')),
+                ('project_level', models.ForeignKey(to='karaage.ProjectLevel', null=True, blank=False)),
             ],
             options={
             },
@@ -560,9 +560,9 @@ class Migration(migrations.Migration):
                 ('grant', models.ForeignKey(null=True, to='karaage.Grant')),
                 ('machine', models.ForeignKey(to='karaage.Machine')),
                 ('person', models.ForeignKey(null=True, to='karaage.Person')),
-                ('person_career_level', models.ForeignKey(to='karaage.CareerLevel')),
+                ('person_career_level', models.ForeignKey(to='karaage.CareerLevel', null=True, blank=True)),
                 ('person_institute', models.ForeignKey(null=True, related_name='person_institute', to='karaage.Institute')),
-                ('person_project_level', models.ForeignKey(to='karaage.ProjectLevel')),
+                ('person_project_level', models.ForeignKey(to='karaage.ProjectLevel', null=True, blank=True)),
                 ('project_institute', models.ForeignKey(related_name='project_institute', to='karaage.Institute')),
                 ('resource', models.ForeignKey(to='karaage.Resource')),
                 ('resource_pool', models.ForeignKey(null=True, to='karaage.ResourcePool')),
@@ -633,6 +633,54 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(to='karaage.Grant'),
             preserve_default=True,
         ),
+        migrations.RunSQL(
+            '''
+                INSERT INTO karaage_projectmembership (
+                    person_id,
+                    project_id,
+                    is_project_supervisor,
+                    is_project_leader,
+                    is_default_project,
+                    is_primary_contact
+                ) SELECT
+                    members.person_id,
+                    project.id,
+                    FALSE,
+                    leaders.id IS NOT NULL,
+                    members.person_id IN (
+                        SELECT person_id
+                        FROM account
+                        WHERE default_project_id = project.id
+                    ),
+                    FALSE
+                    FROM people_group_members members
+                        INNER JOIN people_group grp ON (
+                            members.group_id = grp.id
+                        )
+                        INNER JOIN project ON (
+                            project.pid = grp.name
+                        )
+                        LEFT JOIN project_leaders leaders ON (
+                            leaders.project_id = project.id
+                        )
+            ''',
+            '''
+                UPDATE account SET default_project_id = (
+                    SELECT membership.project_id
+                    FROM karaage_projectmembership membership
+                    WHERE membership.is_default_project
+                    AND account.person_id = membership.person_id
+                );
+
+                INSERT INTO project_leaders (
+                    project_id,
+                    person_id
+                ) SELECT project_id, person_id
+                FROM karaage_projectmembership
+                WHERE is_project_leader
+                ORDER BY id;
+            ''',
+        ),
         migrations.RemoveField(
             model_name='project',
             name='leaders',
@@ -640,7 +688,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='person',
             name='career_level',
-            field=models.ForeignKey(null=True, to='karaage.CareerLevel'),
+            field=models.ForeignKey(null=True, blank=False, to='karaage.CareerLevel'),
             preserve_default=True,
         ),
         migrations.AddField(

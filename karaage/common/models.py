@@ -66,8 +66,14 @@ class Usage(models.Model):
     resource = models.ForeignKey('karaage.Resource')
     resource_pool = models.ForeignKey('karaage.ResourcePool', null=True)
     scheme = models.ForeignKey('karaage.Scheme', null=True)
-    person_project_level = models.ForeignKey('karaage.ProjectLevel')
-    person_career_level = models.ForeignKey('karaage.CareerLevel')
+    person_project_level = models.ForeignKey(
+        'karaage.ProjectLevel',
+        blank=True, null=True, # legacy data doesn't have person project level
+    )
+    person_career_level = models.ForeignKey(
+        'karaage.CareerLevel',
+        blank=True, null=True, # legacy data doesn't have person career level
+    )
     count = models.PositiveIntegerField()
     created = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=255)

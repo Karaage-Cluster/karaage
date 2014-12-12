@@ -50,7 +50,11 @@ class Person(AbstractBaseUser):
         through='karage.ProjectMembership',
         through_fields=('person', 'project'),
     )
-    career_level = models.ForeignKey('karaage.CareerLevel', null=True)
+    career_level = models.ForeignKey(
+        'karaage.CareerLevel',
+        blank=False, # don't allow saving without filling this in...
+        null=True, # ...but do allow legacy records in DB to be NULL
+    )
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(null=True, db_index=True)
     short_name = models.CharField(max_length=30)
@@ -426,7 +430,11 @@ class ProjectMembership(models.Model):
 
     person = models.ForeignKey('karaage.Person')
     project = models.ForeignKey('karaage.Project')
-    project_level = models.ForeignKey('karaage.ProjectLevel')
+    project_level = models.ForeignKey(
+        'karaage.ProjectLevel',
+        blank=False, # don't allow saving without filling this in...
+        null=True, # ...but do allow legacy records in DB to be NULL
+    )
     is_project_supervisor = models.BooleanField(default=False)
     is_project_leader = models.BooleanField(default=False)
     is_default_project = models.BooleanField(default=False)
