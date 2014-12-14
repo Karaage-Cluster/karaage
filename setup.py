@@ -102,7 +102,7 @@ setup(
             # TODO: python-crack ?
         ],
         'applications': [
-            # TODO: merge kgapplications
+            # no dependencies for kgapplications
         ],
         'software': [
             "karaage4[applications]",
