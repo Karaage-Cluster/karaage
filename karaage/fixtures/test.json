@@ -133,9 +133,6 @@
         "approved_by": 1,
         "is_approved": true,
         "is_active": false,
-        "leaders": [
-            1
-        ],
         "deleted_by": null,
         "date_approved": "2010-08-05",
         "institute": 1,

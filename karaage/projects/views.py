@@ -54,7 +54,10 @@ def profile_projects(request):
     config.configure(delegate_project_list)
 
     leader_project_list = Project.objects.filter(
-        leaders=person, is_active=True)
+        projectmembership__person=person,
+        projectmembership__is_project_leader=True,
+        is_active=True,
+    )
     leader_project_list = ProjectTable(
         leader_project_list, prefix="leader-")
     config.configure(leader_project_list)

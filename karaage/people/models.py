@@ -557,6 +557,16 @@ class Group(models.Model):
         db_table = 'people_group'
         app_label = 'karaage'
 
+    @property
+    def institute_set(self):
+        from karaage.institutes.models import Institute
+        return Institute.objects.filter(name=self.name)
+
+    @property
+    def project_set(self):
+        from karaage.projects.models import Project
+        return Project.objects.filter(pid=self.name)
+
     def __str__(self):
         return six.u("%s") % self.name
 

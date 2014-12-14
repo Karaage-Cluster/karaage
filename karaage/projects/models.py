@@ -109,6 +109,13 @@ class Project(MPTTModel):
     def __str__(self):
         return '%s - %s' % (self.pid, self.name)
 
+    @property
+    def leaders(self):
+        return Person.objects.filter(
+            projectmembership__is_project_leader=True,
+            projectmembership__project=self,
+        )
+
     @models.permalink
     def get_absolute_url(self):
         return ('kg_project_detail', [self.pid])
@@ -207,7 +214,7 @@ class Project(MPTTModel):
         # Leader==person can view projects they lead
         if self.projectmembership_set.filter(
             person=person,
-            is_leader=True,
+            is_project_leader=True,
         ).exists():
             return True
 
@@ -246,7 +253,7 @@ class Project(MPTTModel):
         # Leader==person can edit projects they lead
         if self.projectmembership_set.filter(
             person=person,
-            is_leader=True,
+            is_project_leader=True,
         ).exists():
             return True
 
