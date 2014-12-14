@@ -645,7 +645,7 @@ class Migration(migrations.Migration):
                 ) SELECT
                     members.person_id,
                     project.id,
-                    FALSE,
+                    0,
                     leaders.id IS NOT NULL,
                     members.person_id IN (
                         SELECT person_id
