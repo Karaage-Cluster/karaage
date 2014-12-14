@@ -652,7 +652,7 @@ class Migration(migrations.Migration):
                         FROM account
                         WHERE default_project_id = project.id
                     ),
-                    FALSE
+                    0
                     FROM people_group_members members
                         INNER JOIN people_group grp ON (
                             members.group_id = grp.id
