@@ -92,6 +92,7 @@ setup(
         "python-tldap >= 0.3.3",
         "six",
         "slimit>=0.8.1",
+        "sqlparse",
     ],
     #test_suite='setuptest.setuptest.SetupTestSuite',
     tests_require=tests_require,
