@@ -26,6 +26,7 @@ urlpatterns = patterns(
     url(r'^captcha/', include('captcha.urls')),
     url(r'^lookup/', include('ajax_select.urls')),
 
+    url(r'^allocations/', include('karaage.allocations.urls')),
     url(r'^emails/', include('karaage.emails.urls')),
     url(r'^institutes/', include('karaage.institutes.urls')),
     url(r'^projects/', include('karaage.projects.urls')),
