@@ -1,18 +1,21 @@
-import six
-
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.core.urlresolvers import reverse
 
 from karaage.common.decorators import admin_required, login_required
-from karaage.allocations.models import AllocationPool
-from karaage.allocations.forms import AllocationPeriodForm
+
+from karaage.allocations.forms import (
+    AllocationForm,
+    AllocationPeriodForm,
+    GrantForm,
+    SchemeForm,
+)
 
 
+# TODO: Restrict this view only to authorised users
 # @admin_required
 def allocation_period_add(request):
 
-    # TODO: Restrict this view only to authorised users
     # if not allocation_pool.can_view(request):
     #     return HttpResponseForbidden('<h1>Access Denied</h1>')
 
@@ -20,7 +23,7 @@ def allocation_period_add(request):
         form = AllocationPeriodForm(request.POST)
         if form.is_valid():
             form.save()
-            # return HttpResponseRedirect(reverse('allocation-period-list'))
+            # return HttpResponseRedirect(reverse('allocation_list'))
             # The line below is just for testing that the view works
             return HttpResponse('Allocation period set!')
     else:
@@ -28,8 +31,90 @@ def allocation_period_add(request):
 
     return render(
         request,
-        'karaage/allocations/add_allocation_period.html',
+        'karaage/allocations/allocation_add_template.html',
         {
             'form': form,
+            'title': 'Add allocation period',
+        },
+    )
+
+
+# TODO: Restrict this view only to authorised users
+# @admin_required
+def allocation_add(request):
+
+    # if not allocation_pool.can_view(request):
+    #     return HttpResponseForbidden('<h1>Access Denied</h1>')
+
+    if request.method == "POST":
+        form = AllocationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # return HttpResponseRedirect(reverse('allocation_list'))
+            # The line below is just for testing that the view works
+            return HttpResponse('Allocation set!')
+    else:
+        form = AllocationForm()
+
+    return render(
+        request,
+        'karaage/allocations/allocation_add_template.html',
+        {
+            'form': form,
+            'title': 'Add allocation',
+        },
+    )
+
+
+# TODO: Restrict this view only to authorised users
+# @admin_required
+def grant_add(request):
+
+    # if not allocation_pool.can_view(request):
+    #     return HttpResponseForbidden('<h1>Access Denied</h1>')
+
+    if request.method == "POST":
+        form = GrantForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # return HttpResponseRedirect(reverse('allocation_list'))
+            # The line below is just for testing that the view works
+            return HttpResponse('Grant set!')
+    else:
+        form = GrantForm()
+
+    return render(
+        request,
+        'karaage/allocations/allocation_add_template.html',
+        {
+            'form': form,
+            'title': 'Add grant',
+        },
+    )
+
+
+# TODO: Restrict this view only to authorised users
+# @admin_required
+def scheme_add(request):
+
+    # if not allocation_pool.can_view(request):
+    #     return HttpResponseForbidden('<h1>Access Denied</h1>')
+
+    if request.method == "POST":
+        form = SchemeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # return HttpResponseRedirect(reverse('allocation_list'))
+            # The line below is just for testing that the view works
+            return HttpResponse('Scheme set!')
+    else:
+        form = SchemeForm()
+
+    return render(
+        request,
+        'karaage/allocations/allocation_add_template.html',
+        {
+            'form': form,
+            'title': 'Add scheme',
         },
     )

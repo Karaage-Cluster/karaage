@@ -13,6 +13,9 @@ class Grant(models.Model):
 
     audit_log = AuditLog()
 
+    def __str__(self):
+        return self.description
+
     class Meta:
         ordering = [
             '-expires',
@@ -65,12 +68,14 @@ class AllocationPool(models.Model):
     objects = AllocationPoolQuerySet.as_manager()
     audit_log = AuditLog()
 
+    def __str__(self):
+        return 'Project: %s' % self.project.name
+
     class Meta:
         ordering = [
             '-period__end',
-            '-grant__expires',
-            '-grant__project__end_date',
-            'grant__project__name',
+            '-project__end_date',
+            'project__name',
         ]
 
 
