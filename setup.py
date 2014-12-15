@@ -106,6 +106,7 @@ setup(
         ],
         'software': [
             "karaage4[applications]",
+            "karaage4[usage]",
         ],
         'usage': [
             "karaage4[software]",

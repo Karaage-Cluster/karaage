@@ -49,8 +49,8 @@ class ApplicationManager(models.Manager):
     def requires_attention(self, request):
         person = request.user
         query = Q(
-            projectapplication__project__projectmembersip__person=person,
-            projectapplication__project__projectmembersip__is_project_leader=True,
+            projectapplication__project__projectmembership__person=person.pk,
+            projectapplication__project__projectmembership__is_project_leader=True,
             state=ProjectApplication.WAITING_FOR_LEADER)
         query = query | Q(
             projectapplication__institute__in=person.delegate_for.all(),

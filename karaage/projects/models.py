@@ -63,7 +63,7 @@ class Project(MPTTModel):
     )
     pid = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=200)
-    group = models.OneToOneField('karaage.Group')
+    group = models.ForeignKey('karaage.Group', unique=True)
     institute = models.ForeignKey('karaage.Institute')
     description = models.TextField(null=True, blank=True)
     is_approved = models.BooleanField(default=False)

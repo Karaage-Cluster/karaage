@@ -23,7 +23,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.core import mail
 
-from karaage.people.models import Person
+from karaage.people.models import Person, ProjectMembership
 from karaage.institutes.models import Institute, InstituteDelegate
 from karaage.projects.models import Project
 from karaage.machines.models import Account, MachineCategory
@@ -160,7 +160,11 @@ class PersonTestCase(IntegrationTestCase):
             person=Person.objects.get(id=2),
             defaults={'send_email': False})
         project = Project.objects.get(pid="TestProject1")
-        project.leaders = [2]
+        ProjectMembership.objects.create(
+            project=project,
+            person_id=2,
+            is_project_leader=True,
+        )
 
         test_object = Project.objects.get(pid="TestProject1")
         self.do_permission_tests(test_object, {

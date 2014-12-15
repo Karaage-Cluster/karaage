@@ -147,7 +147,7 @@ class Migration(migrations.Migration):
             name='CareerLevelAuditLogEntry',
             fields=[
                 ('id', models.IntegerField(db_index=True, verbose_name='ID', blank=True, auto_created=True)),
-                ('level', models.CharField(max_length=255, blank=False, null=True)),
+                ('level', models.CharField(max_length=255)),
                 ('action_id', models.AutoField(primary_key=True, serialize=False)),
                 ('action_date', models.DateTimeField(editable=False, default=django.utils.timezone.now)),
                 ('action_type', models.CharField(editable=False, max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')])),
@@ -224,7 +224,7 @@ class Migration(migrations.Migration):
                 ('action_date', models.DateTimeField(editable=False, default=django.utils.timezone.now)),
                 ('action_type', models.CharField(editable=False, max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')])),
                 ('action_user', audit_log.models.fields.LastUserField(editable=False, related_name='_institute_audit_log_entry', null=True, to='karaage.Person')),
-                ('group', models.OneToOneField(to='karaage.Group')),
+                ('group', models.ForeignKey(to='karaage.Group', unique=True)),
             ],
             options={
                 'ordering': ('-action_date',),
@@ -362,7 +362,7 @@ class Migration(migrations.Migration):
                 ('action_user', audit_log.models.fields.LastUserField(editable=False, related_name='_project_audit_log_entry', null=True, to='karaage.Person')),
                 ('approved_by', models.ForeignKey(editable=False, blank=True, related_name='_auditlog_project_approver', null=True, to='karaage.Person')),
                 ('deleted_by', models.ForeignKey(editable=False, blank=True, related_name='_auditlog_project_deletor', null=True, to='karaage.Person')),
-                ('group', models.OneToOneField(to='karaage.Group')),
+                ('group', models.ForeignKey(to='karaage.Group')),
                 ('institute', models.ForeignKey(to='karaage.Institute')),
                 ('parent', mptt.fields.TreeForeignKey(null=True, blank=True, related_name='_auditlog_children', to='karaage.Project')),
             ],
@@ -645,14 +645,14 @@ class Migration(migrations.Migration):
                 ) SELECT
                     members.person_id,
                     project.id,
-                    0,
+                    'f',
                     leaders.id IS NOT NULL,
                     members.person_id IN (
                         SELECT person_id
                         FROM account
                         WHERE default_project_id = project.id
                     ),
-                    0
+                    'f'
                     FROM people_group_members members
                         INNER JOIN people_group grp ON (
                             members.group_id = grp.id
@@ -730,7 +730,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='institute',
             name='group',
-            field=models.OneToOneField(to='karaage.Group'),
+            field=models.ForeignKey(to='karaage.Group', unique=True),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -742,7 +742,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='project',
             name='group',
-            field=models.OneToOneField(to='karaage.Group'),
+            field=models.ForeignKey(to='karaage.Group', unique=True),
             preserve_default=True,
         ),
     ]
