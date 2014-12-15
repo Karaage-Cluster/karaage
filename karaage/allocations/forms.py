@@ -1,14 +1,14 @@
 from django import forms
 
-from allocations.models import AllocationPeriod
+from karaage.allocations.models import AllocationPeriod
 
 
 class AllocationPeriodForm(forms.ModelForm):
 
     class Meta:
-        models = AllocationPeriod
+        model = AllocationPeriod
         fields = [
-            name,
-            start,
-            end,
+            'name',
+            'start',
+            'end',
         ]

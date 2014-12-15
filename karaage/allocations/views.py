@@ -9,10 +9,8 @@ from karaage.allocations.models import AllocationPool
 from karaage.allocations.forms import AllocationPeriodForm
 
 
-@admin_required
-def allocation_period(request, allocation_pool_id):
-
-    allocation_pool = get_object_or_404(AllocationPool, id=allocation_pool_id)
+# @admin_required
+def allocation_period_add(request):
 
     # TODO: Restrict this view only to authorised users
     # if not allocation_pool.can_view(request):
@@ -29,6 +27,7 @@ def allocation_period(request, allocation_pool_id):
         form = AllocationPeriodForm()
 
     return render(
+        request,
         'karaage/allocations/add_allocation_period.html',
         {
             'form': form,

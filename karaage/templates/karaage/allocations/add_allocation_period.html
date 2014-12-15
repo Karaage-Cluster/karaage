@@ -7,8 +7,6 @@
 {% block breadcrumbs %}
 <div class="breadcrumbs">
     <a href='{% url "index" %}'>Home</a>&nbsp;›
-    <a href="{% url 'kg_group_list' %}">Groups</a>&nbsp;›
-    <a href="{% url 'kg_group_detail' group.name %}">{{ group }}</a>&nbsp;›
     Add Allocation Period
 </div>
 {% endblock %}
@@ -19,7 +17,7 @@
 <div class="module">
     <h2>Add Allocation Period</h2>
     <form method="post" action="." class="simple">{% csrf_token %}
-        {{ form }}
+        {{ form.as_p }}
         <input type="submit" value="Add" class="default" />
     </form>
 </div>
