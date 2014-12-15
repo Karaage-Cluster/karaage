@@ -645,14 +645,14 @@ class Migration(migrations.Migration):
                 ) SELECT
                     members.person_id,
                     project.id,
-                    0,
+                    0::bool,
                     leaders.id IS NOT NULL,
                     members.person_id IN (
                         SELECT person_id
                         FROM account
                         WHERE default_project_id = project.id
                     ),
-                    0
+                    0::bool
                     FROM people_group_members members
                         INNER JOIN people_group grp ON (
                             members.group_id = grp.id
