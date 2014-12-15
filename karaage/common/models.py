@@ -40,6 +40,8 @@ COMMENT = 4
 class Usage(models.Model):
     account = models.ForeignKey('karaage.Account')
     allocation_pool = models.ForeignKey('karaage.AllocationPool', null=True)
+    allocation_period = models.ForeignKey('karaage.AllocationPeriod', null=True)
+    content_type = models.ForeignKey('contenttypes.ContentType')
     grant = models.ForeignKey('karaage.Grant', null=True)
     person_institute = models.ForeignKey(
         'karaage.Institute',
@@ -64,8 +66,14 @@ class Usage(models.Model):
     resource = models.ForeignKey('karaage.Resource')
     resource_pool = models.ForeignKey('karaage.ResourcePool', null=True)
     scheme = models.ForeignKey('karaage.Scheme', null=True)
-    person_project_level = models.ForeignKey('karaage.ProjectLevel')
-    person_career_level = models.ForeignKey('karaage.CareerLevel')
+    person_project_level = models.ForeignKey(
+        'karaage.ProjectLevel',
+        blank=True, null=True, # legacy data doesn't have person project level
+    )
+    person_career_level = models.ForeignKey(
+        'karaage.CareerLevel',
+        blank=True, null=True, # legacy data doesn't have person career level
+    )
     count = models.PositiveIntegerField()
     created = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=255)

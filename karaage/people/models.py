@@ -50,7 +50,11 @@ class Person(AbstractBaseUser):
         through='karage.ProjectMembership',
         through_fields=('person', 'project'),
     )
-    career_level = models.ForeignKey('karaage.CareerLevel', null=True)
+    career_level = models.ForeignKey(
+        'karaage.CareerLevel',
+        blank=False, # don't allow saving without filling this in...
+        null=True, # ...but do allow legacy records in DB to be NULL
+    )
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(null=True, db_index=True)
     short_name = models.CharField(max_length=30)
@@ -426,7 +430,11 @@ class ProjectMembership(models.Model):
 
     person = models.ForeignKey('karaage.Person')
     project = models.ForeignKey('karaage.Project')
-    project_level = models.ForeignKey('karaage.ProjectLevel')
+    project_level = models.ForeignKey(
+        'karaage.ProjectLevel',
+        blank=False, # don't allow saving without filling this in...
+        null=True, # ...but do allow legacy records in DB to be NULL
+    )
     is_project_supervisor = models.BooleanField(default=False)
     is_project_leader = models.BooleanField(default=False)
     is_default_project = models.BooleanField(default=False)
@@ -434,6 +442,77 @@ class ProjectMembership(models.Model):
 
     def __str__(self):
         return '{} @ {}'.format(self.person, self.project)
+
+
+def _project_membership_changed(sender, instance, *args, **kwargs):
+
+    """
+    This excecutes when a person is added to a project, and also when
+    one of these values in the ProjectMembership table changes:
+    - primary_contact
+    - project_leader
+    - project_supervisor
+
+    """
+
+    try:
+        existing_data = ProjectMembership.objects.get(pk=instance.pk)
+    except ProjectMembership.DoesNotExist:
+        existing_data = None
+
+    project = instance.project
+
+    # Log a person being added to a project
+    if not existing_data:
+        message = '%s was added to the project.' % instance.person
+        log.change(project, message)
+    # Log changes to primary contact status
+    if instance.is_primary_contact != existing_data.is_primary_contact:
+        if instance.is_primary_contact:
+            message = '%s has become a primary contact' % instance.person
+        else:
+            message = '%s is no longer a primary contact' % instance.person
+        log.change(project, message)
+    # Log changes to project leader status
+    if instance.is_project_leader != existing_data.is_project_leader:
+        if instance.is_project_leader:
+            message = '%s has become a project leader' % instance.person
+        else:
+            message = '%s is no longer a project leader' % instance.person
+        log.change(project, message)
+    # Log changes to project supervisor status
+    if instance.is_project_supervisor != existing_data.is_project_supervisor:
+        if instance.is_project_supervisor:
+            message = '%s has become a supervisor' % instance.person
+        else:
+            message = '%s is no longer a supervisor' % instance.person
+        log.change(project, message)
+
+
+models.signals.pre_save.connect(
+    _project_membership_changed,
+    sender=ProjectMembership,
+)
+
+
+def _person_removed_from_project(sender, instance, *args, **kwargs):
+
+    """
+    This excecutes when a person is removed from a project.
+    """
+
+    existing_data = ProjectMembership.objects.get(pk=instance.pk)
+    project = instance.project
+
+    # Log a person being removed from a project
+    message = '%s was removed from the project.' % instance.person
+    log.change(project, message)
+
+
+models.signals.pre_delete.connect(
+    _person_removed_from_project,
+    sender=ProjectMembership,
+)
 
 
 @python_2_unicode_compatible
@@ -477,6 +556,16 @@ class Group(models.Model):
         ordering = ['name']
         db_table = 'people_group'
         app_label = 'karaage'
+
+    @property
+    def institute_set(self):
+        from karaage.institutes.models import Institute
+        return Institute.objects.filter(name=self.name)
+
+    @property
+    def project_set(self):
+        from karaage.projects.models import Project
+        return Project.objects.filter(pid=self.name)
 
     def __str__(self):
         return six.u("%s") % self.name

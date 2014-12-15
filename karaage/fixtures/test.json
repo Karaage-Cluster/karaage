@@ -133,9 +133,6 @@
         "approved_by": 1,
         "is_approved": true,
         "is_active": false,
-        "leaders": [
-            1
-        ],
         "deleted_by": null,
         "date_approved": "2010-08-05",
         "institute": 1,
@@ -146,6 +143,10 @@
         "additional_req": "",
         "description": "",
         "group": 1,
+        "lft": 0,
+        "rght": 0,
+        "level": 0,
+        "tree_id": 0,
         "start_date": "2010-04-30"
     },
     "pk": 1,
@@ -341,5 +342,11 @@
     },
     "model": "captcha.captchastore",
     "pk": 1
+},{
+    "fields": {
+        "level": "1"
+    },
+    "pk": 1,
+    "model": "karaage.projectlevel"
 }
 ]

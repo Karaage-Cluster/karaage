@@ -140,7 +140,6 @@ TEMPLATE_DIRS = (
 # RequestContext. These callables take a request object as their argument and
 # return a dictionary of items to be merged into the context.
 TEMPLATE_CONTEXT_PROCESSORS = (
-    'audit_log.middleware.UserLoggingMiddleware',
     'django.core.context_processors.request',
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',
@@ -179,6 +178,7 @@ MIDDLEWARE_CLASSES = (
     'karaage.middleware.threadlocals.ThreadLocals',
     'karaage.middleware.saml.SamlUserMiddleware',
     'tldap.middleware.TransactionMiddleware',
+    'audit_log.middleware.UserLoggingMiddleware',
 )
 
 # A tuple of authentication backend classes (as strings) to use when attempting

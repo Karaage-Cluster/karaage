@@ -520,6 +520,7 @@ class Resource(models.Model):
         max_length=255,
         choices=RESOURCE_TYPE_CHOICES,
     )
+    quantity = models.BigIntegerField()
 
     audit_log = AuditLog()
 
