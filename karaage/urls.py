@@ -34,6 +34,7 @@ urlpatterns = patterns(
     url(r'^groups/', include('karaage.people.urls.groups')),
     url(r'^accounts/', include('karaage.machines.urls.accounts')),
     url(r'^machines/', include('karaage.machines.urls.machines')),
+    url(r'^resources/', include('karaage.machines.urls.resources')),
 
     url(r'^$', 'karaage.common.views.common.index', name='index'),
     url(r'^search/$', 'karaage.common.views.common.search',
