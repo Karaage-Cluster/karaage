@@ -17,7 +17,7 @@ env:
 
 before_install:
         - sudo apt-get update -qq
-        - sudo apt-get install -qq libcrack2-dev csstidy slapd ldap-utils
+        - sudo apt-get install -qq libcrack2-dev csstidy slapd ldap-utils apparmor
         - sudo service slapd stop
         - sudo apt-get build-dep -qq python-cracklib
         - sudo ln -s /etc/apparmor.d/usr.sbin.slapd /etc/apparmor.d/disable/
