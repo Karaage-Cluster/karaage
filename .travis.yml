@@ -20,6 +20,7 @@ before_install:
         - sudo apt-get install -qq libcrack2-dev csstidy slapd ldap-utils
         - sudo service slapd stop
         - sudo apt-get build-dep -qq python-cracklib
+        - [ -r /etc/apparmor.d/usr.sbin.slapd ] && sudo ln -s /etc/apparmor.d/usr.sbin.slapd /etc/apparmor.d/disable/ && sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.slapd
 
 install:
         - pip install --allow-external python-crack --allow-unverified python-crack --allow-external mysql-connector-python -r requirements.txt -r requirements-tests.txt mysql-connector-python psycopg2 mysqlclient codecov
