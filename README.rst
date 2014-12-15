@@ -90,7 +90,7 @@ install with::
 karaage-applications
 ^^^^^^^^^^^^^^^^^^^^
 
-.. todo:: Write paragraph about what the applications plugin does.
+This plugin allows users to self register accounts with Karaage.
 
 The karaage-applications plugin, install with::
 
