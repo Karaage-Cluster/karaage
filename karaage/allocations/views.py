@@ -62,15 +62,18 @@ def allocation_add(request, project_id):
 
 
 @admin_required
-def grant_add(request):
+def grant_add(request, project_id):
+
+    project = Project.objects.get(pk=project_id)
 
     if request.method == "POST":
         form = GrantForm(request.POST)
         if form.is_valid():
-            form.save()
-            # return HttpResponseRedirect(reverse('allocation_list'))
-            # The line below is just for testing that the view works
-            return HttpResponse('Grant set!')
+            # import pdb; pdb.set_trace()
+            obj = form.save(commit=False)
+            obj.project = project
+            obj.save()
+            return redirect('kg_project_detail', project_id)
     else:
         form = GrantForm()
 

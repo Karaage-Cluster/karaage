@@ -43,7 +43,6 @@ class GrantForm(forms.ModelForm):
     class Meta:
         model = Grant
         fields = [
-            'project',
             'scheme',
             'date',
             'description',
