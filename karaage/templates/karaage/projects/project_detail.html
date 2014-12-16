@@ -267,6 +267,7 @@
         <table>
             <thead>
                 <tr>
+                    <th>Allocation description</th>
                     <th>Allocation pool</th>
                     <th>Period</th>
                     <th>Grant</th>
@@ -276,6 +277,8 @@
             <tbody>
                 {% for a in allocations %}
                 <tr>
+                    <td><a href={% url 'allocation_edit' a.grant.project.id a.id %}>
+                      {{ a.description }}</a></td>
                     <td>{{ a.allocation_pool }}</td>
                     <td>{{ a.period }}</td>
                     <td>{{ a.grant }}</td>

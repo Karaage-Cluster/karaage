@@ -5,6 +5,7 @@ from django.shortcuts import (
     redirect,
 )
 
+from karaage.allocations.models import Allocation
 from karaage.allocations.forms import (
     AllocationForm,
     AllocationPeriodForm,
@@ -39,24 +40,36 @@ def allocation_period_add(request):
 
 
 @admin_required
-def allocation_add(request, project_id):
+def add_edit_allocation(request, project_id, allocation_id=None):
 
     project = Project.objects.get(pk=project_id)
 
+    if allocation_id:
+        title = 'Edit allocation'
+        allocation = Allocation.objects.get(pk=allocation_id)
+    else:
+        title = 'Add allocation'
+
     if request.method == "POST":
-        form = AllocationForm(project, request.POST)
+        if allocation_id:
+            form = AllocationForm(project, request.POST, instance=allocation)
+        else:
+            form = AllocationForm(project, request.POST)
         if form.is_valid():
             form.save()
             return redirect('kg_project_detail', project_id)
     else:
-        form = AllocationForm(project)
+        if allocation_id:
+            form = AllocationForm(project, instance=allocation)
+        else:
+            form = AllocationForm(project)
 
     return render(
         request,
-        'karaage/allocations/allocation_add_template.html',
+        'karaage/allocations/allocation_add_edit_template.html',
         {
             'form': form,
-            'title': 'Add allocation',
+            'title': title,
         },
     )
 
