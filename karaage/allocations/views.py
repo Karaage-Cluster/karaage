@@ -12,12 +12,8 @@ from karaage.allocations.forms import (
 )
 
 
-# TODO: Restrict this view only to authorised users
-# @admin_required
+@admin_required
 def allocation_period_add(request):
-
-    # if not allocation_pool.can_view(request):
-    #     return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     if request.method == "POST":
         form = AllocationPeriodForm(request.POST)
@@ -39,12 +35,8 @@ def allocation_period_add(request):
     )
 
 
-# TODO: Restrict this view only to authorised users
-# @admin_required
-def allocation_add(request):
+@admin_required
 
-    # if not allocation_pool.can_view(request):
-    #     return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     if request.method == "POST":
         form = AllocationForm(request.POST)
@@ -66,12 +58,8 @@ def allocation_add(request):
     )
 
 
-# TODO: Restrict this view only to authorised users
-# @admin_required
+@admin_required
 def grant_add(request):
-
-    # if not allocation_pool.can_view(request):
-    #     return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     if request.method == "POST":
         form = GrantForm(request.POST)
@@ -93,12 +81,8 @@ def grant_add(request):
     )
 
 
-# TODO: Restrict this view only to authorised users
-# @admin_required
+@admin_required
 def scheme_add(request):
-
-    # if not allocation_pool.can_view(request):
-    #     return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     if request.method == "POST":
         form = SchemeForm(request.POST)
