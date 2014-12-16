@@ -1,8 +1,9 @@
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
-from django.core.urlresolvers import reverse
-
-from karaage.common.decorators import admin_required, login_required
+from django.http import HttpResponse
+from django.shortcuts import (
+    get_object_or_404,
+    render,
+    redirect,
+)
 
 from karaage.allocations.forms import (
     AllocationForm,
@@ -10,6 +11,8 @@ from karaage.allocations.forms import (
     GrantForm,
     SchemeForm,
 )
+from karaage.common.decorators import admin_required, login_required
+from karaage.projects.models import Project
 
 
 @admin_required
@@ -36,17 +39,17 @@ def allocation_period_add(request):
 
 
 @admin_required
+def allocation_add(request, project_id):
 
+    project = Project.objects.get(pk=project_id)
 
     if request.method == "POST":
-        form = AllocationForm(request.POST)
+        form = AllocationForm(project, request.POST)
         if form.is_valid():
             form.save()
-            # return HttpResponseRedirect(reverse('allocation_list'))
-            # The line below is just for testing that the view works
-            return HttpResponse('Allocation set!')
+            return redirect('kg_project_detail', project_id)
     else:
-        form = AllocationForm()
+        form = AllocationForm(project)
 
     return render(
         request,

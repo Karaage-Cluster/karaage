@@ -3,6 +3,7 @@ from django import forms
 from karaage.allocations.models import (
     Allocation,
     AllocationPeriod,
+    AllocationPool,
     Grant,
 )
 from karaage.schemes.models import Scheme
@@ -20,6 +21,12 @@ class AllocationPeriodForm(forms.ModelForm):
 
 
 class AllocationForm(forms.ModelForm):
+
+    def __init__(self, project, *args, **kwargs):
+        super(AllocationForm, self).__init__(*args, **kwargs)
+        self.fields['grant'].queryset = Grant.objects.filter(project=project)
+        self.fields['allocation_pool'].queryset = \
+            AllocationPool.objects.filter(project=project)
 
     class Meta:
         model = Allocation
