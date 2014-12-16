@@ -26,6 +26,7 @@ from django.db.models import Q
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 
+from karaage.allocations.models import Allocation
 from karaage.common.decorators import admin_required, login_required
 from karaage.people.models import Person
 from karaage.machines.models import Account
@@ -149,7 +150,7 @@ def delete_project(request, project_id):
 def project_detail(request, project_id):
 
     project = get_object_or_404(Project, pid=project_id)
-
+    allocations = Allocation.objects.filter(grant__project=project)
     if not project.can_view(request):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
@@ -166,9 +167,14 @@ def project_detail(request, project_id):
 
     return render_to_response(
         'karaage/projects/project_detail.html',
-        {'project': project, 'form': form,
-            'can_edit': project.can_edit(request)},
-        context_instance=RequestContext(request))
+        {
+            'allocations': allocations,
+            'project': project,
+            'form': form,
+            'can_edit': project.can_edit(request)
+        },
+        context_instance=RequestContext(request)
+    )
 
 
 @admin_required

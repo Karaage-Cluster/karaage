@@ -33,6 +33,8 @@ class AllocationPoolQuerySet(models.QuerySet):
             raw_used=models.Sum('usage__raw_used'),
             # TODO: used_percent= \
             # 100 * Sum('allocation__quantity')) / Sum('usage__used')
+            # TODO: remaining= \
+            # Sum('allocation__quantity')) - Sum('usage__used')
         )
 
 
@@ -64,6 +66,9 @@ class AllocationPool(models.Model):
     @cached_property
     def used_percent(self):
         return 100.0 * self.used / self.allocated
+    @cached_property
+    def remaining(self):
+        return self.allocated - self.used
 
     objects = AllocationPoolQuerySet.as_manager()
     audit_log = AuditLog()
@@ -87,6 +92,9 @@ class Allocation(models.Model):
 
     audit_log = AuditLog()
 
+    def __str__(self):
+        return self.description
+
     class Meta:
         ordering = [
             'allocation_pool',
@@ -99,6 +107,9 @@ class AllocationPeriod(models.Model):
     end = models.DateTimeField()
 
     audit_log = AuditLog()
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         ordering = [

@@ -231,5 +231,67 @@
         </div>
     </div>
     {% endif %}
+
+    {% if is_admin %}
+    <div class="module">
+        <h2>Allocations</h2>
+        <h3>Allocation pools</h3>
+        {% if project.allocationpool_set.all %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Resource pool</th>
+                    <th>Period</th>
+                    <th>Quantity</th>
+                    <th>Used</th>
+                    <th>Remaining</th>
+                    <th>Percent</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ap in project.allocationpool_set.all %}
+                <tr>
+                    <td>{{ ap.resource_pool }}</td>
+                    <td>{{ ap.period }}</td>
+                    <td>{{ ap.allocated }}</td>
+                    <td>{{ ap.used }}</td>
+                    <td>{{ ap.remaining }}</td>
+                    <td>{{ ap.used_percent }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+        <h3>Individual allocations</h3>
+        {% if allocations %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Allocation pool</th>
+                    <th>Period</th>
+                    <th>Grant</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in allocations %}
+                <tr>
+                    <td>{{ a.allocation_pool }}</td>
+                    <td>{{ a.period }}</td>
+                    <td>{{ a.grant }}</td>
+                    <td>{{ a.quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+        <div class="object-tools">
+            <ul>
+                <li><a href="{% url 'allocation_add' %}" class="addlink">
+                  Add allocation</a></li>
+            </ul>
+        </div>
+    {% endif %}
+    </div>
 </div>
 {% endblock %}
