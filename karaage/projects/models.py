@@ -63,7 +63,7 @@ class Project(MPTTModel):
     )
     pid = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=200)
-    group = models.OneToOneField('karaage.Group')
+    group = models.ForeignKey('karaage.Group', unique=True)
     institute = models.ForeignKey('karaage.Institute')
     description = models.TextField(null=True, blank=True)
     is_approved = models.BooleanField(default=False)
@@ -115,6 +115,34 @@ class Project(MPTTModel):
             projectmembership__is_project_leader=True,
             projectmembership__project=self,
         )
+
+    def add_update_project_members(self, *people, **attributes):
+        """
+        Add/update project members with desired attributes.
+
+        Ensure all people have membership in the proejct, and that the specified
+        attributes are set as supplied.
+        """
+        from karaage.people.models import ProjectMembership
+        for person in people:
+            if hasattr(person, 'pk'):
+                person_id = person.pk
+            else:
+                person_id = person
+            obj, created = ProjectMembership.objects.get_or_create(
+                person_id=person_id,
+                project=self,
+                defaults=attributes,
+            )
+            if not created:
+                dirty = False
+                for attr, val in attributes.items():
+                    if getattr(obj, attr) != val:
+                        setattr(obj, attr, val)
+                        dirty = True
+                if dirty:
+                    obj.save()
+    add_update_project_members.alters_data = True
 
     @models.permalink
     def get_absolute_url(self):

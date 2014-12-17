@@ -106,12 +106,12 @@ setup(
         ],
         'software': [
             "karaage4[applications]",
+            "karaage4[usage]",
         ],
         'usage': [
             "karaage4[software]",
             "django_celery",
             "django-filter",
-            "django-xmlrpc >= 0.1",
             "matplotlib",
         ],
     },

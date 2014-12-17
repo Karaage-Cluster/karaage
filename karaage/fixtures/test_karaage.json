@@ -149,6 +149,13 @@
     },
     {
         "fields": {
+            "level": "1"
+        },
+        "model": "karaage.careerlevel",
+        "pk": 1
+    },
+    {
+        "fields": {
             "cap": null,
             "machine_category": 1,
             "project": 1
