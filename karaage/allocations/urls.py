@@ -3,7 +3,7 @@ from django.conf import settings
 
 urlpatterns = patterns(
     'karaage.allocations.views',
-    url(r'^allocation-period/add/$',
+    url(r'^project-(?P<project_id>\d+)/allocation-period/add/$',
         'allocation_period_add', name='allocation_period_add'),
     url(r'^project-(?P<project_id>\d+)/add-allocation/$',
         'add_edit_allocation', name='allocation_add'),

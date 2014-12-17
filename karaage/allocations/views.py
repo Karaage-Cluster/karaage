@@ -23,22 +23,21 @@ from karaage.projects.models import Project
 
 
 @admin_required
-def allocation_period_add(request):
+def allocation_period_add(request, project_id):
 
     if request.method == "POST":
         form = AllocationPeriodForm(request.POST)
         if form.is_valid():
             form.save()
-            # return HttpResponseRedirect(reverse('allocation_list'))
-            # The line below is just for testing that the view works
-            return HttpResponse('Allocation period set!')
+            return redirect('kg_project_detail', project_id)
     else:
         form = AllocationPeriodForm()
 
     return render(
         request,
-        'karaage/allocations/allocation_add_template.html',
+        'karaage/allocations/allocation_add_edit_template.html',
         {
+            'pid': project_id,
             'form': form,
             'title': 'Add allocation period',
         },
