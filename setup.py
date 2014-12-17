@@ -77,7 +77,7 @@ setup(
     install_requires=[
         "cssmin",
         "Django >= 1.7",
-        "django-audit-log>=0.5.1",
+        "django-audit-log>=0.5.2",
         "django-xmlrpc >= 0.1",
         "django-simple-captcha",
         "django-ajax-selects >= 1.1.3",
