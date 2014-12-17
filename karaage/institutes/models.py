@@ -209,7 +209,7 @@ class InstituteQuota(models.Model):
 class InstituteDelegate(models.Model):
     person = models.ForeignKey('karaage.Person')
     institute = models.ForeignKey('karaage.Institute')
-    send_email = models.BooleanField()
+    send_email = models.BooleanField(default=False)
 
     _tracker = FieldTracker()
 

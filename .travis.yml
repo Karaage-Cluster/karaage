@@ -22,11 +22,11 @@ before_install:
         - sudo apt-get build-dep -qq python-cracklib
 
 install:
-        - pip install --allow-external python-crack --allow-unverified python-crack --allow-external mysql-connector-python -r requirements.txt -r requirements-tests.txt mysql-connector-python psycopg2 mysqlclient codecov
+        - pip install --allow-external python-crack --allow-unverified python-crack --allow-external mysql-connector-python -r requirements.txt -r requirements-usage.txt -r requirements-tests.txt mysql-connector-python psycopg2 mysqlclient codecov
         - python setup.py develop
 
 script:
-        - coverage run sbin/kg-manage test -v3 karaage
+        - coverage run sbin/kg-manage test -v3 karaage kgusage kgapplications kgsoftware
 
 after_script:
         - codecov

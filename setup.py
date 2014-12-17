@@ -77,7 +77,7 @@ setup(
     install_requires=[
         "cssmin",
         "Django >= 1.7",
-        "django-audit-log>=0.5.1",
+        "django-audit-log>=0.5.2",
         "django-xmlrpc >= 0.1",
         "django-simple-captcha",
         "django-ajax-selects >= 1.1.3",
@@ -92,6 +92,7 @@ setup(
         "python-tldap >= 0.3.3",
         "six",
         "slimit>=0.8.1",
+        "sqlparse",
     ],
     #test_suite='setuptest.setuptest.SetupTestSuite',
     tests_require=tests_require,
@@ -101,16 +102,16 @@ setup(
             # TODO: python-crack ?
         ],
         'applications': [
-            # TODO: merge kgapplications
+            # no dependencies for kgapplications
         ],
         'software': [
-            "[applications]",
+            "karaage4[applications]",
+            "karaage4[usage]",
         ],
         'usage': [
-            "[software]",
+            "karaage4[software]",
             "django_celery",
             "django-filter",
-            "django-xmlrpc >= 0.1",
             "matplotlib",
         ],
     },

@@ -28,6 +28,8 @@ class AllocationPoolQuerySet(models.QuerySet):
             allocated=models.Sum('allocation__quantity'),
             used=models.Sum('usage__used'),
             raw_used=models.Sum('usage__raw_used'),
+            # TODO: used_percent= \
+            # 100 * Sum('allocation__quantity')) / Sum('usage__used')
         )
 
 
@@ -43,34 +45,9 @@ class AllocationPool(models.Model):
     TODO: User documentation of the allocation behaviour with concrete examples.
     """
 
-    class AllocationMode:
-        PRIVATE = 'private'
-        SHARED = 'shared'
-        # CAPPED = 'capped'
-
-    ALLOCATION_MODE_CHOICES = [
-        (
-            AllocationMode.PRIVATE,
-            'Private (this project only)',
-        ),
-        (
-            AllocationMode.SHARED,
-            'Shared (this project and all sub-projects)',
-        ),
-        # (
-        #     AllocationMode.CAPPED,
-        #     'Capped (use parent allocation up to this amount)',
-        # ),
-    ]
-
-    grant = models.ForeignKey('karaage.Grant')
+    project = models.ForeignKey('karaage.Project')
     period = models.ForeignKey('karaage.AllocationPeriod')
     resource_pool = models.ForeignKey('karaage.ResourcePool')
-    allocation_mode = models.CharField(
-        max_length=20,
-        choices=ALLOCATION_MODE_CHOICES,
-        default=AllocationMode.PRIVATE,
-    )
 
     @cached_property
     def allocated(self):
@@ -81,6 +58,9 @@ class AllocationPool(models.Model):
     @cached_property
     def raw_used(self):
         return self.usage_set.aggregate(r=models.Sum('raw_used'))['r']
+    @cached_property
+    def used_percent(self):
+        return 100.0 * self.used / self.allocated
 
     objects = AllocationPoolQuerySet.as_manager()
     audit_log = AuditLog()
@@ -95,6 +75,8 @@ class AllocationPool(models.Model):
 
 
 class Allocation(models.Model):
+    description = models.CharField(max_length=100)
+    grant = models.ForeignKey('karaage.Grant')
     allocation_pool = models.ForeignKey('karaage.AllocationPool')
     quantity = models.FloatField()
 

@@ -32,7 +32,7 @@ from model_utils import FieldTracker
 
 from karaage.common.constants import TITLES, COUNTRIES
 from karaage.common import new_random_token, get_current_person, is_admin, log
-from karaage.people.models import Person
+from karaage.people.models import Person, ProjectMembership
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory, Account
 
@@ -49,7 +49,7 @@ class ApplicationManager(models.Manager):
     def requires_attention(self, request):
         person = request.user
         query = Q(
-            projectapplication__project__in=person.leads.all(),
+            projectapplication__project__projectmembership__in=person.projectmembership_set.filter(is_project_leader=True),
             state=ProjectApplication.WAITING_FOR_LEADER)
         query = query | Q(
             projectapplication__institute__in=person.delegate_for.all(),
@@ -274,7 +274,9 @@ class ProjectApplication(Application):
             self.project = project
             self.save()
         if self.make_leader:
-            self.project.leaders.add(person)
+            self.project.add_update_project_members(
+                person, is_project_leader=True,
+            )
         if self.needs_account:
             found_pc = False
             for pc in self.project.projectquota_set.all():

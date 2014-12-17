@@ -136,14 +136,22 @@
             "is_active": false,
             "is_approved": true,
             "last_usage": null,
-            "leaders": [
-                1
-            ],
             "name": "backup",
             "pid": "1",
+            "lft": 0,
+            "rght": 0,
+            "tree_id": 0,
+            "level": 0,
             "start_date": "2010-04-30"
         },
         "model": "karaage.project",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "level": "1"
+        },
+        "model": "karaage.careerlevel",
         "pk": 1
     },
     {
