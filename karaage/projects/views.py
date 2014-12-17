@@ -102,6 +102,10 @@ def add_edit_project(request, project_id=None):
             project.save()
             approved_by = request.user
             project.activate(approved_by)
+            project.add_update_project_members(
+                is_project_leader=True,
+                *form.cleaned_data['leaders']
+            )
             form.save_m2m()
             if flag == 1:
                 messages.success(
