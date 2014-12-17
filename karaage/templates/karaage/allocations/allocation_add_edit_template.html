@@ -20,12 +20,12 @@
     <h2>{{ title }}</h2>
     <form method="post" action="." class="simple">{% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Save" class="default" />
-    </form>
+        <input type="submit" value="Save" class="default" />&nbsp;&nbsp;&nbsp;
     {% if record_type == 'grant'  %}
-        <a href={% url 'grant_delete' pid record_id %}> Delete grant</a>
+        <a class="deletelink" href={% url 'grant_delete' pid record_id %}>Delete grant</a>
     {% elif record_type == 'allocation' %}
-        <a href={% url 'allocation_delete' pid record_id %}> Delete allocation</a>
+        <a class="deletelink" href={% url 'allocation_delete' pid record_id %}>Delete allocation</a>
     {% endif %}
+    </form>
 </div>
 {% endblock %}
