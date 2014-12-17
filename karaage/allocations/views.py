@@ -7,6 +7,7 @@ from django.shortcuts import (
 
 from karaage.allocations.models import (
     Allocation,
+    AllocationPool,
     Grant,
 )
 from karaage.allocations.forms import (
@@ -15,6 +16,7 @@ from karaage.allocations.forms import (
     GrantForm,
     SchemeForm,
 )
+from karaage.allocations.utils import create_allocation_pool_if_required
 from karaage.common.models import Usage
 from karaage.common.decorators import admin_required, login_required
 from karaage.projects.models import Project
@@ -46,29 +48,34 @@ def allocation_period_add(request):
 @admin_required
 def add_edit_allocation(request, project_id, allocation_id=None):
 
-    project = Project.objects.get(pk=project_id)
+    kwargs = {
+        'project': Project.objects.get(pk=project_id),
+    }
 
     if allocation_id:
         mode = 'edit'
         title = 'Edit allocation'
-        allocation = Allocation.objects.get(pk=allocation_id)
+        kwargs['instance'] = Allocation.objects.get(pk=allocation_id)
     else:
         mode = 'add'
         title = 'Add allocation'
 
     if request.method == "POST":
-        if allocation_id:
-            form = AllocationForm(project, request.POST, instance=allocation)
-        else:
-            form = AllocationForm(project, request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('kg_project_detail', project_id)
-    else:
-        if allocation_id:
-            form = AllocationForm(project, instance=allocation)
-        else:
-            form = AllocationForm(project)
+        kwargs['data'] = request.POST
+
+    form = AllocationForm(**kwargs)
+
+    if form.is_valid():
+        alloc = form.save(commit=False)
+        obj, created = AllocationPool.objects.get_or_create(
+            project=kwargs['project'],
+            period=form.cleaned_data['period'],
+            resource_pool=form.cleaned_data['resource_pool'],
+        )
+        alloc.allocation_pool = obj
+        alloc.save()
+        return redirect('kg_project_detail', project_id)
+
     return render(
         request,
         'karaage/allocations/allocation_add_edit_template.html',
