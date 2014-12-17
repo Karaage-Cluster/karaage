@@ -11,6 +11,21 @@ You will need to substitute correct values for the following when applicable:
 *  Administrator DN: ``cn=admin,dc=example,dc=org``
 *  Administrator password: ``XXXXXXXX`` (do not use ``XXXXXXXX``).
 
+..  todo::
+
+    Need index to sections, otherwise reader may not notice that Debian is
+    also documented.
+
+    Need to document 389 configuration.
+
+    RHEL 6 and Debian installations of OpenLDAP should be very similar, maybe
+    these can be combined? Main difference is that RHEL 6 autoconfigures
+    the database with stupid defaults, possible we should delete existing
+    config and start with new clean configuration rather then patch the
+    existing setup.
+
+    RHEL6 openldap needs to be able to read certificate files. With Debian
+    this is controlled by ssl-cert group.
 
 RHEL 6 installation
 -------------------
@@ -68,14 +83,20 @@ RHEL 6 installation
         replace: olcTLSCertificatekeyFile
         olcTLSCertificatekeyFile: /etc/ssl/private/www_privatekey.pem
         -
-        replace: olcTLSCACertificatePath
-        olcTLSCACertificatePath: /etc/ssl/private/www_intermediate.pem
+        replace: olcTLSCACertificateFile
+        olcTLSCACertificateFile: /etc/ssl/private/www_intermediate.pem
+
+        dn: olcDatabase={2}bdb,cn=config
+        changetype: modify
+        delete: olcTLSCertificateFile
+        -
+        delete: olcTLSCertificateKeyFile
 
 #.  Import with the following command:
 
     .. code-block:: bash
 
-        ldapadd -Y EXTERNAL -H ldapi:///  < /tmp/ldapssl.ldif
+        ldapmodify -Y EXTERNAL -H ldapi:///  < /tmp/ldapssl.ldif
 
 #.  Edit ``/etc/sysconfig/ldap``::
 
@@ -170,8 +191,6 @@ RHEL 6 installation
 
     REPLICATION
 
-    CENTOS REPLICATION
-
     See http://itdavid.blogspot.com.au/2012/06/howto-openldap-24-replication-on-centos.html
 
 
@@ -205,21 +224,13 @@ Debian installation
         dn: cn=config
         changetype: modify
         replace: olcTLSCertificateFile
-        olcTLSCertificateFile: /etc/ssl/private/www_combined.pem
+        olcTLSCertificateFile: /etc/ssl/private/www_cert.pem
         -
         replace: olcTLSCertificatekeyFile
         olcTLSCertificatekeyFile: /etc/ssl/private/www_privatekey.pem
         -
-        replace: olcTLSCACertificatePath
-        olcTLSCACertificatePath: /etc/ssl/private/www_intermediate.pem
-
-    .. note::
-
-        The ``olcTLSCACertificatePath`` by itself should be sufficient for
-        specifying the intermediate certificate. Tests on Debian wheezy show
-        this is not the case, hence ``olcTLSCertificateFile`` specifies
-        ``www_combined.pem`` instead of ``www_cert.pem`` which would be the
-        correct value to use.
+        replace: olcTLSCACertificateFile
+        olcTLSCACertificateFile: /etc/ssl/private/www_intermediate.pem
 
 #.  Import with the following command:
 
