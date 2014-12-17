@@ -281,7 +281,8 @@
                       {{ a.description }}</a></td>
                     <td>{{ a.allocation_pool }}</td>
                     <td>{{ a.period }}</td>
-                    <td>{{ a.grant }}</td>
+                    <td><a href={% url 'grant_edit' a.grant.project.id a.grant.id %}>
+                      {{ a.grant }}</a></td>
                     <td>{{ a.quantity }}</td>
                 </tr>
                 {% endfor %}
