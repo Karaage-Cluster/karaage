@@ -182,22 +182,21 @@ def delete_grant(request, project_id, grant_id):
 
 
 @admin_required
-def scheme_add(request):
+def scheme_add(request, project_id):
 
     if request.method == "POST":
         form = SchemeForm(request.POST)
         if form.is_valid():
             form.save()
-            # return HttpResponseRedirect(reverse('allocation_list'))
-            # The line below is just for testing that the view works
-            return HttpResponse('Scheme set!')
+            return redirect('kg_project_detail', project_id)
     else:
         form = SchemeForm()
 
     return render(
         request,
-        'karaage/allocations/allocation_add_template.html',
+        'karaage/allocations/allocation_add_edit_template.html',
         {
+            'pid': project_id,
             'form': form,
             'title': 'Add scheme',
         },
