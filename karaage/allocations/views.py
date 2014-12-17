@@ -15,6 +15,7 @@ from karaage.allocations.forms import (
     GrantForm,
     SchemeForm,
 )
+from karaage.common.models import Usage
 from karaage.common.decorators import admin_required, login_required
 from karaage.projects.models import Project
 
@@ -110,8 +111,38 @@ def add_edit_grant(request, project_id, grant_id=None):
         'karaage/allocations/allocation_add_edit_template.html',
         {
             'pid': project_id,
+            'record_id': grant_id,
             'form': form,
             'title': title,
+        },
+    )
+
+
+@admin_required
+def delete_grant(request, project_id, grant_id):
+
+    record = get_object_or_404(Grant, pk=grant_id)
+    record_type = 'grant'
+
+    errors = []
+    if Allocation.objects.filter(grant=record).exists():
+        errors.append('At least one allocation is using this grant')
+    if Usage.objects.filter(grant=record).exists():
+        errors.append(
+            'At least one usage record table record references this grant'
+        )
+
+    if request.method == 'POST':
+        record.delete()
+        return redirect('kg_project_detail', project_id)
+
+    return render(
+        request,
+        'karaage/allocations/allocation_confirm_delete_template.html',
+        {
+            'record': record,
+            'record_type': record_type,
+            'errors': errors,
         },
     )
 

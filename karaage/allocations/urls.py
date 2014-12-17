@@ -13,5 +13,7 @@ urlpatterns = patterns(
         'add_edit_grant', name='grant_add'),
     url(r'^project-(?P<project_id>\d+)/edit-grant/(?P<grant_id>\d+)/$',
         'add_edit_grant', name='grant_edit'),
+    url(r'^project-(?P<project_id>\d+)/delete-grant/(?P<grant_id>\d+)/$',
+        'delete_grant', name='grant_delete'),
     url(r'^add-scheme/$', 'scheme_add', name='scheme_add'),
 )

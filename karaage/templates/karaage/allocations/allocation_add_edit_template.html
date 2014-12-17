@@ -22,5 +22,6 @@
         {{ form.as_p }}
         <input type="submit" value="Save" class="default" />
     </form>
+    <a href={% url 'grant_delete' pid record_id %}> Delete</a>
 </div>
 {% endblock %}
