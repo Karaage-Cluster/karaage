@@ -60,3 +60,5 @@ debian/karaage3.*
 
 # Rope
 .ropeproject/
+tmp/
+.coverage*
