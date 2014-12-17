@@ -104,7 +104,8 @@ class Person(AbstractBaseUser):
 
     _tracker = FieldTracker()
 
-    audit_log = AuditLog()
+    #XXX: do we need to have AuditLog enabled for users?
+    #audit_log = AuditLog()
 
     def __init__(self, *args, **kwargs):
         super(Person, self).__init__(*args, **kwargs)
@@ -311,10 +312,11 @@ class Person(AbstractBaseUser):
             return True
 
         # Leader==person can view people in projects they lead
-        tmp = Project.objects.filter(group__members=self.id) \
-            .filter(leaders=person.id) \
-            .filter(is_active=True)
-        if tmp.count() > 0:
+        if Project.objects.filter(
+            projectmembership__is_project_leader=True,
+            projectmembership__person=person,
+            is_active=True,
+        ).exists():
             return True
         return False
 
@@ -466,6 +468,8 @@ def _project_membership_changed(sender, instance, *args, **kwargs):
     if not existing_data:
         message = '%s was added to the project.' % instance.person
         log.change(project, message)
+        return
+
     # Log changes to primary contact status
     if instance.is_primary_contact != existing_data.is_primary_contact:
         if instance.is_primary_contact:

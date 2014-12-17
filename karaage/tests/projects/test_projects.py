@@ -16,6 +16,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
+from unittest import skip
 
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
