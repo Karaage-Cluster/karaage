@@ -88,7 +88,7 @@ def add_test_methods(testcase, urlpatterns):
                 'test',
                 '%.4d' % index,
                 func.__module__.replace(u'.', u'_'),
-                slugify(func_name),
+                slugify(u'%s' % func_name),
             ] + slugify(
                 url_pattern.replace(u'/', u'_') or u'root'
             ).replace(u'_', u' ').split(),

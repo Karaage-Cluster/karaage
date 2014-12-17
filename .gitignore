@@ -63,3 +63,7 @@ debian/karaage3.*
 
 #Vim
 *.swp
+
+#Tox/Coverage
+tmp/
+.coverage*

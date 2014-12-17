@@ -125,10 +125,10 @@ class Project(MPTTModel):
         """
         from karaage.people.models import ProjectMembership
         for person in people:
-            if isinstance(person, int):
-                person_id = person
+            if hasattr(person, 'pk'):
+                person_id = person.pk
             else:
-                person_id = person.id
+                person_id = person
             obj, created = ProjectMembership.objects.get_or_create(
                 person_id=person_id,
                 project=self,
