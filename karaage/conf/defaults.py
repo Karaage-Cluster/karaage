@@ -119,6 +119,7 @@ INSTALLED_APPS = (
 for dotted_path in [
     'django_extensions',
     'sslserver',
+    'djcelery',
 ]:
     try:
         import_module(dotted_path)

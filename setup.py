@@ -112,7 +112,6 @@ setup(
             "karaage4[software]",
             "django_celery",
             "django-filter",
-            "django-xmlrpc >= 0.1",
             "matplotlib",
         ],
     },

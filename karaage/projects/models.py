@@ -116,6 +116,30 @@ class Project(MPTTModel):
             projectmembership__project=self,
         )
 
+    def add_update_project_members(self, *people, **attributes):
+        """
+        Add/update project members with desired attributes.
+
+        Ensure all people have membership in the proejct, and that the specified
+        attributes are set as supplied.
+        """
+        from karaage.people.models import ProjectMembership
+        for person in people:
+            obj, created = ProjectMembership.objects.get_or_create(
+                person=person,
+                project=self,
+                defaults=attributes,
+            )
+            if not created:
+                dirty = False
+                for attr, val in attributes.items():
+                    if getattr(obj, attr) != val:
+                        setattr(obj, attr, val)
+                        dirty = True
+                if dirty:
+                    obj.save()
+    add_update_project_members.alters_data = True
+
     @models.permalink
     def get_absolute_url(self):
         return ('kg_project_detail', [self.pid])

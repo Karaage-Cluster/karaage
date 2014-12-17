@@ -1,5 +1,6 @@
 #!/bin/bash
 DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
+REQUIREMENTS="-r ./requirements.txt -r ./requirements-usage.txt -r ./requirements-tests.txt"
 
 RETURN=0
 cd $DIR
@@ -7,7 +8,7 @@ cd $DIR
 if [ -n "$*" ]; then
     TESTS="$@"
 else
-    TESTS="karaage"
+    TESTS="karaage kgapplications kgsoftware kgusage"
 fi
 
 echo ""
@@ -30,7 +31,7 @@ echo "############################"
 echo ""
 echo "TESTS - Python 2"
 echo "############################"
-pip2 install -r ./requirements-tests.txt
+pip2 install $REQUIREMENTS
 python2 ./manage.py test --settings=karaage.tests.settings -v 2 $TESTS
 if [ ! $? -eq 0 ]
 then
@@ -40,7 +41,7 @@ fi
 echo ""
 echo "TESTS - Python 3"
 echo "############################"
-pip3 install -r ./requirements-tests.txt
+pip3 install $REQUIREMENTS
 python3 ./manage.py test --settings=karaage.tests.settings -v 2 $TESTS
 if [ ! $? -eq 0 ]
 then
