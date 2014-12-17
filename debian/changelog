@@ -1,3 +1,11 @@
+karaage3 (3.1.10-1) unstable; urgency=low
+
+  * Bug fixes.
+  * Fix problems with django-pipeline 1.4.0.
+  * Updates to documentation.
+
+ -- Brian May <bam@debian.org>  Mon, 01 Dec 2014 14:51:19 +1100
+
 karaage3-software (3.1.4-1) unstable; urgency=low
 
   * Fix Python3 depends.

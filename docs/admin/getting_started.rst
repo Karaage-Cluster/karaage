@@ -96,6 +96,11 @@ You should create a signed SSL certificate for Apache and LDAP.
         cd /etc/ssl/private
         chown root:ssl-cert www_*.pem
 
+..  todo::
+
+    OS other then Debian may not have ssl-cert group, e.g. CentOS 6.6 doesn't.
+    The above instructions will not work.
+
 Apache Configuration
 --------------------
 Karaage, by default, requires a https connection. While this default can be
