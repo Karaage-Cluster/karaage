@@ -1,4 +1,4 @@
-Feature:
+Feature: Manage resource pools
 	As an administrator
 	I want to manage machine resources in groups (resource pools)
 	So that allocations can be made across all grouped resources rather than individual machine resources
