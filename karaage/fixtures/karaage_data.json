@@ -20,5 +20,7 @@
 {"pk": 503, "model": "karaage.group", "fields": {"name": "testproject1", "members": [3], "description": "Test."}},
 {"pk": 1, "model": "karaage.project", "fields": {"pid": "TestProject1", "group": 503, "additional_req": "", "is_approved": 1, "end_date": null, "institute": 1, "description": "", "is_active": 1, "date_deleted": null, "deleted_by": null, "approved_by": null, "last_usage": null, "date_approved": null, "start_date": "2010-05-13", "name": "Test Project 1", "level": 0, "lft": 0, "rght": 0, "tree_id": 0}},
 {"pk": 1, "model": "karaage.institutequota", "fields": {"institute": 1, "disk_quota": null, "machine_category": 1, "cap": null, "quota": "0.00"}},
-{"pk": 1, "model": "karaage.projectquota", "fields": {"project": 1, "machine_category": 1, "cap": null}}
+{"pk": 1, "model": "karaage.projectquota", "fields": {"project": 1, "machine_category": 1, "cap": null}},
+{"pk": 1, "model": "karaage.projectlevel", "fields": {"level": "1"}},
+{"pk": 1, "model": "karaage.projectmembership", "fields": {"project": 1, "person": 1, "project_level": 1, "is_default_project": true, "is_project_leader": true, "is_project_supervisor": true}}
 ]

@@ -100,14 +100,14 @@ def add_test_methods(testcase, urlpatterns):
                 re.search(stop_pattern, url_pattern)
                 for stop_pattern
                 in [
-                    '<uidb64>',
-                    #'<app_label>',
-                    #'<model>',
-                    #'<key>',
-                    #'<token>',
-                    #'/tasks/',
-                    #'/usage/',
-                    #'/captcha/',
+                    r'<uidb64>',
+                    #r'<app_label>',
+                    #r'<model>',
+                    #r'<key>',
+                    #r'<token>',
+                    #r'/tasks/',
+                    #r'/usage/',
+                    #r'/captcha/',
                 ]
             ),
             'URL pattern %r contains stop pattern.' % url_pattern,
@@ -119,12 +119,14 @@ def add_test_methods(testcase, urlpatterns):
             any(
                 re.search(stop_pattern, view_path)
                 for stop_pattern in [
-                    '^captcha.',
-                    '^ajax_select.',
-                    '^django.contrib.auth.views.',
-                    '^django.contrib.staticfiles.views.',
-                    '^django_xmlrpc.views.',
-                    '^karaage.people.views.persons.activate$',
+                    r'^captcha\.',
+                    r'^djcelery\.',
+                    r'^ajax_select\.',
+                    r'^django\.contrib\.auth\.views\.',
+                    r'^django\.contrib\.staticfiles\.views\.',
+                    r'^django_xmlrpc\.views\.',
+                    r'^karaage\.people\.views\.persons\.activate$',
+                    r'^kgusage\.views\.',
                 ]
             ),
             'View %r contains stop pattern.' % view_path,

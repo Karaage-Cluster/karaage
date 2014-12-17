@@ -21,6 +21,7 @@ from django.test import TestCase
 
 import karaage.people.forms as forms
 import karaage.tests.fixtures as fixtures
+from karaage.tests.integration import skip_if_missing_requirements
 
 
 class AddPersonFormTestCase(TestCase):
@@ -46,6 +47,7 @@ class AddPersonFormTestCase(TestCase):
         self.assertEqual(form.cleaned_data['password1'], 'wai5bixa8Igohxa')
         self.assertEqual(form.cleaned_data['password2'], 'wai5bixa8Igohxa')
 
+    @skip_if_missing_requirements('python-crack')
     def test_password_short(self):
         form_data = self._valid_user()
         form_data['password1'] = 'abc'
@@ -64,6 +66,7 @@ class AddPersonFormTestCase(TestCase):
             })
         )
 
+    @skip_if_missing_requirements('python-crack')
     def test_password_simple(self):
         form_data = self._valid_user()
         form_data['password1'] = 'qwerty'
@@ -152,6 +155,7 @@ class AdminPasswordChangeFormTestCase(TestCase):
         self.assertEqual(form.cleaned_data['new1'], 'wai5bixa8Igohxa')
         self.assertEqual(form.cleaned_data['new2'], 'wai5bixa8Igohxa')
 
+    @skip_if_missing_requirements('python-crack')
     def test_password_short(self):
         person, form_data = self._valid_change()
         form_data['new1'] = 'abc'
@@ -170,6 +174,7 @@ class AdminPasswordChangeFormTestCase(TestCase):
             })
         )
 
+    @skip_if_missing_requirements('python-crack')
     def test_password_simple(self):
         person, form_data = self._valid_change()
         form_data['new1'] = 'qwerty'
@@ -231,6 +236,7 @@ class PasswordChangeFormTestCase(TestCase):
             })
         )
 
+    @skip_if_missing_requirements('python-crack')
     def test_password_short(self):
         person, form_data = self._valid_change()
         form_data['new1'] = 'abc'
@@ -249,6 +255,7 @@ class PasswordChangeFormTestCase(TestCase):
             })
         )
 
+    @skip_if_missing_requirements('python-crack')
     def test_password_simple(self):
         person, form_data = self._valid_change()
         form_data['new1'] = 'qwerty'
