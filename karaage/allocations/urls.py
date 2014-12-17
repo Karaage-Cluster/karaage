@@ -9,6 +9,8 @@ urlpatterns = patterns(
         'add_edit_allocation', name='allocation_add'),
     url(r'^project-(?P<project_id>\d+)/edit-allocation/(?P<allocation_id>\d+)/$',
         'add_edit_allocation', name='allocation_edit'),
+    url(r'^project-(?P<project_id>\d+)/delete-allocation/(?P<allocation_id>\d+)/$',
+        'delete_allocation', name='allocation_delete'),
     url(r'^project-(?P<project_id>\d+)/add-grant/$',
         'add_edit_grant', name='grant_add'),
     url(r'^project-(?P<project_id>\d+)/edit-grant/(?P<grant_id>\d+)/$',

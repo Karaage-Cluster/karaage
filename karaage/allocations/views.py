@@ -72,11 +72,33 @@ def add_edit_allocation(request, project_id, allocation_id=None):
         request,
         'karaage/allocations/allocation_add_edit_template.html',
         {
+            'record_type': 'allocation',
             'pid': project_id,
+            'record_id': allocation_id,
             'form': form,
             'title': title,
         },
     )
+
+
+@admin_required
+def delete_allocation(request, project_id, allocation_id):
+
+    record = get_object_or_404(Allocation, pk=allocation_id)
+
+    if request.method == 'POST':
+        record.delete()
+        return redirect('kg_project_detail', project_id)
+
+    return render(
+        request,
+        'karaage/allocations/allocation_confirm_delete_template.html',
+        {
+            'record': record,
+            'record_type': 'allocation',
+        },
+    )
+
 
 
 @admin_required
@@ -110,6 +132,7 @@ def add_edit_grant(request, project_id, grant_id=None):
         request,
         'karaage/allocations/allocation_add_edit_template.html',
         {
+            'record_type': 'grant',
             'pid': project_id,
             'record_id': grant_id,
             'form': form,
