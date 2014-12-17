@@ -49,9 +49,11 @@ def add_edit_allocation(request, project_id, allocation_id=None):
     project = Project.objects.get(pk=project_id)
 
     if allocation_id:
+        mode = 'edit'
         title = 'Edit allocation'
         allocation = Allocation.objects.get(pk=allocation_id)
     else:
+        mode = 'add'
         title = 'Add allocation'
 
     if request.method == "POST":
@@ -67,11 +69,11 @@ def add_edit_allocation(request, project_id, allocation_id=None):
             form = AllocationForm(project, instance=allocation)
         else:
             form = AllocationForm(project)
-
     return render(
         request,
         'karaage/allocations/allocation_add_edit_template.html',
         {
+            'mode': mode,
             'record_type': 'allocation',
             'pid': project_id,
             'record_id': allocation_id,
@@ -107,9 +109,11 @@ def add_edit_grant(request, project_id, grant_id=None):
     project = Project.objects.get(pk=project_id)
 
     if grant_id:
+        mode = 'edit'
         title = 'Edit grant'
         grant = Grant.objects.get(pk=grant_id)
     else:
+        mode = 'add'
         title = 'Add grant'
 
     if request.method == "POST":
@@ -132,6 +136,7 @@ def add_edit_grant(request, project_id, grant_id=None):
         request,
         'karaage/allocations/allocation_add_edit_template.html',
         {
+            'mode': mode,
             'record_type': 'grant',
             'pid': project_id,
             'record_id': grant_id,
