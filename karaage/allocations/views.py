@@ -71,6 +71,7 @@ def add_edit_allocation(request, project_id, allocation_id=None):
         request,
         'karaage/allocations/allocation_add_edit_template.html',
         {
+            'pid': project_id,
             'form': form,
             'title': title,
         },
@@ -108,6 +109,7 @@ def add_edit_grant(request, project_id, grant_id=None):
         request,
         'karaage/allocations/allocation_add_edit_template.html',
         {
+            'pid': project_id,
             'form': form,
             'title': title,
         },
