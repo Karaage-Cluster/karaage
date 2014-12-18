@@ -60,11 +60,13 @@ class InstituteTestCase(UnitTestCase):
         """
         account1 = simple_account(machine_category=self.machine_category)
         group1 = GroupFactory()
-        group1.add_person(account1.person)
 
         # Test during initial creation of the institute
         self.resetDatastore()
         institute = InstituteFactory(group=group1)
+        group1.parent = institute
+        group1.save()
+        group1.add_person(account1.person)
         institute_quota = InstituteQuota.objects.create(
             machine_category=self.machine_category, institute=institute,
             quota=100)

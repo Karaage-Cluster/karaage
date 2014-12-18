@@ -19,8 +19,10 @@ import six
 import datetime
 import warnings
 
-from django.db import models
+from django.db import models, transaction
+from django.db import IntegrityError
 from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.contenttypes.fields import GenericForeignKey, ContentType
 from django.core.urlresolvers import reverse
 from django.utils.encoding import python_2_unicode_compatible
 from jsonfield import JSONField
@@ -498,6 +500,21 @@ models.signals.pre_save.connect(
     sender=ProjectMembership,
 )
 
+def _project_membership_changed(sender, instance, *args, **kwargs):
+    """Synchronise group membership when project membership changes."""
+    project = instance.project
+    project.group.sync_members(
+        Person.objects.filter(
+            projectmembership__project=project,
+        )
+    )
+
+
+models.signals.post_save.connect(
+    _project_membership_changed,
+    sender=ProjectMembership,
+)
+
 
 def _person_removed_from_project(sender, instance, *args, **kwargs):
 
@@ -532,6 +549,44 @@ class CareerLevel(models.Model):
         ordering = ['level']
 
 
+class GroupManager(models.Manager):
+
+    """Custom manager for Group model."""
+
+    def get_or_create_unique(self, parent, name, defaults, save_parent=True, pre_parent_save=None):
+        """Get or create a group by parent while ensuring uniqueness of name."""
+        if 'name' in defaults:
+            raise ValueError(
+                "'name' provided in 'defaults', use 'name' argument instead.",
+            )
+        defaults['name'] = name  # start with desired name
+        unique_index = 0
+        while True:
+            try:
+                with transaction.atomic():
+                    obj, created = self.get_or_create(
+                        content_type=ContentType.objects.get_for_model(parent),
+                        object_id=parent.pk,
+                        defaults=defaults,
+                    )
+                    if parent.pk is None and save_parent:
+                        if callable(pre_parent_save):
+                            pre_parent_save(obj, parent)
+                        parent.save()
+                        obj.object_id = parent.pk
+                        obj.save()
+                    return obj, created
+            except IntegrityError:
+                unique_index += 1
+                defaults['name'] = '%s_%d' % (name, unique_index)
+
+    def get_or_create_and_sync_members(self, parent, name, defaults, members):
+        """Get or create a group by parent and then sync its member list."""
+        obj, created = self.get_or_create_unique(parent, name, defaults)
+        obj.sync_members(members)
+        return obj, created
+
+
 @python_2_unicode_compatible
 class Group(models.Model):
 
@@ -540,9 +595,20 @@ class Group(models.Model):
     expressed externally in a datastore.
 
     Groups here are replicated to clusters as posix groups (/etc/groups) with
-    their associated members.
+    their associated members.  Groups should relate to a parent which provides
+    the motivation for having the group, for example members of a project should
+    be members of the group associated with the project - the parent generic
+    foreign key in this instance would refer to the project.
+
+    The parent relationship also helps to avoid shadow namespacing issues where
+    things like project PIDs and institute names are the same (think "RMIT").
+    The application code is forced to resolve any naming conflicts, and group
+    membership synchronisation issues are no longer possible.
     """
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255, unique=True, null=True)
+    content_type = models.ForeignKey(ContentType, blank=True, null=True)
+    object_id = models.PositiveIntegerField(blank=True, null=True)
+    parent = GenericForeignKey('content_type', 'object_id')
     foreign_id = models.CharField(
         max_length=255, null=True, unique=True,
         help_text='The foreign identifier from the datastore.')
@@ -554,12 +620,16 @@ class Group(models.Model):
 
     _tracker = FieldTracker()
 
+    objects = GroupManager()
     audit_log = AuditLog()
 
     class Meta:
         ordering = ['name']
         db_table = 'people_group'
         app_label = 'karaage'
+        unique_together = [
+            ['content_type', 'object_id'],
+        ]
 
     @property
     def institute_set(self):
@@ -620,7 +690,37 @@ class Group(models.Model):
         machine_category_delete_group(self)
     delete.alters_data = True
 
+    def sync_members(self, people):
+        """Synchronise membership list with minimal updates."""
+        # determine old set of member ids
+        old_member_ids = set(self.members.values_list('pk', flat=True))
+
+        # determine new set of member ids
+        new_member_ids = set()
+        for person in people:
+            if hasattr(person, 'pk'):
+                person_id = person.pk
+            else:
+                person_id = int(person)
+            new_member_ids.add(person_id)
+
+        # people to be added
+        add_member_ids = new_member_ids.difference(old_member_ids)
+        if add_member_ids:
+            self.members.add(*[person_id for person_id in add_member_ids])
+
+        # people to be removed
+        del_member_ids = old_member_ids.difference(new_member_ids)
+        if del_member_ids:
+            self.members.remove(*[person_id for person_id in del_member_ids])
+    sync_members.alters_data = True
+
     def add_person(self, person):
+        from karaage.projects.models import Project
+        if self.content_type.model_class() is Project:
+            raise DeprecationWarning(
+                'Add project group members via ProjectMembership.',
+            )
         self.members.add(person)
     add_person.alters_data = True
 
