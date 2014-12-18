@@ -16,7 +16,6 @@ from karaage.allocations.forms import (
     GrantForm,
     SchemeForm,
 )
-from karaage.allocations.utils import create_allocation_pool_if_required
 from karaage.common.models import Usage
 from karaage.common.decorators import admin_required, login_required
 from karaage.projects.models import Project
@@ -47,14 +46,20 @@ def allocation_period_add(request, project_id):
 @admin_required
 def add_edit_allocation(request, project_id, allocation_id=None):
 
+    project = Project.objects.get(pk=project_id)
+
     kwargs = {
-        'project': Project.objects.get(pk=project_id),
+        'project': project,
     }
 
     if allocation_id:
         mode = 'edit'
         title = 'Edit allocation'
-        kwargs['instance'] = Allocation.objects.get(pk=allocation_id)
+        kwargs['instance'] = alloc = Allocation.objects.get(pk=allocation_id)
+        kwargs['initial'] = {
+            'period': alloc.allocation_pool.period,
+            'resource_pool': alloc.allocation_pool.resource_pool,
+        }
     else:
         mode = 'add'
         title = 'Add allocation'
@@ -67,7 +72,7 @@ def add_edit_allocation(request, project_id, allocation_id=None):
     if form.is_valid():
         alloc = form.save(commit=False)
         obj, created = AllocationPool.objects.get_or_create(
-            project=kwargs['project'],
+            project=project,
             period=form.cleaned_data['period'],
             resource_pool=form.cleaned_data['resource_pool'],
         )
