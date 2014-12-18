@@ -35,6 +35,9 @@ Documentation
 The Karaage 4 documentation will be available soon on `ReadTheDocs
 <http://readthedocs.org/>`_.
 
+Mailing list: `<http://lists.vpac.org/cgi-bin/mailman/listinfo/karaage>`_
+
+Gerrit code review tool: `<https://code.vpac.org/gerrit>`_
 
 Components
 ----------
@@ -170,7 +173,7 @@ Step 4. Install Karaage 4
 
 ::
 
-    $ pip install -e git+https://github.com/vlsci/karaage#egg=karaage4
+    $ pip install -e 'git+https://github.com/vlsci/karaage#egg=karaage4[usage,applications,software]'
 
 Step 5. Migrate database
 ^^^^^^^^^^^^^^^^^^^^^^^^
