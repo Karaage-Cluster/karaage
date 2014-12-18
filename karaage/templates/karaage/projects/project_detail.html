@@ -250,16 +250,14 @@
             </thead>
             <tbody>
                 {% for ap in project.allocationpool_set.all %}
-                    {% ifequal ap.project project %}
-                    <tr>
-                        <td>{{ ap.resource_pool }}</td>
-                        <td>{{ ap.period }}</td>
-                        <td>{{ ap.allocated }}</td>
-                        <td>{{ ap.used }}</td>
-                        <td>{{ ap.remaining }}</td>
-                        <td>{{ ap.used_percent }}</td>
-                    </tr>
-                    {% endifequal %}
+                <tr>
+                    <td>{{ ap.resource_pool }}</td>
+                    <td>{{ ap.period }}</td>
+                    <td>{{ ap.allocated }}</td>
+                    <td>{{ ap.used }}</td>
+                    <td>{{ ap.remaining }}</td>
+                    <td>{{ ap.used_percent|default_if_none:"n/a" }}</td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>

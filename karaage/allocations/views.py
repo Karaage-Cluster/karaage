@@ -69,6 +69,8 @@ def add_edit_allocation(request, project_id, allocation_id=None):
 
     form = AllocationForm(**kwargs)
 
+    # TODO: Need to periodically clean up allocation pools which have
+    # had all their allocations removed
     if form.is_valid():
         alloc = form.save(commit=False)
         obj, created = AllocationPool.objects.get_or_create(
