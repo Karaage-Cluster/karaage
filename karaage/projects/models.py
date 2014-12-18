@@ -153,11 +153,11 @@ class Project(MPTTModel):
 
         with transaction.atomic():
             # set group if not already set
+            state = {
+                'saved': False,
+            }
             if self.group_id is None:
                 name = self.pid
-                state = {
-                    'saved': False,
-                }
                 def pre_save(group, obj, _state=state):
                     obj.group_id=group.pk
                     _state['saved'] = True
@@ -166,11 +166,10 @@ class Project(MPTTModel):
                     defaults={'description': self.name},
                     pre_parent_save=pre_save,
                 )
-                if not state['saved']:
-                    self.save()
 
-            # save the object
-            super(Project, self).save(*args, **kwargs)
+            if not state['saved']:
+                # save the object
+                super(Project, self).save(*args, **kwargs)
 
         if created:
             log.add(self, 'Created')

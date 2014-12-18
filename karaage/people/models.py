@@ -717,7 +717,8 @@ class Group(models.Model):
 
     def add_person(self, person):
         from karaage.projects.models import Project
-        if self.content_type.model_class() is Project:
+        ct = self.content_type
+        if ct and ct.model_class() is Project:
             raise DeprecationWarning(
                 'Add project group members via ProjectMembership.',
             )

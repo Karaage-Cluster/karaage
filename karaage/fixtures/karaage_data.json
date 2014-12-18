@@ -1,7 +1,7 @@
 [
 {"pk": 500, "model": "karaage.group", "fields": {"name": "example", "members": [], "description": "Test.", "content_type": ["karaage", "institute"], "object_id": 1}},
-{"pk": 501, "model": "karaage.group", "fields": {"name": "otherinst", "members": [], "description": "Test.", "content_type": ["karaage", "isstitute"], "object_id": 2}},
-{"pk": 502, "model": "karaage.group", "fields": {"name": "samlinst", "members": [], "description": "Test.", "content_type": ["karaage", "isstitute"], "object_id": 3}},
+{"pk": 501, "model": "karaage.group", "fields": {"name": "otherinst", "members": [], "description": "Test.", "content_type": ["karaage", "institute"], "object_id": 2}},
+{"pk": 502, "model": "karaage.group", "fields": {"name": "samlinst", "members": [], "description": "Test.", "content_type": ["karaage", "institute"], "object_id": 3}},
 {"pk": 1, "model": "karaage.institute", "fields": {"group": 500, "name": "Example", "is_active": 1, "saml_entityid": null}}, 
 {"pk": 2, "model": "karaage.institute", "fields": {"group": 501, "name": "OtherInst", "is_active": 1, "saml_entityid": ""}}, 
 {"pk": 3, "model": "karaage.institute", "fields": {"group": 502, "name": "SamlInst", "is_active": 1, "saml_entityid": "http://samlid"}}, 
