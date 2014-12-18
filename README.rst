@@ -39,6 +39,18 @@ Mailing list: `<http://lists.vpac.org/cgi-bin/mailman/listinfo/karaage>`_
 
 Gerrit code review tool: `<https://code.vpac.org/gerrit>`_
 
+User documentation:
+`<http://karaage.readthedocs.org/projects/karaage-user/en/latest/>`_
+
+Programmer documentation:
+`<http://karaage.readthedocs.org/projects/karaage-programmer/en/latest/>`_
+
+Software requirements specification:
+`<http://karaage.readthedocs.org/projects/karaage-srs/en/latest/>`_
+
+Admin documentation: `<http://karaage.readthedocs.org/en/latest/>`_
+
+
 Components
 ----------
 
@@ -55,15 +67,6 @@ These modules are:
   <https://github.com/Karaage-Cluster/karaage-software>`_)
 - karaage-usage (also see `Karaage 3 karaage-usage
   <https://github.com/Karaage-Cluster/karaage-usage>`_)
-
-
-Software requirements specification
------------------------------------
-
-The software requirements specification for Karaage 3 is `here
-<https://github.com/Karaage-Cluster/karaage-srs>`_.
-
-This document will be updated for Karaage 4 soon.
 
 
 Installation
