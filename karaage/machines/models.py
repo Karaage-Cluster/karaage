@@ -496,6 +496,9 @@ class ResourcePool(models.Model):
 
     audit_log = AuditLog()
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         ordering = ['name']
 
@@ -523,6 +526,9 @@ class Resource(models.Model):
     quantity = models.BigIntegerField()
 
     audit_log = AuditLog()
+
+    def __str__(self):
+        return self.resource_type
 
     class Meta:
         ordering = ['resource_type']

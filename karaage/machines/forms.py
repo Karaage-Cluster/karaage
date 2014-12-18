@@ -24,7 +24,13 @@ from django.conf import settings
 from karaage.people.utils import validate_username_for_new_account
 from karaage.people.utils import check_username_for_new_account
 from karaage.people.utils import UsernameException
-from karaage.machines.models import MachineCategory, Machine, Account
+from karaage.machines.models import (
+    Account,
+    Machine,
+    MachineCategory,
+    Resource,
+    ResourcePool,
+)
 
 import ajax_select.fields
 
@@ -136,3 +142,23 @@ class UserAccountForm(forms.ModelForm):
 class AddProjectForm(forms.Form):
     project = ajax_select.fields.AutoCompleteSelectField(
         'project', required=True, label='Add to existing project')
+
+
+class ResourceForm(forms.ModelForm):
+    class Meta:
+        model = Resource
+        fields = [
+            'machine',
+            'scaling_factor',
+            'resource_type',
+            'resource_pool',
+            'quantity',
+        ]
+
+
+class ResourcePoolForm(forms.ModelForm):
+    class Meta:
+        model = ResourcePool
+        fields = [
+            'name',
+        ]

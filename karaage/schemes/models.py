@@ -28,5 +28,8 @@ class Scheme(models.Model):
 
     audit_log = AuditLog()
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         ordering = ['name']
