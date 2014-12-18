@@ -6,6 +6,7 @@ from django.shortcuts import (
 
 from karaage.common.decorators import admin_required, login_required
 
+from karaage.allocations.models import AllocationPool
 from karaage.machines.models import (
     Resource,
     ResourcePool,
@@ -52,6 +53,27 @@ def add_edit_resource(request, resource_id=None):
 
 
 @admin_required
+def delete_resource(request, resource_id):
+
+    record = get_object_or_404(Resource, pk=resource_id)
+
+    # TODO: Check for aggregate usage before deleting a resource
+
+    if request.method == 'POST':
+        record.delete()
+        return redirect('kg_machine_category_list')
+
+    return render(
+        request,
+        'karaage/machines/resource_confirm_delete_template.html',
+        {
+            'record': record,
+            'record_type': 'resource',
+        },
+    )
+
+
+@admin_required
 def add_edit_resource_pool(request, resource_pool_id=None):
 
     kwargs = {}
@@ -84,3 +106,36 @@ def add_edit_resource_pool(request, resource_pool_id=None):
             'title': title,
         },
     )
+
+
+@admin_required
+def delete_resource_pool(request, resource_pool_id):
+
+    record = get_object_or_404(ResourcePool, pk=resource_pool_id)
+
+    errors = []
+    # TODO: Check for aggregate usage before deleting a resource pool
+    for child in record.resource_set.all():
+        errors.append(
+            'Resource "%s" depends on this resource pool.' % child
+        
+        )
+    for child in record.allocationpool_set.all():
+        errors.append(
+            'Allocation pool "%s" depends on this resource pool.' % child
+        )
+
+    if request.method == 'POST':
+        record.delete()
+        return redirect('kg_machine_category_list')
+
+    return render(
+        request,
+        'karaage/machines/resource_confirm_delete_template.html',
+        {
+            'record': record,
+            'record_type': 'resource_pool',
+            'errors': errors,
+        },
+    )
+

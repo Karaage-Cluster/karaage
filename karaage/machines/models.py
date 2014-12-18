@@ -528,7 +528,11 @@ class Resource(models.Model):
     audit_log = AuditLog()
 
     def __str__(self):
-        return self.resource_type
+        return '%s / %s @ %s' % (
+            self.machine,
+            self.resource_type,
+            self.resource_pool
+        )
 
     class Meta:
         ordering = ['resource_type']
