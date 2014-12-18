@@ -74,7 +74,7 @@
     },
     {
         "fields": {
-            "description": "Dummy group used for upgrades.",
+            "description": "Institute #1",
             "extra_data": {},
             "foreign_id": null,
             "members": [],
@@ -82,6 +82,17 @@
         },
         "model": "karaage.group",
         "pk": 1
+    },
+    {
+        "fields": {
+            "description": "Group #1",
+            "extra_data": {},
+            "foreign_id": null,
+            "members": [],
+            "name": "1_1"
+        },
+        "model": "karaage.group",
+        "pk": 2
     },
     {
         "fields": {
