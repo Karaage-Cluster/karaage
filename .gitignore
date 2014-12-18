@@ -60,5 +60,10 @@ debian/karaage3.*
 
 # Rope
 .ropeproject/
+
+#Vim
+*.swp
+
+#Tox/Coverage
 tmp/
 .coverage*
