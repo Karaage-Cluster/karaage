@@ -110,3 +110,83 @@ Contact
 
 The lead developer for Karaage 4 is `Tyson Clugg
 <mailto:"tyson@commoncode.com.au">`_.
+
+Setting up a development instance
+---------------------------------
+
+The steps below will guide you through setting up an instance of Karaage 4.
+
+Step 1. Install system dependencies
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+::
+
+    $ sudo apt-get remove karaage\*
+    $ sudo apt-get install libcrack2-dev csstidy slapd ldap-utils
+    $ sudo apt-get build-dep python-cracklib
+
+Step 2. Install pip, virtualenv and virtualenvwrapper
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+You may already have these installed. If so, skip this step.
+
+::
+
+    $ sudo apt-get install python-pip
+    $ sudo pip install virtualenv virtualenvwrapper
+
+Add these lines to the end of your ``~/.bashrc`` file::
+
+    export WORKON_HOME=$HOME/.virtualenvs
+    source /usr/local/bin/virtualenvwrapper.sh
+
+Reload ``~/.bashrc``::
+
+    $ source ~/.bashrc
+
+Step 3. Set up a virtualenv
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+::
+
+    $ mkvirtualenv karaage4
+
+Add these lines to the end of ``~/.virtualenvs/karaage4/bin/postactivate``::
+
+    export KARAAGE_SECRET_KEY='d4-5vjhdyi)673gd56#ge@3r8t#*)+s8z-z0l!_sy94ol!m'
+    export KARAAGE_DEBUG='True'
+    export DJANGO_PIPELINE_ENABLED='False'
+    export KARAAGE_DB_ENGINE='django.db.backends.mysql'
+
+Restart the virtualenv so that these setting take effect:
+
+::
+
+    $ deactivate
+    $ workon karaage4
+
+Step 4. Install Karaage 4
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+::
+
+    $ pip install -e git+https://github.com/vlsci/karaage#egg=karaage4
+
+Step 5. Migrate database
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+::
+
+    $ kg-manage migrate
+
+Step 6. Start the server
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+::
+
+    $ kg-manage runsslserver 0:8000
+
+Step 7. Open Karaage
+^^^^^^^^^^^^^^^^^^^^
+
+Browse to ``https://localhost:8000``
