@@ -27,7 +27,12 @@ from karaage.projects.tables import ProjectTable
 from karaage.projects.models import Project
 from karaage.machines.tables import MachineTable, MachineCategoryTable
 from karaage.machines.tables import AccountTable
-from karaage.machines.models import Machine, MachineCategory
+from karaage.machines.models import (
+    Machine,
+    MachineCategory,
+    Resource,
+    ResourcePool,
+)
 from karaage.machines.forms import MachineForm
 from karaage.common.decorators import admin_required, login_required
 import karaage.common as util
@@ -123,7 +128,11 @@ def category_list(request):
 
     return render_to_response(
         'karaage/machines/machinecategory_list.html',
-        {'table': table},
+        {
+            'table': table,
+            'resources': Resource.objects.all(),
+            'resource_pools': ResourcePool.objects.all(),
+        },
         context_instance=RequestContext(request))
 
 

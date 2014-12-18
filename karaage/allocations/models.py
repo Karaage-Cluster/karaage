@@ -56,15 +56,17 @@ class AllocationPool(models.Model):
 
     @cached_property
     def allocated(self):
-        return self.allocations_set.aggregate(a=models.Sum('allocated'))['a']
+        return self.allocation_set.aggregate(a=models.Sum('quantity'))['a'] or 0.0
     @cached_property
     def used(self):
-        return self.usage_set.aggregate(u=models.Sum('used'))['u']
+        return self.usage_set.aggregate(u=models.Sum('used'))['u'] or 0.0
     @cached_property
     def raw_used(self):
-        return self.usage_set.aggregate(r=models.Sum('raw_used'))['r']
+        return self.usage_set.aggregate(r=models.Sum('raw_used'))['r'] or 0.0
     @cached_property
     def used_percent(self):
+        if self.allocated == 0.0:
+            return None
         return 100.0 * self.used / self.allocated
     @cached_property
     def remaining(self):
