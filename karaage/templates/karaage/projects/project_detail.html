@@ -242,22 +242,24 @@
                 <tr>
                     <th>Resource pool</th>
                     <th>Period</th>
-                    <th>Quantity</th>
-                    <th>Used</th>
-                    <th>Remaining</th>
-                    <th>Percent</th>
+                    <th>Quantity allocated</th>
+                    <th>Quantity used</th>
+                    <th>Quantity remaining</th>
+                    <th>Percent used</th>
                 </tr>
             </thead>
             <tbody>
                 {% for ap in project.allocationpool_set.all %}
-                <tr>
-                    <td>{{ ap.resource_pool }}</td>
-                    <td>{{ ap.period }}</td>
-                    <td>{{ ap.allocated }}</td>
-                    <td>{{ ap.used }}</td>
-                    <td>{{ ap.remaining }}</td>
-                    <td>{{ ap.used_percent }}</td>
-                </tr>
+                    {% ifequal ap.project project %}
+                    <tr>
+                        <td>{{ ap.resource_pool }}</td>
+                        <td>{{ ap.period }}</td>
+                        <td>{{ ap.allocated }}</td>
+                        <td>{{ ap.used }}</td>
+                        <td>{{ ap.remaining }}</td>
+                        <td>{{ ap.used_percent }}</td>
+                    </tr>
+                    {% endifequal %}
                 {% endfor %}
             </tbody>
         </table>
@@ -268,7 +270,7 @@
             <thead>
                 <tr>
                     <th>Allocation description</th>
-                    <th>Allocation pool</th>
+                    <th>Resource pool</th>
                     <th>Period</th>
                     <th>Grant</th>
                     <th>Quantity</th>
@@ -279,8 +281,8 @@
                 <tr>
                     <td><a href={% url 'allocation_edit' a.grant.project.id a.id %}>
                       {{ a.description }}</a></td>
-                    <td>{{ a.allocation_pool }}</td>
-                    <td>{{ a.period }}</td>
+                    <td>{{ a.allocation_pool.resource_pool }}</td>
+                    <td>{{ a.allocation_pool.period }}</td>
                     <td><a href={% url 'grant_edit' a.grant.project.id a.grant.id %}>
                       {{ a.grant }}</a></td>
                     <td>{{ a.quantity }}</td>
