@@ -1,0 +1,32 @@
+{% extends "forms.html" %}
+
+
+{% block title %}{{ title }}{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    <a href='{% url "kg_machine_category_list" %}'>Machines</a>&nbsp;›
+    {{ title }}
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="module">
+    <h2>{{ title }}</h2>
+    <form method="post" action="." class="simple">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Save" class="default" />
+    {% ifequal mode 'edit' %}
+        &nbsp;&nbsp;&nbsp;
+        {% if record_type == 'resource'  %}
+            <a class="deletelink" href={% url 'resource_delete' record_id %}>Delete resource</a>
+        {% elif record_type == 'resource pool' %}
+            <a class="deletelink" href={% url 'resource_pool_delete' record_id %}>Delete resource pool</a>
+        {% endif %}
+    {% endifequal %}
+    </form>
+</div>
+{% endblock %}

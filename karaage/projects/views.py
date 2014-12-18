@@ -26,6 +26,7 @@ from django.db.models import Q
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 
+from karaage.allocations.models import Allocation
 from karaage.common.decorators import admin_required, login_required
 from karaage.people.models import Person
 from karaage.machines.models import Account
@@ -73,19 +74,27 @@ def profile_projects(request):
 @login_required
 def add_edit_project(request, project_id=None):
 
+    kwargs={}
+
     if project_id is None:
         project = None
         flag = 1
     else:
-        project = get_object_or_404(Project, pid=project_id)
+        kwargs['instance'] = project = get_object_or_404(Project, pid=project_id)
+        kwargs['initial'] = {
+            'leaders': list(project.leaders.values_list('pk', flat=True)),
+        }
         flag = 2
 
+    if request.method == 'POST':
+        kwargs['data'] = request.POST
+
     if util.is_admin(request):
-        form = ProjectForm(instance=project, data=request.POST or None)
+        form = ProjectForm(**kwargs)
     else:
         if not project.can_edit(request):
             return HttpResponseForbidden('<h1>Access Denied</h1>')
-        form = UserProjectForm(instance=project, data=request.POST or None)
+        form = UserProjectForm(**kwargs)
 
     if request.method == 'POST':
         if form.is_valid():
@@ -102,6 +111,13 @@ def add_edit_project(request, project_id=None):
             project.save()
             approved_by = request.user
             project.activate(approved_by)
+            project.projectmembership_set.filter(
+                is_project_leader=True,
+            ).exclude(
+                person__in=form.cleaned_data['leaders'],
+            ).update(
+                is_project_leader=False,
+            )
             project.add_update_project_members(
                 is_project_leader=True,
                 *form.cleaned_data['leaders']
@@ -153,7 +169,7 @@ def delete_project(request, project_id):
 def project_detail(request, project_id):
 
     project = get_object_or_404(Project, pid=project_id)
-
+    allocations = Allocation.objects.filter(grant__project=project)
     if not project.can_view(request):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
@@ -170,9 +186,14 @@ def project_detail(request, project_id):
 
     return render_to_response(
         'karaage/projects/project_detail.html',
-        {'project': project, 'form': form,
-            'can_edit': project.can_edit(request)},
-        context_instance=RequestContext(request))
+        {
+            'allocations': allocations,
+            'project': project,
+            'form': form,
+            'can_edit': project.can_edit(request)
+        },
+        context_instance=RequestContext(request)
+    )
 
 
 @admin_required

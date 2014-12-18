@@ -446,7 +446,7 @@ SECRET_KEY = os.environ.get('KARAAGE_SECRET_KEY', '')
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get(
-            'KARAAGE_DB_ENGINE', 'django.db.backends.dummy',
+            'KARAAGE_DB_ENGINE', 'django.db.backends.sqlite',
         ),
         'NAME': os.environ.get(
             'KARAAGE_DB_NAME', LOGNAME,

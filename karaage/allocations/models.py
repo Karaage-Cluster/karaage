@@ -13,6 +13,9 @@ class Grant(models.Model):
 
     audit_log = AuditLog()
 
+    def __str__(self):
+        return self.description
+
     class Meta:
         ordering = [
             '-expires',
@@ -30,6 +33,8 @@ class AllocationPoolQuerySet(models.QuerySet):
             raw_used=models.Sum('usage__raw_used'),
             # TODO: used_percent= \
             # 100 * Sum('allocation__quantity')) / Sum('usage__used')
+            # TODO: remaining= \
+            # Sum('allocation__quantity')) - Sum('usage__used')
         )
 
 
@@ -51,26 +56,33 @@ class AllocationPool(models.Model):
 
     @cached_property
     def allocated(self):
-        return self.allocations_set.aggregate(a=models.Sum('allocated'))['a']
+        return self.allocation_set.aggregate(a=models.Sum('quantity'))['a'] or 0.0
     @cached_property
     def used(self):
-        return self.usage_set.aggregate(u=models.Sum('used'))['u']
+        return self.usage_set.aggregate(u=models.Sum('used'))['u'] or 0.0
     @cached_property
     def raw_used(self):
-        return self.usage_set.aggregate(r=models.Sum('raw_used'))['r']
+        return self.usage_set.aggregate(r=models.Sum('raw_used'))['r'] or 0.0
     @cached_property
     def used_percent(self):
+        if self.allocated == 0.0:
+            return None
         return 100.0 * self.used / self.allocated
+    @cached_property
+    def remaining(self):
+        return self.allocated - self.used
 
     objects = AllocationPoolQuerySet.as_manager()
     audit_log = AuditLog()
 
+    def __str__(self):
+        return 'Project: %s' % self.project.name
+
     class Meta:
         ordering = [
             '-period__end',
-            '-grant__expires',
-            '-grant__project__end_date',
-            'grant__project__name',
+            '-project__end_date',
+            'project__name',
         ]
 
 
@@ -81,6 +93,9 @@ class Allocation(models.Model):
     quantity = models.FloatField()
 
     audit_log = AuditLog()
+
+    def __str__(self):
+        return self.description
 
     class Meta:
         ordering = [
@@ -94,6 +109,9 @@ class AllocationPeriod(models.Model):
     end = models.DateTimeField()
 
     audit_log = AuditLog()
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         ordering = [
