@@ -123,8 +123,8 @@ RHEL 6 installation
         dn: olcDatabase={2}bdb,cn=config
         changetype: modify
         add: olcAccess
-        olcAccess: to attrs=userPassword,shadowLastChange by self write by anonymous auth by dn="cn=admin,dc=example,dc=org" write by * none
-        olcAccess: to * by self write by dn="cn=admin,dc=example,dc=org" write by * read
+        olcAccess: to attrs=userPassword,shadowLastChange by anonymous auth by dn="cn=admin,dc=example,dc=org" write by * none
+        olcAccess: to * by dn="cn=admin,dc=example,dc=org" write by * read
 
 #.  Import with the following command:
 
