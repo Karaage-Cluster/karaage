@@ -27,5 +27,58 @@
         </div>
         {% endif %}
     </div>
+    {% if is_admin %}
+    <div class="module">
+        <h2>Resources</h2>
+        <h3>Resources</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Resource no.</th>
+                    <th>Machine</th>
+                    <th>Resource pool</th>
+                    <th>Quantity</th>
+                    <th>Resource type</th>
+                    <th>Scaling factor</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in resources %}
+                <tr>
+                    <td><a href={% url 'resource_edit' r.id %}>
+                      {{ r.id }}</a></td>
+                    <td>{{ r.machine }}</td>
+                    <td><a href={% url 'resource_pool_edit' r.resource_pool.id %}>
+                      {{ r.resource_pool }}</a></td>
+                    <td>{{ r.quantity }}</td>
+                    <td>{{ r.resource_type }}</td>
+                    <td>{{ r.scaling_factor }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="object-tools">
+            <ul>
+                <li><a class="addlink" href="{% url 'resource_add' %}">Add resource</a></li>
+            </ul>
+        </div>
+        <h3>Resource pools</h3>
+        <table>
+            <tbody>
+                {% for rp in resource_pools %}
+                <tr>
+                    <td><a href={% url 'resource_pool_edit' rp.id %}>
+                      {{ rp.name }}</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="object-tools">
+            <ul>
+                <li><a class="addlink" href="{% url 'resource_pool_add' %}">Add resource pool</a></li>
+            </ul>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

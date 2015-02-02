@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.db import models
+from django.db import models, transaction
 from django.utils.encoding import python_2_unicode_compatible
 
 from mptt.models import MPTTModel, TreeForeignKey
@@ -125,10 +125,10 @@ class Project(MPTTModel):
         """
         from karaage.people.models import ProjectMembership
         for person in people:
-            if isinstance(person, int):
-                person_id = person
+            if hasattr(person, 'pk'):
+                person_id = person.pk
             else:
-                person_id = person.id
+                person_id = person
             obj, created = ProjectMembership.objects.get_or_create(
                 person_id=person_id,
                 project=self,
@@ -151,13 +151,25 @@ class Project(MPTTModel):
     def save(self, *args, **kwargs):
         created = self.pk is None
 
-        # set group if not already set
-        if self.group_id is None:
-            name = self.pid
-            self.group, _ = Group.objects.get_or_create(name=name)
+        with transaction.atomic():
+            # set group if not already set
+            state = {
+                'saved': False,
+            }
+            if self.group_id is None:
+                name = self.pid
+                def pre_save(group, obj, _state=state):
+                    obj.group_id=group.pk
+                    _state['saved'] = True
+                self.group, _ = Group.objects.get_or_create_unique(
+                    parent=self, name=self.pid,
+                    defaults={'description': self.name},
+                    pre_parent_save=pre_save,
+                )
 
-        # save the object
-        super(Project, self).save(*args, **kwargs)
+            if not state['saved']:
+                # save the object
+                super(Project, self).save(*args, **kwargs)
 
         if created:
             log.add(self, 'Created')
