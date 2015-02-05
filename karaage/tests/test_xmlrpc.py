@@ -69,7 +69,7 @@ class XmlrpcTestCase(TestCase):
 
     def setUp(self):
         super(XmlrpcTestCase, self).setUp()
-        call_command('loaddata', 'karaage_data', **{'verbosity': 0})
+        call_command('loaddata', 'test_karaage', **{'verbosity': 0})
         self.server = self.get_server_proxy()
 
     def test_get_disk_quota(self):

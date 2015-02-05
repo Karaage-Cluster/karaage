@@ -40,7 +40,7 @@ class PersonTestCase(IntegrationTestCase):
 
     def setUp(self):
         super(PersonTestCase, self).setUp()
-        call_command('loaddata', 'karaage_data', **{'verbosity': 0})
+        call_command('loaddata', 'test_karaage', **{'verbosity': 0})
         self._datastore = self.mc_ldap_datastore
 
     def do_permission_tests(self, test_object, users):
