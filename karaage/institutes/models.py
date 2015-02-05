@@ -1,4 +1,5 @@
 # Copyright 2007-2015 VPAC
+# Copyright 2014 The University of Melbourne
 #
 # This file is part of Karaage.
 #

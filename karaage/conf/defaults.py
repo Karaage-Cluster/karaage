@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2007-2014 VPAC
+# Copyright 2014 The University of Melbourne
 #
 # This file is part of Karaage.
 #
