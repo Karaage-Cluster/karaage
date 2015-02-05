@@ -34,7 +34,7 @@ from karaage.common import log, is_admin
 class Project(models.Model):
     pid = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=200)
-    group = models.ForeignKey(Group)
+    group = models.ForeignKey(Group, on_delete=models.PROTECT)
     institute = models.ForeignKey(Institute)
     leaders = models.ManyToManyField(Person, related_name='leads')
     description = models.TextField(null=True, blank=True)
