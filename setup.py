@@ -17,6 +17,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
+"""Karaage setup script."""
 
 from setuptools import setup
 import os
@@ -51,6 +52,7 @@ for d in dirs:
             packages.append('.'.join(fullsplit(dirpath)))
 
 tests_require = [
+    "django-extensions",
     "factory_boy",
     "mock",
     "cracklib",
@@ -95,8 +97,7 @@ setup(
             ['conf/karaage3-wsgi.conf', ]),
     ],
     install_requires=[
-        "Django >= 1.6",
-        "South >= 1.0",
+        "Django >= 1.7",
         "python-alogger >= 2.0",
         "django-xmlrpc >= 0.1",
         "django-simple-captcha",
@@ -104,13 +105,26 @@ setup(
         "django_jsonfield >= 0.9.12",
         "django-model-utils >= 2.0.0",
         "python-tldap >= 0.3.3",
-        "django-xmlrpc >= 0.1",
-        "django_model_utils >= 2.0.0",
         "django-pipeline",
         "django-tables2",
         "django-filter",
+        "six",
     ],
     tests_require=tests_require,
     extras_require={
-        'tests': tests_require},
+        'tests': tests_require,
+        'applications': [
+            # no dependencies for kgapplications
+        ],
+        'software': [
+            "karaage4[applications]",
+            "karaage4[usage]",
+        ],
+        'usage': [
+            "karaage4[software]",
+            "django_celery",
+            "django-filter",
+            "matplotlib",
+        ],
+    },
 )
