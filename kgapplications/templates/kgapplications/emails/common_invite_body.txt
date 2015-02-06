@@ -1,0 +1,21 @@
+{% autoescape off %}{% if receiver.get_short_name %}Hello {{ receiver.get_short_name }},
+{% else %}Hello,
+{% endif %}
+
+{% if not application.created_by %}Somebody has invited you to {{ application.info }}.
+{% elif application.created_by != receiver %}{{ application.created_by }} has invited you to {{ application.info }}.
+{% else %}You have started a new application to {{ application.info }}.
+{% endif %}
+{% if application.header_message %}{{ application.header_message }}
+
+{% endif %}To accept this invitation and continue the application, please enter the following address in your web browser:
+{{ link }}
+
+{% if is_secret %}This URL must remain secret, do not give it to anybody else. Please
+make sure nobody is already logged into Karaage from your computer before using it.
+
+This link will expire in 7 days.
+{% else %}If you are not already logged in you will be required to log in before using this link.
+{% endif %}
+
+{% include "karaage/emails/email_footer.txt" %}{% endautoescape %}

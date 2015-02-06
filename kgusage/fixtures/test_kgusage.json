@@ -1,0 +1,77 @@
+[
+    {
+        "fields": {
+            "available_time": "529485465600.00",
+            "cpu_time": "296045170945.00",
+            "date": "2014-11-05",
+            "end": "2014-11-10",
+            "machine_category": 1,
+            "no_jobs": 1,
+            "start": "2014-10-07"
+        },
+        "model": "kgusage.machinecategorycache",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "account": 1,
+            "act_wall_time": 39900,
+            "cores": 64,
+            "cpu_usage": 2553600,
+            "ctime": "2013-12-14T23:15:09",
+            "date": "2014-01-01",
+            "est_wall_time": 174600,
+            "etime": "2013-12-14T23:15:09",
+            "exit_status": 0,
+            "jobid": "1",
+            "jobname": "SphereRe800-OS0.60",
+            "list_mem": 0,
+            "list_pmem": 2048,
+            "list_pvmem": 0,
+            "list_vmem": 0,
+            "machine": 1,
+            "mem": 0,
+            "project": 1,
+            "qtime": "2013-12-14T23:15:09",
+            "queue": "1",
+            "software": [],
+            "start": "2014-01-01T00:03:54",
+            "username": "1",
+            "vmem": 0
+        },
+        "model": "kgusage.cpujob",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "cpu_time": "13634637218.00",
+            "date": "2014-11-05",
+            "end": "2014-11-05",
+            "institute": 1,
+            "machine_category": 1,
+            "no_jobs": 1,
+            "start": "2014-08-07"
+        },
+        "model": "kgusage.institutecache",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "cpu_time": "3499806051.00",
+            "date": "2014-11-05",
+            "end": "2014-11-05",
+            "machine": 1,
+            "no_jobs": 1,
+            "start": "2014-08-07"
+        },
+        "model": "kgusage.machinecache",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "description": null
+        },
+        "model": "kgusage.queue",
+        "pk": "1"
+    }
+]

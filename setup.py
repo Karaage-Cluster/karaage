@@ -39,14 +39,16 @@ def fullsplit(path, result=None):
         return result
     return fullsplit(head, [tail] + result)
 
+dirs = ['karaage', 'kgapplications', 'kgsoftware', 'kgusage']
 packages = []
-for dirpath, dirnames, filenames in os.walk("karaage"):
-    # Ignore dirnames that start with '.'
-    for i, dirname in enumerate(dirnames):
-        if dirname.startswith('.'):
-            del dirnames[i]
-    if filenames:
-        packages.append('.'.join(fullsplit(dirpath)))
+for d in dirs:
+    for dirpath, dirnames, filenames in os.walk(d):
+        # Ignore dirnames that start with '.'
+        for i, dirname in enumerate(dirnames):
+            if dirname.startswith('.'):
+                del dirnames[i]
+        if filenames:
+            packages.append('.'.join(fullsplit(dirpath)))
 
 tests_require = [
     "factory_boy",

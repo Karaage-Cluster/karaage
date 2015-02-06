@@ -1,0 +1,33 @@
+{% extends "main.html" %}
+{% load render_table from django_tables2 %}
+{% load forms %}
+
+
+{% block title %}Applications{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    Applications
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+    <div class="toolbar">
+        <button id="opener">Filter</button>
+        {% for key, value in spec %}
+            {{ key }} = {{ value }}{% if not forloop.last %}, {% else %}.{% endif %}
+        {% endfor %}
+    </div>
+    <div class="module clear">
+        <h2>{{ title }}</h2>
+        {% render_table table %}
+    </div>
+    <form action="" id="dialog-modal" title="Filter" method="get">
+        {% form_as_div filter.form %}
+    </form>
+</div>
+{% endblock %}
