@@ -82,11 +82,11 @@ class TestAllPagesMeta(type):
             name = '_'.join(
                 [
                     'test',
-                    func.__module__.replace(u'.', u'_'),
-                    slugify(u'%s' % func_name),
+                    func.__module__.replace('.', '_'),
+                    slugify('%s' % func_name),
                 ] + slugify(
-                    url_pattern.replace(u'/', u'_') or u'root'
-                ).replace(u'_', u' ').split(),
+                    url_pattern.replace('/', '_') or 'root'
+                ).replace('_', ' ').split(),
             )
             url = url_pattern
 
