@@ -40,22 +40,25 @@ Mailing list: `<http://lists.vpac.org/cgi-bin/mailman/listinfo/karaage>`_
 
 Gerrit code review tool: `<https://code.vpac.org/gerrit>`_
 
-User documentation:
+Karaage 2.7.x: <http://karaage.readthedocs.org/en/2.7.stable/>`_.
+
+Karaage 3.x User documentation:
 `<http://karaage.readthedocs.org/projects/karaage-user/en/latest/>`_
 
-Programmer documentation:
+Karaage 3.x Programmer documentation:
 `<http://karaage.readthedocs.org/projects/karaage-programmer/en/latest/>`_
+
+Karaage 3.x Admin documentation: `<http://karaage.readthedocs.org/en/latest/>`_
 
 Software requirements specification:
 `<http://karaage.readthedocs.org/projects/karaage-srs/en/latest/>`_
 
-Admin documentation: `<http://karaage.readthedocs.org/en/latest/>`_
 
 
 Components
 ----------
 
-Prior to Karaage 4, the various Karaage modules had been in seperate
+Prior to Karaage 3.1.11, the various Karaage modules had been in seperate
 repositories. They have now been brought together into one repo.
 
 These modules are:
