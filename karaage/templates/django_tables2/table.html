@@ -1,12 +1,11 @@
 {% spaceless %}
 {% load django_tables2 %}
 {% load i18n %}
-{% with table.page.paginator.count as total %}
 {% if table.page %}
 <div class="table-container">
 {% endif %}
 {% block table %}
-{% if total > 0 %}
+{% if table.rows %}
 <table{% if table.attrs %} {{ table.attrs.as_html }}{% endif %}>
     {% nospaceless %}
     {% block table.thead %}
@@ -74,12 +73,13 @@
     {% nospaceless %}{% block pagination.last %}<li class="last link"><a href="{% querystring table.prefixed_page_field=table.paginator.num_pages %}">{% trans "Last" %}</a></li>{% endblock pagination.last %}{% endnospaceless %}
     {% endif %}
 
+    {% with table.page.paginator.count as total %}
     {% with table.page.start_index as start_index and table.page.end_index as end_index and table.page.object_list|length as count %}
     {% nospaceless %}{% block pagination.cardinality %}<li class="cardinality">{% if total != count %}{% blocktrans %}{{ start_index }} to {{ end_index}} of {{ total }}{% endblocktrans %}{% else %}{{ total }}{% endif %} {% if total == 1 %}{{ table.data.verbose_name }}{% else %}{{ table.data.verbose_name_plural }}{% endif %}</li>{% endblock pagination.cardinality %}{% endnospaceless %}
+    {% endwith %}
     {% endwith %}
 </ul>
 {% endblock pagination %}
 </div>
 {% endif %}
-{% endwith %}
 {% endspaceless %}
