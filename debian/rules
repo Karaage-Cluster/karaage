@@ -6,6 +6,9 @@ PREFIX3 = debian/python3-karaage
 PREFIXC = debian/karaage3-common
 PREFIXA = debian/karaage3-wsgi
 
+USAGE2 = debian/python-kgusage
+USAGE3 = debian/python3-kgusage
+
 export PYBUILD_NAME=karaage
 
 %:
@@ -68,7 +71,16 @@ override_dh_install:
 
 override_dh_python3:
 	dh_python3
-	find debian/python3-karaage/usr/lib/python3/dist-packages/ -type f -not -name '*.py' | \
+	mkdir -p $(USAGE2)/usr/lib/python2.7/dist-packages/kgusage
+	mv \
+		$(PREFIX2)/usr/lib/python2.7/dist-packages/kgusage \
+		$(USAGE2)/usr/lib/python2.7/dist-packages/kgusage
+	mkdir -p $(USAGE3)/usr/lib/python3/dist-packages/kgusage
+	mv \
+		$(PREFIX3)/usr/lib/python3/dist-packages/kgusage \
+		$(USAGE3)/usr/lib/python3/dist-packages/kgusage
+
+	find $(PREFIX3)/usr/lib/python3/dist-packages/ -type f -not -name '*.py' | \
 	(while read file; do \
 		relname=$${file##debian/python3-karaage/usr/lib/python3/dist-packages/}; \
 		reldirname=$$(dirname $$relname); \

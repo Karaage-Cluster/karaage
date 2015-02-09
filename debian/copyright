@@ -4,7 +4,7 @@ Upstream-Contact: Brian May <bam@debian.org>
 Source: https://github.com/Karaage-Cluster/karaage/
 
 Files: *
-Copyright: 2007-2014 VPAC
+Copyright: 2007-2014 VPAC, 2010-2014 The University of Melbourne
 License: GPL-3+
 
 Files: debian/*
