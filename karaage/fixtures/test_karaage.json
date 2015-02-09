@@ -1,24 +1,349 @@
 [
-{"pk": 500, "model": "karaage.group", "fields": {"name": "example", "members": [], "description": "Test."}},
-{"pk": 501, "model": "karaage.group", "fields": {"name": "otherinst", "members": [], "description": "Test."}},
-{"pk": 502, "model": "karaage.group", "fields": {"name": "samlinst", "members": [], "description": "Test."}},
-{"pk": 1, "model": "karaage.institute", "fields": {"group": 500, "name": "Example", "is_active": 1, "saml_entityid": null}}, 
-{"pk": 2, "model": "karaage.institute", "fields": {"group": 501, "name": "OtherInst", "is_active": 1, "saml_entityid": ""}}, 
-{"pk": 3, "model": "karaage.institute", "fields": {"group": 502, "name": "SamlInst", "is_active": 1, "saml_entityid": "http://samlid"}}, 
-{"pk": 1, "model": "karaage.institutedelegate", "fields": {"institute": 1, "person": 1, "send_email": true}}, 
-{"pk": 2, "model": "karaage.institutedelegate", "fields": {"institute": 2, "person": 1, "send_email": true}},
-{"pk": 1, "model": "karaage.person", "fields": {"username": "kgtestuser1", "short_name": "Test", "full_name": "Test User1", "is_active": 1, "is_admin": 0, "comment": "", "supervisor": "", "telephone": "", "postcode": "", "date_approved": null, "city": "", "title": null, "state": null, "approved_by": null, "department": "", "last_usage": null, "website": "", "fax": "", "expires": null, "password": "sha1$d1880$6d09cd44ed623474678ab3a79010b20281f1f548", "email": "leader@example.com", "address": "", "mobile": "", "country": "AU", "date_deleted": null, "deleted_by": null, "institute": 1, "position": "", "login_enabled": true}}, 
-{"pk": 2, "model": "karaage.person", "fields": {"username": "kgtestuser2", "short_name": "Test", "full_name": "Test User2", "is_active": 1, "is_admin": 0, "comment": "", "supervisor": "", "telephone": "", "postcode": "", "date_approved": null, "city": "", "title": null, "state": null, "approved_by": null, "department": "", "last_usage": null, "website": "", "fax": "", "expires": null, "password": "sha1$d1880$6d09cd44ed623474678ab3a79010b20281f1f548", "email": "sam@vpac.org", "address": "", "mobile": "", "country": "AU", "date_deleted": null, "deleted_by": null, "institute": 1, "position": "", "login_enabled": true}}, 
-{"pk": 3, "model": "karaage.person", "fields": {"username": "kgtestuser3", "short_name": "Test", "full_name": "Test User3", "is_active": 1, "is_admin": 0, "comment": "", "supervisor": "", "telephone": "", "postcode": "", "date_approved": null, "city": "", "title": null, "state": null, "approved_by": null, "department": "", "last_usage": null, "website": "", "fax": "", "expires": null, "password": "sha1$d1880$6d09cd44ed623474678ab3a79010b20281f1f548", "email": "sam@vpac.org", "address": "", "mobile": "", "country": "AU", "date_deleted": null, "deleted_by": null, "institute": 1, "position": "", "login_enabled": true}}, 
-{"pk": 4, "model": "karaage.person", "fields": {"username": "kgsuper", "short_name": "Super", "full_name": "Super User", "is_active": 1, "is_admin": 1, "comment": "", "supervisor": "", "telephone": "", "postcode": "", "date_approved": null, "city": "", "title": null, "state": null, "approved_by": null, "department": "", "last_usage": null, "website": "", "fax": "", "expires": null, "password": "sha1$d1880$6d09cd44ed623474678ab3a79010b20281f1f548",  "email": "sam@vpac.org", "address": "", "mobile": "", "country": "AU", "date_deleted": null, "deleted_by": null, "institute": 1, "position": "", "login_enabled": true}}, 
-{"pk": 1, "model": "karaage.machinecategory", "fields": {"name": "Default", "datastore": "ldap"}}, 
-{"pk": 2, "model": "karaage.machinecategory", "fields": {"name": "OtherMC", "datastore": "dummy"}}, 
-{"pk": 1, "model": "karaage.machine", "fields": {"category": 1, "name": "tango", "end_date": null, "no_nodes": 5, "mem_per_core": null, "type": "Linux", "start_date": "2010-05-13", "no_cpus": 10, "pbs_server_host": "", "password": "sha1$d1880$6d09cd44ed623474678ab3a79010b20281f1f548"}},
-{"pk": 2, "model": "karaage.machine", "fields": {"category": 2, "name": "wexstan", "end_date": null, "no_nodes": 10, "mem_per_core": null, "type": "Linux", "start_date": "2010-05-13", "no_cpus": 40, "pbs_server_host": "", "password": "sha1$d1880$6d09cd44ed623474678ab3a79010b20281f1f548"}},
-{"pk": 3, "model": "karaage.machine", "fields": {"category": 2, "name": "edda", "end_date": null, "no_nodes": 100, "mem_per_core": null, "type": "Linux", "start_date": "2010-05-13", "no_cpus": 8000, "pbs_server_host": "", "password": "sha1$d1880$6d09cd44ed623474678ab3a79010b20281f1f548"}},
-{"pk": 1, "model": "karaage.account", "fields": {"username": "kgtestuser3", "default_project": 1, "date_deleted": null, "disk_quota": null, "machine_category": 1, "person": 3, "date_created": "2010-05-13"}}, 
-{"pk": 503, "model": "karaage.group", "fields": {"name": "testproject1", "members": [3], "description": "Test."}},
-{"pk": 1, "model": "karaage.project", "fields": {"pid": "TestProject1", "group": 503, "additional_req": "", "is_approved": 1, "end_date": null, "institute": 1, "description": "", "is_active": 1, "date_deleted": null, "deleted_by": null, "approved_by": null, "leaders": [1], "last_usage": null, "date_approved": null, "start_date": "2010-05-13", "name": "Test Project 1"}},
-{"pk": 1, "model": "karaage.institutequota", "fields": {"institute": 1, "disk_quota": null, "machine_category": 1, "cap": null, "quota": "0.00"}},
-{"pk": 1, "model": "karaage.projectquota", "fields": {"project": 1, "machine_category": 1, "cap": null}}
+    {
+        "pk": 500,
+        "model": "karaage.group",
+        "fields": {
+            "members": [],
+            "name": "example",
+            "description": "Test."
+        }
+    },
+    {
+        "pk": 501,
+        "model": "karaage.group",
+        "fields": {
+            "members": [],
+            "name": "otherinst",
+            "description": "Test."
+        }
+    },
+    {
+        "pk": 502,
+        "model": "karaage.group",
+        "fields": {
+            "members": [],
+            "name": "samlinst",
+            "description": "Test."
+        }
+    },
+    {
+        "pk": 1,
+        "model": "karaage.institute",
+        "fields": {
+            "group": 500,
+            "name": "Example",
+            "saml_entityid": null,
+            "is_active": 1
+        }
+    },
+    {
+        "pk": 2,
+        "model": "karaage.institute",
+        "fields": {
+            "group": 501,
+            "name": "OtherInst",
+            "saml_entityid": "",
+            "is_active": 1
+        }
+    },
+    {
+        "pk": 3,
+        "model": "karaage.institute",
+        "fields": {
+            "group": 502,
+            "name": "SamlInst",
+            "saml_entityid": "http://samlid",
+            "is_active": 1
+        }
+    },
+    {
+        "pk": 1,
+        "model": "karaage.institutedelegate",
+        "fields": {
+            "person": 1,
+            "send_email": true,
+            "institute": 1
+        }
+    },
+    {
+        "pk": 2,
+        "model": "karaage.institutedelegate",
+        "fields": {
+            "person": 1,
+            "send_email": true,
+            "institute": 2
+        }
+    },
+    {
+        "pk": 1,
+        "model": "karaage.person",
+        "fields": {
+            "department": "",
+            "email": "leader@example.com",
+            "fax": "",
+            "state": null,
+            "country": "AU",
+            "expires": null,
+            "last_usage": null,
+            "full_name": "Test User1",
+            "website": "",
+            "username": "kgtestuser1",
+            "address": "",
+            "telephone": "",
+            "password": "sha1$d1880$6d09cd44ed623474678ab3a79010b20281f1f548",
+            "approved_by": null,
+            "city": "",
+            "short_name": "Test",
+            "is_admin": 0,
+            "postcode": "",
+            "mobile": "",
+            "supervisor": "",
+            "title": null,
+            "date_approved": null,
+            "comment": "",
+            "date_deleted": null,
+            "institute": 1,
+            "is_active": 1,
+            "deleted_by": null,
+            "position": "",
+            "login_enabled": true
+        }
+    },
+    {
+        "pk": 2,
+        "model": "karaage.person",
+        "fields": {
+            "department": "",
+            "email": "sam@vpac.org",
+            "fax": "",
+            "state": null,
+            "country": "AU",
+            "expires": null,
+            "last_usage": null,
+            "full_name": "Test User2",
+            "website": "",
+            "username": "kgtestuser2",
+            "address": "",
+            "telephone": "",
+            "password": "sha1$d1880$6d09cd44ed623474678ab3a79010b20281f1f548",
+            "approved_by": null,
+            "city": "",
+            "short_name": "Test",
+            "is_admin": 0,
+            "postcode": "",
+            "mobile": "",
+            "supervisor": "",
+            "title": null,
+            "date_approved": null,
+            "comment": "",
+            "date_deleted": null,
+            "institute": 1,
+            "is_active": 1,
+            "deleted_by": null,
+            "position": "",
+            "login_enabled": true
+        }
+    },
+    {
+        "pk": 3,
+        "model": "karaage.person",
+        "fields": {
+            "department": "",
+            "email": "sam@vpac.org",
+            "fax": "",
+            "state": null,
+            "country": "AU",
+            "expires": null,
+            "last_usage": null,
+            "full_name": "Test User3",
+            "website": "",
+            "username": "kgtestuser3",
+            "address": "",
+            "telephone": "",
+            "password": "sha1$d1880$6d09cd44ed623474678ab3a79010b20281f1f548",
+            "approved_by": null,
+            "city": "",
+            "short_name": "Test",
+            "is_admin": 0,
+            "postcode": "",
+            "mobile": "",
+            "supervisor": "",
+            "title": null,
+            "date_approved": null,
+            "comment": "",
+            "date_deleted": null,
+            "institute": 1,
+            "is_active": 1,
+            "deleted_by": null,
+            "position": "",
+            "login_enabled": true
+        }
+    },
+    {
+        "pk": 4,
+        "model": "karaage.person",
+        "fields": {
+            "department": "",
+            "email": "sam@vpac.org",
+            "fax": "",
+            "state": null,
+            "country": "AU",
+            "expires": null,
+            "last_usage": null,
+            "full_name": "Super User",
+            "website": "",
+            "username": "kgsuper",
+            "address": "",
+            "telephone": "",
+            "password": "sha1$d1880$6d09cd44ed623474678ab3a79010b20281f1f548",
+            "approved_by": null,
+            "city": "",
+            "short_name": "Super",
+            "is_admin": 1,
+            "postcode": "",
+            "mobile": "",
+            "supervisor": "",
+            "title": null,
+            "date_approved": null,
+            "comment": "",
+            "date_deleted": null,
+            "institute": 1,
+            "is_active": 1,
+            "deleted_by": null,
+            "position": "",
+            "login_enabled": true
+        }
+    },
+    {
+        "pk": 1,
+        "model": "karaage.machinecategory",
+        "fields": {
+            "name": "Default",
+            "datastore": "ldap"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "karaage.machinecategory",
+        "fields": {
+            "name": "OtherMC",
+            "datastore": "dummy"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "karaage.machine",
+        "fields": {
+            "pbs_server_host": "",
+            "end_date": null,
+            "category": 1,
+            "start_date": "2010-05-13",
+            "mem_per_core": null,
+            "name": "tango",
+            "password": "sha1$d1880$6d09cd44ed623474678ab3a79010b20281f1f548",
+            "no_nodes": 5,
+            "type": "Linux",
+            "no_cpus": 10
+        }
+    },
+    {
+        "pk": 2,
+        "model": "karaage.machine",
+        "fields": {
+            "pbs_server_host": "",
+            "end_date": null,
+            "category": 2,
+            "start_date": "2010-05-13",
+            "mem_per_core": null,
+            "name": "wexstan",
+            "password": "sha1$d1880$6d09cd44ed623474678ab3a79010b20281f1f548",
+            "no_nodes": 10,
+            "type": "Linux",
+            "no_cpus": 40
+        }
+    },
+    {
+        "pk": 3,
+        "model": "karaage.machine",
+        "fields": {
+            "pbs_server_host": "",
+            "end_date": null,
+            "category": 2,
+            "start_date": "2010-05-13",
+            "mem_per_core": null,
+            "name": "edda",
+            "password": "sha1$d1880$6d09cd44ed623474678ab3a79010b20281f1f548",
+            "no_nodes": 100,
+            "type": "Linux",
+            "no_cpus": 8000
+        }
+    },
+    {
+        "pk": 1,
+        "model": "karaage.account",
+        "fields": {
+            "disk_quota": null,
+            "machine_category": 1,
+            "person": 3,
+            "username": "kgtestuser3",
+            "default_project": 1,
+            "date_created": "2010-05-13",
+            "date_deleted": null
+        }
+    },
+    {
+        "pk": 503,
+        "model": "karaage.group",
+        "fields": {
+            "members": [
+                3
+            ],
+            "name": "testproject1",
+            "description": "Test."
+        }
+    },
+    {
+        "pk": 1,
+        "model": "karaage.project",
+        "fields": {
+            "end_date": null,
+            "group": 503,
+            "leaders": [
+                1
+            ],
+            "last_usage": null,
+            "start_date": "2010-05-13",
+            "is_approved": 1,
+            "name": "Test Project 1",
+            "approved_by": null,
+            "pid": "TestProject1",
+            "date_approved": null,
+            "additional_req": "",
+            "date_deleted": null,
+            "description": "",
+            "institute": 1,
+            "is_active": 1,
+            "deleted_by": null
+        }
+    },
+    {
+        "pk": 1,
+        "model": "karaage.institutequota",
+        "fields": {
+            "disk_quota": null,
+            "cap": null,
+            "machine_category": 1,
+            "quota": "0.00",
+            "institute": 1
+        }
+    },
+    {
+        "pk": 1,
+        "model": "karaage.projectquota",
+        "fields": {
+            "cap": null,
+            "machine_category": 1,
+            "project": 1
+        }
+    }
 ]
