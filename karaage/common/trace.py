@@ -11,7 +11,7 @@
 modules (possibly recursively).  A tracing decorator is provided for
 tracing function and method calls in your applications.
 
-from .decorators import *
+from decorators import *
 
 @trace
 def function(...):
