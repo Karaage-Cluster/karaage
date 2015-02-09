@@ -71,11 +71,11 @@ override_dh_install:
 
 override_dh_python3:
 	dh_python3
-	mkdir -p $(USAGE2)/usr/lib/python2.7/dist-packages/kgusage
+	mkdir -p $(USAGE2)/usr/lib/python2.7/dist-packages
 	mv \
 		$(PREFIX2)/usr/lib/python2.7/dist-packages/kgusage \
 		$(USAGE2)/usr/lib/python2.7/dist-packages/kgusage
-	mkdir -p $(USAGE3)/usr/lib/python3/dist-packages/kgusage
+	mkdir -p $(USAGE3)/usr/lib/python3/dist-packages
 	mv \
 		$(PREFIX3)/usr/lib/python3/dist-packages/kgusage \
 		$(USAGE3)/usr/lib/python3/dist-packages/kgusage
