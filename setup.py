@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-# Copyright 2012-2014 VPAC
-# Copyright 2014 The University of Melbourne
+# Copyright 2010, 2014-2015 VPAC
+# Copyright 2010, 2014 The University of Melbourne
 #
 # This file is part of Karaage.
 #

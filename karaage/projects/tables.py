@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright 2007-2014 VPAC
+# Copyright 2014-2015 VPAC
 #
 # This file is part of Karaage.
 #

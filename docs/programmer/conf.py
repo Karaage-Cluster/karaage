@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Copyright 2014-2015 VPAC
 #
 # Karaage documentation build configuration file, created by
 # sphinx-quickstart on Thu Jan 16 14:28:57 2014.

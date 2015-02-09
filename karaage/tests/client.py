@@ -1,4 +1,3 @@
-# Copyright 2014 VLSCI
 # Copyright 2015 VPAC
 #
 # This file is part of Karaage.

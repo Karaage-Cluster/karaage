@@ -9,6 +9,8 @@
 # Other Django settings are also possible, this list is not a comprehensive
 # list of all settings.
 
+# Copyright 2010-2011, 2014-2015 VPAC
+# Copyright 2010-2011 The University of Melbourne
 #
 # Django settings
 #

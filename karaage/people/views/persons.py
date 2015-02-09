@@ -1,4 +1,4 @@
-# Copyright 2007-2015 VPAC
+# Copyright 2008, 2010-2011, 2013-2015 VPAC
 #
 # This file is part of Karaage.
 #
