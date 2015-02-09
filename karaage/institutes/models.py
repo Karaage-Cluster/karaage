@@ -23,7 +23,7 @@ from audit_log.models.managers import AuditLog
 
 from karaage.common import log, is_admin
 from karaage.people.models import Person, Group
-from karaage.machines.models import Account, MachineCategory
+from karaage.machines.models import Account
 from karaage.institutes.managers import ActiveInstituteManager
 
 

@@ -5,7 +5,6 @@ from django import forms
 from karaage.allocations.models import (
     Allocation,
     AllocationPeriod,
-    AllocationPool,
     Grant,
 )
 from karaage.machines.models import ResourcePool

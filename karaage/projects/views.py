@@ -74,13 +74,14 @@ def profile_projects(request):
 @login_required
 def add_edit_project(request, project_id=None):
 
-    kwargs={}
+    kwargs = {}
 
     if project_id is None:
         project = None
         flag = 1
     else:
-        kwargs['instance'] = project = get_object_or_404(Project, pid=project_id)
+        kwargs['instance'] = project = \
+            get_object_or_404(Project, pid=project_id)
         kwargs['initial'] = {
             'leaders': list(project.leaders.values_list('pk', flat=True)),
         }

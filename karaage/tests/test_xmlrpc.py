@@ -32,7 +32,6 @@ except ImportError:
 from unittest import skip
 
 from django.test import TestCase
-from django.core.management import call_command
 
 from karaage.people.models import Person, Group
 from karaage.machines.models import Account
@@ -67,6 +66,7 @@ class XmlrpcTestCase(TestCase):
     fixtures = [
         'karaage_data.json',
     ]
+
     def get_server_proxy(self):
         return xmlrpclib.ServerProxy(
             'http://testserver/xmlrpc/',

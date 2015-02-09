@@ -32,7 +32,7 @@ from model_utils import FieldTracker
 
 from karaage.common.constants import TITLES, COUNTRIES
 from karaage.common import new_random_token, get_current_person, is_admin, log
-from karaage.people.models import Person, ProjectMembership
+from karaage.people.models import Person
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory, Account
 
@@ -48,8 +48,9 @@ class ApplicationManager(models.Manager):
 
     def requires_attention(self, request):
         person = request.user
+        leaders = person.projectmembership_set.filter(is_project_leader=True)
         query = Q(
-            projectapplication__project__projectmembership__in=person.projectmembership_set.filter(is_project_leader=True),
+            projectapplication__project__projectmembership__in=leaders,
             state=ProjectApplication.WAITING_FOR_LEADER)
         query = query | Q(
             projectapplication__institute__in=person.delegate_for.all(),
@@ -225,7 +226,8 @@ class ProjectApplication(Application):
     # new project request
     name = models.CharField('Title', max_length=200)
     institute = models.ForeignKey(
-        'karaage.Institute', limit_choices_to={'is_active': True}, null=True, blank=True)
+        'karaage.Institute', limit_choices_to={'is_active': True},
+        null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
     machine_categories = models.ManyToManyField(

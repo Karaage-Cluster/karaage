@@ -26,8 +26,7 @@ from model_utils import FieldTracker
 from audit_log.models.managers import AuditLog
 
 from karaage.people.models import Person, Group
-from karaage.institutes.models import Institute
-from karaage.machines.models import MachineCategory, Account
+from karaage.machines.models import Account
 from karaage.projects.managers import ActiveProjectManager
 from karaage.projects.managers import DeletedProjectManager
 from karaage.common import log, is_admin
@@ -88,7 +87,8 @@ class Project(MPTTModel):
     deleted = DeletedProjectManager()
 
     # MPTT fields
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+    parent = TreeForeignKey(
+        'self', null=True, blank=True, related_name='children')
     lft = models.PositiveIntegerField(db_index=True, editable=False)
     rght = models.PositiveIntegerField(db_index=True, editable=False)
     tree_id = models.PositiveIntegerField(db_index=True, editable=False)
@@ -104,7 +104,7 @@ class Project(MPTTModel):
         app_label = 'karaage'
 
     class MPTTMeta:
-         order_insertion_by = ['pid']
+        order_insertion_by = ['pid']
 
     def __str__(self):
         return '%s - %s' % (self.pid, self.name)
@@ -120,8 +120,8 @@ class Project(MPTTModel):
         """
         Add/update project members with desired attributes.
 
-        Ensure all people have membership in the proejct, and that the specified
-        attributes are set as supplied.
+        Ensure all people have membership in the proejct, and that the
+        specified attributes are set as supplied.
         """
         from karaage.people.models import ProjectMembership
         for person in people:
@@ -157,9 +157,8 @@ class Project(MPTTModel):
                 'saved': False,
             }
             if self.group_id is None:
-                name = self.pid
                 def pre_save(group, obj, _state=state):
-                    obj.group_id=group.pk
+                    obj.group_id = group.pk
                     _state['saved'] = True
                 self.group, _ = Group.objects.get_or_create_unique(
                     parent=self, name=self.pid,

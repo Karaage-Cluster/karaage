@@ -4,9 +4,8 @@ from django.shortcuts import (
     redirect,
 )
 
-from karaage.common.decorators import admin_required, login_required
+from karaage.common.decorators import admin_required
 
-from karaage.allocations.models import AllocationPool
 from karaage.machines.models import (
     Resource,
     ResourcePool,
@@ -118,7 +117,7 @@ def delete_resource_pool(request, resource_pool_id):
     for child in record.resource_set.all():
         errors.append(
             'Resource "%s" depends on this resource pool.' % child
-        
+
         )
     for child in record.allocationpool_set.all():
         errors.append(
@@ -138,4 +137,3 @@ def delete_resource_pool(request, resource_pool_id):
             'errors': errors,
         },
     )
-

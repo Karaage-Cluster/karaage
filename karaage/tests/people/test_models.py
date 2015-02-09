@@ -52,7 +52,7 @@ class PersonTestCase(TestCase):
         # Max length
         person = PersonFactory(
             username="a" * 255,
-            career_level_id = 1,
+            career_level_id=1,
         )
         person.full_clean()
 

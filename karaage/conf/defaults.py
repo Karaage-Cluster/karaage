@@ -21,9 +21,7 @@
 from importlib import import_module
 import os
 from socket import getfqdn
-import sys
 
-import django
 import six
 
 TRUE_STRINGS = [
@@ -34,6 +32,7 @@ TRUE_STRINGS = [
     'true',
     't',
 ]
+
 
 def env_is_true(name, default):
     return os.environ.get(name, default).strip().lower() in TRUE_STRINGS

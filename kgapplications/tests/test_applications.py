@@ -136,18 +136,18 @@ class UserApplicationTestCase(TestCase):
             ProjectApplication.WAITING_FOR_LEADER)
         msgs = [str(msg.message()) for msg in mail.outbox]
         self.assertEqual(
-            len(mail.outbox), 1, # XXX: should be 2 - missing request email!
+            len(mail.outbox), 1,  # XXX: should be 2 - missing request email!
             msgs,
         )
-        False and self.assertTrue( #XXX: missing request email here too...
+        False and self.assertTrue(  # XXX: missing request email here too...
             mail.outbox[-1].subject.startswith('TestOrg request'),
             msgs,
         )
-        False and self.assertEqual( #XXX: missing request email here too...
+        False and self.assertEqual(  # XXX: missing request email here too...
             mail.outbox[-1].from_email, settings.ACCOUNTS_EMAIL,
             msgs,
         )
-        False and self.assertEqual( #XXX: missing request email here too...
+        False and self.assertEqual(  # XXX: missing request email here too...
             mail.outbox[-1].to[0], 'leader@example.com',
             msgs,
         )

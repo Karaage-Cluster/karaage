@@ -54,8 +54,8 @@ class Person(AbstractBaseUser):
     )
     career_level = models.ForeignKey(
         'karaage.CareerLevel',
-        blank=False, # don't allow saving without filling this in...
-        null=True, # ...but do allow legacy records in DB to be NULL
+        blank=False,  # don't allow saving without filling this in...
+        null=True,  # ...but do allow legacy records in DB to be NULL
     )
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(null=True, db_index=True)
@@ -106,8 +106,8 @@ class Person(AbstractBaseUser):
 
     _tracker = FieldTracker()
 
-    #XXX: do we need to have AuditLog enabled for users?
-    #audit_log = AuditLog()
+    # XXX: do we need to have AuditLog enabled for users?
+    # audit_log = AuditLog()
 
     def __init__(self, *args, **kwargs):
         super(Person, self).__init__(*args, **kwargs)
@@ -436,8 +436,8 @@ class ProjectMembership(models.Model):
     project = models.ForeignKey('karaage.Project')
     project_level = models.ForeignKey(
         'karaage.ProjectLevel',
-        blank=False, # don't allow saving without filling this in...
-        null=True, # ...but do allow legacy records in DB to be NULL
+        blank=False,  # don't allow saving without filling this in...
+        null=True,  # ...but do allow legacy records in DB to be NULL
     )
     is_project_supervisor = models.BooleanField(default=False)
     is_project_leader = models.BooleanField(default=False)
@@ -500,6 +500,7 @@ models.signals.pre_save.connect(
     sender=ProjectMembership,
 )
 
+
 def _project_membership_changed(sender, instance, *args, **kwargs):
     """Synchronise group membership when project membership changes."""
     project = instance.project
@@ -522,7 +523,7 @@ def _person_removed_from_project(sender, instance, *args, **kwargs):
     This excecutes when a person is removed from a project.
     """
 
-    existing_data = ProjectMembership.objects.get(pk=instance.pk)
+    # existing_data = ProjectMembership.objects.get(pk=instance.pk)
     project = instance.project
 
     # Log a person being removed from a project
@@ -553,8 +554,11 @@ class GroupManager(models.Manager):
 
     """Custom manager for Group model."""
 
-    def get_or_create_unique(self, parent, name, defaults, save_parent=True, pre_parent_save=None):
-        """Get or create a group by parent while ensuring uniqueness of name."""
+    def get_or_create_unique(
+            self, parent, name, defaults,
+            save_parent=True, pre_parent_save=None):
+        """Get or create a group by parent while ensuring uniqueness of
+        name."""
         if 'name' in defaults:
             raise ValueError(
                 "'name' provided in 'defaults', use 'name' argument instead.",
@@ -596,9 +600,9 @@ class Group(models.Model):
 
     Groups here are replicated to clusters as posix groups (/etc/groups) with
     their associated members.  Groups should relate to a parent which provides
-    the motivation for having the group, for example members of a project should
-    be members of the group associated with the project - the parent generic
-    foreign key in this instance would refer to the project.
+    the motivation for having the group, for example members of a project
+    should be members of the group associated with the project - the parent
+    generic foreign key in this instance would refer to the project.
 
     The parent relationship also helps to avoid shadow namespacing issues where
     things like project PIDs and institute names are the same (think "RMIT").
@@ -707,12 +711,14 @@ class Group(models.Model):
         # people to be added
         add_member_ids = new_member_ids.difference(old_member_ids)
         if add_member_ids:
-            self.members.add(*[person_id for person_id in add_member_ids])
+            self.members.add(
+                *[tmp_person_id for tmp_person_id in add_member_ids])
 
         # people to be removed
         del_member_ids = old_member_ids.difference(new_member_ids)
         if del_member_ids:
-            self.members.remove(*[person_id for person_id in del_member_ids])
+            self.members.remove(
+                *[tmp_person_id for tmp_person_id in del_member_ids])
     sync_members.alters_data = True
 
     def add_person(self, person):

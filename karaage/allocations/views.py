@@ -1,4 +1,20 @@
-from django.http import HttpResponse
+# Copyright 2014 The University of Melbourne
+#
+# This file is part of Karaage.
+#
+# Karaage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Karaage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Karaage  If not, see <http://www.gnu.org/licenses/>.
+
 from django.shortcuts import (
     get_object_or_404,
     render,
@@ -17,7 +33,7 @@ from karaage.allocations.forms import (
     SchemeForm,
 )
 from karaage.common.models import Usage
-from karaage.common.decorators import admin_required, login_required
+from karaage.common.decorators import admin_required
 from karaage.projects.models import Project
 
 
@@ -113,7 +129,6 @@ def delete_allocation(request, project_id, allocation_id):
             'record_type': 'allocation',
         },
     )
-
 
 
 @admin_required

@@ -31,7 +31,6 @@ from alogger import get_parser
 import alogger.tests.examples
 
 from django.test import TestCase
-from django.core.management import call_command
 
 from karaage.tests.test_xmlrpc import DjangoTestClientTransport
 from karaage.people.models import Person
@@ -44,6 +43,7 @@ class XmlrpcTestCase(TestCase):
     fixtures = [
         'karaage_data.json',
     ]
+
     def setUp(self):
         super(XmlrpcTestCase, self).setUp()
         self.client.logout()

@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from karaage.conf.defaults import *
+from karaage.conf.defaults import *  # NOQA
 
 
 class InvalidString(str):
@@ -24,7 +24,7 @@ class InvalidString(str):
         raise TemplateSyntaxError(
             "Undefined variable or unknown value for: \"%s\"" % other)
 
-#TEMPLATE_STRING_IF_INVALID = InvalidString("%s")
+TEMPLATE_STRING_IF_INVALID = InvalidString("%s")
 
 DEBUG = True
 PIPELINE_ENABLED = False

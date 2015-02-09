@@ -30,10 +30,9 @@ def skip_if_missing_requirements(*requirements):
     try:
         pkg_resources.require(*requirements)
         msg = ''
-    except pkg_resources.DistributionNotFound as err:
+    except pkg_resources.DistributionNotFound:
         msg = 'Missing one or more requirements (%s)' % '|'.join(requirements)
-    return skipUnless(msg=='', msg)
-
+    return skipUnless(msg == '', msg)
 
 
 class IntegrationTestCase(TestCase):

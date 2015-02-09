@@ -3,6 +3,7 @@ from django.db import models
 from audit_log.models.managers import AuditLog
 from django.utils.functional import cached_property
 
+
 class Grant(models.Model):
     project = models.ForeignKey('karaage.Project')
     scheme = models.ForeignKey('karaage.Scheme')
@@ -31,9 +32,9 @@ class AllocationPoolQuerySet(models.QuerySet):
             allocated=models.Sum('allocation__quantity'),
             used=models.Sum('usage__used'),
             raw_used=models.Sum('usage__raw_used'),
-            # TODO: used_percent= \
+            # TODO: used_percent=
             # 100 * Sum('allocation__quantity')) / Sum('usage__used')
-            # TODO: remaining= \
+            # TODO: remaining=
             # Sum('allocation__quantity')) - Sum('usage__used')
         )
 
@@ -44,10 +45,11 @@ class AllocationPool(models.Model):
     Grouping of resources allocated to a grant (project).
 
     AllocationMode='capped' is not supported yet, until a demonstratted need is
-    shown (and optionally that we can use an array of foreign key to relate from
-    Usage to AllocationPool to avoid the M2M join table).
+    shown (and optionally that we can use an array of foreign key to relate
+    from Usage to AllocationPool to avoid the M2M join table).
 
-    TODO: User documentation of the allocation behaviour with concrete examples.
+    TODO: User documentation of the allocation behaviour with concrete
+    examples.
     """
 
     project = models.ForeignKey('karaage.Project')
@@ -56,18 +58,23 @@ class AllocationPool(models.Model):
 
     @cached_property
     def allocated(self):
-        return self.allocation_set.aggregate(a=models.Sum('quantity'))['a'] or 0.0
+        return self.allocation_set.aggregate(
+            a=models.Sum('quantity'))['a'] or 0.0
+
     @cached_property
     def used(self):
         return self.usage_set.aggregate(u=models.Sum('used'))['u'] or 0.0
+
     @cached_property
     def raw_used(self):
         return self.usage_set.aggregate(r=models.Sum('raw_used'))['r'] or 0.0
+
     @cached_property
     def used_percent(self):
         if self.allocated == 0.0:
             return None
         return 100.0 * self.used / self.allocated
+
     @cached_property
     def remaining(self):
         return self.allocated - self.used

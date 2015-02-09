@@ -29,7 +29,7 @@ def registered_karaage_apps():
         try:
             entry_point.load()
         except (ImportError, pkg_resources.DistributionNotFound):
-            continue # dependencies for the entry point not satisfied
+            continue  # dependencies for the entry point not satisfied
         apps.append(entry_point.name)
     return apps
 
