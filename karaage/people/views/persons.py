@@ -1,4 +1,5 @@
-# Copyright 2007-2014 VPAC
+# Copyright 2008, 2010-2011, 2013-2014 VPAC
+# Copyright 2014 The University of Melbourne
 #
 # This file is part of Karaage.
 #
@@ -22,7 +23,8 @@ import django_tables2 as tables
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponseForbidden, \
+    HttpResponseBadRequest
 from django.http import QueryDict
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -207,7 +209,10 @@ def user_verbose(request, username):
 
 @admin_required
 def activate(request, username):
-    person = get_object_or_404(Person, username=username, is_active=False)
+    person = get_object_or_404(Person, username=username)
+
+    if person.is_active:
+        return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
     if request.method == 'POST':
         approved_by = request.user
