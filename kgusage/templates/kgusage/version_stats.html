@@ -47,7 +47,7 @@
                     <tr>
                         <td><a href="{% url 'kg_person_detail' person.username %}">{{ person }}</a></td>
                         <td><a href="{% url 'kg_institute_detail' person.institute.pk %}">{{ person.institute }}</a></td>
-                        <td class="right">{{ person.cpu_usage|timeformat }}</td>
+                        <td class="right">{{ person.usage|timeformat }}</td>
                         <td class="right">{{ person.jobs|intcomma }}</td>
                     </tr>
                     {% endfor %}

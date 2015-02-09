@@ -1,6 +1,5 @@
-# Copyright 2007-2014 VPAC
-#
 # This file is part of Karaage.
+# Copyright 2015 VPAC
 #
 # Karaage is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,34 +15,76 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import six
+import datetime
 
 import django_tables2 as tables
-import datetime
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.db.models import Count, Sum
 from django.template.defaultfilters import wordwrap
+from django.apps import apps
 
 from karaage.common.decorators import admin_required, login_required
 from karaage.people.models import Person
-from karaage.institutes.models import Institute
-from karaage.common import get_date_range, log
+from karaage.common import log
 import karaage.common as util
 
-from kgapplications.tables import ApplicationTable
+from .models import SoftwareCategory, Software, SoftwareVersion
+from .models import SoftwareLicense, SoftwareLicenseAgreement
+from .forms import AddPackageForm, LicenseForm
+from .forms import SoftwareVersionForm
+from .tables import SoftwareFilter, SoftwareTable
 
-from ..models import SoftwareCategory, Software, SoftwareVersion
-from ..models import SoftwareLicense, SoftwareLicenseAgreement
-from ..models import SoftwareApplication
-from ..forms import AddPackageForm, LicenseForm
-from ..forms import SoftwareVersionForm
-from ..tables import SoftwareFilter, SoftwareTable
 
-from .applications import new_application
+if apps.is_installed("kgsoftware.applications"):
+    from kgapplications.tables import ApplicationTable
+    from .applications.views import new_application
+    from .applications.models import SoftwareApplication
+
+    def is_application_pending(person, software_license):
+            query = SoftwareApplication.objects.get_for_applicant(person)
+            query = query.filter(software_license=software_license)
+            if query.count() > 0:
+                return True
+
+    def get_applications(software_license):
+        applications = SoftwareApplication.objects.filter(
+            software_license__software=software_license)
+        applications = applications.exclude(state='C')
+        return applications
+
+    def get_applications_for_person(person, software_license):
+        applications = SoftwareApplication.objects.get_for_applicant(person)
+        applications = applications.filter(software_license=software_license)
+        return applications
+
+    def get_application_table(request, applications):
+        applications_table = ApplicationTable(applications)
+        config = tables.RequestConfig(request, paginate={"per_page": 5})
+        config.configure(applications_table)
+        return applications_table
+
+else:
+    from django.http import HttpResponseBadRequest
+
+    def is_application_pending(person, software_license):
+        return False
+
+    def get_applications(software_license):
+        return []
+
+    def get_applications_for_person(person, software_license):
+        return []
+
+    def get_application_table(request, applications):
+        return None
+
+    @login_required
+    def new_application(request, software_license):
+        return HttpResponseBadRequest("<h1>Restricted Software denied.</h1>")
 
 
 @login_required
@@ -100,10 +141,7 @@ def _software_list_non_admin(request):
             data['accepted_date'] = la.date
 
         software_license = software.get_current_license()
-        query = SoftwareApplication.objects.get_for_applicant(person)
-        query = query.filter(software_license=software_license)
-        if query.count() > 0:
-            data['pending'] = True
+        data['pending'] = is_application_pending(person, software_license)
         software_list.append(data)
 
     return render_to_response(
@@ -125,16 +163,9 @@ def software_detail(request, software_id):
 
     # we only list applications for current software license
 
-    applications = SoftwareApplication.objects.filter(
-        software_license__software=software_license)
-    applications = applications.exclude(state='C')
-    applications_table = ApplicationTable(applications)
-    config = tables.RequestConfig(request, paginate={"per_page": 5})
-    config.configure(applications_table)
-
-    open_applications = SoftwareApplication.objects.get_for_applicant(person)
-    open_applications = open_applications.filter(
-        software_license=software_license)
+    applications = get_applications(software_license)
+    application_table = get_application_table(request, applications)
+    open_applications = get_applications_for_person(person, software_license)
 
     if agreement is None and software_license is not None \
             and len(open_applications) == 0 and request.method == 'POST':
@@ -359,85 +390,14 @@ def remove_member(request, software_id, person_id):
         context_instance=RequestContext(request))
 
 
-@admin_required
-def software_stats(request, software_id):
-    software = get_object_or_404(Software, pk=software_id)
-    start, end = get_date_range(request)
-    querystring = request.META.get('QUERY_STRING', '')
-    if software.softwareversion_set.count() == 1:
-        sv = software.softwareversion_set.all()[0]
-        url = reverse('kg_software_version_stats', args=[sv.id])
-        return HttpResponseRedirect(url)
-    version_stats = SoftwareVersion.objects \
-        .filter(software=software, cpujob__date__range=(start, end)) \
-        .annotate(jobs=Count('cpujob'), cpu_usage=Sum('cpujob__cpu_usage')) \
-        .filter(cpu_usage__isnull=False)
-    version_totaljobs = version_stats.aggregate(Sum('jobs'))['jobs__sum']
-    # version_totalusage = version_stats.aggregate(Sum('usage'))
-    person_stats = Person.objects \
-        .filter(account__cpujob__software__software=software,
-                account__cpujob__date__range=(start, end)) \
-        .annotate(jobs=Count('account__cpujob'),
-                  usage=Sum('account__cpujob__cpu_usage'))
-    institute_stats = Institute.objects \
-        .filter(person__account__cpujob__software__software=software,
-                person__account__cpujob__date__range=(start, end)) \
-        .annotate(jobs=Count('person__account__cpujob'),
-                  usage=Sum('person__account__cpujob__cpu_usage'))
-
-    context = {
-        'software': software,
-        'version_stats': version_stats,
-        'version_totaljobs': version_totaljobs,
-        'person_stats': person_stats,
-        'institute_stats': institute_stats,
-        'start': start,
-        'end': end,
-        'querystring': querystring,
-    }
-    return render_to_response(
-        'kgsoftware/software_stats.html',
-        context,
-        context_instance=RequestContext(request))
-
-
-@admin_required
-def version_stats(request, version_id):
-    version = get_object_or_404(SoftwareVersion, pk=version_id)
-    start, end = get_date_range(request)
-    querystring = request.META.get('QUERY_STRING', '')
-
-    person_stats = Person.objects \
-        .filter(account__cpujob__software=version,
-                account__cpujob__date__range=(start, end)) \
-        .annotate(jobs=Count('account__cpujob'),
-                  cpu_usage=Sum('account__cpujob__cpu_usage'))
-    institute_stats = Institute.objects \
-        .filter(person__account__cpujob__software=version,
-                person__account__cpujob__date__range=(start, end)) \
-        .annotate(jobs=Count('person__account__cpujob'),
-                  cpu_usage=Sum('person__account__cpujob__cpu_usage'))
-
-    context = {
-        'version': version,
-        'person_stats': person_stats,
-        'institute_stats': institute_stats,
-        'start': start,
-        'end': end,
-        'querystring': querystring,
-    }
-
-    return render_to_response(
-        'kgsoftware/version_stats.html',
-        context,
-        context_instance=RequestContext(request))
-
-
 @login_required
 def license_txt(request, software_id):
 
     software = get_object_or_404(Software, pk=software_id)
     software_license = software.get_current_license()
+
+    if software_license is None:
+        raise Http404('No license found for software')
 
     return HttpResponse(
         wordwrap(software_license.text, 80),

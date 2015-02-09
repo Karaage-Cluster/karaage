@@ -1,4 +1,4 @@
-# Copyright 2007-2014 VPAC
+# Copyright 2014 VPAC
 #
 # This file is part of Karaage.
 #
@@ -49,6 +49,11 @@ urlpatterns = patterns(
 
     url(r'^(?P<machine_category_id>\d+)/top_users/$',
         'top_users', name='kg_usage_top_users'),
+
+    url(r'^software/(?P<software_id>\d+)/stats/$',
+        'software_stats', name='kg_software_stats'),
+    url(r'^software_version/(?P<version_id>\d+)/stats/$',
+        'version_stats', name='kg_software_version_stats'),
 )
 
 urlpatterns = patterns(

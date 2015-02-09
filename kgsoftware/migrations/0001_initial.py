@@ -7,7 +7,6 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kgapplications', '0001_initial'),
         ('karaage', '0001_initial'),
     ]
 
@@ -28,16 +27,6 @@ class Migration(migrations.Migration):
                 'db_table': 'software',
             },
             bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='SoftwareApplication',
-            fields=[
-                ('application_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='kgapplications.Application')),
-            ],
-            options={
-                'db_table': 'applications_softwareapplication',
-            },
-            bases=('kgapplications.application',),
         ),
         migrations.CreateModel(
             name='SoftwareCategory',
@@ -96,12 +85,6 @@ class Migration(migrations.Migration):
                 'db_table': 'software_version',
             },
             bases=(models.Model,),
-        ),
-        migrations.AddField(
-            model_name='softwareapplication',
-            name='software_license',
-            field=models.ForeignKey(to='kgsoftware.SoftwareLicense'),
-            preserve_default=True,
         ),
         migrations.AddField(
             model_name='software',

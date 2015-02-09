@@ -1,4 +1,4 @@
-# Copyright 2007-2014 VPAC
+# Copyright 2013-2014 VPAC
 #
 # This file is part of Karaage.
 #
@@ -104,9 +104,8 @@ def delete_group(request, group_name):
     group = get_object_or_404(Group, name=group_name)
 
     error = None
-    if hasattr(group, 'software_set') and group.software_set.all().count() > 0:
-        error = "A software software is using this group."
-    elif group.institute_set.all().count() > 0:
+
+    if group.institute_set.all().count() > 0:
         error = "An institute is using this group."
     elif group.project_set.all().count() > 0:
         error = "A project is using this group."

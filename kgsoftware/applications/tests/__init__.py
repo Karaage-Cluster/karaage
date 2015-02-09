@@ -1,6 +1,5 @@
-# Copyright 2014 VPAC
-#
 # This file is part of Karaage.
+# Copyright 2015 VPAC
 #
 # Karaage is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,9 +13,3 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
-
-from karaage.plugins import BasePlugin
-
-
-class plugin(BasePlugin):
-    name = "kgsoftware"

@@ -1,4 +1,4 @@
-# Copyright 2007-2014 VPAC
+# Copyright 2014 VPAC
 #
 # This file is part of Karaage.
 #
@@ -17,11 +17,8 @@
 
 from django.conf.urls import patterns, url, include
 
-from .views.applications import register as register_software
-register_software()
-
 urlpatterns = patterns(
-    'kgsoftware.views.software',
+    'kgsoftware.views',
     url(r'^$', 'software_list', name='kg_software_list'),
     url(r'^add/$', 'add_package', name='kg_software_add'),
 
@@ -37,8 +34,6 @@ urlpatterns = patterns(
         'software_edit', name='kg_software_edit'),
     url(r'^(?P<software_id>\d+)/delete/$',
         'software_delete', name='kg_software_delete'),
-    url(r'^(?P<software_id>\d+)/stats/$',
-        'software_stats', name='kg_software_stats'),
     url(r'^(?P<software_id>\d+)/logs/$',
         'software_logs', name='kg_software_logs'),
     url(r'^(?P<software_id>\d+)/add_comment/$',
@@ -52,8 +47,6 @@ urlpatterns = patterns(
 
     url(r'^version/(?P<version_id>\d+)/edit/$',
         'edit_version', name='kg_software_version_edit'),
-    url(r'^version/(?P<version_id>\d+)/stats/$',
-        'version_stats', name='kg_software_version_stats'),
     url(r'^version/(?P<version_id>\d+)/delete/$',
         'delete_version', name='kg_software_version_delete'),
 
@@ -74,6 +67,6 @@ urlpatterns = patterns(
 )
 
 profile_urlpatterns = patterns(
-    'kgsoftware.views.software',
+    'kgsoftware.views',
     url(r'^software/$', 'profile_software', name='kg_profile_software'),
 )

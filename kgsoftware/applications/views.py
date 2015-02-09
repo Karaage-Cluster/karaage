@@ -1,6 +1,5 @@
-# Copyright 2007-2014 VPAC
-#
 # This file is part of Karaage.
+# Copyright 2015 VPAC
 #
 # Karaage is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,8 +25,8 @@ from karaage.people.models import Person
 
 from kgapplications.views import base, states
 
-from ..forms import ApproveSoftwareForm
-from ..models import SoftwareApplication
+from .forms import ApproveSoftwareForm
+from .models import SoftwareApplication
 
 
 class StateIntroduction(base.State):

@@ -40,7 +40,7 @@
                 <li><a href="{% url 'kg_software_add_version' software.id %}" class="addlink">Add Version</a></li>
                 <li><a href="{% url 'kg_software_add_license' software.id %}" class="addlink">Add License</a></li>
                 <li><a href="{% url 'kg_software_logs' software.id %}">Logs</a></li>
-                <li><a href="{% url 'kg_software_stats' software.id %}">Statistics</a></li>
+                {% for_each_app_include "software_detail_tools.html" %}
             </ul>
         </div>
         {% endif %}
