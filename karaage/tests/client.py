@@ -38,7 +38,7 @@ urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
 def make_test_get_function(name, url, url_pattern):
     def test_get(self):
         self.assertEqual(
-            self.client.login(username='kgsuper', password='aq12ws'),
+            self.client.login(username='1', password='password'),
             True,
             'Login failed.',
         )
