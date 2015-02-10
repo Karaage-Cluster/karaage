@@ -92,11 +92,12 @@ setup(
     ],
     data_files=[
         ('/etc/karaage3',
-            ['conf/settings.py', 'conf/karaage.wsgi', ]),
+            ['conf/settings.py', 'conf/karaage.wsgi']),
         ('/etc/apache2/conf-available',
-            ['conf/karaage3-wsgi.conf', ]),
+            ['conf/karaage3-wsgi.conf']),
     ],
     install_requires=[
+        "cssmin",
         "Django >= 1.7",
         "python-alogger >= 2.0",
         "django-xmlrpc >= 0.1",
@@ -109,6 +110,7 @@ setup(
         "django-tables2",
         "django-filter",
         "six",
+        "slimit>=0.8.1",
     ],
     tests_require=tests_require,
     extras_require={

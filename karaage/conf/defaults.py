@@ -222,7 +222,7 @@ ALLOWED_HOSTS = ["%(HOST)s"]
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 PIPELINE_EMBED_PATH = r'img/|images/'
-PIPELINE_CSS_COMPRESSOR = None
+PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.csstidy.CSSTidyCompressor'
 PIPELINE_CSS = {
     'karaage': {
         'source_filenames': (
@@ -233,7 +233,7 @@ PIPELINE_CSS = {
         'variant': 'datauri',
     },
 }
-PIPELINE_JS_COMPRESSOR = None
+PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.slimit.SlimItCompressor'
 PIPELINE_JS = {
     'karaage': {
         'source_filenames': (
@@ -245,6 +245,7 @@ PIPELINE_JS = {
         'output_filename': 'min.js',
     }
 }
+
 
 ###
 # AJAX SETTINGS
