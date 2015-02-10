@@ -23,7 +23,7 @@ from pkg_resources import get_distribution, DistributionNotFound
 default_app_config = 'karaage.apps.Karaage'
 
 try:
-    _dist = get_distribution('karaage')
+    _dist = get_distribution('karaage4')
     if not __file__.startswith(os.path.join(_dist.location, 'karaage', '')):
         # not installed, but there is another version that *is*
         raise DistributionNotFound
