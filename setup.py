@@ -65,14 +65,10 @@ setup(
         'sbin/kg-migrate-south',
     ],
     data_files=[
-        (
-            '/etc/karaage3',
-            ['conf/settings.py', 'conf/karaage.wsgi'],
-        ),
-        (
-            '/etc/apache2/conf-available',
-            ['conf/karaage3-wsgi.conf'],
-        ),
+        ('/etc/karaage3',
+            ['conf/settings.py', 'conf/karaage.wsgi']),
+        ('/etc/apache2/conf-available',
+            ['conf/karaage3-wsgi.conf']),
     ],
     install_requires=[
         "cssmin",
