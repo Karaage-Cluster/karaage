@@ -860,12 +860,12 @@ def version_stats(request, version_id):
         .filter(account__cpujob__software=version,
                 account__cpujob__date__range=(start, end)) \
         .annotate(jobs=Count('account__cpujob'),
-                  usage=Sum('account__cpujob__cpu_usage'))
+                  p_usage=Sum('account__cpujob__cpu_usage'))
     institute_stats = Institute.objects \
         .filter(person__account__cpujob__software=version,
                 person__account__cpujob__date__range=(start, end)) \
         .annotate(jobs=Count('person__account__cpujob'),
-                  usage=Sum('person__account__cpujob__cpu_usage'))
+                  i_usage=Sum('person__account__cpujob__cpu_usage'))
 
     context = {
         'version': version,
