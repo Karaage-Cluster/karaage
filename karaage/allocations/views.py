@@ -41,6 +41,8 @@ from karaage.projects.models import Project
 @admin_required
 def allocation_period_add(request, project_id):
 
+    project = Project.objects.get(pk=project_id)
+
     if request.method == "POST":
         form = AllocationPeriodForm(request.POST)
         if form.is_valid():
@@ -53,7 +55,7 @@ def allocation_period_add(request, project_id):
         request,
         'karaage/allocations/allocation_add_edit_template.html',
         {
-            'pid': project_id,
+            'project': project,
             'form': form,
             'title': 'Add allocation period',
         },
@@ -105,7 +107,7 @@ def add_edit_allocation(request, project_id, allocation_id=None):
         {
             'mode': mode,
             'record_type': 'allocation',
-            'pid': project_id,
+            'project': project,
             'record_id': allocation_id,
             'form': form,
             'title': title,
@@ -116,6 +118,7 @@ def add_edit_allocation(request, project_id, allocation_id=None):
 @admin_required
 def delete_allocation(request, project_id, allocation_id):
 
+    project = Project.objects.get(pk=project_id)
     record = get_object_or_404(Allocation, pk=allocation_id)
 
     if request.method == 'POST':
@@ -126,6 +129,7 @@ def delete_allocation(request, project_id, allocation_id):
         request,
         'karaage/allocations/allocation_confirm_delete_template.html',
         {
+            'project': project,
             'record': record,
             'record_type': 'allocation',
         },
@@ -167,7 +171,7 @@ def add_edit_grant(request, project_id, grant_id=None):
         {
             'mode': mode,
             'record_type': 'grant',
-            'pid': project_id,
+            'project': project,
             'record_id': grant_id,
             'form': form,
             'title': title,
@@ -177,6 +181,8 @@ def add_edit_grant(request, project_id, grant_id=None):
 
 @admin_required
 def delete_grant(request, project_id, grant_id):
+
+    project = Project.objects.get(pk=project_id)
 
     record = get_object_or_404(Grant, pk=grant_id)
     record_type = 'grant'
@@ -197,6 +203,7 @@ def delete_grant(request, project_id, grant_id):
         request,
         'karaage/allocations/allocation_confirm_delete_template.html',
         {
+            'project': project,
             'record': record,
             'record_type': record_type,
             'errors': errors,
@@ -206,6 +213,8 @@ def delete_grant(request, project_id, grant_id):
 
 @admin_required
 def scheme_add(request, project_id):
+
+    project = Project.objects.get(pk=project_id)
 
     if request.method == "POST":
         form = SchemeForm(request.POST)
@@ -219,7 +228,7 @@ def scheme_add(request, project_id):
         request,
         'karaage/allocations/allocation_add_edit_template.html',
         {
-            'pid': project_id,
+            'project': project,
             'form': form,
             'title': 'Add scheme',
         },

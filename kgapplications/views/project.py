@@ -824,7 +824,7 @@ def send_invitation(request, project_id=None):
 
     project = None
     if project_id is not None:
-        project = get_object_or_404(Project, pid=project_id)
+        project = get_object_or_404(Project, id=project_id)
 
     if project is None:
 

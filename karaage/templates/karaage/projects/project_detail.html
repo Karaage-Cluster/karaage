@@ -49,7 +49,7 @@
                         <li>
                             <a href="{{ l.get_absolute_url }}">{{ l }}</a><br/>
                             {% if l != request.user and can_edit %}
-                            <a href="{% url 'kg_revoke_leader' project.pid l.username %}" class="deletelink">Revoke</a>
+                            <a href="{% url 'kg_revoke_leader' project.id l.username %}" class="deletelink">Revoke</a>
                             {% endif %}
                         </li>
                         {% endfor %}
@@ -95,13 +95,13 @@
         <div class="object-tools">
             <ul>
                 {% if is_admin %}
-                    <li><a href="{% url 'kg_project_logs' project.pid %}">View logs</a></li>
-                    <li><a href="{% url 'kg_project_verbose' project.pid %}">Verbose</a></li>
-                    <li><a href="{% url 'kg_project_edit' project.pid %}" class="changelink">Edit</a></li>
-                    {% if project.is_active %}<li><a href="{% url 'kg_project_delete' project.pid %}" class="deletelink">Delete project</a></li>{% endif %}
+                    <li><a href="{% url 'kg_project_logs' project.id %}">View logs</a></li>
+                    <li><a href="{% url 'kg_project_verbose' project.id %}">Verbose</a></li>
+                    <li><a href="{% url 'kg_project_edit' project.id %}" class="changelink">Edit</a></li>
+                    {% if project.is_active %}<li><a href="{% url 'kg_project_delete' project.id %}" class="deletelink">Delete project</a></li>{% endif %}
                 {% else %}
                     {% if can_edit %}
-                        <li><a href="{% url 'kg_project_edit' project.pid %}" class="changelink">Edit</a></li>
+                        <li><a href="{% url 'kg_project_edit' project.id %}" class="changelink">Edit</a></li>
                     {% endif %}
                 {% endif %}
                 {% for_each_app_include "project_detail_tools.html" %}
@@ -139,7 +139,7 @@
         {% endif %}
         <div class="object-tools">
             <ul>
-                <li><a href="{% url 'kg_projectquota_add' project.pid %}" class="addlink">Add</a></li>
+                <li><a href="{% url 'kg_projectquota_add' project.id %}" class="addlink">Add</a></li>
             </ul>
         </div>
     </div>
@@ -193,9 +193,9 @@
                     {% endif %}
                     {% if can_edit %}
                     <td>
-                        <a href="{% url 'kg_remove_project_member' project.pid person.username %}" class="deletelink">Remove</a>
+                        <a href="{% url 'kg_remove_project_member' project.id person.username %}" class="deletelink">Remove</a>
                         {% if person not in project.leaders.all %}
-                        <a href="{% url 'kg_grant_leader' project.pid person.username %}" class="addlink">Grant leader</a>
+                        <a href="{% url 'kg_grant_leader' project.id person.username %}" class="addlink">Grant leader</a>
                         {% endif %}
                     </td>
                     {% endif %}
@@ -226,7 +226,7 @@
         {% comments project %}
         <div class="object-tools">
             <ul>
-                {% if is_admin %}<li><a href="{% url 'kg_project_add_comment' project.pid %}" class="addlink">Add comment</a></li>{% endif %}
+                {% if is_admin %}<li><a href="{% url 'kg_project_add_comment' project.id %}" class="addlink">Add comment</a></li>{% endif %}
             </ul>
         </div>
     </div>

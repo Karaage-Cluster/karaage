@@ -30,28 +30,28 @@ urlpatterns = patterns(
     url(r'^quota/(?P<projectquota_id>\d+)/delete/$',
         'projectquota_delete', name='kg_projectquota_delete'),
 
-    url(r'^(?P<project_id>%s)/$' % settings.PROJECT_VALIDATION_RE,
+    url(r'^(?P<project_id>\d+)/$',
         'project_detail', name='kg_project_detail'),
-    url(r'^(?P<project_id>%s)/verbose/$' % settings.PROJECT_VALIDATION_RE,
+    url(r'^(?P<project_id>\d+)/verbose/$',
         'project_verbose', name='kg_project_verbose'),
-    url(r'^(?P<project_id>%s)/edit/$' % settings.PROJECT_VALIDATION_RE,
+    url(r'^(?P<project_id>\d+)/edit/$',
         'add_edit_project', name='kg_project_edit'),
-    url(r'^(?P<project_id>%s)/delete/$' % settings.PROJECT_VALIDATION_RE,
+    url(r'^(?P<project_id>\d+)/delete/$',
         'delete_project', name='kg_project_delete'),
-    url(r'^(?P<project_id>%s)/remove_user/(?P<username>%s)/$'
-        % (settings.USERNAME_VALIDATION_RE, settings.PROJECT_VALIDATION_RE),
+    url(r'^(?P<project_id>\d+)/remove_user/(?P<username>%s)/$'
+        % (settings.USERNAME_VALIDATION_RE,),
         'remove_user', name='kg_remove_project_member'),
-    url(r'^(?P<project_id>%s)/grant/(?P<username>%s)/$'
-        % (settings.USERNAME_VALIDATION_RE, settings.PROJECT_VALIDATION_RE),
+    url(r'^(?P<project_id>\d+)/grant/(?P<username>%s)/$'
+        % (settings.USERNAME_VALIDATION_RE,),
         'grant_leader', name='kg_grant_leader'),
-    url(r'^(?P<project_id>%s)/revoke/(?P<username>%s)/$'
-        % (settings.USERNAME_VALIDATION_RE, settings.PROJECT_VALIDATION_RE),
+    url(r'^(?P<project_id>\d+)/revoke/(?P<username>%s)/$'
+        % (settings.USERNAME_VALIDATION_RE,),
         'revoke_leader', name='kg_revoke_leader'),
-    url(r'^(?P<project_id>%s)/logs/$' % settings.PROJECT_VALIDATION_RE,
+    url(r'^(?P<project_id>\d+)/logs/$',
         'project_logs', name='kg_project_logs'),
-    url(r'^(?P<project_id>%s)/add_comment/$' % settings.PROJECT_VALIDATION_RE,
+    url(r'^(?P<project_id>\d+)/add_comment/$',
         'add_comment', name='kg_project_add_comment'),
-    url(r'^(?P<project_id>%s)/quota/add/$' % settings.PROJECT_VALIDATION_RE,
+    url(r'^(?P<project_id>\d+)/quota/add/$',
         'projectquota_add', name='kg_projectquota_add'),
 )
 

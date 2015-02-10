@@ -110,7 +110,7 @@ class ProjectTestCase(IntegrationTestCase):
         project = Project.objects.get(pid='TestProject1')
         self.assertEqual(project.group.members.count(), 2)
         response = self.client.get(
-            reverse('kg_project_detail', args=[project.pid]))
+            reverse('kg_project_detail', args=[project.id]))
         self.assertEqual(response.status_code, 200)
         self.assertRaises(
             self._datastore._account.DoesNotExist,
@@ -119,7 +119,7 @@ class ProjectTestCase(IntegrationTestCase):
         # add kgtestuser2 to project
         new_user = Person.objects.get(username='kgtestuser2')
         response = self.client.post(
-            reverse('kg_project_detail', args=[project.pid]),
+            reverse('kg_project_detail', args=[project.id]),
             {'person': new_user.id})
         self.assertEqual(response.status_code, 302)
         project = Project.objects.get(pid='TestProject1')
@@ -134,7 +134,7 @@ class ProjectTestCase(IntegrationTestCase):
             account.save()
         response = self.client.post(
             reverse('kg_remove_project_member',
-                    args=[project.pid, new_user.username]))
+                    args=[project.id, new_user.username]))
         self.assertEqual(response.status_code, 302)
         project = Project.objects.get(pid='TestProject1')
         self.assertEqual(project.group.members.count(), 2)
@@ -156,7 +156,7 @@ class ProjectTestCase(IntegrationTestCase):
         self.assertEqual(project.is_active, True)
 
         response = self.client.post(
-            reverse('kg_project_delete', args=[project.pid]))
+            reverse('kg_project_delete', args=[project.id]))
         self.assertEqual(response.status_code, 302)
 
         project = Project.objects.get(pid='TestProject1')
@@ -181,7 +181,7 @@ class ProjectTestCase(IntegrationTestCase):
 
         self.client.login(username='kgsuper', password='aq12ws')
         response = self.client.get(
-            reverse('kg_project_edit', args=['TestProject1']))
+            reverse('kg_project_edit', args=[project.id]))
         self.assertEqual(response.status_code, 200)
 
         form_data = {
@@ -193,7 +193,7 @@ class ProjectTestCase(IntegrationTestCase):
         }
 
         response = self.client.post(
-            reverse('kg_project_edit', args=['TestProject1']),
+            reverse('kg_project_edit', args=[project.id]),
             form_data)
         self.assertEqual(response.status_code, 302)
         project = Project.objects.get(pid='TestProject1')
