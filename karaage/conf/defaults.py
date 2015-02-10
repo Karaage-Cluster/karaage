@@ -340,7 +340,7 @@ SHIB_ATTRIBUTE_MAP = {
 }
 
 # RE for validing a username.
-USERNAME_VALIDATION_RE = '[-\w]+'
+USERNAME_VALIDATION_RE = r'[-\w]+'
 
 # Error to display if username validation failed.
 USERNAME_VALIDATION_ERROR_MSG = six.u(
@@ -349,7 +349,7 @@ USERNAME_VALIDATION_ERROR_MSG = six.u(
 USERNAME_MAX_LENGTH = 255
 
 # RE for validing a project.
-PROJECT_VALIDATION_RE = '[-\w]+'
+PROJECT_VALIDATION_RE = r'[-\w]+'
 
 # Max length of a project identifier
 PROJECT_ID_MAX_LENGTH = 255
@@ -360,7 +360,7 @@ PROJECT_VALIDATION_ERROR_MSG = six.u(
     'numbers and underscores')
 
 # RE for validing a group id.
-GROUP_VALIDATION_RE = '[-\w]+'
+GROUP_VALIDATION_RE = r'[-\w]+'
 
 # Error to display if group validation failed.
 GROUP_VALIDATION_ERROR_MSG = six.u(
