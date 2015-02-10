@@ -59,7 +59,7 @@ for values in $TESTS; do
     fi
 
     if [ "$RETURN" -ne 0 ]; then
-        echo "ERROR: Some tests failed for $valuetring" >&2
+        echo "ERROR: Some tests failed for $values" >&2
         exit "$RETURN"
     fi
 done
