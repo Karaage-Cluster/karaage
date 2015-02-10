@@ -35,8 +35,8 @@ import karaage.common as util
 
 from .models import SoftwareCategory, Software, SoftwareVersion
 from .models import SoftwareLicense, SoftwareLicenseAgreement
-from .forms import AddPackageForm, LicenseForm
-from .forms import SoftwareVersionForm
+from .forms import SoftwareForm, AddPackageForm, LicenseForm
+from .forms import SoftwareVersionForm, SoftwareCategoryForm
 from .tables import SoftwareFilter, SoftwareTable
 
 
@@ -195,7 +195,6 @@ def software_detail(request, software_id):
 
 @admin_required
 def add_package(request):
-
     if request.method == 'POST':
         form = AddPackageForm(request.POST)
 
@@ -215,7 +214,8 @@ def add_package(request):
 def software_edit(request, software_id):
     from karaage.common.create_update import update_object
     return update_object(
-        request, object_id=software_id, model=Software)
+        request, object_id=software_id, model=Software,
+        form_class=SoftwareForm)
 
 
 @admin_required
@@ -364,14 +364,16 @@ def category_list(request):
 def category_create(request):
     from karaage.common.create_update import create_object
     return create_object(
-        request, model=SoftwareCategory)
+        request, model=SoftwareCategory,
+        form_class=SoftwareCategoryForm)
 
 
 @admin_required
 def category_edit(request, category_id):
     from karaage.common.create_update import update_object
     return update_object(
-        request, object_id=category_id, model=SoftwareCategory)
+        request, object_id=category_id, model=SoftwareCategory,
+        form_class=SoftwareCategoryForm)
 
 
 @admin_required

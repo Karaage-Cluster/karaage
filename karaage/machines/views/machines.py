@@ -28,7 +28,7 @@ from karaage.projects.models import Project
 from karaage.machines.tables import MachineTable, MachineCategoryTable
 from karaage.machines.tables import AccountTable
 from karaage.machines.models import Machine, MachineCategory
-from karaage.machines.forms import MachineForm
+from karaage.machines.forms import MachineForm, MachineCategoryForm
 from karaage.common.decorators import admin_required, login_required
 import karaage.common as util
 
@@ -132,6 +132,7 @@ def category_create(request):
     from karaage.common.create_update import create_object
     return create_object(
         request, model=MachineCategory,
+        form_class=MachineCategoryForm,
         template_name="karaage/machines/machinecategory_form.html")
 
 
@@ -140,6 +141,7 @@ def category_edit(request, category_id):
     from karaage.common.create_update import update_object
     return update_object(
         request, object_id=category_id, model=MachineCategory,
+        form_class=MachineCategoryForm,
         template_name="karaage/machines/machinecategory_form.html")
 
 

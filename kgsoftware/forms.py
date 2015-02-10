@@ -27,7 +27,7 @@ from .models import SoftwareCategory, Software
 from .models import SoftwareVersion, SoftwareLicense
 
 
-class SoftwareForm(forms.Form):
+class SoftwareForm(forms.ModelForm):
     category = forms.ModelChoiceField(queryset=None)
     name = forms.CharField()
     description = forms.CharField(required=False, widget=forms.Textarea())
@@ -41,22 +41,12 @@ class SoftwareForm(forms.Form):
         super(SoftwareForm, self).__init__(*args, **kwargs)
         self.fields['category'].queryset = SoftwareCategory.objects.all()
 
-    def save(self, software=None):
-        data = self.cleaned_data
-
-        if software is None:
-            software = Software()
-
-        software.category = data['category']
-        software.name = data['name']
-        software.description = data['description']
-        software.homepage = data['homepage']
-        software.tutorial_url = data['tutorial_url']
-        software.academic_only = data['academic_only']
-        software.restricted = data['restricted']
-        software.save()
-
-        return software
+    class Meta:
+        model = Software
+        fields = [
+            'category', 'name', 'description', 'homepage', 'tutorial_url',
+            'academic_only', 'restricted',
+        ]
 
 
 class AddPackageForm(SoftwareForm):
@@ -87,14 +77,13 @@ class AddPackageForm(SoftwareForm):
 
         return data
 
-    def save(self, software=None):
+    def save(self):
         data = self.cleaned_data
 
-        software = Software()
+        software = super(AddPackageForm, self).save(commit=False)
         name = self.cleaned_data['group_name']
         software.group, _ = Group.objects.get_or_create(name=name)
-
-        software = super(AddPackageForm, self).save(software)
+        software.save()
 
         version = SoftwareVersion(
             software=software,
@@ -112,7 +101,6 @@ class AddPackageForm(SoftwareForm):
                 date=data['license_date'],
                 text=data['license_text'],
             )
-            software.save()
 
         return software
 
@@ -129,3 +117,12 @@ class SoftwareVersionForm(forms.ModelForm):
     class Meta:
         model = SoftwareVersion
         fields = ['software', 'version', 'machines', 'module', 'last_used']
+
+
+class SoftwareCategoryForm(forms.ModelForm):
+
+    class Meta:
+        model = SoftwareCategory
+        fields = [
+            'name',
+        ]
