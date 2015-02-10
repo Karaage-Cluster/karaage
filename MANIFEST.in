@@ -7,4 +7,6 @@ recursive-include docs *
 recursive-include karaage *
 recursive-include sbin *
 recursive-include conf *
+recursive-include kgapplications *
+recursive-include kgsoftware *
 recursive-include kgusage *
