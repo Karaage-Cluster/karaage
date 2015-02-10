@@ -33,7 +33,7 @@ class TestKgApplicationPages(TestAllPagesCase):
 
     fixtures = [
         'test_karaage.json',
-        'test_kgsoftware.json'
+        'test_kgapplications.json',
     ]
     variables = {
         'application_id': '1',
