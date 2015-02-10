@@ -56,7 +56,7 @@ class AccountTable(tables.Table):
     username = tables.LinkColumn(
         'kg_account_detail', args=[A('pk')], verbose_name="Account")
     default_project = tables.LinkColumn(
-        'kg_project_detail', args=[A('default_project.pid')])
+        'kg_project_detail', args=[A('default_project.id')])
 
     def render_active(self, record):
         if record.date_deleted is not None:

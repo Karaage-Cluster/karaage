@@ -16,7 +16,6 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf.urls import patterns, url, include
-from django.conf import settings
 
 from .views.project import register as register_project
 register_project()
@@ -43,8 +42,7 @@ urlpatterns = patterns(
         'project.new_application', name='kg_application_new'),
     url(r'^project/invite/$',
         'project.send_invitation', name='kg_application_invite'),
-    url(r'^project/invite/(?P<project_id>%s)/$'
-        % settings.PROJECT_VALIDATION_RE,
+    url(r'^project/invite/(?P<project_id>\d+)/$',
         'project.send_invitation', name='kg_application_invite'),
 
     # this must come last

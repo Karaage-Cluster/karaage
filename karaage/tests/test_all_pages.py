@@ -34,7 +34,7 @@ class TestKaraagePages(TestAllPagesCase):
         'username': 'kgsuper',
         'group_name': 'example',
         'account_id': '1',
-        'project_id': 'TestProject1',
+        'project_id': '1',
         'projectquota_id': '1',
         'institute_id': '1',
         'institutequota_id': '1',

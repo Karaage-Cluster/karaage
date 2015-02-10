@@ -75,7 +75,8 @@ def add_edit_project(request, project_id=None):
         project = None
         flag = 1
     else:
-        project = get_object_or_404(Project, pid=project_id)
+        project = get_object_or_404(Project, id=project_id)
+        old_pid = project.pid
         flag = 2
 
     if util.is_admin(request):
@@ -89,9 +90,8 @@ def add_edit_project(request, project_id=None):
         if form.is_valid():
             project = form.save(commit=False)
             if project_id is not None:
-                # if project is being edited, project_id cannot change, so we
-                # should always use the value supplied on the URL.
-                project.pid = project_id
+                # if project is being edited, project_id cannot change.
+                project.pid = old_pid
             elif not project.pid:
                 # if project was being created, did the user give a project_id
                 # we should use? If not, then we have to generate one
@@ -119,7 +119,7 @@ def add_edit_project(request, project_id=None):
 @admin_required
 def delete_project(request, project_id):
 
-    project = get_object_or_404(Project, pid=project_id)
+    project = get_object_or_404(Project, id=project_id)
 
     query = Account.objects.filter(
         date_deleted__isnull=True, default_project=project)
@@ -146,7 +146,7 @@ def delete_project(request, project_id):
 @login_required
 def project_detail(request, project_id):
 
-    project = get_object_or_404(Project, pid=project_id)
+    project = get_object_or_404(Project, id=project_id)
 
     if not project.can_view(request):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
@@ -171,7 +171,7 @@ def project_detail(request, project_id):
 
 @admin_required
 def project_verbose(request, project_id):
-    project = get_object_or_404(Project, pid=project_id)
+    project = get_object_or_404(Project, id=project_id)
 
     from karaage.datastores import machine_category_get_project_details
     project_details = machine_category_get_project_details(project)
@@ -220,7 +220,7 @@ def project_list(request, queryset=None):
 @login_required
 def remove_user(request, project_id, username):
 
-    project = get_object_or_404(Project, pid=project_id)
+    project = get_object_or_404(Project, id=project_id)
     person = get_object_or_404(Person, username=username)
 
     if not project.can_edit(request):
@@ -252,7 +252,7 @@ def remove_user(request, project_id, username):
 
 @login_required
 def grant_leader(request, project_id, username):
-    project = get_object_or_404(Project, pid=project_id)
+    project = get_object_or_404(Project, id=project_id)
     person = get_object_or_404(Person, username=username)
 
     if not project.can_edit(request):
@@ -278,7 +278,7 @@ def grant_leader(request, project_id, username):
 
 @login_required
 def revoke_leader(request, project_id, username):
-    project = get_object_or_404(Project, pid=project_id)
+    project = get_object_or_404(Project, id=project_id)
     person = get_object_or_404(Person, username=username)
 
     if not project.can_edit(request):
@@ -309,37 +309,37 @@ def no_users(request):
     project_ids = []
     for p in Project.active.all():
         if p.group.members.count() == 0:
-            project_ids.append(p.pid)
+            project_ids.append(p.id)
 
-    return project_list(request, Project.objects.filter(pid__in=project_ids))
+    return project_list(request, Project.objects.filter(id__in=project_ids))
 
 
 @admin_required
 def project_logs(request, project_id):
-    obj = get_object_or_404(Project, pid=project_id)
+    obj = get_object_or_404(Project, id=project_id)
     breadcrumbs = []
     breadcrumbs.append(
         ("Projects", reverse("kg_project_list")))
     breadcrumbs.append(
-        (six.text_type(obj.pid), reverse("kg_project_detail", args=[obj.pid])))
+        (six.text_type(obj.pid), reverse("kg_project_detail", args=[obj.id])))
     return util.log_list(request, breadcrumbs, obj)
 
 
 @admin_required
 def add_comment(request, project_id):
-    obj = get_object_or_404(Project, pid=project_id)
+    obj = get_object_or_404(Project, id=project_id)
     breadcrumbs = []
     breadcrumbs.append(
         ("Projects", reverse("kg_project_list")))
     breadcrumbs.append(
-        (six.text_type(obj.pid), reverse("kg_project_detail", args=[obj.pid])))
+        (six.text_type(obj.pid), reverse("kg_project_detail", args=[obj.id])))
     return util.add_comment(request, breadcrumbs, obj)
 
 
 @admin_required
 def projectquota_add(request, project_id):
 
-    project = get_object_or_404(Project, pid=project_id)
+    project = get_object_or_404(Project, id=project_id)
 
     project_chunk = ProjectQuota()
     project_chunk.project = project

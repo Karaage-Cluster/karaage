@@ -57,7 +57,7 @@ class ProjectColumn(BaseLinkColumn):
 
     def render(self, value):
         if value is not None:
-            url = reverse('kg_project_detail', args=[value.pid])
+            url = reverse('kg_project_detail', args=[value.id])
             link = self.render_link(url, text=six.text_type(value.pid))
             return link
         else:
@@ -76,8 +76,9 @@ class ProjectFilter(django_filters.FilterSet):
 
 class ProjectTable(tables.Table):
     is_active = tables.Column(order_by=('-is_active'), verbose_name="active")
-    pid = tables.LinkColumn(
-        'kg_project_detail', args=[A('pid')], verbose_name="PID")
+    id = tables.LinkColumn(
+        'kg_project_detail', args=[A('id')], verbose_name="ID")
+    pid = tables.Column(verbose_name="PID")
     institute = tables.LinkColumn(
         'kg_institute_detail', args=[A('institute.pk')])
     leaders = PeopleColumn(orderable=False)

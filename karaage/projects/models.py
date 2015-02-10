@@ -69,7 +69,7 @@ class Project(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('kg_project_detail', [self.pid])
+        return ('kg_project_detail', [self.id])
 
     def save(self, *args, **kwargs):
         created = self.pk is None

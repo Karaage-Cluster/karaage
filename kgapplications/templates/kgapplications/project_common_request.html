@@ -3,7 +3,7 @@
     <h3>Existing Project Details</h3>
     <div class="table-container">
         <table class="keyvalue">
-            <tr><th>Project:</th><td><a href='{% url 'kg_project_detail' application.project.pid %}'>{{ application.project }}</a></td></tr>
+            <tr><th>Project:</th><td><a href='{% url 'kg_project_detail' application.project.id %}'>{{ application.project }}</a></td></tr>
             <tr><th>Institute:</th><td>{{ application.project.institute }}</td></tr>
             <tr><th>Description:</th><td>{{ application.project.description|linebreaks }}</td></tr>
             <tr><th>Additional requirements:</th><td>{{ application.project.additional_req|linebreaks }}</td></tr>
