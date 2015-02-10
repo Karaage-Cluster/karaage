@@ -76,9 +76,8 @@ class ProjectFilter(django_filters.FilterSet):
 
 class ProjectTable(tables.Table):
     is_active = tables.Column(order_by=('-is_active'), verbose_name="active")
-    id = tables.LinkColumn(
-        'kg_project_detail', args=[A('id')], verbose_name="ID")
-    pid = tables.Column(verbose_name="PID")
+    pid = tables.LinkColumn(
+        'kg_project_detail', args=[A('id')], verbose_name="PID")
     institute = tables.LinkColumn(
         'kg_institute_detail', args=[A('institute.pk')])
     leaders = PeopleColumn(orderable=False)
