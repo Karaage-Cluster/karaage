@@ -31,7 +31,7 @@ class ProjectTestCase(IntegrationTestCase):
 
     def setUp(self):
         super(ProjectTestCase, self).setUp()
-        call_command('loaddata', 'karaage_data', **{'verbosity': 0})
+        call_command('loaddata', 'test_karaage', **{'verbosity': 0})
         self._datastore = self.mc_ldap_datastore
 
     def test_admin_add_project(self):

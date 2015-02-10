@@ -65,7 +65,7 @@ class DjangoTestClientTransport(object):
 
 class XmlrpcTestCase(TestCase):
     fixtures = [
-        'karaage_data.json',
+        'test_karaage.json',
     ]
 
     def get_server_proxy(self):

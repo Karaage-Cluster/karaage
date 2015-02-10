@@ -38,7 +38,7 @@ class FakeRequest(object):
 
 class PersonTestCase(IntegrationTestCase):
     fixtures = [
-        'karaage_data.json',
+        'test_karaage.json',
     ]
 
     def setUp(self):

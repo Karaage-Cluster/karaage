@@ -42,7 +42,7 @@ from karaage.machines.models import Account, MachineCategory
 
 class XmlrpcTestCase(TestCase):
     fixtures = [
-        'karaage_data.json',
+        'test_karaage.json',
     ]
 
     def setUp(self):

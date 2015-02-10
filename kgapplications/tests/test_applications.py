@@ -45,7 +45,7 @@ def set_no_admin():
 class UserApplicationTestCase(TestCase):
 
     def setUp(self):
-        call_command('loaddata', 'karaage_data', **{'verbosity': 0})
+        call_command('loaddata', 'test_karaage', **{'verbosity': 0})
 
     def tearDown(self):
         set_admin()
@@ -301,7 +301,7 @@ class UserApplicationTestCase(TestCase):
 class ProjectApplicationTestCase(TestCase):
 
     def setUp(self):
-        call_command('loaddata', 'karaage_data', **{'verbosity': 0})
+        call_command('loaddata', 'test_karaage', **{'verbosity': 0})
 
     def tearDown(self):
         set_admin()
