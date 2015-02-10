@@ -74,7 +74,7 @@ class PersonTestCase(IntegrationTestCase):
             1: True,    # person 1 can view: self, project member,
                         #                    person's institute delegate
             2: False,   # person 2 cannot view
-            3: False,   # person 3 cannot view
+            3: True,    # person 3 can view: project member
             4: True,    # person 4 can view: is_staff, institute delegate
         })
 
@@ -182,7 +182,7 @@ class PersonTestCase(IntegrationTestCase):
         self.do_permission_tests(test_object, {
             1: True,    # person 1 can view: self, project member
             2: True,    # person 2 can view: person's institute delegate
-            3: False,   # person 3 cannot view
+            3: True,    # person 3 can view: project member
             4: True,    # person 4 can view: is_staff
         })
 

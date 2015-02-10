@@ -108,7 +108,7 @@ class ProjectTestCase(IntegrationTestCase):
 
         # get project details
         project = Project.objects.get(pid='TestProject1')
-        self.assertEqual(project.group.members.count(), 1)
+        self.assertEqual(project.group.members.count(), 2)
         response = self.client.get(
             reverse('kg_project_detail', args=[project.pid]))
         self.assertEqual(response.status_code, 200)
@@ -123,7 +123,7 @@ class ProjectTestCase(IntegrationTestCase):
             {'person': new_user.id})
         self.assertEqual(response.status_code, 302)
         project = Project.objects.get(pid='TestProject1')
-        self.assertEqual(project.group.members.count(), 2)
+        self.assertEqual(project.group.members.count(), 3)
         lgroup = self._datastore._groups().get(cn=project.pid)
         self._datastore._accounts().get(pk='kgtestuser2')
         lgroup.secondary_accounts.get(pk='kgtestuser2')
@@ -137,7 +137,7 @@ class ProjectTestCase(IntegrationTestCase):
                     args=[project.pid, new_user.username]))
         self.assertEqual(response.status_code, 302)
         project = Project.objects.get(pid='TestProject1')
-        self.assertEqual(project.group.members.count(), 1)
+        self.assertEqual(project.group.members.count(), 2)
         lgroup = self._datastore._groups().get(cn=project.pid)
         self.assertRaises(
             self._datastore._account.DoesNotExist,
