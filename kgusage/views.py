@@ -33,20 +33,21 @@ from django.core.urlresolvers import reverse
 from django.template.defaultfilters import dictsortreversed
 from django.core.cache import cache
 from django.http import QueryDict
+from django.db.models import Count, Sum
 
 from karaage.common.decorators import admin_required, usage_required
+from karaage.people.models import Person
 from karaage.institutes.models import Institute, InstituteQuota
 from karaage.projects.models import Project, ProjectQuota
 from karaage.machines.models import Account, MachineCategory
 from karaage.common import get_date_range
 
+from . import models, graphs, tasks, usage
 from .models import CPUJob
 from .forms import UsageSearchForm
 from .tables import CPUJobFilter, CPUJobTable
-import kgusage.models as models
-import kgusage.graphs as graphs
-import kgusage.tasks as tasks
-import kgusage.usage as usage
+
+from kgsoftware.models import Software, SoftwareVersion
 
 LOCK_EXPIRE = 60 * 60  # Lock expires in 1 hour
 
@@ -804,4 +805,78 @@ def job_list(request):
             'spec': spec,
             'title': "Job list",
         },
+        context_instance=RequestContext(request))
+
+
+@admin_required
+def software_stats(request, software_id):
+    software = get_object_or_404(Software, pk=software_id)
+    start, end = get_date_range(request)
+    querystring = request.META.get('QUERY_STRING', '')
+    if software.softwareversion_set.count() == 1:
+        sv = software.softwareversion_set.all()[0]
+        url = reverse('kg_software_version_stats', args=[sv.id])
+        return HttpResponseRedirect(url)
+    version_stats = SoftwareVersion.objects \
+        .filter(software=software, cpujob__date__range=(start, end)) \
+        .annotate(jobs=Count('cpujob'), usage=Sum('cpujob__cpu_usage')) \
+        .filter(usage__isnull=False)
+    version_totaljobs = version_stats.aggregate(Sum('jobs'))['jobs__sum']
+    # version_totalusage = version_stats.aggregate(Sum('usage'))
+    person_stats = Person.objects \
+        .filter(account__cpujob__software__software=software,
+                account__cpujob__date__range=(start, end)) \
+        .annotate(jobs=Count('account__cpujob'),
+                  usage=Sum('account__cpujob__cpu_usage'))
+    institute_stats = Institute.objects \
+        .filter(person__account__cpujob__software__software=software,
+                person__account__cpujob__date__range=(start, end)) \
+        .annotate(jobs=Count('person__account__cpujob'),
+                  usage=Sum('person__account__cpujob__cpu_usage'))
+
+    context = {
+        'software': software,
+        'version_stats': version_stats,
+        'version_totaljobs': version_totaljobs,
+        'person_stats': person_stats,
+        'institute_stats': institute_stats,
+        'start': start,
+        'end': end,
+        'querystring': querystring,
+    }
+    return render_to_response(
+        'kgusage/software_stats.html',
+        context,
+        context_instance=RequestContext(request))
+
+
+@admin_required
+def version_stats(request, version_id):
+    version = get_object_or_404(SoftwareVersion, pk=version_id)
+    start, end = get_date_range(request)
+    querystring = request.META.get('QUERY_STRING', '')
+
+    person_stats = Person.objects \
+        .filter(account__cpujob__software=version,
+                account__cpujob__date__range=(start, end)) \
+        .annotate(jobs=Count('account__cpujob'),
+                  p_usage=Sum('account__cpujob__cpu_usage'))
+    institute_stats = Institute.objects \
+        .filter(person__account__cpujob__software=version,
+                person__account__cpujob__date__range=(start, end)) \
+        .annotate(jobs=Count('person__account__cpujob'),
+                  i_usage=Sum('person__account__cpujob__cpu_usage'))
+
+    context = {
+        'version': version,
+        'person_stats': person_stats,
+        'institute_stats': institute_stats,
+        'start': start,
+        'end': end,
+        'querystring': querystring,
+    }
+
+    return render_to_response(
+        'kgusage/version_stats.html',
+        context,
         context_instance=RequestContext(request))

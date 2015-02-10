@@ -43,11 +43,11 @@
                 {% endcomment %}
 
                 <tbody>
-                    {% for person in person_stats|dictsortreversed:"usage" %}
+                    {% for person in person_stats|dictsortreversed:"p_usage" %}
                     <tr>
                         <td><a href="{% url 'kg_person_detail' person.username %}">{{ person }}</a></td>
                         <td><a href="{% url 'kg_institute_detail' person.institute.pk %}">{{ person.institute }}</a></td>
-                        <td class="right">{{ person.usage|timeformat }}</td>
+                        <td class="right">{{ person.p_usage|timeformat }}</td>
                         <td class="right">{{ person.jobs|intcomma }}</td>
                     </tr>
                     {% endfor %}
@@ -76,10 +76,10 @@
                 </tfoot>
                 {% endcomment %}
                 <tbody>
-                    {% for institute in institute_stats|dictsortreversed:"usage" %}
+                    {% for institute in institute_stats|dictsortreversed:"i_usage" %}
                     <tr>
                         <td><a href="{% url 'kg_institute_detail' institute.pk %}">{{ institute }}</a></td>
-                        <td class="right">{{ institute.usage|timeformat }}</td>
+                        <td class="right">{{ institute.i_usage|timeformat }}</td>
                        <td class="right">{{ institute.jobs|intcomma }}</td>
                     </tr>
                     {% endfor %}
