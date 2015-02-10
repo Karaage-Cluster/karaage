@@ -278,7 +278,3 @@ ACCOUNTS_ORG_NAME = 'Example'
 #     'kgsoftware.plugin',
 #     'kgusage.plugin',
 # ]
-
-# Django Pipeline configuration
-PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.csstidy.CSSTidyCompressor'
-PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.slimit.SlimItCompressor'
