@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2014-2015 VPAC
 #
-# Copyright 2007-2014 VPAC
+# Copyright 2014 The University of Melbourne
 #
 # This file is part of Karaage.
 #
@@ -72,20 +72,15 @@ def load_plugins(namespace, plugins):
     installed_apps = []
     done = set()
 
-    for app in namespace.KARAAGE_APPS:
-        if app not in done:
-            installed_apps.append(app)
-            done.add(app)
-
-    for app in django_apps:
-        if app not in done:
-            installed_apps.append(app)
-            done.add(app)
-
-    for app in namespace.INSTALLED_APPS:
-        if app not in done:
-            installed_apps.append(app)
-            done.add(app)
+    for apps in [
+        namespace.KARAAGE_APPS,
+        django_apps,
+        namespace.INSTALLED_APPS,
+    ]:
+        for app in apps:
+            if app not in done:
+                installed_apps.append(app)
+                done.add(app)
 
     namespace.INSTALLED_APPS = installed_apps
 
