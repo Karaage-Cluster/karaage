@@ -24,7 +24,7 @@ class InvalidString(str):
 
 TEMPLATE_STRING_IF_INVALID = InvalidString("%s")
 
-DEBUG = True
+DEBUG = False
 DEBUG_SERVE_STATIC = True
 PIPELINE_ENABLED = True
 TEMPLATE_DEBUG = DEBUG
