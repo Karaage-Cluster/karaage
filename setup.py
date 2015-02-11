@@ -22,6 +22,7 @@
 from setuptools import setup
 import os
 
+
 def fullsplit(path, result=None):
     """
     Split a pathname into components (the opposite of os.path.join) in a
