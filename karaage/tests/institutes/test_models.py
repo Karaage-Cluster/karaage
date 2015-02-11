@@ -61,13 +61,20 @@ class InstituteTestCase(UnitTestCase):
         """
         account1 = simple_account(machine_category=self.machine_category)
         group1 = GroupFactory()
-
-        # Test during initial creation of the institute
-        self.resetDatastore()
         institute = InstituteFactory(group=group1)
+
+        # Test setting up initial group for institute
+        self.resetDatastore()
         group1.parent = institute
         group1.save()
         group1.add_person(account1.person)
+        self.assertEqual(
+            self.datastore.method_calls,
+            [mock.call.save_group(group1),
+             mock.call.add_account_to_group(account1, group1)])
+
+        # Test during initial creation of the institute
+        self.resetDatastore()
         institute_quota = InstituteQuota.objects.create(
             machine_category=self.machine_category, institute=institute,
             quota=100)
