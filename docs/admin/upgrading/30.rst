@@ -36,7 +36,7 @@ Upgrading from 3.0.x to 3.1.x
 
         apt-get install virtualenv         # Debian Jessie only
         apt-get install python-virtualenv  # Debian Wheezy only
-        kg-migrate-south
+        kg-migrate-south --noinput
 
    Regardless of what version of Django you have installed, continue and
    run the native migrations.
