@@ -34,7 +34,12 @@ for values in $TESTS; do
     echo ""
     echo "STATIC FILES - $conf"
     echo "############################"
+    rm -rf tmp
     ./manage.py collectstatic --settings="$conf" -v 2 --noinput
+    if [ "$?" -ne 0 ]
+    then
+        exit 1
+    fi
 
     echo ""
     echo "TESTS - Python 2 - $conf - $tests"
