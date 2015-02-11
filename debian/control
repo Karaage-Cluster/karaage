@@ -54,8 +54,8 @@ Package: python3-karaage
 Architecture: all
 Depends: ${misc:Depends}, ${python3:Depends}, karaage3-common (= ${binary:Version})
 Recommends: python3-cracklib
-Replaces: python-kgapplications (<< 3.1.11), python-kgsoftware (<< 3.1.11)
-Breaks: python-kgapplications (<< 3.1.11), python-kgsoftware (<< 3.1.11)
+Replaces: python3-kgapplications (<< 3.1.11), python3-kgsoftware (<< 3.1.11)
+Breaks: python3-kgapplications (<< 3.1.11), python3-kgsoftware (<< 3.1.11)
 Description: Collection of Django apps to manage a cluster
  Karaage is a cluster account management tool. It can manage users and projects
  in a cluster and can store the data in various backends.
