@@ -3,6 +3,7 @@ Section: python
 Priority: optional
 Maintainer: Brian May <bam@debian.org>
 Build-Depends: debhelper (>=8.1.0), dh-python, slapd, ldap-utils, po-debconf,
+ csstidy, slimit,
  python-all (>= 2.6.6-3~), python-setuptools, python-django, python-tldap,
  python-six, python-django-xmlrpc, python-django-captcha, python-alogger,
  python-ajax-select, python-django-jsonfield, python-django-pipeline,
