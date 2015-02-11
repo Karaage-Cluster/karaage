@@ -22,10 +22,6 @@
 from setuptools import setup
 import os
 
-with open('VERSION.txt', 'r') as f:
-    version = f.readline().strip()
-
-
 def fullsplit(path, result=None):
     """
     Split a pathname into components (the opposite of os.path.join) in a
@@ -60,7 +56,7 @@ tests_require = [
 
 setup(
     name="karaage",
-    version=version,
+    version=open('VERSION.txt', 'r').readline().strip(),
     url='https://github.com/Karaage-Cluster/karaage',
     author='Brian May',
     author_email='brian@v3.org.au',
