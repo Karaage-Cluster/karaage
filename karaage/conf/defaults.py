@@ -222,7 +222,7 @@ ALLOWED_HOSTS = ["%(HOST)s"]
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 PIPELINE_EMBED_PATH = r'img/|images/'
-PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.csstidy.CSSTidyCompressor'
+PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.cssmin.CSSMinCompressor'
 PIPELINE_CSS = {
     'karaage': {
         'source_filenames': (
