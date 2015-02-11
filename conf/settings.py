@@ -276,5 +276,6 @@ ACCOUNTS_ORG_NAME = 'Example'
 # PLUGINS = [
 #     'kgapplications.plugin',
 #     'kgsoftware.plugin',
+#     'kgsoftware.applications.plugin',
 #     'kgusage.plugin',
 # ]
