@@ -37,7 +37,7 @@ def fullsplit(path, result=None):
         return result
     return fullsplit(head, [tail] + result)
 
-dirs = ['karaage', 'kgapplications', 'kgsoftware', 'kgusage']
+dirs = ['karaage', ]
 packages = []
 for d in dirs:
     for dirpath, dirnames, filenames in os.walk(d):
