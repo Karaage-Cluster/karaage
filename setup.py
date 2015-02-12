@@ -92,9 +92,6 @@ setup(
     tests_require=tests_require,
     extras_require={
         'tests': tests_require,
-        'crack': [
-            # TODO: python-crack ?
-        ],
         'applications': [
             # no dependencies for kgapplications
         ],
