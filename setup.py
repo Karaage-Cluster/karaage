@@ -106,11 +106,4 @@ setup(
             "matplotlib",
         ],
     },
-    entry_points={
-        'karaage.apps': [
-            'kgapplications.plugin = kgapplications:plugin [applications]',
-            'kgusage.plugin = kgusage:plugin [usage]',
-            'kgsoftware.plugin = kgsoftware:plugin [software]',
-        ],
-    },
 )
