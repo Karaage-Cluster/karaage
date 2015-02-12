@@ -51,7 +51,7 @@ for values in $TESTS; do
     fi
 
     # FIXME: ugly hack because Python3 django celery not in wheezy
-    if [ "$conf" != "kgusage.tests.settings" ]
+    if [ "$conf" != "karaage.plugins.kgusage.tests.settings" ]
     then
         echo ""
         echo "TESTS - Python 3 - $conf - $tests"
