@@ -26,7 +26,7 @@ install:
         - python setup.py develop
 
 script:
-        - coverage run sbin/kg-manage test -v3 karaage kgusage kgapplications kgsoftware
+        - coverage run sbin/kg-manage test -v3 karaage
 
 after_script:
         - codecov

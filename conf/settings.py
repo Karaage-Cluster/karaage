@@ -274,8 +274,8 @@ ACCOUNTS_ORG_NAME = 'Example'
 # default: PLUGINS = []
 #
 # PLUGINS = [
-#     'kgapplications.plugin',
-#     'kgsoftware.plugin',
-#     'kgsoftware.applications.plugin',
-#     'kgusage.plugin',
+#     'karaage.plugins.kgapplications.plugin',
+#     'karaage.plugins.kgsoftware.plugin',
+#     'karaage.plugins.kgsoftware.applications.plugin',
+#     'karaage.plugins.kgusage.plugin',
 # ]

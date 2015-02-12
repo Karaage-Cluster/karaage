@@ -9,10 +9,10 @@ if [ -n "$*" ]; then
     TESTS="$@"
 else
     TESTS="karaage.tests.settings:karaage.tests
-        kgapplications.tests.settings:kgapplications
-        kgsoftware.tests.settings:kgsoftware.tests
-        kgsoftware.applications.tests.settings:kgsoftware
-        kgusage.tests.settings:kgusage"
+        karaage.plugins.kgapplications.tests.settings:karaage.plugins.kgapplications
+        karaage.plugins.kgsoftware.tests.settings:karaage.plugins.kgsoftware.tests
+        karaage.plugins.kgsoftware.applications.tests.settings:karaage.plugins.kgsoftware
+        karaage.plugins.kgusage.tests.settings:karaage.plugins.kgusage"
 fi
 
 echo ""

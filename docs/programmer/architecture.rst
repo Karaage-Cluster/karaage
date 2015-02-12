@@ -68,11 +68,11 @@ The core Karaage defines the following db models in the
 
 Karaage Applications plugin
 ---------------------------
-.. py:module:: kgapplications.models
+.. py:module:: karaage.plugins.kgapplications.models
 
 Karaage Applications is a plugin that defines additional functionality
 used for applications. It defines the following db models in the
-:py:mod:`kgapplications.models` module.
+:py:mod:`karaage.plugins.kgapplications.models` module.
 
 .. py:class:: Application
 
@@ -91,11 +91,11 @@ used for applications. It defines the following db models in the
 
 Karaage Software plugin
 -----------------------
-.. py:module:: kgsoftware.models
+.. py:module:: karaage.plugins.kgsoftware.models
 
 Karaage Software is a plugin that defines additional functionality
 used for tracking software. It defines the following db models in the
-:py:mod:`kgsoftware.models` module.
+:py:mod:`karaage.plugins.kgsoftware.models` module.
 
 .. py:class:: Software
 
@@ -123,7 +123,7 @@ used for tracking software. It defines the following db models in the
 
 .. py:class:: SoftwareApplication
 
-   Class that is derived from :py:class:`kgapplications.models.Application` for
+   Class that is derived from :py:class:`karaage.plugins.kgapplications.models.Application` for
    applications to access restricted software.
 
 

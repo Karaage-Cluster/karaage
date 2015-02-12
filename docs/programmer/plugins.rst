@@ -42,17 +42,17 @@ Here is an example, taken from the karaage-usage pugin:
    from karaage.plugins import BasePlugin
 
     class plugin(BasePlugin):
-        name = "kgusage"
+        name = "karaage.plugins.kgusage"
         django_apps = ("djcelery",)
         xmlrpc_methods = (
-            ('kgusage.xmlrpc.parse_usage', 'parse_usage',),
+            ('karaage.plugins.kgusage.xmlrpc.parse_usage', 'parse_usage',),
         )
         settings = {
             'GRAPH_DEBUG': False,
             'GRAPH_DIR': 'kgusage/',
             'GRAPH_TMP': 'kgusage/',
         }
-        depends = ("kgsoftware.plugin",)
+        depends = ("karaage.plugins.kgsoftware.plugin",)
 
 The ``module`` value is required, all other attributes are optional.
 
