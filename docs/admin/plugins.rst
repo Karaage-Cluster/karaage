@@ -24,7 +24,7 @@ provides usage graphs and statistics for cluster systems. To enable it:
     .. code-block:: python
 
         PLUGINS = [
-            'kgusage.plugin',
+            'karaage.plugins.kgusage.plugin',
         ]
 
 #.   Run the database migrations, restart apache, and install the celery

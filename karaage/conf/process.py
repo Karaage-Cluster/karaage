@@ -20,6 +20,7 @@
 
 import importlib
 import django
+import warnings
 from karaage.plugins import BasePlugin
 
 
@@ -64,6 +65,16 @@ def load_plugins(namespace, plugins):
     while len(depends) > 0:
         new_depends = []
         for plugin in depends:
+            if plugin.startswith("kgapplications.") \
+                    or plugin.startswith("kgsoftware.") \
+                    or plugin.startswith("kgusage."):
+                new_plugin = "karaage.plugins.%s" % plugin
+
+                warnings.warn(
+                    "%s is legacy, use %s instead"
+                    % (plugin, new_plugin), DeprecationWarning)
+                plugin = new_plugin
+
             if plugin not in done:
                 add_plugin(namespace, plugin, django_apps, new_depends)
                 done.add(plugin)
