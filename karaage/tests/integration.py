@@ -16,12 +16,23 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import pkg_resources
+from unittest import skipUnless
 from django.test import TestCase
 from tldap.test import slapd
 
 from karaage.tests.initial_ldap_data import test_ldif
 from karaage.datastores import _MACHINE_CATEGORY_DATASTORES
 from karaage.datastores.ldap import MachineCategoryDataStore, GlobalDataStore
+
+
+def skip_if_missing_requirements(*requirements):
+    try:
+        pkg_resources.require(*requirements)
+        msg = ''
+    except pkg_resources.DistributionNotFound:
+        msg = 'Missing one or more requirements (%s)' % '|'.join(requirements)
+    return skipUnless(msg == '', msg)
 
 
 class IntegrationTestCase(TestCase):
