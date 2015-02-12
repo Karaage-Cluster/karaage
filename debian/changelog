@@ -1,9 +1,9 @@
-karaage3 (3.1.11-1) UNRELEASED; urgency=medium
+karaage3 (3.1.11-1) unstable; urgency=medium
 
   * Merge plugins into one source.
   * Merge kgapplications and kgsoftware into karaage package.
 
- -- Brian May <bam@debian.org>  Fri, 06 Feb 2015 11:29:12 +1100
+ -- Brian May <bam@debian.org>  Thu, 12 Feb 2015 14:20:54 +1100
 
 karaage3 (3.1.10-1) unstable; urgency=low
 
