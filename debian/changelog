@@ -1,8 +1,10 @@
-karaage3 (3.1.12-1) UNRELEASED; urgency=medium
+karaage3 (3.1.12-1) unstable; urgency=medium
 
   * New upstream release.
+  * Move plugins to karaage.plugins.
+  * Various minor bug fixes.
 
- -- Brian May <bam@debian.org>  Thu, 12 Feb 2015 14:21:43 +1100
+ -- Brian May <bam@debian.org>  Mon, 16 Feb 2015 10:51:02 +1100
 
 karaage3 (3.1.11-1) unstable; urgency=medium
 
