@@ -2,7 +2,8 @@
 
 if [ "$1" = "purge" ]
 then
-    for i in /var/log/karaage3 \
+    for i in /etc/karaage3/settings.py \
+             /var/log/karaage3 \
              /var/cache/karaage3/tmp \
              /var/cache/karaage3/files
     do

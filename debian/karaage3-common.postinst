@@ -34,6 +34,15 @@ if [ "$1" = "configure" ]; then
         fi
     done
 
+    for i in /etc/karaage3/settings.py
+    do
+        # only do something when no setting exists
+        if ! dpkg-statoverride --list $i >/dev/null 2>&1
+        then
+            dpkg-statoverride --update --add root www-data 640 $i
+        fi
+    done
+
     for i in /var/log/karaage3 \
              /var/cache/karaage3/tmp \
              /var/cache/karaage3/files
