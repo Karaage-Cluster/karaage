@@ -12,6 +12,8 @@ then
             rm -rf $i
         fi
     done
+
+    rm -rf /var/lib/karaage3
 fi
 
 #DEBHELPER#
