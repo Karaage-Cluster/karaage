@@ -1,3 +1,10 @@
+karaage3 (3.1.13-1) unstable; urgency=medium
+
+  * Fix package cleanup.
+  * Ensure config file not world readable.
+
+ -- Brian May <bam@debian.org>  Tue, 17 Feb 2015 14:30:02 +1100
+
 karaage3 (3.1.12-1) unstable; urgency=medium
 
   * New upstream release.
