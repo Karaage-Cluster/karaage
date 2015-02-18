@@ -100,7 +100,7 @@ Check MySQL server config
 
     .. code-block:: bash
 
-        service mysql reload
+        service mysql restart
 
 
 Installing Karaage3
