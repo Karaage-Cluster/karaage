@@ -93,6 +93,7 @@ You should create a signed SSL certificate for Apache and LDAP.
 
     .. code-block:: bash
 
+        apt-get install ssl-cert
         cd /etc/ssl/private
         chown root:ssl-cert www_*.pem
 
@@ -138,7 +139,7 @@ of your server.
         see the `Apache wiki <https://wiki.apache.org/httpd/RedirectSSL>`_.
 
 #.      (optional) It is recommended that you change the following settings in
-        ``/etc/apache2/mods-enabled/ssl.conf`` to make SSL more secure by
+        ``/etc/apache2/mods-available/ssl.conf`` to make SSL more secure by
         disabling insecure protocols and ciphers::
 
            SSLProtocol all -SSLv2 -SSLv3
@@ -196,11 +197,12 @@ MySQL configuration
 
     Note: these settings may affect other applications that use this database.
 
-#.  Restart mysql server to load config:
+#.  Restart mysql server to load config, and connect to it:
 
     .. code-block:: bash
 
-        service mysql reload
+        service mysql restart
+        mysql
 
 #.  Create a user and database for karaage::
 
@@ -248,6 +250,12 @@ Initial setup
 
 #.  Update other settings in ``/etc/karaage3/settings.py`` as required. See
     comments in this file and :doc:`/ref/settings`.
+
+#.  Reload Apache after changing ``/etc/karaage3/settings.py``.
+
+    .. code-block:: bash
+
+            service apache2 reload
 
 #.  Create DB tables:
 
