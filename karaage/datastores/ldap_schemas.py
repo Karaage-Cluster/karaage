@@ -19,9 +19,11 @@
 import six
 
 import tldap.schemas as schemas
+import tldap.schemas.ad
 import tldap.schemas.rfc
 import tldap.schemas.ds389
 import tldap.methods as methods
+import tldap.methods.ad
 import tldap.methods.common
 import tldap.methods.pwdpolicy
 import tldap.methods.ds389
@@ -388,3 +390,121 @@ class ds389_kg27_group(methods.baseMixin):
         this_key='memberUid',
         linked_cls=ds389_kg27, linked_key='uid', linked_is_p=False,
         related_name="secondary_groups")
+
+
+####################
+# Active Directory #
+####################
+
+class ad_person(methods.baseMixin):
+
+    schema_list = [
+        schemas.ad.person,
+        schemas.rfc.organizationalPerson,
+        schemas.rfc.inetOrgPerson,
+        schemas.ad.user,
+        schemas.ad.posixAccount,
+    ]
+
+    mixin_list = [
+        methods.common.personMixin,
+        methods.common.accountMixin,
+        methods.ad.adUserMixin,
+        kPersonMixin,
+    ]
+
+    class Meta:
+        base_dn_setting = "LDAP_PERSON_BASE"
+        object_classes = set(['top'])
+        search_classes = set(['user'])
+        pk = 'cn'
+
+    managed_by = tldap.manager.ManyToOneDescriptor(
+        this_key='manager',
+        linked_cls='karaage.datastores.ldap_schemas.ad_person',
+        linked_key='dn')
+    manager_of = tldap.manager.OneToManyDescriptor(
+        this_key='dn',
+        linked_cls='karaage.datastores.ldap_schemas.ad_person',
+        linked_key='manager')
+
+
+class ad_account(methods.baseMixin):
+
+    schema_list = [
+        schemas.ad.person,
+        schemas.rfc.organizationalPerson,
+        schemas.rfc.inetOrgPerson,
+        schemas.ad.user,
+        schemas.ad.posixAccount,
+    ]
+
+    mixin_list = [
+        methods.common.personMixin,
+        methods.common.accountMixin,
+        methods.ad.adUserMixin,
+        kAccountMixin,
+    ]
+
+    class Meta:
+        base_dn_setting = "LDAP_ACCOUNT_BASE"
+        object_classes = set(['top'])
+        search_classes = set(['user'])
+        pk = 'cn'
+
+    managed_by = tldap.manager.ManyToOneDescriptor(
+        this_key='manager',
+        linked_cls='karaage.datastores.ldap_schemas.ad_account',
+        linked_key='dn')
+    manager_of = tldap.manager.OneToManyDescriptor(
+        this_key='dn',
+        linked_cls='karaage.datastores.ldap_schemas.ad_account',
+        linked_key='manager')
+
+
+class ad_person_group(methods.baseMixin):
+
+    schema_list = [
+        schemas.ad.group,
+    ]
+
+    mixin_list = [
+        methods.ad.adGroupMixin,
+    ]
+
+    class Meta:
+        base_dn_setting = "LDAP_GROUP_BASE"
+        object_classes = set(['top'])
+        search_classes = set(['group'])
+        pk = 'cn'
+
+    # accounts
+    secondary_people = tldap.manager.AdAccountLinkDescriptor(
+        linked_cls=ad_person, related_name="secondary_groups")
+
+
+class ad_account_group(methods.baseMixin):
+
+    schema_list = [
+        schemas.rfc.posixGroup,
+        schemas.ad.group,
+    ]
+
+    mixin_list = [
+        methods.common.groupMixin,
+        methods.ad.adGroupMixin
+    ]
+
+    class Meta:
+        base_dn_setting = "LDAP_GROUP_BASE"
+        object_classes = set(['top'])
+        search_classes = set(['group'])
+        pk = 'cn'
+
+    # accounts
+    primary_accounts = tldap.manager.OneToManyDescriptor(
+        this_key='gidNumber',
+        linked_cls=ad_account, linked_key='gidNumber',
+        related_name="primary_group")
+    secondary_accounts = tldap.manager.AdAccountLinkDescriptor(
+        linked_cls=ad_account, related_name="secondary_groups")
