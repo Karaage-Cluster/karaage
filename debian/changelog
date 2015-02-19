@@ -1,3 +1,11 @@
+karaage3 (3.1.14-1) unstable; urgency=medium
+
+  * Add missing depends.
+  * Fix errors in installation documentation.
+  * Add untested Active Directory schema support.
+
+ -- Brian May <bam@debian.org>  Thu, 19 Feb 2015 16:22:55 +1100
+
 karaage3 (3.1.13-1) unstable; urgency=medium
 
   * Fix package cleanup.
