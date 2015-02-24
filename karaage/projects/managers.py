@@ -26,5 +26,5 @@ class ActiveProjectManager(models.Manager):
 
 class DeletedProjectManager(models.Manager):
     def get_queryset(self):
-        query = super(ActiveProjectManager, self).get_queryset()
+        query = super(DeletedProjectManager, self).get_queryset()
         return query.filter(is_active=False)
