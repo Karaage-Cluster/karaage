@@ -48,12 +48,12 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-    var name = $("#id_name")
+    var name = $("#id_name");
     var lastValue = name.val();
     name.on('change keyup paste mouseup', function() {
         if (name.val() != lastValue) {
-            lastValue = name.val()
-            newValue = lastValue.split(" ").join("").toLowerCase()
+            lastValue = name.val();
+            var newValue = lastValue.split(" ").join("").toLowerCase();
             $("#id_group_name").val(newValue)
         }
     })
