@@ -195,7 +195,7 @@ RHEL 6 installation
 
 
 Debian installation
----------------------
+-------------------
 
 #.  Run the following commands:
 

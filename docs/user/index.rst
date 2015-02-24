@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Karaage user documentation
-===========================
+==========================
 
 This is documentation for Karaage 3. For documentation for earlier versions of Karaage, please see
 https://github.com/Karaage-Cluster/karaage/wiki.
