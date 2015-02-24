@@ -132,7 +132,7 @@ def saml_details(request):
                 person = saml.add_saml_data(
                     person, request)
                 person.save()
-                return HttpResponseRedirect(url)
+                return HttpResponseRedirect(redirect_to)
             else:
                 return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
