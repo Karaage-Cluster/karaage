@@ -23,7 +23,7 @@ from model_utils import FieldTracker
 
 from karaage.common import log, is_admin
 from karaage.people.models import Person, Group
-from karaage.machines.models import Account, MachineCategory
+from karaage.machines.models import Account
 from karaage.institutes.managers import ActiveInstituteManager
 
 
@@ -33,7 +33,7 @@ class Institute(models.Model):
     delegates = models.ManyToManyField(
         Person, related_name='delegate_for',
         blank=True, null=True, through='InstituteDelegate')
-    group = models.ForeignKey(Group)
+    group = models.OneToOneField('karaage.Group')
     saml_entityid = models.CharField(
         max_length=200,
         null=True, blank=True, unique=True)
@@ -137,8 +137,8 @@ class Institute(models.Model):
 
 @python_2_unicode_compatible
 class InstituteQuota(models.Model):
-    institute = models.ForeignKey(Institute)
-    machine_category = models.ForeignKey(MachineCategory)
+    institute = models.ForeignKey('karaage.Institute')
+    machine_category = models.ForeignKey('karaage.MachineCategory')
     quota = models.DecimalField(max_digits=5, decimal_places=2)
     cap = models.IntegerField(null=True, blank=True)
     disk_quota = models.IntegerField(null=True, blank=True)
@@ -203,9 +203,9 @@ class InstituteQuota(models.Model):
 
 
 class InstituteDelegate(models.Model):
-    person = models.ForeignKey(Person)
-    institute = models.ForeignKey(Institute)
-    send_email = models.BooleanField()
+    person = models.ForeignKey('karaage.Person')
+    institute = models.ForeignKey('karaage.Institute')
+    send_email = models.BooleanField(default=False)
 
     _tracker = FieldTracker()
 

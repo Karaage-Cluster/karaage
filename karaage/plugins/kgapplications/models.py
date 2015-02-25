@@ -1,4 +1,5 @@
-# Copyright 2015 VPAC
+# Copyright 2014-2015 VPAC
+# Copyright 2014 The University of Melbourne
 #
 # This file is part of Karaage.
 #
@@ -33,7 +34,6 @@ from model_utils import FieldTracker
 from karaage.common.constants import TITLES, COUNTRIES
 from karaage.common import new_random_token, get_current_person, is_admin, log
 from karaage.people.models import Person
-from karaage.institutes.models import Institute
 from karaage.projects.models import Project
 from karaage.machines.models import MachineCategory, Account
 
@@ -76,7 +76,7 @@ class Application(models.Model):
         max_length=64, default=new_random_token, editable=False, unique=True)
     expires = models.DateTimeField(editable=False)
     created_by = models.ForeignKey(
-        Person, editable=False, null=True, blank=True)
+        'karaage.Person', editable=False, null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True, editable=False)
     submitted_date = models.DateTimeField(null=True, blank=True)
     state = models.CharField(max_length=5)
@@ -226,7 +226,8 @@ class ProjectApplication(Application):
     # new project request
     name = models.CharField('Title', max_length=200)
     institute = models.ForeignKey(
-        Institute, limit_choices_to={'is_active': True}, null=True, blank=True)
+        'karaage.Institute', limit_choices_to={'is_active': True},
+        null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
     machine_categories = models.ManyToManyField(
@@ -234,7 +235,7 @@ class ProjectApplication(Application):
     pid = models.CharField(max_length=50, null=True, blank=True)
 
     # existing project request
-    project = models.ForeignKey(Project, null=True, blank=True)
+    project = models.ForeignKey('karaage.Project', null=True, blank=True)
 
     objects = ApplicationManager()
 
@@ -344,7 +345,7 @@ class Applicant(models.Model):
     short_name = models.CharField(max_length=30)
     full_name = models.CharField(max_length=60)
     institute = models.ForeignKey(
-        Institute,
+        'karaage.Institute',
         help_text="If your institute is not listed please contact %s"
         % settings.ACCOUNTS_EMAIL,
         limit_choices_to={'is_active': True},
