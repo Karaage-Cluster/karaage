@@ -65,6 +65,7 @@ class InstituteTestCase(UnitTestCase):
 
         # Test setting up initial group for institute
         self.resetDatastore()
+        group1.parent = institute
         group1.save()
         group1.add_person(account1.person)
         self.assertEqual(
