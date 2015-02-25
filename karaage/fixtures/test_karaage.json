@@ -347,6 +347,13 @@
         }
     },
     {
+        "pk": 1,
+        "model": "karaage.projectlevel",
+        "fields": {
+            "level": "1"
+        }
+    },
+    {
         "fields": {
             "level": "1"
         },

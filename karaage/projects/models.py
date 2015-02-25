@@ -22,6 +22,7 @@ from django.utils.encoding import python_2_unicode_compatible
 import datetime
 
 from model_utils import FieldTracker
+from audit_log.models.managers import AuditLog
 
 from karaage.people.models import Person, Group
 from karaage.institutes.models import Institute
@@ -293,6 +294,19 @@ class ProjectQuota(models.Model):
         if iq.cap is not None:
             return iq.cap
         return iq.quota * 1000
+
+
+@python_2_unicode_compatible
+class ProjectLevel(models.Model):
+    level = models.CharField(max_length=255)
+
+    audit_log = AuditLog()
+
+    def __str__(self):
+        return self.level
+
+    class Meta:
+        ordering = ['level']
 
 
 def _leaders_changed(
