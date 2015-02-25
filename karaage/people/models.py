@@ -22,6 +22,7 @@ import warnings
 
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.contenttypes.fields import GenericForeignKey, ContentType
 from django.core.urlresolvers import reverse
 from django.utils.encoding import python_2_unicode_compatible
 from jsonfield import JSONField
@@ -550,9 +551,25 @@ class CareerLevel(models.Model):
 
 class Group(models.Model):
 
-    """Groups represent collections of people, these objects can be
-    expressed externally in a datastore."""
-    name = models.CharField(max_length=255, unique=True)
+    """
+    Groups represent collections of people, these objects can be
+    expressed externally in a datastore.
+
+    Groups here are replicated to clusters as posix groups (/etc/groups) with
+    their associated members.  Groups should relate to a parent which provides
+    the motivation for having the group, for example members of a project
+    should be members of the group associated with the project - the parent
+    generic foreign key in this instance would refer to the project.
+
+    The parent relationship also helps to avoid shadow namespacing issues where
+    things like project PIDs and institute names are the same (think "RMIT").
+    The application code is forced to resolve any naming conflicts, and group
+    membership synchronisation issues are no longer possible.
+    """
+    name = models.CharField(max_length=255, unique=True, null=True)
+    content_type = models.ForeignKey(ContentType, blank=True, null=True)
+    object_id = models.PositiveIntegerField(blank=True, null=True)
+    parent = GenericForeignKey('content_type', 'object_id')
     foreign_id = models.CharField(
         max_length=255, null=True, unique=True,
         help_text='The foreign identifier from the datastore.')
@@ -570,6 +587,9 @@ class Group(models.Model):
         ordering = ['name']
         db_table = 'people_group'
         app_label = 'karaage'
+        unique_together = [
+            ['content_type', 'object_id'],
+        ]
 
     def __str__(self):
         return six.u("%s") % self.name

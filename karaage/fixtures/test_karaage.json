@@ -3,7 +3,12 @@
         "pk": 500,
         "model": "karaage.group",
         "fields": {
+            "object_id": 1,
             "members": [],
+            "content_type": [
+                "karaage",
+                "institute"
+            ],
             "name": "example",
             "description": "Test."
         }
@@ -12,7 +17,12 @@
         "pk": 501,
         "model": "karaage.group",
         "fields": {
+            "object_id": 2,
             "members": [],
+            "content_type": [
+                "karaage",
+                "institute"
+            ],
             "name": "otherinst",
             "description": "Test."
         }
@@ -21,7 +31,12 @@
         "pk": 502,
         "model": "karaage.group",
         "fields": {
+            "object_id": 3,
             "members": [],
+            "content_type": [
+                "karaage",
+                "institute"
+            ],
             "name": "samlinst",
             "description": "Test."
         }
@@ -295,7 +310,12 @@
         "pk": 503,
         "model": "karaage.group",
         "fields": {
+            "object_id": 1,
             "members": [
+            ],
+            "content_type": [
+                "karaage",
+                "project"
             ],
             "name": "testproject1",
             "description": "Test."
