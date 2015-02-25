@@ -345,5 +345,12 @@
             "machine_category": 1,
             "project": 1
         }
+    },
+    {
+        "fields": {
+            "level": "1"
+        },
+        "model": "karaage.careerlevel",
+        "pk": 1
     }
 ]
