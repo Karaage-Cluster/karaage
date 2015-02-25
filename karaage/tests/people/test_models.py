@@ -24,6 +24,10 @@ from karaage.tests.fixtures import PersonFactory, InstituteFactory
 
 
 class PersonTestCase(TestCase):
+    fixtures = [
+        'test_karaage.json',
+    ]
+
     def test_minimum_create(self):
         institute = InstituteFactory()
         person = Person.objects.create(
@@ -32,6 +36,7 @@ class PersonTestCase(TestCase):
             short_name='RK',
             full_name='Rick Spicy McHaggis',
             email='test@example.com',
+            career_level_id=1,
             institute=institute)
         person.full_clean()
         self.assertFalse(person.is_admin)
@@ -46,7 +51,10 @@ class PersonTestCase(TestCase):
         assert_raises = self.assertRaises(django_exceptions.ValidationError)
 
         # Max length
-        person = PersonFactory(username="a" * 255)
+        person = PersonFactory(
+            username="a" * 255,
+            career_level_id=1,
+        )
         person.full_clean()
 
         # Name is too long
