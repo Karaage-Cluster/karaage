@@ -56,7 +56,7 @@ tests_require = [
 ]
 
 setup(
-    name="karaage",
+    name="karaage4",
     version=open('VERSION.txt', 'r').readline().strip(),
     url='https://github.com/Karaage-Cluster/karaage',
     author='Brian May',

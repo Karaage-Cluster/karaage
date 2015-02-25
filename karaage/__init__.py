@@ -1,5 +1,5 @@
-# Original code: Copyright 2014 The University of Melbourne
 # Copyright 2010, 2015 VPAC
+# Copyright 2014 The University of Melbourne
 #
 # This file is part of Karaage.
 #
@@ -23,7 +23,7 @@ from pkg_resources import get_distribution, DistributionNotFound
 default_app_config = 'karaage.apps.Karaage'
 
 try:
-    _dist = get_distribution('karaage')
+    _dist = get_distribution('karaage4')
     if not __file__.startswith(os.path.join(_dist.location, 'karaage', '')):
         # not installed, but there is another version that *is*
         raise DistributionNotFound

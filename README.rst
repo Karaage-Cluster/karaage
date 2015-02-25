@@ -1,4 +1,4 @@
-Karaage 3
+Karaage 4
 =========
 
 **Cluster account management tool.**
@@ -12,8 +12,29 @@ Karaage manages users and projects in a cluster and can store the data in
 various backends.
 
 
+Project background
+------------------
+
+Karaage 4 will extend Karaage 3 to allow management of resource allocations to
+projects based on grants. It will also make Karaage faster and more responsive.
+
+
+Karaage 4 proposal
+------------------
+
+A Karaage Enhancement Proposal -- KEP 4000 -- similar to a `Python Enhancement
+Proposal <https://www.python.org/dev/peps/pep-0001/#what-is-a-pep>`_ is being
+developed.
+
+A link to KEP 4000 will being added to this README once the draft is complete,
+and comment from the Karaage community will be sought.
+
+
 Documentation
 -------------
+
+The Karaage 4 documentation will be available soon on `ReadTheDocs
+<http://readthedocs.org/>`_.
 
 Mailing list: `<http://lists.vpac.org/cgi-bin/mailman/listinfo/karaage>`_
 
@@ -77,8 +98,8 @@ karaage-software
 Contact
 -------
 
-The lead developer for Karaage 3 is `Brian May
-<mailto:"brian@v3.org.au">`_.
+The lead developer for Karaage 4 is `Tyson Clugg
+<mailto:"tyson@commoncode.com.au">`_.
 
 Setting up a development instance
 ---------------------------------
@@ -118,9 +139,9 @@ Step 3. Set up a virtualenv
 
 ::
 
-    $ mkvirtualenv karaage3
+    $ mkvirtualenv karaage4
 
-Add these lines to the end of ``~/.virtualenvs/karaage3/bin/postactivate``::
+Add these lines to the end of ``~/.virtualenvs/karaage4/bin/postactivate``::
 
     export KARAAGE_SECRET_KEY='d4-5vjhdyi)673gd56#ge@3r8t#*)+s8z-z0l!_sy94ol!m'
     export KARAAGE_DEBUG='True'
@@ -132,14 +153,14 @@ Restart the virtualenv so that these setting take effect:
 ::
 
     $ deactivate
-    $ workon karaage3
+    $ workon karaage4
 
 Step 4. Install Karaage 4
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
-    $ pip install -e 'git+https://github.com/vlsci/karaage#egg=karaage3[usage,applications,software]'
+    $ pip install -e 'git+https://github.com/vlsci/karaage#egg=karaage4[usage,applications,software]'
 
 Step 5. Migrate database
 ^^^^^^^^^^^^^^^^^^^^^^^^

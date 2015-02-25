@@ -1,3 +1,9 @@
+karaage4 (4.0.0-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+
+ -- Brian May <bam@debian.org>  Mon, 09 Feb 2015 14:54:17 +1100
+
 karaage3 (3.1.14-1) unstable; urgency=medium
 
   * Add missing depends.
