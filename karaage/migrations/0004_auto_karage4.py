@@ -63,6 +63,26 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='KaraageSchemeAuditLogEntry',
+            fields=[
+                ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
+                ('name', models.CharField(max_length=200, db_index=True)),
+                ('description', models.CharField(max_length=200, blank=True)),
+                ('opened', models.DateField()),
+                ('closed', models.DateField(null=True, blank=True)),
+                ('action_id', models.AutoField(serialize=False, primary_key=True)),
+                ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
+                ('action_user', audit_log.models.fields.LastUserField(to='karaage.Person', null=True, editable=False, related_name='_scheme_audit_log_entry')),
+            ],
+            options={
+                'db_table': 'karaage_schemeauditlogentry',
+                'ordering': ('-action_date',),
+                'default_permissions': (),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='ProjectLevel',
             fields=[
                 ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
@@ -86,6 +106,20 @@ class Migration(migrations.Migration):
                 ('project_level', models.ForeignKey(null=True, to='karaage.ProjectLevel')),
             ],
             options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Scheme',
+            fields=[
+                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('name', models.CharField(max_length=200, unique=True)),
+                ('description', models.CharField(max_length=200, blank=True)),
+                ('opened', models.DateField()),
+                ('closed', models.DateField(null=True, blank=True)),
+            ],
+            options={
+                'ordering': ['name'],
             },
             bases=(models.Model,),
         ),

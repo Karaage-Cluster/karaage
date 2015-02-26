@@ -1,4 +1,5 @@
 # Copyright 2014-2015 VPAC
+# Copyright 2014 The University of Melbourne
 #
 # This file is part of Karaage.
 #
@@ -21,3 +22,4 @@ import karaage.people.models  # NOQA
 import karaage.projects.models  # NOQA
 import karaage.institutes.models  # NOQA
 import karaage.machines.models  # NOQA
+import karaage.schemes.models  # NOQA
