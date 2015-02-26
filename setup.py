@@ -109,6 +109,7 @@ setup(
         "django-filter",
         "six",
         "slimit>=0.8.1",
+        "sqlparse",
     ],
     tests_require=tests_require,
     extras_require={
