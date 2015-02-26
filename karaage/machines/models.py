@@ -48,6 +48,8 @@ class MachineCategory(models.Model):
 
     _tracker = FieldTracker()
 
+    audit_log = AuditLog()
+
     def __init__(self, *args, **kwargs):
         super(MachineCategory, self).__init__(*args, **kwargs)
         self._datastore = None
@@ -175,6 +177,8 @@ class Account(models.Model):
         help_text='Datastore specific values should be stored in this field.')
 
     _tracker = FieldTracker()
+
+    audit_log = AuditLog()
 
     def __init__(self, *args, **kwargs):
         super(Account, self).__init__(*args, **kwargs)

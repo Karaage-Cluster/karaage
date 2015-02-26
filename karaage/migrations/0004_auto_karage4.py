@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 import mptt.fields
 import django.utils.timezone
+import jsonfield.fields
+import datetime
 import audit_log.models.fields
 
 
@@ -75,6 +77,32 @@ class Migration(migrations.Migration):
             ],
             options={
                 'ordering': ['-expires', '-project__end_date', 'project__name', 'description'],
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='AccountAuditLogEntry',
+            fields=[
+                ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
+                ('username', models.CharField(max_length=255)),
+                ('foreign_id', models.CharField(null=True, help_text='The foreign identifier from the datastore.', max_length=255, db_index=True)),
+                ('date_created', models.DateField()),
+                ('date_deleted', models.DateField(null=True, blank=True)),
+                ('disk_quota', models.IntegerField(null=True, help_text='In GB', blank=True)),
+                ('shell', models.CharField(max_length=50)),
+                ('login_enabled', models.BooleanField(default=True)),
+                ('extra_data', jsonfield.fields.JSONField(default={}, help_text='Datastore specific values should be stored in this field.')),
+                ('action_id', models.AutoField(serialize=False, primary_key=True)),
+                ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
+                ('action_user', audit_log.models.fields.LastUserField(to='karaage.Person', null=True, editable=False, related_name='_account_audit_log_entry')),
+                ('default_project', models.ForeignKey(blank=True, null=True, to='karaage.Project')),
+                ('machine_category', models.ForeignKey(to='karaage.MachineCategory')),
+                ('person', models.ForeignKey(to='karaage.Person')),
+            ],
+            options={
+                'ordering': ('-action_date',),
+                'default_permissions': (),
             },
             bases=(models.Model,),
         ),
@@ -169,6 +197,134 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='GroupAuditLogEntry',
+            fields=[
+                ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
+                ('name', models.CharField(max_length=255, db_index=True)),
+                ('foreign_id', models.CharField(null=True, help_text='The foreign identifier from the datastore.', max_length=255, db_index=True)),
+                ('description', models.TextField(null=True, blank=True)),
+                ('extra_data', jsonfield.fields.JSONField(default={}, help_text='Datastore specific values should be stored in this field.')),
+                ('action_id', models.AutoField(serialize=False, primary_key=True)),
+                ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
+                ('action_user', audit_log.models.fields.LastUserField(to='karaage.Person', null=True, editable=False, related_name='_group_audit_log_entry')),
+            ],
+            options={
+                'ordering': ('-action_date',),
+                'default_permissions': (),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='InstituteAuditLogEntry',
+            fields=[
+                ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
+                ('name', models.CharField(max_length=255, db_index=True)),
+                ('saml_entityid', models.CharField(null=True, max_length=200, blank=True, db_index=True)),
+                ('is_active', models.BooleanField(default=True)),
+                ('action_id', models.AutoField(serialize=False, primary_key=True)),
+                ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
+                ('action_user', audit_log.models.fields.LastUserField(to='karaage.Person', null=True, editable=False, related_name='_institute_audit_log_entry')),
+                ('group', models.ForeignKey(to='karaage.Group')),
+            ],
+            options={
+                'ordering': ('-action_date',),
+                'default_permissions': (),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='InstituteDelegateAuditLogEntry',
+            fields=[
+                ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
+                ('send_email', models.BooleanField()),
+                ('action_id', models.AutoField(serialize=False, primary_key=True)),
+                ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
+                ('action_user', audit_log.models.fields.LastUserField(to='karaage.Person', null=True, editable=False, related_name='_institutedelegate_audit_log_entry')),
+                ('institute', models.ForeignKey(to='karaage.Institute')),
+                ('person', models.ForeignKey(to='karaage.Person')),
+            ],
+            options={
+                'ordering': ('-action_date',),
+                'default_permissions': (),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='InstituteQuotaAuditLogEntry',
+            fields=[
+                ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
+                ('quota', models.DecimalField(max_digits=5, decimal_places=2)),
+                ('cap', models.IntegerField(null=True, blank=True)),
+                ('disk_quota', models.IntegerField(null=True, blank=True)),
+                ('action_id', models.AutoField(serialize=False, primary_key=True)),
+                ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
+                ('action_user', audit_log.models.fields.LastUserField(to='karaage.Person', null=True, editable=False, related_name='_institutequota_audit_log_entry')),
+                ('institute', models.ForeignKey(to='karaage.Institute')),
+                ('machine_category', models.ForeignKey(to='karaage.MachineCategory')),
+            ],
+            options={
+                'ordering': ('-action_date',),
+                'default_permissions': (),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='MachineCategoryAuditLogEntry',
+            fields=[
+                ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
+                ('name', models.CharField(max_length=100, db_index=True)),
+                ('datastore', models.CharField(help_text='Modifying this value on existing categories will affect accounts created under the old datastore', max_length=255, choices=[('dummy', 'dummy'), ('ldap', 'ldap')])),
+                ('action_id', models.AutoField(serialize=False, primary_key=True)),
+                ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
+                ('action_user', audit_log.models.fields.LastUserField(to='karaage.Person', null=True, editable=False, related_name='_machinecategory_audit_log_entry')),
+            ],
+            options={
+                'ordering': ('-action_date',),
+                'default_permissions': (),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ProjectAuditLogEntry',
+            fields=[
+                ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
+                ('pid', models.CharField(max_length=255, db_index=True)),
+                ('name', models.CharField(max_length=200)),
+                ('description', models.TextField(null=True, blank=True)),
+                ('is_approved', models.BooleanField(default=False)),
+                ('start_date', models.DateField(default=datetime.datetime.today)),
+                ('end_date', models.DateField(null=True, blank=True)),
+                ('additional_req', models.TextField(null=True, blank=True)),
+                ('is_active', models.BooleanField(default=False)),
+                ('date_approved', models.DateField(null=True, editable=False, blank=True)),
+                ('date_deleted', models.DateField(null=True, editable=False, blank=True)),
+                ('last_usage', models.DateField(null=True, editable=False, blank=True)),
+                ('lft', models.PositiveIntegerField(editable=False, db_index=True)),
+                ('rght', models.PositiveIntegerField(editable=False, db_index=True)),
+                ('tree_id', models.PositiveIntegerField(editable=False, db_index=True)),
+                ('level', models.PositiveIntegerField(editable=False, db_index=True)),
+                ('action_id', models.AutoField(serialize=False, primary_key=True)),
+                ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
+                ('action_user', audit_log.models.fields.LastUserField(to='karaage.Person', null=True, editable=False, related_name='_project_audit_log_entry')),
+                ('approved_by', models.ForeignKey(blank=True, null=True, editable=False, related_name='_auditlog_project_approver', to='karaage.Person')),
+                ('deleted_by', models.ForeignKey(blank=True, null=True, editable=False, related_name='_auditlog_project_deletor', to='karaage.Person')),
+                ('group', models.ForeignKey(to='karaage.Group')),
+                ('institute', models.ForeignKey(to='karaage.Institute')),
+                ('parent', mptt.fields.TreeForeignKey(blank=True, null=True, related_name='_auditlog_children', to='karaage.Project')),
+            ],
+            options={
+                'ordering': ('-action_date',),
+                'default_permissions': (),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='ProjectLevelAuditLogEntry',
             fields=[
                 ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
@@ -177,6 +333,24 @@ class Migration(migrations.Migration):
                 ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
                 ('action_user', audit_log.models.fields.LastUserField(to='karaage.Person', null=True, editable=False, related_name='_projectlevel_audit_log_entry')),
+            ],
+            options={
+                'ordering': ('-action_date',),
+                'default_permissions': (),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ProjectQuotaAuditLogEntry',
+            fields=[
+                ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
+                ('cap', models.IntegerField(null=True, blank=True)),
+                ('action_id', models.AutoField(serialize=False, primary_key=True)),
+                ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
+                ('action_user', audit_log.models.fields.LastUserField(to='karaage.Person', null=True, editable=False, related_name='_projectquota_audit_log_entry')),
+                ('machine_category', models.ForeignKey(to='karaage.MachineCategory')),
+                ('project', models.ForeignKey(to='karaage.Project')),
             ],
             options={
                 'ordering': ('-action_date',),
