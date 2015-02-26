@@ -105,6 +105,7 @@ setup(
         "django-model-utils >= 2.0.0",
         "python-tldap >= 0.3.3",
         "django-pipeline",
+        "django-mptt>=0.6.1",
         "django-tables2",
         "django-filter",
         "six",

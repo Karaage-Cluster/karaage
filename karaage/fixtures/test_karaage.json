@@ -310,16 +310,20 @@
             "last_usage": null,
             "start_date": "2010-05-13",
             "is_approved": 1,
+            "lft": 0,
+            "tree_id": 0,
             "name": "Test Project 1",
             "approved_by": null,
             "pid": "TestProject1",
             "date_approved": null,
             "additional_req": "",
+            "level": 0,
             "date_deleted": null,
             "description": "",
             "institute": 1,
             "is_active": 1,
-            "deleted_by": null
+            "deleted_by": null,
+            "rght": 0
         }
     },
     {
