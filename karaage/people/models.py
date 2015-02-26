@@ -496,6 +496,33 @@ class Group(models.Model):
         machine_category_delete_group(self)
     delete.alters_data = True
 
+    def sync_members(self, people):
+        """Synchronise membership list with minimal updates."""
+        # determine old set of member ids
+        old_member_ids = set(self.members.values_list('pk', flat=True))
+
+        # determine new set of member ids
+        new_member_ids = set()
+        for person in people:
+            if hasattr(person, 'pk'):
+                person_id = person.pk
+            else:
+                person_id = int(person)
+            new_member_ids.add(person_id)
+
+        # people to be added
+        add_member_ids = new_member_ids.difference(old_member_ids)
+        if add_member_ids:
+            self.members.add(
+                *[tmp_person_id for tmp_person_id in add_member_ids])
+
+        # people to be removed
+        del_member_ids = old_member_ids.difference(new_member_ids)
+        if del_member_ids:
+            self.members.remove(
+                *[tmp_person_id for tmp_person_id in del_member_ids])
+    sync_members.alters_data = True
+
     def add_person(self, person):
         self.members.add(person)
     add_person.alters_data = True
