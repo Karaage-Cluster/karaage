@@ -18,6 +18,43 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='Allocation',
+            fields=[
+                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('description', models.CharField(max_length=100)),
+                ('quantity', models.FloatField()),
+            ],
+            options={
+                'ordering': ['allocation_pool'],
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='AllocationPeriod',
+            fields=[
+                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('name', models.CharField(max_length=255)),
+                ('start', models.DateTimeField()),
+                ('end', models.DateTimeField()),
+            ],
+            options={
+                'ordering': ['-end', 'name'],
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='AllocationPool',
+            fields=[
+                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('period', models.ForeignKey(to='karaage.AllocationPeriod')),
+                ('project', models.ForeignKey(to='karaage.Project')),
+            ],
+            options={
+                'ordering': ['-period__end', '-project__end_date', 'project__name'],
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='CareerLevel',
             fields=[
                 ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
@@ -25,6 +62,75 @@ class Migration(migrations.Migration):
             ],
             options={
                 'ordering': ['level'],
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Grant',
+            fields=[
+                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('description', models.CharField(max_length=255)),
+                ('date', models.DateField()),
+                ('begins', models.DateField()),
+                ('expires', models.DateField()),
+                ('project', models.ForeignKey(to='karaage.Project')),
+            ],
+            options={
+                'ordering': ['-expires', '-project__end_date', 'project__name', 'description'],
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='AllocationAuditLogEntry',
+            fields=[
+                ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
+                ('description', models.CharField(max_length=100)),
+                ('quantity', models.FloatField()),
+                ('action_id', models.AutoField(serialize=False, primary_key=True)),
+                ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
+                ('action_user', audit_log.models.fields.LastUserField(to='karaage.Person', null=True, editable=False, related_name='_allocation_audit_log_entry')),
+                ('allocation_pool', models.ForeignKey(to='karaage.AllocationPool')),
+                ('grant', models.ForeignKey(to='karaage.Grant')),
+            ],
+            options={
+                'ordering': ('-action_date',),
+                'default_permissions': (),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='AllocationPeriodAuditLogEntry',
+            fields=[
+                ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
+                ('name', models.CharField(max_length=255)),
+                ('start', models.DateTimeField()),
+                ('end', models.DateTimeField()),
+                ('action_id', models.AutoField(serialize=False, primary_key=True)),
+                ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
+                ('action_user', audit_log.models.fields.LastUserField(to='karaage.Person', null=True, editable=False, related_name='_allocationperiod_audit_log_entry')),
+            ],
+            options={
+                'ordering': ('-action_date',),
+                'default_permissions': (),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='AllocationPoolAuditLogEntry',
+            fields=[
+                ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
+                ('action_id', models.AutoField(serialize=False, primary_key=True)),
+                ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
+                ('action_user', audit_log.models.fields.LastUserField(to='karaage.Person', null=True, editable=False, related_name='_allocationpool_audit_log_entry')),
+                ('period', models.ForeignKey(to='karaage.AllocationPeriod')),
+                ('project', models.ForeignKey(to='karaage.Project')),
+            ],
+            options={
+                'ordering': ('-action_date',),
+                'default_permissions': (),
             },
             bases=(models.Model,),
         ),
@@ -37,6 +143,26 @@ class Migration(migrations.Migration):
                 ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
                 ('action_user', audit_log.models.fields.LastUserField(to='karaage.Person', null=True, editable=False, related_name='_careerlevel_audit_log_entry')),
+            ],
+            options={
+                'ordering': ('-action_date',),
+                'default_permissions': (),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='GrantAuditLogEntry',
+            fields=[
+                ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
+                ('description', models.CharField(max_length=255)),
+                ('date', models.DateField()),
+                ('begins', models.DateField()),
+                ('expires', models.DateField()),
+                ('action_id', models.AutoField(serialize=False, primary_key=True)),
+                ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
+                ('action_user', audit_log.models.fields.LastUserField(to='karaage.Person', null=True, editable=False, related_name='_grant_audit_log_entry')),
+                ('project', models.ForeignKey(to='karaage.Project')),
             ],
             options={
                 'ordering': ('-action_date',),
@@ -190,6 +316,42 @@ class Migration(migrations.Migration):
             model_name='resourceauditlogentry',
             name='resource_pool',
             field=models.ForeignKey(to='karaage.ResourcePool'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='grantauditlogentry',
+            name='scheme',
+            field=models.ForeignKey(to='karaage.Scheme'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='allocationpoolauditlogentry',
+            name='resource_pool',
+            field=models.ForeignKey(to='karaage.ResourcePool'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='grant',
+            name='scheme',
+            field=models.ForeignKey(to='karaage.Scheme'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='allocationpool',
+            name='resource_pool',
+            field=models.ForeignKey(to='karaage.ResourcePool'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='allocation',
+            name='allocation_pool',
+            field=models.ForeignKey(to='karaage.AllocationPool'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='allocation',
+            name='grant',
+            field=models.ForeignKey(to='karaage.Grant'),
             preserve_default=True,
         ),
         migrations.RunSQL(
