@@ -33,6 +33,7 @@ from karaage.allocations.forms import (
     GrantForm,
     SchemeForm,
 )
+from karaage.common.models import Usage
 from karaage.common.decorators import admin_required
 from karaage.projects.models import Project
 
@@ -189,6 +190,10 @@ def delete_grant(request, project_id, grant_id):
     errors = []
     if Allocation.objects.filter(grant=record).exists():
         errors.append('At least one allocation is using this grant')
+    if Usage.objects.filter(grant=record).exists():
+        errors.append(
+            'At least one usage record table record references this grant'
+        )
 
     if request.method == 'POST':
         record.delete()
