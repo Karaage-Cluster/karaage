@@ -231,5 +231,77 @@
         </div>
     </div>
     {% endif %}
+
+    {% if is_admin %}
+    <div class="module">
+        <h2>Allocations</h2>
+        <h3>Allocation pools</h3>
+        {% if project.allocationpool_set.all %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Resource pool</th>
+                    <th>Period</th>
+                    <th>Quantity allocated</th>
+                    <th>Quantity used</th>
+                    <th>Quantity remaining</th>
+                    <th>Percent used</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ap in project.allocationpool_set.all %}
+                <tr>
+                    <td>{{ ap.resource_pool }}</td>
+                    <td>{{ ap.period }}</td>
+                    <td>{{ ap.allocated }}</td>
+                    <td>{{ ap.used }}</td>
+                    <td>{{ ap.remaining }}</td>
+                    <td>{{ ap.used_percent|default_if_none:"n/a" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+        <h3>Individual allocations</h3>
+        {% if allocations %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Allocation description</th>
+                    <th>Resource pool</th>
+                    <th>Period</th>
+                    <th>Grant</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in allocations %}
+                <tr>
+                    <td><a href={% url 'allocation_edit' a.grant.project.id a.id %}>
+                      {{ a.description }}</a></td>
+                    <td>{{ a.allocation_pool.resource_pool }}</td>
+                    <td>{{ a.allocation_pool.period }}</td>
+                    <td><a href={% url 'grant_edit' a.grant.project.id a.grant.id %}>
+                      {{ a.grant }}</a></td>
+                    <td>{{ a.quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+        <div class="object-tools">
+            <ul>
+                <li><a href="{% url 'allocation_add' project.id %}" class="addlink">
+                  Add allocation</a></li>
+                <li><a href="{% url 'grant_add' project.id %}" class="addlink">
+                  Add grant</a></li>
+                <li><a href="{% url 'allocation_period_add' project.id %}" class="addlink">
+                  Add allocation period</a></li>
+                <li><a href="{% url 'scheme_add' project.id %}" class="addlink">
+                  Add scheme</a></li>
+            </ul>
+        </div>
+    {% endif %}
+    </div>
 </div>
 {% endblock %}

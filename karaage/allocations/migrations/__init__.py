@@ -1,5 +1,4 @@
-# Copyright 2014-2015 VPAC
-# Copyright 2014 The University of Melbourne
+# Copyright 2015 VPAC
 #
 # This file is part of Karaage.
 #
@@ -15,12 +14,3 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
-
-
-import karaage.common.models  # NOQA
-import karaage.people.models  # NOQA
-import karaage.projects.models  # NOQA
-import karaage.institutes.models  # NOQA
-import karaage.machines.models  # NOQA
-import karaage.allocations.models  # NOQA
-import karaage.schemes.models  # NOQA
