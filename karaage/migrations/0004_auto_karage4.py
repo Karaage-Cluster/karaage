@@ -63,6 +63,43 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='KaraageResourceAuditLogEntry',
+            fields=[
+                ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
+                ('scaling_factor', models.FloatField()),
+                ('resource_type', models.CharField(max_length=255, choices=[('slurm_cpu', 'Slurm (CPU)'), ('slurm_mem', 'Slurm (MEM)'), ('gpfs', 'GPFS')])),
+                ('quantity', models.BigIntegerField()),
+                ('action_id', models.AutoField(serialize=False, primary_key=True)),
+                ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
+                ('action_user', audit_log.models.fields.LastUserField(to='karaage.Person', null=True, editable=False, related_name='_resource_audit_log_entry')),
+                ('machine', models.ForeignKey(to='karaage.Machine')),
+            ],
+            options={
+                'db_table': 'karaage_resourceauditlogentry',
+                'ordering': ('-action_date',),
+                'default_permissions': (),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='KaraageResourcePoolAuditLogEntry',
+            fields=[
+                ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
+                ('name', models.CharField(max_length=255, db_index=True)),
+                ('action_id', models.AutoField(serialize=False, primary_key=True)),
+                ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
+                ('action_user', audit_log.models.fields.LastUserField(to='karaage.Person', null=True, editable=False, related_name='_resourcepool_audit_log_entry')),
+            ],
+            options={
+                'db_table': 'karaage_resourcepoolauditlogentry',
+                'ordering': ('-action_date',),
+                'default_permissions': (),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='KaraageSchemeAuditLogEntry',
             fields=[
                 ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
@@ -110,6 +147,31 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='Resource',
+            fields=[
+                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('scaling_factor', models.FloatField()),
+                ('resource_type', models.CharField(max_length=255, choices=[('slurm_cpu', 'Slurm (CPU)'), ('slurm_mem', 'Slurm (MEM)'), ('gpfs', 'GPFS')])),
+                ('quantity', models.BigIntegerField()),
+                ('machine', models.ForeignKey(to='karaage.Machine')),
+            ],
+            options={
+                'ordering': ['resource_type'],
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ResourcePool',
+            fields=[
+                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('name', models.CharField(max_length=255, unique=True)),
+            ],
+            options={
+                'ordering': ['name'],
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='Scheme',
             fields=[
                 ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
@@ -122,6 +184,18 @@ class Migration(migrations.Migration):
                 'ordering': ['name'],
             },
             bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='resource',
+            name='resource_pool',
+            field=models.ForeignKey(to='karaage.ResourcePool'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='karaageresourceauditlogentry',
+            name='resource_pool',
+            field=models.ForeignKey(to='karaage.ResourcePool'),
+            preserve_default=True,
         ),
         migrations.RunSQL(
             '''
