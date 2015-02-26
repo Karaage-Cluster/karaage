@@ -37,6 +37,62 @@ DELETION = 3
 COMMENT = 4
 
 
+@python_2_unicode_compatible
+class Usage(models.Model):
+    account = models.ForeignKey('karaage.Account')
+    allocation_pool = models.ForeignKey('karaage.AllocationPool', null=True)
+    allocation_period = models.ForeignKey(
+        'karaage.AllocationPeriod', null=True)
+    content_type = models.ForeignKey('contenttypes.ContentType')
+    grant = models.ForeignKey('karaage.Grant', null=True)
+    person_institute = models.ForeignKey(
+        'karaage.Institute',
+        related_name='person_institute',
+        null=True,
+    )
+    project_institute = models.ForeignKey(
+        'karaage.Institute',
+        related_name='project_institute',
+    )
+    machine = models.ForeignKey('karaage.Machine')
+    person = models.ForeignKey('karaage.Person', null=True)
+    submitted_project = models.ForeignKey(
+        'karaage.Project',
+        related_name='submitted_usage',
+    )
+    allocated_project = models.ForeignKey(
+        'karaage.Project',
+        related_name='allocated_usage',
+        null=True,
+    )
+    resource = models.ForeignKey('karaage.Resource')
+    resource_pool = models.ForeignKey('karaage.ResourcePool', null=True)
+    scheme = models.ForeignKey('karaage.Scheme', null=True)
+    person_project_level = models.ForeignKey(
+        'karaage.ProjectLevel',
+        blank=True, null=True,  # legacy data doesn't have person project level
+    )
+    person_career_level = models.ForeignKey(
+        'karaage.CareerLevel',
+        blank=True, null=True,  # legacy data doesn't have person career level
+    )
+    count = models.PositiveIntegerField()
+    created = models.DateTimeField(auto_now_add=True)
+    description = models.CharField(max_length=255)
+    range_start = models.DateTimeField()
+    range_end = models.DateTimeField()
+    raw_used = models.FloatField()
+    used = models.FloatField()
+
+    def __str__(self):
+        return self.description
+
+    class Meta:
+        # Not using ordering so database planner is free to pick the
+        # rows as they come.
+        pass
+
+
 class LogEntryManager(models.Manager):
 
     def log_action(self, user_id, content_type_id, object_id,
