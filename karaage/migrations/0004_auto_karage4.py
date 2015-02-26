@@ -73,6 +73,74 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
+        migrations.CreateModel(
+            name='ProjectMembership',
+            fields=[
+                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('is_project_supervisor', models.BooleanField(default=False)),
+                ('is_project_leader', models.BooleanField(default=False)),
+                ('is_default_project', models.BooleanField(default=False)),
+                ('is_primary_contact', models.BooleanField(default=False)),
+                ('person', models.ForeignKey(to='karaage.Person')),
+                ('project', models.ForeignKey(to='karaage.Project')),
+                ('project_level', models.ForeignKey(null=True, to='karaage.ProjectLevel')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.RunSQL(
+            '''
+                INSERT INTO karaage_projectmembership (
+                    person_id,
+                    project_id,
+                    is_project_supervisor,
+                    is_project_leader,
+                    is_default_project,
+                    is_primary_contact
+                ) SELECT
+                    members.person_id,
+                    project.id,
+                    '0',
+                    leaders.id IS NOT NULL,
+                    members.person_id IN (
+                        SELECT person_id
+                        FROM account
+                        WHERE default_project_id = project.id
+                    ),
+                    '0'
+                    FROM people_group_members members
+                        INNER JOIN people_group grp ON (
+                            members.group_id = grp.id
+                        )
+                        INNER JOIN project ON (
+                            project.pid = grp.name
+                        )
+                        LEFT JOIN project_leaders leaders ON (
+                            leaders.project_id = project.id
+                        )
+            ''',
+            '''
+                UPDATE account SET default_project_id = (
+                    SELECT membership.project_id
+                    FROM karaage_projectmembership membership
+                    WHERE membership.is_default_project
+                    AND account.person_id = membership.person_id
+                );
+
+                INSERT INTO project_leaders (
+                    project_id,
+                    person_id
+                ) SELECT project_id, person_id
+                FROM karaage_projectmembership
+                WHERE is_project_leader
+                ORDER BY id;
+            ''',
+        ),
+        migrations.RemoveField(
+            model_name='project',
+            name='leaders',
+        ),
         migrations.AddField(
             model_name='person',
             name='career_level',

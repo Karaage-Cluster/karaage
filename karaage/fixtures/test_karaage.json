@@ -296,7 +296,6 @@
         "model": "karaage.group",
         "fields": {
             "members": [
-                3
             ],
             "name": "testproject1",
             "description": "Test."
@@ -308,9 +307,6 @@
         "fields": {
             "end_date": null,
             "group": 503,
-            "leaders": [
-                1
-            ],
             "last_usage": null,
             "start_date": "2010-05-13",
             "is_approved": 1,
@@ -351,6 +347,30 @@
         "model": "karaage.projectlevel",
         "fields": {
             "level": "1"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "karaage.projectmembership",
+        "fields": {
+            "is_project_leader": true,
+            "project_level": 1,
+            "project": 1,
+            "person": 1,
+            "is_default_project": true,
+            "is_project_supervisor": true
+        }
+    },
+    {
+        "pk": 2,
+        "model": "karaage.projectmembership",
+        "fields": {
+            "is_project_leader": false,
+            "project_level": 1,
+            "project": 1,
+            "person": 3,
+            "is_default_project": true,
+            "is_project_supervisor": false
         }
     },
     {
