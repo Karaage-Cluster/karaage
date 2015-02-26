@@ -105,6 +105,9 @@ class Person(AbstractBaseUser):
 
     _tracker = FieldTracker()
 
+    # XXX: do we need to have AuditLog enabled for users?
+    # audit_log = AuditLog()
+
     def __init__(self, *args, **kwargs):
         super(Person, self).__init__(*args, **kwargs)
         self._password = None
@@ -561,6 +564,8 @@ class Group(models.Model):
         help_text='Datastore specific values should be stored in this field.')
 
     _tracker = FieldTracker()
+
+    audit_log = AuditLog()
 
     class Meta:
         ordering = ['name']
