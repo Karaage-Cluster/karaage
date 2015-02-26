@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import mptt.fields
 import django.utils.timezone
 import audit_log.models.fields
 
@@ -141,5 +142,35 @@ class Migration(migrations.Migration):
             name='career_level',
             field=models.ForeignKey(null=True, to='karaage.CareerLevel'),
             preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='project',
+            name='level',
+            field=models.PositiveIntegerField(default=0, editable=False, db_index=True),
+            preserve_default=False,
+        ),
+        migrations.AddField(
+            model_name='project',
+            name='lft',
+            field=models.PositiveIntegerField(default=0, editable=False, db_index=True),
+            preserve_default=False,
+        ),
+        migrations.AddField(
+            model_name='project',
+            name='parent',
+            field=mptt.fields.TreeForeignKey(blank=True, null=True, related_name='children', to='karaage.Project'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='project',
+            name='rght',
+            field=models.PositiveIntegerField(default=0, editable=False, db_index=True),
+            preserve_default=False,
+        ),
+        migrations.AddField(
+            model_name='project',
+            name='tree_id',
+            field=models.PositiveIntegerField(default=0, editable=False, db_index=True),
+            preserve_default=False,
         ),
     ]
