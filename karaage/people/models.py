@@ -105,6 +105,9 @@ class Person(AbstractBaseUser):
 
     _tracker = FieldTracker()
 
+    # XXX: do we need to have AuditLog enabled for users?
+    # audit_log = AuditLog()
+
     def __init__(self, *args, **kwargs):
         super(Person, self).__init__(*args, **kwargs)
         self._password = None

@@ -68,6 +68,8 @@ class Project(MPTTModel):
 
     _tracker = FieldTracker()
 
+    audit_log = AuditLog()
+
     class Meta:
         ordering = ['pid']
         db_table = 'project'
@@ -289,6 +291,8 @@ class ProjectQuota(models.Model):
     machine_category = models.ForeignKey(MachineCategory)
 
     _tracker = FieldTracker()
+
+    audit_log = AuditLog()
 
     def save(self, *args, **kwargs):
         created = self.pk is None
