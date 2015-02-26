@@ -24,7 +24,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.core import mail
 
-from karaage.people.models import Person
+from karaage.people.models import Person, ProjectMembership
 from karaage.institutes.models import Institute, InstituteDelegate
 from karaage.projects.models import Project
 from karaage.machines.models import Account, MachineCategory
@@ -70,7 +70,7 @@ class PersonTestCase(IntegrationTestCase):
             1: True,    # person 1 can view: self, project member,
                         #                    person's institute delegate
             2: False,   # person 2 cannot view
-            3: False,   # person 3 cannot view
+            3: True,    # person 3 can view: project member
             4: True,    # person 4 can view: is_staff, institute delegate
         })
 
@@ -159,7 +159,11 @@ class PersonTestCase(IntegrationTestCase):
             person=Person.objects.get(id=2),
             defaults={'send_email': False})
         project = Project.objects.get(pid="TestProject1")
-        project.leaders = [2]
+        ProjectMembership.objects.create(
+            project=project,
+            person_id=2,
+            is_project_leader=True,
+        )
 
         test_object = Project.objects.get(pid="TestProject1")
         self.do_permission_tests(test_object, {
@@ -174,7 +178,7 @@ class PersonTestCase(IntegrationTestCase):
         self.do_permission_tests(test_object, {
             1: True,    # person 1 can view: self, project member
             2: True,    # person 2 can view: person's institute delegate
-            3: False,   # person 3 cannot view
+            3: True,    # person 3 can view: project member
             4: True,    # person 4 can view: is_staff
         })
 

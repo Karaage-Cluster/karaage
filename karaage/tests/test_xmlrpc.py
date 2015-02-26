@@ -201,7 +201,7 @@ class XmlrpcTestCase(TestCase):
 
         # Project has ProjectQuota for default machine category
         result = server.get_project_members("tango", "aq12ws", "TestProject1")
-        self.assertEqual(result, ['kgtestuser3'])
+        self.assertEqual(result, ['kgtestuser1', 'kgtestuser3'])
 
         result = server.get_project_members(
             "wexstan", "aq12ws", "TestProject1")
@@ -220,7 +220,7 @@ class XmlrpcTestCase(TestCase):
             cm.exception.faultString, 'Username and/or password is incorrect')
 
         result = server.get_users_projects("kgtestuser1", "aq12ws")
-        self.assertEqual(result, [0, []])
+        self.assertEqual(result, [0, ['TestProject1']])
 
         result = server.get_users_projects("kgtestuser2", "aq12ws")
         self.assertEqual(result, [0, []])

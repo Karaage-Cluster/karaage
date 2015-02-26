@@ -38,7 +38,6 @@ class Project(models.Model):
     name = models.CharField(max_length=200)
     group = models.ForeignKey(Group, unique=True)
     institute = models.ForeignKey(Institute)
-    leaders = models.ManyToManyField(Person, related_name='leads')
     description = models.TextField(null=True, blank=True)
     is_approved = models.BooleanField(default=False)
     start_date = models.DateField(default=datetime.datetime.today)
@@ -67,6 +66,41 @@ class Project(models.Model):
 
     def __str__(self):
         return '%s - %s' % (self.pid, self.name)
+
+    @property
+    def leaders(self):
+        return Person.objects.filter(
+            projectmembership__is_project_leader=True,
+            projectmembership__project=self,
+        )
+
+    def add_update_project_members(self, *people, **attributes):
+        """
+        Add/update project members with desired attributes.
+
+        Ensure all people have membership in the proejct, and that the
+        specified attributes are set as supplied.
+        """
+        from karaage.people.models import ProjectMembership
+        for person in people:
+            if hasattr(person, 'pk'):
+                person_id = person.pk
+            else:
+                person_id = person
+            obj, created = ProjectMembership.objects.get_or_create(
+                person_id=person_id,
+                project=self,
+                defaults=attributes,
+            )
+            if not created:
+                dirty = False
+                for attr, val in attributes.items():
+                    if getattr(obj, attr) != val:
+                        setattr(obj, attr, val)
+                        dirty = True
+                if dirty:
+                    obj.save()
+    add_update_project_members.alters_data = True
 
     @models.permalink
     def get_absolute_url(self):
@@ -164,8 +198,10 @@ class Project(models.Model):
                 return True
 
         # Leader==person can view projects they lead
-        tmp = self.leaders.filter(pk=person.pk)
-        if tmp.count() > 0:
+        if self.projectmembership_set.filter(
+            person=person,
+            is_project_leader=True,
+        ).exists():
             return True
 
         # person can view own projects
@@ -201,8 +237,10 @@ class Project(models.Model):
                 return True
 
         # Leader==person can edit projects they lead
-        tmp = self.leaders.filter(pk=person.pk)
-        if tmp.count() > 0:
+        if self.projectmembership_set.filter(
+            person=person,
+            is_project_leader=True,
+        ).exists():
             return True
 
         return False
@@ -307,77 +345,3 @@ class ProjectLevel(models.Model):
 
     class Meta:
         ordering = ['level']
-
-
-def _leaders_changed(
-        sender, instance, action, reverse, model, pk_set, **kwargs):
-    """
-    Hook that executes whenever the group members are changed.
-    """
-    # print("'%s','%s','%s','%s','%s'"
-    #   %(instance, action, reverse, model, pk_set))
-
-    if action == "post_add":
-        if not reverse:
-            project = instance
-            for person in model.objects.filter(pk__in=pk_set):
-                log.change(
-                    person,
-                    "Added person to project %s leaders" % project)
-                log.change(
-                    project,
-                    "Added person %s to project leaders" % person)
-        else:
-            person = instance
-            for project in model.objects.filter(pk__in=pk_set):
-                log.change(
-                    person,
-                    "Added person to project %s leaders" % project)
-                log.change(
-                    project,
-                    "Added person %s to project leaders" % person)
-
-    elif action == "post_remove":
-        if not reverse:
-            project = instance
-            for person in model.objects.filter(pk__in=pk_set):
-                log.change(
-                    person,
-                    "Removed person from project %s leaders" % project)
-                log.change(
-                    project,
-                    "Removed person %s from project leaders" % person)
-        else:
-            person = instance
-            for project in model.objects.filter(pk__in=pk_set):
-                log.change(
-                    person,
-                    "Removed person from project %s leaders" % project)
-                log.change(
-                    project,
-                    "Removed person %s from project leaders" % person)
-
-    elif action == "pre_clear":
-        # This has to occur in pre_clear, not post_clear, as otherwise
-        # we won't see what project leaders need to be removed.
-        if not reverse:
-            project = instance
-            log.change(
-                project,
-                "Removed all project leaders")
-            for person in project.leaders.all():
-                log.change(
-                    project,
-                    "Removed person %s from project leaders" % person)
-        else:
-            person = instance
-            log.change(
-                person,
-                "Removed person from all project leaders")
-            for project in person.leads.all():
-                log.change(
-                    project,
-                    "Removed person %s from project leaders" % person)
-
-models.signals.m2m_changed.connect(
-    _leaders_changed, sender=Project.leaders.through)

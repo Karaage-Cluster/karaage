@@ -49,8 +49,9 @@ class ApplicationManager(models.Manager):
 
     def requires_attention(self, request):
         person = request.user
+        leaders = person.projectmembership_set.filter(is_project_leader=True)
         query = Q(
-            projectapplication__project__in=person.leads.all(),
+            projectapplication__project__projectmembership__in=leaders,
             state=ProjectApplication.WAITING_FOR_LEADER)
         query = query | Q(
             projectapplication__institute__in=person.delegate_for.all(),
@@ -275,7 +276,9 @@ class ProjectApplication(Application):
             self.project = project
             self.save()
         if self.make_leader:
-            self.project.leaders.add(person)
+            self.project.add_update_project_members(
+                person, is_project_leader=True,
+            )
         if self.needs_account:
             found_pc = False
             for pc in self.project.projectquota_set.all():

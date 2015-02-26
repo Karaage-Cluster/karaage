@@ -1,4 +1,5 @@
 # Copyright 2008, 2010-2011, 2013-2015 VPAC
+# Copyright 2014 The University of Melbourne
 #
 # This file is part of Karaage.
 #
@@ -169,7 +170,10 @@ def user_detail(request, username):
             'about this person.</p>')
 
     leader_project_list = Project.objects.filter(
-        leaders=person, is_active=True)
+        projectmembership__person=person,
+        projectmembership__is_project_leader=True,
+        is_active=True,
+    )
     leader_project_list = ProjectTable(
         leader_project_list, prefix="leader-")
     config.configure(leader_project_list)
