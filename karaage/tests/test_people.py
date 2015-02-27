@@ -53,7 +53,10 @@ class PersonTestCase(IntegrationTestCase):
             result = test_object.can_view(request)
             expected_result = users[user_id]
             # print("---> got:'%s' expected:'%s'"%(result, expected_result))
-            self.assertEqual(result, expected_result)
+            self.assertEqual(
+                result, expected_result,
+                "%r.can_view(%r) returned %r but we expected %r"
+                % (test_object, person, result, expected_result))
             # print()
 
     def test_permissions(self):
