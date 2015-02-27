@@ -70,8 +70,6 @@ LOGGING = {
 # DATASTORES
 
 MACHINE_CATEGORY_DATASTORES = {
-    'ldap': [
-    ],
     'dummy': [
     ],
 }
