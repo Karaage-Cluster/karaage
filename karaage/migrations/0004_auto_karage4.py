@@ -293,6 +293,7 @@ class Migration(migrations.Migration):
             name='ProjectAuditLogEntry',
             fields=[
                 ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
+                ('allocation_mode', models.CharField(default='private', choices=[('private', 'Private (this project only)'), ('shared', 'Shared (this project and all sub-projects)')], max_length=20)),
                 ('pid', models.CharField(max_length=255, db_index=True)),
                 ('name', models.CharField(max_length=200)),
                 ('description', models.TextField(null=True, blank=True)),
@@ -614,6 +615,12 @@ class Migration(migrations.Migration):
             model_name='person',
             name='career_level',
             field=models.ForeignKey(null=True, to='karaage.CareerLevel'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='project',
+            name='allocation_mode',
+            field=models.CharField(default='private', choices=[('private', 'Private (this project only)'), ('shared', 'Shared (this project and all sub-projects)')], max_length=20),
             preserve_default=True,
         ),
         migrations.AddField(
