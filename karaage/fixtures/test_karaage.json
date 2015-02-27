@@ -219,7 +219,7 @@
         "model": "karaage.machinecategory",
         "fields": {
             "name": "Default",
-            "datastore": "ldap"
+            "datastore": "dummy"
         }
     },
     {
