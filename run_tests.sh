@@ -12,7 +12,7 @@ else
         karaage.plugins.kgapplications.tests.settings:karaage.plugins.kgapplications
         karaage.plugins.kgsoftware.tests.settings:karaage.plugins.kgsoftware.tests
         karaage.plugins.kgsoftware.applications.tests.settings:karaage.plugins.kgsoftware
-        karaage.plugins.kgusage.tests.settings:karaage.plugins.kgusage"
+        "
 fi
 
 echo ""
@@ -50,17 +50,13 @@ for values in $TESTS; do
         RETURN=1
     fi
 
-    # FIXME: ugly hack because Python3 django celery not in wheezy
-    if [ "$conf" != "karaage.plugins.kgusage.tests.settings" ]
+    echo ""
+    echo "TESTS - Python 3 - $conf - $tests"
+    echo "############################"
+    python3 ./manage.py test --settings="$conf" -v 2 $tests
+    if [ "$?" -ne 0 ]
     then
-        echo ""
-        echo "TESTS - Python 3 - $conf - $tests"
-        echo "############################"
-        python3 ./manage.py test --settings="$conf" -v 2 $tests
-        if [ "$?" -ne 0 ]
-        then
-            RETURN=1
-        fi
+        RETURN=1
     fi
 
     if [ "$RETURN" -ne 0 ]; then
