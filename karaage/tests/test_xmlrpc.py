@@ -1,4 +1,5 @@
 # Copyright 2014-2015 VPAC
+# Copyright 2014 The University of Melbourne
 #
 # This file is part of Karaage.
 #
@@ -30,7 +31,6 @@ except ImportError:
     import xmlrpclib
 
 from django.test import TestCase
-from django.core.management import call_command
 
 from karaage.people.models import Person, Group
 from karaage.machines.models import Account
@@ -61,6 +61,10 @@ class DjangoTestClientTransport(object):
 
 
 class XmlrpcTestCase(TestCase):
+    fixtures = [
+        'test_karaage.json',
+    ]
+
     def get_server_proxy(self):
         return xmlrpclib.ServerProxy(
             'http://testserver/xmlrpc/',
@@ -69,7 +73,6 @@ class XmlrpcTestCase(TestCase):
 
     def setUp(self):
         super(XmlrpcTestCase, self).setUp()
-        call_command('loaddata', 'test_karaage', **{'verbosity': 0})
         self.server = self.get_server_proxy()
 
     def test_get_disk_quota(self):

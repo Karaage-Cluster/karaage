@@ -1,4 +1,5 @@
-# Copyright 2015 VPAC
+# Copyright 2014-2015 VPAC
+# Copyright 2014 The University of Melbourne
 #
 # This file is part of Karaage.
 #
@@ -30,7 +31,6 @@ from alogger import get_parser
 import alogger.tests.examples
 
 from django.test import TestCase
-from django.core.management import call_command
 
 from karaage.tests.test_xmlrpc import DjangoTestClientTransport
 from karaage.people.models import Person
@@ -40,9 +40,12 @@ from karaage.machines.models import Account, MachineCategory
 
 
 class XmlrpcTestCase(TestCase):
+    fixtures = [
+        'test_karaage.json',
+    ]
+
     def setUp(self):
         super(XmlrpcTestCase, self).setUp()
-        call_command('loaddata', 'test_karaage', **{'verbosity': 0})
         self.server = xmlrpclib.ServerProxy(
             'http://testserver/xmlrpc/',
             transport=DjangoTestClientTransport(self.client),
