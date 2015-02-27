@@ -277,7 +277,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
                 ('name', models.CharField(max_length=100, db_index=True)),
-                ('datastore', models.CharField(help_text='Modifying this value on existing categories will affect accounts created under the old datastore', max_length=255, choices=[('dummy', 'dummy'), ('ldap', 'ldap')])),
+                ('datastore', models.CharField(help_text='Modifying this value on existing categories will affect accounts created under the old datastore', max_length=255, choices=[('dummy', 'dummy')])),
                 ('action_id', models.AutoField(serialize=False, primary_key=True)),
                 ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
@@ -652,5 +652,11 @@ class Migration(migrations.Migration):
             name='tree_id',
             field=models.PositiveIntegerField(default=0, editable=False, db_index=True),
             preserve_default=False,
+        ),
+        migrations.AlterField(
+            model_name='machinecategory',
+            name='datastore',
+            field=models.CharField(choices=[('dummy', 'dummy')], max_length=255, help_text='Modifying this value on existing categories will affect accounts created under the old datastore'),
+            preserve_default=True,
         ),
     ]
