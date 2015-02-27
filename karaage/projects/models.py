@@ -36,6 +36,32 @@ from karaage.common import log, is_admin
 
 @python_2_unicode_compatible
 class Project(MPTTModel):
+
+    class AllocationMode:
+        PRIVATE = 'private'
+        SHARED = 'shared'
+        # CAPPED = 'capped'
+
+    ALLOCATION_MODE_CHOICES = [
+        (
+            AllocationMode.PRIVATE,
+            'Private (this project only)',
+        ),
+        (
+            AllocationMode.SHARED,
+            'Shared (this project and all sub-projects)',
+        ),
+        # (
+        #     AllocationMode.CAPPED,
+        #     'Capped (use parent allocation up to this amount)',
+        # ),
+    ]
+
+    allocation_mode = models.CharField(
+        max_length=20,
+        choices=ALLOCATION_MODE_CHOICES,
+        default=AllocationMode.PRIVATE,
+    )
     pid = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=200)
     group = models.ForeignKey(Group, unique=True)
