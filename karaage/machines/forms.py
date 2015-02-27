@@ -46,6 +46,12 @@ class MachineForm(forms.ModelForm):
 
 
 class MachineCategoryForm(forms.ModelForm):
+    _DATASTORES = [(i, i) for i in settings.MACHINE_CATEGORY_DATASTORES.keys()]
+    datastore = forms.ChoiceField(
+        choices=_DATASTORES,
+        help_text="Modifying this value on existing categories will affect "
+        "accounts created under the old datastore")
+
     class Meta:
         model = MachineCategory
         fields = ['name', 'datastore']

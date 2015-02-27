@@ -38,10 +38,9 @@ from karaage.common import log, is_admin
 
 @python_2_unicode_compatible
 class MachineCategory(models.Model):
-    DATASTORES = [(i, i) for i in settings.MACHINE_CATEGORY_DATASTORES.keys()]
     name = models.CharField(max_length=100, unique=True)
     datastore = models.CharField(
-        max_length=255, choices=DATASTORES,
+        max_length=255,
         help_text="Modifying this value on existing categories will affect "
         "accounts created under the old datastore")
     objects = MachineCategoryManager()

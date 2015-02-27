@@ -18,18 +18,6 @@ class Migration(migrations.Migration):
             preserve_default=True,
         ),
         migrations.AlterField(
-            model_name='machinecategory',
-            name='datastore',
-            field=models.CharField(help_text='Modifying this value on existing categories will affect accounts created under the old datastore', max_length=255, choices=[('ldap', 'ldap'), ('dummy', 'dummy')]),
-            preserve_default=True,
-        ),
-        migrations.AlterField(
-            model_name='machinecategoryauditlogentry',
-            name='datastore',
-            field=models.CharField(help_text='Modifying this value on existing categories will affect accounts created under the old datastore', max_length=255, choices=[('ldap', 'ldap'), ('dummy', 'dummy')]),
-            preserve_default=True,
-        ),
-        migrations.AlterField(
             model_name='project',
             name='group',
             field=models.OneToOneField(to='karaage.Group'),
