@@ -23,6 +23,7 @@ import six
 
 from django.conf import settings
 from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -91,6 +92,22 @@ class Usage(models.Model):
         # Not using ordering so database planner is free to pick the
         # rows as they come.
         pass
+
+
+@python_2_unicode_compatible
+class PublicNotes(models.Model):
+    note = models.TextField()
+    when = models.DateTimeField()
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    person = models.ForeignKey('karaage.Person')
+
+    def __str__(self):
+        return self.note
+
+    class Meta:
+        ordering = ['-when']
 
 
 class LogEntryManager(models.Manager):
