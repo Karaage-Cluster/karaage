@@ -20,7 +20,8 @@ import six
 import datetime
 import warnings
 
-from django.db import models
+from django.db import models, transaction
+from django.db import IntegrityError
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.contenttypes.fields import GenericForeignKey, ContentType
 from django.core.urlresolvers import reverse
@@ -549,6 +550,50 @@ class CareerLevel(models.Model):
         ordering = ['level']
 
 
+class GroupManager(models.Manager):
+
+    """Custom manager for Group model."""
+
+    def get_or_create_unique(
+            self, parent, name, defaults=None,
+            save_parent=True, pre_parent_save=None):
+        """Get or create a group by parent while ensuring uniqueness of
+        name."""
+        if defaults is None:
+            defaults = {}
+        if 'name' in defaults:
+            raise ValueError(
+                "'name' provided in 'defaults', use 'name' argument instead.",
+            )
+        defaults['name'] = name  # start with desired name
+        unique_index = 0
+        while True:
+            try:
+                with transaction.atomic():
+                    obj, created = self.get_or_create(
+                        content_type=ContentType.objects.get_for_model(parent),
+                        object_id=parent.pk,
+                        defaults=defaults,
+                    )
+                    if parent.pk is None and save_parent:
+                        if callable(pre_parent_save):
+                            pre_parent_save(obj, parent)
+                        parent.save()
+                        obj.object_id = parent.pk
+                        obj.save()
+                    return obj, created
+            except IntegrityError:
+                unique_index += 1
+                defaults['name'] = '%s_%d' % (name, unique_index)
+
+    def get_or_create_and_sync_members(
+            self, parent, name, members, defaults=None):
+        """Get or create a group by parent and then sync its member list."""
+        obj, created = self.get_or_create_unique(parent, name, defaults)
+        obj.sync_members(members)
+        return obj, created
+
+
 class Group(models.Model):
 
     """
@@ -581,6 +626,7 @@ class Group(models.Model):
 
     _tracker = FieldTracker()
 
+    objects = GroupManager()
     audit_log = AuditLog()
 
     class Meta:
