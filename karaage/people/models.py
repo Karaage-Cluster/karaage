@@ -715,6 +715,12 @@ class Group(models.Model):
     sync_members.alters_data = True
 
     def add_person(self, person):
+        from karaage.projects.models import Project
+        ct = self.content_type
+        if ct and ct.model_class() is Project:
+            raise DeprecationWarning(
+                'Add project group members via ProjectMembership.',
+            )
         self.members.add(person)
     add_person.alters_data = True
 
