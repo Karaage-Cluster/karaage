@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2014-2015 VPAC
+# Copyright 2014 The University of Melbourne
 #
 # This file is part of Karaage.
 #
@@ -15,10 +16,13 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
+import os.path
+SYSTEM_SETTINGS_PATH = "/etc/karaage3/settings.py"
 
 from .defaults import *  # NOQA
 
-exec(open("/etc/karaage3/settings.py", "rb").read())
+if os.path.isfile(SYSTEM_SETTINGS_PATH):
+    exec(open(SYSTEM_SETTINGS_PATH, "rb").read())
 
 import sys
 from .process import post_process

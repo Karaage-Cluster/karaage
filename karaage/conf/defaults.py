@@ -23,6 +23,21 @@ import six
 from socket import getfqdn
 HTTP_HOST = getfqdn()
 
+def env_is_true(name, default):
+    return os.environ.get(name, default).strip().lower() in TRUE_STRINGS
+
+LOGNAME = os.environ['LOGNAME']
+FQDN = getfqdn()
+
+HTTP_HOST = FQDN
+
+# Users are advised to contact this address if having problems.
+# This is also used as the from address in outgoing emails.
+ACCOUNTS_EMAIL = '{}@{}'.format(LOGNAME, FQDN)
+
+# This organisation name, used in outgoing emails.
+ACCOUNTS_ORG_NAME = 'Example'
+
 ###
 # DJANGO SETTINGS
 ###
@@ -38,7 +53,7 @@ HTTP_HOST = getfqdn()
 # display a detailed traceback, including a lot of metadata about your
 # environment, such as all the currently defined Django settings (from
 # settings.py).
-DEBUG = False
+DEBUG = env_is_true('KARAAGE_DEBUG', '0')
 
 # A boolean that turns on/off template debug mode. If this is True, the fancy
 # error page will display a detailed report for any exception raised during
@@ -186,7 +201,7 @@ X_FRAME_OPTIONS = 'DENY'
 # Whether to use a secure cookie for the session cookie. If this is set to
 # True, the cookie will be marked as “secure,” which means browsers may ensure
 # that the cookie is only sent under an HTTPS connection.
-SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = env_is_true('SESSION_COOKIE_SECURE', '1')
 
 # Whether to expire the session when the user closes their browser. See
 # `Browser-length sessions vs. persistent sessions
@@ -222,6 +237,7 @@ ALLOWED_HOSTS = ["%(HOST)s"]
 # DJANGO PIPELINE
 ###
 
+PIPELINE_ENABLED = env_is_true('DJANGO_PIPELINE_ENABLED', '1')
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 PIPELINE_EMBED_PATH = r'img/|images/'
 PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.cssmin.CSSMinCompressor'
@@ -411,3 +427,33 @@ SILENCED_SYSTEM_CHECKS = [
 # Required for djcelery to work properly. Has no effect otherwise.
 import os
 os.environ.setdefault('CELERY_LOADER', 'djcelery.loaders.DjangoLoader')
+# A secret key for a particular Django installation. This is used to provide
+# cryptographic signing, and should be set to a unique, unpredictable value.
+SECRET_KEY = os.environ.get('KARAAGE_SECRET_KEY', '')
+
+# A dictionary containing the settings for all databases to be used with
+# Django. It is a nested dictionary whose contents maps database aliases to a
+# dictionary containing the options for an individual database.
+DATABASES = {
+    'default': {
+        'ENGINE': os.environ.get(
+            'KARAAGE_DB_ENGINE', 'django.db.backends.sqlite',
+        ),
+        'NAME': os.environ.get(
+            'KARAAGE_DB_NAME', LOGNAME,
+        ),
+        'USER': os.environ.get(
+            'KARAAGE_DB_USER', LOGNAME,
+        ),
+        'PASSWORD': os.environ.get(
+            'KARAAGE_DB_PASSWORD', '',
+        ),
+        'HOST': os.environ.get(
+            'KARAAGE_DB_HOST', '',
+        ),
+        'PORT': os.environ.get(
+            'KARAAGE_DB_PORT', '',
+        ),
+        'ATOMIC_REQUESTS': True,
+    }
+}
