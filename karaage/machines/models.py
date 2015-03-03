@@ -454,8 +454,13 @@ def _remove_group(group, person):
     # if removing default project from person, then break link first
     for ua in person.account_set.filter(
             date_deleted__isnull=True, default_project__isnull=False):
+
         # Does the default_project for ua belong to this group?
-        count = group.project_set.filter(pk=ua.default_project.pk).count()
+        count = 0
+        if hasattr(group, 'project'):
+            if group.project.pk == ua.default_project.pk:
+                count = 1
+
         # If yes, deactivate the ua
         if count > 0:
             ua.default_project = None

@@ -667,10 +667,10 @@ def _add_person_to_group(person, group):
     a_list = person.account_set
     global_add_person_to_group(person, group)
     add_accounts_to_group(a_list, group)
-    for project in group.project_set.all():
-        add_accounts_to_project(a_list, project)
-    for institute in group.institute_set.all():
-        add_accounts_to_institute(a_list, institute)
+    if hasattr(group, 'project'):
+        add_accounts_to_project(a_list, group.project)
+    if hasattr(group, 'institute'):
+        add_accounts_to_institute(a_list, group.institute)
 
 
 def _remove_person_from_group(person, group):
@@ -683,10 +683,10 @@ def _remove_person_from_group(person, group):
     a_list = person.account_set
     global_remove_person_from_group(person, group)
     remove_accounts_from_group(a_list, group)
-    for project in group.project_set.all():
-        remove_accounts_from_project(a_list, project)
-    for institute in group.institute_set.all():
-        remove_accounts_from_institute(a_list, institute)
+    if hasattr(group, 'project'):
+        remove_accounts_from_project(a_list, group.project)
+    if hasattr(group, 'institute'):
+        remove_accounts_from_institute(a_list, group.institute)
 
 
 def _members_changed(

@@ -64,7 +64,7 @@ class Project(MPTTModel):
     )
     pid = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=200)
-    group = models.ForeignKey(Group, unique=True)
+    group = models.OneToOneField(Group)
     institute = models.ForeignKey(Institute)
     description = models.TextField(null=True, blank=True)
     is_approved = models.BooleanField(default=False)

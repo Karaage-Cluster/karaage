@@ -40,7 +40,7 @@
         {% endif %}
     </div>
 
-    {% if group.software_set.all or group.institute_set.all or group.project_set.all %}
+    {% if group.software or group.institute or group.project %}
     <div class="module">
         <h2>Used by</h2>
         <div class="table-container">
@@ -49,24 +49,24 @@
                     <tr><th>Type</th><th>Link</th></tr>
                 </thead>
                 <tbody>
-                    {% for software in group.software_set.all %}
+                    {% if group.software %}
                     <tr>
                         <td>Software</td>
-                        <td><a href="{{ software.get_absolute_url }}">{{ software }}</td></a>
+                        <td><a href="{{ group.software.get_absolute_url }}">{{ group.software }}</td></a>
                     </tr>
-                    {% endfor %}
-                    {% for institute in group.institute_set.all %}
+                    {% endif %}
+                    {% if group.institute %}
                     <tr>
                         <td>Institute</td>
-                        <td><a href="{{ institute.get_absolute_url }}">{{ institute }}</a></td>
+                        <td><a href="{{ group.institute.get_absolute_url }}">{{ group.institute }}</a></td>
                     </tr>
-                    {% endfor %}
-                    {% for project in group.project_set.all %}
+                    {% endif %}
+                    {% if group.project %}
                     <tr>
                         <td>Project</td>
-                        <td><a href="{{ project.get_absolute_url }}">{{ project }}</a></td>
+                        <td><a href="{{ group.project.get_absolute_url }}">{{ group.project }}</a></td>
                     </tr>
-                    {% endfor %}
+                    {% endif %}
                 </tbody>
             </table>
         </div>

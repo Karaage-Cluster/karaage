@@ -46,8 +46,8 @@ class Software(models.Model):
     category = models.ForeignKey(SoftwareCategory, blank=True, null=True)
     name = models.CharField(max_length=200, unique=True)
     description = models.TextField(blank=True, null=True)
-    group = models.ForeignKey(
-        Group, unique=True, blank=True, null=True, on_delete=models.SET_NULL)
+    group = models.OneToOneField(
+        Group, blank=True, null=True, on_delete=models.SET_NULL)
     homepage = models.URLField(blank=True, null=True)
     tutorial_url = models.URLField(blank=True, null=True)
     academic_only = models.BooleanField(default=False)

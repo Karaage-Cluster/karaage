@@ -105,9 +105,9 @@ def delete_group(request, group_name):
 
     error = None
 
-    if group.institute_set.all().count() > 0:
+    if hasattr(group, 'institute'):
         error = "An institute is using this group."
-    elif group.project_set.all().count() > 0:
+    elif hasattr(group, 'project'):
         error = "A project is using this group."
     elif request.method == 'POST':
         group.delete()
@@ -193,8 +193,13 @@ def remove_group_member(request, group_name, username):
 
     error = None
     for account in person.account_set.filter(date_deleted__isnull=True):
+
         # Does the default_project for ua belong to this group?
-        count = group.project_set.filter(pk=account.default_project.pk).count()
+        count = 0
+        if hasattr(group, 'project'):
+            if group.project.pk == account.default_project.pk:
+                count = 1
+
         # If yes, error
         if count > 0:
             error = "The person has accounts that use " \
