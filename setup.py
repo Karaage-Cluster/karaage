@@ -19,40 +19,17 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 """Karaage setup script."""
 
-from setuptools import setup
-import os
+from setuptools import find_packages, setup
 
-
-def fullsplit(path, result=None):
-    """
-    Split a pathname into components (the opposite of os.path.join) in a
-    platform-neutral way.
-    """
-    if result is None:
-        result = []
-    head, tail = os.path.split(path)
-    if head == '':
-        return [tail] + result
-    if head == path:
-        return result
-    return fullsplit(head, [tail] + result)
-
-dirs = ['karaage', ]
-packages = []
-for d in dirs:
-    for dirpath, dirnames, filenames in os.walk(d):
-        # Ignore dirnames that start with '.'
-        for i, dirname in enumerate(dirnames):
-            if dirname.startswith('.'):
-                del dirnames[i]
-        if filenames:
-            packages.append('.'.join(fullsplit(dirpath)))
 
 tests_require = [
     "django-extensions",
     "factory_boy",
     "mock",
     "cracklib",
+    "django-behave",
+    "selenium",
+    "selenium-page-adapter",
 ]
 
 setup(
@@ -62,7 +39,7 @@ setup(
     author='Brian May',
     author_email='brian@v3.org.au',
     description='Collection of Django apps to manage a clusters',
-    packages=packages,
+    packages=find_packages(),
     license="GPL3+",
     long_description=open('README.rst').read(),
     classifiers=[
@@ -104,8 +81,8 @@ setup(
         "django_jsonfield >= 0.9.12",
         "django-model-utils >= 2.0.0",
         "python-tldap >= 0.3.3",
-        "django-pipeline",
         "django-mptt>=0.6.1",
+        "django-pipeline>=1.4",
         "django-tables2",
         "django-filter",
         "six",

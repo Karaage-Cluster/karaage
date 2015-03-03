@@ -18,10 +18,19 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 """ Default Karaage Settings. """
+from importlib import import_module
+
 import six
 
-from socket import getfqdn
-HTTP_HOST = getfqdn()
+TRUE_STRINGS = [
+    '1',
+    'yes',
+    'y',
+    'on',
+    'true',
+    't',
+]
+
 
 ###
 # DJANGO SETTINGS
@@ -66,15 +75,9 @@ AUTH_USER_MODEL = 'karaage.Person'
 #
 # * an application configuration class, or a package containing a
 # * application.
-import django
-if django.VERSION < (1, 7):
-    KARAAGE_APPS = (
-        'karaage',
-    )
-else:
-    KARAAGE_APPS = (
-        'karaage.apps.Karaage',
-    )
+KARAAGE_APPS = (
+    'karaage.apps.Karaage',
+)
 
 INSTALLED_APPS = (
     'django_xmlrpc',
@@ -94,26 +97,19 @@ INSTALLED_APPS = (
     'mptt',
 )
 
-# South not available for Python 3+ or Django 1.7+
-import sys
-if sys.version_info < (3, 0) and django.VERSION < (1, 7):
-    KARAAGE_APPS += (
-        'karaage.legacy.common',
-        'karaage.legacy.admin',
-        'karaage.legacy.people',
-        'karaage.legacy.machines',
-        'karaage.legacy.institutes',
-        'karaage.legacy.projects',
-        'karaage.legacy.usage',
-        'karaage.legacy.cache',
-        'karaage.legacy.software',
-        'karaage.legacy.pbsmoab',
-        'karaage.legacy.emails',
-        'karaage.legacy.applications',
-    )
-
-    INSTALLED_APPS += ('south',)
-
+# These optional apps are used in a dev environment
+for dotted_path in [
+    'django_extensions',
+    'sslserver',
+    'djcelery',
+]:
+    try:
+        import_module(dotted_path)
+        INSTALLED_APPS += (
+            dotted_path,
+        )
+    except ImportError:
+        pass
 
 # List of locations of the template source files searched by
 # django.template.loaders.filesystem.Loader, in search order.
@@ -223,6 +219,13 @@ ALLOWED_HOSTS = ["%(HOST)s"]
 ###
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'pipeline.finders.PipelineFinder',
+)
+
 PIPELINE_EMBED_PATH = r'img/|images/'
 PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.cssmin.CSSMinCompressor'
 PIPELINE_CSS = {
