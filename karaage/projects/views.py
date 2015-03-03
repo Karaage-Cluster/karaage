@@ -75,20 +75,29 @@ def profile_projects(request):
 @login_required
 def add_edit_project(request, project_id=None):
 
+    kwargs = {}
+
     if project_id is None:
         project = None
         flag = 1
     else:
-        project = get_object_or_404(Project, id=project_id)
+        kwargs['instance'] = project = \
+            get_object_or_404(Project, id=project_id)
+        kwargs['initial'] = {
+            'leaders': list(project.leaders.values_list('pk', flat=True)),
+        }
         old_pid = project.pid
         flag = 2
 
+    if request.method == 'POST':
+        kwargs['data'] = request.POST
+
     if util.is_admin(request):
-        form = ProjectForm(instance=project, data=request.POST or None)
+        form = ProjectForm(**kwargs)
     else:
         if not project.can_edit(request):
             return HttpResponseForbidden('<h1>Access Denied</h1>')
-        form = UserProjectForm(instance=project, data=request.POST or None)
+        form = UserProjectForm(**kwargs)
 
     if request.method == 'POST':
         if form.is_valid():
