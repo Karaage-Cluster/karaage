@@ -4,3 +4,4 @@ debian/karaage3.*
 *.pyc
 *.bak
 /karaage.egg-info/
+/tmp/
