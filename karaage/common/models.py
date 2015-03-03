@@ -98,6 +98,22 @@ class Usage(models.Model):
         pass
 
 
+@python_2_unicode_compatible
+class PublicNotes(models.Model):
+    note = models.TextField()
+    when = models.DateTimeField()
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    person = models.ForeignKey('karaage.Person')
+
+    def __str__(self):
+        return self.note
+
+    class Meta:
+        ordering = ['-when']
+
+
 class LogEntryManager(models.Manager):
 
     def log_action(self, user_id, content_type_id, object_id,

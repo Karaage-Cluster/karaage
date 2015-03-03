@@ -441,6 +441,21 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='PublicNotes',
+            fields=[
+                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('note', models.TextField()),
+                ('when', models.DateTimeField()),
+                ('object_id', models.PositiveIntegerField()),
+                ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
+                ('person', models.ForeignKey(to='karaage.Person')),
+            ],
+            options={
+                'ordering': ['-when'],
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='Resource',
             fields=[
                 ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
