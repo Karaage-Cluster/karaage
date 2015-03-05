@@ -35,13 +35,18 @@ Parse log files using alogger.
 """
 
 
+class AloggerParser(object):
+
+    def line_to_dict(self, line):
+        return json.loads(line)
+
+
 def parse_logs(log_list, date, machine_name, log_type):
     """
     Parse log file lines in log_type format.
     """
     output = []
     count = fail = skip = updated = 0
-    line_no = 0
 
     # Check things are setup correctly
     try:
@@ -49,73 +54,84 @@ def parse_logs(log_list, date, machine_name, log_type):
     except Machine.DoesNotExist:
         return "ERROR: Couldn't find machine named: %s" % machine_name
 
-    if log_type != "alogger":
+    if log_type == "alogger":
+        parser = AloggerParser()
+    else:
         parser = get_parser(log_type)
 
     # Process each line
     for line_no, line in enumerate(log_list):
-        if log_type == "alogger":
-            data = json.loads(line)
-        else:
-            try:
-                data = parser.line_to_dict(line)
-            except ValueError:
-                output.append("%d: Error reading line" % line_no)
-                continue
-
-        if data is None:
-            skip = skip + 1
+        try:
+            data = parser.line_to_dict(line)
+        except ValueError:
+            output.append("%d: Error reading line" % line_no)
             continue
 
+        # if parser returns None, nothing to do, continue to next line
+        if data is None:
+            skip += 1
+            continue
+
+        # check for required fields
+        required_fields = [
+            'user', 'project', 'jobid', 'jobname',
+            'cpu_usage', 'cores',
+            'act_wall_time', 'est_wall_time',
+            'mem', 'vmem', 'list_pmem', 'list_mem', 'list_pvmem',
+            'ctime', 'qtime', 'etime', 'start',
+        ]
+
+        for field in required_fields:
+            if field not in data:
+                output.append(
+                    "line %d: %s field not given." % (line_no, field))
+                fail = fail + 1
+                continue
+
+        # Process user --> account
         try:
             account = Account.objects.get(
                 username=data['user'],
                 machine_category=machine.category,
                 date_deleted__isnull=True)
+
         except Account.DoesNotExist:
             # Couldn't find user account - Assign to user None
-            account = None
             output.append(
-                "%d: Couldn't find user account for username=%s and "
-                "machine category=%s. Assigned to None."
+                "line %d: Couldn't find user account for username=%s and "
+                "machine category=%s."
                 % (line_no, data['user'], machine.category.name))
-            fail = fail + 1
+            fail += 1
             continue
 
         except Account.MultipleObjectsReturned:
-            account = None
             output.append(
-                "%d: Username %s has multiple active accounts on "
-                "machine category %s. Assigned to None."
+                "line %d: Username %s has multiple active accounts on "
+                "machine category %s."
                 % (line_no, data['user'], machine.category.name))
-            fail = fail + 1
+            fail += 1
             continue
 
-        if 'project' not in data:
-            output.append(
-                "%d: Project not given." % line_no)
-            fail = fail + 1
-            continue
-
+        # Process project
         try:
             project = Project.objects.get(pid=data['project'])
+
         except Project.DoesNotExist:
             output.append(
-                "%d: Couldn't find specified project %s"
+                "line %d: Couldn't find specified project %s"
                 % (line_no, data['project']))
-            fail = fail + 1
+            fail += 1
             continue
 
+        # check person is in project
         if account.person not in project.group.members.all():
             output.append(
-                "%d: %s is not in project %s, cpu usage: %s"
+                "line %d: %s is not in project %s, cpu usage: %s"
                 % (line_no, account.person, project, data['cpu_usage']))
-            fail = fail + 1
+            fail += 1
             continue
 
-        # Everything is good so add entry
-        queue, created = Queue.objects.get_or_create(name=data['queue'])
-
+        # memory calculations
         if machine.mem_per_core:
             avail_mem_per_core = machine.mem_per_core * 1024
             avail_mem_for_job = avail_mem_per_core * data['cores']
@@ -133,7 +149,11 @@ def parse_logs(log_list, date, machine_name, log_type):
                     * data['act_wall_time']
                     * data['cores'])
 
+        # apply scaling factor to cpu_usage
         data['cpu_usage'] = data['cpu_usage'] * machine.scaling_factor
+
+        # Everything is good so add entry
+        queue, created = Queue.objects.get_or_create(name=data['queue'])
 
         try:
             cpujob, created = CPUJob.objects.get_or_create(jobid=data['jobid'])
@@ -162,8 +182,9 @@ def parse_logs(log_list, date, machine_name, log_type):
             cpujob.save()
 
         except Exception as e:
-            output.append("%d: Failed to insert a line  - %s" % (line_no, e))
-            fail = fail + 1
+            output.append(
+                "line %d: Failed to insert a line  - %s" % (line_no, e))
+            fail += 1
             continue
 
         if created:
