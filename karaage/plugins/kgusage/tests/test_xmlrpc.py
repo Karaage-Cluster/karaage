@@ -101,8 +101,8 @@ class XmlrpcTestCase(TestCase):
             "tango", "aq12ws",
             lines, today, 'tango', 'TORQUE')
         self.assertEqual(
-            result,
-            ['Inserted : 16\nUpdated  : 0\nFailed   : 0\nSkiped   : 35', []])
+            result[0],
+            'Inserted : 16\nUpdated  : 0\nFailed   : 6\nSkiped   : 35')
 
     def test_parse_usage_alogger(self):
         server = self.server
@@ -155,8 +155,8 @@ class XmlrpcTestCase(TestCase):
             "tango", "aq12ws",
             json_array, today, 'tango', 'alogger')
         self.assertEqual(
-            result,
-            ['Inserted : 16\nUpdated  : 0\nFailed   : 0\nSkiped   : 0', []])
+            result[0],
+            'Inserted : 16\nUpdated  : 0\nFailed   : 6\nSkiped   : 0')
 
     def test_add_modules_used(self):
         server = self.server
