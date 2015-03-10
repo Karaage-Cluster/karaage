@@ -1,4 +1,5 @@
 # Copyright 2014-2015 VPAC
+# Copyright 2014 The University of Melbourne
 #
 # This file is part of Karaage.
 #
@@ -15,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+from django.contrib.auth import login as auth_login
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseBadRequest
@@ -44,12 +46,11 @@ def login(request, username=None):
 
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            from django.contrib.auth import login
             person = Person.objects.authenticate(
                 username=username, password=password)
             if person is not None:
                 if person.is_active and not person.is_locked():
-                    login(request, person)
+                    auth_login(request, person)
                     return HttpResponseRedirect(redirect_to)
                 else:
                     error = 'User account is inactive or locked'
@@ -132,7 +133,7 @@ def saml_details(request):
                 person = saml.add_saml_data(
                     person, request)
                 person.save()
-                return HttpResponseRedirect(url)
+                return HttpResponseRedirect(redirect_to)
             else:
                 return HttpResponseBadRequest("<h1>Bad Request</h1>")
 

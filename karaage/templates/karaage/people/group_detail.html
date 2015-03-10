@@ -52,7 +52,7 @@
                     {% if group.software %}
                     <tr>
                         <td>Software</td>
-                        <td><a href="{{ group.software.get_absolute_url }}">{{ group.software }}</td></a>
+                        <td><a href="{{ group.software.get_absolute_url }}">{{ group.software }}</a></td>
                     </tr>
                     {% endif %}
                     {% if group.institute %}
@@ -88,7 +88,7 @@
                     <td>{{ member.get_full_name }}</td>
                     {% if is_admin %}
                     <td>
-                        <div><a href="{% url 'kg_group_remove_person' group.name member.username %}" class="deletelink">Delete</a></li>
+                        <div><a href="{% url 'kg_group_remove_person' group.name member.username %}" class="deletelink">Delete</a></div>
                     </td>
                     {% endif %}
                 </tr>

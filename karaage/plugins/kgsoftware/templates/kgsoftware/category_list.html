@@ -27,7 +27,7 @@
                 <tbody>
                     {% for c in category_list %}
                     <tr>
-                        <td><a href="{{ c.id }}/edit/">{{ c.name }}</a></td>
+                        <td><a href="{% url 'kg_software_category_edit' c.id %}">{{ c.name }}</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

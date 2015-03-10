@@ -19,7 +19,6 @@
 import datetime
 import re
 
-from django.core.management import call_command
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.core import mail
@@ -38,10 +37,12 @@ class FakeRequest(object):
 
 
 class PersonTestCase(IntegrationTestCase):
+    fixtures = [
+        'test_karaage.json',
+    ]
 
     def setUp(self):
         super(PersonTestCase, self).setUp()
-        call_command('loaddata', 'test_karaage', **{'verbosity': 0})
         self._datastore = self.mc_ldap_datastore
 
     def do_permission_tests(self, test_object, users):
@@ -52,7 +53,10 @@ class PersonTestCase(IntegrationTestCase):
             result = test_object.can_view(request)
             expected_result = users[user_id]
             # print("---> got:'%s' expected:'%s'"%(result, expected_result))
-            self.assertEqual(result, expected_result)
+            self.assertEqual(
+                result, expected_result,
+                "%r.can_view(%r) returned %r but we expected %r"
+                % (test_object, person, result, expected_result))
             # print()
 
     def test_permissions(self):

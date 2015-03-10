@@ -37,7 +37,7 @@
             <input type="hidden" id="id_project" name="project" value="">
 
             <div class="form-row">
-                <label for="id_name">Project Leader/Project ID:</label>
+                <label for="id_terms">Project Leader/Project ID:</label>
                 <input type="text" name="terms" id="id_terms" />
             </div>
 
@@ -87,26 +87,29 @@ $(document).ready(function(){
     // select dialog type
 
     function setup_existing() {
-        $("#form_new").addClass("hidden")
+        $("#form_new").addClass("hidden");
         $("#form_existing").removeClass("hidden")
     }
 
     function setup_new() {
-        $("#form_new").removeClass("hidden")
+        $("#form_new").removeClass("hidden");
         $("#form_existing").addClass("hidden")
     }
 
-    $("#id_application_type_0").change(function() {
-        setup_existing()
-    })
-    $("#id_application_type_1").change(function() {
-        setup_new()
-    })
+    var t0_node = $("#id_application_type_0");
+    var t1_node = $("#id_application_type_1");
 
-    t0 = $("#id_application_type_0").prop('checked')
-    t1 = $("#id_application_type_1").prop('checked')
+    t0_node.change(function() {
+        setup_existing()
+    });
+    t1_node.change(function() {
+        setup_new()
+    });
+
+    var t0 = t0_node.prop('checked');
+    var t1 = t1_node.prop('checked');
     {% if project %}
-    select_project("{{project.pk}}", "{{project}}")
+    select_project("{{project.pk}}", "{{project}}");
     {% endif %}
     if (t0) {
         setup_existing()
@@ -125,8 +128,8 @@ $(document).ready(function(){
                 if (ui.item) {
                     select_item(ui.item);
                 }
-            },
-    })
+            }
+    });
 
     function autocomplete_source(request, response) {
         $.ajax({
@@ -136,16 +139,16 @@ $(document).ready(function(){
             data:
                 {
                     terms: request.term,
-                    ajax: true,
+                    ajax: true
                 },
             success:
                 function(data) {
-                    var node = $("#error_list").empty()
+                    var node = $("#error_list").empty();
                     if (data.error) {
-                        list = $("<ul class='errorlist'></ul>").appendTo(node)
+                        var list = $("<ul class='errorlist'></ul>").appendTo(node);
                         $("<li></li>")
                             .text(data.error)
-                            .appendTo(list)
+                            .appendTo(list);
                         return
                     }
 
@@ -154,18 +157,18 @@ $(document).ready(function(){
                             pk: item[0],
                             label: item[1],
                             value: item[1],
-                            type: "project",
+                            type: "project"
                         }
-                    })
+                    });
 
                     var leaders = $.map( data.leader_list, function( item ) {
                         return {
                             pk: item[0],
                             label: item[1],
                             value: item[1],
-                            type: "leader",
+                            type: "leader"
                         }
-                    })
+                    });
 
                     var results = [].concat(projects, leaders);
                     response(results);
@@ -173,7 +176,7 @@ $(document).ready(function(){
             error:
                 function(jqXHR, textStatus, errorThrown) {
                     alert(errorThrown)
-                },
+                }
         });
     }
 
@@ -184,10 +187,10 @@ $(document).ready(function(){
         if (item.type == "leader") {
             select_leader(pk, name)
         } else if (item.type == "project") {
-            $("#project_list").empty()
+            $("#project_list").empty();
             select_project(pk, name)
         }
-        return
+
     }
 
     function select_leader(leader_pk, leader_name) {
@@ -199,21 +202,23 @@ $(document).ready(function(){
                 {
                     leader: leader_pk,
                     terms: $("#id_terms").val(),
-                    ajax: true,
+                    ajax: true
                 },
             success:
                 function(data, textStatus, jqXHR) {
+                    void textStatus;
+                    void jqXHR;
                     fill_projects(data, "Projects for leader "+leader_name)
                 },
             error:
                 function(jqXHR, textStatus, errorThrown) {
                     alert(errorThrown)
-                },
+                }
         })
     }
 
     function select_project(pk, name) {
-        $("#id_project").val(pk)
+        $("#id_project").val(pk);
         $("#selected_project").html($("<p></p>")
             .addClass("selected")
             .text("Selected project: " +name))
@@ -221,22 +226,23 @@ $(document).ready(function(){
 
 
     function fill_projects(data, project_list_text) {
-        var node = $("#error_list").empty()
+        var el_node = $("#error_list").empty();
         if (data.error) {
-            list = $("<ul class='errorlist'></ul>").appendTo(node)
+            var el_list = $("<ul class='errorlist'></ul>").appendTo(el_node);
             $("<li></li>")
                 .text(data.error)
-                .appendTo(list)
+                .appendTo(el_list)
         }
 
         if (data.project_list != null) {
-            var node = $("#project_list").empty()
+            var pl_node = $("#project_list").empty();
+            var pl_list = null;
             if (data.project_list.length > 0) {
                 $("<p></p>")
                     .text(project_list_text)
-                    .appendTo(node)
-                list = $("<ul></ul>")
-                    .appendTo(node)
+                    .appendTo(pl_node);
+                pl_list = $("<ul></ul>")
+                    .appendTo(pl_node)
             }
             for (var i=0; i<data.project_list.length; ++i) {
                 var input = $("<input type='radio'></input>")
@@ -245,16 +251,17 @@ $(document).ready(function(){
                     .attr("value", data.project_list[i][0])
                     .data("name", data.project_list[i][1])
                     .change(function(ev) {
-                        project_name = $(this).data("name");
-                        project_pk = $(this).val();
+                        void ev;
+                        var project_name = $(this).data("name");
+                        var project_pk = $(this).val();
                         select_project(project_pk, project_name);
-                    })
+                    });
 
-                item = $("<li></li>")
+                $("<li></li>")
                     .append(input)
                     .append($("<span></span>")
                         .text(data.project_list[i][1]))
-                    .appendTo(list)
+                    .appendTo(pl_list)
             }
         }
     }

@@ -1,4 +1,5 @@
-# Copyright 2015 VPAC
+# Copyright 2014-2015 VPAC
+# Copyright 2014 The University of Melbourne
 #
 # This file is part of Karaage.
 #
@@ -30,7 +31,6 @@ from alogger import get_parser
 import alogger.tests.examples
 
 from django.test import TestCase
-from django.core.management import call_command
 
 from karaage.tests.test_xmlrpc import DjangoTestClientTransport
 from karaage.people.models import Person
@@ -40,9 +40,12 @@ from karaage.machines.models import Account, MachineCategory
 
 
 class XmlrpcTestCase(TestCase):
+    fixtures = [
+        'test_karaage.json',
+    ]
+
     def setUp(self):
         super(XmlrpcTestCase, self).setUp()
-        call_command('loaddata', 'test_karaage', **{'verbosity': 0})
         self.server = xmlrpclib.ServerProxy(
             'http://testserver/xmlrpc/',
             transport=DjangoTestClientTransport(self.client),
@@ -98,8 +101,8 @@ class XmlrpcTestCase(TestCase):
             "tango", "aq12ws",
             lines, today, 'tango', 'TORQUE')
         self.assertEqual(
-            result,
-            ['Inserted : 16\nUpdated  : 0\nFailed   : 0\nSkiped   : 35', []])
+            result[0],
+            'Inserted : 16\nUpdated  : 0\nFailed   : 6\nSkiped   : 35')
 
     def test_parse_usage_alogger(self):
         server = self.server
@@ -152,8 +155,8 @@ class XmlrpcTestCase(TestCase):
             "tango", "aq12ws",
             json_array, today, 'tango', 'alogger')
         self.assertEqual(
-            result,
-            ['Inserted : 16\nUpdated  : 0\nFailed   : 0\nSkiped   : 0', []])
+            result[0],
+            'Inserted : 16\nUpdated  : 0\nFailed   : 6\nSkiped   : 0')
 
     def test_add_modules_used(self):
         server = self.server

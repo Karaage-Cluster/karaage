@@ -10,8 +10,8 @@
     <h2>Quick search</h2>
     <form action="{% url "kg_site_search" %}" method="get">
       <div><!-- DIV needed for valid HTML -->
-          &nbsp;<input type="text" size="21" name="sitesearch" value="{% if siteterms %}{{ siteterms }}{% endif %}" id="sitesearch" />
-        <input type="submit" value="Go" class="default" />
+          <input title="Search" type="text" size="21" name="sitesearch" value="{% if siteterms %}{{ siteterms }}{% endif %}" id="sitesearch" />
+          <input type="submit" value="Go" class="default" />
       </div>
     </form>
   </div>

@@ -35,8 +35,8 @@ $.ajaxSetup({
 });
 
 $(document).ready(function(){
-    $("#progressbar").progressbar({ value: 0, });
-    $("#message").text("Please wait")
+    $("#progressbar").progressbar({ value: 0 });
+    $("#message").text("Please wait");
 
     var interval = setInterval(function() {
         $.ajax({
@@ -48,20 +48,22 @@ $(document).ready(function(){
             }
         })
         .done(function(data, textStatus, jqXHR) {
+            void textStatus;
+            void jqXHR;
             if (data.ready) {
                 clearInterval(interval);
-                $("#progressbar").progressbar( "option", "value", 100)
-                $("#message").text("done.")
+                $("#progressbar").progressbar( "option", "value", 100);
+                $("#message").text("done.");
                 location.reload(true)
             } else if (data.info != null) {
-                var info=data.info
-                $("#progressbar").progressbar( "option", "value", info.completed/info.total*100)
+                var info=data.info;
+                $("#progressbar").progressbar( "option", "value", info.completed/info.total*100);
                 $("#message").text("please wait: " + info.message + ". " + info.completed + " tasks out of " + info.total + " finished.")
             }
         })
         .fail(function(jqXHR, textStatus, errorThrown) {
             clearInterval(interval);
-            $("#progressbar").progressbar( "option", "value", false )
+            $("#progressbar").progressbar( "option", "value", false );
             $("#message").text("Error "+errorThrown)
         })
     }, 1000);

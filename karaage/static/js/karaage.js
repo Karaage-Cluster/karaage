@@ -1,23 +1,25 @@
 $( document ).ready(function() {
     $.each($(".hidden-link"), function (index, element) {
+        void index;
+        void element;
         $(this).find("a").on("click", function(ev) {
-            var hl = $(this).parent().parent()
-            var next = hl.next()
+            var hl = $(this).parent().parent();
+            var next = hl.next();
             while (next.length > 0) {
                 next.show("slow");
                 next = next.next();
             }
             hl.remove();
             ev.preventDefault();
-        })
-        var next = $(this).next()
+        });
+        var next = $(this).next();
         while (next.length > 0) {
             next.hide();
             next = next.next();
         }
-    })
+    });
 
-    dialog = $( "#dialog-modal" ).dialog({
+    var dialog = $( "#dialog-modal" ).dialog({
         autoOpen: false,
         height: 480,
         width: 400,
@@ -28,8 +30,8 @@ $( document ).ready(function() {
             },
             "cancel": function() {
                 $( this ).dialog( "close" );
-            },
-        },
+            }
+        }
     });
 
     dialog.keyup(function (event) {
@@ -43,4 +45,4 @@ $( document ).ready(function() {
         dialog.dialog( "open" );
     });
 
-})
+});

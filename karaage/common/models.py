@@ -22,7 +22,7 @@ from __future__ import absolute_import
 import six
 
 from django.conf import settings
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -126,8 +126,7 @@ class LogEntry(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
     content_type = models.ForeignKey(ContentType)
     object_id = models.TextField(_('object id'), blank=True, null=True)
-    content_object = generic.GenericForeignKey(ct_field="content_type",
-                                               fk_field="object_id")
+    content_object = GenericForeignKey('content_type', 'object_id')
     object_repr = models.CharField(_('object repr'), max_length=200)
     action_flag = models.PositiveSmallIntegerField(_('action flag'))
     change_message = models.TextField(_('change message'), blank=True)

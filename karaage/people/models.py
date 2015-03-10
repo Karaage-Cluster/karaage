@@ -127,8 +127,7 @@ class Person(AbstractBaseUser):
     def get_absolute_url(self):
         return reverse('kg_person_detail', kwargs={'username': self.username})
 
-    @staticmethod
-    def is_authenticated():
+    def is_authenticated(self):
         """ Return yes, this person is not anonymous. """
         return True
 
@@ -596,7 +595,7 @@ class Group(models.Model):
             global_set_group_name(self, old_name, new_name)
             from karaage.datastores import machine_category_set_group_name
             machine_category_set_group_name(self, old_name, new_name)
-            log.chnage(self, "Renamed group")
+            log.change(self, "Renamed group")
 
         # update the datastore
         from karaage.datastores import global_save_group

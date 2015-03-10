@@ -4,6 +4,13 @@ karaage4 (4.0.0-1) UNRELEASED; urgency=medium
 
  -- Brian May <bam@debian.org>  Mon, 09 Feb 2015 14:54:17 +1100
 
+karaage3 (3.1.15-1) unstable; urgency=medium
+
+  * Various bug fixes.
+  * Simplification of code, mainly alogger and tests.
+
+ -- Brian May <bam@debian.org>  Tue, 10 Mar 2015 14:37:33 +1100
+
 karaage3 (3.1.14-1) unstable; urgency=medium
 
   * Add missing depends.

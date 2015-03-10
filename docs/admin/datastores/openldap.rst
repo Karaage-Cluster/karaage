@@ -195,7 +195,7 @@ RHEL 6 installation
 
 
 Debian installation
----------------------
+-------------------
 
 #.  Run the following commands:
 
@@ -312,7 +312,7 @@ Configuring Karaage to use LDAP
                   'PASSWORD': 'XXXXXXXX',
                   'REQUIRE_TLS': True,
                   'START_TLS': True,
-                  'TLS_CA' : None,
+                  'TLS_CA': None,
              }
         }
 
