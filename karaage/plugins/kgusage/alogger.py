@@ -113,6 +113,12 @@ def parse_logs(log_list, date, machine_name, log_type):
             continue
 
         # Process project
+        if data['project'] is None:
+            output.append(
+                "line %d: Project was not supplied." % (line_no))
+            fail += 1
+            continue
+
         try:
             project = Project.objects.get(pid=data['project'])
 
