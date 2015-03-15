@@ -116,9 +116,10 @@ class Application(models.Model):
 
     def save(self, *args, **kwargs):
         created = self.pk is None
+        if not self.expires:
+            self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
         if not self.pk:
             self.created_by = get_current_person()
-            self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
             parent = list(self._meta.parents.keys())[0]
             subclasses = parent._meta.get_all_related_objects()
             for klass in subclasses:
