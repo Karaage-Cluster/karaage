@@ -189,6 +189,7 @@ class TransitionApprove(base.Transition):
         created_person, created_account = application.approve(approved_by)
 
         # send email
+        application.extend()
         link, is_secret = base.get_email_link(application)
         emails.send_approved_email(
             application, created_person, created_account, link, is_secret)

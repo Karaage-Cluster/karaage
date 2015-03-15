@@ -158,6 +158,10 @@ class Application(models.Model):
         self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
         self.save()
 
+    def extend(self):
+        self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
+        self.save()
+
     def submit(self):
         self.submitted_date = datetime.datetime.now()
         self.save()
