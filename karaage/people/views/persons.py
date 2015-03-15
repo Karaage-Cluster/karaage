@@ -329,6 +329,7 @@ def add_comment(request, username):
 @login_required
 def password_request(request, username):
     person = get_object_or_404(Person, username=username)
+    error = None
 
     post_reset_redirect = reverse(
         'kg_person_reset_done', args=[person.username])
@@ -339,13 +340,19 @@ def password_request(request, username):
             '<p>You do not have permission to view details '
             'about this user.</p>')
 
-    if request.method == "POST":
-        if person.has_usable_password():
-            send_reset_password_email(person)
-            return HttpResponseRedirect(post_reset_redirect)
+    elif not person.is_active:
+        error = "Person '%s' is deleted." % person.username
+
+    elif not person.login_enabled:
+        error = "Person '%s' is locked." % person.username
+
+    elif request.method == "POST":
+        send_reset_password_email(person)
+        return HttpResponseRedirect(post_reset_redirect)
 
     var = {
         'person': person,
+        'error': error,
     }
     return render_to_response(
         'karaage/people/person_password_request.html',
@@ -356,6 +363,13 @@ def password_request(request, username):
 @login_required
 def password_request_done(request, username):
     person = get_object_or_404(Person, username=username)
+
+    if not person.can_view(request):
+        return HttpResponseForbidden(
+            '<h1>Access Denied</h1>'
+            '<p>You do not have permission to view details '
+            'about this user.</p>')
+
     var = {
         'person': person,
     }
