@@ -15,8 +15,16 @@
 
     <div class="object-tools">
         <ul>
+            {% if user.is_authenticated %}
+            <li><a class="{% active request "profile/personal/" %}" href="{% url 'kg_profile_personal' %}">Personal</a></li>
+            {% if SHIB_SUPPORTED %}
+            <li><a class="{% active request "profile/saml/" %}" href="{% url 'kg_profile_saml' %}">SAML Profile</a></li>
+            {% endif %}
+            <li><a class="{% active request "profile/accounts/" %}" href="{% url 'kg_profile_accounts' %}">Accounts</a></li>
+            <li><a class="{% active request "profile/institutes/" %}" href="{% url 'kg_profile_institutes' %}">Institutes</a></li>
+            <li><a class="{% active request "profile/projects/" %}" href="{% url 'kg_profile_projects' %}">Projects</a></li>
+            {% endif %}
             {% for_each_app_include "main_profile.html" %}
-            {% for_each_app_include "main_profile_end.html" %}
         </ul>
     </div>
 </div>
