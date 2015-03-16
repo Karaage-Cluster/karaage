@@ -30,6 +30,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
 
+from karaage.plugins import BasePlugin
 from karaage.middleware.threadlocals import get_current_user
 from karaage.common.forms import CommentForm
 from karaage.common.models import (LogEntry, ADDITION, CHANGE,
@@ -170,12 +171,10 @@ def get_app_modules(name):
     else:
         from django.apps import apps
         for config in apps.get_app_configs():
-            try:
+            if isinstance(config, BasePlugin):
                 module_name = config.name + "." + name
                 module = importlib.import_module(module_name)
                 yield module
-            except ImportError:
-                pass
 
 
 def get_urls(name):
