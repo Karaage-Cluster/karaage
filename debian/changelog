@@ -1,3 +1,15 @@
+karaage3 (3.1.16-1) unstable; urgency=medium
+
+  * Generate error if alogger does not supply project in usage.
+  * Rebuild static files when upgrading package.
+  * Extend application expiry after it is approved.
+  * Allow resetting password even if no password set.
+  * Django 1.6 support was broken in 3.1.15, now fixed.
+  * Fix default URLs.
+  * Simplify autoconfiguration of plugins.
+
+ -- Brian May <bam@debian.org>  Tue, 17 Mar 2015 11:40:07 +1100
+
 karaage3 (3.1.15-1) unstable; urgency=medium
 
   * Various bug fixes.
