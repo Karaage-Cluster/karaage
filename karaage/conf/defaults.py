@@ -373,10 +373,10 @@ GROUP_VALIDATION_ERROR_MSG = six.u(
 TRAINING_ACCOUNT_PREFIX = 'train'
 
 # Registration base URL - Used in email templates.
-REGISTRATION_BASE_URL = 'https://%(HOST)s/users'
+REGISTRATION_BASE_URL = 'https://%(HOST)s/karaage'
 
 # Admin base URL - Used in email templates.
-ADMIN_BASE_URL = 'https://%(HOST)s/kgadmin'
+ADMIN_BASE_URL = 'https://%(HOST)s/karaage'
 
 # Do we allow anonymous users to request accounts?
 ALLOW_REGISTRATIONS = False

@@ -23,9 +23,7 @@ if [ "$1" = "configure" ]; then
         apache_force_reload
     fi
 
-    if [ "$2" = "" ]; then
-        dpkg-trigger karaage-static
-    fi
+    dpkg-trigger karaage-static
 fi
 
 if [ "$1" = "triggered" ]; then

@@ -19,6 +19,12 @@ A list of classes that define Karaage plugins.
 
 Creating a plugin
 -----------------
+.. py:module:: karaage.urls
+
+A plugin needs to provide a urls.py file. This file can be empty if it doesn't
+provide any urls. It can optionally provide values for ``urlpatterns`` and
+``profile_urlpatterns``.
+
 .. py:module:: karaage.plugins
 
 A plugin needs to provide a plugin class that is derived from the

@@ -22,7 +22,12 @@ from __future__ import absolute_import
 import six
 
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericForeignKey
+try:
+    # Django >= 1.7
+    from django.contrib.contenttypes.fields import GenericForeignKey
+except ImportError:
+    # Django < 1.7
+    from django.contrib.contenttypes.generic import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _

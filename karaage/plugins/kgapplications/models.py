@@ -22,7 +22,14 @@ from django.db.models import Q
 from django.db.models.fields import FieldDoesNotExist
 from django.db.models.related import RelatedObject
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
+try:
+    # Django >= 1.7
+    from django.contrib.contenttypes.fields import GenericForeignKey, \
+        GenericRelation
+except ImportError:
+    # Django < 1.7
+    from django.contrib.contenttypes.generic import GenericForeignKey, \
+        GenericRelation
 from django.conf import settings
 from django.utils.encoding import python_2_unicode_compatible
 
@@ -87,7 +94,7 @@ class Application(models.Model):
         limit_choices_to={'model__in': ['person', 'applicant']},
         null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
-    applicant = generic.GenericForeignKey()
+    applicant = GenericForeignKey()
     header_message = models.TextField(
         'Message', null=True, blank=True,
         help_text=six.u(
@@ -117,9 +124,10 @@ class Application(models.Model):
 
     def save(self, *args, **kwargs):
         created = self.pk is None
+        if not self.expires:
+            self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
         if not self.pk:
             self.created_by = get_current_person()
-            self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
             parent = list(self._meta.parents.keys())[0]
             subclasses = parent._meta.get_all_related_objects()
             for klass in subclasses:
@@ -156,6 +164,10 @@ class Application(models.Model):
     def reopen(self):
         self.submitted_date = None
         self.complete_date = None
+        self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
+        self.save()
+
+    def extend(self):
         self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
         self.save()
 
@@ -366,7 +378,7 @@ class Applicant(models.Model):
     fax = models.CharField(max_length=50, null=True, blank=True)
     saml_id = models.CharField(
         max_length=200, null=True, blank=True, editable=False, unique=True)
-    applications = generic.GenericRelation(Application)
+    applications = GenericRelation(Application)
 
     class Meta:
         db_table = "applications_applicant"

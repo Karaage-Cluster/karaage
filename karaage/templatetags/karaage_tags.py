@@ -25,6 +25,7 @@ from django.http import QueryDict
 from django.contrib.contenttypes.models import ContentType
 from django.utils.html import escape
 
+from karaage.plugins import BasePlugin
 from karaage.common.models import LogEntry, COMMENT
 
 register = template.Library()
@@ -217,7 +218,8 @@ def get_app_labels():
     else:
         from django.apps import apps
         for config in apps.get_app_configs():
-            yield config.label
+            if isinstance(config, BasePlugin):
+                yield config.label
 
 
 class ForEachAppIncludeNode(template.Node):

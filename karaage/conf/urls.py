@@ -1,4 +1,5 @@
 # Copyright 2014-2015 VPAC
+# Copyright 2014 The University of Melbourne
 #
 # This file is part of Karaage.
 #
@@ -16,18 +17,82 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf.urls import patterns, url, include
+from django.conf import settings
 
 from karaage.common import get_urls
 
-profile_urlpatterns = patterns('')
+import re
+
+
+# Profile URLS
+
+profile_urlpatterns = patterns(
+    '',
+)
+
+
+def _load_profile_urls():
+    import importlib
+    global profile_urlpatterns
+    modules = [
+        'karaage.institutes.urls',
+        'karaage.projects.urls',
+        'karaage.people.urls',
+        'karaage.machines.urls',
+    ]
+    for module_name in modules:
+        module = importlib.import_module(module_name)
+        profile_urlpatterns += module.profile_urlpatterns
+
+_load_profile_urls()
+
 for urls in get_urls("profile_urlpatterns"):
     profile_urlpatterns += urls
     del urls
 
+
+# Standard URLS
+
 urlpatterns = patterns(
     '',
+    url(r'^xmlrpc/$', 'django_xmlrpc.views.handle_xmlrpc',),
+    url(r'^captcha/', include('captcha.urls')),
+    url(r'^lookup/', include('ajax_select.urls')),
+
+    url(r'^allocations/', include('karaage.allocations.urls')),
+    url(r'^emails/', include('karaage.emails.urls')),
+    url(r'^institutes/', include('karaage.institutes.urls')),
+    url(r'^projects/', include('karaage.projects.urls')),
+    url(r'^persons/', include('karaage.people.urls.persons')),
+    url(r'^groups/', include('karaage.people.urls.groups')),
+    url(r'^accounts/', include('karaage.machines.urls.accounts')),
+    url(r'^machines/', include('karaage.machines.urls.machines')),
+    url(r'^resources/', include('karaage.machines.urls.resources')),
     url(r'^profile/', include(profile_urlpatterns)),
+
+    url(r'^$', 'karaage.common.views.common.index', name='index'),
+    url(r'^search/$', 'karaage.common.views.common.search',
+        name='kg_site_search'),
+    url(r'^misc/$', 'karaage.common.views.common.misc', name='kg_misc'),
+    url(r'^logs/$', 'karaage.common.views.common.log_list',
+        name='kg_log_list'),
+    url(r'^aup/$', 'karaage.common.views.common.aup', name="kg_aup"),
 )
+
+if settings.DEBUG_SERVE_STATIC:
+    urlpatterns += patterns(
+        '',
+        url(r'^%s(?P<path>.*)$' % re.escape(settings.STATIC_URL.lstrip('/')),
+            'django.views.static.serve',
+            {'document_root': settings.STATIC_ROOT}),
+    )
+
+    urlpatterns += patterns(
+        '',
+        url(r'^%s(?P<path>.*)$' % re.escape(settings.FILES_URL.lstrip('/')),
+            'django.views.static.serve',
+            {'document_root': settings.FILES_DIR}),
+    )
 
 for urls in get_urls("urlpatterns"):
     urlpatterns += urls

@@ -18,6 +18,12 @@
   <div class="module object-tools">
     <h2>Admin links</h2>
     <ul>
+        <li><a class="{% active request "persons/" %}" href="{% url "kg_person_list" %}?active=yes">People</a></li>
+        <li><a class="{% active request "groups/" %}" href="{% url "kg_group_list" %}">Groups</a></li>
+        <li><a class="{% active request "projects/" %}" href="{% url "kg_project_list" %}?active=yes">Projects</a></li>
+        <li><a class="{% active request "institutes/" %}" href="{% url "kg_institute_list" %}?active=yes">Institutes</a></li>
+        <li><a class="{% active request "machines/" %}" href="{% url "kg_machine_category_list" %}">Machines</a></li>
+        <li><a class="{% active request "emails/" %}" href="{% url "kg_emails_index" %}">Send Email</a></li>
         {% for_each_app_include "main_admin.html" %}
         <li><a class="{% active request "misc/" %}" href="{% url "kg_misc" %}">Other Stuff</a></li>
     </ul>
@@ -26,6 +32,15 @@
   <div class="module object-tools">
     <h2>Profile links</h2>
     <ul>
+        {% if user.is_authenticated %}
+        <li><a class="{% active request "profile/personal/" %}" href="{% url 'kg_profile_personal' %}">Personal</a></li>
+        {% if SHIB_SUPPORTED %}
+        <li><a class="{% active request "profile/saml/" %}" href="{% url 'kg_profile_saml' %}">SAML Profile</a></li>
+        {% endif %}
+        <li><a class="{% active request "profile/accounts/" %}" href="{% url 'kg_profile_accounts' %}">Accounts</a></li>
+        <li><a class="{% active request "profile/institutes/" %}" href="{% url 'kg_profile_institutes' %}">Institutes</a></li>
+        <li><a class="{% active request "profile/projects/" %}" href="{% url 'kg_profile_projects' %}">Projects</a></li>
+        {% endif %}
         {% for_each_app_include "main_profile.html" %}
         {% if user.is_authenticated %}
         <li><a href="{% url 'kg_profile_logout' %}">Log Out</a></li>
