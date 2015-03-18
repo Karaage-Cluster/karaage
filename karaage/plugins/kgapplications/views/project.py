@@ -849,7 +849,7 @@ def new_application(request):
             {},
             context_instance=RequestContext(request))
 
-    roles = set(['is_applicant', 'is_authorised'])
+    roles = {'is_applicant', 'is_authorised'}
 
     if not request.user.is_authenticated():
         form = forms.UnauthenticatedInviteUserApplicationForm(

@@ -140,7 +140,7 @@ def application_unauthenticated(request, token, state=None, label=None):
     application = base.get_application(
         secret_token=token, expires__gt=datetime.datetime.now())
 
-    roles = set(['is_applicant', 'is_authorised'])
+    roles = {'is_applicant', 'is_authorised'}
 
     # redirect user to real url if possible.
     if request.user.is_authenticated():

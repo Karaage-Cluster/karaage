@@ -78,8 +78,8 @@ class openldap_person(methods.baseMixin):
 
     class Meta:
         base_dn_setting = "LDAP_PERSON_BASE"
-        object_classes = set(['top'])
-        search_classes = set(['person'])
+        object_classes = {'top'}
+        search_classes = {'person'}
         pk = 'uid'
 
     managed_by = tldap.manager.ManyToOneDescriptor(
@@ -112,8 +112,8 @@ class openldap_account(methods.baseMixin):
 
     class Meta:
         base_dn_setting = "LDAP_ACCOUNT_BASE"
-        object_classes = set(['top'])
-        search_classes = set(['posixAccount'])
+        object_classes = {'top'}
+        search_classes = {'posixAccount'}
         pk = 'uid'
 
     managed_by = tldap.manager.ManyToOneDescriptor(
@@ -147,9 +147,9 @@ class openldap_kg27(methods.baseMixin):
 
     class Meta:
         base_dn_setting = "LDAP_ACCOUNT_BASE"
-        object_classes = set(['top'])
+        object_classes = {'top'}
         # this will find people and accounts
-        search_classes = set(['person'])
+        search_classes = {'person'}
         pk = 'uid'
 
     managed_by = tldap.manager.ManyToOneDescriptor(
@@ -170,8 +170,8 @@ class openldap_person_group(methods.baseMixin):
 
     class Meta:
         base_dn_setting = "LDAP_GROUP_BASE"
-        object_classes = set(['top'])
-        search_classes = set(['posixGroup'])
+        object_classes = {'top'}
+        search_classes = {'posixGroup'}
         pk = 'cn'
 
     # people
@@ -188,8 +188,8 @@ class openldap_account_group(methods.baseMixin):
 
     class Meta:
         base_dn_setting = "LDAP_GROUP_BASE"
-        object_classes = set(['top'])
-        search_classes = set(['posixGroup'])
+        object_classes = {'top'}
+        search_classes = {'posixGroup'}
         pk = 'cn'
 
     # accounts
@@ -210,8 +210,8 @@ class openldap_kg27_group(methods.baseMixin):
 
     class Meta:
         base_dn_setting = "LDAP_GROUP_BASE"
-        object_classes = set(['top'])
-        search_classes = set(['posixGroup'])
+        object_classes = {'top'}
+        search_classes = {'posixGroup'}
         pk = 'cn'
 
     # accounts
@@ -246,8 +246,8 @@ class ds389_person(methods.baseMixin):
 
     class Meta:
         base_dn_setting = "LDAP_PERSON_BASE"
-        object_classes = set(['top'])
-        search_classes = set(['person'])
+        object_classes = {'top'}
+        search_classes = {'person'}
         pk = 'uid'
 
     managed_by = tldap.manager.ManyToOneDescriptor(
@@ -280,8 +280,8 @@ class ds389_account(methods.baseMixin):
 
     class Meta:
         base_dn_setting = "LDAP_ACCOUNT_BASE"
-        object_classes = set(['top'])
-        search_classes = set(['posixAccount'])
+        object_classes = {'top'}
+        search_classes = {'posixAccount'}
         pk = 'uid'
 
     managed_by = tldap.manager.ManyToOneDescriptor(
@@ -315,8 +315,8 @@ class ds389_kg27(methods.baseMixin):
 
     class Meta:
         base_dn_setting = "LDAP_ACCOUNT_BASE"
-        object_classes = set(['top'])
-        search_classes = set(['person'])
+        object_classes = {'top'}
+        search_classes = {'person'}
         pk = 'uid'
 
     managed_by = tldap.manager.ManyToOneDescriptor(
@@ -337,8 +337,8 @@ class ds389_person_group(methods.baseMixin):
 
     class Meta:
         base_dn_setting = "LDAP_GROUP_BASE"
-        object_classes = set(['top'])
-        search_classes = set(['posixGroup'])
+        object_classes = {'top'}
+        search_classes = {'posixGroup'}
         pk = 'cn'
 
     # people
@@ -355,8 +355,8 @@ class ds389_account_group(methods.baseMixin):
 
     class Meta:
         base_dn_setting = "LDAP_GROUP_BASE"
-        object_classes = set(['top'])
-        search_classes = set(['posixGroup'])
+        object_classes = {'top'}
+        search_classes = {'posixGroup'}
         pk = 'cn'
 
     # accounts
@@ -377,8 +377,8 @@ class ds389_kg27_group(methods.baseMixin):
 
     class Meta:
         base_dn_setting = "LDAP_GROUP_BASE"
-        object_classes = set(['top'])
-        search_classes = set(['posixGroup'])
+        object_classes = {'top'}
+        search_classes = {'posixGroup'}
         pk = 'cn'
 
     # accounts
@@ -415,8 +415,8 @@ class ad_person(methods.baseMixin):
 
     class Meta:
         base_dn_setting = "LDAP_PERSON_BASE"
-        object_classes = set(['top'])
-        search_classes = set(['user'])
+        object_classes = {'top'}
+        search_classes = {'user'}
         pk = 'cn'
 
     managed_by = tldap.manager.ManyToOneDescriptor(
@@ -448,8 +448,8 @@ class ad_account(methods.baseMixin):
 
     class Meta:
         base_dn_setting = "LDAP_ACCOUNT_BASE"
-        object_classes = set(['top'])
-        search_classes = set(['user'])
+        object_classes = {'top'}
+        search_classes = {'user'}
         pk = 'cn'
 
     managed_by = tldap.manager.ManyToOneDescriptor(
@@ -474,8 +474,8 @@ class ad_person_group(methods.baseMixin):
 
     class Meta:
         base_dn_setting = "LDAP_GROUP_BASE"
-        object_classes = set(['top'])
-        search_classes = set(['group'])
+        object_classes = {'top'}
+        search_classes = {'group'}
         pk = 'cn'
 
     # accounts
@@ -497,8 +497,8 @@ class ad_account_group(methods.baseMixin):
 
     class Meta:
         base_dn_setting = "LDAP_GROUP_BASE"
-        object_classes = set(['top'])
-        search_classes = set(['group'])
+        object_classes = {'top'}
+        search_classes = {'group'}
         pk = 'cn'
 
     # accounts
