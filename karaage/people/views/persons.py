@@ -307,22 +307,20 @@ def bounced_email(request, username):
 @admin_required
 def person_logs(request, username):
     obj = get_object_or_404(Person, username=username)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("People", reverse("kg_person_list")))
-    breadcrumbs.append(
-        (six.text_type(obj), reverse("kg_person_detail", args=[obj.username])))
+    breadcrumbs = [
+        ("People", reverse("kg_person_list")),
+        (six.text_type(obj), reverse("kg_person_detail", args=[obj.username]))
+    ]
     return common.log_list(request, breadcrumbs, obj)
 
 
 @admin_required
 def add_comment(request, username):
     obj = get_object_or_404(Person, username=username)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("People", reverse("kg_person_list")))
-    breadcrumbs.append(
-        (six.text_type(obj), reverse("kg_person_detail", args=[obj.username])))
+    breadcrumbs = [
+        ("People", reverse("kg_person_list")),
+        (six.text_type(obj), reverse("kg_person_detail", args=[obj.username]))
+    ]
     return common.add_comment(request, breadcrumbs, obj)
 
 

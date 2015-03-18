@@ -317,22 +317,20 @@ def no_users(request):
 @admin_required
 def project_logs(request, project_id):
     obj = get_object_or_404(Project, id=project_id)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("Projects", reverse("kg_project_list")))
-    breadcrumbs.append(
-        (six.text_type(obj.pid), reverse("kg_project_detail", args=[obj.id])))
+    breadcrumbs = [
+        ("Projects", reverse("kg_project_list")),
+        (six.text_type(obj.pid), reverse("kg_project_detail", args=[obj.id]))
+    ]
     return util.log_list(request, breadcrumbs, obj)
 
 
 @admin_required
 def add_comment(request, project_id):
     obj = get_object_or_404(Project, id=project_id)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("Projects", reverse("kg_project_list")))
-    breadcrumbs.append(
-        (six.text_type(obj.pid), reverse("kg_project_detail", args=[obj.id])))
+    breadcrumbs = [
+        ("Projects", reverse("kg_project_list")),
+        (six.text_type(obj.pid), reverse("kg_project_detail", args=[obj.id]))
+    ]
     return util.add_comment(request, breadcrumbs, obj)
 
 

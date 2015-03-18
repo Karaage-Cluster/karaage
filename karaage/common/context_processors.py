@@ -22,10 +22,11 @@ from karaage.common import is_admin
 
 def common(request):
     """ Set context with common variables. """
-    ctx = {}
-    ctx['SHIB_SUPPORTED'] = settings.SHIB_SUPPORTED
-    ctx['org_name'] = settings.ACCOUNTS_ORG_NAME
-    ctx['accounts_email'] = settings.ACCOUNTS_EMAIL
-    ctx['is_admin'] = is_admin(request)
+    ctx = {
+        'SHIB_SUPPORTED': settings.SHIB_SUPPORTED,
+        'org_name': settings.ACCOUNTS_ORG_NAME,
+        'accounts_email': settings.ACCOUNTS_EMAIL,
+        'is_admin': is_admin(request)
+    }
 
     return ctx

@@ -110,22 +110,20 @@ def applicant_edit(request, applicant_id):
 @admin_required
 def application_logs(request, application_id):
     obj = get_object_or_404(Application, pk=application_id)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("Applications", reverse("kg_application_list")))
-    breadcrumbs.append(
-        (six.text_type(obj), reverse("kg_application_detail", args=[obj.pk])))
+    breadcrumbs = [
+        ("Applications", reverse("kg_application_list")),
+        (six.text_type(obj), reverse("kg_application_detail", args=[obj.pk]))
+    ]
     return util.log_list(request, breadcrumbs, obj)
 
 
 @admin_required
 def add_comment(request, application_id):
     obj = get_object_or_404(Application, pk=application_id)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("Applications", reverse("kg_application_list")))
-    breadcrumbs.append(
-        (six.text_type(obj), reverse("kg_application_detail", args=[obj.pk])))
+    breadcrumbs = [
+        ("Applications", reverse("kg_application_list")),
+        (six.text_type(obj), reverse("kg_application_detail", args=[obj.pk]))
+    ]
     return util.add_comment(request, breadcrumbs, obj)
 
 

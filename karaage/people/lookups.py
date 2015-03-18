@@ -105,8 +105,7 @@ class GroupLookup(LookupChannel):
         """
         (HTML) formatted item for display in the dropdown
         """
-        result = []
-        result.append(escape(obj.name))
+        result = [escape(obj.name)]
 
         if obj.description:
             result.append(escape(obj.description))

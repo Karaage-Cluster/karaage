@@ -229,22 +229,20 @@ def software_delete(request, software_id):
 @admin_required
 def software_logs(request, software_id):
     obj = get_object_or_404(Software, pk=software_id)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("Softwares", reverse("kg_software_list")))
-    breadcrumbs.append(
-        (six.text_type(obj), reverse("kg_software_detail", args=[obj.pk])))
+    breadcrumbs = [
+        ("Softwares", reverse("kg_software_list")),
+        (six.text_type(obj), reverse("kg_software_detail", args=[obj.pk]))
+    ]
     return util.log_list(request, breadcrumbs, obj)
 
 
 @admin_required
 def add_comment(request, software_id):
     obj = get_object_or_404(Software, pk=software_id)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("Softwares", reverse("kg_software_list")))
-    breadcrumbs.append(
-        (six.text_type(obj), reverse("kg_software_detail", args=[obj.pk])))
+    breadcrumbs = [
+        ("Softwares", reverse("kg_software_list")),
+        (six.text_type(obj), reverse("kg_software_detail", args=[obj.pk]))
+    ]
     return util.add_comment(request, breadcrumbs, obj)
 
 

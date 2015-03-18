@@ -315,8 +315,7 @@ def machine_category_account_exists(username, machine_category):
 def machine_category_get_account_details(account):
     """ Get the account details. """
     machine_category = account.machine_category
-    result = {}
-    result[machine_category.name] = []
+    result = {machine_category.name: []}
     for datastore in _get_machine_category_datastores(machine_category):
         value = datastore.get_account_details(account)
         value['datastore'] = datastore.config['DESCRIPTION']
