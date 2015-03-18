@@ -113,12 +113,12 @@ def institute_list(request):
         queryset = institute_list.filter(
             is_active=True, delegates=request.user)
 
-    filter = InstituteFilter(request.GET, queryset=queryset)
-    table = InstituteTable(filter.qs)
+    q_filter = InstituteFilter(request.GET, queryset=queryset)
+    table = InstituteTable(q_filter.qs)
     tables.RequestConfig(request).configure(table)
 
     spec = []
-    for name, value in six.iteritems(filter.form.cleaned_data):
+    for name, value in six.iteritems(q_filter.form.cleaned_data):
         if value is not None and value != "":
             name = name.replace('_', ' ').capitalize()
             spec.append((name, value))
@@ -127,7 +127,7 @@ def institute_list(request):
         'karaage/institutes/institute_list.html',
         {
             'table': table,
-            'filter': filter,
+            'filter': q_filter,
             'spec': spec,
             'title': "Institute list",
         },
@@ -144,24 +144,24 @@ def add_edit_institute(request, institute_id=None):
         institute = None
         flag = 1
 
-    DelegateFormSet = inlineformset_factory(
+    delegate_formset = inlineformset_factory(
         Institute, InstituteDelegate, form=DelegateForm, extra=3)
 
     if request.method == 'POST':
         form = InstituteForm(request.POST, instance=institute)
-        delegate_formset = DelegateFormSet(request.POST, instance=institute)
+        delegate_formset = delegate_formset(request.POST, instance=institute)
 
         if form.is_valid() and delegate_formset.is_valid():
             institute = form.save()
             if flag == 1:
-                delegate_formset = DelegateFormSet(
+                delegate_formset = delegate_formset(
                     request.POST, instance=institute)
                 delegate_formset.is_valid()
             delegate_formset.save()
             return HttpResponseRedirect(institute.get_absolute_url())
     else:
         form = InstituteForm(instance=institute)
-        delegate_formset = DelegateFormSet(instance=institute)
+        delegate_formset = delegate_formset(instance=institute)
 
     media = form.media
     for dform in delegate_formset.forms:

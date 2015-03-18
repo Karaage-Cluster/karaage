@@ -69,7 +69,7 @@ class StateWaitingForAdmin(states.StateWaitingForApproval):
 
 def get_application_state_machine():
     """ Get the default state machine for applications. """
-    Open = states.TransitionOpen(on_success='O')
+    open_transition = states.TransitionOpen(on_success='O')
 
     state_machine = base.StateMachine()
     state_machine.add_state(
@@ -86,8 +86,8 @@ def get_application_state_machine():
         {})
     state_machine.add_state(
         states.StateDeclined(), 'R',
-        {'reopen': Open, })
-    state_machine.set_first_state(Open)
+        {'reopen': open_transition, })
+    state_machine.set_first_state(open_transition)
     return state_machine
 
 

@@ -31,7 +31,7 @@ from karaage.common.models import LogEntry, COMMENT
 register = template.Library()
 
 
-class url_with_param_node(template.Node):
+class UrlWithParamNode(template.Node):
     def __init__(self, copy, nopage, changes):
         self.copy = copy
         self.nopage = nopage
@@ -87,7 +87,7 @@ def url_with_param(parser, token):
         except ValueError:
             raise template.TemplateSyntaxError(
                 "Argument syntax wrong: should be key=value")
-    return url_with_param_node(copy, nopage, qschanges)
+    return UrlWithParamNode(copy, nopage, qschanges)
 
 
 @register.inclusion_tag('karaage/common/comments.html', takes_context=True)
@@ -202,9 +202,9 @@ class SearchFormNode(template.Node):
 
 @register.simple_tag
 def divide(a, b):
-    TWOPLACES = Decimal(10) ** -2
+    two_places = Decimal(10) ** -2
     try:
-        return (Decimal(a) / Decimal(b) * 100).quantize(TWOPLACES)
+        return (Decimal(a) / Decimal(b) * 100).quantize(two_places)
     except:
         return ''
 

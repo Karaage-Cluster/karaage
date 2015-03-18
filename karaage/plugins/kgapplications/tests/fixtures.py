@@ -24,7 +24,7 @@ except ImportError:
         "factory_boy is required, "
         "either install from a package or using \'pip install -e .[tests]\'")
 
-from karaage.tests.fixtures import FuzzyLowerText, \
+from karaage.tests.fixtures import fuzzy_lower_text, \
     PersonFactory, InstituteFactory, ProjectFactory
 
 from ..models import Application, ProjectApplication
@@ -41,7 +41,7 @@ class ProjectApplicationFactory(ApplicationFactory):
 
 
 class NewProjectApplicationFactory(ProjectApplicationFactory):
-    name = FuzzyLowerText(prefix='projectapplication-')
+    name = fuzzy_lower_text(prefix='projectapplication-')
     description = FuzzyText()
     institute = factory.SubFactory(InstituteFactory)
 

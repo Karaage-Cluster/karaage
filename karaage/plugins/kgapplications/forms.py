@@ -264,7 +264,7 @@ class UnauthenticatedInviteUserApplicationForm(forms.Form):
         return email
 
 
-def ApproveProjectFormGenerator(application, auth):
+def approve_project_form_generator(application, auth):
     if application.project is None:
         # new project
         include_fields = [
@@ -300,8 +300,8 @@ def ApproveProjectFormGenerator(application, auth):
     return ApproveProjectForm
 
 
-def AdminApproveProjectFormGenerator(application, auth):
-    parent = ApproveProjectFormGenerator(application, auth)
+def admin_approve_project_form_generator(application, auth):
+    parent = approve_project_form_generator(application, auth)
     if application.project is None:
         # new project
         include_fields = [

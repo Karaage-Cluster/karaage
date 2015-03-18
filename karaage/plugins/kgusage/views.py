@@ -787,12 +787,12 @@ def job_list(request):
 
     queryset = CPUJob.objects.select_related()
 
-    filter = CPUJobFilter(request.GET, queryset=queryset)
-    table = CPUJobTable(filter.qs)
+    q_filter = CPUJobFilter(request.GET, queryset=queryset)
+    table = CPUJobTable(q_filter.qs)
     tables.RequestConfig(request).configure(table)
 
     spec = []
-    for name, value in six.iteritems(filter.form.cleaned_data):
+    for name, value in six.iteritems(q_filter.form.cleaned_data):
         if value is not None and value != "":
             name = name.replace('_', ' ').capitalize()
             spec.append((name, value))
@@ -801,7 +801,7 @@ def job_list(request):
         'kgusage/job_list.html',
         {
             'table': table,
-            'filter': filter,
+            'filter': q_filter,
             'spec': spec,
             'title': "Job list",
         },

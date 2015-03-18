@@ -196,12 +196,12 @@ def project_list(request, queryset=None):
 
     queryset = queryset.select_related()
 
-    filter = ProjectFilter(request.GET, queryset=queryset)
-    table = ProjectTable(filter.qs)
+    q_filter = ProjectFilter(request.GET, queryset=queryset)
+    table = ProjectTable(q_filter.qs)
     tables.RequestConfig(request).configure(table)
 
     spec = []
-    for name, value in six.iteritems(filter.form.cleaned_data):
+    for name, value in six.iteritems(q_filter.form.cleaned_data):
         if value is not None and value != "":
             name = name.replace('_', ' ').capitalize()
             spec.append((name, value))
@@ -210,7 +210,7 @@ def project_list(request, queryset=None):
         'karaage/projects/project_list.html',
         {
             'table': table,
-            'filter': filter,
+            'filter': q_filter,
             'spec': spec,
             'title': "Project list",
         },

@@ -613,7 +613,7 @@ class StateWaitingForLeader(states.StateWaitingForApproval):
         return application.project.leaders.filter(is_active=True)
 
     def get_approve_form(self, request, application, roles):
-        return forms.ApproveProjectFormGenerator(application, roles)
+        return forms.approve_project_form_generator(application, roles)
 
 
 class StateWaitingForDelegate(states.StateWaitingForApproval):
@@ -627,7 +627,7 @@ class StateWaitingForDelegate(states.StateWaitingForApproval):
             .filter(institutedelegate__send_email=True, is_active=True)
 
     def get_approve_form(self, request, application, roles):
-        return forms.ApproveProjectFormGenerator(application, roles)
+        return forms.approve_project_form_generator(application, roles)
 
 
 class StateWaitingForAdmin(states.StateWaitingForApproval):
@@ -644,7 +644,7 @@ class StateWaitingForAdmin(states.StateWaitingForApproval):
         return 'is_admin' in roles
 
     def get_approve_form(self, request, application, roles):
-        return forms.AdminApproveProjectFormGenerator(
+        return forms.admin_approve_project_form_generator(
             application, roles)
 
     def get_request_email_link(self, application):
@@ -723,16 +723,16 @@ class TransitionSplit(base.Transition):
 
 def get_application_state_machine():
     """ Get the default state machine for applications. """
-    Open = states.TransitionOpen(on_success='O')
-    Split = TransitionSplit(
+    open_transition = states.TransitionOpen(on_success='O')
+    split = TransitionSplit(
         on_existing_project='L', on_new_project='D', on_error="R")
 
     state_machine = base.StateMachine()
     state_machine.add_state(
         StateApplicantEnteringDetails(), 'O',
-        {'cancel': 'R', 'reopen': Open, 'duplicate': 'DUP',
+        {'cancel': 'R', 'reopen': open_transition, 'duplicate': 'DUP',
             'submit': states.TransitionSubmit(
-                on_success=Split, on_error="R")})
+                on_success=split, on_error="R")})
     state_machine.add_state(
         StateWaitingForLeader(), 'L',
         {'cancel': 'R', 'approve': 'K', 'duplicate': 'DUP', })
@@ -755,11 +755,11 @@ def get_application_state_machine():
         {})
     state_machine.add_state(
         states.StateDeclined(), 'R',
-        {'reopen': Open, })
+        {'reopen': open_transition, })
     state_machine.add_state(
         StateDuplicateApplicant(), 'DUP',
-        {'reopen': Open, 'cancel': 'R', })
-    state_machine.set_first_state(Open)
+        {'reopen': open_transition, 'cancel': 'R', })
+    state_machine.set_first_state(open_transition)
 #    NEW = 'N'
 #    OPEN = 'O'
 #    WAITING_FOR_LEADER = 'L'

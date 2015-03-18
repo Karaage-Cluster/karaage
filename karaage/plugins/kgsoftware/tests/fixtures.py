@@ -23,7 +23,7 @@ except ImportError:
         "factory_boy is required, "
         "either install from a package or using \'pip install -e .[tests]\'")
 
-from karaage.tests.fixtures import FuzzyLowerText, GroupFactory
+from karaage.tests.fixtures import fuzzy_lower_text, GroupFactory
 
 from ..models import Software
 
@@ -32,5 +32,5 @@ class SoftwareFactory(DjangoModelFactory):
     FACTORY_FOR = Software
     FACTORY_DJANGO_GET_OR_CREATE = ('name',)
 
-    name = FuzzyLowerText(prefix='soft-')
+    name = fuzzy_lower_text(prefix='soft-')
     group = factory.SubFactory(GroupFactory)

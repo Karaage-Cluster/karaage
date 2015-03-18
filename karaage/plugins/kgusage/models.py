@@ -159,8 +159,8 @@ class MachineCategoryCache(UsageCache):
         total_time = self.available_time
         if total_time == 0:
             return 0
-        TWOPLACES = decimal.Decimal(10) ** -2
-        return ((usage / total_time) * 100 * 1000).quantize(TWOPLACES)
+        two_places = decimal.Decimal(10) ** -2
+        return ((usage / total_time) * 100 * 1000).quantize(two_places)
 
     def is_project_over_quota(self, project_quota, start, end):
         mpots = self.get_project_mpots(project_quota, start, end)

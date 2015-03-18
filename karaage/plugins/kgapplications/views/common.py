@@ -45,13 +45,13 @@ def application_list(request):
     else:
         queryset = Application.objects.get_for_applicant(request.user)
 
-    filter = ApplicationFilter(request.GET, queryset=queryset)
+    q_filter = ApplicationFilter(request.GET, queryset=queryset)
 
-    table = ApplicationTable(filter.qs)
+    table = ApplicationTable(q_filter.qs)
     tables.RequestConfig(request).configure(table)
 
     spec = []
-    for name, value in six.iteritems(filter.form.cleaned_data):
+    for name, value in six.iteritems(q_filter.form.cleaned_data):
         if value is not None and value != "":
             name = name.replace('_', ' ').capitalize()
             spec.append((name, value))
@@ -60,7 +60,7 @@ def application_list(request):
         "kgapplications/application_list.html",
         {
             'table': table,
-            'filter': filter,
+            'filter': q_filter,
             'spec': spec,
             'title': "Application list",
         },

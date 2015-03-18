@@ -59,7 +59,7 @@ def make_test_get_function(name, url, url_pattern):
 
 class TestAllPagesMeta(type):
     @classmethod
-    def _add_test_methods(cls, attrs, urlpatterns):
+    def _add_test_methods(mcs, attrs, urlpatterns):
         # loop through every URL pattern
         for index, (func, regex, url_name) in enumerate(
                 extract_views_from_urlpatterns(urlpatterns)):
@@ -109,10 +109,10 @@ class TestAllPagesMeta(type):
 
             attrs[name] = testfunc
 
-    def __new__(cls, name, parents, attrs):
+    def __new__(mcs, name, parents, attrs):
         if parents != (TestCase,):
-            cls._add_test_methods(attrs, urlconf.urlpatterns)
-        return super(TestAllPagesMeta, cls).__new__(cls, name, parents, attrs)
+            mcs._add_test_methods(attrs, urlconf.urlpatterns)
+        return super(TestAllPagesMeta, mcs).__new__(mcs, name, parents, attrs)
 
 
 @six.add_metaclass(TestAllPagesMeta)

@@ -5,8 +5,8 @@ from django.db import migrations
 
 
 def fix_applications(apps, schema_editor):
-    ContentType = apps.get_model("contenttypes", "ContentType")
-    ContentType.objects.filter(model="softwareapplication").update(app_label="kgsoftware.applications")
+    content_type = apps.get_model("contenttypes", "ContentType")
+    content_type.objects.filter(model="softwareapplication").update(app_label="kgsoftware.applications")
 
 
 class Migration(migrations.Migration):

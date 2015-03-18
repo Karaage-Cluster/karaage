@@ -83,33 +83,33 @@ def get_current_person():
 
 
 class log():
-    def __init__(self, user, object, flag, message):
+    def __init__(self, user, obj, flag, message):
         warnings.warn("Calling karaage.common.log directly has been"
                       " deprecated. You should use the API "
                       "log.(add|change|field_change|delete|comment)",
                       DeprecationWarning)
-        LogEntry.objects.log_object(object, flag, message, user)
+        LogEntry.objects.log_object(obj, flag, message, user)
 
     @classmethod
-    def add(cls, object, message, user=None):
-        return LogEntry.objects.log_object(object, ADDITION, message, user)
+    def add(cls, obj, message, user=None):
+        return LogEntry.objects.log_object(obj, ADDITION, message, user)
 
     @classmethod
-    def change(cls, object, message, user=None):
-        return LogEntry.objects.log_object(object, CHANGE, message, user)
+    def change(cls, obj, message, user=None):
+        return LogEntry.objects.log_object(obj, CHANGE, message, user)
 
     @classmethod
-    def field_change(cls, object, user=None, field=None, new_value=None):
+    def field_change(cls, obj, user=None, field=None, new_value=None):
         return LogEntry.objects.log_object(
-            object, CHANGE, 'Changed %s to %s' % (field, new_value), user)
+            obj, CHANGE, 'Changed %s to %s' % (field, new_value), user)
 
     @classmethod
-    def delete(cls, object, message, user=None):
-        return LogEntry.objects.log_object(object, DELETION, message, user)
+    def delete(cls, obj, message, user=None):
+        return LogEntry.objects.log_object(obj, DELETION, message, user)
 
     @classmethod
-    def comment(cls, object, message, user=None):
-        return LogEntry.objects.log_object(object, COMMENT, message, user)
+    def comment(cls, obj, message, user=None):
+        return LogEntry.objects.log_object(obj, COMMENT, message, user)
 
 
 def new_random_token():
@@ -120,9 +120,9 @@ def new_random_token():
         randrange = random.SystemRandom().randrange
     else:
         randrange = random.randrange
-    MAX_KEY = 18446744073709551616     # 2 << 63
+    max_key = 18446744073709551616     # 2 << 63
 
-    string = six.u("%s%s") % (randrange(0, MAX_KEY), settings.SECRET_KEY)
+    string = six.u("%s%s") % (randrange(0, max_key), settings.SECRET_KEY)
     return sha1(string.encode("ascii")).hexdigest()
 
 

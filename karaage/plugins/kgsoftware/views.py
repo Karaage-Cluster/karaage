@@ -104,12 +104,12 @@ def software_list(request):
         return _software_list_non_admin(request)
 
     queryset = Software.objects.all().select_related()
-    filter = SoftwareFilter(request.GET, queryset=queryset)
-    table = SoftwareTable(filter.qs)
+    q_filter = SoftwareFilter(request.GET, queryset=queryset)
+    table = SoftwareTable(q_filter.qs)
     tables.RequestConfig(request).configure(table)
 
     spec = []
-    for name, value in six.iteritems(filter.form.cleaned_data):
+    for name, value in six.iteritems(q_filter.form.cleaned_data):
         if value is not None and value != "":
             name = name.replace('_', ' ').capitalize()
             spec.append((name, value))
@@ -118,7 +118,7 @@ def software_list(request):
         'kgsoftware/software_list.html',
         {
             'table': table,
-            'filter': filter,
+            'filter': q_filter,
             'spec': spec,
             'title': "Software list",
         },

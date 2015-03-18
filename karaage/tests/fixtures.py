@@ -36,7 +36,7 @@ import karaage.people.models
 import karaage.projects.models
 
 
-def FuzzyLowerText(*args, **kwargs):
+def fuzzy_lower_text(*args, **kwargs):
     if 'chars' not in kwargs:
         kwargs['chars'] = 'abcdefghijklmnopqrstuvwxyz'
     return FuzzyText(*args, **kwargs)
@@ -45,14 +45,14 @@ def FuzzyLowerText(*args, **kwargs):
 class GroupFactory(DjangoModelFactory):
     FACTORY_FOR = karaage.people.models.Group
     FACTORY_DJANGO_GET_OR_CREATE = ('name',)
-    name = FuzzyLowerText(prefix='group-')
+    name = fuzzy_lower_text(prefix='group-')
 
 
 class PersonFactory(DjangoModelFactory):
     FACTORY_FOR = karaage.people.models.Person
     FACTORY_DJANGO_GET_OR_CREATE = ('username',)
 
-    username = FuzzyLowerText(prefix='person-')
+    username = fuzzy_lower_text(prefix='person-')
     password = make_password('test')
     full_name = factory.LazyAttribute(lambda a: a.username.title()[:50])
     short_name = factory.LazyAttribute(lambda a: a.username.title()[:30])
@@ -60,14 +60,14 @@ class PersonFactory(DjangoModelFactory):
         lambda a: '{0}@example.com'.format(a.username[:62]).lower())
     institute = factory.LazyAttribute(
         lambda a: InstituteFactory(
-            name=FuzzyLowerText(prefix='%s-inst-' % a.username)))
+            name=fuzzy_lower_text(prefix='%s-inst-' % a.username)))
 
 
 class MachineCategoryFactory(DjangoModelFactory):
     FACTORY_FOR = karaage.machines.models.MachineCategory
     FACTORY_DJANGO_GET_OR_CREATE = ('name',)
 
-    name = FuzzyLowerText(prefix='mc-')
+    name = fuzzy_lower_text(prefix='mc-')
     datastore = 'dummy'
 
 
@@ -75,7 +75,7 @@ class InstituteFactory(DjangoModelFactory):
     FACTORY_FOR = karaage.institutes.models.Institute
     FACTORY_DJANGO_GET_OR_CREATE = ('name',)
 
-    name = FuzzyLowerText(prefix='inst-')
+    name = fuzzy_lower_text(prefix='inst-')
     group = factory.SubFactory(GroupFactory)
 
 
@@ -92,13 +92,13 @@ class ProjectFactory(DjangoModelFactory):
     FACTORY_FOR = karaage.projects.models.Project
     FACTORY_DJANGO_GET_OR_CREATE = ('pid',)
 
-    pid = FuzzyLowerText(prefix='proj-')
+    pid = fuzzy_lower_text(prefix='proj-')
     name = factory.LazyAttribute(lambda a: a.pid.title()[:200])
     institute = factory.SubFactory(InstituteFactory)
     is_approved = True
     approved_by = factory.LazyAttribute(
         lambda a: PersonFactory(
-            username=FuzzyLowerText(prefix='%s-acc-' % a.pid)))
+            username=fuzzy_lower_text(prefix='%s-acc-' % a.pid)))
     is_active = True
 
 
@@ -114,7 +114,7 @@ class AccountFactory(DjangoModelFactory):
     FACTORY_FOR = karaage.machines.models.Account
     FACTORY_DJANGO_GET_OR_CREATE = ('person', 'username', 'machine_category')
 
-    username = FuzzyLowerText(prefix='account-')
+    username = fuzzy_lower_text(prefix='account-')
     foreign_id = FuzzyText()
     person = factory.SubFactory(PersonFactory)
     machine_category = factory.SubFactory(MachineCategoryFactory)
@@ -129,7 +129,7 @@ def simple_account(institute=None, machine_category=None):
     if not institute:
         institute = InstituteFactory()
     person = PersonFactory(institute=institute)
-    project = ProjectFactory(pid=FuzzyLowerText(prefix='proj-default-'),
+    project = ProjectFactory(pid=fuzzy_lower_text(prefix='proj-default-'),
                              institute=institute,
                              approved_by=person)
     account = AccountFactory(machine_category=machine_category,

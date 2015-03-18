@@ -36,7 +36,7 @@ def _a(string):
     return string
 
 
-class kPersonMixin(object):
+class PersonMixin(object):
     @classmethod
     def pre_save(cls, self):
         full_name = getattr(self, "fullName", None)
@@ -46,7 +46,7 @@ class kPersonMixin(object):
         self.displayName = six.u('%s (%s)') % (full_name, self.o)
 
 
-class kAccountMixin(object):
+class AccountMixin(object):
     @classmethod
     def pre_save(cls, self):
         full_name = getattr(self, "fullName", None)
@@ -73,7 +73,7 @@ class openldap_person(methods.baseMixin):
     mixin_list = [
         methods.common.personMixin,
         methods.pwdpolicy.pwdPolicyMixin,
-        kPersonMixin,
+        PersonMixin,
     ]
 
     class Meta:
@@ -107,7 +107,7 @@ class openldap_account(methods.baseMixin):
         methods.common.personMixin,
         methods.common.accountMixin,
         methods.pwdpolicy.pwdPolicyMixin,
-        kAccountMixin,
+        AccountMixin,
     ]
 
     class Meta:
@@ -142,7 +142,7 @@ class openldap_kg27(methods.baseMixin):
         methods.common.personMixin,
         methods.common.accountMixin,
         methods.pwdpolicy.pwdPolicyMixin,
-        kAccountMixin,
+        AccountMixin,
     ]
 
     class Meta:
@@ -241,7 +241,7 @@ class ds389_person(methods.baseMixin):
     mixin_list = [
         methods.common.personMixin,
         methods.ds389.passwordObjectMixin,
-        kPersonMixin,
+        PersonMixin,
     ]
 
     class Meta:
@@ -275,7 +275,7 @@ class ds389_account(methods.baseMixin):
         methods.common.personMixin,
         methods.common.accountMixin,
         methods.ds389.passwordObjectMixin,
-        kAccountMixin,
+        AccountMixin,
     ]
 
     class Meta:
@@ -310,7 +310,7 @@ class ds389_kg27(methods.baseMixin):
         methods.common.personMixin,
         methods.common.accountMixin,
         methods.ds389.passwordObjectMixin,
-        kAccountMixin,
+        AccountMixin,
     ]
 
     class Meta:
@@ -410,7 +410,7 @@ class ad_person(methods.baseMixin):
         methods.common.personMixin,
         methods.common.accountMixin,
         methods.ad.adUserMixin,
-        kPersonMixin,
+        PersonMixin,
     ]
 
     class Meta:
@@ -443,7 +443,7 @@ class ad_account(methods.baseMixin):
         methods.common.personMixin,
         methods.common.accountMixin,
         methods.ad.adUserMixin,
-        kAccountMixin,
+        AccountMixin,
     ]
 
     class Meta:
