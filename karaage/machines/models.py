@@ -83,10 +83,10 @@ class MachineCategory(models.Model):
             set_mc_datastore(self, old_datastore, self)
     save.alters_data = True
 
-    def delete(self):
+    def delete(self, **kwargs):
         # delete the object
         log.delete(self, 'Deleted')
-        super(MachineCategory, self).delete()
+        super(MachineCategory, self).delete(**kwargs)
         from karaage.datastores import set_mc_datastore
         old_datastore = self._datastore
         set_mc_datastore(self, old_datastore, None)
@@ -382,11 +382,11 @@ class Account(models.Model):
 
         return True
 
-    def delete(self):
+    def delete(self, **kwargs):
         # delete the object
         log.delete(self.person, 'Account %s: Deleted' % self)
         log.delete(self.machine_category, 'Account %s: Deleted' % self)
-        super(Account, self).delete()
+        super(Account, self).delete(**kwargs)
         if self.date_deleted is None:
             # delete the datastore
             from karaage.datastores import machine_category_delete_account

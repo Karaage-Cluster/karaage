@@ -135,7 +135,9 @@ class AddPersonForm(AdminPersonForm):
         password2 = self.cleaned_data.get('password2')
         return validate_password(username, password1, password2)
 
-    def save(self):
+    def save(self, commit=True):
+        assert commit is True
+
         data = self.cleaned_data
 
         person = super(AddPersonForm, self).save(commit=False)
