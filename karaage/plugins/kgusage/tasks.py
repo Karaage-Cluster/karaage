@@ -525,7 +525,7 @@ def _gen_institute_graph(start, end, machine_category,
 
         mcu = usage.get_machine_category_usage(machine_category, start, end)
         hours = int(mcu.available_time - total)
-        csv_writer.writerow(["unused", hours, jobs])
+        csv_writer.writerow(["unused", hours])
         data.append(hours)
         labels.append('Unused')
 
