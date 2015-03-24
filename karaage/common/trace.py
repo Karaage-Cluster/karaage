@@ -15,7 +15,7 @@ from decorators import *
 
 @trace
 def function(...):
-    '''Output goes to <TT>logging.getLogger(__module__)</TT>,
+    '''Output goes to <TT>logging.get_logger(__module__)</TT>,
     where <TT>__module__</TT> is the name of the module in which
     the function is defined.  If the current module is '__main__'
     then the root logger will be used.
@@ -68,53 +68,44 @@ import types
 from functools import wraps
 from itertools import chain
 
-FunctionTypes = tuple(set((
-    types.BuiltinFunctionType,
-    types.FunctionType
-)))
+FunctionTypes = tuple({types.BuiltinFunctionType, types.FunctionType})
 
-MethodTypes = tuple(set((
-    types.BuiltinMethodType,
-    types.MethodType,
-)))
+MethodTypes = tuple({types.BuiltinMethodType, types.MethodType})
 
 
 class _C(object):
 
     @classmethod
-    def classMethod(klass):
+    def class_method(cls):
         pass
-    classMethodType = type(classMethod)
+    classMethodType = type(class_method)
 
     @staticmethod
-    def staticMethod():
+    def static_method():
         pass
-    staticMethodType = type(staticMethod)
+    staticMethodType = type(static_method)
 
     @property
-    def propertyMethod(self):
-        pass
+    def property_method(self):
+        return None
 
 ClassMethodType = _C.classMethodType
 StaticMethodType = _C.staticMethodType
-PropertyType = type(_C.propertyMethod)
+PropertyType = type(_C.property_method)
 
-CallableTypes = tuple(set((
-    types.BuiltinFunctionType,
-    types.FunctionType,
-    types.BuiltinMethodType,
-    types.MethodType,
-    ClassMethodType
-)))
+CallableTypes = tuple({
+    types.BuiltinFunctionType, types.FunctionType,
+    types.BuiltinMethodType, types.MethodType, ClassMethodType
+})
 
 __all__ = (
     'ThreadLocal',
     'TraceMetaClass',
     'attach',
-    'getFormatter',
-    'setFormatter',
-    'getLoggerFactory',
-    'setLoggerFactory',
+    'get_formatter',
+    'set_formatter',
+    'get_logger_factory',
+    'set_logger_factory',
     'trace'
 )
 
@@ -154,7 +145,7 @@ def loggable(obj):
 _logger_factory = logging
 
 
-def getLoggerFactory():
+def get_logger_factory():
     """Retrieve the current factory object for creating loggers.
     The default is to use the logging module.
     """
@@ -162,9 +153,9 @@ def getLoggerFactory():
     return _logger_factory
 
 
-def setLoggerFactory(factory):
+def set_logger_factory(factory):
     """Set a factory object for creating loggers.  This object must
-    publish a method or class named 'getLogger' that takes a string
+    publish a method or class named 'get_logger' that takes a string
     parameter naming the logger instance to retrieve.  Logger objects
     returned by this factory must, at a minimum, expose the methods
     'isEnabledFor' and 'debug'.
@@ -202,7 +193,7 @@ class PrependLoggerFactory(object):
     def prefix(self, value):
         self.__prefix = value.strip('.')
 
-    def getLogger(self, name):
+    def get_logger(self, name):
         return logging.getLogger('.'.join((self.__prefix, name)))
 
 
@@ -234,12 +225,12 @@ class ThreadLocal(object):
             self.__vars[thread.get_ident()] = value
 
     @property
-    def initialValue(self):
+    def initial_value(self):
         with self.__lock:
             return self.__init
 
-    @initialValue.setter
-    def initialValue(self, value):
+    @initial_value.setter
+    def initial_value(self, value):
         with self.__lock:
             self.__init = value
 
@@ -287,9 +278,9 @@ af_unnamed = chop
 af_keyword = _formatter_named
 
 
-def getFormatter(name):
+def get_formatter(name):
     """Return the named formatter function.  See the function
-    "setFormatter" for details.
+    "set_formatter" for details.
     """
     if name in ('self', 'instance', 'this'):
         return af_self
@@ -307,7 +298,7 @@ def getFormatter(name):
         raise ValueError('unknown trace formatter %r' % name)
 
 
-def setFormatter(name, func):
+def set_formatter(name, func):
     """Replace the formatter function used by the trace decorator to
     handle formatting a specific kind of argument.  There are several
     kinds of arguments that trace discriminates between:
@@ -464,10 +455,10 @@ def __lookup_builtin(name):
         print(
             "Warning: builtin function %r is missing prototype" % name,
             file=sys.stderr)
-    return (len(params), params, defaults)
+    return len(params), params, defaults
 
 _ = ThreadLocal()
-_.initialValue = False
+_.initial_value = False
 
 
 def trace(_name):
@@ -543,13 +534,13 @@ def trace(_name):
                         finally:
                             _.value = True
                     except:
-                        type, value, traceback = sys.exc_info()
+                        ex_type, value, traceback = sys.exc_info()
                         leave.append(' => exception thrown\n\traise ')
-                        __mname = type.__module__
+                        __mname = ex_type.__module__
                         if __mname != '__main__':
                             leave.append(__mname)
                             leave.append('.')
-                        leave.append(type.__name__)
+                        leave.append(ex_type.__name__)
                         if value.args:
                             leave.append('(')
                             leave.append(
@@ -613,23 +604,20 @@ def trace(_name):
         __fqfn = ''.join(__fqfn)
 
         if type(_name) in CallableTypes:
-            logger = getLoggerFactory().getLogger(__fqfn)
+            logger = get_logger_factory().get_logger(__fqfn)
         elif loggable(_name):
             logger = _name
         elif isinstance(_name, six.string_types):
-            logger = getLoggerFactory().getLogger(_name)
+            logger = get_logger_factory().get_logger(_name)
         else:
             raise ValueError(
                 'invalid object %r: must be a function, a method, '
                 'a string or an object that implements the Logger API' % _name)
 
-        pre_enter = ['>>> ']
-        pre_enter.append(__fqfn)
-        pre_enter.append('(')
+        pre_enter = ['>>> ', __fqfn, '(']
         pre_enter = ''.join(pre_enter)
 
-        pre_leave = ['<<< ']
-        pre_leave.append(__fqfn)
+        pre_leave = ['<<< ', __fqfn]
         pre_leave = ''.join(pre_leave)
 
         ####
@@ -677,7 +665,7 @@ def trace(_name):
 #  attach: apply decorator to a class or module
 ######################################################################
 
-def attachToProperty(decorator, klass, k, prop_attr, prop_decorator):
+def attach_to_property(decorator, klass, k, prop_attr, prop_decorator):
     if prop_attr is not None:
         setattr(klass, k, prop_attr)
         value = decorator(getattr(klass, k))
@@ -688,7 +676,7 @@ def attachToProperty(decorator, klass, k, prop_attr, prop_decorator):
     return prop_decorator(value)
 
 
-def attachToClass(decorator, klass, recursive=True):
+def attach_to_class(decorator, klass, recursive=True):
     for k, v in six.iteritems(klass.__dict__):
         t = type(v)
         if isinstance(v, types.FunctionType) or t is ClassMethodType:
@@ -697,15 +685,15 @@ def attachToClass(decorator, klass, recursive=True):
             setattr(klass, k, staticmethod(decorator(getattr(klass, k))))
         elif t is PropertyType:
             value = getattr(klass, k)
-            value = attachToProperty(
+            value = attach_to_property(
                 decorator, klass, k, value.fget, value.getter)
-            value = attachToProperty(
+            value = attach_to_property(
                 decorator, klass, k, value.fset, value.setter)
-            value = attachToProperty(
+            value = attach_to_property(
                 decorator, klass, k, value.fdel, value.deleter)
             setattr(klass, k, value)
         elif recursive and inspect.isclass(v):
-            attachToClass(decorator, v, recursive)
+            attach_to_class(decorator, v, recursive)
 
 
 def attach(decorator, obj, recursive=True):
@@ -725,9 +713,9 @@ def attach(decorator, obj, recursive=True):
         for name, fn in inspect.getmembers(obj, inspect.isfunction):
             setattr(obj, name, decorator(fn))
         for name, klass in inspect.getmembers(obj, inspect.isclass):
-            attachToClass(decorator, klass, recursive)
+            attach_to_class(decorator, klass, recursive)
     elif inspect.isclass(obj):
-        attachToClass(decorator, obj, recursive)
+        attach_to_class(decorator, obj, recursive)
 
 
 ######################################################################
@@ -739,14 +727,14 @@ class TraceMetaClass(type):
     """Metaclass to automatically attach the 'trace' decorator to all
     methods, static method and class methods of the class.
     """
-    def __new__(meta, className, bases, classDict):
-        klass = super(TraceMetaClass, meta) \
-            .__new__(meta, className, bases, classDict)
-        if '__logger__' in classDict:
-            hook = trace(classDict['__logger__'])
+    def __new__(mcs, class_name, bases, class_dict):
+        klass = super(TraceMetaClass, mcs) \
+            .__new__(mcs, class_name, bases, class_dict)
+        if '__logger__' in class_dict:
+            hook = trace(class_dict['__logger__'])
         else:
             hook = trace
-        attachToClass(hook, klass, False)
+        attach_to_class(hook, klass, False)
         return klass
 
 if __name__ == '__main__':
@@ -758,11 +746,11 @@ if __name__ == '__main__':
         __metaclass__ = TraceMetaClass
 
         @classmethod
-        def classMethod(klass):
+        def class_method(cls):
             pass
 
         @staticmethod
-        def staticMethod():
+        def static_method():
             pass
 
         __test = None
@@ -778,8 +766,8 @@ if __name__ == '__main__':
         def method(self):
             pass
 
-    Test.classMethod()
-    Test.staticMethod()
+    Test.class_method()
+    Test.static_method()
     test = Test()
     test.test = 1
     assert 1 == test.test
@@ -788,11 +776,11 @@ if __name__ == '__main__':
     class Test(object):
 
         @classmethod
-        def classMethod(klass):
+        def class_method(cls):
             pass
 
         @staticmethod
-        def staticMethod():
+        def static_method():
             pass
 
         __test = None
@@ -812,8 +800,8 @@ if __name__ == '__main__':
             return 'Test(' + str(self.test) + ')'
 
     attach(trace(logger), Test)
-    Test.classMethod()
-    Test.staticMethod()
+    Test.class_method()
+    Test.static_method()
     test = Test()
     test.test = 1
     assert 1 == test.test
@@ -832,7 +820,7 @@ if __name__ == '__main__':
     test(5, 5)
     test(5, 5, False)
 
-    setLoggerFactory(PrependLoggerFactory())
+    set_logger_factory(PrependLoggerFactory())
 
     @trace('main')
     def test(x, *argv, **kwds):
