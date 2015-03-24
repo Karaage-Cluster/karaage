@@ -147,6 +147,7 @@ class StateWaitingForApproval(base.State):
 class TransitionSubmit(base.Transition):
     """ A transition after application submitted. """
     def __init__(self, on_success, on_error):
+        super(TransitionSubmit, self).__init__()
         self._on_success = on_success
         self._on_error = on_error
 
@@ -171,6 +172,7 @@ class TransitionApprove(base.Transition):
     """ A transition after application fully approved. """
 
     def __init__(self, on_password_needed, on_password_ok, on_error):
+        super(TransitionApprove, self).__init__()
         self._on_password_needed = on_password_needed
         self._on_password_ok = on_password_ok
         self._on_error = on_error
