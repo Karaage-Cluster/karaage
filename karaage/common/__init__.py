@@ -137,9 +137,11 @@ def log_list(request, breadcrumbs, obj):
 def add_comment(request, breadcrumbs, obj):
     assert obj is not None
     assert obj.pk is not None
-    form = CommentForm(data=request.POST or None, obj=obj, instance=None)
+    form = CommentForm(
+        data=request.POST or None, obj=obj,
+        request=request, instance=None)
     if request.method == 'POST':
-        form.save(request=request)
+        form.save()
         return HttpResponseRedirect(obj.get_absolute_url())
 
     return render_to_response(
