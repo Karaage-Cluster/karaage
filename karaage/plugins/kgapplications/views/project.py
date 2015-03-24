@@ -314,9 +314,10 @@ class StateStepApplicant(Step):
         """ Django view method. """
         # Get the appropriate form
         status = None
+        form = None
+
         if application.content_type.model != 'applicant':
             status = "You are already registered in the system."
-            form = None
         elif application.content_type.model == 'applicant':
             if application.applicant.saml_id is not None:
                 form = forms.SAMLApplicantForm(
@@ -537,6 +538,8 @@ class StateApplicantEnteringDetails(StateWithSteps):
             # or we know the secret for this application.
 
             new_person = None
+            reason = None
+            details = None
 
             attrs, _ = saml.parse_attributes(request)
             saml_id = attrs['persistent_id']

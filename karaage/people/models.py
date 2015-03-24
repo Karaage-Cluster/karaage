@@ -216,40 +216,35 @@ class Person(AbstractBaseUser):
             return self.full_name
 
     def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission? (depreciated)"
+        """Does the user have a specific permission? (depreciated)"""
         warnings.warn('Person.has_perm obsolete (get)', DeprecationWarning)
         raise RuntimeError("Do not use")
-        return self.is_admin
 
     def has_module_perms(self, app_label):
-        "(depreciated)"
+        """(depreciated)"""
         warnings.warn(
             'Person.has_module_perms obsolete (get)', DeprecationWarning)
         raise RuntimeError("Do not use")
-        return True
 
     @property
     def user(self):
-        "(depreciated)"
+        """(depreciated)"""
         warnings.warn(
             'Person.user obsolete (get)', DeprecationWarning)
         raise RuntimeError("Do not use")
-        return self
 
     def get_profile(self):
-        "(depreciated)"
+        """(depreciated)"""
         warnings.warn(
             'Person.get_profile() obsolete (get)', DeprecationWarning)
         raise RuntimeError("Do not use")
-        return self
 
     @property
     def is_staff(self):
-        "Is the user a member of staff? (depreciated)"
+        """Is the user a member of staff? (depreciated)"""
         warnings.warn(
             'Person.has_module_perms obsolete (get)', DeprecationWarning)
         raise RuntimeError("Do not use")
-        return self.is_admin
 
     # Can person view this self record?
     def can_view(self, request):

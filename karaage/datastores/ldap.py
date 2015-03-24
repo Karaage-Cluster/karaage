@@ -41,7 +41,7 @@ def _lookup(cls):
             cls = getattr(module, name)
         except AttributeError:
             raise AttributeError("%s reference cannot be found" % cls)
-    return(cls)
+    return cls
 
 
 class GlobalDataStore(base.GlobalDataStore):

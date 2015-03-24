@@ -44,7 +44,7 @@ class TransitionOpen(base.Transition):
         messages.success(
             request,
             "Sent an invitation to %s."
-            % (application.applicant.email))
+            % application.applicant.email)
         return self._on_success
 
 
@@ -169,6 +169,7 @@ class TransitionSubmit(base.Transition):
 
 class TransitionApprove(base.Transition):
     """ A transition after application fully approved. """
+
     def __init__(self, on_password_needed, on_password_ok, on_error):
         self._on_password_needed = on_password_needed
         self._on_password_ok = on_password_ok

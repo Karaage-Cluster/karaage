@@ -73,6 +73,7 @@ def add_edit_project(request, project_id=None):
 
     if project_id is None:
         project = None
+        old_pid = None
         flag = 1
     else:
         project = get_object_or_404(Project, id=project_id)

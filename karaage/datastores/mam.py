@@ -88,7 +88,7 @@ class MamDataStoreBase(base.MachineCategoryDataStore):
         value = value.replace("\\", "")
 
         # Used for stripping non-ascii characters
-        value = ''.join(c for c in value if ord(c) > 31 and ord(c) < 127)
+        value = ''.join(c for c in value if 31 < ord(c) < 127)
 
         return value
 
@@ -101,7 +101,7 @@ class MamDataStoreBase(base.MachineCategoryDataStore):
         length = int(arg)
         if value is None:
             value = ""
-        if (len(value) > length):
+        if len(value) > length:
             return value[:length] + "..."
         else:
             return value
@@ -158,7 +158,7 @@ class MamDataStoreBase(base.MachineCategoryDataStore):
                 "<-- Cmd %s returned: %d (error)" % (command, retcode))
             raise subprocess.CalledProcessError(retcode, command)
 
-        logger.debug("<-- Returned %d (good)" % (retcode))
+        logger.debug("<-- Returned %d (good)" % retcode)
         return
 
     def _read_output(self, command):
@@ -202,7 +202,7 @@ class MamDataStoreBase(base.MachineCategoryDataStore):
         if len(headers) == 0:
             logger.debug("Cmd %s didn't return any headers." % command)
 
-        logger.debug("<-- Returned: %d (good)" % (retcode))
+        logger.debug("<-- Returned: %d (good)" % retcode)
         return results
 
     def check_version(self):
@@ -288,9 +288,9 @@ class MamDataStoreBase(base.MachineCategoryDataStore):
         ds_project = self.get_project(projectname)
         if ds_project is None:
             logger.error(
-                "Project '%s' does not exist in MAM" % (projectname))
+                "Project '%s' does not exist in MAM" % projectname)
             raise RuntimeError(
-                "Project '%s' does not exist in MAM" % (projectname))
+                "Project '%s' does not exist in MAM" % projectname)
 
         user_list = []
         if ds_project["Users"] != "":
@@ -301,8 +301,8 @@ class MamDataStoreBase(base.MachineCategoryDataStore):
         """ Get list of projects in user from MAM. """
         ds_balance = self.get_user_balance(username)
         if ds_balance is None:
-            logger.error("User '%s' does not exist in MAM" % (username))
-            raise RuntimeError("User '%s' does not exist in MAM" % (username))
+            logger.error("User '%s' does not exist in MAM" % username)
+            raise RuntimeError("User '%s' does not exist in MAM" % username)
 
         project_list = []
         for bal in ds_balance:

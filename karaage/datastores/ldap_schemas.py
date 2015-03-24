@@ -32,7 +32,7 @@ import tldap.manager
 
 def _a(string):
     """ Force string to ASCII only characters. """
-    string = ''.join(c for c in string if ord(c) > 31 and ord(c) < 127)
+    string = ''.join(c for c in string if 31 < ord(c) < 127)
     return string
 
 

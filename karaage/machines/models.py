@@ -62,7 +62,7 @@ class MachineCategory(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('kg_machine_category_detail', [self.pk])
+        return 'kg_machine_category_detail', [self.pk]
 
     def save(self, *args, **kwargs):
         created = self.pk is None
@@ -122,7 +122,7 @@ class Machine(AbstractBaseUser):
             log.add(self.category, 'Machine %s: Created' % self)
         for field in self._tracker.changed():
             if field == "password":
-                log.change(self, 'Changed %s' % (field))
+                log.change(self, 'Changed %s' % field)
                 log.change(
                     self.category,
                     'Machine %s: Changed %s' % (self, field))
@@ -150,7 +150,7 @@ class Machine(AbstractBaseUser):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('kg_machine_detail', [self.id])
+        return 'kg_machine_detail', [self.id]
 
 
 @python_2_unicode_compatible
