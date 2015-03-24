@@ -56,11 +56,6 @@ h2 {
     margin: 1em 0 .5em 0;
 }
 
-h2.subhead {
-    font-weight: normal;
-    margin-top: 0;
-}
-
 h3 {
     font-size: 14px;
     margin: .8em 0 .3em 0;
@@ -85,10 +80,6 @@ h5 {
 ul li {
     list-style-type: square;
     padding: 1px 0;
-}
-
-ul.plainlist {
-    margin-left: 0 !important;
 }
 
 ul.plainlist li {
@@ -125,12 +116,6 @@ code, pre {
     color: #666;
 }
 
-pre.literal-block {
-    margin: 10px;
-    background: #eee;
-    padding: 6px 8px;
-}
-
 code strong {
     color: #930;
 }
@@ -148,42 +133,13 @@ hr {
 
 /* TEXT STYLES & MODIFIERS */
 
-.small {
-    font-size: 11px;
-}
-
-.tiny {
-    font-size: 10px;
-}
-
-p.tiny {
-    margin-top: -2px;
-}
-
-.mini {
-    font-size: 9px;
-}
-
-p.mini {
-    margin-top: -3px;
-}
-
 .help, p.help {
     font-size: 10px !important;
     color: #999;
 }
 
-img.help-tooltip {
-    cursor: help;
-}
-
 p img, h1 img, h2 img, h3 img, h4 img, td img {
     vertical-align: middle;
-}
-
-.quiet, a.quiet:link, a.quiet:visited {
-    color: #999 !important;
-    font-weight: normal !important;
 }
 
 .quiet strong {
@@ -202,24 +158,11 @@ p img, h1 img, h2 img, h3 img, h4 img, td img {
     clear: both;
 }
 
-.align-left {
-    text-align: left;
-}
-
-.align-right {
-    text-align: right;
-}
-
 .example {
     margin: 10px 0;
     padding: 5px 10px;
     background: #efefef;
 }
-
-.nowrap {
-    white-space: nowrap;
-}
-
 
 /* TABLES */
 
@@ -301,11 +244,6 @@ textarea {
     vertical-align: top !important;
 }
 
-input[type=text], input[type=password], textarea, select, .vTextField {
-    border: 1px solid #ccc;
-}
-
-
 /* FORM BUTTONS */
 
 .button, input[type=submit], input[type=button] {
@@ -317,13 +255,11 @@ input[type=text], input[type=password], textarea, select, .vTextField {
 }
 
 .button:active, input[type=submit]:active, input[type=button]:active {
-    background-image: url(../img/nav-bg-reverse.gif);
-    background-position: top;
+    background: url(../img/nav-bg-reverse.gif) top;
 }
 
 .button[disabled], input[type=submit][disabled], input[type=button][disabled] {
-    background-image: url(../img/nav-bg.gif);
-    background-position: bottom;
+    background: url(../img/nav-bg.gif) bottom;
     opacity: 0.4;
 }
 
@@ -335,13 +271,11 @@ input[type=text], input[type=password], textarea, select, .vTextField {
 }
 
 .button.default:active, input[type=submit].default:active, input[type=button]:active {
-    background-image: url(../img/default-bg-reverse.gif);
-    background-position: top;
+    background: url(../img/default-bg-reverse.gif) top;
 }
 
 .button[disabled].default, input[type=submit][disabled].default, input[type=button][disabled].default {
-    background-image: url(../img/default-bg.gif);
-    background-position: bottom;
+    background: url(../img/default-bg.gif) bottom;
     opacity: 0.4;
 }
 
@@ -465,19 +399,6 @@ td ul.errorlist li {
     border: 1px solid red;
 }
 
-div.system-message {
-    background: #ffc;
-    margin: 10px;
-    padding: 6px 8px;
-}
-
-div.system-message p.system-message-title {
-    padding: 4px 5px 4px 25px;
-    margin: 0;
-    color: red;
-    background: #ffc url(../img/icon_error.gif) 5px .3em no-repeat;
-}
-
 .description {
     padding: 5px 0 0 12px;
 }
@@ -556,10 +477,9 @@ div.breadcrumbs {
     width: 100px;
     height: 30px;
     padding: 4px 4px 4px 20px;
-    background-position: 4px 4px;
     vertical-align: bottom;
     color: #333;
-    background-color: #bbb;
+    background: #bbb 4px 4px;
 }
 
 .object-tools a.active {
@@ -652,12 +572,6 @@ div.breadcrumbs {
     width: 95%;
 }
 
-.subcol {
-    float: left;
-    width: 46%;
-    margin-right: 15px;
-}
-
 .dashboard #content {
     width: 500px;
 }
@@ -733,19 +647,6 @@ div.breadcrumbs {
 
 .hidden { display: none !important; }
 
-/* MENUS */
-
-#menu.ui-menu {
-    width: 100px;
-}
-
-.ui-menu {
-    width: 200px;
-}
-
-.ui-menu .ui-menu-item.selected a {
-    color: #f00;
-}
 
 /* TOOLBAR */
 
