@@ -156,21 +156,21 @@ class AccountTestCase(TestCase):
         person = Person.objects.get(username='samtest2')
         ua = person.get_account(MachineCategory.objects.get(pk=1))
         self.assertEqual(person.is_locked(), False)
-        self.assertEqual(ua.loginShell(), '/bin/bash')
+        self.assertEqual(ua.login_shell(), '/bin/bash')
 
         response = self.client.post(
             reverse('kg_person_lock', args=['samtest2']))
         person = Person.objects.get(username='samtest2')
         ua = person.get_account(MachineCategory.objects.get(pk=1))
         self.assertEqual(person.is_locked(), True)
-        self.assertEqual(ua.loginShell(), '/bin/bash')
+        self.assertEqual(ua.login_shell(), '/bin/bash')
 
         response = self.client.post(
             reverse('kg_person_unlock', args=['samtest2']))
         person = Person.objects.get(username='samtest2')
         ua = person.get_account(MachineCategory.objects.get(pk=1))
         self.assertEqual(person.is_locked(), False)
-        self.assertEqual(ua.loginShell(), '/bin/bash')
+        self.assertEqual(ua.login_shell(), '/bin/bash')
 
 
 class MachineTestCase(TestCase):

@@ -423,7 +423,7 @@ class Account(models.Model):
             machine_category=self.machine_category)
         return iq.disk_quota
 
-    def loginShell(self):
+    def login_shell(self):
         return self.shell
 
     def lock(self):
