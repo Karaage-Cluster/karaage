@@ -418,7 +418,7 @@ def machine_category_save_institute(institute):
             datastore.save_institute(institute)
 
 
-def machine_category_delete_institute(institute, machine_category):
+def machine_category_delete_institute(institute, machine_category=None):
     """ An institute has been deleted. """
     if machine_category is None:
         for institute_quota in institute.institutequota_set.all():
