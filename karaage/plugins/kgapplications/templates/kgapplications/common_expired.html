@@ -1,0 +1,26 @@
+{% extends "forms.html" %}
+{% load forms %}
+{% load applications %}
+
+
+{% block title %}Introduction{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_application_list' %}">Applications</a>&nbsp;›
+    {{ application }}&nbsp;›
+    Expired
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="module">
+    <h2>Application Link Expired</h2>
+
+    The secret link you followed to get to the application has expired and is
+    no longer valid.
+</div>
+{% endblock %}

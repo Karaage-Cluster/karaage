@@ -137,8 +137,12 @@ def application_detail(request, application_id, state=None, label=None):
 
 def application_unauthenticated(request, token, state=None, label=None):
     """ An somebody is trying to access an application. """
-    application = base.get_application(
-        secret_token=token, expires__gt=datetime.datetime.now())
+    application = base.get_application(secret_token=token)
+    if application.expires < datetime.datetime.now():
+        return render_to_response(
+            'kgapplications/common_expired.html',
+            {'application': application},
+            context_instance=RequestContext(request))
 
     roles = {'is_applicant', 'is_authorised'}
 
