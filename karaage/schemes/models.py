@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Q
 
 from audit_log.models.managers import AuditLog
+from django.utils.encoding import python_2_unicode_compatible
 
 
 class ActiveSchemeManager(models.Manager):
@@ -16,6 +17,7 @@ class DeletedSchemeManager(models.Manager):
         return query.filter(~Q(closed=None))
 
 
+@python_2_unicode_compatible
 class Scheme(models.Model):
     name = models.CharField(max_length=200, unique=True)
     description = models.CharField(max_length=200, null=False, blank=True)

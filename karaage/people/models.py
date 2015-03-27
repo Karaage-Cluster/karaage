@@ -548,6 +548,7 @@ class CareerLevel(models.Model):
         ordering = ['level']
 
 
+@python_2_unicode_compatible
 class Group(models.Model):
 
     """Groups represent collections of people, these objects can be

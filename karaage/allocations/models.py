@@ -20,8 +20,10 @@ from django.db import models
 
 from audit_log.models.managers import AuditLog
 from django.utils.functional import cached_property
+from django.utils.encoding import python_2_unicode_compatible
 
 
+@python_2_unicode_compatible
 class Grant(models.Model):
     project = models.ForeignKey('karaage.Project')
     scheme = models.ForeignKey('karaage.Scheme')
@@ -57,6 +59,7 @@ class AllocationPoolQuerySet(models.QuerySet):
         )
 
 
+@python_2_unicode_compatible
 class AllocationPool(models.Model):
 
     """

@@ -496,6 +496,7 @@ def _members_changed(
                 _remove_group(group, person)
 
 
+@python_2_unicode_compatible
 class ResourcePool(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
@@ -508,6 +509,7 @@ class ResourcePool(models.Model):
         ordering = ['name']
 
 
+@python_2_unicode_compatible
 class Resource(models.Model):
 
     class ResourceType:
