@@ -31,13 +31,15 @@ from ..models import Application, ProjectApplication
 
 
 class ApplicationFactory(DjangoModelFactory):
-    FACTORY_FOR = Application
-
     applicant = factory.SubFactory(PersonFactory)
+
+    class Meta:
+        model = Application
 
 
 class ProjectApplicationFactory(ApplicationFactory):
-    FACTORY_FOR = ProjectApplication
+    class Meta:
+        model = ProjectApplication
 
 
 class NewProjectApplicationFactory(ProjectApplicationFactory):

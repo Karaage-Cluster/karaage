@@ -29,8 +29,9 @@ from ..models import Software
 
 
 class SoftwareFactory(DjangoModelFactory):
-    FACTORY_FOR = Software
-    FACTORY_DJANGO_GET_OR_CREATE = ('name',)
-
     name = fuzzy_lower_text(prefix='soft-')
     group = factory.SubFactory(GroupFactory)
+
+    class Meta:
+        model = Software
+        django_get_or_create = ('name',)
