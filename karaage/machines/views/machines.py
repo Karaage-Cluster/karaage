@@ -95,28 +95,28 @@ def machine_password(request, machine_id):
 @admin_required
 def machine_logs(request, machine_id):
     obj = get_object_or_404(Machine, pk=machine_id)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("Machines", reverse("kg_machine_category_list")))
-    breadcrumbs.append(
-        (six.text_type(obj.category),
-            reverse("kg_machine_category_detail", args=[obj.category.pk])))
-    breadcrumbs.append(
-        (six.text_type(obj), reverse("kg_machine_detail", args=[obj.pk])))
+    breadcrumbs = [
+        ("Machines", reverse("kg_machine_category_list")),
+        (
+            six.text_type(obj.category),
+            reverse("kg_machine_category_detail", args=[obj.category.pk])
+        ),
+        (six.text_type(obj), reverse("kg_machine_detail", args=[obj.pk]))
+    ]
     return util.log_list(request, breadcrumbs, obj)
 
 
 @admin_required
 def machine_add_comment(request, machine_id):
     obj = get_object_or_404(Machine, pk=machine_id)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("Machines", reverse("kg_machine_category_list")))
-    breadcrumbs.append(
-        (six.text_type(obj.category),
-            reverse("kg_machine_category_detail", args=[obj.category.pk])))
-    breadcrumbs.append(
-        (six.text_type(obj), reverse("kg_machine_detail", args=[obj.pk])))
+    breadcrumbs = [
+        ("Machines", reverse("kg_machine_category_list")),
+        (
+            six.text_type(obj.category),
+            reverse("kg_machine_category_detail", args=[obj.category.pk])
+        ),
+        (six.text_type(obj), reverse("kg_machine_detail", args=[obj.pk]))
+    ]
     return util.add_comment(request, breadcrumbs, obj)
 
 
@@ -201,22 +201,24 @@ def category_projects(request, category_id):
 @admin_required
 def category_logs(request, category_id):
     obj = get_object_or_404(MachineCategory, pk=category_id)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("Machines", reverse("kg_machine_category_list")))
-    breadcrumbs.append(
-        (six.text_type(obj),
-            reverse("kg_machine_category_detail", args=[obj.pk])))
+    breadcrumbs = [
+        ("Machines", reverse("kg_machine_category_list")),
+        (
+            six.text_type(obj),
+            reverse("kg_machine_category_detail", args=[obj.pk])
+        )
+    ]
     return util.log_list(request, breadcrumbs, obj)
 
 
 @admin_required
 def category_add_comment(request, category_id):
     obj = get_object_or_404(MachineCategory, pk=category_id)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("Machines", reverse("kg_machine_category_list")))
-    breadcrumbs.append(
-        (six.text_type(obj),
-            reverse("kg_machine_category_detail", args=[obj.pk])))
+    breadcrumbs = [
+        ("Machines", reverse("kg_machine_category_list")),
+        (
+            six.text_type(obj),
+            reverse("kg_machine_category_detail", args=[obj.pk])
+        )
+    ]
     return util.add_comment(request, breadcrumbs, obj)

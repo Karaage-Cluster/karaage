@@ -38,10 +38,6 @@ body.login {
     color: #333;
 }
 
-.login .form-row #id_username, .login .form-row #id_password {
-    width: 13em;
-}
-
 .login span.help {
     font-size: 10px;
     display: block;
@@ -56,6 +52,3 @@ body.login {
     margin: 0;
 }
 
-.login .password-reset-link {
-    text-align: center;
-}

@@ -65,7 +65,7 @@ class MachineCategory(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('kg_machine_category_detail', [self.pk])
+        return 'kg_machine_category_detail', [self.pk]
 
     def save(self, *args, **kwargs):
         created = self.pk is None
@@ -86,10 +86,10 @@ class MachineCategory(models.Model):
             set_mc_datastore(self, old_datastore, self)
     save.alters_data = True
 
-    def delete(self):
+    def delete(self, **kwargs):
         # delete the object
         log.delete(self, 'Deleted')
-        super(MachineCategory, self).delete()
+        super(MachineCategory, self).delete(**kwargs)
         from karaage.datastores import set_mc_datastore
         old_datastore = self._datastore
         set_mc_datastore(self, old_datastore, None)
@@ -125,7 +125,7 @@ class Machine(AbstractBaseUser):
             log.add(self.category, 'Machine %s: Created' % self)
         for field in self._tracker.changed():
             if field == "password":
-                log.change(self, 'Changed %s' % (field))
+                log.change(self, 'Changed %s' % field)
                 log.change(
                     self.category,
                     'Machine %s: Changed %s' % (self, field))
@@ -153,7 +153,7 @@ class Machine(AbstractBaseUser):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('kg_machine_detail', [self.id])
+        return 'kg_machine_detail', [self.id]
 
 
 @python_2_unicode_compatible
@@ -387,11 +387,11 @@ class Account(models.Model):
 
         return True
 
-    def delete(self):
+    def delete(self, **kwargs):
         # delete the object
         log.delete(self.person, 'Account %s: Deleted' % self)
         log.delete(self.machine_category, 'Account %s: Deleted' % self)
-        super(Account, self).delete()
+        super(Account, self).delete(**kwargs)
         if self.date_deleted is None:
             # delete the datastore
             from karaage.datastores import machine_category_delete_account
@@ -428,7 +428,7 @@ class Account(models.Model):
             machine_category=self.machine_category)
         return iq.disk_quota
 
-    def loginShell(self):
+    def login_shell(self):
         return self.shell
 
     def lock(self):

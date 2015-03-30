@@ -22,7 +22,7 @@ import tldap.ldap_passwd
 
 
 class LDAPBackend(ModelBackend):
-    def authenticate(self, username=None, password=None):
+    def authenticate(self, username=None, password=None, **kwargs):
         try:
             person = Person.objects.get(username__exact=username)
         except Person.DoesNotExist:

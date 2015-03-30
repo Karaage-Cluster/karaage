@@ -58,11 +58,6 @@ form ul.radiolist label {
     display: inline;
 }
 
-form ul.inline {
-    margin-left: 0;
-    padding: 0;
-}
-
 form ul.inline li {
     float: left;
     padding-right: 7px;
@@ -94,33 +89,14 @@ form ul.inline li {
     width: auto;
 }
 
-.colMS .aligned .vLargeTextField, .colMS .aligned .vXMLLargeTextField {
-    width: 350px;
-}
-
 form .aligned table p {
     margin-left: 0;
     padding-left: 0;
 }
 
-.aligned .vCheckboxLabel {
-    float: none !important;
-    display: inline;
-    padding-left: 4px;
-}
-
-.colM .aligned .vLargeTextField, .colM .aligned .vXMLLargeTextField {
-    width: 610px;
-}
-
 .checkbox-row p.help {
     margin-left: 0;
     padding-left: 0 !important;
-}
-
-fieldset .field-box {
-    float: left;
-    margin-right: 20px;
 }
 
 /* WIDE FIELDSETS */
@@ -137,29 +113,15 @@ form .wide p.help {
     padding-left: 38px;
 }
 
-.colM fieldset.wide .vLargeTextField, .colM fieldset.wide .vXMLLargeTextField {
-    width: 450px;
-}
-
 /* COLLAPSED FIELDSETS */
 
 fieldset.collapsed * {
     display: none;
 }
 
-fieldset.collapsed h2, fieldset.collapsed {
-    display: block !important;
-}
-
 fieldset.collapsed h2 {
-    background-image: url(../img/nav-bg.gif);
-    background-position: bottom left;
+    background: url(../img/nav-bg.gif) bottom left;
     color: #999;
-}
-
-fieldset.collapsed .collapse-toggle {
-    background: transparent;
-    display: inline !important;
 }
 
 /* MONOSPACE TEXTAREAS */
@@ -191,10 +153,6 @@ body.popup .submit-row {
     margin: 0.3em;
 }
 
-.submit-row p.deletelink-box {
-    float: left;
-}
-
 .submit-row .deletelink {
     background: url(../img/icon_deletelink.gif) 0 50% no-repeat;
     padding-left: 14px;
@@ -202,60 +160,10 @@ body.popup .submit-row {
 
 /* CUSTOM FORM FIELDS */
 
-.vSelectMultipleField {
-    vertical-align: top !important;
-}
-
-.vCheckboxField {
-    border: none;
-}
-
-.vDateField, .vTimeField {
-    margin-right: 2px;
-}
-
-.vURLField {
-    width: 30em;
-}
-
-.vLargeTextField, .vXMLLargeTextField {
-    width: 48em;
-}
-
-.flatpages-flatpage #id_content {
-    height: 40.2em;
-}
-
-.module table .vPositiveSmallIntegerField {
-    width: 2.2em;
-}
-
-.vTextField {
-    width: 20em;
-}
-
-.vIntegerField {
-    width: 5em;
-}
-
-.vForeignKeyRawIdAdminField {
-    width: 5em;
-}
-
 /* INLINES */
-
-.inline-group {
-    padding: 0;
-    border: 1px solid #ccc;
-    margin: 10px 0;
-}
 
 .inline-group .aligned label {
     width: 8em;
-}
-
-.inline-related {
-    position: relative;
 }
 
 .inline-related h3 {
@@ -309,17 +217,6 @@ body.popup .submit-row {
     padding-top: 2em;
 }
 
-.inline-group .tabular tr td.original {
-    padding: 2px 0 0 0;
-    width: 0;
-    _position: relative;
-}
-
-.inline-group .tabular th.original {
-    width: 0px;
-    padding: 0;
-}
-
 .inline-group .tabular td.original p {
     position: absolute;
     left: 0;
@@ -363,8 +260,4 @@ body.popup .submit-row {
     padding-left: 14px;
     font-size: 11px;
     outline: 0; /* Remove dotted border around link */
-}
-
-.empty-form {
-    display: none;
 }

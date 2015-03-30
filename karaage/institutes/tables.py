@@ -55,7 +55,7 @@ class InstituteFilter(django_filters.FilterSet):
 
 
 class InstituteTable(tables.Table):
-    is_active = tables.Column(order_by=('-is_active'), verbose_name="active")
+    is_active = tables.Column(order_by='-is_active', verbose_name="active")
     name = tables.LinkColumn('kg_institute_detail', args=[A('pk')])
     delegates = PeopleColumn(orderable=False)
 

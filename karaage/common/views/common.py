@@ -140,12 +140,12 @@ def search(request):
 def log_list(request):
     queryset = LogEntry.objects.all()
 
-    filter = LogEntryFilter(request.GET, queryset=queryset)
-    table = LogEntryTable(filter.qs)
+    q_filter = LogEntryFilter(request.GET, queryset=queryset)
+    table = LogEntryTable(q_filter.qs)
     tables.RequestConfig(request).configure(table)
 
     spec = []
-    for name, value in six.iteritems(filter.form.cleaned_data):
+    for name, value in six.iteritems(q_filter.form.cleaned_data):
         if value is not None and value != "":
             name = name.replace('_', ' ').capitalize()
             spec.append((name, value))
@@ -154,7 +154,7 @@ def log_list(request):
         'karaage/common/log_list.html',
         {
             'table': table,
-            'filter': filter,
+            'filter': q_filter,
             'spec': spec,
             'title': "Institute list",
         },

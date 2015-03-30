@@ -83,7 +83,7 @@ class SlurmDataStore(base.MachineCategoryDataStore):
         value = value.strip()
 
         # Used for stripping non-ascii characters
-        value = ''.join(c for c in value if ord(c) > 31 and ord(c) < 127)
+        value = ''.join(c for c in value if 31 < ord(c) < 127)
 
         return value
 
@@ -96,7 +96,7 @@ class SlurmDataStore(base.MachineCategoryDataStore):
         length = int(arg)
         if value is None:
             value = ""
-        if (len(value) > length):
+        if len(value) > length:
             return value[:length] + "..."
         else:
             return value
@@ -126,7 +126,7 @@ class SlurmDataStore(base.MachineCategoryDataStore):
                 "<-- Cmd %s returned: %d (error)" % (command, retcode))
             raise subprocess.CalledProcessError(retcode, command)
 
-        logger.debug("<-- Returned %d (good)" % (retcode))
+        logger.debug("<-- Returned %d (good)" % retcode)
         return
 
     def _read_output(self, command):
@@ -177,7 +177,7 @@ class SlurmDataStore(base.MachineCategoryDataStore):
             logger.error("Cmd %s didn't return any headers." % command)
             raise RuntimeError("Cmd %s didn't return any headers." % command)
 
-        logger.debug("<-- Returned: %d (good)" % (retcode))
+        logger.debug("<-- Returned: %d (good)" % retcode)
         return results
 
     def get_user(self, username):

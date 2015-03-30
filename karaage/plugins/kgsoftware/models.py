@@ -38,7 +38,7 @@ class SoftwareCategory(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('kg_software_category_list', [])
+        return 'kg_software_category_list', []
 
 
 @python_2_unicode_compatible
@@ -86,7 +86,7 @@ class Software(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('kg_software_detail', [self.id])
+        return 'kg_software_detail', [self.id]
 
     def get_current_license(self):
         try:
@@ -146,7 +146,7 @@ class SoftwareLicense(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('kg_software_license_detail', [self.id])
+        return 'kg_software_license_detail', [self.id]
 
 
 class SoftwareLicenseAgreement(models.Model):

@@ -45,14 +45,14 @@ import karaage.common as common
 
 
 def _add_edit_user(request, form_class, username):
-    PersonForm = form_class
+    person_form = form_class
 
     if username is None:
         person = None
     else:
         person = get_object_or_404(Person, username=username)
 
-    form = PersonForm(request.POST or None, instance=person)
+    form = person_form(request.POST or None, instance=person)
     if request.method == 'POST':
         if form.is_valid():
             if person:
@@ -96,20 +96,20 @@ def user_list(request, queryset=None, title=None):
 
     queryset = queryset.select_related()
 
-    filter = PersonFilter(request.GET, queryset=queryset)
+    q_filter = PersonFilter(request.GET, queryset=queryset)
 
-    table = PersonTable(filter.qs)
+    table = PersonTable(q_filter.qs)
     tables.RequestConfig(request).configure(table)
 
     spec = []
-    for name, value in six.iteritems(filter.form.cleaned_data):
+    for name, value in six.iteritems(q_filter.form.cleaned_data):
         if value is not None and value != "":
             name = name.replace('_', ' ').capitalize()
             spec.append((name, value))
 
     context = {
         'table': table,
-        'filter': filter,
+        'filter': q_filter,
         'spec': spec,
         'title': title or "Person list",
     }
@@ -311,22 +311,20 @@ def bounced_email(request, username):
 @admin_required
 def person_logs(request, username):
     obj = get_object_or_404(Person, username=username)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("People", reverse("kg_person_list")))
-    breadcrumbs.append(
-        (six.text_type(obj), reverse("kg_person_detail", args=[obj.username])))
+    breadcrumbs = [
+        ("People", reverse("kg_person_list")),
+        (six.text_type(obj), reverse("kg_person_detail", args=[obj.username]))
+    ]
     return common.log_list(request, breadcrumbs, obj)
 
 
 @admin_required
 def add_comment(request, username):
     obj = get_object_or_404(Person, username=username)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("People", reverse("kg_person_list")))
-    breadcrumbs.append(
-        (six.text_type(obj), reverse("kg_person_detail", args=[obj.username])))
+    breadcrumbs = [
+        ("People", reverse("kg_person_list")),
+        (six.text_type(obj), reverse("kg_person_detail", args=[obj.username]))
+    ]
     return common.add_comment(request, breadcrumbs, obj)
 
 

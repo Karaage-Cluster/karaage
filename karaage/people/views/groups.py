@@ -36,12 +36,12 @@ import karaage.common as util
 def group_list(request):
     queryset = Group.objects.select_related()
 
-    filter = GroupFilter(request.GET, queryset=queryset)
-    table = GroupTable(filter.qs)
+    q_filter = GroupFilter(request.GET, queryset=queryset)
+    table = GroupTable(q_filter.qs)
     tables.RequestConfig(request).configure(table)
 
     spec = []
-    for name, value in six.iteritems(filter.form.cleaned_data):
+    for name, value in six.iteritems(q_filter.form.cleaned_data):
         if value is not None and value != "":
             name = name.replace('_', ' ').capitalize()
             spec.append((name, value))
@@ -50,7 +50,7 @@ def group_list(request):
         'karaage/people/group_list.html',
         {
             'table': table,
-            'filter': filter,
+            'filter': q_filter,
             'spec': spec,
             'title': "Group list",
         },
@@ -58,7 +58,7 @@ def group_list(request):
 
 
 def _add_edit_group(request, form_class, group_name):
-    GroupForm = form_class
+    group_form = form_class
 
     if group_name is None:
         group = None
@@ -66,7 +66,7 @@ def _add_edit_group(request, form_class, group_name):
         group = get_object_or_404(Group, name=group_name)
 
     if request.method == 'POST':
-        form = GroupForm(request.POST, instance=group)
+        form = group_form(request.POST, instance=group)
         if form.is_valid():
             if group:
                 # edit
@@ -81,7 +81,7 @@ def _add_edit_group(request, form_class, group_name):
 
             return HttpResponseRedirect(group.get_absolute_url())
     else:
-        form = GroupForm(instance=group)
+        form = group_form(instance=group)
 
     return render_to_response(
         'karaage/people/group_form.html',
@@ -150,22 +150,20 @@ def group_verbose(request, group_name):
 @admin_required
 def group_logs(request, group_name):
     obj = get_object_or_404(Group, name=group_name)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("Groups", reverse("kg_group_list")))
-    breadcrumbs.append(
-        (six.text_type(obj), reverse("kg_group_detail", args=[obj.name])))
+    breadcrumbs = [
+        ("Groups", reverse("kg_group_list")),
+        (six.text_type(obj), reverse("kg_group_detail", args=[obj.name]))
+    ]
     return util.log_list(request, breadcrumbs, obj)
 
 
 @admin_required
 def add_comment(request, group_name):
     obj = get_object_or_404(Group, name=group_name)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("Groups", reverse("kg_group_list")))
-    breadcrumbs.append(
-        (six.text_type(obj), reverse("kg_group_detail", args=[obj.name])))
+    breadcrumbs = [
+        ("Groups", reverse("kg_group_list")),
+        (six.text_type(obj), reverse("kg_group_detail", args=[obj.name]))
+    ]
     return util.add_comment(request, breadcrumbs, obj)
 
 

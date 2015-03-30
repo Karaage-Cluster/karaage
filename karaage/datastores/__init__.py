@@ -40,7 +40,7 @@ def _lookup(cls):
             cls = getattr(module, name)
         except AttributeError:
             raise AttributeError("%s reference cannot be found" % cls)
-    return(cls)
+    return cls
 
 
 def _get_datastore(cls, expected, config):
@@ -315,8 +315,7 @@ def machine_category_account_exists(username, machine_category):
 def machine_category_get_account_details(account):
     """ Get the account details. """
     machine_category = account.machine_category
-    result = {}
-    result[machine_category.name] = []
+    result = {machine_category.name: []}
     for datastore in _get_machine_category_datastores(machine_category):
         value = datastore.get_account_details(account)
         value['datastore'] = datastore.config['DESCRIPTION']
@@ -419,7 +418,7 @@ def machine_category_save_institute(institute):
             datastore.save_institute(institute)
 
 
-def machine_category_delete_institute(institute, machine_category):
+def machine_category_delete_institute(institute, machine_category=None):
     """ An institute has been deleted. """
     if machine_category is None:
         for institute_quota in institute.institutequota_set.all():

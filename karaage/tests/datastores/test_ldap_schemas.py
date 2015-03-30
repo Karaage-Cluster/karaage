@@ -22,12 +22,12 @@ from karaage.tests.integration import IntegrationTestCase
 from karaage.tests.fixtures import PersonFactory
 
 
-class openldapPersonTestCase(IntegrationTestCase):
+class OpenldapPersonTestCase(IntegrationTestCase):
 
     def setUp(self):
         self.LDAP_CONFIG['PERSON'] = \
             'karaage.datastores.ldap_schemas.openldap_person'
-        super(openldapPersonTestCase, self).setUp()
+        super(OpenldapPersonTestCase, self).setUp()
 
     def test_kAccountMixin(self):
         person = PersonFactory()

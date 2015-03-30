@@ -145,7 +145,7 @@ class Project(MPTTModel):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('kg_project_detail', [self.id])
+        return 'kg_project_detail', [self.id]
 
     def save(self, *args, **kwargs):
         created = self.pk is None
@@ -329,7 +329,7 @@ class ProjectQuota(models.Model):
         if created:
             log.add(
                 self.project,
-                'Quota %s: Created' % (self.machine_category))
+                'Quota %s: Created' % self.machine_category)
         for field in self._tracker.changed():
             log.change(
                 self.project,
@@ -347,7 +347,7 @@ class ProjectQuota(models.Model):
     def delete(self, *args, **kwargs):
         log.delete(
             self.project,
-            'Quota %s: Deleted' % (self.machine_category))
+            'Quota %s: Deleted' % self.machine_category)
 
         from karaage.datastores import remove_accounts_from_project
         query = Account.objects.filter(person__groups=self.project.group)

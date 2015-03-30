@@ -75,7 +75,7 @@ class ProjectFilter(django_filters.FilterSet):
 
 
 class ProjectTable(tables.Table):
-    is_active = tables.Column(order_by=('-is_active'), verbose_name="active")
+    is_active = tables.Column(order_by='-is_active', verbose_name="active")
     pid = tables.LinkColumn(
         'kg_project_detail', args=[A('id')], verbose_name="PID")
     institute = tables.LinkColumn(

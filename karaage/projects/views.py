@@ -77,6 +77,7 @@ def add_edit_project(request, project_id=None):
 
     if project_id is None:
         project = None
+        old_pid = None
         flag = 1
     else:
         project = get_object_or_404(Project, id=project_id)
@@ -216,12 +217,12 @@ def project_list(request, queryset=None):
 
     queryset = queryset.select_related()
 
-    filter = ProjectFilter(request.GET, queryset=queryset)
-    table = ProjectTable(filter.qs)
+    q_filter = ProjectFilter(request.GET, queryset=queryset)
+    table = ProjectTable(q_filter.qs)
     tables.RequestConfig(request).configure(table)
 
     spec = []
-    for name, value in six.iteritems(filter.form.cleaned_data):
+    for name, value in six.iteritems(q_filter.form.cleaned_data):
         if value is not None and value != "":
             name = name.replace('_', ' ').capitalize()
             spec.append((name, value))
@@ -230,7 +231,7 @@ def project_list(request, queryset=None):
         'karaage/projects/project_list.html',
         {
             'table': table,
-            'filter': filter,
+            'filter': q_filter,
             'spec': spec,
             'title': "Project list",
         },
@@ -337,22 +338,20 @@ def no_users(request):
 @admin_required
 def project_logs(request, project_id):
     obj = get_object_or_404(Project, id=project_id)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("Projects", reverse("kg_project_list")))
-    breadcrumbs.append(
-        (six.text_type(obj.pid), reverse("kg_project_detail", args=[obj.id])))
+    breadcrumbs = [
+        ("Projects", reverse("kg_project_list")),
+        (six.text_type(obj.pid), reverse("kg_project_detail", args=[obj.id]))
+    ]
     return util.log_list(request, breadcrumbs, obj)
 
 
 @admin_required
 def add_comment(request, project_id):
     obj = get_object_or_404(Project, id=project_id)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("Projects", reverse("kg_project_list")))
-    breadcrumbs.append(
-        (six.text_type(obj.pid), reverse("kg_project_detail", args=[obj.id])))
+    breadcrumbs = [
+        ("Projects", reverse("kg_project_list")),
+        (six.text_type(obj.pid), reverse("kg_project_detail", args=[obj.id]))
+    ]
     return util.add_comment(request, breadcrumbs, obj)
 
 

@@ -73,6 +73,9 @@ class BulkEmailForm(EmailForm):
         elif group == 'cluster_users':
             person_list = Person.active.filter(account__isnull=False)
 
+        else:
+            person_list = None
+
         if person_list:
             for person in person_list:
                 if person.email not in email_list:

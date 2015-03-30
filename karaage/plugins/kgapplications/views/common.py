@@ -45,13 +45,13 @@ def application_list(request):
     else:
         queryset = Application.objects.get_for_applicant(request.user)
 
-    filter = ApplicationFilter(request.GET, queryset=queryset)
+    q_filter = ApplicationFilter(request.GET, queryset=queryset)
 
-    table = ApplicationTable(filter.qs)
+    table = ApplicationTable(q_filter.qs)
     tables.RequestConfig(request).configure(table)
 
     spec = []
-    for name, value in six.iteritems(filter.form.cleaned_data):
+    for name, value in six.iteritems(q_filter.form.cleaned_data):
         if value is not None and value != "":
             name = name.replace('_', ' ').capitalize()
             spec.append((name, value))
@@ -60,7 +60,7 @@ def application_list(request):
         "kgapplications/application_list.html",
         {
             'table': table,
-            'filter': filter,
+            'filter': q_filter,
             'spec': spec,
             'title': "Application list",
         },
@@ -110,22 +110,20 @@ def applicant_edit(request, applicant_id):
 @admin_required
 def application_logs(request, application_id):
     obj = get_object_or_404(Application, pk=application_id)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("Applications", reverse("kg_application_list")))
-    breadcrumbs.append(
-        (six.text_type(obj), reverse("kg_application_detail", args=[obj.pk])))
+    breadcrumbs = [
+        ("Applications", reverse("kg_application_list")),
+        (six.text_type(obj), reverse("kg_application_detail", args=[obj.pk]))
+    ]
     return util.log_list(request, breadcrumbs, obj)
 
 
 @admin_required
 def add_comment(request, application_id):
     obj = get_object_or_404(Application, pk=application_id)
-    breadcrumbs = []
-    breadcrumbs.append(
-        ("Applications", reverse("kg_application_list")))
-    breadcrumbs.append(
-        (six.text_type(obj), reverse("kg_application_detail", args=[obj.pk])))
+    breadcrumbs = [
+        ("Applications", reverse("kg_application_list")),
+        (six.text_type(obj), reverse("kg_application_detail", args=[obj.pk]))
+    ]
     return util.add_comment(request, breadcrumbs, obj)
 
 
@@ -139,10 +137,14 @@ def application_detail(request, application_id, state=None, label=None):
 
 def application_unauthenticated(request, token, state=None, label=None):
     """ An somebody is trying to access an application. """
-    application = base.get_application(
-        secret_token=token, expires__gt=datetime.datetime.now())
+    application = base.get_application(secret_token=token)
+    if application.expires < datetime.datetime.now():
+        return render_to_response(
+            'kgapplications/common_expired.html',
+            {'application': application},
+            context_instance=RequestContext(request))
 
-    roles = set(['is_applicant', 'is_authorised'])
+    roles = {'is_applicant', 'is_authorised'}
 
     # redirect user to real url if possible.
     if request.user.is_authenticated():

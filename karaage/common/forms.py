@@ -57,20 +57,25 @@ class CommentForm(forms.ModelForm):
         model = LogEntry
         fields = ["change_message"]
 
-    def __init__(self, obj, instance=None, **kwargs):
+    def __init__(self, obj, request, instance=None, **kwargs):
         self.obj = obj
+        self.request = request
         if instance is not None:
             assert instance.action_flag == COMMENT
             assert obj == instance.content_object
-        return super(CommentForm, self).__init__(instance=instance, **kwargs)
+        super(CommentForm, self).__init__(instance=instance, **kwargs)
 
-    def save(self, request):
+    def save(self, commit=True):
         log = super(CommentForm, self).save(commit=False)
         log.content_object = self.obj
         log.object_repr = six.text_type(self.obj)
         log.action_flag = COMMENT
-        log.user = request.user
-        log.save()
+        log.user = self.request.user
+
+        if commit:
+            log.save()
+
+        return log
 
 
 class LoginForm(forms.Form):

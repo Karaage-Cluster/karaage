@@ -78,7 +78,9 @@ class AddPackageForm(SoftwareForm):
 
         return data
 
-    def save(self):
+    def save(self, commit=True):
+        assert commit is True
+
         data = self.cleaned_data
 
         software = super(AddPackageForm, self).save(commit=False)

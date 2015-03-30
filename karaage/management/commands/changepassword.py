@@ -48,10 +48,10 @@ class Command(BaseCommand):
 
         self.stdout.write("Changing password for person '%s'\n" % person)
 
-        MAX_TRIES = 3
+        max_tries = 3
         count = 0
         p1, p2 = 1, 2  # To make them initially mismatch.
-        while p1 != p2 and count < MAX_TRIES:
+        while p1 != p2 and count < max_tries:
             p1 = self._get_pass()
             p2 = self._get_pass("Password (again): ")
             if p1 != p2:
@@ -59,7 +59,7 @@ class Command(BaseCommand):
                     "Passwords do not match. Please try again.\n")
                 count = count + 1
 
-        if count == MAX_TRIES:
+        if count == max_tries:
             raise CommandError(
                 "Aborting password change for user '%s' after %s attempts"
                 % (username, count))

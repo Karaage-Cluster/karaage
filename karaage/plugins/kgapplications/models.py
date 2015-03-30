@@ -120,7 +120,7 @@ class Application(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('kg_application_detail', [self.id])
+        return 'kg_application_detail', [self.id]
 
     def save(self, *args, **kwargs):
         created = self.pk is None

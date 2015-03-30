@@ -105,7 +105,7 @@ class Institute(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('kg_institute_detail', [self.id])
+        return 'kg_institute_detail', [self.id]
 
     def can_view(self, request):
         person = request.user
@@ -163,7 +163,7 @@ class InstituteQuota(models.Model):
         if created:
             log.add(
                 self.institute,
-                'Quota %s: Created' % (self.machine_category))
+                'Quota %s: Created' % self.machine_category)
         for field in self._tracker.changed():
             log.change(
                 self.institute,
@@ -181,7 +181,7 @@ class InstituteQuota(models.Model):
     def delete(self, *args, **kwargs):
         log.delete(
             self.institute,
-            'Quota %s: Deleted' % (self.machine_category))
+            'Quota %s: Deleted' % self.machine_category)
 
         from karaage.datastores import remove_accounts_from_institute
         query = Account.objects.filter(person__groups=self.institute.group)
@@ -234,4 +234,4 @@ class InstituteDelegate(models.Model):
 
         log.delete(
             self.institute,
-            'Delegate %s: Deleted' % (self.person))
+            'Delegate %s: Deleted' % self.person)

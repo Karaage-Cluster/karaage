@@ -31,7 +31,7 @@ from karaage.datastores import get_machine_category_test_datastore
 import karaage.datastores.ldap as dldap
 
 
-def _EQ(dn1, dn2):
+def _eq(dn1, dn2):
     dn1 = dn2str(str2dn(dn1)).lower()
     dn2 = dn2str(str2dn(dn2)).lower()
     return dn1 == dn2
@@ -185,7 +185,7 @@ class Command(BaseCommand):
                 # copy account to correct place
                 try:
                     dst = machine_category_datastore._accounts().get(uid=p.uid)
-                    if _EQ(p.dn, dst.dn):
+                    if _eq(p.dn, dst.dn):
                         delete_this = False
                     if 'posixAccount' not in dst.objectClass:
                         delete_this = False
@@ -234,7 +234,7 @@ class Command(BaseCommand):
                 # person.save() as we get the password too.
                 try:
                     dst = global_datastore._people().get(uid=uid)
-                    if _EQ(p.dn, dst.dn):
+                    if _eq(p.dn, dst.dn):
                         delete_this = False
                     if 'posixAccount' in dst.objectClass:
                         delete_this = False
@@ -282,7 +282,7 @@ class Command(BaseCommand):
             if global_datastore is not None:
                 try:
                     dst = global_datastore._groups().get(cn=g.cn)
-                    if _EQ(g.dn, dst.dn):
+                    if _eq(g.dn, dst.dn):
                         delete_this = False
                 except global_datastore._group.DoesNotExist:
                     new_group = global_datastore._create_group()
@@ -300,7 +300,7 @@ class Command(BaseCommand):
 
             try:
                 dst = machine_category_datastore._groups().get(cn=g.cn)
-                if _EQ(g.dn, dst.dn):
+                if _eq(g.dn, dst.dn):
                     delete_this = False
             except machine_category_datastore._group.DoesNotExist:
                 new_group = machine_category_datastore._create_group()
