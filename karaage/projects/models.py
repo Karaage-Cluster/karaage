@@ -388,3 +388,4 @@ class ProjectLevel(models.Model):
 
     class Meta:
         ordering = ['level']
+        app_label = 'karaage'

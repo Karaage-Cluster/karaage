@@ -35,3 +35,4 @@ class Scheme(models.Model):
 
     class Meta:
         ordering = ['name']
+        app_label = 'karaage'

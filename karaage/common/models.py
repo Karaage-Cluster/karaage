@@ -95,7 +95,7 @@ class Usage(models.Model):
     class Meta:
         # Not using ordering so database planner is free to pick the
         # rows as they come.
-        pass
+        app_label = 'karaage'
 
 
 class LogEntryManager(models.Manager):

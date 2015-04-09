@@ -507,6 +507,7 @@ class ResourcePool(models.Model):
 
     class Meta:
         ordering = ['name']
+        app_label = 'karaage'
 
 
 @python_2_unicode_compatible
@@ -543,6 +544,7 @@ class Resource(models.Model):
 
     class Meta:
         ordering = ['resource_type']
+        app_label = 'karaage'
 
 
 models.signals.m2m_changed.connect(

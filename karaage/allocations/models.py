@@ -44,6 +44,7 @@ class Grant(models.Model):
             'project__name',
             'description',
         ]
+        app_label = 'karaage'
 
 
 class AllocationPoolQuerySet(models.QuerySet):
@@ -112,6 +113,7 @@ class AllocationPool(models.Model):
             '-project__end_date',
             'project__name',
         ]
+        app_label = 'karaage'
 
 
 class Allocation(models.Model):
@@ -129,6 +131,7 @@ class Allocation(models.Model):
         ordering = [
             'allocation_pool',
         ]
+        app_label = 'karaage'
 
 
 class AllocationPeriod(models.Model):
@@ -146,3 +149,4 @@ class AllocationPeriod(models.Model):
             '-end',
             'name',
         ]
+        app_label = 'karaage'
