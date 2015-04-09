@@ -580,15 +580,12 @@ class Migration(migrations.Migration):
                     ),
                     '0'
                     FROM people_group_members members
-                        INNER JOIN people_group grp ON (
-                            members.group_id = grp.id
-                        )
-                        INNER JOIN project ON (
-                            project.pid = grp.name
-                        )
-                        LEFT JOIN project_leaders leaders ON (
-                            leaders.project_id = project.id
-                        )
+                    INNER JOIN project ON (
+                        project.group_id = members.group_id
+                    )
+                    LEFT JOIN project_leaders leaders ON (
+                        leaders.project_id = project.id
+                    )
             ''',
             '''
                 UPDATE account SET default_project_id = (
