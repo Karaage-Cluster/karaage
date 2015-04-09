@@ -438,6 +438,7 @@ class ProjectMembership(models.Model):
     is_primary_contact = models.BooleanField(default=False)
 
     class Meta:
+        app_label = 'karaage'
         unique_together = (
             'person', 'project',
         )
@@ -546,6 +547,7 @@ class CareerLevel(models.Model):
 
     class Meta:
         ordering = ['level']
+        app_label = 'karaage'
 
 
 @python_2_unicode_compatible
