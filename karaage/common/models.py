@@ -48,7 +48,7 @@ class Usage(models.Model):
     allocation_pool = models.ForeignKey('karaage.AllocationPool', null=True)
     allocation_period = models.ForeignKey(
         'karaage.AllocationPeriod', null=True)
-    content_type = models.ForeignKey('contenttypes.ContentType')
+    content_type = models.ForeignKey('contenttypes.ContentType', null=True)
     grant = models.ForeignKey('karaage.Grant', null=True)
     person_institute = models.ForeignKey(
         'karaage.Institute',
@@ -84,10 +84,10 @@ class Usage(models.Model):
     count = models.PositiveIntegerField()
     created = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=255)
-    range_start = models.DateTimeField()
-    range_end = models.DateTimeField()
-    raw_used = models.FloatField()
-    used = models.FloatField()
+    range_start = models.DateField()
+    range_end = models.DateField()
+    raw_used = models.BigIntegerField()
+    used = models.BigIntegerField()
 
     def __str__(self):
         return self.description
@@ -96,6 +96,9 @@ class Usage(models.Model):
         # Not using ordering so database planner is free to pick the
         # rows as they come.
         app_label = 'karaage'
+        unique_together = (
+            'range_start', 'range_end',
+            'account', 'machine', 'submitted_project')
 
 
 class LogEntryManager(models.Manager):
