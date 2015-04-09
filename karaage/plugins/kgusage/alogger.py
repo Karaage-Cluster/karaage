@@ -129,14 +129,6 @@ def parse_logs(log_list, date, machine_name, log_type):
             fail += 1
             continue
 
-        # check person is in project
-        if account.person not in project.group.members.all():
-            output.append(
-                "line %d: %s is not in project %s, cpu usage: %s"
-                % (line_no, account.person, project, data['cpu_usage']))
-            fail += 1
-            continue
-
         # memory calculations
         if machine.mem_per_core:
             avail_mem_per_core = machine.mem_per_core * 1024
