@@ -1,3 +1,4 @@
+{% load karaage_tags %}
 {% if user.is_authenticated %}
 <li><a href="{% url 'kg_profile_applications' %}" class='{% active request "profile/applications/" %}'>Applications ({{ pending_applications }})</a></li>
 {% else %}

@@ -1,3 +1,4 @@
+{% load karaage_tags %}
 {% if user.is_authenticated %}
 <li><a class="{% active request "profile/software/" %}" href="{% url 'kg_profile_software' %}">Software Agreements</a></li>
 {% endif %}
