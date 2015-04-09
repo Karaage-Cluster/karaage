@@ -440,6 +440,10 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
+        migrations.AlterUniqueTogether(
+            name='projectmembership',
+            unique_together=set([('person', 'project')]),
+        ),
         migrations.CreateModel(
             name='Resource',
             fields=[

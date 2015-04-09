@@ -437,6 +437,11 @@ class ProjectMembership(models.Model):
     is_default_project = models.BooleanField(default=False)
     is_primary_contact = models.BooleanField(default=False)
 
+    class Meta:
+        unique_together = (
+            'person', 'project',
+        )
+
     def __str__(self):
         return '{} @ {}'.format(self.person, self.project)
 
