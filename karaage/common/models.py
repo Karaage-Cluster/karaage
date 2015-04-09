@@ -84,10 +84,10 @@ class Usage(models.Model):
     count = models.PositiveIntegerField()
     created = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=255)
-    range_start = models.DateTimeField()
-    range_end = models.DateTimeField()
-    raw_used = models.FloatField()
-    used = models.FloatField()
+    range_start = models.DateField()
+    range_end = models.DateField()
+    raw_used = models.BigIntegerField()
+    used = models.BigIntegerField()
 
     def __str__(self):
         return self.description
@@ -95,7 +95,10 @@ class Usage(models.Model):
     class Meta:
         # Not using ordering so database planner is free to pick the
         # rows as they come.
-        pass
+        app_label = 'karaage'
+        unique_together = (
+            'range_start', 'range_end',
+            'account', 'machine', 'submitted_project')
 
 
 class LogEntryManager(models.Manager):
