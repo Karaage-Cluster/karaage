@@ -568,7 +568,7 @@ class Migration(migrations.Migration):
                     is_project_leader,
                     is_default_project,
                     is_primary_contact
-                ) SELECT
+                ) SELECT DISTINCT
                     members.person_id,
                     project.id,
                     '0',
