@@ -20,7 +20,14 @@ import six
 from django.db import models
 from django.db.models import Q
 from django.db.models.fields import FieldDoesNotExist
-from django.db.models.related import RelatedObject
+
+try:
+    # Django < 1.8
+    from django.db.models.related import RelatedObject as ForeignObjectRel
+except ImportError:
+    # Django >= 1.8
+    from django.db.models.fields.related import ForeignObjectRel
+
 from django.contrib.contenttypes.models import ContentType
 try:
     # Django >= 1.7
@@ -130,9 +137,8 @@ class Application(models.Model):
             parent = list(self._meta.parents.keys())[0]
             subclasses = parent._meta.get_all_related_objects()
             for klass in subclasses:
-                if isinstance(klass, RelatedObject) \
-                        and klass.field.primary_key \
-                        and klass.opts == self._meta:
+                if isinstance(klass, ForeignObjectRel) \
+                        and klass.field.primary_key:
                     self._class = klass.get_accessor_name()
                     break
 
@@ -152,9 +158,7 @@ class Application(models.Model):
 
     def get_object(self):
         try:
-            if self._class \
-                    and self._meta.get_field_by_name(self._class)[0].opts \
-                    != self._meta:
+            if self._class is not None:
                 return getattr(self, self._class)
         except FieldDoesNotExist:
             pass
