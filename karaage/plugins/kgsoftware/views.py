@@ -53,7 +53,7 @@ if apps.is_installed("karaage.plugins.kgsoftware.applications"):
 
     def get_applications(software_license):
         applications = SoftwareApplication.objects.filter(
-            software_license__software=software_license)
+            software_license=software_license)
         applications = applications.exclude(state='C')
         return applications
 
