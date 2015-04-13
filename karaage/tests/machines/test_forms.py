@@ -32,10 +32,11 @@ class AdminAccountFormTestCase(TestCase):
         self.account = simple_account()
 
     def _valid_form_data(self):
+        text = six.text_type
         data = {
             'username': self.account.username,
-            'machine_category': self.account.machine_category.id,
-            'default_project': self.account.default_project.id,
+            'machine_category': text(self.account.machine_category.id),
+            'default_project': text(self.account.default_project.id),
             'shell': settings.DEFAULT_SHELL,
         }
         return data

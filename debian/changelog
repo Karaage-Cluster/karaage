@@ -4,6 +4,18 @@ karaage4 (4.0.0-1) unstable; urgency=medium
 
  -- Brian May <bam@debian.org>  Mon, 09 Feb 2015 14:54:17 +1100
 
+karaage3 (3.1.18-1) unstable; urgency=medium
+
+  * Django 1.8 and 1.9 fixes.
+      * Minor Schema change to last_login field of Person and Machine.
+      * Email length in Person increased.
+      * Fix RelatedObject related issues in Applications.
+      * Plus others.
+  * Fix bug in software application listing.
+  * Fix incorrect name of query and jquery-ui files.
+
+ -- Brian May <bam@debian.org>  Mon, 13 Apr 2015 09:05:05 +1000
+
 karaage3 (3.1.17-1) unstable; urgency=medium
 
   * Cleanup code.

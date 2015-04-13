@@ -19,8 +19,14 @@ import six
 
 from django.db import models
 from django.db.models import Q
-from django.db.models.fields import FieldDoesNotExist
-from django.db.models.related import RelatedObject
+
+try:
+    # Django < 1.8
+    from django.db.models.related import RelatedObject as OneToOneRel
+except ImportError:
+    # Django >= 1.8
+    from django.db.models.fields.related import OneToOneRel
+
 from django.contrib.contenttypes.models import ContentType
 try:
     # Django >= 1.7
@@ -128,13 +134,32 @@ class Application(models.Model):
             self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
         if not self.pk:
             self.created_by = get_current_person()
-            parent = list(self._meta.parents.keys())[0]
-            subclasses = parent._meta.get_all_related_objects()
-            for klass in subclasses:
-                if isinstance(klass, RelatedObject) \
-                        and klass.field.primary_key \
-                        and klass.opts == self._meta:
-                    self._class = klass.get_accessor_name()
+
+            # Find the accessor from Application to type(self) class
+            if hasattr(Application._meta, 'get_fields'):
+                # Django >= 1.8
+                fields = [
+                    f for f in Application._meta.get_fields()
+                    if isinstance(f, OneToOneRel)
+                    and f.field.primary_key
+                    and f.auto_created
+                ]
+
+            else:
+                # Django <= 1.8
+                fields = [
+                    f for f in Application._meta.get_all_related_objects()
+                    if isinstance(f, OneToOneRel)
+                    and f.field.primary_key
+                ]
+
+            for rel in fields:
+                # Works with Django < 1.8 and => 1.8
+                related_model = getattr(rel, 'related_model', rel.model)
+
+                # if we find it, save the name
+                if related_model == type(self):
+                    self._class = rel.get_accessor_name()
                     break
 
         super(Application, self).save(*args, **kwargs)
@@ -152,13 +177,8 @@ class Application(models.Model):
         super(Application, self).delete(*args, **kwargs)
 
     def get_object(self):
-        try:
-            if self._class \
-                    and self._meta.get_field_by_name(self._class)[0].opts \
-                    != self._meta:
-                return getattr(self, self._class)
-        except FieldDoesNotExist:
-            pass
+        if self._class:
+            return getattr(self, self._class)
         return self
 
     def reopen(self):

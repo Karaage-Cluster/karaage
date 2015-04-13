@@ -38,7 +38,7 @@ def unique_group_for_project(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('karaage', '0002_auto_20140924_1111'),
+        ('karaage', '0003_auto_20150410_1032'),
     ]
 
     operations = [

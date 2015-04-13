@@ -239,8 +239,8 @@ PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.slimit.SlimItCompressor'
 PIPELINE_JS = {
     'karaage': {
         'source_filenames': (
-            'js/jquery-1.11.0.js',
-            'js/jquery-ui-1.10.4.js',
+            'js/jquery-1.11.2.js',
+            'js/jquery-ui-1.11.4.js',
             'js/*.js',
             'ajax_select/js/ajax_select.js',
         ),

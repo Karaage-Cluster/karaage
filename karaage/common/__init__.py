@@ -37,10 +37,6 @@ from karaage.common.models import (LogEntry, ADDITION, CHANGE,
                                    DELETION, COMMENT)
 
 
-from django.template import add_to_builtins
-add_to_builtins('karaage.templatetags.karaage_tags')
-
-
 def get_date_range(request, default_start=None, default_end=None):
 
     if default_start is None:
@@ -50,7 +46,7 @@ def get_date_range(request, default_start=None, default_end=None):
 
     today = datetime.date.today()
 
-    if 'start' in request.REQUEST:
+    if 'start' in request.GET:
         try:
             years, months, days = request.GET['start'].split('-')
             start = datetime.datetime(int(years), int(months), int(days))
@@ -60,7 +56,7 @@ def get_date_range(request, default_start=None, default_end=None):
     else:
         start = default_start
 
-    if 'end' in request.REQUEST:
+    if 'end' in request.GET:
         try:
             years, months, days = request.GET['end'].split('-')
             end = datetime.datetime(int(years), int(months), int(days))

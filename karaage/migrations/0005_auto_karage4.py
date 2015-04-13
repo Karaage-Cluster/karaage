@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('contenttypes', '0001_initial'),
-        ('karaage', '0003_unique_groups'),
+        ('karaage', '0004_unique_groups'),
     ]
 
     operations = [

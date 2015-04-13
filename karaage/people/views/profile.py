@@ -36,8 +36,8 @@ import karaage.common.saml as saml
 def login(request, username=None):
     error = ''
     redirect_to = reverse('index')
-    if 'next' in request.REQUEST:
-        redirect_to = request.REQUEST['next']
+    if 'next' in request.GET:
+        redirect_to = request.GET['next']
 
     if request.POST:
 

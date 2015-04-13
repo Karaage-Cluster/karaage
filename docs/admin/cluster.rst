@@ -37,7 +37,7 @@ Debian Installation
 
 Redhat Installation
 -------------------
-Redhat6, Redhat 7, Centos 6, Centos 7, and Fedora 20 are supports.
+Redhat6, Redhat 7, Centos 6, and Centos 7 are supported.
 
 #.  If you require a proxy server for out going connections, set it up now.
 
@@ -50,6 +50,29 @@ Redhat6, Redhat 7, Centos 6, Centos 7, and Fedora 20 are supports.
     .. code-block:: bash
 
         wget http://code.vpac.org/centos/vpac.repo -O /etc/yum.repos.d/vpac.repo
+
+#.  Install the packages:
+
+    .. code-block:: bash
+
+        yum install karaage-cluster-tools
+
+
+Fedora Installation
+-------------------
+Fedora 20 is supported.
+
+#.  If you require a proxy server for out going connections, set it up now.
+
+    .. code-block:: bash
+
+        export http_proxy=http://proxy.example.org
+
+#.  Add the VPAC repository.
+
+    .. code-block:: bash
+
+        wget http://code.vpac.org/fedora/vpac.repo -O /etc/yum.repos.d/vpac.repo
 
 #.  Install the packages:
 
