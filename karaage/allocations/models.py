@@ -114,6 +114,11 @@ class AllocationPool(models.Model):
             'project__name',
         ]
         app_label = 'karaage'
+        unique_together = (
+            'project',
+            'period',
+            'resource_pool',
+        )
 
 
 class Allocation(models.Model):
@@ -135,7 +140,7 @@ class Allocation(models.Model):
 
 
 class AllocationPeriod(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     start = models.DateTimeField()
     end = models.DateTimeField()
 

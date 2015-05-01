@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
             name='AllocationPeriod',
             fields=[
                 ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
+                ('name', models.CharField(unique=True, max_length=255)),
                 ('start', models.DateTimeField()),
                 ('end', models.DateTimeField()),
             ],
@@ -58,7 +58,7 @@ class Migration(migrations.Migration):
             name='CareerLevel',
             fields=[
                 ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
-                ('level', models.CharField(max_length=255)),
+                ('level', models.CharField(unique=True, max_length=255)),
             ],
             options={
                 'ordering': ['level'],
@@ -129,7 +129,7 @@ class Migration(migrations.Migration):
             name='AllocationPeriodAuditLogEntry',
             fields=[
                 ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
-                ('name', models.CharField(max_length=255)),
+                ('name', models.CharField(max_length=255, db_index=True)),
                 ('start', models.DateTimeField()),
                 ('end', models.DateTimeField()),
                 ('action_id', models.AutoField(serialize=False, primary_key=True)),
@@ -164,7 +164,7 @@ class Migration(migrations.Migration):
             name='CareerLevelAuditLogEntry',
             fields=[
                 ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
-                ('level', models.CharField(max_length=255)),
+                ('level', models.CharField(max_length=255, db_index=True)),
                 ('action_id', models.AutoField(serialize=False, primary_key=True)),
                 ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
@@ -329,7 +329,7 @@ class Migration(migrations.Migration):
             name='ProjectLevelAuditLogEntry',
             fields=[
                 ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
-                ('level', models.CharField(max_length=255)),
+                ('level', models.CharField(max_length=255, db_index=True)),
                 ('action_id', models.AutoField(serialize=False, primary_key=True)),
                 ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
@@ -417,7 +417,7 @@ class Migration(migrations.Migration):
             name='ProjectLevel',
             fields=[
                 ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
-                ('level', models.CharField(max_length=255)),
+                ('level', models.CharField(unique=True, max_length=255)),
             ],
             options={
                 'ordering': ['level'],
@@ -562,6 +562,10 @@ class Migration(migrations.Migration):
             name='grant',
             field=models.ForeignKey(to='karaage.Grant'),
             preserve_default=True,
+        ),
+        migrations.AlterUniqueTogether(
+            name='allocationpool',
+            unique_together=set([('project', 'period', 'resource_pool')]),
         ),
         migrations.RunSQL(
             '''

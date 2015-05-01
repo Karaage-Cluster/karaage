@@ -379,7 +379,7 @@ class ProjectQuota(models.Model):
 
 @python_2_unicode_compatible
 class ProjectLevel(models.Model):
-    level = models.CharField(max_length=255)
+    level = models.CharField(max_length=255, unique=True)
 
     audit_log = AuditLog()
 

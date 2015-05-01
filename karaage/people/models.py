@@ -538,7 +538,7 @@ models.signals.pre_delete.connect(
 
 @python_2_unicode_compatible
 class CareerLevel(models.Model):
-    level = models.CharField(max_length=255)
+    level = models.CharField(max_length=255, unique=True)
 
     audit_log = AuditLog()
 
