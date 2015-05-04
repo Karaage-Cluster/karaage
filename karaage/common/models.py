@@ -52,12 +52,12 @@ class Usage(models.Model):
     grant = models.ForeignKey('karaage.Grant', null=True)
     person_institute = models.ForeignKey(
         'karaage.Institute',
-        related_name='person_institute',
+        related_name='person_usage',
         null=True,
     )
     project_institute = models.ForeignKey(
         'karaage.Institute',
-        related_name='project_institute',
+        related_name='project_usage',
     )
     machine = models.ForeignKey('karaage.Machine')
     person = models.ForeignKey('karaage.Person', null=True)
