@@ -84,8 +84,8 @@ class Usage(models.Model):
     count = models.PositiveIntegerField()
     created = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=255)
-    range_start = models.DateTimeField()
-    range_end = models.DateTimeField()
+    range_start = models.DateField()
+    range_end = models.DateField()
     raw_used = models.FloatField()
     used = models.FloatField()
 
