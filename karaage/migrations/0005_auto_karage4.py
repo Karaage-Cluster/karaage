@@ -383,6 +383,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
                 ('name', models.CharField(max_length=255, db_index=True)),
+                ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
                 ('action_id', models.AutoField(serialize=False, primary_key=True)),
                 ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('action_type', models.CharField(max_length=1, choices=[('I', 'Created'), ('U', 'Changed'), ('D', 'Deleted')], editable=False)),
@@ -463,6 +464,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
                 ('name', models.CharField(max_length=255, unique=True)),
+                ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
             ],
             options={
                 'ordering': ['name'],
@@ -497,7 +499,6 @@ class Migration(migrations.Migration):
                 ('allocated_project', models.ForeignKey(to='karaage.Project', null=True, related_name='allocated_usage')),
                 ('allocation_period', models.ForeignKey(null=True, to='karaage.AllocationPeriod')),
                 ('allocation_pool', models.ForeignKey(null=True, to='karaage.AllocationPool')),
-                ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
                 ('grant', models.ForeignKey(null=True, to='karaage.Grant')),
                 ('machine', models.ForeignKey(to='karaage.Machine')),
                 ('person', models.ForeignKey(null=True, to='karaage.Person')),

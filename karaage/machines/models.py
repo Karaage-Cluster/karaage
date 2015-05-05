@@ -499,6 +499,7 @@ def _members_changed(
 @python_2_unicode_compatible
 class ResourcePool(models.Model):
     name = models.CharField(max_length=255, unique=True)
+    content_type = models.ForeignKey('contenttypes.ContentType')
 
     audit_log = AuditLog()
 

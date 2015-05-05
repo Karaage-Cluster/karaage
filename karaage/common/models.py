@@ -47,7 +47,6 @@ class Usage(models.Model):
     allocation_pool = models.ForeignKey('karaage.AllocationPool', null=True)
     allocation_period = models.ForeignKey(
         'karaage.AllocationPeriod', null=True)
-    content_type = models.ForeignKey('contenttypes.ContentType')
     grant = models.ForeignKey('karaage.Grant', null=True)
     person_institute = models.ForeignKey(
         'karaage.Institute',
