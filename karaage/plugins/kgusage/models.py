@@ -68,6 +68,25 @@ class CPUJob(models.Model):
     jobname = models.CharField(max_length=256, blank=True, null=True)
     software = models.ManyToManyField(SoftwareVersion, blank=True, null=True)
 
+    person_institute = models.ForeignKey(
+        'karaage.Institute',
+        related_name='person_institute_cpujob',
+        null=True,  # legacy data doesn't have person institute
+    )
+    person_career_level = models.ForeignKey(
+        'karaage.CareerLevel',
+        null=True,  # legacy data doesn't have person career level
+    )
+    person_project_level = models.ForeignKey(
+        'karaage.ProjectLevel',
+        null=True,  # legacy data doesn't have person project level
+    )
+    project_institute = models.ForeignKey(
+        'karaage.Institute',
+        related_name='project_institute_cpujob',
+        null=True,  # legacy data doesn't have project institute
+    )
+
     class Meta:
         ordering = ['-date']
         db_table = 'cpu_job'
