@@ -496,10 +496,26 @@ def _members_changed(
                 _remove_group(group, person)
 
 
+class ResourceUnits:
+    MB = 'megabytes'
+    CPU_HOURS = 'CPU Hours'
+
+
+class ResourceFunction:
+    AVERAGE = 'average'
+    MINIMUM = 'minimum'
+    MAXIMUM = 'maximum'
+    LAST = 'last'
+    SUM = 'sum'
+
+
 @python_2_unicode_compatible
 class ResourcePool(models.Model):
     name = models.CharField(max_length=255, unique=True)
     content_type = models.ForeignKey('contenttypes.ContentType')
+    description = models.CharField(max_length=255)
+    resource_function = models.CharField(max_length=10)
+    resource_units = models.CharField(max_length=10)
 
     audit_log = AuditLog()
 
