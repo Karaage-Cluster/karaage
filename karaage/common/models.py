@@ -84,8 +84,8 @@ class Usage(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     range_start = models.DateField()
     range_end = models.DateField()
-    raw_used = models.FloatField()
-    used = models.FloatField()
+    raw_used = models.BigIntegerField()
+    used = models.BigIntegerField()
 
     class Meta:
         # Not using ordering so database planner is free to pick the
