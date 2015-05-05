@@ -532,6 +532,11 @@ class Resource(models.Model):
         ordering = ['machine']
         app_label = 'karaage'
 
+        unique_together = (
+            'resource_pool',
+            'resource_name',
+            'machine',
+        )
 
 models.signals.m2m_changed.connect(
     _members_changed, sender=Group.members.through)

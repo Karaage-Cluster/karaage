@@ -459,6 +459,10 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
+        migrations.AlterUniqueTogether(
+            name='resource',
+            unique_together=set([('resource_pool', 'resource_name', 'machine')]),
+        ),
         migrations.CreateModel(
             name='ResourcePool',
             fields=[
