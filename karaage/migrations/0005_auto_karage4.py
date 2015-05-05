@@ -489,7 +489,6 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
                 ('count', models.PositiveIntegerField()),
                 ('created', models.DateTimeField(auto_now_add=True)),
-                ('description', models.CharField(max_length=255)),
                 ('range_start', models.DateField()),
                 ('range_end', models.DateField()),
                 ('raw_used', models.FloatField()),

@@ -42,7 +42,6 @@ DELETION = 3
 COMMENT = 4
 
 
-@python_2_unicode_compatible
 class Usage(models.Model):
     account = models.ForeignKey('karaage.Account')
     allocation_pool = models.ForeignKey('karaage.AllocationPool', null=True)
@@ -83,14 +82,10 @@ class Usage(models.Model):
     )
     count = models.PositiveIntegerField()
     created = models.DateTimeField(auto_now_add=True)
-    description = models.CharField(max_length=255)
     range_start = models.DateField()
     range_end = models.DateField()
     raw_used = models.FloatField()
     used = models.FloatField()
-
-    def __str__(self):
-        return self.description
 
     class Meta:
         # Not using ordering so database planner is free to pick the
