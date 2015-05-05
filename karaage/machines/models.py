@@ -513,25 +513,9 @@ class ResourcePool(models.Model):
 
 @python_2_unicode_compatible
 class Resource(models.Model):
-
-    class ResourceType:
-        SLURM_CPU = 'slurm_cpu'
-        SLURM_MEM = 'slurm_mem'
-        GPFS = 'gpfs'
-
-    RESOURCE_TYPE_CHOICES = [
-        (ResourceType.SLURM_CPU, 'Slurm (CPU)'),
-        (ResourceType.SLURM_MEM, 'Slurm (MEM)'),
-        (ResourceType.GPFS, 'GPFS'),
-    ]
-
     machine = models.ForeignKey('karaage.Machine')
     resource_pool = models.ForeignKey('karaage.ResourcePool')
     scaling_factor = models.FloatField()
-    resource_type = models.CharField(
-        max_length=255,
-        choices=RESOURCE_TYPE_CHOICES,
-    )
     quantity = models.BigIntegerField()
 
     audit_log = AuditLog()
@@ -539,12 +523,12 @@ class Resource(models.Model):
     def __str__(self):
         return '%s / %s @ %s' % (
             self.machine,
-            self.resource_type,
+            "",
             self.resource_pool
         )
 
     class Meta:
-        ordering = ['resource_type']
+        ordering = ['machine']
         app_label = 'karaage'
 
 

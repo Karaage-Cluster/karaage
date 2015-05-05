@@ -364,7 +364,6 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
                 ('scaling_factor', models.FloatField()),
-                ('resource_type', models.CharField(max_length=255, choices=[('slurm_cpu', 'Slurm (CPU)'), ('slurm_mem', 'Slurm (MEM)'), ('gpfs', 'GPFS')])),
                 ('quantity', models.BigIntegerField()),
                 ('action_id', models.AutoField(serialize=False, primary_key=True)),
                 ('action_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
@@ -450,12 +449,11 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
                 ('scaling_factor', models.FloatField()),
-                ('resource_type', models.CharField(max_length=255, choices=[('slurm_cpu', 'Slurm (CPU)'), ('slurm_mem', 'Slurm (MEM)'), ('gpfs', 'GPFS')])),
                 ('quantity', models.BigIntegerField()),
                 ('machine', models.ForeignKey(to='karaage.Machine')),
             ],
             options={
-                'ordering': ['resource_type'],
+                'ordering': ['machine'],
             },
             bases=(models.Model,),
         ),

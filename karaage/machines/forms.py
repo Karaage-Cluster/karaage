@@ -157,7 +157,6 @@ class ResourceForm(forms.ModelForm):
         fields = [
             'machine',
             'scaling_factor',
-            'resource_type',
             'resource_pool',
             'quantity',
         ]
