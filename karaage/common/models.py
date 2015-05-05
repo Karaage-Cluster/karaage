@@ -88,6 +88,12 @@ class Usage(models.Model):
         # Not using ordering so database planner is free to pick the
         # rows as they come.
         app_label = 'karaage'
+        unique_together = (
+            'range_start', 'range_end',
+            'account', 'machine', 'submitted_project',
+            'person_institute', 'person_career_level',
+            'person_project_level', 'project_institute',
+        )
 
 
 class LogEntryManager(models.Manager):

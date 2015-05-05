@@ -519,6 +519,10 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
+        migrations.AlterUniqueTogether(
+            name='usage',
+            unique_together=set([('range_start', 'range_end', 'account', 'machine', 'submitted_project', 'person_institute', 'person_career_level', 'person_project_level', 'project_institute')]),
+        ),
         migrations.AddField(
             model_name='resource',
             name='resource_pool',
