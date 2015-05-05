@@ -505,7 +505,6 @@ class Migration(migrations.Migration):
                 ('allocated_project', models.ForeignKey(to='karaage.Project', null=True, related_name='allocated_usage')),
                 ('allocation_period', models.ForeignKey(null=True, to='karaage.AllocationPeriod')),
                 ('allocation_pool', models.ForeignKey(null=True, to='karaage.AllocationPool')),
-                ('grant', models.ForeignKey(null=True, to='karaage.Grant')),
                 ('machine', models.ForeignKey(to='karaage.Machine')),
                 ('person', models.ForeignKey(null=True, to='karaage.Person')),
                 ('person_career_level', models.ForeignKey(blank=True, null=True, to='karaage.CareerLevel')),
@@ -514,7 +513,6 @@ class Migration(migrations.Migration):
                 ('project_institute', models.ForeignKey(related_name='project_usage', to='karaage.Institute')),
                 ('resource', models.ForeignKey(to='karaage.Resource')),
                 ('resource_pool', models.ForeignKey(null=True, to='karaage.ResourcePool')),
-                ('scheme', models.ForeignKey(null=True, to='karaage.Scheme')),
                 ('submitted_project', models.ForeignKey(related_name='submitted_usage', to='karaage.Project')),
             ],
             options={

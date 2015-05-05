@@ -47,7 +47,6 @@ class Usage(models.Model):
     allocation_pool = models.ForeignKey('karaage.AllocationPool', null=True)
     allocation_period = models.ForeignKey(
         'karaage.AllocationPeriod', null=True)
-    grant = models.ForeignKey('karaage.Grant', null=True)
     person_institute = models.ForeignKey(
         'karaage.Institute',
         related_name='person_usage',
@@ -70,7 +69,6 @@ class Usage(models.Model):
     )
     resource = models.ForeignKey('karaage.Resource')
     resource_pool = models.ForeignKey('karaage.ResourcePool', null=True)
-    scheme = models.ForeignKey('karaage.Scheme', null=True)
     person_project_level = models.ForeignKey(
         'karaage.ProjectLevel',
         blank=True, null=True,  # legacy data doesn't have person project level
