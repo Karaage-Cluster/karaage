@@ -363,6 +363,7 @@ class Migration(migrations.Migration):
             name='ResourceAuditLogEntry',
             fields=[
                 ('id', models.IntegerField(auto_created=True, blank=True, verbose_name='ID', db_index=True)),
+                ('resource_name', models.CharField(max_length=255, null=True, blank=True)),
                 ('scaling_factor', models.FloatField()),
                 ('quantity', models.BigIntegerField()),
                 ('action_id', models.AutoField(serialize=False, primary_key=True)),
@@ -448,6 +449,7 @@ class Migration(migrations.Migration):
             name='Resource',
             fields=[
                 ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('resource_name', models.CharField(max_length=255, null=True, blank=True)),
                 ('scaling_factor', models.FloatField()),
                 ('quantity', models.BigIntegerField()),
                 ('machine', models.ForeignKey(to='karaage.Machine')),

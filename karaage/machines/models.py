@@ -515,6 +515,7 @@ class ResourcePool(models.Model):
 class Resource(models.Model):
     machine = models.ForeignKey('karaage.Machine')
     resource_pool = models.ForeignKey('karaage.ResourcePool')
+    resource_name = models.CharField(max_length=255, null=True, blank=True)
     scaling_factor = models.FloatField()
     quantity = models.BigIntegerField()
 
@@ -523,7 +524,7 @@ class Resource(models.Model):
     def __str__(self):
         return '%s / %s @ %s' % (
             self.machine,
-            "",
+            self.resource_name,
             self.resource_pool
         )
 
