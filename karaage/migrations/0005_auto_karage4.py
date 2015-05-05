@@ -533,6 +533,10 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(to='karaage.ResourcePool'),
             preserve_default=True,
         ),
+        migrations.AlterUniqueTogether(
+            name='resource',
+            unique_together=set([('resource_pool', 'resource_name', 'machine')]),
+        ),
         migrations.AddField(
             model_name='grantauditlogentry',
             name='scheme',
