@@ -7,13 +7,17 @@ Adding Slurm
 
 #. Install slurm command line.
 
-#. Add to /etc/sudoers:
+#. Add to ``/etc/sudoers``:
 
-        www-data ALL=(slurm) NOPASSWD: /usr/local/slurm/latest/bin/sacctmgr
+   .. code-block:: text
+
+      www-data ALL=(slurm) NOPASSWD: /usr/local/slurm/latest/bin/sacctmgr
 
 #. Test using ``www-data`` user:
 
-        sudo -uslurm /usr/local/slurm/latest/bin/sacctmgr -ip
+   .. code-block:: bash
+
+      sudo -uslurm /usr/local/slurm/latest/bin/sacctmgr -ip
 
 #. Add project to slurm that has no access. Call it ``default`` (or whatever
    else you want).
