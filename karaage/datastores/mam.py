@@ -349,8 +349,10 @@ class MamDataStoreBase(base.MachineCategoryDataStore):
                 "-u", username])
 
             # add rest of projects user belongs to
+            mam_projects = self.get_projects_in_user(username)
             for project in account.person.projects.all():
-                self.add_account_to_project(account, project)
+                if project.pid not in mam_projects:
+                    self.add_account_to_project(account, project.pid)
         else:
             # date_deleted is not set, user should not exist
             logger.debug("account is not active")
