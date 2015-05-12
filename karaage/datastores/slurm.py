@@ -284,11 +284,15 @@ class SlurmDataStore(base.MachineCategoryDataStore):
             # update user meta information
 
             # add rest of projects user belongs to
+            slurm_projects = self.get_projects_in_user(username)
+            slurm_projects = [ project.lower() for project in slurm_projects ]
+            slurm_projects = set(slurm_projects)
             for project in account.person.projects.all():
-                self._call([
-                    "add", "user",
-                    "name=%s" % username,
-                    "accounts=%s" % project.pid], ignore_errors={1})
+                if project.lower() not in slurm_projects:
+                    self._call([
+                        "add", "user",
+                        "name=%s" % username,
+                        "accounts=%s" % project.pid])
         else:
             # date_deleted is not set, user should not exist
             logger.debug("account is not active")
