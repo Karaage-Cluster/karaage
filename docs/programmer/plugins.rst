@@ -60,7 +60,7 @@ Here is an example, taken from the karaage-usage pugin:
         }
         depends = ("karaage.plugins.kgsoftware.plugin",)
 
-The ``module`` value is required, all other attributes are optional.
+The ``name`` value is required, all other attributes are optional.
 
 The following attributes can be set:
 
