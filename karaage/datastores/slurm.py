@@ -285,7 +285,7 @@ class SlurmDataStore(base.MachineCategoryDataStore):
 
             # add rest of projects user belongs to
             slurm_projects = self.get_projects_in_user(username)
-            slurm_projects = [ project.lower() for project in slurm_projects ]
+            slurm_projects = [project.lower() for project in slurm_projects]
             slurm_projects = set(slurm_projects)
             for project in account.person.projects.all():
                 if project.pid.lower() not in slurm_projects:
