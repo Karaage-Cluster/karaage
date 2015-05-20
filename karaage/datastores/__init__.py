@@ -469,6 +469,7 @@ def add_accounts_to_project(accounts_query, project):
     """ Add accounts to project. """
 
     query = accounts_query.filter(date_deleted__isnull=True)
+    print("yyyy", type(project))
     query = query.filter(machine_category__projectquota__project=project)
 
     for account in query:
