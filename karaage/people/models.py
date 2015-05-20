@@ -27,7 +27,6 @@ from django.utils.encoding import python_2_unicode_compatible
 from jsonfield import JSONField
 
 from model_utils import FieldTracker
-from audit_log.models.managers import AuditLog
 
 from karaage.common.constants import TITLES, STATES, COUNTRIES
 from karaage.people.managers import ActivePersonManager, DeletedPersonManager
@@ -104,9 +103,6 @@ class Person(AbstractBaseUser):
     REQUIRED_FIELDS = ['email', 'short_name', 'full_name', 'institute']
 
     _tracker = FieldTracker()
-
-    # XXX: do we need to have AuditLog enabled for users?
-    # audit_log = AuditLog()
 
     def __init__(self, *args, **kwargs):
         super(Person, self).__init__(*args, **kwargs)
@@ -540,8 +536,6 @@ models.signals.pre_delete.connect(
 class CareerLevel(models.Model):
     level = models.CharField(max_length=255, unique=True)
 
-    audit_log = AuditLog()
-
     def __str__(self):
         return self.level
 
@@ -566,8 +560,6 @@ class Group(models.Model):
         help_text='Datastore specific values should be stored in this field.')
 
     _tracker = FieldTracker()
-
-    audit_log = AuditLog()
 
     class Meta:
         ordering = ['name']

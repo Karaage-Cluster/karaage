@@ -24,7 +24,6 @@ from mptt.models import MPTTModel, TreeForeignKey
 import datetime
 
 from model_utils import FieldTracker
-from audit_log.models.managers import AuditLog
 
 from karaage.people.models import Person, Group
 from karaage.institutes.models import Institute
@@ -94,8 +93,6 @@ class Project(MPTTModel):
     level = models.PositiveIntegerField(db_index=True, editable=False)
 
     _tracker = FieldTracker()
-
-    audit_log = AuditLog()
 
     class Meta:
         ordering = ['pid']
@@ -319,8 +316,6 @@ class ProjectQuota(models.Model):
 
     _tracker = FieldTracker()
 
-    audit_log = AuditLog()
-
     def save(self, *args, **kwargs):
         created = self.pk is None
 
@@ -380,8 +375,6 @@ class ProjectQuota(models.Model):
 @python_2_unicode_compatible
 class ProjectLevel(models.Model):
     level = models.CharField(max_length=255, unique=True)
-
-    audit_log = AuditLog()
 
     def __str__(self):
         return self.level
