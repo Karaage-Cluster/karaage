@@ -669,6 +669,7 @@ def _add_person_to_group(person, group):
     global_add_person_to_group(person, group)
     add_accounts_to_group(a_list, group)
     if hasattr(group, 'project'):
+        print("======", type(group), type(group.project))
         add_accounts_to_project(a_list, group.project)
     if hasattr(group, 'institute'):
         add_accounts_to_institute(a_list, group.institute)
