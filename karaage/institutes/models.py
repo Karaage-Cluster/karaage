@@ -20,7 +20,6 @@ from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
 from model_utils import FieldTracker
-from audit_log.models.managers import AuditLog
 
 from karaage.common import log, is_admin
 from karaage.people.models import Person, Group
@@ -43,8 +42,6 @@ class Institute(models.Model):
     active = ActiveInstituteManager()
 
     _tracker = FieldTracker()
-
-    audit_log = AuditLog()
 
     class Meta:
         ordering = ['name']
@@ -148,8 +145,6 @@ class InstituteQuota(models.Model):
 
     _tracker = FieldTracker()
 
-    audit_log = AuditLog()
-
     class Meta:
         db_table = 'institute_quota'
         unique_together = ('institute', 'machine_category')
@@ -213,8 +208,6 @@ class InstituteDelegate(models.Model):
     send_email = models.BooleanField()
 
     _tracker = FieldTracker()
-
-    audit_log = AuditLog()
 
     class Meta:
         db_table = 'institutedelegate'

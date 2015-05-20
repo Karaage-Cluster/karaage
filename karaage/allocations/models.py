@@ -18,7 +18,6 @@
 
 from django.db import models
 
-from audit_log.models.managers import AuditLog
 from django.utils.functional import cached_property
 from django.utils.encoding import python_2_unicode_compatible
 
@@ -31,8 +30,6 @@ class Grant(models.Model):
     date = models.DateField()
     begins = models.DateField()
     expires = models.DateField()
-
-    audit_log = AuditLog()
 
     def __str__(self):
         return self.description
@@ -102,7 +99,6 @@ class AllocationPool(models.Model):
         return self.allocated - self.used
 
     objects = AllocationPoolQuerySet.as_manager()
-    audit_log = AuditLog()
 
     def __str__(self):
         return 'Project: %s' % self.project.name
@@ -127,8 +123,6 @@ class Allocation(models.Model):
     allocation_pool = models.ForeignKey('karaage.AllocationPool')
     quantity = models.FloatField()
 
-    audit_log = AuditLog()
-
     def __str__(self):
         return self.description
 
@@ -143,8 +137,6 @@ class AllocationPeriod(models.Model):
     name = models.CharField(max_length=255, unique=True)
     start = models.DateTimeField()
     end = models.DateTimeField()
-
-    audit_log = AuditLog()
 
     def __str__(self):
         return self.name

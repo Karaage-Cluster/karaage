@@ -28,8 +28,6 @@ from jsonfield import JSONField
 
 from model_utils import FieldTracker
 
-from audit_log.models.managers import AuditLog
-
 from karaage.people.models import Person, Group
 from karaage.machines.managers import MachineCategoryManager
 from karaage.machines.managers import MachineManager, ActiveMachineManager
@@ -46,8 +44,6 @@ class MachineCategory(models.Model):
     objects = MachineCategoryManager()
 
     _tracker = FieldTracker()
-
-    audit_log = AuditLog()
 
     def __init__(self, *args, **kwargs):
         super(MachineCategory, self).__init__(*args, **kwargs)
@@ -176,8 +172,6 @@ class Account(models.Model):
         help_text='Datastore specific values should be stored in this field.')
 
     _tracker = FieldTracker()
-
-    audit_log = AuditLog()
 
     def __init__(self, *args, **kwargs):
         super(Account, self).__init__(*args, **kwargs)
@@ -517,8 +511,6 @@ class ResourcePool(models.Model):
     resource_function = models.CharField(max_length=10)
     resource_units = models.CharField(max_length=10)
 
-    audit_log = AuditLog()
-
     def __str__(self):
         return self.name
 
@@ -534,8 +526,6 @@ class Resource(models.Model):
     resource_name = models.CharField(max_length=255, null=True, blank=True)
     scaling_factor = models.FloatField()
     quantity = models.BigIntegerField()
-
-    audit_log = AuditLog()
 
     def __str__(self):
         return '%s / %s @ %s' % (
