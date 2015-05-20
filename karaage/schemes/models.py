@@ -1,7 +1,6 @@
 from django.db import models
 from django.db.models import Q
 
-from audit_log.models.managers import AuditLog
 from django.utils.encoding import python_2_unicode_compatible
 
 
@@ -27,8 +26,6 @@ class Scheme(models.Model):
     objects = models.Manager()
     active = ActiveSchemeManager()
     deleted = DeletedSchemeManager()
-
-    audit_log = AuditLog()
 
     def __str__(self):
         return self.name

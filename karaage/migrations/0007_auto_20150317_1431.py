@@ -17,10 +17,4 @@ class Migration(migrations.Migration):
             field=models.CharField(help_text='Modifying this value on existing categories will affect accounts created under the old datastore', max_length=255),
             preserve_default=True,
         ),
-        migrations.AlterField(
-            model_name='machinecategoryauditlogentry',
-            name='datastore',
-            field=models.CharField(help_text='Modifying this value on existing categories will affect accounts created under the old datastore', max_length=255),
-            preserve_default=True,
-        ),
     ]

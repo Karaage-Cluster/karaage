@@ -165,7 +165,6 @@ MIDDLEWARE_CLASSES = (
     'karaage.middleware.threadlocals.ThreadLocals',
     'karaage.middleware.saml.SamlUserMiddleware',
     'tldap.middleware.TransactionMiddleware',
-    'audit_log.middleware.UserLoggingMiddleware',
 )
 
 # A tuple of authentication backend classes (as strings) to use when attempting
