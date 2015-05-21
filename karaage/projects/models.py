@@ -24,6 +24,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 import datetime
 
 from model_utils import FieldTracker
+import reversion
 
 from karaage.people.models import Person, Group
 from karaage.institutes.models import Institute
@@ -33,6 +34,7 @@ from karaage.projects.managers import DeletedProjectManager
 from karaage.common import log, is_admin
 
 
+@reversion.register
 @python_2_unicode_compatible
 class Project(MPTTModel):
 
@@ -309,6 +311,7 @@ class Project(MPTTModel):
             yield pq.machine_category
 
 
+@reversion.register
 class ProjectQuota(models.Model):
     project = models.ForeignKey(Project)
     cap = models.IntegerField(null=True, blank=True)
@@ -372,6 +375,7 @@ class ProjectQuota(models.Model):
         return iq.quota * 1000
 
 
+@reversion.register
 @python_2_unicode_compatible
 class ProjectLevel(models.Model):
     level = models.CharField(max_length=255, unique=True)

@@ -24,9 +24,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.core.urlresolvers import reverse
 from django.utils.encoding import python_2_unicode_compatible
-from jsonfield import JSONField
 
+from jsonfield import JSONField
 from model_utils import FieldTracker
+import reversion
 
 from karaage.common.constants import TITLES, STATES, COUNTRIES
 from karaage.people.managers import ActivePersonManager, DeletedPersonManager
@@ -43,6 +44,7 @@ from karaage.common import log, is_admin
 # A locked person is a person who has not been deleted but is not allowed
 # access for some reason.
 
+@reversion.register(follow=['groups', 'projectmembership_set'])
 @python_2_unicode_compatible
 class Person(AbstractBaseUser):
     projects = models.ManyToManyField(
@@ -411,6 +413,7 @@ class Person(AbstractBaseUser):
         return Institute.objects.filter(group__members=self)
 
 
+@reversion.register
 @python_2_unicode_compatible
 class ProjectMembership(models.Model):
 
@@ -532,6 +535,7 @@ models.signals.pre_delete.connect(
 )
 
 
+@reversion.register
 @python_2_unicode_compatible
 class CareerLevel(models.Model):
     level = models.CharField(max_length=255, unique=True)
@@ -544,6 +548,7 @@ class CareerLevel(models.Model):
         app_label = 'karaage'
 
 
+@reversion.register
 @python_2_unicode_compatible
 class Group(models.Model):
 

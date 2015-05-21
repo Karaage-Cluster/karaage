@@ -92,6 +92,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mptt',
+    'reversion',
 )
 
 # South not available for Python 3+ or Django 1.7+
@@ -165,6 +166,7 @@ MIDDLEWARE_CLASSES = (
     'karaage.middleware.threadlocals.ThreadLocals',
     'karaage.middleware.saml.SamlUserMiddleware',
     'tldap.middleware.TransactionMiddleware',
+    'reversion.middleware.RevisionMiddleware',
 )
 
 # A tuple of authentication backend classes (as strings) to use when attempting

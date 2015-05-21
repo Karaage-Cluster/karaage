@@ -20,6 +20,7 @@ from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
 from model_utils import FieldTracker
+import reversion
 
 from karaage.common import log, is_admin
 from karaage.people.models import Person, Group
@@ -27,6 +28,7 @@ from karaage.machines.models import Account, MachineCategory
 from karaage.institutes.managers import ActiveInstituteManager
 
 
+@reversion.register
 @python_2_unicode_compatible
 class Institute(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -135,6 +137,7 @@ class Institute(models.Model):
             yield iq.machine_category
 
 
+@reversion.register
 @python_2_unicode_compatible
 class InstituteQuota(models.Model):
     institute = models.ForeignKey(Institute)
@@ -202,6 +205,7 @@ class InstituteQuota(models.Model):
         return None
 
 
+@reversion.register
 class InstituteDelegate(models.Model):
     person = models.ForeignKey(Person)
     institute = models.ForeignKey(Institute)
