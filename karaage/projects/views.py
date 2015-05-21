@@ -118,6 +118,24 @@ def add_edit_project(request, project_id=None):
 
 
 @admin_required
+def undelete_project(request, project_id):
+
+    project = get_object_or_404(Project, id=project_id)
+
+    if request.method == 'POST':
+        undeleted_by = request.user
+        project.activate(undeleted_by)
+        messages.success(
+            request, "Project '%s' undeleted succesfully" % project)
+        return HttpResponseRedirect(project.get_absolute_url())
+
+    return render_to_response(
+        'karaage/projects/project_confirm_undelete.html',
+        {'project': project},
+        context_instance=RequestContext(request))
+
+
+@admin_required
 def delete_project(request, project_id):
 
     project = get_object_or_404(Project, id=project_id)

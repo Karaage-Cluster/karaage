@@ -36,6 +36,8 @@ urlpatterns = patterns(
         'project_verbose', name='kg_project_verbose'),
     url(r'^(?P<project_id>\d+)/edit/$',
         'add_edit_project', name='kg_project_edit'),
+    url(r'^(?P<project_id>\d+)/undelete/$',
+        'undelete_project', name='kg_project_undelete'),
     url(r'^(?P<project_id>\d+)/delete/$',
         'delete_project', name='kg_project_delete'),
     url(r'^(?P<project_id>\d+)/remove_user/(?P<username>%s)/$'
