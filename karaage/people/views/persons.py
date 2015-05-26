@@ -27,10 +27,9 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden, \
 from django.http import QueryDict
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.conf import settings
 
 from karaage.common.decorators import admin_required, login_required
-from karaage.people.tables import PersonFilter, PersonTable
+from karaage.people.tables import PersonFilter, PersonTable, LeaderTable
 from karaage.people.models import Person
 from karaage.people.emails import send_bounced_warning
 from karaage.people.emails import send_reset_password_email
@@ -275,28 +274,26 @@ def unlock_person(request, username):
 @admin_required
 def bounced_email(request, username):
     person = get_object_or_404(Person, username=username)
+
+    leader_list = []
+    for project in person.projects.filter(is_active=True):
+        for leader in project.leaders.filter(
+                is_active=True, login_enabled=True):
+            leader_list.append({'project': project, 'leader': leader})
+
     if request.method == 'POST':
         person.lock()
-        send_bounced_warning(person)
+        send_bounced_warning(person, leader_list)
         messages.success(
             request,
             "%s's account has been locked and emails have been sent" % person)
         common.log.change(
             person,
             'Emails sent to project leaders and account locked')
-        for ua in person.account_set.all():
-            ua.change_shell(ua.previous_shell)
-            ua.change_shell(settings.BOUNCED_SHELL)
         return HttpResponseRedirect(person.get_absolute_url())
 
-    leader_list = Person.objects \
-        .filter(
-            groups__members=person,
-            groups__project__is_active=True) \
-        .filter(is_active=True)
-
-    leader_list = PersonTable(
-        leader_list, prefix="leader-")
+    leader_list = LeaderTable(leader_list)
+    tables.RequestConfig(request).configure(leader_list)
 
     return render_to_response(
         'karaage/people/person_bounced_email.html',

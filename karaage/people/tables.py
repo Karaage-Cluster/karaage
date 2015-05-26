@@ -106,6 +106,20 @@ class PersonTable(tables.Table):
                   "is_admin", "last_usage", "date_approved")
 
 
+class LeaderTable(tables.Table):
+    leader = tables.LinkColumn(
+        'kg_person_detail', args=[A('leader.username')])
+    institute = tables.LinkColumn(
+        'kg_institute_detail',
+        args=[A('leader.institute.pk')],
+        accessor="leader.institute")
+    project = tables.LinkColumn(
+        'kg_project_detail', args=[A('project.pk')])
+
+    class Meta:
+        fields = ("leader", "institute", "project", )
+
+
 class GroupFilter(django_filters.FilterSet):
     name = django_filters.CharFilter(lookup_type="icontains")
     description = django_filters.CharFilter(lookup_type="icontains")
