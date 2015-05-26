@@ -139,29 +139,27 @@ def add_edit_institute(request, institute_id=None):
 
     if institute_id:
         institute = get_object_or_404(Institute, pk=institute_id)
-        flag = 2
     else:
         institute = None
-        flag = 1
 
-    delegate_formset = inlineformset_factory(
+    delegate_formset_class = inlineformset_factory(
         Institute, InstituteDelegate, form=DelegateForm, extra=3)
 
     if request.method == 'POST':
         form = InstituteForm(request.POST, instance=institute)
-        delegate_formset = delegate_formset(request.POST, instance=institute)
 
-        if form.is_valid() and delegate_formset.is_valid():
+        if form.is_valid():
             institute = form.save()
-            if flag == 1:
-                delegate_formset = delegate_formset(
-                    request.POST, instance=institute)
-                delegate_formset.is_valid()
-            delegate_formset.save()
-            return HttpResponseRedirect(institute.get_absolute_url())
+
+            delegate_formset = delegate_formset_class(
+                request.POST, instance=institute)
+
+            if delegate_formset.is_valid():
+                delegate_formset.save()
+                return HttpResponseRedirect(institute.get_absolute_url())
     else:
         form = InstituteForm(instance=institute)
-        delegate_formset = delegate_formset(instance=institute)
+        delegate_formset = delegate_formset_class(instance=institute)
 
     media = form.media
     for dform in delegate_formset.forms:
