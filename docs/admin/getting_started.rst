@@ -161,6 +161,20 @@ of your server.
 #.      Test by loading both ``http://www.example.org/`` and
         ``https://www.example.org/`` in your browser.
 
+#.      (recommended) Enable
+        `HSTS <https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security>`_
+        support with the following commands:
+
+        .. code-block:: bash
+
+            echo 'Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"' > /etc/apache2/conf-available/hsts.conf
+            a2enmod  headers
+            a2enconf hsts
+            service apache2 restart
+
+#.      Test by loading both ``http://www.example.org/`` and
+        ``https://www.example.org/`` in your browser.
+
 #.      Test website with `SSL Test
         <https://www.ssllabs.com/ssltest/index.html>`_.
 
