@@ -36,7 +36,7 @@ class PersonManager(BaseUserManager):
         person = self.model(
             username=username, email=email,
             short_name=short_name, full_name=full_name,
-            is_admin=is_admin, is_active=True,
+            is_admin=is_admin,
             institute=institute,
             **extra_fields
         )
