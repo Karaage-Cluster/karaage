@@ -138,7 +138,7 @@ of your server.
         For more information on this step,
         see the `Apache wiki <https://wiki.apache.org/httpd/RedirectSSL>`_.
 
-#.      (optional) It is recommended that you change the following settings in
+#.      (recommended) It is recommended that you change the following settings in
         ``/etc/apache2/mods-available/ssl.conf`` to make SSL more secure by
         disabling insecure protocols and ciphers::
 
