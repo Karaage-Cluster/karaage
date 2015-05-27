@@ -23,6 +23,7 @@ from django.core.management import call_command
 
 from captcha.models import CaptchaStore
 from karaage.tests import fixtures
+from karaage.people.models import Person
 
 from ..models import Application, Applicant
 from ..models import ProjectApplication
@@ -49,6 +50,9 @@ class UserApplicationTestCase(TestCase):
 
     def test_register_account(self):
         set_no_admin()
+
+        with self.assertRaises(Person.DoesNotExist):
+            Person.objects.get(username='jimbob')
 
         self.assertEqual(len(mail.outbox), 0)
         response = self.client.get(reverse('kg_application_new'))
@@ -280,6 +284,17 @@ class UserApplicationTestCase(TestCase):
             reverse('kg_application_unauthenticated', args=[token, 'A']))
         self.assertEqual(response.status_code, 200)
 
+        person = Person.objects.get(username='jimbob')
+        self.assertEqual(person.title, 'Mr')
+        self.assertEqual(person.short_name, 'Jim')
+        self.assertEqual(person.full_name, 'Jim Bob')
+        self.assertEqual(person.institute.name, 'Example')
+        self.assertEqual(person.email, 'jim.bob@example.com')
+        self.assertEqual(person.telephone, '4444444')
+        self.assertEqual(person.approved_by.username, 'kgsuper')
+        self.assertEqual(person.account_set.count(), 0)
+        self.assertIsNotNone(person.date_approved)
+
 
 class ProjectApplicationTestCase(TestCase):
 
@@ -291,6 +306,9 @@ class ProjectApplicationTestCase(TestCase):
 
     def test_register_account(self):
         set_no_admin()
+
+        with self.assertRaises(Person.DoesNotExist):
+            Person.objects.get(username='jimbob')
 
         self.assertEqual(len(mail.outbox), 0)
         response = self.client.get(reverse('kg_application_new'))
@@ -517,6 +535,16 @@ class ProjectApplicationTestCase(TestCase):
         response = self.client.get(
             reverse('kg_application_unauthenticated', args=[token, 'A']))
         self.assertEqual(response.status_code, 200)
+
+        person = Person.objects.get(username='jimbob')
+        self.assertEqual(person.title, 'Mr')
+        self.assertEqual(person.short_name, 'Jim')
+        self.assertEqual(person.full_name, 'Jim Bob')
+        self.assertEqual(person.institute.name, 'Example')
+        self.assertEqual(person.telephone, '4444444')
+        self.assertEqual(person.approved_by.username, 'kgsuper')
+        self.assertEqual(person.account_set.count(), 0)
+        self.assertIsNotNone(person.date_approved)
 
     def _test_project_approval(self, application):
         admin = fixtures.PersonFactory(username='admin')
