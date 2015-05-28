@@ -229,6 +229,15 @@ class openldap_kg27_group(methods.baseMixin):
 # 389 LDAP #
 ############
 
+class ds389AccountMixin(object):
+    @classmethod
+    def pre_save(cls, self):
+        # work around for https://bugzilla.redhat.com/show_bug.cgi?id=1171308
+        if self.userPassword is None:
+            from karaage.people.models import Person
+            self.change_password(Person.objects.make_random_password())
+
+
 class ds389_person(methods.baseMixin):
 
     schema_list = [
@@ -242,6 +251,7 @@ class ds389_person(methods.baseMixin):
         methods.common.personMixin,
         methods.ds389.passwordObjectMixin,
         PersonMixin,
+        ds389AccountMixin,
     ]
 
     class Meta:
@@ -276,6 +286,7 @@ class ds389_account(methods.baseMixin):
         methods.common.accountMixin,
         methods.ds389.passwordObjectMixin,
         AccountMixin,
+        ds389AccountMixin,
     ]
 
     class Meta:
