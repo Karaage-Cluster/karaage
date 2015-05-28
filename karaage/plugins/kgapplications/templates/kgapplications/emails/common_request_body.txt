@@ -1,6 +1,9 @@
 {% autoescape off %}Hello {{ receiver.get_short_name }},
 
 
+This email is being sent to you as {{ authorised_text }}.
+
+
 {{ application.applicant }} is requesting to {{ application.info }}.
 
 This application is now waiting for {{ authorised_text }} to process the application.
