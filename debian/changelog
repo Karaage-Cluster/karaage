@@ -1,3 +1,25 @@
+karaage3 (3.1.19-1) unstable; urgency=medium
+
+  * Numerous bug fixes.
+  * Display software stats correctly.
+  * Update documentation for Jessie.
+  * Update MAM and slurm documentation.
+  * Fix problems with latest slurm.
+  * Fix institute form.
+  * Support undelete project button.
+  * Fix display of leaders in bounce list.
+  * Set date_approved in approved applicants.
+  * Add more tests.
+  * Add HSTS to instruction.
+  * Change name of "Is existing person" button to "Mark duplicate user".
+  * Attempt to clarify emails.
+  * Add work around for ds389 bug. Note this won't work when adding a person
+    and setting their password at the same time; in this case please manually
+    reset the password to get it to work.
+    https://bugzilla.redhat.com/show_bug.cgi?id=1171308
+
+ -- Brian May <bam@debian.org>  Fri, 29 May 2015 10:09:04 +1000
+
 karaage3 (3.1.18-1) unstable; urgency=medium
 
   * Django 1.8 and 1.9 fixes.
