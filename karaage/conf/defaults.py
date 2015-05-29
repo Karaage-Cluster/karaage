@@ -308,9 +308,6 @@ SHELLS = (
 # Default shell we should use for new accounts.
 DEFAULT_SHELL = '/bin/bash'
 
-# Change the shell to this value if emails start bouncing (manual process).
-BOUNCED_SHELL = '/usr/local/sbin/bouncedemail'
-
 # List of global datastores and configurations for Karaage.
 GLOBAL_DATASTORES = [
 ]

@@ -613,7 +613,8 @@ class StateWaitingForLeader(states.StateWaitingForApproval):
     authorised_text = "a project leader"
 
     def get_authorised_persons(self, application):
-        return application.project.leaders.filter(is_active=True)
+        return application.project.leaders.filter(
+            is_active=True, login_enabled=True)
 
     def get_approve_form(self, request, application, roles):
         return forms.approve_project_form_generator(application, roles)
@@ -627,7 +628,9 @@ class StateWaitingForDelegate(states.StateWaitingForApproval):
 
     def get_authorised_persons(self, application):
         return application.institute.delegates \
-            .filter(institutedelegate__send_email=True, is_active=True)
+            .filter(
+                institutedelegate__send_email=True,
+                is_active=True, login_enabled=True)
 
     def get_approve_form(self, request, application, roles):
         return forms.approve_project_form_generator(application, roles)
@@ -640,7 +643,8 @@ class StateWaitingForAdmin(states.StateWaitingForApproval):
     authorised_text = "an administrator"
 
     def get_authorised_persons(self, application):
-        return Person.objects.filter(is_admin=True, is_active=True)
+        return Person.objects.filter(
+            is_admin=True, is_active=True, login_enabled=True)
 
     def check_authorised(self, request, application, roles):
         """ Check the person's authorization. """
@@ -661,9 +665,10 @@ class StateDuplicateApplicant(base.State):
     name = "Duplicate Applicant"
 
     def enter_state(self, request, application):
-        authorised_persons = Person.objects.filter(is_admin=True)
+        authorised_persons = Person.objects.filter(
+            is_admin=True, is_active=True, login_enabled=True)
         link, is_secret = base.get_registration_email_link(application)
-        emails.send_request_email(
+        emails.send_duplicate_email(
             "an administrator",
             authorised_persons,
             application,

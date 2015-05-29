@@ -24,7 +24,7 @@ with:
 
    apt-get install virtualenv
 
-On Debian wheezy install it with:
+On Debian jessie install it with:
 
 .. code-block:: bash
 

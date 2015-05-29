@@ -251,6 +251,12 @@ class SlurmDataStore(base.MachineCategoryDataStore):
             project_list.append(result["Account"])
         return project_list
 
+    def is_user_in_project(self, username, projectname):
+        cmd = ["list", "assoc", "where",
+               "user=%s" % username, "account=%s" % projectname]
+        results = self._read_output(cmd)
+        return len(results) > 0
+
     def _save_account(self, account, username):
         """ Called when account is created/updated. With username override. """
 
@@ -284,11 +290,15 @@ class SlurmDataStore(base.MachineCategoryDataStore):
             # update user meta information
 
             # add rest of projects user belongs to
-            for project in account.person.project_set.all():
-                self._call([
-                    "add", "user",
-                    "name=%s" % username,
-                    "accounts=%s" % project.pid])
+            slurm_projects = self.get_projects_in_user(username)
+            slurm_projects = [project.lower() for project in slurm_projects]
+            slurm_projects = set(slurm_projects)
+            for project in account.person.projects.all():
+                if project.pid.lower() not in slurm_projects:
+                    self._call([
+                        "add", "user",
+                        "name=%s" % username,
+                        "accounts=%s" % project.pid])
         else:
             # date_deleted is not set, user should not exist
             logger.debug("account is not active")
@@ -330,19 +340,21 @@ class SlurmDataStore(base.MachineCategoryDataStore):
         """ Add account to project. """
         username = account.username
         projectname = project.pid
-        self._call([
-            "add", "user",
-            "accounts=%s" % projectname,
-            "name=%s" % username])
+        if not self.is_user_in_project(username, projectname):
+            self._call([
+                "add", "user",
+                "accounts=%s" % projectname,
+                "name=%s" % username])
 
     def remove_account_from_project(self, account, project):
         """ Remove account from project. """
         username = account.username
         projectname = project.pid
-        self._call([
-            "delete", "user",
-            "name=%s" % username,
-            "account=%s" % projectname])
+        if self.is_user_in_project(username, projectname):
+            self._call([
+                "delete", "user",
+                "name=%s" % username,
+                "account=%s" % projectname])
 
     def account_exists(self, username):
         """ Does the account exist? """

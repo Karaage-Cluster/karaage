@@ -98,7 +98,11 @@
                     <li><a href="{% url 'kg_project_logs' project.id %}">View logs</a></li>
                     <li><a href="{% url 'kg_project_verbose' project.id %}">Verbose</a></li>
                     <li><a href="{% url 'kg_project_edit' project.id %}" class="changelink">Edit</a></li>
-                    {% if project.is_active %}<li><a href="{% url 'kg_project_delete' project.id %}" class="deletelink">Delete project</a></li>{% endif %}
+                    {% if project.is_active %}
+                        <li><a href="{% url 'kg_project_delete' project.id %}" class="deletelink">Delete project</a></li>
+                    {% else %}
+                        <li><a href="{% url 'kg_project_undelete' project.id %}" class="changelink">Undelete project</a></li>
+                    {% endif %}
                 {% else %}
                     {% if can_edit %}
                         <li><a href="{% url 'kg_project_edit' project.id %}" class="changelink">Edit</a></li>

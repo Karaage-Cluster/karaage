@@ -6,10 +6,11 @@ This email is being sent to you as {{ authorised_text }}.
 
 {{ application.applicant }} is requesting to {{ application.info }}.
 
-This application is now waiting for {{ authorised_text }} to process the application.
+This applicant in the application has been marked as a duplicate. This
+means that the user might already have an existing account on the system.
 
 Please visit the {{ org_name }} account management site at {{ link }} for more
-information and to accept or decline this request.
+information and to reopen or decline this request.
 
 {% if is_secret %}This URL must remain secret, do not give it to anybody else. Please
 make sure nobody is already logged into Karaage from your computer before using it.

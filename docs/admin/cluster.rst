@@ -20,8 +20,8 @@ Debian Installation
 
 #.  Create a /etc/apt/sources.list.d/vpac.list containing::
 
-        deb     http://code.vpac.org/debian  wheezy main
-        deb-src http://code.vpac.org/debian  wheezy main
+        deb     http://code.vpac.org/debian  jessie main
+        deb-src http://code.vpac.org/debian  jessie main
 
 #.  Update your apt database and install the packages:
 

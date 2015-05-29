@@ -475,9 +475,10 @@ class Applicant(models.Model):
             'country': self.country,
             'fax': self.fax,
             'saml_id': self.saml_id,
-            'approved_by': approved_by,
+            'is_active': False,
         }
         person = Person.objects.create_user(**data)
+        person.activate(approved_by)
 
         for application in self.applications.all():
             application.applicant = person

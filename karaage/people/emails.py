@@ -38,28 +38,29 @@ def render_email(name, context):
     return subject, body
 
 
-def send_bounced_warning(person):
+def send_bounced_warning(person, leader_list):
     """Sends an email to each project leader for person
     informing them that person's email has bounced"""
     context = CONTEXT.copy()
     context['person'] = person
 
-    for project in person.project_set.filter(is_active=True):
-        context['project'] = project
-        for leader in project.leaders.filter(is_active=True):
-            context['receiver'] = leader
+    for lp in leader_list:
+        leader = lp['leader']
 
-            to_email = leader.email
-            subject = render_to_string(
-                'karaage/people/emails/bounced_email_subject.txt', context)
-            body = render_to_string(
-                'karaage/people/emails/bounced_email_body.txt', context)
-            send_mail(
-                subject.replace('\n', ''), body,
-                settings.ACCOUNTS_EMAIL, [to_email])
-            log.change(
-                leader,
-                'Sent email about bounced emails from %s' % person)
+        context['project'] = lp['project']
+        context['receiver'] = leader
+
+        to_email = leader.email
+        subject = render_to_string(
+            'karaage/people/emails/bounced_email_subject.txt', context)
+        body = render_to_string(
+            'karaage/people/emails/bounced_email_body.txt', context)
+        send_mail(
+            subject.replace('\n', ''), body,
+            settings.ACCOUNTS_EMAIL, [to_email])
+        log.change(
+            leader,
+            'Sent email about bounced emails from %s' % person)
 
 
 def send_reset_password_email(person):

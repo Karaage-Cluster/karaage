@@ -6,7 +6,7 @@ This section is for administrators who have an older 2.7.x version of Karaage
 already installed, and wish to upgrade to 3.1.x.
 
 These instructions are also usable for upgrades from 2.6.x, however
-Debian/wheezy is a prerequisite.
+Debian/jessie is a prerequisite.
 
 If you don't already have Karaage installed and wish to get started for the
 first time, please see the :doc:`/getting_started` section.
@@ -68,7 +68,7 @@ will occur during the upgrade.
 Operating System
 ----------------
 
-Ensure production box is running Debian wheezy with all applicable updates. You
+Ensure production box is running Debian jessie with all applicable updates. You
 will not be able to install Karaage3 if you are running anything older then
 Wheezy. It is also suggested (but not required) that you upgrade to the latest
 2.7 Karaage here, as this will make downgrading easier in case of problems

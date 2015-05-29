@@ -57,6 +57,29 @@ def send_request_email(
         send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
 
 
+def send_duplicate_email(
+        authorised_text, authorised_persons, application,
+        link, is_secret):
+    """Sends an email to admin to warn application was marked duplicate."""
+    context = CONTEXT.copy()
+    context['requester'] = application.applicant
+    context['link'] = link
+    context['is_secret'] = is_secret
+    context['application'] = application
+    context['authorised_text'] = authorised_text
+
+    for person in authorised_persons:
+        if not person.email:
+            continue
+
+        context['receiver'] = person
+
+        to_email = person.email
+        subject, body = render_email('project_duplicate_applicant', context)
+
+        send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
+
+
 def send_invite_email(application, link, is_secret):
     """ Sends an email inviting someone to create an account"""
 

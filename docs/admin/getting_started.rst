@@ -37,8 +37,8 @@ Installation
 
 #.  Create a ``/etc/apt/sources.list.d/vpac.list`` containing::
 
-        deb     http://code.vpac.org/debian  wheezy main
-        deb-src http://code.vpac.org/debian  wheezy main
+        deb     http://code.vpac.org/debian  jessie main
+        deb-src http://code.vpac.org/debian  jessie main
 
 #.  Update your apt database and install the packages:
 
@@ -138,7 +138,7 @@ of your server.
         For more information on this step,
         see the `Apache wiki <https://wiki.apache.org/httpd/RedirectSSL>`_.
 
-#.      (optional) It is recommended that you change the following settings in
+#.      (recommended) It is recommended that you change the following settings in
         ``/etc/apache2/mods-available/ssl.conf`` to make SSL more secure by
         disabling insecure protocols and ciphers::
 
@@ -156,6 +156,20 @@ of your server.
 
             a2enmod ssl
             a2ensite default-ssl.
+            service apache2 restart
+
+#.      Test by loading both ``http://www.example.org/`` and
+        ``https://www.example.org/`` in your browser.
+
+#.      (recommended) Enable
+        `HSTS <https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security>`_
+        support with the following commands:
+
+        .. code-block:: bash
+
+            echo 'Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"' > /etc/apache2/conf-available/hsts.conf
+            a2enmod  headers
+            a2enconf hsts
             service apache2 restart
 
 #.      Test by loading both ``http://www.example.org/`` and

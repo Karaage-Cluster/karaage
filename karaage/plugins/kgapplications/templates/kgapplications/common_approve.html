@@ -43,7 +43,7 @@
             {% get_similar_people_table  application.applicant as table %}
             {% render_table table %}
             {% if 'duplicate' in actions %}
-            <input type="submit" name="duplicate" value="Is existing user" class="button" />
+            <input type="submit" name="duplicate" value="Mark duplicate user" class="button" />
             {% endif %}
         </form>
     </div>

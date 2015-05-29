@@ -1,0 +1,26 @@
+{% extends "forms.html" %}
+
+
+{% block title %}Undelete Project{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_project_list' %}">Projects</a>&nbsp;›
+    <a href="{% url 'kg_project_detail' project.id %}">{{ project.pid }}</a>&nbsp;›
+    Undelete
+</div>
+{% endblock %}
+
+
+{% block content %}
+    <h1>Are you sure?</h1>    
+    <p>Are you sure you want to undelete the project "{{ project }}"? </p>
+    <form method="post" action=".">{% csrf_token %}
+        <div>
+            <input type="hidden" name="post" value="yes" />
+            <input type="submit" value="Yes, I'm sure" />
+        </div>
+    </form>
+{% endblock %}

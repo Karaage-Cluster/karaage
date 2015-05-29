@@ -827,19 +827,31 @@ def software_stats(request, software_id):
         .filter(account__cpujob__software__software=software,
                 account__cpujob__date__range=(start, end)) \
         .annotate(jobs=Count('account__cpujob'),
-                  usage=Sum('account__cpujob__cpu_usage'))
-    institute_stats = Institute.objects \
+                  p_usage=Sum('account__cpujob__cpu_usage'))
+    project_stats = Project.objects \
+        .filter(cpujob__software__software=software,
+                cpujob__date__range=(start, end)) \
+        .annotate(jobs=Count('cpujob'),
+                  p_usage=Sum('cpujob__cpu_usage'))
+    person_institute_stats = Institute.objects \
         .filter(person__account__cpujob__software__software=software,
                 person__account__cpujob__date__range=(start, end)) \
         .annotate(jobs=Count('person__account__cpujob'),
-                  usage=Sum('person__account__cpujob__cpu_usage'))
+                  i_usage=Sum('person__account__cpujob__cpu_usage'))
+    project_institute_stats = Institute.objects \
+        .filter(project__cpujob__software__software=software,
+                project__cpujob__date__range=(start, end)) \
+        .annotate(jobs=Count('project__cpujob'),
+                  i_usage=Sum('project__cpujob__cpu_usage'))
 
     context = {
         'software': software,
         'version_stats': version_stats,
         'version_totaljobs': version_totaljobs,
         'person_stats': person_stats,
-        'institute_stats': institute_stats,
+        'person_institute_stats': person_institute_stats,
+        'project_stats': project_stats,
+        'project_institute_stats': project_institute_stats,
         'start': start,
         'end': end,
         'querystring': querystring,
@@ -861,16 +873,28 @@ def version_stats(request, version_id):
                 account__cpujob__date__range=(start, end)) \
         .annotate(jobs=Count('account__cpujob'),
                   p_usage=Sum('account__cpujob__cpu_usage'))
-    institute_stats = Institute.objects \
+    project_stats = Project.objects \
+        .filter(cpujob__software=version,
+                cpujob__date__range=(start, end)) \
+        .annotate(jobs=Count('cpujob'),
+                  p_usage=Sum('cpujob__cpu_usage'))
+    person_institute_stats = Institute.objects \
         .filter(person__account__cpujob__software=version,
                 person__account__cpujob__date__range=(start, end)) \
         .annotate(jobs=Count('person__account__cpujob'),
                   i_usage=Sum('person__account__cpujob__cpu_usage'))
+    project_institute_stats = Institute.objects \
+        .filter(project__cpujob__software=version,
+                project__cpujob__date__range=(start, end)) \
+        .annotate(jobs=Count('project__cpujob'),
+                  i_usage=Sum('project__cpujob__cpu_usage'))
 
     context = {
         'version': version,
         'person_stats': person_stats,
-        'institute_stats': institute_stats,
+        'person_institute_stats': person_institute_stats,
+        'project_stats': project_stats,
+        'project_institute_stats': project_institute_stats,
         'start': start,
         'end': end,
         'querystring': querystring,
