@@ -111,7 +111,6 @@ LDAP_TEST_DATASTORE_N = 0
 import os
 SERVER_EMAIL = 'django@' + os.uname()[1]
 ACCOUNTS_EMAIL = 'accounts@vpac.org'
-APPROVE_ACCOUNTS_EMAIL = ACCOUNTS_EMAIL
 EMAIL_SUBJECT_PREFIX = '[Grunt VPAC] - '
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
