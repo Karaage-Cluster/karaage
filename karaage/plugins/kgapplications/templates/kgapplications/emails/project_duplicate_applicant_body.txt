@@ -1,4 +1,4 @@
-{% autoescape off %}Hello {{ receiver.get_short_name }},
+{% autoescape off %}Hello {{ receiver_text }},
 
 
 This email is being sent to you as {{ authorised_text }}.

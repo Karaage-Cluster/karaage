@@ -23,6 +23,10 @@ class plugin(BasePlugin):
     template_context_processors = (
         "karaage.plugins.kgapplications.context_processor",)
 
+    settings = {
+        'APPROVE_ACCOUNTS_EMAIL': None,
+    }
+
     def ready(self):
         from . import signals  # NOQA
 
