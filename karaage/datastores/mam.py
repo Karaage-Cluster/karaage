@@ -301,8 +301,7 @@ class MamDataStoreBase(base.MachineCategoryDataStore):
         """ Get list of projects in user from MAM. """
         ds_balance = self.get_user_balance(username)
         if ds_balance is None:
-            logger.error("User '%s' does not exist in MAM" % username)
-            raise RuntimeError("User '%s' does not exist in MAM" % username)
+            return []
 
         project_list = []
         for bal in ds_balance:
@@ -352,7 +351,7 @@ class MamDataStoreBase(base.MachineCategoryDataStore):
             mam_projects = self.get_projects_in_user(username)
             for project in account.person.projects.all():
                 if project.pid not in mam_projects:
-                    self.add_account_to_project(account, project.pid)
+                    self.add_account_to_project(account, project)
         else:
             # date_deleted is not set, user should not exist
             logger.debug("account is not active")
