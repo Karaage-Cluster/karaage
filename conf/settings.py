@@ -246,12 +246,6 @@ ACCOUNTS_ORG_NAME = 'Example'
 #
 # AUP_URL = "https://site.example.org/users/aup/"
 
-# Do we allow anonymous users to request accounts?
-#
-# default:  ALLOW_REGISTRATIONS = False
-#
-# ALLOW_REGISTRATIONS = True
-
 # Do we allow any logged in user to access all usage information?
 #
 # default: USAGE_IS_PUBLIC = True
@@ -279,3 +273,18 @@ ACCOUNTS_ORG_NAME = 'Example'
 #     'karaage.plugins.kgsoftware.applications.plugin',
 #     'karaage.plugins.kgusage.plugin',
 # ]
+
+
+# --- KGAPPLICATIONS plugin settings ---
+
+# Do we allow anonymous users to request accounts?
+#
+# default:  ALLOW_REGISTRATIONS = False
+#
+# ALLOW_REGISTRATIONS = False
+
+# Do we new projects applications?
+#
+# default:  ALLOW_NEW_PROJECTS = True
+#
+# ALLOW_NEW_PROJECTS = True

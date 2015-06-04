@@ -373,9 +373,6 @@ REGISTRATION_BASE_URL = 'https://%(HOST)s/karaage'
 # Admin base URL - Used in email templates.
 ADMIN_BASE_URL = 'https://%(HOST)s/karaage'
 
-# Do we allow anonymous users to request accounts?
-ALLOW_REGISTRATIONS = False
-
 # If true, only administrators can log on to site. Used for karaage-admin.
 ADMIN_REQUIRED = False
 

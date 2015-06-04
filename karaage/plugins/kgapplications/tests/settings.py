@@ -22,6 +22,8 @@ PLUGINS = [
     'karaage.plugins.kgapplications.plugin',
 ]
 
+ALLOW_REGISTRATIONS = True
+
 import sys
 from karaage.conf.process import post_process
 post_process(sys.modules[__name__])

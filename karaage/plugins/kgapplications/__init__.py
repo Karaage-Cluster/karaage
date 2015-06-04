@@ -24,6 +24,8 @@ class plugin(BasePlugin):
         "karaage.plugins.kgapplications.context_processor",)
 
     settings = {
+        'ALLOW_REGISTRATIONS': False,
+        'ALLOW_NEW_PROJECTS': True,
         'APPROVE_ACCOUNTS_EMAIL': None,
     }
 
