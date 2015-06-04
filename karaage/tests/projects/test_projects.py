@@ -176,6 +176,8 @@ class ProjectTestCase(IntegrationTestCase):
         self.assertEqual(project.is_active, True)
         self.assertEqual(project.name, 'Test Project 1')
         self.assertTrue(Person.objects.get(pk=1) in project.leaders.all())
+        self.assertFalse(Person.objects.get(pk=2) in project.leaders.all())
+        self.assertFalse(Person.objects.get(pk=3) in project.leaders.all())
         self.assertTrue(
             Person.objects.get(pk=3) in project.group.members.all())
 
@@ -198,8 +200,11 @@ class ProjectTestCase(IntegrationTestCase):
         self.assertEqual(response.status_code, 302)
         project = Project.objects.get(pid='TestProject1')
         self.assertEqual(project.is_active, True)
-        self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
-        self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())
+        # this is not changed because we don't support editing leaders with
+        # this interface any more
+        self.assertTrue(Person.objects.get(pk=1) in project.leaders.all())
+        self.assertFalse(Person.objects.get(pk=2) in project.leaders.all())
+        self.assertFalse(Person.objects.get(pk=3) in project.leaders.all())
         lgroup = self._datastore._groups().get(cn=project.pid)
         self.assertEqual(lgroup.cn, project.pid)
 
