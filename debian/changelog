@@ -4,6 +4,22 @@ karaage4 (4.0.0-1) unstable; urgency=medium
 
  -- Brian May <bam@debian.org>  Mon, 09 Feb 2015 14:54:17 +1100
 
+karaage3 (3.1.20-1) unstable; urgency=medium
+
+  * Override admin email addresses using APPROVE_ACCOUNTS_EMAIL setting.
+  * Fix flake8 tests in migrations.
+  * Change order of deactivate() function to avoid multiple updates to
+    accounts.
+  * Fix issues with MAM datastore.
+  * Sort applications in admin list by reverse expiry date by default.
+  * Display machine_category in account lists.
+  * Don't allow editing project leaders through edit view.
+  * Don't allow revoking last project leader.
+  * Add new ALLOW_NEW_PROJECTS setting, if set to False user's will not be
+    able to apply for new projects, only existing projects.
+
+ -- Brian May <bam@debian.org>  Fri, 05 Jun 2015 09:15:49 +1000
+
 karaage3 (3.1.19-1) unstable; urgency=medium
 
   * Numerous bug fixes.

@@ -327,6 +327,9 @@ def revoke_leader(request, project_id, username):
     if request.user == person:
         error = "Cannot revoke self."
 
+    elif project.leaders.exclude(pk=person.pk).count() == 0:
+        error = "Cannot revoke last project leader."
+
     elif request.method == 'POST':
         if project.leaders.filter(pk=person.pk).count() > 0:
             project.leaders.remove(person)

@@ -34,8 +34,36 @@ def render_email(name, context):
     return subject, body
 
 
+def _send_request_email(context, role, persons, template):
+    # if APPROVE_ACCOUNTS_EMAIL and this email to administrator role, use this
+    # value instead of emailing individual administrators.
+    if role == "administrator" and \
+            settings.APPROVE_ACCOUNTS_EMAIL is not None:
+
+        context['receiver'] = None
+        context['receiver_text'] = "Administatror"
+
+        to_email = settings.APPROVE_ACCOUNTS_EMAIL
+        subject, body = render_email(template, context)
+
+        send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
+        return
+
+    for person in persons:
+        if not person.email:
+            continue
+
+        context['receiver'] = person
+        context['receiver_text'] = person.get_short_name()
+
+        to_email = person.email
+        subject, body = render_email(template, context)
+
+        send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
+
+
 def send_request_email(
-        authorised_text, authorised_persons, application,
+        authorised_text, authorised_role, authorised_persons, application,
         link, is_secret):
     """Sends an email to admin asking to approve user application"""
     context = CONTEXT.copy()
@@ -44,21 +72,14 @@ def send_request_email(
     context['is_secret'] = is_secret
     context['application'] = application
     context['authorised_text'] = authorised_text
-
-    for person in authorised_persons:
-        if not person.email:
-            continue
-
-        context['receiver'] = person
-
-        to_email = person.email
-        subject, body = render_email('common_request', context)
-
-        send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
+    _send_request_email(
+        context,
+        authorised_role, authorised_persons,
+        "common_request")
 
 
 def send_duplicate_email(
-        authorised_text, authorised_persons, application,
+        authorised_text, authorised_role, authorised_persons, application,
         link, is_secret):
     """Sends an email to admin to warn application was marked duplicate."""
     context = CONTEXT.copy()
@@ -67,17 +88,10 @@ def send_duplicate_email(
     context['is_secret'] = is_secret
     context['application'] = application
     context['authorised_text'] = authorised_text
-
-    for person in authorised_persons:
-        if not person.email:
-            continue
-
-        context['receiver'] = person
-
-        to_email = person.email
-        subject, body = render_email('project_duplicate_applicant', context)
-
-        send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
+    _send_request_email(
+        context,
+        authorised_role, authorised_persons,
+        "project_duplicate_applicant")
 
 
 def send_invite_email(application, link, is_secret):

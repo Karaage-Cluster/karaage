@@ -47,7 +47,7 @@ def application_list(request):
 
     q_filter = ApplicationFilter(request.GET, queryset=queryset)
 
-    table = ApplicationTable(q_filter.qs)
+    table = ApplicationTable(q_filter.qs.order_by("-expires"))
     tables.RequestConfig(request).configure(table)
 
     spec = []

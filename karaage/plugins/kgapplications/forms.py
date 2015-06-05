@@ -39,8 +39,12 @@ from .models import Applicant
 
 APP_CHOICES = (
     ('U', 'Join an existing project'),
-    ('P', 'Apply to start a new project'),
 )
+
+if settings.ALLOW_NEW_PROJECTS:
+    APP_CHOICES = APP_CHOICES + (
+        ('P', 'Apply to start a new project'),
+    )
 
 
 def _clean_email(email):

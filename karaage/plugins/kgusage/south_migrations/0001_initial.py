@@ -155,7 +155,6 @@ class Migration(SchemaMigration):
         # Adding unique constraint on 'MachineCache', fields ['date', 'start', 'end', 'machine']
         db.create_unique('cache_machinecache', ['date', 'start', 'end', 'machine_id'])
 
-
     def backwards(self, orm):
         if not db.dry_run:
             orm['contenttypes.contenttype'].objects.filter(app_label='kgusage').update(app_label='usage')
@@ -202,7 +201,6 @@ class Migration(SchemaMigration):
 
         # Deleting model 'MachineCache'
         db.delete_table('cache_machinecache')
-
 
     models = {
         'institutes.institute': {

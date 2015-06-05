@@ -76,6 +76,7 @@ class StateWaitingForApproval(base.State):
         link, is_secret = self.get_request_email_link(application)
         emails.send_request_email(
             self.authorised_text,
+            self.authorised_role,
             authorised_persons,
             application,
             link, is_secret)

@@ -298,7 +298,20 @@ ALLOW_REGISTRATIONS
 ~~~~~~~~~~~~~~~~~~~
 Default: False
 
+Plugin: kgapplications
+
 Do we allow anonymous users to request accounts?
+
+
+.. setting:: ALLOW_NEW_PROJECTS
+
+ALLOW_NEW_PROJECTS
+~~~~~~~~~~~~~~~~~~~
+Default: True
+
+Plugin: kgapplications
+
+Do we allow applications for new projects?
 
 
 .. setting:: USAGE_IS_PUBLIC

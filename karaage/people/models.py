@@ -358,17 +358,22 @@ class Person(AbstractBaseUser):
 
     def deactivate(self, deleted_by):
         """ Sets Person not active and deletes all Accounts"""
-        self.is_active = False
-        self.expires = None
-
-        self.date_deleted = datetime.datetime.today()
-        self.deleted_by = deleted_by
-        self.groups.clear()
-        self.save()
-
+        # deactivate accounts first, so we don't need to repeatedly update
+        # their datastores uselessly when clearing the groups.
         for ua in self.account_set.filter(date_deleted__isnull=True):
             ua.deactivate()
 
+        # now we can clear the groups
+        self.groups.clear()
+
+        # finally, mark the person as deleted.
+        self.is_active = False
+        self.expires = None
+        self.date_deleted = datetime.datetime.today()
+        self.deleted_by = deleted_by
+        self.save()
+
+        # log a message
         log.change(self, 'Deactivated by %s' % deleted_by)
     deactivate.alters_data = True
 

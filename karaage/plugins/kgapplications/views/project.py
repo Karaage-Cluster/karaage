@@ -611,6 +611,7 @@ class StateWaitingForLeader(states.StateWaitingForApproval):
     """ We need the leader to provide approval. """
     name = "Waiting for leader"
     authorised_text = "a project leader"
+    authorised_role = "project leader"
 
     def get_authorised_persons(self, application):
         return application.project.leaders.filter(
@@ -625,6 +626,7 @@ class StateWaitingForDelegate(states.StateWaitingForApproval):
     """ We need the delegate to provide approval. """
     name = "Waiting for delegate"
     authorised_text = "an institute delegate"
+    authorised_role = "institute delegate"
 
     def get_authorised_persons(self, application):
         return application.institute.delegates \
@@ -641,6 +643,7 @@ class StateWaitingForAdmin(states.StateWaitingForApproval):
     """ We need the administrator to provide approval. """
     name = "Waiting for administrator"
     authorised_text = "an administrator"
+    authorised_role = "administrator"
 
     def get_authorised_persons(self, application):
         return Person.objects.filter(
@@ -670,6 +673,7 @@ class StateDuplicateApplicant(base.State):
         link, is_secret = base.get_registration_email_link(application)
         emails.send_duplicate_email(
             "an administrator",
+            "administrator",
             authorised_persons,
             application,
             link, is_secret)
