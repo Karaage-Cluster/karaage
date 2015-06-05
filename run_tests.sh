@@ -18,13 +18,15 @@ fi
 echo ""
 echo "FLAKE8"
 echo "############################"
-flake8 --ignore=E501 --filename="south_migrations" .
-flake8 --ignore=E501 --filename="migrations" .
+find -path "*/south_migrations/*.py" -print0 | xargs -0 flake8 --ignore=E501
+if [ ! $? -eq 0 ]; then FLAKE=1; fi
+
+find -path "*/migrations/*.py" -print0 | xargs -0 flake8 --ignore=E501
+if [ ! $? -eq 0 ]; then FLAKE=1; fi
+
 flake8 --exclude="south_migrations,migrations" .
-if [ ! $? -eq 0 ]
-then
-    FLAKE=1
-fi
+if [ ! $? -eq 0 ]; then FLAKE=1; fi
+
 echo -e "\n\n"
 
 for values in $TESTS; do

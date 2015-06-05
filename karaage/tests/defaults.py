@@ -111,7 +111,6 @@ LDAP_TEST_DATASTORE_N = 0
 import os
 SERVER_EMAIL = 'django@' + os.uname()[1]
 ACCOUNTS_EMAIL = 'accounts@vpac.org'
-APPROVE_ACCOUNTS_EMAIL = ACCOUNTS_EMAIL
 EMAIL_SUBJECT_PREFIX = '[Grunt VPAC] - '
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -126,7 +125,6 @@ INTERNAL_IPS = (
 
 AUP_URL = 'http://example.com/aup.html'
 
-ALLOW_REGISTRATIONS = True
 REGISTRATION_BASE_URL = 'https://example.com/users'
 
 SECRET_KEY = '5hvhpe6gv2t5x4$3dtq(w2v#vg@)sx4p3r_@wv%l41g!stslc*'

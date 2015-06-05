@@ -105,18 +105,21 @@ def add_edit_project(request, project_id=None):
             project.save()
             approved_by = request.user
             project.activate(approved_by)
-            project.projectmembership_set.filter(
-                is_project_leader=True,
-            ).exclude(
-                person__in=form.cleaned_data['leaders'],
-            ).update(
-                is_project_leader=False,
-            )
-            project.add_update_project_members(
-                is_project_leader=True,
-                *form.cleaned_data['leaders']
-            )
-            form.save_m2m()
+
+            if 'leaders' in form.cleaned_data:
+                project.projectmembership_set.filter(
+                    is_project_leader=True,
+                ).exclude(
+                    person__in=form.cleaned_data['leaders'],
+                ).update(
+                    is_project_leader=False,
+                )
+                project.add_update_project_members(
+                    is_project_leader=True,
+                    *form.cleaned_data['leaders']
+                )
+                form.save_m2m()
+
             if flag == 1:
                 messages.success(
                     request, "Project '%s' created succesfully" % project)
@@ -326,6 +329,9 @@ def revoke_leader(request, project_id, username):
     error = None
     if request.user == person:
         error = "Cannot revoke self."
+
+    elif project.leaders.exclude(pk=person.pk).count() == 0:
+        error = "Cannot revoke last project leader."
 
     elif request.method == 'POST':
         if project.leaders.filter(pk=person.pk).count() > 0:

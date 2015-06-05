@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 from django.utils.text import slugify
 import django.db.models.deletion
+
+
 def unique_group_for_software(apps, schema_editor):
     Group = apps.get_model('karaage', 'Group')
     Software = apps.get_model('karaage', 'Software')

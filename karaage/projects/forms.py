@@ -68,6 +68,7 @@ class ProjectForm(forms.ModelForm):
             self.fields['pid'].widget.attrs['readonly'] = "readonly"
             self.fields['pid'].help_text = \
                 "You can't change the PID of an existing project"
+            del self.fields['leaders']
 
     def clean_pid(self):
         pid = self.cleaned_data['pid']

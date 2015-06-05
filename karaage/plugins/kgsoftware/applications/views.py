@@ -55,6 +55,7 @@ class StateWaitingForAdmin(states.StateWaitingForApproval):
     """ We need the administrator to provide approval. """
     name = "Waiting for administrator"
     authorised_text = "an administrator"
+    authorised_role = "administrator"
 
     def get_authorised_persons(self, application):
         return Person.objects.filter(is_admin=True)

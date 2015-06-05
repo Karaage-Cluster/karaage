@@ -81,7 +81,6 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('kgapplications', ['Applicant'])
 
-
     def backwards(self, orm):
         if not db.dry_run:
             orm['contenttypes.contenttype'].objects.filter(app_label='kgapplications').update(app_label='applications')
@@ -98,7 +97,6 @@ class Migration(SchemaMigration):
 
         # Deleting model 'Applicant'
         db.delete_table('kgapplications_applicant')
-
 
     models = {
         'contenttypes.contenttype': {

@@ -51,6 +51,8 @@ class MachineCategoryTable(tables.Table):
 class AccountTable(tables.Table):
     active = tables.Column(
         empty_values=(), order_by=('date_deleted', '-login_enabled'))
+    machine_category = tables.LinkColumn(
+        'kg_machine_category_detail', args=[A('machine_category.pk')])
     person = tables.LinkColumn(
         'kg_person_detail', args=[A('person.username')])
     username = tables.LinkColumn(
@@ -69,5 +71,5 @@ class AccountTable(tables.Table):
 
     class Meta:
         model = Account
-        fields = ("active", "username", "person",
+        fields = ("active", "username", "machine_category", "person",
                   "default_project", "date_created", "date_deleted")
