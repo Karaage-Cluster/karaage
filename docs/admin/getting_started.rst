@@ -14,7 +14,7 @@ however you will have to adapt from this documentation.
 
 * You have a cluster running Slurm or PBS that is already up and running.
 * You want to OpenLDAP with ppolicy support, on the same server.
-* You have a Debian Wheezy server already setup for Karaage.
+* You have a Debian Jessie server already setup for Karaage.
 * You will be installing all components on a single system.
 * You are upgrading to Karaage 3.1.
 * The visible hostname is ``www.example.org``. This will have to be
