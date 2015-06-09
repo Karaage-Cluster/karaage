@@ -121,7 +121,7 @@ def user_list(request, queryset=None, title=None):
 def locked_list(request):
 
     result = QueryDict("", mutable=True)
-    result['login_enabled'] = False
+    result['active'] = "locked"
     url = reverse('kg_person_list') + "?" + result.urlencode()
     return HttpResponseRedirect(url)
 
@@ -132,7 +132,7 @@ def struggling(request):
     days30 = today - datetime.timedelta(days=30)
 
     result = QueryDict("", mutable=True)
-    result['is_active'] = True
+    result['active'] = "yes"
     result['begin_date_approved'] = days30
     result['no_last_usage'] = True
     result['sort'] = "-date_approved"
