@@ -283,7 +283,7 @@ ACCOUNTS_ORG_NAME = 'Example'
 #
 # ALLOW_REGISTRATIONS = False
 
-# Do we new projects applications?
+# Do we allow new projects applications?
 #
 # default:  ALLOW_NEW_PROJECTS = True
 #
