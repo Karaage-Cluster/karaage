@@ -1,3 +1,12 @@
+karaage3 (3.1.21-1) unstable; urgency=medium
+
+  * Fix broken people list links.
+  * Fix Jessie references in documentation.
+  * Enhance unlock_training_account function.
+  * Add documentation on making new Karaage releases.
+
+ -- Brian May <bam@debian.org>  Wed, 17 Jun 2015 11:19:39 +1000
+
 karaage3 (3.1.20-1) unstable; urgency=medium
 
   * Override admin email addresses using APPROVE_ACCOUNTS_EMAIL setting.
