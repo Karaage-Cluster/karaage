@@ -6,6 +6,16 @@ release of Karaage.
 It is assumed the system is running Debian Jessie; other build systems may be
 possible, but will require variations.
 
+.. note::
+
+    Karaage is current developed using `Gerrit <https://code.vpac.org/gerrit>`_.
+    However, after 2015-06-19, this may no longer be the case. In which case
+    commits should sent as github pull requests. Please check before submitting
+    changes if the procedure documented here is still releveant.
+
+    If github is no longer used, the ``git review`` commands should be
+    replaced with something more appropriate, e.g. ``git push``.
+
 
 Preparing system
 ----------------
@@ -80,8 +90,7 @@ replaced with the actual version.
 
     .. code-block:: bash
 
-        git push origin
-        git push origin --tags
+        git review
 
 #.  Merge changes into ``karaage4`` branch:
 
@@ -103,6 +112,13 @@ replaced with the actual version.
 
     .. code-block:: bash
 
-        git push origin
-        git push origin --tags
+        git review
         git checkout master
+
+#.  When changes are approved in gerrit, push the tags to github. Ideally this
+    should be done via gerrit, but this doesn't seem to happen at present.
+
+    .. code-block:: bash
+
+        git fetch origin  # check changes have been pushed to origin.
+        git push origin --tags

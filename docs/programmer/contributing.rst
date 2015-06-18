@@ -1,7 +1,12 @@
 Contributing Code
 =================
 
-Karaage is developed using `Gerrit <https://code.vpac.org/gerrit>`_.
+.. note::
+
+    Karaage is current developed using `Gerrit <https://code.vpac.org/gerrit>`_.
+    However, after 2015-06-19, this may no longer be the case. In which case
+    commits should sent as github pull requests. Please check before submitting
+    changes if the procedure documented here is still releveant.
 
 Getting Started
 ---------------
