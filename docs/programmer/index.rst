@@ -15,9 +15,11 @@ Contents:
    :maxdepth: 2
 
    architecture
+   prepare
    contributing
-   plugins
    releasing
+   testing
+   plugins
    ../glossary
 
 
