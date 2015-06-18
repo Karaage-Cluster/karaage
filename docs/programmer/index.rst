@@ -17,8 +17,8 @@ Contents:
    architecture
    prepare
    contributing
-   releasing
    testing
+   releasing
    plugins
    ../glossary
 
