@@ -533,7 +533,7 @@ class Resource(models.Model):
     resource_pool = models.ForeignKey('karaage.ResourcePool')
     resource_name = models.CharField(max_length=255, null=True, blank=True)
     scaling_factor = models.FloatField()
-    quantity = models.BigIntegerField()
+    quantity = models.BigIntegerField(null=True, blank=True)
 
     audit_log = AuditLog()
 
