@@ -38,7 +38,7 @@ The Karaage 4 documentation will be available soon on `ReadTheDocs
 
 Mailing list: `<http://lists.vpac.org/cgi-bin/mailman/listinfo/karaage>`_
 
-Gerrit code review tool: `<https://code.vpac.org/gerrit>`_
+Old gerrit code review tool (not used anymore): `<https://code.vpac.org/gerrit>`_
 
 Karaage 2.7.x: <http://karaage.readthedocs.org/en/2.7.stable/>`_.
 
@@ -98,8 +98,8 @@ karaage-software
 Contact
 -------
 
-The lead developer for Karaage 4 is `Tyson Clugg
-<mailto:"tyson@commoncode.com.au">`_.
+The lead developer for Karaage 3 is `Brian May
+<mailto:"brian@v3.org.au">`_.
 
 Setting up a development instance
 ---------------------------------

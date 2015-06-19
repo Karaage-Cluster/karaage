@@ -4,6 +4,12 @@ karaage4 (4.0.0-1) unstable; urgency=medium
 
  -- Brian May <bam@debian.org>  Mon, 09 Feb 2015 14:54:17 +1100
 
+karaage3 (3.1.22-1) unstable; urgency=medium
+
+  * Documentation updates.
+
+ -- Brian May <bam@debian.org>  Fri, 19 Jun 2015 13:57:03 +1000
+
 karaage3 (3.1.21-1) unstable; urgency=medium
 
   * Fix broken people list links.
