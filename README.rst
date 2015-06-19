@@ -17,7 +17,7 @@ Documentation
 
 Mailing list: `<http://lists.vpac.org/cgi-bin/mailman/listinfo/karaage>`_
 
-Gerrit code review tool: `<https://code.vpac.org/gerrit>`_
+Old gerrit code review tool (not used anymore): `<https://code.vpac.org/gerrit>`_
 
 Karaage 2.7.x: <http://karaage.readthedocs.org/en/2.7.stable/>`_.
 
