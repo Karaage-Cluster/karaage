@@ -32,12 +32,16 @@ class Command(BaseCommand):
     def handle(self, **options):
 
         verbose = int(options.get('verbosity'))
-        prefix = getattr(settings, 'TRAINING_ACCOUNT_PREFIX', 'train')
+        training_prefix = getattr(settings, 'TRAINING_ACCOUNT_PREFIX', 'train')
 
-        for person in Person.active.filter(username__startswith=prefix):
+        query = Person.active.all()
+        query = query.filter(username__startswith=training_prefix)
+        query = query.order_by('username')
+
+        for person in query.all():
             try:
                 person.lock()
                 if verbose > 1:
-                    print("Locked %s" % person.username)
-            except:
-                print("Failed to lock %s" % person)
+                    print("%s: Locked" % person.username)
+            except Exception as e:
+                print("%s: Failed to lock: %s" % (person, e))

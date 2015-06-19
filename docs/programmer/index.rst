@@ -17,6 +17,7 @@ Contents:
    architecture
    contributing
    plugins
+   releasing
    ../glossary
 
 
