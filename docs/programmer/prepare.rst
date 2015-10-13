@@ -42,6 +42,9 @@ These steps only need to be done once for a system.
 
         cd tree
         git clone https://github.com/brianmay/bampkgbuild.git
+        cd bampkgbuild
+        git checkout 67c81afcb3dcdd8dfa8adf9f105a0bd06a0eed25
+        cd ..
         sudo ~/tree/bampkgbuild/create_schroot debian sid amd64
         sudo ~/tree/bampkgbuild/create_schroot debian sid i386
         sudo ~/tree/bampkgbuild/create_schroot debian jessie amd64
