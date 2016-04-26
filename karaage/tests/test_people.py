@@ -19,6 +19,7 @@
 import datetime
 import re
 
+import django
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.core import mail
@@ -438,13 +439,18 @@ class PersonTestCase(IntegrationTestCase):
             username='kgtestuser1', password='aq12ws')
         self.assertEqual(logged_in, True)
 
+        if django.VERSION >= (1, 9):
+            url_prefix = ""
+        else:
+            url_prefix = 'http://testserver'
+
         # send request
         url = reverse("kg_profile_reset")
         done_url = reverse("kg_profile_reset_done")
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.redirect_chain[0][0],
-                         'http://testserver' + done_url)
+                         url_prefix + done_url)
 
         # check email
         self.assertEqual(len(mail.outbox), 1)
@@ -468,7 +474,7 @@ class PersonTestCase(IntegrationTestCase):
         response = self.client.post(url, form_data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.redirect_chain[0][0],
-                         'http://testserver' + done_url)
+                         url_prefix + done_url)
 
         # test new password
         logged_in = self.client.login(
@@ -479,13 +485,18 @@ class PersonTestCase(IntegrationTestCase):
         logged_in = self.client.login(username='kgsuper', password='aq12ws')
         self.assertEqual(logged_in, True)
 
+        if django.VERSION >= (1, 9):
+            url_prefix = ""
+        else:
+            url_prefix = 'http://testserver'
+
         # send request
         url = reverse("kg_person_reset", args=["kgtestuser1"])
         done_url = reverse("kg_person_reset_done", args=["kgtestuser1"])
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.redirect_chain[0][0],
-                         'http://testserver' + done_url)
+                         url_prefix + done_url)
         self.client.logout()
 
         # check email
@@ -510,7 +521,7 @@ class PersonTestCase(IntegrationTestCase):
         response = self.client.post(url, form_data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.redirect_chain[0][0],
-                         'http://testserver' + done_url)
+                         url_prefix + done_url)
 
         # test new password
         logged_in = self.client.login(

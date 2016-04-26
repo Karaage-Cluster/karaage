@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import django
 from django.test import TestCase
 from django.core import mail
 from django.core.urlresolvers import reverse
@@ -46,6 +47,11 @@ class SoftwareApplicationTestCase(TestCase):
         set_admin()
 
     def test_register_software(self):
+        if django.VERSION >= (1, 9):
+            url_prefix = ""
+        else:
+            url_prefix = 'http://testserver'
+
         group = Group.objects.create(name="windows")
         software = Software.objects.create(
             name="windows",
@@ -82,8 +88,8 @@ class SoftwareApplicationTestCase(TestCase):
         application = Application.objects.get()
         self.assertEqual(
             response.redirect_chain[0][0],
-            'http://testserver'
-            + reverse('kg_application_detail', args=[application.pk, 'O']))
+            url_prefix +
+            reverse('kg_application_detail', args=[application.pk, 'O']))
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(
             mail.outbox[0].subject,
@@ -102,8 +108,8 @@ class SoftwareApplicationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.redirect_chain[0][0],
-            'http://testserver'
-            + reverse('kg_application_detail', args=[application.pk, 'K']))
+            url_prefix +
+            reverse('kg_application_detail', args=[application.pk, 'K']))
 
         self.assertEqual(len(mail.outbox), 2)
         self.assertEqual(
@@ -146,8 +152,8 @@ class SoftwareApplicationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.redirect_chain[0][0],
-            'http://testserver'
-            + reverse('kg_application_detail', args=[application.pk, 'C']))
+            url_prefix +
+            reverse('kg_application_detail', args=[application.pk, 'C']))
         application = Application.objects.get(pk=application.id)
         self.assertEqual(application.state, SoftwareApplication.COMPLETED)
         self.assertEqual(len(mail.outbox), 3)
