@@ -91,6 +91,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.auth',
 )
 
 # South not available for Python 3+ or Django 1.7+
