@@ -221,29 +221,33 @@ ALLOWED_HOSTS = ["%(HOST)s"]
 ###
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
-PIPELINE_EMBED_PATH = r'img/|images/'
-PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.cssmin.CSSMinCompressor'
-PIPELINE_CSS = {
-    'karaage': {
-        'source_filenames': (
-            'css/*.css',
-            'ajax_select/css/ajax_select.css',
-        ),
-        'output_filename': 'min.css',
-        'variant': 'datauri',
+
+PIPELINE = {
+    'PIPELINE_ENABLED': False,
+    'EMBED_PATH': r'img/|images/',
+    'CSS_COMPRESSOR': 'pipeline.compressors.cssmin.CSSMinCompressor',
+    'STYLESHEETS': {
+        'karaage': {
+            'source_filenames': (
+                'css/*.css',
+                'ajax_select/css/ajax_select.css',
+            ),
+            'output_filename': 'min.css',
+            'variant': 'datauri',
+        },
     },
-}
-PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.slimit.SlimItCompressor'
-PIPELINE_JS = {
-    'karaage': {
-        'source_filenames': (
-            'js/jquery-1.11.2.js',
-            'js/jquery-ui-1.11.4.js',
-            'js/*.js',
-            'ajax_select/js/ajax_select.js',
-        ),
-        'output_filename': 'min.js',
-    }
+    'JS_COMPRESSOR': 'pipeline.compressors.slimit.SlimItCompressor',
+    'JAVASCRIPT': {
+        'karaage': {
+            'source_filenames': (
+                'js/jquery-1.11.2.js',
+                'js/jquery-ui-1.11.4.js',
+                'js/*.js',
+                'ajax_select/js/ajax_select.js',
+            ),
+            'output_filename': 'min.js',
+        }
+    },
 }
 
 

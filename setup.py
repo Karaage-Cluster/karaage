@@ -103,7 +103,7 @@ setup(
         "django_jsonfield >= 0.9.12",
         "django-model-utils >= 2.0.0",
         "python-tldap >= 0.3.3",
-        "django-pipeline",
+        "django-pipeline >= 1.6.0",
         "django-tables2",
         "django-filter",
         "six",
