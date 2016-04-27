@@ -9,13 +9,13 @@ Build-Depends: debhelper (>=8.1.0), dh-python, slapd, ldap-utils, po-debconf,
  python-ajax-select, python-django-jsonfield, python-django-pipeline (>= 1.6.0),
  python-django-tables2, python-django-filters, python-django-model-utils,
  python-factory-boy, python-mock, python-cracklib, python-flake8,
- python-django-extensions, python-django-celery, python-matplotlib,
+ python-django-celery, python-matplotlib,
  python3-all, python3-setuptools, python-django, python3-tldap,
  python3-six, python3-django-xmlrpc, python3-django-captcha, python3-alogger,
  python3-ajax-select, python3-django-jsonfield, python3-django-pipeline (>= 1.6.0),
  python3-django-tables2, python3-django-filters, python3-django-model-utils,
  python3-factory-boy, python3-mock, python3-cracklib, python3-flake8,
- python3-django-extensions, python3-django-celery, python3-matplotlib,
+ python3-django-celery, python3-matplotlib,
 Build-Depends-Indep: python3-sphinx (>= 1.0.7+dfsg-1~)
 Standards-Version: 3.9.6
 Homepage: https://github.com/Karaage-Cluster/karaage
