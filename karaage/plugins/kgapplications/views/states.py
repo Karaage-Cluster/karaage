@@ -32,6 +32,7 @@ from . import base
 
 class TransitionOpen(base.Transition):
     """ A transition after application opened. """
+
     def __init__(self, on_success):
         super(TransitionOpen, self).__init__()
         self._on_success = on_success
@@ -147,6 +148,7 @@ class StateWaitingForApproval(base.State):
 
 class TransitionSubmit(base.Transition):
     """ A transition after application submitted. """
+
     def __init__(self, on_success, on_error):
         super(TransitionSubmit, self).__init__()
         self._on_success = on_success

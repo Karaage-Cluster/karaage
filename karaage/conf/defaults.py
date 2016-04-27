@@ -18,7 +18,10 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 """ Default Karaage Settings. """
+import os
 import six
+import sys
+import django
 
 from socket import getfqdn
 HTTP_HOST = getfqdn()
@@ -66,7 +69,6 @@ AUTH_USER_MODEL = 'karaage.Person'
 #
 # * an application configuration class, or a package containing a
 # * application.
-import django
 if django.VERSION < (1, 7):
     KARAAGE_APPS = (
         'karaage',
@@ -95,7 +97,6 @@ INSTALLED_APPS = (
 )
 
 # South not available for Python 3+ or Django 1.7+
-import sys
 if sys.version_info < (3, 0) and django.VERSION < (1, 7):
     KARAAGE_APPS += (
         'karaage.legacy.common',
@@ -406,5 +407,4 @@ SILENCED_SYSTEM_CHECKS = [
 ]
 
 # Required for djcelery to work properly. Has no effect otherwise.
-import os
 os.environ.setdefault('CELERY_LOADER', 'djcelery.loaders.DjangoLoader')

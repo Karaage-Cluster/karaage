@@ -32,7 +32,7 @@ from django.utils.encoding import smart_text
 
 from django.core.exceptions import ViewDoesNotExist
 from django.core.urlresolvers import RegexURLPattern, RegexURLResolver, \
-        LocaleRegexURLResolver
+    LocaleRegexURLResolver
 from django.utils import translation
 
 urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
@@ -119,6 +119,7 @@ def make_test_get_function(name, url, url_pattern):
 
 
 class TestAllPagesMeta(type):
+
     @classmethod
     def _add_test_methods(mcs, attrs, urlpatterns):
         # loop through every URL pattern

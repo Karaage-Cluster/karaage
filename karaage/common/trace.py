@@ -566,7 +566,11 @@ def trace(_name):
 
         __self = False
         __klass = False
-        __rewrap = lambda x: x
+
+        def nop(x):
+            return x
+
+        __rewrap = nop
         if type(_func) in FunctionTypes:
             # functions do not belong to a class.
             __cname = None

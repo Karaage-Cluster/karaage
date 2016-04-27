@@ -29,6 +29,7 @@ from karaage.tests.fixtures import MachineCategoryFactory
 
 
 class UnitTestCase(TestCase):
+
     def setUp(self):
         super(TestCase, self).setUp()
         self.resetDatastore()

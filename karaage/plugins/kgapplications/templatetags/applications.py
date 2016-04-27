@@ -20,11 +20,12 @@
 import django_tables2 as tables
 
 from django import template
-register = template.Library()
 
 from karaage.people.tables import PersonTable
 
 from ..views.base import get_state_machine
+
+register = template.Library()
 
 
 @register.simple_tag(takes_context=True)
@@ -84,6 +85,7 @@ def do_application_actions_plus(parser, token):
 
 class ApplicationActionsPlus(template.Node):
     """ Node for rendering actions available with extra text. """
+
     def __init__(self, nodelist):
         super(ApplicationActionsPlus, self).__init__()
         self.nodelist = nodelist

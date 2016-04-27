@@ -77,8 +77,8 @@ def redirect_to(request, url, permanent=True, query_string=False, **kwargs):
         if args and query_string:
             url = "%s?%s" % (url, args)
 
-        klass = (permanent and HttpResponsePermanentRedirect
-                 or HttpResponseRedirect)
+        klass = (permanent and HttpResponsePermanentRedirect or
+                 HttpResponseRedirect)
         return klass(url)
     else:
         logger.warning(

@@ -53,6 +53,7 @@ class ActiveFilter(django_filters.ChoiceFilter):
 
 
 class PeopleColumn(BaseLinkColumn):
+
     def render(self, value):
         people = []
         for person in value.all():

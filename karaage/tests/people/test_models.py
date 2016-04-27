@@ -24,6 +24,7 @@ from karaage.tests.fixtures import PersonFactory, InstituteFactory
 
 
 class PersonTestCase(TestCase):
+
     def test_minimum_create(self):
         institute = InstituteFactory()
         person = Person.objects.create(

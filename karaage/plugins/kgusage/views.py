@@ -234,8 +234,8 @@ def index(request, machine_category_id):
             data_row['percent'] = 0
         if data_row['quota'] is not None:
             if data_row['quota'] != 0:
-                data_row['p_used'] = (data_row['percent']
-                                      / data_row['quota']) * 100
+                data_row['p_used'] = (data_row['percent'] /
+                                      data_row['quota']) * 100
             else:
                 data_row['p_used'] = None
             data_row['diff'] = data_row['percent'] - data_row['quota']

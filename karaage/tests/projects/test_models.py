@@ -26,6 +26,7 @@ from karaage.tests.fixtures import (ProjectFactory, InstituteFactory,
 
 
 class ProjectTestCase(UnitTestCase):
+
     def test_minimum_create(self):
         institute = InstituteFactory()
         project = Project.objects.create(

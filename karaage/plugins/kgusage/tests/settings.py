@@ -15,13 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
 from karaage.conf.defaults import *  # NOQA
 from karaage.tests.defaults import *  # NOQA
+from karaage.conf.process import post_process
 
 PLUGINS = [
     'karaage.plugins.kgusage.plugin',
 ]
 
-import sys
-from karaage.conf.process import post_process
 post_process(sys.modules[__name__])

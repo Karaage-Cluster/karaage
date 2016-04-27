@@ -28,6 +28,7 @@ from .models import LogEntry
 
 
 class ObjectColumn(BaseLinkColumn):
+
     def __init__(self, *args, **kwargs):
         super(ObjectColumn, self).__init__(*args, empty_values=(), **kwargs)
 

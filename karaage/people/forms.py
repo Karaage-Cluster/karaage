@@ -107,8 +107,8 @@ class AddPersonForm(AdminPersonForm):
     username = forms.CharField(
         label=six.u("Requested username"),
         max_length=settings.USERNAME_MAX_LENGTH,
-        help_text=(settings.USERNAME_VALIDATION_ERROR_MSG
-                   + " and has a max length of %s."
+        help_text=(settings.USERNAME_VALIDATION_ERROR_MSG +
+                   " and has a max length of %s."
                    % settings.USERNAME_MAX_LENGTH))
     password1 = forms.CharField(
         widget=forms.PasswordInput(render_value=False),

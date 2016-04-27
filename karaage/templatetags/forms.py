@@ -44,6 +44,7 @@ def formfield(parser, token):
 
 
 class FormFieldNode(template.Node):
+
     def __init__(self, field):
         self.field = template.Variable(field)
 

@@ -19,19 +19,12 @@ from .dirs import GRAPH_TMP, GRAPH_ROOT
 
 import os
 import os.path
-os.environ['MPLCONFIGDIR'] = GRAPH_TMP
 
 import logging
-logger = logging.getLogger(__name__)
 
 import six
 import csv
 import datetime
-
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
 
 from djcelery.app import app
 
@@ -48,6 +41,13 @@ from .models import InstituteCache, ProjectCache, PersonCache
 from .models import MachineCache, MachineCategoryCache
 from . import usage, graphs
 
+import matplotlib
+os.environ['MPLCONFIGDIR'] = GRAPH_TMP
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt  # NOQA
+import matplotlib.dates as mdates  # NOQA
+
+logger = logging.getLogger(__name__)
 # app.conf.update(CELERYD_HIJACK_ROOT_LOGGER = False)
 
 

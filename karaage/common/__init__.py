@@ -79,6 +79,7 @@ def get_current_person():
 
 
 class log():
+
     def __init__(self, user, obj, flag, message):
         warnings.warn("Calling karaage.common.log directly has been"
                       " deprecated. You should use the API "

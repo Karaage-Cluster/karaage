@@ -31,6 +31,7 @@ import ajax_select.fields
 
 
 class MachineForm(forms.ModelForm):
+
     class Meta:
         model = Machine
         fields = (
@@ -40,6 +41,7 @@ class MachineForm(forms.ModelForm):
 
 
 class MachineCategoryForm(forms.ModelForm):
+
     class Meta:
         model = MachineCategory
         fields = ['name', 'datastore']

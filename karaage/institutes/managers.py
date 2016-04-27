@@ -22,6 +22,7 @@ class ActiveInstituteManager(models.Manager):
     """
     Returns only 'active' institutes.
     """
+
     def get_queryset(self):
         query = super(ActiveInstituteManager, self).get_queryset()
         return query.filter(is_active=True)

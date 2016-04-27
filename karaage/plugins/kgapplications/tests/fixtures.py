@@ -38,6 +38,7 @@ class ApplicationFactory(DjangoModelFactory):
 
 
 class ProjectApplicationFactory(ApplicationFactory):
+
     class Meta:
         model = ProjectApplication
 

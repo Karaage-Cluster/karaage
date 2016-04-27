@@ -139,17 +139,17 @@ class Application(models.Model):
                 # Django >= 1.8
                 fields = [
                     f for f in Application._meta.get_fields()
-                    if isinstance(f, OneToOneRel)
-                    and f.field.primary_key
-                    and f.auto_created
+                    if isinstance(f, OneToOneRel) and
+                    f.field.primary_key and
+                    f.auto_created
                 ]
 
             else:
                 # Django <= 1.8
                 fields = [
                     f for f in Application._meta.get_all_related_objects()
-                    if isinstance(f, OneToOneRel)
-                    and f.field.primary_key
+                    if isinstance(f, OneToOneRel) and
+                    f.field.primary_key
                 ]
 
             for rel in fields:
@@ -297,8 +297,8 @@ class ProjectApplication(Application):
                 institute=self.institute,
                 additional_req=self.additional_req,
                 start_date=datetime.datetime.today(),
-                end_date=datetime.datetime.today()
-                + datetime.timedelta(days=365),
+                end_date=datetime.datetime.today() +
+                datetime.timedelta(days=365),
             )
             project.save()
             for mc in self.machine_categories.all():

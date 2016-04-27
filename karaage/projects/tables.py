@@ -52,6 +52,7 @@ class ActiveFilter(django_filters.ChoiceFilter):
 
 
 class ProjectColumn(BaseLinkColumn):
+
     def __init__(self, *args, **kwargs):
         super(ProjectColumn, self).__init__(*args, empty_values=(), **kwargs)
 

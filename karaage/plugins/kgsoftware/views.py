@@ -46,10 +46,10 @@ if apps.is_installed("karaage.plugins.kgsoftware.applications"):
     from .applications.models import SoftwareApplication
 
     def is_application_pending(person, software_license):
-            query = SoftwareApplication.objects.get_for_applicant(person)
-            query = query.filter(software_license=software_license)
-            if query.count() > 0:
-                return True
+        query = SoftwareApplication.objects.get_for_applicant(person)
+        query = query.filter(software_license=software_license)
+        if query.count() > 0:
+            return True
 
     def get_applications(software_license):
         applications = SoftwareApplication.objects.filter(

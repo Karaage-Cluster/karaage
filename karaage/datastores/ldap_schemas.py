@@ -37,6 +37,7 @@ def _a(string):
 
 
 class PersonMixin(object):
+
     @classmethod
     def pre_save(cls, self):
         full_name = getattr(self, "fullName", None)
@@ -47,6 +48,7 @@ class PersonMixin(object):
 
 
 class AccountMixin(object):
+
     @classmethod
     def pre_save(cls, self):
         full_name = getattr(self, "fullName", None)
@@ -230,6 +232,7 @@ class openldap_kg27_group(methods.baseMixin):
 ############
 
 class ds389AccountMixin(object):
+
     @classmethod
     def pre_save(cls, self):
         # work around for https://bugzilla.redhat.com/show_bug.cgi?id=1171308

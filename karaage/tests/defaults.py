@@ -14,9 +14,12 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
+import os
+import os.path
 
 
 class InvalidString(str):
+
     def __mod__(self, other):
         from django.template.base import TemplateSyntaxError
         raise TemplateSyntaxError(
@@ -108,7 +111,6 @@ LDAP = {
 LDAP_TEST_DATASTORE = 'ldap'
 LDAP_TEST_DATASTORE_N = 0
 
-import os
 SERVER_EMAIL = 'django@' + os.uname()[1]
 ACCOUNTS_EMAIL = 'accounts@vpac.org'
 EMAIL_SUBJECT_PREFIX = '[Grunt VPAC] - '
@@ -132,7 +134,6 @@ SECRET_KEY = '5hvhpe6gv2t5x4$3dtq(w2v#vg@)sx4p3r_@wv%l41g!stslc*'
 STATIC_ROOT = 'tmp/static'
 STATIC_URL = "/static/"
 
-import os.path
 TEST_MODULE_ROOT = os.path.dirname(os.path.realpath(__file__))
 FIXTURE_DIRS = (os.path.join(TEST_MODULE_ROOT),)
 

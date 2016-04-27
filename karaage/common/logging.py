@@ -24,6 +24,7 @@ import errno
 
 
 class FileHandler(logging.FileHandler):
+
     def __init__(self, filename, owner=None, **kwargs):
         if owner:
             if not os.path.exists(filename):
