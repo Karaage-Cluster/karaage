@@ -35,6 +35,8 @@ from django.core.urlresolvers import RegexURLPattern, RegexURLResolver, \
     LocaleRegexURLResolver
 from django.utils import translation
 
+from karaage.middleware.threadlocals import reset
+
 urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
 
 
@@ -179,4 +181,10 @@ class TestAllPagesMeta(type):
 
 @six.add_metaclass(TestAllPagesMeta)
 class TestAllPagesCase(TestCase):
-    pass
+
+    def setUp(self):
+        super(TestAllPagesCase, self).setUp()
+
+        def cleanup():
+            reset()
+        self.addCleanup(cleanup)
