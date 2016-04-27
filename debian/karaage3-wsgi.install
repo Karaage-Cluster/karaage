@@ -1,3 +1,1 @@
-conf/settings.py /etc/karaage
-conf/karaage.wsgi /etc/karaage
-conf/karaage.conf /etc/apache2/conf-available
+conf/karaage3-wsgi.conf /etc/apache2/conf-available

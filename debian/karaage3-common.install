@@ -1,0 +1,2 @@
+conf/settings.py /etc/karaage
+conf/karaage.wsgi /etc/karaage

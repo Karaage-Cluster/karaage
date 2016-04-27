@@ -43,16 +43,6 @@ endif
 override_dh_install:
 	dh_install
 	
-	mkdir -p $(PREFIXC)/etc/karaage3
-	set -e; for f in settings.py karaage.wsgi; do \
-		mv $(PREFIX2)/etc/karaage3/$$f $(PREFIXC)/etc/karaage3; \
-		rm $(PREFIX3)/etc/karaage3/$$f; \
-	done
-	
-	mkdir -p $(PREFIXA)/etc/apache2/conf-available
-	mv $(PREFIX2)/etc/apache2/conf-available/karaage3-wsgi.conf $(PREFIXA)/etc/apache2/conf-available/;
-	rm $(PREFIX3)/etc/apache2/conf-available/karaage3-wsgi.conf;
-	
 	mkdir -p $(PREFIX2)/usr/share/python-karaage/bin
 	mkdir -p $(PREFIX3)/usr/share/python3-karaage/bin
 	mkdir -p $(PREFIXC)/usr/bin
