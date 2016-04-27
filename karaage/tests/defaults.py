@@ -16,6 +16,9 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 import os
 import os.path
+import environ
+
+env = environ.Env()
 
 
 class InvalidString(str):
@@ -83,17 +86,7 @@ MACHINE_CATEGORY_DATASTORES = {
 
 ACCOUNTS_ORG_NAME = 'TestOrg'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'karaage.db',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-        'ATOMIC_REQUESTS': True,
-    }
-}
+DATABASES = {'default': env.db(default="sqlite:///")}
 
 LDAP = {
     'default': {

@@ -87,12 +87,6 @@ setup(
         'sbin/kg-manage',
         'sbin/kg-migrate-south',
     ],
-    data_files=[
-        ('/etc/karaage3',
-            ['conf/settings.py', 'conf/karaage.wsgi']),
-        ('/etc/apache2/conf-available',
-            ['conf/karaage3-wsgi.conf']),
-    ],
     install_requires=[
         "cssmin",
         "Django >= 1.7",
@@ -106,6 +100,7 @@ setup(
         "django-pipeline >= 1.6.0",
         "django-tables2",
         "django-filter",
+        "django-environ",
         "six",
         "slimit>=0.8.1",
     ],
