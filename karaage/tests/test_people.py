@@ -241,7 +241,7 @@ class PersonTestCase(IntegrationTestCase):
 
         self.assertEqual(Person.objects.count(), users + 1)
         users = users + 1
-        person = Person.objects.get(pk=users)
+        person = Person.objects.get(username='samtest')
         self.assertEqual(person.is_active, True)
         self.assertEqual(person.username, 'samtest')
         self.assertEqual(Account.objects.count(), 2)
@@ -281,7 +281,7 @@ class PersonTestCase(IntegrationTestCase):
 
         self.assertEqual(Person.objects.count(), users + 1)
         users = users + 1
-        person = Person.objects.get(pk=users)
+        person = Person.objects.get(username='samtest2')
         self.assertEqual(person.is_active, True)
         self.assertEqual(person.username, 'samtest2')
         # Try adding it again - Should fail
