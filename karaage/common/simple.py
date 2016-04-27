@@ -15,13 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
+import logging
+
 from django.template import loader, RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http import HttpResponsePermanentRedirect, HttpResponseGone
-from django.utils.log import getLogger
 
 
-logger = getLogger('django.request')
+logger = logging.getLogger('django.request')
 
 
 def direct_to_template(
