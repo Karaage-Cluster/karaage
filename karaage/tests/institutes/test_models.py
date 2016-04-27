@@ -18,6 +18,7 @@
 
 from django.core import exceptions as django_exceptions
 import mock
+import unittest
 
 from karaage.tests.unit import UnitTestCase
 from karaage.people.models import Group
@@ -42,6 +43,7 @@ class InstituteTestCase(UnitTestCase):
             institute.group.name,
             institute.name.lower().replace(' ', ''))
 
+    @unittest.skip("broken with mysql/postgresql")
     def test_username(self):
         assert_raises = self.assertRaises(django_exceptions.ValidationError)
 
