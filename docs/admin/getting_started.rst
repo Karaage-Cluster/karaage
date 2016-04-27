@@ -236,7 +236,7 @@ Initial setup
     .. code-block:: bash
 
         apt-get install karaage3
-        apt-get install python-mysql.connector
+        apt-get install python-mysqldb
 
 #.  Edit the :setting:`DATABASES` setting in ``/etc/karaage3/settings.py``:
 
@@ -244,13 +244,16 @@ Initial setup
 
          DATABASES = {
               'default': {
-                    'ENGINE': 'mysql.connector.django',
+                    'ENGINE': 'django.db.backends.mysql',
                     'NAME': 'karaage',
                     'USER': 'karaage',
                     'PASSWORD': 'YYYYYYYY',
                     'HOST': 'localhost',
                     'PORT': '',
                     'ATOMIC_REQUESTS': True,
+                    'OPTIONS': {
+                        'sql_mode': 'STRICT_ALL_TABLES'
+                    },
               }
          }
 
