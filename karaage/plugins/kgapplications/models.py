@@ -262,7 +262,7 @@ class ProjectApplication(Application):
     description = models.TextField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
     machine_categories = models.ManyToManyField(
-        MachineCategory, null=True, blank=True)
+        MachineCategory, blank=True)
     pid = models.CharField(max_length=50, null=True, blank=True)
 
     # existing project request

@@ -32,7 +32,7 @@ class Institute(models.Model):
     name = models.CharField(max_length=255, unique=True)
     delegates = models.ManyToManyField(
         Person, related_name='delegate_for',
-        blank=True, null=True, through='InstituteDelegate')
+        blank=True, through='InstituteDelegate')
     group = models.ForeignKey(Group)
     saml_entityid = models.CharField(
         max_length=200,
