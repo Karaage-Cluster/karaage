@@ -35,9 +35,16 @@ override_dh_clean:
 
 .PHONY: override_dh_auto_test
 override_dh_auto_test:
-ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	./run_tests.sh
-endif
+	./manage.py collectstatic --settings="karaage.tests.settings" -v 2 --noinput
+	dh_auto_test -- --system=custom --test-args="{interpreter}  ./manage.py test --settings="karaage.tests.settings" -v 2 karaage.tests"
+	./manage.py collectstatic --settings="karaage.plugins.kgapplications.tests.settings" -v 2 --noinput
+	dh_auto_test -- --system=custom --test-args="{interpreter}  ./manage.py test --settings="karaage.plugins.kgapplications.tests.settings" -v 2 karaage.plugins.kgapplications"
+	./manage.py collectstatic --settings="karaage.plugins.kgsoftware.tests.settings" -v 2 --noinput
+	dh_auto_test -- --system=custom --test-args="{interpreter}  ./manage.py test --settings="karaage.plugins.kgsoftware.tests.settings" -v 2 karaage.plugins.kgsoftware.tests"
+	./manage.py collectstatic --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 --noinput
+	dh_auto_test -- --system=custom --test-args="{interpreter}  ./manage.py test --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 karaage.plugins.kgsoftware"
+	./manage.py collectstatic --settings="karaage.plugins.kgusage.tests.settings" -v 2 --noinput
+	dh_auto_test -- --system=custom --test-args="{interpreter}  ./manage.py test --settings="karaage.plugins.kgusage.tests.settings" -v 2 karaage.plugins.kgusage"
 
 .PHONY: override_dh_install
 override_dh_install:
