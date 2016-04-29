@@ -26,6 +26,7 @@ Contents:
    tasks
    upgrading
    ref
+   changes
    glossary
 
 Indices and tables
