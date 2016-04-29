@@ -15,7 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
 from karaage.conf.defaults import *  # NOQA
+from karaage.conf.process import post_process
 
 exec(open("/etc/karaage3/settings.py", "rb").read())
 
@@ -23,6 +25,4 @@ PLUGINS = [
     'karaage.plugins.kgapplications.plugin',
 ]
 
-import sys
-from karaage.conf.process import post_process
 post_process(sys.modules[__name__])

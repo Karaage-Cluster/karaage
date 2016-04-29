@@ -19,12 +19,14 @@ from django.db import models
 
 
 class ActiveProjectManager(models.Manager):
+
     def get_queryset(self):
         query = super(ActiveProjectManager, self).get_queryset()
         return query.filter(is_active=True)
 
 
 class DeletedProjectManager(models.Manager):
+
     def get_queryset(self):
         query = super(DeletedProjectManager, self).get_queryset()
         return query.filter(is_active=False)

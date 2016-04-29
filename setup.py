@@ -20,7 +20,14 @@
 """Karaage setup script."""
 
 from setuptools import setup
+import shutil
 import os
+
+for doc in ["admin", "programmer", "user"]:
+    with open("./docs/%s/conf.orig.py" % doc, "r") as src:
+        with open("./docs/%s/conf.py" % doc, "w") as dst:
+            dst.write("# FILE COPIED FROM conf.orig.py; DO NOT CHANGE\n")
+            shutil.copyfileobj(src, dst)
 
 
 def fullsplit(path, result=None):
@@ -56,8 +63,11 @@ tests_require = [
 ]
 
 setup(
-    name="karaage4",
-    version=open('VERSION.txt', 'r').readline().strip(),
+    name="karaage",
+    use_scm_version={
+        'write_to': "karaage/version.py",
+    },
+    setup_requires=['setuptools_scm'],
     url='https://github.com/Karaage-Cluster/karaage',
     author='Brian May',
     author_email='brian@v3.org.au',
@@ -73,8 +83,9 @@ setup(
         "License :: OSI Approved :: GNU General Public "
             "License v3 or later (GPLv3+)",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     keywords="karaage cluster user administration",
@@ -87,12 +98,6 @@ setup(
         'sbin/kg-manage',
         'sbin/kg-migrate-south',
     ],
-    data_files=[
-        ('/etc/karaage3',
-            ['conf/settings.py', 'conf/karaage.wsgi']),
-        ('/etc/apache2/conf-available',
-            ['conf/karaage3-wsgi.conf']),
-    ],
     install_requires=[
         "cssmin",
         "Django >= 1.7",
@@ -104,10 +109,11 @@ setup(
         "django_jsonfield >= 0.9.12",
         "django-model-utils >= 2.0.0",
         "python-tldap >= 0.3.3",
-        "django-pipeline",
+        "django-pipeline >= 1.6.0",
         "django-mptt>=0.6.1",
         "django-tables2",
         "django-filter",
+        "django-environ",
         "six",
         "slimit>=0.8.1",
         "sqlparse",

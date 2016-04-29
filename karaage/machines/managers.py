@@ -21,12 +21,14 @@ from django.contrib.auth.models import BaseUserManager
 
 
 class MachineCategoryManager(models.Manager):
+
     def get_default(self):
         machine_category = self.get(pk=settings.DEFAULT_MC)
         return machine_category
 
 
 class MachineManager(BaseUserManager):
+
     def authenticate(self, machine_name, password):
         try:
             machine = self.get(name=machine_name)
@@ -38,6 +40,7 @@ class MachineManager(BaseUserManager):
 
 
 class ActiveMachineManager(MachineManager):
+
     def get_queryset(self):
         return super(ActiveMachineManager, self) \
             .get_queryset().filter(end_date__isnull=True)

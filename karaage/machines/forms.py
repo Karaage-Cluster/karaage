@@ -37,6 +37,7 @@ import ajax_select.fields
 
 
 class MachineForm(forms.ModelForm):
+
     class Meta:
         model = Machine
         fields = (

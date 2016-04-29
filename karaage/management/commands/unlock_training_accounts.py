@@ -71,9 +71,9 @@ def nicepass(alpha=6, numeric=2):
         return ret
 
     ####
-    fpl = alpha/2
+    fpl = alpha / 2
     if alpha % 2:
-        fpl = int(alpha/2) + 1
+        fpl = int(alpha / 2) + 1
     lpl = alpha - fpl
 
     start = a_part(fpl)

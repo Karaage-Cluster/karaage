@@ -208,7 +208,7 @@ Installing Karaage3
     .. code-block:: python
 
         apt-get install karaage3
-        apt-get install python-mysql.connector
+        apt-get install python-mysqldb
 
 #.  Check the :setting:`DATABASES`, :setting:`LDAP`,
     :setting:`MACHINE_CATEGORY_DATASTORES` and :setting:`KG27_DATASTORE`
@@ -220,13 +220,16 @@ Installing Karaage3
 
         DATABASES = {
             'default': {
-                'ENGINE': 'mysql.connector.django',
+                'ENGINE': 'django.db.backends.mysql',
                 'NAME': 'karaage3',
                 'USER': 'karaage3',
                 'PASSWORD': 'YYYYYYYY',
                 'HOST': '',
                 'PORT': '',
                 'ATOMIC_REQUESTS': True,
+                'OPTIONS': {
+                    'sql_mode': 'STRICT_ALL_TABLES'
+                },
             }
         }
 

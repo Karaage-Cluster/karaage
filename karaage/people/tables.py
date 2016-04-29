@@ -53,6 +53,7 @@ class ActiveFilter(django_filters.ChoiceFilter):
 
 
 class PeopleColumn(BaseLinkColumn):
+
     def render(self, value):
         people = []
         for person in value.all():
@@ -67,7 +68,8 @@ class PersonFilter(django_filters.FilterSet):
     username = django_filters.CharFilter(lookup_type="icontains")
     full_name = django_filters.CharFilter(lookup_type="icontains")
     email = django_filters.CharFilter(lookup_type="icontains")
-    no_last_usage = django_filters.BooleanFilter(name="last_usage__isnull")
+    no_last_usage = django_filters.BooleanFilter(
+        name="last_usage", lookup_expr="isnull")
     begin_last_usage = django_filters.DateFilter(
         name="last_usage", lookup_type="gte")
     end_last_usage = django_filters.DateFilter(

@@ -311,6 +311,7 @@ class State(object):
 
 class Transition(object):
     """ A transition from one state to another. """
+
     def __init__(self):
         pass
 

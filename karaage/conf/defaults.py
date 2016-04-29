@@ -18,7 +18,10 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 """ Default Karaage Settings. """
+import os
 import six
+import sys
+import django
 
 from socket import getfqdn
 HTTP_HOST = getfqdn()
@@ -66,7 +69,6 @@ AUTH_USER_MODEL = 'karaage.Person'
 #
 # * an application configuration class, or a package containing a
 # * application.
-import django
 if django.VERSION < (1, 7):
     KARAAGE_APPS = (
         'karaage',
@@ -92,10 +94,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mptt',
+    'django.contrib.auth',
 )
 
 # South not available for Python 3+ or Django 1.7+
-import sys
 if sys.version_info < (3, 0) and django.VERSION < (1, 7):
     KARAAGE_APPS += (
         'karaage.legacy.common',
@@ -223,29 +225,33 @@ ALLOWED_HOSTS = ["%(HOST)s"]
 ###
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
-PIPELINE_EMBED_PATH = r'img/|images/'
-PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.cssmin.CSSMinCompressor'
-PIPELINE_CSS = {
-    'karaage': {
-        'source_filenames': (
-            'css/*.css',
-            'ajax_select/css/ajax_select.css',
-        ),
-        'output_filename': 'min.css',
-        'variant': 'datauri',
+
+PIPELINE = {
+    'PIPELINE_ENABLED': True,
+    'EMBED_PATH': r'img/|images/',
+    'CSS_COMPRESSOR': 'pipeline.compressors.cssmin.CSSMinCompressor',
+    'STYLESHEETS': {
+        'karaage': {
+            'source_filenames': (
+                'css/*.css',
+                'ajax_select/css/ajax_select.css',
+            ),
+            'output_filename': 'min.css',
+            'variant': 'datauri',
+        },
     },
-}
-PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.slimit.SlimItCompressor'
-PIPELINE_JS = {
-    'karaage': {
-        'source_filenames': (
-            'js/jquery-1.11.2.js',
-            'js/jquery-ui-1.11.4.js',
-            'js/*.js',
-            'ajax_select/js/ajax_select.js',
-        ),
-        'output_filename': 'min.js',
-    }
+    'JS_COMPRESSOR': 'pipeline.compressors.slimit.SlimItCompressor',
+    'JAVASCRIPT': {
+        'karaage': {
+            'source_filenames': (
+                'js/jquery-1.11.2.js',
+                'js/jquery-ui-1.11.4.js',
+                'js/*.js',
+                'ajax_select/js/ajax_select.js',
+            ),
+            'output_filename': 'min.js',
+        }
+    },
 }
 
 
@@ -403,5 +409,4 @@ SILENCED_SYSTEM_CHECKS = [
 ]
 
 # Required for djcelery to work properly. Has no effect otherwise.
-import os
 os.environ.setdefault('CELERY_LOADER', 'djcelery.loaders.DjangoLoader')

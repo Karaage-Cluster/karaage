@@ -4,6 +4,12 @@ karaage4 (4.0.0-1) unstable; urgency=medium
 
  -- Brian May <bam@debian.org>  Mon, 09 Feb 2015 14:54:17 +1100
 
+karaage3 (3.1.23-1) unstable; urgency=medium
+
+  * Fix tests and ensure everything still works.
+
+ -- Brian May <bam@debian.org>  Tue, 26 Apr 2016 16:17:32 +1000
+
 karaage3 (3.1.22-1) unstable; urgency=medium
 
   * Documentation updates.

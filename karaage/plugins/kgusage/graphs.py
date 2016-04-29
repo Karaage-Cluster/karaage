@@ -105,7 +105,6 @@ def get_institute_trend_graph_filename(institute,
 def get_project_trend_graph_url(project,
                                 start, end,
                                 machine_category):
-
     """Generates a bar graph for a project. """
 
     filename = get_project_trend_graph_filename(

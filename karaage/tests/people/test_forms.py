@@ -26,6 +26,7 @@ from karaage.tests.integration import skip_if_missing_requirements
 
 
 class AddPersonFormTestCase(TestCase):
+
     def _valid_user(self):
         project = fixtures.ProjectFactory()
         valid_user = {
@@ -140,6 +141,7 @@ class AddPersonFormTestCase(TestCase):
 
 
 class AdminPasswordChangeFormTestCase(TestCase):
+
     def _valid_change(self):
         person = fixtures.PersonFactory()
 
@@ -208,6 +210,7 @@ class AdminPasswordChangeFormTestCase(TestCase):
 
 
 class PasswordChangeFormTestCase(TestCase):
+
     def _valid_change(self):
         person = fixtures.PersonFactory()
 

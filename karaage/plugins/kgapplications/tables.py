@@ -32,6 +32,7 @@ from .views.base import get_state_machine
 
 
 class ApplicantColumn(BaseLinkColumn):
+
     def render(self, value):
         if isinstance(value, Person):
             url = reverse("kg_person_detail", args=[value.username])
@@ -42,6 +43,7 @@ class ApplicantColumn(BaseLinkColumn):
 
 
 class ApplicationFilter(django_filters.FilterSet):
+
     class Meta:
         model = Application
         fields = ('secret_token',)

@@ -35,23 +35,20 @@ override_dh_clean:
 
 .PHONY: override_dh_auto_test
 override_dh_auto_test:
-ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	./run_tests.sh
-endif
+	./manage.py collectstatic --settings="karaage.tests.settings" -v 2 --noinput
+	dh_auto_test -- --system=custom --test-args="{interpreter}  ./manage.py test --settings="karaage.tests.settings" -v 2 karaage.tests"
+	./manage.py collectstatic --settings="karaage.plugins.kgapplications.tests.settings" -v 2 --noinput
+	dh_auto_test -- --system=custom --test-args="{interpreter}  ./manage.py test --settings="karaage.plugins.kgapplications.tests.settings" -v 2 karaage.plugins.kgapplications"
+	./manage.py collectstatic --settings="karaage.plugins.kgsoftware.tests.settings" -v 2 --noinput
+	dh_auto_test -- --system=custom --test-args="{interpreter}  ./manage.py test --settings="karaage.plugins.kgsoftware.tests.settings" -v 2 karaage.plugins.kgsoftware.tests"
+	./manage.py collectstatic --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 --noinput
+	dh_auto_test -- --system=custom --test-args="{interpreter}  ./manage.py test --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 karaage.plugins.kgsoftware"
+	./manage.py collectstatic --settings="karaage.plugins.kgusage.tests.settings" -v 2 --noinput
+	dh_auto_test -- --system=custom --test-args="{interpreter}  ./manage.py test --settings="karaage.plugins.kgusage.tests.settings" -v 2 karaage.plugins.kgusage"
 
 .PHONY: override_dh_install
 override_dh_install:
 	dh_install
-	
-	mkdir -p $(PREFIXC)/etc/karaage3
-	set -e; for f in settings.py karaage.wsgi; do \
-		mv $(PREFIX2)/etc/karaage3/$$f $(PREFIXC)/etc/karaage3; \
-		rm $(PREFIX3)/etc/karaage3/$$f; \
-	done
-	
-	mkdir -p $(PREFIXA)/etc/apache2/conf-available
-	mv $(PREFIX2)/etc/apache2/conf-available/karaage3-wsgi.conf $(PREFIXA)/etc/apache2/conf-available/;
-	rm $(PREFIX3)/etc/apache2/conf-available/karaage3-wsgi.conf;
 	
 	mkdir -p $(PREFIX2)/usr/share/python-karaage/bin
 	mkdir -p $(PREFIX3)/usr/share/python3-karaage/bin

@@ -23,10 +23,10 @@ import logging
 import sys
 
 import karaage.common.trace as trace
-logger = logging.getLogger(__name__)
 
 from karaage.datastores import base
 
+logger = logging.getLogger(__name__)
 
 if sys.version_info < (3, 0):
     # Python2: csv module does not support unicode, we must use byte strings.

@@ -22,6 +22,7 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
 
+from karaage.middleware.threadlocals import reset
 from karaage.people.models import Person
 from karaage.projects.models import Project
 from karaage.machines.models import Machine, MachineCategory
@@ -30,6 +31,10 @@ from karaage.machines.models import Machine, MachineCategory
 class AccountTestCase(TestCase):
 
     def setUp(self):
+        def cleanup():
+            reset()
+        self.addCleanup(cleanup)
+
         call_command('loaddata', 'test_karaage', **{'verbosity': 0})
         form_data = {
             'title': 'Mr',

@@ -30,10 +30,73 @@ from django.test import TestCase
 from django.utils.text import slugify
 from django.utils.encoding import smart_text
 
-from django_extensions.management.commands.show_urls import \
-    extract_views_from_urlpatterns
+from django.core.exceptions import ViewDoesNotExist
+from django.core.urlresolvers import RegexURLPattern, RegexURLResolver, \
+    LocaleRegexURLResolver
+from django.utils import translation
+
+from karaage.middleware.threadlocals import reset
 
 urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
+
+
+def extract_views_from_urlpatterns(urlpatterns, base='', namespace=None):
+    """
+    Return a list of views from a list of urlpatterns.
+
+    Each object in the returned list is a two-tuple: (view_func, regex)
+    """
+    LANGUAGES = getattr(settings, 'LANGUAGES', ((None, None), ))
+
+    views = []
+    for p in urlpatterns:
+        if isinstance(p, RegexURLPattern):
+            try:
+                if not p.name:
+                    name = p.name
+                elif namespace:
+                    name = '{0}:{1}'.format(namespace, p.name)
+                else:
+                    name = p.name
+                views.append((p.callback, base + p.regex.pattern, name))
+            except ViewDoesNotExist:
+                continue
+        elif isinstance(p, RegexURLResolver):
+            try:
+                patterns = p.url_patterns
+            except ImportError:
+                continue
+            if namespace and p.namespace:
+                _namespace = '{0}:{1}'.format(namespace, p.namespace)
+            else:
+                _namespace = (p.namespace or namespace)
+            if isinstance(p, LocaleRegexURLResolver):
+                for langauge in LANGUAGES:
+                    with translation.override(langauge[0]):
+                        views.extend(
+                            extract_views_from_urlpatterns(
+                                patterns, base + p.regex.pattern,
+                                namespace=_namespace))
+            else:
+                views.extend(extract_views_from_urlpatterns(
+                    patterns, base + p.regex.pattern, namespace=_namespace))
+        elif hasattr(p, '_get_callback'):
+            try:
+                views.append(
+                    (p._get_callback(), base + p.regex.pattern, p.name))
+            except ViewDoesNotExist:
+                continue
+        elif hasattr(p, 'url_patterns') or hasattr(p, '_get_url_patterns'):
+            try:
+                patterns = p.url_patterns
+            except ImportError:
+                continue
+            views.extend(
+                extract_views_from_urlpatterns(
+                    patterns, base + p.regex.pattern, namespace=namespace))
+        else:
+            raise TypeError("%s does not appear to be a urlpattern object" % p)
+    return views
 
 
 def make_test_get_function(name, url, url_pattern):
@@ -58,6 +121,7 @@ def make_test_get_function(name, url, url_pattern):
 
 
 class TestAllPagesMeta(type):
+
     @classmethod
     def _add_test_methods(mcs, attrs, urlpatterns):
         # loop through every URL pattern
@@ -117,4 +181,10 @@ class TestAllPagesMeta(type):
 
 @six.add_metaclass(TestAllPagesMeta)
 class TestAllPagesCase(TestCase):
-    pass
+
+    def setUp(self):
+        super(TestAllPagesCase, self).setUp()
+
+        def cleanup():
+            reset()
+        self.addCleanup(cleanup)

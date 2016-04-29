@@ -24,20 +24,23 @@ except ImportError:
         "either install from a package or using \'pip install -e .[tests]\'")
 from django.test import TestCase
 
+from karaage.middleware.threadlocals import reset
 from karaage.datastores import _MACHINE_CATEGORY_DATASTORES
 from karaage.tests.fixtures import MachineCategoryFactory
 
 
 class UnitTestCase(TestCase):
+
     def setUp(self):
         super(TestCase, self).setUp()
         self.resetDatastore()
         self.machine_category = MachineCategoryFactory(datastore='mock')
 
+        def cleanup():
+            _MACHINE_CATEGORY_DATASTORES['mock'] = []
+            reset()
+        self.addCleanup(cleanup)
+
     def resetDatastore(self):
         self.datastore = Mock()
         _MACHINE_CATEGORY_DATASTORES['mock'] = [self.datastore]
-
-    def tearDown(self):
-        super(TestCase, self).tearDown()
-        _MACHINE_CATEGORY_DATASTORES['mock'] = []

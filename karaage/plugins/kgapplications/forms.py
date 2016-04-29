@@ -83,8 +83,8 @@ class ApplicantForm(forms.ModelForm):
         "^%s$" % settings.USERNAME_VALIDATION_RE,
         label=six.u("Requested username"),
         max_length=settings.USERNAME_MAX_LENGTH,
-        help_text=(settings.USERNAME_VALIDATION_ERROR_MSG
-                   + " and has a max length of %s." %
+        help_text=(settings.USERNAME_VALIDATION_ERROR_MSG +
+                   " and has a max length of %s." %
                    settings.USERNAME_MAX_LENGTH))
     telephone = forms.RegexField(
         "^[0-9a-zA-Z\.( )+-]+$", required=True,

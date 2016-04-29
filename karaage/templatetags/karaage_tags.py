@@ -32,6 +32,7 @@ register = template.Library()
 
 
 class UrlWithParamNode(template.Node):
+
     def __init__(self, copy, nopage, changes):
         self.copy = copy
         self.nopage = nopage
@@ -187,6 +188,7 @@ def yes_no(boolean, true_msg='Yes', false_msg='No'):
 
 
 class SearchFormNode(template.Node):
+
     def __init__(self, post_url):
         self.post_url = post_url
 

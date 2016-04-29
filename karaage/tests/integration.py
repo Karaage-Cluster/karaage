@@ -21,6 +21,7 @@ from unittest import skipUnless
 from django.test import TestCase
 from tldap.test import slapd
 
+from karaage.middleware.threadlocals import reset
 from karaage.tests.initial_ldap_data import test_ldif
 from karaage.datastores import _MACHINE_CATEGORY_DATASTORES
 from karaage.datastores.ldap import MachineCategoryDataStore, GlobalDataStore
@@ -82,5 +83,6 @@ class IntegrationTestCase(TestCase):
 
     def cleanup(self):
         self.__ldap_server.stop()
+        reset()
         _MACHINE_CATEGORY_DATASTORES[self.ldap_datastore] = []
         # _GLOBAL_DATASTORES.remove(self.global_ldap_datastore)

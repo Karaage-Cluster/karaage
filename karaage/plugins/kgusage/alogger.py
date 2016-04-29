@@ -21,7 +21,6 @@ import json
 
 from math import ceil
 import logging
-logger = logging.getLogger(__name__)
 
 from karaage.machines.models import Machine, Account
 from karaage.projects.models import Project
@@ -29,6 +28,8 @@ from karaage.projects.models import Project
 from alogger import get_parser
 
 from .models import CPUJob, Queue
+
+logger = logging.getLogger(__name__)
 
 """
 Parse log files using alogger.
@@ -143,9 +144,9 @@ def parse_logs(log_list, date, machine_name, log_type):
 
             if memory_used_for_job > avail_mem_for_job:
                 data['cpu_usage'] = ceil(
-                    memory_used_per_core / avail_mem_per_core
-                    * data['act_wall_time']
-                    * data['cores'])
+                    memory_used_per_core / avail_mem_per_core *
+                    data['act_wall_time'] *
+                    data['cores'])
 
         # apply scaling factor to cpu_usage
         data['cpu_usage'] = data['cpu_usage'] * machine.scaling_factor

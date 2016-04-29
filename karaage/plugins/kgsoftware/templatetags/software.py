@@ -20,9 +20,10 @@
 import django_tables2 as tables
 
 from django import template
-register = template.Library()
 
 from ..tables import SoftwareLicenseAgreementTable
+
+register = template.Library()
 
 
 @register.assignment_tag(takes_context=True)
