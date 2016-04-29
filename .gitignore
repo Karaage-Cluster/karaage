@@ -4,3 +4,6 @@ debian/karaage3.*
 *.pyc
 *.bak
 /karaage.egg-info/
+karaage/version.py
+docs/*/conf.py
+docs/*/_build/

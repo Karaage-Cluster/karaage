@@ -10,6 +10,9 @@ This is documentation for Karaage 3. For documentation for version 2.7.x of
 Karaage, please see `the latest documentation
 <http://karaage.readthedocs.org/en/2.7.stable/>`_.
 
+:Date: |today|
+:Version: |version|
+
 Contents:
 
 .. toctree::
