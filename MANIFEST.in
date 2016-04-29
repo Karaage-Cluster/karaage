@@ -6,6 +6,7 @@ include .gitreview
 include tox.ini
 include MANIFEST.in
 include pylint.conf
+exclude karaage/version.py
 recursive-include docs *.py
 recursive-include docs *.rst
 recursive-include karaage *.sql

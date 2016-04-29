@@ -20,7 +20,14 @@
 """Karaage setup script."""
 
 from setuptools import setup
+import shutil
 import os
+
+for doc in ["admin", "programmer", "user"]:
+    with open("./docs/%s/conf.orig.py" % doc, "r") as src:
+        with open("./docs/%s/conf.py" % doc, "w") as dst:
+            dst.write("# FILE COPIED FROM conf.orig.py; DO NOT CHANGE\n")
+            shutil.copyfileobj(src, dst)
 
 
 def fullsplit(path, result=None):
@@ -57,7 +64,10 @@ tests_require = [
 
 setup(
     name="karaage",
-    version=open('VERSION.txt', 'r').readline().strip(),
+    use_scm_version={
+        'write_to': "karaage/version.py",
+    },
+    setup_requires=['setuptools_scm'],
     url='https://github.com/Karaage-Cluster/karaage',
     author='Brian May',
     author_email='brian@v3.org.au',
