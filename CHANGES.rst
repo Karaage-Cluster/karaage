@@ -1113,11 +1113,6 @@ Release 2.3.11 (21 Jul 2010)
 
 * Compatible with Django 1.1
 * Other tweaks to default configuration.
-
-
-Release 2.3.10 (20 Jul 2010)
-============================
-
 * Minor updates to configuration.
 * Add script to set default secret.
 
