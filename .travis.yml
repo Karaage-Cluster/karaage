@@ -8,8 +8,8 @@ python:
 addons:
   apt:
     packages:
-    - python-cracklib
     - slapd
+    - ldap-utils
 
 env:
  - DJANGO_VERSION=1.7.10 DATABASE_URL=postgres://postgres@/spud
