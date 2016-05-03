@@ -42,10 +42,15 @@ install:
 
 script:
   - python ./setup.py --version
+  - ./manage.py collectstatic --settings="karaage.tests.settings" -v 2 --noinput
   - python ./manage.py test --settings="karaage.tests.settings" -v 2 karaage.tests
+  - ./manage.py collectstatic --settings="karaage.plugins.kgapplications.tests.settings" -v 2 --noinput
   - python ./manage.py test --settings="karaage.plugins.kgapplications.tests.settings" -v 2 karaage.plugins.kgapplications
+  - ./manage.py collectstatic --settings="karaage.plugins.kgsoftware.tests.settings" -v 2 --noinput
   - python ./manage.py test --settings="karaage.plugins.kgsoftware.tests.settings" -v 2 karaage.plugins.kgsoftware.tests
+  - ./manage.py collectstatic --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 --noinput
   - python ./manage.py test --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 karaage.plugins.kgsoftware
+  - ./manage.py collectstatic --settings="karaage.plugins.kgusage.tests.settings" -v 2 --noinput
   - python ./manage.py test --settings="karaage.plugins.kgusage.tests.settings" -v 2 karaage.plugins.kgusage
 
 matrix:
