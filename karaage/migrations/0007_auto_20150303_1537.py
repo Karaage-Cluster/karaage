@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('karaage', '0005_auto_karage4'),
+        ('karaage', '0006_auto_karage4'),
     ]
 
     operations = [
