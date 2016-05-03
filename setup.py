@@ -76,7 +76,7 @@ setup(
     license="GPL3+",
     long_description=open('README.rst').read(),
     classifiers=[
-        "Development Status :: 5 - Production/Stable",
+        "Development Status :: 3 - Alpha",
         "Framework :: Django",
         "Intended Audience :: Developers",
         "Intended Audience :: System Administrators",
