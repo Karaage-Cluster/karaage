@@ -32,7 +32,7 @@ def assert_password_simple(password, old=None):
 
 
 try:
-    from crack import VeryFascistCheck as _assert_password
+    from cracklib import VeryFascistCheck as _assert_password
     # Some configuration errors are only apparent when cracklib
     # tests a password for the first time, so test a strong password to
     # verify that cracklib is working as intended.
