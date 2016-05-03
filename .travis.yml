@@ -9,6 +9,7 @@ addons:
   apt:
     packages:
     - python-cracklib
+    - slapd
 
 env:
  - DJANGO_VERSION=1.7.10 DATABASE_URL=postgres://postgres@/spud
