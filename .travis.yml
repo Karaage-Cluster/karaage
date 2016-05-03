@@ -40,7 +40,7 @@ install:
   - travis_retry pip install django-pipeline django-tables2 django-filter
   - travis_retry pip install django-environ six slimit django-extensions
   - travis_retry pip install factory_boy mock django_celery
-  - travis_retry pip install django-mptt django-audit-log
+  - travis_retry pip install sqlparse django-mptt django-audit-log
 
 script:
   - python ./setup.py --version
