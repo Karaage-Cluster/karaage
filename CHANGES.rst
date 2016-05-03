@@ -1,3 +1,11 @@
+Release 3.1.25 (03 May 2016)
+============================
+
+* Move karaage.common.logging to common.logging, as we cannot initialize
+  karaage.common at time logging is loaded with Django 1.9. Will require config
+  change.
+
+
 Release 3.1.24 (03 May 2016)
 ============================
 
