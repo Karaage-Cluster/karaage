@@ -4,6 +4,7 @@ Release 3.1.24 (03 May 2016)
 * Updates to packaging.
 * Updates to documentation.
 * Fix tests for django_tables 1.2.0.
+* Enable travis tests.
 
 
 Release 3.1.23 (29 Apr 2016)
