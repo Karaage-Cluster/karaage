@@ -5,6 +5,11 @@ python:
  - 3.4
  - 3.5
 
+addons:
+  apt:
+    packages:
+    - python-cracklib
+
 env:
  - DJANGO_VERSION=1.7.10 DATABASE_URL=postgres://postgres@/spud
  - DJANGO_VERSION=1.8.11 DATABASE_URL=postgres://postgres@/spud
@@ -33,7 +38,7 @@ install:
   - travis_retry pip install django_jsonfield django-model-utils python-tldap
   - travis_retry pip install django-pipeline django-tables2 django-filter
   - travis_retry pip install django-environ six slimit django-extensions
-  - travis_retry pip install factory_boy mock cracklib django_celery
+  - travis_retry pip install factory_boy mock django_celery
 
 script:
   - python ./setup.py --version
