@@ -1,6 +1,5 @@
 Testing Karaage
 ===============
-How to setup 
 This section talks about the steps involved in creating a new official
 release of Karaage.
 
@@ -113,7 +112,7 @@ Examples for running tests in a schroot:
 
        ./dotest --help
 
-*  Create Karaage from last release available at code.vpac.org, install with
+*  Create Karaage from last release available at linuxpenguins.xyz, install with
    empty data, and create super user.
 
    .. code-block:: ldif

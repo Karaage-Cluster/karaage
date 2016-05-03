@@ -16,12 +16,12 @@ Debian Installation
 
     .. code-block:: bash
 
-        wget http://code.vpac.org/debian/vpac-debian-key.gpg -O - | apt-key add -
+        wget http://linuxpenguins.xyz/debian/vpac-debian-key.gpg -O - | apt-key add -
 
-#.  Create a /etc/apt/sources.list.d/vpac.list containing::
+#.  Create a /etc/apt/sources.list.d/karaage.list containing::
 
-        deb     http://code.vpac.org/debian  jessie main
-        deb-src http://code.vpac.org/debian  jessie main
+        deb     http://linuxpenguins.xyz/debian  jessie main
+        deb-src http://linuxpenguins.xyz/debian  jessie main
 
 #.  Update your apt database and install the packages:
 
@@ -49,7 +49,7 @@ Redhat6, Redhat 7, Centos 6, and Centos 7 are supported.
 
     .. code-block:: bash
 
-        wget http://code.vpac.org/centos/vpac.repo -O /etc/yum.repos.d/vpac.repo
+        wget http://linuxpenguins.xyz/centos/vpac.repo -O /etc/yum.repos.d/vpac.repo
 
 #.  Install the packages:
 
@@ -72,7 +72,7 @@ Fedora 20 is supported.
 
     .. code-block:: bash
 
-        wget http://code.vpac.org/fedora/vpac.repo -O /etc/yum.repos.d/vpac.repo
+        wget http://linuxpenguins.xyz/fedora/vpac.repo -O /etc/yum.repos.d/vpac.repo
 
 #.  Install the packages:
 
