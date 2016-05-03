@@ -121,24 +121,3 @@ These steps only need to be done once for a system.
     .. code-block:: bash
 
         schroot --chroot source:jessie-amd64
-
-#.  Add the following to ``~/dput.cf`` (requires you can ssh into code.vpac.org
-    as repo):
-
-    .. code-block:: text
-
-        [vpac]
-        login                   = repo
-        fqdn                    = code.vpac.org
-        method                  = scp
-        incoming                = /var/www/debian/incoming/
-        allow_dcut              = 0
-        allowed_distributions   = (?!UNRELEASED|.*-security)
-
-#.  Add the following to ``~/.gitconfig``:
-
-    .. code-block:: text
-
-        [merge "dpkg-mergechangelogs"]
-        name = debian/changelog merge driver
-        driver = dpkg-mergechangelogs -m %O %A %B %A

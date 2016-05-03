@@ -42,7 +42,12 @@ class ObjectColumn(BaseLinkColumn):
             return "none: %s" % record.object_repr
 
         url = obj.get_absolute_url()
-        link = self.render_link(url, text=six.text_type(obj))
+        try:
+            # django-tables >= 1.2.0
+            link = self.render_link(url, record=obj, value=six.text_type(obj))
+        except TypeError:
+            # django-tables < 1.2.0
+            link = self.render_link(url, text=six.text_type(obj))
         return link
 
 

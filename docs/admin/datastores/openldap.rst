@@ -237,7 +237,7 @@ Debian installation
     .. code-block:: bash
 
         ldapadd -Y EXTERNAL -H ldapi:/// < /etc/ldap/schema/ppolicy.ldif
-        ldapmodify -Y EXTERNAL -H ldapi:///  < /tmp/ppolicy1.ldif
+        ldapadd -Y EXTERNAL -H ldapi:///  < /tmp/ppolicy1.ldif
         ldapmodify -Y EXTERNAL -H ldapi:///  < /tmp/ldapssl.ldif
 
 #.  Create the file with the following contents in ``/tmp/ppolicy2.ldif``::

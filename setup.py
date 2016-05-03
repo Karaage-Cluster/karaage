@@ -131,7 +131,6 @@ setup(
         'usage': [
             "karaage4[software]",
             "django_celery",
-            "django-filter",
             "matplotlib",
         ],
     },

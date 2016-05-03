@@ -58,7 +58,13 @@ class PeopleColumn(BaseLinkColumn):
         people = []
         for person in value.all():
             url = reverse("kg_person_detail", args=[person.username])
-            link = self.render_link(url, text=six.text_type(person))
+            try:
+                # django-tables >= 1.2.0
+                link = self.render_link(
+                    url, record=person, value=six.text_type(person))
+            except TypeError:
+                # django-tables < 1.2.0
+                link = self.render_link(url, text=six.text_type(person))
             people.append(link)
         return mark_safe(", ".join(people))
 
