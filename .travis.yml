@@ -22,7 +22,7 @@ env:
  - DJANGO_VERSION=master DATABASE_URL=sqlite://
 
 install:
-  - travis_retry pip install -q factory_boy mock django-celery django-environ psycopg2 mysqlclient setuptools_scm django_xmlrpc
+  - travis_retry pip install -q cssmin python-alogger django-xmlrpc django-simple-captcha django-ajax-selects django_jsonfield django-model-utils python-tldap django-pipeline django-tables2 django-filter django-environ six slimit django-extensions factory_boy mock cracklib django_celery
 # Install django master or version
   - bash -c "if [[ \"$DJANGO_VERSION\" == 'master' ]]; then pip install 'https://github.com/django/django/archive/master.tar.gz'; else pip install Django==$DJANGO_VERSION; fi; "
 # Install database drivers
