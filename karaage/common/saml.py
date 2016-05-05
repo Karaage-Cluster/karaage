@@ -54,7 +54,8 @@ def parse_attributes(request):
 def build_shib_url(request, target, entityid=None):
     url_base = 'https://%s' % request.get_host()
     shib_url = "%s%s" % (
-        url_base, getattr(settings, 'SHIB_HANDLER', '/Shibboleth.sso/DS'))
+        url_base, getattr(
+            settings, 'SHIB_HANDLER_LOGIN', '/Shibboleth.sso/Login'))
     if not target.startswith('http'):
         target = url_base + target
 
@@ -67,7 +68,8 @@ def build_shib_url(request, target, entityid=None):
 def logout_url(request):
     url_base = 'https://%s' % request.get_host()
     url = "%s%s" % (
-        url_base, getattr(settings, 'SHIB_HANDLER', '/Shibboleth.sso/Logout'))
+        url_base, getattr(
+            settings, 'SHIB_HANDLER_LOGOUT', '/Shibboleth.sso/Logout'))
     return url
 
 
