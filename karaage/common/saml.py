@@ -75,11 +75,15 @@ def logout_url(request):
 
 def add_saml_data(person, request):
     attrs, error = parse_attributes(request)
-    if 'first_name' in attrs:
+    if 'first_name' in attrs and attrs['first_name'] is not None:
         person.short_name = attrs['first_name']
-        if 'last_name' in attrs:
+        if 'last_name' in attrs and attrs['last_name'] is not None:
             person.full_name = six.u("%s %s") % (
                 attrs['first_name'], attrs['last_name'])
+    if person.short_name is None:
+        person.short_name = ""
+    if person.full_name is None:
+        person.full_name = ""
     person.email = attrs['email']
     person.saml_id = attrs['persistent_id']
     person.telephone = attrs.get('telephone', None)
