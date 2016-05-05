@@ -59,7 +59,13 @@ class ProjectColumn(BaseLinkColumn):
     def render(self, value):
         if value is not None:
             url = reverse('kg_project_detail', args=[value.id])
-            link = self.render_link(url, text=six.text_type(value.pid))
+            try:
+                # django-tables >= 1.2.0
+                link = self.render_link(
+                    url, record=value, value=six.text_type(value.pid))
+            except TypeError:
+                # django-tables < 1.2.0
+                link = self.render_link(url, text=six.text_type(value.pid))
             return link
         else:
             return "—"

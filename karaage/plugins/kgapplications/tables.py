@@ -36,7 +36,13 @@ class ApplicantColumn(BaseLinkColumn):
     def render(self, value):
         if isinstance(value, Person):
             url = reverse("kg_person_detail", args=[value.username])
-            link = self.render_link(url, text=six.text_type(value))
+            try:
+                # django-tables >= 1.2.0
+                link = self.render_link(
+                    url, record=value, value=six.text_type(value))
+            except TypeError:
+                # django-tables < 1.2.0
+                link = self.render_link(url, text=six.text_type(value))
             return mark_safe(link)
         else:
             return value.email
