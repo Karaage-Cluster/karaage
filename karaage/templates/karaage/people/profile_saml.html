@@ -13,6 +13,15 @@
 
     {% if saml_session %}
         <p>You have an established SAML session.</p>
+        <p>request.META values:</p>
+        <div class="table-container">
+            <table>
+                {% for key,value in request.META.items %}
+                <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+        <p>attrs values:</p>
         <div class="table-container">
             <table>
                 {% for key,value in attrs.items %}
