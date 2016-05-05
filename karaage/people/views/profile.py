@@ -22,6 +22,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.apps import apps
 
 from karaage.common.decorators import login_required
 from karaage.people.models import Person
@@ -92,15 +93,19 @@ def saml_login(request):
     elif request.user.is_authenticated():
         error = "You are already logged in."
     elif saml_session:
-        attrs, error = saml.parse_attributes(request)
-        saml_id = attrs['persistent_id']
-        try:
-            Person.objects.get(saml_id=saml_id)
-            error = "Shibboleth session established " \
-                    "but you did not get logged in."
-        except Person.DoesNotExist:
-            error = "Cannot log in with shibboleth as " \
-                    "we do not know your shibboleth id."
+        if apps.is_installed("karaage.plugins.kgapplications"):
+            app_url = reverse('kg_application_new')
+            return HttpResponseRedirect(app_url)
+        else:
+            attrs, error = saml.parse_attributes(request)
+            saml_id = attrs['persistent_id']
+            try:
+                Person.objects.get(saml_id=saml_id)
+                error = "Shibboleth session established " \
+                        "but you did not get logged in."
+            except Person.DoesNotExist:
+                error = "Cannot log in with shibboleth as " \
+                        "we do not know your shibboleth id."
 
     return render_to_response(
         'karaage/people/profile_login_saml.html',
