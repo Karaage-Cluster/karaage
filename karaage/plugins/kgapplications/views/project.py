@@ -294,7 +294,7 @@ class StateStepShibboleth(Step):
                         return action
                 return HttpResponseBadRequest("<h1>Bad Request</h1>")
             else:
-                status = "Please register with Shibboleth before proceeding."
+                status = "Please click register button before proceeding."
 
         # render the page
         return render_to_response(
