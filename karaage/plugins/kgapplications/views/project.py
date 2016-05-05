@@ -864,8 +864,10 @@ def new_application(request):
     roles = {'is_applicant', 'is_authorised'}
 
     if not request.user.is_authenticated():
+        attrs, _ = saml.parse_attributes(request)
+        defaults = {'email': attrs['email']}
         form = forms.UnauthenticatedInviteUserApplicationForm(
-            request.POST or None)
+            request.POST or None, initial=defaults)
         if request.method == 'POST':
             if form.is_valid():
                 email = form.cleaned_data['email']
