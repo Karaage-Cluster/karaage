@@ -46,66 +46,6 @@ These steps only need to be done once for a system.
         sudo ~/tree/bampkgbuild/create_schroot debian sid i386
         sudo ~/tree/bampkgbuild/create_schroot debian jessie amd64
         sudo ~/tree/bampkgbuild/create_schroot debian jessie i386
-        sudo ~/tree/bampkgbuild/create_schroot debian wheezy amd64
-        sudo ~/tree/bampkgbuild/create_schroot debian wheezy i386
-
-#.  Add the following to ``/etc/schroot/schroot.conf``, replacing
-    ``brian`` with your unix user id.
-
-    .. code-block:: text
-
-        [wheezy-i386]
-        type=directory
-        directory=/srv/chroot/wheezy-i386
-        description=Debian Jessie (i386)
-        users=brian
-        root-users=brian
-        union-type=overlay
-        personality=linux32
-        [wheezy-amd64]
-        type=directory
-        directory=/srv/chroot/wheezy-amd64
-        description=Debian Jessie (amd64)
-        users=brian
-        root-users=brian
-        union-type=overlay
-
-        [jessie-i386]
-        type=directory
-        directory=/srv/chroot/jessie-i386
-        description=Debian Jessie (i386)
-        users=brian
-        root-users=brian
-        union-type=overlay
-        personality=linux32
-        [jessie-amd64]
-        type=directory
-        directory=/srv/chroot/jessie-amd64
-        description=Debian Jessie (amd64)
-        users=brian
-        root-users=brian
-        union-type=overlay
-
-        [sid-i386]
-        type=directory
-        directory=/srv/chroot/sid-i386
-        description=Debian Jessie (i386)
-        users=brian
-        root-users=brian
-        union-type=overlay
-        personality=linux32
-        [sid-amd64]
-        type=directory
-        directory=/srv/chroot/sid-amd64
-        description=Debian Jessie (amd64)
-        users=brian
-        root-users=brian
-        union-type=overlay
-
-    .. note::
-
-        The ``overlay`` union type requires a new kernel. If this does not
-        work for you, try ``overlayfs`` or ``aufs`` instead.
 
 #.  Test schroot is in working order. Changes should disappear after exiting
     the schroot.
@@ -121,3 +61,7 @@ These steps only need to be done once for a system.
     .. code-block:: bash
 
         schroot --chroot source:jessie-amd64
+
+#.  If making releases you will need to have a GPG key to use to distribute
+    the changes and this should have an established web of trust. If not,
+    create a key and get other trusted people to sign it.

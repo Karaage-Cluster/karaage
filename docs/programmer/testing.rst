@@ -6,6 +6,11 @@ release of Karaage.
 It is assumed the system is running Debian Jessie; other build systems may be
 possible, but will require variations.
 
+..  warning::
+
+    As of 6th May 2016 there are known problems with the karaage-test package
+    that still need to get fixed. As a result the instructions here may not
+    work, especially when trying to get dotest to build Debian packages.
 
 Preparing system
 ----------------
