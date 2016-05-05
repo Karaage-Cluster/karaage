@@ -254,25 +254,6 @@ class StateStepShibboleth(Step):
                             request, url, institute.saml_entityid)
                     return HttpResponseRedirect(url)
 
-                # Did we get a register request?
-                elif 'register' in request.POST:
-                    if saml_session:
-                        applicant = _get_applicant_from_saml(request)
-                        if applicant is not None:
-                            application.applicant = applicant
-                            application.save()
-                        else:
-                            applicant = application.applicant
-
-                        applicant = saml.add_saml_data(
-                            applicant, request)
-                        applicant.save()
-
-                        url = base.get_url(request, application, roles, label)
-                        return HttpResponseRedirect(url)
-                    else:
-                        return HttpResponseBadRequest("<h1>Bad Request</h1>")
-
                 # Did we get a logout request?
                 elif 'logout' in request.POST:
                     if saml_session:
@@ -288,13 +269,33 @@ class StateStepShibboleth(Step):
 
         # if we are done, we can proceed to next state
         if request.method == 'POST':
-            if done:
-                for action in actions:
-                    if action in request.POST:
-                        return action
-                return HttpResponseBadRequest("<h1>Bad Request</h1>")
-            else:
-                status = "Please click register button before proceeding."
+            if 'cancel' in request.POST:
+                return "cancel"
+            if 'prev' in request.POST:
+                return 'prev'
+
+            if not done:
+                if saml_session:
+                    applicant = _get_applicant_from_saml(request)
+                    if applicant is not None:
+                        application.applicant = applicant
+                        application.save()
+                    else:
+                        applicant = application.applicant
+
+                    applicant = saml.add_saml_data(
+                        applicant, request)
+                    applicant.save()
+
+                    done = True
+                else:
+                    status = "Please login to SAML before proceeding."
+
+        if request.method == 'POST' and done:
+            for action in actions:
+                if action in request.POST:
+                    return action
+            return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
         # render the page
         return render_to_response(

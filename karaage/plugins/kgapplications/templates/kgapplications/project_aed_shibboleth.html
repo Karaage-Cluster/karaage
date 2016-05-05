@@ -41,14 +41,13 @@
                     {% endfor %}
                 </table>
             </div>
-            <p>If you continue and click Register, then your details, including
+            <p>If you continue, then your details, including
             your email address, will be replaced by those above and you will be
             able to log in using SAML. {% if attrs.email != application.applicant.email %}
             All future emails concerning this application
             will then go to <b>{{ attrs.email }}</b> instead of
             {{ application.applicant.email }}. {% endif %}</p>
             <input type="submit" name="logout" value="SAML Logout" class="button" />
-            <input type="submit" name="register" value="Register" class="button" />
         {% else %}
             {% if status %}
             <ul class="errorlist">
