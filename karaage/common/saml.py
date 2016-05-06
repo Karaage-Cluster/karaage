@@ -54,7 +54,8 @@ def parse_attributes(request):
 def build_shib_url(request, target, entityid=None):
     url_base = 'https://%s' % request.get_host()
     shib_url = "%s%s" % (
-        url_base, getattr(settings, 'SHIB_HANDLER', '/Shibboleth.sso/DS'))
+        url_base, getattr(
+            settings, 'SHIB_HANDLER_LOGIN', '/Shibboleth.sso/Login'))
     if not target.startswith('http'):
         target = url_base + target
 
@@ -67,15 +68,22 @@ def build_shib_url(request, target, entityid=None):
 def logout_url(request):
     url_base = 'https://%s' % request.get_host()
     url = "%s%s" % (
-        url_base, getattr(settings, 'SHIB_HANDLER', '/Shibboleth.sso/Logout'))
+        url_base, getattr(
+            settings, 'SHIB_HANDLER_LOGOUT', '/Shibboleth.sso/Logout'))
     return url
 
 
 def add_saml_data(person, request):
     attrs, error = parse_attributes(request)
-    person.short_name = attrs['first_name']
-    person.full_name = six.u("%s %s") % (
-        attrs['first_name'], attrs['last_name'])
+    if 'first_name' in attrs and attrs['first_name'] is not None:
+        person.short_name = attrs['first_name']
+        if 'last_name' in attrs and attrs['last_name'] is not None:
+            person.full_name = six.u("%s %s") % (
+                attrs['first_name'], attrs['last_name'])
+    if person.short_name is None:
+        person.short_name = ""
+    if person.full_name is None:
+        person.full_name = ""
     person.email = attrs['email']
     person.saml_id = attrs['persistent_id']
     person.telephone = attrs.get('telephone', None)

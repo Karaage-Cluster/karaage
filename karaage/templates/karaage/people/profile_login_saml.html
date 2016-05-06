@@ -41,6 +41,9 @@
     {% endfor %}
     {% endif %}
 
+    <p>You can also login using <a href="{% url 'kg_profile_login' %}">Karaage
+    authentication</a>.</p>
+
     <form method="post" action=".">{% csrf_token %}
         {% form_as_div form %}
         <input type="submit" name="login" value="SAML Login" />

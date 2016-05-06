@@ -32,6 +32,11 @@
 </p>
 {% endif %}
 
+  {% if SHIB_SUPPORTED %}
+    <p>You can also login using <a href="{% url 'kg_profile_login_saml' %}">Shibboleth
+    authentication</a>.</p>
+  {% endif %}
+
 <div id="content-main">
 <form action="" method="post" id="login-form">{% csrf_token %}
   <div class="form-row">

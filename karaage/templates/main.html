@@ -44,6 +44,8 @@
         {% for_each_app_include "main_profile.html" %}
         {% if user.is_authenticated %}
         <li><a href="{% url 'kg_profile_logout' %}">Log Out</a></li>
+        {% elif SHIB_SUPPORTED %}
+        <li><a href="{% url 'kg_profile_login_saml' %}">Log In</a></li>
         {% else %}
         <li><a href="{% url 'kg_profile_login' %}">Log In</a></li>
         {% endif %}

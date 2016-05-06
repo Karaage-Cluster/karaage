@@ -14,11 +14,43 @@ These steps only need to be done once for a system.
 Follow the instructions under :doc:`prepare`.
 
 
-Make release
-------------
+Make upstream release
+---------------------
+This needs to happen first before building the Debian packages. You will need
+to have write access to the github repository for Karaage and PyPI.
 
-Assume we are releasing version X.Y.Z. Obviously this needs to be
-replaced with the actual version.
+#.  Check all changes pushed to github and
+    [travis tests](https://travis-ci.org/Karaage-Cluster/karaage/builds) for
+    the appropriate branch pass.
+
+#.  Check ``CHANGES.rst`` has entry for new release.
+
+#.  Create a tag for the new release.
+
+    .. code-block:: bash
+
+        git tag --sign x.y.z
+
+#.  Check version is correct.
+
+    .. code-block:: bash
+
+        ./setup.py --version
+
+#.  Push and upload.
+
+    .. code-block:: bash
+
+        python ./setup.py sdist upload -s -i 0xGPGKEY
+        git push
+        git push --tags
+
+
+Make Debian release
+-------------------
+This needs to happen after the upstream release. You will need to have write
+access to the github repository for Karaage Debian and somewhere to upload the
+changes to.
 
 #.  Ensure schroot are up to date:
 
@@ -26,11 +58,11 @@ replaced with the actual version.
 
         sudo ~/tree/bampkgbuild/update_schroot
 
-#.  Ensure we are in the karaage tree on the master branch.
+#.  Ensure we are in the karaage-debian tree on the master branch.
 
     .. code-block:: bash
 
-        cd tree/karaage/karaage
+        cd tree/karaage/karaage-debian
 
 #.  Ensure there are no git uncommited git changes or staged changes.
 
@@ -38,43 +70,38 @@ replaced with the actual version.
 
         git status
 
-#.  Run tests, ensure everything passes.
+#.  Ensure all branches are up to date.
 
     .. code-block:: bash
 
-        ./run_tests.sh
+        git pull --ff-only --all
 
-#.  Write X.Y.Z to ``VERSION.txt``.
-#.  Update ``debian/changelog`` using `dch` command. Create a new entry for
-    version X.Y.Z-1. The debian postfix should almost always be -1.
-#.  Run tests, ensure everything still passes.
+#.  Download and merge new upstream source.
 
     .. code-block:: bash
 
-        ./run_tests.sh
+        git checkout master
+        uscan --verbose
+        git-dpm import-new-upstream --ptc --rebase-patched ../karaage3_X.Y.Z.orig.tar.gz
 
-#.  Commit changes, using something like:
-
-    .. code-block:: bash
-
-        git commit -a -m "Release version X.Y.Z"
-
-#.  Create a release tag (requires a GPG key for signing):
+#.  Update ``debian/changelog`` command.
 
     .. code-block:: bash
 
-        git tag -s X.Y.Z
+        dch -v "X.Y.Z-1" "New upstream version."
+        git commit debian/changelog -m "Version X.Y.Z-1"
+        git push --all
 
-    Ensure the message contains the string "Version X.Y.Z" at the top.
-    Typically I copy and paste the contents of the most recent
-    ``debian/changelog`` here, but this isn't essential.
+#.  Check Debian package builds.
 
-#.  Build package and upload to VPAC repository (requires permission to upload
-    to VPAC repository):
+#.  Make changelog for release.
 
     .. code-block:: bash
 
-        ~/tree/bampkgbuild/release --upload vpac --arch amd64 --working .
+        dch --release
+        git commit debian/changelog -m "Release version X.Y.Z"
+
+#.  Build and upload package.
 
 #.  When sure everything is ok, push changes to github:
 
@@ -90,18 +117,9 @@ replaced with the actual version.
         git checkout karaage4
         git merge origin
 
-    There will be some minor conflicts, e.g. ``VERSION.txt`` will
-    probably need to be manually fixed.
-
-#.  Run tests, ensure everything still works.
-
-    .. code-block:: bash
-
-        ./run_tests.sh
-
 #.  When sure everything is ok, push changes to github:
 
     .. code-block:: bash
 
         git push origin
-        git push origin --tags
+        git checkout master

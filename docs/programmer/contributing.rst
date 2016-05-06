@@ -1,10 +1,7 @@
 Contributing Code
 =================
 
-In the past Karaage was current developed using
-`Gerrit <https://code.vpac.org/gerrit>`_. 
-As of 2015-06-19 this is no longer the case. github pull requests should be
-used instead.
+github pull requests should be used.
 
 
 Getting Started
@@ -22,3 +19,6 @@ Getting Started
     line show up in your commit message text.
 
 #.  Make changes, commit, and submit as github pull request.
+
+#.  After the pull request is created, travis will run a complete set of tests
+    against the request to ensure it doesn't break Karaage.

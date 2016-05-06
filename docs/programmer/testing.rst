@@ -6,7 +6,6 @@ release of Karaage.
 It is assumed the system is running Debian Jessie; other build systems may be
 possible, but will require variations.
 
-
 Preparing system
 ----------------
 #.  Follow the instructions under :doc:`prepare`.
