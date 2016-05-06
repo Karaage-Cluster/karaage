@@ -6,8 +6,7 @@
 Karaage user documentation
 ==========================
 
-This is documentation for Karaage 3. For documentation for earlier versions of Karaage, please see
-https://github.com/Karaage-Cluster/karaage/wiki.
+This is documentation for Karaage 3.
 
 :Date: |today|
 :Version: |version|
