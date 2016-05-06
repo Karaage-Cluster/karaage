@@ -35,50 +35,6 @@ Debian Installation
 
         apt-get install karaage-cluster-tools
 
-Redhat Installation
--------------------
-Redhat6, Redhat 7, Centos 6, and Centos 7 are supported.
-
-#.  If you require a proxy server for out going connections, set it up now.
-
-    .. code-block:: bash
-
-        export http_proxy=http://proxy.example.org
-
-#.  Add the VPAC repository.
-
-    .. code-block:: bash
-
-        wget http://linuxpenguins.xyz/centos/vpac.repo -O /etc/yum.repos.d/vpac.repo
-
-#.  Install the packages:
-
-    .. code-block:: bash
-
-        yum install karaage-cluster-tools
-
-
-Fedora Installation
--------------------
-Fedora 20 is supported.
-
-#.  If you require a proxy server for out going connections, set it up now.
-
-    .. code-block:: bash
-
-        export http_proxy=http://proxy.example.org
-
-#.  Add the VPAC repository.
-
-    .. code-block:: bash
-
-        wget http://linuxpenguins.xyz/fedora/vpac.repo -O /etc/yum.repos.d/vpac.repo
-
-#.  Install the packages:
-
-    .. code-block:: bash
-
-        yum install karaage-cluster-tools
 
 Configuring
 -----------
