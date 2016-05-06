@@ -130,6 +130,7 @@ changes to.
 
     .. code-block:: bash
 
+        git-dpm tag
         git push origin
         git push origin --tags
 
