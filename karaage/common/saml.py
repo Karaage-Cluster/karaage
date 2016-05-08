@@ -89,6 +89,9 @@ def add_saml_data(person, request):
     if person.full_name is None:
         person.full_name = ""
 
+    # fill uid if it was supplied
+    person.username = attrs.get('uid', person.username)
+
     # fill telephone if supplied
     person.telephone = attrs.get('telephone', person.telephone)
 
