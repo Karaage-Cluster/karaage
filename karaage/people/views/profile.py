@@ -68,7 +68,7 @@ def login(request, username=None):
 
 
 def saml_login(request):
-    redirect_to = reverse('kg_profile_login_saml')
+    redirect_to = reverse('index')
     if 'next' in request.REQUEST:
         redirect_to = request.REQUEST['next']
     error = None
