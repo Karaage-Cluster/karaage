@@ -104,7 +104,7 @@ def saml_login(request):
             email = attrs['email']
             try:
                 Person.objects.get(email=email)
-                error = "Cannot log in with this shibboleth account." \
+                error = "Cannot log in with this shibboleth account. " \
                         "Please try using the Karaage login instead."
             except Person.DoesNotExist:
                 if apps.is_installed("karaage.plugins.kgapplications"):
