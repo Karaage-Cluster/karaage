@@ -225,7 +225,6 @@ ALLOWED_HOSTS = ["%(HOST)s"]
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
 PIPELINE = {
-    'PIPELINE_ENABLED': True,
     'EMBED_PATH': r'img/|images/',
     'CSS_COMPRESSOR': 'pipeline.compressors.cssmin.CSSMinCompressor',
     'STYLESHEETS': {
