@@ -23,6 +23,8 @@ from karaage.institutes.models import Institute
 
 
 def is_saml_session(request):
+    if not settings.SHIB_SUPPORTED:
+        return False
     if 'HTTP_SHIB_SESSION_ID' not in request.META:
         return False
     if not request.META['HTTP_SHIB_SESSION_ID']:
