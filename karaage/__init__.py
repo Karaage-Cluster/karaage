@@ -15,19 +15,13 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
-import os.path
-from pkg_resources import get_distribution, DistributionNotFound
 
 # Django 1.7 style AppConfig, see
 # http://docs.djangoproject.com/en/1.7/ref/applications/
 default_app_config = 'karaage.apps.Karaage'
 
 try:
-    _dist = get_distribution('karaage')
-    if not __file__.startswith(os.path.join(_dist.location, 'karaage', '')):
-        # not installed, but there is another version that *is*
-        raise DistributionNotFound
-except DistributionNotFound:
+    import karaage.version
+    __version__ = karaage.version.version
+except ImportError:
     __version__ = 'development'
-else:
-    __version__ = _dist.version
