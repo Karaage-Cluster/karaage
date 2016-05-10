@@ -1,5 +1,5 @@
-Release 3.1.27 (UNRELEASED)
-===========================
+Release 3.1.27 (10 May 2016)
+============================
 
 * Update progammer's documentation.
 * Remove references to legacy documentation.
