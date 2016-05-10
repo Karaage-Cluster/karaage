@@ -18,6 +18,9 @@
     {{ error }}
 </p>
 
+<p>You can also login using <a href="{% url 'kg_profile_login' %}">Karaage
+authentication</a>.</p>
+
 {% if saml_session %}
     <form method="post" action=".">{% csrf_token %}
         <input type="submit" name="logout" value="SAML Logout" />
