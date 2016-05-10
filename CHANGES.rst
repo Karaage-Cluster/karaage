@@ -1,3 +1,14 @@
+Release 3.1.27 (UNRELEASED)
+===========================
+
+* Update progammer's documentation.
+* Remove references to legacy documentation.
+* Automatically fill username from shibboleth if we can.
+* Various fixes for shibboleth work flow.
+* Tests for login/logout.
+* Display Karaage version in footnote.
+
+
 Release 3.1.26 (06 May 2016)
 ============================
 
