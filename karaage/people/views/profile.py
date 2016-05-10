@@ -93,19 +93,26 @@ def saml_login(request):
     elif request.user.is_authenticated():
         error = "You are already logged in."
     elif saml_session:
-        if apps.is_installed("karaage.plugins.kgapplications"):
-            app_url = reverse('kg_application_new')
-            return HttpResponseRedirect(app_url)
-        else:
-            attrs, error = saml.parse_attributes(request)
-            saml_id = attrs['persistent_id']
+        attrs, error = saml.parse_attributes(request)
+        saml_id = attrs['persistent_id']
+        try:
+            Person.objects.get(saml_id=saml_id)
+            # This should not happen, suggests a fault in the saml middleware
+            error = "Shibboleth session established " \
+                    "but you did not get logged in. "
+        except Person.DoesNotExist:
+            email = attrs['email']
             try:
-                Person.objects.get(saml_id=saml_id)
-                error = "Shibboleth session established " \
-                        "but you did not get logged in."
+                Person.objects.get(email=email)
+                error = "Cannot log in with this shibboleth account." \
+                        "Please try using the Karaage login instead."
             except Person.DoesNotExist:
-                error = "Cannot log in with shibboleth as " \
-                        "we do not know your shibboleth id."
+                if apps.is_installed("karaage.plugins.kgapplications"):
+                    app_url = reverse('kg_application_new')
+                    return HttpResponseRedirect(app_url)
+                else:
+                    error = "Cannot log in with shibboleth as " \
+                            "we do not recognise your shibboleth id."
 
     return render_to_response(
         'karaage/people/profile_login_saml.html',
