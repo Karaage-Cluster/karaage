@@ -23,6 +23,7 @@ import django
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.core import mail
+from django.contrib import auth
 
 from karaage.people.models import Person, ProjectMembership
 from karaage.institutes.models import Institute, InstituteDelegate
@@ -45,6 +46,79 @@ class PersonTestCase(IntegrationTestCase):
     def setUp(self):
         super(PersonTestCase, self).setUp()
         self._datastore = self.mc_ldap_datastore
+
+    def test_login(self):
+        if django.VERSION >= (1, 9):
+            url_prefix = ""
+        else:
+            url_prefix = 'http://testserver'
+
+        form_data = {
+            'username': 'kgsuper',
+            'password': 'aq12ws',
+        }
+
+        response = self.client.post(
+            reverse('kg_profile_login'), form_data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.redirect_chain[0][0],
+            url_prefix + reverse('index'))
+
+        user = auth.get_user(self.client)
+        assert user.is_authenticated()
+        assert user.username == 'kgsuper'
+
+    def test_saml_login(self):
+        person = Person.objects.get(username='kgtestuser1')
+        person.institute = Institute.objects.get(pk=3)
+        person.saml_id = "pY9RL3RHeQwAm4Hd"
+        person.save()
+
+        form_data = {
+            'login': 'true',
+            'institute': 3,
+        }
+
+        response = self.client.post(
+            reverse('kg_profile_login_saml'), form_data, follow=True)
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            response.redirect_chain[0][0],
+            "https://testserver/Shibboleth.sso/Login" +
+            "?target=https://testserver/&entityID=http://samlid")
+
+        response = self.client.get(
+            reverse('index'),
+            HTTP_SHIB_SESSION_ID="yes",
+            HTTP_SHIB_IDENTITY_PROVIDER="http://samlid",
+            HTTP_PERSISTENT_ID="pY9RL3RHeQwAm4Hd",
+            HTTP_MAIL="email@example.org",
+            HTTP_GIVENNAME="Firstname",
+            HTTP_SN="Surname",
+            HTTP_TELEPHONENUMBER="000",
+            HTTP_UID="somethingelse"
+        )
+        self.assertEqual(response.status_code, 200)
+
+        user = auth.get_user(self.client)
+        assert user.is_authenticated()
+        assert user.username == 'kgtestuser1'
+
+    def test_logout(self):
+        if django.VERSION >= (1, 9):
+            url_prefix = ""
+        else:
+            url_prefix = 'http://testserver'
+
+        response = self.client.post(reverse('kg_profile_logout'), follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.redirect_chain[0][0],
+            url_prefix + reverse('index'))
+
+        user = auth.get_user(self.client)
+        assert not user.is_authenticated()
 
     def do_permission_tests(self, test_object, users):
         for user_id in users:

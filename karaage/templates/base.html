@@ -41,6 +41,8 @@
                 {% endif %}
                 <a href="{% url 'kg_profile_password' %}">{% trans 'Change password' %}</a> /
                 <a href="{% url 'kg_profile_logout' %}">{% trans 'Log out' %}</a>
+                {% elif SHIB_SUPPORTED %}
+                <a href="{% url 'kg_profile_login_saml' %}">{% trans 'Log in' %}</a>
                 {% else %}
                 <a href="{% url 'kg_profile_login' %}{% url_with_param next=request.path %}">{% trans 'Log in' %}</a>
                 {% endif %}
@@ -77,7 +79,7 @@
     </div>
     <!-- END Content -->
 
-    {% block footer %}<div id="footer"></div>{% endblock %}
+    {% block footer %}<div id="footer">Karaage {{ kgversion }}</div>{% endblock %}
 </div>
 <!-- END Container -->
 

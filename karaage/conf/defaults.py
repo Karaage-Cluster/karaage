@@ -227,7 +227,6 @@ ALLOWED_HOSTS = ["%(HOST)s"]
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
 PIPELINE = {
-    'PIPELINE_ENABLED': True,
     'EMBED_PATH': r'img/|images/',
     'CSS_COMPRESSOR': 'pipeline.compressors.cssmin.CSSMinCompressor',
     'STYLESHEETS': {
@@ -342,6 +341,7 @@ SHIB_ATTRIBUTE_MAP = {
     "HTTP_GIVENNAME": (False, "first_name"),
     "HTTP_SN": (False, "last_name"),
     "HTTP_TELEPHONENUMBER": (False, "telephone"),
+    "HTTP_UID": (False, "uid"),
 }
 
 # RE for validing a username.

@@ -52,6 +52,13 @@ This needs to happen after the upstream release. You will need to have write
 access to the github repository for Karaage Debian and somewhere to upload the
 changes to.
 
+.. warning::
+
+   Current versions of Karaage use git-dpm for the git work flow. This is a
+   good solution and is the solution used by the Debian Python Modules team,
+   Unfortunately it is no longer actively developed and can be quirky at times.
+   As such it is difficult to document all the quirks here.
+
 #.  Ensure schroot are up to date:
 
     .. code-block:: bash
@@ -76,13 +83,29 @@ changes to.
 
         git pull --ff-only --all
 
-#.  Download and merge new upstream source.
+#.  Copy the new upstream source from the upstream repository.
+
+    .. code-block:: bash
+
+        cp ../karaage/dist/karaage-X.Y.Z.tar.gz ../karaage3_X.Y.Z.orig.tar.gz
+
+#.  Merge the new upstream source.
 
     .. code-block:: bash
 
         git checkout master
-        uscan --verbose
         git-dpm import-new-upstream --ptc --rebase-patched ../karaage3_X.Y.Z.orig.tar.gz
+
+#.  It is possible conflicts may occur in the previous step, when it rebases
+    the Debian changes. If so, fix them and complete the rebase before
+    continuing.
+
+#.  Sometimes git-dpm will leave you in the patches directory, you need to be
+    in the Master directory.
+
+    .. code-block:: bash
+
+        git-dpm update-patches
 
 #.  Update ``debian/changelog`` command.
 
@@ -107,6 +130,7 @@ changes to.
 
     .. code-block:: bash
 
+        git-dpm tag
         git push origin
         git push origin --tags
 

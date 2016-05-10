@@ -17,6 +17,7 @@
 
 from django.conf import settings
 
+from karaage import __version__
 from karaage.common import is_admin
 
 
@@ -26,7 +27,8 @@ def common(request):
         'SHIB_SUPPORTED': settings.SHIB_SUPPORTED,
         'org_name': settings.ACCOUNTS_ORG_NAME,
         'accounts_email': settings.ACCOUNTS_EMAIL,
-        'is_admin': is_admin(request)
+        'is_admin': is_admin(request),
+        'kgversion': __version__,
     }
 
     return ctx
