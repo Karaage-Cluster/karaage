@@ -200,7 +200,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 ROOT_URLCONF = 'karaage.conf.urls'
 
 # The URL where requests are redirected for login, especially when
-# using the login_required() decorator.
+# using the login_required() decorator. Mostly not used anymore.
 LOGIN_URL = 'kg_profile_login'
 
 # The absolute path to the directory where collectstatic will collect static
