@@ -6,7 +6,6 @@ include .gitreview
 include tox.ini
 include MANIFEST.in
 include pylint.conf
-exclude karaage/version.py
 exclude docs/admin/conf.py
 exclude docs/programmer/conf.py
 exclude docs/user/conf.py

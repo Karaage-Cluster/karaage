@@ -1,7 +1,14 @@
+Release 3.1.28 (11 May 2016)
+============================
+
+* Ensure version.py gets installed.
+* Ensure logout works with shibboleth.
+
+
 Release 3.1.27 (10 May 2016)
 ============================
 
-* Update progammer's documentation.
+* Update programmer's documentation.
 * Remove references to legacy documentation.
 * Automatically fill username from shibboleth if we can.
 * Various fixes for shibboleth work flow.
@@ -12,12 +19,12 @@ Release 3.1.27 (10 May 2016)
 Release 3.1.26 (06 May 2016)
 ============================
 
-* Add shibboleth apache configuration.
+* Add shibboleth Apache configuration.
 * Fix various shibboleth problems.
 * Update shibboleth to use /Shibboleth.sso/Login instead of
   /Shibboleth.sso/DS.
 * Display request.META values in SAML profile page.
-* Fix render_link with latest django tables 1.2.0.
+* Fix render_link with latest Django Tables 1.2.0.
 * Make first name and last name optional in shibboleth.
 * Auto populate project application with email from shibboleth if possible.
 * Redirect unknown shibboleth user to project application.
