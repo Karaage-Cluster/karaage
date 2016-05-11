@@ -107,7 +107,7 @@ class SlurmDataStore(base.MachineCategoryDataStore):
             ignore_errors = []
         cmd = []
         cmd.extend(self._prefix)
-        cmd.extend([self._path, "-ip"])
+        cmd.extend([self._path, "-iP"])
         cmd.extend(command)
         command = cmd
 
@@ -133,7 +133,7 @@ class SlurmDataStore(base.MachineCategoryDataStore):
         """ Read CSV delimited input from Slurm. """
         cmd = []
         cmd.extend(self._prefix)
-        cmd.extend([self._path, "-ip"])
+        cmd.extend([self._path, "-iP"])
         cmd.extend(command)
         command = cmd
 
