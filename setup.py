@@ -30,6 +30,16 @@ for doc in ["admin", "programmer", "user"]:
             shutil.copyfileobj(src, dst)
 
 
+def version_scheme(version):
+    from setuptools_scm.version import guess_next_dev_version
+    version = guess_next_dev_version(version)
+    split = version.split('.')
+    if split[0] == '3':
+        number = int(split[1])*1000 + int(split[2])
+        version = '4.0.0a%d.%s' % (number, split[3])
+    return version
+
+
 def fullsplit(path, result=None):
     """
     Split a pathname into components (the opposite of os.path.join) in a
@@ -66,6 +76,7 @@ setup(
     name="karaage",
     use_scm_version={
         'write_to': "karaage/version.py",
+        'version_scheme': version_scheme,
     },
     setup_requires=['setuptools_scm'],
     url='https://github.com/Karaage-Cluster/karaage',
