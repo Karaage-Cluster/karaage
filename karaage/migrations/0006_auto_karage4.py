@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.db import models, migrations
 import mptt.fields
 import django.utils.timezone
 import jsonfield.fields
 import datetime
 import audit_log.models.fields
+
+if settings.DATABASES['default']['ENGINE'] == "django.db.backends.sqlite3":
+    _false = 0
+else:
+    _false = 'false'
 
 
 class Migration(migrations.Migration):
@@ -591,14 +597,14 @@ class Migration(migrations.Migration):
                 ) SELECT DISTINCT
                     members.person_id,
                     project.id,
-                    '0',
+                    {0},
                     leaders.id IS NOT NULL,
                     members.person_id IN (
                         SELECT person_id
                         FROM account
                         WHERE default_project_id = project.id
                     ),
-                    '0'
+                    {0}
                     FROM people_group_members members
                     INNER JOIN project ON (
                         project.group_id = members.group_id
@@ -606,7 +612,7 @@ class Migration(migrations.Migration):
                     LEFT JOIN project_leaders leaders ON (
                         leaders.project_id = project.id
                     )
-            ''',
+            '''.format(_false),
             '''
                 UPDATE account SET default_project_id = (
                     SELECT membership.project_id
