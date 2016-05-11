@@ -1,5 +1,5 @@
-Release 3.1.28 (UNRELEASED)
-===========================
+Release 3.1.28 (11 May 2016)
+============================
 
 * Ensure version.py gets installed.
 * Ensure logout works with shibboleth.
