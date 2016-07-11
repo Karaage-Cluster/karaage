@@ -106,7 +106,9 @@ class ApplicationActionsPlus(template.Node):
 @register.assignment_tag(takes_context=True)
 def get_similar_people_table(context, applicant):
     queryset = applicant.similar_people()
-    table = PersonTable(queryset)
+    table = PersonTable(
+        queryset,
+        empty_text="(No potential duplicates found, please check manually)")
     config = tables.RequestConfig(context['request'], paginate={"per_page": 5})
     config.configure(table)
     return table
