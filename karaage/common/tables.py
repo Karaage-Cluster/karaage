@@ -85,3 +85,4 @@ class LogEntryTable(tables.Table):
         model = LogEntry
         fields = ('action_time', 'user', 'obj', 'action_flag',
                   'change_message')
+        empty_text = "No items"

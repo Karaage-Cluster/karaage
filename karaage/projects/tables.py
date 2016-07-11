@@ -102,3 +102,4 @@ class ProjectTable(tables.Table):
         model = Project
         fields = ('is_active', 'pid', 'name', 'institute',
                   'leaders', 'last_usage')
+        empty_text = "No items"

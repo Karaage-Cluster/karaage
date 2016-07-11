@@ -46,6 +46,7 @@ class SoftwareTable(tables.Table):
         model = Software
         fields = ('name', 'description', 'group', 'category',
                   'softwareversion__last_used')
+        empty_text = "No items"
 
 
 class SoftwareLicenseAgreementTable(tables.Table):
@@ -60,3 +61,4 @@ class SoftwareLicenseAgreementTable(tables.Table):
     class Meta:
         model = SoftwareLicenseAgreement
         fields = ("software", "license", "person", "date")
+        empty_text = "No items"

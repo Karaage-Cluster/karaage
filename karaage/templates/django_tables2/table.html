@@ -3,7 +3,6 @@
 
 <div class="table-container">
 {% block table %}
-{% if table.rows %}
 <table{% if table.attrs %} {{ table.attrs.as_html }}{% endif %}>
     {% block table.thead %}
     {% if table.show_header %}
@@ -44,9 +43,6 @@
     {% endblock table.tfoot %}
 
 </table>
-{% else %}
-<p>No items.</p>
-{% endif %}
 {% endblock table %}
 
 {% if table.page %}
