@@ -118,6 +118,7 @@ class ApplicantForm(forms.ModelForm):
         self.fields['username'].label = 'Requested username'
         self.fields['username'].required = True
         self.fields['institute'].required = True
+        self.fields['department'].required = True
 
     def clean_username(self):
         username = self.cleaned_data['username']
