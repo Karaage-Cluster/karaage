@@ -114,7 +114,13 @@ class ApplicantForm(forms.ModelForm):
         super(ApplicantForm, self).__init__(*args, **kwargs)
         self.fields['title'].required = True
         self.fields['short_name'].required = True
+        self.fields['short_name'].help_text = \
+            "This is typically your given name. "\
+            "For example enter 'Fred' here."
         self.fields['full_name'].required = True
+        self.fields['full_name'].help_text = \
+            "This is typically your full name. " \
+            "For example enter 'Fred Smith' here."
         self.fields['username'].label = 'Requested username'
         self.fields['username'].required = True
         self.fields['institute'].required = True

@@ -63,6 +63,15 @@ class PersonForm(forms.ModelForm):
     country = forms.ChoiceField(
         choices=COUNTRIES, initial='AU', required=False)
 
+    def __init__(self, *args, **kwargs):
+        super(PersonForm, self).__init__(*args, **kwargs)
+        self.fields['short_name'].help_text = \
+            "This is typically the person's given name. "\
+            "For example enter 'Fred' here."
+        self.fields['full_name'].help_text = \
+            "This is typically the person's full name. " \
+            "For example enter 'Fred Smith' here."
+
     class Meta:
         model = Person
         fields = [
