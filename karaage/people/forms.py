@@ -72,6 +72,19 @@ class PersonForm(forms.ModelForm):
             "This is typically the person's full name. " \
             "For example enter 'Fred Smith' here."
 
+    def clean(self):
+        data = super(PersonForm, self).clean()
+
+        for key in [
+                'short_name', 'full_name', 'email', 'position',
+                'supervisor', 'department', 'telephone', 'mobile', 'fax',
+                'address'
+                ]:
+            if key in data and data[key]:
+                data[key] = data[key].strip()
+
+        return data
+
     class Meta:
         model = Person
         fields = [

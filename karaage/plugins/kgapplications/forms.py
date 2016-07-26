@@ -110,6 +110,19 @@ class ApplicantForm(forms.ModelForm):
             'address', 'city', 'postcode', 'country', 'fax',
         ]
 
+    def clean(self):
+        data = super(ApplicantForm, self).clean()
+
+        for key in [
+                'short_name', 'full_name', 'email', 'position',
+                'supervisor', 'department', 'telephone', 'mobile', 'fax',
+                'address', 'city', 'postcode',
+                ]:
+            if key in data and data[key]:
+                data[key] = data[key].strip()
+
+        return data
+
     def __init__(self, *args, **kwargs):
         super(ApplicantForm, self).__init__(*args, **kwargs)
         self.fields['title'].required = True
