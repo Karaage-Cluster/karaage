@@ -24,6 +24,7 @@ from django.conf import settings
 from django.http import QueryDict
 from django.contrib.contenttypes.models import ContentType
 from django.utils.html import escape
+from django.utils.safestring import mark_safe
 
 from karaage.plugins import BasePlugin
 from karaage.common.models import LogEntry, COMMENT
@@ -170,7 +171,7 @@ def date_filter(start, end):
         url = ".?" + result.urlencode()
         s.append("""<a href="%s">Last 365 Days</a>""" % escape(url))
 
-    return " | ".join(s)
+    return mark_safe(" | ".join(s))
 
 
 @register.simple_tag
@@ -182,9 +183,9 @@ def yes_no(boolean, true_msg='Yes', false_msg='No'):
             boolean = True
 
     if boolean:
-        return "<span class='yes'>%s</span>" % true_msg
+        return mark_safe("<span class='yes'>%s</span>" % escape(true_msg))
     else:
-        return "<span class='no'>%s</span>" % false_msg
+        return mark_safe("<span class='no'>%s</span>" % escape(false_msg))
 
 
 class SearchFormNode(template.Node):
