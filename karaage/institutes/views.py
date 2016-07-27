@@ -148,11 +148,11 @@ def add_edit_institute(request, institute_id=None):
     if request.method == 'POST':
         form = InstituteForm(request.POST, instance=institute)
 
+        delegate_formset = delegate_formset_class(
+            request.POST, instance=institute)
+
         if form.is_valid():
             institute = form.save()
-
-            delegate_formset = delegate_formset_class(
-                request.POST, instance=institute)
 
             if delegate_formset.is_valid():
                 delegate_formset.save()
