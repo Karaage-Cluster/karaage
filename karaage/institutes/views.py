@@ -143,7 +143,8 @@ def add_edit_institute(request, institute_id=None):
         institute = None
 
     delegate_formset_class = inlineformset_factory(
-        Institute, InstituteDelegate, form=DelegateForm, extra=3)
+        Institute, InstituteDelegate, form=DelegateForm, extra=3,
+        min_num=1, validate_min=True)
 
     if request.method == 'POST':
         form = InstituteForm(request.POST, instance=institute)
