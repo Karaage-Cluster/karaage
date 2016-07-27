@@ -59,6 +59,7 @@ class ProjectFormTestCase(TestCase):
         self.assertEqual(
             form.errors.items(),
             dict.items({
+                'leaders': [six.u('This field is required.')],
                 'pid': [six.u(
                     'Project names can only contain letters,'
                     ' numbers and underscores')]
