@@ -100,7 +100,7 @@ setup(
     ],
     install_requires=[
         "cssmin",
-        "Django >= 1.7",
+        "Django >= 1.8",
         "python-alogger >= 2.0",
         "django-xmlrpc >= 0.1",
         "django-simple-captcha",
