@@ -116,8 +116,7 @@ class ApplicantForm(forms.ModelForm):
         for key in [
                 'short_name', 'full_name', 'email', 'position',
                 'supervisor', 'department', 'telephone', 'mobile', 'fax',
-                'address', 'city', 'postcode',
-                ]:
+                'address', 'city', 'postcode', ]:
             if key in data and data[key]:
                 data[key] = data[key].strip()
 
