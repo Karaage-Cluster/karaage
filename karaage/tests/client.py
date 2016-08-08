@@ -95,7 +95,8 @@ def extract_views_from_urlpatterns(urlpatterns, base='', namespace=None):
                 extract_views_from_urlpatterns(
                     patterns, base + p.regex.pattern, namespace=namespace))
         else:
-            raise TypeError("%s does not appear to be a urlpattern object" % p)
+            raise TypeError(
+                "%s does not appear to be a urlpattern object" % (p,))
     return views
 
 

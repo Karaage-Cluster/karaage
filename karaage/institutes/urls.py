@@ -15,34 +15,33 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import patterns, url
+from django.conf.urls import url
+from karaage.institutes import views
 
-urlpatterns = patterns(
-    'karaage.institutes.views',
-    url(r'^$', 'institute_list', name='kg_institute_list'),
-    url(r'^add/$', 'add_edit_institute', name='kg_institute_add'),
+urlpatterns = [
+    url(r'^$', views.institute_list, name='kg_institute_list'),
+    url(r'^add/$', views.add_edit_institute, name='kg_institute_add'),
 
     url(r'^quota/(?P<institutequota_id>\d+)/$',
-        'institutequota_edit', name='kg_institutequota_edit'),
+        views.institutequota_edit, name='kg_institutequota_edit'),
     url(r'^quota/(?P<institutequota_id>\d+)/delete/$',
-        'institutequota_delete', name='kg_institutequota_delete'),
+        views.institutequota_delete, name='kg_institutequota_delete'),
 
     url(r'^(?P<institute_id>\d+)/$',
-        'institute_detail', name='kg_institute_detail'),
+        views.institute_detail, name='kg_institute_detail'),
     url(r'^(?P<institute_id>\d+)/verbose/$',
-        'institute_verbose', name='kg_institute_verbose'),
+        views.institute_verbose, name='kg_institute_verbose'),
     url(r'^(?P<institute_id>\d+)/edit/$',
-        'add_edit_institute', name='kg_institute_edit'),
+        views.add_edit_institute, name='kg_institute_edit'),
     url(r'^(?P<institute_id>\d+)/quota/add/$',
-        'institutequota_add', name='kg_institutequota_add'),
+        views.institutequota_add, name='kg_institutequota_add'),
     url(r'^(?P<institute_id>[-.\w]+)/logs/$',
-        'institute_logs', name='kg_institute_logs'),
+        views.institute_logs, name='kg_institute_logs'),
     url(r'^(?P<institute_id>[-.\w]+)/add_comment/$',
-        'add_comment', name='kg_institute_add_comment'),
+        views.add_comment, name='kg_institute_add_comment'),
+]
 
-)
-
-profile_urlpatterns = patterns(
-    'karaage.institutes.views',
-    url(r'^institutes/$', 'profile_institutes', name='kg_profile_institutes'),
-)
+profile_urlpatterns = [
+    url(r'^institutes/$',
+        views.profile_institutes, name='kg_profile_institutes'),
+]

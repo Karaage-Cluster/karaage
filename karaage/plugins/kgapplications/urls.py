@@ -15,56 +15,55 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
+
+from karaage.plugins.kgapplications.views import common, project
 
 from .views.project import register as register_project
 register_project()
 
-urlpatterns = patterns(
-    'karaage.plugins.kgapplications.views',
+urlpatterns = [
     url(r'^$',
-        'common.application_list', name='kg_application_list'),
+        common.application_list, name='kg_application_list'),
     url(r'^applicants/(?P<applicant_id>\d+)/$',
-        'common.applicant_edit', name='kg_applicant_edit'),
+        common.applicant_edit, name='kg_applicant_edit'),
     url(r'^(?P<application_id>\d+)/logs/$',
-        'common.application_logs', name='kg_application_logs'),
+        common.application_logs, name='kg_application_logs'),
     url(r'^(?P<application_id>\d+)/add_comment/$',
-        'common.add_comment', name='kg_application_add_comment'),
+        common.add_comment, name='kg_application_add_comment'),
 
     url(r'^(?P<application_id>\d+)/$',
-        'common.application_detail', name='kg_application_detail'),
+        common.application_detail, name='kg_application_detail'),
     url(r'^(?P<application_id>\d+)/(?P<state>[-.\w]+)/$',
-        'common.application_detail', name='kg_application_detail'),
+        common.application_detail, name='kg_application_detail'),
     url(r'^(?P<application_id>\d+)/(?P<state>[-.\w]+)/(?P<label>[-.\w]+)/$',
-        'common.application_detail', name='kg_application_detail'),
+        common.application_detail, name='kg_application_detail'),
 
     url(r'^project/new/$',
-        'project.new_application', name='kg_application_new'),
+        project.new_application, name='kg_application_new'),
     url(r'^project/invite/$',
-        'project.send_invitation', name='kg_application_invite'),
+        project.send_invitation, name='kg_application_invite'),
     url(r'^project/invite/(?P<project_id>\d+)/$',
-        'project.send_invitation', name='kg_application_invite'),
+        project.send_invitation, name='kg_application_invite'),
 
     # this must come last
     url(r'^(?P<token>[-.\w]+)/$',
-        'common.application_unauthenticated',
+        common.application_unauthenticated,
         name='kg_application_unauthenticated'),
     url(r'^(?P<token>[-.\w]+)/(?P<state>[-.\w]+)/$',
-        'common.application_unauthenticated',
+        common.application_unauthenticated,
         name='kg_application_unauthenticated'),
     url(r'^(?P<token>[-.\w]+)/(?P<state>[-.\w]+)/(?P<label>[-.\w]+)/$',
-        'common.application_unauthenticated',
+        common.application_unauthenticated,
         name='kg_application_unauthenticated'),
-)
+]
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^applications/', include(urlpatterns)),
-)
+]
 
-profile_urlpatterns = patterns(
-    'karaage.plugins.kgapplications.views',
+profile_urlpatterns = [
     url(r'^applications/$',
-        'common.profile_application_list',
+        common.profile_application_list,
         name='kg_profile_applications'),
-)
+]
