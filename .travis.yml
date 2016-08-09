@@ -10,8 +10,6 @@ addons:
     packages:
     - slapd
     - ldap-utils
-    - python-matplotlib
-    - python3-matplotlib
 
 env:
  - DJANGO_VERSION=1.8.11 DATABASE_URL=postgres://postgres@/spud
@@ -50,8 +48,8 @@ script:
   - python ./manage.py test --settings="karaage.plugins.kgsoftware.tests.settings" -v 2 karaage.plugins.kgsoftware.tests
   - ./manage.py collectstatic --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 --noinput
   - python ./manage.py test --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 karaage.plugins.kgsoftware
-  - ./manage.py collectstatic --settings="karaage.plugins.kgusage.tests.settings" -v 2 --noinput
-  - python ./manage.py test --settings="karaage.plugins.kgusage.tests.settings" -v 2 karaage.plugins.kgusage
+#  - ./manage.py collectstatic --settings="karaage.plugins.kgusage.tests.settings" -v 2 --noinput
+#  - python ./manage.py test --settings="karaage.plugins.kgusage.tests.settings" -v 2 karaage.plugins.kgusage
 
 matrix:
   fast_finish: true
