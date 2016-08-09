@@ -10,6 +10,8 @@ addons:
     packages:
     - slapd
     - ldap-utils
+    - python-matplotlib
+    - python3-matplotlib
 
 env:
  - DJANGO_VERSION=1.8.11 DATABASE_URL=postgres://postgres@/spud
