@@ -20,8 +20,7 @@ import datetime
 
 import django_tables2 as tables
 
-from django.shortcuts import get_object_or_404, render_to_response
-from django.template import RequestContext
+from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, HttpResponseForbidden, \
     HttpResponseBadRequest
 from django.http import QueryDict
@@ -68,10 +67,10 @@ def _add_edit_user(request, form_class, username):
 
             return HttpResponseRedirect(person.get_absolute_url())
 
-    return render_to_response(
-        'karaage/people/person_form.html',
-        {'person': person, 'form': form},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/person_form.html',
+        context={'person': person, 'form': form},
+        request=request)
 
 
 @admin_required
@@ -112,9 +111,9 @@ def user_list(request, queryset=None, title=None):
         'title': title or "Person list",
     }
 
-    return render_to_response(
-        "karaage/people/person_list.html", context,
-        context_instance=RequestContext(request))
+    return render(
+        template_name="karaage/people/person_list.html", context=context,
+        request=request)
 
 
 @admin_required
@@ -151,9 +150,10 @@ def delete_user(request, username):
         messages.success(request, "User '%s' was deleted succesfully" % person)
         return HttpResponseRedirect(person.get_absolute_url())
 
-    return render_to_response(
-        'karaage/people/person_confirm_delete.html', locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/person_confirm_delete.html',
+        context=locals(),
+        request=request)
 
 
 @login_required
@@ -179,9 +179,9 @@ def user_detail(request, username):
         delegate_institute_list, prefix="delegate")
     config.configure(delegate_institute_list)
 
-    return render_to_response(
-        'karaage/people/person_detail.html', locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/person_detail.html', context=locals(),
+        request=request)
 
 
 @admin_required
@@ -197,9 +197,9 @@ def user_verbose(request, username):
         details = machine_category_get_account_details(ua)
         account_details.append(details)
 
-    return render_to_response(
-        'karaage/people/person_verbose.html', locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/person_verbose.html', context=locals(),
+        request=request)
 
 
 @admin_required
@@ -215,10 +215,10 @@ def activate(request, username):
         return HttpResponseRedirect(
             reverse('kg_person_password', args=[person.username]))
 
-    return render_to_response(
-        'karaage/people/person_reactivate.html',
-        {'person': person},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/person_reactivate.html',
+        context={'person': person},
+        request=request)
 
 
 @admin_required
@@ -237,10 +237,10 @@ def password_change(request, username):
     else:
         form = AdminPasswordChangeForm(person=person)
 
-    return render_to_response(
-        'karaage/people/person_password.html',
-        {'person': person, 'form': form},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/person_password.html',
+        context={'person': person, 'form': form},
+        request=request)
 
 
 @admin_required
@@ -252,10 +252,10 @@ def lock_person(request, username):
         messages.success(request, "%s's account has been locked" % person)
         return HttpResponseRedirect(person.get_absolute_url())
 
-    return render_to_response(
-        'karaage/people/person_confirm_lock.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/person_confirm_lock.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -265,10 +265,10 @@ def unlock_person(request, username):
         person.unlock()
         messages.success(request, "%s's account has been unlocked" % person)
         return HttpResponseRedirect(person.get_absolute_url())
-    return render_to_response(
-        'karaage/people/person_confirm_unlock.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/person_confirm_unlock.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -295,10 +295,10 @@ def bounced_email(request, username):
     leader_list = LeaderTable(leader_list)
     tables.RequestConfig(request).configure(leader_list)
 
-    return render_to_response(
-        'karaage/people/person_bounced_email.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/person_bounced_email.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -349,10 +349,10 @@ def password_request(request, username):
         'person': person,
         'error': error,
     }
-    return render_to_response(
-        'karaage/people/person_password_request.html',
-        var,
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/person_password_request.html',
+        context=var,
+        request=request)
 
 
 @login_required
@@ -368,7 +368,7 @@ def password_request_done(request, username):
     var = {
         'person': person,
     }
-    return render_to_response(
-        'karaage/people/person_password_request_done.html',
-        var,
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/person_password_request_done.html',
+        context=var,
+        request=request)

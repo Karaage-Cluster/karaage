@@ -19,8 +19,7 @@ import six
 import django_tables2 as tables
 
 from django.core.urlresolvers import reverse
-from django.shortcuts import get_object_or_404, render_to_response
-from django.template import RequestContext
+from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 
@@ -46,15 +45,15 @@ def group_list(request):
             name = name.replace('_', ' ').capitalize()
             spec.append((name, value))
 
-    return render_to_response(
-        'karaage/people/group_list.html',
-        {
+    return render(
+        template_name='karaage/people/group_list.html',
+        context={
             'table': table,
             'filter': q_filter,
             'spec': spec,
             'title': "Group list",
         },
-        context_instance=RequestContext(request))
+        request=request)
 
 
 def _add_edit_group(request, form_class, group_name):
@@ -83,10 +82,10 @@ def _add_edit_group(request, form_class, group_name):
     else:
         form = group_form(instance=group)
 
-    return render_to_response(
-        'karaage/people/group_form.html',
-        {'group': group, 'form': form},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/group_form.html',
+        context={'group': group, 'form': form},
+        request=request)
 
 
 @admin_required
@@ -114,10 +113,10 @@ def delete_group(request, group_name):
         messages.success(request, "Group '%s' was deleted succesfully" % group)
         return HttpResponseRedirect(reverse("kg_group_list"))
 
-    return render_to_response(
-        'karaage/people/group_confirm_delete.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/group_confirm_delete.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -125,10 +124,10 @@ def group_detail(request, group_name):
     group = get_object_or_404(Group, name=group_name)
     form = AddGroupMemberForm(instance=group)
 
-    return render_to_response(
-        'karaage/people/group_detail.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/group_detail.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -141,10 +140,10 @@ def group_verbose(request, group_name):
     from karaage.datastores import machine_category_get_group_details
     machine_category_group_details = machine_category_get_group_details(group)
 
-    return render_to_response(
-        'karaage/people/group_verbose.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/group_verbose.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -178,10 +177,10 @@ def add_group_member(request, group_name):
     else:
         form = AddGroupMemberForm(instance=group)
 
-    return render_to_response(
-        'karaage/people/group_add_member.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/group_add_member.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -202,7 +201,7 @@ def remove_group_member(request, group_name, username):
         group.remove_person(person)
         return HttpResponseRedirect(group.get_absolute_url())
 
-    return render_to_response(
-        'karaage/people/group_remove_member.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/group_remove_member.html',
+        context=locals(),
+        request=request)

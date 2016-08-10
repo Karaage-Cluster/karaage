@@ -20,8 +20,7 @@ import django_tables2 as tables
 
 from django.db.models import Q
 from django.forms.utils import ErrorList
-from django.shortcuts import get_object_or_404, render_to_response
-from django.template import RequestContext
+from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.core.urlresolvers import reverse
 from django.forms.models import inlineformset_factory
@@ -57,12 +56,13 @@ def profile_institutes(request):
         delegate_institute_list, prefix="delegate")
     config.configure(delegate_institute_list)
 
-    return render_to_response(
-        'karaage/institutes/profile_institutes.html',
-        {'person': person,
+    return render(
+        template_name='karaage/institutes/profile_institutes.html',
+        context={
+            'person': person,
             'my_institute_list': my_institute_list,
             'delegate_institute_list': delegate_institute_list},
-        context_instance=RequestContext(request))
+        request=request)
 
 
 @login_required
@@ -86,10 +86,10 @@ def institute_detail(request, institute_id):
     person_list = PersonTable(person_list, prefix="person-")
     config.configure(person_list)
 
-    return render_to_response(
-        'karaage/institutes/institute_detail.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/institutes/institute_detail.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -99,10 +99,10 @@ def institute_verbose(request, institute_id):
     from karaage.datastores import machine_category_get_institute_details
     institute_details = machine_category_get_institute_details(institute)
 
-    return render_to_response(
-        'karaage/institutes/institute_verbose.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/institutes/institute_verbose.html',
+        context=locals(),
+        request=request)
 
 
 @login_required
@@ -123,15 +123,15 @@ def institute_list(request):
             name = name.replace('_', ' ').capitalize()
             spec.append((name, value))
 
-    return render_to_response(
-        'karaage/institutes/institute_list.html',
-        {
+    return render(
+        template_name='karaage/institutes/institute_list.html',
+        context={
             'table': table,
             'filter': q_filter,
             'spec': spec,
             'title': "Institute list",
         },
-        context_instance=RequestContext(request))
+        request=request)
 
 
 @admin_required
@@ -166,11 +166,12 @@ def add_edit_institute(request, institute_id=None):
     for dform in delegate_formset.forms:
         media = media + dform.media
 
-    return render_to_response(
-        'karaage/institutes/institute_form.html',
-        {'institute': institute, 'form': form,
+    return render(
+        template_name='karaage/institutes/institute_form.html',
+        context={
+            'institute': institute, 'form': form,
             'media': media, 'delegate_formset': delegate_formset},
-        context_instance=RequestContext(request))
+        request=request)
 
 
 @admin_required
@@ -196,10 +197,10 @@ def institutequota_add(request, institute_id):
                 institute_chunk = form.save()
                 return HttpResponseRedirect(institute.get_absolute_url())
 
-    return render_to_response(
-        'karaage/institutes/institutequota_form.html',
-        {'form': form, 'institute': institute, },
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/institutes/institutequota_form.html',
+        context={'form': form, 'institute': institute, },
+        request=request)
 
 
 @admin_required
@@ -222,11 +223,14 @@ def institutequota_edit(request, institutequota_id):
                 return HttpResponseRedirect(
                     institute_chunk.institute.get_absolute_url())
 
-    return render_to_response(
-        'karaage/institutes/institutequota_form.html',
-        {'form': form, 'institute': institute_chunk.institute,
-            'object': institute_chunk},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/institutes/institutequota_form.html',
+        context={
+            'form': form,
+            'institute': institute_chunk.institute,
+            'object': institute_chunk
+        },
+        request=request)
 
 
 @admin_required
@@ -239,10 +243,10 @@ def institutequota_delete(request, institutequota_id):
         return HttpResponseRedirect(
             institute_chunk.institute.get_absolute_url())
 
-    return render_to_response(
-        'karaage/institutes/institutequota_delete_form.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/institutes/institutequota_delete_form.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required

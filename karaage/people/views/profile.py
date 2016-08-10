@@ -17,8 +17,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib.auth import login as auth_login
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -60,11 +59,13 @@ def login(request, username=None):
     else:
         form = LoginForm(initial={'username': username})
 
-    return render_to_response('karaage/people/profile_login.html', {
-        'form': form,
-        'next': redirect_to,
-        'error': error,
-    }, context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/profile_login.html',
+        context={
+            'form': form,
+            'next': redirect_to,
+            'error': error,
+        }, request=request)
 
 
 def saml_login(request):
@@ -114,10 +115,10 @@ def saml_login(request):
                     error = "Cannot log in with shibboleth as " \
                             "we do not recognise your shibboleth id."
 
-    return render_to_response(
-        'karaage/people/profile_login_saml.html',
-        {'form': form, 'error': error, 'saml_session': saml_session, },
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/profile_login_saml.html',
+        context={'form': form, 'error': error, 'saml_session': saml_session, },
+        request=request)
 
 
 def saml_details(request):
@@ -168,10 +169,11 @@ def saml_details(request):
     if request.user.is_authenticated():
         person = request.user
 
-    return render_to_response(
-        'karaage/people/profile_saml.html',
-        {'attrs': attrs, 'saml_session': saml_session, 'person': person, },
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/profile_saml.html',
+        context={
+            'attrs': attrs, 'saml_session': saml_session, 'person': person, },
+        request=request)
 
 
 @login_required
@@ -183,10 +185,10 @@ def profile_personal(request):
     user_applications = []
     start, end = common.get_date_range(request)
 
-    return render_to_response(
-        'karaage/people/profile_personal.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/profile_personal.html',
+        context=locals(),
+        request=request)
 
 
 @login_required
@@ -201,10 +203,10 @@ def edit_profile(request):
                 request, "User '%s' was edited succesfully" % person)
             return HttpResponseRedirect(person.get_absolute_url())
 
-    return render_to_response(
-        'karaage/people/profile_edit.html',
-        {'person': person, 'form': form},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/people/profile_edit.html',
+        context={'person': person, 'form': form},
+        request=request)
 
 
 @login_required
@@ -222,10 +224,10 @@ def password_change(request):
     else:
         form = PasswordChangeForm(person=person)
 
-    return render_to_response(
-        'karaage/common/profile_password.html',
-        {'person': person, 'form': form},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/common/profile_password.html',
+        context={'person': person, 'form': form},
+        request=request)
 
 
 @login_required
@@ -242,10 +244,10 @@ def password_request(request):
     var = {
         'person': person,
     }
-    return render_to_response(
-        'karaage/common/profile_password_request.html',
-        var,
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/common/profile_password_request.html',
+        context=var,
+        request=request)
 
 
 @login_required
@@ -254,7 +256,7 @@ def password_request_done(request):
     var = {
         'person': person,
     }
-    return render_to_response(
-        'karaage/common/profile_password_request_done.html',
-        var,
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/common/profile_password_request_done.html',
+        context=var,
+        request=request)

@@ -20,8 +20,7 @@ import six
 import django_tables2 as tables
 
 from django.forms.utils import ErrorList
-from django.shortcuts import get_object_or_404, render_to_response
-from django.template import RequestContext
+from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.db.models import Q
 from django.contrib import messages
@@ -60,12 +59,15 @@ def profile_projects(request):
         leader_project_list, prefix="leader-")
     config.configure(leader_project_list)
 
-    return render_to_response(
-        'karaage/projects/profile_projects.html',
-        {'person': person, 'project_list': project_list,
+    return render(
+        template_name='karaage/projects/profile_projects.html',
+        context={
+            'person': person,
+            'project_list': project_list,
             'delegate_project_list': delegate_project_list,
-            'leader_project_list': leader_project_list},
-        context_instance=RequestContext(request))
+            'leader_project_list': leader_project_list
+        },
+        request=request)
 
 
 @login_required
@@ -111,10 +113,10 @@ def add_edit_project(request, project_id=None):
 
             return HttpResponseRedirect(project.get_absolute_url())
 
-    return render_to_response(
-        'karaage/projects/project_form.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/projects/project_form.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -129,10 +131,10 @@ def undelete_project(request, project_id):
             request, "Project '%s' undeleted succesfully" % project)
         return HttpResponseRedirect(project.get_absolute_url())
 
-    return render_to_response(
-        'karaage/projects/project_confirm_undelete.html',
-        {'project': project},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/projects/project_confirm_undelete.html',
+        context={'project': project},
+        request=request)
 
 
 @admin_required
@@ -156,10 +158,10 @@ def delete_project(request, project_id):
 
     del query
 
-    return render_to_response(
-        'karaage/projects/project_confirm_delete.html',
-        {'project': project, 'error': error},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/projects/project_confirm_delete.html',
+        context={'project': project, 'error': error},
+        request=request)
 
 
 @login_required
@@ -181,11 +183,14 @@ def project_detail(request, project_id):
                 "User '%s' was added to %s succesfully" % (person, project))
             return HttpResponseRedirect(project.get_absolute_url())
 
-    return render_to_response(
-        'karaage/projects/project_detail.html',
-        {'project': project, 'form': form,
-            'can_edit': project.can_edit(request)},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/projects/project_detail.html',
+        context={
+            'project': project,
+            'form': form,
+            'can_edit': project.can_edit(request)
+        },
+        request=request)
 
 
 @admin_required
@@ -195,10 +200,10 @@ def project_verbose(request, project_id):
     from karaage.datastores import machine_category_get_project_details
     project_details = machine_category_get_project_details(project)
 
-    return render_to_response(
-        'karaage/projects/project_verbose.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/projects/project_verbose.html',
+        context=locals(),
+        request=request)
 
 
 @login_required
@@ -225,15 +230,15 @@ def project_list(request, queryset=None):
             name = name.replace('_', ' ').capitalize()
             spec.append((name, value))
 
-    return render_to_response(
-        'karaage/projects/project_list.html',
-        {
+    return render(
+        template_name='karaage/projects/project_list.html',
+        context={
             'table': table,
             'filter': q_filter,
             'spec': spec,
             'title': "Project list",
         },
-        context_instance=RequestContext(request))
+        request=request)
 
 
 @login_required
@@ -263,10 +268,10 @@ def remove_user(request, project_id, username):
 
     del query
 
-    return render_to_response(
-        'karaage/projects/remove_user_confirm.html',
-        {'project': project, 'person': person, 'error': error, },
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/projects/remove_user_confirm.html',
+        context={'project': project, 'person': person, 'error': error, },
+        request=request)
 
 
 @login_required
@@ -289,10 +294,10 @@ def grant_leader(request, project_id, username):
                 % (person, project.pid))
         return HttpResponseRedirect(project.get_absolute_url())
 
-    return render_to_response(
-        'karaage/projects/grant_leader.html',
-        {'project': project, 'person': person, },
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/projects/grant_leader.html',
+        context={'project': project, 'person': person, },
+        request=request)
 
 
 @login_required
@@ -319,10 +324,10 @@ def revoke_leader(request, project_id, username):
                 % (person, project.pid))
         return HttpResponseRedirect(project.get_absolute_url())
 
-    return render_to_response(
-        'karaage/projects/revoke_leader.html',
-        {'project': project, 'person': person, 'error': error},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/projects/revoke_leader.html',
+        context={'project': project, 'person': person, 'error': error},
+        request=request)
 
 
 @admin_required
@@ -380,10 +385,10 @@ def projectquota_add(request, project_id):
                 new_cap = project_chunk.cap
                 return HttpResponseRedirect(project.get_absolute_url())
 
-    return render_to_response(
-        'karaage/projects/projectquota_form.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/projects/projectquota_form.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -405,10 +410,10 @@ def projectquota_edit(request, projectquota_id):
                 return HttpResponseRedirect(
                     project_chunk.project.get_absolute_url())
 
-    return render_to_response(
-        'karaage/projects/projectquota_form.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/projects/projectquota_form.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -420,7 +425,7 @@ def projectquota_delete(request, projectquota_id):
         project_chunk.delete()
         return HttpResponseRedirect(project_chunk.project.get_absolute_url())
 
-    return render_to_response(
-        'karaage/projects/projectquota_delete_form.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/projects/projectquota_delete_form.html',
+        context=locals(),
+        request=request)

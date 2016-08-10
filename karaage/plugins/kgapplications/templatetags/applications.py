@@ -31,11 +31,11 @@ register = template.Library()
 @register.simple_tag(takes_context=True)
 def application_state(context, application):
     """ Render current state of application, verbose. """
-    new_context = template.context.Context({
+    new_context = {
         'roles': context['roles'],
         'org_name': context['org_name'],
         'application': application,
-    })
+    }
     nodelist = template.loader.get_template(
         'kgapplications/%s_common_state.html' % application.type)
     output = nodelist.render(new_context)
@@ -45,11 +45,11 @@ def application_state(context, application):
 @register.simple_tag(takes_context=True)
 def application_request(context, application):
     """ Render current detail of application, verbose. """
-    new_context = template.context.Context({
+    new_context = {
         'roles': context['roles'],
         'org_name': context['org_name'],
         'application': application,
-    })
+    }
     nodelist = template.loader.get_template(
         'kgapplications/%s_common_request.html' % application.type)
     output = nodelist.render(new_context)
@@ -94,11 +94,11 @@ class ApplicationActionsPlus(template.Node):
         extra = self.nodelist.render(context)
         nodelist = template.loader.get_template(
             'kgapplications/common_actions.html')
-        new_context = template.context.Context({
+        new_context = {
             'roles': context['roles'],
             'extra': extra,
             'actions': context['actions'],
-        })
+        }
         output = nodelist.render(new_context)
         return output
 

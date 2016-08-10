@@ -17,8 +17,7 @@
 
 """ This file shows the project application views using a state machine. """
 
-from django.shortcuts import get_object_or_404, render_to_response
-from django.template import RequestContext
+from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.core.urlresolvers import reverse
@@ -172,14 +171,14 @@ class StateStepIntroduction(Step):
             if action in request.POST:
                 return action
         link, is_secret = base.get_email_link(application)
-        return render_to_response(
-            'kgapplications/project_aed_introduction.html',
-            {
+        return render(
+            template_name='kgapplications/project_aed_introduction.html',
+            context={
                 'actions': actions,
                 'application': application, 'roles': roles,
                 'link': link, 'is_secret': is_secret,
             },
-            context_instance=RequestContext(request))
+            request=request)
 
 
 class StateStepShibboleth(Step):
@@ -298,12 +297,19 @@ class StateStepShibboleth(Step):
             return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
         # render the page
-        return render_to_response(
-            'kgapplications/project_aed_shibboleth.html',
-            {'form': form, 'done': done, 'status': status,
-                'actions': actions, 'roles': roles, 'application': application,
-                'attrs': attrs, 'saml_session': saml_session, },
-            context_instance=RequestContext(request))
+        return render(
+            template_name='kgapplications/project_aed_shibboleth.html',
+            context={
+                'form': form,
+                'done': done,
+                'status': status,
+                'actions': actions,
+                'roles': roles,
+                'application': application,
+                'attrs': attrs,
+                'saml_session': saml_session,
+            },
+            request=request)
 
 
 class StateStepApplicant(Step):
@@ -352,14 +358,14 @@ class StateStepApplicant(Step):
                     return action
 
         # Render the response
-        return render_to_response(
-            'kgapplications/project_aed_applicant.html',
-            {
+        return render(
+            template_name='kgapplications/project_aed_applicant.html',
+            context={
                 'form': form,
                 'application': application,
                 'status': status, 'actions': actions, 'roles': roles,
             },
-            context_instance=RequestContext(request))
+            request=request)
 
 
 class StateStepProject(base.State):
@@ -510,12 +516,16 @@ class StateStepProject(base.State):
                 pass
 
         # render the response
-        return render_to_response(
-            'kgapplications/project_aed_project.html',
-            {'forms': project_forms, 'project': project,
-                'actions': actions, 'roles': roles,
-                'application': application, },
-            context_instance=RequestContext(request))
+        return render(
+            template_name='kgapplications/project_aed_project.html',
+            context={
+                'forms': project_forms,
+                'project': project,
+                'actions': actions,
+                'roles': roles,
+                'application': application,
+            },
+            request=request)
 
 
 class StateApplicantEnteringDetails(StateWithSteps):
@@ -583,11 +593,16 @@ class StateApplicantEnteringDetails(StateWithSteps):
                         url = base.get_url(request, application, roles, label)
                         return HttpResponseRedirect(url)
                     else:
-                        return render_to_response(
-                            'kgapplications/project_aed_steal.html',
-                            {'application': application, 'person': new_person,
-                                'reason': reason, 'details': details, },
-                            context_instance=RequestContext(request))
+                        return render(
+                            template_name='kgapplications'
+                            '/project_aed_steal.html',
+                            context={
+                                'application': application,
+                                'person': new_person,
+                                'reason': reason,
+                                'details': details,
+                            },
+                            request=request)
 
         # if the user is the leader, show him the leader specific page.
         if ('is_leader' in roles or 'is_delegate' in roles) \
@@ -596,11 +611,11 @@ class StateApplicantEnteringDetails(StateWithSteps):
             actions = ['reopen']
             if 'reopen' in request.POST:
                 return 'reopen'
-            return render_to_response(
+            return render(
                 'kgapplications/project_aed_for_leader.html',
                 {'application': application,
                     'actions': actions, 'roles': roles, },
-                context_instance=RequestContext(request))
+                request=request)
 
         # otherwise do the default behaviour for StateWithSteps
         return super(StateApplicantEnteringDetails, self) \
@@ -700,11 +715,11 @@ class StateDuplicateApplicant(base.State):
                             return action
                     return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
-            return render_to_response(
+            return render(
                 'kgapplications/project_duplicate_applicant.html',
                 {'application': application, 'form': form,
                     'actions': actions, 'roles': roles, },
-                context_instance=RequestContext(request))
+                request=request)
         return super(StateDuplicateApplicant, self).view(
             request, application, label, roles, actions)
 
@@ -811,10 +826,10 @@ def _send_invitation(request, project):
             applicant, existing_person = get_applicant_from_email(email)
 
             if existing_person and 'existing' not in request.POST:
-                return render_to_response(
+                return render(
                     'kgapplications/project_common_invite_existing.html',
                     {'form': form, 'person': applicant},
-                    context_instance=RequestContext(request))
+                    request=request)
 
             application = form.save(commit=False)
             application.applicant = applicant
@@ -824,10 +839,10 @@ def _send_invitation(request, project):
             response = state_machine.start(request, application)
             return response
 
-    return render_to_response(
-        'kgapplications/project_common_invite_other.html',
-        {'form': form, 'project': project, },
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgapplications/project_common_invite_other.html',
+        context={'form': form, 'project': project, },
+        request=request)
 
 
 @login_required
@@ -857,10 +872,10 @@ def new_application(request):
     # Note default kgapplications/index.html will display error if user logged
     # in.
     if not settings.ALLOW_REGISTRATIONS:
-        return render_to_response(
+        return render(
             'kgapplications/project_common_disabled.html',
             {},
-            context_instance=RequestContext(request))
+            request=request)
 
     roles = {'is_applicant', 'is_authorised'}
 
@@ -885,10 +900,11 @@ def new_application(request):
                 # stage.
                 url = reverse('index')
                 return HttpResponseRedirect(url)
-        return render_to_response(
-            'kgapplications/project_common_invite_unauthenticated.html',
-            {'form': form, },
-            context_instance=RequestContext(request))
+        return render(
+            template_name='kgapplications/'
+            'project_common_invite_unauthenticated.html',
+            context={'form': form, },
+            request=request)
     else:
         if request.method == 'POST':
             person = request.user
@@ -900,7 +916,8 @@ def new_application(request):
             state_machine = get_application_state_machine()
             response = state_machine.start(request, application, roles)
             return response
-        return render_to_response(
-            'kgapplications/project_common_invite_authenticated.html',
-            {},
-            context_instance=RequestContext(request))
+        return render(
+            template_name='kgapplications/'
+            'project_common_invite_authenticated.html',
+            context={},
+            request=request)

@@ -242,7 +242,7 @@ class ForEachAppIncludeNode(template.Node):
                 pass
             else:
                 context.push()
-                output = template_obj.render(context)
+                output = template_obj.render(context.flatten())
                 result.append(output)
                 context.pop()
 

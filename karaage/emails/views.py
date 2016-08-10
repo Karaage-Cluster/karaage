@@ -15,9 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from django.template import RequestContext
 from django.core.mail import send_mass_mail
 from django.core.urlresolvers import reverse
 from django.contrib import messages
@@ -45,6 +44,6 @@ def send_email(request):
 
                 return HttpResponseRedirect(reverse('index'))
 
-    return render_to_response(
-        'karaage/emails/send_email_form.html', locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/emails/send_email_form.html', context=locals(),
+        request=request)

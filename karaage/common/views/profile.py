@@ -15,8 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib import messages
@@ -28,10 +27,10 @@ from karaage.common.decorators import login_required
 @login_required
 def profile(request):
     person = request.user
-    return render_to_response(
-        'karaage/common/profile.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/common/profile.html',
+        context=locals(),
+        request=request)
 
 
 def logout(request, username=None):

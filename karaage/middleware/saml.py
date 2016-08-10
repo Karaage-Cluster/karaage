@@ -19,8 +19,7 @@
 from django.contrib import auth
 from django.core.exceptions import ImproperlyConfigured
 from karaage.people.models import Person
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 
 import karaage.common.saml as saml
 
@@ -62,9 +61,9 @@ class SamlUserMiddleware(object):
         # Can we get the shib attributes we need?
         attrs, error = saml.parse_attributes(request)
         if error:
-            return render_to_response('saml_error.html',
-                                      {'shib_attrs': attrs},
-                                      context_instance=RequestContext(request))
+            return render(template_name='saml_error.html',
+                          context={'shib_attrs': attrs},
+                          request=request)
 
         # What is our persistent_id?
         saml_id = attrs['persistent_id']

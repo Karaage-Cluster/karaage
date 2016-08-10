@@ -23,8 +23,7 @@ import six
 
 import django
 from django.http import QueryDict
-from django.template import RequestContext
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -141,13 +140,13 @@ def add_comment(request, breadcrumbs, obj):
         form.save()
         return HttpResponseRedirect(obj.get_absolute_url())
 
-    return render_to_response(
-        'karaage/common/add_comment.html',
-        {
+    return render(
+        template_name='karaage/common/add_comment.html',
+        context={
             'form': form, 'obj': obj,
             'breadcrumbs': breadcrumbs,
         },
-        context_instance=RequestContext(request))
+        request=request)
 
 
 def is_admin(request):
