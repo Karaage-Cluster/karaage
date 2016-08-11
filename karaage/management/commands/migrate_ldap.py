@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import optparse
-
 from django.core.management.base import BaseCommand
 import django.db.transaction
 import tldap.transaction
@@ -40,21 +38,20 @@ def _eq(dn1, dn2):
 class Command(BaseCommand):
     help = "Run migrations on the LDAP database."
 
-    option_list = BaseCommand.option_list + (
-        optparse.make_option(
+    def add_arguments(self, parser):
+        parser.add_argument(
             '--dry-run',
             action='store_true',
             dest='dry_run',
             default=False,
             help='Don\'t change anything, output what needs '
             'to change instead.'),
-        optparse.make_option(
+        parser.add_argument(
             '--delete',
             action='store_true',
             dest='delete',
             default=False,
             help='Delete records that are no longer used.'),
-    )
 
     def get_base(self, datastore, key):
         if key in datastore._settings:

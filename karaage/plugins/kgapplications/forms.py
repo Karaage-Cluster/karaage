@@ -110,14 +110,33 @@ class ApplicantForm(forms.ModelForm):
             'address', 'city', 'postcode', 'country', 'fax',
         ]
 
+    def clean(self):
+        data = super(ApplicantForm, self).clean()
+
+        for key in [
+                'short_name', 'full_name', 'email', 'position',
+                'supervisor', 'department', 'telephone', 'mobile', 'fax',
+                'address', 'city', 'postcode', ]:
+            if key in data and data[key]:
+                data[key] = data[key].strip()
+
+        return data
+
     def __init__(self, *args, **kwargs):
         super(ApplicantForm, self).__init__(*args, **kwargs)
         self.fields['title'].required = True
         self.fields['short_name'].required = True
+        self.fields['short_name'].help_text = \
+            "This is typically your given name. "\
+            "For example enter 'Fred' here."
         self.fields['full_name'].required = True
+        self.fields['full_name'].help_text = \
+            "This is typically your full name. " \
+            "For example enter 'Fred Smith' here."
         self.fields['username'].label = 'Requested username'
         self.fields['username'].required = True
         self.fields['institute'].required = True
+        self.fields['department'].required = True
 
     def clean_username(self):
         username = self.cleaned_data['username']

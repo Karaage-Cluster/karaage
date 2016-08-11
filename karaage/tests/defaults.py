@@ -28,12 +28,12 @@ class InvalidString(str):
         raise TemplateSyntaxError(
             "Undefined variable or unknown value for: \"%s\"" % other)
 
-TEMPLATE_STRING_IF_INVALID = InvalidString("%s")
+# FIXME: TEMPLATES not accessible
+# TEMPLATES[0]['OPTIONS']['string_if_invalid'] = InvalidString("%s")
 
 DEBUG = True
 DEBUG_SERVE_STATIC = True
 PIPELINE_ENABLED = True
-TEMPLATE_DEBUG = DEBUG
 SHIB_SUPPORTED = True
 SOUTH_TESTS_MIGRATE = False
 

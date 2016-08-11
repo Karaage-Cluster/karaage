@@ -20,8 +20,7 @@ import six
 import django_tables2 as tables
 
 from django.conf import settings
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -66,16 +65,16 @@ def admin_index(request):
         'newest_projects': newest_projects,
         'recent_actions': recent_actions,
     }
-    return render_to_response(
-        'karaage/common/index.html', var,
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/common/index.html', context=var,
+        request=request)
 
 
 def index(request):
     if settings.ADMIN_REQUIRED or is_admin(request):
         return admin_index(request)
-    return render_to_response(
-        'karaage/common/index.html', context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/common/index.html', request=request)
 
 
 @admin_required
@@ -128,10 +127,10 @@ def search(request):
         project_list = ProjectTable(project_list, prefix="project-")
         config.configure(project_list)
 
-        return render_to_response(
-            'karaage/common/site_search.html',
-            locals(),
-            context_instance=RequestContext(request))
+        return render(
+            template_name='karaage/common/site_search.html',
+            context=locals(),
+            request=request)
     else:
         return HttpResponseRedirect(reverse('index'))
 
@@ -150,15 +149,15 @@ def log_list(request):
             name = name.replace('_', ' ').capitalize()
             spec.append((name, value))
 
-    return render_to_response(
-        'karaage/common/log_list.html',
-        {
+    return render(
+        template_name='karaage/common/log_list.html',
+        context={
             'table': table,
             'filter': q_filter,
             'spec': spec,
             'title': "Institute list",
         },
-        context_instance=RequestContext(request))
+        request=request)
 
 
 @admin_required

@@ -111,7 +111,7 @@ setup(
     ],
     install_requires=[
         "cssmin",
-        "Django >= 1.7",
+        "Django >= 1.8",
         "django-audit-log>=0.5.1",
         "python-alogger >= 2.0",
         "django-xmlrpc >= 0.1",

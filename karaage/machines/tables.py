@@ -37,6 +37,7 @@ class MachineTable(tables.Table):
     class Meta:
         model = Machine
         fields = ("name", )
+        empty_text = "No items"
 
 
 class MachineCategoryTable(tables.Table):
@@ -46,6 +47,7 @@ class MachineCategoryTable(tables.Table):
     class Meta:
         model = MachineCategory
         fields = ("name", )
+        empty_text = "No items"
 
 
 class AccountTable(tables.Table):

@@ -1,3 +1,21 @@
+Release 3.1.29 (11th August 2016)
+=================================
+
+* Fix broken tests.
+* Require at least one institute delegate.
+* Make project leaders a required value.
+* Don't crash if institute form invalid.
+* Add mark_safe to required template tags.
+* Strip leading and trailing space from input fields.
+* Clarify purpose of Karaage password.
+* Try to eliminate confusion in entering names.
+* Make department field mandatory on applicant form.
+* Update empty_text for similar_people_table.
+* Don't output empty fields from Slurm.
+* Requires Django >= 1.8
+* Fix Django 1.10 compatibility warnings.
+
+
 Release 3.1.28 (11 May 2016)
 ============================
 

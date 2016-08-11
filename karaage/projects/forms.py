@@ -49,7 +49,7 @@ class ProjectForm(forms.ModelForm):
             'class': 'vLargeTextField', 'rows': 10, 'cols': 40}),
         required=False)
     leaders = ajax_select.fields.AutoCompleteSelectMultipleField(
-        'person', required=False)
+        'person', required=True)
     start_date = forms.DateField(
         widget=AdminDateWidget, initial=datetime.datetime.today)
     end_date = forms.DateField(widget=AdminDateWidget, required=False)

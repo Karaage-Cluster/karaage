@@ -73,3 +73,4 @@ class ApplicationTable(tables.Table):
     class Meta:
         model = Application
         fields = ('id', 'action', 'applicant', 'state', 'expires')
+        empty_text = "No items"

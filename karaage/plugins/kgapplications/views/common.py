@@ -20,8 +20,7 @@ import six
 import django_tables2 as tables
 import datetime
 
-from django.shortcuts import get_object_or_404, render_to_response
-from django.template import RequestContext
+from django.shortcuts import get_object_or_404, render
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.http import HttpResponseRedirect
@@ -56,15 +55,15 @@ def application_list(request):
             name = name.replace('_', ' ').capitalize()
             spec.append((name, value))
 
-    return render_to_response(
-        "kgapplications/application_list.html",
-        {
+    return render(
+        template_name="kgapplications/application_list.html",
+        context={
             'table': table,
             'filter': q_filter,
             'spec': spec,
             'title': "Application list",
         },
-        context_instance=RequestContext(request))
+        request=request)
 
 
 @login_required
@@ -81,14 +80,14 @@ def profile_application_list(request):
     requires_attention = ApplicationTable(requires_attention, prefix="attn-")
     config.configure(requires_attention)
 
-    return render_to_response(
-        'kgapplications/profile_applications.html',
-        {
+    return render(
+        template_name='kgapplications/profile_applications.html',
+        context={
             'person': request.user,
             'my_applications': my_applications,
             'requires_attention': requires_attention,
         },
-        context_instance=RequestContext(request))
+        request=request)
 
 
 @admin_required
@@ -102,9 +101,10 @@ def applicant_edit(request, applicant_id):
             messages.success(request, "%s modified successfully." % applicant)
             return HttpResponseRedirect(reverse('kg_application_list'))
 
-    return render_to_response(
-        'kgapplications/applicant_form.html',
-        {'form': form}, context_instance=RequestContext(request))
+    return render(
+        template_name='kgapplications/applicant_form.html',
+        context={'form': form},
+        request=request)
 
 
 @admin_required
@@ -139,10 +139,10 @@ def application_unauthenticated(request, token, state=None, label=None):
     """ An somebody is trying to access an application. """
     application = base.get_application(secret_token=token)
     if application.expires < datetime.datetime.now():
-        return render_to_response(
-            'kgapplications/common_expired.html',
-            {'application': application},
-            context_instance=RequestContext(request))
+        return render(
+            template_name='kgapplications/common_expired.html',
+            context={'application': application},
+            request=request)
 
     roles = {'is_applicant', 'is_authorised'}
 

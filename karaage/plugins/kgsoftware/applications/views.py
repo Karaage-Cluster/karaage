@@ -17,8 +17,7 @@
 
 """ This file shows the project application views using a state machine. """
 
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.http import HttpResponseBadRequest
 
 from karaage.common.decorators import login_required
@@ -42,11 +41,16 @@ class StateIntroduction(base.State):
                 if action in request.POST:
                     return action
             link, is_secret = base.get_email_link(application)
-            return render_to_response(
-                'kgapplications/software_introduction.html',
-                {'actions': actions, 'application': application,
-                    'roles': roles, 'link': link, 'is_secret': is_secret},
-                context_instance=RequestContext(request))
+            return render(
+                template_name='kgapplications/software_introduction.html',
+                context={
+                    'actions': actions,
+                    'application': application,
+                    'roles': roles,
+                    'link': link,
+                    'is_secret': is_secret
+                },
+                request=request)
         return super(StateIntroduction, self).view(
             request, application, label, roles, actions)
 

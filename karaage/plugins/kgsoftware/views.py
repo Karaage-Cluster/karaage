@@ -21,8 +21,7 @@ import datetime
 
 import django_tables2 as tables
 
-from django.shortcuts import get_object_or_404, render_to_response
-from django.template import RequestContext
+from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -93,10 +92,10 @@ else:
 def profile_software(request):
     person = request.user
     agreement_list = person.softwarelicenseagreement_set.all()
-    return render_to_response(
-        'kgsoftware/profile_software.html',
-        {'person': person, 'agreement_list': agreement_list},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgsoftware/profile_software.html',
+        context={'person': person, 'agreement_list': agreement_list},
+        request=request)
 
 
 @login_required
@@ -115,15 +114,15 @@ def software_list(request):
             name = name.replace('_', ' ').capitalize()
             spec.append((name, value))
 
-    return render_to_response(
-        'kgsoftware/software_list.html',
-        {
+    return render(
+        template_name='kgsoftware/software_list.html',
+        context={
             'table': table,
             'filter': q_filter,
             'spec': spec,
             'title': "Software list",
         },
-        context_instance=RequestContext(request))
+        request=request)
 
 
 @login_required
@@ -146,10 +145,10 @@ def _software_list_non_admin(request):
         data['pending'] = is_application_pending(person, software_license)
         software_list.append(data)
 
-    return render_to_response(
-        'kgsoftware/add_package_list.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgsoftware/add_package_list.html',
+        context=locals(),
+        request=request)
 
 
 @login_required
@@ -188,10 +187,10 @@ def software_detail(request, software_id):
         messages.success(request, "Approved access to %s." % software)
         return HttpResponseRedirect(reverse('kg_profile_software'))
 
-    return render_to_response(
-        'kgsoftware/software_detail.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgsoftware/software_detail.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -205,10 +204,10 @@ def add_package(request):
     else:
         form = AddPackageForm()
 
-    return render_to_response(
-        'kgsoftware/add_package_form.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgsoftware/add_package_form.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -250,10 +249,10 @@ def add_comment(request, software_id):
 @login_required
 def license_detail(request, license_id):
     l = get_object_or_404(SoftwareLicense, pk=license_id)
-    return render_to_response(
-        'kgsoftware/license_detail.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgsoftware/license_detail.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -267,10 +266,10 @@ def add_license(request, software_id):
             log.add(software, "license: %s added" % l)
             return HttpResponseRedirect(software.get_absolute_url())
 
-    return render_to_response(
-        'kgsoftware/license_form.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgsoftware/license_form.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -284,10 +283,10 @@ def edit_license(request, license_id):
             form.save()
             return HttpResponseRedirect(software.get_absolute_url())
 
-    return render_to_response(
-        'kgsoftware/license_form.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgsoftware/license_form.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -311,10 +310,10 @@ def delete_version(request, version_id):
             request, "Version '%s' was deleted succesfully" % version)
         return HttpResponseRedirect(version.get_absolute_url())
 
-    return render_to_response(
-        'kgsoftware/version_confirm_delete.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgsoftware/version_confirm_delete.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -327,10 +326,10 @@ def add_version(request, software_id):
             version = form.save()
             return HttpResponseRedirect(software.get_absolute_url())
 
-    return render_to_response(
-        'kgsoftware/version_form.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgsoftware/version_form.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -344,19 +343,19 @@ def edit_version(request, version_id):
             version = form.save()
             return HttpResponseRedirect(software.get_absolute_url())
 
-    return render_to_response(
-        'kgsoftware/version_form.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgsoftware/version_form.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
 def category_list(request):
     category_list = SoftwareCategory.objects.all()
-    return render_to_response(
-        'kgsoftware/category_list.html',
-        {'category_list': category_list},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgsoftware/category_list.html',
+        context={'category_list': category_list},
+        request=request)
 
 
 @admin_required
@@ -386,10 +385,10 @@ def remove_member(request, software_id, person_id):
 
         return HttpResponseRedirect(software.get_absolute_url())
 
-    return render_to_response(
-        'kgsoftware/person_confirm_remove.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgsoftware/person_confirm_remove.html',
+        context=locals(),
+        request=request)
 
 
 @login_required

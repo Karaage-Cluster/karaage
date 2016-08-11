@@ -12,17 +12,14 @@ addons:
     - ldap-utils
 
 env:
- - DJANGO_VERSION=1.7.10 DATABASE_URL=postgres://postgres@/spud
  - DJANGO_VERSION=1.8.11 DATABASE_URL=postgres://postgres@/spud
  - DJANGO_VERSION=1.9.4 DATABASE_URL=postgres://postgres@/spud
  - DJANGO_VERSION=master DATABASE_URL=postgres://postgres@/spud
 
- - DJANGO_VERSION=1.7.10 DATABASE_URL=mysql://root:@localhost/spud
  - DJANGO_VERSION=1.8.11 DATABASE_URL=mysql://root:@localhost/spud
  - DJANGO_VERSION=1.9.4 DATABASE_URL=mysql://root:@localhost/spud
  - DJANGO_VERSION=master DATABASE_URL=mysql://root:@localhost/spud
 
- - DJANGO_VERSION=1.7.10 DATABASE_URL=sqlite://
  - DJANGO_VERSION=1.8.11 DATABASE_URL=sqlite://
  - DJANGO_VERSION=1.9.4 DATABASE_URL=sqlite://
  - DJANGO_VERSION=master DATABASE_URL=sqlite://
@@ -52,19 +49,11 @@ script:
   - python ./manage.py test --settings="karaage.plugins.kgsoftware.tests.settings" -v 2 karaage.plugins.kgsoftware.tests
   - ./manage.py collectstatic --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 --noinput
   - python ./manage.py test --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 karaage.plugins.kgsoftware
-  - ./manage.py collectstatic --settings="karaage.plugins.kgusage.tests.settings" -v 2 --noinput
-  - python ./manage.py test --settings="karaage.plugins.kgusage.tests.settings" -v 2 karaage.plugins.kgusage
+#  - ./manage.py collectstatic --settings="karaage.plugins.kgusage.tests.settings" -v 2 --noinput
+#  - python ./manage.py test --settings="karaage.plugins.kgusage.tests.settings" -v 2 karaage.plugins.kgusage
 
 matrix:
   fast_finish: true
-  exclude:
-      # Drop python 3.5 and django 1.7
-      - python: 3.5
-        env: DJANGO_VERSION=1.7.10 DATABASE_URL=postgres://postgres@/spud
-      - python: 3.5
-        env: DJANGO_VERSION=1.7.10 DATABASE_URL=mysql://root:@localhost/spud
-      - python: 3.5
-        env: DJANGO_VERSION=1.7.10 DATABASE_URL=sqlite://
   allow_failures:
       - env: DJANGO_VERSION=master DATABASE_URL=postgres://postgres@/spud
       - env: DJANGO_VERSION=master DATABASE_URL=mysql://root:@localhost/spud

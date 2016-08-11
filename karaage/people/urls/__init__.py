@@ -16,30 +16,36 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf import settings
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
-profile_urlpatterns = patterns(
-    'karaage.common.views.profile',
-    url(r'^$', 'profile', name='kg_profile'),
-    url(r'^logout/$', 'logout', name='kg_profile_logout'),
-)
+from karaage.common.views import profile as common_profile
+from karaage.people.views import profile as people_profile
 
-profile_urlpatterns += patterns(
-    'karaage.people.views.profile',
-    url(r'^personal/$', 'profile_personal', name='kg_profile_personal'),
-    url(r'^edit/$', 'edit_profile', name='kg_profile_edit'),
-    url(r'^password/$', 'password_change', name='kg_profile_password'),
-    url(r'^password_request/$', 'password_request', name='kg_profile_reset'),
+profile_urlpatterns = [
+    url(r'^$', common_profile.profile, name='kg_profile'),
+    url(r'^logout/$', common_profile.logout, name='kg_profile_logout'),
+]
+
+profile_urlpatterns += [
+    url(r'^personal/$',
+        people_profile.profile_personal, name='kg_profile_personal'),
+    url(r'^edit/$',
+        people_profile.edit_profile, name='kg_profile_edit'),
+    url(r'^password/$',
+        people_profile.password_change, name='kg_profile_password'),
+    url(r'^password_request/$',
+        people_profile.password_request, name='kg_profile_reset'),
     url(r'^password_request/done/$',
-        'password_request_done', name='kg_profile_reset_done'),
-    url(r'^login/$', 'login', name='kg_profile_login'),
+        people_profile.password_request_done, name='kg_profile_reset_done'),
+    url(r'^login/$', people_profile.login, name='kg_profile_login'),
     url(r'^login/(?P<username>%s)/$' % settings.USERNAME_VALIDATION_RE,
-        'login', name="kg_profile_login"),
-)
+        people_profile.login, name="kg_profile_login"),
+]
 
 if settings.SHIB_SUPPORTED:
-    profile_urlpatterns += patterns(
-        'karaage.people.views.profile',
-        url(r'^saml/$', 'saml_details', name='kg_profile_saml'),
-        url(r'^slogin/$', 'saml_login', name='kg_profile_login_saml'),
-    )
+    profile_urlpatterns += [
+        url(r'^saml/$',
+            people_profile.saml_details, name='kg_profile_saml'),
+        url(r'^slogin/$',
+            people_profile.saml_login, name='kg_profile_login_saml'),
+    ]

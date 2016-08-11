@@ -63,3 +63,4 @@ class CPUJobTable(tables.Table):
         fields = ('jobid', 'person', 'project', 'machine', 'date',
                   'queue', 'cpu_usage', 'cores', 'vmem',
                   'wait_time', 'est_wall_time', 'act_wall_time')
+        empty_text = "No items"

@@ -20,9 +20,8 @@ import six
 import django_tables2 as tables
 
 from django.core.urlresolvers import reverse
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
-from django.template import RequestContext
 
 from karaage.projects.tables import ProjectTable
 from karaage.projects.models import Project
@@ -42,10 +41,10 @@ import karaage.common as util
 @login_required
 def machine_detail(request, machine_id):
     machine = get_object_or_404(Machine, pk=machine_id)
-    return render_to_response(
-        'karaage/machines/machine_detail.html',
-        {'machine': machine},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/machines/machine_detail.html',
+        context={'machine': machine},
+        request=request)
 
 
 @admin_required
@@ -56,10 +55,10 @@ def machine_create(request):
             machine = form.save()
             return HttpResponseRedirect(machine.get_absolute_url())
 
-    return render_to_response(
-        'karaage/machines/machine_form.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/machines/machine_form.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -72,10 +71,10 @@ def machine_edit(request, machine_id):
             machine = form.save()
             return HttpResponseRedirect(machine.get_absolute_url())
 
-    return render_to_response(
-        'karaage/machines/machine_form.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/machines/machine_form.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -86,10 +85,10 @@ def machine_password(request, machine_id):
         password = Machine.objects.make_random_password()
         machine.set_password(password)
         machine.save()
-    return render_to_response(
-        'karaage/machines/machine_password.html',
-        {'machine': machine, 'password': password},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/machines/machine_password.html',
+        context={'machine': machine, 'password': password},
+        request=request)
 
 
 @admin_required
@@ -127,14 +126,14 @@ def category_list(request):
     table = MachineCategoryTable(queryset)
     tables.RequestConfig(request).configure(table)
 
-    return render_to_response(
-        'karaage/machines/machinecategory_list.html',
-        {
+    return render(
+        template_name='karaage/machines/machinecategory_list.html',
+        context={
             'table': table,
             'resources': Resource.objects.all(),
             'resource_pools': ResourcePool.objects.all(),
         },
-        context_instance=RequestContext(request))
+        request=request)
 
 
 @admin_required
@@ -163,10 +162,10 @@ def category_detail(request, category_id):
     table = MachineTable(queryset)
     tables.RequestConfig(request).configure(table)
 
-    return render_to_response(
-        'karaage/machines/machinecategory_detail.html',
-        {'machine_category': machine_category, 'table': table},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/machines/machinecategory_detail.html',
+        context={'machine_category': machine_category, 'table': table},
+        request=request)
 
 
 @admin_required
@@ -177,10 +176,10 @@ def category_accounts(request, category_id):
     table = AccountTable(queryset)
     tables.RequestConfig(request).configure(table)
 
-    return render_to_response(
-        'karaage/machines/machinecategory_accounts.html',
-        {'machine_category': machine_category, 'table': table},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/machines/machinecategory_accounts.html',
+        context={'machine_category': machine_category, 'table': table},
+        request=request)
 
 
 @admin_required
@@ -192,10 +191,10 @@ def category_projects(request, category_id):
     table = ProjectTable(queryset)
     tables.RequestConfig(request).configure(table)
 
-    return render_to_response(
-        'karaage/machines/machinecategory_projects.html',
-        {'machine_category': machine_category, 'table': table},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/machines/machinecategory_projects.html',
+        context={'machine_category': machine_category, 'table': table},
+        request=request)
 
 
 @admin_required

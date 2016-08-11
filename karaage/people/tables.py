@@ -112,6 +112,7 @@ class PersonTable(tables.Table):
         model = Person
         fields = ("active", "username", "full_name", "institute",
                   "is_admin", "last_usage", "date_approved")
+        empty_text = "No items"
 
 
 class LeaderTable(tables.Table):
@@ -126,6 +127,7 @@ class LeaderTable(tables.Table):
 
     class Meta:
         fields = ("leader", "institute", "project", )
+        empty_text = "No items"
 
 
 class GroupFilter(django_filters.FilterSet):
@@ -145,3 +147,4 @@ class GroupTable(tables.Table):
     class Meta:
         model = Group
         fields = ("name", "description")
+        empty_text = "No items"

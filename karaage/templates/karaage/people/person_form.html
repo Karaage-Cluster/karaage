@@ -28,7 +28,9 @@
 
         <fieldset class="module aligned ()">
             <h2>Personal Details</h2>
-            {% inlineformfield form.title form.short_name form.full_name %}
+            {% formfield form.title %}
+            {% formfield form.short_name %}
+            {% formfield form.full_name %}
             {% inlineformfield form.institute form.department %}
             {% formfield form.position %}
             {% formfield form.supervisor %}

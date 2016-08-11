@@ -17,8 +17,7 @@
 
 """ This file implements a state machine for the views. """
 
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponseForbidden
@@ -296,10 +295,10 @@ class State(object):
                 'actions': actions,
                 'state': self.name,
                 'roles': roles})
-            return render_to_response(
-                'kgapplications/common_detail.html',
-                context,
-                context_instance=RequestContext(request))
+            return render(
+                template_name='kgapplications/common_detail.html',
+                context=context,
+                request=request)
         elif request.method == "POST":
             for action in actions:
                 if action in request.POST:

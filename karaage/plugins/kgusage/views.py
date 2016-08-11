@@ -23,8 +23,7 @@ from decimal import Decimal
 from celery.task import Task
 import json
 
-from django.shortcuts import get_object_or_404, render_to_response
-from django.template import RequestContext
+from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.http import HttpResponse
 from django.conf import settings
@@ -59,10 +58,10 @@ def progress(request):
         models.InstituteCache.objects.all().delete()
         models.PersonCache.objects.all().delete()
         models.ProjectCache.objects.all().delete()
-        return render_to_response(
-            'main.html',
-            {'content': 'Deleted'},
-            context_instance=RequestContext(request))
+        return render(
+            template_name='main.html',
+            context={'content': 'Deleted'},
+            request=request)
 
     if request.method == 'POST':
         if 'task_id' in request.POST:
@@ -145,10 +144,10 @@ def usage_index(request):
 
     result = gen_machine_category_cache(request, start, end)
     if result is not None:
-        return render_to_response(
-            'kgusage/progress.html',
-            {'task_id': result.task_id},
-            context_instance=RequestContext(request))
+        return render(
+            template_name='kgusage/progress.html',
+            context={'task_id': result.task_id},
+            request=request)
 
     mc_list = []
     for machine_category in MachineCategory.objects.all():
@@ -158,9 +157,10 @@ def usage_index(request):
                 start, end, machine_category),
         })
 
-    return render_to_response(
-        'kgusage/mc_list.html', locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgusage/mc_list.html',
+        context=locals(),
+        request=request)
 
 
 @usage_required
@@ -178,10 +178,10 @@ def index(request, machine_category_id):
     result = gen_cache_for_machine_category(
         request, start, end, machine_category)
     if result is not None:
-        return render_to_response(
-            'kgusage/progress.html',
-            {'task_id': result.task_id},
-            context_instance=RequestContext(request))
+        return render(
+            template_name='kgusage/progress.html',
+            context={'task_id': result.task_id},
+            request=request)
 
     show_zeros = True
 
@@ -274,9 +274,10 @@ def index(request, machine_category_id):
     trend_graph = graphs.get_trend_graph_url(
         start, end, machine_category)
 
-    return render_to_response(
-        'kgusage/usage_institute_list.html', locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgusage/usage_institute_list.html',
+        context=locals(),
+        request=request)
 
 
 @usage_required
@@ -293,18 +294,18 @@ def institute_usage(request, institute_id, machine_category_id):
     result = gen_cache_for_machine_category(
         request, start, end, machine_category)
     if result is not None:
-        return render_to_response(
-            'kgusage/progress.html',
-            {'task_id': result.task_id},
-            context_instance=RequestContext(request))
+        return render(
+            template_name='kgusage/progress.html',
+            context={'task_id': result.task_id},
+            request=request)
 
     result = gen_cache_for_institute(
         request, start, end, institute, machine_category)
     if result is not None:
-        return render_to_response(
-            'kgusage/progress.html',
-            {'task_id': result.task_id},
-            context_instance=RequestContext(request))
+        return render(
+            template_name='kgusage/progress.html',
+            context={'task_id': result.task_id},
+            request=request)
 
     project_list = []
     institute_list = Institute.active.all()
@@ -393,9 +394,10 @@ def institute_usage(request, institute_id, machine_category_id):
     graph = graphs.get_institute_trend_graph_url(
         institute, start, end, machine_category)
 
-    return render_to_response(
-        'kgusage/usage_institute_detail.html', locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgusage/usage_institute_detail.html',
+        context=locals(),
+        request=request)
 
 
 @usage_required
@@ -417,18 +419,18 @@ def project_usage(request, project_id, machine_category_id):
     result = gen_cache_for_machine_category(
         request, start, end, machine_category)
     if result is not None:
-        return render_to_response(
-            'kgusage/progress.html',
-            {'task_id': result.task_id},
-            context_instance=RequestContext(request))
+        return render(
+            template_name='kgusage/progress.html',
+            context={'task_id': result.task_id},
+            request=request)
 
     result = gen_cache_for_project(
         request, start, end, project, machine_category)
     if result is not None:
-        return render_to_response(
-            'kgusage/progress.html',
-            {'task_id': result.task_id},
-            context_instance=RequestContext(request))
+        return render(
+            template_name='kgusage/progress.html',
+            context={'task_id': result.task_id},
+            request=request)
 
     usage_list = []
     total, total_jobs = 0, 0
@@ -467,9 +469,10 @@ def project_usage(request, project_id, machine_category_id):
     graph = graphs.get_project_trend_graph_url(
         project, start, end, machine_category)
 
-    return render_to_response(
-        'kgusage/project_usage.html', locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgusage/project_usage.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -554,9 +557,10 @@ def search(request):
         }
         form = UsageSearchForm(initial=initial)
 
-    return render_to_response(
-        'kgusage/search.html', locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgusage/search.html',
+        context=locals(),
+        request=request)
 
 
 @usage_required
@@ -573,10 +577,10 @@ def top_users(request, machine_category_id):
     result = gen_cache_for_machine_category(
         request, start, end, machine_category)
     if result is not None:
-        return render_to_response(
-            'kgusage/progress.html',
-            {'task_id': result.task_id},
-            context_instance=RequestContext(request))
+        return render(
+            template_name='kgusage/progress.html',
+            context={'task_id': result.task_id},
+            request=request)
 
     start, end = get_date_range(request)
     mc_cache = usage.get_machine_category_usage(machine_category, start, end)
@@ -603,9 +607,10 @@ def top_users(request, machine_category_id):
 
     person_percent = (person_total / available_time) * 100
 
-    return render_to_response(
-        'kgusage/top_users.html', locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgusage/top_users.html',
+        context=locals(),
+        request=request)
 
 
 @usage_required
@@ -621,17 +626,18 @@ def institute_trends(request, machine_category_id):
     result = gen_cache_for_all_institutes(
         request, start, end, machine_category)
     if result is not None:
-        return render_to_response(
-            'kgusage/progress.html',
-            {'task_id': result.task_id},
-            context_instance=RequestContext(request))
+        return render(
+            template_name='kgusage/progress.html',
+            context={'task_id': result.task_id},
+            request=request)
 
     graph_list = graphs.get_institutes_trend_graph_urls(
         start, end, machine_category)
 
-    return render_to_response(
-        'kgusage/institute_trends.html', locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgusage/institute_trends.html',
+        context=locals(),
+        request=request)
 
 
 @usage_required
@@ -647,10 +653,10 @@ def institute_users(request, machine_category_id, institute_id):
     result = gen_cache_for_machine_category(
         request, start, end, machine_category)
     if result is not None:
-        return render_to_response(
-            'kgusage/progress.html',
-            {'task_id': result.task_id},
-            context_instance=RequestContext(request))
+        return render(
+            template_name='kgusage/progress.html',
+            context={'task_id': result.task_id},
+            request=request)
 
     institute = get_object_or_404(Institute, pk=institute_id)
 
@@ -688,9 +694,10 @@ def institute_users(request, machine_category_id, institute_id):
     else:
         person_percent = 0
 
-    return render_to_response(
-        'kgusage/institute_users.html', locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgusage/institute_users.html',
+        context=locals(),
+        request=request)
 
 
 @usage_required
@@ -722,9 +729,10 @@ def core_report(request, machine_category_id):
 #    g = GraphGenerator()
 #    graph = g.bar_chart(data, x_labels, max_y, bar_width=50).get_url()
 
-    return render_to_response(
-        'kgusage/core_report.html', locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgusage/core_report.html',
+        context=locals(),
+        request=request)
 
 
 @usage_required
@@ -761,9 +769,10 @@ def mem_report(request, machine_category_id):
 #    g = GraphGenerator()
 #    graph = g.bar_chart(data, x_labels, max_y, bar_width=50).get_url()
 
-    return render_to_response(
-        'kgusage/mem_report.html', locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgusage/mem_report.html',
+        context=locals(),
+        request=request)
 
 
 @usage_required
@@ -774,10 +783,10 @@ def job_detail(request, jobid):
             not getattr(settings, 'USAGE_IS_PUBLIC', False)):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
-    return render_to_response(
-        'kgusage/job_detail.html',
-        {'job': job},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgusage/job_detail.html',
+        context={'job': job},
+        request=request)
 
 
 @usage_required
@@ -797,15 +806,15 @@ def job_list(request):
             name = name.replace('_', ' ').capitalize()
             spec.append((name, value))
 
-    return render_to_response(
-        'kgusage/job_list.html',
-        {
+    return render(
+        template_name='kgusage/job_list.html',
+        context={
             'table': table,
             'filter': q_filter,
             'spec': spec,
             'title': "Job list",
         },
-        context_instance=RequestContext(request))
+        request=request)
 
 
 @admin_required
@@ -856,10 +865,10 @@ def software_stats(request, software_id):
         'end': end,
         'querystring': querystring,
     }
-    return render_to_response(
-        'kgusage/software_stats.html',
-        context,
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgusage/software_stats.html',
+        context=context,
+        request=request)
 
 
 @admin_required
@@ -900,7 +909,7 @@ def version_stats(request, version_id):
         'querystring': querystring,
     }
 
-    return render_to_response(
-        'kgusage/version_stats.html',
-        context,
-        context_instance=RequestContext(request))
+    return render(
+        template_name='kgusage/version_stats.html',
+        context=context,
+        request=request)

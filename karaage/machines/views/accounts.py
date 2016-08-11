@@ -15,8 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.shortcuts import get_object_or_404, render_to_response
-from django.template import RequestContext
+from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.http import HttpResponseBadRequest
 from django.contrib import messages
@@ -37,10 +36,10 @@ import karaage.common as common
 def profile_accounts(request):
     person = request.user
     accounts = person.account_set.filter(date_deleted__isnull=True)
-    return render_to_response(
-        'karaage/machines/profile_accounts.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/machines/profile_accounts.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -58,10 +57,10 @@ def add_account(request, username=None):
             person = account.person
             return HttpResponseRedirect(person.get_absolute_url())
 
-    return render_to_response(
-        'karaage/machines/account_form.html',
-        {'form': form, 'person': person, 'account': account},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/machines/account_form.html',
+        context={'form': form, 'person': person, 'account': account},
+        request=request)
 
 
 @login_required
@@ -74,10 +73,10 @@ def account_detail(request, account_id):
             '<p>You do not have permission to view details '
             'about this account.</p>')
 
-    return render_to_response(
-        'karaage/machines/account_detail.html',
-        {'account': account, 'can_edit': account.can_edit(request)},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/machines/account_detail.html',
+        context={'account': account, 'can_edit': account.can_edit(request)},
+        request=request)
 
 
 @login_required
@@ -108,10 +107,10 @@ def edit_account(request, account_id):
             person = account.person
             return HttpResponseRedirect(person.get_absolute_url())
 
-    return render_to_response(
-        'karaage/machines/account_form.html',
-        {'form': form, 'person': person, 'account': account},
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/machines/account_form.html',
+        context={'form': form, 'person': person, 'account': account},
+        request=request)
 
 
 @admin_required
@@ -130,10 +129,10 @@ def add_project(request, username):
                 "User '%s' was added to %s succesfully" % (person, project))
             return HttpResponseRedirect(person.get_absolute_url())
 
-    return render_to_response(
-        'karaage/machines/person_add_project.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/machines/person_add_project.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required
@@ -148,10 +147,10 @@ def delete_account(request, account_id):
             "User account for '%s' deleted succesfully" % account.person)
         return HttpResponseRedirect(account.get_absolute_url())
 
-    return render_to_response(
-        'karaage/machines/account_confirm_delete.html',
-        locals(),
-        context_instance=RequestContext(request))
+    return render(
+        template_name='karaage/machines/account_confirm_delete.html',
+        context=locals(),
+        request=request)
 
 
 @admin_required

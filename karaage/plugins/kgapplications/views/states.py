@@ -17,8 +17,7 @@
 
 """ This file is for common state or transitions that can be shared. """
 
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.contrib import messages
 from django.conf import settings
 from django.http import HttpResponseBadRequest
@@ -106,12 +105,16 @@ class StateWaitingForApproval(base.State):
                 if form.is_valid():
                     form.save()
                     return "approve"
-            return render_to_response(
-                self.template_approve,
-                {'application': application, 'form': form,
+            return render(
+                template_name=self.template_approve,
+                context={
+                    'application': application,
+                    'form': form,
                     'authorised_text': self.authorised_text,
-                    'actions': actions, 'roles': roles},
-                context_instance=RequestContext(request))
+                    'actions': actions,
+                    'roles': roles
+                },
+                request=request)
         elif label == "decline" and 'can_approve' in roles:
             actions = ['cancel']
             if request.method == 'POST':
@@ -133,12 +136,16 @@ class StateWaitingForApproval(base.State):
                         'link': link, 'is_secret': is_secret})
                 initial_data = {'body': body, 'subject': subject}
                 form = EmailForm(initial=initial_data)
-            return render_to_response(
-                self.template_decline,
-                {'application': application, 'form': form,
+            return render(
+                template_name=self.template_decline,
+                context={
+                    'application': application,
+                    'form': form,
                     'authorised_text': self.authorised_text,
-                    'actions': actions, 'roles': roles},
-                context_instance=RequestContext(request))
+                    'actions': actions,
+                    'roles': roles
+                },
+                request=request)
         self.context = {
             'authorised_text': self.authorised_text,
         }
@@ -233,11 +240,16 @@ class StatePassword(base.State):
                         if action in request.POST:
                             return action
                     return HttpResponseBadRequest("<h1>Bad Request</h1>")
-            return render_to_response(
-                'kgapplications/common_password.html',
-                {'application': application, 'form': form,
-                    'actions': actions, 'roles': roles, 'type': form_type},
-                context_instance=RequestContext(request))
+            return render(
+                template_name='kgapplications/common_password.html',
+                context={
+                    'application': application,
+                    'form': form,
+                    'actions': actions,
+                    'roles': roles,
+                    'type': form_type
+                },
+                request=request)
         return super(StatePassword, self).view(
             request, application, label, roles, actions)
 
@@ -262,10 +274,13 @@ class StateDeclined(base.State):
             # applicant, admin, leader can reopen an application
             if 'reopen' in request.POST:
                 return 'reopen'
-            return render_to_response(
-                'kgapplications/common_declined.html',
-                {'application': application,
-                    'actions': actions, 'roles': roles},
-                context_instance=RequestContext(request))
+            return render(
+                template_name='kgapplications/common_declined.html',
+                context={
+                    'application': application,
+                    'actions': actions,
+                    'roles': roles
+                },
+                request=request)
         return super(StateDeclined, self).view(
             request, application, label, roles, actions)

@@ -18,7 +18,7 @@
 from __future__ import absolute_import
 import logging
 
-from django.template import loader, RequestContext
+from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http import HttpResponsePermanentRedirect, HttpResponseGone
 
@@ -40,9 +40,10 @@ def direct_to_template(
             dictionary[key] = value()
         else:
             dictionary[key] = value
-    c = RequestContext(request, dictionary)
     t = loader.get_template(template)
-    return HttpResponse(t.render(c), content_type=mimetype)
+    return HttpResponse(
+        t.render(context=dictionary, request=request),
+        content_type=mimetype)
 
 
 def redirect_to(request, url, permanent=True, query_string=False, **kwargs):

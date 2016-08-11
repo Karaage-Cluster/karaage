@@ -16,19 +16,23 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
 from django.conf import settings
+
+import django.views.static
+
+import django_xmlrpc.views
 
 from karaage.common import get_urls
 
 import re
+from karaage.common.views import common
 
 
 # Profile URLS
 
-profile_urlpatterns = patterns(
-    '',
-)
+profile_urlpatterns = [
+]
 
 
 def _load_profile_urls():
@@ -53,9 +57,8 @@ for urls in get_urls("profile_urlpatterns"):
 
 # Standard URLS
 
-urlpatterns = patterns(
-    '',
-    url(r'^xmlrpc/$', 'django_xmlrpc.views.handle_xmlrpc',),
+urlpatterns = [
+    url(r'^xmlrpc/$', django_xmlrpc.views.handle_xmlrpc),
     url(r'^captcha/', include('captcha.urls')),
     url(r'^lookup/', include('ajax_select.urls')),
 
@@ -70,29 +73,27 @@ urlpatterns = patterns(
     url(r'^resources/', include('karaage.machines.urls.resources')),
     url(r'^profile/', include(profile_urlpatterns)),
 
-    url(r'^$', 'karaage.common.views.common.index', name='index'),
-    url(r'^search/$', 'karaage.common.views.common.search',
+    url(r'^$', common.index, name='index'),
+    url(r'^search/$', common.search,
         name='kg_site_search'),
-    url(r'^misc/$', 'karaage.common.views.common.misc', name='kg_misc'),
-    url(r'^logs/$', 'karaage.common.views.common.log_list',
+    url(r'^misc/$', common.misc, name='kg_misc'),
+    url(r'^logs/$', common.log_list,
         name='kg_log_list'),
-    url(r'^aup/$', 'karaage.common.views.common.aup', name="kg_aup"),
-)
+    url(r'^aup/$', common.aup, name="kg_aup"),
+]
 
 if settings.DEBUG_SERVE_STATIC:
-    urlpatterns += patterns(
-        '',
+    urlpatterns += [
         url(r'^%s(?P<path>.*)$' % re.escape(settings.STATIC_URL.lstrip('/')),
-            'django.views.static.serve',
+            django.views.static.serve,
             {'document_root': settings.STATIC_ROOT}),
-    )
+    ]
 
-    urlpatterns += patterns(
-        '',
+    urlpatterns += [
         url(r'^%s(?P<path>.*)$' % re.escape(settings.FILES_URL.lstrip('/')),
-            'django.views.static.serve',
+            django.views.static.serve,
             {'document_root': settings.FILES_DIR}),
-    )
+    ]
 
 for urls in get_urls("urlpatterns"):
     urlpatterns += urls

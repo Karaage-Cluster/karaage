@@ -43,15 +43,6 @@ HTTP_HOST = getfqdn()
 # settings.py).
 DEBUG = False
 
-# A boolean that turns on/off template debug mode. If this is True, the fancy
-# error page will display a detailed report for any exception raised during
-# template rendering. This report contains the relevant snippet of the
-# template, with the appropriate line highlighted.
-#
-# Note that Django only displays fancy error pages if DEBUG is True, so you’ll
-# want to set that to take advantage of this setting.
-TEMPLATE_DEBUG = True
-
 # For debugging purposes, ensure that static files are served when DEBUG=False,
 # used for testing django-pipeline. Should never be set to True on production
 # box or for normal debugging.
@@ -117,37 +108,33 @@ if sys.version_info < (3, 0) and django.VERSION < (1, 7):
     INSTALLED_APPS += ('south',)
 
 
-# List of locations of the template source files searched by
-# django.template.loaders.filesystem.Loader, in search order.
-
-# Allow administrator to override templates.
-TEMPLATE_DIRS = (
-    "/etc/karaage3/templates",
-)
-
-# A tuple of callables that are used to populate the context in
-# RequestContext. These callables take a request object as their argument and
-# return a dictionary of items to be merged into the context.
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.request',
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.static',
-    'django.core.context_processors.media',
-    'django.core.context_processors.i18n',
-    'django.contrib.messages.context_processors.messages',
-    'karaage.common.context_processors.common',
-)
-
-# A tuple of template loader classes, specified as strings. Each Loader class
-# knows how to import templates from a particular source. Optionally, a tuple
-# can be used instead of a string. The first item in the tuple should be the
-# Loader’s module, subsequent items are passed to the Loader during
-# initialization.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
+# A list containing the settings for all template engines to be used with
+# Django. Each item of the list is a dictionary containing the options for an
+# individual engine.
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            "/etc/karaage3/templates",
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'karaage.common.context_processors.common',
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.request',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+            ],
+            'debug': True,
+            # 'string_if_invalid': InvalidString("%s"),
+        },
+    },
+]
 
 # A boolean that specifies whether Django’s translation system should be
 # enabled. This provides an easy way to turn it off, for performance. If this

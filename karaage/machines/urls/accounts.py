@@ -15,31 +15,32 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.conf import settings
 
-urlpatterns = patterns(
-    'karaage.machines.views.accounts',
+from karaage.machines.views import accounts
+
+urlpatterns = [
     url(r'^add/(?P<username>%s)/$' % settings.USERNAME_VALIDATION_RE,
-        'add_account', name='kg_account_add'),
+        accounts.add_account, name='kg_account_add'),
     url(r'^add_project/(?P<username>%s)/$' % settings.USERNAME_VALIDATION_RE,
-        'add_project', name='kg_account_add_project'),
-    url(r'^(?P<account_id>\d+)/$', 'account_detail',
+        accounts.add_project, name='kg_account_add_project'),
+    url(r'^(?P<account_id>\d+)/$', accounts.account_detail,
         name='kg_account_detail'),
-    url(r'^(?P<account_id>\d+)/edit/$', 'edit_account',
+    url(r'^(?P<account_id>\d+)/edit/$', accounts.edit_account,
         name='kg_account_edit'),
-    url(r'^(?P<account_id>\d+)/delete/$', 'delete_account',
+    url(r'^(?P<account_id>\d+)/delete/$', accounts.delete_account,
         name='kg_account_delete'),
     url(r'^(?P<account_id>\d+)/makedefault/(?P<project_id>%s)/$'
         % settings.PROJECT_VALIDATION_RE,
-        'make_default', name='kg_account_set_default'),
+        accounts.make_default, name='kg_account_set_default'),
 
-    url(r'^no_project/$', 'no_project_list',
+    url(r'^no_project/$', accounts.no_project_list,
         name='kg_account_no_project'),
-    url(r'^no_default/$', 'no_default_list',
+    url(r'^no_default/$', accounts.no_default_list,
         name='kg_account_no_default'),
-    url(r'^wrong_default/$', 'wrong_default_list',
+    url(r'^wrong_default/$', accounts.wrong_default_list,
         name='kg_account_wrong_default'),
-    url(r'^no_account/$', 'no_account_list',
+    url(r'^no_account/$', accounts.no_account_list,
         name='kg_account_no_account'),
-)
+]

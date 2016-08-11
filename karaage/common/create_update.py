@@ -1,7 +1,7 @@
 import six
 
 from django.forms.models import ModelFormMetaclass, ModelForm
-from django.template import RequestContext, loader
+from django.template import loader
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.core.exceptions import ObjectDoesNotExist, ImproperlyConfigured
 from django.utils.translation import ugettext
@@ -134,11 +134,11 @@ def create_object(
         template_name = "%s/%s_form.html" % (
             model._meta.app_label, model._meta.object_name.lower())
     t = template_loader.get_template(template_name)
-    c = RequestContext(request, {
+    c = {
         'form': form,
-    }, context_processors)
+    }
     apply_extra_context(extra_context, c)
-    return HttpResponse(t.render(c))
+    return HttpResponse(t.render(context=c, request=request))
 
 
 def update_object(
@@ -180,12 +180,12 @@ def update_object(
         template_name = "%s/%s_form.html" % (
             model._meta.app_label, model._meta.object_name.lower())
     t = template_loader.get_template(template_name)
-    c = RequestContext(request, {
+    c = {
         'form': form,
         template_object_name: obj,
-    }, context_processors)
+    }
     apply_extra_context(extra_context, c)
-    response = HttpResponse(t.render(c))
+    response = HttpResponse(t.render(context=c, request=request))
     return response
 
 
@@ -224,9 +224,9 @@ def delete_object(
             template_name = "%s/%s_confirm_delete.html" % (
                 model._meta.app_label, model._meta.object_name.lower())
         t = template_loader.get_template(template_name)
-        c = RequestContext(request, {
+        c = {
             template_object_name: obj,
-        }, context_processors)
+        }
         apply_extra_context(extra_context, c)
-        response = HttpResponse(t.render(c))
+        response = HttpResponse(t.render(context=c, request=request))
         return response

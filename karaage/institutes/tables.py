@@ -69,3 +69,4 @@ class InstituteTable(tables.Table):
     class Meta:
         model = Institute
         fields = ('is_active', 'name')
+        empty_text = "No items"

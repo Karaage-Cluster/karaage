@@ -21,7 +21,6 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 
 from karaage.people.models import Person
-from optparse import make_option
 
 import django.db.transaction
 import tldap.transaction
@@ -85,15 +84,15 @@ def nicepass(alpha=6, numeric=2):
 
 class Command(BaseCommand):
     help = "Unlock all training accounts and reset password."
-    option_list = BaseCommand.option_list + (
-        make_option(
+
+    def add_arguments(self, parser):
+        parser.add_argument(
             '--password', dest="password",
             action='store_true', default=False,
             help="Read password to use on stdin."),
-        make_option(
+        parser.add_argument(
             '--number', dest="number",
             type=int, help="Number of accounts to unlock"),
-    )
 
     @django.db.transaction.atomic
     @tldap.transaction.commit_on_success
