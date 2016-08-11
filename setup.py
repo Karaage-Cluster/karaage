@@ -35,7 +35,7 @@ def version_scheme(version):
     version = guess_next_dev_version(version)
     split = version.split('.')
     if split[0] == '3':
-        number = int(split[1])*1000 + int(split[2])
+        number = int(split[1]) * 1000 + int(split[2])
         version = '4.0.0a%d.%s' % (number, split[3])
     return version
 

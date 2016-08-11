@@ -132,14 +132,14 @@ class Command(BaseCommand):
 
                 defaults={
                     'person': person,
-                    'count':  row['jobs'],
-                    'raw_used':  row['usage'],
+                    'count': row['jobs'],
+                    'raw_used': row['usage'],
                     'used': used,
 
-                    'resource':  resource,
-                    'resource_pool':  resource_pool,
+                    'resource': resource,
+                    'resource_pool': resource_pool,
 
-                    'allocated_project':  allocated_project,
+                    'allocated_project': allocated_project,
                     'allocation_pool': allocation_pool,
                     'allocation_period': allocation_period,
                 }
