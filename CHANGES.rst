@@ -13,6 +13,7 @@ Release 3.1.28 (UNRELEASED)
 * Update empty_text for similar_people_table.
 * Don't output empty fields from Slurm.
 * Requires Django >= 1.8
+* Fix Django 1.10 compatibility warnings.
 
 
 Release 3.1.28 (11 May 2016)
