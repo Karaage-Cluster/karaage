@@ -1,5 +1,5 @@
-Release 3.1.28 (UNRELEASED)
-===========================
+Release 3.1.29 (11th August 2016)
+=================================
 
 * Fix broken tests.
 * Require at least one institute delegate.
