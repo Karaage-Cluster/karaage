@@ -11,7 +11,7 @@ Release 3.1.28 (UNRELEASED)
 * Try to eliminate confusion in entering names.
 * Make department field mandatory on applicant form.
 * Update empty_text for similar_people_table.
-* Don't output empty fields from slurm.
+* Don't output empty fields from Slurm.
 * Requires Django >= 1.8
 
 
