@@ -22,7 +22,6 @@ Management utility to create superusers.
 import getpass
 import os
 import sys
-from optparse import make_option
 import re
 
 from django.core import exceptions
@@ -45,15 +44,15 @@ except NameError:
 
 
 class Command(BaseCommand):
-    option_list = BaseCommand.option_list + (
-        make_option('--username', '-u', help='Username'),
-        make_option('--email', '-e', help='E-Mail'),
-        make_option('--short_name', '-f', help='Short Name'),
-        make_option('--full_name', '-l', help='Full Name'),
-        make_option('--password', '-p', help='Password'),
-        make_option('--institute', '-i', help='Institute Name'),
-    )
     help = 'Used to create a karaage superuser.'
+
+    def add_arguments(self, parser):
+        parser.add_argument('--username', '-u', help='Username'),
+        parser.add_argument('--email', '-e', help='E-Mail'),
+        parser.add_argument('--short_name', '-f', help='Short Name'),
+        parser.add_argument('--full_name', '-l', help='Full Name'),
+        parser.add_argument('--password', '-p', help='Password'),
+        parser.add_argument('--institute', '-i', help='Institute Name'),
 
     @django.db.transaction.atomic
     @tldap.transaction.commit_on_success

@@ -17,7 +17,6 @@
 
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
-from optparse import make_option
 import datetime
 
 from karaage.plugins.kgsoftware.models import SoftwareVersion, Software
@@ -30,14 +29,15 @@ class Command(BaseCommand):
     help = ("Link used modules to jobs in the DB. "
             "Defaults to parsing all of yesterdays data")
 
-    option_list = BaseCommand.option_list + (
-        make_option('-a', '--all', action='store_true',
-                    dest='all', default=False,
-                    help='Report on all months.'),
-        make_option('--start',
-                    dest='start', default='',
-                    help='Start date to process modules from'),
-    )
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '-a', '--all', action='store_true',
+            dest='all', default=False,
+            help='Report on all months.'),
+        parser.add_argument(
+            '--start',
+            dest='start', default='',
+            help='Start date to process modules from'),
 
     def handle(self, **options):
         today = datetime.date.today()
