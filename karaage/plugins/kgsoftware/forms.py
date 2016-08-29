@@ -69,11 +69,15 @@ class AddPackageForm(SoftwareForm):
 
         data = self.cleaned_data
 
-        if data['license_version'] \
-                or data['license_date'] \
-                or data['license_text']:
-            raise forms.ValidationError(
-                six.u('You must specify all fields in the license section'))
+        if 'license_version' in data and data['license_version']:
+            if (not data['license_version']
+                    or 'license_date' not in data
+                    or not data['license_date']
+                    or 'license_text' not in data
+                    or not data['license_text']):
+                raise forms.ValidationError(
+                    six.u('You must specify all fields in the license section')
+                )
 
         return data
 
@@ -96,7 +100,7 @@ class AddPackageForm(SoftwareForm):
         version.machines = data['machines']
         version.save()
 
-        if data['license_text']:
+        if data['license_version']:
             SoftwareLicense.objects.create(
                 software=software,
                 version=data['license_version'],
