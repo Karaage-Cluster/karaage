@@ -1,3 +1,12 @@
+Release 3.1.30 (11th September 2016)
+====================================
+
+* Fix various errors.
+* Fix broken calls to render.
+* Fix validation logic, licence details, new software.
+* Save institute even if commit==False.
+
+
 Release 3.1.29 (11th August 2016)
 =================================
 
