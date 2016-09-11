@@ -612,9 +612,9 @@ class StateApplicantEnteringDetails(StateWithSteps):
             if 'reopen' in request.POST:
                 return 'reopen'
             return render(
-                'kgapplications/project_aed_for_leader.html',
-                {'application': application,
-                    'actions': actions, 'roles': roles, },
+                template_name='kgapplications/project_aed_for_leader.html',
+                context={'application': application,
+                         'actions': actions, 'roles': roles, },
                 request=request)
 
         # otherwise do the default behaviour for StateWithSteps
@@ -716,9 +716,10 @@ class StateDuplicateApplicant(base.State):
                     return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
             return render(
-                'kgapplications/project_duplicate_applicant.html',
-                {'application': application, 'form': form,
-                    'actions': actions, 'roles': roles, },
+                template_name='kgapplications/'
+                              'project_duplicate_applicant.html',
+                context={'application': application, 'form': form,
+                         'actions': actions, 'roles': roles, },
                 request=request)
         return super(StateDuplicateApplicant, self).view(
             request, application, label, roles, actions)
@@ -827,8 +828,9 @@ def _send_invitation(request, project):
 
             if existing_person and 'existing' not in request.POST:
                 return render(
-                    'kgapplications/project_common_invite_existing.html',
-                    {'form': form, 'person': applicant},
+                    template_name='kgapplications/'
+                                  'project_common_invite_existing.html',
+                    context={'form': form, 'person': applicant},
                     request=request)
 
             application = form.save(commit=False)
@@ -873,8 +875,8 @@ def new_application(request):
     # in.
     if not settings.ALLOW_REGISTRATIONS:
         return render(
-            'kgapplications/project_common_disabled.html',
-            {},
+            template_name='kgapplications/project_common_disabled.html',
+            context={},
             request=request)
 
     roles = {'is_applicant', 'is_authorised'}
