@@ -113,10 +113,6 @@ class Person(AbstractBaseUser):
     def get_absolute_url(self):
         return reverse('kg_person_detail', kwargs={'username': self.username})
 
-    def is_authenticated(self):
-        """ Return yes, this person is not anonymous. """
-        return True
-
     def save(self, *args, **kwargs):
         created = self.pk is None
 
