@@ -367,9 +367,9 @@ class Applicant(models.Model):
 
     """ A person who has completed an application however is not yet officially
     registered on the system yet. """
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=False)
     email_verified = models.BooleanField(editable=False, default=False)
-    username = models.CharField(max_length=255, unique=True,
+    username = models.CharField(max_length=255, unique=False,
                                 null=True, blank=True)
     title = models.CharField(
         choices=TITLES, max_length=10, null=True, blank=True)
