@@ -772,7 +772,7 @@ def get_application_state_machine():
         StateWaitingForAdmin(), 'K',
         {'cancel': 'R', 'duplicate': 'DUP',
             'approve': states.TransitionApprove(
-                on_password_needed='P', on_password_ok='C', on_error="R")})
+                on_password_needed='P', on_password_ok='C', on_error="K")})
     state_machine.add_state(
         states.StatePassword(), 'P',
         {'submit': 'C', })
