@@ -10,6 +10,7 @@ addons:
     packages:
     - slapd
     - ldap-utils
+    - libcrack2-dev
 
 env:
  - DJANGO_VERSION=1.8.16 DATABASE_URL=postgres://postgres@/spud
