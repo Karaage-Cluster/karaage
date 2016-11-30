@@ -114,6 +114,7 @@ def get_kg27_datastore():
     global _KG27_DATASTORE
     return _KG27_DATASTORE
 
+
 # Initialize data stores
 _init_datastores()
 

@@ -34,4 +34,5 @@ def create_secondary_site(app, created_models, verbosity, db, **kwargs):
         s.save(using=db)
     Site.objects.clear_cache()
 
+
 signals.post_syncdb.connect(create_secondary_site, sender=site_app)

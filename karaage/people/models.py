@@ -565,5 +565,6 @@ def _members_changed(
                 log.change(group, "Removed person %s from group" % person)
                 _remove_person_from_group(person, group)
 
+
 models.signals.m2m_changed.connect(
     _members_changed, sender=Group.members.through)

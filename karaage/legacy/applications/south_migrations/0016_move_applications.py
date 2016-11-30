@@ -15,8 +15,6 @@ class Migration(DataMigration):
         for src in orm.UserApplication.objects.iterator():
             values = {
                 'pk': src.pk,
-                'expires': src.expires,
-                'created_date': src.created_date,
                 'secret_token': src.secret_token,
                 'expires': src.expires,
                 'created_by': src.created_by,
@@ -48,8 +46,6 @@ class Migration(DataMigration):
         for src in orm.ProjectApplication.objects.filter(project__isnull=False, name=""):
             values = {
                 'pk': src.pk,
-                'expires': src.expires,
-                'created_date': src.created_date,
                 'secret_token': src.secret_token,
                 'expires': src.expires,
                 'created_by': src.created_by,

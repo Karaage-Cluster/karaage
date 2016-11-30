@@ -31,6 +31,7 @@ class InvalidString(str):
 # FIXME: TEMPLATES not accessible
 # TEMPLATES[0]['OPTIONS']['string_if_invalid'] = InvalidString("%s")
 
+
 DEBUG = True
 DEBUG_SERVE_STATIC = True
 SESSION_COOKIE_SECURE = False

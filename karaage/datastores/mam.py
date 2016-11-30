@@ -637,6 +637,7 @@ def MamDataStore(config):
         return ds
     raise RuntimeError("We do not support this version of MAM")
 
+
 trace.attach(trace.trace(logger), MamDataStoreBase)
 trace.attach(trace.trace(logger), MamDataStore71)
 trace.attach(trace.trace(logger), MamDataStore72)

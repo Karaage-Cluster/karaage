@@ -415,5 +415,6 @@ class MachineCategoryDataStore(base.MachineCategoryDataStore):
             a.dn for a in lgroup.secondary_accounts.all()]
         return result
 
+
 trace.attach(trace.trace(logger), GlobalDataStore)
 trace.attach(trace.trace(logger), MachineCategoryDataStore)

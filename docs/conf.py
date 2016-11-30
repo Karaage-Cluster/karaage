@@ -53,4 +53,5 @@ def guess_next_version(tag_version):
     prefix, tail = re.match('(.*?)(\d+)$', version).groups()
     return '%s%d' % (prefix, int(tail) + 1)
 
+
 karaage_next_version = guess_next_version(version)

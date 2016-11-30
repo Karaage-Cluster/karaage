@@ -365,5 +365,6 @@ def _leaders_changed(
                     project,
                     "Removed person %s from project leaders" % person)
 
+
 models.signals.m2m_changed.connect(
     _leaders_changed, sender=Project.leaders.through)

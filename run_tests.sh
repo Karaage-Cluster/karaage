@@ -18,10 +18,10 @@ fi
 echo ""
 echo "FLAKE8"
 echo "############################"
-find -path "karaage/*/south_migrations/*.py" -print0 | xargs -0 flake8 --ignore=E501
+find karaage -path "*/south_migrations/*.py" -print0 | xargs -0 flake8 --ignore=E501
 if [ ! $? -eq 0 ]; then FLAKE=1; fi
 
-find -path "karaage/*/migrations/*.py" -print0 | xargs -0 flake8 --ignore=E501
+find karaage -path "*/migrations/*.py" -print0 | xargs -0 flake8 --ignore=E501
 if [ ! $? -eq 0 ]; then FLAKE=1; fi
 
 flake8 --exclude="south_migrations,migrations,.tox" .

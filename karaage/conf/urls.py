@@ -47,6 +47,7 @@ def _load_profile_urls():
         module = importlib.import_module(module_name)
         profile_urlpatterns += module.profile_urlpatterns
 
+
 _load_profile_urls()
 
 for urls in get_urls("profile_urlpatterns"):

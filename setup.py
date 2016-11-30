@@ -44,6 +44,7 @@ def fullsplit(path, result=None):
         return result
     return fullsplit(head, [tail] + result)
 
+
 dirs = ['karaage', ]
 packages = []
 for d in dirs:

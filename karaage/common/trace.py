@@ -89,6 +89,7 @@ class _C(object):
     def property_method(self):
         return None
 
+
 ClassMethodType = _C.classMethodType
 StaticMethodType = _C.staticMethodType
 PropertyType = type(_C.property_method)
@@ -270,6 +271,7 @@ def _formatter_named(name, value):
 def _formatter_defaults(name, value):
     return '[%s = %s]' % (name, chop(value))
 
+
 af_self = _formatter_self
 af_class = _formatter_class
 af_named = _formatter_named
@@ -349,6 +351,7 @@ def set_formatter(name, func):
         af_keyword = _formatter_named if func is None else func
     else:
         raise ValueError('unknown trace formatter %r' % name)
+
 
 ######################################################################
 #  Decorator: trace
@@ -456,6 +459,7 @@ def __lookup_builtin(name):
             "Warning: builtin function %r is missing prototype" % name,
             file=sys.stderr)
     return len(params), params, defaults
+
 
 _ = ThreadLocal()
 _.initial_value = False
@@ -740,6 +744,7 @@ class TraceMetaClass(type):
             hook = trace
         attach_to_class(hook, klass, False)
         return klass
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
