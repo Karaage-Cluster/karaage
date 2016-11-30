@@ -3,15 +3,15 @@ cssmin==0.2.0
 # Django==1.8.16
 python-alogger==2.2.9
 django-xmlrpc==0.1.7
-django-simple-captcha==0.4.3
-django-ajax-selects==1.4.3
-django-jsonfield==0.9.13
-django-model-utils==2.2
+django-simple-captcha==0.5.3
+django-ajax-selects==1.5.2
+django-jsonfield==1.0.1
+django-model-utils==2.6
 ldap3==1.4.0
 python-tldap==0.3.18
 django-pipeline==1.6.9
 django-tables2==1.2.6
 django-filter==0.13.0
 django-environ==0.4.1
-six==1.8.0
+six==1.10.0
 slimit==0.8.1
