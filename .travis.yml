@@ -12,16 +12,16 @@ addons:
     - ldap-utils
 
 env:
- - DJANGO_VERSION=1.8.11 DATABASE_URL=postgres://postgres@/spud
- - DJANGO_VERSION=1.9.4 DATABASE_URL=postgres://postgres@/spud
+ - DJANGO_VERSION=1.8.16 DATABASE_URL=postgres://postgres@/spud
+ - DJANGO_VERSION=1.9.11 DATABASE_URL=postgres://postgres@/spud
  - DJANGO_VERSION=master DATABASE_URL=postgres://postgres@/spud
 
- - DJANGO_VERSION=1.8.11 DATABASE_URL=mysql://root:@localhost/spud
- - DJANGO_VERSION=1.9.4 DATABASE_URL=mysql://root:@localhost/spud
+ - DJANGO_VERSION=1.8.16 DATABASE_URL=mysql://root:@localhost/spud
+ - DJANGO_VERSION=1.9.11 DATABASE_URL=mysql://root:@localhost/spud
  - DJANGO_VERSION=master DATABASE_URL=mysql://root:@localhost/spud
 
- - DJANGO_VERSION=1.8.11 DATABASE_URL=sqlite://
- - DJANGO_VERSION=1.9.4 DATABASE_URL=sqlite://
+ - DJANGO_VERSION=1.8.16 DATABASE_URL=sqlite://
+ - DJANGO_VERSION=1.9.11 DATABASE_URL=sqlite://
  - DJANGO_VERSION=master DATABASE_URL=sqlite://
 
 install:
@@ -31,12 +31,7 @@ install:
   - bash -c "if [[ $DATABASE_URL = postgres* ]]; then pip install psycopg2==2.6.1; fi; "
   - bash -c "if [[ $DATABASE_URL = mysql* ]]; then pip install mysqlclient==1.3.7; fi; "
 # Install other dependancies
-  - travis_retry pip install cssmin python-alogger django-xmlrpc
-  - travis_retry pip install django-simple-captcha django-ajax-selects
-  - travis_retry pip install django_jsonfield django-model-utils python-tldap
-  - travis_retry pip install django-pipeline django-tables2 django-filter
-  - travis_retry pip install django-environ six slimit django-extensions
-  - travis_retry pip install factory_boy mock django_celery
+  - pip install -rrequirements-tests.txt
 
 script:
   - python ./setup.py --version
