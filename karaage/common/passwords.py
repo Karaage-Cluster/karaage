@@ -18,7 +18,7 @@
 
 from __future__ import absolute_import
 import logging
-from karaage.conf import settings
+from django.conf import settings
 
 
 LOG = logging.getLogger(__name__)
