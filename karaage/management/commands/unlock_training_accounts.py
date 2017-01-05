@@ -39,7 +39,7 @@ import tldap.transaction
 # 1.2 - renamed functions _apart & _npart to a_part
 #       & n_part as zope does not allow functions to
 # start with _
-def nicepass(alpha=6, numeric=2):
+def nicepass(alpha=8, numeric=4):
     """
     returns a human-readble password (say rol86din instead of
     a difficult to remember K8Yn9muL )
@@ -111,7 +111,7 @@ class Command(BaseCommand):
         if options['password']:
             password = sys.stdin.readline().strip()
         else:
-            password = nicepass(6, 2)
+            password = nicepass(8, 4)
             print("New password: %s" % password)
 
         for person in query.all():
