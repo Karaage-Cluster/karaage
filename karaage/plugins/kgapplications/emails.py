@@ -41,7 +41,7 @@ def _send_request_email(context, role, persons, template):
             settings.APPROVE_ACCOUNTS_EMAIL is not None:
 
         context['receiver'] = None
-        context['receiver_text'] = "Administatror"
+        context['receiver_text'] = "Administrator"
 
         to_email = settings.APPROVE_ACCOUNTS_EMAIL
         subject, body = render_email(template, context)
