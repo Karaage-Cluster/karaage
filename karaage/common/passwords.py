@@ -52,9 +52,9 @@ def assert_strong_password(username, password, old_password=None):
 
     # test the length
     try:
-	minlength = settings.MIN_PASSWORD_LENGTH
+        minlength = settings.MIN_PASSWORD_LENGTH
     except AttributeError:
-	minlength = 12
+        minlength = 12
     if len(password) < minlength:
         raise ValueError("Password must be at least %s characters long" % minlength)
 
