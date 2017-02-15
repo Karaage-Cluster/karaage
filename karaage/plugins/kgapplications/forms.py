@@ -17,7 +17,6 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import six
-import re
 import ajax_select.fields
 
 from django import forms
@@ -33,7 +32,7 @@ from karaage.people.utils import validate_username_for_new_person
 from karaage.people.utils import UsernameException
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
-from karaage.common.forms import validate_password
+from karaage.common.forms import validate_password, clean_email
 
 from .models import ProjectApplication
 from .models import Applicant
@@ -46,32 +45,6 @@ if settings.ALLOW_NEW_PROJECTS:
     APP_CHOICES = APP_CHOICES + (
         ('P', 'Apply to start a new project'),
     )
-
-
-def _clean_email(email):
-    email_match_type = "exclude"
-    email_match_list = []
-    if hasattr(settings, 'EMAIL_MATCH_TYPE'):
-        email_match_type = settings.EMAIL_MATCH_TYPE
-    if hasattr(settings, 'EMAIL_MATCH_LIST'):
-        email_match_list = settings.EMAIL_MATCH_LIST
-
-    found = False
-    for string in email_match_list:
-        m = re.search(string, email, re.IGNORECASE)
-        if m is not None:
-            found = True
-            break
-
-    message = "This email address cannot be used."
-    if email_match_type == "include":
-        if not found:
-            raise forms.ValidationError(message)
-    elif email_match_type == "exclude":
-        if found:
-            raise forms.ValidationError(message)
-    else:
-        raise forms.ValidationError("Oops. Nothing is valid. Sorry.")
 
 
 class StartApplicationForm(forms.Form):
@@ -158,7 +131,7 @@ class ApplicantForm(forms.ModelForm):
                     'An account with this email already exists. '
                     'Please email %s')
                 % settings.ACCOUNTS_EMAIL)
-        _clean_email(email)
+        clean_email(email)
         return email
 
 
@@ -265,7 +238,7 @@ class InviteUserApplicationForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data['email']
-        _clean_email(email)
+        clean_email(email)
         return email
 
 
@@ -284,7 +257,7 @@ class UnauthenticatedInviteUserApplicationForm(forms.Form):
                 'E-Mail address is already in use. '
                 'Do you already have an account?'))
 
-        _clean_email(email)
+        clean_email(email)
         return email
 
 

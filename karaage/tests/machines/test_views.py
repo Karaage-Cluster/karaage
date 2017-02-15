@@ -43,7 +43,7 @@ class AccountTestCase(TestCase):
             'position': 'Sys Admin',
             'institute': 1,
             'department': 'eddf',
-            'email': 'sam@vpac.org',
+            'email': 'sam2@vpac.org',
             'country': 'AU',
             'telephone': '4444444',
             'username': 'samtest2',

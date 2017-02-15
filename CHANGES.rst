@@ -24,6 +24,7 @@ Changed
 
 Fixed
 ~~~~~
+* E-Mail validation for admin person form.
 * Fixed my email address.
 * Various bugs fixed.
 
