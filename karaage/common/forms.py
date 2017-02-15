@@ -20,6 +20,8 @@
 
 import six
 from django import forms
+from django.conf import settings
+import re
 
 from karaage.common.models import LogEntry, COMMENT
 from .passwords import assert_strong_password
@@ -41,14 +43,37 @@ def validate_password(username, password1, password2=None, old_password=None):
         assert_strong_password(username, password1, old_password)
     except ValueError as e:
         raise forms.ValidationError(six.u(
-            'Your password was found to be insecure: %s. '
-            'A good password has a combination of letters '
-            '(uppercase, lowercase), numbers and is at least 8 '
-            'characters long.' % str(e)))
+            'Your password was found to be insecure: %s. ' % str(e)))
 
     # If password1 is ok, return it.
     return password1
 
+def _clean_email(email):
+    email_match_type = "exclude"
+    email_match_list = []
+    if hasattr(settings, 'EMAIL_MATCH_TYPE'):
+        email_match_type = settings.EMAIL_MATCH_TYPE
+    if hasattr(settings, 'EMAIL_MATCH_LIST'):
+        email_match_list = settings.EMAIL_MATCH_LIST
+
+    found = False
+    for string in email_match_list:
+        m = re.search(string, email, re.IGNORECASE)
+        if m is not None:
+            found = True
+            break
+
+    message = "This email address cannot be used."
+    if hasattr(settings, 'EMAIL_MATCH_MSG'):
+        message = settings.EMAIL_MATCH_MSG
+    if email_match_type == "include":
+        if not found:
+            raise forms.ValidationError(message)
+    elif email_match_type == "exclude":
+        if found:
+            raise forms.ValidationError(message)
+    else:
+        raise forms.ValidationError("Oops. Nothing is valid. Sorry.")
 
 class CommentForm(forms.ModelForm):
     """ Comment form. """

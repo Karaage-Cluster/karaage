@@ -32,7 +32,7 @@ from karaage.people.utils import validate_username_for_new_person
 from karaage.people.utils import UsernameException
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
-from karaage.common.forms import validate_password
+from karaage.common.forms import validate_password, _clean_email
 
 from .models import ProjectApplication
 from .models import Applicant
@@ -47,32 +47,6 @@ if settings.ALLOW_NEW_PROJECTS:
     )
 
 
-def _clean_email(email):
-    email_match_type = "exclude"
-    email_match_list = []
-    if hasattr(settings, 'EMAIL_MATCH_TYPE'):
-        email_match_type = settings.EMAIL_MATCH_TYPE
-    if hasattr(settings, 'EMAIL_MATCH_LIST'):
-        email_match_list = settings.EMAIL_MATCH_LIST
-
-    found = False
-    for string in email_match_list:
-        m = re.search(string, email, re.IGNORECASE)
-        if m is not None:
-            found = True
-            break
-
-    message = "This email address cannot be used."
-    if email_match_type == "include":
-        if not found:
-            raise forms.ValidationError(message)
-    elif email_match_type == "exclude":
-        if found:
-            raise forms.ValidationError(message)
-    else:
-        raise forms.ValidationError("Oops. Nothing is valid. Sorry.")
-
-
 class StartApplicationForm(forms.Form):
     application_type = forms.ChoiceField(
         choices=APP_CHOICES, widget=forms.RadioSelect())
@@ -83,8 +57,8 @@ class ApplicantForm(forms.ModelForm):
         "^%s$" % settings.USERNAME_VALIDATION_RE,
         label=six.u("Requested username"),
         max_length=settings.USERNAME_MAX_LENGTH,
-        help_text=(settings.USERNAME_VALIDATION_ERROR_MSG +
-                   " and has a max length of %s." %
+        help_text=(settings.USERNAME_VALIDATION_ERROR_MSG
+                   + " and has a max length of %s." %
                    settings.USERNAME_MAX_LENGTH))
     telephone = forms.RegexField(
         "^[0-9a-zA-Z\.( )+-]+$", required=True,
@@ -110,33 +84,14 @@ class ApplicantForm(forms.ModelForm):
             'address', 'city', 'postcode', 'country', 'fax',
         ]
 
-    def clean(self):
-        data = super(ApplicantForm, self).clean()
-
-        for key in [
-                'short_name', 'full_name', 'email', 'position',
-                'supervisor', 'department', 'telephone', 'mobile', 'fax',
-                'address', 'city', 'postcode', ]:
-            if key in data and data[key]:
-                data[key] = data[key].strip()
-
-        return data
-
     def __init__(self, *args, **kwargs):
         super(ApplicantForm, self).__init__(*args, **kwargs)
         self.fields['title'].required = True
         self.fields['short_name'].required = True
-        self.fields['short_name'].help_text = \
-            "This is typically your given name. "\
-            "For example enter 'Fred' here."
         self.fields['full_name'].required = True
-        self.fields['full_name'].help_text = \
-            "This is typically your full name. " \
-            "For example enter 'Fred Smith' here."
         self.fields['username'].label = 'Requested username'
         self.fields['username'].required = True
         self.fields['institute'].required = True
-        self.fields['department'].required = True
 
     def clean_username(self):
         username = self.cleaned_data['username']
