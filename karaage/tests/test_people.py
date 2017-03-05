@@ -541,8 +541,8 @@ class PersonTestCase(IntegrationTestCase):
 
         # send new password
         form_data = {
-            'new_password1': 'q1w2e3r4',
-            'new_password2': 'q1w2e3r4',
+            'new_password1': 'VQA#y!xD=BpI<sM69`RW:%',
+            'new_password2': 'VQA#y!xD=BpI<sM69`RW:%',
         }
         done_url = reverse("password_reset_complete")
         response = self.client.post(url, form_data, follow=True)
@@ -552,7 +552,7 @@ class PersonTestCase(IntegrationTestCase):
 
         # test new password
         logged_in = self.client.login(
-            username='kgtestuser1', password='q1w2e3r4')
+            username='kgtestuser1', password='VQA#y!xD=BpI<sM69`RW:%')
         self.assertEqual(logged_in, True)
 
     def test_password_reset_by_admin(self):
@@ -588,8 +588,8 @@ class PersonTestCase(IntegrationTestCase):
 
         # send new password
         form_data = {
-            'new_password1': 'q1w2e3r4',
-            'new_password2': 'q1w2e3r4',
+            'new_password1': 'VQA#y!xD=BpI<sM69`RW:%',
+            'new_password2': 'VQA#y!xD=BpI<sM69`RW:%',
         }
         done_url = reverse("password_reset_complete")
         response = self.client.post(url, form_data, follow=True)
@@ -599,5 +599,5 @@ class PersonTestCase(IntegrationTestCase):
 
         # test new password
         logged_in = self.client.login(
-            username='kgtestuser1', password='q1w2e3r4')
+            username='kgtestuser1', password='VQA#y!xD=BpI<sM69`RW:%')
         self.assertEqual(logged_in, True)

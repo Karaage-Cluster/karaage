@@ -18,6 +18,7 @@
 
 from __future__ import absolute_import
 import logging
+from django.conf import settings
 
 
 LOG = logging.getLogger(__name__)
@@ -48,6 +49,15 @@ def assert_strong_password(username, password, old_password=None):
     """Raises ValueError if the password isn't strong.
 
     Returns the password otherwise."""
+
+    # test the length
+    try:
+        minlength = settings.MIN_PASSWORD_LENGTH
+    except AttributeError:
+        minlength = 12
+    if len(password) < minlength:
+        raise ValueError("Password must be at least %s characters long" % minlength)
+
     if username is not None and username in password:
         raise ValueError("Password contains username")
 
