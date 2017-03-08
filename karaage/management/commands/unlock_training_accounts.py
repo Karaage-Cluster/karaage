@@ -100,8 +100,9 @@ class Command(BaseCommand):
         verbose = int(options.get('verbosity'))
         training_prefix = getattr(settings, 'TRAINING_ACCOUNT_PREFIX', 'train')
 
-        query = Person.active.all()
-        query = query.filter(username__startswith=training_prefix)
+        # If training accounts are system users, they will be found by Person.objects.all() but not Person.active.all()
+        query = Person.objects.all()
+        query = query.filter(username__iregex=training_prefix)
         query = query.order_by('username')
 
         if options['number'] is not None:
