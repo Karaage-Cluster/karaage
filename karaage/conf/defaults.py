@@ -358,7 +358,7 @@ GROUP_VALIDATION_ERROR_MSG = six.u(
     'numbers and underscores')
 
 # Used for lock_training_accounts and unlock_training_accounts commands.
-TRAINING_ACCOUNT_PREFIX = 'train'
+TRAINING_ACCOUNT_PREFIX = '^train[0-9]+$'
 
 # Registration base URL - Used in email templates.
 REGISTRATION_BASE_URL = 'https://%(HOST)s/karaage'
