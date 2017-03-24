@@ -32,7 +32,7 @@ from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
 from karaage.common.constants import COUNTRIES
 from karaage.common import get_current_person
-from karaage.common.forms import validate_password
+from karaage.common.forms import validate_password, _clean_email
 
 
 class PersonForm(forms.ModelForm):
@@ -63,27 +63,6 @@ class PersonForm(forms.ModelForm):
     country = forms.ChoiceField(
         choices=COUNTRIES, initial='AU', required=False)
 
-    def __init__(self, *args, **kwargs):
-        super(PersonForm, self).__init__(*args, **kwargs)
-        self.fields['short_name'].help_text = \
-            "This is typically the person's given name. "\
-            "For example enter 'Fred' here."
-        self.fields['full_name'].help_text = \
-            "This is typically the person's full name. " \
-            "For example enter 'Fred Smith' here."
-
-    def clean(self):
-        data = super(PersonForm, self).clean()
-
-        for key in [
-                'short_name', 'full_name', 'email', 'position',
-                'supervisor', 'department', 'telephone', 'mobile', 'fax',
-                'address', ]:
-            if key in data and data[key]:
-                data[key] = data[key].strip()
-
-        return data
-
     class Meta:
         model = Person
         fields = [
@@ -91,6 +70,18 @@ class PersonForm(forms.ModelForm):
             'supervisor', 'department', 'telephone', 'mobile', 'fax',
             'address', 'country'
         ]
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        users = Person.objects.filter(email__exact=email)
+        if users.count() > 0:
+            raise forms.ValidationError(
+                six.u(
+                    'An account with this email already exists. '
+                    'Please email %s')
+                % settings.ACCOUNTS_EMAIL)
+        _clean_email(email)
+        return email
 
 
 class AdminPersonForm(PersonForm):
@@ -128,8 +119,8 @@ class AddPersonForm(AdminPersonForm):
     username = forms.CharField(
         label=six.u("Requested username"),
         max_length=settings.USERNAME_MAX_LENGTH,
-        help_text=(settings.USERNAME_VALIDATION_ERROR_MSG +
-                   " and has a max length of %s."
+        help_text=(settings.USERNAME_VALIDATION_ERROR_MSG
+                   + " and has a max length of %s."
                    % settings.USERNAME_MAX_LENGTH))
     password1 = forms.CharField(
         widget=forms.PasswordInput(render_value=False),
