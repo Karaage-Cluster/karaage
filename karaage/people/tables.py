@@ -71,19 +71,19 @@ class PeopleColumn(BaseLinkColumn):
 
 class PersonFilter(django_filters.FilterSet):
     active = ActiveFilter()
-    username = django_filters.CharFilter(lookup_type="icontains")
-    full_name = django_filters.CharFilter(lookup_type="icontains")
-    email = django_filters.CharFilter(lookup_type="icontains")
+    username = django_filters.CharFilter(lookup_expr="icontains")
+    full_name = django_filters.CharFilter(lookup_expr="icontains")
+    email = django_filters.CharFilter(lookup_expr="icontains")
     no_last_usage = django_filters.BooleanFilter(
         name="last_usage", lookup_expr="isnull")
     begin_last_usage = django_filters.DateFilter(
-        name="last_usage", lookup_type="gte")
+        name="last_usage", lookup_expr="gte")
     end_last_usage = django_filters.DateFilter(
-        name="last_usage", lookup_type="lte")
+        name="last_usage", lookup_expr="lte")
     begin_date_approved = django_filters.DateFilter(
-        name="date_approved", lookup_type="gte")
+        name="date_approved", lookup_expr="gte")
     end_date_approved = django_filters.DateFilter(
-        name="date_approved", lookup_type="lte")
+        name="date_approved", lookup_expr="lte")
 
     class Meta:
         model = Person
@@ -131,8 +131,8 @@ class LeaderTable(tables.Table):
 
 
 class GroupFilter(django_filters.FilterSet):
-    name = django_filters.CharFilter(lookup_type="icontains")
-    description = django_filters.CharFilter(lookup_type="icontains")
+    name = django_filters.CharFilter(lookup_expr="icontains")
+    description = django_filters.CharFilter(lookup_expr="icontains")
 
     class Meta:
         model = Group

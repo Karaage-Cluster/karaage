@@ -72,8 +72,8 @@ class ProjectColumn(BaseLinkColumn):
 
 
 class ProjectFilter(django_filters.FilterSet):
-    pid = django_filters.CharFilter(lookup_type="icontains", label="PID")
-    name = django_filters.CharFilter(lookup_type="icontains")
+    pid = django_filters.CharFilter(lookup_expr="icontains", label="PID")
+    name = django_filters.CharFilter(lookup_expr="icontains")
     active = ActiveFilter()
 
     class Meta:

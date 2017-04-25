@@ -23,13 +23,13 @@ from .models import Software, SoftwareLicenseAgreement
 
 
 class SoftwareFilter(django_filters.FilterSet):
-    description = django_filters.CharFilter(lookup_type="icontains")
+    description = django_filters.CharFilter(lookup_expr="icontains")
     begin__last_used = django_filters.DateFilter(
         name="softwareversion__last_used",
-        lookup_type="gte")
+        lookup_expr="gte")
     end_last_used = django_filters.DateFilter(
         name="softwareversion__last_used",
-        lookup_type="lte")
+        lookup_expr="lte")
 
     class Meta:
         model = Software

@@ -47,7 +47,7 @@ class ActiveFilter(django_filters.ChoiceFilter):
 
 class InstituteFilter(django_filters.FilterSet):
     active = ActiveFilter()
-    name = django_filters.CharFilter(lookup_type="icontains")
+    name = django_filters.CharFilter(lookup_expr="icontains")
 
     class Meta:
         model = Institute
