@@ -104,14 +104,14 @@ Release 3.1.20 (05 Jun 2015)
 * Override admin email addresses using APPROVE_ACCOUNTS_EMAIL setting.
 * Fix flake8 tests in migrations.
 * Change order of deactivate() function to avoid multiple updates to
-accounts.
+  accounts.
 * Fix issues with MAM datastore.
 * Sort applications in admin list by reverse expiry date by default.
 * Display machine_category in account lists.
 * Don't allow editing project leaders through edit view.
 * Don't allow revoking last project leader.
 * Add new ALLOW_NEW_PROJECTS setting, if set to False user's will not be
-able to apply for new projects, only existing projects.
+  able to apply for new projects, only existing projects.
 
 
 Release 3.1.19 (29 May 2015)
@@ -131,9 +131,9 @@ Release 3.1.19 (29 May 2015)
 * Change name of "Is existing person" button to "Mark duplicate user".
 * Attempt to clarify emails.
 * Add work around for ds389 bug. Note this won't work when adding a person
-and setting their password at the same time; in this case please manually
-reset the password to get it to work.
-https://bugzilla.redhat.com/show_bug.cgi?id=1171308
+  and setting their password at the same time; in this case please manually
+  reset the password to get it to work.
+  https://bugzilla.redhat.com/show_bug.cgi?id=1171308
 
 
 Release 3.1.18 (13 Apr 2015)
@@ -258,7 +258,7 @@ Release 3.1.4 (15 Sep 2014)
 
 * Updates to fix Django 1.7 issues.
 * Django 1.7 should really work now, however upgrade from earlier versions
-not yet documented.
+  not yet documented.
 
 
 Release 3.1.3 (09 Sep 2014)
@@ -296,7 +296,7 @@ Release 3.1.1 (19 Aug 2014)
 * Fix copyright.
 * Use roles in applications.
 * Fix project application specific wording.
-* Make sure we include *.json files.
+* Make sure we include ``*.json`` files.
 * Fix faulty role checks.
 * Remove Django South hack.
 * Make sure we kill the LDAP server after test fails.
@@ -583,8 +583,8 @@ Release 3.0.8 (14 Mar 2014)
 ===========================
 
 * Remove REMOTE_USER middleware from karaage.middleware.auth
-Django now has django.contrib.auth.middleware.RemoteUserMiddleware
-and django.contrib.auth.backends.RemoteUserBackend.
+  Django now has django.contrib.auth.middleware.RemoteUserMiddleware
+  and django.contrib.auth.backends.RemoteUserBackend.
 * Fix error in calling log function in Applications.
 * Test changes in Karaage source code with flake8.
 
@@ -655,13 +655,13 @@ Release 3.0.1 (30 Jan 2014)
 
 
 Release 3.0.0 (18 Jul 2013)
-===========================
+---------------------------
 
 * MAJOR CHANGES. BACKUP EVERYTHING ***BEFORE*** INSTALLING. BACKUP MYSQL.
-BACKUP OPENLDAP. TEST YOU CAN USE RESTORE MYSQL AND OPENLDAP. TEST
-MIGRATIONS WORK ON TEST SYSTEM WITH REAL DATA BEFORE INSTALLING ON
-PRODUCTION BOX.  MIGRATIONS MAY TAKE SOME TIME TO COMPLETE ON REAL DATA
-(ESPECIALLY IF CPUJob CONTAINS MANY ITEMS).
+  BACKUP OPENLDAP. TEST YOU CAN USE RESTORE MYSQL AND OPENLDAP. TEST
+  MIGRATIONS WORK ON TEST SYSTEM WITH REAL DATA BEFORE INSTALLING ON
+  PRODUCTION BOX.  MIGRATIONS MAY TAKE SOME TIME TO COMPLETE ON REAL DATA
+  (ESPECIALLY IF CPUJob CONTAINS MANY ITEMS).
 * Improved support for transactions.
 * Various bugs fixed.
 * Make mysql database authoritive over LDAP.
@@ -886,7 +886,7 @@ Release 2.5.17 (15 Jul 2011)
 ============================
 
 * Workaround for long standing matplotlib bug. Don't error
-if can't display graph
+  if can't display graph.
 * Fixed another SAML_ID unique bug
 
 
@@ -1009,11 +1009,11 @@ Release 2.5.3 (21 Feb 2011)
 * Active Directory datastore
 * Project applications
 * Management command now deletes all applications that have been
-complete for 30 days
+  complete for 30 days.
 * Ability to allow public access to usage information.
-Default is to keep restricted
+  Default is to keep restricted.
 * Add CAPTCHA fields to application forms if no token and open
-registrations allowed
+  registrations allowed.
 
 
 Release 2.5.2 (15 Dec 2010)
@@ -1033,7 +1033,7 @@ Release 2.5.1 (10 Dec 2010)
 
 * Return distinct results in global search form
 * Raise 403 error instead of 404 when application exists
-but is in wrong state.
+  but is in wrong state.
 * Force user sync for LDAP on changing default project
 * Show secret token in admin view
 * Use model auth backend too to support alogger and the likes
