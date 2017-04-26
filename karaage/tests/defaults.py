@@ -133,3 +133,5 @@ TEST_MODULE_ROOT = os.path.dirname(os.path.realpath(__file__))
 FIXTURE_DIRS = (os.path.join(TEST_MODULE_ROOT),)
 
 ENABLE_CRACKLIB = False
+
+MIN_PASSWORD_LENGTH = 6

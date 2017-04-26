@@ -41,7 +41,7 @@ def validate_password(username, password1, password2=None, old_password=None):
         assert_strong_password(username, password1, old_password)
     except ValueError as e:
         raise forms.ValidationError(six.u(
-            'Your password was found to be insecure: %s. ' % str(e)))
+            'Your password was found to be insecure: %s.' % str(e)))
 
     # If password1 is ok, return it.
     return password1

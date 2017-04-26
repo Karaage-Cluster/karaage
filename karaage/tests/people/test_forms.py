@@ -61,10 +61,7 @@ class AddPersonFormTestCase(TestCase):
             dict.items({
                 'password2': [six.u(
                     'Your password was found to be insecure: '
-                    'it is WAY too short. '
-                    'A good password has a combination of '
-                    'letters (uppercase, lowercase), numbers '
-                    'and is at least 8 characters long.')]
+                    'Password must be at least 6 characters long.')]
             })
         )
 
@@ -80,10 +77,7 @@ class AddPersonFormTestCase(TestCase):
             dict.items({
                 'password2': [six.u(
                     'Your password was found to be insecure: '
-                    'it is based on a dictionary word. '
-                    'A good password has a combination of '
-                    'letters (uppercase, lowercase), numbers '
-                    'and is at least 8 characters long.')]
+                    'it is based on a dictionary word.')]
             })
         )
 
@@ -170,10 +164,7 @@ class AdminPasswordChangeFormTestCase(TestCase):
             dict.items({
                 'new2': [six.u(
                     'Your password was found to be insecure: '
-                    'it is WAY too short. '
-                    'A good password has a combination of '
-                    'letters (uppercase, lowercase), numbers '
-                    'and is at least 8 characters long.')]
+                    'Password must be at least 6 characters long.')]
             })
         )
 
@@ -189,10 +180,7 @@ class AdminPasswordChangeFormTestCase(TestCase):
             dict.items({
                 'new2': [six.u(
                     'Your password was found to be insecure: '
-                    'it is based on a dictionary word. '
-                    'A good password has a combination of '
-                    'letters (uppercase, lowercase), numbers '
-                    'and is at least 8 characters long.')]
+                    'it is based on a dictionary word.')]
             })
         )
 
@@ -252,10 +240,7 @@ class PasswordChangeFormTestCase(TestCase):
             dict.items({
                 'new2': [six.u(
                     'Your password was found to be insecure: '
-                    'it is WAY too short. '
-                    'A good password has a combination of '
-                    'letters (uppercase, lowercase), numbers '
-                    'and is at least 8 characters long.')]
+                    'Password must be at least 6 characters long.')]
             })
         )
 
@@ -271,10 +256,7 @@ class PasswordChangeFormTestCase(TestCase):
             dict.items({
                 'new2': [six.u(
                     'Your password was found to be insecure: '
-                    'it is based on a dictionary word. '
-                    'A good password has a combination of '
-                    'letters (uppercase, lowercase), numbers '
-                    'and is at least 8 characters long.')]
+                    'it is based on a dictionary word.')]
             })
         )
 
