@@ -17,7 +17,9 @@
 import sys
 import re
 from os.path import abspath, dirname, join
-from setuptools_scm import get_version
+
+sys.path.insert(0, abspath('../..'))
+import karaage.version  # NOQA
 
 
 sys.path.append(abspath(join(dirname(dirname(__file__)), "ext")))
@@ -39,10 +41,10 @@ intersphinx_mapping = {
 # built documents.
 #
 
-# The short X.Y version.
-version = get_version(root="../..")
 # The full version, including alpha/beta/rc tags.
-release = version
+release = karaage.version.version
+# The short X.Y version.
+version = '.'.join(release.split('.')[:2])
 
 
 def guess_next_version(tag_version):

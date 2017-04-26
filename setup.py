@@ -23,13 +23,6 @@ from setuptools import setup
 import shutil
 import os
 
-for doc in ["admin", "programmer", "user"]:
-    with open("./docs/%s/conf.orig.py" % doc, "r") as src:
-        with open("./docs/%s/conf.py" % doc, "w") as dst:
-            dst.write("# FILE COPIED FROM conf.orig.py; DO NOT CHANGE\n")
-            shutil.copyfileobj(src, dst)
-
-
 def fullsplit(path, result=None):
     """
     Split a pathname into components (the opposite of os.path.join) in a
