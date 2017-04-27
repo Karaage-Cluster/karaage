@@ -14,14 +14,17 @@ addons:
 env:
  - DJANGO_VERSION=1.8.16 DATABASE_URL=postgres://postgres@/spud
  - DJANGO_VERSION=1.9.11 DATABASE_URL=postgres://postgres@/spud
+ - DJANGO_VERSION=1.10.7 DATABASE_URL=postgres://postgres@/spud
  - DJANGO_VERSION=master DATABASE_URL=postgres://postgres@/spud
 
  - DJANGO_VERSION=1.8.16 DATABASE_URL=mysql://root:@localhost/spud
  - DJANGO_VERSION=1.9.11 DATABASE_URL=mysql://root:@localhost/spud
+ - DJANGO_VERSION=1.10.7 DATABASE_URL=mysql://root:@localhost/spud
  - DJANGO_VERSION=master DATABASE_URL=mysql://root:@localhost/spud
 
  - DJANGO_VERSION=1.8.16 DATABASE_URL=sqlite://
  - DJANGO_VERSION=1.9.11 DATABASE_URL=sqlite://
+ - DJANGO_VERSION=1.10.7 DATABASE_URL=sqlite://
  - DJANGO_VERSION=master DATABASE_URL=sqlite://
 
 install:
