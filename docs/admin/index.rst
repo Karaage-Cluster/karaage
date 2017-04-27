@@ -24,6 +24,12 @@ Contents:
    tasks
    upgrading
    ref
+
+Appendices:
+
+.. toctree::
+   :maxdepth: 1
+
    changes
    glossary
 

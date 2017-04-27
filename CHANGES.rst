@@ -32,8 +32,8 @@ Security
 * Use bcrypt by default for passwords instead of SHA1. We still support
   SHA1 for existing passwords.
 
-Release 3.1.30 (11th September 2016)
-------------------------------------
+3.1.30 - 2016-09-11
+-------------------
 
 * Fix various errors.
 * Fix broken calls to render.
@@ -41,8 +41,8 @@ Release 3.1.30 (11th September 2016)
 * Save institute even if commit==False.
 
 
-Release 3.1.29 (11th August 2016)
----------------------------------
+3.1.29 - 2016-08-11
+-------------------
 
 * Fix broken tests.
 * Require at least one institute delegate.
@@ -59,15 +59,15 @@ Release 3.1.29 (11th August 2016)
 * Fix Django 1.10 compatibility warnings.
 
 
-Release 3.1.28 (11 May 2016)
-----------------------------
+3.1.28 - 2016-05-11
+-------------------
 
 * Ensure version.py gets installed.
 * Ensure logout works with shibboleth.
 
 
-Release 3.1.27 (10 May 2016)
-----------------------------
+3.1.27 - 2016-05-10
+-------------------
 
 * Update programmer's documentation.
 * Remove references to legacy documentation.
@@ -77,8 +77,8 @@ Release 3.1.27 (10 May 2016)
 * Display Karaage version in footnote.
 
 
-Release 3.1.26 (06 May 2016)
-----------------------------
+3.1.26 - 2016-05-06
+-------------------
 
 * Add shibboleth Apache configuration.
 * Fix various shibboleth problems.
@@ -94,16 +94,16 @@ Release 3.1.26 (06 May 2016)
 * Updates to programmer's documentation.
 
 
-Release 3.1.25 (03 May 2016)
-----------------------------
+3.1.25 - 2016-05-03
+-------------------
 
 * Move karaage.common.logging to common.logging, as we cannot initialize
   karaage.common at time logging is loaded with Django 1.9. Will require config
   change.
 
 
-Release 3.1.24 (03 May 2016)
-----------------------------
+3.1.24 - 2016-05-03
+-------------------
 
 * Updates to packaging.
 * Updates to documentation.
@@ -111,20 +111,20 @@ Release 3.1.24 (03 May 2016)
 * Enable travis tests.
 
 
-Release 3.1.23 (29 Apr 2016)
-----------------------------
+3.1.23 - 2016-04-29
+-------------------
 
 * Fix tests and ensure everything still works.
 
 
-Release 3.1.22 (19 Jun 2015)
-----------------------------
+3.1.22 - 2015-06-19
+-------------------
 
 * Documentation updates.
 
 
-Release 3.1.21 (17 Jun 2015)
-----------------------------
+3.1.21 - 2015-06-17
+-------------------
 
 * Fix broken people list links.
 * Fix Jessie references in documentation.
@@ -132,8 +132,8 @@ Release 3.1.21 (17 Jun 2015)
 * Add documentation on making new Karaage releases.
 
 
-Release 3.1.20 (05 Jun 2015)
-----------------------------
+3.1.20 - 2015-06-05
+-------------------
 
 * Override admin email addresses using APPROVE_ACCOUNTS_EMAIL setting.
 * Fix flake8 tests in migrations.
@@ -148,8 +148,8 @@ Release 3.1.20 (05 Jun 2015)
   able to apply for new projects, only existing projects.
 
 
-Release 3.1.19 (29 May 2015)
-----------------------------
+3.1.19 - 2015-05-29
+-------------------
 
 * Numerous bug fixes.
 * Display software stats correctly.
@@ -170,8 +170,8 @@ Release 3.1.19 (29 May 2015)
   https://bugzilla.redhat.com/show_bug.cgi?id=1171308
 
 
-Release 3.1.18 (13 Apr 2015)
-----------------------------
+3.1.18 - 2015-04-13
+-------------------
 
 * Django 1.8 and 1.9 fixes.
   * Minor Schema change to last_login field of Person and Machine.
@@ -182,15 +182,16 @@ Release 3.1.18 (13 Apr 2015)
 * Fix incorrect name of query and jquery-ui files.
 
 
-Release 3.1.17 (30 Mar 2015)
-----------------------------
+3.1.17 - 2015-03-30
+-------------------
 
 * Cleanup code.
 * Clanup css files and remove unused selectors.
 * Support latest factory-boy.
 
 
-Release 3.1.16 (17 Mar 2015)
+3.1.16 - 2015-03-17
+-------------------
 
 * Generate error if alogger does not supply project in usage.
 * Rebuild static files when upgrading package.
@@ -201,53 +202,53 @@ Release 3.1.16 (17 Mar 2015)
 * Simplify autoconfiguration of plugins.
 
 
-Release 3.1.15 (10 Mar 2015)
-----------------------------
+3.1.15 - 2015-03-10
+-------------------
 
 * Various bug fixes.
 * Simplification of code, mainly alogger and tests.
 
 
-Release 3.1.14 (19 Feb 2015)
-----------------------------
+3.1.14 - 2015-02-19
+-------------------
 
 * Add missing depends.
 * Fix errors in installation documentation.
 * Add untested Active Directory schema support.
 
 
-Release 3.1.13 (17 Feb 2015)
-----------------------------
+3.1.13 - 2015-02-17
+-------------------
 
 * Fix package cleanup.
 * Ensure config file not world readable.
 
 
-Release 3.1.12 (16 Feb 2015)
-----------------------------
+3.1.12 - 2015-02-16
+-------------------
 
 * New upstream release.
 * Move plugins to karaage.plugins.
 * Various minor bug fixes.
 
 
-Release 3.1.11 (12 Feb 2015)
-----------------------------
+3.1.11 - 2015-02-12
+-------------------
 
 * Merge plugins into one source.
 * Merge kgapplications and kgsoftware into karaage package.
 
 
-Release 3.1.10 (01 Dec 2014)
-----------------------------
+3.1.10 - 2014-12-01
+-------------------
 
 * Bug fixes.
 * Fix problems with django-pipeline 1.4.0.
 * Updates to documentation.
 
 
-Release 3.1.9 (30 Oct 2014)
----------------------------
+3.1.9 - 2014-10-30
+------------------
 
 * Documentation: update apache configuration.
 * Python3 fixes.
@@ -255,22 +256,22 @@ Release 3.1.9 (30 Oct 2014)
 * Updates to upgrade documentation.
 
 
-Release 3.1.8 (13 Oct 2014)
----------------------------
+3.1.8 - 2014-10-13
+------------------
 
 * Fix daily cleanup. Work properly with plugins.
 * Test daily cleanup.
 
 
-Release 3.1.7 (10 Oct 2014)
----------------------------
+3.1.7 - 2014-10-10
+------------------
 
 * Fix various MAM issues.
 * Support MAM 2.7.
 
 
-Release 3.1.6 (30 Sep 2014)
----------------------------
+3.1.6 - 2014-09-30
+------------------
 
 * More Django 1.7 updates.
 * Django 1.6 should continue to work. For now.
@@ -278,8 +279,8 @@ Release 3.1.6 (30 Sep 2014)
 * Fix problems with logentry migrations.
 
 
-Release 3.1.5 (18 Sep 2014)
----------------------------
+3.1.5 - 2014-09-18
+------------------
 
 * Fix karaage3-database upgrade.
 * Make work with Django 1.7
@@ -287,16 +288,16 @@ Release 3.1.5 (18 Sep 2014)
 * We should fully support Django 1.7 now.
 
 
-Release 3.1.4 (15 Sep 2014)
----------------------------
+3.1.4 - 2014-09-15
+------------------
 
 * Updates to fix Django 1.7 issues.
 * Django 1.7 should really work now, however upgrade from earlier versions
   not yet documented.
 
 
-Release 3.1.3 (09 Sep 2014)
----------------------------
+3.1.3 - 2014-09-09
+------------------
 
 * Rewrite migrate_ldap.
 * Add Django 1.7 migration.
@@ -305,8 +306,8 @@ Release 3.1.3 (09 Sep 2014)
 * Django 1.7 should work, however not yet recommended for production use.
 
 
-Release 3.1.2 (27 Aug 2014)
----------------------------
+3.1.2 - 2014-08-27
+------------------
 
 * Remove odd,even row classes.
 * Fix broken templates.
@@ -320,8 +321,8 @@ Release 3.1.2 (27 Aug 2014)
 * Fix display of institute in migration.
 
 
-Release 3.1.1 (19 Aug 2014)
-----------------------------
+3.1.1 - 2014-08-19
+------------------
 
 * Update documentation.
 * Fix formatting.
@@ -348,8 +349,8 @@ Release 3.1.1 (19 Aug 2014)
 * Fix release tag.
 
 
-Release 3.1.0 (30 Jul 2014)
-----------------------------
+3.1.0 - 2014-07-30
+------------------
 
 [ Brian May ]
 * Update software usage statistics.
@@ -416,8 +417,8 @@ Release 3.1.0 (30 Jul 2014)
 * Modify Apache2.2 test.
 
 
-Release 3.0.15 (17 Jun 2014)
-----------------------------
+3.0.15 - 2014-06-17
+-------------------
 
 * Fix account detail page for admin.
 * Change get_absolute_url for accounts.
@@ -432,8 +433,8 @@ Release 3.0.15 (17 Jun 2014)
 * Display more project application details.
 
 
-Release 3.0.14 (27 May 2014)
-----------------------------
+3.0.14 - 2014-05-27
+-------------------
 
 * Put all tables inside table-container.
 * Remove calc from css.
@@ -448,8 +449,8 @@ Release 3.0.14 (27 May 2014)
 * Fix account permissions.
 
 
-Release 3.0.13 (05 May 2014)
-----------------------------
+3.0.13 - 2014-05-05
+-------------------
 
 * Specify python/debian mappings.
 * Update migrations threshold.
@@ -459,8 +460,8 @@ Release 3.0.13 (05 May 2014)
 * Triggers for static files.
 
 
-Release 3.0.12 (01 May 2014)
-----------------------------
+3.0.12 - 2014-05-01
+-------------------
 
 [ Brian May ]
 * Remove unused file.
@@ -513,8 +514,8 @@ Release 3.0.12 (01 May 2014)
 * Show if person is admin or not in details page.
 
 
-Release 3.0.11 (10 Apr 2014)
-----------------------------
+3.0.11 - 2014-04-10
+-------------------
 
 [ Brian May ]
 * Fix replaces/breaks headers.
@@ -540,8 +541,8 @@ Release 3.0.11 (10 Apr 2014)
 * Add "make leader" field to project select form.
 
 
-Release 3.0.10 (02 Apr 2014)
-----------------------------
+3.0.10 - 2014-04-02
+-------------------
 
 * Add migration to resize applicant.username.
 * Fix typo in in 389 support.
@@ -553,8 +554,8 @@ Release 3.0.10 (02 Apr 2014)
 * Update logging calls.
 
 
-Release 3.0.9 (25 Mar 2014)
----------------------------
+3.0.9 - 2014-03-25
+------------------
 
 [ Russell Sim ]
 * Increase max length of institute identifier to 255
@@ -613,8 +614,8 @@ Release 3.0.9 (25 Mar 2014)
 * Better testing of project group changes
 
 
-Release 3.0.8 (14 Mar 2014)
----------------------------
+3.0.8 - 2014-03-14
+------------------
 
 * Remove REMOTE_USER middleware from karaage.middleware.auth
   Django now has django.contrib.auth.middleware.RemoteUserMiddleware
@@ -623,8 +624,8 @@ Release 3.0.8 (14 Mar 2014)
 * Test changes in Karaage source code with flake8.
 
 
-Release 3.0.7 (13 Mar 2014)
----------------------------
+3.0.7 - 2014-03-13
+------------------
 
 * Numerous fixes to logging.
 * Fix password reset URL.
@@ -636,8 +637,8 @@ Release 3.0.7 (13 Mar 2014)
 * Hide project edit button if not leader.
 
 
-Release 3.0.6 (11 Mar 2014)
----------------------------
+3.0.6 - 2014-03-11
+------------------
 
 * Various bugs fixed.
 * Update python packaging.
@@ -645,16 +646,16 @@ Release 3.0.6 (11 Mar 2014)
 * Add legacy packages for backword compatibility.
 
 
-Release 3.0.5 (03 Mar 2014)
----------------------------
+3.0.5 - 2014-03-03
+------------------
 
 * Start arranging code into correct modules.
 * Display profile menu in top level profile page.
 * Cosmetic changes.
 
 
-Release 3.0.4 (27 Feb 2014)
----------------------------
+3.0.4 - 2014-02-27
+------------------
 
 * Redesign datastores.
 * Some small config changes required. See /usr/share/doc/karaage3/NEWS.
@@ -662,8 +663,8 @@ Release 3.0.4 (27 Feb 2014)
 * New theme.
 
 
-Release 3.0.3 (24 Feb 2014)
----------------------------
+3.0.3 - 2014-02-24
+------------------
 
 * New release of Karaage.
 * Updates to theme.
@@ -672,24 +673,24 @@ Release 3.0.3 (24 Feb 2014)
 * Restructure the views.
 
 
-Release 3.0.2 (05 Feb 2014)
----------------------------
+3.0.2 - 2014-02-05
+------------------
 
 * Bugs fixed.
 * Update documentation.
 * Updates to installation procedures.
 
 
-Release 3.0.1 (30 Jan 2014)
----------------------------
+3.0.1 - 2014-01-30
+------------------
 
 * Various bugs fixed.
 * Add unique constraints to usage caches.
 * Usage uses django-celery.
 
 
-Release 3.0.0 (18 Jul 2013)
----------------------------
+3.0.0 - 2013-07-18
+------------------
 
 * MAJOR CHANGES. BACKUP EVERYTHING ***BEFORE*** INSTALLING. BACKUP MYSQL.
   BACKUP OPENLDAP. TEST YOU CAN USE RESTORE MYSQL AND OPENLDAP. TEST
@@ -729,36 +730,36 @@ Release 3.0.0 (18 Jul 2013)
 * World peace is still to come.
 
 
-Release 2.7.6 (27 Mar 2013)
----------------------------
+2.7.6 - 2013-03-27
+------------------
 
 * Fix authentication for user's without a cluster account.
 * Fix account expiry process.
 
 
-Release 2.7.5 (25 Mar 2013)
----------------------------
+2.7.5 - 2013-03-25
+------------------
 
 * Fix error creating new accounts.
 * Reverse lock/unlock links when editing person.
 
 
-Release 2.7.4 (22 Mar 2013)
----------------------------
+2.7.4 - 2013-03-22
+------------------
 
 * Fix software data stores.
 * Fix various errors initializing data for new users.
 * Fix error in pbsmoab if user could not be found.
 
 
-Release 2.7.3 (15 Mar 2013)
----------------------------
+2.7.3 - 2013-03-15
+------------------
 
 * Don't support Python 2.5
 
 
-Release 2.7.3 (15 Mar 2013)
----------------------------
+2.7.3 - 2013-03-15
+------------------
 
 * Simplify default arguments.
 * Remove duplicate initialization of machinecategory.
@@ -769,20 +770,20 @@ Release 2.7.3 (15 Mar 2013)
 * debian
 
 
-Release 2.7.2 (19 Feb 2013)
----------------------------
+2.7.2 - 2013-02-19
+------------------
 
 * Tests all work now.
 
 
-Release 2.7.1 (11 Feb 2013)
----------------------------
+2.7.1 - 2013-02-11
+------------------
 
 * Increase the version number in __init__.py.
 
 
-Release 2.7.0 (11 Feb 2013)
----------------------------
+2.7.0 - 2013-02-11
+------------------
 
 * New version.
 * Based on latest django-placard.
@@ -790,28 +791,28 @@ Release 2.7.0 (11 Feb 2013)
   correctly.
 
 
-Release 2.6.8 (19 Nov 2012)
----------------------------
+2.6.8 - 2012-11-19
+------------------
 
 * Fix error in template. Requires permissions to see </ul> end tag.
 
 
-Release 2.6.7 (14 Nov 2012)
----------------------------
+2.6.7 - 2012-11-14
+------------------
 
 * Fix placard templates, accidentally broken in last release.
 
 
-Release 2.6.6 (13 Nov 2012)
----------------------------
+2.6.6 - 2012-11-13
+------------------
 
 * Fix broken software email templates.
 * Update loginShell form processing.
 * Updates to django ajax selects stuff.
 
 
-Release 2.6.5 (16 Oct 2012)
----------------------------
+2.6.5 - 2012-10-16
+------------------
 
 * Update for latest django-ajax-selects.
 * Remove obsolete code.
@@ -829,8 +830,8 @@ Release 2.6.5 (16 Oct 2012)
 * Convert media files to staticfiles
 
 
-Release 2.6.4 (22 Mar 2012)
----------------------------
+2.6.4 - 2012-03-22
+------------------
 
 * See https://github.com/Karaage-Cluster/karaage/issues?milestone=5&state=closed
 * Method to get a users projects via XML RPC
@@ -858,8 +859,8 @@ Release 2.6.4 (22 Mar 2012)
 * Machine Category usage cache errors
 
 
-Release 2.6.3 (7 Feb 2012)
---------------------------
+2.6.3 - 2012-02-07
+------------------
 
 * Jobname for a CPU Job increased to 256 characters
 * Fixed bug for trend graphs when institute name had a / in it
@@ -875,8 +876,8 @@ Release 2.6.3 (7 Feb 2012)
 * Added managment commands to lock/unlock training accounts
 
 
-Release 2.6.2 (19 Oct 2011)
----------------------------
+2.6.2 - 2011-10-19
+------------------
 
 * Handle module strings with // as a separator
 * More filtering on software list
@@ -884,8 +885,8 @@ Release 2.6.2 (19 Oct 2011)
 * Other minor bug fixes
 
 
-Release 2.6.1 (30 Aug 2011)
----------------------------
+2.6.1 - 2011-08-30
+------------------
 
 * Fixed out by 1 error when calculating available cpus
 * Added memory and core usage reports
@@ -895,8 +896,8 @@ Release 2.6.1 (30 Aug 2011)
 * Fixed longstanding matplotlib project graph error
 
 
-Release 2.6 (02 Aug 2011)
--------------------------
+2.6 - 2011-08-02
+----------------
 
 * Institutes now have 0 or many delegates, got rid of active/sub delegates
 * Removed deprecated requests app
@@ -916,30 +917,30 @@ Release 2.6 (02 Aug 2011)
 * Made the Send Email function more generic
 
 
-Release 2.5.17 (15 Jul 2011)
-----------------------------
+2.5.17 - 2011-07-15
+-------------------
 
 * Workaround for long standing matplotlib bug. Don't error
   if can't display graph.
 * Fixed another SAML_ID unique bug
 
 
-Release 2.5.16 (27 Jun 2011)
-----------------------------
+2.5.16 - 2011-06-27
+-------------------
 
 * Fixed instutute usage bug
 
 
-Release 2.5.15 (14 Jun 2011)
-----------------------------
+2.5.15 - 2011-06-14
+-------------------
 
 * Fixed bug in user invite email sending
 * Fixed broken decline link in project applications
 * Fixed bug in software detail template
 
 
-Release 2.5.14 (10 Jun 2011)
-----------------------------
+2.5.14 - 2011-06-10
+-------------------
 
 * Ability to view accepted licenses
 * Fixed bug where utilisation only showed up after 2nd request
@@ -947,15 +948,15 @@ Release 2.5.14 (10 Jun 2011)
 * Other minor bug fixes
 
 
-Release 2.5.13 (03 Jun 2011)
-----------------------------
+2.5.13 - 2011-06-03
+-------------------
 
 * Ensure SAML ID doesn't get set on new applications
 * This fixes a serious bug
 
 
-Release 2.5.12 (03 Jun 2011)
-----------------------------
+2.5.12 - 2011-06-03
+-------------------
 
 * Project approved emails were going to the wrong place
 * Log view for applications. Log against the parent Application model
@@ -963,8 +964,8 @@ Release 2.5.12 (03 Jun 2011)
 * Minor bugs fixed
 
 
-Release 2.5.11 (01 Jun 2011)
-----------------------------
+2.5.11 - 2011-06-01
+-------------------
 
 * Ensure project PIDs and institute names don't clash
 * Fixed bug in application invites
@@ -974,8 +975,8 @@ Release 2.5.11 (01 Jun 2011)
 * Refactored email templates. Use .example as suffixes
 
 
-Release 2.5.10 (25 May 2011)
-----------------------------
+2.5.10 - 2011-05-25
+-------------------
 
 * Fixed SAML entity ID bug when editing institutes
 * Password encoding bug for AD fixed
@@ -985,16 +986,16 @@ Release 2.5.10 (25 May 2011)
 * Ability to override UserApplicationForm
 
 
-Release 2.5.9 (18 May 2011)
----------------------------
+2.5.9 - 2011-05-18
+------------------
 
 * Fixed bug in graph generation when usage is unknown.
 * Fixed bug in application saml institute logic
 * Show unknow usage if user or project is NULL
 
 
-Release 2.5.8 (04 May 2011)
-----------------------------
+2.5.8 - 2011-05-04
+------------------
 
 * Show all unknow usage function
 * Set defaults for PERSONAL_DATASTORE and ACCOUNT_DATASTORES
@@ -1002,8 +1003,8 @@ Release 2.5.8 (04 May 2011)
 * Minor bug fixes
 
 
-Release 2.5.7 (30 Mar 2011)
----------------------------
+2.5.7 - 2011-03-30
+------------------
 
 * Project Caps, multiple caps allowed
 * Got rid of need for unknown user and project for missing usage
@@ -1012,31 +1013,31 @@ Release 2.5.7 (30 Mar 2011)
 * Various bug fixes and RPM packaging improvements
 
 
-Release 2.5.6 (09 Mar 2011)
----------------------------
+2.5.6 - 2011-03-09
+------------------
 
 * Bug fixes
 * Show saml ids in admin detail pages
 * Changed create_password_hash to handle different formats
 
 
-Release 2.5.5 (08 Mar 2011)
----------------------------
+2.5.5 - 2011-03-08
+------------------
 
 * Added initial code for SAML support
 * Don't assume LDAP in kgcreateuser command
 * Add CAPTCHA to application forms if in use
 
 
-Release 2.5.4 (23 Feb 2011)
----------------------------
+2.5.4 - 2011-02-23
+------------------
 
 * Change default url for graphs to /karaage_graphs/
 * Minor bug fixes
 
 
-Release 2.5.3 (21 Feb 2011)
-----------------------------
+2.5.3 - 2011-02-21
+------------------
 
 * New application state ARCHIVE, handle multiple applications per applicant
 * APPROVE_ACCOUNTS_EMAIL added
@@ -1050,8 +1051,8 @@ Release 2.5.3 (21 Feb 2011)
   registrations allowed.
 
 
-Release 2.5.2 (15 Dec 2010)
----------------------------
+2.5.2 - 2010-12-15
+------------------
 
 * Add transaction middleware
 * Force close LDAP connection to avoid stale data
@@ -1062,8 +1063,8 @@ Release 2.5.2 (15 Dec 2010)
 * Added logging for application state changes
 
 
-Release 2.5.1 (10 Dec 2010)
----------------------------
+2.5.1 - 2010-12-10
+------------------
 
 * Return distinct results in global search form
 * Raise 403 error instead of 404 when application exists
@@ -1074,8 +1075,8 @@ Release 2.5.1 (10 Dec 2010)
 * Use andsomes is_password_strong method instead of own
 
 
-Release 2.5 (17 Nov 2010)
--------------------------
+2.5 - 2010-11-17
+----------------
 
 * Project Datastores
 * Support for system users
@@ -1088,16 +1089,16 @@ Release 2.5 (17 Nov 2010)
 * Many bug fixes throughout code
 
 
-Release 2.4.14 (17 Nov 2010)
-----------------------------
+2.4.14 - 2010-11-17
+-------------------
 
 * Added CSV user import command
 * Ensure applicant with same email doesn't exist when inviting
 * Minor bug fixes
 
 
-Release 2.4.13 (20 Oct 2010)
-----------------------------
+2.4.13 - 2010-10-20
+-------------------
 
 * Make sure invitation isn't expired
 * Send different email if existing user on account creation
@@ -1109,16 +1110,16 @@ Release 2.4.13 (20 Oct 2010)
 * Other various bug fixes
 
 
-Release 2.4.12 (13 Oct 2010)
-----------------------------
+2.4.12 - 2010-10-13
+-------------------
 
 * Make header_message required field in application invite form
 * Only show software that has a license for users to accept
 * Bug fixes
 
 
-Release 2.4.11 (07 Oct 2010)
-----------------------------
+2.4.11 - 2010-10-07
+-------------------
 
 * Select related to lessen SQL queries
 * Fixed bug in log parser if user has two accounts
@@ -1133,22 +1134,22 @@ Release 2.4.11 (07 Oct 2010)
 * More explicit confirm when inviting users that already exist in system
 
 
-Release 2.4.10 (04 Oct 2010)
-----------------------------
+2.4.10 - 2010-10-04
+-------------------
 
 * Fixed serious cirular import bug
 
 
-Release 2.4.9 (29 Sep 2010)
----------------------------
+2.4.9 - 2010-09-29
+------------------
 
 * New Application app
 * Fixed bug in password done template
 * Other minor fixes
 
 
-Release 2.4.8 (15 Sep 2010)
----------------------------
+2.4.8 - 2010-09-15
+------------------
 
 * Added memory and core usage reports
 * Use django-ajax-selects
@@ -1157,15 +1158,15 @@ Release 2.4.8 (15 Sep 2010)
 * Bug fixes and code cleanup
 
 
-Release 2.4.7 (25 Aug 2010)
----------------------------
+2.4.7 - 2010-08-25
+------------------
 
 * Use django-andsome baseurl context
 * Bug fixes
 
 
-Release 2.4.6 (25 Aug 2010)
-----------------------------
+2.4.6 - 2010-08-25
+------------------
 
 * Added ability to request software.
 * Cleaned up permission system on who can view what
@@ -1173,15 +1174,15 @@ Release 2.4.6 (25 Aug 2010)
 * Bug fixes
 
 
-Release 2.4.5 (17 Aug 2010)
----------------------------
+2.4.5 - 2010-08-17
+------------------
 
 * Use BigInteger field in usage fields
 * Fix import error in request forms
 
 
-Release 2.4.4 (12 Aug 2010)
----------------------------
+2.4.4 - 2010-08-12
+------------------
 
 * Set django password to unusable once user has password in ldap
 * Removed required fields on most user form fields.
@@ -1190,22 +1191,22 @@ Release 2.4.4 (12 Aug 2010)
 * Other small bug fixes
 
 
-Release 2.4.3 (28 Jul 2010)
----------------------------
+2.4.3 - 2010-07-28
+------------------
 
 * Make kgcreatesuperuser script smarter
 * Don't error if graphs not implemented in specific library
 
 
-Release 2.4.2 (28 Jul 2010)
----------------------------
+2.4.2 - 2010-07-28
+------------------
 
 * Dropped support for Django 1.1.1
 * LOGIN_URL settings move to karaage-admin
 
 
-Release 2.4.1 (27 Jul 2010)
----------------------------
+2.4.1 - 2010-07-27
+------------------
 
 * Added command to create a karaage superuser
 * Make LDAP Auth backend the default
@@ -1213,16 +1214,16 @@ Release 2.4.1 (27 Jul 2010)
 * Make country field optional on Person model
 
 
-Release 2.4 (27 Jul 2010)
--------------------------
+2.4 - 2010-07-27
+----------------
 
 * Minor config changes
 * Changes to default settings for new installs
 * Bug fixes to project form
 
 
-Release 2.3.11 (21 Jul 2010)
-----------------------------
+2.3.11 - 2010-07-21
+-------------------
 
 * Compatible with Django 1.1
 * Other tweaks to default configuration.
@@ -1230,42 +1231,42 @@ Release 2.3.11 (21 Jul 2010)
 * Add script to set default secret.
 
 
-Release 2.3.10 (20 Jul 2010)
-----------------------------
+2.3.10 - 2010-07-20
+-------------------
 
 * Change to non-native format.
 * Use new configuration system.
 * Other improvements to packaging.
 
 
-Release 2.3.9 (08 Jun 2010)
----------------------------
+2.3.9 - 2010-06-08
+------------------
 
 * Fixed syntax error
 
 
-Release 2.3.8 (08 Jun 2010)
----------------------------
+2.3.8 - 2010-06-08
+------------------
 
 * Fixed Django 1.2 incompatibility
 
 
-Release 2.3.7 (31 May 2010)
----------------------------
+2.3.7 - 2010-05-31
+------------------
 
 * Remove username from account creation form, fixes #43.
 * Allow searching for project ID's in choose project that are longer that 8 characters
 
 
-Release 2.3.6 (28 May 2010)
----------------------------
+2.3.6 - 2010-05-28
+------------------
 
 * Removed comment field from request detail
 * Only activate a user if not already active
 
 
-Release 2.3.5 (28 May 2010)
----------------------------
+2.3.5 - 2010-05-28
+------------------
 
 * Fix issue of not being able to search from page 2+ in userlist, Fixes #40
 * Fixed #44 </tr> tag now in correct place for valid html
@@ -1274,8 +1275,8 @@ Release 2.3.5 (28 May 2010)
 * More testing
 
 
-Release 2.3.4 (26 May 2010)
----------------------------
+2.3.4 - 2010-05-26
+------------------
 
 * Decreased verbosity in management scripts
 * Split user forms up one with username/password, one without
@@ -1286,39 +1287,39 @@ Release 2.3.4 (26 May 2010)
 * More unit tests
 
 
-Release 2.3.3 (19 May 2010)
----------------------------
+2.3.3 - 2010-05-19
+------------------
 
 * Gecos and gidNumber are now also configurable via ldap_attrs
 
 
-Release 2.3.2 (19 May 2010)
----------------------------
+2.3.2 - 2010-05-19
+------------------
 
 * Pull in django-south dependency
 
 
-Release 2.3.1 (19 May 2010)
----------------------------
+2.3.1 - 2010-05-19
+------------------
 
 * Use active institutes in forms
 
 
-Release 2.3 (19 May 2010)
--------------------------
+2.3 - 2010-05-19
+----------------
 
 * Use Django-south for DB migrations
 * Added is_active field to Institute
 
 
-Release 2.2.1 (17 May 2010)
-----------------------------
+2.2.1 - 2010-05-17
+-------------------
 
 * Fixed create_account bug with ldap_attrs
 
 
-Release 2.2 (17 May 2010)
--------------------------
+2.2 - 2010-05-17
+----------------
 
 * Use dynamic values when creating an LDAP account. Also supply default_project when creating accounts
 * Code clean up
@@ -1329,15 +1330,15 @@ Release 2.2 (17 May 2010)
 * Added pylint file
 
 
-Release 2.1.1 (07 May 2010)
----------------------------
+2.1.1 - 2010-05-07
+------------------
 
 * Ability to set LOCKED_SHELL. Fixes #34
 * objectClass now configurable
 
 
-Release 2.1 (06 May 2010)
--------------------------
+2.1 - 2010-05-06
+----------------
 
 * Changed size of cpu_job.jobname from 20 -> 100. REQUIRES DB change
 * removed is_expertise from user project form
@@ -1345,27 +1346,27 @@ Release 2.1 (06 May 2010)
 * Removed VPAC in text on admin person form
 
 
-Release 2.0.16 (05 May 2010)
-----------------------------
+2.0.16 - 2010-05-05
+-------------------
 
 * Better way of checking to see if user is locked or not
 
 
-Release 2.0.15 (05 May 2010)
-----------------------------
+2.0.15 - 2010-05-05
+-------------------
 
 * Removed VPAC specific lock DN
 
 
-Release 2.0.14 (03 May 2010)
-----------------------------
+2.0.14 - 2010-05-03
+-------------------
 
 * Fixed usage bug when no projectchunk
 * Fixed JS broken link on project form
 
 
-Release 2.0.13 (03 May 2010)
-----------------------------
+2.0.13 - 2010-05-03
+-------------------
 
 * Added initial data for default MachineCategory. Fixes #31
 * Added initial api docs
@@ -1374,75 +1375,75 @@ Release 2.0.13 (03 May 2010)
 * Don't display title if it doesn't exist. Fixes #30
 
 
-Release 2.0.12 (29 Apr 2010)
-----------------------------
+2.0.12 - 2010-04-29
+-------------------
 
 * Attempts to fix usage error. addresses #25
 
 
-Release 2.0.11 (28 Apr 2010)
-----------------------------
+2.0.11 - 2010-04-28
+-------------------
 
 * Fixed broken graph urls
 
 
-Release 2.0.10 (28 Apr 2010)
-----------------------------
+2.0.10 - 2010-04-28
+-------------------
 
 * Provide GRAPH_URL in template context
 
 
-Release 2.0.9 (28 Apr 2010)
----------------------------
+2.0.9 - 2010-04-28
+------------------
 
 * GRAPH_URL and GRAPH_ROOT settings if graph dir separate to MEDIA_*
 
 
-Release 2.0.8 (01 Apr 2010)
----------------------------
+2.0.8 - 2010-04-01
+------------------
 
 * Fixed software_detail bug
 
 
-Release 2.0.7 (31 Mar 2010)
----------------------------
+2.0.7 - 2010-03-31
+------------------
 
 * Fixed totals displaying in usage_institute_detail page
 * Use new django aggregation support instead of raw sql
 * Show project usage based on machine_category
 
 
-Release 2.0.6 (24 Mar 2010)
----------------------------
+2.0.6 - 2010-03-24
+------------------
 
 * Fixed bug in project reports url redirection
 
 
-Release 2.0.5 (22 Mar 2010)
----------------------------
+2.0.5 - 2010-03-22
+------------------
 
 * Depend on django-xmlrpc package
 
 
-Release 2.0.4 (22 Mar 2010)
----------------------------
+2.0.4 - 2010-03-22
+------------------
 
 * Actually use new alogger library
 
 
-Release 2.0.3 (22 Mar 2010)
----------------------------
+2.0.3 - 2010-03-22
+------------------
 
 * Depend on python-alogger
 
 
-Release 2.0.2 (19 Mar 2010)
----------------------------
+2.0.2 - 2010-03-19
+------------------
 
 * Fixed gdchart2 requirment
 
 
-Release 2.0.1 (19 Mar 2010)
----------------------------
+2.0.1 - 2010-03-19
+------------------
 
 * Initial release.
