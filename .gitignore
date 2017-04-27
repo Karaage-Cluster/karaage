@@ -11,3 +11,5 @@
 /.eggs/
 /.tox/
 /.idea/
+/.cache/
+/file.db
