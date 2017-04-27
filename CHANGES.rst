@@ -23,8 +23,14 @@ Fixed
 * Applicants can have duplicate email and usernames.
 * Various Django 1.10 fixes. Django >= 1.10 not yet supported.
 * Improved error handling on approving applications.
-* Update various dependancies, and fix related issues.
-* Fix typo in emails. Administrator not Administatror.
+* Update various dependencies, and fix related issues.
+* Fix typo in emails. Administrator not Administrator.
+* All tests pass under Django 1.10.
+
+Security
+~~~~~~~~
+* Use bcrypt by default for passwords instead of SHA1. We still support
+  SHA1 for existing passwords.
 
 Release 3.1.30 (11th September 2016)
 ------------------------------------
