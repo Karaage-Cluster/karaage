@@ -1,0 +1,24 @@
+From e4d051acaf0c82da4bf6d26ae51880b3934dfacb Mon Sep 17 00:00:00 2001
+From: Brian May <brian@linuxpenguins.xyz>
+Date: Fri, 29 Apr 2016 10:45:28 +1000
+Subject: sphinx
+
+---
+ docs/conf.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/docs/conf.py b/docs/conf.py
+index bc5a8b5..99b045f 100644
+--- a/docs/conf.py
++++ b/docs/conf.py
+@@ -30,8 +30,8 @@ extensions += ["djangodocs"]
+ extensions += ["sphinx.ext.intersphinx"]
+ intersphinx_mapping = {
+     'django': (
+-        'https://docs.djangoproject.com/en/1.7/',
+-        'https://docs.djangoproject.com/en/1.7/_objects/'),
++        '/usr/share/doc/python-django-doc/html/',
++        None),
+ }
+ 
+ # The version info for the project you're documenting, acts as replacement for

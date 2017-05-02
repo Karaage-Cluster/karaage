@@ -1,0 +1,19 @@
+#!/bin/sh
+shell_code=''' '
+# shell code
+if command -v python2.7 > /dev/null && test -e /usr/share/python-karaage
+then
+    exec python2.7 "$0" "$@"
+elif command -v python3 > /dev/null && test -e /usr/share/python3-karaage
+then
+    exec python3 "$0" "$@"
+else
+    echo "Cannot find installed version of karaage." >&2
+    exit 1
+fi
+
+python_code='''
+# python code
+# ONLY use DOUBLE quotes <"> after this line
+exec(open("/usr/share/python-karaage/bin/kg-manage", "rb").read())
+# End of Python code. Do not modify this line. #'

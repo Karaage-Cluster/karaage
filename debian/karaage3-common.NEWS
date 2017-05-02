@@ -1,0 +1,11 @@
+karaage (2.7.0-1) stable; urgency=low
+
+   Templates have significant changes and may require updating.
+
+   Config changes will be required.
+   https://github.com/Karaage-Cluster/karaage/wiki/Upgrading
+
+   The risk of breaking functionality exists with this update.
+   Do not install on critical system if downtime not scheduled.
+
+ -- Brian May <bam@debian.org>  Mon, 11 Feb 2013 12:50:19 +1100

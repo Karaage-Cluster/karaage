@@ -1,0 +1,9 @@
+Document: karaage3-user
+Title: Karaage User Documentation
+Author: Brian May
+Abstract: This documents karaage functions for Users.
+Section: Network/Communication
+
+Format: HTML
+Index: /usr/share/doc/karaage3-doc/user/index.html
+Files: /usr/share/doc/karaage3-doc/user/*.html

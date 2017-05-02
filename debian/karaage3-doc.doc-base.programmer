@@ -1,0 +1,9 @@
+Document: karaage3-programmer
+Title: Karaage Admin Documentation
+Author: Brian May
+Abstract: This documents karaage functions for Administrators.
+Section: Programming/Python
+
+Format: HTML
+Index: /usr/share/doc/karaage3-doc/programmer/index.html
+Files: /usr/share/doc/karaage3-doc/programmer/*.html

@@ -1,0 +1,102 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: karaage3\n"
+"Report-Msgid-Bugs-To: karaage3@packages.debian.org\n"
+"POT-Creation-Date: 2014-09-18 10:14+1000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: boolean
+#. Description
+#: ../karaage3-database.templates:1001
+msgid "Do you want to migrate the database now?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../karaage3-database.templates:1001
+msgid ""
+"There are database schema changes with this release. You can upgrade "
+"automatically now or migrate manually later. Karaage will be unstable until "
+"database migrations are applied."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../karaage3-database.templates:1001
+msgid "Note: Migrations can take some time on large databases."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../karaage3-database.templates:2001
+msgid "Pending Migrations"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../karaage3-database.templates:2001
+msgid ""
+"You will need to run migrations manually in order to complete the upgrade."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../karaage3-database.templates:2001
+msgid " kg-manage migrate"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../karaage3-database.templates:3001
+msgid "Pending South Migrations"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../karaage3-database.templates:3001
+msgid ""
+"You will need to run south migrations manually in order to complete the "
+"upgrade."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../karaage3-database.templates:3001
+msgid ""
+" kg-migrate-south\n"
+" kg-manage migrate"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../karaage3-database.templates:3001
+msgid ""
+"Do not run \"kg-manage migrate\" until after the kg-migrate-south has "
+"completed successfully or you may end up with a broken system."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../karaage3-database.templates:4001
+msgid "Error with migrations"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../karaage3-database.templates:4001
+msgid ""
+"Please identify the problem and fix it. Karaage will not be reliable until "
+"this is completed."
+msgstr ""

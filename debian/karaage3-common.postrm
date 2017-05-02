@@ -1,0 +1,20 @@
+#!/bin/sh -e
+
+if [ "$1" = "purge" ]
+then
+    for i in /etc/karaage3/settings.py \
+             /var/log/karaage3 \
+             /var/cache/karaage3/tmp \
+             /var/cache/karaage3/files
+    do
+        if dpkg-statoverride --list $i >/dev/null 2>&1
+        then
+            dpkg-statoverride --remove $i
+            rm -rf $i
+        fi
+    done
+
+    rm -rf /var/lib/karaage3
+fi
+
+#DEBHELPER#
