@@ -9,7 +9,7 @@ django-ajax-selects==1.5.2
 django-jsonfield==1.0.1
 django-model-utils==3.0
 ldap3==1.4.0
-python-tldap==0.3.20
+python-tldap==0.4.1
 django-pipeline==1.6.12
 django-tables2==1.6.0
 django-filter==1.0.2
