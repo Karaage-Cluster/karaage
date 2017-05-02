@@ -9,8 +9,8 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
-UNRELEASED
-----------
+3.1.31 - 2017-05-03
+-------------------
 
 Changed
 ~~~~~~~
@@ -26,11 +26,11 @@ Fixed
 * Update various dependencies, and fix related issues.
 * Fix typo in emails. Administrator not Administrator.
 * All tests pass under Django 1.10.
+* Support tldap 1.4.1 and ldap3 2.2.3.
+* Explicitly use bcrypt/pbkdf2_sha256 by default for passwords instead of SHA1.
+  Update tests to use pbkdf2_sha256. Outside tests this was already the default
+  with recent versions of Django.
 
-Security
-~~~~~~~~
-* Use bcrypt by default for passwords instead of SHA1. We still support
-  SHA1 for existing passwords.
 
 3.1.30 - 2016-09-11
 -------------------
