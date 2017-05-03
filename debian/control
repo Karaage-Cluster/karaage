@@ -3,7 +3,8 @@ Section: python
 Priority: optional
 Maintainer: Brian May <bam@debian.org>
 Build-Depends: debhelper (>=8.1.0), dh-python, slapd, ldap-utils, po-debconf,
- cssmin, slimit,
+ cssmin,
+ python-cssmin, python-slimit, python-bcrypt,
  python-all (>= 2.6.6-3~), python-setuptools, python-django, python-tldap,
  python-six, python-django-xmlrpc, python-django-captcha, python-alogger,
  python-ajax-select, python-django-jsonfield, python-django-pipeline (>= 1.6.0),
@@ -11,6 +12,7 @@ Build-Depends: debhelper (>=8.1.0), dh-python, slapd, ldap-utils, po-debconf,
  python-factory-boy, python-mock, python-cracklib,
  python-django-celery, python-matplotlib, python-django-environ,
  python-setuptools-scm, python-ipaddress,
+ python3-cssmin, python3-slimit, python3-bcrypt,
  python3-all, python3-setuptools, python-django, python3-tldap,
  python3-six, python3-django-xmlrpc, python3-django-captcha, python3-alogger,
  python3-ajax-select, python3-django-jsonfield, python3-django-pipeline (>= 1.6.0),
@@ -160,7 +162,7 @@ Package: karaage3-celery
 Replaces: python-karaage-celery (<< 3.1.0)
 Breaks: python-karaage-celery (<< 3.1.0)
 Architecture: all
-Depends: ${misc:Depends}, python-karaage, python-amqp | python-amqplib
+Depends: ${misc:Depends}, python-karaage, python-amqp | python-amqplib, lsb-base (>= 3.0-6)
 Recommends: rabbitmq-server
 Description: Celery server for karaage
  Karaage is a cluster account management tool. It can manage users and projects
