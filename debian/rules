@@ -8,6 +8,7 @@ PREFIXA = debian/karaage3-wsgi
 
 PY2VERS=$(shell pyversions -r)
 PY3VERS=$(shell py3versions -r)
+DEB_UPSTREAM_VERSION ?= $(shell dpkg-parsechangelog | sed -rne 's/^Version: ([0-9.]+)[-+].*$$/\1/p')
 
 USAGE2 = debian/python-kgusage
 USAGE3 = debian/python3-kgusage
@@ -21,6 +22,10 @@ export SETUPTOOLS_SCM_PRETEND_VERSION=$(shell cat PKG-INFO | sed -n 's/^Version:
 .PHONY: override_dh_sphinxdoc
 override_dh_sphinxdoc:
 ifeq (,$(findstring nodocs, $(DEB_BUILD_OPTIONS)))
+	# Kludge for Jessie
+	if [ ! -f karaage/version.py ]; then \
+	    echo "version = '$(DEB_UPSTREAM_VERSION)'" > karaage/version.py; \
+	fi
 	PYTHONPATH=. sphinx-build -b html -d docs/admin/.build/.doctrees -N docs/admin debian/karaage3-doc/usr/share/doc/karaage3-doc/admin
 	PYTHONPATH=. sphinx-build -b man -d docs/admin/.build/.doctrees -N docs/admin debian/karaage3-common/usr/share/man/man8
 	PYTHONPATH=. sphinx-build -b html -d docs/user/.build/.doctrees -N docs/user debian/karaage3-doc/usr/share/doc/karaage3-doc/user
