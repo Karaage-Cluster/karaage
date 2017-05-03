@@ -20,13 +20,13 @@ export SETUPTOOLS_SCM_PRETEND_VERSION=$(shell cat PKG-INFO | sed -n 's/^Version:
 
 .PHONY: override_dh_sphinxdoc
 override_dh_sphinxdoc:
-#ifeq (,$(findstring nodocs, $(DEB_BUILD_OPTIONS)))
+ifeq (,$(findstring nodocs, $(DEB_BUILD_OPTIONS)))
 	PYTHONPATH=. sphinx-build -b html -d docs/admin/.build/.doctrees -N docs/admin debian/karaage3-doc/usr/share/doc/karaage3-doc/admin
 	PYTHONPATH=. sphinx-build -b man -d docs/admin/.build/.doctrees -N docs/admin debian/karaage3-common/usr/share/man/man8
 	PYTHONPATH=. sphinx-build -b html -d docs/user/.build/.doctrees -N docs/user debian/karaage3-doc/usr/share/doc/karaage3-doc/user
 	PYTHONPATH=. sphinx-build -b html -d docs/programmer/.build/.doctrees -N docs/programmer debian/karaage3-doc/usr/share/doc/karaage3-doc/programmer
 	dh_sphinxdoc
-#endif
+endif
 
 .PHONY: override_dh_clean
 override_dh_clean:
@@ -38,6 +38,7 @@ override_dh_clean:
 
 .PHONY: override_dh_auto_test
 override_dh_auto_test:
+ifeq (,$(findstring nocheck, $(DEB_BUILD_OPTIONS)))
 	./manage.py collectstatic --settings="karaage.tests.settings" -v 2 --noinput
 	dh_auto_test -- --system=custom --test-args="{interpreter}  ./manage.py test --settings="karaage.tests.settings" -v 2 karaage.tests"
 	./manage.py collectstatic --settings="karaage.plugins.kgapplications.tests.settings" -v 2 --noinput
@@ -48,6 +49,7 @@ override_dh_auto_test:
 	dh_auto_test -- --system=custom --test-args="{interpreter}  ./manage.py test --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 karaage.plugins.kgsoftware"
 	./manage.py collectstatic --settings="karaage.plugins.kgusage.tests.settings" -v 2 --noinput
 	dh_auto_test -- --system=custom --test-args="{interpreter}  ./manage.py test --settings="karaage.plugins.kgusage.tests.settings" -v 2 karaage.plugins.kgusage"
+endif
 
 .PHONY: override_dh_install
 override_dh_install:
