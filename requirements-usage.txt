@@ -1,4 +1,4 @@
 -r requirements.txt
 celery==4.0.2
 django-celery==3.2.1
-matplotlib==2.0.0
+matplotlib==2.0.1
