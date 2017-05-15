@@ -26,6 +26,7 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden, \
 from django.http import QueryDict
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.views.decorators.debug import sensitive_post_parameters
 
 from karaage.common.decorators import admin_required, login_required
 from karaage.people.tables import PersonFilter, PersonTable, LeaderTable
@@ -73,6 +74,7 @@ def _add_edit_user(request, form_class, username):
         request=request)
 
 
+@sensitive_post_parameters('password1', 'password2')
 @admin_required
 def add_user(request):
     return _add_edit_user(request, AddPersonForm, None)
@@ -221,6 +223,7 @@ def activate(request, username):
         request=request)
 
 
+@sensitive_post_parameters('new1', 'new2')
 @admin_required
 def password_change(request, username):
     person = get_object_or_404(Person, username=username)

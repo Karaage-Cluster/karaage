@@ -22,6 +22,7 @@ from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.apps import apps
+from django.views.decorators.debug import sensitive_post_parameters
 
 from karaage.common.decorators import login_required
 from karaage.people.models import Person
@@ -33,6 +34,7 @@ from karaage.common.forms import LoginForm
 import karaage.common.saml as saml
 
 
+@sensitive_post_parameters('password')
 def login(request, username=None):
     error = ''
     redirect_to = reverse('index')
@@ -209,6 +211,7 @@ def edit_profile(request):
         request=request)
 
 
+@sensitive_post_parameters('new1', 'new2')
 @login_required
 def password_change(request):
 
