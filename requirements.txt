@@ -12,7 +12,7 @@ ldap3==2.2.4
 python-tldap==0.4.1
 django-pipeline==1.6.12
 django-tables2==1.6.1
-django-filter==1.0.2
+django-filter==1.0.4
 django-environ==0.4.3
 six==1.10.0
 slimit==0.8.1
