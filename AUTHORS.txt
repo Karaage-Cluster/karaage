@@ -2,7 +2,7 @@ Andrew Isaac <aisaac@unimelb.edu.au>
 Andrew Spiers <andrew@andrewspiers.net>
 Ben Moran <bjmoran@gmail.com>
 Brett Pemberton <bpe@unimelb.edu.au>
-Brian May <brian@v3.org.au>
+Brian May <brian@linuxpenguins.xyz>
 Kieran Spear <kispear@gmail.com>
 Lev Lafayette <lev@levlafayette.com>
 Russell Sim <russell.sim@gmail.com>
