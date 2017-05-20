@@ -23,8 +23,8 @@ Build-Depends: debhelper (>=9), dh-python, slapd, ldap-utils, po-debconf,
 Build-Depends-Indep: python3-sphinx (>= 1.0.7+dfsg-1~)
 Standards-Version: 3.9.8
 Homepage: https://github.com/Karaage-Cluster/karaage
-Vcs-Git: git://github.com/Karaage-Cluster/karaage-debian
-Vcs-Browser: https://github.com/Karaage-Cluster/karaage-debian
+Vcs-Git: git://github.com/Karaage-Cluster/karaage
+Vcs-Browser: https://github.com/Karaage-Cluster/karaage
 X-Python-Version: >= 2.7
 
 Package: karaage3-common
