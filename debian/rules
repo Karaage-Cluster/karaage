@@ -14,7 +14,6 @@ USAGE2 = debian/python-kgusage
 USAGE3 = debian/python3-kgusage
 
 export PYBUILD_NAME=karaage
-export SETUPTOOLS_SCM_PRETEND_VERSION=$(shell cat PKG-INFO | sed -n 's/^Version: //p')
 
 %:
 	dh $@ --with python2,python3,sphinxdoc --buildsystem=pybuild
