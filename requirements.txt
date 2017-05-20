@@ -2,7 +2,7 @@ bcrypt==3.1.3
 cssmin==0.2.0
 # Don't include Django, so tests can test different versions
 # Django==1.8.16
-python-alogger==2.2.9
+python-alogger==2.2.10
 django-xmlrpc==0.1.7
 django-simple-captcha==0.5.5
 django-ajax-selects==1.6.0
