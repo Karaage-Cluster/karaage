@@ -1,4 +1,5 @@
-# Copyright 2007-2014 VPAC
+# Copyright 2010-2017, The University of Melbourne
+# Copyright 2010-2017, Brian May
 #
 # This file is part of Karaage.
 #
