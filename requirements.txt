@@ -16,4 +16,4 @@ django-filter==1.0.4
 django-environ==0.4.3
 six==1.10.0
 slimit==0.8.1
-setuptools_scm==1.15.5
+setuptools-scm==1.15.6
