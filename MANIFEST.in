@@ -13,3 +13,4 @@ recursive-include sbin *
 recursive-include conf *
 recursive-include docs Makefile
 recursive-exclude karaage *.pyc
+recursive-include requirements *.txt
