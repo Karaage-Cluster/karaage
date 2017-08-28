@@ -4,7 +4,6 @@
 *.pyc
 *.bak
 /karaage.egg-info/
-/karaage/version.py
 /docs/*/_build/
 /tmp/
 /dist/

@@ -20,7 +20,7 @@ import re
 from os.path import abspath, dirname, join
 
 sys.path.insert(0, abspath('../..'))
-import karaage.version  # NOQA
+import karaage  # NOQA
 
 
 sys.path.append(abspath(join(dirname(dirname(__file__)), "ext")))
@@ -43,7 +43,7 @@ intersphinx_mapping = {
 #
 
 # The full version, including alpha/beta/rc tags.
-release = karaage.version.version
+release = karaage.__version__
 # The short X.Y version.
 version = '.'.join(release.split('.')[:2])
 

@@ -20,8 +20,8 @@
 """Karaage setup script."""
 
 from setuptools import setup
-import shutil
 import os
+
 
 def fullsplit(path, result=None):
     """
@@ -58,10 +58,7 @@ tests_require = [
 
 setup(
     name="karaage",
-    use_scm_version={
-        'write_to': "karaage/version.py",
-    },
-    setup_requires=['setuptools_scm'],
+    version='3.1.31',
     url='https://github.com/Karaage-Cluster/karaage',
     author='Brian May',
     author_email='brian@v3.org.au',

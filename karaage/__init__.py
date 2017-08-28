@@ -20,8 +20,6 @@
 # http://docs.djangoproject.com/en/1.7/ref/applications/
 default_app_config = 'karaage.apps.Karaage'
 
-try:
-    import karaage.version
-    __version__ = karaage.version.version
-except ImportError:
-    __version__ = 'development'
+__author__ = """Brian May"""
+__email__ = 'brian@linuxpenguins.xyz'
+__version__ = '3.1.31'
