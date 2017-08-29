@@ -1,0 +1,12 @@
+*.pyc
+*.bak
+karaage.egg-info/
+docs/*/_build/
+tmp/
+dist/
+.eggs/
+.tox/
+.idea/
+.cache/
+.git/
+file.db
