@@ -1,12 +1,10 @@
 # Start with a Python image.
 FROM python:3.6-stretch as slurm
 MAINTAINER brian@linuxpenguins.xyz
+
+# Slurm configuration
 ARG SLURM_VER=17.02.7
 ARG SLURM_URL=https://www.schedmd.com/downloads/latest/slurm-17.02.7.tar.bz2
-
-# Some stuff that everyone has been copy-pasting
-# since the dawn of time.
-ENV PYTHONUNBUFFERED 1
 
 # Install OS dependencies
 RUN apt-get update \
