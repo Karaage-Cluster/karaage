@@ -1,9 +1,10 @@
 #!/bin/sh
 set -e
-echo "www-data ALL=(slurm) NOPASSWD: /usr/local/bin/sacct" >> /etc/sudoers
 
 if getent passwd munge > /dev/null
 then
+    echo "www-data ALL=(slurm) NOPASSWD: /usr/local/bin/sacct" >> /etc/sudoers
+    echo "www-data ALL=(slurm) NOPASSWD: /usr/local/bin/sacctmgr" >> /etc/sudoers
     service munge start
 fi
 

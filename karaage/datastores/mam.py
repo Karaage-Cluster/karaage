@@ -174,7 +174,7 @@ class MamDataStoreBase(base.MachineCategoryDataStore):
         reader = csv.reader(_input_csv(process.stdout), delimiter="|")
 
         try:
-            headers = reader.next()
+            headers = next(reader)
             logger.debug("<-- headers %s" % headers)
         except StopIteration:
             logger.debug("Cmd %s headers not found" % command)

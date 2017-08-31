@@ -148,7 +148,7 @@ class SlurmDataStore(base.MachineCategoryDataStore):
         reader = csv.reader(_input_csv(process.stdout), delimiter=str("|"))
 
         try:
-            headers = reader.next()
+            headers = next(reader)
             logger.debug("<-- headers %s" % headers)
         except StopIteration:
             logger.debug("Cmd %s headers not found" % command)
