@@ -1,5 +1,5 @@
-*.pyc
-*.bak
+**/*.pyc
+**/*.bak
 karaage.egg-info/
 docs/*/_build/
 tmp/
@@ -8,5 +8,6 @@ dist/
 .tox/
 .idea/
 .cache/
-.git/
+local/
 file.db
+.git/

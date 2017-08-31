@@ -8,4 +8,5 @@
 /.tox/
 /.idea/
 /.cache/
+/local/
 /file.db
