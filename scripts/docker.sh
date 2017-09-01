@@ -14,8 +14,12 @@ then
     chown www-data:www-data /var/cache/karaage3
 fi
 
-chown www-data:root -R /var/lib/karaage3/static
-sudo -u www-data python3 manage.py collectstatic --noinput
-chown root:root -R /var/lib/karaage3/static
+if ! test -d /var/lib/karaage3/static
+then
+    mkdir /var/lib/karaage3/static
+    chown www-data:root -R /var/lib/karaage3/static
+    sudo -u www-data python3 manage.py collectstatic --noinput
+    chown root:root -R /var/lib/karaage3/static
+fi
 
 sudo -u www-data ./scripts/start.sh
