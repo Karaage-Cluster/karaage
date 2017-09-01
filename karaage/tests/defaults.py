@@ -34,7 +34,6 @@ class InvalidString(str):
 
 
 DEBUG = True
-DEBUG_SERVE_STATIC = True
 SESSION_COOKIE_SECURE = False
 PIPELINE_ENABLED = True
 SHIB_SUPPORTED = True

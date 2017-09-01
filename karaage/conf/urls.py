@@ -17,15 +17,11 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf.urls import url, include
-from django.conf import settings
-
-import django.views.static
 
 import django_xmlrpc.views
 
 from karaage.common import get_urls
 
-import re
 from karaage.common.views import common
 
 
@@ -80,19 +76,6 @@ urlpatterns = [
         name='kg_log_list'),
     url(r'^aup/$', common.aup, name="kg_aup"),
 ]
-
-if settings.DEBUG_SERVE_STATIC:
-    urlpatterns += [
-        url(r'^%s(?P<path>.*)$' % re.escape(settings.STATIC_URL.lstrip('/')),
-            django.views.static.serve,
-            {'document_root': settings.STATIC_ROOT}),
-    ]
-
-    urlpatterns += [
-        url(r'^%s(?P<path>.*)$' % re.escape(settings.FILES_URL.lstrip('/')),
-            django.views.static.serve,
-            {'document_root': settings.FILES_DIR}),
-    ]
 
 for urls in get_urls("urlpatterns"):
     urlpatterns += urls
