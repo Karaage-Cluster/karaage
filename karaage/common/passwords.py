@@ -56,7 +56,8 @@ def assert_strong_password(username, password, old_password=None):
     except AttributeError:
         minlength = 12
     if len(password) < minlength:
-        raise ValueError("Password must be at least %s characters long" % minlength)
+        raise ValueError(
+            "Password must be at least %s characters long" % minlength)
 
     if username is not None and username in password:
         raise ValueError("Password contains username")
