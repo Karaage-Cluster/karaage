@@ -8,16 +8,14 @@ then
     service munge start
 fi
 
-if ! test -d /var/lib/karaage3
-then
-    mkdir /var/lib/karaage3
-    chown www-data:www-data /var/lib/karaage3
-fi
-
 if ! test -d /var/cache/karaage3
 then
     mkdir /var/cache/karaage3
     chown www-data:www-data /var/cache/karaage3
 fi
+
+chown www-data:root -R /var/lib/karaage3/static
+sudo -u www-data python3 manage.py collectstatic --noinput
+chown root:root -R /var/lib/karaage3/static
 
 sudo -u www-data ./scripts/start.sh
