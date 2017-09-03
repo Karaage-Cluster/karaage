@@ -257,7 +257,7 @@ def index(request, machine_category_id):
         unused['percent'] = (unused['usage'] / available_time) * 100
     else:
         unused['percent'] = 0
-    unused['diff'] = unused['percent'] - unused['quota'] / 100
+    unused['diff'] = unused['percent'] - unused['quota'] // 100
     if unused['diff'] <= 0:
         unused['class'] = 'green'
     else:
