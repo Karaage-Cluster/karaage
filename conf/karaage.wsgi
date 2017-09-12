@@ -20,6 +20,7 @@ import os
 import sys
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'karaage.conf.settings'
+sys.path.insert(0, "/opt/karaage")
 
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()

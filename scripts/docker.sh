@@ -1,6 +1,12 @@
 #!/bin/sh
 set -e
 
+chmod go+rX -R /opt/karaage/
+if test "$1" = "apache"
+then
+    chmod 644 /etc/apache2/conf-available/karaage3-wsgi.conf
+fi
+
 if getent passwd munge > /dev/null
 then
     echo "www-data ALL=(slurm) NOPASSWD: /usr/local/bin/sacct" >> /etc/sudoers
@@ -16,8 +22,13 @@ fi
 
 if ! test -d /var/lib/karaage3/static
 then
-    mkdir /var/lib/karaage3/static
+    mkdir -p /var/lib/karaage3/static
     python3 manage.py collectstatic --noinput
 fi
 
-sudo -u www-data ./scripts/start.sh
+if test "$1" = "apache"
+then
+    ./scripts/start.sh "$@"
+else
+    sudo -u www-data ./scripts/start.sh "$@"
+fi
