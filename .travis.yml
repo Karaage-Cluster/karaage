@@ -1,9 +1,8 @@
 language: python
 sudo: false
 python:
- - 2.7
- - 3.4
  - 3.5
+ - 3.6
 
 addons:
   apt:
@@ -12,19 +11,13 @@ addons:
     - ldap-utils
 
 env:
- - DJANGO_VERSION=1.8.16 DATABASE_URL=postgres://postgres@/spud
- - DJANGO_VERSION=1.9.11 DATABASE_URL=postgres://postgres@/spud
- - DJANGO_VERSION=1.10.7 DATABASE_URL=postgres://postgres@/spud
+ - DJANGO_VERSION=1.11.5 DATABASE_URL=postgres://postgres@/spud
  - DJANGO_VERSION=master DATABASE_URL=postgres://postgres@/spud
 
- - DJANGO_VERSION=1.8.16 DATABASE_URL=mysql://root:@localhost/spud
- - DJANGO_VERSION=1.9.11 DATABASE_URL=mysql://root:@localhost/spud
- - DJANGO_VERSION=1.10.7 DATABASE_URL=mysql://root:@localhost/spud
+ - DJANGO_VERSION=1.11.5 DATABASE_URL=mysql://root:@localhost/spud
  - DJANGO_VERSION=master DATABASE_URL=mysql://root:@localhost/spud
 
- - DJANGO_VERSION=1.8.16 DATABASE_URL=sqlite://
- - DJANGO_VERSION=1.9.11 DATABASE_URL=sqlite://
- - DJANGO_VERSION=1.10.7 DATABASE_URL=sqlite://
+ - DJANGO_VERSION=1.11.5 DATABASE_URL=sqlite://
  - DJANGO_VERSION=master DATABASE_URL=sqlite://
 
 install:
@@ -46,8 +39,8 @@ script:
   - python ./manage.py test --settings="karaage.plugins.kgsoftware.tests.settings" -v 2 karaage.plugins.kgsoftware.tests
   - ./manage.py collectstatic --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 --noinput
   - python ./manage.py test --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 karaage.plugins.kgsoftware
-#  - ./manage.py collectstatic --settings="karaage.plugins.kgusage.tests.settings" -v 2 --noinput
-#  - python ./manage.py test --settings="karaage.plugins.kgusage.tests.settings" -v 2 karaage.plugins.kgusage
+  - ./manage.py collectstatic --settings="karaage.plugins.kgusage.tests.settings" -v 2 --noinput
+  - python ./manage.py test --settings="karaage.plugins.kgusage.tests.settings" -v 2 karaage.plugins.kgusage
 
 matrix:
   fast_finish: true
