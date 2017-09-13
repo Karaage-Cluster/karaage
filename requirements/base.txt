@@ -18,3 +18,4 @@ django-environ==0.4.4
 six==1.10.0
 slimit==0.8.1
 whitenoise==3.3.0
+Django==1.11.5

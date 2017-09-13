@@ -11,14 +11,9 @@ addons:
     - ldap-utils
 
 env:
- - DJANGO_VERSION=1.11.5 DATABASE_URL=postgres://postgres@/spud
- - DJANGO_VERSION=master DATABASE_URL=postgres://postgres@/spud
-
- - DJANGO_VERSION=1.11.5 DATABASE_URL=mysql://root:@localhost/spud
- - DJANGO_VERSION=master DATABASE_URL=mysql://root:@localhost/spud
-
- - DJANGO_VERSION=1.11.5 DATABASE_URL=sqlite://
- - DJANGO_VERSION=master DATABASE_URL=sqlite://
+ - DATABASE_URL=postgres://postgres@/spud
+ - DATABASE_URL=mysql://root:@localhost/spud
+ - DATABASE_URL=sqlite://
 
 install:
 # Install django master or version
@@ -44,7 +39,3 @@ script:
 
 matrix:
   fast_finish: true
-  allow_failures:
-      - env: DJANGO_VERSION=master DATABASE_URL=postgres://postgres@/spud
-      - env: DJANGO_VERSION=master DATABASE_URL=mysql://root:@localhost/spud
-      - env: DJANGO_VERSION=master DATABASE_URL=sqlite://
