@@ -15,7 +15,7 @@ django-pipeline==1.6.13
 django-tables2==1.11.0
 django-filter==1.0.4
 django-environ==0.4.4
-six==1.10.0
+six==1.11.0
 slimit==0.8.1
 whitenoise==3.3.0
 Django==1.11.5
