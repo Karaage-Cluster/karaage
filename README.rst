@@ -77,5 +77,5 @@ karaage-software
 Contact
 -------
 
-The lead developer for Karaage 3 is `Brian May
-<mailto:"brian@v3.org.au">`_.
+The lead developer for Karaage 3 is
+`Brian May <mailto:brian@linuxpenguins.xyz>`_.
