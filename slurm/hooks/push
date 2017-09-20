@@ -1,0 +1,4 @@
+#!/bin/bash
+
+docker push "$DOCKER_REPO:16.05"
+docker push "$DOCKER_REPO:17.02"
