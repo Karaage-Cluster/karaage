@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# File needs to be called /hooks/build relative to the Dockerfile.
+# $IMAGE_NAME var is injected into the build so the tag is correct.
+
+for SLURM_VERSION in 16.05 17.02
+do
+    docker build \
+        --file "Dockerfile" \
+        --tag "$DOCKER_REPO:slurm$SLURM_VERSION" \
+        --build-arg="SLURM_VER=$SLURM_VERSION" \
+        .
+
+    docker build \
+        --file "Dockerfile.apache" \
+        --tag "$DOCKER_REPO:slurm$SLURM_VERSION-apache" \
+        --build-arg="SLURM_VER=$SLURM_VERSION" \
+        .
+done
