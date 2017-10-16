@@ -1,5 +1,5 @@
 -r usage.txt
-django-extensions==1.9.1
+django-extensions==1.9.6
 factory-boy==2.9.2
 mock==2.0.0
 flake8==3.4.1
