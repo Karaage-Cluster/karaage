@@ -36,12 +36,12 @@ RUN pip install -r requirements/docker.txt
 # Copy all our files into the image.
 COPY . /opt/karaage/
 COPY conf/karaage3-wsgi.conf /etc/apache2/conf-available/karaage3-wsgi.conf
-RUN a2enconf karaage3-wsgi && \
-  sed -i "s/Listen 80/Listen 8000/" /etc/apache2/ports.conf && \
-  sed -i "s=<VirtualHost \*:80>=<VirtualHost *:8000>=" /etc/apache2/sites-available/000-default.conf
+COPY conf/ports.conf /etc/apache2/ports.conf
+COPY conf/000-default.conf /etc/apache2/sites-available/000-default.conf
+RUN a2enconf karaage3-wsgi
 
 # Specify the command to run when the image is run.
-EXPOSE 8000
+EXPOSE 80
 VOLUME '/etc/karaage3' '/var/log/karaage3' '/var/lib/karaage3' \
   '/etc/shibboleth' '/var/log/apache2'
 CMD /opt/karaage/scripts/docker.sh apache
