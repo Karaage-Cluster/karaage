@@ -55,7 +55,7 @@ def get_project_recent_usage(context, project):
 
 @register.assignment_tag(takes_context=True)
 def get_software_recent_usage(context, software):
-    queryset = CPUJob.objects.filter(software=software).select_related()
+    queryset = CPUJob.objects.filter(software__software=software).select_related()
     table = CPUJobTable(queryset, prefix="software-%d-usage-" % software.pk)
     config = tables.RequestConfig(context['request'], paginate={"per_page": 5})
     config.configure(table)
