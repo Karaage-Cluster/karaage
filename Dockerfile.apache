@@ -41,7 +41,7 @@ COPY conf/000-default.conf /etc/apache2/sites-available/000-default.conf
 RUN a2enconf karaage3-wsgi
 
 # Specify the command to run when the image is run.
-EXPOSE 80
+EXPOSE 443
 VOLUME '/etc/karaage3' '/var/log/karaage3' '/var/lib/karaage3' \
   '/etc/shibboleth' '/var/log/apache2'
 CMD /opt/karaage/scripts/docker.sh apache
