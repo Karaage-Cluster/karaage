@@ -78,7 +78,14 @@
     </div>
     <!-- END Content -->
 
-    {% block footer %}<div id="footer">Karaage {{ kgversion }}</div>{% endblock %}
+    {% block footer %}
+        <div id="footer">
+            Karaage {{ kgversion }}
+            {% if VCS_REF %}{{ VCS_REF }}{% endif %}
+            {% if BUILD_DATE %}{{ BUILD_DATE }}{% endif %}
+            {% if SLURM_VERSION %}Slurm {{ SLURM_VERSION }}{% endif %}
+        </div>
+    {% endblock %}
 </div>
 <!-- END Container -->
 

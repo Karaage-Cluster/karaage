@@ -30,5 +30,5 @@ if test "$1" = "apache"
 then
     ./scripts/start.sh "$@"
 else
-    sudo -u www-data ./scripts/start.sh "$@"
+    sudo -u www-data -E ./scripts/start.sh "$@"
 fi

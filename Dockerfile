@@ -20,6 +20,13 @@ RUN pip install -r requirements/docker.txt
 COPY . /opt/karaage/
 RUN chmod go+rX -R /opt/karaage/
 
+# Setup access to version information
+ARG BUILD_DATE=
+ARG VCS_REF=
+ENV BUILD_DATE=${BUILD_DATE}
+ENV VCS_REF=${VCS_REF}
+ENV SLURM_VER=${SLURM_VER}
+
 # Specify the command to run when the image is run.
 EXPOSE 8000
 VOLUME '/etc/karaage3' '/var/log/karaage3' '/var/lib/karaage3'

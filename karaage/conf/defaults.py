@@ -18,6 +18,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 """ Default Karaage Settings. """
+import environ
 import os
 import six
 import sys
@@ -25,6 +26,7 @@ import django
 
 from socket import getfqdn
 HTTP_HOST = getfqdn()
+env = environ.Env()
 
 ###
 # DJANGO SETTINGS
@@ -278,6 +280,11 @@ XMLRPC_METHODS = (
 ###
 # KARAAGE SETTINGS
 ###
+
+# SETTINGS FROM DOCKER
+BUILD_DATE = env('BUILD_DATE', default=None)
+VCS_REF = env('VCS_REF', default=None)
+SLURM_VER = env('SLURM_VER', default=None)
 
 # DIRECTORY FOR TEMP FILES
 TMP_DIR = "/var/cache/karaage3/tmp/"
