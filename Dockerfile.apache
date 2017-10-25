@@ -40,6 +40,13 @@ COPY conf/ports.conf /etc/apache2/ports.conf
 COPY conf/000-default.conf /etc/apache2/sites-available/000-default.conf
 RUN a2enconf karaage3-wsgi
 
+# Setup access to version information
+ARG BUILD_DATE=
+ARG VCS_REF=
+ENV BUILD_DATE=${BUILD_DATE}
+ENV VCS_REF=${VCS_REF}
+ENV SLURM_VER=${SLURM_VER}
+
 # Specify the command to run when the image is run.
 EXPOSE 443
 VOLUME '/etc/karaage3' '/var/log/karaage3' '/var/lib/karaage3' \
