@@ -9,6 +9,29 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+3.1.32 - UNRELEASED
+-------------------
+
+Added
+~~~~~
+* Docker support.
+
+Changed
+~~~~~~~
+* Updated requirements.
+* Python3.5 or Python3.6 required. Django 1.11 required.  Earlier versions will
+  still work (for now) but are no longer tested.
+
+Fixed
+~~~~~
+* Fixed my email address.
+* Various bugs fixed.
+
+Removed
+~~~~~~~
+* Debian packages.
+
+
 3.1.31 - 2017-05-03
 -------------------
 
