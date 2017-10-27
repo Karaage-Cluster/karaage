@@ -1,4 +1,2 @@
 -r base.txt
-celery==3.1.25
-django-celery==3.2.1
 matplotlib==2.1.0

@@ -49,7 +49,6 @@ Here is an example, taken from the karaage-usage pugin:
 
     class plugin(BasePlugin):
         name = "karaage.plugins.kgusage"
-        django_apps = ("djcelery",)
         xmlrpc_methods = (
             ('karaage.plugins.kgusage.xmlrpc.parse_usage', 'parse_usage',),
         )

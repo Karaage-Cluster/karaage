@@ -2,7 +2,18 @@
 set -e
 
 python3 manage.py migrate --noinput
-#python3 manage.py celery worker --time-limit=300 --concurrency=1 --loglevel=INFO --logfile=/var/log/karaage3/w1.log -D
+python3 -m celery -A karaage.celery worker \
+    --concurrency=1 \
+    --loglevel=INFO \
+    --pidfile=/tmp/celeryd.pid \
+    --logfile=/var/log/karaage3/celery.log \
+    --detach
+python3 -m celery -A karaage.celery beat \
+    --schedule /tmp/celerybeat-schedule \
+    --loglevel=INFO \
+    --pidfile=/tmp/celeryd.pid \
+    --logfile=/var/log/karaage3/beat.log \
+    --detach
 
 if test "$1" = "gunicorn"
 then

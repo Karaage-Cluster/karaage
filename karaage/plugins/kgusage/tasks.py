@@ -26,8 +26,9 @@ import logging
 import six
 import csv
 import datetime
+import dateutil.parser
 
-from djcelery.app import app
+from celery import shared_task
 
 from django.conf import settings
 from django.db.models import Sum, Count
@@ -49,11 +50,13 @@ import matplotlib.pyplot as plt  # NOQA
 import matplotlib.dates as mdates  # NOQA
 
 logger = logging.getLogger(__name__)
-# app.conf.update(CELERYD_HIJACK_ROOT_LOGGER = False)
 
 
-@app.task()
+@shared_task
 def gen_machine_category_cache(start, end):
+    start = dateutil.parser.parse(start)
+    end = dateutil.parser.parse(end)
+
     current = gen_machine_category_cache
 
     logger.info("gen_machine_category_cache")
@@ -90,8 +93,11 @@ def gen_machine_category_cache(start, end):
     logger.info("finished")
 
 
-@app.task()
+@shared_task
 def gen_cache_for_machine_category(start, end, machine_category_pk):
+    start = dateutil.parser.parse(start)
+    end = dateutil.parser.parse(end)
+
     machine_category = MachineCategory.objects.get(pk=machine_category_pk)
 
     current = gen_cache_for_machine_category
@@ -151,8 +157,11 @@ def gen_cache_for_machine_category(start, end, machine_category_pk):
     logger.info("finished")
 
 
-@app.task()
+@shared_task
 def gen_cache_for_project(start, end, project_pk, machine_category_pk):
+    start = dateutil.parser.parse(start)
+    end = dateutil.parser.parse(end)
+
     project = Project.objects.get(pk=project_pk)
     machine_category = MachineCategory.objects.get(pk=machine_category_pk)
 
@@ -170,8 +179,11 @@ def gen_cache_for_project(start, end, project_pk, machine_category_pk):
     i = i + 1
 
 
-@app.task()
+@shared_task
 def gen_cache_for_institute(start, end, institute_pk, machine_category_pk):
+    start = dateutil.parser.parse(start)
+    end = dateutil.parser.parse(end)
+
     institute = Institute.objects.get(pk=institute_pk)
     machine_category = MachineCategory.objects.get(pk=machine_category_pk)
 
@@ -189,8 +201,11 @@ def gen_cache_for_institute(start, end, institute_pk, machine_category_pk):
     i = i + 1
 
 
-@app.task()
+@shared_task
 def gen_cache_for_all_institutes(start, end, machine_category_pk):
+    start = dateutil.parser.parse(start)
+    end = dateutil.parser.parse(end)
+
     machine_category = MachineCategory.objects.get(pk=machine_category_pk)
 
     current = gen_cache_for_all_institutes

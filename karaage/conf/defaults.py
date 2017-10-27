@@ -19,7 +19,6 @@
 
 """ Default Karaage Settings. """
 import environ
-import os
 import six
 import sys
 import django
@@ -75,6 +74,7 @@ INSTALLED_APPS = (
     'tldap.methods',
     'tldap.django',
     'pipeline',
+    'django_celery_results',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
@@ -406,5 +406,12 @@ SILENCED_SYSTEM_CHECKS = [
     '1_6.W002',
 ]
 
-# Required for djcelery to work properly. Has no effect otherwise.
-os.environ.setdefault('CELERY_LOADER', 'djcelery.loaders.DjangoLoader')
+CELERY_ENABLE_UTC = True
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_BEAT_SCHEDULE = {
+    'daily': {
+        'task': 'karaage.tasks.daily',
+        'schedule': 6 * 60 * 60,
+    },
+}
