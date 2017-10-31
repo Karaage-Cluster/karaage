@@ -54,8 +54,8 @@ logger = logging.getLogger(__name__)
 
 @shared_task
 def gen_machine_category_cache(start, end):
-    start = dateutil.parser.parse(start)
-    end = dateutil.parser.parse(end)
+    start = dateutil.parser.parse(start).date()
+    end = dateutil.parser.parse(end).date()
 
     current = gen_machine_category_cache
 
@@ -95,8 +95,8 @@ def gen_machine_category_cache(start, end):
 
 @shared_task
 def gen_cache_for_machine_category(start, end, machine_category_pk):
-    start = dateutil.parser.parse(start)
-    end = dateutil.parser.parse(end)
+    start = dateutil.parser.parse(start).date()
+    end = dateutil.parser.parse(end).date()
 
     machine_category = MachineCategory.objects.get(pk=machine_category_pk)
 
@@ -159,8 +159,8 @@ def gen_cache_for_machine_category(start, end, machine_category_pk):
 
 @shared_task
 def gen_cache_for_project(start, end, project_pk, machine_category_pk):
-    start = dateutil.parser.parse(start)
-    end = dateutil.parser.parse(end)
+    start = dateutil.parser.parse(start).date()
+    end = dateutil.parser.parse(end).date()
 
     project = Project.objects.get(pk=project_pk)
     machine_category = MachineCategory.objects.get(pk=machine_category_pk)
@@ -181,8 +181,8 @@ def gen_cache_for_project(start, end, project_pk, machine_category_pk):
 
 @shared_task
 def gen_cache_for_institute(start, end, institute_pk, machine_category_pk):
-    start = dateutil.parser.parse(start)
-    end = dateutil.parser.parse(end)
+    start = dateutil.parser.parse(start).date()
+    end = dateutil.parser.parse(end).date()
 
     institute = Institute.objects.get(pk=institute_pk)
     machine_category = MachineCategory.objects.get(pk=machine_category_pk)
@@ -203,8 +203,8 @@ def gen_cache_for_institute(start, end, institute_pk, machine_category_pk):
 
 @shared_task
 def gen_cache_for_all_institutes(start, end, machine_category_pk):
-    start = dateutil.parser.parse(start)
-    end = dateutil.parser.parse(end)
+    start = dateutil.parser.parse(start).date()
+    end = dateutil.parser.parse(end).date()
 
     machine_category = MachineCategory.objects.get(pk=machine_category_pk)
 
