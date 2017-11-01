@@ -2,15 +2,19 @@ include *.rst
 include *.txt
 include *.py
 include *.sh
+include .dockerignore
 include .gitreview
 include tox.ini
 include MANIFEST.in
 include pylint.conf
+include Dockerfile*
 recursive-include docs *.py
 recursive-include docs *.rst
 recursive-include karaage *.sql
 recursive-include sbin *
 recursive-include conf *
 recursive-include docs Makefile
+recursive-include hooks *
 recursive-exclude karaage *.pyc
 recursive-include requirements *.txt
+recursive-include scripts *.sh
