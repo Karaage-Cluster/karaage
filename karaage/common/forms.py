@@ -26,6 +26,7 @@ import re
 from karaage.common.models import LogEntry, COMMENT
 from .passwords import assert_strong_password
 
+
 def validate_password(username, password1, password2=None, old_password=None):
     # password1 is mandatory, it must be given in order to proceed.
     if password1 is None:
@@ -46,6 +47,7 @@ def validate_password(username, password1, password2=None, old_password=None):
 
     # If password1 is ok, return it.
     return password1
+
 
 def clean_email(email):
     email_match_type = "exclude"
@@ -73,6 +75,7 @@ def clean_email(email):
             raise forms.ValidationError(message)
     else:
         raise forms.ValidationError("Oops. Nothing is valid. Sorry.")
+
 
 class CommentForm(forms.ModelForm):
     """ Comment form. """
