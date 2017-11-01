@@ -44,15 +44,6 @@ for values in $TESTS; do
     fi
 
     echo ""
-    echo "TESTS - Python 2 - $conf - $tests"
-    echo "############################"
-    python2 ./manage.py test --settings="$conf" -v 2 $tests
-    if [ "$?" -ne 0 ]
-    then
-        RETURN=1
-    fi
-
-    echo ""
     echo "TESTS - Python 3 - $conf - $tests"
     echo "############################"
     python3 ./manage.py test --settings="$conf" -v 2 $tests
