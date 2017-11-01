@@ -32,7 +32,7 @@ from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
 from karaage.common.constants import COUNTRIES
 from karaage.common import get_current_person
-from karaage.common.forms import validate_password
+from karaage.common.forms import validate_password, _clean_email
 
 
 class PersonForm(forms.ModelForm):
@@ -92,6 +92,17 @@ class PersonForm(forms.ModelForm):
             'address', 'country'
         ]
 
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        users = Person.objects.filter(email__exact=email)
+        if users.count() > 0:
+            raise forms.ValidationError(
+                six.u(
+                    'An account with this email already exists. '
+                    'Please email %s')
+                % settings.ACCOUNTS_EMAIL)
+        _clean_email(email)
+        return email
 
 class AdminPersonForm(PersonForm):
     institute = forms.ModelChoiceField(queryset=None)
