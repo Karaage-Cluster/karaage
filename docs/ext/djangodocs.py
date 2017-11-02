@@ -10,7 +10,7 @@ from docutils.parsers.rst import directives
 
 from sphinx import addnodes, __version__ as sphinx_ver
 from sphinx.builders.html import StandaloneHTMLBuilder
-from sphinx.writers.html import SmartyPantsHTMLTranslator
+from sphinx.writers.html import HTMLTranslator
 from sphinx.util.console import bold
 from sphinx.util.compat import Directive
 from sphinx.util.nodes import set_source_info
@@ -221,7 +221,7 @@ class VersionDirective(Directive):
         return ret
 
 
-class KaraageHTMLTranslator(SmartyPantsHTMLTranslator):
+class KaraageHTMLTranslator(HTMLTranslator):
     """
     Karaage-specific reST to HTML tweaks.
     """
@@ -254,10 +254,10 @@ class KaraageHTMLTranslator(SmartyPantsHTMLTranslator):
         #
         def visit_literal_block(self, node):
             self.no_smarty += 1
-            SmartyPantsHTMLTranslator.visit_literal_block(self, node)
+            HTMLTranslator.visit_literal_block(self, node)
 
         def depart_literal_block(self, node):
-            SmartyPantsHTMLTranslator.depart_literal_block(self, node)
+            HTMLTranslator.depart_literal_block(self, node)
             self.no_smarty -= 1
 
     #
@@ -294,7 +294,7 @@ class KaraageHTMLTranslator(SmartyPantsHTMLTranslator):
         old_ids = node.get('ids', [])
         node['ids'] = ['s-' + i for i in old_ids]
         node['ids'].extend(old_ids)
-        SmartyPantsHTMLTranslator.visit_section(self, node)
+        HTMLTranslator.visit_section(self, node)
         node['ids'] = old_ids
 
 

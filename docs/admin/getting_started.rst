@@ -97,42 +97,42 @@ Installation
           --net="host" \
           -v /etc/passwd:/etc/passwd \
           -v /etc/group:/etc/group \
-          -v /etc/munge:/etc/munge \
-          -v /var/log/munge:/var/log/munge \
-          -v /var/lib/munge:/var/lib/munge \
-          -v /usr/local/slurm/etc:/usr/local/etc \
-          -v /etc/shibboleth:/etc/shibboleth \
-          -v /etc/karaage3:/etc/karaage3 \
-          -v /var/log/docker/apache2:/var/log/apache2 \
-          -v /var/log/docker/karaage3:/var/log/karaage3 \
-          -v /var/lib/karaage3:/var/lib/karaage3 \
-          -v /var/cache/karaage3:/var/cache/karaage3 \
+          -v /opt/karaage/etc/munge:/etc/munge \
+          -v /opt/karaage/log/munge:/var/log/munge \
+          -v /opt/karaage/lib/munge:/var/lib/munge \
+          -v /opt/karaage/etc/slurm:/usr/local/etc \
+          -v /opt/karaage/etc/shibboleth:/etc/shibboleth \
+          -v /opt/karaage/etc/karaage3:/etc/karaage3 \
+          -v /opt/karaage/log/apache2:/var/log/apache2 \
+          -v /opt/karaage/log/karaage3:/var/log/karaage3 \
+          -v /opt/karaage/lib/karaage3:/var/lib/karaage3 \
+          -v /opt/karaage/cache/karaage3:/var/cache/karaage3 \
           brianmay/karaage:slurm17.02-apache
         ExecStop=/usr/bin/docker stop karaage
 
         [Install]
         WantedBy=multi-user.target
 
-#.  Create required directories and configuration files.
 
-#.  Start karaage.
+#.  Create required users in ``/etc/passwd``:
 
-    .. code-block:: bash
+    *  ``munge``: required for munge, for slurm.
+    *  ``_shibd``: required for shibbioleth.
+    *  ``www-data``: required by web process.
 
-        systemctl daemon-reload
-        systemctl start karaage
+#.  Create required directories and configuration files:
 
-#.  Monitor progress of Karaage starting.
-
-    .. code-block:: bash
-
-        journalctl -u karaage -f
-
-#.  Check that Karaage is running and listening on http://localhost:443/.
-
-
-Initial setup
--------------
+    * ``/opt/karaage/etc/munge``: contains ``munge.key``, and must be
+      owned and only readable by ``munge`` user.
+    * ``/opt/karaage/log/munge``: should be writable by ``munge`` user.
+    * ``/opt/karaage/lib/munge``: should be writable by ``munge`` user.
+    * ``/opt/karaage/etc/slurm``: should contain ``slurm.conf``.
+    * ``/opt/karaage/etc/shibboleth``: should contain all shibboleth config.
+    * ``/opt/karaage/etc/karaage3``: should contain ``settings.py``.
+    * ``/opt/karaage/log/apache2``: Should be writable by ``www-data``.
+    * ``/opt/karaage/log/karaage3``: Should be writable by ``www-data``.
+    * ``/opt/karaage/lib/karaage3``: Should be writable by ``www-data``.
+    * ``/opt/karaage/cache/karaage3``: Should be writable by ``www-data``.
 
 #.  Copy ``/etc/karaage3/settings.py`` from initial sample file.
 #.  Edit the :setting:`DATABASES` setting in ``/etc/karaage3/settings.py``:
@@ -155,7 +155,7 @@ Initial setup
          }
 
 #.  Add the :setting:`HTTP_HOST` setting in ``/etc/karaage3/settings.py``:
-    
+
     .. code-block:: python
 
         HTTP_HOST = "www.example.org"
@@ -171,19 +171,27 @@ Initial setup
 
         systemctl restart karaage
 
-#.  Create DB tables:
-
-    .. code-block:: bash
-
-        kg-manage migrate
-
 #.  Create a karaage superuser using :djadmin:`kgcreatesuperuser`:
 
     .. code-block:: bash
 
         kg-manage kgcreatesuperuser
 
-#.  Test. You should now be able to go to ``http://www.example.org/karaage/``.
+#.  Start karaage.
+
+    .. code-block:: bash
+
+        systemctl daemon-reload
+        systemctl start karaage
+
+#.  Monitor progress of Karaage starting.
+
+    .. code-block:: bash
+
+        journalctl -u karaage -f
+
+#.  Check that Karaage is running and listening on http://localhost:443/.
+
 
 
 SSL certificate
