@@ -78,6 +78,9 @@ class BulkEmailForm(EmailForm):
             person_list = None
 
         if person_list:
+            person_list = person_list.filter(
+                is_systemuser=False, login_enabled=True)
+
             for person in person_list:
                 if person.email not in email_list:
                     ctx = Context({
