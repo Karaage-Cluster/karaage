@@ -48,6 +48,10 @@ class SamlUserMiddleware(object):
                 " 'django.contrib.auth.middleware.AuthenticationMiddleware'"
                 " before the SamlUserMiddleware class.")
 
+        request.saml_session = False
+        request.saml_id = None
+        request.saml_logged_in = False
+
         # If the user is already authenticated and that user is the user we are
         # getting passed in the headers, then the correct user is already
         # persisted in the session and we don't need to continue.
@@ -59,6 +63,7 @@ class SamlUserMiddleware(object):
             return
 
         # Can we get the shib attributes we need?
+        request.saml_session = True
         attrs, error = saml.parse_attributes(request)
         if error:
             return render(template_name='saml_error.html',
@@ -68,6 +73,7 @@ class SamlUserMiddleware(object):
         # What is our persistent_id?
         saml_id = attrs['persistent_id']
         assert saml_id
+        request.saml_id = saml_id
 
         # We are seeing this user for the first time in this session, attempt
         # to authenticate the user.
@@ -79,6 +85,7 @@ class SamlUserMiddleware(object):
         # User is valid.  Set request.user and persist user in the session
         # by logging the user in.
         request.user = person
+        request.saml_logged_in = True
         # We must set the model backend here manually as we skip
         # the call to auth.authenticate().
         request.user.backend = 'django.contrib.auth.backends.ModelBackend'
