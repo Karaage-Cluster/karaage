@@ -22,6 +22,7 @@ import subprocess
 import csv
 import logging
 import sys
+from django.conf import settings
 
 import karaage.common.trace as trace
 
@@ -393,7 +394,15 @@ class SlurmDataStore(base.MachineCategoryDataStore):
             logger.debug("project is active")
             ds_project = self.get_project(pid)
             if ds_project is None:
-                self._call(["add", "account", "name=%s" % pid, "grpcpumins=0"])
+                try:
+                    usefairtree = settings.USE_FAIRTREE
+                except AttributeError:
+                    usefairtree = False
+
+                if usefairtree:
+                    self._call(["add", "account", "name=%s" % pid, "parent=noquota", "fairshare=0"])
+                else:
+                    self._call(["add", "account", "name=%s" % pid, "grpcpumins=0"])
 
             # update project meta information
             name = self._truncate(project.name, 40)
