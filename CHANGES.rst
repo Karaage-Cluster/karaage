@@ -16,6 +16,7 @@ Fixed
 ~~~~~
 * Not updating passwords for datastores.
 * Documentation issues.
+* Don't log raw datastore password when changing password.
 
 
 3.1.33 - 2017-11-02

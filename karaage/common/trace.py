@@ -496,6 +496,8 @@ def trace(_name):
                 params = dict(co_defaults)
                 params.update(__kwds)
                 params.update(zip(co_varnames, __argv))
+                if 'raw_password' in params:
+                    params['raw_password'] = '<censored>'
 
                 position = [
                     positional(n, params.pop(n))
@@ -639,17 +641,17 @@ def trace(_name):
         #  func.func_defaults - contains default arguments
 
         try:
-            code = _func.func_code
+            code = _func.__code__
         except AttributeError:
             co_argcount, co_varnames, co_defaults = \
                 __lookup_builtin(_func.__name__)
         else:
             co_argcount = code.co_argcount
             co_varnames = code.co_varnames[:co_argcount]
-            if _func.func_defaults:
+            if _func.__defaults__:
                 co_defaults = dict(
-                    zip(co_varnames[-len(_func.func_defaults):],
-                        _func.func_defaults))
+                    zip(co_varnames[-len(_func.__defaults__):],
+                        _func.__defaults__))
             else:
                 co_defaults = dict()
             if __klass:
