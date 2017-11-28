@@ -20,7 +20,7 @@
 <div class="module">
     <h2>4. Project details</h2>
 
-    <form method="post" action=".">{% csrf_token %}
+    <form method="post" action="." novalidate>{% csrf_token %}
         <div>
             <h3>Common</h3>
             {% form_as_div forms.common %}
