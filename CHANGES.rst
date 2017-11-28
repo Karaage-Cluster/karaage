@@ -9,7 +9,7 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
-3.1.34 - UNRELEASED
+3.1.34 - 2017-11-28
 -------------------
 
 Fixed
