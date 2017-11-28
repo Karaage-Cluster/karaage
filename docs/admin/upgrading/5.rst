@@ -1,0 +1,12 @@
+.. index:: upgrading; from 5.x.x
+
+Upgrading from 3.1.x to 5.x.x
+=============================
+
+Note we skipped version 4.x.x because this was a fork of Karaage that never got
+completed.
+
+At present the only thing to be aware of is:
+
+* You must be running the latest 3.1.x version to upgrade.
+* Downgrading back to earlier versions is not supported and may not work.

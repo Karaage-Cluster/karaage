@@ -7,5 +7,4 @@ Contents:
 
 .. toctree::
 
-   upgrading/27
-   upgrading/30
+   upgrading/5
