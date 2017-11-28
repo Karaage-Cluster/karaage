@@ -8,6 +8,13 @@ adheres to `Semantic Versioning`_.
 .. _`Keep a Changelog`: http://keepachangelog.com/
 .. _`Semantic Versioning`: http://semver.org/
 
+5.0.0 - UNRELEASED
+------------------
+
+Removed
+-------
+* Legacy south migrations.
+
 
 3.1.34 - 2017-11-28
 -------------------

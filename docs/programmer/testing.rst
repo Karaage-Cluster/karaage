@@ -128,13 +128,13 @@ Examples for running tests in a schroot:
        ./dotest --distribution jessie --architecture amd64 --shell --source=local
 
 *  Build test Karaage from copy of production data, and run full set of
-   migrations, including south migrations.
+   migrations.
 
    .. code-block:: ldif
 
        ./dotest --distribution jessie --architecture amd64 -k
        data/vpac/settings.py -L data/vpac/complete.ldif  -S
-       data/vpac/nousage.sql --south --shell
+       data/vpac/nousage.sql --shell
 
 
 Testing Karaage in Vagrant

@@ -87,7 +87,6 @@ setup(
     scripts=[
         'sbin/kg_set_secret_key',
         'sbin/kg-manage',
-        'sbin/kg-migrate-south',
     ],
     install_requires=[
         "cssmin",

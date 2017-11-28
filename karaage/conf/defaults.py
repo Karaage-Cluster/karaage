@@ -20,7 +20,6 @@
 """ Default Karaage Settings. """
 import environ
 import six
-import sys
 import django
 
 from socket import getfqdn
@@ -83,26 +82,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.auth',
 )
-
-# South not available for Python 3+ or Django 1.7+
-if sys.version_info < (3, 0) and django.VERSION < (1, 7):
-    KARAAGE_APPS += (
-        'karaage.legacy.common',
-        'karaage.legacy.admin',
-        'karaage.legacy.people',
-        'karaage.legacy.machines',
-        'karaage.legacy.institutes',
-        'karaage.legacy.projects',
-        'karaage.legacy.usage',
-        'karaage.legacy.cache',
-        'karaage.legacy.software',
-        'karaage.legacy.pbsmoab',
-        'karaage.legacy.emails',
-        'karaage.legacy.applications',
-    )
-
-    INSTALLED_APPS += ('south',)
-
 
 # A list containing the settings for all template engines to be used with
 # Django. Each item of the list is a dictionary containing the options for an
