@@ -58,7 +58,7 @@ tests_require = [
 
 setup(
     name="karaage",
-    version='3.1.33',
+    version='3.1.34',
     url='https://github.com/Karaage-Cluster/karaage',
     author='Brian May',
     author_email='brian@v3.org.au',
