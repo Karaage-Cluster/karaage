@@ -14,6 +14,7 @@ adheres to `Semantic Versioning`_.
 Removed
 -------
 * Legacy south migrations.
+* Legacy site creation.
 
 
 3.1.34 - 2017-11-28
