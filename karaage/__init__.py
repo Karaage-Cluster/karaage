@@ -23,4 +23,4 @@ default_app_config = 'karaage.apps.Karaage'
 
 __author__ = """Brian May"""
 __email__ = 'brian@linuxpenguins.xyz'
-__version__ = '3.1.34'
+__version__ = '5.0.0-alpha'
