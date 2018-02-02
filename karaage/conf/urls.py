@@ -17,6 +17,8 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf.urls import url, include
+from django.conf import settings
+import django.views.static
 
 import django_xmlrpc.views
 
@@ -80,3 +82,9 @@ urlpatterns = [
 for urls in get_urls("urlpatterns"):
     urlpatterns += urls
     del urls
+
+if settings.DEBUG:
+    urlpatterns += [
+        url(r'^kgfiles/(?P<path>.*)$', django.views.static.serve,
+            {'document_root': settings.FILES_DIR})
+    ]

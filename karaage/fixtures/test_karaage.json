@@ -216,27 +216,10 @@
     },
     {
         "pk": 1,
-        "model": "karaage.machinecategory",
-        "fields": {
-            "name": "Default",
-            "datastore": "ldap"
-        }
-    },
-    {
-        "pk": 2,
-        "model": "karaage.machinecategory",
-        "fields": {
-            "name": "OtherMC",
-            "datastore": "dummy"
-        }
-    },
-    {
-        "pk": 1,
         "model": "karaage.machine",
         "fields": {
             "pbs_server_host": "",
             "end_date": null,
-            "category": 1,
             "start_date": "2010-05-13",
             "mem_per_core": null,
             "name": "tango",
@@ -252,7 +235,6 @@
         "fields": {
             "pbs_server_host": "",
             "end_date": null,
-            "category": 2,
             "start_date": "2010-05-13",
             "mem_per_core": null,
             "name": "wexstan",
@@ -268,7 +250,6 @@
         "fields": {
             "pbs_server_host": "",
             "end_date": null,
-            "category": 2,
             "start_date": "2010-05-13",
             "mem_per_core": null,
             "name": "edda",
@@ -283,7 +264,6 @@
         "model": "karaage.account",
         "fields": {
             "disk_quota": null,
-            "machine_category": 1,
             "person": 3,
             "username": "kgtestuser3",
             "default_project": 1,
@@ -324,26 +304,6 @@
             "institute": 1,
             "is_active": 1,
             "deleted_by": null
-        }
-    },
-    {
-        "pk": 1,
-        "model": "karaage.institutequota",
-        "fields": {
-            "disk_quota": null,
-            "cap": null,
-            "machine_category": 1,
-            "quota": "0.00",
-            "institute": 1
-        }
-    },
-    {
-        "pk": 1,
-        "model": "karaage.projectquota",
-        "fields": {
-            "cap": null,
-            "machine_category": 1,
-            "project": 1
         }
     }
 ]

@@ -59,7 +59,7 @@ else:
             assert isinstance(column, str)
 
 
-class MamDataStoreBase(base.MachineCategoryDataStore):
+class MamDataStoreBase(base.DataStore):
     """ MAM datastore. """
     version = None
 

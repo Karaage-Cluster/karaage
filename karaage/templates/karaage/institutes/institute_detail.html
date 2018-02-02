@@ -39,7 +39,6 @@
                 {% if institute.saml_entityid %}
                 <tr><th>SAML entityID:</th><td>{{ institute.saml_entityid }}</td></tr>
                 {% endif %}
-                <tr><th>Categories:</th><td>{% for iq in institute.institutequota_set.all %}<a href='{% url 'kg_machine_category_detail' iq.machine_category.pk %}'>{{ iq.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
             </table>
         </div>
 
@@ -53,46 +52,6 @@
                 <li><a href="{% url 'kg_institute_verbose' institute.pk %}">Verbose</a></li>
                 {% endif %}
                 {% for_each_app_include "institute_detail_tools.html" %}
-            </ul>
-        </div>
-        {% endif %}
-    </div>
-
-    <div class="module">
-        <h2>Caps and quotas</h2>
-        {% if institute.institutequota_set.all %}
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Machine Category</th>
-                        <th>Quota</th>
-                        <th>Cap (mPoTS)</th>
-                        {% if is_admin %}
-                        <th></th><th></th>
-                        {% endif %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for iq in institute.institutequota_set.all %}
-                    <tr>
-                        <td><a href='{% url 'kg_machine_category_detail' iq.machine_category.pk %}'>{{ iq.machine_category }}</a></td>
-                        <td>{{ iq.quota }}</td>
-                        <td>{{ iq.get_cap }}</td>
-                        {% if is_admin %}
-                        <td><a class="changelink" href="{% url 'kg_institutequota_edit' iq.pk %}">edit</a></td>
-                        <td><a class="deletelink" href="{% url 'kg_institutequota_delete' iq.pk %}">Remove</a></td>
-                        {% endif %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% endif %}
-        {% if is_admin %}
-        <div class="object-tools">
-            <ul>
-                <li><a class="addlink" href="{% url 'kg_institutequota_add' institute.pk %}">Add</a></li>
             </ul>
         </div>
         {% endif %}

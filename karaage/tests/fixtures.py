@@ -22,7 +22,7 @@ from django.conf import settings
 from django.contrib.auth.hashers import make_password
 try:
     from factory.django import DjangoModelFactory
-    from factory.fuzzy import FuzzyText, FuzzyChoice, FuzzyDecimal
+    from factory.fuzzy import FuzzyText, FuzzyChoice
     import factory
 except ImportError:
     raise ImportError(
@@ -66,15 +66,6 @@ class PersonFactory(DjangoModelFactory):
         django_get_or_create = ('username',)
 
 
-class MachineCategoryFactory(DjangoModelFactory):
-    name = fuzzy_lower_text(prefix='mc-')
-    datastore = 'dummy'
-
-    class Meta:
-        model = karaage.machines.models.MachineCategory
-        django_get_or_create = ('name',)
-
-
 class InstituteFactory(DjangoModelFactory):
     name = fuzzy_lower_text(prefix='inst-')
     group = factory.SubFactory(GroupFactory)
@@ -82,16 +73,6 @@ class InstituteFactory(DjangoModelFactory):
     class Meta:
         model = karaage.institutes.models.Institute
         django_get_or_create = ('name',)
-
-
-class InstituteQuotaFactory(DjangoModelFactory):
-    institute = factory.SubFactory(InstituteFactory)
-    machine_category = factory.SubFactory(MachineCategoryFactory)
-    quota = FuzzyDecimal(0.0, 999.0)
-
-    class Meta:
-        model = karaage.institutes.models.InstituteQuota
-        django_get_or_create = ('institute', 'machine_category')
 
 
 class ProjectFactory(DjangoModelFactory):
@@ -108,42 +89,27 @@ class ProjectFactory(DjangoModelFactory):
         model = karaage.projects.models.Project
 
 
-class ProjectQuotaFactory(DjangoModelFactory):
-    project = factory.SubFactory(ProjectFactory)
-    machine_category = factory.SubFactory(MachineCategoryFactory)
-
-    class Meta:
-        model = karaage.projects.models.ProjectQuota
-        django_get_or_create = ('project', 'machine_category')
-
-
 class AccountFactory(DjangoModelFactory):
     username = fuzzy_lower_text(prefix='account-')
     foreign_id = FuzzyText()
     person = factory.SubFactory(PersonFactory)
-    machine_category = factory.SubFactory(MachineCategoryFactory)
     date_created = factory.LazyAttribute(lambda a: datetime.datetime.today())
     default_project = factory.SubFactory(ProjectFactory)
-    shell = FuzzyChoice(settings.SHELLS)
+    shell = FuzzyChoice([s[0] for s in settings.SHELLS])
 
     class Meta:
         model = karaage.machines.models.Account
-        django_get_or_create = ('person', 'username', 'machine_category')
+        django_get_or_create = ('person', 'username')
 
 
-def simple_account(institute=None, machine_category=None):
-    if not machine_category:
-        machine_category = MachineCategoryFactory()
+def simple_account(institute=None):
     if not institute:
         institute = InstituteFactory()
     person = PersonFactory(institute=institute)
     project = ProjectFactory(pid=fuzzy_lower_text(prefix='proj-default-'),
                              institute=institute,
                              approved_by=person)
-    account = AccountFactory(machine_category=machine_category,
-                             person=person,
+    account = AccountFactory(person=person,
                              default_project=project)
-    ProjectQuotaFactory(project=project,
-                        machine_category=machine_category)
     add_user_to_project(account.person, project)
     return account

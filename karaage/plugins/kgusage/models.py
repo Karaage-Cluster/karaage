@@ -16,13 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import datetime
-import decimal
-
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
-from karaage.machines.models import Account, Machine, MachineCategory
+from karaage.machines.models import Account, Machine
 from karaage.projects.models import Project
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
@@ -111,70 +108,38 @@ class UsageCache(models.Model):
 
 class InstituteCache(UsageCache):
     institute = models.ForeignKey(Institute)
-    machine_category = models.ForeignKey(MachineCategory)
 
     class Meta:
         unique_together = (
-            'date', 'start', 'end', 'institute', 'machine_category')
+            'date', 'start', 'end', 'institute')
         db_table = 'cache_institutecache'
 
 
 class ProjectCache(UsageCache):
     project = models.ForeignKey(Project)
-    machine_category = models.ForeignKey(MachineCategory)
 
     class Meta:
         unique_together = (
-            'date', 'start', 'end', 'project', 'machine_category')
+            'date', 'start', 'end', 'project')
         db_table = 'cache_projectcache'
 
 
 class PersonCache(UsageCache):
     person = models.ForeignKey(Person)
     project = models.ForeignKey(Project)
-    machine_category = models.ForeignKey(MachineCategory)
 
     class Meta:
         unique_together = (
-            'date', 'start', 'end', 'person', 'project', 'machine_category')
+            'date', 'start', 'end', 'person', 'project')
         db_table = 'cache_personcache'
 
 
 class MachineCategoryCache(UsageCache):
-    machine_category = models.ForeignKey(MachineCategory)
     available_time = models.DecimalField(max_digits=30, decimal_places=2)
 
     class Meta:
-        unique_together = ('date', 'start', 'end', 'machine_category')
+        unique_together = ('date', 'start', 'end')
         db_table = 'cache_machinecategorycache'
-
-    def get_project_mpots(self, project_quota, start, end):
-        project_cache = ProjectCache.objects.get(
-            project=project_quota.project,
-            machine_category=self.machine_category,
-            start=start,
-            end=end,
-            date=datetime.date.today()
-        )
-        usage = project_cache.cpu_time
-        total_time = self.available_time
-        if total_time == 0:
-            return 0
-        two_places = decimal.Decimal(10) ** -2
-        return ((usage / total_time) * 100 * 1000).quantize(two_places)
-
-    def is_project_over_quota(self, project_quota, start, end):
-        mpots = self.get_project_mpots(project_quota, start, end)
-        cap = project_quota.get_cap()
-        return bool(mpots > cap)
-
-    def get_project_cap_percent(self, project_quota, start, end):
-        mpots = self.get_project_mpots(project_quota, start, end)
-        cap = project_quota.get_cap()
-        if cap == 0:
-            return 'NaN'
-        else:
-            return (mpots / cap) * 100
 
 
 class MachineCache(UsageCache):

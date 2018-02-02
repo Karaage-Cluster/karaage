@@ -24,6 +24,8 @@ except ImportError:
 
 from .dirs import GRAPH_URL
 
+from karaage.institutes.models import Institute
+
 
 def get_colour(index):
     """ get color number index. """
@@ -41,75 +43,64 @@ def get_colour(index):
 # -----------------------------------------------------------------------
 
 
-def get_project_trend_graph_filename(project,
-                                     start, end,
-                                     machine_category):
+def get_project_trend_graph_filename(project, start, end):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
     filename = os.path.join(
         "projects",
-        "%s_%s_%s_%i" % (
-            project.pid, start_str, end_str, machine_category.id)
+        "%s_%s_%s" % (project.pid, start_str, end_str)
     )
     return filename
 
 
-def get_institute_graph_filename(start, end, machine_category):
+def get_institute_graph_filename(start, end):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
     filename = os.path.join(
         "institutes",
-        "%s_%s_%i" % (
-            start_str, end_str, machine_category.id)
+        "%s_%s" % (start_str, end_str)
     )
     return filename
 
 
-def get_machine_graph_filename(start, end, machine_category):
+def get_machine_graph_filename(start, end):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
     filename = os.path.join(
         "machines",
-        "%s_%s_%i" % (
-            start_str, end_str, machine_category.id)
+        "%s_%s" % (start_str, end_str)
     )
     return filename
 
 
-def get_trend_graph_filename(start, end, machine_category):
+def get_trend_graph_filename(start, end):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
     filename = os.path.join(
         "trends",
-        "%s_%s_%i" % (
-            start_str, end_str, machine_category.id)
+        "%s_%s" % (start_str, end_str)
     )
     return filename
 
 
-def get_institute_trend_graph_filename(institute,
-                                       start, end,
-                                       machine_category):
+def get_institute_trend_graph_filename(institute, start, end):
     start_str = start.strftime('%Y-%m-%d')
     end_str = end.strftime('%Y-%m-%d')
     filename = os.path.join(
         "i_trends",
-        "%s_%s_%s_%i" % (
+        "%s_%s_%s" % (
             institute.name.replace(' ', '').replace('/', '-').lower(),
-            start_str, end_str, machine_category.id)
+            start_str, end_str)
     )
     return filename
 
 
 # -----------------------------------------------------------------------
 
-def get_project_trend_graph_url(project,
-                                start, end,
-                                machine_category):
+def get_project_trend_graph_url(project, start, end):
     """Generates a bar graph for a project. """
 
-    filename = get_project_trend_graph_filename(
-        project, start, end, machine_category)
+    filename = get_project_trend_graph_filename(project, start, end)
     urls = {
         'graph_url': urlparse.urljoin(GRAPH_URL, filename + ".png"),
         'data_url': urlparse.urljoin(GRAPH_URL, filename + ".csv"),
@@ -118,10 +109,10 @@ def get_project_trend_graph_url(project,
     return urls
 
 
-def get_institute_graph_url(start, end, machine_category):
+def get_institute_graph_url(start, end):
     """ Pie chart comparing institutes usage. """
 
-    filename = get_institute_graph_filename(start, end, machine_category)
+    filename = get_institute_graph_filename(start, end)
     urls = {
         'graph_url': urlparse.urljoin(GRAPH_URL, filename + ".png"),
         'data_url': urlparse.urljoin(GRAPH_URL, filename + ".csv"),
@@ -130,10 +121,10 @@ def get_institute_graph_url(start, end, machine_category):
     return urls
 
 
-def get_machine_graph_url(start, end, machine_category):
+def get_machine_graph_url(start, end):
     """ Pie chart comparing machines usage. """
 
-    filename = get_machine_graph_filename(start, end, machine_category)
+    filename = get_machine_graph_filename(start, end)
     urls = {
         'graph_url': urlparse.urljoin(GRAPH_URL, filename + ".png"),
         'data_url': urlparse.urljoin(GRAPH_URL, filename + ".csv"),
@@ -142,10 +133,10 @@ def get_machine_graph_url(start, end, machine_category):
     return urls
 
 
-def get_trend_graph_url(start, end, machine_category):
+def get_trend_graph_url(start, end):
     """ Total trend graph for machine category. """
 
-    filename = get_trend_graph_filename(start, end, machine_category)
+    filename = get_trend_graph_filename(start, end)
     urls = {
         'graph_url': urlparse.urljoin(GRAPH_URL, filename + ".png"),
         'data_url': urlparse.urljoin(GRAPH_URL, filename + ".csv"),
@@ -154,13 +145,10 @@ def get_trend_graph_url(start, end, machine_category):
     return urls
 
 
-def get_institute_trend_graph_url(institute,
-                                  start, end,
-                                  machine_category):
+def get_institute_trend_graph_url(institute, start, end):
     """ Institute trend graph for machine category. """
 
-    filename = get_institute_trend_graph_filename(
-        institute, start, end, machine_category)
+    filename = get_institute_trend_graph_filename(institute, start, end)
     urls = {
         'graph_url': urlparse.urljoin(GRAPH_URL, filename + ".png"),
         'data_url': urlparse.urljoin(GRAPH_URL, filename + ".csv"),
@@ -169,14 +157,12 @@ def get_institute_trend_graph_url(institute,
     return urls
 
 
-def get_institutes_trend_graph_urls(start, end, machine_category):
+def get_institutes_trend_graph_urls(start, end):
     """ Get all institute trend graphs. """
 
     graph_list = []
-    for iq in machine_category.institutequota_set.all():
-        institute = iq.institute
-        urls = get_institute_trend_graph_url(
-            institute, start, end, machine_category)
+    for institute in Institute.objects.all():
+        urls = get_institute_trend_graph_url(institute, start, end)
         urls['institute'] = institute
         graph_list.append(urls)
 

@@ -20,7 +20,7 @@ import django_tables2 as tables
 from django_tables2.utils import A
 from django.utils.safestring import mark_safe
 
-from .models import Machine, MachineCategory, Account
+from .models import Machine, Account
 
 
 class MachineTable(tables.Table):
@@ -41,21 +41,9 @@ class MachineTable(tables.Table):
         empty_text = "No items"
 
 
-class MachineCategoryTable(tables.Table):
-    name = tables.LinkColumn(
-        'kg_machine_category_detail', args=[A('pk')])
-
-    class Meta:
-        model = MachineCategory
-        fields = ("name", )
-        empty_text = "No items"
-
-
 class AccountTable(tables.Table):
     active = tables.Column(
         empty_values=(), order_by=('date_deleted', '-login_enabled'))
-    machine_category = tables.LinkColumn(
-        'kg_machine_category_detail', args=[A('machine_category.pk')])
     person = tables.LinkColumn(
         'kg_person_detail', args=[A('person.username')])
     username = tables.LinkColumn(
@@ -74,5 +62,5 @@ class AccountTable(tables.Table):
 
     class Meta:
         model = Account
-        fields = ("active", "username", "machine_category", "person",
+        fields = ("active", "username", "person",
                   "default_project", "date_created", "date_deleted")

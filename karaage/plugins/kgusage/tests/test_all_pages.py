@@ -39,6 +39,5 @@ from __future__ import print_function, unicode_literals
 #         'version_id': '1',
 #         'institute_id': '1',
 #         'project_id': '1',
-#         # 'machine_category_id': '1',
 #     }
 #     module = "karaage.plugins.kgusage"

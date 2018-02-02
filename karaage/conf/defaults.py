@@ -252,7 +252,6 @@ XMLRPC_METHODS = (
     ('karaage.projects.xmlrpc.get_project_members', 'get_project_members',),
     ('karaage.projects.xmlrpc.get_projects', 'get_projects',),
     ('karaage.projects.xmlrpc.get_users_projects', 'get_users_projects',),
-    ('karaage.projects.xmlrpc.showquota', 'showquota',),
 )
 
 
@@ -291,18 +290,8 @@ SHELLS = (
 DEFAULT_SHELL = '/bin/bash'
 
 # List of global datastores and configurations for Karaage.
-GLOBAL_DATASTORES = [
+DATASTORES = [
 ]
-
-
-# List of MC datastores and configurations for Karaage.
-MACHINE_CATEGORY_DATASTORES = {
-    'dummy': [
-    ],
-}
-
-# List of old Karaage 2.7 LDAP datastores.
-KG27_DATASTORE = None
 
 # Can any logged in user access the usage information?
 USAGE_IS_PUBLIC = True

@@ -32,7 +32,6 @@ class ProjectTestCase(IntegrationTestCase):
     def setUp(self):
         super(ProjectTestCase, self).setUp()
         call_command('loaddata', 'test_karaage', **{'verbosity': 0})
-        self._datastore = self.mc_ldap_datastore
 
     def test_admin_add_project(self):
 
@@ -63,7 +62,7 @@ class ProjectTestCase(IntegrationTestCase):
         self.assertEqual(project.pid, 'pExam0001')
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
         self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())
-        lgroup = self._datastore._groups().get(cn=project.pid)
+        lgroup = self._ldap_datastore._groups().get(cn=project.pid)
         self.assertEqual(lgroup.cn, project.pid)
 
     def test_admin_add_project_pid(self):
@@ -95,13 +94,13 @@ class ProjectTestCase(IntegrationTestCase):
         self.assertEqual(project.pid, 'Enrico')
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
         self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())
-        lgroup = self._datastore._groups().get(cn=project.pid)
+        lgroup = self._ldap_datastore._groups().get(cn=project.pid)
         self.assertEqual(lgroup.cn, project.pid)
 
     def test_add_remove_user_to_project(self):
         self.assertRaises(
-            self._datastore._account.DoesNotExist,
-            self._datastore._accounts().get, pk='kgtestuser2')
+            self._ldap_datastore._account.DoesNotExist,
+            self._ldap_datastore._accounts().get, pk='kgtestuser2')
 
         # login
         self.client.login(username='kgsuper', password='aq12ws')
@@ -113,8 +112,8 @@ class ProjectTestCase(IntegrationTestCase):
             reverse('kg_project_detail', args=[project.id]))
         self.assertEqual(response.status_code, 200)
         self.assertRaises(
-            self._datastore._account.DoesNotExist,
-            self._datastore._accounts().get, pk='kgtestuser2')
+            self._ldap_datastore._account.DoesNotExist,
+            self._ldap_datastore._accounts().get, pk='kgtestuser2')
 
         # add kgtestuser2 to project
         new_user = Person.objects.get(username='kgtestuser2')
@@ -124,8 +123,8 @@ class ProjectTestCase(IntegrationTestCase):
         self.assertEqual(response.status_code, 302)
         project = Project.objects.get(pid='TestProject1')
         self.assertEqual(project.group.members.count(), 2)
-        lgroup = self._datastore._groups().get(cn=project.pid)
-        self._datastore._accounts().get(pk='kgtestuser2')
+        lgroup = self._ldap_datastore._groups().get(cn=project.pid)
+        self._ldap_datastore._accounts().get(pk='kgtestuser2')
         lgroup.secondary_accounts.get(pk='kgtestuser2')
 
         # remove user
@@ -138,9 +137,9 @@ class ProjectTestCase(IntegrationTestCase):
         self.assertEqual(response.status_code, 302)
         project = Project.objects.get(pid='TestProject1')
         self.assertEqual(project.group.members.count(), 1)
-        lgroup = self._datastore._groups().get(cn=project.pid)
+        lgroup = self._ldap_datastore._groups().get(cn=project.pid)
         self.assertRaises(
-            self._datastore._account.DoesNotExist,
+            self._ldap_datastore._account.DoesNotExist,
             lgroup.secondary_accounts.get,
             pk='kgtestuser2')
 
@@ -205,7 +204,7 @@ class ProjectTestCase(IntegrationTestCase):
         self.assertTrue(Person.objects.get(pk=1) in project.leaders.all())
         self.assertFalse(Person.objects.get(pk=2) in project.leaders.all())
         self.assertFalse(Person.objects.get(pk=3) in project.leaders.all())
-        lgroup = self._datastore._groups().get(cn=project.pid)
+        lgroup = self._ldap_datastore._groups().get(cn=project.pid)
         self.assertEqual(lgroup.cn, project.pid)
 
     def test_user_add_project(self):

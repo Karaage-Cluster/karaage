@@ -22,9 +22,8 @@ import six
 from django.conf import settings
 
 from karaage.people.models import Person
-from karaage.datastores import global_person_exists
-from karaage.datastores import machine_category_account_exists
-from karaage.machines.models import MachineCategory, Account
+from karaage.datastores import account_exists
+from karaage.machines.models import Account
 
 username_re = re.compile(r'^%s$' % settings.USERNAME_VALIDATION_RE)
 
@@ -89,18 +88,11 @@ def validate_username_for_new_person(username):
             'If this was the name of your old account please email %s')
             % settings.ACCOUNTS_EMAIL)
 
-    # Check person datastore, in case username created outside Karaage.
-
-    if global_person_exists(username):
-        raise UsernameTaken(
-            six.u('Username is already in external personal datastore.'))
-
     # Check account datastore, in case username created outside Karaage.
 
-    for mc in MachineCategory.objects.all():
-        if machine_category_account_exists(username, mc):
-            raise UsernameTaken(
-                six.u('Username is already in external account datastore.'))
+    if account_exists(username):
+        raise UsernameTaken(
+            six.u('Username is already in external account datastore.'))
 
     return username
 
@@ -140,39 +132,37 @@ def validate_username_for_new_account(person, username):
             'If this was the name of your old account please email %s')
             % settings.ACCOUNTS_EMAIL)
 
-    # Check person datastore, in case username created outside Karaage.
+    # Check datastore, in case username created outside Karaage.
     # Make sure we don't count the entry for person.
 
     query = Person.objects.filter(username__exact=username)
     count = query.filter(pk=person.pk).count()
-    if count == 0 and global_person_exists(username):
+    if count == 0 and account_exists(username):
         raise UsernameTaken(
             six.u('Username is already in external personal datastore.'))
 
 
-def check_username_for_new_account(person, username, machine_category):
+def check_username_for_new_account(person, username):
     """ Check the new username for a new account. If the username  is
     in use, raises :py:exc:`UsernameTaken`.
 
     :param person: Owner of new account.
     :param username: Username to validate.
-    :param machine_category: Machine category for new account.
     """
 
     query = Account.objects.filter(
         username__exact=username,
-        machine_category=machine_category,
         date_deleted__isnull=True)
 
     if query.count() > 0:
         raise UsernameTaken(
-            six.u('Username already in use on machine category %s.')
-            % machine_category)
+            six.u('Username already in use.')
+        )
 
-    if machine_category_account_exists(username, machine_category):
+    if account_exists(username):
         raise UsernameTaken(
-            six.u('Username is already in datastore for machine category %s.')
-            % machine_category)
+            six.u('Username is already in datastore.')
+        )
 
     return username
 
@@ -207,22 +197,12 @@ def validate_username_for_rename_person(username, person):
         raise UsernameTaken(
             six.u('The username is already taken by an existing account.'))
 
-    # Check person datastore, in case username created outside Karaage.
+    # Check datastore, in case username created outside Karaage.
 
-    if global_person_exists(username):
+    count = Account.objects.filter(
+        username__exact=username,
+        person=person,
+        date_deleted__isnull=True).count()
+    if count == 0 and account_exists(username):
         raise UsernameTaken(
-            six.u('Username is already in external personal datastore.'))
-
-    # Check account datastore, in case username created outside Karaage.
-
-    for mc in MachineCategory.objects.all():
-        # If there is an active account on this MC and we own it, it doesn't
-        # matter
-        count = Account.objects.filter(
-            username__exact=username,
-            person=person,
-            machine_category=mc,
-            date_deleted__isnull=True).count()
-        if count == 0 and machine_category_account_exists(username, mc):
-            raise UsernameTaken(
-                six.u('Username is already in external account datastore.'))
+            six.u('Username is already in external account datastore.'))

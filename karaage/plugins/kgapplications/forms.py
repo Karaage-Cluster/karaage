@@ -202,12 +202,12 @@ class NewProjectApplicationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(NewProjectApplicationForm, self).__init__(*args, **kwargs)
-        self.fields['machine_categories'].required = True
 
     class Meta:
         model = ProjectApplication
         fields = [
-            'name', 'description', 'additional_req', 'machine_categories']
+            'name', 'description', 'additional_req',
+        ]
 
 
 class ExistingProjectApplicationForm(forms.ModelForm):
@@ -265,7 +265,7 @@ def approve_project_form_generator(application, auth):
     if application.project is None:
         # new project
         include_fields = [
-            'machine_categories', 'additional_req', 'needs_account']
+            'additional_req', 'needs_account']
     else:
         # existing project
         include_fields = [
@@ -291,8 +291,6 @@ def approve_project_form_generator(application, auth):
                 six.u("Does this person require a cluster account?")
             self.fields['needs_account'].help_text = \
                 six.u("Will this person be working on the project?")
-            if application.project is None:
-                self.fields['machine_categories'].required = True
 
     return ApproveProjectForm
 
@@ -302,7 +300,7 @@ def admin_approve_project_form_generator(application, auth):
     if application.project is None:
         # new project
         include_fields = [
-            'pid', 'machine_categories', 'additional_req', 'needs_account']
+            'pid', 'additional_req', 'needs_account']
     else:
         # existing project
         include_fields = ['make_leader', 'needs_account']

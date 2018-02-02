@@ -25,8 +25,7 @@ except ImportError:
 from django.test import TestCase
 
 from karaage.middleware.threadlocals import reset
-from karaage.datastores import _MACHINE_CATEGORY_DATASTORES
-from karaage.tests.fixtures import MachineCategoryFactory
+from karaage.datastores import _DATASTORES
 
 
 class UnitTestCase(TestCase):
@@ -34,13 +33,13 @@ class UnitTestCase(TestCase):
     def setUp(self):
         super(TestCase, self).setUp()
         self.resetDatastore()
-        self.machine_category = MachineCategoryFactory(datastore='mock')
 
         def cleanup():
-            _MACHINE_CATEGORY_DATASTORES['mock'] = []
+            _DATASTORES.clear()
             reset()
         self.addCleanup(cleanup)
 
     def resetDatastore(self):
         self.datastore = Mock()
-        _MACHINE_CATEGORY_DATASTORES['mock'] = [self.datastore]
+        _DATASTORES.clear()
+        _DATASTORES.append(self.datastore)

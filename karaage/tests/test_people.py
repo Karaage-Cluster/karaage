@@ -28,7 +28,7 @@ from django.contrib import auth
 from karaage.people.models import Person
 from karaage.institutes.models import Institute, InstituteDelegate
 from karaage.projects.models import Project
-from karaage.machines.models import Account, MachineCategory
+from karaage.machines.models import Account
 from karaage.tests.integration import IntegrationTestCase
 
 
@@ -42,10 +42,6 @@ class PersonTestCase(IntegrationTestCase):
     fixtures = [
         'test_karaage.json',
     ]
-
-    def setUp(self):
-        super(PersonTestCase, self).setUp()
-        self._datastore = self.mc_ldap_datastore
 
     def test_login(self):
         if django.VERSION >= (1, 9):
@@ -307,7 +303,6 @@ class PersonTestCase(IntegrationTestCase):
             'password2': 'Exaiquouxei0',
             'project': 1,
             'needs_account': True,
-            'machine_category': 1,
         }
 
         response = self.client.post(reverse('kg_person_add'), form_data)
@@ -320,7 +315,7 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(person.username, 'samtest')
         self.assertEqual(Account.objects.count(), 2)
         self.assertEqual(project.group.members.count(), p_users + 1)
-        luser = self._datastore._accounts().get(uid='samtest')
+        luser = self._ldap_datastore._accounts().get(uid='samtest')
         self.assertEqual(luser.givenName, 'Sam')
         self.assertEqual(luser.homeDirectory, '/vpac/TestProject1/samtest')
 
@@ -367,7 +362,7 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(logged_in, True)
 
         person = Person.objects.get(username='kgtestuser3')
-        luser = self._datastore._accounts().get(uid='kgtestuser3')
+        luser = self._ldap_datastore._accounts().get(uid='kgtestuser3')
         self.assertEqual(person.mobile, '')
         self.assertEqual(luser.gidNumber, 500)
         self.assertEqual(luser.o, 'Example')
@@ -393,7 +388,7 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(response.status_code, 302)
 
         person = Person.objects.get(username='kgtestuser3')
-        luser = self._datastore._accounts().get(uid='kgtestuser3')
+        luser = self._ldap_datastore._accounts().get(uid='kgtestuser3')
         self.assertEqual(person.mobile, '555666')
         self.assertEqual(luser.gidNumber, 501)
         self.assertEqual(luser.o, 'OtherInst')
@@ -406,7 +401,7 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(person.projects.count(), 1)
         self.assertEqual(person.account_set.count(), 1)
         self.assertEqual(person.account_set.all()[0].date_deleted, None)
-        luser = self._datastore._accounts().get(uid='kgtestuser3')
+        luser = self._ldap_datastore._accounts().get(uid='kgtestuser3')
         self.assertEqual(luser.givenName, 'Test')
 
         response = self.client.get(
@@ -425,8 +420,8 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(person.account_set.all()[0].date_deleted,
                          datetime.date.today())
         self.assertRaises(
-            self._datastore._account.DoesNotExist,
-            self._datastore._accounts().get,
+            self._ldap_datastore._account.DoesNotExist,
+            self._ldap_datastore._accounts().get,
             uid='kgtestuser3')
 
         # Test activating
@@ -464,7 +459,6 @@ class PersonTestCase(IntegrationTestCase):
             name='test project',
             leader=person,
             start_date=datetime.date.today(),
-            machine_category=MachineCategory.objects.get(name='VPAC'),
             institute=Institute.objects.get(name='VPAC'),
             is_active=True,
             is_approved=True,
@@ -496,7 +490,6 @@ class PersonTestCase(IntegrationTestCase):
             name='test project 5',
             leader=Person.objects.get(username='leader'),
             start_date=datetime.date.today(),
-            machine_category=MachineCategory.objects.get(name='VPAC'),
             institute=Institute.objects.get(name='VPAC'),
             is_active=True,
             is_approved=True,

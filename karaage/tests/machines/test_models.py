@@ -21,7 +21,6 @@ import unittest
 from django.core import exceptions as django_exceptions
 from django.test import TestCase
 
-from karaage.machines.models import MachineCategory
 from karaage.tests.fixtures import AccountFactory
 
 
@@ -39,10 +38,3 @@ class AccountTestCase(TestCase):
         account = AccountFactory(username="a" * 256)
         with assert_raises:
             account.full_clean()
-
-
-class MachineCategoryTestCase(TestCase):
-
-    def test_create(self):
-        machine_category = MachineCategory(name='test', datastore='dummy')
-        machine_category.full_clean()

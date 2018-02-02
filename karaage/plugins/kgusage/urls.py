@@ -22,7 +22,7 @@ from django.conf import settings
 from karaage.plugins.kgusage import views
 
 urlpatterns = [
-    url(r'^$', views.usage_index, name='kg_usage_list'),
+    url(r'^$', views.index, name='kg_usage'),
 
     url(r'^unknown/$', views.unknown_usage, name='kg_usage_unknown'),
 
@@ -31,26 +31,19 @@ urlpatterns = [
     url(r'^jobs/(?P<jobid>[-.\w\[\]]+)/$',
         views.job_detail, name='kg_usage_job_detail'),
 
-    url(r'^(?P<machine_category_id>\d+)/$', views.index, name='kg_usage_mc'),
+    url(r'^core_report/$', views.core_report, name='kg_usage_core_report'),
+    url(r'^mem_report/$', views.mem_report, name='kg_usage_mem_report'),
+    url(r'^trends/$', views.institute_trends, name='kg_usage_institute_trends'),
 
-    url(r'^(?P<machine_category_id>\d+)/core_report/$',
-        views.core_report, name='kg_usage_core_report'),
-    url(r'^(?P<machine_category_id>\d+)/mem_report/$',
-        views.mem_report, name='kg_usage_mem_report'),
-    url(r'^(?P<machine_category_id>\d+)/trends/$',
-        views.institute_trends, name='kg_usage_institute_trends'),
-
-    url(r'^(?P<machine_category_id>\d+)/institute/(?P<institute_id>\d+)/$',
+    url(r'^institute/(?P<institute_id>\d+)/$',
         views.institute_usage, name='kg_usage_institute'),
-    url(r'^(?P<machine_category_id>\d+)/institute/'
-        r'(?P<institute_id>\d+)/users/$',
+    url(r'^institute/(?P<institute_id>\d+)/users/$',
         views.institute_users, name='kg_usage_users'),
-    url(r'^(?P<machine_category_id>\d+)/projects/(?P<project_id>%s)/$'
+    url(r'^projects/(?P<project_id>%s)/$'
         % settings.PROJECT_VALIDATION_RE,
         views.project_usage, name='kg_usage_project'),
 
-    url(r'^(?P<machine_category_id>\d+)/top_users/$',
-        views.top_users, name='kg_usage_top_users'),
+    url(r'^top_users/$', views.top_users, name='kg_usage_top_users'),
 
     url(r'^software/(?P<software_id>\d+)/stats/$',
         views.software_stats, name='kg_software_stats'),

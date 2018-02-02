@@ -17,20 +17,32 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import six
-import django_tables2 as tables
 
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
+import django_tables2 as tables
 
-from karaage.projects.tables import ProjectTable
-from karaage.projects.models import Project
-from karaage.machines.tables import MachineTable, MachineCategoryTable
-from karaage.machines.tables import AccountTable
-from karaage.machines.models import Machine, MachineCategory
-from karaage.machines.forms import MachineForm, MachineCategoryForm
+from karaage.machines.models import Machine
+from karaage.machines.forms import MachineForm
+from karaage.machines.tables import MachineTable
 from karaage.common.decorators import admin_required, login_required
 import karaage.common as util
+
+
+@login_required
+def machine_list(request):
+    queryset = Machine.objects.all()
+    table = MachineTable(queryset)
+    tables.RequestConfig(request).configure(table)
+
+    return render(
+        template_name='karaage/machines/machine_list.html',
+        context={
+            'table': table,
+            'title': "Machine list",
+        },
+        request=request)
 
 
 @login_required
@@ -90,11 +102,7 @@ def machine_password(request, machine_id):
 def machine_logs(request, machine_id):
     obj = get_object_or_404(Machine, pk=machine_id)
     breadcrumbs = [
-        ("Machines", reverse("kg_machine_category_list")),
-        (
-            six.text_type(obj.category),
-            reverse("kg_machine_category_detail", args=[obj.category.pk])
-        ),
+        ("Machines", reverse("kg_machine_list")),
         (six.text_type(obj), reverse("kg_machine_detail", args=[obj.pk]))
     ]
     return util.log_list(request, breadcrumbs, obj)
@@ -104,111 +112,7 @@ def machine_logs(request, machine_id):
 def machine_add_comment(request, machine_id):
     obj = get_object_or_404(Machine, pk=machine_id)
     breadcrumbs = [
-        ("Machines", reverse("kg_machine_category_list")),
-        (
-            six.text_type(obj.category),
-            reverse("kg_machine_category_detail", args=[obj.category.pk])
-        ),
+        ("Machines", reverse("kg_machine_list")),
         (six.text_type(obj), reverse("kg_machine_detail", args=[obj.pk]))
-    ]
-    return util.add_comment(request, breadcrumbs, obj)
-
-
-@login_required
-def category_list(request):
-    queryset = MachineCategory.objects.all()
-
-    table = MachineCategoryTable(queryset)
-    tables.RequestConfig(request).configure(table)
-
-    return render(
-        template_name='karaage/machines/machinecategory_list.html',
-        context={'table': table},
-        request=request)
-
-
-@admin_required
-def category_create(request):
-    from karaage.common.create_update import create_object
-    return create_object(
-        request, model=MachineCategory,
-        form_class=MachineCategoryForm,
-        template_name="karaage/machines/machinecategory_form.html")
-
-
-@admin_required
-def category_edit(request, category_id):
-    from karaage.common.create_update import update_object
-    return update_object(
-        request, object_id=category_id, model=MachineCategory,
-        form_class=MachineCategoryForm,
-        template_name="karaage/machines/machinecategory_form.html")
-
-
-@login_required
-def category_detail(request, category_id):
-    machine_category = get_object_or_404(MachineCategory, pk=category_id)
-
-    queryset = machine_category.machine_set.all()
-    table = MachineTable(queryset)
-    tables.RequestConfig(request).configure(table)
-
-    return render(
-        template_name='karaage/machines/machinecategory_detail.html',
-        context={'machine_category': machine_category, 'table': table},
-        request=request)
-
-
-@admin_required
-def category_accounts(request, category_id):
-    machine_category = get_object_or_404(MachineCategory, pk=category_id)
-
-    queryset = machine_category.account_set.all()
-    table = AccountTable(queryset)
-    tables.RequestConfig(request).configure(table)
-
-    return render(
-        template_name='karaage/machines/machinecategory_accounts.html',
-        context={'machine_category': machine_category, 'table': table},
-        request=request)
-
-
-@admin_required
-def category_projects(request, category_id):
-    machine_category = get_object_or_404(MachineCategory, pk=category_id)
-
-    queryset = Project.objects.filter(
-        projectquota__machine_category=machine_category)
-    table = ProjectTable(queryset)
-    tables.RequestConfig(request).configure(table)
-
-    return render(
-        template_name='karaage/machines/machinecategory_projects.html',
-        context={'machine_category': machine_category, 'table': table},
-        request=request)
-
-
-@admin_required
-def category_logs(request, category_id):
-    obj = get_object_or_404(MachineCategory, pk=category_id)
-    breadcrumbs = [
-        ("Machines", reverse("kg_machine_category_list")),
-        (
-            six.text_type(obj),
-            reverse("kg_machine_category_detail", args=[obj.pk])
-        )
-    ]
-    return util.log_list(request, breadcrumbs, obj)
-
-
-@admin_required
-def category_add_comment(request, category_id):
-    obj = get_object_or_404(MachineCategory, pk=category_id)
-    breadcrumbs = [
-        ("Machines", reverse("kg_machine_category_list")),
-        (
-            six.text_type(obj),
-            reverse("kg_machine_category_detail", args=[obj.pk])
-        )
     ]
     return util.add_comment(request, breadcrumbs, obj)

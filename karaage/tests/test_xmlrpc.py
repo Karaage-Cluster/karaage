@@ -34,7 +34,6 @@ from django.test import TestCase
 
 from karaage.people.models import Person, Group
 from karaage.machines.models import Account
-from karaage.projects.models import ProjectQuota
 
 
 class DjangoTestClientTransport(object):
@@ -95,26 +94,6 @@ class XmlrpcTestCase(TestCase):
         result = server.get_disk_quota("kgtestuser3", "tango")
         self.assertEqual(result, 1048576)
 
-    def test_showquota(self):
-        server = self.server
-
-        result = server.showquota("kgtestuser1")
-        self.assertEqual(result, [-1, 'Account not found'])
-
-        result = server.showquota("kgtestuser3")
-        self.assertEqual(result, [0, [['TestProject1', 0, '0.0', True]]])
-        result = server.showquota("kgtestuser3", "tango")
-        self.assertEqual(result, [0, [['TestProject1', 0, '0.0', True]]])
-
-        pq = ProjectQuota.objects.get(project__pid="TestProject1")
-        pq.cap = 1
-        pq.save()
-
-        result = server.showquota("kgtestuser3")
-        self.assertEqual(result, [0, [['TestProject1', 0, '1.0', True]]])
-        result = server.showquota("kgtestuser3", "tango")
-        self.assertEqual(result, [0, [['TestProject1', 0, '1.0', True]]])
-
     def test_get_projects(self):
         server = self.server
 
@@ -128,10 +107,10 @@ class XmlrpcTestCase(TestCase):
         self.assertEqual(result, ['TestProject1'])
 
         result = server.get_projects("wexstan", "aq12ws")
-        self.assertEqual(result, [])
+        self.assertEqual(result, ['TestProject1'])
 
         result = server.get_projects("edda", "aq12ws")
-        self.assertEqual(result, [])
+        self.assertEqual(result, ['TestProject1'])
 
     def test_get_project(self):
         server = self.server
@@ -144,25 +123,24 @@ class XmlrpcTestCase(TestCase):
         result = server.get_project("kgtestuser3", "TestProject1")
         self.assertEqual(result, "TestProject1")
 
-        result = server.get_project(
-            "kgtestuser3", "TestProject1", "tango")
+        result = server.get_project("kgtestuser3", "TestProject1", "tango")
         self.assertEqual(result, "TestProject1")
 
         result = server.get_project("kgtestuser3", "TestProject1", "wexstan")
-        self.assertEqual(result, "Account 'kgtestuser3' not found")
+        self.assertEqual(result, "TestProject1")
 
         result = server.get_project("kgtestuser3", "TestProject1", "edda")
-        self.assertEqual(result, "Account 'kgtestuser3' not found")
+        self.assertEqual(result, "TestProject1")
 
         # project does not exist - should fall back to default
         result = server.get_project("kgtestuser3", "TestProjectx", "tango")
         self.assertEqual(result, "TestProject1")
 
         result = server.get_project("kgtestuser3", "TestProjectx", "wexstan")
-        self.assertEqual(result, "Account 'kgtestuser3' not found")
+        self.assertEqual(result, "TestProject1")
 
         result = server.get_project("kgtestuser3", "TestProjectx", "edda")
-        self.assertEqual(result, "Account 'kgtestuser3' not found")
+        self.assertEqual(result, "TestProject1")
 
         # project does exist, and person doesn't belong to it
         # in this case default fall back fails too
@@ -177,10 +155,10 @@ class XmlrpcTestCase(TestCase):
         self.assertEqual(result, "None")
 
         result = server.get_project("kgtestuser3", "TestProject1", "wexstan")
-        self.assertEqual(result, "Account 'kgtestuser3' not found")
+        self.assertEqual(result, "None")
 
         result = server.get_project("kgtestuser3", "TestProject1", "edda")
-        self.assertEqual(result, "Account 'kgtestuser3' not found")
+        self.assertEqual(result, "None")
 
     def test_get_project_members(self):
         server = self.server
@@ -208,10 +186,10 @@ class XmlrpcTestCase(TestCase):
 
         result = server.get_project_members(
             "wexstan", "aq12ws", "TestProject1")
-        self.assertEqual(result, "Project not found")
+        self.assertEqual(result, ['kgtestuser3'])
 
         result = server.get_project_members("edda", "aq12ws", "TestProject1")
-        self.assertEqual(result, "Project not found")
+        self.assertEqual(result, ['kgtestuser3'])
 
     def test_get_users_project(self):
         server = self.server

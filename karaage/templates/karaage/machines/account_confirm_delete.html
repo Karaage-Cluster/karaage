@@ -8,7 +8,7 @@
 <div class="breadcrumbs">
     <a href='{% url "index" %}'>Home</a>&nbsp;›
     <a href="{% url 'kg_person_list' %}">People</a>&nbsp;›
-    <a href="{% url 'kg_person_detail' account.person.username %}">{{ account.person }}</a>&nbsp;›
+    <a href="{% url 'kg_person_detail' account.person.username %}">{{ account.username }}</a>&nbsp;›
     {{ account.username }}&nbsp;›
     Delete
 </div>
@@ -17,7 +17,7 @@
 
 {% block content %}
     <h1>Are you sure?</h1>
-    <p>Are you sure you want to delete {{ account.person }}'s user account on {{ account.machine_category }}? </p>
+    <p>Are you sure you want to delete {{ account.person }}'s user account with username {{ account.username }}? </p>
     <form method="post" action=".">{% csrf_token %}
         <div>
             <input type="hidden" name="post" value="yes" />

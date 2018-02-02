@@ -69,16 +69,3 @@ def get_machine_recent_usage(context, machine):
     config = tables.RequestConfig(context['request'], paginate={"per_page": 5})
     config.configure(table)
     return table
-
-
-@register.assignment_tag(takes_context=True)
-def get_machinecategory_recent_usage(context, machinecategory):
-    # we must do two separate queries here, otherwise mysql takes
-    # ages and uses a lot of disk space.
-    machines = Machine.objects.filter(category=machinecategory)
-    queryset = CPUJob.objects.filter(machine__in=machines).select_related()
-    table = CPUJobTable(
-        queryset, prefix="category-%d-usage-" % machinecategory.pk)
-    config = tables.RequestConfig(context['request'], paginate={"per_page": 5})
-    config.configure(table)
-    return table

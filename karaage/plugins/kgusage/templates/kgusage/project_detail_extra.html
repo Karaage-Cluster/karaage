@@ -8,7 +8,7 @@
     <div class="object-tools">
         <ul>
             <li><a href="{% url 'kg_usage_job_list' %}{% url_with_param project=project.pid %}">Display all jobs</a></li>
-            {% for pc in project.projectquota_set.all %}<li><a href="{% url 'kg_usage_project' pc.machine_category.pk project.pid %}">Usage: {{ pc.machine_category }}</a></li>{% endfor %}
+            <li><a href="{% url 'kg_usage_project' project.pid %}">Usage</a></li>
         </ul>
     </div>
 </div>

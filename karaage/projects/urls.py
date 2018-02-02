@@ -27,11 +27,6 @@ urlpatterns = [
     url(r'^add/$', views.add_edit_project, name='kg_project_add'),
     url(r'^no_users/$', views.no_users, name='kg_empty_projects_list'),
 
-    url(r'^quota/(?P<projectquota_id>\d+)/$',
-        views.projectquota_edit, name='kg_projectquota_edit'),
-    url(r'^quota/(?P<projectquota_id>\d+)/delete/$',
-        views.projectquota_delete, name='kg_projectquota_delete'),
-
     url(r'^(?P<project_id>\d+)/$',
         views.project_detail, name='kg_project_detail'),
     url(r'^(?P<project_id>\d+)/verbose/$',
@@ -55,8 +50,6 @@ urlpatterns = [
         views.project_logs, name='kg_project_logs'),
     url(r'^(?P<project_id>\d+)/add_comment/$',
         views.add_comment, name='kg_project_add_comment'),
-    url(r'^(?P<project_id>\d+)/quota/add/$',
-        views.projectquota_add, name='kg_projectquota_add'),
 ]
 
 profile_urlpatterns = [

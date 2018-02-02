@@ -22,7 +22,7 @@ from django import forms
 from django.conf import settings
 
 from karaage.people.models import Group
-from karaage.institutes.models import Institute, InstituteQuota
+from karaage.institutes.models import Institute
 from karaage.institutes.models import InstituteDelegate
 from karaage.projects.models import Project
 import ajax_select.fields
@@ -63,13 +63,6 @@ class InstituteForm(forms.ModelForm):
             name = self.cleaned_data['group_name']
             institute.group, _ = Group.objects.get_or_create(name=name)
         return institute
-
-
-class InstituteQuotaForm(forms.ModelForm):
-
-    class Meta:
-        model = InstituteQuota
-        fields = ('machine_category', 'quota', 'cap', 'disk_quota')
 
 
 class DelegateForm(forms.ModelForm):

@@ -94,23 +94,20 @@ def parse_logs(log_list, date, machine_name, log_type):
         try:
             account = Account.objects.get(
                 username=data['user'],
-                machine_category=machine.category,
                 date_deleted__isnull=True)
 
         except Account.DoesNotExist:
             # Couldn't find user account - Assign to user None
             output.append(
-                "line %d: Couldn't find user account for username=%s and "
-                "machine category=%s."
-                % (line_no, data['user'], machine.category.name))
+                "line %d: Couldn't find user account for username=%s."
+                % (line_no, data['user']))
             fail += 1
             continue
 
         except Account.MultipleObjectsReturned:
             output.append(
-                "line %d: Username %s has multiple active accounts on "
-                "machine category %s."
-                % (line_no, data['user'], machine.category.name))
+                "line %d: Username %s has multiple active accounts."
+                % (line_no, data['user']))
             fail += 1
             continue
 

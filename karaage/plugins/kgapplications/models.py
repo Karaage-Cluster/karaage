@@ -49,7 +49,7 @@ from karaage.common import new_random_token, get_current_person, is_admin, log
 from karaage.people.models import Person
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
-from karaage.machines.models import MachineCategory, Account
+from karaage.machines.models import Account
 
 
 class ApplicationManager(models.Manager):
@@ -262,8 +262,6 @@ class ProjectApplication(Application):
         Institute, limit_choices_to={'is_active': True}, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
-    machine_categories = models.ManyToManyField(
-        MachineCategory, blank=True)
     pid = models.CharField(max_length=50, null=True, blank=True)
 
     # existing project request
@@ -302,34 +300,24 @@ class ProjectApplication(Application):
                 datetime.timedelta(days=365),
             )
             project.save()
-            for mc in self.machine_categories.all():
-                project.projectquota_set.create(machine_category=mc)
             project.activate(approved_by)
             self.project = project
             self.save()
         if self.make_leader:
             self.project.leaders.add(person)
         if self.needs_account:
-            found_pc = False
-            for pc in self.project.projectquota_set.all():
-                found_pc = True
-                if not person.has_account(pc.machine_category):
-                    log.add(
-                        self.application_ptr,
-                        'Created account on machine category %s'
-                        % pc.machine_category)
-                    Account.create(person, self.project, pc.machine_category)
-                    created_account = True
-                else:
-                    log.change(
-                        self.application_ptr,
-                        'Account on machine category %s already exists'
-                        % pc.machine_category)
-            if not found_pc:
+            if not person.has_account():
+                log.add(
+                    self.application_ptr,
+                    'Created account.'
+                )
+                Account.create(person, self.project)
+                created_account = True
+            else:
                 log.change(
                     self.application_ptr,
-                    'No project quotas found; no accounts created '
-                    'despite being requested')
+                    'Account already exists'
+                )
         self.project.group.members.add(person)
         return created_person, created_account
     approve.alters_data = True
@@ -407,7 +395,7 @@ class Applicant(models.Model):
             return full_name
         return self.email
 
-    def has_account(self, mc):
+    def has_account(self):
         return False
 
     def get_full_name(self):

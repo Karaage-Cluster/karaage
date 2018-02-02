@@ -18,18 +18,7 @@
 
 from django_xmlrpc.decorators import xmlrpc_func
 
-from karaage.machines.models import MachineCategory, Machine, Account
-
-
-def _get_machine_category(machine_name):
-    """ Helper to make machine_name optional for backwards compatability. """
-    if machine_name is None:
-        # depreciated use
-        machine_category = MachineCategory.objects.get_default()
-    else:
-        machine = Machine.objects.get(name=machine_name)
-        machine_category = MachineCategory.objects.get(machine=machine)
-    return machine_category
+from karaage.machines.models import Account
 
 
 @xmlrpc_func(returns='int', args=['string', 'string'])
@@ -38,11 +27,9 @@ def get_disk_quota(username, machine_name=None):
     Returns disk quota for username in KB
     """
 
-    machine_category = _get_machine_category(machine_name)
     try:
         ua = Account.objects.get(
             username=username,
-            machine_category=machine_category,
             date_deleted__isnull=True)
     except Account.DoesNotExist:
         return 'Account not found'

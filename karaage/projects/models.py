@@ -25,7 +25,7 @@ from model_utils import FieldTracker
 
 from karaage.people.models import Person, Group
 from karaage.institutes.models import Institute
-from karaage.machines.models import MachineCategory, Account
+from karaage.machines.models import Account
 from karaage.projects.managers import ActiveProjectManager
 from karaage.projects.managers import DeletedProjectManager
 from karaage.common import log, is_admin
@@ -93,13 +93,13 @@ class Project(models.Model):
         if self._tracker.has_changed("pid"):
             old_pid = self._tracker.previous('pid')
             if old_pid is not None:
-                from karaage.datastores import machine_category_set_project_pid
-                machine_category_set_project_pid(self, old_pid, self.pid)
+                from karaage.datastores import set_project_pid
+                set_project_pid(self, old_pid, self.pid)
                 log.change(self, 'Renamed %s to %s' % (old_pid, self.pid))
 
         # update the datastore
-        from karaage.datastores import machine_category_save_project
-        machine_category_save_project(self)
+        from karaage.datastores import save_project
+        save_project(self)
 
         # has group changed?
         if self._tracker.has_changed("group_id"):
@@ -121,21 +121,30 @@ class Project(models.Model):
         query = Account.objects.filter(default_project=self)
         query.update(default_project=None)
 
+        # Get list of accounts.
+        # We do this here to ensure nothing gets deleted when
+        # we call the super method.
+        old_group_pk = self._tracker.previous("group_id")
+        if old_group_pk is not None:
+            old_group = Group.objects.get(pk=old_group_pk)
+            query = Account.objects.filter(person__groups=old_group)
+            query = query.filter(date_deleted__isnull=True)
+            accounts = list(query)
+        else:
+            accounts = []
+
         # delete the object
         log.delete(self, 'Deleted')
         super(Project, self).delete(*args, **kwargs)
 
         # update datastore associations
-        old_group_pk = self._tracker.previous("group_id")
-        if old_group_pk is not None:
-            old_group = Group.objects.get(pk=old_group_pk)
-            from karaage.datastores import remove_accounts_from_project
-            query = Account.objects.filter(person__groups=old_group)
-            remove_accounts_from_project(query, self)
+        for account in accounts:
+            from karaage.datastores import remove_account_from_project
+            remove_account_from_project(account, self)
 
         # update the datastore
-        from karaage.datastores import machine_category_delete_project
-        machine_category_delete_project(self)
+        from karaage.datastores import delete_project
+        delete_project(self)
     delete.alters_data = True
 
     # Can user view this self record?
@@ -225,74 +234,6 @@ class Project(models.Model):
         self.save()
         log.change(self, 'Deactivated by %s' % deleted_by)
     deactivate.alters_data = True
-
-    @property
-    def machine_categories(self):
-        for pq in self.projectquota_set.all():
-            yield pq.machine_category
-
-
-class ProjectQuota(models.Model):
-    project = models.ForeignKey(Project)
-    cap = models.IntegerField(null=True, blank=True)
-    machine_category = models.ForeignKey(MachineCategory)
-
-    _tracker = FieldTracker()
-
-    def save(self, *args, **kwargs):
-        created = self.pk is None
-
-        super(ProjectQuota, self).save(*args, **kwargs)
-
-        if created:
-            log.add(
-                self.project,
-                'Quota %s: Created' % self.machine_category)
-        for field in self._tracker.changed():
-            log.change(
-                self.project,
-                'Quota %s: Changed %s to %s' %
-                (self.machine_category, field, getattr(self, field)))
-
-        from karaage.datastores import machine_category_save_project
-        machine_category_save_project(self.project)
-
-        if created:
-            from karaage.datastores import add_accounts_to_project
-            query = Account.objects.filter(person__groups=self.project.group)
-            add_accounts_to_project(query, self.project)
-
-    def delete(self, *args, **kwargs):
-        log.delete(
-            self.project,
-            'Quota %s: Deleted' % self.machine_category)
-
-        from karaage.datastores import remove_accounts_from_project
-        query = Account.objects.filter(person__groups=self.project.group)
-        remove_accounts_from_project(query, self.project)
-
-        super(ProjectQuota, self).delete(*args, **kwargs)
-
-        from karaage.datastores import machine_category_delete_project
-        machine_category_delete_project(self.project, self.machine_category)
-
-    class Meta:
-        db_table = 'project_quota'
-        app_label = 'karaage'
-        unique_together = ('project', 'machine_category')
-
-    def get_cap(self):
-        if self.cap is not None:
-            return self.cap
-
-        try:
-            iq = self.project.institute.institutequota_set.get(
-                machine_category=self.machine_category)
-        except:
-            return None
-        if iq.cap is not None:
-            return iq.cap
-        return iq.quota * 1000
 
 
 def _leaders_changed(

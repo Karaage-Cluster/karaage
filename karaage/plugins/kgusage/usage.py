@@ -28,7 +28,7 @@ from .models import PersonCache, MachineCache
 from .models import MachineCategoryCache
 
 
-def get_institute_usage(institute, start, end, machine_category):
+def get_institute_usage(institute, start, end):
     """Return a tuple of cpu hours and number of jobs for an institute
     for a given period
 
@@ -36,18 +36,17 @@ def get_institute_usage(institute, start, end, machine_category):
     institute --
     start -- start date
     end -- end date
-    machine_category -- MachineCategory object
     """
     try:
         cache = InstituteCache.objects.get(
             institute=institute, date=datetime.date.today(),
-            start=start, end=end, machine_category=machine_category)
+            start=start, end=end)
         return cache.cpu_time, cache.no_jobs
     except InstituteCache.DoesNotExist:
         return 0, 0
 
 
-def get_project_usage(project, start, end, machine_category):
+def get_project_usage(project, start, end):
     """Return a tuple of cpu hours and number of jobs for a project
     for a given period
 
@@ -60,13 +59,13 @@ def get_project_usage(project, start, end, machine_category):
     try:
         cache = ProjectCache.objects.get(
             project=project, date=datetime.date.today(),
-            start=start, end=end, machine_category=machine_category)
+            start=start, end=end)
         return cache.cpu_time, cache.no_jobs
     except ProjectCache.DoesNotExist:
         return 0, 0
 
 
-def get_person_usage(person, project, start, end, machine_category):
+def get_person_usage(person, project, start, end):
     """Return a tuple of cpu hours and number of jobs for a person in a
     specific project
 
@@ -79,7 +78,7 @@ def get_person_usage(person, project, start, end, machine_category):
     try:
         cache = PersonCache.objects.get(
             person=person, project=project, date=datetime.date.today(),
-            start=start, end=end, machine_category=machine_category)
+            start=start, end=end)
         return cache.cpu_time, cache.no_jobs
     except PersonCache.DoesNotExist:
         return 0, 0
@@ -105,12 +104,11 @@ def get_machine_usage(machine, start, end):
         return 0, 0
 
 
-def get_machine_category_usage(machine_category, start, end):
-    """Return a tuple of cpu hours and number of jobs for a machine_category
+def get_machine_category_usage(start, end):
+    """Return a tuple of cpu hours and number of jobs
     for a given period
 
     Keyword arguments:
-    machine_category --
     start -- start date
     end -- end date
 
@@ -118,5 +116,5 @@ def get_machine_category_usage(machine_category, start, end):
 
     cache = MachineCategoryCache.objects.get(
         date=datetime.date.today(),
-        start=start, end=end, machine_category=machine_category)
+        start=start, end=end)
     return cache

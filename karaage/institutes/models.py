@@ -23,7 +23,7 @@ from model_utils import FieldTracker
 
 from karaage.common import log, is_admin
 from karaage.people.models import Person, Group
-from karaage.machines.models import Account, MachineCategory
+from karaage.machines.models import Account
 from karaage.institutes.managers import ActiveInstituteManager
 
 
@@ -61,8 +61,8 @@ class Institute(models.Model):
                        % (field, getattr(self, field)))
 
         # update the datastore
-        from karaage.datastores import machine_category_save_institute
-        machine_category_save_institute(self)
+        from karaage.datastores import save_institute
+        save_institute(self)
 
         # has group changed?
         if self._tracker.has_changed("group_id"):
@@ -80,21 +80,30 @@ class Institute(models.Model):
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
+        # Get list of accounts.
+        # This must happen before we call the super method,
+        # as this will delete accounts that use this institute.
+        old_group_pk = self._tracker.previous("group_id")
+        if old_group_pk is not None:
+            old_group = Group.objects.get(pk=old_group_pk)
+            query = Account.objects.filter(person__groups=old_group)
+            query = query.filter(date_deleted__isnull=True)
+            accounts = list(query)
+        else:
+            accounts = []
+
         # delete the object
         log.delete(self, 'Deleted')
         super(Institute, self).delete(*args, **kwargs)
 
         # update datastore associations
-        old_group_pk = self._tracker.previous("group_id")
-        if old_group_pk is not None:
-            old_group = Group.objects.get(pk=old_group_pk)
-            from karaage.datastores import remove_accounts_from_institute
-            query = Account.objects.filter(person__groups=old_group)
-            remove_accounts_from_institute(query, self)
+        for account in accounts:
+            from karaage.datastores import remove_account_from_institute
+            remove_account_from_institute(account, self)
 
         # update the datastore
-        from karaage.datastores import machine_category_delete_institute
-        machine_category_delete_institute(self)
+        from karaage.datastores import delete_institute
+        delete_institute(self)
     delete.alters_data = True
 
     def __str__(self):
@@ -128,78 +137,6 @@ class Institute(models.Model):
             return True
 
         return False
-
-    @property
-    def machine_categories(self):
-        for iq in self.institutequota_set.all():
-            yield iq.machine_category
-
-
-@python_2_unicode_compatible
-class InstituteQuota(models.Model):
-    institute = models.ForeignKey(Institute)
-    machine_category = models.ForeignKey(MachineCategory)
-    quota = models.DecimalField(max_digits=5, decimal_places=2)
-    cap = models.IntegerField(null=True, blank=True)
-    disk_quota = models.IntegerField(null=True, blank=True)
-
-    _tracker = FieldTracker()
-
-    class Meta:
-        db_table = 'institute_quota'
-        unique_together = ('institute', 'machine_category')
-        app_label = 'karaage'
-
-    def save(self, *args, **kwargs):
-        created = self.pk is None
-
-        super(InstituteQuota, self).save(*args, **kwargs)
-
-        if created:
-            log.add(
-                self.institute,
-                'Quota %s: Created' % self.machine_category)
-        for field in self._tracker.changed():
-            log.change(
-                self.institute,
-                'Quota %s: Changed %s to %s' %
-                (self.machine_category, field, getattr(self, field)))
-
-        from karaage.datastores import machine_category_save_institute
-        machine_category_save_institute(self.institute)
-
-        if created:
-            from karaage.datastores import add_accounts_to_institute
-            query = Account.objects.filter(person__groups=self.institute.group)
-            add_accounts_to_institute(query, self.institute)
-
-    def delete(self, *args, **kwargs):
-        log.delete(
-            self.institute,
-            'Quota %s: Deleted' % self.machine_category)
-
-        from karaage.datastores import remove_accounts_from_institute
-        query = Account.objects.filter(person__groups=self.institute.group)
-        remove_accounts_from_institute(query, self.institute)
-
-        super(InstituteQuota, self).delete(*args, **kwargs)
-
-        from karaage.datastores import machine_category_delete_institute
-        machine_category_delete_institute(
-            self.institute, self.machine_category)
-
-    def __str__(self):
-        return '%s - %s' % (self.institute, self.machine_category)
-
-    def get_absolute_url(self):
-        return self.institute.get_absolute_url()
-
-    def get_cap(self):
-        if self.cap:
-            return self.cap
-        if self.quota:
-            return self.quota * 1000
-        return None
 
 
 class InstituteDelegate(models.Model):

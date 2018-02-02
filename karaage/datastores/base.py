@@ -19,71 +19,7 @@
 """ Base file used for all datastores. """
 
 
-class GlobalDataStore(object):
-
-    """ Base class used for all global datastores. """
-
-    def __init__(self, config):
-        self.config = config
-
-    ##########
-    # PERSON #
-    ##########
-
-    def save_person(self, person):
-        """ Person was saved. """
-        return
-
-    def delete_person(self, person):
-        """ Person was deleted. """
-        return
-
-    def set_person_password(self, person, raw_password):
-        """ Person's password was changed. """
-        return
-
-    def set_person_username(self, person, old_username, new_username):
-        """ Person's username was changed. """
-        return
-
-    def add_person_to_group(self, person, group):
-        """ Add person to group. """
-        return
-
-    def remove_person_from_group(self, person, group):
-        """ Remove person from group. """
-        return
-
-    def get_person_details(self, person):
-        """ Get person's details. """
-        return {}
-
-    def person_exists(self, username):
-        """ Does the person exist? """
-        return False
-
-    #########
-    # GROUP #
-    #########
-
-    def save_group(self, group):
-        """ Group was saved. """
-        return
-
-    def delete_group(self, group):
-        """ Group was deleted. """
-        return
-
-    def set_group_name(self, group, old_name, new_name):
-        """ Group was renamed. """
-        return
-
-    def get_group_details(self, group):
-        """ Get the group details. """
-        return {}
-
-
-class MachineCategoryDataStore(object):
+class DataStore(object):
     """ Base class used for all MC datastores. """
 
     def __init__(self, config):

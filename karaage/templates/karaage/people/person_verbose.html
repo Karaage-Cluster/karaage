@@ -17,24 +17,7 @@
 {% block content %}
 <div id="content-main">
 
-    <div class="module">
-        <h2>Person details</h2>
-        {% for a in person_details %}
-        <h3>{{a.datastore}}</h3>
-        <div class="table-container">
-            <table class="keyvalue">
-                {% for i,j in a.items %}
-                    <tr>
-                        <th>{{ i }}</th><td>{{ j }}</td>
-                   </tr>
-                {% endfor %}
-            </table>
-        </div>
-        {% endfor %}
-    </div>
-
-    {% for account in account_details %}
-    {% for name, details in account.items %}
+    {% for name, details in account_details.items %}
     <div class="module">
         <h2>Account details - {{ name }}</h2>
         {% for a in details %}
@@ -55,9 +38,8 @@
     {% empty %}
     <div class="module">
         <h2>Account details</h2>
-        <p>Account is not in any machine categories (should never happen).</p>
+        <p>No accounts.</p>
     </div>
-    {% endfor %}
     {% endfor %}
 
 </div>

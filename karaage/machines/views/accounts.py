@@ -175,10 +175,8 @@ def no_account_list(request):
     person_id_list = []
 
     for u in Person.objects.all():
-        for project in u.projects.all():
-            for pc in project.projectquota_set.all():
-                if not u.has_account(pc.machine_category):
-                    person_id_list.append(u.id)
+        if not u.has_account():
+            person_id_list.append(u.id)
 
     persons = Person.objects.filter(id__in=person_id_list)
     return user_list(request, persons, 'No accounts')
@@ -188,8 +186,7 @@ def no_account_list(request):
 def wrong_default_list(request):
     wrong = []
     for u in Person.active.all():
-        for ua in u.account_set.filter(
-                machine_category__id=1, date_deleted__isnull=True):
+        for ua in u.account_set.filter(date_deleted__isnull=True):
             d = False
             for p in ua.project_list():
                 if p == ua.default_project:

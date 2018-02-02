@@ -21,7 +21,7 @@ from django.conf.urls import url
 from karaage.machines.views import machines
 
 urlpatterns = [
-    url(r'^$', machines.category_list, name='kg_machine_category_list'),
+    url(r'^$', machines.machine_list, name='kg_machine_list'),
     url(r'^add/$', machines.machine_create, name='kg_machine_add'),
     url(r'^(?P<machine_id>\d+)/$',
         machines.machine_detail, name='kg_machine_detail'),
@@ -33,19 +33,4 @@ urlpatterns = [
         name='kg_machine_logs'),
     url(r'^(?P<machine_id>\d+)/add_comment/$', machines.machine_add_comment,
         name='kg_machine_add_comment'),
-    url(r'^categories/add/$', machines.category_create,
-        name='kg_machine_category_add'),
-    url(r'^categories/(?P<category_id>\d+)/$', machines.category_detail,
-        name='kg_machine_category_detail'),
-    url(r'^categories/(?P<category_id>\d+)/accounts/$',
-        machines.category_accounts, name='kg_machine_category_accounts'),
-    url(r'^categories/(?P<category_id>\d+)/projects/$',
-        machines.category_projects, name='kg_machine_category_projects'),
-    url(r'^categories/(?P<category_id>\d+)/edit/$', machines.category_edit,
-        name='kg_machine_category_edit'),
-    url(r'^categories/(?P<category_id>\d+)/logs/$', machines.category_logs,
-        name='kg_machine_category_logs'),
-    url(r'^categories/(?P<category_id>\d+)/add_comment/$',
-        machines.category_add_comment,
-        name='kg_machine_category_add_comment'),
 ]

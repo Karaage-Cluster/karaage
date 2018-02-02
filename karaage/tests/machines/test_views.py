@@ -25,7 +25,7 @@ from django.core.management import call_command
 from karaage.middleware.threadlocals import reset
 from karaage.people.models import Person
 from karaage.projects.models import Project
-from karaage.machines.models import Machine, MachineCategory
+from karaage.machines.models import Machine
 
 
 class AccountTestCase(TestCase):
@@ -71,7 +71,6 @@ class AccountTestCase(TestCase):
         form_data = {
             'username': person.username,
             'shell': '/bin/bash',
-            'machine_category': 1,
             'default_project': 1,
         }
 
@@ -79,7 +78,7 @@ class AccountTestCase(TestCase):
             reverse('kg_account_add', args=['samtest2']), form_data)
         self.assertEqual(response.status_code, 302)
         person = Person.objects.get(username="samtest2")
-        self.assertTrue(person.has_account(MachineCategory.objects.get(pk=1)))
+        self.assertTrue(person.has_account())
 
     def test_fail_add_accounts_username(self):
         project = Project.objects.get(pk=1)
@@ -89,7 +88,6 @@ class AccountTestCase(TestCase):
         form_data = {
             'username': person.username,
             'shell': '/bin/bash',
-            'machine_category': 1,
             'default_project': 1,
         }
         response = self.client.post(
@@ -99,13 +97,12 @@ class AccountTestCase(TestCase):
         response = self.client.post(
             reverse('kg_account_add', args=['samtest2']), form_data)
         self.assertContains(
-            response, "Username already in use on machine category Default")
+            response, "Username already in use.")
 
     def test_fail_add_accounts_project(self):
         form_data = {
             'username': 'samtest2',
             'shell': '/bin/bash',
-            'machine_category': 1,
             'default_project': 1,
         }
         response = self.client.post(
@@ -120,7 +117,6 @@ class AccountTestCase(TestCase):
         form_data = {
             'username': person.username,
             'shell': '/bin/bash',
-            'machine_category': 1,
             'default_project': 1,
         }
         response = self.client.post(
@@ -130,14 +126,13 @@ class AccountTestCase(TestCase):
         form_data = {
             'username': person.username,
             'shell': '/bin/bash',
-            'machine_category': 2,
             'default_project': 1,
         }
 
         response = self.client.post(
             reverse('kg_account_add', args=['samtest2']), form_data)
         self.assertContains(
-            response, "Default project not in machine category")
+            response, "Username already in use.")
 
     def test_lock_unlock_account(self):
         project = Project.objects.get(pk=1)
@@ -151,7 +146,6 @@ class AccountTestCase(TestCase):
         form_data = {
             'username': person.username,
             'shell': '/bin/bash',
-            'machine_category': 1,
             'default_project': 1,
         }
 
@@ -159,21 +153,21 @@ class AccountTestCase(TestCase):
             reverse('kg_account_add', args=['samtest2']), form_data)
         self.assertEqual(response.status_code, 302)
         person = Person.objects.get(username='samtest2')
-        ua = person.get_account(MachineCategory.objects.get(pk=1))
+        ua = person.get_account()
         self.assertEqual(person.is_locked(), False)
         self.assertEqual(ua.login_shell(), '/bin/bash')
 
         response = self.client.post(
             reverse('kg_person_lock', args=['samtest2']))
         person = Person.objects.get(username='samtest2')
-        ua = person.get_account(MachineCategory.objects.get(pk=1))
+        ua = person.get_account()
         self.assertEqual(person.is_locked(), True)
         self.assertEqual(ua.login_shell(), '/bin/bash')
 
         response = self.client.post(
             reverse('kg_person_unlock', args=['samtest2']))
         person = Person.objects.get(username='samtest2')
-        ua = person.get_account(MachineCategory.objects.get(pk=1))
+        ua = person.get_account()
         self.assertEqual(person.is_locked(), False)
         self.assertEqual(ua.login_shell(), '/bin/bash')
 
@@ -195,39 +189,3 @@ class MachineTestCase(TestCase):
         mach3 = Machine.objects.get(pk=3)
         mach3.start_date = today - datetime.timedelta(days=30)
         mach3.save()
-
-    def do_availablity_test(self, start, end, mc, expected_time, expected_cpu):
-        from karaage.cache.usage import get_machine_category_usage
-        cache = get_machine_category_usage(mc, start.date(), end.date())
-        available_time = cache.available_time
-        self.assertEqual(available_time, expected_time)
-
-    def no_test_available_time(self):
-        mc1 = MachineCategory.objects.get(pk=1)
-        MachineCategory.objects.get(pk=2)
-        for machine in Machine.objects.all():
-            machine.category = mc1
-            machine.save()
-
-        day = 60 * 60 * 24
-        today = datetime.datetime.now()
-
-        end = today - datetime.timedelta(days=20)
-        start = today - datetime.timedelta(days=30)
-        self.do_availablity_test(start, end, mc1, 8050 * day * 11, 8050)
-
-        start = today - datetime.timedelta(days=99)
-        end = today - datetime.timedelta(days=90)
-        self.do_availablity_test(start, end, mc1, 40 * day * 10, 40)
-
-        start = today - datetime.timedelta(days=85)
-        end = today - datetime.timedelta(days=76)
-        self.do_availablity_test(start, end, mc1, 45 * day * 10, 45)
-
-        start = today - datetime.timedelta(days=35)
-        end = today - datetime.timedelta(days=16)
-        self.do_availablity_test(start, end, mc1, 6042 * day * 20, 6042)
-
-        start = today - datetime.timedelta(days=20)
-        end = today - datetime.timedelta(days=20)
-        self.do_availablity_test(start, end, mc1, 8050 * day, 8050)

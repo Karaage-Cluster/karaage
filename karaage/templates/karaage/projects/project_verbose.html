@@ -17,10 +17,9 @@
 {% block content %}
 <div id="content-main">
 
-    {% for name, details in project_details.items %}
     <div class="module">
-        <h2>Project details - {{name}}</h2>
-        {% for a in details %}
+        <h2>Project details - {{project}}</h2>
+        {% for a in project_details %}
         <h3>{{a.datastore}}</h3>
         <div class="table-container">
             <table class="keyvalue">
@@ -35,12 +34,6 @@
         <p>No datastores.</p>
         {% endfor %}
     </div>
-    {% empty %}
-    <div class="module">
-        <h2>Project details</h2>
-        <p>Project is not in any machine categories.</p>
-    </div>
-    {% endfor %}
 
 </div>
 {% endblock %}

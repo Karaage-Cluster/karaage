@@ -48,7 +48,7 @@ class CPUJobFilter(django_filters.FilterSet):
 
     class Meta:
         model = CPUJob
-        fields = ('person', 'machine__category', 'queue', 'account', 'project')
+        fields = ('person', 'queue', 'account', 'project')
 
 
 class CPUJobTable(tables.Table):

@@ -20,7 +20,6 @@ import six
 import django_tables2 as tables
 
 from django.db.models import Q
-from django.forms.utils import ErrorList
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.core.urlresolvers import reverse
@@ -30,10 +29,8 @@ from karaage.common import is_admin
 from karaage.common.decorators import admin_required, login_required
 import karaage.common as util
 from karaage.institutes.tables import InstituteTable, InstituteFilter
-from karaage.institutes.models import Institute, InstituteQuota, \
-    InstituteDelegate
-from karaage.institutes.forms import InstituteForm, InstituteQuotaForm, \
-    DelegateForm
+from karaage.institutes.models import Institute, InstituteDelegate
+from karaage.institutes.forms import InstituteForm, DelegateForm
 from karaage.people.models import Person
 from karaage.people.tables import PersonTable
 from karaage.projects.tables import ProjectTable
@@ -97,8 +94,8 @@ def institute_detail(request, institute_id):
 def institute_verbose(request, institute_id):
     institute = get_object_or_404(Institute, pk=institute_id)
 
-    from karaage.datastores import machine_category_get_institute_details
-    institute_details = machine_category_get_institute_details(institute)
+    from karaage.datastores import get_institute_details
+    institute_details = get_institute_details(institute)
 
     return render(
         template_name='karaage/institutes/institute_verbose.html',
@@ -172,81 +169,6 @@ def add_edit_institute(request, institute_id=None):
         context={
             'institute': institute, 'form': form,
             'media': media, 'delegate_formset': delegate_formset},
-        request=request)
-
-
-@admin_required
-def institutequota_add(request, institute_id):
-
-    institute = get_object_or_404(Institute, pk=institute_id)
-
-    institute_chunk = InstituteQuota()
-    institute_chunk.institute = institute
-
-    form = InstituteQuotaForm(request.POST or None, instance=institute_chunk)
-    if request.method == 'POST':
-        if form.is_valid():
-            mc = form.cleaned_data['machine_category']
-            conflicting = InstituteQuota.objects.filter(
-                institute=institute, machine_category=mc)
-
-            if conflicting.count() >= 1:
-                form._errors["machine_category"] = \
-                    ErrorList([
-                        "Cap already exists with this machine category"])
-            else:
-                institute_chunk = form.save()
-                return HttpResponseRedirect(institute.get_absolute_url())
-
-    return render(
-        template_name='karaage/institutes/institutequota_form.html',
-        context={'form': form, 'institute': institute, },
-        request=request)
-
-
-@admin_required
-def institutequota_edit(request, institutequota_id):
-
-    institute_chunk = get_object_or_404(InstituteQuota, pk=institutequota_id)
-    old_mc = institute_chunk.machine_category
-
-    form = InstituteQuotaForm(request.POST or None, instance=institute_chunk)
-    if request.method == 'POST':
-        if form.is_valid():
-            mc = form.cleaned_data['machine_category']
-            if old_mc.pk != mc.pk:
-                form._errors["machine_category"] = \
-                    ErrorList([
-                        "Please don't change the machine category; "
-                        "it confuses me"])
-            else:
-                institute_chunk = form.save()
-                return HttpResponseRedirect(
-                    institute_chunk.institute.get_absolute_url())
-
-    return render(
-        template_name='karaage/institutes/institutequota_form.html',
-        context={
-            'form': form,
-            'institute': institute_chunk.institute,
-            'object': institute_chunk
-        },
-        request=request)
-
-
-@admin_required
-def institutequota_delete(request, institutequota_id):
-
-    institute_chunk = get_object_or_404(InstituteQuota, pk=institutequota_id)
-
-    if request.method == 'POST':
-        institute_chunk.delete()
-        return HttpResponseRedirect(
-            institute_chunk.institute.get_absolute_url())
-
-    return render(
-        template_name='karaage/institutes/institutequota_delete_form.html',
-        context=locals(),
         request=request)
 
 

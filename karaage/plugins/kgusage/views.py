@@ -37,9 +37,9 @@ from django.db.models import Count, Sum
 
 from karaage.common.decorators import admin_required, usage_required
 from karaage.people.models import Person
-from karaage.institutes.models import Institute, InstituteQuota
-from karaage.projects.models import Project, ProjectQuota
-from karaage.machines.models import Account, MachineCategory
+from karaage.institutes.models import Institute
+from karaage.projects.models import Project
+from karaage.machines.models import Account
 from karaage.common import get_date_range
 
 from . import models, graphs, tasks, usage
@@ -112,72 +112,34 @@ def gen_machine_category_cache(request, start, end):
 
 
 @synchronise
-def gen_cache_for_machine_category(request, start, end, machine_category):
-    return tasks.gen_cache_for_machine_category.delay(
-        start, end, machine_category.pk)
+def gen_cache_for_machine_category(request, start, end):
+    return tasks.gen_cache_for_machine_category.delay(start, end)
 
 
 @synchronise
-def gen_cache_for_project(request, start, end, project, machine_category):
-    return tasks.gen_cache_for_project.delay(
-        start, end, project.pk, machine_category.pk)
+def gen_cache_for_project(request, start, end, project):
+    return tasks.gen_cache_for_project.delay(start, end, project.pk)
 
 
 @synchronise
-def gen_cache_for_institute(request, start, end, institute, machine_category):
-    return tasks.gen_cache_for_institute.delay(
-        start, end, institute.pk, machine_category.pk)
+def gen_cache_for_institute(request, start, end, institute):
+    return tasks.gen_cache_for_institute.delay(start, end, institute.pk)
 
 
 @synchronise
-def gen_cache_for_all_institutes(request, start, end, machine_category):
-    return tasks.gen_cache_for_all_institutes.delay(
-        start, end, machine_category.pk)
+def gen_cache_for_all_institutes(request, start, end):
+    return tasks.gen_cache_for_all_institutes.delay(start, end)
 
 
 @usage_required
-def usage_index(request):
+def index(request):
     result = progress(request)
     if result is not None:
         return result
 
     start, end = get_date_range(request)
 
-    result = gen_machine_category_cache(request, start, end)
-    if result is not None:
-        return render(
-            template_name='kgusage/progress.html',
-            context={'task_id': result.task_id},
-            request=request)
-
-    mc_list = []
-    for machine_category in MachineCategory.objects.all():
-        mc_list.append({
-            'obj': machine_category,
-            'graph': graphs.get_machine_graph_url(
-                start, end, machine_category),
-        })
-
-    return render(
-        template_name='kgusage/mc_list.html',
-        context=locals(),
-        request=request)
-
-
-@usage_required
-def index(request, machine_category_id):
-    machine_category = get_object_or_404(
-        MachineCategory, pk=machine_category_id)
-    mc_list = MachineCategory.objects.exclude(id__exact=machine_category_id)
-
-    result = progress(request)
-    if result is not None:
-        return result
-
-    start, end = get_date_range(request)
-
-    result = gen_cache_for_machine_category(
-        request, start, end, machine_category)
+    result = gen_cache_for_machine_category(request, start, end)
     if result is not None:
         return render(
             template_name='kgusage/progress.html',
@@ -187,10 +149,9 @@ def index(request, machine_category_id):
     show_zeros = True
 
     institute_list = Institute.active.all()
-    i_list = []
     m_list = []
 
-    mc_cache = usage.get_machine_category_usage(machine_category, start, end)
+    mc_cache = usage.get_machine_category_usage(start, end)
     total = mc_cache.cpu_time
     total_jobs = mc_cache.no_jobs
     available_time = mc_cache.available_time
@@ -198,7 +159,6 @@ def index(request, machine_category_id):
     avg_cpus = available_time / total_time
 
     for m_cache in models.MachineCache.objects.filter(
-            machine__category=machine_category,
             date=datetime.date.today(), start=start, end=end):
         m = m_cache.machine
         time = m_cache.cpu_time
@@ -206,50 +166,10 @@ def index(request, machine_category_id):
         m_list.append({'machine': m, 'usage': time, 'jobs': jobs})
 
     for i_cache in models.InstituteCache.objects.filter(
-            machine_category=machine_category,
             date=datetime.date.today(), start=start, end=end):
         i = i_cache.institute
         time = i_cache.cpu_time
         jobs = i_cache.no_jobs
-
-        try:
-            quota = InstituteQuota.objects.get(
-                institute=i, machine_category=machine_category)
-            display_quota = quota.quota
-        except InstituteQuota.DoesNotExist:
-            display_quota = None
-
-        if display_quota is None and time == 0 and jobs == 0:
-            continue
-
-        data_row = {
-            'institute': i,
-            'usage': time,
-            'jobs': jobs,
-            'quota': display_quota
-        }
-
-        if available_time != 0:
-            data_row['percent'] = Decimal(time) / Decimal(available_time) * 100
-        else:
-            data_row['percent'] = 0
-        if data_row['quota'] is not None:
-            if data_row['quota'] != 0:
-                data_row['p_used'] = (data_row['percent'] /
-                                      data_row['quota']) * 100
-            else:
-                data_row['p_used'] = None
-            data_row['diff'] = data_row['percent'] - data_row['quota']
-            if data_row['diff'] <= 0:
-                data_row['class'] = 'green'
-            else:
-                data_row['class'] = 'red'
-        else:
-            data_row['class'] = 'green'
-            data_row['diff'] = None
-            data_row['p_used'] = None
-
-        i_list.append(data_row)
 
     # Unused Entry
     unused = {'usage': available_time - total, 'quota': 0}
@@ -268,12 +188,9 @@ def index(request, machine_category_id):
     else:
         utilization = 0
 
-    institutes_graph = graphs.get_institute_graph_url(
-        start, end, machine_category)
-    machines_graph = graphs.get_machine_graph_url(
-        start, end, machine_category)
-    trend_graph = graphs.get_trend_graph_url(
-        start, end, machine_category)
+    institutes_graph = graphs.get_institute_graph_url(start, end)
+    machines_graph = graphs.get_machine_graph_url(start, end)
+    trend_graph = graphs.get_trend_graph_url(start, end)
 
     return render(
         template_name='kgusage/usage_institute_list.html',
@@ -282,26 +199,22 @@ def index(request, machine_category_id):
 
 
 @usage_required
-def institute_usage(request, institute_id, machine_category_id):
+def institute_usage(request, institute_id):
     result = progress(request)
     if result is not None:
         return result
 
-    machine_category = get_object_or_404(
-        MachineCategory, pk=machine_category_id)
     institute = get_object_or_404(Institute, pk=institute_id)
     start, end = get_date_range(request)
 
-    result = gen_cache_for_machine_category(
-        request, start, end, machine_category)
+    result = gen_cache_for_machine_category(request, start, end)
     if result is not None:
         return render(
             template_name='kgusage/progress.html',
             context={'task_id': result.task_id},
             request=request)
 
-    result = gen_cache_for_institute(
-        request, start, end, institute, machine_category)
+    result = gen_cache_for_institute(request, start, end, institute)
     if result is not None:
         return render(
             template_name='kgusage/progress.html',
@@ -315,55 +228,23 @@ def institute_usage(request, institute_id, machine_category_id):
             not getattr(settings, 'USAGE_IS_PUBLIC', False)):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
-    mc_cache = usage.get_machine_category_usage(machine_category, start, end)
+    mc_cache = usage.get_machine_category_usage(start, end)
     available_time = mc_cache.available_time
 
-    quota = get_object_or_404(
-        InstituteQuota, institute=institute, machine_category=machine_category)
-
-    i_usage, i_jobs = usage.get_institute_usage(
-        institute, start, end, machine_category)
+    i_usage, i_jobs = usage.get_institute_usage(institute, start, end)
 
     for p_cache in models.ProjectCache.objects.filter(
             project__institute=institute,
-            machine_category=machine_category,
             date=datetime.date.today(), start=start, end=end):
         p = p_cache.project
         p_usage = p_cache.cpu_time
         p_jobs = p_cache.no_jobs
-
-        try:
-            chunk = p.projectquota_set.get(machine_category=machine_category)
-        except ProjectQuota.DoesNotExist:
-            chunk = None
-
-        if chunk is None and p_usage == 0 and p_jobs == 0:
-            continue
-
-        if chunk is not None:
-            mpots = mc_cache.get_project_mpots(chunk, start, end)
-            percent = mc_cache.get_project_cap_percent(chunk, start, end)
-        else:
-            mpots = None
-            percent = None
-        if available_time > 0 and quota.quota > 0:
-            quota_percent = p_usage / (available_time * quota.quota) * 10000
-        else:
-            quota_percent = 0
-        project_list.append(
-            {'project': p,
-             'usage': p_usage,
-             'jobs': p_jobs,
-             'percent': percent,
-             'quota_percent': quota_percent,
-             })
 
     person_list = []
     person_total, person_total_jobs = 0, 0
 
     query = models.PersonCache.objects.filter(
         project__institute=institute,
-        machine_category=machine_category,
         date=datetime.date.today(), start=start, end=end)
     query = query.order_by('-cpu_time')
 
@@ -374,17 +255,12 @@ def institute_usage(request, institute_id, machine_category_id):
             i_percent = (u.cpu_time / i_usage) * 100
         else:
             i_percent = None
-        if available_time > 0 and quota.quota > 0:
-            quota_percent = u.cpu_time / (available_time * quota.quota) * 10000
-        else:
-            quota_percent = 0
         person_list.append(
             {'person': u.person,
              'project': u.project,
              'usage': u.cpu_time,
              'jobs': u.no_jobs,
              'percent': i_percent,
-             'quota_percent': quota_percent,
              })
 
     if i_usage > 0:
@@ -392,8 +268,7 @@ def institute_usage(request, institute_id, machine_category_id):
     else:
         person_percent = None
 
-    graph = graphs.get_institute_trend_graph_url(
-        institute, start, end, machine_category)
+    graph = graphs.get_institute_trend_graph_url(institute, start, end)
 
     return render(
         template_name='kgusage/usage_institute_detail.html',
@@ -402,9 +277,7 @@ def institute_usage(request, institute_id, machine_category_id):
 
 
 @usage_required
-def project_usage(request, project_id, machine_category_id):
-    machine_category = get_object_or_404(
-        MachineCategory, pk=machine_category_id)
+def project_usage(request, project_id):
     project = get_object_or_404(Project, pid=project_id)
 
     if (not project.can_view(request) and
@@ -417,16 +290,14 @@ def project_usage(request, project_id, machine_category_id):
 
     start, end = get_date_range(request)
 
-    result = gen_cache_for_machine_category(
-        request, start, end, machine_category)
+    result = gen_cache_for_machine_category(request, start, end)
     if result is not None:
         return render(
             template_name='kgusage/progress.html',
             context={'task_id': result.task_id},
             request=request)
 
-    result = gen_cache_for_project(
-        request, start, end, project, machine_category)
+    result = gen_cache_for_project(request, start, end, project)
     if result is not None:
         return render(
             template_name='kgusage/progress.html',
@@ -439,15 +310,13 @@ def project_usage(request, project_id, machine_category_id):
     # Custom SQL as need to get users that were removed from project too
     query = CPUJob.objects.filter(
         project=project,
-        machine__category=machine_category,
         date__range=(start, end)
     )
     query = query.values('account').annotate().order_by('account')
 
     for row in query:
         u = Account.objects.get(id=row['account']).person
-        time, jobs = usage.get_person_usage(
-            u, project, start, end, machine_category)
+        time, jobs = usage.get_person_usage(u, project, start, end)
         if time:
             total += time
             total_jobs += jobs
@@ -467,8 +336,7 @@ def project_usage(request, project_id, machine_category_id):
         i['colour'] = graphs.get_colour(count)
         count += 1
 
-    graph = graphs.get_project_trend_graph_url(
-        project, start, end, machine_category)
+    graph = graphs.get_project_trend_graph_url(project, start, end)
 
     return render(
         template_name='kgusage/project_usage.html',
@@ -565,18 +433,16 @@ def search(request):
 
 
 @usage_required
-def top_users(request, machine_category_id):
+def top_users(request):
     count = 20
 
     result = progress(request)
     if result is not None:
         return result
 
-    machine_category = MachineCategory.objects.get(pk=machine_category_id)
     start, end = get_date_range(request)
 
-    result = gen_cache_for_machine_category(
-        request, start, end, machine_category)
+    result = gen_cache_for_machine_category(request, start, end)
     if result is not None:
         return render(
             template_name='kgusage/progress.html',
@@ -584,7 +450,7 @@ def top_users(request, machine_category_id):
             request=request)
 
     start, end = get_date_range(request)
-    mc_cache = usage.get_machine_category_usage(machine_category, start, end)
+    mc_cache = usage.get_machine_category_usage(start, end)
     available_time = mc_cache.available_time
     person_list = []
 
@@ -592,7 +458,7 @@ def top_users(request, machine_category_id):
 
     query = models.PersonCache.objects.filter(
         date=datetime.date.today(), start=start, end=end,
-        machine_category=machine_category)
+    )
 
     for u in query.order_by('-cpu_time')[:count]:
         if u.cpu_time:
@@ -615,25 +481,21 @@ def top_users(request, machine_category_id):
 
 
 @usage_required
-def institute_trends(request, machine_category_id):
+def institute_trends(request):
     result = progress(request)
     if result is not None:
         return result
 
-    machine_category = get_object_or_404(
-        MachineCategory, pk=machine_category_id)
     start, end = get_date_range(request)
 
-    result = gen_cache_for_all_institutes(
-        request, start, end, machine_category)
+    result = gen_cache_for_all_institutes(request, start, end)
     if result is not None:
         return render(
             template_name='kgusage/progress.html',
             context={'task_id': result.task_id},
             request=request)
 
-    graph_list = graphs.get_institutes_trend_graph_urls(
-        start, end, machine_category)
+    graph_list = graphs.get_institutes_trend_graph_urls(start, end)
 
     return render(
         template_name='kgusage/institute_trends.html',
@@ -642,17 +504,14 @@ def institute_trends(request, machine_category_id):
 
 
 @usage_required
-def institute_users(request, machine_category_id, institute_id):
+def institute_users(request, institute_id):
     result = progress(request)
     if result is not None:
         return result
 
-    machine_category = get_object_or_404(
-        MachineCategory, pk=machine_category_id)
     start, end = get_date_range(request)
 
-    result = gen_cache_for_machine_category(
-        request, start, end, machine_category)
+    result = gen_cache_for_machine_category(request, start, end)
     if result is not None:
         return render(
             template_name='kgusage/progress.html',
@@ -667,14 +526,13 @@ def institute_users(request, machine_category_id, institute_id):
 
     start, end = get_date_range(request)
 
-    mc_cache = usage.get_machine_category_usage(machine_category, start, end)
+    mc_cache = usage.get_machine_category_usage(start, end)
     available_time = mc_cache.available_time
 
     person_list = []
 
     query = models.PersonCache.objects.filter(
         date=datetime.date.today(), start=start, end=end,
-        machine_category=machine_category,
         person__institute=institute,
         no_jobs__gt=0)
 
@@ -702,14 +560,10 @@ def institute_users(request, machine_category_id, institute_id):
 
 
 @usage_required
-def core_report(request, machine_category_id):
-    machine_category = get_object_or_404(
-        MachineCategory, pk=machine_category_id)
-
+def core_report(request):
     start, end = get_date_range(request)
 
-    job_list = CPUJob.objects.filter(
-        date__gte=start, date__lte=end, machine__category=machine_category)
+    job_list = CPUJob.objects.filter(date__gte=start, date__lte=end)
 
     core_1 = job_list.filter(cores=1).count()
     core_2_4 = job_list.filter(cores__gte=2, cores__lte=4).count()
@@ -737,15 +591,11 @@ def core_report(request, machine_category_id):
 
 
 @usage_required
-def mem_report(request, machine_category_id):
-
-    machine_category = get_object_or_404(
-        MachineCategory, pk=machine_category_id)
+def mem_report(request):
 
     start, end = get_date_range(request)
 
-    job_list = CPUJob.objects.filter(
-        date__gte=start, date__lte=end, machine__category=machine_category)
+    job_list = CPUJob.objects.filter(date__gte=start, date__lte=end)
 
     mem_0_4 = job_list.filter(mem__lte=4 * 1024 * 1024).count()
     mem_4_8 = job_list.filter(

@@ -74,7 +74,6 @@
                 <tr><th>End Date:</th><td>{{ project.end_date|date }}</td></tr>
                 {% endif %}
                 <tr><th>Approved:</th><td>{% yes_no project.is_approved %}</td></tr>
-                <tr><th>Categories:</th><td>{% for pq in project.projectquota_set.all %}<a href='{% url 'kg_machine_category_detail' pq.machine_category.pk %}'>{{ pq.machine_category }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
                 {% if is_admin %}
                 <tr class="hidden-link"><td colspan="2"><a href="#">More....</a></td></tr>
                 <tr><th>Additional Req:</th><td>{{ project.additional_req|linebreaks }}</td></tr>
@@ -112,42 +111,6 @@
             </ul>
         </div>
     </div>
-
-    {% if is_admin %}
-    <div class="module">
-        <h2>Project Caps/quota</h2>
-        {% if project.projectquota_set.all %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Machine Category</th>
-                    <th>Quota</th>
-                    {% if is_admin %}
-                    <th></th><th></th>
-                    {% endif %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for pc in project.projectquota_set.all %}
-                <tr>
-                    <td>{{ pc.machine_category }}</td>
-                    <td>{{ pc.get_cap }}</td>
-                    {% if is_admin %}
-                    <td><a href="{% url 'kg_projectquota_edit' pc.pk %}" class="changelink">edit</a></td>
-                    <td><a href="{% url 'kg_projectquota_delete' pc.pk %}" class="deletelink">Remove</a></td>
-                    {% endif %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% endif %}
-        <div class="object-tools">
-            <ul>
-                <li><a href="{% url 'kg_projectquota_add' project.id %}" class="addlink">Add</a></li>
-            </ul>
-        </div>
-    </div>
-    {% endif %}
 
     {% if project.group.members.all %}
     <div class="module">

@@ -16,16 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf import settings
-from django.db import models
 from django.contrib.auth.models import BaseUserManager
-
-
-class MachineCategoryManager(models.Manager):
-
-    def get_default(self):
-        machine_category = self.get(pk=settings.DEFAULT_MC)
-        return machine_category
 
 
 class MachineManager(BaseUserManager):

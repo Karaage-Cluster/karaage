@@ -18,20 +18,9 @@
 
 from django_xmlrpc.decorators import xmlrpc_func, permission_required
 
-from karaage.projects.models import Project, ProjectQuota
-from karaage.machines.models import MachineCategory, Machine, Account
+from karaage.projects.models import Project
+from karaage.machines.models import Account
 from karaage.common.decorators import xmlrpc_machine_required
-
-
-def _get_machine_category(machine_name):
-    """ Helper to make machine_name optional for backwards compatability. """
-    if machine_name is None:
-        # depreciated use
-        machine_category = MachineCategory.objects.get_default()
-    else:
-        machine = Machine.objects.get(name=machine_name)
-        machine_category = MachineCategory.objects.get(machine=machine)
-    return machine_category
 
 
 @xmlrpc_machine_required()
@@ -41,8 +30,7 @@ def get_project_members(machine, project_id):
     Returns list of usernames given a project id
     """
     try:
-        project = Project.objects.get(
-            pid=project_id, projectquota__machine_category=machine.category)
+        project = Project.objects.get(pid=project_id)
     except Project.DoesNotExist:
         return 'Project not found'
 
@@ -56,8 +44,7 @@ def get_projects(machine):
     Returns list of project ids
     """
 
-    query = Project.active.filter(
-        projectquota__machine_category=machine.category)
+    query = Project.active.all()
     return [x.pid for x in query]
 
 
@@ -67,11 +54,9 @@ def get_project(username, project, machine_name=None):
     Used in the submit filter to make sure user is in project
     """
 
-    machine_category = _get_machine_category(machine_name)
     try:
         account = Account.objects.get(
             username=username,
-            machine_category=machine_category,
             date_deleted__isnull=True)
     except Account.DoesNotExist:
         return "Account '%s' not found" % username
@@ -108,49 +93,3 @@ def get_users_projects(user):
     person = user
     projects = person.projects.filter(is_active=True)
     return 0, [x.pid for x in projects]
-
-
-@xmlrpc_func(returns='int, list', args=['string', 'string'])
-def showquota(username, machine_name=None):
-    """
-    returns a list a tuples
-    (project_id, actual_mpots, quota_mpots)
-    """
-
-    machine_category = _get_machine_category(machine_name)
-
-    try:
-        u_a = Account.objects.get(
-            username=username,
-            machine_category=machine_category,
-            date_deleted__isnull=True)
-    except Account.DoesNotExist:
-        return -1, 'Account not found'
-
-    d_p = u_a.default_project
-    if d_p is None:
-        return -1, 'Default Project not set'
-
-    p_l = []
-    query = ProjectQuota.objects.filter(
-        project__is_active=True, machine_category=machine_category)
-    for project_chunk in query:
-        project = project_chunk.project
-
-        is_default = False
-        if project == d_p:
-            is_default = True
-
-        # Is this needed?
-        mpots = 0
-
-        cap = str(float(project_chunk.get_cap()))
-
-        p_l.append([
-            project.pid,
-            mpots,
-            cap,
-            is_default,
-        ])
-
-    return 0, p_l

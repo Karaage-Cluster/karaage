@@ -35,7 +35,6 @@ class AdminAccountFormTestCase(TestCase):
         text = six.text_type
         data = {
             'username': self.account.username,
-            'machine_category': text(self.account.machine_category.id),
             'default_project': text(self.account.default_project.id),
             'shell': settings.DEFAULT_SHELL,
         }

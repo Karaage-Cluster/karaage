@@ -1,30 +1,34 @@
 {% extends "main.html" %}
+{% load karaage_tags %}
 {% load render_table from django_tables2 %}
 
 
-{% block title %}Machine Categories{% endblock %}
+{% block title %}Machine{% endblock %}
 
 
 {% block breadcrumbs %}
 <div class="breadcrumbs">
     <a href='{% url "index" %}'>Home</a>&nbsp;›
-    Machines</div>
+    Machines
+</div>
 {% endblock %}
 
 
 {% block content %}
 <div id="content-main">
-    <div class="module clear">
-        <h2>Machine Category List</h2>
-        {% render_table table %}
+    <div class="toolbar">
         {% if is_admin %}
         <div class="object-tools">
             <ul>
-                <li><a class="addlink" href="{% url 'kg_machine_category_add' %}">Add machine category</a></li>
-                <li><a class="addlink" href="{% url 'kg_machine_add' %}">Add machine</a></li>
+                <li><a href="{% url 'kg_machine_add' %}" class="addlink">Add machine</a></li>
             </ul>
         </div>
         {% endif %}
     </div>
+    <div class="module clear">
+        <h2>{{ title }}</h2>
+        {% render_table table %}
+    </div>
 </div>
 {% endblock %}
+

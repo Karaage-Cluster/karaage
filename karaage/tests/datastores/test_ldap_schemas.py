@@ -19,21 +19,20 @@
 import six
 
 from karaage.tests.integration import IntegrationTestCase
-from karaage.tests.fixtures import PersonFactory
+from karaage.tests.fixtures import AccountFactory
 
 
-class OpenldapPersonTestCase(IntegrationTestCase):
+class OpenldapAccountTestCase(IntegrationTestCase):
 
     def setUp(self):
-        self.LDAP_CONFIG['PERSON'] = \
-            'karaage.datastores.ldap_schemas.openldap_person'
-        super(OpenldapPersonTestCase, self).setUp()
+        super(OpenldapAccountTestCase, self).setUp()
 
     def test_kAccountMixin(self):
-        person = PersonFactory()
-        ldap = self.global_ldap_datastore._people()
-        self.global_ldap_datastore.save_person(person)
-        ldap_person = ldap.get(uid=person.username)
+        account = AccountFactory()
+        ldap = self._ldap_datastore._accounts()
+        self._ldap_datastore.save_account(account)
+        ldap_account = ldap.get(uid=account.username)
         self.assertEqual(
-            ldap_person.displayName,
-            six.u('%s (%s)') % (person.full_name, person.institute))
+            ldap_account.uid,
+            account.username
+        )

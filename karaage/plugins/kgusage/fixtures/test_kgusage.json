@@ -5,7 +5,6 @@
             "cpu_time": "296045170945.00",
             "date": "2014-11-05",
             "end": "2014-11-10",
-            "machine_category": 1,
             "no_jobs": 1,
             "start": "2014-10-07"
         },
@@ -48,7 +47,6 @@
             "date": "2014-11-05",
             "end": "2014-11-05",
             "institute": 1,
-            "machine_category": 1,
             "no_jobs": 1,
             "start": "2014-08-07"
         },

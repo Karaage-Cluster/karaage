@@ -127,25 +127,10 @@ class Person(AbstractBaseUser):
                     self,
                     'Changed %s to %s' % (field, getattr(self, field)))
 
-        # has username changed?
-        self._tracker.has_changed("username")
-        if self._tracker.has_changed("username"):
-            old_username = self._tracker.previous('username')
-            if old_username is not None:
-                from karaage.datastores import global_set_person_username
-                global_set_person_username(self, old_username, self.username)
-                log.change(
-                    self,
-                    'Renamed %s to %s' % (old_username, self.username))
-
-        # update the datastore
-        from karaage.datastores import global_save_person
-        global_save_person(self)
-
-        # update account datastores
-        from karaage.datastores import machine_category_save_account
+        # update datastores
+        from karaage.datastores import save_account
         for ua in self.account_set.filter(date_deleted__isnull=True):
-            machine_category_save_account(ua)
+            save_account(ua)
 
         # has locked status changed?
         if self._tracker.has_changed("login_enabled"):
@@ -172,8 +157,6 @@ class Person(AbstractBaseUser):
                 add_accounts_to_institute(query, new_institute)
 
         if self._raw_password is not None:
-            from karaage.datastores import global_set_person_password
-            global_set_person_password(self, self._raw_password)
             for ua in self.account_set.filter(date_deleted__isnull=True):
                 ua.set_password(self._raw_password)
                 ua.save()
@@ -185,10 +168,6 @@ class Person(AbstractBaseUser):
         # delete the object
         log.delete(self, 'Deleted')
         super(Person, self).delete(*args, **kwargs)
-
-        # update the datastore
-        from karaage.datastores import global_delete_person
-        global_delete_person(self)
     delete.alters_data = True
 
     @property
@@ -304,19 +283,19 @@ class Person(AbstractBaseUser):
         """ Get the abbreviated name of the person. """
         return self.short_name
 
-    def has_account(self, machine_category):
+    def has_account(self):
         ua = self.account_set.all()
-        ua = ua.filter(
-            machine_category=machine_category, date_deleted__isnull=True)
+        ua = ua.filter(date_deleted__isnull=True)
         if ua.count() != 0:
             return True
         return False
 
-    def get_account(self, machine_category):
+    def get_account(self):
         try:
-            return self.account_set.get(
-                machine_category=machine_category, date_deleted__isnull=True)
-        except:
+            return self.account_set.get(date_deleted__isnull=True)
+        except self.account_set.DoesNotExist:
+            return None
+        except self.account_set.MultipleObjectsReturned:
             return None
 
     def is_leader(self):
@@ -443,22 +422,21 @@ class Group(models.Model):
         old_name = self._tracker.previous("name")
         new_name = self.name
         if old_name is not None and old_name != new_name:
-            from karaage.datastores import global_set_group_name
-            global_set_group_name(self, old_name, new_name)
-            from karaage.datastores import machine_category_set_group_name
-            machine_category_set_group_name(self, old_name, new_name)
+            from karaage.datastores import set_group_name
+            set_group_name(self, old_name, new_name)
             log.change(self, "Renamed group")
 
         # update the datastore
-        from karaage.datastores import global_save_group
-        global_save_group(self)
-        from karaage.datastores import machine_category_save_group
-        machine_category_save_group(self)
+        from karaage.datastores import save_group
+        save_group(self)
 
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
+        raise Meow()
+        print("Removing all person from group", self)
         for person in self.members.all():
+            print("Removing person from group", person, self)
             _remove_person_from_group(person, self)
 
         # delete the object
@@ -466,10 +444,8 @@ class Group(models.Model):
         super(Group, self).delete(*args, **kwargs)
 
         # update the datastore
-        from karaage.datastores import global_delete_group
-        global_delete_group(self)
-        from karaage.datastores import machine_category_delete_group
-        machine_category_delete_group(self)
+        from karaage.datastores import delete_group
+        delete_group(self)
     delete.alters_data = True
 
     def add_person(self, person):
@@ -483,13 +459,11 @@ class Group(models.Model):
 
 def _add_person_to_group(person, group):
     """ Call datastores after adding a person to a group. """
-    from karaage.datastores import global_add_person_to_group
     from karaage.datastores import add_accounts_to_group
     from karaage.datastores import add_accounts_to_project
     from karaage.datastores import add_accounts_to_institute
 
     a_list = person.account_set
-    global_add_person_to_group(person, group)
     add_accounts_to_group(a_list, group)
     for project in group.project_set.all():
         add_accounts_to_project(a_list, project)
@@ -499,13 +473,11 @@ def _add_person_to_group(person, group):
 
 def _remove_person_from_group(person, group):
     """ Call datastores after removing a person from a group. """
-    from karaage.datastores import global_remove_person_from_group
     from karaage.datastores import remove_accounts_from_group
     from karaage.datastores import remove_accounts_from_project
     from karaage.datastores import remove_accounts_from_institute
 
     a_list = person.account_set
-    global_remove_person_from_group(person, group)
     remove_accounts_from_group(a_list, group)
     for project in group.project_set.all():
         remove_accounts_from_project(a_list, project)
@@ -518,9 +490,6 @@ def _members_changed(
     """
     Hook that executes whenever the group members are changed.
     """
-    # print "'%s','%s','%s','%s','%s'" \
-    # %(instance, action, reverse, model, pk_set)
-
     if action == "post_add":
         if not reverse:
             group = instance

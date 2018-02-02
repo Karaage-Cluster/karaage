@@ -22,7 +22,7 @@
         <li><a class="{% active request "groups/" %}" href="{% url "kg_group_list" %}">Groups</a></li>
         <li><a class="{% active request "projects/" %}" href="{% url "kg_project_list" %}?active=yes">Projects</a></li>
         <li><a class="{% active request "institutes/" %}" href="{% url "kg_institute_list" %}?active=yes">Institutes</a></li>
-        <li><a class="{% active request "machines/" %}" href="{% url "kg_machine_category_list" %}">Machines</a></li>
+        <li><a class="{% active request "machines/" %}" href="{% url "kg_machine_list" %}">Machines</a></li>
         <li><a class="{% active request "emails/" %}" href="{% url "kg_emails_index" %}">Send Email</a></li>
         {% for_each_app_include "main_admin.html" %}
         <li><a class="{% active request "misc/" %}" href="{% url "kg_misc" %}">Other Stuff</a></li>

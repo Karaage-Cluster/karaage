@@ -22,7 +22,6 @@ import unittest
 
 from karaage.tests.unit import UnitTestCase
 from karaage.people.models import Group
-from karaage.institutes.models import InstituteQuota
 from karaage.tests.fixtures import (InstituteFactory, simple_account,
                                     GroupFactory)
 
@@ -61,9 +60,15 @@ class InstituteTestCase(UnitTestCase):
         removed from the institute and new ones are added.
 
         """
-        account1 = simple_account(machine_category=self.machine_category)
+        account1 = simple_account()
         group1 = GroupFactory()
+
+        # Test initial creation of the institute
+        self.resetDatastore()
         institute = InstituteFactory(group=group1)
+        self.assertEqual(
+            self.datastore.method_calls,
+            [mock.call.save_institute(institute)])
 
         # Test setting up initial group for institute
         self.resetDatastore()
@@ -72,39 +77,33 @@ class InstituteTestCase(UnitTestCase):
         self.assertEqual(
             self.datastore.method_calls,
             [mock.call.save_group(group1),
-             mock.call.add_account_to_group(account1, group1)])
-
-        # Test during initial creation of the institute
-        self.resetDatastore()
-        institute_quota = InstituteQuota.objects.create(
-            machine_category=self.machine_category, institute=institute,
-            quota=100)
-        self.assertEqual(
-            self.datastore.method_calls,
-            [mock.call.save_institute(institute),
+             mock.call.add_account_to_group(account1, group1),
              mock.call.add_account_to_institute(account1, institute)])
 
         # Test changing an existing institutions group
-        account2 = simple_account(institute=institute,
-                                  machine_category=self.machine_category)
+        account2 = simple_account(institute=institute)
         self.resetDatastore()
         group2 = GroupFactory()
         group2.add_person(account2.person)
+        group2.save()
         institute.group = group2
         institute.save()
         self.assertEqual(
             self.datastore.method_calls,
             [mock.call.save_group(group2),
              mock.call.add_account_to_group(account2, group2),
+             mock.call.save_group(group2),
              mock.call.save_institute(institute),
              # old accounts are removed
              mock.call.remove_account_from_institute(account1, institute),
              # new accounts are added
              mock.call.add_account_to_institute(account2, institute)])
 
-        # Test deleting project quota
+        # Test deleting institute
+        from karaage.people.models import Person
+        from karaage.machines.models import Account
         self.resetDatastore()
-        institute_quota.delete()
+        institute.delete()
         self.assertEqual(
             self.datastore.method_calls,
             [mock.call.remove_account_from_institute(account2, institute),

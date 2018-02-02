@@ -58,7 +58,7 @@ else:
             assert isinstance(column, str)
 
 
-class SlurmDataStore(base.MachineCategoryDataStore):
+class SlurmDataStore(base.DataStore):
     """ Slurm datastore. """
 
     def __init__(self, config):

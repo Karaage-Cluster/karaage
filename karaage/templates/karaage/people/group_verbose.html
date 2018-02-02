@@ -18,25 +18,8 @@
 <div id="content-main">
 
     <div class="module">
-        <h2>Group details</h2>
-        {% for a in global_group_details %}
-        <h3>{{a.datastore}}</h3>
-        <div class="table-container">
-            <table class="keyvalue">
-                {% for i,j in a.items %}
-                    <tr>
-                        <th>{{ i }}</th><td>{{ j }}</td>
-                   </tr>
-                {% endfor %}
-            </table>
-        </div>
-        {% endfor %}
-    </div>
-
-    {% for name, details in machine_category_group_details.items %}
-    <div class="module">
-        <h2>Group details - {{name}}</h2>
-        {% for a in details %}
+        <h2>Group details - {{ group }} </h2>
+        {% for a in group_details %}
         <h3>{{a.datastore}}</h3>
         <div class="table-container">
             <table class="keyvalue">
@@ -48,16 +31,9 @@
             </table>
         </div>
         {% empty %}
-        <p>No datastores.</p>
+        <p>Group is not in any datastores.</p>
         {% endfor %}
     </div>
-    {% empty %}
-    <div class="module">
-        <h2>Group details</h2>
-        <p>Group is not in any machine categories.</p>
-    </div>
-    {% endfor %}
-
 
 </div>
 {% endblock %}

@@ -19,7 +19,6 @@
 import six
 import django_tables2 as tables
 
-from django.forms.utils import ErrorList
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.db.models import Q
@@ -30,9 +29,9 @@ from karaage.common.decorators import admin_required, login_required
 from karaage.people.models import Person
 from karaage.machines.models import Account
 from karaage.projects.tables import ProjectFilter, ProjectTable
-from karaage.projects.models import Project, ProjectQuota
+from karaage.projects.models import Project
 from karaage.projects.forms import ProjectForm, UserProjectForm, \
-    ProjectQuotaForm, AddPersonForm
+    AddPersonForm
 from karaage.projects.utils import get_new_pid, add_user_to_project, \
     remove_user_from_project
 import karaage.common as util
@@ -197,8 +196,8 @@ def project_detail(request, project_id):
 def project_verbose(request, project_id):
     project = get_object_or_404(Project, id=project_id)
 
-    from karaage.datastores import machine_category_get_project_details
-    project_details = machine_category_get_project_details(project)
+    from karaage.datastores import get_project_details
+    project_details = get_project_details(project)
 
     return render(
         template_name='karaage/projects/project_verbose.html',
@@ -359,73 +358,3 @@ def add_comment(request, project_id):
         (six.text_type(obj.pid), reverse("kg_project_detail", args=[obj.id]))
     ]
     return util.add_comment(request, breadcrumbs, obj)
-
-
-@admin_required
-def projectquota_add(request, project_id):
-
-    project = get_object_or_404(Project, id=project_id)
-
-    project_chunk = ProjectQuota()
-    project_chunk.project = project
-
-    form = ProjectQuotaForm(request.POST or None, instance=project_chunk)
-    if request.method == 'POST':
-        if form.is_valid():
-            mc = form.cleaned_data['machine_category']
-            conflicting = ProjectQuota.objects.filter(
-                project=project, machine_category=mc)
-
-            if conflicting.count() >= 1:
-                form._errors["machine_category"] = \
-                    ErrorList(
-                        ["Cap already exists with this machine category"])
-            else:
-                project_chunk = form.save()
-                new_cap = project_chunk.cap
-                return HttpResponseRedirect(project.get_absolute_url())
-
-    return render(
-        template_name='karaage/projects/projectquota_form.html',
-        context=locals(),
-        request=request)
-
-
-@admin_required
-def projectquota_edit(request, projectquota_id):
-
-    project_chunk = get_object_or_404(ProjectQuota, pk=projectquota_id)
-    old_mc = project_chunk.machine_category
-
-    form = ProjectQuotaForm(request.POST or None, instance=project_chunk)
-    if request.method == 'POST':
-        if form.is_valid():
-            mc = form.cleaned_data['machine_category']
-            if old_mc.pk != mc.pk:
-                form._errors["machine_category"] = ErrorList([
-                    "Please don't change the machine category; "
-                    "it confuses me"])
-            else:
-                project_chunk = form.save()
-                return HttpResponseRedirect(
-                    project_chunk.project.get_absolute_url())
-
-    return render(
-        template_name='karaage/projects/projectquota_form.html',
-        context=locals(),
-        request=request)
-
-
-@admin_required
-def projectquota_delete(request, projectquota_id):
-
-    project_chunk = get_object_or_404(ProjectQuota, pk=projectquota_id)
-
-    if request.method == 'POST':
-        project_chunk.delete()
-        return HttpResponseRedirect(project_chunk.project.get_absolute_url())
-
-    return render(
-        template_name='karaage/projects/projectquota_delete_form.html',
-        context=locals(),
-        request=request)

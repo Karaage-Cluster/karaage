@@ -23,8 +23,8 @@ from tldap.test import slapd
 
 from karaage.middleware.threadlocals import reset
 from karaage.tests.initial_ldap_data import test_ldif
-from karaage.datastores import _MACHINE_CATEGORY_DATASTORES
-from karaage.datastores.ldap import MachineCategoryDataStore, GlobalDataStore
+from karaage.datastores import _DATASTORES
+from karaage.datastores.ldap import DataStore
 
 
 def skip_if_missing_requirements(*requirements):
@@ -37,18 +37,6 @@ def skip_if_missing_requirements(*requirements):
 
 
 class IntegrationTestCase(TestCase):
-    ldap_datastore = 'ldap'
-
-    GLOBAL_LDAP_CONFIG = {
-        'DESCRIPTION': 'LDAP datastore',
-        'ENGINE': 'karaage.datastores.ldap.GlobalDataStore',
-        'LDAP': 'default',
-        'PERSON': 'karaage.datastores.ldap_schemas.openldap_person',
-        'GROUP': 'karaage.datastores.ldap_schemas.openldap_person_group',
-        'LDAP_PERSON_BASE': 'ou=People,dc=python-ldap,dc=org',
-        'LDAP_GROUP_BASE': 'ou=PeopleGroup,dc=python-ldap,dc=org',
-    }
-
     LDAP_CONFIG = {
         'DESCRIPTION': 'LDAP datastore',
         'ENGINE': 'karaage.datastores.ldap.AccountDataStore',
@@ -73,16 +61,11 @@ class IntegrationTestCase(TestCase):
 
         server.ldapadd("\n".join(test_ldif) + "\n")
         self.__ldap_server = server
-        self.mc_ldap_datastore = MachineCategoryDataStore(self.LDAP_CONFIG)
-        self.global_ldap_datastore = GlobalDataStore(self.GLOBAL_LDAP_CONFIG)
-        _MACHINE_CATEGORY_DATASTORES[self.ldap_datastore] \
-            = [self.mc_ldap_datastore]
-        # NOTE (RS) this is currently disabled because it causes test
-        # failures.
-        # _GLOBAL_DATASTORES.append(self.global_ldap_datastore)
+        self._ldap_datastore = DataStore(self.LDAP_CONFIG)
+        _DATASTORES.clear()
+        _DATASTORES.append(self._ldap_datastore)
 
     def cleanup(self):
         self.__ldap_server.stop()
         reset()
-        _MACHINE_CATEGORY_DATASTORES[self.ldap_datastore] = []
-        # _GLOBAL_DATASTORES.remove(self.global_ldap_datastore)
+        _DATASTORES.clear()

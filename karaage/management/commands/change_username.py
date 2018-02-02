@@ -70,7 +70,7 @@ class Command(BaseCommand):
         for account in person.account_set.filter(date_deleted__isnull=True):
             account.username = new
             account.save()
-            print("Changed username on %s account" % account.machine_category)
+            print("Changed username to %s" % account.username)
 
         person.username = new
         person.save()

@@ -36,7 +36,7 @@ from karaage.tests.test_xmlrpc import DjangoTestClientTransport
 from karaage.people.models import Person
 from karaage.projects.models import Project
 from karaage.institutes.models import Institute
-from karaage.machines.models import Account, MachineCategory
+from karaage.machines.models import Account
 
 
 class XmlrpcTestCase(TestCase):
@@ -72,7 +72,6 @@ class XmlrpcTestCase(TestCase):
         self.assertEqual(
             cm.exception.faultString, 'Username and/or password is incorrect')
 
-        mc = MachineCategory.objects.get(name="Default")
         proj = Project.objects.get(pid="TestProject1")
         i = Institute.objects.get(name="Example")
 
@@ -83,7 +82,7 @@ class XmlrpcTestCase(TestCase):
             institute=i)
         proj.group.members.add(p)
         Account.objects.create(
-            username="blair", person=p, machine_category=mc,
+            username="blair", person=p,
             default_project=proj,
             date_created=datetime.datetime.today())
 
@@ -93,7 +92,7 @@ class XmlrpcTestCase(TestCase):
         proj.group.members.add(p)
         proj2.group.members.add(p)
         Account.objects.create(
-            username="philipn", person=p, machine_category=mc,
+            username="philipn", person=p,
             default_project=proj,
             date_created=datetime.datetime.today())
 
@@ -116,7 +115,6 @@ class XmlrpcTestCase(TestCase):
         lines = fd.readlines()
         fd.close()
 
-        mc = MachineCategory.objects.get(name="Default")
         proj = Project.objects.get(pid="TestProject1")
         i = Institute.objects.get(name="Example")
 
@@ -127,7 +125,7 @@ class XmlrpcTestCase(TestCase):
             institute=i)
         proj.group.members.add(p)
         Account.objects.create(
-            username="blair", person=p, machine_category=mc,
+            username="blair", person=p,
             default_project=proj,
             date_created=datetime.datetime.today())
 
@@ -137,7 +135,7 @@ class XmlrpcTestCase(TestCase):
         proj.group.members.add(p)
         proj2.group.members.add(p)
         Account.objects.create(
-            username="philipn", person=p, machine_category=mc,
+            username="philipn", person=p,
             default_project=proj,
             date_created=datetime.datetime.today())
 

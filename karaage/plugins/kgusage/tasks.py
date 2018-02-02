@@ -34,9 +34,9 @@ from django.conf import settings
 from django.db.models import Sum, Count
 from django.db import transaction, IntegrityError
 
-from karaage.machines.models import MachineCategory
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
+from karaage.machines.models import Machine
 
 from .models import CPUJob
 from .models import InstituteCache, ProjectCache, PersonCache
@@ -61,7 +61,7 @@ def gen_machine_category_cache(start, end):
 
     logger.info("gen_machine_category_cache")
 
-    total = 2 + MachineCategory.objects.count()
+    total = 3
     i = 0
 
     logger.info("caching machines")
@@ -80,25 +80,21 @@ def gen_machine_category_cache(start, end):
     _gen_machine_category_cache(start, end)
     i = i + 1
 
-    query = MachineCategory.objects.all()
-    for machine_category in query.iterator():
-        logger.info("generating category graphs %s" % machine_category)
-        current.update_state(
-            state='PROGRESS',
-            meta={'completed': i, 'total': total,
-                  'message': 'generating category graphs'})
-        _gen_machine_graph(start, end, machine_category, force_overwrite=False)
-        i = i + 1
+    logger.info("generating category graphs")
+    current.update_state(
+        state='PROGRESS',
+        meta={'completed': i, 'total': total,
+              'message': 'generating category graphs'})
+    _gen_machine_graph(start, end, force_overwrite=False)
+    i = i + 1
 
     logger.info("finished")
 
 
 @shared_task
-def gen_cache_for_machine_category(start, end, machine_category_pk):
+def gen_cache_for_machine_category(start, end):
     start = dateutil.parser.parse(start).date()
     end = dateutil.parser.parse(end).date()
-
-    machine_category = MachineCategory.objects.get(pk=machine_category_pk)
 
     current = gen_cache_for_machine_category
 
@@ -126,7 +122,7 @@ def gen_cache_for_machine_category(start, end, machine_category_pk):
         state='PROGRESS',
         meta={'completed': i, 'total': total,
               'message': 'caching institutes'})
-    _gen_institute_cache(start, end, machine_category)
+    _gen_institute_cache(start, end)
     i = i + 1
 
     logger.info("caching projects")
@@ -134,7 +130,7 @@ def gen_cache_for_machine_category(start, end, machine_category_pk):
         state='PROGRESS',
         meta={'completed': i, 'total': total,
               'message': 'caching projects'})
-    _gen_project_cache(start, end, machine_category)
+    _gen_project_cache(start, end)
     i = i + 1
 
     logger.info("caching people")
@@ -142,7 +138,7 @@ def gen_cache_for_machine_category(start, end, machine_category_pk):
         state='PROGRESS',
         meta={'completed': i, 'total': total,
               'message': 'caching people'})
-    _gen_person_cache(start, end, machine_category)
+    _gen_person_cache(start, end)
     i = i + 1
 
     logger.info("generating machine category graph")
@@ -150,20 +146,19 @@ def gen_cache_for_machine_category(start, end, machine_category_pk):
         state='PROGRESS',
         meta={'completed': i, 'total': total,
               'message': 'generating machine category graphs', })
-    _gen_institute_graph(start, end, machine_category, force_overwrite=False)
-    _gen_trend_graph(start, end, machine_category, force_overwrite=False)
+    _gen_institute_graph(start, end, force_overwrite=False)
+    _gen_trend_graph(start, end, force_overwrite=False)
     i = i + 1
 
     logger.info("finished")
 
 
 @shared_task
-def gen_cache_for_project(start, end, project_pk, machine_category_pk):
+def gen_cache_for_project(start, end, project_pk):
     start = dateutil.parser.parse(start).date()
     end = dateutil.parser.parse(end).date()
 
     project = Project.objects.get(pk=project_pk)
-    machine_category = MachineCategory.objects.get(pk=machine_category_pk)
 
     current = gen_cache_for_project
     total = 1
@@ -174,18 +169,16 @@ def gen_cache_for_project(start, end, project_pk, machine_category_pk):
         state='PROGRESS',
         meta={'completed': i, 'total': total,
               'message': 'generating project graphs'})
-    _gen_project_trend_graph(
-        project, start, end, machine_category, force_overwrite=False)
+    _gen_project_trend_graph(project, start, end, force_overwrite=False)
     i = i + 1
 
 
 @shared_task
-def gen_cache_for_institute(start, end, institute_pk, machine_category_pk):
+def gen_cache_for_institute(start, end, institute_pk):
     start = dateutil.parser.parse(start).date()
     end = dateutil.parser.parse(end).date()
 
     institute = Institute.objects.get(pk=institute_pk)
-    machine_category = MachineCategory.objects.get(pk=machine_category_pk)
 
     current = gen_cache_for_institute
     total = 1
@@ -196,31 +189,26 @@ def gen_cache_for_institute(start, end, institute_pk, machine_category_pk):
         state='PROGRESS',
         meta={'completed': i, 'total': total,
               'message': 'generating institute graphs'})
-    _gen_institute_trend_graph(
-        institute, start, end, machine_category, force_overwrite=False)
+    _gen_institute_trend_graph(institute, start, end, force_overwrite=False)
     i = i + 1
 
 
 @shared_task
-def gen_cache_for_all_institutes(start, end, machine_category_pk):
+def gen_cache_for_all_institutes(start, end):
     start = dateutil.parser.parse(start).date()
     end = dateutil.parser.parse(end).date()
 
-    machine_category = MachineCategory.objects.get(pk=machine_category_pk)
-
     current = gen_cache_for_all_institutes
-    total = len(machine_category.institutequota_set.all())
+    total = Institute.objects.count()
     i = 0
 
-    for iq in machine_category.institutequota_set.all():
-        institute = iq.institute
+    for institute in Institute.objects.all():
         logger.info("generating institute graphs %s" % institute)
         current.update_state(
             state='PROGRESS',
             meta={'completed': i, 'total': total,
                   'message': 'generating institute graphs'})
-        _gen_institute_trend_graph(
-            institute, start, end, machine_category, force_overwrite=False)
+        _gen_institute_trend_graph(institute, start, end, force_overwrite=False)
         i = i + 1
 
 
@@ -228,57 +216,53 @@ def gen_cache_for_all_institutes(start, end, machine_category_pk):
 
 
 def _gen_machine_category_cache(start, end):
-    query = MachineCategory.objects.all()
-    for machine_category in query.iterator():
-        try:
-            with transaction.atomic():
-                cache = MachineCategoryCache.objects.create(
-                    machine_category=machine_category,
-                    start=start, end=end,
-                    cpu_time=0, no_jobs=0,
-                    available_time=0)
-                machines = machine_category.machine_set.all()
-                total_time = 0
-                for machine in machines:
-                    m_start = machine.start_date
-                    m_end = machine.end_date
-                    if not m_end:
-                        m_end = end
+    try:
+        with transaction.atomic():
+            cache = MachineCategoryCache.objects.create(
+                start=start, end=end,
+                cpu_time=0, no_jobs=0,
+                available_time=0)
+            machines = Machine.objects.all()
+            total_time = 0
+            for machine in machines:
+                m_start = machine.start_date
+                m_end = machine.end_date
+                if not m_end:
+                    m_end = end
 
-                    assert start <= end
-                    assert m_start <= m_end
+                assert start <= end
+                assert m_start <= m_end
 
-                    if start > m_end or m_start > end:
-                        continue
-                    if end < m_start or m_end < start:
-                        continue
+                if start > m_end or m_start > end:
+                    continue
+                if end < m_start or m_end < start:
+                    continue
 
-                    this_start = start
-                    if start < m_start:
-                        this_start = m_start
-                    this_end = end
-                    if end > m_end:
-                        this_end = m_end
+                this_start = start
+                if start < m_start:
+                    this_start = m_start
+                this_end = end
+                if end > m_end:
+                    this_end = m_end
 
-                    num_days = (this_end - this_start).days + 1
-                    total_time += (machine.no_cpus * num_days * 24 * 60 * 60)
+                num_days = (this_end - this_start).days + 1
+                total_time += (machine.no_cpus * num_days * 24 * 60 * 60)
 
-                query = CPUJob.objects.filter(
-                    machine__category=machine_category,
-                    date__range=(start, end))
-                data = query.aggregate(
-                    usage=Sum('cpu_usage'),
-                    jobs=Count('id'))
+            query = CPUJob.objects.filter(
+                date__range=(start, end))
+            data = query.aggregate(
+                usage=Sum('cpu_usage'),
+                jobs=Count('id'))
 
-                data['usage'] = data['usage'] or 0
+            data['usage'] = data['usage'] or 0
 
-                cache.cpu_time = data['usage']
-                cache.no_jobs = data['jobs']
-                cache.available_time = total_time
-                cache.save()
-        except IntegrityError:
-            # entry already exists
-            pass
+            cache.cpu_time = data['usage']
+            cache.no_jobs = data['jobs']
+            cache.available_time = total_time
+            cache.save()
+    except IntegrityError:
+        # entry already exists
+        pass
 
 
 def _gen_machine_cache(start, end):
@@ -301,10 +285,9 @@ def _gen_machine_cache(start, end):
             pass
 
 
-def _gen_institute_cache(start, end, machine_category):
+def _gen_institute_cache(start, end):
     query = CPUJob.objects.filter(
         date__range=(start, end),
-        machine__category=machine_category,
     )
     query = query.values('project__institute')
     query = query.annotate(usage=Sum('cpu_usage'), jobs=Count('id'))
@@ -317,7 +300,6 @@ def _gen_institute_cache(start, end, machine_category):
             with transaction.atomic():
                 InstituteCache.objects.create(
                     institute_id=institute,
-                    machine_category=machine_category,
                     start=start, end=end,
                     cpu_time=data['usage'], no_jobs=data['jobs'])
         except IntegrityError:
@@ -325,10 +307,9 @@ def _gen_institute_cache(start, end, machine_category):
             pass
 
 
-def _gen_project_cache(start, end, machine_category):
+def _gen_project_cache(start, end):
     query = CPUJob.objects.filter(
         date__range=(start, end),
-        machine__category=machine_category,
     )
     query = query.values('project')
     query = query.annotate(usage=Sum('cpu_usage'), jobs=Count('id'))
@@ -341,7 +322,6 @@ def _gen_project_cache(start, end, machine_category):
             with transaction.atomic():
                 ProjectCache.objects.create(
                     project_id=project,
-                    machine_category=machine_category,
                     start=start, end=end,
                     cpu_time=data['usage'], no_jobs=data['jobs'])
         except IntegrityError:
@@ -349,10 +329,9 @@ def _gen_project_cache(start, end, machine_category):
             pass
 
 
-def _gen_person_cache(start, end, machine_category):
+def _gen_person_cache(start, end):
     query = CPUJob.objects.filter(
         date__range=(start, end),
-        machine__category=machine_category,
     )
     query = query.values('project', 'account__person')
     query = query.annotate(usage=Sum('cpu_usage'), jobs=Count('id'))
@@ -366,7 +345,6 @@ def _gen_person_cache(start, end, machine_category):
             with transaction.atomic():
                 PersonCache.objects.create(
                     person_id=person, project_id=project,
-                    machine_category=machine_category,
                     start=start, end=end,
                     cpu_time=data['usage'], no_jobs=data['jobs'])
         except IntegrityError:
@@ -382,22 +360,16 @@ def _check_directory_exists(filename):
         os.makedirs(base_path)
 
 
-def _gen_project_trend_graph(project,
-                             start,
-                             end,
-                             machine_category,
-                             force_overwrite=False):
+def _gen_project_trend_graph(project, start, end, force_overwrite=False):
     """Generates a bar graph for a project
 
     Keyword arguments:
     project -- Project
     start -- start date
     end -- end date
-    machine_category -- MachineCategory object
 
     """
-    filename = graphs.get_project_trend_graph_filename(
-        project, start, end, machine_category)
+    filename = graphs.get_project_trend_graph_filename(project, start, end)
     csv_filename = os.path.join(GRAPH_ROOT, filename + '.csv')
     png_filename = os.path.join(GRAPH_ROOT, filename + '.png')
 
@@ -411,7 +383,6 @@ def _gen_project_trend_graph(project,
 
     query = CPUJob.objects.filter(
         project=project,
-        machine__category=machine_category,
         date__range=(start, end)
     )
     query = query.values('account', 'account__username', 'date')
@@ -504,11 +475,9 @@ def _gen_project_trend_graph(project,
     plt.close()
 
 
-def _gen_institute_graph(start, end, machine_category,
-                         force_overwrite=False):
+def _gen_institute_graph(start, end, force_overwrite=False):
     """ Pie chart comparing institutes usage. """
-    filename = graphs.get_institute_graph_filename(
-        start, end, machine_category)
+    filename = graphs.get_institute_graph_filename(start, end)
     csv_filename = os.path.join(GRAPH_ROOT, filename + '.csv')
     png_filename = os.path.join(GRAPH_ROOT, filename + '.png')
 
@@ -528,18 +497,17 @@ def _gen_institute_graph(start, end, machine_category,
     labels = []
 
     total = 0
-    with open(csv_filename, 'wb') as csv_file:
+    with open(csv_filename, 'w') as csv_file:
         csv_writer = csv.writer(csv_file)
         for institute in institute_list.iterator():
-            hours, jobs = usage.get_institute_usage(
-                institute, start, end, machine_category)
+            hours, jobs = usage.get_institute_usage(institute, start, end)
             total = total + int(hours)
             if hours > 0:
                 csv_writer.writerow([institute.name, hours, jobs])
                 data.append(hours)
                 labels.append(institute.name)
 
-        mcu = usage.get_machine_category_usage(machine_category, start, end)
+        mcu = usage.get_machine_category_usage(start, end)
         hours = int(mcu.available_time - total)
         csv_writer.writerow(["unused", hours])
         data.append(hours)
@@ -551,10 +519,9 @@ def _gen_institute_graph(start, end, machine_category,
     plt.close()
 
 
-def _gen_machine_graph(start, end, machine_category,
-                       force_overwrite=False):
+def _gen_machine_graph(start, end, force_overwrite=False):
     """ Pie chart comparing machines usage. """
-    filename = graphs.get_machine_graph_filename(start, end, machine_category)
+    filename = graphs.get_machine_graph_filename(start, end)
     csv_filename = os.path.join(GRAPH_ROOT, filename + '.csv')
     png_filename = os.path.join(GRAPH_ROOT, filename + '.png')
 
@@ -566,7 +533,7 @@ def _gen_machine_graph(start, end, machine_category,
             if os.path.exists(png_filename):
                 return
 
-    machine_list = machine_category.machine_set.all()
+    machine_list = Machine.objects.all()
 
     plt.subplots(figsize=(4, 4))
 
@@ -592,10 +559,9 @@ def _gen_machine_graph(start, end, machine_category,
     plt.close()
 
 
-def _gen_trend_graph(start, end, machine_category,
-                     force_overwrite=False):
+def _gen_trend_graph(start, end, force_overwrite=False):
     """ Total trend graph for machine category. """
-    filename = graphs.get_trend_graph_filename(start, end, machine_category)
+    filename = graphs.get_trend_graph_filename(start, end)
     csv_filename = os.path.join(GRAPH_ROOT, filename + '.csv')
     png_filename = os.path.join(GRAPH_ROOT, filename + '.png')
 
@@ -608,7 +574,6 @@ def _gen_trend_graph(start, end, machine_category,
                 return
 
     query = CPUJob.objects.filter(
-        machine__category=machine_category,
         date__range=(start, end)
     )
     query = query.values('date').annotate(Sum('cpu_usage'))
@@ -672,11 +637,9 @@ def _gen_trend_graph(start, end, machine_category,
 def _gen_institute_trend_graph(institute,
                                start,
                                end,
-                               machine_category,
                                force_overwrite=False):
     """ Institute trend graph for machine category. """
-    filename = graphs.get_institute_trend_graph_filename(
-        institute, start, end, machine_category)
+    filename = graphs.get_institute_trend_graph_filename(institute, start, end)
     csv_filename = os.path.join(GRAPH_ROOT, filename + '.csv')
     png_filename = os.path.join(GRAPH_ROOT, filename + '.png')
 
@@ -690,7 +653,6 @@ def _gen_institute_trend_graph(institute,
 
     query = CPUJob.objects.filter(
         project__institute=institute,
-        machine__category=machine_category,
         date__range=(start, end)
     )
     query = query.values('date').annotate(Sum('cpu_usage'))

@@ -25,7 +25,7 @@ from django.conf import settings
 from karaage.people.utils import validate_username_for_new_account
 from karaage.people.utils import check_username_for_new_account
 from karaage.people.utils import UsernameException
-from karaage.machines.models import MachineCategory, Machine, Account
+from karaage.machines.models import Machine, Account
 
 import ajax_select.fields
 
@@ -35,16 +35,9 @@ class MachineForm(forms.ModelForm):
     class Meta:
         model = Machine
         fields = (
-            'name', 'no_cpus', 'no_nodes', 'type', 'category',
+            'name', 'no_cpus', 'no_nodes', 'type',
             'start_date', 'end_date', 'pbs_server_host',
             'mem_per_core', 'scaling_factor')
-
-
-class MachineCategoryForm(forms.ModelForm):
-
-    class Meta:
-        model = MachineCategory
-        fields = ['name', 'datastore']
 
 
 class AdminAccountForm(forms.ModelForm):
@@ -54,8 +47,6 @@ class AdminAccountForm(forms.ModelForm):
         help_text=((settings.USERNAME_VALIDATION_ERROR_MSG +
                     " and has a max length of %s.")
                    % settings.USERNAME_MAX_LENGTH))
-    machine_category = forms.ModelChoiceField(
-        queryset=MachineCategory.objects.all(), initial=1)
     default_project = ajax_select.fields.AutoCompleteSelectField(
         'project', required=True)
     shell = forms.ChoiceField(choices=settings.SHELLS)
@@ -88,18 +79,9 @@ class AdminAccountForm(forms.ModelForm):
 
     def clean(self):
         data = self.cleaned_data
-        if 'machine_category' not in data:
-            return data
         if 'default_project' not in data:
             return data
         default_project = data['default_project']
-        machine_category = data['machine_category']
-
-        query = default_project.projectquota_set.filter(
-            machine_category=machine_category)
-        if query.count() == 0:
-            raise forms.ValidationError(
-                six.u('Default project not in machine category.'))
 
         if 'username' not in data:
             return data
@@ -108,8 +90,7 @@ class AdminAccountForm(forms.ModelForm):
         if (self.old_username is None or
                 self.old_username != username):
             try:
-                check_username_for_new_account(
-                    self.person, username, machine_category)
+                check_username_for_new_account(self.person, username)
             except UsernameException as e:
                 raise forms.ValidationError(e.args[0])
 
@@ -124,7 +105,7 @@ class AdminAccountForm(forms.ModelForm):
     class Meta:
         model = Account
         fields = (
-            'username', 'machine_category',
+            'username',
             'default_project', 'disk_quota', 'shell')
 
 
