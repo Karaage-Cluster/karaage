@@ -20,6 +20,7 @@
 
 import importlib
 import types
+import warnings
 
 from django.conf import settings
 
@@ -55,12 +56,18 @@ def _init_datastores():
         cls = _lookup(config['ENGINE'])
         ds = _get_datastore(cls, DataStore, config)
         _DATASTORES.append(ds)
-    for name in ['ldap']:
-        array = settings.MACHINE_CATEGORY_DATASTORES.get(name, [])
-        for config in array:
-            cls = _lookup(config['ENGINE'])
-            ds = _get_datastore(cls, DataStore, config)
-            _DATASTORES.append(ds)
+    legacy_settings = getattr(settings, 'MACHINE_CATEGORY_DATASTORES', None)
+    if legacy_settings is not None:
+        warnings.warn(
+            "MACHINE_CATEGORY_DATASTORES is deprecated, "
+            "please change to use DATASTORES",
+        )
+        for name in ['ldap']:
+            array = settings.MACHINE_CATEGORY_DATASTORES.get(name, [])
+            for config in array:
+                cls = _lookup(config['ENGINE'])
+                ds = _get_datastore(cls, DataStore, config)
+                _DATASTORES.append(ds)
 
 
 def _get_datastores():
