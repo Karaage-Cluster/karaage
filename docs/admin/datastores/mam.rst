@@ -13,28 +13,24 @@ Adding MOAB Account Manager
 #. Add project to MAM that has no access. Call it ``default`` (or whatever
    else you want).
 
-#. Edit the :setting:`MACHINE_CATEGORY_DATASTORES` setting in
+#. Edit the :setting:`DATASTORES` setting in
    ``/etc/karaage3/settings.py``:
 
    .. code-block:: python
 
-      MACHINE_CATEGORY_DATASTORES = {
-          'ldap': [
-              {
-                  'DESCRIPTION': 'LDAP datastore',
-                  ...
-              },
-              {
-                  'DESCRIPTION': 'MAM datastore',
-                  'ENGINE': 'karaage.datastores.mam.MamDataStore',
-                  'PREFIX': [],
-                  'PATH': '/usr/local/mam/bin:/usr/local/mam/sbin',
-                  'NULL_PROJECT': 'default',
-              },
-          ],
-          'dummy': [
-          ],
-      }
+      DATASTORES = [
+          {
+              'DESCRIPTION': 'LDAP datastore',
+              ...
+          },
+          {
+              'DESCRIPTION': 'MAM datastore',
+              'ENGINE': 'karaage.datastores.mam.MamDataStore',
+              'PREFIX': [],
+              'PATH': '/usr/local/mam/bin:/usr/local/mam/sbin',
+              'NULL_PROJECT': 'default',
+          },
+      ]
 
    Values ``PREFIX``, ``PATH``, and ``NULL_PROJECT`` are defaults and can be
    omitted.

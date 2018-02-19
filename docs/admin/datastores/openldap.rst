@@ -298,7 +298,7 @@ Debian installation
 
 Configuring Karaage to use LDAP
 -------------------------------
-#.  Add the :setting:`LDAP` and :setting:`MACHINE_CATEGORY_DATASTORES` settings
+#.  Add the :setting:`LDAP` and :setting:`DATASTORES` settings
     to ``/etc/karaage3/settings.py``:
 
     .. code-block:: python
@@ -316,26 +316,22 @@ Configuring Karaage to use LDAP
              }
         }
 
-        MACHINE_CATEGORY_DATASTORES = {
-             'ldap': [
-                  {
-                        'DESCRIPTION': 'LDAP datastore',
-                        'ENGINE': 'karaage.datastores.ldap.MachineCategoryDataStore',
-                        'LDAP': 'default',
-                        'ACCOUNT': 'karaage.datastores.ldap_schemas.openldap_account',
-                        'GROUP': 'karaage.datastores.ldap_schemas.openldap_account_group',
-                        'PRIMARY_GROUP': "institute",
-                        'DEFAULT_PRIMARY_GROUP': "dummy",
-                        'HOME_DIRECTORY': "/home/%(uid)s",
-                        'LOCKED_SHELL': "/usr/local/sbin/locked",
-                        'NUMBER_SCHEME': 'default',
-                        'LDAP_ACCOUNT_BASE': 'ou=Accounts,dc=example,dc=org',
-                        'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
-                  },
-             ],
-             'dummy': [
-             ],
-        }
+        DATASTORES = [
+              {
+                    'DESCRIPTION': 'LDAP datastore',
+                    'ENGINE': 'karaage.datastores.ldap.MachineCategoryDataStore',
+                    'LDAP': 'default',
+                    'ACCOUNT': 'karaage.datastores.ldap_schemas.openldap_account',
+                    'GROUP': 'karaage.datastores.ldap_schemas.openldap_account_group',
+                    'PRIMARY_GROUP': "institute",
+                    'DEFAULT_PRIMARY_GROUP': "dummy",
+                    'HOME_DIRECTORY': "/home/%(uid)s",
+                    'LOCKED_SHELL': "/usr/local/sbin/locked",
+                    'NUMBER_SCHEME': 'default',
+                    'LDAP_ACCOUNT_BASE': 'ou=Accounts,dc=example,dc=org',
+                    'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
+              },
+         ]
 
 #.  (optional) If you require people to be recorded in LDAP, add the
     :setting:`GLOBAL_DATASTORES` setting to ``/etc/karaage3/settings.py``:

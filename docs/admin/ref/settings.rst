@@ -331,70 +331,29 @@ A list of classes that define Karaage plugins. For more information on
 creating plugins from scratch, please see the Karaage programmers
 documentation.
 
-.. setting:: GLOBAL_DATASTORES
+.. setting:: DATASTORES
 
-GLOBAL_DATASTORES
+DATASTORES
 ~~~~~~~~~~~~~~~~~
 Default: ``[]`` (Empty list)
 
-This is a list of dictionaries, that define the :term:`global data stores
-<global data store>`.
+This is a list of dictionaries, that define the :term:`data stores
+<data store>`.
 
 An example:
 
 .. code-block:: python
 
-   GLOBAL_DATASTORES = [
+   DATASTORES = [
        {
            'DESCRIPTION': 'LDAP datastore',
-           'ENGINE': 'karaage.datastores.ldap.GlobalDataStore',
+           'ENGINE': 'karaage.datastores.ldap.DataStore',
            ...
         }
     ]
 
 The settings for each datastore will vary depending on the value of
 ``ENGINE`` supplied. For more information, see :doc:`/datastores`.
-
-.. setting:: MACHINE_CATEGORY_DATASTORES
-
-MACHINE_CATEGORY_DATASTORES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Default: ``{}`` (Empty dictionary)
-
-This is a dictionary containing a list of dictionaries, that define the
-:term:`machine category data stores <machine category data store>`.
-
-An example:
-
-.. code-block:: python
-
-  MACHINE_CATEGORY_DATASTORES = {
-      'ldap': [
-          {
-              'DESCRIPTION': 'LDAP datastore',
-              'ENGINE': 'karaage.datastores.ldap.MachineCategoryDataStore',
-              ...
-          },
-      ],
-      'dummy': [
-      ],
-  }
-
-The settings for each datastore will vary depending on the value of
-``ENGINE`` supplied. For more information, see :doc:`/datastores`.
-
-
-.. setting:: KG27_DATASTORE
-
-KG27_DATASTORE
-~~~~~~~~~~~~~~
-Default: ``None``
-
-Datastore used for upgrades from Karaage 2.7. For more information, see
-:doc:`/upgrading`.
-
-This datastore is never written to, unless you have used the same settings for
-:setting:`GLOBAL_DATASTORES` or :setting:`MACHINE_CATEGORY_DATASTORES`.
 
 
 .. setting:: LDAP
@@ -404,8 +363,7 @@ LDAP
 Default: ``{}`` (Empty dictionary)
 
 This setting defines LDAP settings for a connection to a LDAP server. It
-is only used if you have configured :setting:`GLOBAL_DATASTORES` or
-:setting:`MACHINE_CATEGORY_DATASTORES` to use ldap.
+is only used if you have configured :setting:`DATASTORES` to use ldap.
 
 An example:
 
