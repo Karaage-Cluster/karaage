@@ -23,7 +23,7 @@ install:
   - pip install -rrequirements/tests.txt
 
 script:
-  flake8
+  - flake8
   - ./manage.py collectstatic --settings="karaage.tests.settings" -v 2 --noinput
   - python ./manage.py test --settings="karaage.tests.settings" -v 2 karaage.tests
   - ./manage.py collectstatic --settings="karaage.plugins.kgapplications.tests.settings" -v 2 --noinput
