@@ -8,7 +8,7 @@ adheres to `Semantic Versioning`_.
 .. _`Keep a Changelog`: http://keepachangelog.com/
 .. _`Semantic Versioning`: http://semver.org/
 
-5.0.0 - UNRELEASED
+5.0.0 - 2018-02-20
 ------------------
 
 Fixed
