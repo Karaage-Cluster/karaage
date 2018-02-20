@@ -19,7 +19,6 @@
 import django_tables2 as tables
 from django import template
 
-from karaage.machines.models import Machine
 from ..models import CPUJob
 from ..tables import CPUJobTable
 

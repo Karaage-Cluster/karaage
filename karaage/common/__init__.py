@@ -50,7 +50,7 @@ def get_date_range(request, default_start=None, default_end=None):
             years, months, days = request.GET['start'].split('-')
             start = datetime.datetime(int(years), int(months), int(days))
             start = start.date()
-        except:
+        except ValueError:
             start = today - datetime.timedelta(days=90)
     else:
         start = default_start
@@ -60,7 +60,7 @@ def get_date_range(request, default_start=None, default_end=None):
             years, months, days = request.GET['end'].split('-')
             end = datetime.datetime(int(years), int(months), int(days))
             end = end.date()
-        except:
+        except ValueError:
             end = today
     else:
         end = default_end

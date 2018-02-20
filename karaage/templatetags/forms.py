@@ -38,7 +38,7 @@ def form_as_div(form):
 def formfield(parser, token):
     try:
         tag_name, field = token.split_contents()
-    except:
+    except ValueError:
         raise template.TemplateSyntaxError(
             "%r tag requires exactly one argument" % token.contents.split()[0])
     return FormFieldNode(field)

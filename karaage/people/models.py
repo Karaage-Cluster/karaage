@@ -433,10 +433,7 @@ class Group(models.Model):
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
-        raise Meow()
-        print("Removing all person from group", self)
         for person in self.members.all():
-            print("Removing person from group", person, self)
             _remove_person_from_group(person, self)
 
         # delete the object

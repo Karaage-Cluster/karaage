@@ -79,10 +79,6 @@ class AdminAccountForm(forms.ModelForm):
 
     def clean(self):
         data = self.cleaned_data
-        if 'default_project' not in data:
-            return data
-        default_project = data['default_project']
-
         if 'username' not in data:
             return data
         username = data['username']

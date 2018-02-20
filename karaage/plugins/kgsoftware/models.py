@@ -92,7 +92,7 @@ class Software(models.Model):
     def get_current_license(self):
         try:
             return self.softwarelicense_set.latest()
-        except:
+        except SoftwareLicense.DoesNotExist:
             return None
 
     def group_name(self):

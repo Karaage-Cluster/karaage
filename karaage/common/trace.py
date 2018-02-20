@@ -539,7 +539,7 @@ def trace(_name):
                             result = _func(*__argv, **__kwds)
                         finally:
                             _.value = True
-                    except:
+                    except Exception:
                         ex_type, value, traceback = sys.exc_info()
                         leave.append(' => exception thrown\n\traise ')
                         __mname = ex_type.__module__

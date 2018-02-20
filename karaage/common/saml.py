@@ -44,7 +44,7 @@ def parse_attributes(request):
             # If multiple attributes releases just care about the 1st one
             try:
                 value = values.split(';')[0]
-            except:
+            except IndexError:
                 value = values
 
         shib_attrs[name] = value

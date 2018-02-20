@@ -209,7 +209,7 @@ def divide(a, b):
     two_places = Decimal(10) ** -2
     try:
         return (Decimal(a) / Decimal(b) * 100).quantize(two_places)
-    except:
+    except ZeroDivisionError:
         return ''
 
 
@@ -254,7 +254,7 @@ class ForEachAppIncludeNode(template.Node):
 def for_each_app_include(parser, token):
     try:
         tag_name, template_name = token.split_contents()
-    except:
+    except ValueError:
         raise template.TemplateSyntaxError(
             "%r tag requires one arguments" % token.contents.split()[0])
     return ForEachAppIncludeNode(template_name)

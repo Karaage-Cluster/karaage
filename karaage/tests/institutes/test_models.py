@@ -100,8 +100,6 @@ class InstituteTestCase(UnitTestCase):
              mock.call.add_account_to_institute(account2, institute)])
 
         # Test deleting institute
-        from karaage.people.models import Person
-        from karaage.machines.models import Account
         self.resetDatastore()
         institute.delete()
         self.assertEqual(

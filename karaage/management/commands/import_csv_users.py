@@ -58,7 +58,7 @@ username,password,short_name,full_name,email,institute,project"""
 
         try:
             data = DictReader(open(csvfile))
-        except:
+        except FileNotFoundError:
             sys.stderr.write("ERROR: Failed to read CSV file.\n")
             sys.exit(1)
 
