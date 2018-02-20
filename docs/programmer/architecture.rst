@@ -18,19 +18,10 @@ The core Karaage defines the following db models in the
 
    Represents an :term:`institute` for a :term:`person`.
 
-.. py:class:: InstituteQuota
-
-   Represents the quota for a :term:`machine category` for an :term:`institute`.
-
 .. py:class:: InstituteDelegate
 
    Represents an :term:`institute delegate` for an :term:`institute` with extra
    attributes.
-
-.. py:class:: MachineCategory
-
-   Represents a :term:`machine category`. Each machine category in Karaage in
-   considered distinct with its own data stores and monitoring.
 
 .. py:class:: Machine
 
@@ -58,13 +49,6 @@ The core Karaage defines the following db models in the
    Represents a :term:`project` for a set of :term:`machine categories <machine
    category>`. A project is considered global, although is only active on given
    machine categories.
-
-.. py:class:: ProjectQuota
-
-   Represents the quota for a :term:`project` on a particular :term:`machine
-   category`.  If there is no :py:class:`ProjectQuota` for a particular project
-   on a particular machine category, then the project is not active on that
-   machine category.
 
 Karaage Applications plugin
 ---------------------------

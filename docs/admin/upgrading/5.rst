@@ -18,7 +18,7 @@ all machine categories will be deleted::
 
     ./manage.py clear_usage_cache
 
-
-After upgrading, and confirming everything still works, the
-``GLOBAL_DATASTORES`` and ``MACHINE_CATAGEORY_DATASTORES`` should be replaced
+The ``GLOBAL_DATASTORES`` and ``MACHINE_CATAGEORY_DATASTORES`` should be replaced
 with the new ``DATASTORES`` settings.
+
+Confirm everything still works.

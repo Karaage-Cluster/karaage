@@ -319,7 +319,7 @@ Configuring Karaage to use LDAP
         DATASTORES = [
               {
                     'DESCRIPTION': 'LDAP datastore',
-                    'ENGINE': 'karaage.datastores.ldap.MachineCategoryDataStore',
+                    'ENGINE': 'karaage.datastores.ldap.DataStore',
                     'LDAP': 'default',
                     'ACCOUNT': 'karaage.datastores.ldap_schemas.openldap_account',
                     'GROUP': 'karaage.datastores.ldap_schemas.openldap_account_group',
