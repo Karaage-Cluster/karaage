@@ -11,10 +11,15 @@ adheres to `Semantic Versioning`_.
 5.0.0 - UNRELEASED
 ------------------
 
+Fixed
+~~~~~
+* Use text mode not binary when writing CSV files in usage.
+
 Removed
 -------
 * Legacy south migrations.
 * Legacy site creation.
+* MachineCategories, ProjectQuotas, and InstituteQuotas.
 
 
 3.1.34 - 2017-11-28
