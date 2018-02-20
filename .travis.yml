@@ -38,29 +38,35 @@ script:
 jobs:
   include:
     - stage: deploy
+      if: branch = master and type = push
+      install:
       script:
-      - if [ "$TRAVIS_BRANCH" == "master" ] && [ -z "$TRAVIS_PULL_REQUEST_BRANCH" ]; then
-            for SLURM_VERSION in 16.05 17.02
-            do
-                docker build \
-                    --file "Dockerfile" \
-                    --tag "$DOCKER_REPO:slurm$SLURM_VERSION" \
-                    --build-arg "SLURM_VER=$SLURM_VERSION" \
-                    --build-arg "BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`" \
-                    --build-arg "VCS_REF=`git rev-parse --short HEAD`" \
-            done
-            for SLURM_VERSION in 16.05 17.02
-                docker build \
-                    --file "Dockerfile.apache" \
-                    --tag "$DOCKER_REPO:slurm$SLURM_VERSION-apache" \
-                    --build-arg "SLURM_VER=$SLURM_VERSION" \
-                    --build-arg "BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`" \
-                    --build-arg "VCS_REF=`git rev-parse --short HEAD`" \
-            done
-            docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
-            for SLURM_VERSION in 16.05 17.02
-            do
-                docker push "$DOCKER_REPO:slurm$SLURM_VERSION"
-                docker push "$DOCKER_REPO:slurm$SLURM_VERSION-apache"
-            done
-        fi
+      - docker build
+            --file "Dockerfile"
+            --tag "$DOCKER_REPO:slurm16.05"
+            --build-arg "SLURM_VER=16.05"
+            --build-arg "BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`"
+            --build-arg "VCS_REF=$TRAVIS_COMMIT"
+      - docker build
+            --file "Dockerfile.apache"
+            --tag "$DOCKER_REPO:slurm16.05-apache"
+            --build-arg "SLURM_VER=16.05"
+            --build-arg "BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`"
+            --build-arg "VCS_REF=$TRAVIS_COMMIT"
+      - docker build
+            --file "Dockerfile"
+            --tag "$DOCKER_REPO:slurm17.02"
+            --build-arg "SLURM_VER=17.02"
+            --build-arg "BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`"
+            --build-arg "VCS_REF=$TRAVIS_COMMIT"
+      - docker build
+            --file "Dockerfile.apache"
+            --tag "$DOCKER_REPO:slurm17.02-apache"
+            --build-arg "SLURM_VER=17.02"
+            --build-arg "BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`"
+            --build-arg "VCS_REF=$TRAVIS_COMMIT"
+      - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+      - docker push "$DOCKER_REPO:slurm-16.05"
+      - docker push "$DOCKER_REPO:slurm-16.05-apache"
+      - docker push "$DOCKER_REPO:slurm-17.02"
+      - docker push "$DOCKER_REPO:slurm-17.02-apache"
