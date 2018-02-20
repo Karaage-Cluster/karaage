@@ -35,32 +35,32 @@ script:
   - ./manage.py collectstatic --settings="karaage.plugins.kgusage.tests.settings" -v 2 --noinput
   - python ./manage.py test --settings="karaage.plugins.kgusage.tests.settings" -v 2 karaage.plugins.kgusage
 
-after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ] && [ -z "$TRAVIS_PULL_REQUEST_BRANCH" ]; then
-        for SLURM_VERSION in 16.05 17.02
-        do
-            docker build \
-                --file "Dockerfile" \
-                --tag "$DOCKER_REPO:slurm$SLURM_VERSION" \
-                --build-arg "SLURM_VER=$SLURM_VERSION" \
-                --build-arg "BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`" \
-                --build-arg "VCS_REF=`git rev-parse --short HEAD`" \
-        done
-        for SLURM_VERSION in 16.05 17.02
-            docker build \
-                --file "Dockerfile.apache" \
-                --tag "$DOCKER_REPO:slurm$SLURM_VERSION-apache" \
-                --build-arg "SLURM_VER=$SLURM_VERSION" \
-                --build-arg "BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`" \
-                --build-arg "VCS_REF=`git rev-parse --short HEAD`" \
-        done
-        docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
-        for SLURM_VERSION in 16.05 17.02
-        do
-            docker push "$DOCKER_REPO:slurm$SLURM_VERSION"
-            docker push "$DOCKER_REPO:slurm$SLURM_VERSION-apache"
-        done
-    fi
-
-matrix:
-  fast_finish: true
+jobs:
+  include:
+    - stage: deploy
+      script:
+      - if [ "$TRAVIS_BRANCH" == "master" ] && [ -z "$TRAVIS_PULL_REQUEST_BRANCH" ]; then
+            for SLURM_VERSION in 16.05 17.02
+            do
+                docker build \
+                    --file "Dockerfile" \
+                    --tag "$DOCKER_REPO:slurm$SLURM_VERSION" \
+                    --build-arg "SLURM_VER=$SLURM_VERSION" \
+                    --build-arg "BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`" \
+                    --build-arg "VCS_REF=`git rev-parse --short HEAD`" \
+            done
+            for SLURM_VERSION in 16.05 17.02
+                docker build \
+                    --file "Dockerfile.apache" \
+                    --tag "$DOCKER_REPO:slurm$SLURM_VERSION-apache" \
+                    --build-arg "SLURM_VER=$SLURM_VERSION" \
+                    --build-arg "BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`" \
+                    --build-arg "VCS_REF=`git rev-parse --short HEAD`" \
+            done
+            docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+            for SLURM_VERSION in 16.05 17.02
+            do
+                docker push "$DOCKER_REPO:slurm$SLURM_VERSION"
+                docker push "$DOCKER_REPO:slurm$SLURM_VERSION-apache"
+            done
+        fi
