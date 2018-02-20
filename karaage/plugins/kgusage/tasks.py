@@ -409,7 +409,7 @@ def _gen_project_trend_graph(project, start, end, force_overwrite=False):
     x_data = {}
     y_data = {}
 
-    with open(csv_filename, 'wb') as csv_file:
+    with open(csv_filename, 'w') as csv_file:
         csv_writer = csv.writer(csv_file)
         for row in query.iterator():
             csv_writer.writerow([
@@ -540,7 +540,7 @@ def _gen_machine_graph(start, end, force_overwrite=False):
     data = []
     labels = []
 
-    with open(csv_filename, 'wb') as csv_file:
+    with open(csv_filename, 'w') as csv_file:
         csv_writer = csv.writer(csv_file)
         for machine in machine_list.iterator():
             hours, jobs = usage.get_machine_usage(machine, start, end)
@@ -600,7 +600,7 @@ def _gen_trend_graph(start, end, force_overwrite=False):
     x_data = []
     y_data = []
 
-    with open(csv_filename, 'wb') as csv_file:
+    with open(csv_filename, 'w') as csv_file:
         csv_writer = csv.writer(csv_file)
         for row in query.iterator():
             csv_writer.writerow([
@@ -679,7 +679,7 @@ def _gen_institute_trend_graph(institute,
     x_data = []
     y_data = []
 
-    with open(csv_filename, 'wb') as csv_file:
+    with open(csv_filename, 'w') as csv_file:
         csv_writer = csv.writer(csv_file)
         for row in query.iterator():
             csv_writer.writerow([
