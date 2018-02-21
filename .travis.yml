@@ -1,5 +1,7 @@
 language: python
 sudo: false
+services :
+ - docker
 python:
  - 3.5
  - 3.6
@@ -43,30 +45,30 @@ jobs:
       script:
       - docker build
             --file "Dockerfile"
-            --tag "$DOCKER_REPO:slurm16.05"
+            --tag "brianmay/karaage:slurm16.05"
             --build-arg "SLURM_VER=16.05"
             --build-arg "BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`"
             --build-arg "VCS_REF=$TRAVIS_COMMIT"
       - docker build
             --file "Dockerfile.apache"
-            --tag "$DOCKER_REPO:slurm16.05-apache"
+            --tag "brianmay/karaage:slurm16.05-apache"
             --build-arg "SLURM_VER=16.05"
             --build-arg "BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`"
             --build-arg "VCS_REF=$TRAVIS_COMMIT"
       - docker build
             --file "Dockerfile"
-            --tag "$DOCKER_REPO:slurm17.02"
+            --tag "brianmay/karaage:slurm17.02"
             --build-arg "SLURM_VER=17.02"
             --build-arg "BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`"
             --build-arg "VCS_REF=$TRAVIS_COMMIT"
       - docker build
             --file "Dockerfile.apache"
-            --tag "$DOCKER_REPO:slurm17.02-apache"
+            --tag "brianmay/karaage:slurm17.02-apache"
             --build-arg "SLURM_VER=17.02"
             --build-arg "BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`"
             --build-arg "VCS_REF=$TRAVIS_COMMIT"
       - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-      - docker push "$DOCKER_REPO:slurm-16.05"
-      - docker push "$DOCKER_REPO:slurm-16.05-apache"
-      - docker push "$DOCKER_REPO:slurm-17.02"
-      - docker push "$DOCKER_REPO:slurm-17.02-apache"
+      - docker push "brianmay/karaage:slurm-16.05"
+      - docker push "brianmay/karaage:slurm-16.05-apache"
+      - docker push "brianmay/karaage:slurm-17.02"
+      - docker push "brianmay/karaage:slurm-17.02-apache"
