@@ -17,7 +17,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 import datetime
 import os.path
-from decimal import Decimal
+from decimal import Decimal, DivisionByZero, InvalidOperation
 
 import django
 from django import template
@@ -209,7 +209,7 @@ def divide(a, b):
     two_places = Decimal(10) ** -2
     try:
         return (Decimal(a) / Decimal(b) * 100).quantize(two_places)
-    except ZeroDivisionError:
+    except (DivisionByZero, InvalidOperation):
         return ''
 
 
