@@ -1,24 +1,22 @@
 bcrypt==3.1.4
 cssmin==0.2.0
-# Don't include Django, so tests can test different versions
-# Django==1.8.16
 python-alogger==2.2.10
 django-xmlrpc==0.1.8
 django-simple-captcha==0.5.6
-django-ajax-selects==1.6.1
+django-ajax-selects==1.7.0
 django-jsonfield==1.0.1
-django-model-utils==3.0
-pyasn1==0.3.7
-ldap3==2.3
-python-tldap==0.4.1
-django-pipeline==1.6.13
-django-tables2==1.16.0
+django-model-utils==3.1.1
+pyasn1==0.4.2
+ldap3==2.4.1
+python-tldap==0.4.3
+django-pipeline==1.6.14
+django-tables2==1.19.0
 django-filter==1.1.0
 django-environ==0.4.4
 six==1.11.0
 slimit==0.8.1
 whitenoise==3.3.1
-Django==1.11.7
+Django==1.11.10
 
 # celery
 amqp==2.2.2
