@@ -11,7 +11,7 @@ django-model-utils==3.0
 pyasn1==0.3.7
 ldap3==2.3
 python-tldap==0.4.1
-django-pipeline==1.6.13
+django-pipeline==1.6.14
 django-tables2==1.16.0
 django-filter==1.1.0
 django-environ==0.4.4
