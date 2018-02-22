@@ -23,8 +23,8 @@ fi
 if ! test -d /var/lib/karaage3/static
 then
     mkdir -p /var/lib/karaage3/static
-    python3 manage.py collectstatic --noinput
 fi
+python3 manage.py collectstatic --noinput
 
 if test "$1" = "apache"
 then
