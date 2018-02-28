@@ -9,7 +9,7 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
-5.0.1 - 2018-02-28
+5.0.2 - 2018-02-28
 ------------------
 
 Changed
@@ -23,7 +23,7 @@ Fixed
 * Fixed starting of celery process.
 
 
-5.0.0 - 2018-02-20
+5.0.1 - 2018-02-20
 ------------------
 
 Fixed
