@@ -8,6 +8,21 @@ adheres to `Semantic Versioning`_.
 .. _`Keep a Changelog`: http://keepachangelog.com/
 .. _`Semantic Versioning`: http://semver.org/
 
+
+5.0.1 - 2018-02-28
+------------------
+
+Changed
+~~~~~~~
+* Update docker test scripts.
+* Added reportlab to requirements for 3rd party plugin.
+
+Fixed
+~~~~~
+* Deploy to dockerhub automatically on travis success.
+* Fixed starting of celery process.
+
+
 5.0.0 - 2018-02-20
 ------------------
 
