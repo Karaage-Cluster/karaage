@@ -37,7 +37,6 @@ except ImportError:
     # Django < 1.7
     from django.contrib.contenttypes.generic import GenericForeignKey, \
         GenericRelation
-from django.conf import settings
 from django.utils.encoding import python_2_unicode_compatible
 
 import datetime
@@ -366,8 +365,6 @@ class Applicant(models.Model):
     full_name = models.CharField(max_length=60)
     institute = models.ForeignKey(
         Institute,
-        help_text="If your institute is not listed please contact %s"
-        % settings.ACCOUNTS_EMAIL,
         limit_choices_to={'is_active': True},
         null=True, blank=True)
     department = models.CharField(max_length=200, null=True, blank=True)

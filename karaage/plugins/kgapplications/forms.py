@@ -110,6 +110,9 @@ class ApplicantForm(forms.ModelForm):
         self.fields['username'].label = 'Requested username'
         self.fields['username'].required = True
         self.fields['institute'].required = True
+        self.fields['institute'].help_text = \
+            "If your institute is not listed please contact %s"\
+            % settings.ACCOUNTS_EMAIL
         self.fields['department'].required = True
 
     def clean_username(self):

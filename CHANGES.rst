@@ -9,6 +9,15 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+5.0.3 - UNRELEASED
+------------------
+
+Fixed
+~~~~~
+* Moved institute help text out of migration so it doesn't trigger a new
+  migration when the email address changes.
+
+
 5.0.2 - 2018-02-28
 ------------------
 
