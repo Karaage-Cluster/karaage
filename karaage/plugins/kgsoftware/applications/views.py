@@ -18,12 +18,11 @@
 
 """ This file shows the project application views using a state machine. """
 
-from django.shortcuts import render
 from django.http import HttpResponseBadRequest
+from django.shortcuts import render
 
 from karaage.common.decorators import login_required
 from karaage.people.models import Person
-
 from karaage.plugins.kgapplications.views import base, states
 
 from .forms import ApproveSoftwareForm

@@ -16,8 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from karaage.tests.integration import IntegrationTestCase
 from karaage.tests.fixtures import AccountFactory
+from karaage.tests.integration import IntegrationTestCase
 
 
 class OpenldapAccountTestCase(IntegrationTestCase):

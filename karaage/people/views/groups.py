@@ -16,20 +16,18 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import six
 import django_tables2 as tables
-
-from django.core.urlresolvers import reverse
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect
+import six
 from django.contrib import messages
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
 
-from karaage.common.decorators import admin_required
-from karaage.people.tables import GroupFilter, GroupTable
-from karaage.people.models import Person, Group
-from karaage.people.forms import AdminGroupForm
-from karaage.people.forms import AddGroupMemberForm
 import karaage.common as util
+from karaage.common.decorators import admin_required
+from karaage.people.forms import AddGroupMemberForm, AdminGroupForm
+from karaage.people.models import Group, Person
+from karaage.people.tables import GroupFilter, GroupTable
 
 
 @admin_required

@@ -19,16 +19,16 @@
 from __future__ import absolute_import
 
 import json
-
-from math import ceil
 import logging
-
-from karaage.machines.models import Machine, Account
-from karaage.projects.models import Project
+from math import ceil
 
 from alogger import get_parser
 
+from karaage.machines.models import Account, Machine
+from karaage.projects.models import Project
+
 from .models import CPUJob, Queue
+
 
 logger = logging.getLogger(__name__)
 

@@ -17,7 +17,9 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf.urls import url
+
 from karaage.emails import views
+
 
 urlpatterns = [
     url(r'^$', views.send_email, name='kg_emails_index'),

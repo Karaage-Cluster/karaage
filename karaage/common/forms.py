@@ -18,12 +18,14 @@
 
 """ Forms for Karaage use. """
 
+import re
+
 import six
 from django import forms
 from django.conf import settings
-import re
 
-from karaage.common.models import LogEntry, COMMENT
+from karaage.common.models import COMMENT, LogEntry
+
 from .passwords import assert_strong_password
 
 

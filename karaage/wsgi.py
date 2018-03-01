@@ -17,7 +17,9 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+
 from django.core.wsgi import get_wsgi_application
+
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'karaage.conf.settings'
 

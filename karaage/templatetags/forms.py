@@ -17,9 +17,9 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import six
-
-from django.template import Library
 from django import template
+from django.template import Library
+
 
 register = Library()
 

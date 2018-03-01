@@ -17,7 +17,9 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf.urls import url
+
 from karaage.institutes import views
+
 
 urlpatterns = [
     url(r'^$', views.institute_list, name='kg_institute_list'),

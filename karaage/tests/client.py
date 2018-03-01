@@ -20,22 +20,25 @@
 
 from __future__ import print_function, unicode_literals
 
-import six
 import re
 import unittest
 
+import six
 from django.conf import settings
 from django.contrib.admindocs.views import simplify_regex
-from django.test import TestCase
-from django.utils.text import slugify
-from django.utils.encoding import smart_text
-
 from django.core.exceptions import ViewDoesNotExist
-from django.core.urlresolvers import RegexURLPattern, RegexURLResolver, \
-    LocaleRegexURLResolver
+from django.core.urlresolvers import (
+    LocaleRegexURLResolver,
+    RegexURLPattern,
+    RegexURLResolver,
+)
+from django.test import TestCase
 from django.utils import translation
+from django.utils.encoding import smart_text
+from django.utils.text import slugify
 
 from karaage.middleware.threadlocals import reset
+
 
 urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
 

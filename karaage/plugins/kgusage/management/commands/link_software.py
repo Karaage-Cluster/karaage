@@ -16,11 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
 import datetime
 
-from karaage.plugins.kgsoftware.models import SoftwareVersion, Software
+from django.conf import settings
+from django.core.management.base import BaseCommand, CommandError
+
+from karaage.plugins.kgsoftware.models import Software, SoftwareVersion
 
 from ...models import CPUJob, UsedModules
 

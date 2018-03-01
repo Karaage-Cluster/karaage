@@ -31,17 +31,18 @@ bob,secret2,Bob,Bob Smith,bob@example.com,Example University,pEx0032
 import re
 import sys
 from csv import DictReader
+
+import django.db.transaction
+import tldap.transaction
 from django.core import exceptions
 from django.core.management.base import BaseCommand
 from django.core.validators import validate_email
 
-from karaage.people.models import Person
 from karaage.institutes.models import Institute
+from karaage.people.models import Person
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
 
-import django.db.transaction
-import tldap.transaction
 
 RE_VALID_USERNAME = re.compile('[\w.@+-]+$')
 

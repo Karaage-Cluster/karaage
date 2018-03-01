@@ -24,19 +24,18 @@ except ImportError:
     import xmlrpclib
 
 import datetime
-import os.path
 import json
+import os.path
 
-from alogger import get_parser
 import alogger.tests.examples
-
+from alogger import get_parser
 from django.test import TestCase
 
-from karaage.tests.test_xmlrpc import DjangoTestClientTransport
-from karaage.people.models import Person
-from karaage.projects.models import Project
 from karaage.institutes.models import Institute
 from karaage.machines.models import Account
+from karaage.people.models import Person
+from karaage.projects.models import Project
+from karaage.tests.test_xmlrpc import DjangoTestClientTransport
 
 
 class XmlrpcTestCase(TestCase):

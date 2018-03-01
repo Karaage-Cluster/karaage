@@ -17,17 +17,16 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import six
-
-import tldap.schemas as schemas
-import tldap.schemas.ad
-import tldap.schemas.rfc
-import tldap.schemas.ds389
+import tldap.manager
 import tldap.methods as methods
 import tldap.methods.ad
 import tldap.methods.common
-import tldap.methods.pwdpolicy
 import tldap.methods.ds389
-import tldap.manager
+import tldap.methods.pwdpolicy
+import tldap.schemas as schemas
+import tldap.schemas.ad
+import tldap.schemas.ds389
+import tldap.schemas.rfc
 
 
 def _a(string):

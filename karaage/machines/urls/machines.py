@@ -20,6 +20,7 @@ from django.conf.urls import url
 
 from karaage.machines.views import machines
 
+
 urlpatterns = [
     url(r'^$', machines.machine_list, name='kg_machine_list'),
     url(r'^add/$', machines.machine_create, name='kg_machine_add'),

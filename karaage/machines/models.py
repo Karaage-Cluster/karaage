@@ -18,19 +18,17 @@
 
 import datetime
 
-from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
 from django.core.urlresolvers import reverse
+from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
-
 from jsonfield import JSONField
-
 from model_utils import FieldTracker
 
-from karaage.people.models import Person, Group
-from karaage.machines.managers import MachineManager, ActiveMachineManager
-from karaage.common import log, is_admin
+from karaage.common import is_admin, log
+from karaage.machines.managers import ActiveMachineManager, MachineManager
+from karaage.people.models import Group, Person
 
 
 @python_2_unicode_compatible

@@ -16,23 +16,24 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import six
-
 import ajax_select.fields
+import six
 from django import forms
 from django.conf import settings
 from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 
-from karaage.people.models import Person, Group
-from karaage.people.utils import validate_username_for_new_person
-from karaage.people.utils import UsernameException
+from karaage.common import get_current_person
+from karaage.common.constants import COUNTRIES
+from karaage.common.forms import clean_email, validate_password
 from karaage.institutes.models import Institute
+from karaage.people.models import Group, Person
+from karaage.people.utils import (
+    UsernameException,
+    validate_username_for_new_person,
+)
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
-from karaage.common.constants import COUNTRIES
-from karaage.common import get_current_person
-from karaage.common.forms import validate_password, clean_email
 
 
 class PersonForm(forms.ModelForm):

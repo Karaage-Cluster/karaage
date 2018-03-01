@@ -16,14 +16,19 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.core import exceptions as django_exceptions
-import mock
 import unittest
 
-from karaage.tests.unit import UnitTestCase
+import mock
+from django.core import exceptions as django_exceptions
+
 from karaage.projects.models import Project
-from karaage.tests.fixtures import (ProjectFactory, InstituteFactory,
-                                    GroupFactory, simple_account)
+from karaage.tests.fixtures import (
+    GroupFactory,
+    InstituteFactory,
+    ProjectFactory,
+    simple_account,
+)
+from karaage.tests.unit import UnitTestCase
 
 
 class ProjectTestCase(UnitTestCase):

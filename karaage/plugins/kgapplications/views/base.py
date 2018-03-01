@@ -18,15 +18,20 @@
 
 """ This file implements a state machine for the views. """
 
-from django.shortcuts import render
-from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.http import HttpResponseBadRequest, HttpResponse, Http404
 from django.contrib import messages
+from django.core.urlresolvers import reverse
+from django.http import (
+    Http404,
+    HttpResponse,
+    HttpResponseBadRequest,
+    HttpResponseForbidden,
+    HttpResponseRedirect,
+)
+from django.shortcuts import render
 
-from karaage.common import log
 import karaage.common as common
+from karaage.common import log
 
 from ..models import Application
 

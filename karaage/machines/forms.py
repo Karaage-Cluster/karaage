@@ -17,17 +17,18 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
-import six
 
+import ajax_select.fields
+import six
 from django import forms
 from django.conf import settings
 
-from karaage.people.utils import validate_username_for_new_account
-from karaage.people.utils import check_username_for_new_account
-from karaage.people.utils import UsernameException
-from karaage.machines.models import Machine, Account
-
-import ajax_select.fields
+from karaage.machines.models import Account, Machine
+from karaage.people.utils import (
+    UsernameException,
+    check_username_for_new_account,
+    validate_username_for_new_account,
+)
 
 
 class MachineForm(forms.ModelForm):

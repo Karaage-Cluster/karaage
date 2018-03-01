@@ -17,4 +17,6 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from .views import register as register_software
+
+
 register_software()

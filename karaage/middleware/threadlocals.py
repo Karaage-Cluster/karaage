@@ -18,6 +18,8 @@
 
 # Django 1.6 Hack: Ensure tldap.django gets initialised.
 import django
+
+
 if django.VERSION < (1, 7):
     import tldap.django  # NOQA
 

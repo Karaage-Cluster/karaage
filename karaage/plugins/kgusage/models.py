@@ -19,12 +19,11 @@
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
-from karaage.machines.models import Account, Machine
-from karaage.projects.models import Project
-from karaage.people.models import Person
 from karaage.institutes.models import Institute
-
+from karaage.machines.models import Account, Machine
+from karaage.people.models import Person
 from karaage.plugins.kgsoftware.models import SoftwareVersion
+from karaage.projects.models import Project
 
 
 @python_2_unicode_compatible

@@ -17,11 +17,16 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import absolute_import
+
 import logging
 
+from django.http import (
+    HttpResponse,
+    HttpResponseGone,
+    HttpResponsePermanentRedirect,
+    HttpResponseRedirect,
+)
 from django.template import loader
-from django.http import HttpResponse, HttpResponseRedirect
-from django.http import HttpResponsePermanentRedirect, HttpResponseGone
 
 
 logger = logging.getLogger('django.request')

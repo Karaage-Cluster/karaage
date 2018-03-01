@@ -18,11 +18,13 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 """ Default Karaage Settings. """
+from socket import getfqdn
+
+import django
 import environ
 import six
-import django
 
-from socket import getfqdn
+
 HTTP_HOST = getfqdn()
 env = environ.Env()
 

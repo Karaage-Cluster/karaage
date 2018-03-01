@@ -19,12 +19,12 @@
 """ Application specific tags. """
 
 import django_tables2 as tables
-
 from django import template
 
 from karaage.people.tables import PersonTable
 
 from ..views.base import get_state_machine
+
 
 register = template.Library()
 

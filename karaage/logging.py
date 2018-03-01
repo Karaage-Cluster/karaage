@@ -17,11 +17,11 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 from __future__ import absolute_import
 
-import os.path
-import logging
-import pwd
-import grp
 import errno
+import grp
+import logging
+import os.path
+import pwd
 
 
 class FileHandler(logging.FileHandler):

@@ -16,10 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import tldap.ldap_passwd
 from django.contrib.auth.backends import ModelBackend
 
 from karaage.people.models import Person
-import tldap.ldap_passwd
 
 
 class LDAPBackend(ModelBackend):

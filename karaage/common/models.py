@@ -16,25 +16,26 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 import six
-
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
+from django.db import models
+from django.utils.encoding import python_2_unicode_compatible, smart_text
+from django.utils.translation import ugettext
+from django.utils.translation import ugettext_lazy as _
+
+from karaage.middleware.threadlocals import get_current_user
+
+
 try:
     # Django >= 1.7
     from django.contrib.contenttypes.fields import GenericForeignKey
 except ImportError:
     # Django < 1.7
     from django.contrib.contenttypes.generic import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
-from django.db import models
-from django.utils.translation import ugettext, ugettext_lazy as _
-from django.utils.encoding import smart_text
-from django.utils.encoding import python_2_unicode_compatible
 
-from karaage.middleware.threadlocals import get_current_user
 
 ADDITION = 1
 CHANGE = 2

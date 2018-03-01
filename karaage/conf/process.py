@@ -21,8 +21,10 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import importlib
-import django
 import warnings
+
+import django
+
 from karaage.plugins import BasePlugin
 
 

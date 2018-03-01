@@ -18,16 +18,16 @@
 
 """ This file is for common state or transitions that can be shared. """
 
-from django.shortcuts import render
-from django.contrib import messages
 from django.conf import settings
+from django.contrib import messages
 from django.http import HttpResponseBadRequest
+from django.shortcuts import render
 
 from karaage.emails.forms import EmailForm
 from karaage.people.models import Person
 
-from .. import forms, emails
 from . import base
+from .. import emails, forms
 
 
 class TransitionOpen(base.Transition):

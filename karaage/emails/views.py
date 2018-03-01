@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.contrib import messages
 from django.core.mail import send_mass_mail
 from django.core.urlresolvers import reverse
-from django.contrib import messages
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 
 from karaage.common.decorators import admin_required
 from karaage.emails.forms import BulkEmailForm

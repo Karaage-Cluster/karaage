@@ -16,31 +16,37 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import six
 import datetime
 
 import django_tables2 as tables
-
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect, HttpResponseForbidden, \
-    HttpResponseBadRequest
-from django.http import QueryDict
+import six
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.http import (
+    HttpResponseBadRequest,
+    HttpResponseForbidden,
+    HttpResponseRedirect,
+    QueryDict,
+)
+from django.shortcuts import get_object_or_404, render
 from django.views.decorators.debug import sensitive_post_parameters
 
+import karaage.common as common
 from karaage.common.decorators import admin_required, login_required
-from karaage.people.tables import PersonFilter, PersonTable, LeaderTable
+from karaage.institutes.tables import InstituteTable
+from karaage.people.emails import (
+    send_bounced_warning,
+    send_reset_password_email,
+)
+from karaage.people.forms import (
+    AddPersonForm,
+    AdminPasswordChangeForm,
+    AdminPersonForm,
+)
 from karaage.people.models import Person
-from karaage.people.emails import send_bounced_warning
-from karaage.people.emails import send_reset_password_email
-from karaage.people.forms import AddPersonForm, AdminPersonForm
-from karaage.people.forms import AdminPasswordChangeForm
+from karaage.people.tables import LeaderTable, PersonFilter, PersonTable
 from karaage.projects.models import Project
 from karaage.projects.tables import ProjectTable
-from karaage.institutes.tables import InstituteTable
-
-import karaage.common as common
 
 
 def _add_edit_user(request, form_class, username):

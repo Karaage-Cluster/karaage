@@ -19,8 +19,8 @@
 """
 All email sending is done from this module
 """
-from django.core.mail import EmailMessage
 from django.conf import settings
+from django.core.mail import EmailMessage
 
 
 CONTEXT = {

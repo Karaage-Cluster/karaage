@@ -16,9 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.core.management.base import BaseCommand
 import django.db.transaction
 import tldap.transaction
+from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):

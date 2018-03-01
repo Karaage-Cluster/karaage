@@ -19,6 +19,7 @@
 """Test all pages render (without exceptions)."""
 
 from __future__ import print_function, unicode_literals
+
 from .client import TestAllPagesCase
 
 

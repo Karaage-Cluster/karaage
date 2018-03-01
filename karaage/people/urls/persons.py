@@ -16,9 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import url, include
 from django.conf import settings
-
+from django.conf.urls import include, url
 from django.contrib.auth import views as django_views
 
 from karaage.people.forms import SetPasswordForm

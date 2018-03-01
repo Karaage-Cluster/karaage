@@ -16,9 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import datetime
+
 from django import forms
 from django.forms.extras.widgets import SelectDateWidget
-import datetime
+
 
 todays_year = datetime.date.today().year
 

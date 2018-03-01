@@ -16,14 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import url, include
-from django.conf import settings
 import django.views.static
-
 import django_xmlrpc.views
+from django.conf import settings
+from django.conf.urls import include, url
 
 from karaage.common import get_urls
-
 from karaage.common.views import common
 
 

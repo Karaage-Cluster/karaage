@@ -16,23 +16,25 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import six
 import datetime
 import warnings
 
-from django.db import models
+import six
 from django.contrib.auth.models import AbstractBaseUser
 from django.core.urlresolvers import reverse
+from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from jsonfield import JSONField
-
 from model_utils import FieldTracker
 
-from karaage.common.constants import TITLES, STATES, COUNTRIES
-from karaage.people.managers import ActivePersonManager, DeletedPersonManager
-from karaage.people.managers import LeaderManager, PersonManager
-
-from karaage.common import log, is_admin
+from karaage.common import is_admin, log
+from karaage.common.constants import COUNTRIES, STATES, TITLES
+from karaage.people.managers import (
+    ActivePersonManager,
+    DeletedPersonManager,
+    LeaderManager,
+    PersonManager,
+)
 
 
 # Note on terminology:

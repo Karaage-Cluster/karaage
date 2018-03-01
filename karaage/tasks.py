@@ -1,6 +1,5 @@
-from django.core import management
-
 from celery import shared_task
+from django.core import management
 
 from karaage.signals import daily_cleanup
 

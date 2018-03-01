@@ -16,24 +16,22 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import six
-
-import django_tables2 as tables
 import datetime
 
-from django.shortcuts import get_object_or_404, render
-from django.core.urlresolvers import reverse
+import django_tables2 as tables
+import six
 from django.contrib import messages
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
 
-from karaage.common.decorators import admin_required, login_required
 import karaage.common as util
-
-from ..tables import ApplicationFilter, ApplicationTable
-from ..models import Applicant, Application
-from ..forms import ApplicantForm
+from karaage.common.decorators import admin_required, login_required
 
 from . import base
+from ..forms import ApplicantForm
+from ..models import Applicant, Application
+from ..tables import ApplicationFilter, ApplicationTable
 
 
 @login_required

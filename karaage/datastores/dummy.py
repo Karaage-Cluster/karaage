@@ -18,10 +18,12 @@
 
 """ LDAP datastore. """
 
+import logging
+
+import karaage.common.trace as trace
 from karaage.datastores import base
 
-import logging
-import karaage.common.trace as trace
+
 logger = logging.getLogger(__name__)
 
 

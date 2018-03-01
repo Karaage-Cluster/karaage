@@ -23,9 +23,13 @@ uses a database cache to speed up proccess
 """
 import datetime
 
-from .models import InstituteCache, ProjectCache
-from .models import PersonCache, MachineCache
-from .models import MachineCategoryCache
+from .models import (
+    InstituteCache,
+    MachineCache,
+    MachineCategoryCache,
+    PersonCache,
+    ProjectCache,
+)
 
 
 def get_institute_usage(institute, start, end):

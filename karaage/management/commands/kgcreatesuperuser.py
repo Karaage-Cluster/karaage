@@ -22,21 +22,23 @@ Management utility to create superusers.
 
 import getpass
 import os
-import sys
 import re
-
-from django.core import exceptions
-from django.core.management.base import BaseCommand
-from django.core.validators import validate_email
-from django.conf import settings
-
-from karaage.people.models import Person, Group
-from karaage.institutes.models import Institute
-from karaage.people.utils import validate_username_for_new_person
-from karaage.people.utils import UsernameException
+import sys
 
 import django.db.transaction
 import tldap.transaction
+from django.conf import settings
+from django.core import exceptions
+from django.core.management.base import BaseCommand
+from django.core.validators import validate_email
+
+from karaage.institutes.models import Institute
+from karaage.people.models import Group, Person
+from karaage.people.utils import (
+    UsernameException,
+    validate_username_for_new_person,
+)
+
 
 try:
     input = raw_input

@@ -16,9 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.test import TestCase
 from django.core.management import call_command
-
+from django.test import TestCase
 from mock import Mock
 
 from karaage.signals import daily_cleanup

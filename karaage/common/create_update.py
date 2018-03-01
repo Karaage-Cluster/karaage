@@ -1,13 +1,12 @@
 import six
-
-from django.forms.models import ModelFormMetaclass, ModelForm
-from django.template import loader
-from django.http import Http404, HttpResponse, HttpResponseRedirect
-from django.core.exceptions import ObjectDoesNotExist, ImproperlyConfigured
-from django.utils.translation import ugettext
-from django.contrib.auth.views import redirect_to_login
-from django.views.generic import GenericViewError
 from django.contrib import messages
+from django.contrib.auth.views import redirect_to_login
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
+from django.forms.models import ModelForm, ModelFormMetaclass
+from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.template import loader
+from django.utils.translation import ugettext
+from django.views.generic import GenericViewError
 
 
 def apply_extra_context(extra_context, context):

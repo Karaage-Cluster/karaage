@@ -16,14 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import six
-
-from django import forms
-from django.contrib.admin.widgets import AdminDateWidget
-from django.conf import settings
 import datetime
 
 import ajax_select.fields
+import six
+from django import forms
+from django.conf import settings
+from django.contrib.admin.widgets import AdminDateWidget
 
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project

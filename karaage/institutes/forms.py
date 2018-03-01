@@ -16,16 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import ajax_select.fields
 import six
-
 from django import forms
 from django.conf import settings
 
+from karaage.institutes.models import Institute, InstituteDelegate
 from karaage.people.models import Group
-from karaage.institutes.models import Institute
-from karaage.institutes.models import InstituteDelegate
 from karaage.projects.models import Project
-import ajax_select.fields
 
 
 class InstituteForm(forms.ModelForm):

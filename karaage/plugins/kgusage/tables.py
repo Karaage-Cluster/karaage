@@ -16,11 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import django_tables2 as tables
-from django_tables2.utils import A
 import django_filters
-
+import django_tables2 as tables
 from django.db.models import Q
+from django_tables2.utils import A
 
 from karaage.projects.tables import ProjectColumn
 

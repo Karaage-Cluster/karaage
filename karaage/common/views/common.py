@@ -16,25 +16,22 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import six
-
 import django_tables2 as tables
-
+import six
 from django.conf import settings
-from django.shortcuts import render
-from django.db.models import Q
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.http import HttpResponseRedirect
-
+from django.shortcuts import render
 
 from karaage.common import is_admin
 from karaage.common.decorators import admin_required
 from karaage.common.models import LogEntry
 from karaage.common.tables import LogEntryFilter, LogEntryTable
-from karaage.people.tables import PersonTable, GroupTable
-from karaage.people.models import Person, Group
-from karaage.projects.tables import ProjectTable
+from karaage.people.models import Group, Person
+from karaage.people.tables import GroupTable, PersonTable
 from karaage.projects.models import Project
+from karaage.projects.tables import ProjectTable
 
 
 @admin_required

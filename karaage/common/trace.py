@@ -52,21 +52,23 @@ attach(trace(logger), PostDecorate)
 
 You can also attach a decorator to an existing module.
 """
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
-import six
 import inspect
 import logging
 import sys
+import types
+from functools import wraps
+from itertools import chain
+
+import six
+
+
 try:
     import _thread as thread
 except ImportError:
     import thread
-import types
 
-from functools import wraps
-from itertools import chain
 
 FunctionTypes = tuple({types.BuiltinFunctionType, types.FunctionType})
 

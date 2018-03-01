@@ -17,9 +17,9 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import six
-
-from django.conf import settings
 from django import forms
+from django.conf import settings
+
 from karaage.institutes.models import Institute
 
 

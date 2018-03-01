@@ -16,19 +16,20 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
-
 import datetime
 
+from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 from model_utils import FieldTracker
 
-from karaage.people.models import Person, Group
+from karaage.common import is_admin, log
 from karaage.institutes.models import Institute
 from karaage.machines.models import Account
-from karaage.projects.managers import ActiveProjectManager
-from karaage.projects.managers import DeletedProjectManager
-from karaage.common import log, is_admin
+from karaage.people.models import Group, Person
+from karaage.projects.managers import (
+    ActiveProjectManager,
+    DeletedProjectManager,
+)
 
 
 @python_2_unicode_compatible

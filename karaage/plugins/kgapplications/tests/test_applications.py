@@ -17,21 +17,21 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import django
-from django.test import TestCase
-from django.core import mail
-from django.core.urlresolvers import reverse
-from django.conf import settings
-from django.core.management import call_command
-
 from captcha.models import CaptchaStore
-from karaage.tests import fixtures
+from django.conf import settings
+from django.core import mail
+from django.core.management import call_command
+from django.core.urlresolvers import reverse
+from django.test import TestCase
+
 from karaage.people.models import Person
+from karaage.tests import fixtures
 
-from ..models import Application, Applicant
-from ..models import ProjectApplication
-
-from .fixtures import NewProjectApplicationFactory, \
-    ExistingProjectApplicationFactory
+from ..models import Applicant, Application, ProjectApplication
+from .fixtures import (
+    ExistingProjectApplicationFactory,
+    NewProjectApplicationFactory,
+)
 
 
 def set_admin():

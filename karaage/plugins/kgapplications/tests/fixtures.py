@@ -25,8 +25,12 @@ except ImportError:
         "factory_boy is required, "
         "either install from a package or using \'pip install -e .[tests]\'")
 
-from karaage.tests.fixtures import fuzzy_lower_text, \
-    PersonFactory, InstituteFactory, ProjectFactory
+from karaage.tests.fixtures import (
+    InstituteFactory,
+    PersonFactory,
+    ProjectFactory,
+    fuzzy_lower_text,
+)
 
 from ..models import Application, ProjectApplication
 

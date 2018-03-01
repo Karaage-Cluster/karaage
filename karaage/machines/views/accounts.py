@@ -16,21 +16,27 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.http import HttpResponseBadRequest
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.http import (
+    HttpResponseBadRequest,
+    HttpResponseForbidden,
+    HttpResponseRedirect,
+)
+from django.shortcuts import get_object_or_404, render
 
+import karaage.common as common
 from karaage.common.decorators import admin_required, login_required
-from karaage.projects.models import Project
+from karaage.machines.forms import (
+    AddProjectForm,
+    AdminAccountForm,
+    UserAccountForm,
+)
+from karaage.machines.models import Account
 from karaage.people.models import Person
 from karaage.people.views.persons import user_list
+from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
-from karaage.machines.models import Account
-from karaage.machines.forms import AdminAccountForm, UserAccountForm
-from karaage.machines.forms import AddProjectForm
-import karaage.common as common
 
 
 @login_required

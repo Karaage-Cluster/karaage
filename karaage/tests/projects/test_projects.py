@@ -18,12 +18,12 @@
 
 import datetime
 
-from django.core.urlresolvers import reverse
 from django.core.management import call_command
+from django.core.urlresolvers import reverse
 
-from karaage.people.models import Person, Group
-from karaage.projects.models import Project
 from karaage.machines.models import Account
+from karaage.people.models import Group, Person
+from karaage.projects.models import Project
 from karaage.tests.integration import IntegrationTestCase
 
 

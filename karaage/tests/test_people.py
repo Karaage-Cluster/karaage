@@ -20,15 +20,15 @@ import datetime
 import re
 
 import django
-from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.core import mail
 from django.contrib import auth
+from django.core import mail
+from django.core.urlresolvers import reverse
 
-from karaage.people.models import Person
 from karaage.institutes.models import Institute, InstituteDelegate
-from karaage.projects.models import Project
 from karaage.machines.models import Account
+from karaage.people.models import Person
+from karaage.projects.models import Project
 from karaage.tests.integration import IntegrationTestCase
 
 

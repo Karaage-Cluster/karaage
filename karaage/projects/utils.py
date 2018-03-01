@@ -16,8 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from karaage.projects.models import Project
 from karaage.machines.models import Account
+from karaage.projects.models import Project
 
 
 def add_user_to_project(person, project):

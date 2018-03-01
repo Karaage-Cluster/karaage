@@ -20,6 +20,14 @@ import datetime
 
 from django.conf import settings
 from django.contrib.auth.hashers import make_password
+
+import karaage.institutes.models
+import karaage.machines.models
+import karaage.people.models
+import karaage.projects.models
+from karaage.projects.utils import add_user_to_project
+
+
 try:
     from factory.django import DjangoModelFactory
     from factory.fuzzy import FuzzyText, FuzzyChoice
@@ -28,12 +36,6 @@ except ImportError:
     raise ImportError(
         "factory_boy is required, "
         "either install from a package or using \'pip install -e .[tests]\'")
-
-from karaage.projects.utils import add_user_to_project
-import karaage.institutes.models
-import karaage.machines.models
-import karaage.people.models
-import karaage.projects.models
 
 
 def fuzzy_lower_text(*args, **kwargs):

@@ -19,10 +19,10 @@
 """ Application specific tags. """
 
 import django_tables2 as tables
-
 from django import template
 
 from ..tables import SoftwareLicenseAgreementTable
+
 
 register = template.Library()
 

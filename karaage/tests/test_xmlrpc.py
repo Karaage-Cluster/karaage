@@ -32,8 +32,8 @@ except ImportError:
 
 from django.test import TestCase
 
-from karaage.people.models import Person, Group
 from karaage.machines.models import Account
+from karaage.people.models import Group, Person
 
 
 class DjangoTestClientTransport(object):

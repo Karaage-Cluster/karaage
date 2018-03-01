@@ -18,10 +18,10 @@
 
 from django.contrib import auth
 from django.core.exceptions import ImproperlyConfigured
-from karaage.people.models import Person
 from django.shortcuts import render
 
 import karaage.common.saml as saml
+from karaage.people.models import Person
 
 
 class SamlUserMiddleware(object):

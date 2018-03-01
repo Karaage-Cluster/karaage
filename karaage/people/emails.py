@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.template.loader import render_to_string
 from django.conf import settings
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 
 from karaage.common import log
 from karaage.common.emails import CONTEXT, send_mail

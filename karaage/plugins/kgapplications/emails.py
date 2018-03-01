@@ -16,8 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.template.loader import render_to_string
 from django.conf import settings
+from django.template.loader import render_to_string
 
 from karaage.common.emails import CONTEXT, send_mail
 

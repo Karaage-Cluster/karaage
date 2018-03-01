@@ -18,13 +18,12 @@
 
 import sys
 
-from django.core.management.base import BaseCommand
-from django.conf import settings
-
-from karaage.people.models import Person
-
 import django.db.transaction
 import tldap.transaction
+from django.conf import settings
+from django.core.management.base import BaseCommand
+
+from karaage.people.models import Person
 
 
 # Generate a human readable 'random' password

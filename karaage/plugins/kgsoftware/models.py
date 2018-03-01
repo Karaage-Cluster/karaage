@@ -18,12 +18,11 @@
 
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
-
 from model_utils import FieldTracker
 
-from karaage.people.models import Person, Group
-from karaage.machines.models import Machine
 from karaage.common import log
+from karaage.machines.models import Machine
+from karaage.people.models import Group, Person
 
 
 @python_2_unicode_compatible

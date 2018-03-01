@@ -21,6 +21,7 @@ from django import template
 
 from karaage.machines.tables import AccountTable
 
+
 register = template.Library()
 
 

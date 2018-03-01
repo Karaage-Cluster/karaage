@@ -15,9 +15,10 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
-from django.template import Library
 from django.contrib.humanize.templatetags.humanize import intcomma
+from django.template import Library
 from django.template.defaultfilters import filesizeformat
+
 
 register = Library()
 

@@ -16,22 +16,21 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.contrib.auth import login as auth_login
-from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponseBadRequest
-from django.contrib import messages
-from django.core.urlresolvers import reverse
 from django.apps import apps
+from django.contrib import messages
+from django.contrib.auth import login as auth_login
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseBadRequest, HttpResponseRedirect
+from django.shortcuts import render
 from django.views.decorators.debug import sensitive_post_parameters
 
-from karaage.common.decorators import login_required
-from karaage.people.models import Person
-from karaage.people.emails import send_reset_password_email
-from karaage.people.forms import PersonForm, PasswordChangeForm
-
 import karaage.common as common
-from karaage.common.forms import LoginForm
 import karaage.common.saml as saml
+from karaage.common.decorators import login_required
+from karaage.common.forms import LoginForm
+from karaage.people.emails import send_reset_password_email
+from karaage.people.forms import PasswordChangeForm, PersonForm
+from karaage.people.models import Person
 
 
 @sensitive_post_parameters('password')

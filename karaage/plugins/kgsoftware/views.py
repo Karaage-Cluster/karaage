@@ -16,27 +16,36 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import six
 import datetime
 
 import django_tables2 as tables
-
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+import six
+from django.apps import apps
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
 from django.template.defaultfilters import wordwrap
-from django.apps import apps
 
+import karaage.common as util
+from karaage.common import log
 from karaage.common.decorators import admin_required, login_required
 from karaage.people.models import Person
-from karaage.common import log
-import karaage.common as util
 
-from .models import SoftwareCategory, Software, SoftwareVersion
-from .models import SoftwareLicense, SoftwareLicenseAgreement
-from .forms import SoftwareForm, AddPackageForm, LicenseForm
-from .forms import SoftwareVersionForm, SoftwareCategoryForm
+from .forms import (
+    AddPackageForm,
+    LicenseForm,
+    SoftwareCategoryForm,
+    SoftwareForm,
+    SoftwareVersionForm,
+)
+from .models import (
+    Software,
+    SoftwareCategory,
+    SoftwareLicense,
+    SoftwareLicenseAgreement,
+    SoftwareVersion,
+)
 from .tables import SoftwareFilter, SoftwareTable
 
 

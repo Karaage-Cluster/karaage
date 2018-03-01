@@ -16,13 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.core.management.base import BaseCommand
-from django.conf import settings
-
-from karaage.people.models import Person
-
 import django.db.transaction
 import tldap.transaction
+from django.conf import settings
+from django.core.management.base import BaseCommand
+
+from karaage.people.models import Person
 
 
 class Command(BaseCommand):

@@ -18,13 +18,12 @@
 
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
-
 from model_utils import FieldTracker
 
-from karaage.common import log, is_admin
-from karaage.people.models import Person, Group
-from karaage.machines.models import Account
+from karaage.common import is_admin, log
 from karaage.institutes.managers import ActiveInstituteManager
+from karaage.machines.models import Account
+from karaage.people.models import Group, Person
 
 
 @python_2_unicode_compatible

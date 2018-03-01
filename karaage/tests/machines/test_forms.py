@@ -17,9 +17,8 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import six
-
-from django.test import TestCase
 from django.conf import settings
+from django.test import TestCase
 
 from karaage.machines.forms import AdminAccountForm
 from karaage.tests.fixtures import simple_account

@@ -18,26 +18,30 @@
 
 """ This file shows the project application views using a state machine. """
 
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.http import HttpResponseBadRequest, HttpResponse
-from django.core.urlresolvers import reverse
-from django.contrib import messages
-from django.db.models import Q
-from django.conf import settings
+import json
 
+import six
+from django.conf import settings
+from django.contrib import messages
+from django.core.urlresolvers import reverse
+from django.db.models import Q
+from django.http import (
+    HttpResponse,
+    HttpResponseBadRequest,
+    HttpResponseForbidden,
+    HttpResponseRedirect,
+)
+from django.shortcuts import get_object_or_404, render
+
+from karaage.common import is_admin, log, saml
 from karaage.common.decorators import login_required
+from karaage.institutes.models import Institute
 from karaage.people.models import Person
 from karaage.projects.models import Project
-from karaage.institutes.models import Institute
-from karaage.common import log, is_admin, saml
 
-import json
-import six
-
-from ..models import ProjectApplication, Applicant
-from .. import forms, emails
 from . import base, states
+from .. import emails, forms
+from ..models import Applicant, ProjectApplication
 
 
 def _get_applicant_from_saml(request):

@@ -18,15 +18,15 @@
 
 """ MOAB Account Manager datastore. """
 
-import os.path
-import subprocess
 import csv
 import logging
+import os.path
+import subprocess
 import sys
 
 import karaage.common.trace as trace
-
 from karaage.datastores import base
+
 
 logger = logging.getLogger(__name__)
 

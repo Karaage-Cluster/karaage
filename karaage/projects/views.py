@@ -16,25 +16,26 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import six
 import django_tables2 as tables
-
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.db.models import Q
+import six
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.db.models import Q
+from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
 
-from karaage.common.decorators import admin_required, login_required
-from karaage.people.models import Person
-from karaage.machines.models import Account
-from karaage.projects.tables import ProjectFilter, ProjectTable
-from karaage.projects.models import Project
-from karaage.projects.forms import ProjectForm, UserProjectForm, \
-    AddPersonForm
-from karaage.projects.utils import get_new_pid, add_user_to_project, \
-    remove_user_from_project
 import karaage.common as util
+from karaage.common.decorators import admin_required, login_required
+from karaage.machines.models import Account
+from karaage.people.models import Person
+from karaage.projects.forms import AddPersonForm, ProjectForm, UserProjectForm
+from karaage.projects.models import Project
+from karaage.projects.tables import ProjectFilter, ProjectTable
+from karaage.projects.utils import (
+    add_user_to_project,
+    get_new_pid,
+    remove_user_from_project,
+)
 
 
 @login_required

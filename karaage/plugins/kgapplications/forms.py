@@ -16,26 +16,26 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import six
 import ajax_select.fields
-
+import six
+from captcha.fields import CaptchaField
 from django import forms
 from django.conf import settings
-from django.db.models import Q
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.utils.safestring import mark_safe
 
-from captcha.fields import CaptchaField
-
-from karaage.people.models import Person
-from karaage.people.utils import validate_username_for_new_person
-from karaage.people.utils import UsernameException
+from karaage.common.forms import clean_email, validate_password
 from karaage.institutes.models import Institute
+from karaage.people.models import Person
+from karaage.people.utils import (
+    UsernameException,
+    validate_username_for_new_person,
+)
 from karaage.projects.models import Project
-from karaage.common.forms import validate_password, clean_email
 
-from .models import ProjectApplication
-from .models import Applicant
+from .models import Applicant, ProjectApplication
+
 
 APP_CHOICES = (
     ('U', 'Join an existing project'),

@@ -17,12 +17,15 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import re
-from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError
-from karaage.projects.models import Project
 import sys
+
 import django.db.transaction
 import tldap.transaction
+from django.conf import settings
+from django.core.management.base import BaseCommand, CommandError
+
+from karaage.projects.models import Project
+
 
 try:
     input = raw_input

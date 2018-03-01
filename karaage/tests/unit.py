@@ -24,8 +24,8 @@ except ImportError:
         "either install from a package or using \'pip install -e .[tests]\'")
 from django.test import TestCase
 
-from karaage.middleware.threadlocals import reset
 from karaage.datastores import _DATASTORES
+from karaage.middleware.threadlocals import reset
 
 
 class UnitTestCase(TestCase):

@@ -16,21 +16,20 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import six
 import django_tables2 as tables
-
-from django.db.models import Q
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+import six
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.forms.models import inlineformset_factory
+from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
 
+import karaage.common as util
 from karaage.common import is_admin
 from karaage.common.decorators import admin_required, login_required
-import karaage.common as util
-from karaage.institutes.tables import InstituteTable, InstituteFilter
+from karaage.institutes.forms import DelegateForm, InstituteForm
 from karaage.institutes.models import Institute, InstituteDelegate
-from karaage.institutes.forms import InstituteForm, DelegateForm
+from karaage.institutes.tables import InstituteFilter, InstituteTable
 from karaage.people.models import Person
 from karaage.people.tables import PersonTable
 from karaage.projects.tables import ProjectTable

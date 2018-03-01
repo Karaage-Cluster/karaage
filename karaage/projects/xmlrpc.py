@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django_xmlrpc.decorators import xmlrpc_func, permission_required
+from django_xmlrpc.decorators import permission_required, xmlrpc_func
 
-from karaage.projects.models import Project
-from karaage.machines.models import Account
 from karaage.common.decorators import xmlrpc_machine_required
+from karaage.machines.models import Account
+from karaage.projects.models import Project
 
 
 @xmlrpc_machine_required()

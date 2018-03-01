@@ -22,13 +22,14 @@ from decimal import Decimal, DivisionByZero, InvalidOperation
 import django
 from django import template
 from django.conf import settings
-from django.http import QueryDict
 from django.contrib.contenttypes.models import ContentType
+from django.http import QueryDict
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
+from karaage.common.models import COMMENT, LogEntry
 from karaage.plugins import BasePlugin
-from karaage.common.models import LogEntry, COMMENT
+
 
 register = template.Library()
 

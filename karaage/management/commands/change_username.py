@@ -16,13 +16,19 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.core.management.base import BaseCommand, CommandError
-from karaage.people.models import Person
-from karaage.people.utils import validate_username_for_rename_person
-from karaage.people.utils import UsernameInvalid, UsernameTaken
 import sys
+
 import django.db.transaction
 import tldap.transaction
+from django.core.management.base import BaseCommand, CommandError
+
+from karaage.people.models import Person
+from karaage.people.utils import (
+    UsernameInvalid,
+    UsernameTaken,
+    validate_username_for_rename_person,
+)
+
 
 try:
     input = raw_input

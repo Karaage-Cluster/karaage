@@ -16,38 +16,40 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from .dirs import GRAPH_TMP, GRAPH_ROOT
-
+import csv
+import datetime
+import logging
 import os
 import os.path
 
-import logging
-
-import six
-import csv
-import datetime
 import dateutil.parser
-
+import six
 from celery import shared_task
-
 from django.conf import settings
-from django.db.models import Sum, Count
-from django.db import transaction, IntegrityError
+from django.db import IntegrityError, transaction
+from django.db.models import Count, Sum
 
 from karaage.institutes.models import Institute
-from karaage.projects.models import Project
 from karaage.machines.models import Machine
+from karaage.projects.models import Project
 
-from .models import CPUJob
-from .models import InstituteCache, ProjectCache, PersonCache
-from .models import MachineCache, MachineCategoryCache
-from . import usage, graphs
+from . import graphs, usage
+from .dirs import GRAPH_ROOT, GRAPH_TMP
+from .models import (
+    CPUJob,
+    InstituteCache,
+    MachineCache,
+    MachineCategoryCache,
+    PersonCache,
+    ProjectCache,
+)
 
-import matplotlib
+
+import matplotlib  # isort:skip
 os.environ['MPLCONFIGDIR'] = GRAPH_TMP
 matplotlib.use('Agg')
-import matplotlib.pyplot as plt  # NOQA
-import matplotlib.dates as mdates  # NOQA
+import matplotlib.pyplot as plt  # NOQA isort:skip
+import matplotlib.dates as mdates  # NOQA isort:skip
 
 logger = logging.getLogger(__name__)
 

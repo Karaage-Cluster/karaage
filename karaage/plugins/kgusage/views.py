@@ -16,38 +16,39 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import six
+import datetime
+import json
+from decimal import Decimal
 
 import django_tables2 as tables
-import datetime
-from decimal import Decimal
+import six
 from celery.task import Task
-import json
-
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.http import HttpResponse
 from django.conf import settings
-from django.db.models import Q
-from django.core.urlresolvers import reverse
-from django.template.defaultfilters import dictsortreversed
 from django.core.cache import cache
-from django.http import QueryDict
-from django.db.models import Count, Sum
+from django.core.urlresolvers import reverse
+from django.db.models import Count, Q, Sum
+from django.http import (
+    HttpResponse,
+    HttpResponseForbidden,
+    HttpResponseRedirect,
+    QueryDict,
+)
+from django.shortcuts import get_object_or_404, render
+from django.template.defaultfilters import dictsortreversed
 
-from karaage.common.decorators import admin_required, usage_required
-from karaage.people.models import Person
-from karaage.institutes.models import Institute
-from karaage.projects.models import Project
-from karaage.machines.models import Account
 from karaage.common import get_date_range
+from karaage.common.decorators import admin_required, usage_required
+from karaage.institutes.models import Institute
+from karaage.machines.models import Account
+from karaage.people.models import Person
+from karaage.plugins.kgsoftware.models import Software, SoftwareVersion
+from karaage.projects.models import Project
 
-from . import models, graphs, tasks, usage
-from .models import CPUJob
+from . import graphs, models, tasks, usage
 from .forms import UsageSearchForm
+from .models import CPUJob
 from .tables import CPUJobFilter, CPUJobTable
 
-from karaage.plugins.kgsoftware.models import Software, SoftwareVersion
 
 LOCK_EXPIRE = 60 * 60  # Lock expires in 1 hour
 

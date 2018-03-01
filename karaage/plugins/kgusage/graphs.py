@@ -17,14 +17,16 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import os.path
+
+from karaage.institutes.models import Institute
+
+from .dirs import GRAPH_URL
+
+
 try:
     import urlparse
 except ImportError:
     import urllib.parse as urlparse
-
-from .dirs import GRAPH_URL
-
-from karaage.institutes.models import Institute
 
 
 def get_colour(index):

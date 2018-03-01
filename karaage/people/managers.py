@@ -16,8 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import BaseUserManager
 
 
 class PersonManager(BaseUserManager):

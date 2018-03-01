@@ -16,10 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import url
 from django.conf import settings
+from django.conf.urls import url
 
 from karaage.people.views import groups
+
 
 urlpatterns = [
     url(r'^$', groups.group_detail, name='kg_group_detail'),

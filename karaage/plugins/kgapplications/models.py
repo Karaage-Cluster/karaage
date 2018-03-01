@@ -16,10 +16,22 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import six
+import datetime
 
+import six
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q
+from django.utils.encoding import python_2_unicode_compatible
+from model_utils import FieldTracker
+
+from karaage.common import get_current_person, is_admin, log, new_random_token
+from karaage.common.constants import COUNTRIES, TITLES
+from karaage.institutes.models import Institute
+from karaage.machines.models import Account
+from karaage.people.models import Person
+from karaage.projects.models import Project
+
 
 try:
     # Django < 1.8
@@ -28,7 +40,6 @@ except ImportError:
     # Django >= 1.8
     from django.db.models.fields.related import OneToOneRel
 
-from django.contrib.contenttypes.models import ContentType
 try:
     # Django >= 1.7
     from django.contrib.contenttypes.fields import GenericForeignKey, \
@@ -37,18 +48,6 @@ except ImportError:
     # Django < 1.7
     from django.contrib.contenttypes.generic import GenericForeignKey, \
         GenericRelation
-from django.utils.encoding import python_2_unicode_compatible
-
-import datetime
-
-from model_utils import FieldTracker
-
-from karaage.common.constants import TITLES, COUNTRIES
-from karaage.common import new_random_token, get_current_person, is_admin, log
-from karaage.people.models import Person
-from karaage.institutes.models import Institute
-from karaage.projects.models import Project
-from karaage.machines.models import Account
 
 
 class ApplicationManager(models.Manager):

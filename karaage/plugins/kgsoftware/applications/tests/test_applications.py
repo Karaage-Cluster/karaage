@@ -17,14 +17,13 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import django
-from django.test import TestCase
-from django.core import mail
-from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.core import mail
 from django.core.management import call_command
+from django.core.urlresolvers import reverse
+from django.test import TestCase
 
 from karaage.people.models import Group
-
 from karaage.plugins.kgapplications.models import Application
 
 from ...models import Software, SoftwareLicense

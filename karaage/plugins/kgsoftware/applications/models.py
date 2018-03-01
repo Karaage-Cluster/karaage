@@ -16,16 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import six
 import datetime
 
+import six
 from django.db import models
 
+from karaage.plugins.kgapplications.models import (
+    Application,
+    ApplicationManager,
+)
 
 from ..models import SoftwareLicense, SoftwareLicenseAgreement
-
-from karaage.plugins.kgapplications.models \
-    import Application, ApplicationManager
 
 
 class SoftwareApplication(Application):

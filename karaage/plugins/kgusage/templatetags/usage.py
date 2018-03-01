@@ -22,6 +22,7 @@ from django import template
 from ..models import CPUJob
 from ..tables import CPUJobTable
 
+
 register = template.Library()
 
 

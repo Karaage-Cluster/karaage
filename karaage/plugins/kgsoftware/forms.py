@@ -17,15 +17,18 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import six
-
 from django import forms
 from django.conf import settings
 
-from karaage.people.models import Group
 from karaage.machines.models import Machine
+from karaage.people.models import Group
 
-from .models import SoftwareCategory, Software
-from .models import SoftwareVersion, SoftwareLicense
+from .models import (
+    Software,
+    SoftwareCategory,
+    SoftwareLicense,
+    SoftwareVersion,
+)
 
 
 class SoftwareForm(forms.ModelForm):

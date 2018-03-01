@@ -17,7 +17,6 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import six
-
 from django.test import TestCase
 
 from karaage.projects.forms import ProjectForm

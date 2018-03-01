@@ -1,7 +1,6 @@
 #!/bin/bash
 DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 
-FLAKE=0
 RETURN=0
 cd $DIR
 
@@ -16,10 +15,22 @@ else
 fi
 
 echo ""
+echo "ISORT"
+echo "############################"
+isort -rc --check --diff karaage
+if [ "$?" -ne 0 ]
+then
+    exit 1
+fi
+
+echo ""
 echo "FLAKE8"
 echo "############################"
-flake8
-if [ ! $? -eq 0 ]; then FLAKE=1; fi
+flake8 karaage
+if [ "$?" -ne 0 ]
+then
+    exit 1
+fi
 
 echo -e "\n\n"
 
@@ -51,11 +62,5 @@ for values in $TESTS; do
         exit "$RETURN"
     fi
 done
-
-if [ "$FLAKE" -ne 0 ]; then
-    echo "ERROR: flake8 tests failed" >&2
-    exit "$FLAKE"
-fi
-
 
 exit "$RETURN"

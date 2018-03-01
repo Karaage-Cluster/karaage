@@ -17,6 +17,10 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import warnings
+
+from .mam import MamDataStore as GoldDataStore  # NOQA
+
+
 warnings.warn(
     'karaage.datastores.gold obsolete; '
     'use karaage.datastores.mam instead.',
@@ -24,4 +28,3 @@ warnings.warn(
 )
 
 """ Gold datastore. """
-from .mam import MamDataStore as GoldDataStore  # NOQA

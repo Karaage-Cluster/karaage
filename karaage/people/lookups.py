@@ -16,14 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.utils.html import escape
+import ajax_select
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
-
-import ajax_select
+from django.utils.html import escape
 
 from karaage.common import is_admin
-from karaage.people.models import Person, Group
+from karaage.people.models import Group, Person
 
 
 class LookupChannel(ajax_select.LookupChannel):

@@ -16,10 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
 from django.contrib import messages
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 
 import karaage.common.saml as saml
 from karaage.common.decorators import login_required

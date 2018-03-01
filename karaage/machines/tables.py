@@ -17,10 +17,10 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import django_tables2 as tables
-from django_tables2.utils import A
 from django.utils.safestring import mark_safe
+from django_tables2.utils import A
 
-from .models import Machine, Account
+from .models import Account, Machine
 
 
 class MachineTable(tables.Table):

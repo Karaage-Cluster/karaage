@@ -25,6 +25,7 @@ install:
   - pip install -rrequirements/tests.txt
 
 script:
+  - isort -rc --check --diff karaage
   - flake8
   - ./manage.py collectstatic --settings="karaage.tests.settings" -v 2 --noinput
   - python ./manage.py test --settings="karaage.tests.settings" -v 2 karaage.tests
