@@ -112,7 +112,7 @@ def create_object(
     """
     if extra_context is None:
         extra_context = {}
-    if login_required and not request.user.is_authenticated():
+    if login_required and not request.user.is_authenticated:
         return redirect_to_login(request.path)
 
     model, form_class = get_model_and_form_class(model, form_class)
@@ -158,7 +158,7 @@ def update_object(
     """
     if extra_context is None:
         extra_context = {}
-    if login_required and not request.user.is_authenticated():
+    if login_required and not request.user.is_authenticated:
         return redirect_to_login(request.path)
 
     model, form_class = get_model_and_form_class(model, form_class)
@@ -207,7 +207,7 @@ def delete_object(
     """
     if extra_context is None:
         extra_context = {}
-    if login_required and not request.user.is_authenticated():
+    if login_required and not request.user.is_authenticated:
         return redirect_to_login(request.path)
 
     obj = lookup_object(model, object_id, slug, slug_field)

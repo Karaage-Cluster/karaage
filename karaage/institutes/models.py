@@ -17,6 +17,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.db import models
+from django.urls import reverse
 from django.utils.encoding import python_2_unicode_compatible
 from model_utils import FieldTracker
 
@@ -32,7 +33,7 @@ class Institute(models.Model):
     delegates = models.ManyToManyField(
         Person, related_name='delegate_for',
         blank=True, through='InstituteDelegate')
-    group = models.ForeignKey(Group)
+    group = models.ForeignKey(Group, on_delete=models.PROTECT)
     saml_entityid = models.CharField(
         max_length=200,
         null=True, blank=True, unique=True)
@@ -108,14 +109,13 @@ class Institute(models.Model):
     def __str__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
-        return 'kg_institute_detail', [self.id]
+        return reverse('kg_institute_detail', args=[self.id])
 
     def can_view(self, request):
         person = request.user
 
-        if not person.is_authenticated():
+        if not person.is_authenticated:
             return False
 
         # staff members can view everything
@@ -139,8 +139,8 @@ class Institute(models.Model):
 
 
 class InstituteDelegate(models.Model):
-    person = models.ForeignKey(Person)
-    institute = models.ForeignKey(Institute)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
     send_email = models.BooleanField()
 
     _tracker = FieldTracker()

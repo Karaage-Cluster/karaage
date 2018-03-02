@@ -26,10 +26,10 @@ from .models import Software, SoftwareLicenseAgreement
 class SoftwareFilter(django_filters.FilterSet):
     description = django_filters.CharFilter(lookup_expr="icontains")
     begin__last_used = django_filters.DateFilter(
-        name="softwareversion__last_used",
+        field_name="softwareversion__last_used",
         lookup_expr="gte")
     end_last_used = django_filters.DateFilter(
-        name="softwareversion__last_used",
+        field_name="softwareversion__last_used",
         lookup_expr="lte")
 
     class Meta:

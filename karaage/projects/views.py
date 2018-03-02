@@ -19,10 +19,10 @@
 import django_tables2 as tables
 import six
 from django.contrib import messages
-from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 
 import karaage.common as util
 from karaage.common.decorators import admin_required, login_required

@@ -39,7 +39,7 @@ def context_processor(request):
     from .models import Application
     ctx = {}
 
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         person = request.user
         my_applications = Application.objects.get_for_applicant(person)
         requires_attention = Application.objects.requires_attention(request)

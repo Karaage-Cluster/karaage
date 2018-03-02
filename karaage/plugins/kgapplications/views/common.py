@@ -21,9 +21,9 @@ import datetime
 import django_tables2 as tables
 import six
 from django.contrib import messages
-from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 
 import karaage.common as util
 from karaage.common.decorators import admin_required, login_required
@@ -146,7 +146,7 @@ def application_unauthenticated(request, token, state=None, label=None):
     roles = {'is_applicant', 'is_authorised'}
 
     # redirect user to real url if possible.
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         if request.user == application.applicant:
             url = base.get_url(
                 request, application, roles, label)

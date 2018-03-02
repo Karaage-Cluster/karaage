@@ -21,8 +21,8 @@ from captcha.models import CaptchaStore
 from django.conf import settings
 from django.core import mail
 from django.core.management import call_command
-from django.core.urlresolvers import reverse
 from django.test import TestCase
+from django.urls import reverse
 
 from karaage.people.models import Person
 from karaage.tests import fixtures

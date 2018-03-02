@@ -19,7 +19,7 @@
 import datetime
 
 from django import forms
-from django.forms.extras.widgets import SelectDateWidget
+from django.forms.widgets import SelectDateWidget
 
 
 todays_year = datetime.date.today().year

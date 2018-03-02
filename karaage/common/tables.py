@@ -53,9 +53,9 @@ class ObjectColumn(BaseLinkColumn):
 
 class LogEntryFilter(django_filters.FilterSet):
     begin_action_time = django_filters.DateFilter(
-        name="action_time", lookup_expr="gte")
+        field_name="action_time", lookup_expr="gte")
     end_action_time = django_filters.DateFilter(
-        name="action_time", lookup_expr="lte")
+        field_name="action_time", lookup_expr="lte")
 
     class Meta:
         model = LogEntry

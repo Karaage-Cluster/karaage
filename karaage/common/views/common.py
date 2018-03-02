@@ -19,10 +19,10 @@
 import django_tables2 as tables
 import six
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse
 
 from karaage.common import is_admin
 from karaage.common.decorators import admin_required

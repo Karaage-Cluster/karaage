@@ -25,7 +25,7 @@ from karaage.machines.tables import AccountTable
 register = template.Library()
 
 
-@register.assignment_tag(takes_context=True)
+@register.simple_tag(takes_context=True)
 def get_account_table(context, queryset):
     table = AccountTable(queryset)
     config = tables.RequestConfig(context['request'], paginate={"per_page": 5})

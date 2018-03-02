@@ -120,7 +120,7 @@ TEMPLATES = [
 USE_I18N = False
 
 # A tuple of middleware classes to use.
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -132,7 +132,7 @@ MIDDLEWARE_CLASSES = (
     'karaage.middleware.saml.SamlUserMiddleware',
     'tldap.middleware.TransactionMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-)
+]
 
 # A tuple of authentication backend classes (as strings) to use when attempting
 # to authenticate a user.

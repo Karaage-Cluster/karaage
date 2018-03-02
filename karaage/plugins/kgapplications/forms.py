@@ -21,8 +21,8 @@ import six
 from captcha.fields import CaptchaField
 from django import forms
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.db.models import Q
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from karaage.common.forms import clean_email, validate_password

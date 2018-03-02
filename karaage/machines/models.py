@@ -20,8 +20,8 @@ import datetime
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
-from django.core.urlresolvers import reverse
 from django.db import models
+from django.urls import reverse
 from django.utils.encoding import python_2_unicode_compatible
 from jsonfield import JSONField
 from model_utils import FieldTracker
@@ -78,20 +78,20 @@ class Machine(AbstractBaseUser):
     def __str__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
-        return 'kg_machine_detail', [self.id]
+        return reverse('kg_machine_detail', args=[self.id])
 
 
 @python_2_unicode_compatible
 class Account(models.Model):
-    person = models.ForeignKey(Person)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
     username = models.CharField(max_length=255)
     foreign_id = models.CharField(
         max_length=255, null=True, unique=True,
         help_text='The foreign identifier from the datastore.')
     default_project = models.ForeignKey(
-        'karaage.Project', null=True, blank=True)
+        'karaage.Project', null=True, blank=True,
+        on_delete=models.SET_NULL)
     date_created = models.DateField()
     date_deleted = models.DateField(null=True, blank=True)
     disk_quota = models.IntegerField(null=True, blank=True, help_text="In GB")
@@ -202,7 +202,7 @@ class Account(models.Model):
 
     def can_view(self, request):
         # if user not authenticated, no access
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             return False
 
         # ensure person making request isn't deleted.

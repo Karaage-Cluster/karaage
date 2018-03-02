@@ -37,7 +37,7 @@ class LookupChannel(ajax_select.LookupChannel):
         HttpResponseForbidden("who are you?") instead of raising
         PermissionDenied (401 response)
         """
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             raise PermissionDenied
         if not is_admin(request):
             raise PermissionDenied

@@ -21,7 +21,6 @@ import datetime
 import django_tables2 as tables
 import six
 from django.contrib import messages
-from django.core.urlresolvers import reverse
 from django.http import (
     HttpResponseBadRequest,
     HttpResponseForbidden,
@@ -29,6 +28,7 @@ from django.http import (
     QueryDict,
 )
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 from django.views.decorators.debug import sensitive_post_parameters
 
 import karaage.common as common

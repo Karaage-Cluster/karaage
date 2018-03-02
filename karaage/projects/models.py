@@ -19,6 +19,7 @@
 import datetime
 
 from django.db import models
+from django.urls import reverse
 from django.utils.encoding import python_2_unicode_compatible
 from model_utils import FieldTracker
 
@@ -36,8 +37,8 @@ from karaage.projects.managers import (
 class Project(models.Model):
     pid = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=200)
-    group = models.ForeignKey(Group)
-    institute = models.ForeignKey(Institute)
+    group = models.ForeignKey(Group, on_delete=models.PROTECT)
+    institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
     leaders = models.ManyToManyField(Person, related_name='leads')
     description = models.TextField(null=True, blank=True)
     is_approved = models.BooleanField(default=False)
@@ -47,11 +48,13 @@ class Project(models.Model):
     is_active = models.BooleanField(default=False)
     approved_by = models.ForeignKey(
         Person, related_name='project_approver',
-        null=True, blank=True, editable=False)
+        null=True, blank=True, editable=False,
+        on_delete=models.SET_NULL)
     date_approved = models.DateField(null=True, blank=True, editable=False)
     deleted_by = models.ForeignKey(
         Person, related_name='project_deletor',
-        null=True, blank=True, editable=False)
+        null=True, blank=True, editable=False,
+        on_delete=models.SET_NULL)
     date_deleted = models.DateField(null=True, blank=True, editable=False)
     last_usage = models.DateField(null=True, blank=True, editable=False)
     objects = models.Manager()
@@ -68,9 +71,8 @@ class Project(models.Model):
     def __str__(self):
         return '%s - %s' % (self.pid, self.name)
 
-    @models.permalink
     def get_absolute_url(self):
-        return 'kg_project_detail', [self.id]
+        return reverse('kg_project_detail', args=[self.id])
 
     def save(self, *args, **kwargs):
         created = self.pk is None
@@ -152,7 +154,7 @@ class Project(models.Model):
     def can_view(self, request):
         person = request.user
 
-        if not person.is_authenticated():
+        if not person.is_authenticated:
             return False
 
         if is_admin(request):
@@ -189,7 +191,7 @@ class Project(models.Model):
         # The same as can_view, except normal project members cannot edit
         person = request.user
 
-        if not person.is_authenticated():
+        if not person.is_authenticated:
             return False
 
         if is_admin(request):

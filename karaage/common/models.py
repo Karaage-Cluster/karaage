@@ -73,8 +73,9 @@ class LogEntryManager(models.Manager):
 @python_2_unicode_compatible
 class LogEntry(models.Model):
     action_time = models.DateTimeField(_('action time'), auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
-    content_type = models.ForeignKey(ContentType)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.TextField(_('object id'), blank=True, null=True)
     content_object = GenericForeignKey('content_type', 'object_id')
     object_repr = models.CharField(_('object repr'), max_length=200)

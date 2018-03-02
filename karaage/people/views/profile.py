@@ -19,9 +19,9 @@
 from django.apps import apps
 from django.contrib import messages
 from django.contrib.auth import login as auth_login
-from django.core.urlresolvers import reverse
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.decorators.debug import sensitive_post_parameters
 
 import karaage.common as common
@@ -92,7 +92,7 @@ def saml_login(request):
                 return HttpResponseBadRequest("<h1>Bad Request</h1>")
         else:
             return HttpResponseBadRequest("<h1>Bad Request</h1>")
-    elif request.user.is_authenticated():
+    elif request.user.is_authenticated:
         error = "You are already logged in."
     elif saml_session:
         attrs, error = saml.parse_attributes(request)
@@ -128,7 +128,7 @@ def saml_details(request):
 
     if request.method == 'POST':
         if 'login' in request.POST:
-            if request.user.is_authenticated():
+            if request.user.is_authenticated:
                 person = request.user
                 institute = person.institute
                 if institute.saml_entityid:
@@ -142,7 +142,7 @@ def saml_details(request):
                 return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
         elif 'register' in request.POST:
-            if request.user.is_authenticated() and saml_session:
+            if request.user.is_authenticated and saml_session:
                 person = request.user
                 person = saml.add_saml_data(
                     person, request)
@@ -167,7 +167,7 @@ def saml_details(request):
         saml_session = True
 
     person = None
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         person = request.user
 
     return render(

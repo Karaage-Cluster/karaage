@@ -25,7 +25,6 @@ import six
 from celery.task import Task
 from django.conf import settings
 from django.core.cache import cache
-from django.core.urlresolvers import reverse
 from django.db.models import Count, Q, Sum
 from django.http import (
     HttpResponse,
@@ -35,6 +34,7 @@ from django.http import (
 )
 from django.shortcuts import get_object_or_404, render
 from django.template.defaultfilters import dictsortreversed
+from django.urls import reverse
 
 from karaage.common import get_date_range
 from karaage.common.decorators import admin_required, usage_required

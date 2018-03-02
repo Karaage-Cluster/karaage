@@ -27,12 +27,12 @@ import six
 from django.conf import settings
 from django.contrib.admindocs.views import simplify_regex
 from django.core.exceptions import ViewDoesNotExist
-from django.core.urlresolvers import (
+from django.test import TestCase
+from django.urls import (
     LocaleRegexURLResolver,
     RegexURLPattern,
     RegexURLResolver,
 )
-from django.test import TestCase
 from django.utils import translation
 from django.utils.encoding import smart_text
 from django.utils.text import slugify

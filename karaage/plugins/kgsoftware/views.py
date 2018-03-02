@@ -22,10 +22,10 @@ import django_tables2 as tables
 import six
 from django.apps import apps
 from django.contrib import messages
-from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.template.defaultfilters import wordwrap
+from django.urls import reverse
 
 import karaage.common as util
 from karaage.common import log

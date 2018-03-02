@@ -40,9 +40,9 @@ class UnknownUsageFilter(django_filters.BooleanFilter):
 
 
 class CPUJobFilter(django_filters.FilterSet):
-    person = django_filters.CharFilter(name="account__person__username")
-    account = django_filters.CharFilter(name="account__pk")
-    project = django_filters.CharFilter(name="project__pid")
+    person = django_filters.CharFilter(field_name="account__person__username")
+    account = django_filters.CharFilter(field_name="account__pk")
+    project = django_filters.CharFilter(field_name="project__pid")
     unknown_usage = UnknownUsageFilter()
 
     class Meta:

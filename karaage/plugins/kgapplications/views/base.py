@@ -20,7 +20,6 @@
 
 from django.conf import settings
 from django.contrib import messages
-from django.core.urlresolvers import reverse
 from django.http import (
     Http404,
     HttpResponse,
@@ -29,6 +28,7 @@ from django.http import (
     HttpResponseRedirect,
 )
 from django.shortcuts import render
+from django.urls import reverse
 
 import karaage.common as common
 from karaage.common import log
@@ -49,7 +49,7 @@ def get_url(request, application, roles, label=None):
     elif 'is_applicant' not in roles:
         # we never give secrets to anybody but the applicant
         require_secret = False
-    elif not request.user.is_authenticated():
+    elif not request.user.is_authenticated:
         # If applicant is not logged in, we redirect them to secret URL
         require_secret = True
     elif request.user != application.applicant:

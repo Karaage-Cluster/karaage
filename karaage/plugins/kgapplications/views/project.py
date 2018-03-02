@@ -23,7 +23,6 @@ import json
 import six
 from django.conf import settings
 from django.contrib import messages
-from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import (
     HttpResponse,
@@ -32,6 +31,7 @@ from django.http import (
     HttpResponseRedirect,
 )
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 
 from karaage.common import is_admin, log, saml
 from karaage.common.decorators import login_required
@@ -572,7 +572,7 @@ class StateApplicantEnteringDetails(StateWithSteps):
                         "as a registered user.")
                 del query
 
-            if request.user.is_authenticated():
+            if request.user.is_authenticated:
                 new_person = request.user
                 reason = "%s was logged in " \
                     "and accessed the secret URL." % new_person
@@ -886,7 +886,7 @@ def new_application(request):
 
     roles = {'is_applicant', 'is_authorised'}
 
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         attrs, _ = saml.parse_attributes(request)
         defaults = {'email': attrs['email']}
         form = forms.UnauthenticatedInviteUserApplicationForm(

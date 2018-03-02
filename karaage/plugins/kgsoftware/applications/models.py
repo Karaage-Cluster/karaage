@@ -31,7 +31,7 @@ from ..models import SoftwareLicense, SoftwareLicenseAgreement
 
 class SoftwareApplication(Application):
     type = "software"
-    software_license = models.ForeignKey(SoftwareLicense)
+    software_license = models.ForeignKey(SoftwareLicense, on_delete=models.CASCADE)
 
     objects = ApplicationManager()
 

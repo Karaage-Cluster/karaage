@@ -17,6 +17,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.db import models
+from django.urls import reverse
 from django.utils.encoding import python_2_unicode_compatible
 from model_utils import FieldTracker
 
@@ -36,14 +37,14 @@ class SoftwareCategory(models.Model):
     def __str__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
-        return 'kg_software_category_list', []
+        return reverse('kg_software_category_list')
 
 
 @python_2_unicode_compatible
 class Software(models.Model):
-    category = models.ForeignKey(SoftwareCategory, blank=True, null=True)
+    category = models.ForeignKey(
+        SoftwareCategory, blank=True, null=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, unique=True)
     description = models.TextField(blank=True, null=True)
     group = models.ForeignKey(
@@ -84,9 +85,8 @@ class Software(models.Model):
     def __str__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
-        return 'kg_software_detail', [self.id]
+        return reverse('kg_software_detail', args=[self.id])
 
     def get_current_license(self):
         try:
@@ -106,7 +106,7 @@ class Software(models.Model):
 
 @python_2_unicode_compatible
 class SoftwareVersion(models.Model):
-    software = models.ForeignKey(Software)
+    software = models.ForeignKey(Software, on_delete=models.CASCADE)
     version = models.CharField(max_length=100)
     machines = models.ManyToManyField(Machine)
     module = models.CharField(max_length=100, blank=True, null=True)
@@ -131,7 +131,7 @@ class SoftwareVersion(models.Model):
 
 
 class SoftwareLicense(models.Model):
-    software = models.ForeignKey(Software)
+    software = models.ForeignKey(Software, on_delete=models.CASCADE)
     version = models.CharField(max_length=100, blank=True, null=True)
     date = models.DateField(blank=True, null=True)
     text = models.TextField()
@@ -144,14 +144,13 @@ class SoftwareLicense(models.Model):
     def __str__(self):
         return '%s - %s' % (self.software.name, self.version)
 
-    @models.permalink
     def get_absolute_url(self):
-        return 'kg_software_license_detail', [self.id]
+        return reverse('kg_software_license_detail', args=[self.id])
 
 
 class SoftwareLicenseAgreement(models.Model):
-    person = models.ForeignKey(Person)
-    license = models.ForeignKey(SoftwareLicense)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    license = models.ForeignKey(SoftwareLicense, on_delete=models.CASCADE)
     date = models.DateField()
 
     class Meta:

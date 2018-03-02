@@ -26,7 +26,7 @@ from django.http import QueryDict
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
 
 from karaage.plugins import BasePlugin
@@ -72,7 +72,7 @@ def get_current_person():
     user = get_current_user()
     if user is None:
         return None
-    if not user.is_authenticated():
+    if not user.is_authenticated:
         return None
     return user
 
@@ -152,7 +152,7 @@ def add_comment(request, breadcrumbs, obj):
 def is_admin(request):
     if settings.ADMIN_IGNORED:
         return False
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         return False
     return request.user.is_admin
 

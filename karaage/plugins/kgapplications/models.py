@@ -22,6 +22,7 @@ import six
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q
+from django.urls import reverse
 from django.utils.encoding import python_2_unicode_compatible
 from model_utils import FieldTracker
 
@@ -88,7 +89,8 @@ class Application(models.Model):
         max_length=64, default=new_random_token, editable=False, unique=True)
     expires = models.DateTimeField(editable=False)
     created_by = models.ForeignKey(
-        Person, editable=False, null=True, blank=True)
+        Person, editable=False, null=True, blank=True,
+        on_delete=models.SET_NULL)
     created_date = models.DateTimeField(auto_now_add=True, editable=False)
     submitted_date = models.DateTimeField(null=True, blank=True)
     state = models.CharField(max_length=5)
@@ -96,7 +98,8 @@ class Application(models.Model):
     content_type = models.ForeignKey(
         ContentType,
         limit_choices_to={'model__in': ['person', 'applicant']},
-        null=True, blank=True)
+        null=True, blank=True,
+        on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     applicant = GenericForeignKey()
     header_message = models.TextField(
@@ -122,9 +125,8 @@ class Application(models.Model):
     def get_type(self):
         return self._class
 
-    @models.permalink
     def get_absolute_url(self):
-        return 'kg_application_detail', [self.id]
+        return reverse('kg_application_detail', args=[self.id])
 
     def save(self, *args, **kwargs):
         created = self.pk is None
@@ -257,13 +259,15 @@ class ProjectApplication(Application):
     # new project request
     name = models.CharField('Title', max_length=200)
     institute = models.ForeignKey(
-        Institute, limit_choices_to={'is_active': True}, null=True, blank=True)
+        Institute, limit_choices_to={'is_active': True}, null=True, blank=True,
+        on_delete=models.CASCADE)
     description = models.TextField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
     pid = models.CharField(max_length=50, null=True, blank=True)
 
     # existing project request
-    project = models.ForeignKey(Project, null=True, blank=True)
+    project = models.ForeignKey(
+        Project, null=True, blank=True, on_delete=models.CASCADE)
 
     objects = ApplicationManager()
 
@@ -365,7 +369,8 @@ class Applicant(models.Model):
     institute = models.ForeignKey(
         Institute,
         limit_choices_to={'is_active': True},
-        null=True, blank=True)
+        null=True, blank=True,
+        on_delete=models.CASCADE)
     department = models.CharField(max_length=200, null=True, blank=True)
     position = models.CharField(max_length=200, null=True, blank=True)
     telephone = models.CharField(

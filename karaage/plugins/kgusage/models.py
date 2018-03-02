@@ -17,6 +17,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.db import models
+from django.urls import reverse
 from django.utils.encoding import python_2_unicode_compatible
 
 from karaage.institutes.models import Institute
@@ -40,12 +41,12 @@ class Queue(models.Model):
 
 @python_2_unicode_compatible
 class CPUJob(models.Model):
-    account = models.ForeignKey(Account, blank=True, null=True)
+    account = models.ForeignKey(Account, blank=True, null=True, on_delete=models.PROTECT)
     username = models.CharField(max_length=50, blank=True, null=True)
-    project = models.ForeignKey(Project, null=True, blank=True)
-    machine = models.ForeignKey(Machine, blank=True, null=True)
+    project = models.ForeignKey(Project, null=True, blank=True, on_delete=models.PROTECT)
+    machine = models.ForeignKey(Machine, blank=True, null=True, on_delete=models.PROTECT)
     date = models.DateField(db_index=True, blank=True, null=True)
-    queue = models.ForeignKey(Queue, blank=True, null=True)
+    queue = models.ForeignKey(Queue, blank=True, null=True, on_delete=models.PROTECT)
     cpu_usage = models.BigIntegerField(blank=True, null=True)
     mem = models.BigIntegerField(blank=True, null=True)
     vmem = models.BigIntegerField(blank=True, null=True)
@@ -75,9 +76,8 @@ class CPUJob(models.Model):
         return ('%s - %s - %s - %s'
                 % (self.username, self.project, self.machine, self.date))
 
-    @models.permalink
     def get_absolute_url(self):
-        return 'kg_usage_job_detail', [self.jobid]
+        return reverse('kg_usage_job_detail', args=[self.jobid])
 
     def wait_time(self):
         diff = self.start - self.qtime
@@ -106,7 +106,7 @@ class UsageCache(models.Model):
 
 
 class InstituteCache(UsageCache):
-    institute = models.ForeignKey(Institute)
+    institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = (
@@ -115,7 +115,7 @@ class InstituteCache(UsageCache):
 
 
 class ProjectCache(UsageCache):
-    project = models.ForeignKey(Project)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = (
@@ -124,8 +124,8 @@ class ProjectCache(UsageCache):
 
 
 class PersonCache(UsageCache):
-    person = models.ForeignKey(Person)
-    project = models.ForeignKey(Project)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = (
@@ -142,7 +142,7 @@ class MachineCategoryCache(UsageCache):
 
 
 class MachineCache(UsageCache):
-    machine = models.ForeignKey(Machine)
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('date', 'start', 'end', 'machine')

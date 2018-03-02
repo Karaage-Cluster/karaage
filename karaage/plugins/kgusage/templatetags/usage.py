@@ -26,7 +26,7 @@ from ..tables import CPUJobTable
 register = template.Library()
 
 
-@register.assignment_tag(takes_context=True)
+@register.simple_tag(takes_context=True)
 def get_person_recent_usage(context, person):
     queryset = CPUJob.objects.filter(account__person=person).select_related()
     table = CPUJobTable(queryset, prefix="person-%d-usage-" % person.pk)
@@ -35,7 +35,7 @@ def get_person_recent_usage(context, person):
     return table
 
 
-@register.assignment_tag(takes_context=True)
+@register.simple_tag(takes_context=True)
 def get_account_recent_usage(context, account):
     queryset = CPUJob.objects.filter(account=account).select_related()
     table = CPUJobTable(queryset, prefix="account-%d-usage-" % account.pk)
@@ -44,7 +44,7 @@ def get_account_recent_usage(context, account):
     return table
 
 
-@register.assignment_tag(takes_context=True)
+@register.simple_tag(takes_context=True)
 def get_project_recent_usage(context, project):
     queryset = CPUJob.objects.filter(project=project).select_related()
     table = CPUJobTable(queryset, prefix="project-%d-usage-" % project.pk)
@@ -53,7 +53,7 @@ def get_project_recent_usage(context, project):
     return table
 
 
-@register.assignment_tag(takes_context=True)
+@register.simple_tag(takes_context=True)
 def get_software_recent_usage(context, software):
     queryset = CPUJob.objects.filter(software__software=software).select_related()
     table = CPUJobTable(queryset, prefix="software-%d-usage-" % software.pk)
@@ -62,7 +62,7 @@ def get_software_recent_usage(context, software):
     return table
 
 
-@register.assignment_tag(takes_context=True)
+@register.simple_tag(takes_context=True)
 def get_machine_recent_usage(context, machine):
     queryset = CPUJob.objects.filter(machine=machine).select_related()
     table = CPUJobTable(queryset, prefix="machine-%d-usage-" % machine.pk)

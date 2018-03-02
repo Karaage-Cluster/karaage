@@ -19,7 +19,7 @@
 import django_filters
 import django_tables2 as tables
 import six
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django_tables2.columns.linkcolumn import BaseLinkColumn
 from django_tables2.utils import A
@@ -73,15 +73,15 @@ class PersonFilter(django_filters.FilterSet):
     full_name = django_filters.CharFilter(lookup_expr="icontains")
     email = django_filters.CharFilter(lookup_expr="icontains")
     no_last_usage = django_filters.BooleanFilter(
-        name="last_usage", lookup_expr="isnull")
+        field_name="last_usage", lookup_expr="isnull")
     begin_last_usage = django_filters.DateFilter(
-        name="last_usage", lookup_expr="gte")
+        field_name="last_usage", lookup_expr="gte")
     end_last_usage = django_filters.DateFilter(
-        name="last_usage", lookup_expr="lte")
+        field_name="last_usage", lookup_expr="lte")
     begin_date_approved = django_filters.DateFilter(
-        name="date_approved", lookup_expr="gte")
+        field_name="date_approved", lookup_expr="gte")
     end_date_approved = django_filters.DateFilter(
-        name="date_approved", lookup_expr="lte")
+        field_name="date_approved", lookup_expr="lte")
 
     class Meta:
         model = Person

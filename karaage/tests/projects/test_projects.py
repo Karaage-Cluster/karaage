@@ -19,7 +19,7 @@
 import datetime
 
 from django.core.management import call_command
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from karaage.machines.models import Account
 from karaage.people.models import Group, Person

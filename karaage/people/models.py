@@ -21,8 +21,8 @@ import warnings
 
 import six
 from django.contrib.auth.models import AbstractBaseUser
-from django.core.urlresolvers import reverse
 from django.db import models
+from django.urls import reverse
 from django.utils.encoding import python_2_unicode_compatible
 from jsonfield import JSONField
 from model_utils import FieldTracker
@@ -61,7 +61,7 @@ class Person(AbstractBaseUser):
     mobile = models.CharField(max_length=200, null=True, blank=True)
     department = models.CharField(max_length=200, null=True, blank=True)
     supervisor = models.CharField(max_length=100, null=True, blank=True)
-    institute = models.ForeignKey('karaage.Institute')
+    institute = models.ForeignKey('karaage.Institute', on_delete=models.CASCADE)
     title = models.CharField(
         choices=TITLES, max_length=10, null=True, blank=True)
     address = models.CharField(max_length=200, null=True, blank=True)
@@ -75,9 +75,11 @@ class Person(AbstractBaseUser):
     fax = models.CharField(max_length=50, null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
     approved_by = models.ForeignKey(
-        'self', related_name='user_approver', null=True, blank=True)
+        'self', related_name='user_approver', null=True, blank=True,
+        on_delete=models.SET_NULL)
     deleted_by = models.ForeignKey(
-        'self', related_name='user_deletor', null=True, blank=True)
+        'self', related_name='user_deletor', null=True, blank=True,
+        on_delete=models.SET_NULL)
     date_approved = models.DateField(null=True, blank=True)
     date_deleted = models.DateField(null=True, blank=True)
     last_usage = models.DateField(null=True, blank=True)
@@ -228,7 +230,7 @@ class Person(AbstractBaseUser):
         from karaage.projects.models import Project
         person = request.user
 
-        if not person.is_authenticated():
+        if not person.is_authenticated:
             return False
 
         # ensure person making request isn't deleted.

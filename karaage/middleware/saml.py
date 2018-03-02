@@ -19,12 +19,13 @@
 from django.contrib import auth
 from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import render
+from django.utils.deprecation import MiddlewareMixin
 
 import karaage.common.saml as saml
 from karaage.people.models import Person
 
 
-class SamlUserMiddleware(object):
+class SamlUserMiddleware(MiddlewareMixin):
     """
     Middleware for utilizing Web-server-provided authentication.
 
@@ -51,7 +52,7 @@ class SamlUserMiddleware(object):
         # If the user is already authenticated and that user is the user we are
         # getting passed in the headers, then the correct user is already
         # persisted in the session and we don't need to continue.
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return
 
         # Is this a shib session?

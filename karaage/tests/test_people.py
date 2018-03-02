@@ -23,7 +23,7 @@ import django
 from django.conf import settings
 from django.contrib import auth
 from django.core import mail
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from karaage.institutes.models import Institute, InstituteDelegate
 from karaage.machines.models import Account
@@ -62,7 +62,7 @@ class PersonTestCase(IntegrationTestCase):
             url_prefix + reverse('index'))
 
         user = auth.get_user(self.client)
-        assert user.is_authenticated()
+        assert user.is_authenticated
         assert user.username == 'kgsuper'
 
     def test_saml_login(self):
@@ -98,7 +98,7 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(response.status_code, 200)
 
         user = auth.get_user(self.client)
-        assert user.is_authenticated()
+        assert user.is_authenticated
         assert user.username == 'kgtestuser1'
 
     def test_logout(self):
@@ -114,7 +114,7 @@ class PersonTestCase(IntegrationTestCase):
             url_prefix + reverse('index'))
 
         user = auth.get_user(self.client)
-        assert not user.is_authenticated()
+        assert not user.is_authenticated
 
     def do_permission_tests(self, test_object, users):
         for user_id in users:
@@ -178,7 +178,7 @@ class PersonTestCase(IntegrationTestCase):
         # test that members can see other people in own project
         # print("------------------------------------------------------------")
         project = Project.objects.get(pid="TestProject1")
-        project.group.members = [2, 3]
+        project.group.members.set([2, 3])
 
         test_object = Project.objects.get(pid="TestProject1")
         self.do_permission_tests(test_object, {
@@ -234,7 +234,7 @@ class PersonTestCase(IntegrationTestCase):
             person=Person.objects.get(id=2),
             defaults={'send_email': False})
         project = Project.objects.get(pid="TestProject1")
-        project.leaders = [2]
+        project.leaders.set([2])
 
         test_object = Project.objects.get(pid="TestProject1")
         self.do_permission_tests(test_object, {

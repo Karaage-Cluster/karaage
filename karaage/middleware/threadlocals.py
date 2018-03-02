@@ -18,6 +18,7 @@
 
 # Django 1.6 Hack: Ensure tldap.django gets initialised.
 import django
+from django.utils.deprecation import MiddlewareMixin
 
 
 if django.VERSION < (1, 7):
@@ -41,7 +42,7 @@ def reset():
     _thread_locals.user = None
 
 
-class ThreadLocals(object):
+class ThreadLocals(MiddlewareMixin):
     """Middleware that gets various objects from the
     request object and saves them in thread local storage."""
 

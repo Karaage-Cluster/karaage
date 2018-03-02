@@ -261,7 +261,7 @@ def for_each_app_include(parser, token):
     return ForEachAppIncludeNode(template_name)
 
 
-@register.assignment_tag()
+@register.simple_tag()
 def is_for_each_app_include_empty(template_name):
     for label in get_app_labels():
         template_path = os.path.join(label, template_name)

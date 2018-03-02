@@ -104,7 +104,7 @@ class ApplicationActionsPlus(template.Node):
         return output
 
 
-@register.assignment_tag(takes_context=True)
+@register.simple_tag(takes_context=True)
 def get_similar_people_table(context, applicant):
     queryset = applicant.similar_people()
     table = PersonTable(
