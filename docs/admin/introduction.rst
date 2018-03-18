@@ -8,6 +8,7 @@ in a cluster and can store the data in various backends.
 
 .. index:: Karaage; features
 
+
 Features
 --------
 * Can store user information and/or posix account information in LDAP/Active Directory/passwd file.
@@ -17,6 +18,7 @@ Features
 * Usage reporting. Report on a per institute, per project or per user for CPU usage.
 * Track usage of software and versions. Keep track of what software (and version) and type of jobs a user is running.
 
+
 Admin access
 ------------
 When an administrator logs into karaage, they can do the following:
@@ -24,6 +26,7 @@ When an administrator logs into karaage, they can do the following:
 * See/modify information about all users/projects/institutes/applications/usage etc.
 * Many changes are logged.
 * Anything a normal user can.
+
 
 User access
 -----------
