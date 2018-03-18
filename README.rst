@@ -55,23 +55,11 @@ These modules are:
 Plugins
 -------
 
-karaage-usage
-^^^^^^^^^^^^^
-
-.. todo:: Write paragraph about what the usage plugin does.
-
-The karaage-usage plugin provides monitoring of usage information.
-
-karaage-applications
-^^^^^^^^^^^^^^^^^^^^
-
-This plugin allows users to self register accounts with Karaage.
-
-
-karaage-software
-^^^^^^^^^^^^^^^^
-
-.. todo:: Write paragraph about what the software plugin does.
+* karaage-usage: The karaage-usage plugin provides monitoring of usage
+  information.
+* karaage-applications: This plugin allows users to self register accounts with
+  Karaage.
+* karaage-software: Keep track of installed software applications.
 
 
 Contact
