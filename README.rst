@@ -5,11 +5,11 @@ Karaage 3
 
 .. contents :: Table of Contents
 
-Overview
---------
 
-Karaage manages users and projects in a cluster and can store the data in
-various backends.
+What is Karaage?
+----------------
+Karaage is a cluster account management tool. It can manage users and projects
+in a cluster and can store the data in various backends.
 
 
 Features
