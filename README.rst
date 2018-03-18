@@ -67,8 +67,8 @@ Plugins
 Support
 -------
 
-* [Mailing list](https://groups.google.com/d/forum/karaage-users)
-* [Bug reports](https://github.com/Karaage-Cluster/karaage/issues)
+* `Mailing list <https://groups.google.com/d/forum/karaage-users>`_
+* `Bug reports <https://github.com/Karaage-Cluster/karaage/issues`_
 
 
 Source code
