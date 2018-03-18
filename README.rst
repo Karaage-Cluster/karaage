@@ -30,15 +30,15 @@ Components
 Karaage is a complicated application and has more then one source repository:
 
 - `Karaage 3 karaage-cluster-tools
-  <https://github.com/Karaage-Cluster/karaage-cluster-tools>`_)
+  <https://github.com/Karaage-Cluster/karaage-cluster-tools>`_
 - `TLDAP library
-  <https://github.com/Karaage-Cluster/python-tldap>`_)
+  <https://github.com/Karaage-Cluster/python-tldap>`_
 - `ALogger library
-  <https://github.com/Karaage-Cluster/python-alogger>`_)
+  <https://github.com/Karaage-Cluster/python-alogger>`_
 - `Website
-  <https://github.com/Karaage-Cluster/Karaage-Cluster.github.io>`_)
+  <https://github.com/Karaage-Cluster/Karaage-Cluster.github.io>`_
 - `Slurm Docker packaging
-  <https://github.com/Karaage-Cluster/slurm>`_)
+  <https://github.com/Karaage-Cluster/slurm>`_
 
 Anything else not in this list has not been touched in years, and may not
 be still relevant.
