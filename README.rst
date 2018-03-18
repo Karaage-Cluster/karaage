@@ -68,7 +68,7 @@ Support
 -------
 
 * `Mailing list <https://groups.google.com/d/forum/karaage-users>`_
-* `Bug reports <https://github.com/Karaage-Cluster/karaage/issues`_
+* `Bug reports <https://github.com/Karaage-Cluster/karaage/issues>`_
 
 
 Source code
