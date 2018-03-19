@@ -26,12 +26,12 @@ Documentation
 -------------
 
 - `Karaage 3.x User documentation
-  <http://karaage.readthedocs.org/projects/karaage-user/en/latest/>`_
+  <https://karaage.readthedocs.org/projects/karaage-user/en/latest/>`_
 
 - `Karaage 3.x Programmer documentation:
-  <http://karaage.readthedocs.org/projects/karaage-programmer/en/latest/>`_
+  <https://karaage.readthedocs.org/projects/karaage-programmer/en/latest/>`_
 
-- `Karaage 3.x Admin documentation: <http://karaage.readthedocs.org/en/latest/>`_
+- `Karaage 3.x Admin documentation: <https://karaage.readthedocs.org/en/latest/>`_
 
 
 Components
