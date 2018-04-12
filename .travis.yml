@@ -25,7 +25,7 @@ install:
   - pip install -rrequirements/tests.txt
 
 script:
-   isort -rc --check --diff karaage
+  - isort -rc --check --diff karaage
   - flake8
 
   - ./manage.py makemigrations --settings="karaage.tests.settings" --check --dry-run
