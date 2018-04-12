@@ -25,16 +25,26 @@ install:
   - pip install -rrequirements/tests.txt
 
 script:
-  - isort -rc --check --diff karaage
+   isort -rc --check --diff karaage
   - flake8
+
+  - ./manage.py makemigrations --settings="karaage.tests.settings" --check --dry-run
   - ./manage.py collectstatic --settings="karaage.tests.settings" -v 2 --noinput
   - python ./manage.py test --settings="karaage.tests.settings" -v 2 karaage.tests
+
+  - ./manage.py makemigrations --settings="karaage.plugins.kgapplications.tests.settings" --check --dry-run
   - ./manage.py collectstatic --settings="karaage.plugins.kgapplications.tests.settings" -v 2 --noinput
   - python ./manage.py test --settings="karaage.plugins.kgapplications.tests.settings" -v 2 karaage.plugins.kgapplications
+
+  - ./manage.py makemigrations --settings="karaage.plugins.kgsoftware.tests.settings" --check --dry-run
   - ./manage.py collectstatic --settings="karaage.plugins.kgsoftware.tests.settings" -v 2 --noinput
   - python ./manage.py test --settings="karaage.plugins.kgsoftware.tests.settings" -v 2 karaage.plugins.kgsoftware.tests
+
+  - ./manage.py makemigrations --settings="karaage.plugins.kgsoftware.applications.tests.settings" --check --dry-run
   - ./manage.py collectstatic --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 --noinput
   - python ./manage.py test --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 karaage.plugins.kgsoftware
+
+  - ./manage.py makemigrations --settings="karaage.plugins.kgusage.tests.settings" --check --dry-run
   - ./manage.py collectstatic --settings="karaage.plugins.kgusage.tests.settings" -v 2 --noinput
   - python ./manage.py test --settings="karaage.plugins.kgusage.tests.settings" -v 2 karaage.plugins.kgusage
 

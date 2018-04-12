@@ -42,6 +42,12 @@ for values in $TESTS; do
     echo "STATIC FILES - $conf"
     echo "############################"
     rm -rf tmp
+    ./manage.py makemigrations --settings="$conf" --check --dry-run
+    if [ "$?" -ne 0 ]
+    then
+        exit 1
+    fi
+
     ./manage.py collectstatic --settings="$conf" -v 2 --noinput
     if [ "$?" -ne 0 ]
     then
