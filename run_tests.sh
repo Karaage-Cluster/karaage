@@ -39,15 +39,23 @@ for values in $TESTS; do
     tests=$(echo $values | cut -f2 -d: | sed 's/,/ /g')
 
     echo ""
-    echo "STATIC FILES - $conf"
+    echo "MIGRATIONS - $conf"
     echo "############################"
-    rm -rf tmp
     ./manage.py makemigrations --settings="$conf" --check --dry-run
     if [ "$?" -ne 0 ]
     then
         exit 1
     fi
+    ./manage.py migrate --settings="$conf"
+    if [ "$?" -ne 0 ]
+    then
+        exit 1
+    fi
 
+    echo ""
+    echo "STATIC FILES - $conf"
+    echo "############################"
+    rm -rf tmp
     ./manage.py collectstatic --settings="$conf" -v 2 --noinput
     if [ "$?" -ne 0 ]
     then

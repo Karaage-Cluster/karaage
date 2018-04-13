@@ -13,8 +13,8 @@ addons:
     - ldap-utils
 
 env:
- - DATABASE_URL=postgres://postgres@/spud
- - DATABASE_URL=mysql://root:@localhost/spud
+ - DATABASE_URL=postgres://postgres@/karaage
+ - DATABASE_URL=mysql://root:@localhost/karaage
  - DATABASE_URL=sqlite://
 
 install:
@@ -24,29 +24,38 @@ install:
 # Install other dependancies
   - pip install -rrequirements/tests.txt
 
+before_script:
+  - psql -c 'create database karaage;' -U postgres
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS karaage;'
+
 script:
   - isort -rc --check --diff karaage
   - flake8
 
   - ./manage.py makemigrations --settings="karaage.tests.settings" --check --dry-run
+  - ./manage.py migrate --settings="karaage.tests.settings"
   - ./manage.py collectstatic --settings="karaage.tests.settings" -v 2 --noinput
-  - python ./manage.py test --settings="karaage.tests.settings" -v 2 karaage.tests
+  - ./manage.py test --settings="karaage.tests.settings" -v 2 karaage.tests
 
   - ./manage.py makemigrations --settings="karaage.plugins.kgapplications.tests.settings" --check --dry-run
+  - ./manage.py migrate --settings="karaage.plugins.kgapplications.tests.settings"
   - ./manage.py collectstatic --settings="karaage.plugins.kgapplications.tests.settings" -v 2 --noinput
-  - python ./manage.py test --settings="karaage.plugins.kgapplications.tests.settings" -v 2 karaage.plugins.kgapplications
+  - ./manage.py test --settings="karaage.plugins.kgapplications.tests.settings" -v 2 karaage.plugins.kgapplications
 
   - ./manage.py makemigrations --settings="karaage.plugins.kgsoftware.tests.settings" --check --dry-run
+  - ./manage.py migrate --settings="karaage.plugins.kgsoftware.tests.settings"
   - ./manage.py collectstatic --settings="karaage.plugins.kgsoftware.tests.settings" -v 2 --noinput
-  - python ./manage.py test --settings="karaage.plugins.kgsoftware.tests.settings" -v 2 karaage.plugins.kgsoftware.tests
+  - ./manage.py test --settings="karaage.plugins.kgsoftware.tests.settings" -v 2 karaage.plugins.kgsoftware.tests
 
   - ./manage.py makemigrations --settings="karaage.plugins.kgsoftware.applications.tests.settings" --check --dry-run
+  - ./manage.py migrate --settings="karaage.plugins.kgsoftware.applications.tests.settings"
   - ./manage.py collectstatic --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 --noinput
-  - python ./manage.py test --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 karaage.plugins.kgsoftware
+  - ./manage.py test --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 karaage.plugins.kgsoftware
 
   - ./manage.py makemigrations --settings="karaage.plugins.kgusage.tests.settings" --check --dry-run
+  - ./manage.py migrate --settings="karaage.plugins.kgusage.tests.settings"
   - ./manage.py collectstatic --settings="karaage.plugins.kgusage.tests.settings" -v 2 --noinput
-  - python ./manage.py test --settings="karaage.plugins.kgusage.tests.settings" -v 2 karaage.plugins.kgusage
+  - ./manage.py test --settings="karaage.plugins.kgusage.tests.settings" -v 2 karaage.plugins.kgusage
 
 jobs:
   include:
