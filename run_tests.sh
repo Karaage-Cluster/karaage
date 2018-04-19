@@ -46,11 +46,6 @@ for values in $TESTS; do
     then
         exit 1
     fi
-    ./manage.py migrate --settings="$conf"
-    if [ "$?" -ne 0 ]
-    then
-        exit 1
-    fi
 
     echo ""
     echo "STATIC FILES - $conf"
