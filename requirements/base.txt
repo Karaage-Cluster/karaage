@@ -16,7 +16,7 @@ django-environ==0.4.4
 six==1.11.0
 slimit==0.8.1
 whitenoise==3.3.1
-Django==1.11.11
+Django==2.0.4
 
 # celery
 amqp==2.2.2
