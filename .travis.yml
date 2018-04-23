@@ -55,7 +55,7 @@ script:
 jobs:
   include:
     - stage: deploy
-      if: branch = master and type = push
+      if: branch = master and type = push and tag =~ ^v
       install:
       script:
       - docker build
