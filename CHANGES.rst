@@ -9,13 +9,29 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
-5.0.3 - UNRELEASED
+5.0.3 - 2018-04-23
 ------------------
 
 Fixed
 ~~~~~
 * Moved institute help text out of migration so it doesn't trigger a new
   migration when the email address changes.
+
+Changed
+~~~~~~~
+* Fix out-by-one error in changelog versions.
+* Improvements to static checks.
+* Fix deprecation warnings.
+* Update django-extensions from 2.0.0 to 2.0.2.
+* Update matplotlib from 2.1.2 to 2.2.0.
+* Update Django.
+* Various updates to documentation.
+* More work with tests.
+* Update django-extensions from 2.0.2 to 2.0.7.
+* Update django-tables2 from 1.19.0 to 1.21.2.
+* Update ldap3 from 2.4.1 to 2.5.
+* Update matplotlib from 2.2.0 to 2.2.2.
+* Update sphinx from 1.7.1 to 1.7.3.
 
 
 5.0.2 - 2018-02-28
