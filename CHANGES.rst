@@ -9,6 +9,14 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Fixed
+~~~~~
+* Fixed setup.py error.
+
+
 5.0.4 (2018-04-24)
 ------------------
 
