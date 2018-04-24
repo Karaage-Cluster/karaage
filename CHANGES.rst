@@ -9,6 +9,14 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Changed
+~~~~~~~
+* Add ability to change default slurm add account command.
+
+
 5.0.3 - 2018-04-23
 ------------------
 
