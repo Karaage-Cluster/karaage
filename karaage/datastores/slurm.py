@@ -66,6 +66,7 @@ class SlurmDataStore(base.DataStore):
         self._prefix = config.get('PREFIX', ["sudo", "-uslurm"])
         self._path = config.get('PATH', "/usr/local/slurm/latest/bin/sacctmgr")
         self._null_project = config.get('NULL_PROJECT', "default")
+        self._add_account_extra = config.get('ADD_ACCOUNT_EXTRA', ['grpcpumins=0'])
 
     @staticmethod
     def _filter_string(value):
@@ -393,7 +394,7 @@ class SlurmDataStore(base.DataStore):
             logger.debug("project is active")
             ds_project = self.get_project(pid)
             if ds_project is None:
-                self._call(["add", "account", "name=%s" % pid, "grpcpumins=0"])
+                self._call(["add", "account", "name=%s" % pid] + self._add_account_extra)
 
             # update project meta information
             name = self._truncate(project.name, 40)
