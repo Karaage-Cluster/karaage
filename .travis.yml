@@ -97,3 +97,5 @@ jobs:
         password:
           secure: BQaJb9cNx4fX5j/eLPjyvBq20N9gd3QWtq42qgBjF68608qIWKo3BtrNG87JtN1MkdZJDDUPdTjeQnwnjYfxbZvzaiJ32i+JyO92HlBL51DdSpppMVlalO0yYDos4ZHPi61M1xOu1DGPIl6vUaYamHI8ylpf8mWeO/UBp3uuq2M=
         distributions: "sdist bdist_wheel"
+        on:
+          all_branches: true
