@@ -1,7 +1,0 @@
-#!/bin/bash
-
-for SLURM_VERSION in 16.05 17.02
-do
-    docker push "$DOCKER_REPO:slurm$SLURM_VERSION"
-    docker push "$DOCKER_REPO:slurm$SLURM_VERSION-apache"
-done
