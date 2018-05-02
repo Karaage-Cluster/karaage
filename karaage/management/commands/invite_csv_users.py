@@ -27,30 +27,20 @@ sam,secret,Joe,Joe Bloggs,joe@example.com,Test,TestProject2
 
 import re
 import sys
-import urllib
-import urllib2
 from csv import DictReader
-from django.core import exceptions
-from django.core.management.base import BaseCommand
-from django.core.validators import validate_email
-from django.test.client import RequestFactory
-from django.contrib.auth import authenticate, login
-from django.contrib.messages.storage import default_storage
-from django.contrib.messages.storage.fallback import FallbackStorage
-from django import http
-
-from karaage.people.models import Person
-from karaage.institutes.models import Institute
-from karaage.projects.models import Project
 
 import django.db.transaction
 import tldap.transaction
+from django.core import exceptions
+from django.core.management.base import BaseCommand
+from django.core.validators import validate_email
 
-from karaage.plugins.kgapplications.models import ProjectApplication, Applicant
-from karaage.plugins.kgapplications import forms, emails
-from karaage.plugins.kgapplications.views import base, states
-from karaage.plugins.kgapplications.views.project import send_invitation, get_applicant_from_email, get_application_state_machine
-
+from karaage.institutes.models import Institute
+from karaage.projects.models import Project
+from karaage.plugins.kgapplications import emails
+from karaage.plugins.kgapplications.models import ProjectApplication
+from karaage.plugins.kgapplications.views import base
+from karaage.plugins.kgapplications.views.project import get_application_state_machine
 
 RE_VALID_USERNAME = re.compile('[\w.@+-]+$')
 
@@ -157,8 +147,7 @@ username,password,short_name,full_name,email,institute,project"""
             application.applicant = applicant
             application.project = project
             application.state = ProjectApplication.OPEN
-#            application.created_by = 
-            application.header_message = "Please select 'unimelb' and hit the 'SAML login' button when asked to select your institute"
+            application.header_message = "Please select your institute and hit the 'SAML login' button when prompted"
             application.reopen()
 
             email_link, is_secret = base.get_email_link(application)
