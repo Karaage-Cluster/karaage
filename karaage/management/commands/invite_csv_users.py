@@ -25,9 +25,9 @@ sam,secret,Joe,Joe Bloggs,joe@example.com,Test,TestProject2
 
 """
 
+import csv
 import re
 import sys
-import csv
 
 import django.db.transaction
 import tldap.transaction
@@ -40,18 +40,18 @@ from karaage.plugins.kgapplications import emails
 from karaage.plugins.kgapplications.models import ProjectApplication
 from karaage.plugins.kgapplications.views import base
 from karaage.plugins.kgapplications.views.project import (
-        get_applicant_from_email,
+    get_applicant_from_email,
 )
 from karaage.projects.models import Project
 
 
 RE_VALID_USERNAME = re.compile('[\w.@+-]+$')
 
+
 class Command(BaseCommand):
     help = """Initiate bulk invitation a CSV file with the following format:
 username,password,short_name,full_name,email,institute,project"""
     args = "csvfile"
-
 
     @django.db.transaction.non_atomic_requests
     @tldap.transaction.commit_on_success
@@ -60,7 +60,7 @@ username,password,short_name,full_name,email,institute,project"""
 
         try:
             data = csv.DictReader(open(csvfile))
-        except csv.Error as e :
+        except csv.Error as e:
             sys.stderr.write("ERROR: Failed to read CSV file.\n")
             sys.exit(1)
 
