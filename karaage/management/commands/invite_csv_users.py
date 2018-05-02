@@ -27,7 +27,7 @@ sam,secret,Joe,Joe Bloggs,joe@example.com,Test,TestProject2
 
 import re
 import sys
-from csv import DictReader
+import csv
 
 import django.db.transaction
 import tldap.transaction
@@ -36,11 +36,14 @@ from django.core.management.base import BaseCommand
 from django.core.validators import validate_email
 
 from karaage.institutes.models import Institute
-from karaage.projects.models import Project
 from karaage.plugins.kgapplications import emails
 from karaage.plugins.kgapplications.models import ProjectApplication
 from karaage.plugins.kgapplications.views import base
-from karaage.plugins.kgapplications.views.project import get_application_state_machine
+from karaage.plugins.kgapplications.views.project import (
+        get_applicant_from_email,
+)
+from karaage.projects.models import Project
+
 
 RE_VALID_USERNAME = re.compile('[\w.@+-]+$')
 
@@ -56,8 +59,8 @@ username,password,short_name,full_name,email,institute,project"""
         verbosity = int(options.get('verbosity', 1))
 
         try:
-            data = DictReader(open(csvfile))
-        except:
+            data = csv.DictReader(open(csvfile))
+        except csv.Error as e :
             sys.stderr.write("ERROR: Failed to read CSV file.\n")
             sys.exit(1)
 
@@ -139,7 +142,6 @@ username,password,short_name,full_name,email,institute,project"""
                 skip += 1
                 continue
 
-
             application = ProjectApplication()
             applicant.short_name = user["short_name"]
             applicant.full_name = user["full_name"]
@@ -154,11 +156,9 @@ username,password,short_name,full_name,email,institute,project"""
             emails.send_invite_email(application, email_link, is_secret)
             success += 1
 
-
         print('')
         print('Added:   %s' % success)
         print('Skipped: %s' % skip)
         print('Failed:  %s' % fail_count)
 
         sys.exit(0)
-
