@@ -253,9 +253,7 @@ class StateWaitingForDelegate(StateWaitingForApproval):
 
     def get_authorised_persons(self, application):
         return application.institute.delegates \
-            .filter(
-                institutedelegate__send_email=True,
-                is_active=True, login_enabled=True)
+            .filter(is_active=True, login_enabled=True)
 
     def get_approve_form(self, request, application, roles):
         return forms.approve_project_form_generator(application, roles)
