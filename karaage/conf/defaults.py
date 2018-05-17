@@ -385,3 +385,254 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': 6 * 60 * 60,
     },
 }
+
+APPLICATION_PROJECT = {
+    'start': {
+        'type': 'transition',
+        'class': 'karaage.plugins.kgapplications.views.transitions.TransitionOpen',
+        'on_success': {
+            'type': 'goto',
+            'key': 'O',
+        },
+    },
+    'O': {
+        'type': 'state',
+        'class': 'karaage.plugins.kgapplications.views.aed.StateApplicantEnteringDetails',
+        'on_cancel': {
+            'type': 'goto',
+            'key': 'R',
+        },
+        'on_reopen': {
+            'type': 'goto',
+            'key': 'start',
+        },
+        'on_duplicate': {
+            'type': 'goto',
+            'key': 'DUP',
+        },
+        'on_submit': {
+            'type': 'transition',
+            'class': 'karaage.plugins.kgapplications.views.transitions.TransitionSubmit',
+            'on_success': {
+                'type': 'transition',
+                'class': 'karaage.plugins.kgapplications.views.transitions.TransitionSplit',
+                'on_existing_project': {
+                    'type': 'goto',
+                    'key': 'L',
+                },
+                'on_new_project': {
+                    'type': 'goto',
+                    'key': 'D',
+                },
+                'on_error': {
+                    'type': 'goto',
+                    'key': 'R',
+                },
+            },
+            'on_error': {
+                'type': 'goto',
+                'key': 'R',
+            },
+        }
+    },
+    'L': {
+        'type': 'state',
+        'class': 'karaage.plugins.kgapplications.views.states.StateWaitingForLeader',
+        'on_cancel': {
+            'type': 'goto',
+            'key': 'R',
+        },
+        'on_duplicate': {
+            'type': 'goto',
+            'key': 'DUP',
+        },
+        'on_approve': {
+            'type': 'goto',
+            'key': 'K',
+        },
+    },
+    'D': {
+        'type': 'state',
+        'class': 'karaage.plugins.kgapplications.views.states.StateWaitingForDelegate',
+        'on_cancel': {
+            'type': 'goto',
+            'key': 'R',
+        },
+        'on_duplicate': {
+            'type': 'goto',
+            'key': 'DUP',
+        },
+        'on_approve': {
+            'type': 'goto',
+            'key': 'K',
+        },
+    },
+    'K': {
+        'type': 'state',
+        'class': 'karaage.plugins.kgapplications.views.states.StateWaitingForAdmin',
+        'on_cancel': {
+            'type': 'goto',
+            'key': 'R',
+        },
+        'on_duplicate': {
+            'type': 'goto',
+            'key': 'DUP',
+        },
+        'on_approve': {
+            'type': 'transition',
+            'class': 'karaage.plugins.kgapplications.views.transitions.TransitionApprove',
+            'on_password_needed': {
+                'type': 'goto',
+                'key': 'P',
+            },
+            'on_password_ok': {
+                'type': 'goto',
+                'key': 'C',
+            },
+            'on_error': {
+                'type': 'goto',
+                'key': 'K',
+            },
+        },
+    },
+    'P': {
+        'type': 'state',
+        'class': 'karaage.plugins.kgapplications.views.states.StatePassword',
+        'on_cancel': {
+            'type': 'goto',
+            'key': 'R',
+        },
+        'on_submit': {
+            'type': 'goto',
+            'key': 'C',
+        },
+    },
+    'C': {
+        'type': 'state',
+        'class': 'karaage.plugins.kgapplications.views.states.StateCompleted',
+        'on_archive': {
+            'type': 'goto',
+            'key': 'A',
+        },
+    },
+    'A': {
+        'type': 'state',
+        'class': 'karaage.plugins.kgapplications.views.states.StateArchived',
+        'on_reopen': {
+            'type': 'goto',
+            'key': 'start',
+        }
+    },
+    'R': {
+        'type': 'state',
+        'class': 'karaage.plugins.kgapplications.views.states.StateDeclined',
+        'on_archive': {
+            'type': 'goto',
+            'key': 'A',
+        },
+        'on_reopen': {
+            'type': 'goto',
+            'key': 'start',
+        }
+    },
+    'DUP': {
+        'type': 'state',
+        'class': 'karaage.plugins.kgapplications.views.states.StateDuplicateApplicant',
+        'on_reopen': {
+            'type': 'goto',
+            'key': 'start',
+        },
+        'on_cancel': {
+            'type': 'goto',
+            'key': 'R',
+        },
+    },
+}
+
+
+APPLICATION_SOFTWARE = {
+    'start': {
+        'type': 'transition',
+        'class': 'karaage.plugins.kgapplications.views.transitions.TransitionOpen',
+        'on_success': {
+            'type': 'goto',
+            'key': 'O',
+        },
+    },
+    'O': {
+        'type': 'state',
+        'class': 'karaage.plugins.kgapplications.views.states.StateIntroduction',
+        'on_cancel': {
+            'type': 'goto',
+            'key': 'R',
+        },
+        'on_submit': {
+            'type': 'transition',
+            'class': 'karaage.plugins.kgapplications.views.transitions.TransitionSubmit',
+            'on_success': {
+                'type': 'goto',
+                'key': 'K'
+            },
+            'on_error': {
+                'type': 'goto',
+                'key': 'R'
+            },
+        }
+    },
+    'K': {
+        'type': 'state',
+        'class': 'karaage.plugins.kgapplications.views.states.StateWaitingForAdminSoftware',
+        'on_cancel': {
+            'type': 'goto',
+            'key': 'R',
+        },
+        'on_duplicate': {
+            'type': 'goto',
+            'key': 'DUP',
+        },
+        'on_approve': {
+            'type': 'transition',
+            'class': 'karaage.plugins.kgapplications.views.transitions.TransitionApprove',
+            'on_password_needed': {
+                'type': 'goto',
+                'key': 'R',
+            },
+            'on_password_ok': {
+                'type': 'goto',
+                'key': 'C',
+            },
+            'on_error': {
+                'type': 'goto',
+                'key': 'R',
+            },
+        },
+    },
+    'C': {
+        'type': 'state',
+        'class': 'karaage.plugins.kgapplications.views.states.StateCompleted',
+        'on_archive': {
+            'type': 'goto',
+            'key': 'A',
+        },
+    },
+    'A': {
+        'type': 'state',
+        'class': 'karaage.plugins.kgapplications.views.states.StateArchived',
+        'on_reopen': {
+            'type': 'goto',
+            'key': 'start',
+        }
+    },
+    'R': {
+        'type': 'state',
+        'class': 'karaage.plugins.kgapplications.views.states.StateDeclined',
+        'on_archive': {
+            'type': 'goto',
+            'key': 'A',
+        },
+        'on_reopen': {
+            'type': 'goto',
+            'key': 'start',
+        }
+    },
+}

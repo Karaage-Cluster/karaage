@@ -72,9 +72,7 @@
                 </fieldset>
             </div>
 
-            {% application_actions_plus %}
-            <a href="{% url 'kg_application_detail' application.id application.state 'decline' %}" class="deletelink float-left">Decline</a>
-            {% end_application_actions %}
+            {% application_actions %}
         </form>
     </div>
 </div>

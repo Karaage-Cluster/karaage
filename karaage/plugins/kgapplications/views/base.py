@@ -17,6 +17,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 """ This file implements a state machine for the views. """
+import importlib
 
 from django.conf import settings
 from django.contrib import messages
@@ -34,6 +35,35 @@ import karaage.common as common
 from karaage.common import log
 
 from ..models import Application
+
+
+def load_state_instance(config):
+    assert config['type'] == 'state'
+    name = config['class']
+    module_name, class_name = name.rsplit(".", 1)
+    module = importlib.import_module(module_name)
+    klass = getattr(module, class_name)
+    assert issubclass(klass, State)
+    return klass(config)
+
+
+def load_transition_instance(config):
+    assert config['type'] == 'transition'
+    name = config['class']
+    module_name, class_name = name.rsplit(".", 1)
+    module = importlib.import_module(module_name)
+    klass = getattr(module, class_name)
+    assert issubclass(klass, Transition)
+    return klass(config)
+
+
+def load_instance(config):
+    if config['type'] == 'state':
+        return load_state_instance(config)
+    if config['type'] == 'transition':
+        return load_transition_instance(config)
+    else:
+        assert False
 
 
 def get_url(request, application, roles, label=None):
@@ -110,24 +140,20 @@ class StateMachine(object):
     # PUBLIC METHODS #
     ##################
 
-    def __init__(self):
-        self._first_state = None
-        self._states = {}
+    def __init__(self, config):
+        self._first_state = {
+            'type': 'goto',
+            'key': 'start',
+        }
+        self._config = config
         super(StateMachine, self).__init__()
 
-    def add_state(self, state, state_id, actions):
-        """ Add a state to the list. The first state added becomes the initial
-        state. """
-        self._states[state_id] = state, actions
-
-    def set_first_state(self, state_id):
-        self._first_state = state_id
-
     def get_state(self, application):
-        if application.state not in self._states:
+        if application.state not in self._config:
             raise RuntimeError("Invalid state '%s'" % application.state)
-        state, _ = self._states[application.state]
-        return state
+        config = self._config[application.state]
+        instance = load_state_instance(config)
+        return instance
 
     def start(self, request, application, extra_roles=None):
         """ Continue the state machine at first state. """
@@ -140,10 +166,6 @@ class StateMachine(object):
         # leader, delegate or admin, they probably shouldn't be here.
         if 'is_authorised' not in roles:
             return HttpResponseForbidden('<h1>Access Denied</h1>')
-
-        # Sanity check
-        if self._first_state is None:
-            raise RuntimeError("First state not set.")
 
         # Go to first state.
         return self._next(request, application, roles, self._first_state)
@@ -169,8 +191,8 @@ class StateMachine(object):
             return HttpResponseRedirect(url)
 
         # Check that the current state is valid.
-        if application.state not in self._states:
-            raise RuntimeError("Invalid state '%s'" % application.state)
+        if application.state not in self._config:
+            raise RuntimeError("Invalid current state '%s'" % application.state)
 
         # If state user expected is different to state we are in, warn user
         # and jump to expected state.
@@ -186,20 +208,19 @@ class StateMachine(object):
             return HttpResponseRedirect(url)
 
         # Get the current state for this application
-        state, actions = self._states[application.state]
+        state_config = self._config[application.state]
 
         # Finally do something
+        instance = load_state_instance(state_config)
         if request.method == "GET":
             # if method is GET, state does not ever change.
-            response = state.view(
-                request, application, label, roles, actions.keys())
+            response = instance.get_next_config(request, application, label, roles)
             assert isinstance(response, HttpResponse)
             return response
 
         elif request.method == "POST":
             # if method is POST, it can return a HttpResponse or a string
-            response = state.view(
-                request, application, label, roles, actions.keys())
+            response = instance.get_next_config(request, application, label, roles)
             if isinstance(response, HttpResponse):
                 # If it returned a HttpResponse, state not changed, just
                 # display
@@ -207,13 +228,9 @@ class StateMachine(object):
             else:
                 # If it returned a string, lookit up in the actions for this
                 # state
-                if response not in actions:
-                    raise RuntimeError(
-                        "Invalid response '%s' from state '%s'"
-                        % (response, state))
-                next_state_key = actions[response]
+                next_config = response
                 # Go to the next state
-                return self._next(request, application, roles, next_state_key)
+                return self._next(request, application, roles, next_config)
 
         else:
             # Shouldn't happen, user did something weird
@@ -233,27 +250,39 @@ class StateMachine(object):
 
         return roles
 
-    def _next(self, request, application, roles, state_key):
+    def _next(self, request, application, roles, next_config):
         """ Continue the state machine at given state. """
         # we only support state changes for POST requests
         if request.method == "POST":
+            key = None
+
             # If next state is a transition, process it
-            while isinstance(state_key, Transition):
-                state_key = state_key.get_next_state(
-                    request, application, roles)
+            while True:
+                # We do not expect to get a direct state transition here.
+                assert next_config['type'] in ['goto', 'transition']
+
+                while next_config['type'] == 'goto':
+                    key = next_config['key']
+                    next_config = self._config[key]
+
+                instance = load_instance(next_config)
+
+                if not isinstance(instance, Transition):
+                    break
+
+                next_config = instance.get_next_config(request, application, roles)
 
             # lookup next state
-            if state_key not in self._states:
-                raise RuntimeError("Invalid state '%s'" % state_key)
-            state, _ = self._states[state_key]
+            assert key is not None
+            state_key = key
 
             # enter that state
-            state.enter_state(request, application)
+            instance.enter_state(request, application)
             application.state = state_key
             application.save()
 
             # log details
-            log.change(application.application_ptr, "state: %s" % state.name)
+            log.change(application.application_ptr, "state: %s" % instance.name)
 
             # redirect to this new state
             url = get_url(request, application, roles)
@@ -265,15 +294,36 @@ class StateMachine(object):
 class State(object):
     """ A abstract class that is the base for all application states. """
     name = "Abstract State"
+    actions = set()
 
-    def __init__(self):
+    def __init__(self, config):
         self.context = {}
+        self._config = config
+        for action_key in self.actions:
+            key = 'on_%s' % action_key
+            assert key in config
+        actions = self.actions
+        for key, value in config.items():
+            if key.startswith('on_'):
+                action_key = key[3:]
+                assert action_key in actions
+
+    def get_actions(self, request, application, roles):
+        return self.actions
 
     def enter_state(self, request, application):
         """ This is becoming the new current state. """
         pass
 
-    def view(self, request, application, label, roles, actions):
+    def get_next_config(self, request, application, label, roles):
+        response = self.get_next_action(request, application, label, roles)
+        if isinstance(response, HttpResponse):
+            return response
+        assert response in self.get_actions(request, application, roles)
+        key = 'on_%s' % response
+        return self._config[key]
+
+    def get_next_action(self, request, application, label, roles):
         """ Django view method. We provide a default detail view for
         applications. """
 
@@ -282,16 +332,7 @@ class State(object):
             return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
         # only certain actions make sense for default view
-        tmp_actions = []
-        if 'reopen' in actions:
-            tmp_actions.append("reopen")
-        if 'cancel' in actions:
-            tmp_actions.append("cancel")
-        if 'duplicate' in actions:
-            tmp_actions.append("duplicate")
-        if 'archive' in actions and 'is_admin' in roles:
-            tmp_actions.append("archive")
-        actions = tmp_actions
+        actions = self.get_actions(request, application, roles)
 
         # process the request in default view
         if request.method == "GET":
@@ -316,11 +357,24 @@ class State(object):
 
 class Transition(object):
     """ A transition from one state to another. """
+    actions = set()
 
-    def __init__(self):
-        pass
+    def __init__(self, config):
+        self._config = config
+        for action in self.actions:
+            key = 'on_%s' % action
+            assert key in config
 
-    def get_next_state(self, request, application, roles):
+    def get_actions(self, request, application, roles):
+        return self.actions
+
+    def get_next_config(self, request, application, roles):
+        action = self.get_next_action(request, application, roles)
+        assert action in self.get_actions(request, application, roles)
+        key = 'on_%s' % action
+        return self._config[key]
+
+    def get_next_action(self, request, application, roles):
         """ Retrieve the next state. """
         raise NotImplementedError()
 
@@ -336,7 +390,7 @@ def get_application(**kwargs):
             application = application.get_object()
             return application
     except Application.DoesNotExist:
-        raise RuntimeError("The application is currupt.")
+        raise RuntimeError("The application is corrupt.")
 
     raise Http404("The application does not exist.")
 

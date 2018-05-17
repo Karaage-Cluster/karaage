@@ -18,81 +18,19 @@
 
 """ This file shows the project application views using a state machine. """
 
+from django.conf import settings
 from django.http import HttpResponseBadRequest
-from django.shortcuts import render
 
 from karaage.common.decorators import login_required
-from karaage.people.models import Person
-from karaage.plugins.kgapplications.views import base, states
+from karaage.plugins.kgapplications.views import base
 
-from .forms import ApproveSoftwareForm
 from .models import SoftwareApplication
-
-
-class StateIntroduction(base.State):
-    """ Invitation has been sent to applicant. """
-    name = "Read introduction"
-
-    def view(self, request, application, label, roles, actions):
-        """ Django view method. """
-        if label is None and \
-                'is_applicant' in roles and 'is_admin' not in roles:
-            for action in actions:
-                if action in request.POST:
-                    return action
-            link, is_secret = base.get_email_link(application)
-            return render(
-                template_name='kgapplications/software_introduction.html',
-                context={
-                    'actions': actions,
-                    'application': application,
-                    'roles': roles,
-                    'link': link,
-                    'is_secret': is_secret
-                },
-                request=request)
-        return super(StateIntroduction, self).view(
-            request, application, label, roles, actions)
-
-
-class StateWaitingForAdmin(states.StateWaitingForApproval):
-    """ We need the administrator to provide approval. """
-    name = "Waiting for administrator"
-    authorised_text = "an administrator"
-    authorised_role = "administrator"
-
-    def get_authorised_persons(self, application):
-        return Person.objects.filter(is_admin=True)
-
-    def check_can_approve(self, request, application, roles):
-        """ Check the person's authorization. """
-        return 'is_admin' in roles
-
-    def get_approve_form(self, request, application, roles):
-        return ApproveSoftwareForm
 
 
 def get_application_state_machine():
     """ Get the default state machine for applications. """
-    open_transition = states.TransitionOpen(on_success='O')
-
-    state_machine = base.StateMachine()
-    state_machine.add_state(
-        StateIntroduction(), 'O',
-        {'cancel': 'R',
-            'submit': states.TransitionSubmit(on_success='K', on_error="R")})
-    state_machine.add_state(
-        StateWaitingForAdmin(), 'K',
-        {'cancel': 'R',
-            'approve': states.TransitionApprove(
-                on_password_needed='R', on_password_ok='C', on_error="R")})
-    state_machine.add_state(
-        states.StateCompleted(), 'C',
-        {})
-    state_machine.add_state(
-        states.StateDeclined(), 'R',
-        {'reopen': open_transition, })
-    state_machine.set_first_state(open_transition)
+    config = settings.APPLICATION_SOFTWARE
+    state_machine = base.StateMachine(config)
     return state_machine
 
 
