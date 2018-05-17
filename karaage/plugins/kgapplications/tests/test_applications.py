@@ -159,7 +159,7 @@ class UserApplicationTestCase(TestCase):
         # LEADER GET DECLINE PAGE
         response = self.client.get(
             reverse('kg_application_detail',
-                    args=[application.pk, 'L', 'decline']))
+                    args=[application.pk, 'L', 'cancel']))
         self.assertEqual(response.status_code, 200)
 
         # LEADER GET APPROVE PAGE
@@ -201,7 +201,7 @@ class UserApplicationTestCase(TestCase):
         # ADMIN GET DECLINE PAGE
         response = self.client.get(
             reverse('kg_application_detail',
-                    args=[application.pk, 'K', 'decline']))
+                    args=[application.pk, 'K', 'cancel']))
         self.assertEqual(response.status_code, 200)
 
         # ADMIN GET APPROVE PAGE
@@ -418,7 +418,7 @@ class ProjectApplicationTestCase(TestCase):
         # DELEGATE GET DECLINE PAGE
         response = self.client.get(
             reverse('kg_application_detail',
-                    args=[application.pk, 'D', 'decline']))
+                    args=[application.pk, 'D', 'cancel']))
         self.assertEqual(response.status_code, 200)
 
         # DELEGATE GET APPROVE PAGE
@@ -460,7 +460,7 @@ class ProjectApplicationTestCase(TestCase):
         # ADMIN GET DECLINE PAGE
         response = self.client.get(
             reverse('kg_application_detail',
-                    args=[application.pk, 'K', 'decline']))
+                    args=[application.pk, 'K', 'cancel']))
         self.assertEqual(response.status_code, 200)
 
         # ADMIN GET APPROVE PAGE

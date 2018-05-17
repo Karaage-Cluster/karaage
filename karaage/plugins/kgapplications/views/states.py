@@ -147,6 +147,11 @@ class StateWaitingForApproval(base.State):
                     url = base.get_url(request, application, roles, action)
                     return HttpResponseRedirect(url)
 
+        # Not parent class method will do the same thing, however this makes it
+        # explicit.
+        if label is not None:
+            return HttpResponseBadRequest("<h1>Bad Request</h1>")
+
         self.context = {
             'authorised_text': self.authorised_text,
         }

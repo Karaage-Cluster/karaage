@@ -130,7 +130,7 @@ class SoftwareApplicationTestCase(TestCase):
         # ADMIN GET DECLINE PAGE
         response = self.client.get(
             reverse('kg_application_detail',
-                    args=[application.pk, 'K', 'decline']))
+                    args=[application.pk, 'K', 'cancel']))
         self.assertEqual(response.status_code, 200)
 
         # ADMIN GET APPROVE PAGE
