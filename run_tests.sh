@@ -63,12 +63,7 @@ for values in $TESTS; do
     python3 ./manage.py test --settings="$conf" -v 2 $tests
     if [ "$?" -ne 0 ]
     then
-        RETURN=1
-    fi
-
-    if [ "$RETURN" -ne 0 ]; then
-        echo "ERROR: Some tests failed for $values" >&2
-        exit "$RETURN"
+        exit 1
     fi
 done
 
