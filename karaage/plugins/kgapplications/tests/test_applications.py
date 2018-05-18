@@ -65,7 +65,7 @@ class UserApplicationTestCase(TestCase):
         response = self.client.get(reverse('kg_application_new'))
         self.assertEqual(response.status_code, 200)
         a = response.content.find(
-            b'name="captcha_0" type="hidden" value="') + 38
+            b'name="captcha_0" value="') + 24
         b = a + 40
         hash_ = response.content[a:b].decode("ascii")
 
@@ -327,7 +327,7 @@ class ProjectApplicationTestCase(TestCase):
         response = self.client.get(reverse('kg_application_new'))
         self.assertEqual(response.status_code, 200)
         a = response.content.find(
-            b'name="captcha_0" type="hidden" value="') + 38
+            b'name="captcha_0" value="') + 24
         b = a + 40
         hash_ = response.content[a:b].decode("ascii")
 
