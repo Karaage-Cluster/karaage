@@ -72,7 +72,12 @@
                 </fieldset>
             </div>
 
-            {% application_actions %}
+            {# Default actions are likely to be confusing, need to replace them. #}
+            <div class="submit-row">
+                <input type="submit" name="back" value="Go back" class="button" />
+                <input type="submit" name="approve" value="Approve" class="button default" />
+            </div>
+
         </form>
     </div>
 </div>

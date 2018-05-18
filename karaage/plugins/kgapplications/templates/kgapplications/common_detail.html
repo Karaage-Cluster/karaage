@@ -37,7 +37,7 @@
                 <ul>
                     {% if 'approve' in actions %}
                     <li><a href="{% url 'kg_application_detail' application.id application.state 'approve' %}" class="yeslink">Approve</a></li>
-                    <li><a href="{% url 'kg_application_detail' application.id application.state 'decline' %}" class="nolink">Decline</a></li>
+                    <li><a href="{% url 'kg_application_detail' application.id application.state 'cancel' %}" class="nolink">Decline</a></li>
                     {% endif %}
                     {% if is_admin %}
                     <li><a href="{% url 'kg_application_logs' application.pk %}">Logs</a></li>

@@ -43,15 +43,11 @@ function showForm() {
             </fieldset>
         </div>
 
-    {# Default actions are likely to be confusing, need to replace them. #}
-    <div class="submit-row">
-        {% if 'approve' in actions %}
-        <input type="submit" name="approve" value="Goto approve" class="deletelink" />
-        {% endif %}
-        {% if 'cancel' in actions %}
-        <input type="submit" name="cancel" value="Do Decline/Cancel Application" class="button default" />
-        {% endif %}
-    </div>
+        {# Default actions are likely to be confusing, need to replace them. #}
+        <div class="submit-row">
+            <input type="submit" name="back" value="Go back" class="button" />
+            <input type="submit" name="cancel" value="Decline/Cancel" class="button default" />
+        </div>
 
     </form>
 </div>

@@ -88,12 +88,10 @@ class StateWaitingForApproval(base.State):
                 request, application, roles)
             form = application_form(request.POST or None, instance=application)
             if request.method == 'POST':
-                if 'cancel' in request.POST:
-                    url = base.get_url(request, application, roles, 'cancel')
+                if 'back' in request.POST:
+                    url = base.get_url(request, application, roles)
                     return HttpResponseRedirect(url)
-                if 'duplicate' in request.POST:
-                    return 'duplicate'
-                if form.is_valid():
+                if 'approve' in request.POST and form.is_valid():
                     form.save()
                     return "approve"
             return render(
@@ -108,13 +106,11 @@ class StateWaitingForApproval(base.State):
                 request=request)
         elif label == "cancel" and 'cancel' in actions:
             if request.method == 'POST':
-                if 'approve' in request.POST:
-                    url = base.get_url(request, application, roles, 'approve')
-                    return HttpResponseRedirect(url)
-                if 'duplicate' in request.POST:
-                    return 'duplicate'
                 form = EmailForm(request.POST)
-                if form.is_valid():
+                if 'back' in request.POST:
+                    url = base.get_url(request, application, roles)
+                    return HttpResponseRedirect(url)
+                if 'cancel' in request.POST and form.is_valid():
                     to_email = application.applicant.email
                     subject, body = form.get_data()
                     emails.send_mail(
