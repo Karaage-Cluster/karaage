@@ -144,6 +144,7 @@ class SoftwareApplicationTestCase(TestCase):
             'make_leader': False,
             'additional_req': 'Woof',
             'needs_account': False,
+            'approve': True,
         }
         response = self.client.post(
             reverse('kg_application_detail',

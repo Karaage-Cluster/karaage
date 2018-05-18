@@ -173,6 +173,7 @@ class UserApplicationTestCase(TestCase):
             'make_leader': False,
             'additional_req': 'Meow',
             'needs_account': False,
+            'approve': True,
         }
         response = self.client.post(
             reverse('kg_application_detail',
@@ -215,6 +216,7 @@ class UserApplicationTestCase(TestCase):
             'make_leader': False,
             'additional_req': 'Woof',
             'needs_account': False,
+            'approve': True,
         }
         response = self.client.post(
             reverse('kg_application_detail',
@@ -432,6 +434,7 @@ class ProjectApplicationTestCase(TestCase):
             'additional_req': 'Meow',
             'needs_account': False,
             'machine_categories': [1],
+            'approve': True,
         }
         response = self.client.post(
             reverse('kg_application_detail',
@@ -474,6 +477,7 @@ class ProjectApplicationTestCase(TestCase):
             'additional_req': 'Woof',
             'needs_account': False,
             'machine_categories': [1],
+            'approve': True,
         }
         response = self.client.post(
             reverse('kg_application_detail',
