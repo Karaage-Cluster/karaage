@@ -22,7 +22,7 @@ Django==1.11.11
 amqp==2.2.2
 billiard==3.5.0.3
 celery==4.1.0
-kombu==4.1.0
+kombu==4.2.0
 vine==1.1.4
 django-celery-results==1.0.1
 redis==2.10.6
