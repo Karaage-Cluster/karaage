@@ -1,2 +1,2 @@
 Sphinx==1.7.4
-celery==4.1.0
+celery==4.1.1
