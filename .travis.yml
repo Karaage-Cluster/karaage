@@ -73,8 +73,6 @@ jobs:
             --build-arg "VCS_REF=$TRAVIS_COMMIT"
             .
       - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-      - docker push "brianmay/karaage:slurm16.05-beta"
-      - docker push "brianmay/karaage:slurm16.05-apache-beta"
       - docker push "brianmay/karaage:slurm17.02-beta"
       - docker push "brianmay/karaage:slurm17.02-apache-beta"
     - stage: deploy
@@ -96,8 +94,6 @@ jobs:
             --build-arg "VCS_REF=$TRAVIS_COMMIT"
             .
       - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-      - docker push "brianmay/karaage:slurm16.05"
-      - docker push "brianmay/karaage:slurm16.05-apache"
       - docker push "brianmay/karaage:slurm17.02"
       - docker push "brianmay/karaage:slurm17.02-apache"
       deploy:
