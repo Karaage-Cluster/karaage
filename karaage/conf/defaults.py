@@ -270,7 +270,7 @@ SLURM_VER = env('SLURM_VER', default=None)
 TMP_DIR = "/var/cache/karaage3/tmp/"
 
 # DIRECTORY FOR SHARED FILES
-FILES_DIR = "/var/cache/karaage3/files/"
+FILES_DIR = "/var/lib/karaage3/files/"
 
 # URL FOR SHARED FILES
 FILES_URL = "/kgfiles/"
