@@ -95,18 +95,14 @@ Installation
         ExecStartPre=/usr/bin/docker pull brianmay/karaage:slurm17.02-apache
         ExecStart=/usr/bin/docker run --name karaage \
           --net="host" \
-          -v /etc/passwd:/etc/passwd \
-          -v /etc/group:/etc/group \
-          -v /opt/karaage/etc/munge:/etc/munge \
-          -v /opt/karaage/log/munge:/var/log/munge \
+          -e MUNGE_KEY_FILE="/mnt/munge/munge.key" \
+          -v /opt/karaage/etc/munge:/mnt/munge \
+          -v /opt/karaage/log:/var/log \
           -v /opt/karaage/lib/munge:/var/lib/munge \
           -v /opt/karaage/etc/slurm:/usr/local/etc \
           -v /opt/karaage/etc/shibboleth:/etc/shibboleth \
           -v /opt/karaage/etc/karaage3:/etc/karaage3 \
-          -v /opt/karaage/log/apache2:/var/log/apache2 \
-          -v /opt/karaage/log/karaage3:/var/log/karaage3 \
           -v /opt/karaage/lib/karaage3:/var/lib/karaage3 \
-          -v /opt/karaage/cache/karaage3:/var/cache/karaage3 \
           brianmay/karaage:slurm17.02-apache
         ExecStop=/usr/bin/docker stop karaage
 
