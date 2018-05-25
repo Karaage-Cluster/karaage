@@ -9,6 +9,34 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+5.0.6 (UNRELEASED)
+------------------
+
+Changed
+~~~~~~~
+* Update sphinx from 1.7.3 to 1.7.4
+* Update gunicorn from 19.7.1 to 19.8.0
+* Remove legacy dockerhub hooks
+* Update gunicorn from 19.8.0 to 19.8.1
+* Added invite_csv_users.py for cli bulk inviting (#431)
+* Update factory-boy from 2.10.0 to 2.11.1
+* Update django-model-utils from 3.1.1 to 3.1.2
+* Completely revise application process
+* Allow institute delegates with emails turned off to approve applications
+* Auto build beta docker image
+* Update django-simple-captcha from 0.5.6 to 0.5.7
+* Update kombu from 4.1.0 to 4.2.0
+* Update celery from 4.1.0 to 4.1.1
+* Update for latest slurm images
+* Move dynamic files from /var/cache/karaage3/files to /var/lib/karaage3/files
+* Update docker start instructions
+* Update pyasn1 from 0.4.2 to 0.4.3
+
+Removed
+~~~~~~~
+* Dropped support for slurm 16.02
+
+
 5.0.5 (2018-04-26)
 ------------------
 
