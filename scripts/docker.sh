@@ -19,6 +19,7 @@ python3 manage.py collectstatic --noinput
 if test "$1" = "apache"
 then
     install -d -o www-data -g www-data /var/log/apache2
+    install -d -o _shibd -g _shibd /var/log/shibboleth
     ./scripts/start.sh "$@"
 else
     sudo -u www-data -E ./scripts/start.sh "$@"
