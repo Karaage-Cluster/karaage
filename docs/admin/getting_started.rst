@@ -99,7 +99,7 @@ Installation
           -v /opt/karaage/etc/munge:/mnt/munge \
           -v /opt/karaage/log:/var/log \
           -v /opt/karaage/lib/munge:/var/lib/munge \
-          -v /opt/karaage/etc/slurm:/usr/local/etc \
+          -v /opt/karaage/etc/slurm:/etc/slurm \
           -v /opt/karaage/etc/shibboleth:/etc/shibboleth \
           -v /opt/karaage/etc/karaage3:/etc/karaage3 \
           -v /opt/karaage/lib/karaage3:/var/lib/karaage3 \
