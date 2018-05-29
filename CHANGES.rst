@@ -9,6 +9,17 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Changed
+~~~~~~~
+* Remove amqp library requirement.
+* Fixup slurm directory in documentation.
+* Ensure /var/log/shibboleth has correct permissions.
+* Update sphinx from 1.7.4 to 1.7.5.
+
+
 5.0.6 (2018-05-25)
 ------------------
 
