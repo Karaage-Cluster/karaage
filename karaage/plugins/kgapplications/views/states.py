@@ -47,6 +47,10 @@ class StateWaitingForApproval(base.State):
     def get_authorised_persons(self, application):
         raise NotImplementedError()
 
+    def get_email_persons(self, application):
+        # by default, email all authorised persons
+        return self.get_authorised_persons(application)
+
     def get_approve_form(self, request, application, roles):
         raise NotImplementedError()
 
@@ -67,7 +71,7 @@ class StateWaitingForApproval(base.State):
 
     def enter_state(self, request, application):
         """ This is becoming the new current state. """
-        authorised_persons = self.get_authorised_persons(application)
+        authorised_persons = self.get_email_persons(application)
         link, is_secret = self.get_request_email_link(application)
         emails.send_request_email(
             self.authorised_text,
@@ -255,6 +259,12 @@ class StateWaitingForDelegate(StateWaitingForApproval):
     def get_authorised_persons(self, application):
         return application.institute.delegates \
             .filter(is_active=True, login_enabled=True)
+
+    def get_email_persons(self, application):
+        return application.institute.delegates \
+            .filter(
+                institutedelegate__send_email=True,
+                is_active=True, login_enabled=True)
 
     def get_approve_form(self, request, application, roles):
         return forms.approve_project_form_generator(application, roles)
