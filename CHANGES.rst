@@ -9,6 +9,18 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Changed
+~~~~~~~
+* Update kombu from 4.2.0 to 4.2.1.
+* Don't email project leaders with email turned off, but allow them to approve
+  projects.
+* Update celery from 4.1.1 to 4.2.0.
+* Update django-simple-captcha from 0.5.7 to 0.5.9.
+
+
 5.0.7 (2018-05-29)
 ------------------
 
