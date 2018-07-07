@@ -19,7 +19,7 @@ whitenoise==3.3.1
 Django==1.11.11
 
 # celery
-billiard==3.5.0.3
+billiard==3.5.0.4
 celery==4.2.0
 kombu==4.2.1
 vine==1.1.4
