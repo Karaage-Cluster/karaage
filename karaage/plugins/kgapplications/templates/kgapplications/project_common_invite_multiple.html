@@ -1,0 +1,21 @@
+{% extends "forms.html" %}
+
+
+{% block title %}Start Application{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href='{% url "index" %}'>Home</a>&nbsp;›
+    <a href="{% url 'kg_application_list' %}">Applications</a>&nbsp;›
+    Start application
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="module">
+    <h2>Multiple users with email address</h2>
+    <p>Multiple users with this email address ({{ email }}) already exist in the system. This should not happen. We cannot continue.</p>
+</div>
+{% endblock %}

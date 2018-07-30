@@ -46,11 +46,23 @@ def register():
 
 
 def get_applicant_from_email(email):
+    """
+    Get applicant from email address.
+
+    If the person exists, return (person, True)
+
+    If multiple matches, return (None, True)
+
+    Otherwise create applicant and return (applicant, False)
+    """
     try:
         applicant = Person.active.get(email=email)
         existing_person = True
     except Person.DoesNotExist:
         applicant, _ = Applicant.objects.get_or_create(email=email)
+        existing_person = False
+    except Person.MultipleObjectsReturned:
+        applicant = None
         existing_person = False
     return applicant, existing_person
 
@@ -64,6 +76,14 @@ def _send_invitation(request, project):
 
             email = form.cleaned_data['email']
             applicant, existing_person = get_applicant_from_email(email)
+
+            # If applicant is None then there were multiple persons found.
+            if applicant is None:
+                return render(
+                    template_name='kgapplications/'
+                                  'project_common_invite_multiple.html',
+                    context={'form': form, 'email': email},
+                    request=request)
 
             if existing_person and 'existing' not in request.POST:
                 return render(
@@ -129,6 +149,13 @@ def new_application(request):
             if form.is_valid():
                 email = form.cleaned_data['email']
                 applicant, existing_person = get_applicant_from_email(email)
+
+                # If applicant is None then there were multiple persons found.
+                # This should never happen as the
+                # UnauthenticatedInviteUserApplicationForm form disallows
+                # existing users applying unauthenticated.
+                assert applicant is not None
+                # Similarly existing_person should always be False here.
                 assert not existing_person
 
                 application = ProjectApplication()

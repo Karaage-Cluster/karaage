@@ -258,7 +258,7 @@ class UnauthenticatedInviteUserApplicationForm(forms.Form):
         if query.count() > 0:
             raise forms.ValidationError(six.u(
                 'E-Mail address is already in use. '
-                'Do you already have an account?'))
+                'If you already have an account, please login.'))
 
         clean_email(email)
         return email
