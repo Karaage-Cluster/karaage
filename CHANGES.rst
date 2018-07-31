@@ -9,6 +9,22 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+* Update django-environ from 0.4.4 to 0.4.5.
+* Update mysqlclient from 1.3.12 to 1.3.13.
+* Update billiard from 3.5.0.3 to 3.5.0.4.
+* Update reportlab from 3.4.0 to 3.5.0.
+* Update django-filter from 1.1.0 to 2.0.0.
+* Update sphinx from 1.7.5 to 1.7.6.
+* Update django-extensions from 2.0.7 to 2.1.0.
+* Update reportlab from 3.5.0 to 3.5.1.
+* Update celery from 4.2.0 to 4.2.1.
+* Update reportlab from 3.5.1 to 3.5.2.
+* Update pyasn1 from 0.4.3 to 0.4.4.
+* Fix various issues creating new project application. Fixes #450.
+
+
 5.0.8 (2018-06-22)
 ------------------
 
