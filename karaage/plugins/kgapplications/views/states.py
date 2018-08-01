@@ -67,6 +67,7 @@ class StateWaitingForApproval(base.State):
         actions = set(self.actions)
         if not self.check_can_approve(request, application, roles):
             actions.remove('approve')
+            actions.remove('duplicate')
         return actions
 
     def enter_state(self, request, application):

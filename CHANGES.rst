@@ -23,6 +23,8 @@ UNRELEASED
 * Update reportlab from 3.5.1 to 3.5.2.
 * Update pyasn1 from 0.4.3 to 0.4.4.
 * Fix various issues creating new project application. Fixes #450.
+* In application process don't list similar people or "Mark duplicate user"
+  button unless user has approval rights.
 
 
 5.0.8 (2018-06-22)

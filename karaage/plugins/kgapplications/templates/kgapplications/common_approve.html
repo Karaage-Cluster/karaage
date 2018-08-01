@@ -36,17 +36,17 @@
     </div>
 
     {% if application.content_type.model == 'applicant' %}
+    {% if 'duplicate' in actions %}
     <div>
         <h3>Similar People</h3>
         <form method="post" action=".">{% csrf_token %}
             <p>Please check that the applicant isn't an existing user.</p>
             {% get_similar_people_table  application.applicant as table %}
             {% render_table table %}
-            {% if 'duplicate' in actions %}
             <input type="submit" name="duplicate" value="Mark duplicate user" class="button" />
-            {% endif %}
         </form>
     </div>
+    {% endif %}
     {% endif %}
 
     {% application_request application %}
