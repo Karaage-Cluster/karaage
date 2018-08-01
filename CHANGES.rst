@@ -26,6 +26,7 @@ UNRELEASED
 * In application process don't list similar people or "Mark duplicate user"
   button unless user has approval rights.
 * Rename "Mark duplicate user" button to "Mark duplicate person".
+* Rename "Existing Project Details" to "Join Existing Project Details".
 
 
 5.0.8 (2018-06-22)

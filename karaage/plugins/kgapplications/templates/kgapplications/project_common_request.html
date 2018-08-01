@@ -1,7 +1,7 @@
 {% load karaage_tags %}
 {% if application.project %}
 <div>
-    <h3>Existing Project Details</h3>
+    <h3>Join Existing Project Details</h3>
     <div class="table-container">
         <table class="keyvalue">
             <tr><th>Project:</th><td><a href='{% url 'kg_project_detail' application.project.id %}'>{{ application.project }}</a></td></tr>
