@@ -9,8 +9,8 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
-UNRELEASED
-----------
+5.0.9 (2018-08-03)
+------------------
 * Update django-environ from 0.4.4 to 0.4.5.
 * Update mysqlclient from 1.3.12 to 1.3.13.
 * Update billiard from 3.5.0.3 to 3.5.0.4.
