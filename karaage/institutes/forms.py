@@ -56,10 +56,12 @@ class InstituteForm(forms.ModelForm):
             return name
 
     def save(self, commit=True):
-        institute = super(InstituteForm, self).save(commit=True)
+        institute = super(InstituteForm, self).save(commit=False)
         if institute.group_id is None:
             name = self.cleaned_data['group_name']
             institute.group, _ = Group.objects.get_or_create(name=name)
+        if commit:
+            institute.save()
         return institute
 
 
