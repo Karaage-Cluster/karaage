@@ -16,7 +16,7 @@ django-environ==0.4.5
 six==1.11.0
 slimit==0.8.1
 whitenoise==4.0
-Django==1.11.15
+Django==2.1.1
 
 # celery
 billiard==3.5.0.4
