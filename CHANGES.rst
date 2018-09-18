@@ -13,10 +13,10 @@ UNRELEASED
 ----------
 * Update reportlab from 3.5.2 to 3.5.4.
 * Update matplotlib from 2.2.2 to 2.2.3.
-* Update whitenoise from 3.3.1 to 4.0.
+* Update whitenoise from 3.3.1 to 4.1.
 * Update reportlab from 3.5.4 to 3.5.5.
-* Upgrade Django to latest in LTS series.
-* Update sphinx from 1.7.6 to 1.7.7.
+* Update Django to latest in LTS series.
+* Update sphinx from 1.7.6 to 1.8.0.
 * Update reportlab from 3.5.5 to 3.5.6.
 * Update django-ajax-selects from 1.7.0 to 1.7.1.
 * Update django-extensions from 2.1.0 to 2.1.2.
