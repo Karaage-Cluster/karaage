@@ -9,8 +9,8 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
-UNRELEASED
-----------
+5.0.10 (2018-10-04)
+------------------
 * Update reportlab from 3.5.2 to 3.5.8.
 * Update matplotlib from 2.2.2 to 2.2.3.
 * Update whitenoise from 3.3.1 to 4.1.
