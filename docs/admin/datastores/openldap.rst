@@ -333,28 +333,6 @@ Configuring Karaage to use LDAP
               },
          ]
 
-#.  (optional) If you require people to be recorded in LDAP, add the
-    :setting:`GLOBAL_DATASTORES` setting to ``/etc/karaage3/settings.py``:
-
-    .. code-block:: python
-
-        GLOBAL_DATASTORES = [
-              {
-                    'DESCRIPTION': 'LDAP datastore',
-                    'ENGINE': 'karaage.datastores.ldap.GlobalDataStore',
-                    'LDAP': 'default',
-                    'PERSON': 'karaage.datastores.ldap_schemas.openldap_person',
-                    'GROUP': 'karaage.datastores.ldap_schemas.openldap_person_group',
-                    'NUMBER_SCHEME': 'global',
-                    'LDAP_PERSON_BASE': 'ou=People,dc=example,dc=org',
-                    'LDAP_GROUP_BASE': 'ou=People_Groups,dc=example,dc=org',
-              },
-        ]
-
-    For best results the base settings should be different for the
-    :setting:`GLOBAL_DATASTORES` and the :setting:`MACHINE_CATEGORY_DATASTORES`
-    settings.
-
 #.  Reload apache.
 
     .. code-block:: bash
