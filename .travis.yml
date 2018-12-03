@@ -3,6 +3,8 @@ language: python
 sudo: false
 services :
  - docker
+ - mysql
+ - postgresql
 python:
  - 3.6
  - 3.7
@@ -26,8 +28,8 @@ install:
   - pip install -rrequirements/tests.txt
 
 before_script:
-  - psql -c 'create database karaage;' -U postgres
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS karaage;'
+  - bash -c "if [[ $DATABASE_URL = postgres* ]]; then psql -c 'create database karaage;' -U postgres; fi; "
+  - bash -c "if [[ $DATABASE_URL = mysql* ]]; then mysql -e 'CREATE DATABASE IF NOT EXISTS karaage;'; fi; "
 
 script:
   - isort -rc --check --diff karaage
