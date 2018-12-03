@@ -32,28 +32,7 @@ before_script:
   - bash -c "if [[ $DATABASE_URL = mysql* ]]; then mysql -e 'CREATE DATABASE IF NOT EXISTS karaage;'; fi; "
 
 script:
-  - isort -rc --check --diff karaage
-  - flake8
-
-  - ./manage.py makemigrations --settings="karaage.tests.settings" --check --dry-run
-  - ./manage.py collectstatic --settings="karaage.tests.settings" -v 2 --noinput
-  - ./manage.py test --settings="karaage.tests.settings" -v 2 karaage.tests
-
-  - ./manage.py makemigrations --settings="karaage.plugins.kgapplications.tests.settings" --check --dry-run
-  - ./manage.py collectstatic --settings="karaage.plugins.kgapplications.tests.settings" -v 2 --noinput
-  - ./manage.py test --settings="karaage.plugins.kgapplications.tests.settings" -v 2 karaage.plugins.kgapplications
-
-  - ./manage.py makemigrations --settings="karaage.plugins.kgsoftware.tests.settings" --check --dry-run
-  - ./manage.py collectstatic --settings="karaage.plugins.kgsoftware.tests.settings" -v 2 --noinput
-  - ./manage.py test --settings="karaage.plugins.kgsoftware.tests.settings" -v 2 karaage.plugins.kgsoftware.tests
-
-  - ./manage.py makemigrations --settings="karaage.plugins.kgsoftware.applications.tests.settings" --check --dry-run
-  - ./manage.py collectstatic --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 --noinput
-  - ./manage.py test --settings="karaage.plugins.kgsoftware.applications.tests.settings" -v 2 karaage.plugins.kgsoftware
-
-  - ./manage.py makemigrations --settings="karaage.plugins.kgusage.tests.settings" --check --dry-run
-  - ./manage.py collectstatic --settings="karaage.plugins.kgusage.tests.settings" -v 2 --noinput
-  - ./manage.py test --settings="karaage.plugins.kgusage.tests.settings" -v 2 karaage.plugins.kgusage
+  - python -m tldap.test.slapd ./run_tests.sh
 
 jobs:
   include:
