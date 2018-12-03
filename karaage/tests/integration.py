@@ -18,11 +18,11 @@
 import os
 from unittest import skipUnless
 
+import pkg_resources
 import tldap.database
 import tldap.transaction
 from django.test import TestCase
 
-import pkg_resources
 from karaage.datastores import _DATASTORES
 from karaage.datastores.ldap import DataStore
 from karaage.middleware.threadlocals import reset
