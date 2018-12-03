@@ -91,9 +91,9 @@ DATABASES = {'default': env.db(default="sqlite:///")}
 LDAP = {
     'default': {
         'ENGINE': 'tldap.backend.fake_transactions',
-        'URI': 'ldap://localhost:38911/',
-        'USER': 'cn=Manager,dc=python-ldap,dc=org',
-        'PASSWORD': 'password',
+        'URI': os.environ['LDAP_URL'],
+        'USER': os.environ['LDAP_DN'],
+        'PASSWORD': os.environ['LDAP_PASSWORD'],
         'USE_TLS': False,  # Legacy, for TLDAP <= 0.2.16
         'REQUIRE_TLS': False,
         'START_TLS ': False,

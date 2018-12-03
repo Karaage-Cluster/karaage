@@ -24,6 +24,7 @@ from django.conf import settings
 from django.contrib import auth
 from django.core import mail
 from django.urls import reverse
+from tldap.exceptions import ObjectDoesNotExist
 
 from karaage.institutes.models import Institute, InstituteDelegate
 from karaage.machines.models import Account
@@ -315,9 +316,9 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(person.username, 'samtest')
         self.assertEqual(Account.objects.count(), 2)
         self.assertEqual(project.group.members.count(), p_users + 1)
-        luser = self._ldap_datastore._accounts().get(uid='samtest')
-        self.assertEqual(luser.givenName, 'Sam')
-        self.assertEqual(luser.homeDirectory, '/vpac/TestProject1/samtest')
+        luser = self._ldap_datastore._get_account(uid='samtest')
+        self.assertEqual(luser['givenName'], ['Sam'])
+        self.assertEqual(luser['homeDirectory'], ['/vpac/TestProject1/samtest'])
 
     def test_admin_create_user(self):
         users = Person.objects.count()
@@ -349,7 +350,6 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(response.status_code, 302)
 
         self.assertEqual(Person.objects.count(), users + 1)
-        users = users + 1
         person = Person.objects.get(username='samtest2')
         self.assertEqual(person.is_active, True)
         self.assertEqual(person.username, 'samtest2')
@@ -362,11 +362,11 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(logged_in, True)
 
         person = Person.objects.get(username='kgtestuser3')
-        luser = self._ldap_datastore._accounts().get(uid='kgtestuser3')
         self.assertEqual(person.mobile, '')
-        self.assertEqual(luser.gidNumber, 500)
-        self.assertEqual(luser.o, 'Example')
-        self.assertEqual(luser.gecos, 'Test User3 (Example)')
+        luser = self._ldap_datastore._get_account(uid='kgtestuser3')
+        self.assertEqual(luser['gidNumber'], [500])
+        self.assertEqual(luser['o'], ['Example'])
+        self.assertEqual(luser['gecos'], ['Test User3 (Example)'])
         response = self.client.get(
             reverse('kg_person_edit', args=['kgtestuser3']))
         self.assertEqual(response.status_code, 200)
@@ -388,11 +388,11 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(response.status_code, 302)
 
         person = Person.objects.get(username='kgtestuser3')
-        luser = self._ldap_datastore._accounts().get(uid='kgtestuser3')
         self.assertEqual(person.mobile, '555666')
-        self.assertEqual(luser.gidNumber, 501)
-        self.assertEqual(luser.o, 'OtherInst')
-        self.assertEqual(luser.gecos, 'Test User3 (OtherInst)')
+        luser = self._ldap_datastore._get_account(uid='kgtestuser3')
+        self.assertEqual(luser['gidNumber'], [501])
+        self.assertEqual(luser['o'], ['OtherInst'])
+        self.assertEqual(luser['gecos'], ['Test User3 (OtherInst)'])
 
     def test_delete_activate_person(self):
         self.client.login(username='kgsuper', password='aq12ws')
@@ -401,8 +401,8 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(person.projects.count(), 1)
         self.assertEqual(person.account_set.count(), 1)
         self.assertEqual(person.account_set.all()[0].date_deleted, None)
-        luser = self._ldap_datastore._accounts().get(uid='kgtestuser3')
-        self.assertEqual(luser.givenName, 'Test')
+        luser = self._ldap_datastore._get_account(uid='kgtestuser3')
+        self.assertEqual(luser['givenName'], ['Test'])
 
         response = self.client.get(
             reverse('kg_person_delete', args=[person.username]))
@@ -420,8 +420,8 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(person.account_set.all()[0].date_deleted,
                          datetime.date.today())
         self.assertRaises(
-            self._ldap_datastore._account.DoesNotExist,
-            self._ldap_datastore._accounts().get,
+            ObjectDoesNotExist,
+            self._ldap_datastore._get_account,
             uid='kgtestuser3')
 
         # Test activating
@@ -481,7 +481,7 @@ class PersonTestCase(IntegrationTestCase):
     def stest_add_user_to_project(self):
 
         person = Person.objects.get(pk=Person.objects.count())
-        person.account_set.all()[0]
+        assert len(person.account_set.all()) == 1
 
         self.assertEqual(person.project_set.count(), 1)
 

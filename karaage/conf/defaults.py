@@ -72,7 +72,6 @@ INSTALLED_APPS = (
     'ajax_select',
     'jsonfield',
     'django_tables2',
-    'tldap.methods',
     'tldap.django',
     'pipeline',
     'django_celery_results',
@@ -130,7 +129,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'karaage.middleware.threadlocals.ThreadLocals',
     'karaage.middleware.saml.SamlUserMiddleware',
-    'tldap.middleware.TransactionMiddleware',
+    'tldap.django.middleware.TransactionMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 

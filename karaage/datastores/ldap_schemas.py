@@ -1,5 +1,4 @@
-# Copyright 2010-2017, The University of Melbourne
-# Copyright 2010-2017, Brian May
+# Copyright 2018, Brian May
 #
 # This file is part of Karaage.
 #
@@ -16,230 +15,175 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import six
-import tldap.manager
-import tldap.methods as methods
-import tldap.methods.ad
-import tldap.methods.common
-import tldap.methods.ds389
-import tldap.methods.pwdpolicy
-import tldap.schemas as schemas
-import tldap.schemas.ad
-import tldap.schemas.ds389
-import tldap.schemas.rfc
+from typing import Dict
+
+import tldap.fields
+from tldap.database import helpers, LdapObject, Changeset, SearchOptions, Database
+import tldap.django.helpers as dhelpers
 
 
-def _a(string):
-    """ Force string to ASCII only characters. """
-    string = ''.join(c for c in string if 31 < ord(c) < 127)
-    return string
-
-
-class AccountMixin(object):
+class BaseAccount(LdapObject):
+    """ An abstract Generic LDAP account. """
 
     @classmethod
-    def pre_save(cls, self):
-        full_name = getattr(self, "fullName", None)
-        if full_name is None:
-            full_name = "%s %s" % (self.givenName, self.sn)
-
-        self.displayName = six.u('%s (%s)') % (full_name, self.o)
-        self.gecos = _a(six.u('%s (%s)') % (full_name, self.o))
-
-
-############
-# OpenLDAP #
-############
-
-
-class openldap_account(methods.baseMixin):
-
-    schema_list = [
-        schemas.rfc.person,
-        schemas.rfc.organizationalPerson,
-        schemas.rfc.inetOrgPerson,
-        schemas.rfc.posixAccount,
-        schemas.rfc.shadowAccount,
-        schemas.rfc.pwdPolicy,
-    ]
-
-    mixin_list = [
-        methods.common.personMixin,
-        methods.common.accountMixin,
-        methods.pwdpolicy.pwdPolicyMixin,
-        AccountMixin,
-    ]
-
-    class Meta:
-        base_dn_setting = "LDAP_ACCOUNT_BASE"
-        object_classes = {'top'}
-        search_classes = {'posixAccount'}
-        pk = 'uid'
-
-    managed_by = tldap.manager.ManyToOneDescriptor(
-        this_key='manager',
-        linked_cls='karaage.datastores.ldap_schemas.openldap_account',
-        linked_key='dn')
-    manager_of = tldap.manager.OneToManyDescriptor(
-        this_key='dn',
-        linked_cls='karaage.datastores.ldap_schemas.openldap_account',
-        linked_key='manager')
-    unixHomeDirectory = tldap.manager.AliasDescriptor("homeDirectory")
-
-
-class openldap_account_group(methods.baseMixin):
-
-    schema_list = [schemas.rfc.posixGroup]
-    mixin_list = [methods.common.groupMixin]
-
-    class Meta:
-        base_dn_setting = "LDAP_GROUP_BASE"
-        object_classes = {'top'}
-        search_classes = {'posixGroup'}
-        pk = 'cn'
-
-    # accounts
-    primary_accounts = tldap.manager.OneToManyDescriptor(
-        this_key='gidNumber',
-        linked_cls=openldap_account, linked_key='gidNumber',
-        related_name="primary_group")
-    secondary_accounts = tldap.manager.ManyToManyDescriptor(
-        this_key='memberUid',
-        linked_cls=openldap_account, linked_key='uid', linked_is_p=False,
-        related_name="secondary_groups")
-
-
-############
-# 389 LDAP #
-############
-
-class ds389AccountMixin(object):
+    def get_fields(cls) -> Dict[str, tldap.fields.Field]:
+        fields = {
+            **helpers.get_fields_common(),
+            **helpers.get_fields_person(),
+            **helpers.get_fields_account(),
+            **helpers.get_fields_shadow(),
+            'default_project': tldap.fields.FakeField(required=True),
+        }
+        return fields
 
     @classmethod
-    def pre_save(cls, self):
-        # work around for https://bugzilla.redhat.com/show_bug.cgi?id=1171308
-        if self.userPassword is None:
-            from karaage.people.models import Person
-            self.change_password(Person.objects.make_random_password())
+    def get_search_options(cls, database: Database) -> SearchOptions:
+        settings = database.settings
+        return SearchOptions(
+            base_dn=settings['LDAP_ACCOUNT_BASE'],
+            object_class={'inetOrgPerson', 'organizationalPerson', 'person'},
+            pk_field="uid",
+        )
+
+    @classmethod
+    def on_load(cls, python_data: LdapObject, _database: Database) -> LdapObject:
+        python_data = helpers.load_person(python_data, OpenldapGroup)
+        python_data = helpers.load_account(python_data, OpenldapGroup)
+        python_data = helpers.load_shadow(python_data)
+        return python_data
+
+    @classmethod
+    def on_save(cls, changes: Changeset, database: Database) -> Changeset:
+        settings = database.settings
+        changes = helpers.save_person(changes, database)
+        changes = helpers.save_account(changes, database, {'uid', 'cn', 'givenName', 'sn', 'o', 'default_project'})
+        changes = helpers.save_shadow(changes)
+        changes = helpers.rdn_to_dn(changes, 'uid', settings['LDAP_ACCOUNT_BASE'])
+        return changes
 
 
-class ds389_account(methods.baseMixin):
+class BaseGroup(LdapObject):
+    """ An abstract generic LDAP Group. """
 
-    schema_list = [
-        schemas.rfc.person,
-        schemas.rfc.organizationalPerson,
-        schemas.rfc.inetOrgPerson,
-        schemas.rfc.posixAccount,
-        schemas.rfc.shadowAccount,
-        schemas.ds389.passwordObject,
-    ]
+    @classmethod
+    def get_fields(cls) -> Dict[str, tldap.fields.Field]:
+        fields = {
+            **helpers.get_fields_common(),
+            **helpers.get_fields_group(),
+        }
+        return fields
 
-    mixin_list = [
-        methods.common.personMixin,
-        methods.common.accountMixin,
-        methods.ds389.passwordObjectMixin,
-        AccountMixin,
-        ds389AccountMixin,
-    ]
+    @classmethod
+    def get_search_options(cls, database: Database) -> SearchOptions:
+        settings = database.settings
+        return SearchOptions(
+            base_dn=settings['LDAP_GROUP_BASE'],
+            object_class={'posixGroup'},
+            pk_field="cn",
+        )
 
-    class Meta:
-        base_dn_setting = "LDAP_ACCOUNT_BASE"
-        object_classes = {'top'}
-        search_classes = {'posixAccount'}
-        pk = 'uid'
+    @classmethod
+    def on_load(cls, python_data: LdapObject, _database: Database) -> LdapObject:
+        return python_data
 
-    managed_by = tldap.manager.ManyToOneDescriptor(
-        this_key='manager',
-        linked_cls='karaage.datastores.ldap_schemas.ds389_account',
-        linked_key='dn')
-    manager_of = tldap.manager.OneToManyDescriptor(
-        this_key='dn',
-        linked_cls='karaage.datastores.ldap_schemas.ds389_account',
-        linked_key='manager')
-    unixHomeDirectory = tldap.manager.AliasDescriptor("homeDirectory")
+    @classmethod
+    def on_save(cls, changes: Changeset, database: Database) -> Changeset:
+        settings = database.settings
+        changes = helpers.save_group(changes)
+        changes = helpers.set_object_class(changes, ['top', 'posixGroup'])
+        changes = helpers.rdn_to_dn(changes, 'cn', settings['LDAP_GROUP_BASE'])
+        return changes
 
+    @classmethod
+    def add_member(cls, changes: Changeset, member: BaseAccount) -> Changeset:
+        return helpers.add_group_member(changes, member)
 
-class ds389_account_group(methods.baseMixin):
-
-    schema_list = [schemas.rfc.posixGroup]
-    mixin_list = [methods.common.groupMixin]
-
-    class Meta:
-        base_dn_setting = "LDAP_GROUP_BASE"
-        object_classes = {'top'}
-        search_classes = {'posixGroup'}
-        pk = 'cn'
-
-    # accounts
-    primary_accounts = tldap.manager.OneToManyDescriptor(
-        this_key='gidNumber',
-        linked_cls=ds389_account, linked_key='gidNumber',
-        related_name="primary_group")
-    secondary_accounts = tldap.manager.ManyToManyDescriptor(
-        this_key='memberUid',
-        linked_cls=ds389_account, linked_key='uid', linked_is_p=False,
-        related_name="secondary_groups")
+    @classmethod
+    def remove_member(cls, changes: Changeset, member: BaseAccount) -> Changeset:
+        return helpers.remove_group_member(changes, member)
 
 
-####################
-# Active Directory #
-####################
+class OpenldapAccount(BaseAccount):
+    """ An OpenLDAP specific account with the pwdpolicy schema. """
 
-class ad_account(methods.baseMixin):
+    @classmethod
+    def get_fields(cls) -> Dict[str, tldap.fields.Field]:
+        fields = {
+            **BaseAccount.get_fields(),
+            **helpers.get_fields_pwdpolicy(),
+        }
+        return fields
 
-    schema_list = [
-        schemas.ad.person,
-        schemas.rfc.organizationalPerson,
-        schemas.rfc.inetOrgPerson,
-        schemas.ad.user,
-        schemas.ad.posixAccount,
-    ]
+    @classmethod
+    def on_load(cls, python_data: LdapObject, database: Database) -> LdapObject:
+        python_data = BaseAccount.on_load(python_data, database)
+        python_data = helpers.load_pwdpolicy(python_data)
+        return python_data
 
-    mixin_list = [
-        methods.common.personMixin,
-        methods.common.accountMixin,
-        methods.ad.adUserMixin,
-        AccountMixin,
-    ]
-
-    class Meta:
-        base_dn_setting = "LDAP_ACCOUNT_BASE"
-        object_classes = {'top'}
-        search_classes = {'user'}
-        pk = 'cn'
-
-    managed_by = tldap.manager.ManyToOneDescriptor(
-        this_key='manager',
-        linked_cls='karaage.datastores.ldap_schemas.ad_account',
-        linked_key='dn')
-    manager_of = tldap.manager.OneToManyDescriptor(
-        this_key='dn',
-        linked_cls='karaage.datastores.ldap_schemas.ad_account',
-        linked_key='manager')
+    @classmethod
+    def on_save(cls, changes: Changeset, database: Database) -> Changeset:
+        changes = BaseAccount.on_save(changes, database)
+        changes = dhelpers.save_account(changes, OpenldapAccount, database)
+        changes = helpers.save_pwdpolicy(changes)
+        changes = helpers.set_object_class(changes, ['top', 'person', 'inetOrgPerson', 'organizationalPerson',
+                                                     'shadowAccount', 'posixAccount', 'pwdPolicy'])
+        return changes
 
 
-class ad_account_group(methods.baseMixin):
+class OpenldapGroup(BaseGroup):
+    """ An OpenLDAP specific group. """
 
-    schema_list = [
-        schemas.rfc.posixGroup,
-        schemas.ad.group,
-    ]
+    @classmethod
+    def on_load(cls, python_data: LdapObject, database: Database) -> LdapObject:
+        python_data = BaseGroup.on_load(python_data, database)
+        python_data = helpers.load_group(python_data, OpenldapAccount)
+        return python_data
 
-    mixin_list = [
-        methods.common.groupMixin,
-        methods.ad.adGroupMixin
-    ]
+    @classmethod
+    def on_save(cls, changes: Changeset, database: Database) -> Changeset:
+        changes = BaseGroup.on_save(changes, database)
+        changes = dhelpers.save_group(changes, OpenldapGroup, database)
+        return changes
 
-    class Meta:
-        base_dn_setting = "LDAP_GROUP_BASE"
-        object_classes = {'top'}
-        search_classes = {'group'}
-        pk = 'cn'
 
-    # accounts
-    primary_accounts = tldap.manager.OneToManyDescriptor(
-        this_key='gidNumber',
-        linked_cls=ad_account, linked_key='gidNumber',
-        related_name="primary_group")
-    secondary_accounts = tldap.manager.AdAccountLinkDescriptor(
-        linked_cls=ad_account, related_name="secondary_groups")
+class Ds389Account(BaseAccount):
+    """ A DS389 specific account with the password object schema. """
+
+    @classmethod
+    def get_fields(cls) -> Dict[str, tldap.fields.Field]:
+        fields = {
+            **BaseAccount.get_fields(),
+            **helpers.get_fields_password_object(),
+        }
+        return fields
+
+    @classmethod
+    def on_load(cls, python_data: LdapObject, database: Database) -> LdapObject:
+        python_data = BaseAccount.on_load(python_data, database)
+        python_data = helpers.load_password_object(python_data)
+        return python_data
+
+    @classmethod
+    def on_save(cls, changes: Changeset, database: Database) -> Changeset:
+        changes = BaseAccount.on_save(changes, database)
+        changes = dhelpers.save_account(changes, Ds389Account, database)
+        changes = helpers.save_password_object(changes)
+        changes = helpers.set_object_class(changes, ['top', 'person', 'inetOrgPerson', 'organizationalPerson',
+                                                     'shadowAccount', 'posixAccount', 'passwordObject'])
+        return changes
+
+
+class Ds389Group(BaseGroup):
+    """ A DS389 specific group. """
+
+    @classmethod
+    def on_load(cls, python_data: LdapObject, database: Database) -> LdapObject:
+        python_data = BaseGroup.on_load(python_data, database)
+        python_data = helpers.load_group(python_data, Ds389Account)
+        return python_data
+
+    @classmethod
+    def on_save(cls, changes: Changeset, database: Database) -> Changeset:
+        changes = BaseGroup.on_save(changes, database)
+        changes = dhelpers.save_group(changes, Ds389Group, database)
+        return changes

@@ -15,17 +15,17 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
-
+import os
 from unittest import skipUnless
 
-import pkg_resources
 from django.test import TestCase
-from tldap.test import slapd
+import tldap.database
+import tldap.transaction
 
+import pkg_resources
 from karaage.datastores import _DATASTORES
 from karaage.datastores.ldap import DataStore
 from karaage.middleware.threadlocals import reset
-from karaage.tests.initial_ldap_data import test_ldif
 
 
 def skip_if_missing_requirements(*requirements):
@@ -42,31 +42,79 @@ class IntegrationTestCase(TestCase):
         'DESCRIPTION': 'LDAP datastore',
         'ENGINE': 'karaage.datastores.ldap.AccountDataStore',
         'LDAP': 'default',
-        'ACCOUNT': 'karaage.datastores.ldap_schemas.openldap_account',
-        'GROUP': 'karaage.datastores.ldap_schemas.openldap_account_group',
         'PRIMARY_GROUP': "institute",
         'DEFAULT_PRIMARY_GROUP': "dummy",
-        'HOME_DIRECTORY': "/vpac/%(default_project)s/%(uid)s",
         'LOCKED_SHELL': "/usr/local/sbin/locked",
-        'LDAP_ACCOUNT_BASE': 'ou=Account,dc=python-ldap,dc=org',
-        'LDAP_GROUP_BASE': 'ou=Group,dc=python-ldap,dc=org',
+        'NUMBER_SCHEME': 'default',
+        'LDAP_ACCOUNT_BASE': os.environ['LDAP_ACCOUNT_BASE'],
+        'LDAP_GROUP_BASE': os.environ['LDAP_GROUP_BASE'],
+        'HOME_DIRECTORY_FORMAT': "/vpac/{default_project}/{uid}",
+        'GECOS_FORMAT': '{cn} ({o})',
     }
 
     def setUp(self):
         super(IntegrationTestCase, self).setUp()
-        server = slapd.Slapd()
-        server.set_port(38911)
-        server.start()
+
+        tldap.transaction.enter_transaction_management()
 
         self.addCleanup(self.cleanup)
 
-        server.ldapadd("\n".join(test_ldif) + "\n")
-        self.__ldap_server = server
-        self._ldap_datastore = DataStore(self.LDAP_CONFIG)
+        if os.environ['LDAP_TYPE'] == "openldap":
+            config = {
+                **self.LDAP_CONFIG,
+                'ACCOUNT': 'karaage.datastores.ldap_schemas.OpenldapAccount',
+                'GROUP': 'karaage.datastores.ldap_schemas.OpenldapGroup',
+
+            }
+        elif os.environ['LDAP_TYPE'] == "ds389":
+            config = {
+                **self.LDAP_CONFIG,
+                'ACCOUNT': 'karaage.datastores.ldap_schemas.Ds389Account',
+                'GROUP': 'karaage.datastores.ldap_schemas.Ds389Group',
+
+            }
+        else:
+            raise RuntimeError(f"Unknown databasebase type {os.environ['LDAP_TYPE']}.")
+
+        self._ldap_datastore = DataStore(config)
+
+        database = self._ldap_datastore._database
+        account = self._ldap_datastore._account_class({
+            'uid': 'kgtestuser3',
+            'givenName': 'Test',
+            'sn': "User3",
+            'cn': 'Test User3',
+            'gidNumber': 500,
+            'o': 'Example',
+        })
+        tldap.database.insert(account, database=database)
+
+        group = self._ldap_datastore._group_class({
+            'cn': 'Example',
+            'gidNumber': 500,
+        })
+        tldap.database.insert(group, database=database)
+
+        group = self._ldap_datastore._group_class({
+            'cn': 'otherinst',
+            'gidNumber': 501,
+        })
+        tldap.database.insert(group, database=database)
+
+        group = self._ldap_datastore._group_class({
+            'cn': 'TestProject1',
+            'memberUid': ['kgtestuser3'],
+            'gidNumber': 504,
+        })
+        tldap.database.insert(group, database=database)
+
         _DATASTORES.clear()
         _DATASTORES.append(self._ldap_datastore)
 
     def cleanup(self):
-        self.__ldap_server.stop()
+        tldap.transaction.rollback()
+        tldap.transaction.leave_transaction_management()
+
         reset()
         _DATASTORES.clear()
+
