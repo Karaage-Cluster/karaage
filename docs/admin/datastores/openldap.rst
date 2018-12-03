@@ -325,7 +325,7 @@ Configuring Karaage to use LDAP
                     'GROUP': 'karaage.datastores.ldap_schemas.openldap_account_group',
                     'PRIMARY_GROUP': "institute",
                     'DEFAULT_PRIMARY_GROUP': "dummy",
-                    'HOME_DIRECTORY': "/home/%(uid)s",
+                    'HOME_DIRECTORY': "/home/(uid)",
                     'LOCKED_SHELL': "/usr/local/sbin/locked",
                     'NUMBER_SCHEME': 'default',
                     'LDAP_ACCOUNT_BASE': 'ou=Accounts,dc=example,dc=org',
