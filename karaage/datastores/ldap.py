@@ -21,15 +21,26 @@
 import importlib
 import logging
 
-from tldap import Q
 import tldap.backend
-from tldap.database import LdapObject, get_one, LdapObjectClass, changeset, save, delete, rename, preload, Database
+from tldap import Q
+from tldap.database import (
+    Database,
+    LdapObject,
+    LdapObjectClass,
+    changeset,
+    delete,
+    get_one,
+    preload,
+    rename,
+    save,
+)
 from tldap.exceptions import ObjectDoesNotExist
 
 import karaage.common.trace as trace
 from karaage.datastores import base
-from karaage.datastores.ldap_schemas import OpenldapGroup, OpenldapAccount
+from karaage.datastores.ldap_schemas import OpenldapAccount, OpenldapGroup
 from karaage.machines.models import Account
+
 
 logger = logging.getLogger(__name__)
 

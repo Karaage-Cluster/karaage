@@ -17,9 +17,15 @@
 
 from typing import Dict
 
-import tldap.fields
-from tldap.database import helpers, LdapObject, Changeset, SearchOptions, Database
 import tldap.django.helpers as dhelpers
+import tldap.fields
+from tldap.database import (
+    Changeset,
+    Database,
+    LdapObject,
+    SearchOptions,
+    helpers,
+)
 
 
 class BaseAccount(LdapObject):

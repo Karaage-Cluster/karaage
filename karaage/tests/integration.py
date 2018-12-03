@@ -18,9 +18,9 @@
 import os
 from unittest import skipUnless
 
-from django.test import TestCase
 import tldap.database
 import tldap.transaction
+from django.test import TestCase
 
 import pkg_resources
 from karaage.datastores import _DATASTORES
@@ -117,4 +117,3 @@ class IntegrationTestCase(TestCase):
 
         reset()
         _DATASTORES.clear()
-
