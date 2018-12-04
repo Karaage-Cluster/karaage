@@ -101,9 +101,6 @@ LDAP = {
     }
 }
 
-LDAP_TEST_DATASTORE = 'ldap'
-LDAP_TEST_DATASTORE_N = 0
-
 SERVER_EMAIL = 'django@' + os.uname()[1]
 ACCOUNTS_EMAIL = 'accounts@vpac.org'
 EMAIL_SUBJECT_PREFIX = '[Grunt VPAC] - '

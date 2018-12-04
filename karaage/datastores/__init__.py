@@ -75,15 +75,6 @@ def _get_datastores():
     return _DATASTORES
 
 
-def get_test_datastore(number=None):
-    """ For testing only. Do not use. """
-    global _DATASTORES
-    if number is None:
-        number = settings.LDAP_TEST_DATASTORE_N
-    datastores = _DATASTORES
-    return datastores[number]
-
-
 # Initialize data stores
 _init_datastores()
 
