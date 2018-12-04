@@ -131,9 +131,6 @@ class DataStore(base.DataStore):
             'mail': _str_or_none(person.email),
             'title': _str_or_none(person.title),
             'o': person.institute.name,
-            # 'homeDirectory': self._home_directory % {
-            #     'default_project': default_project,
-            #     'uid': account.username},
             'cn': person.full_name,
             'default_project': default_project,
             'locked': account.is_locked()
