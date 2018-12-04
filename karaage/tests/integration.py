@@ -44,7 +44,6 @@ class IntegrationTestCase(TestCase):
         'LDAP': 'default',
         'PRIMARY_GROUP': "institute",
         'DEFAULT_PRIMARY_GROUP': "dummy",
-        'LOCKED_SHELL': "/usr/local/sbin/locked",
         'NUMBER_SCHEME': 'default',
         'LDAP_ACCOUNT_BASE': os.environ['LDAP_ACCOUNT_BASE'],
         'LDAP_GROUP_BASE': os.environ['LDAP_GROUP_BASE'],

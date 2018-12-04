@@ -78,7 +78,6 @@ class DataStore(base.DataStore):
         self._group_class = _lookup(config['GROUP'])
         self._primary_group = config.get('PRIMARY_GROUP', 'institute')
         self._default_primary_group = config.get('DEFAULT_PRIMARY_GROUP', 'dummy')
-        self._locked_shell = config.get('LOCKED_SHELL', "/usr/local/sbin/locked")
         self._settings = config
 
     def _get_account(self, uid: str) -> LdapObject:

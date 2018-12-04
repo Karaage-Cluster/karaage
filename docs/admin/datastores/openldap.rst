@@ -326,7 +326,6 @@ Configuring Karaage to use LDAP
                     'PRIMARY_GROUP': "institute",
                     'DEFAULT_PRIMARY_GROUP': "dummy",
                     'HOME_DIRECTORY': "/home/(uid)",
-                    'LOCKED_SHELL': "/usr/local/sbin/locked",
                     'NUMBER_SCHEME': 'default',
                     'LDAP_ACCOUNT_BASE': 'ou=Accounts,dc=example,dc=org',
                     'LDAP_GROUP_BASE': 'ou=Groups,dc=example,dc=org',
