@@ -9,8 +9,30 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+5.0.11 (UNRELEASED)
+-------------------
+
+Changed
+~~~~~~~
+* Update gunicorn from 19.8.1 to 19.9.0.
+* Update reportlab from 3.5.8 to 3.5.9.
+* Update sphinx from 1.8.1 to 1.8.2.
+* Remove legacy LDAP classes.
+* Update to latest python-tldap.
+* Update supported Python versions to 3.6 and 3.7 only.
+* Attempt to fix travis db issues.
+* Update Django for Python 3.7 support.
+* Update HOME_DIRECTORY format specification.
+* Remove legacy locked shell stuff.
+* Remove legacy home directory setting code.
+* Remove legacy test settings.
+
+
 5.0.10 (2018-10-04)
-------------------
+-------------------
+
+Changed
+~~~~~~~
 * Update reportlab from 3.5.2 to 3.5.8.
 * Update matplotlib from 2.2.2 to 2.2.3.
 * Update whitenoise from 3.3.1 to 4.1.
@@ -21,11 +43,17 @@ adheres to `Semantic Versioning`_.
 * Update django-ajax-selects from 1.7.0 to 1.7.1.
 * Update django-extensions from 2.1.0 to 2.1.3.
 * Update sphinx from 1.7.7 to 1.7.8.
+
+Fixed
+~~~~~
 * Fix crash when saving extension. Fixes #476.
 
 
 5.0.9 (2018-08-03)
 ------------------
+
+Changed
+~~~~~~~
 * Update django-environ from 0.4.4 to 0.4.5.
 * Update mysqlclient from 1.3.12 to 1.3.13.
 * Update billiard from 3.5.0.3 to 3.5.0.4.
@@ -37,6 +65,9 @@ adheres to `Semantic Versioning`_.
 * Update celery from 4.2.0 to 4.2.1.
 * Update reportlab from 3.5.1 to 3.5.2.
 * Update pyasn1 from 0.4.3 to 0.4.4.
+
+Fixed
+~~~~~
 * Fix various issues creating new project application. Fixes #450.
 * In application process don't list similar people or "Mark duplicate user"
   button unless user has approval rights.
