@@ -27,6 +27,10 @@ Changed
 * Remove legacy home directory setting code.
 * Remove legacy test settings.
 
+Fixed
+~~~~~
+* Correctly show group name in verbose view.
+
 
 5.0.10 (2018-10-04)
 -------------------

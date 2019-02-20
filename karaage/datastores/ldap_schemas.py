@@ -67,6 +67,9 @@ class BaseAccount(LdapObject):
         changes = helpers.rdn_to_dn(changes, 'uid', settings['LDAP_ACCOUNT_BASE'])
         return changes
 
+    def __repr__(self):
+        return f"user:{self['uid'][0]}"
+
 
 class BaseGroup(LdapObject):
     """ An abstract generic LDAP Group. """
@@ -107,6 +110,9 @@ class BaseGroup(LdapObject):
     @classmethod
     def remove_member(cls, changes: Changeset, member: BaseAccount) -> Changeset:
         return helpers.remove_group_member(changes, member)
+
+    def __repr__(self):
+        return f"group:{self['cn'][0]}"
 
 
 class OpenldapAccount(BaseAccount):
