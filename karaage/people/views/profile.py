@@ -239,9 +239,8 @@ def password_request(request):
     post_reset_redirect = reverse('kg_profile_reset_done')
 
     if request.method == "POST":
-        if person.has_usable_password():
-            send_reset_password_email(person)
-            return HttpResponseRedirect(post_reset_redirect)
+        send_reset_password_email(person)
+        return HttpResponseRedirect(post_reset_redirect)
 
     var = {
         'person': person,
