@@ -6,7 +6,7 @@ django-simple-captcha==0.5.10
 django-ajax-selects==1.7.1
 django-jsonfield==1.0.1
 django-model-utils==3.1.2
-pyasn1==0.4.4
+pyasn1==0.4.5
 ldap3==2.5.2
 python-tldap==1.0.2
 django-pipeline==1.6.14
