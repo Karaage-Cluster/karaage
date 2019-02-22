@@ -21,7 +21,7 @@ Django==1.11.20
 # celery
 billiard==3.6.0.0
 celery==4.2.1
-kombu==4.2.1
+kombu==4.3.0
 vine==1.1.4
 django-celery-results==1.0.4
 redis==3.2.0
