@@ -15,8 +15,6 @@ adheres to `Semantic Versioning`_.
 Changed
 ~~~~~~~
 * Update gunicorn from 19.8.1 to 19.9.0.
-* Update reportlab from 3.5.8 to 3.5.9.
-* Update sphinx from 1.8.1 to 1.8.2.
 * Remove legacy LDAP classes.
 * Update to latest python-tldap.
 * Update supported Python versions to 3.6 and 3.7 only.
@@ -37,16 +35,9 @@ Fixed
 
 Changed
 ~~~~~~~
-* Update reportlab from 3.5.2 to 3.5.8.
-* Update matplotlib from 2.2.2 to 2.2.3.
 * Update whitenoise from 3.3.1 to 4.1.
-* Update reportlab from 3.5.4 to 3.5.5.
 * Update Django to latest in LTS series.
 * Update sphinx from 1.7.6 to 1.8.1.
-* Update reportlab from 3.5.5 to 3.5.6.
-* Update django-ajax-selects from 1.7.0 to 1.7.1.
-* Update django-extensions from 2.1.0 to 2.1.3.
-* Update sphinx from 1.7.7 to 1.7.8.
 
 Fixed
 ~~~~~
@@ -58,17 +49,9 @@ Fixed
 
 Changed
 ~~~~~~~
-* Update django-environ from 0.4.4 to 0.4.5.
-* Update mysqlclient from 1.3.12 to 1.3.13.
-* Update billiard from 3.5.0.3 to 3.5.0.4.
 * Update reportlab from 3.4.0 to 3.5.0.
 * Update django-filter from 1.1.0 to 2.0.0.
-* Update sphinx from 1.7.5 to 1.7.6.
 * Update django-extensions from 2.0.7 to 2.1.0.
-* Update reportlab from 3.5.0 to 3.5.1.
-* Update celery from 4.2.0 to 4.2.1.
-* Update reportlab from 3.5.1 to 3.5.2.
-* Update pyasn1 from 0.4.3 to 0.4.4.
 
 Fixed
 ~~~~~
@@ -84,11 +67,9 @@ Fixed
 
 Changed
 ~~~~~~~
-* Update kombu from 4.2.0 to 4.2.1.
 * Don't email project leaders with email turned off, but allow them to approve
   projects.
 * Update celery from 4.1.1 to 4.2.0.
-* Update django-simple-captcha from 0.5.7 to 0.5.9.
 
 
 5.0.7 (2018-05-29)
@@ -99,7 +80,6 @@ Changed
 * Remove amqp library requirement.
 * Fixup slurm directory in documentation.
 * Ensure /var/log/shibboleth has correct permissions.
-* Update sphinx from 1.7.4 to 1.7.5.
 
 
 5.0.6 (2018-05-25)
@@ -107,23 +87,16 @@ Changed
 
 Changed
 ~~~~~~~
-* Update sphinx from 1.7.3 to 1.7.4
 * Update gunicorn from 19.7.1 to 19.8.0
 * Remove legacy dockerhub hooks
-* Update gunicorn from 19.8.0 to 19.8.1
 * Added invite_csv_users.py for cli bulk inviting (#431)
-* Update factory-boy from 2.10.0 to 2.11.1
-* Update django-model-utils from 3.1.1 to 3.1.2
 * Completely revise application process
 * Allow institute delegates with emails turned off to approve applications
 * Auto build beta docker image
-* Update django-simple-captcha from 0.5.6 to 0.5.7
 * Update kombu from 4.1.0 to 4.2.0
-* Update celery from 4.1.0 to 4.1.1
 * Update for latest slurm images
 * Move dynamic files from /var/cache/karaage3/files to /var/lib/karaage3/files
 * Update docker start instructions
-* Update pyasn1 from 0.4.2 to 0.4.3
 
 Removed
 ~~~~~~~
@@ -159,16 +132,12 @@ Changed
 * Fix out-by-one error in changelog versions.
 * Improvements to static checks.
 * Fix deprecation warnings.
-* Update django-extensions from 2.0.0 to 2.0.2.
 * Update matplotlib from 2.1.2 to 2.2.0.
 * Update Django.
 * Various updates to documentation.
 * More work with tests.
-* Update django-extensions from 2.0.2 to 2.0.7.
 * Update django-tables2 from 1.19.0 to 1.21.2.
 * Update ldap3 from 2.4.1 to 2.5.
-* Update matplotlib from 2.2.0 to 2.2.2.
-* Update sphinx from 1.7.1 to 1.7.3.
 
 
 5.0.2 - 2018-02-28
