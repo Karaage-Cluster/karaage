@@ -22,6 +22,7 @@ from django.conf.urls import url
 from karaage.common.views import profile as common_profile
 from karaage.people.views import profile as people_profile
 
+
 profile_urlpatterns = [
     url(r'^$', common_profile.profile, name='kg_profile'),
     url(r'^logout/$', common_profile.logout, name='kg_profile_logout'),

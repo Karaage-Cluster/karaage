@@ -20,6 +20,7 @@ from django.conf.urls import url
 
 from karaage.machines.views import accounts
 
+
 profile_urlpatterns = [
     url(r'^accounts/$', accounts.profile_accounts, name='kg_profile_accounts'),
 ]

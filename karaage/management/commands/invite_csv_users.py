@@ -40,7 +40,7 @@ from karaage.plugins.kgapplications import emails
 from karaage.plugins.kgapplications.models import ProjectApplication
 from karaage.plugins.kgapplications.views import base
 from karaage.plugins.kgapplications.views.project import (
-    get_applicant_from_email,
+    get_applicant_from_email
 )
 from karaage.projects.models import Project
 

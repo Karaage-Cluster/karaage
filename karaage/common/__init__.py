@@ -19,21 +19,19 @@
 import datetime
 import importlib
 import warnings
-import six
 
 import django
-from django.http import QueryDict
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
+import six
 from django.conf import settings
-from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
+from django.http import HttpResponseRedirect, QueryDict
+from django.shortcuts import render
+from django.urls import reverse
 
-from karaage.plugins import BasePlugin
-from karaage.middleware.threadlocals import get_current_user
 from karaage.common.forms import CommentForm
-from karaage.common.models import (LogEntry, ADDITION, CHANGE,
-                                   DELETION, COMMENT)
+from karaage.common.models import ADDITION, CHANGE, COMMENT, DELETION, LogEntry
+from karaage.middleware.threadlocals import get_current_user
+from karaage.plugins import BasePlugin
 
 
 def get_date_range(request, default_start=None, default_end=None):

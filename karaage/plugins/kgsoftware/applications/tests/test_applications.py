@@ -26,8 +26,8 @@ from django.urls import reverse
 from karaage.people.models import Group
 from karaage.plugins.kgapplications.models import Application
 
-from ...models import Software, SoftwareLicense
 from ..models import SoftwareApplication
+from ...models import Software, SoftwareLicense
 
 
 def set_admin():

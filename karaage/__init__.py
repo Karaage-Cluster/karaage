@@ -19,6 +19,8 @@
 # Django 1.7 style AppConfig, see
 # http://docs.djangoproject.com/en/1.7/ref/applications/
 from .celery import app as celery_app  # NOQA
+
+
 default_app_config = 'karaage.apps.Karaage'
 
 __author__ = """Brian May"""

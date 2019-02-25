@@ -26,6 +26,7 @@ from django.conf import settings
 
 from .base import DataStore
 
+
 _DATASTORES = []
 
 
