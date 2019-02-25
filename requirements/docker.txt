@@ -2,5 +2,4 @@
 cracklib==2.9.3
 gunicorn==19.9.0
 mysqlclient==1.4.2.post1
-reportlab==3.5.9
 sentry-sdk==0.7.3
