@@ -18,33 +18,10 @@
 
 import django_filters
 import django_tables2 as tables
-import six
-from django.urls import reverse
-from django.utils.safestring import mark_safe
-from django_tables2.columns.linkcolumn import BaseLinkColumn
 from django_tables2.utils import A
-
-from karaage.people.models import Person
 
 from .models import Application
 from .views.base import get_state_machine
-
-
-class ApplicantColumn(BaseLinkColumn):
-
-    def render(self, value):
-        if isinstance(value, Person):
-            url = reverse("kg_person_detail", args=[value.username])
-            try:
-                # django-tables >= 1.2.0
-                link = self.render_link(
-                    url, record=value, value=six.text_type(value))
-            except TypeError:
-                # django-tables < 1.2.0
-                link = self.render_link(url, text=six.text_type(value))
-            return mark_safe(link)
-        else:
-            return value.email
 
 
 class ApplicationFilter(django_filters.FilterSet):
@@ -59,7 +36,7 @@ class ApplicationTable(tables.Table):
         'kg_application_detail', args=[A('pk')], verbose_name="ID")
     action = tables.Column(
         empty_values=(), order_by=('date_deleted', '-login_enabled'))
-    applicant = ApplicantColumn()
+    applicant = tables.Column(linkify=True)
 
     def render_action(self, record):
         return record.get_object().info()

@@ -22,9 +22,9 @@ import django_filters
 import django_tables2 as tables
 import six
 from django.urls import reverse
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from django_tables2.columns.linkcolumn import BaseLinkColumn
-from django_tables2.utils import A
+from django_tables2.utils import A, AttributeDict
 
 from karaage.people.tables import PeopleColumn
 
@@ -51,21 +51,26 @@ class ActiveFilter(django_filters.ChoiceFilter):
         return qs
 
 
-class ProjectColumn(BaseLinkColumn):
+class ProjectColumn(tables.Column):
 
     def __init__(self, *args, **kwargs):
         super(ProjectColumn, self).__init__(*args, empty_values=(), **kwargs)
 
+    def render_link(self, uri, value, attrs=None):
+        attrs = AttributeDict(attrs if attrs is not None else
+                              self.attrs.get('a', {}))
+        attrs['href'] = uri
+
+        return format_html(
+            '<a {attrs}>{text}</a>',
+            attrs=attrs.as_html(),
+            text=value,
+        )
+
     def render(self, value):
         if value is not None:
             url = reverse('kg_project_detail', args=[value.id])
-            try:
-                # django-tables >= 1.2.0
-                link = self.render_link(
-                    url, record=value, value=six.text_type(value.pid))
-            except TypeError:
-                # django-tables < 1.2.0
-                link = self.render_link(url, text=six.text_type(value.pid))
+            link = self.render_link(url, value=six.text_type(value.pid))
             return link
         else:
             return "—"

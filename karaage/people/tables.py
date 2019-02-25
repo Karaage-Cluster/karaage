@@ -20,9 +20,9 @@ import django_filters
 import django_tables2 as tables
 import six
 from django.urls import reverse
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from django_tables2.columns.linkcolumn import BaseLinkColumn
-from django_tables2.utils import A
+from django_tables2.utils import A, AttributeDict
 
 from .models import Group, Person
 
@@ -50,19 +50,24 @@ class ActiveFilter(django_filters.ChoiceFilter):
         return qs
 
 
-class PeopleColumn(BaseLinkColumn):
+class PeopleColumn(tables.Column):
+
+    def render_link(self, uri, value, attrs=None):
+        attrs = AttributeDict(attrs if attrs is not None else
+                              self.attrs.get('a', {}))
+        attrs['href'] = uri
+
+        return format_html(
+            '<a {attrs}>{text}</a>',
+            attrs=attrs.as_html(),
+            text=value,
+        )
 
     def render(self, value):
         people = []
         for person in value.all():
             url = reverse("kg_person_detail", args=[person.username])
-            try:
-                # django-tables >= 1.2.0
-                link = self.render_link(
-                    url, record=person, value=six.text_type(person))
-            except TypeError:
-                # django-tables < 1.2.0
-                link = self.render_link(url, text=six.text_type(person))
+            link = self.render_link(url, value=six.text_type(person))
             people.append(link)
         return mark_safe(", ".join(people))
 
