@@ -135,10 +135,10 @@ def loggable(obj):
     if isinstance(obj, logging.Logger):
         return True
     else:
-        return (inspect.isclass(obj) and
-                inspect.ismethod(getattr(obj, 'debug', None)) and
-                inspect.ismethod(getattr(obj, 'isEnabledFor', None)) and
-                inspect.ismethod(getattr(obj, 'setLevel', None)))
+        return (inspect.isclass(obj)
+                and inspect.ismethod(getattr(obj, 'debug', None))
+                and inspect.ismethod(getattr(obj, 'isEnabledFor', None))
+                and inspect.ismethod(getattr(obj, 'setLevel', None)))
 
 
 ######################################################################

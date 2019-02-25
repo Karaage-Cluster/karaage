@@ -88,8 +88,8 @@ class SoftwareApplicationTestCase(TestCase):
         application = Application.objects.get()
         self.assertEqual(
             response.redirect_chain[0][0],
-            url_prefix +
-            reverse('kg_application_detail', args=[application.pk, 'O']))
+            url_prefix
+            + reverse('kg_application_detail', args=[application.pk, 'O']))
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(
             mail.outbox[0].subject,
@@ -108,8 +108,8 @@ class SoftwareApplicationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.redirect_chain[0][0],
-            url_prefix +
-            reverse('kg_application_detail', args=[application.pk, 'K']))
+            url_prefix
+            + reverse('kg_application_detail', args=[application.pk, 'K']))
 
         self.assertEqual(len(mail.outbox), 2)
         self.assertEqual(
@@ -153,8 +153,8 @@ class SoftwareApplicationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.redirect_chain[0][0],
-            url_prefix +
-            reverse('kg_application_detail', args=[application.pk, 'C']))
+            url_prefix
+            + reverse('kg_application_detail', args=[application.pk, 'C']))
         application = Application.objects.get(pk=application.id)
         self.assertEqual(application.state, SoftwareApplication.COMPLETED)
         self.assertEqual(len(mail.outbox), 3)

@@ -121,8 +121,8 @@ def get_registration_email_link(application):
 def get_email_link(application):
     """ Retrieve a link that can be emailed to the applicant. """
     # don't use secret_token unless we have to
-    if (application.content_type.model == 'person' and
-            application.applicant.has_usable_password()):
+    if (application.content_type.model == 'person'
+            and application.applicant.has_usable_password()):
         url = '%s/applications/%d/' % (
             settings.REGISTRATION_BASE_URL, application.pk)
         is_secret = False

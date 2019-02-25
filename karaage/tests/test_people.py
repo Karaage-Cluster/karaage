@@ -82,8 +82,8 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(response.status_code, 404)
         self.assertEqual(
             response.redirect_chain[0][0],
-            "https://testserver/Shibboleth.sso/Login" +
-            "?target=https://testserver/&entityID=http://samlid")
+            "https://testserver/Shibboleth.sso/Login"
+            + "?target=https://testserver/&entityID=http://samlid")
 
         response = self.client.get(
             reverse('index'),
@@ -523,7 +523,7 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(len(mail.outbox), 1)
         message = mail.outbox[0]
         self.assertEqual(message.subject, "TestOrg Password change")
-        url = re.search("(?P<url>https?://[^\s]+)", message.body).group("url")
+        url = re.search(r"(?P<url>https?://[^\s]+)", message.body).group("url")
         self.assertTrue(
             url.startswith("https://example.com/users/persons/reset/"))
         url = url[25:]
@@ -570,7 +570,7 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(len(mail.outbox), 1)
         message = mail.outbox[0]
         self.assertEqual(message.subject, "TestOrg Password change")
-        url = re.search("(?P<url>https?://[^\s]+)", message.body).group("url")
+        url = re.search(r"(?P<url>https?://[^\s]+)", message.body).group("url")
         self.assertTrue(
             url.startswith("https://example.com/users/persons/reset/"))
         url = url[25:]

@@ -214,9 +214,9 @@ def project_list(request, queryset=None):
 
     if not util.is_admin(request):
         queryset = queryset.filter(
-            Q(leaders=request.user, is_active=True) |
-            Q(institute__delegates=request.user, is_active=True) |
-            Q(group__members=request.user, is_active=True)).distinct()
+            Q(leaders=request.user, is_active=True)
+            | Q(institute__delegates=request.user, is_active=True)
+            | Q(group__members=request.user, is_active=True)).distinct()
 
     queryset = queryset.select_related()
 

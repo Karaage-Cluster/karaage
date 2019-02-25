@@ -53,7 +53,7 @@ def direct_to_template(
 
 
 def redirect_to(request, url, permanent=True, query_string=False, **kwargs):
-    """
+    r"""
     Redirect to a given URL.
 
     The given url may contain dict-style string formatting, which will be
@@ -61,7 +61,7 @@ def redirect_to(request, url, permanent=True, query_string=False, **kwargs):
     ``/foo/<id>/`` to ``/bar/<id>/``, you could use the following URLconf::
 
         urlpatterns = patterns('',
-            ('^foo/(?P<id>\d+)/$',
+            (r'^foo/(?P<id>\d+)/$',
              'django.views.generic.simple.redirect_to',
              {'url' : '/bar/%(id)s/'}),
         )
@@ -84,8 +84,8 @@ def redirect_to(request, url, permanent=True, query_string=False, **kwargs):
         if args and query_string:
             url = "%s?%s" % (url, args)
 
-        klass = (permanent and HttpResponsePermanentRedirect or
-                 HttpResponseRedirect)
+        klass = (permanent and HttpResponsePermanentRedirect
+                 or HttpResponseRedirect)
         return klass(url)
     else:
         logger.warning(

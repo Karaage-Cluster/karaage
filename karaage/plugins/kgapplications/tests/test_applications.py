@@ -133,8 +133,8 @@ class UserApplicationTestCase(TestCase):
             form_data, follow=True)
         self.assertEqual(
             response.redirect_chain[0][0],
-            url_prefix +
-            reverse('kg_application_unauthenticated', args=[token, 'L']))
+            url_prefix
+            + reverse('kg_application_unauthenticated', args=[token, 'L']))
         self.assertEqual(response.status_code, 200)
         applicant = Applicant.objects.get(username='jimbob')
         application = applicant.applications.all()[0]
@@ -182,8 +182,8 @@ class UserApplicationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.redirect_chain[0][0],
-            url_prefix +
-            reverse('kg_application_detail', args=[application.pk, 'K']))
+            url_prefix
+            + reverse('kg_application_detail', args=[application.pk, 'K']))
         application = Application.objects.get(pk=application.id)
         self.assertEqual(application.state, Application.WAITING_FOR_ADMIN)
         self.assertEqual(len(mail.outbox), 3)
@@ -225,8 +225,8 @@ class UserApplicationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.redirect_chain[0][0],
-            url_prefix +
-            reverse('kg_application_detail', args=[application.pk, 'P']))
+            url_prefix
+            + reverse('kg_application_detail', args=[application.pk, 'P']))
         application = Application.objects.get(pk=application.id)
         self.assertEqual(application.state, ProjectApplication.PASSWORD)
         self.assertEqual(len(mail.outbox), 4)
@@ -251,8 +251,8 @@ class UserApplicationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.redirect_chain[0][0],
-            url_prefix +
-            reverse('kg_application_unauthenticated', args=[token, 'C']))
+            url_prefix
+            + reverse('kg_application_unauthenticated', args=[token, 'C']))
 
         # APPLICANT GET COMPLETE
         response = self.client.get(
@@ -282,8 +282,8 @@ class UserApplicationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.redirect_chain[0][0],
-            url_prefix +
-            reverse('kg_application_detail', args=[application.pk, 'A']))
+            url_prefix
+            + reverse('kg_application_detail', args=[application.pk, 'A']))
         self.client.logout()
         set_no_admin()
 
@@ -373,9 +373,9 @@ class ProjectApplicationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.redirect_chain[0][0],
-            url_prefix +
-            reverse('kg_application_unauthenticated',
-                    args=[token, 'O', 'project']))
+            url_prefix
+            + reverse('kg_application_unauthenticated',
+                      args=[token, 'O', 'project']))
 
         # SUBMIT PROJECT DETAILS
         form_data = {
@@ -396,8 +396,8 @@ class ProjectApplicationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.redirect_chain[0][0],
-            url_prefix +
-            reverse('kg_application_unauthenticated', args=[token, 'D']))
+            url_prefix
+            + reverse('kg_application_unauthenticated', args=[token, 'D']))
         applicant = Applicant.objects.get(username='jimbob')
         application = applicant.applications.all()[0]
         self.assertEqual(
@@ -443,8 +443,8 @@ class ProjectApplicationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.redirect_chain[0][0],
-            url_prefix +
-            reverse('kg_application_detail', args=[application.pk, 'K']))
+            url_prefix
+            + reverse('kg_application_detail', args=[application.pk, 'K']))
         application = Application.objects.get(pk=application.id)
         self.assertEqual(application.state, Application.WAITING_FOR_ADMIN)
         self.assertEqual(len(mail.outbox), 3)
@@ -486,8 +486,8 @@ class ProjectApplicationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.redirect_chain[0][0],
-            url_prefix +
-            reverse('kg_application_detail', args=[application.pk, 'P']))
+            url_prefix
+            + reverse('kg_application_detail', args=[application.pk, 'P']))
         application = Application.objects.get(pk=application.id)
         self.assertEqual(application.state, ProjectApplication.PASSWORD)
         self.assertEqual(len(mail.outbox), 4)
@@ -512,8 +512,8 @@ class ProjectApplicationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.redirect_chain[0][0],
-            url_prefix +
-            reverse('kg_application_unauthenticated', args=[token, 'C']))
+            url_prefix
+            + reverse('kg_application_unauthenticated', args=[token, 'C']))
 
         # APPLICANT GET COMPLETE
         response = self.client.get(
@@ -541,8 +541,8 @@ class ProjectApplicationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.redirect_chain[0][0],
-            url_prefix +
-            reverse('kg_application_detail', args=[application.pk, 'A']))
+            url_prefix
+            + reverse('kg_application_detail', args=[application.pk, 'A']))
         self.client.logout()
         set_no_admin()
 

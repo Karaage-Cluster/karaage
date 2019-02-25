@@ -45,8 +45,8 @@ class AdminAccountForm(forms.ModelForm):
     username = forms.CharField(
         label=six.u("Requested username"),
         max_length=settings.USERNAME_MAX_LENGTH,
-        help_text=((settings.USERNAME_VALIDATION_ERROR_MSG +
-                    " and has a max length of %s.")
+        help_text=((settings.USERNAME_VALIDATION_ERROR_MSG
+                    + " and has a max length of %s.")
                    % settings.USERNAME_MAX_LENGTH))
     default_project = ajax_select.fields.AutoCompleteSelectField(
         'project', required=True)
@@ -84,8 +84,8 @@ class AdminAccountForm(forms.ModelForm):
             return data
         username = data['username']
 
-        if (self.old_username is None or
-                self.old_username != username):
+        if (self.old_username is None
+                or self.old_username != username):
             try:
                 check_username_for_new_account(self.person, username)
             except UsernameException as e:

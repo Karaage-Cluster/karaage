@@ -51,9 +51,9 @@ class PersonLookup(LookupChannel):
             in the LookupChannel class definition
         """
         return Person.objects.filter(
-            Q(username__icontains=q) |
-            Q(short_name__icontains=q) |
-            Q(full_name__icontains=q)
+            Q(username__icontains=q)
+            | Q(short_name__icontains=q)
+            | Q(full_name__icontains=q)
         )
 
     def get_result(self, obj):
@@ -90,8 +90,8 @@ class GroupLookup(LookupChannel):
             in the LookupChannel class definition
         """
         return Group.objects.filter(
-            Q(name__icontains=q) |
-            Q(description__icontains=q)
+            Q(name__icontains=q)
+            | Q(description__icontains=q)
         )
 
     def get_result(self, obj):

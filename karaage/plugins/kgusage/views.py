@@ -225,8 +225,8 @@ def institute_usage(request, institute_id):
     project_list = []
     institute_list = Institute.active.all()
 
-    if (not institute.can_view(request) and
-            not getattr(settings, 'USAGE_IS_PUBLIC', False)):
+    if (not institute.can_view(request)
+            and not getattr(settings, 'USAGE_IS_PUBLIC', False)):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     mc_cache = usage.get_machine_category_usage(start, end)
@@ -281,8 +281,8 @@ def institute_usage(request, institute_id):
 def project_usage(request, project_id):
     project = get_object_or_404(Project, pid=project_id)
 
-    if (not project.can_view(request) and
-            not getattr(settings, 'USAGE_IS_PUBLIC', False)):
+    if (not project.can_view(request)
+            and not getattr(settings, 'USAGE_IS_PUBLIC', False)):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     result = progress(request)
@@ -521,8 +521,8 @@ def institute_users(request, institute_id):
 
     institute = get_object_or_404(Institute, pk=institute_id)
 
-    if (not institute.can_view(request) and
-            not getattr(settings, 'USAGE_IS_PUBLIC', False)):
+    if (not institute.can_view(request)
+            and not getattr(settings, 'USAGE_IS_PUBLIC', False)):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     start, end = get_date_range(request)
@@ -631,8 +631,8 @@ def mem_report(request):
 def job_detail(request, jobid):
     job = get_object_or_404(CPUJob, jobid=jobid)
 
-    if (not job.project.can_view(request) and
-            not getattr(settings, 'USAGE_IS_PUBLIC', False)):
+    if (not job.project.can_view(request)
+            and not getattr(settings, 'USAGE_IS_PUBLIC', False)):
         return HttpResponseForbidden('<h1>Access Denied</h1>')
 
     return render(

@@ -67,8 +67,8 @@ class StateStepShibboleth(Step):
             form = None
             done = True
 
-        elif (applicant.institute is not None and
-                applicant.institute.saml_entityid is None):
+        elif (applicant.institute is not None
+                and applicant.institute.saml_entityid is None):
             status = "Your institute does not have shibboleth registered."
             form = None
             done = True
@@ -451,9 +451,9 @@ class StateApplicantEnteringDetails(StateWithSteps):
                     new_person = Person.objects.get(saml_id=saml_id)
                     reason = "SAML id is already in use by existing person."
                     details = (
-                        "It is not possible to continue this application " +
-                        "as is because the saml identity already exists " +
-                        "as a registered user.")
+                        "It is not possible to continue this application "
+                        + "as is because the saml identity already exists "
+                        + "as a registered user.")
                 del query
 
             if request.user.is_authenticated:
@@ -461,11 +461,11 @@ class StateApplicantEnteringDetails(StateWithSteps):
                 reason = "%s was logged in " \
                     "and accessed the secret URL." % new_person
                 details = (
-                    "If you want to access this application " +
-                    "as %s " % application.applicant +
-                    "without %s stealing it, " % new_person +
-                    "you will have to ensure %s is " % new_person +
-                    "logged out first.")
+                    "If you want to access this application "
+                    + "as %s " % application.applicant
+                    + "without %s stealing it, " % new_person
+                    + "you will have to ensure %s is " % new_person
+                    + "logged out first.")
 
             if new_person is not None:
                 if application.applicant != new_person:

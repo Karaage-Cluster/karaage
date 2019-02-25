@@ -45,7 +45,7 @@ from karaage.plugins.kgapplications.views.project import (
 from karaage.projects.models import Project
 
 
-RE_VALID_USERNAME = re.compile('[\w.@+-]+$')
+RE_VALID_USERNAME = re.compile(r'[\w.@+-]+$')
 
 
 class Command(BaseCommand):
@@ -60,7 +60,7 @@ username,password,short_name,full_name,email,institute,project"""
 
         try:
             data = csv.DictReader(open(csvfile))
-        except csv.Error as e:
+        except csv.Error:
             sys.stderr.write("ERROR: Failed to read CSV file.\n")
             sys.exit(1)
 

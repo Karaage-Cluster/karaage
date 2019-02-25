@@ -43,7 +43,7 @@ class PersonForm(forms.ModelForm):
     #    department = forms.CharField(required=False)
     #    supervisor = forms.CharField(required=False)
     telephone = forms.RegexField(
-        "^[0-9a-zA-Z\.( )+-]+$", required=True,
+        r"^[0-9a-zA-Z\.( )+-]+$", required=True,
         label=six.u("Office Telephone"),
         help_text=six.u(
             "Used for emergency contact and password reset service."),
@@ -143,8 +143,8 @@ class AddPersonForm(AdminPersonForm):
     username = forms.CharField(
         label=six.u("Requested username"),
         max_length=settings.USERNAME_MAX_LENGTH,
-        help_text=(settings.USERNAME_VALIDATION_ERROR_MSG +
-                   " and has a max length of %s."
+        help_text=(settings.USERNAME_VALIDATION_ERROR_MSG
+                   + " and has a max length of %s."
                    % settings.USERNAME_MAX_LENGTH))
     password1 = forms.CharField(
         widget=forms.PasswordInput(render_value=False),
