@@ -9,6 +9,28 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Fixed
+~~~~~
+* Allow resetting locked passwords. Fixes: #542.
+
+Changed
+~~~~~~~
+* Add sentry-sdk to docker requirements.
+* Update mysqlclient from 1.3.13 to 1.4.2.post1.
+* Update redis from 2.10.6 to 3.2.0.
+* Remove testing on Python 3.6.
+* Update django-filter from 2.0.0 to 2.1.0.
+* Update billiard from 3.5.0.4 to 3.5.0.5.
+* Update django-extensions from 2.1.5 to 2.1.6.
+* Update vine from 1.1.4 to 1.2.0.
+* Remove reportlab dependancy.
+* Update matplotlib from 2.2.3 to 3.0.2.
+* Update django-tables2.
+
+
 5.0.11 (2019-02-20)
 -------------------
 
