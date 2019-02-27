@@ -16,12 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+from ajax_select.fields import AutoCompleteSelectField
 from django import forms
-from django.conf import settings
-from django.template import Context, Template
 
 from karaage.people.models import Person
-from karaage.projects.models import Project
 
 
 EMAIL_GROUPS = (
@@ -42,58 +40,39 @@ class EmailForm(forms.Form):
 
 class BulkEmailForm(EmailForm):
     group = forms.ChoiceField(choices=EMAIL_GROUPS)
+    institute = AutoCompleteSelectField(
+        'institute',
+        required=False,
+        label="Institute"
+    )
+    project = AutoCompleteSelectField(
+        'project',
+        required=False,
+        label="Project"
+    )
 
-    def get_emails(self):
+    def get_person_query(self):
+        person_query = Person.active.all()
+
         group = self.cleaned_data['group']
-        subject, body = self.get_data()
-
-        email_list = []
-
-        subject_t = Template(subject)
-        body_t = Template(body)
-        emails = []
-
         if group == 'leaders':
-            for p in Project.active.all():
-                for leader in p.leaders.all():
-                    ctx = Context({
-                        'receiver': leader,
-                        'project': p,
-                    })
-                    subject = subject_t.render(ctx)
-                    body = body_t.render(ctx)
-                    emails.append(
-                        (subject, body, settings.ACCOUNTS_EMAIL,
-                            [leader.email])
-                    )
-            return emails
+            person_query = person_query.filter(leads__isnull=False)
 
         elif group == 'users':
-            person_list = Person.active.all()
+            pass
 
         elif group == 'cluster_users':
-            person_list = Person.active.filter(account__isnull=False)
+            person_query = person_query.filter(account__isnull=False)
 
         else:
-            person_list = None
+            person_query = None
 
-        if person_list:
-            person_list = person_list.filter(
-                is_systemuser=False, login_enabled=True)
+        institute = self.cleaned_data['institute']
+        if institute is not None:
+            person_query = person_query.filter(institute=institute)
 
-            for person in person_list:
-                if person.email not in email_list:
-                    ctx = Context({
-                        'receiver': person,
-                    })
-                    subject = subject_t.render(ctx)
-                    body = body_t.render(ctx)
-                    emails.append(
-                        (subject, body, settings.ACCOUNTS_EMAIL,
-                            [person.email])
-                    )
-                    email_list.append(person.email)
+        project = self.cleaned_data['project']
+        if project is not None:
+            person_query = person_query.filter(groups__project=project)
 
-            return emails
-
-        return []
+        return person_query

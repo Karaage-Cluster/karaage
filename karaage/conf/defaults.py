@@ -235,6 +235,7 @@ PIPELINE = {
 AJAX_LOOKUP_CHANNELS = {
     'person': ('karaage.people.lookups', 'PersonLookup'),
     'group': ('karaage.people.lookups', 'GroupLookup'),
+    'institute': ('karaage.institutes.lookups', 'InstituteLookup'),
     'project': ('karaage.projects.lookups', 'ProjectLookup'),
 }
 

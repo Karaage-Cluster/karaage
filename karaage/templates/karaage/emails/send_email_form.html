@@ -38,14 +38,10 @@
             <fieldset class="aligned ()">
                 {% form_as_div form %}
             </fieldset>
-            <p>All Project Leaders Context:</p>
+            <p>Context:</p>
             <ul>
-                <li>{% templatetag openvariable %} project {% templatetag closevariable %}</li>
-                <li>{% templatetag openvariable %} receiver {% templatetag closevariable %}</li>
-            </ul>
-            <p>All Users Context:</p>
-            <ul>
-                <li>{% templatetag openvariable %} receiver {% templatetag closevariable %}</li>
+                <li>{% templatetag openvariable %} projects {% templatetag closevariable %} - All projects this person leads.</li>
+                <li>{% templatetag openvariable %} receiver {% templatetag closevariable %} - This person.</li>
             </ul>
             <div class="submit-row">
                 <input type="submit" name="preview" value="Preview" />

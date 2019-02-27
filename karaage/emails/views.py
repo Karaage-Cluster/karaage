@@ -16,14 +16,48 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mass_mail
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.template import Context, Template
 from django.urls import reverse
 
 from karaage.common.decorators import admin_required
 from karaage.emails.forms import BulkEmailForm
+
+
+def _get_emails(person_query, subject, body):
+    emails = []
+
+    if person_query:
+        email_list = []
+
+        subject_t = Template(subject)
+        body_t = Template(body)
+
+        person_query = person_query.filter(
+            is_systemuser=False, login_enabled=True)
+
+        for person in person_query:
+            if person.email not in email_list:
+                projects = ", ".join(
+                    [str(project) for project in person.leads.all()]
+                )
+                ctx = Context({
+                    'projects': projects,
+                    'receiver': person,
+                })
+                subject = subject_t.render(ctx)
+                body = body_t.render(ctx)
+                emails.append(
+                    (subject, body, settings.ACCOUNTS_EMAIL,
+                        [person.email])
+                )
+                email_list.append(person.email)
+
+    return emails
 
 
 @admin_required
@@ -33,14 +67,18 @@ def send_email(request):
     if request.method == 'POST':
 
         if form.is_valid():
+            subject = form.cleaned_data['subject']
+            body = form.cleaned_data['body']
+            person_query = form.get_person_query()
+            emails = _get_emails(person_query, subject, body)
+
             if 'preview' in request.POST:
-                emails = form.get_emails()
                 try:
                     preview = emails[0]
                 except IndexError:
-                    pass
+                    preview = None
             else:
-                send_mass_mail(form.get_emails())
+                send_mass_mail(emails)
                 messages.success(request, "Emails sent successfully")
 
                 return HttpResponseRedirect(reverse('index'))
