@@ -50,7 +50,7 @@ jobs:
       - image: circleci/python:3.7
         environment:
           PIPENV_VENV_IN_PROJECT: true
-          DATABASE_URL: mysql://root:z9Pm29jg9EfJ6m@localhost/circle_test
+          DATABASE_URL: mysql://root:z9Pm29jg9EfJ6m@127.0.0.1/circle_test
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
