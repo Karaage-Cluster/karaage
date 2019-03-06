@@ -19,8 +19,36 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 """Karaage setup script."""
 
-from setuptools import setup
+import sys
 import os
+
+from setuptools import Command, setup, find_packages
+
+
+VERSION='5.0.12'
+
+
+class VerifyVersionCommand(Command):
+    """Custom command to verify that the git tag matches our version"""
+    description = 'verify that the git tag matches our version'
+    user_options = [
+      ('version=', None, 'expected version'),
+    ]
+
+    def initialize_options(self):
+        self.version = None
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        version = self.version
+
+        if version != VERSION:
+            info = "{0} does not match the version of this app: {1}".format(
+                version, VERSION
+            )
+            sys.exit(info)
 
 
 def fullsplit(path, result=None):
@@ -54,6 +82,8 @@ tests_require = [
     "factory_boy",
     "mock",
     "cracklib",
+    "pytest",
+    "pytest-runner",
 ]
 
 setup(
@@ -105,17 +135,20 @@ setup(
         "slimit>=0.8.1",
     ],
     tests_require=tests_require,
+    cmdclass={
+        'verify': VerifyVersionCommand,
+    },
     extras_require={
         'tests': tests_require,
         'applications': [
             # no dependencies for kgapplications
         ],
         'software': [
-            "karaage4[applications]",
-            "karaage4[usage]",
+            "karaage[applications]",
+            "karaage[usage]",
         ],
         'usage': [
-            "karaage4[software]",
+            "karaage[software]",
             "django_celery",
             "matplotlib",
         ],

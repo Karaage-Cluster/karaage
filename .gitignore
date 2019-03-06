@@ -11,3 +11,4 @@
 /.cache/
 /local/
 /file.db
+/.venv/

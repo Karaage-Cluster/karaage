@@ -130,3 +130,11 @@ FIXTURE_DIRS = (os.path.join(TEST_MODULE_ROOT),)
 ENABLE_CRACKLIB = False
 
 MIN_PASSWORD_LENGTH = 6
+
+PLUGINS = [
+    'karaage.plugins.kgapplications.plugin',
+    'karaage.plugins.kgsoftware.plugin',
+    'karaage.plugins.kgusage.plugin',
+]
+
+ALLOW_REGISTRATIONS = True

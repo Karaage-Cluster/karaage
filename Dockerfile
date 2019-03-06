@@ -13,8 +13,9 @@ RUN mkdir /opt/karaage /opt/karaage/requirements
 WORKDIR /opt/karaage
 
 # Install our requirements.
-ADD requirements/*.txt /opt/karaage/requirements/
-RUN pip install -r requirements/docker.txt
+RUN pip install pipenv
+ADD Pipfile Pipfile.lock /opt/karaage/
+RUN pipenv install --system --deploy
 
 # Copy all our files into the image.
 COPY . /opt/karaage/
