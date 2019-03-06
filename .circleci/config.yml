@@ -12,6 +12,11 @@ jobs:
     steps:
       - checkout
 
+      - run:
+          name: Install C files
+          command: |
+            sudo apt-get install libcrack2-dev
+
       - restore_cache:
           key: deps-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
 
@@ -59,9 +64,9 @@ jobs:
       - checkout
 
       - run:
-          name: Install slapd
+          name: Install C files
           command: |
-            sudo apt-get install slapd ldap-utils
+            sudo apt-get install libcrack2-dev slapd ldap-utils
 
       - restore_cache:
           key: deps-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
@@ -99,9 +104,9 @@ jobs:
       - checkout
 
       - run:
-          name: Install slapd
+          name: Install C files
           command: |
-            sudo apt-get install slapd ldap-utils
+            sudo apt-get install libcrack2-dev slapd ldap-utils
 
       - restore_cache:
           key: deps-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
