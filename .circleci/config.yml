@@ -220,7 +220,7 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - build-postgres:
+      - build-postgresql:
           requires:
             - build
           filters:
