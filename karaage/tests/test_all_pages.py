@@ -46,3 +46,4 @@ class TestKaraagePages(TestAllPagesCase):
         'category_id': '1',
     }
     module = "karaage"
+    module_exclude = "karaage.plugins"

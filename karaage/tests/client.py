@@ -132,6 +132,17 @@ class TestAllPagesMeta(type):
         for index, (func, regex, url_name) in enumerate(
                 extract_views_from_urlpatterns(urlpatterns)):
 
+            if 'module_exclude' not in attrs:
+                attrs['module_exclude'] = None
+
+            if attrs['module_exclude'] is not None:
+                if func.__module__.startswith("%s." % attrs['module_exclude']):
+                    continue
+                elif func.__module__ == attrs['module_exclude']:
+                    continue
+                else:
+                    pass
+
             if func.__module__.startswith("%s." % attrs['module']):
                 pass
             elif func.__module__ == attrs['module']:
