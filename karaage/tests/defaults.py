@@ -88,18 +88,19 @@ ACCOUNTS_ORG_NAME = 'TestOrg'
 
 DATABASES = {'default': env.db(default="sqlite:///")}
 
-LDAP = {
-    'default': {
-        'ENGINE': 'tldap.backend.fake_transactions',
-        'URI': os.environ['LDAP_URL'],
-        'USER': os.environ['LDAP_DN'],
-        'PASSWORD': os.environ['LDAP_PASSWORD'],
-        'USE_TLS': False,  # Legacy, for TLDAP <= 0.2.16
-        'REQUIRE_TLS': False,
-        'START_TLS ': False,
-        'TLS_CA': None,
+if 'LDAP_URL' in os.environ:
+    LDAP = {
+        'default': {
+            'ENGINE': 'tldap.backend.fake_transactions',
+            'URI': os.environ['LDAP_URL'],
+            'USER': os.environ['LDAP_DN'],
+            'PASSWORD': os.environ['LDAP_PASSWORD'],
+            'USE_TLS': False,  # Legacy, for TLDAP <= 0.2.16
+            'REQUIRE_TLS': False,
+            'START_TLS ': False,
+            'TLS_CA': None,
+        }
     }
-}
 
 SERVER_EMAIL = 'django@' + os.uname()[1]
 ACCOUNTS_EMAIL = 'accounts@vpac.org'
