@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import pytest
 import six
 from django.test import TestCase
 
@@ -24,6 +25,7 @@ import karaage.tests.fixtures as fixtures
 from karaage.tests.integration import skip_if_missing_requirements
 
 
+@pytest.mark.django_db
 class AddPersonFormTestCase(TestCase):
 
     def _valid_user(self):
@@ -133,6 +135,7 @@ class AddPersonFormTestCase(TestCase):
         )
 
 
+@pytest.mark.django_db
 class AdminPasswordChangeFormTestCase(TestCase):
 
     def _valid_change(self):
@@ -196,6 +199,7 @@ class AdminPasswordChangeFormTestCase(TestCase):
         )
 
 
+@pytest.mark.django_db
 class PasswordChangeFormTestCase(TestCase):
 
     def _valid_change(self):

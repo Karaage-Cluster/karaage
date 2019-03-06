@@ -28,6 +28,7 @@ import json
 import os.path
 
 import alogger.tests.examples
+import pytest
 from alogger import get_parser
 from django.test import TestCase
 
@@ -38,6 +39,7 @@ from karaage.projects.models import Project
 from karaage.tests.test_xmlrpc import DjangoTestClientTransport
 
 
+@pytest.mark.django_db
 class XmlrpcTestCase(TestCase):
     fixtures = [
         'test_karaage.json',

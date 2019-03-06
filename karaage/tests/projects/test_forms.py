@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import pytest
 import six
 from django.test import TestCase
 
@@ -23,6 +24,7 @@ from karaage.projects.forms import ProjectForm
 from karaage.tests.fixtures import ProjectFactory
 
 
+@pytest.mark.django_db
 class ProjectFormTestCase(TestCase):
 
     def setUp(self):

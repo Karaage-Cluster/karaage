@@ -19,6 +19,7 @@
 import unittest
 
 import mock
+import pytest
 from django.core import exceptions as django_exceptions
 
 from karaage.projects.models import Project
@@ -31,6 +32,7 @@ from karaage.tests.fixtures import (
 from karaage.tests.unit import UnitTestCase
 
 
+@pytest.mark.django_db
 class ProjectTestCase(UnitTestCase):
 
     def test_minimum_create(self):

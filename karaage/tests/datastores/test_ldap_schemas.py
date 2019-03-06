@@ -15,10 +15,13 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
+import pytest
+
 from karaage.tests.fixtures import AccountFactory
 from karaage.tests.integration import IntegrationTestCase
 
 
+@pytest.mark.django_db
 class OpenldapAccountTestCase(IntegrationTestCase):
 
     def setUp(self):

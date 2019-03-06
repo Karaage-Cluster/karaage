@@ -24,6 +24,8 @@ from __future__ import print_function, unicode_literals
 # from karaage.tests.client import TestAllPagesCase
 
 
+# import pytest
+# @pytest.mark.django_db
 # class TestKgApplicationPages(TestAllPagesCase):
 #
 #     """Discover all URLs, do a HTTP GET and

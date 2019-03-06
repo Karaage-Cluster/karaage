@@ -20,6 +20,7 @@ import datetime
 import re
 
 import django
+import pytest
 from django.conf import settings
 from django.contrib import auth
 from django.core import mail
@@ -39,6 +40,7 @@ class FakeRequest(object):
         self.user = person
 
 
+@pytest.mark.django_db
 class PersonTestCase(IntegrationTestCase):
     fixtures = [
         'test_karaage.json',

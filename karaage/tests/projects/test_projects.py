@@ -18,6 +18,7 @@
 
 import datetime
 
+import pytest
 from django.core.management import call_command
 from django.urls import reverse
 from tldap.exceptions import ObjectDoesNotExist
@@ -28,6 +29,7 @@ from karaage.projects.models import Project
 from karaage.tests.integration import IntegrationTestCase
 
 
+@pytest.mark.django_db
 class ProjectTestCase(IntegrationTestCase):
 
     def setUp(self):

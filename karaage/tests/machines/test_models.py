@@ -18,12 +18,14 @@
 
 import unittest
 
+import pytest
 from django.core import exceptions as django_exceptions
 from django.test import TestCase
 
 from karaage.tests.fixtures import AccountFactory
 
 
+@pytest.mark.django_db
 class AccountTestCase(TestCase):
 
     @unittest.skip("broken with mysql/postgresql")

@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import pytest
 import six
 from django.conf import settings
 from django.test import TestCase
@@ -24,6 +25,7 @@ from karaage.machines.forms import AdminAccountForm
 from karaage.tests.fixtures import simple_account
 
 
+@pytest.mark.django_db
 class AdminAccountFormTestCase(TestCase):
 
     def setUp(self):

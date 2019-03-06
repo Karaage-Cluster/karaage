@@ -19,6 +19,7 @@
 import unittest
 
 import mock
+import pytest
 from django.core import exceptions as django_exceptions
 
 from karaage.people.models import Group
@@ -30,6 +31,7 @@ from karaage.tests.fixtures import (
 from karaage.tests.unit import UnitTestCase
 
 
+@pytest.mark.django_db
 class InstituteTestCase(UnitTestCase):
 
     def test_add(self):

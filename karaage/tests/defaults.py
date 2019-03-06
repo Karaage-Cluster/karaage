@@ -135,6 +135,7 @@ MIN_PASSWORD_LENGTH = 6
 PLUGINS = [
     'karaage.plugins.kgapplications.plugin',
     'karaage.plugins.kgsoftware.plugin',
+    'karaage.plugins.kgsoftware.applications.plugin',
     'karaage.plugins.kgusage.plugin',
 ]
 

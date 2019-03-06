@@ -17,6 +17,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import django
+import pytest
 from captcha.models import CaptchaStore
 from django.conf import settings
 from django.core import mail
@@ -42,6 +43,7 @@ def set_no_admin():
     settings.ADMIN_IGNORED = True
 
 
+@pytest.mark.django_db
 class UserApplicationTestCase(TestCase):
 
     def setUp(self):
@@ -304,6 +306,7 @@ class UserApplicationTestCase(TestCase):
         self.assertIsNotNone(person.date_approved)
 
 
+@pytest.mark.django_db
 class ProjectApplicationTestCase(TestCase):
 
     def setUp(self):

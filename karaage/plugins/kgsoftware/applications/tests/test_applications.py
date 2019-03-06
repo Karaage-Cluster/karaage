@@ -17,6 +17,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import django
+import pytest
 from django.conf import settings
 from django.core import mail
 from django.core.management import call_command
@@ -38,6 +39,7 @@ def set_no_admin():
     settings.ADMIN_IGNORED = True
 
 
+@pytest.mark.django_db
 class SoftwareApplicationTestCase(TestCase):
 
     def setUp(self):

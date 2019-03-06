@@ -18,6 +18,7 @@
 
 import datetime
 
+import pytest
 from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
@@ -28,6 +29,7 @@ from karaage.people.models import Person
 from karaage.projects.models import Project
 
 
+@pytest.mark.django_db
 class AccountTestCase(TestCase):
 
     def setUp(self):
@@ -172,6 +174,7 @@ class AccountTestCase(TestCase):
         self.assertEqual(ua.login_shell(), '/bin/bash')
 
 
+@pytest.mark.django_db
 class MachineTestCase(TestCase):
 
     def setUp(self):

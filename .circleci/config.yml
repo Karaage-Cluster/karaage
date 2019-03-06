@@ -74,6 +74,7 @@ jobs:
       - run:
           name: Run tests
           command: |
+            pipenv run ./manage.py collectstatic --settings=karaage.tests.settings --noinput
             pipenv run ./manage.py migrate --settings=karaage.tests.settings
             mkdir test-reports
             pipenv run python -m tldap.test.slapd python -m pytest --cov=karaage --junitxml=test-reports/junit.xml
@@ -114,6 +115,7 @@ jobs:
       - run:
           name: Run tests
           command: |
+            pipenv run ./manage.py collectstatic --settings=karaage.tests.settings --noinput
             pipenv run ./manage.py migrate --settings=karaage.tests.settings
             mkdir test-reports
             pipenv run python -m tldap.test.slapd python -m pytest --cov=karaage --junitxml=test-reports/junit.xml

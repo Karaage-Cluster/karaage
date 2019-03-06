@@ -22,11 +22,14 @@ from __future__ import print_function, unicode_literals
 
 import datetime
 
+import pytest
+
 from karaage.tests.client import TestAllPagesCase
 
 from ..models import Application
 
 
+@pytest.mark.django_db
 class TestKgApplicationPages(TestAllPagesCase):
 
     """Discover all URLs, do a HTTP GET and

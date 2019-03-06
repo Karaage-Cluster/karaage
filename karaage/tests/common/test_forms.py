@@ -16,12 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import pytest
 from django import forms as django_forms
 from django.test import TestCase
 
 from karaage.common import forms
 
 
+@pytest.mark.django_db
 class FormsTestCase(TestCase):
 
     def test_validate_password(self):

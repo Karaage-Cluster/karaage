@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import pytest
 from django.test import TestCase
 
 from karaage.tests.fixtures import GroupFactory, simple_account
@@ -23,6 +24,7 @@ from karaage.tests.fixtures import GroupFactory, simple_account
 from .fixtures import SoftwareFactory
 
 
+@pytest.mark.django_db
 class SoftwareTestCase(TestCase):
 
     def test_change_group(self):

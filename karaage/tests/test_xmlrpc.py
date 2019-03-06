@@ -30,6 +30,7 @@ except ImportError:
     # Python 2
     import xmlrpclib
 
+import pytest
 from django.test import TestCase
 
 from karaage.machines.models import Account
@@ -59,6 +60,7 @@ class DjangoTestClientTransport(object):
         return unmarshaller.close()
 
 
+@pytest.mark.django_db
 class XmlrpcTestCase(TestCase):
     fixtures = [
         'test_karaage.json',

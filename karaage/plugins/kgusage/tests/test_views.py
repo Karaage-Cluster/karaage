@@ -1,10 +1,12 @@
 import datetime
 
+import pytest
 from django.test import TestCase
 
 from karaage.machines.models import Machine
 
 
+@pytest.mark.django_db
 class MachineTestCase(TestCase):
     fixtures = [
         'test_karaage.json',

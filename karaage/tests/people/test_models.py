@@ -18,6 +18,7 @@
 
 import unittest
 
+import pytest
 from django.core import exceptions as django_exceptions
 from django.test import TestCase
 
@@ -25,6 +26,7 @@ from karaage.people.models import Group, Person
 from karaage.tests.fixtures import InstituteFactory, PersonFactory
 
 
+@pytest.mark.django_db
 class PersonTestCase(TestCase):
 
     def test_minimum_create(self):
@@ -71,6 +73,7 @@ class PersonTestCase(TestCase):
         self.assertTrue(person.login_enabled)
 
 
+@pytest.mark.django_db
 class GroupTestCase(TestCase):
 
     def test_minimum_create(self):
