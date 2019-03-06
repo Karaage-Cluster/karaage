@@ -138,14 +138,14 @@ jobs:
               --tag "brianmay/karaage:slurm17.02-beta" \
               --build-arg "SLURM_VER=17.02" \
               --build-arg "BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`" \
-              --build-arg "VCS_REF=$CIRCLE_SHA1"
+              --build-arg "VCS_REF=$CIRCLE_SHA1" \
               .
           docker build \
               --file "Dockerfile.apache" \
               --tag "brianmay/karaage:slurm17.02-apache-beta" \
               --build-arg "SLURM_VER=17.02" \
               --build-arg "BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`" \
-              --build-arg "VCS_REF=$CIRCLE_SHA1"
+              --build-arg "VCS_REF=$CIRCLE_SHA1" \
               .
           docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
           docker push "brianmay/karaage:slurm17.02-beta"
@@ -200,14 +200,14 @@ jobs:
                 --tag "brianmay/karaage:slurm17.02" \
                 --build-arg "SLURM_VER=17.02" \
                 --build-arg "BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`" \
-                --build-arg "VCS_REF=$CIRCLE_TAG"
+                --build-arg "VCS_REF=$CIRCLE_TAG" \
                 .
             docker build \
                 --file "Dockerfile.apache" \
                 --tag "brianmay/karaage:slurm17.02-apache" \
                 --build-arg "SLURM_VER=17.02" \
                 --build-arg "BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`" \
-                --build-arg "VCS_REF=$CIRCLE_TAG"
+                --build-arg "VCS_REF=$CIRCLE_TAG" \
                 .
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker push "brianmay/karaage:slurm17.02"
