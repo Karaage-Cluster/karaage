@@ -1,6 +1,6 @@
 bcrypt==3.1.6
 cssmin==0.2.0
-python-alogger==2.2.10
+python-alogger==2.2.11
 django-xmlrpc==0.1.8
 django-simple-captcha==0.5.10
 django-ajax-selects==1.7.1
