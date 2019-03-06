@@ -31,8 +31,8 @@ from karaage.emails.forms import EmailForm
 from karaage.people.models import Person
 from karaage.plugins.kgsoftware.applications.forms import ApproveSoftwareForm
 
-from . import base
 from .. import emails, forms
+from . import base
 
 
 class StateWaitingForApproval(base.State):

@@ -28,9 +28,9 @@ from karaage.common.decorators import login_required
 from karaage.people.models import Person
 from karaage.projects.models import Project
 
-from . import base
 from .. import forms
 from ..models import Applicant, ProjectApplication
+from . import base
 
 
 def get_application_state_machine():

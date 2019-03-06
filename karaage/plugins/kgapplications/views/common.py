@@ -28,10 +28,10 @@ from django.urls import reverse
 import karaage.common as util
 from karaage.common.decorators import admin_required, login_required
 
-from . import base
 from ..forms import ApplicantForm
 from ..models import Applicant, Application
 from ..tables import ApplicationFilter, ApplicationTable
+from . import base
 
 
 @login_required

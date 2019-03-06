@@ -27,11 +27,11 @@ from django.urls import reverse
 from karaage.people.models import Person
 from karaage.tests import fixtures
 
+from ..models import Applicant, Application, ProjectApplication
 from .fixtures import (
     ExistingProjectApplicationFactory,
     NewProjectApplicationFactory,
 )
-from ..models import Applicant, Application, ProjectApplication
 
 
 def set_admin():
