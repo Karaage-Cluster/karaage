@@ -10,6 +10,7 @@ from docutils.parsers.rst import Directive, directives
 
 from sphinx import addnodes
 from sphinx.builders.html import StandaloneHTMLBuilder
+from sphinx.domains.std import Cmdoption
 from sphinx.writers.html import HTMLTranslator
 from sphinx.util.console import bold
 from sphinx.util.nodes import set_source_info
@@ -40,18 +41,13 @@ def setup(app):
         rolename="lookup",
         indextemplate="pair: %s; field lookup type",
     )
-    app.add_description_unit(
+    app.add_object_type(
         directivename="django-admin",
         rolename="djadmin",
         indextemplate="pair: %s; django-admin command",
         parse_node=parse_django_admin_node,
     )
-    app.add_description_unit(
-        directivename="django-admin-option",
-        rolename="djadminopt",
-        indextemplate="pair: %s; django-admin command-line option",
-        parse_node=parse_django_adminopt_node,
-    )
+    app.add_directive('django-admin-option', Cmdoption)
     app.add_config_value('karaage_next_version', '0.0', True)
     app.add_directive('versionadded', VersionDirective)
     app.add_directive('versionchanged', VersionDirective)
