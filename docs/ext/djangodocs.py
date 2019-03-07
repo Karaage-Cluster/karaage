@@ -159,35 +159,6 @@ def parse_django_admin_node(env, sig, signode):
     return sig
 
 
-def parse_django_adminopt_node(env, sig, signode):
-    """A copy of sphinx.directives.CmdoptionDesc.parse_signature()"""
-    from sphinx.domains.std import option_desc_re
-    count = 0
-    firstname = ''
-    for m in option_desc_re.finditer(sig):
-        optname, args = m.groups()
-        if count:
-            signode += addnodes.desc_addname(', ', ', ')
-        signode += addnodes.desc_name(optname, optname)
-        signode += addnodes.desc_addname(args, args)
-        if not count:
-            firstname = optname
-        count += 1
-    if not count:
-        for m in simple_option_desc_re.finditer(sig):
-            optname, args = m.groups()
-            if count:
-                signode += addnodes.desc_addname(', ', ', ')
-            signode += addnodes.desc_name(optname, optname)
-            signode += addnodes.desc_addname(args, args)
-            if not count:
-                firstname = optname
-            count += 1
-    if not firstname:
-        raise ValueError
-    return firstname
-
-
 class KaraageStandaloneHTMLBuilder(StandaloneHTMLBuilder):
     """
     Subclass to add some extra things we need.
