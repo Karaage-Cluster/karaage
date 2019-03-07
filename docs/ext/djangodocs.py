@@ -11,10 +11,12 @@ from docutils.parsers.rst import Directive, directives
 from sphinx import addnodes
 from sphinx.builders.html import StandaloneHTMLBuilder
 from sphinx.domains.std import Cmdoption
+from sphinx.util import logging
 from sphinx.writers.html import HTMLTranslator
 from sphinx.util.console import bold
 from sphinx.util.nodes import set_source_info
 
+logger = logging.getLogger(__name__)
 # RE for option descriptions without a '--' prefix
 simple_option_desc_re = re.compile(
     r'([-_a-zA-Z0-9]+)(\s*.*?)(?=,\s+(?:/|-|--)|$)')
@@ -327,7 +329,7 @@ class KaraageStandaloneHTMLBuilder(StandaloneHTMLBuilder):
 
     def finish(self):
         super(KaraageStandaloneHTMLBuilder, self).finish()
-        self.info(bold("writing templatebuiltins.js..."))
+        logger.info(bold("writing templatebuiltins.js..."))
         xrefs = self.env.domaindata["std"]["objects"]
         templatebuiltins = {
             "ttags": [
