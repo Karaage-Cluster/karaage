@@ -195,9 +195,9 @@ class VersionDirective(Directive):
 
     def run(self):
         if len(self.arguments) > 1:
-            msg = """Only one argument accepted for directive
-            '{directive_name}::'.  Comments should be provided as content, not
-            as an extra argument.""".format(directive_name=self.name)
+            msg = """Only one argument accepted for directive '{directive_name}::'.
+            Comments should be provided as content,
+            not as an extra argument.""".format(directive_name=self.name)
             raise self.error(msg)
 
         env = self.state.document.settings.env
@@ -239,8 +239,7 @@ class KaraageHTMLTranslator(HTMLTranslator):
         self.first_param = 1
         self.optional_param_level = 0
         self.param_separator = node.child_text_separator
-        self.required_params_left = sum([isinstance(c, addnodes.desc_parameter)
-                                         for c in node.children])
+        self.required_params_left = sum(isinstance(c, addnodes.desc_parameter) for c in node.children)
 
     def depart_desc_parameterlist(self, node):
         self.body.append(')')
@@ -267,7 +266,7 @@ class KaraageHTMLTranslator(HTMLTranslator):
         if version_text:
             title = "%s%s" % (
                 version_text % node['version'],
-                ":" if len(node) else "."
+                ":" if node else "."
             )
             self.body.append('<span class="title">%s</span> ' % title)
 
@@ -279,7 +278,7 @@ class KaraageHTMLTranslator(HTMLTranslator):
         old_ids = node.get('ids', [])
         node['ids'] = ['s-' + i for i in old_ids]
         node['ids'].extend(old_ids)
-        HTMLTranslator.visit_section(self, node)
+        super().visit_section(node)
         node['ids'] = old_ids
 
 
@@ -328,16 +327,18 @@ class KaraageStandaloneHTMLBuilder(StandaloneHTMLBuilder):
     name = 'djangohtml'
 
     def finish(self):
-        super(KaraageStandaloneHTMLBuilder, self).finish()
+        super().finish()
         logger.info(bold("writing templatebuiltins.js..."))
         xrefs = self.env.domaindata["std"]["objects"]
         templatebuiltins = {
             "ttags": [
-                n for ((t, n), (l, a)) in xrefs.items()
-                if t == "templatetag" and l == "ref/templates/builtins"],
+                n for ((t, n), (k, a)) in xrefs.items()
+                if t == "templatetag" and k == "ref/templates/builtins"
+            ],
             "tfilters": [
-                n for ((t, n), (l, a)) in xrefs.items()
-                if t == "templatefilter" and l == "ref/templates/builtins"],
+                n for ((t, n), (k, a)) in xrefs.items()
+                if t == "templatefilter" and k == "ref/templates/builtins"
+            ],
         }
         outfilename = os.path.join(self.outdir, "templatebuiltins.js")
         with open(outfilename, 'w') as fp:
