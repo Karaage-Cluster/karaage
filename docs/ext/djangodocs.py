@@ -7,13 +7,12 @@ import re
 
 from docutils import nodes
 from docutils.parsers.rst import Directive
-
 from sphinx import addnodes
 from sphinx.builders.html import StandaloneHTMLBuilder
 from sphinx.domains.std import Cmdoption
 from sphinx.util import logging
-from sphinx.writers.html import HTMLTranslator
 from sphinx.util.console import bold
+from sphinx.writers.html import HTMLTranslator
 
 logger = logging.getLogger(__name__)
 # RE for option descriptions without a '--' prefix
