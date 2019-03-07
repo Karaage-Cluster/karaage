@@ -8,7 +8,6 @@ import re
 from docutils import nodes
 from docutils.parsers.rst import Directive, directives
 
-from sphinx import addnodes, __version__ as sphinx_ver
 from sphinx.builders.html import StandaloneHTMLBuilder
 from sphinx.writers.html import HTMLTranslator
 from sphinx.util.console import bold
@@ -246,18 +245,6 @@ class KaraageHTMLTranslator(HTMLTranslator):
 
     def depart_desc_parameterlist(self, node):
         self.body.append(')')
-
-    if sphinx_ver < '1.0.8':
-        #
-        # Don't apply smartypants to literal blocks
-        #
-        def visit_literal_block(self, node):
-            self.no_smarty += 1
-            HTMLTranslator.visit_literal_block(self, node)
-
-        def depart_literal_block(self, node):
-            HTMLTranslator.depart_literal_block(self, node)
-            self.no_smarty -= 1
 
     #
     # Turn the "new in version" stuff (versionadded/versionchanged) into a
