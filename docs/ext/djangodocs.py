@@ -81,8 +81,11 @@ class VersionDirective(Directive):
         node['type'] = self.name
         if self.content:
             self.state.nested_parse(self.content, self.content_offset, node)
-        env.note_versionchange(
-            node['type'], node['version'], node, self.lineno)
+        try:
+            env.get_domain('changeset').note_changeset(node)
+        except ExtensionError:
+            # Sphinx < 1.8: Domain 'changeset' is not registered
+            env.note_versionchange(node['type'], node['version'], node, self.lineno)
         return ret
 
 
@@ -152,10 +155,10 @@ class KaraageHTMLTranslator(HTMLTranslator):
 
 def parse_django_admin_node(env, sig, signode):
     command = sig.split(' ')[0]
-    env._django_curr_admin_command = command
+    env.ref_context['std:program'] = command
     title = "kg-manage %s" % sig
     signode += addnodes.desc_name(title, title)
-    return sig
+    return command
 
 
 class KaraageStandaloneHTMLBuilder(StandaloneHTMLBuilder):
