@@ -37,6 +37,11 @@ jobs:
             pipenv run ./setup.py --version
 
       - run:
+          name: Test build documentation
+          command: |
+            pipenv run make -C docs/admin html
+
+      - run:
           name: Run tests
           command: |
             pipenv run isort -rc --check --diff karaage

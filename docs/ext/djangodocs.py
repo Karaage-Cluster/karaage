@@ -6,13 +6,12 @@ import os
 import re
 
 from docutils import nodes
-from docutils.parsers.rst import directives
+from docutils.parsers.rst import Directive, directives
 
 from sphinx import addnodes, __version__ as sphinx_ver
 from sphinx.builders.html import StandaloneHTMLBuilder
 from sphinx.writers.html import HTMLTranslator
 from sphinx.util.console import bold
-from sphinx.util.compat import Directive
 from sphinx.util.nodes import set_source_info
 
 # RE for option descriptions without a '--' prefix
