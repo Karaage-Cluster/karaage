@@ -133,6 +133,7 @@ class DataStore(base.DataStore):
             'o': person.institute.name,
             'cn': person.full_name,
             'default_project': default_project,
+            'loginShell': account.shell,
             'locked': account.is_locked()
         })
         save(changes, database=self._database)

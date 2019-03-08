@@ -9,6 +9,14 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Fixed
+~~~~~
+* Actually set the user's login shell in LDAP.
+
+
 5.0.12 (2019-02-26)
 -------------------
 
