@@ -12,6 +12,10 @@ adheres to `Semantic Versioning`_.
 UNRELEASED
 ----------
 
+Changed
+~~~~~~~
+* Use CircleCI for CI tests.
+
 Fixed
 ~~~~~
 * Actually set the user's login shell in LDAP.
