@@ -25,7 +25,7 @@ import os
 from setuptools import Command, setup, find_packages
 
 
-VERSION='5.0.12'
+VERSION='5.0.13'
 
 
 class VerifyVersionCommand(Command):
@@ -88,7 +88,7 @@ tests_require = [
 
 setup(
     name="karaage",
-    version='5.0.13',
+    version=VERSION,
     url='https://github.com/Karaage-Cluster/karaage',
     author='Brian May',
     author_email='brian@v3.org.au',

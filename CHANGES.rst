@@ -8,6 +8,13 @@ adheres to `Semantic Versioning`_.
 .. _`Keep a Changelog`: http://keepachangelog.com/
 .. _`Semantic Versioning`: http://semver.org/
 
+UNRELEASED
+----------
+
+Fixed
+~~~~~
+* Fixed incorrect version in setup.py.
+
 
 5.0.13 (2019-03-08)
 -------------------
