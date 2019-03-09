@@ -8,6 +8,14 @@ adheres to `Semantic Versioning`_.
 .. _`Keep a Changelog`: http://keepachangelog.com/
 .. _`Semantic Versioning`: http://semver.org/
 
+UNRELEASED
+----------
+
+Fixed
+~~~~~
+* Fix errors sorting application table.
+
+
 5.0.14 (2019-03-08)
 -------------------
 
