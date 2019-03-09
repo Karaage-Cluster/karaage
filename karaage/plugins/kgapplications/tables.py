@@ -35,8 +35,9 @@ class ApplicationTable(tables.Table):
     id = tables.LinkColumn(
         'kg_application_detail', args=[A('pk')], verbose_name="ID")
     action = tables.Column(
-        empty_values=(), order_by=('date_deleted', '-login_enabled'))
-    applicant = tables.Column(linkify=True)
+        empty_values=(), order_by=('_class'))
+    applicant = tables.Column(
+        linkify=True, order_by=('content_type', 'object_id'))
 
     def render_action(self, record):
         return record.get_object().info()
