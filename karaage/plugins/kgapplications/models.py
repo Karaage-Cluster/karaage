@@ -355,7 +355,6 @@ class ProjectApplication(Application):
 
 @python_2_unicode_compatible
 class Applicant(models.Model):
-
     """ A person who has completed an application however is not yet officially
     registered on the system yet. """
     email = models.EmailField(unique=False)
