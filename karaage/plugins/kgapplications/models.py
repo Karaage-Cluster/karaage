@@ -383,7 +383,7 @@ class Applicant(models.Model):
         max_length=2, choices=COUNTRIES, null=True, blank=True)
     fax = models.CharField(max_length=50, null=True, blank=True)
     saml_id = models.CharField(
-        max_length=200, null=True, blank=True, editable=False, unique=True)
+        max_length=200, null=True, blank=True, editable=False, unique=False)
     applications = GenericRelation(Application)
 
     class Meta:

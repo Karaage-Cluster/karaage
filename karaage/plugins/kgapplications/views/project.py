@@ -59,7 +59,7 @@ def get_applicant_from_email(email):
         applicant = Person.active.get(email=email)
         existing_person = True
     except Person.DoesNotExist:
-        applicant, _ = Applicant.objects.get_or_create(email=email)
+        applicant = None
         existing_person = False
     except Person.MultipleObjectsReturned:
         applicant = None
