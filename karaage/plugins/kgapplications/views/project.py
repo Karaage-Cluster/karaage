@@ -29,7 +29,7 @@ from karaage.people.models import Person
 from karaage.projects.models import Project
 
 from .. import forms
-from ..models import ProjectApplication
+from ..models import Applicant, ProjectApplication
 from . import base
 
 
@@ -59,7 +59,7 @@ def get_applicant_from_email(email):
         applicant = Person.active.get(email=email)
         existing_person = True
     except Person.DoesNotExist:
-        applicant = None
+        applicant = Applicant.objects.create(email=email)
         existing_person = False
     except Person.MultipleObjectsReturned:
         applicant = None
