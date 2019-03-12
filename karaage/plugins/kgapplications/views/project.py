@@ -29,7 +29,7 @@ from karaage.people.models import Person
 from karaage.projects.models import Project
 
 from .. import forms
-from ..models import Applicant, ProjectApplication
+from ..models import ProjectApplication
 from . import base
 
 
