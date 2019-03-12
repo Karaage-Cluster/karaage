@@ -7,11 +7,7 @@ cd $DIR
 if [ -n "$*" ]; then
     TESTS="$@"
 else
-    TESTS="karaage.tests.settings:karaage.tests
-        karaage.plugins.kgapplications.tests.settings:karaage.plugins.kgapplications
-        karaage.plugins.kgsoftware.tests.settings:karaage.plugins.kgsoftware.tests
-        karaage.plugins.kgsoftware.applications.tests.settings:karaage.plugins.kgsoftware
-        karaage.plugins.kgusage.tests.settings:karaage.plugins.kgusage"
+    TESTS="karaage.tests"
 fi
 
 echo ""
@@ -35,8 +31,8 @@ fi
 echo -e "\n\n"
 
 for values in $TESTS; do
-    conf=$(echo $values | cut -f1 -d:)
-    tests=$(echo $values | cut -f2 -d: | sed 's/,/ /g')
+    conf="karaage.tests.settings"
+    tests="$values"
 
     echo ""
     echo "MIGRATIONS - $conf"
