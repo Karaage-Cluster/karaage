@@ -14,6 +14,9 @@ UNRELEASED
 Fixed
 ~~~~~
 * Fix errors sorting application table.
+* Fix errors with multiple applicants containing conflicting information.
+  Every application has its own applicant attached even if the applicant
+  appears to be the same.
 
 
 5.0.14 (2019-03-08)
