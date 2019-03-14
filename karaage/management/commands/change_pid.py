@@ -35,15 +35,16 @@ except NameError:
 
 class Command(BaseCommand):
     help = 'Change a pid for a project and all accounts for that project'
-    args = '<old pid> <new pid>'
+
+    def add_arguments(self, parser):
+        parser.add_argument('old_pid', type=str)
+        parser.add_argument('new_pid', type=str)
 
     @django.db.transaction.atomic
     @tldap.transaction.commit_on_success
     def handle(self, *args, **options):
-        if len(args) != 2:
-            raise CommandError('Usage: change_pid <old pid> <new pid>')
-        old = args[0]
-        new = args[1]
+        old = options['old_pid']
+        new = options['new_pid']
 
         try:
             project = Project.objects.get(pid=old)

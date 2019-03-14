@@ -51,11 +51,14 @@ RE_VALID_USERNAME = re.compile(r'[\w.@+-]+$')
 class Command(BaseCommand):
     help = """Initiate bulk invitation a CSV file with the following format:
 username,password,short_name,full_name,email,institute,project"""
-    args = "csvfile"
+
+    def add_arguments(self, parser):
+        parser.add_argument('csvfile', type=str)
 
     @django.db.transaction.non_atomic_requests
     @tldap.transaction.commit_on_success
-    def handle(self, csvfile, **options):
+    def handle(self, *args, **options):
+        csvfile = options.get('csvfile')
         verbosity = int(options.get('verbosity', 1))
 
         try:

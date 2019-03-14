@@ -26,6 +26,9 @@ from karaage.people.models import Person
 class Command(BaseCommand):
     help = "Change a person's password for Karaage."
 
+    def add_arguments(self, parser):
+        parser.add_argument('username', nargs='?', type=str)
+
     def _get_pass(self, prompt="Password: "):
         p = getpass.getpass(prompt=prompt)
         if not p:
@@ -37,8 +40,8 @@ class Command(BaseCommand):
             raise CommandError(
                 "need exactly one or zero arguments for username")
 
-        if args:
-            username, = args
+        if options['username'] is not None:
+            username = options['username']
         else:
             username = getpass.getuser()
 
