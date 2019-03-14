@@ -74,7 +74,7 @@ username,password,short_name,full_name,email,institute,project"""
             fail = False
 
             if verbosity >= 1:
-                print("Attempting to send an invite to user '%s' at '%s'" % (user['username'], user['email']))
+                print("Attempting to send an invite to user '%s' at '%s'" % (user.get('username'), user.get('email'))
 
             if 'username' not in user:
                 sys.stderr.write("Error: Failed to find username column.\n")
