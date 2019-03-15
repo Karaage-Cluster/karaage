@@ -8,6 +8,17 @@ adheres to `Semantic Versioning`_.
 .. _`Keep a Changelog`: http://keepachangelog.com/
 .. _`Semantic Versioning`: http://semver.org/
 
+
+UNRELEASED
+----------
+
+Fixed
+~~~~~
+* Fix errors running django admin commands.
+* Increase short_name and full_name to 100 characters max.
+* Improve validation of phone numbers. '-' is no longer allowed.
+
+
 5.0.15 (2019-03-13)
 -------------------
 
