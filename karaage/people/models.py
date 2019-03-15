@@ -49,8 +49,8 @@ from karaage.people.managers import (
 class Person(AbstractBaseUser):
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(null=True, db_index=True)
-    short_name = models.CharField(max_length=30)
-    full_name = models.CharField(max_length=60)
+    short_name = models.CharField(max_length=100)
+    full_name = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 

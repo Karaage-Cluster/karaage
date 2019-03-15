@@ -363,8 +363,8 @@ class Applicant(models.Model):
                                 null=True, blank=True)
     title = models.CharField(
         choices=TITLES, max_length=10, null=True, blank=True)
-    short_name = models.CharField(max_length=30)
-    full_name = models.CharField(max_length=60)
+    short_name = models.CharField(max_length=100)
+    full_name = models.CharField(max_length=100)
     institute = models.ForeignKey(
         Institute,
         limit_choices_to={'is_active': True},
