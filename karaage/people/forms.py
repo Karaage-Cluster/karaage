@@ -25,7 +25,11 @@ from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 
 from karaage.common import get_current_person
 from karaage.common.constants import COUNTRIES
-from karaage.common.forms import clean_email, validate_password
+from karaage.common.forms import (
+    clean_email,
+    validate_password,
+    validate_phone_number,
+)
 from karaage.institutes.models import Institute
 from karaage.people.models import Group, Person
 from karaage.people.utils import (
@@ -42,21 +46,18 @@ class PersonForm(forms.ModelForm):
     #    email = forms.EmailField()
     #    department = forms.CharField(required=False)
     #    supervisor = forms.CharField(required=False)
-    telephone = forms.RegexField(
-        r"^[0-9a-zA-Z\.( )+-]+$", required=True,
+    telephone = forms.CharField(
+        required=True,
         label=six.u("Office Telephone"),
         help_text=six.u(
             "Used for emergency contact and password reset service."),
-        error_messages={
-            'invalid': 'Telephone number may only contain digits, letter, '
-                       'hyphens, spaces, braces,  and the plus sign.'})
-    mobile = forms.RegexField(
-        "^[0-9a-zA-Z( )+-]+$",
+        validators=[validate_phone_number],
+    )
+    mobile = forms.CharField(
         required=False,
-        error_messages={
-            'invalid': 'Telephone number may only contain digits, letter, '
-                       'hyphens, spaces, braces,  and the plus sign.'})
-    fax = forms.CharField(required=False)
+        validators=[validate_phone_number],
+    )
+    fax = forms.CharField(required=False, validators=[validate_phone_number])
     address = forms.CharField(
         label=six.u("Mailing Address"),
         required=False,

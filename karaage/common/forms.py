@@ -23,10 +23,22 @@ import re
 import six
 from django import forms
 from django.conf import settings
+from django.core.exceptions import ValidationError
 
 from karaage.common.models import COMMENT, LogEntry
 
 from .passwords import assert_strong_password
+
+
+def validate_phone_number(value):
+    if re.match(r"^[0-9a-zA-Z\.( )+-]+$", value) is None:
+        raise ValidationError(
+            f'{value} contains invalid characters'
+        )
+    if re.search(r"[0-9]", value) is None:
+        raise ValidationError(
+            f'{value} should contain at least one digit'
+        )
 
 
 def validate_password(username, password1, password2=None, old_password=None):
