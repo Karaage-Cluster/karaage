@@ -9,6 +9,15 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Fixed
+~~~~~
+* Fix slurm error trying to delete a project in approval process.
+* Fix error that would occur if trying to delete non-existant slurm user.
+
+
 5.0.16 (2019-03-16)
 -------------------
 
