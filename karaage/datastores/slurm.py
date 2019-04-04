@@ -304,9 +304,7 @@ class SlurmDataStore(base.DataStore):
         else:
             # date_deleted is not set, user should not exist
             logger.debug("account is not active")
-            if ds_user is not None:
-                # delete Slurm user if account marked as deleted
-                self._call(["delete", "user", "name=%s" % username])
+            self._delete_account(username)
 
         return
 
@@ -314,7 +312,7 @@ class SlurmDataStore(base.DataStore):
         """ Called when account is created/updated. """
         self._save_account(account, account.username)
 
-    def _delete_account(self, account, username):
+    def _delete_account(self, username):
         """ Called when account is deleted. With username override. """
 
         # account deleted
@@ -327,7 +325,7 @@ class SlurmDataStore(base.DataStore):
 
     def delete_account(self, account):
         """ Called when account is deleted. """
-        self._delete_account(account, account.username)
+        self._delete_account(account.username)
 
     def set_account_password(self, account, raw_password):
         """ Account's password was changed. """
@@ -335,7 +333,7 @@ class SlurmDataStore(base.DataStore):
 
     def set_account_username(self, account, old_username, new_username):
         """ Account's username was changed. """
-        self._delete_account(account, old_username)
+        self._delete_account(old_username)
         self._save_account(account, new_username)
 
     def add_account_to_project(self, account, project):
