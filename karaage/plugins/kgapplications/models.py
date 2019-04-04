@@ -301,8 +301,7 @@ class ProjectApplication(Application):
                 end_date=datetime.datetime.today()
                 + datetime.timedelta(days=365),
             )
-            project.save()
-            project.activate(approved_by)
+            project.activate(approved_by)   # Activate has implied call to save().
             self.project = project
             self.save()
         if self.make_leader:

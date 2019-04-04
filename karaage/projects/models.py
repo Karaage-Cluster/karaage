@@ -220,6 +220,8 @@ class Project(models.Model):
 
     def activate(self, approved_by):
         if self.is_active is True:
+            # Call to save() required to keep API consistent.
+            self.save()
             return
         self.is_active = True
         self.is_approved = True
