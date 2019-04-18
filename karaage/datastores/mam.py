@@ -22,7 +22,6 @@ import csv
 import logging
 import os.path
 import subprocess
-import sys
 
 import karaage.common.trace as trace
 from karaage.datastores import base
