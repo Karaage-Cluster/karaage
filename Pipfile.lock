@@ -166,12 +166,11 @@
         },
         "django-jsonfield": {
             "hashes": [
-                "sha256:25e53eae8bda165721773145ee0f8ae53b746bb3051b32f2821ba84d79aa77ef",
-                "sha256:813c52463fbbb548fe0d85bf935d0bf72e933fae2bb00ce3ba27bf69ff6fd2ad",
-                "sha256:cacf5a21e7c2490109a60f1122c05aa3858a8dc06952ad764831b4428164fc8e"
+                "sha256:af7938ebf0eb945d29648d80bad4845973f1ab1d9fea67f65a963753e913e271",
+                "sha256:f357e196565daa503e914b6bdbeeaa104288a5e3b3f982a928a8de46f54e55ea"
             ],
             "index": "pypi",
-            "version": "==1.1.0"
+            "version": "==1.2.0"
         },
         "django-model-utils": {
             "hashes": [
