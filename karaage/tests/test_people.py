@@ -531,15 +531,16 @@ class PersonTestCase(IntegrationTestCase):
         url = url[25:]
 
         # get password reset page
-        response = self.client.get(url)
+        response = self.client.get(url, follow=True)
         self.assertEqual(response.status_code, 200)
 
         # send new password
+        url = "/persons/reset/MQ/set-password/"
         form_data = {
             'new_password1': 'VQA#y!xD=BpI<sM69`RW:%',
             'new_password2': 'VQA#y!xD=BpI<sM69`RW:%',
         }
-        done_url = reverse("password_reset_complete")
+        done_url = "/persons/reset/done/"
         response = self.client.post(url, form_data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.redirect_chain[0][0],
@@ -578,15 +579,16 @@ class PersonTestCase(IntegrationTestCase):
         url = url[25:]
 
         # get password reset page
-        response = self.client.get(url)
+        response = self.client.get(url, follow=True)
         self.assertEqual(response.status_code, 200)
 
         # send new password
+        url = "/persons/reset/MQ/set-password/"
         form_data = {
             'new_password1': 'VQA#y!xD=BpI<sM69`RW:%',
             'new_password2': 'VQA#y!xD=BpI<sM69`RW:%',
         }
-        done_url = reverse("password_reset_complete")
+        done_url = "/persons/reset/done/"
         response = self.client.post(url, form_data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.redirect_chain[0][0],

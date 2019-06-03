@@ -21,6 +21,7 @@ import datetime
 import django_tables2 as tables
 import six
 from django.contrib import messages
+from django.contrib.auth import views
 from django.http import (
     HttpResponseBadRequest,
     HttpResponseForbidden,
@@ -42,6 +43,7 @@ from karaage.people.forms import (
     AddPersonForm,
     AdminPasswordChangeForm,
     AdminPersonForm,
+    SetPasswordForm,
 )
 from karaage.people.models import Person
 from karaage.people.tables import LeaderTable, PersonFilter, PersonTable
@@ -379,3 +381,12 @@ def password_request_done(request, username):
         template_name='karaage/people/person_password_request_done.html',
         context=var,
         request=request)
+
+
+class PasswordResetConfirmView(views.PasswordResetConfirmView):
+    form_class = SetPasswordForm
+    template_name = 'karaage/people/person_reset_confirm.html'
+
+
+class PasswordResetCompleteView(views.PasswordResetCompleteView):
+    template_name = 'karaage/people/person_reset_complete.html'

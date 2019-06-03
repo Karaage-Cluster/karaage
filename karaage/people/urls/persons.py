@@ -18,9 +18,7 @@
 
 from django.conf import settings
 from django.conf.urls import include, url
-from django.contrib.auth import views as django_views
 
-from karaage.people.forms import SetPasswordForm
 from karaage.people.views import persons
 
 
@@ -38,12 +36,9 @@ urlpatterns = [
 urlpatterns += [
     url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/'
         r'(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
-        django_views.password_reset_confirm, {
-            'set_password_form': SetPasswordForm,
-            'template_name': 'karaage/people/person_reset_confirm.html',
-        }, name='password_reset_confirm'),
+        persons.PasswordResetConfirmView.as_view(),
+        name='password_reset_confirm'),
     url(r'^reset/done/$',
-        django_views.password_reset_complete, {
-            'template_name': 'karaage/people/person_reset_complete.html',
-        }, name='password_reset_complete'),
+        persons.PasswordResetCompleteView.as_view(),
+        name='password_reset_complete'),
 ]
