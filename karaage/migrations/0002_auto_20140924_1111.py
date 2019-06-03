@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='logentry',
             name='content_type',
-            field=models.ForeignKey(to='contenttypes.ContentType'),
+            field=models.ForeignKey(to='contenttypes.ContentType', on_delete=models.CASCADE),
         ),
     ]

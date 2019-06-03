@@ -47,7 +47,7 @@ class Migration(migrations.Migration):
                 ('version', models.CharField(max_length=100, null=True, blank=True)),
                 ('date', models.DateField(null=True, blank=True)),
                 ('text', models.TextField()),
-                ('software', models.ForeignKey(to='kgsoftware.Software')),
+                ('software', models.ForeignKey(to='kgsoftware.Software', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['-version'],
@@ -61,8 +61,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('date', models.DateField()),
-                ('license', models.ForeignKey(to='kgsoftware.SoftwareLicense')),
-                ('person', models.ForeignKey(to='karaage.Person')),
+                ('license', models.ForeignKey(to='kgsoftware.SoftwareLicense', on_delete=models.CASCADE)),
+                ('person', models.ForeignKey(to='karaage.Person', on_delete=models.CASCADE)),
             ],
             options={
                 'db_table': 'software_license_agreement',
@@ -78,7 +78,7 @@ class Migration(migrations.Migration):
                 ('module', models.CharField(max_length=100, null=True, blank=True)),
                 ('last_used', models.DateField(null=True, blank=True)),
                 ('machines', models.ManyToManyField(to='karaage.Machine')),
-                ('software', models.ForeignKey(to='kgsoftware.Software')),
+                ('software', models.ForeignKey(to='kgsoftware.Software', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['-version'],
@@ -89,13 +89,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='software',
             name='category',
-            field=models.ForeignKey(blank=True, to='kgsoftware.SoftwareCategory', null=True),
+            field=models.ForeignKey(blank=True, to='kgsoftware.SoftwareCategory', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='software',
             name='group',
-            field=models.ForeignKey(blank=True, to='karaage.Group', null=True),
+            field=models.ForeignKey(blank=True, to='karaage.Group', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

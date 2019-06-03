@@ -48,8 +48,8 @@ class Migration(migrations.Migration):
                 ('is_systemuser', models.BooleanField(default=False)),
                 ('login_enabled', models.BooleanField(default=True)),
                 ('legacy_ldap_password', models.CharField(max_length=128, null=True, blank=True)),
-                ('approved_by', models.ForeignKey(related_name='user_approver', blank=True, to='karaage.Person', null=True)),
-                ('deleted_by', models.ForeignKey(related_name='user_deletor', blank=True, to='karaage.Person', null=True)),
+                ('approved_by', models.ForeignKey(related_name='user_approver', blank=True, to='karaage.Person', null=True, on_delete=models.CASCADE)),
+                ('deleted_by', models.ForeignKey(related_name='user_deletor', blank=True, to='karaage.Person', null=True, on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['full_name', 'short_name'],
@@ -112,8 +112,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('send_email', models.BooleanField()),
-                ('institute', models.ForeignKey(to='karaage.Institute')),
-                ('person', models.ForeignKey(to='karaage.Person')),
+                ('institute', models.ForeignKey(to='karaage.Institute', on_delete=models.CASCADE)),
+                ('person', models.ForeignKey(to='karaage.Person', on_delete=models.CASCADE)),
             ],
             options={
                 'db_table': 'institutedelegate',
@@ -127,7 +127,7 @@ class Migration(migrations.Migration):
                 ('quota', models.DecimalField(max_digits=5, decimal_places=2)),
                 ('cap', models.IntegerField(null=True, blank=True)),
                 ('disk_quota', models.IntegerField(null=True, blank=True)),
-                ('institute', models.ForeignKey(to='karaage.Institute')),
+                ('institute', models.ForeignKey(to='karaage.Institute', on_delete=models.CASCADE)),
             ],
             options={
                 'db_table': 'institute_quota',
@@ -143,8 +143,8 @@ class Migration(migrations.Migration):
                 ('object_repr', models.CharField(max_length=200, verbose_name='object repr')),
                 ('action_flag', models.PositiveSmallIntegerField(verbose_name='action flag')),
                 ('change_message', models.TextField(verbose_name='change message', blank=True)),
-                ('content_type', models.ForeignKey(blank=True, to='contenttypes.ContentType', null=True)),
-                ('user', models.ForeignKey(to='karaage.Person', null=True)),
+                ('content_type', models.ForeignKey(blank=True, to='contenttypes.ContentType', null=True, on_delete=models.CASCADE)),
+                ('user', models.ForeignKey(to='karaage.Person', null=True, on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ('-action_time', '-pk'),
@@ -203,10 +203,10 @@ class Migration(migrations.Migration):
                 ('date_approved', models.DateField(null=True, editable=False, blank=True)),
                 ('date_deleted', models.DateField(null=True, editable=False, blank=True)),
                 ('last_usage', models.DateField(null=True, editable=False, blank=True)),
-                ('approved_by', models.ForeignKey(related_name='project_approver', blank=True, editable=False, to='karaage.Person', null=True)),
-                ('deleted_by', models.ForeignKey(related_name='project_deletor', blank=True, editable=False, to='karaage.Person', null=True)),
-                ('group', models.ForeignKey(to='karaage.Group')),
-                ('institute', models.ForeignKey(to='karaage.Institute')),
+                ('approved_by', models.ForeignKey(related_name='project_approver', blank=True, editable=False, to='karaage.Person', null=True, on_delete=models.CASCADE)),
+                ('deleted_by', models.ForeignKey(related_name='project_deletor', blank=True, editable=False, to='karaage.Person', null=True, on_delete=models.CASCADE)),
+                ('group', models.ForeignKey(to='karaage.Group', on_delete=models.CASCADE)),
+                ('institute', models.ForeignKey(to='karaage.Institute', on_delete=models.CASCADE)),
                 ('leaders', models.ManyToManyField(related_name='leads', to='karaage.Person')),
             ],
             options={
@@ -220,8 +220,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('cap', models.IntegerField(null=True, blank=True)),
-                ('machine_category', models.ForeignKey(to='karaage.MachineCategory')),
-                ('project', models.ForeignKey(to='karaage.Project')),
+                ('machine_category', models.ForeignKey(to='karaage.MachineCategory', on_delete=models.CASCADE)),
+                ('project', models.ForeignKey(to='karaage.Project', on_delete=models.CASCADE)),
             ],
             options={
                 'db_table': 'project_quota',
@@ -235,13 +235,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='machine',
             name='category',
-            field=models.ForeignKey(to='karaage.MachineCategory'),
+            field=models.ForeignKey(to='karaage.MachineCategory', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='institutequota',
             name='machine_category',
-            field=models.ForeignKey(to='karaage.MachineCategory'),
+            field=models.ForeignKey(to='karaage.MachineCategory', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(
@@ -257,31 +257,31 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='institute',
             name='group',
-            field=models.ForeignKey(to='karaage.Group'),
+            field=models.ForeignKey(to='karaage.Group', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='account',
             name='default_project',
-            field=models.ForeignKey(blank=True, to='karaage.Project', null=True),
+            field=models.ForeignKey(blank=True, to='karaage.Project', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='account',
             name='machine_category',
-            field=models.ForeignKey(to='karaage.MachineCategory'),
+            field=models.ForeignKey(to='karaage.MachineCategory', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='account',
             name='person',
-            field=models.ForeignKey(to='karaage.Person'),
+            field=models.ForeignKey(to='karaage.Person', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='person',
             name='institute',
-            field=models.ForeignKey(to='karaage.Institute'),
+            field=models.ForeignKey(to='karaage.Institute', on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

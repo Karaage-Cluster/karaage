@@ -15,8 +15,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SoftwareApplication',
             fields=[
-                ('application_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='kgapplications.Application')),
-                ('software_license', models.ForeignKey(to='kgsoftware.SoftwareLicense')),
+                ('application_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='kgapplications.Application', on_delete=models.CASCADE)),
+                ('software_license', models.ForeignKey(to='kgsoftware.SoftwareLicense', on_delete=models.CASCADE)),
             ],
             options={
                 'db_table': 'applications_softwareapplication',

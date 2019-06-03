@@ -35,9 +35,9 @@ class Migration(migrations.Migration):
                 ('list_pvmem', models.BigIntegerField(null=True, blank=True)),
                 ('exit_status', models.BigIntegerField(null=True, blank=True)),
                 ('jobname', models.CharField(max_length=256, null=True, blank=True)),
-                ('account', models.ForeignKey(blank=True, to='karaage.Account', null=True)),
-                ('machine', models.ForeignKey(blank=True, to='karaage.Machine', null=True)),
-                ('project', models.ForeignKey(blank=True, to='karaage.Project', null=True)),
+                ('account', models.ForeignKey(blank=True, to='karaage.Account', null=True, on_delete=models.CASCADE)),
+                ('machine', models.ForeignKey(blank=True, to='karaage.Machine', null=True, on_delete=models.CASCADE)),
+                ('project', models.ForeignKey(blank=True, to='karaage.Project', null=True, on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['-date'],
@@ -54,8 +54,8 @@ class Migration(migrations.Migration):
                 ('end', models.DateField()),
                 ('cpu_time', models.DecimalField(max_digits=30, decimal_places=2)),
                 ('no_jobs', models.IntegerField()),
-                ('institute', models.ForeignKey(to='karaage.Institute')),
-                ('machine_category', models.ForeignKey(to='karaage.MachineCategory')),
+                ('institute', models.ForeignKey(to='karaage.Institute', on_delete=models.CASCADE)),
+                ('machine_category', models.ForeignKey(to='karaage.MachineCategory', on_delete=models.CASCADE)),
             ],
             options={
                 'db_table': 'cache_institutecache',
@@ -71,7 +71,7 @@ class Migration(migrations.Migration):
                 ('end', models.DateField()),
                 ('cpu_time', models.DecimalField(max_digits=30, decimal_places=2)),
                 ('no_jobs', models.IntegerField()),
-                ('machine', models.ForeignKey(to='karaage.Machine')),
+                ('machine', models.ForeignKey(to='karaage.Machine', on_delete=models.CASCADE)),
             ],
             options={
                 'db_table': 'cache_machinecache',
@@ -88,7 +88,7 @@ class Migration(migrations.Migration):
                 ('cpu_time', models.DecimalField(max_digits=30, decimal_places=2)),
                 ('no_jobs', models.IntegerField()),
                 ('available_time', models.DecimalField(max_digits=30, decimal_places=2)),
-                ('machine_category', models.ForeignKey(to='karaage.MachineCategory')),
+                ('machine_category', models.ForeignKey(to='karaage.MachineCategory', on_delete=models.CASCADE)),
             ],
             options={
                 'db_table': 'cache_machinecategorycache',
@@ -104,9 +104,9 @@ class Migration(migrations.Migration):
                 ('end', models.DateField()),
                 ('cpu_time', models.DecimalField(max_digits=30, decimal_places=2)),
                 ('no_jobs', models.IntegerField()),
-                ('machine_category', models.ForeignKey(to='karaage.MachineCategory')),
-                ('person', models.ForeignKey(to='karaage.Person')),
-                ('project', models.ForeignKey(to='karaage.Project')),
+                ('machine_category', models.ForeignKey(to='karaage.MachineCategory', on_delete=models.CASCADE)),
+                ('person', models.ForeignKey(to='karaage.Person', on_delete=models.CASCADE)),
+                ('project', models.ForeignKey(to='karaage.Project', on_delete=models.CASCADE)),
             ],
             options={
                 'db_table': 'cache_personcache',
@@ -122,8 +122,8 @@ class Migration(migrations.Migration):
                 ('end', models.DateField()),
                 ('cpu_time', models.DecimalField(max_digits=30, decimal_places=2)),
                 ('no_jobs', models.IntegerField()),
-                ('machine_category', models.ForeignKey(to='karaage.MachineCategory')),
-                ('project', models.ForeignKey(to='karaage.Project')),
+                ('machine_category', models.ForeignKey(to='karaage.MachineCategory', on_delete=models.CASCADE)),
+                ('project', models.ForeignKey(to='karaage.Project', on_delete=models.CASCADE)),
             ],
             options={
                 'db_table': 'cache_projectcache',
@@ -176,7 +176,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='cpujob',
             name='queue',
-            field=models.ForeignKey(blank=True, to='kgusage.Queue', null=True),
+            field=models.ForeignKey(blank=True, to='kgusage.Queue', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
