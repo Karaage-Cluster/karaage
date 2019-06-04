@@ -66,7 +66,7 @@ def send_bounced_warning(person, leader_list):
 
 def send_reset_password_email(person):
     """Sends an email to user allowing them to set their password."""
-    uid = urlsafe_base64_encode(force_bytes(person.pk)).decode("ascii")
+    uid = urlsafe_base64_encode(force_bytes(person.pk))
     token = default_token_generator.make_token(person)
     url = '%s/persons/reset/%s/%s/' % (
         settings.REGISTRATION_BASE_URL, uid, token)
