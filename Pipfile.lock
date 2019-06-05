@@ -427,11 +427,11 @@
         },
         "python-alogger": {
             "hashes": [
-                "sha256:8de0f553b8faaecd939561f8c7cb0a96bf399fbf2de854a75a7976320d24631e",
-                "sha256:c3487d426649395d0d0518c18b4cb7b7e9302fbb20309a8ad7e0e23c324cb670"
+                "sha256:0571e97bb1fec1146d18422d180257caf244ed1c070d39b68d7d06a7a860cbf7",
+                "sha256:751acab9bb8f73ae6a949ded9d8aca2c1b0384046d2030ccbabb3411c91641ed"
             ],
             "index": "pypi",
-            "version": "==2.2.11"
+            "version": "==2.2.12"
         },
         "python-dateutil": {
             "hashes": [
