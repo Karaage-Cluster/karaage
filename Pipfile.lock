@@ -260,11 +260,11 @@
         },
         "kombu": {
             "hashes": [
-                "sha256:14997e6d76d36f2b296f57e37fd1d388e4e0159edea8368a8c6f4620a355a722",
-                "sha256:27345bb569eb6bb583bca27dfc0ef181ca6c59c40c6e203cecaa0aeca84360be"
+                "sha256:056a31cc95b10ca4eb0d4ebcba714007b1db1c6c45c8e2d139fe91933481b00b",
+                "sha256:af5b0f892b081f49d95c772a241fb7687f4cc3e42c94328f118dffb1f4e161e5"
             ],
             "index": "pypi",
-            "version": "==4.6.0"
+            "version": "==4.6.1"
         },
         "ldap3": {
             "hashes": [
