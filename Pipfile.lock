@@ -142,11 +142,11 @@
         },
         "django-celery-results": {
             "hashes": [
-                "sha256:7c4c6d6d20d6dd7074b07b7a236b5e7769e515379191608527f7fbcc95a669a5",
-                "sha256:f7638b4eaa30ae8c58d3b07196c855c67f341760f434fb64a4c81bf4daf28789"
+                "sha256:932277e9382528f74778b30cf90e17941cba577b7d73cee09ed55e4972972c32",
+                "sha256:e735dc3e705a0e21afc3b6fa2918ec388258145fcbaad3727c493c5707d25034"
             ],
             "index": "pypi",
-            "version": "==1.1.1"
+            "version": "==1.1.2"
         },
         "django-environ": {
             "hashes": [
