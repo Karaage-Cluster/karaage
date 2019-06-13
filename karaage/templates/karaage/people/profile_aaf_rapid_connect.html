@@ -1,0 +1,43 @@
+{% extends "karaage/common/profile_base.html" %}
+{% load forms %}
+
+
+{% block title %}AAF Rapid Connect - My profile{% endblock %}
+{% block profile_title %}AAF Rapid Connect{% endblock %}
+
+
+{% block profile_content %}
+<div class="module">
+    <h2>AAF Rapid Connect Details</h2>
+
+    <h3>Token details</h3>
+    {% if verified_jwt %}
+        <p>We received a verified JWT:</p>
+        <pre>{{ verified_jwt }}</pre>
+        {% if person %}
+            <p>We found the person {{ person }} from AAF rapid connect.</p>
+        {% else %}
+            <p>We did not find any person from AAF rapid connect.</p>
+        {% endif %}
+    {% else %}
+        <p>We do not have a verified JWT.</p>
+    {% endif %}
+
+    <h3>Session details</h3>
+    {% if session_jwt %}
+        <p>We have a session JWT:</p>
+        <pre>{{ session_jwt }}</pre>
+    {% else %}
+        <p>We do not have a session JWT.</p>
+    {% endif %}
+
+    {% if request.user %}
+        <p>You are logged in to Karaage as {{ request.user }}.</p>
+    {% else %}
+        <p>You are not logged in to Karaage.</p>
+    {% endif %}
+
+    <a href="{{arc_url}}">Login</a>
+</div>
+{% endblock %}
+
