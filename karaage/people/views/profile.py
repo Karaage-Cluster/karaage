@@ -286,7 +286,6 @@ def profile_aaf_rapid_connect(request):
                 settings.ARC_SECRET,
                 audience=settings.ARC_AUDIENCE,
                 issuer=settings.ARC_ISSUER,
-                verify=False
             )
             messages.success(request, "It really worked")
         except jwt.PyJWTError as e:
