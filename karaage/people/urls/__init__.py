@@ -44,6 +44,12 @@ profile_urlpatterns += [
         people_profile.login, name="kg_profile_login"),
 ]
 
+if settings.ARC_ENABLED:
+    profile_urlpatterns += [
+        url(r'^arc/$',
+            people_profile.profile_aaf_rapid_connect, name='kg_profile_arc'),
+    ]
+
 if settings.SHIB_SUPPORTED:
     profile_urlpatterns += [
         url(r'^saml/$',

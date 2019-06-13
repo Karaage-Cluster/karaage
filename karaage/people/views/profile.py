@@ -16,12 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import json
+
+import jwt
 from django.apps import apps
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login as auth_login
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.debug import sensitive_post_parameters
 
 import karaage.common as common
@@ -261,3 +266,67 @@ def password_request_done(request):
         template_name='karaage/common/profile_password_request_done.html',
         context=var,
         request=request)
+
+
+@csrf_exempt
+def profile_aaf_rapid_connect(request):
+    person = None
+    verified_jwt = None
+    if request.method == "POST":
+
+        if 'assertion' not in request.POST:
+            return HttpResponseBadRequest()
+
+        assertion = request.POST['assertion']
+
+        try:
+            # Verifies signature and expiry time
+            verified_jwt = jwt.decode(
+                assertion,
+                settings.ARC_SECRET,
+                audience=settings.ARC_AUDIENCE,
+                issuer=settings.ARC_ISSUER,
+                verify=False
+            )
+            messages.success(request, "It really worked")
+        except jwt.PyJWTError as e:
+            messages.error(request, f"Error: Could not decode token: {e}")
+
+        request.session['arc_jwt'] = verified_jwt
+
+        # We are seeing this user for the first time in this session, attempt
+        # to authenticate the user.
+        if verified_jwt:
+            sub = verified_jwt.get('sub')
+            if sub:
+                try:
+                    person = Person.objects.get(saml_id=sub)
+                except Person.DoesNotExist:
+                    pass
+
+        if person is not None:
+            # We must set the model backend here manually as we skip
+            # the call to auth.authenticate().
+            request.user = person
+            request.user.backend = 'django.contrib.auth.backends.ModelBackend'
+            auth_login(request, person)
+
+    session_jwt = request.session.get('arc_jwt', None)
+
+    if verified_jwt:
+        verified_jwt = json.dumps(verified_jwt, indent=4)
+
+    if session_jwt:
+        session_jwt = json.dumps(session_jwt, indent=4)
+
+    var = {
+        'arc_url': settings.ARC_URL,
+        'person': person,
+        'verified_jwt': verified_jwt,
+        'session_jwt': session_jwt,
+    }
+    return render(
+        template_name='karaage/people/profile_aaf_rapid_connect.html',
+        context=var,
+        request=request
+    )

@@ -299,6 +299,7 @@ DATASTORES = [
 USAGE_IS_PUBLIC = True
 
 # Do we support shibboleth for logins?
+ARC_ENABLED = False
 SHIB_SUPPORTED = False
 
 # How do we interpret HTTP parameters as shibboleth values?

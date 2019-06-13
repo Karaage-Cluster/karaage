@@ -46,6 +46,7 @@ gunicorn = "*"
 mysqlclient = "*"
 sentry-sdk = "*"
 psycopg2-binary = "*"
+pyjwt = "*"
 
 [requires]
 python_version = "3.7"
