@@ -9,6 +9,16 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Changes
+~~~~~~~
+* Update to Django 2.2.
+* Experimental AAF Rapid Connect token support. Will display token values
+  and attempt to log user in.
+
+
 5.0.17 (2019-04-04)
 -------------------
 
