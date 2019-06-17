@@ -9,6 +9,14 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Fixed
+~~~~~
+* Fix error when viewing software with applications.
+
+
 5.0.18 (2019-06-14)
 -------------------
 
