@@ -48,6 +48,9 @@ class ThreadLocals(MiddlewareMixin):
     request object and saves them in thread local storage."""
 
     def process_request(self, request):
+        # We need to retrieve the actual value of the user here.
+        # Otherwise it might be too late when we need it.
+        # See commit cf8e22f95894b8922de771ca52946a3966fe6c90.
         user = auth.get_user(request)
         request.user = user
         _thread_locals.user = user
