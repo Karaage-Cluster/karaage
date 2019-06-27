@@ -152,7 +152,7 @@ username,password,short_name,full_name,email,institute,project"""
             application.applicant = applicant
             application.project = project
             application.state = ProjectApplication.OPEN
-            application.header_message = "Please select your institute and hit the 'SAML login' button when prompted"
+            application.header_message = "Please select your institute and hit the 'AAF login' button when prompted"
             application.reopen()
 
             email_link, is_secret = base.get_email_link(application)

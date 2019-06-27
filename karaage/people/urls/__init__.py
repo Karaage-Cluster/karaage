@@ -44,16 +44,16 @@ profile_urlpatterns += [
         people_profile.login, name="kg_profile_login"),
 ]
 
-if settings.ARC_ENABLED:
+if settings.AAF_RAPID_CONNECT_ENABLED:
     profile_urlpatterns += [
-        url(r'^arc/$',
-            people_profile.profile_aaf_rapid_connect, name='kg_profile_arc'),
-    ]
-
-if settings.SHIB_SUPPORTED:
-    profile_urlpatterns += [
-        url(r'^saml/$',
-            people_profile.saml_details, name='kg_profile_saml'),
-        url(r'^slogin/$',
-            people_profile.saml_login, name='kg_profile_login_saml'),
+        url(
+            r'^arc/$',
+            people_profile.profile_aaf_rapid_connect,
+            name='kg_profile_arc',
+        ),
+        url(
+            r'^slogin/$',
+            people_profile.aaf_rapid_connect_login,
+            name='kg_profile_login_arc',
+        ),
     ]

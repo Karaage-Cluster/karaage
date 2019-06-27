@@ -11,7 +11,7 @@ from django.http import (
 )
 from django.shortcuts import render
 
-from karaage.common import log, saml
+from karaage.common import aaf_rapid_connect, log
 from karaage.institutes.models import Institute
 from karaage.people.models import Person
 from karaage.plugins.kgapplications import forms
@@ -21,16 +21,28 @@ from karaage.plugins.kgapplications.views.states import StateWithSteps, Step
 from karaage.projects.models import Project
 
 
-def _get_applicant_from_saml(request):
-    attrs, _ = saml.parse_attributes(request)
-    saml_id = attrs['persistent_id']
+def _get_applicant_from_token(session_jwt):
+    attributes = session_jwt['https://aaf.edu.au/attributes']
+    email = attributes['mail']
+    saml_id = attributes['edupersontargetedid']
+
     try:
         return Person.objects.get(saml_id=saml_id)
     except Person.DoesNotExist:
         pass
 
     try:
+        return Person.objects.get(email=email)
+    except Person.DoesNotExist:
+        pass
+
+    try:
         return Applicant.objects.get(saml_id=saml_id)
+    except Applicant.DoesNotExist:
+        pass
+
+    try:
+        return Applicant.objects.get(email=email)
     except Applicant.DoesNotExist:
         pass
 
@@ -46,9 +58,8 @@ class StateStepShibboleth(Step):
         """ Django view method. """
         status = None
         applicant = application.applicant
-        attrs = []
-
-        saml_session = saml.is_saml_session(request)
+        attrs = None
+        session_jwt = request.session.get('arc_jwt', None)
 
         # certain actions are supported regardless of what else happens
         if 'cancel' in request.POST:
@@ -58,7 +69,7 @@ class StateStepShibboleth(Step):
 
         # test for conditions where shibboleth registration not required
         if applicant.saml_id is not None:
-            status = "You have already registered a shibboleth id."
+            status = "You have already registered a AAF id."
             form = None
             done = True
 
@@ -69,13 +80,13 @@ class StateStepShibboleth(Step):
 
         elif (applicant.institute is not None
                 and applicant.institute.saml_entityid is None):
-            status = "Your institute does not have shibboleth registered."
+            status = "Your institute does not have AAF registered."
             form = None
             done = True
 
         elif Institute.objects.filter(
                 saml_entityid__isnull=False).count() == 0:
-            status = "No institutes support shibboleth here."
+            status = "No institutes support AAF here."
             form = None
             done = True
 
@@ -83,7 +94,7 @@ class StateStepShibboleth(Step):
             # shibboleth registration is required
 
             # Do construct the form
-            form = saml.SAMLInstituteForm(
+            form = aaf_rapid_connect.AafInstituteForm(
                 request.POST or None,
                 initial={'institute': applicant.institute})
             done = False
@@ -92,34 +103,26 @@ class StateStepShibboleth(Step):
             # Was it a POST request?
             if request.method == 'POST':
 
-                # Did the login form get posted?
-                if 'login' in request.POST and form.is_valid():
-                    institute = form.cleaned_data['institute']
-                    applicant.institute = institute
-                    applicant.save()
-                    # We do not set application.insitute here, that happens
-                    # when application, if it is a ProjectApplication, is
-                    # submitted
+                institute = form.cleaned_data['institute']
+                applicant.institute = institute
+                applicant.save()
+                # We do not set application.insitute here, that happens
+                # when application, if it is a ProjectApplication, is
+                # submitted
 
-                    # if institute supports shibboleth, redirect back here via
-                    # shibboleth, otherwise redirect directly back he.
-                    url = base.get_url(request, application, roles, label)
-                    if institute.saml_entityid is not None:
-                        url = saml.build_shib_url(
-                            request, url, institute.saml_entityid)
-                    return HttpResponseRedirect(url)
-
-                # Did we get a logout request?
-                elif 'logout' in request.POST:
-                    if saml_session:
-                        url = saml.logout_url(request)
-                        return HttpResponseRedirect(url)
-                    else:
-                        return HttpResponseBadRequest("<h1>Bad Request</h1>")
+                # if institute supports shibboleth, redirect back here via
+                # shibboleth, otherwise redirect directly back he.
+                url = base.get_url(request, application, roles, label)
+                if institute.saml_entityid is not None:
+                    redirect_to = url
+                    url = aaf_rapid_connect.build_login_url(
+                        request, institute.saml_entityid)
+                    aaf_rapid_connect.setup_login_redirect(redirect_to)
+                return HttpResponseRedirect(url)
 
             # did we get a shib session yet?
-            if saml_session:
-                attrs, _ = saml.parse_attributes(request)
+            if session_jwt:
+                attrs = session_jwt['https://aaf.edu.au/attributes']
                 saml_session = True
 
         # if we are done, we can proceed to next state
@@ -131,20 +134,20 @@ class StateStepShibboleth(Step):
 
             if not done:
                 if saml_session:
-                    applicant = _get_applicant_from_saml(request)
+                    applicant = _get_applicant_from_token(session_jwt)
                     if applicant is not None:
                         application.applicant = applicant
                         application.save()
                     else:
                         applicant = application.applicant
 
-                    applicant = saml.add_saml_data(
+                    applicant = aaf_rapid_connect.add_saml_data(
                         applicant, request)
                     applicant.save()
 
                     done = True
                 else:
-                    status = "Please login to SAML before proceeding."
+                    status = "Please login to AAF before proceeding."
 
         if request.method == 'POST' and done:
             for action in actions:
@@ -163,7 +166,7 @@ class StateStepShibboleth(Step):
                 'roles': roles,
                 'application': application,
                 'attrs': attrs,
-                'saml_session': saml_session,
+                'session_jwt': session_jwt,
             },
             request=request)
 
@@ -183,7 +186,7 @@ class StateStepApplicant(Step):
             status = "You are already registered in the system."
         elif application.content_type.model == 'applicant':
             if application.applicant.saml_id is not None:
-                form = forms.SAMLApplicantForm(
+                form = forms.AafApplicantForm(
                     request.POST or None,
                     instance=application.applicant)
             else:
@@ -416,8 +419,8 @@ class StateApplicantEnteringDetails(StateWithSteps):
     def __init__(self, config):
         super(StateApplicantEnteringDetails, self).__init__(config)
         self.add_step(StateStepIntroduction(), 'intro')
-        if settings.SHIB_SUPPORTED:
-            self.add_step(StateStepShibboleth(), 'shibboleth')
+        if settings.AAF_RAPID_CONNECT_ENABLED:
+            self.add_step(StateStepShibboleth(), 'AAF')
         self.add_step(StateStepApplicant(), 'applicant')
         self.add_step(StateStepProject(), 'project')
 
@@ -441,15 +444,18 @@ class StateApplicantEnteringDetails(StateWithSteps):
             reason = None
             details = None
 
-            attrs, _ = saml.parse_attributes(request)
-            saml_id = attrs['persistent_id']
+            session_jwt = request.session.get('arc_jwt', None)
+            saml_id = None
+            if session_jwt is not None:
+                attributes = session_jwt['https://aaf.edu.au/attributes']
+                saml_id = attributes['edupersontargetedid']
             if saml_id is not None:
                 query = Person.objects.filter(saml_id=saml_id)
                 if application.content_type.model == "person":
                     query = query.exclude(pk=application.applicant.pk)
                 if query.count() > 0:
                     new_person = Person.objects.get(saml_id=saml_id)
-                    reason = "SAML id is already in use by existing person."
+                    reason = "AAF id is already in use by existing person."
                     details = (
                         "It is not possible to continue this application "
                         + "as is because the saml identity already exists "

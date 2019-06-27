@@ -128,7 +128,6 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'karaage.middleware.threadlocals.ThreadLocals',
-    'karaage.middleware.saml.SamlUserMiddleware',
     'tldap.django.middleware.TransactionMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
@@ -299,8 +298,7 @@ DATASTORES = [
 USAGE_IS_PUBLIC = True
 
 # Do we support shibboleth for logins?
-ARC_ENABLED = False
-SHIB_SUPPORTED = False
+AAF_RAPID_CONNECT_ENABLED = False
 
 # How do we interpret HTTP parameters as shibboleth values?
 SHIB_ATTRIBUTE_MAP = {

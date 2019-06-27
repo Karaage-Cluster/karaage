@@ -272,15 +272,6 @@ Admin base URL - Used in email templates.
 ``%(HOST)`` will be substituted with the :setting:`HTTP_HOST` setting.
 
 
-.. setting:: SHIB_SUPPORTED
-
-SHIB_SUPPORTED
-~~~~~~~~~~~~~~
-Default: False
-
-Is Shibboleth supported?
-
-
 .. setting:: AUP_URL
 
 AUP_URL

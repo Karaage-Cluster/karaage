@@ -68,42 +68,6 @@ class PersonTestCase(IntegrationTestCase):
         assert user.is_authenticated
         assert user.username == 'kgsuper'
 
-    def test_saml_login(self):
-        person = Person.objects.get(username='kgtestuser1')
-        person.institute = Institute.objects.get(pk=3)
-        person.saml_id = "pY9RL3RHeQwAm4Hd"
-        person.save()
-
-        form_data = {
-            'login': 'true',
-            'institute': 3,
-        }
-
-        response = self.client.post(
-            reverse('kg_profile_login_saml'), form_data, follow=True)
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(
-            response.redirect_chain[0][0],
-            "https://testserver/Shibboleth.sso/Login"
-            + "?target=https://testserver/&entityID=http://samlid")
-
-        response = self.client.get(
-            reverse('index'),
-            HTTP_SHIB_SESSION_ID="yes",
-            HTTP_SHIB_IDENTITY_PROVIDER="http://samlid",
-            HTTP_PERSISTENT_ID="pY9RL3RHeQwAm4Hd",
-            HTTP_MAIL="email@example.org",
-            HTTP_GIVENNAME="Firstname",
-            HTTP_SN="Surname",
-            HTTP_TELEPHONENUMBER="000",
-            HTTP_UID="somethingelse"
-        )
-        self.assertEqual(response.status_code, 200)
-
-        user = auth.get_user(self.client)
-        assert user.is_authenticated
-        assert user.username == 'kgtestuser1'
-
     def test_logout(self):
         if django.VERSION >= (1, 9):
             url_prefix = ""

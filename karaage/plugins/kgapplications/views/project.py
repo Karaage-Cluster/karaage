@@ -23,7 +23,7 @@ from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
-from karaage.common import is_admin, saml
+from karaage.common import is_admin
 from karaage.common.decorators import login_required
 from karaage.people.models import Person
 from karaage.projects.models import Project
@@ -141,8 +141,7 @@ def new_application(request):
     roles = {'is_applicant', 'is_authorised'}
 
     if not request.user.is_authenticated:
-        attrs, _ = saml.parse_attributes(request)
-        defaults = {'email': attrs['email']}
+        defaults = {}
         form = forms.UnauthenticatedInviteUserApplicationForm(
             request.POST or None, initial=defaults)
         if request.method == 'POST':
