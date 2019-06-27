@@ -13,23 +13,6 @@
 {% block userlinks %}{% endblock %}
 
 {% block content %}
-{% if error %}
-<p class="errornote">
-    {{ error }}
-</p>
-
-<p>You can also login using <a href="{% url 'kg_profile_login' %}">Karaage
-authentication</a>.</p>
-
-{% if saml_session %}
-    <form method="post" action=".">{% csrf_token %}
-        <input type="submit" name="logout" value="SAML Logout" />
-    </form>
-{% else %}
-<p>Go back to <a href="{% url 'index' %}">first page</a>.</p>
-{% endif %}
-
-{% else %}
     {% if form.errors and not form.non_field_errors and not form.this_is_the_login_form.errors %}
     <p class="errornote">
     {% blocktrans count counter=form.errors.items|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
@@ -49,11 +32,10 @@ authentication</a>.</p>
 
     <form method="post" action=".">{% csrf_token %}
         {% form_as_div form %}
-        <input type="submit" name="login" value="SAML Login" />
+        <input type="submit" name="login" value="Login" />
     </form>
 
     <script type="text/javascript">
         document.getElementById('id_institute').focus()
     </script>
-{% endif %}
 {% endblock %}

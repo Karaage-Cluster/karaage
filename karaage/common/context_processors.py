@@ -25,7 +25,7 @@ from karaage.common import is_admin
 def common(request):
     """ Set context with common variables. """
     ctx = {
-        'SHIB_SUPPORTED': settings.SHIB_SUPPORTED,
+        'AAF_RAPID_CONNECT_ENABLED': settings.AAF_RAPID_CONNECT_ENABLED,
         'org_name': settings.ACCOUNTS_ORG_NAME,
         'accounts_email': settings.ACCOUNTS_EMAIL,
         'is_admin': is_admin(request),

@@ -233,12 +233,6 @@ ACCOUNTS_ORG_NAME = 'Example'
 #
 # ADMIN_BASE_URL = 'https://accounts.example.org/kgadmin'
 
-# Is Shibboleth supported?
-#
-# default: SHIB_SUPPORTED = False
-#
-# SHIB_SUPPORTED = True
-
 # Path to AUP policy. Note that setting this will not disable the Karaage
 # default page, it might be better to replace the AUP with a file in
 # the templates directory ``karaage/common/aup-detail.html`` if required.

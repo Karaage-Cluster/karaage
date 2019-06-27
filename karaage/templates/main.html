@@ -34,8 +34,8 @@
     <ul>
         {% if user.is_authenticated %}
         <li><a class="{% active request "profile/personal/" %}" href="{% url 'kg_profile_personal' %}">Personal</a></li>
-        {% if SHIB_SUPPORTED %}
-        <li><a class="{% active request "profile/saml/" %}" href="{% url 'kg_profile_saml' %}">SAML Profile</a></li>
+        {% if AAF_RAPID_CONNECT_ENABLED %}
+        <li><a class="{% active request "profile/arc/" %}" href="{% url 'kg_profile_arc' %}">AAF Profile</a></li>
         {% endif %}
         <li><a class="{% active request "profile/accounts/" %}" href="{% url 'kg_profile_accounts' %}">Accounts</a></li>
         <li><a class="{% active request "profile/institutes/" %}" href="{% url 'kg_profile_institutes' %}">Institutes</a></li>
@@ -44,8 +44,8 @@
         {% for_each_app_include "main_profile.html" %}
         {% if user.is_authenticated %}
         <li><a href="{% url 'kg_profile_logout' %}">Log Out</a></li>
-        {% elif SHIB_SUPPORTED %}
-        <li><a href="{% url 'kg_profile_login_saml' %}">Log In</a></li>
+        {% elif AAF_RAPID_CONNECT_ENABLED %}
+        <li><a href="{% url 'kg_profile_login_arc' %}">Log In</a></li>
         {% else %}
         <li><a href="{% url 'kg_profile_login' %}">Log In</a></li>
         {% endif %}

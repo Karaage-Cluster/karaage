@@ -19,18 +19,18 @@
 import json
 
 import jwt
-from django.apps import apps
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login as auth_login
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.utils.http import is_safe_url
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.debug import sensitive_post_parameters
 
 import karaage.common as common
-import karaage.common.saml as saml
+import karaage.common.aaf_rapid_connect as aaf_rapid_connect
 from karaage.common.decorators import login_required
 from karaage.common.forms import LoginForm
 from karaage.people.emails import send_reset_password_email
@@ -74,111 +74,25 @@ def login(request, username=None):
         }, request=request)
 
 
-def saml_login(request):
+def aaf_rapid_connect_login(request):
     redirect_to = reverse('index')
     if 'next' in request.GET:
         redirect_to = request.GET['next']
     error = None
-    saml_session = saml.is_saml_session(request)
 
-    form = saml.SAMLInstituteForm(request.POST or None)
+    form = aaf_rapid_connect.AafInstituteForm(request.POST or None)
     if request.method == 'POST':
-        if 'login' in request.POST and form.is_valid():
+        if form.is_valid():
             institute = form.cleaned_data['institute']
-            url = saml.build_shib_url(
-                request, redirect_to,
-                institute.saml_entityid)
+            url = aaf_rapid_connect.build_login_url(
+                request, institute.saml_entityid
+            )
+            aaf_rapid_connect.setup_login_redirect(request, redirect_to)
             return HttpResponseRedirect(url)
-        elif 'logout' in request.POST:
-            if saml_session:
-                url = saml.logout_url(request)
-                return HttpResponseRedirect(url)
-            else:
-                return HttpResponseBadRequest("<h1>Bad Request</h1>")
-        else:
-            return HttpResponseBadRequest("<h1>Bad Request</h1>")
-    elif request.user.is_authenticated:
-        error = "You are already logged in."
-    elif saml_session:
-        attrs, error = saml.parse_attributes(request)
-        saml_id = attrs['persistent_id']
-        try:
-            Person.objects.get(saml_id=saml_id)
-            # This should not happen, suggests a fault in the saml middleware
-            error = "Shibboleth session established " \
-                    "but you did not get logged in. "
-        except Person.DoesNotExist:
-            email = attrs['email']
-            try:
-                Person.objects.get(email=email)
-                error = "Cannot log in with this shibboleth account. " \
-                        "Please try using the Karaage login instead."
-            except Person.DoesNotExist:
-                if apps.is_installed("karaage.plugins.kgapplications"):
-                    app_url = reverse('kg_application_new')
-                    return HttpResponseRedirect(app_url)
-                else:
-                    error = "Cannot log in with shibboleth as " \
-                            "we do not recognise your shibboleth id."
 
     return render(
-        template_name='karaage/people/profile_login_saml.html',
-        context={'form': form, 'error': error, 'saml_session': saml_session, },
-        request=request)
-
-
-def saml_details(request):
-    redirect_to = reverse('kg_profile_saml')
-    saml_session = saml.is_saml_session(request)
-
-    if request.method == 'POST':
-        if 'login' in request.POST:
-            if request.user.is_authenticated:
-                person = request.user
-                institute = person.institute
-                if institute.saml_entityid:
-                    url = saml.build_shib_url(
-                        request, redirect_to,
-                        institute.saml_entityid)
-                    return HttpResponseRedirect(url)
-                else:
-                    return HttpResponseBadRequest("<h1>Bad Request</h1>")
-            else:
-                return HttpResponseBadRequest("<h1>Bad Request</h1>")
-
-        elif 'register' in request.POST:
-            if request.user.is_authenticated and saml_session:
-                person = request.user
-                person = saml.add_saml_data(
-                    person, request)
-                person.save()
-                return HttpResponseRedirect(redirect_to)
-            else:
-                return HttpResponseBadRequest("<h1>Bad Request</h1>")
-
-        elif 'logout' in request.POST:
-            if saml_session:
-                url = saml.logout_url(request)
-                return HttpResponseRedirect(url)
-            else:
-                return HttpResponseBadRequest("<h1>Bad Request</h1>")
-
-        else:
-            return HttpResponseBadRequest("<h1>Bad Request</h1>")
-
-    attrs = {}
-    if saml_session:
-        attrs, _ = saml.parse_attributes(request)
-        saml_session = True
-
-    person = None
-    if request.user.is_authenticated:
-        person = request.user
-
-    return render(
-        template_name='karaage/people/profile_saml.html',
-        context={
-            'attrs': attrs, 'saml_session': saml_session, 'person': person, },
+        template_name='karaage/people/profile_login_aaf_rapid_connect.html',
+        context={'form': form, 'error': error, },
         request=request)
 
 
@@ -283,12 +197,12 @@ def profile_aaf_rapid_connect(request):
             # Verifies signature and expiry time
             verified_jwt = jwt.decode(
                 assertion,
-                settings.ARC_SECRET,
-                audience=settings.ARC_AUDIENCE,
-                issuer=settings.ARC_ISSUER,
+                settings.AAF_RAPID_CONNECT_SECRET,
+                audience=settings.AAF_RAPID_CONNECT_AUDIENCE,
+                issuer=settings.AAF_RAPID_CONNECT_ISSUER,
             )
             messages.success(request, "It really worked")
-        except jwt.PyJWTError as e:
+        except jwt.JWTError as e:
             messages.error(request, f"Error: Could not decode token: {e}")
 
         request.session['arc_jwt'] = verified_jwt
@@ -296,10 +210,18 @@ def profile_aaf_rapid_connect(request):
         # We are seeing this user for the first time in this session, attempt
         # to authenticate the user.
         if verified_jwt:
-            sub = verified_jwt.get('sub')
-            if sub:
+            attributes = verified_jwt['https://aaf.edu.au/attributes']
+            saml_id = attributes['edupersontargetedid']
+
+            try:
+                person = Person.objects.get(saml_id=saml_id)
+            except Person.DoesNotExist:
+                pass
+
+            if person is None:
                 try:
-                    person = Person.objects.get(saml_id=sub)
+                    email = attributes['mail']
+                    person = Person.objects.get(email=email)
                 except Person.DoesNotExist:
                     pass
 
@@ -310,6 +232,18 @@ def profile_aaf_rapid_connect(request):
             request.user.backend = 'django.contrib.auth.backends.ModelBackend'
             auth_login(request, person)
 
+        url = request.session.get('arc_url', None)
+        if url is not None and not is_safe_url(
+            url=url,
+            allowed_hosts={request.get_host()},
+            require_https=request.is_secure(),
+        ):
+            url = None
+
+        if url is not None:
+            return HttpResponseRedirect(url)
+
+    request.session['arc_url'] = None
     session_jwt = request.session.get('arc_jwt', None)
 
     if verified_jwt:
@@ -319,7 +253,7 @@ def profile_aaf_rapid_connect(request):
         session_jwt = json.dumps(session_jwt, indent=4)
 
     var = {
-        'arc_url': settings.ARC_URL,
+        'arc_url': settings.AAF_RAPID_CONNECT_URL,
         'person': person,
         'verified_jwt': verified_jwt,
         'session_jwt': session_jwt,

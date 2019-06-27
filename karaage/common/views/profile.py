@@ -21,7 +21,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-import karaage.common.saml as saml
 from karaage.common.decorators import login_required
 
 
@@ -37,9 +36,6 @@ def profile(request):
 def logout(request, username=None):
     from django.contrib.auth import logout
     logout(request)
-    if saml.is_saml_session(request):
-        url = saml.logout_url(request)
-    else:
-        url = reverse("index")
-        messages.success(request, 'Logout was successful.')
+    url = reverse("index")
+    messages.success(request, 'Logout was successful.')
     return HttpResponseRedirect(url)

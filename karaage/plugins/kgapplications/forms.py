@@ -162,10 +162,10 @@ class UserApplicantForm(ApplicantForm):
         exclude = ['email']
 
 
-class SAMLApplicantForm(UserApplicantForm):
+class AafApplicantForm(UserApplicantForm):
 
     def __init__(self, *args, **kwargs):
-        super(SAMLApplicantForm, self).__init__(*args, **kwargs)
+        super(AafApplicantForm, self).__init__(*args, **kwargs)
         del self.fields['institute']
 
     class Meta:

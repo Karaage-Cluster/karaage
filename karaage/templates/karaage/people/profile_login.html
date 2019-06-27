@@ -32,9 +32,9 @@
 </p>
 {% endif %}
 
-  {% if SHIB_SUPPORTED %}
-    <p>You can also login using <a href="{% url 'kg_profile_login_saml' %}">Shibboleth
-    authentication</a>.</p>
+  {% if AAF_RAPID_CONNECT_ENABLED %}
+    <p>You can also login using <a href="{% url 'kg_profile_login_arc' %}">
+    AAF authentication</a>.</p>
   {% endif %}
 
 <div id="content-main">
