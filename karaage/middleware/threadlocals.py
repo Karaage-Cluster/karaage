@@ -18,6 +18,7 @@
 
 # Django 1.6 Hack: Ensure tldap.django gets initialised.
 import django
+from django.contrib import auth
 from django.utils.deprecation import MiddlewareMixin
 
 
@@ -47,4 +48,6 @@ class ThreadLocals(MiddlewareMixin):
     request object and saves them in thread local storage."""
 
     def process_request(self, request):
-        _thread_locals.user = getattr(request, 'user', None)
+        user = auth.get_user(request)
+        request.user = user
+        _thread_locals.user = user
