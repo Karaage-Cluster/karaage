@@ -32,6 +32,9 @@ def build_login_url(request, entityid=None):
 def get_institute_from_token(verified_jwt):
     attrs = verified_jwt['https://aaf.edu.au/attributes']
     value_list = attrs['edupersonscopedaffiliation'].split(";")
+    value_list = [
+        item for item in value_list if item
+    ]
     try:
         institute = Institute.objects.get(
             saml_scoped_affiliation__in=value_list
