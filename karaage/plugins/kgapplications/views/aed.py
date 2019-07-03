@@ -49,7 +49,7 @@ def _get_applicant_from_token(session_jwt):
     return None
 
 
-class StateStepShibboleth(Step):
+class StateStepAaf(Step):
 
     """ Invitation has been sent to applicant. """
     name = "Invitation sent"
@@ -58,7 +58,6 @@ class StateStepShibboleth(Step):
         """ Django view method. """
         status = None
         applicant = application.applicant
-        attrs = None
         session_jwt = request.session.get('arc_jwt', None)
 
         # certain actions are supported regardless of what else happens
@@ -101,8 +100,11 @@ class StateStepShibboleth(Step):
             status = None
 
             # Was it a POST request?
-            if request.method == 'POST':
-
+            if (
+                request.method == 'POST'
+                and 'login' in request.POST
+                and form.is_valid()
+            ):
                 institute = form.cleaned_data['institute']
                 applicant.institute = institute
                 applicant.save()
@@ -112,18 +114,18 @@ class StateStepShibboleth(Step):
 
                 # if institute supports shibboleth, redirect back here via
                 # shibboleth, otherwise redirect directly back he.
-                url = base.get_url(request, application, roles, label)
-                if institute.saml_entityid is not None:
-                    redirect_to = url
-                    url = aaf_rapid_connect.build_login_url(
-                        request, institute.saml_entityid)
-                    aaf_rapid_connect.setup_login_redirect(redirect_to)
-                return HttpResponseRedirect(url)
+                url = aaf_rapid_connect.build_login_url(
+                    request, institute.saml_entityid
+                )
+                response=HttpResponseRedirect(url)
 
-            # did we get a shib session yet?
-            if session_jwt:
-                attrs = session_jwt['https://aaf.edu.au/attributes']
-                saml_session = True
+                if institute.saml_entityid is not None:
+                    redirect_to = base.get_url(
+                        request, application, roles, label
+                    )
+                    response.set_cookie('arc_url', redirect_to)
+
+                return response
 
         # if we are done, we can proceed to next state
         if request.method == 'POST':
@@ -133,7 +135,7 @@ class StateStepShibboleth(Step):
                 return 'prev'
 
             if not done:
-                if saml_session:
+                if session_jwt:
                     applicant = _get_applicant_from_token(session_jwt)
                     if applicant is not None:
                         application.applicant = applicant
@@ -141,11 +143,13 @@ class StateStepShibboleth(Step):
                     else:
                         applicant = application.applicant
 
-                    applicant = aaf_rapid_connect.add_saml_data(
-                        applicant, request)
-                    applicant.save()
-
-                    done = True
+                    error = aaf_rapid_connect.add_token_data(
+                        applicant, session_jwt)
+                    if error is None:
+                        applicant.save()
+                        done = True
+                    else:
+                        status = error
                 else:
                     status = "Please login to AAF before proceeding."
 
@@ -156,6 +160,12 @@ class StateStepShibboleth(Step):
             return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
         # render the page
+        # did we get a AAF session yet?
+        if session_jwt:
+            attrs = session_jwt['https://aaf.edu.au/attributes']
+        else:
+            attrs = None
+
         return render(
             template_name='kgapplications/project_aed_shibboleth.html',
             context={
@@ -420,7 +430,7 @@ class StateApplicantEnteringDetails(StateWithSteps):
         super(StateApplicantEnteringDetails, self).__init__(config)
         self.add_step(StateStepIntroduction(), 'intro')
         if settings.AAF_RAPID_CONNECT_ENABLED:
-            self.add_step(StateStepShibboleth(), 'AAF')
+            self.add_step(StateStepAaf(), 'AAF')
         self.add_step(StateStepApplicant(), 'applicant')
         self.add_step(StateStepProject(), 'project')
 

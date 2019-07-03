@@ -30,19 +30,24 @@ def build_login_url(request, entityid=None):
     return url
 
 
-def setup_login_redirect(request, url):
-    request.session['arc_url'] = url
+def get_institute_from_token(verified_jwt):
+    attrs = verified_jwt['https://aaf.edu.au/attributes']
+    value_list = attrs['edupersonscopedaffiliation'].split(";")
+    try:
+        institute = Institute.objects.get(
+                saml_scoped_affiliation__in=value_list
+        )
+    except Institute.DoesNotExist:
+        institute = None
+    return institute
 
 
 def add_token_data(person, verified_jwt):
     attrs = verified_jwt['https://aaf.edu.au/attributes']
 
-    # fill name if it was supplied
-    if attrs['first_name'] is not None:
-        person.short_name = attrs['first_name']
-        if attrs['surname'] is not None:
-            person.full_name = six.u("%s %s") % (
-                attrs['first_name'], attrs['last_name'])
+    institute = get_institute_from_token(verified_jwt)
+    if institute is None:
+        return "Could not find institute"
 
     # short_name and full_name cannot be None
     person.short_name = attrs['givenname']
@@ -51,12 +56,12 @@ def add_token_data(person, verified_jwt):
     # fill in mandatory attributes
     person.email = attrs['mail']
     person.saml_id = attrs['edupersontargetedid']
-    person.institute = Institute.objects.get(saml_entityid=attrs['idp'])
+    person.institute = institute
     person.email_verified = True
 
     # save person
     person.save()
-    return person
+    return None
 
 
 class AafInstituteForm(forms.Form):

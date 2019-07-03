@@ -323,11 +323,6 @@ of your server.
 
 #.  Add following to `/etc/apache2/sites-available/000-default.conf`::
 
-        <Location "/Shibboleth.sso/">
-            ProxyPreserveHost On
-            ProxyPass "http://localhost:443/Shibboleth.sso/"
-            ProxyPassReverse "http://localhost:443/Shibboleth.sso/"
-        </Location>
         Alias /kgstatic "/var/lib/karaage3/static"
         <Location "/kgstatic">
             SetHandler None

@@ -44,7 +44,9 @@ class InstituteForm(forms.ModelForm):
 
     class Meta:
         model = Institute
-        fields = ('name', 'saml_entityid', 'is_active')
+        fields = (
+            'name', 'saml_entityid', 'saml_scoped_affiliation', 'is_active'
+        )
 
     def clean_name(self):
         name = self.cleaned_data['name']

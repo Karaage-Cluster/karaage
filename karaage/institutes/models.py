@@ -34,6 +34,9 @@ class Institute(models.Model):
         Person, related_name='delegate_for',
         blank=True, through='InstituteDelegate')
     group = models.ForeignKey(Group, on_delete=models.PROTECT)
+    saml_scoped_affiliation = models.CharField(
+        max_length=200,
+        null=True, blank=True, unique=True)
     saml_entityid = models.CharField(
         max_length=200,
         null=True, blank=True, unique=True)

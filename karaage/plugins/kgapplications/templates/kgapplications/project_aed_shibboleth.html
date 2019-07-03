@@ -3,7 +3,7 @@
 {% load applications %}
 
 
-{% block title %}Step 2: Shibboleth{% endblock %}
+{% block title %}Step 2: AAF{% endblock %}
 
 
 {% block breadcrumbs %}
@@ -11,14 +11,14 @@
     <a href='{% url "index" %}'>Home</a>&nbsp;›
     <a href="{% url 'kg_application_list' %}">Applications</a>&nbsp;›
     {{ application }}&nbsp;›
-    Step 2: Shibboleth
+    Step 2: AAF
 </div>
 {% endblock %}
 
 
 {% block content %}
 <div class="module">
-    <h2>2. Shibboleth</h2>
+    <h2>2. AAF</h2>
 
     <form action="." method="post">{% csrf_token %}
         {% if done %}
