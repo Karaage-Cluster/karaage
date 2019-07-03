@@ -117,7 +117,7 @@ class StateStepAaf(Step):
                 url = aaf_rapid_connect.build_login_url(
                     request, institute.saml_entityid
                 )
-                response=HttpResponseRedirect(url)
+                response = HttpResponseRedirect(url)
 
                 if institute.saml_entityid is not None:
                     redirect_to = base.get_url(
