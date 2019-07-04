@@ -18,6 +18,7 @@
 
 import json
 
+import jwt
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login as auth_login
@@ -29,7 +30,6 @@ from django.utils.http import is_safe_url
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.debug import sensitive_post_parameters
 
-import jwt
 import karaage.common as common
 import karaage.common.aaf_rapid_connect as aaf_rapid_connect
 from karaage.common.decorators import login_required
