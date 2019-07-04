@@ -18,10 +18,10 @@
 
 import json
 
-import jwt
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout as auth_logout
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -29,6 +29,7 @@ from django.utils.http import is_safe_url
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.debug import sensitive_post_parameters
 
+import jwt
 import karaage.common as common
 import karaage.common.aaf_rapid_connect as aaf_rapid_connect
 from karaage.common.decorators import login_required
@@ -89,6 +90,7 @@ def aaf_rapid_connect_login(request):
             )
             response = HttpResponseRedirect(url)
             response.set_cookie('arc_url', redirect_to)
+            response.set_cookie('arc_required', True)
             return response
 
     return render(
@@ -207,6 +209,7 @@ def profile_aaf_rapid_connect(request):
             messages.error(request, f"Error: Could not decode token: {e}")
 
         request.session['arc_jwt'] = verified_jwt
+        arc_required = request.COOKIES.get('arc_required', False)
 
         # We are seeing this user for the first time in this session, attempt
         # to authenticate the user.
@@ -226,7 +229,11 @@ def profile_aaf_rapid_connect(request):
                 except Person.DoesNotExist:
                     pass
 
-        if person is not None:
+        if person is None:
+            auth_logout(request)
+            if arc_required:
+                messages.error(request, f"Error: Could not find Karaage person")
+        else:
             # We must set the model backend here manually as we skip
             # the call to auth.authenticate().
             request.user = person
@@ -245,6 +252,7 @@ def profile_aaf_rapid_connect(request):
         if url is not None:
             response = HttpResponseRedirect(url)
             response.delete_cookie('arc_url')
+            response.delete_cookie('arc_required')
             return response
 
     session_jwt = request.session.get('arc_jwt', None)

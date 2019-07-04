@@ -47,10 +47,6 @@ def get_institute_from_token(verified_jwt):
 def add_token_data(person, verified_jwt):
     attrs = verified_jwt['https://aaf.edu.au/attributes']
 
-    institute = get_institute_from_token(verified_jwt)
-    if institute is None:
-        return "Could not find institute"
-
     # short_name and full_name cannot be None
     person.short_name = attrs['givenname']
     person.full_name = attrs['cn']
@@ -58,7 +54,7 @@ def add_token_data(person, verified_jwt):
     # fill in mandatory attributes
     person.email = attrs['mail']
     person.saml_id = attrs['edupersontargetedid']
-    person.institute = institute
+    person.institute = get_institute_from_token(verified_jwt)
     person.email_verified = True
 
     # save person

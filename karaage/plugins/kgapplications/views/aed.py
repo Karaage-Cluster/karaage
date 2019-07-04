@@ -137,19 +137,18 @@ class StateStepAaf(Step):
             if not done:
                 if session_jwt:
                     applicant = _get_applicant_from_token(session_jwt)
-                    if applicant is not None:
-                        application.applicant = applicant
-                        application.save()
-                    else:
+                    if applicant is None:
                         applicant = application.applicant
 
-                    error = aaf_rapid_connect.add_token_data(
-                        applicant, session_jwt)
-                    if error is None:
-                        applicant.save()
-                        done = True
+                    aaf_rapid_connect.add_token_data(applicant, session_jwt)
+
+                    if applicant.institute is None:
+                        status = "Could not find institute"
                     else:
-                        status = error
+                        done = True
+                        application.applicant = applicant
+                        application.save()
+
                 else:
                     status = "Please login to AAF before proceeding."
 
