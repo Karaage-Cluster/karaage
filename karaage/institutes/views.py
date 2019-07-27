@@ -107,7 +107,7 @@ def institute_list(request):
 
     queryset = Institute.objects.all()
     if not is_admin(request):
-        queryset = institute_list.filter(
+        queryset = queryset.filter(
             is_active=True, delegates=request.user)
 
     q_filter = InstituteFilter(request.GET, queryset=queryset)
