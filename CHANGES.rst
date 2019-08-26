@@ -9,6 +9,19 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Fixed
+~~~~~
+* Fix error viewing institute list as non-admin.
+
+Changes
+~~~~~~~
+* Replace Shibboleth code with AAF RapidConnect code. This requires some
+  config changes.
+
+
 5.0.19 (2019-06-21)
 -------------------
 
