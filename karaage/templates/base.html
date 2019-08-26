@@ -41,7 +41,7 @@
                 <a href="{% url 'kg_profile_password' %}">{% trans 'Change password' %}</a> /
                 <a href="{% url 'kg_profile_logout' %}">{% trans 'Log out' %}</a>
                 {% elif AAF_RAPID_CONNECT_ENABLED %}
-                <a href="{% url 'kg_profile_login_arc' %}">{% trans 'Log in' %}</a>
+                <a href="{% url 'kg_profile_login_arc' %}{% url_with_param next=request.path %}">{% trans 'Log in' %}</a>
                 {% else %}
                 <a href="{% url 'kg_profile_login' %}{% url_with_param next=request.path %}">{% trans 'Log in' %}</a>
                 {% endif %}
