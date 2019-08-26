@@ -25,7 +25,7 @@ import os
 from setuptools import Command, setup, find_packages
 
 
-VERSION='5.0.19'
+VERSION='6.0.0'
 
 
 class VerifyVersionCommand(Command):
