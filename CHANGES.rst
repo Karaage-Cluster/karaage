@@ -20,6 +20,7 @@ Changes
 ~~~~~~~
 * Replace Shibboleth code with AAF RapidConnect code. This requires some
   config changes.
+* Apache docker image is depracated and should not be used for new installs.
 
 
 5.0.19 (2019-06-21)
