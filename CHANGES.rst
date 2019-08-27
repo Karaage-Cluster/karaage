@@ -9,6 +9,14 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Fixed
+~~~~~
+* Invalid reference to jwt.JWTError, should be jwt.PyJWTError
+
+
 6.0.0 (2019-08-26)
 -------------------
 
