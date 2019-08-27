@@ -193,10 +193,10 @@
         },
         "django-simple-captcha": {
             "hashes": [
-                "sha256:e14e5c4b207be3dffb200309e7ac7a48de1a2b3293f09eefedd9ab317c4d9a7f"
+                "sha256:fc25f0425e282aa82d2a65013049a8dc7c0682f8e05d32681c39a0c55ed322bd"
             ],
             "index": "pypi",
-            "version": "==0.5.11"
+            "version": "==0.5.12"
         },
         "django-tables2": {
             "hashes": [
