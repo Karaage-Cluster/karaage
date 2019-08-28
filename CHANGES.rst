@@ -9,6 +9,18 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Fixed
+~~~~~
+* Fix error in CHANGES.rst
+
+Changes
+~~~~~~~
+* Update dependancies.
+
+
 6.0.1 (2019-08-27)
 ------------------
 
