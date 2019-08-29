@@ -9,6 +9,14 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Fixed
+~~~~~
+* Fix error setting AAF credentials in applications.
+
+
 6.0.2 (2019-08-28)
 ------------------
 

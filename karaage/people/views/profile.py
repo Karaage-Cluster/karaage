@@ -208,7 +208,6 @@ def profile_aaf_rapid_connect(request):
         except jwt.PyJWTError as e:
             messages.error(request, f"Error: Could not decode token: {e}")
 
-        request.session['arc_jwt'] = verified_jwt
         arc_required = request.COOKIES.get('arc_required', False)
 
         # We are seeing this user for the first time in this session, attempt
@@ -239,6 +238,9 @@ def profile_aaf_rapid_connect(request):
             request.user = person
             request.user.backend = 'django.contrib.auth.backends.ModelBackend'
             auth_login(request, person)
+
+        # We must setup the session after logging in / logging out.
+        request.session['arc_jwt'] = verified_jwt
 
         url = request.COOKIES.get('arc_url', None)
         if url is not None:
