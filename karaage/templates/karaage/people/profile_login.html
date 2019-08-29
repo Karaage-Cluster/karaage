@@ -33,7 +33,7 @@
 {% endif %}
 
   {% if AAF_RAPID_CONNECT_ENABLED %}
-    <p>You can also login using <a href="{% url 'kg_profile_login_arc' %}">
+    <p>You can also login using <a href="{% url 'kg_profile_login_arc' %}?{{ querystring }}">
     AAF authentication</a>.</p>
   {% endif %}
 

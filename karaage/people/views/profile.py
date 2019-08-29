@@ -66,12 +66,15 @@ def login(request, username=None):
     else:
         form = LoginForm(initial={'username': username})
 
+    querystring = request.META.get('QUERY_STRING', '')
+
     return render(
         template_name='karaage/people/profile_login.html',
         context={
             'form': form,
             'next': redirect_to,
             'error': error,
+            'querystring': querystring,
         }, request=request)
 
 
@@ -93,9 +96,11 @@ def aaf_rapid_connect_login(request):
             response.set_cookie('arc_required', True)
             return response
 
+    querystring = request.META.get('QUERY_STRING', '')
+
     return render(
         template_name='karaage/people/profile_login_aaf_rapid_connect.html',
-        context={'form': form, 'error': error, },
+        context={'form': form, 'error': error, 'querystring': querystring },
         request=request)
 
 
