@@ -100,7 +100,7 @@ def aaf_rapid_connect_login(request):
 
     return render(
         template_name='karaage/people/profile_login_aaf_rapid_connect.html',
-        context={'form': form, 'error': error, 'querystring': querystring },
+        context={'form': form, 'error': error, 'querystring': querystring},
         request=request)
 
 
