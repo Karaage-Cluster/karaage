@@ -36,16 +36,6 @@ def _get_applicant_from_token(session_jwt):
     except Person.DoesNotExist:
         pass
 
-    try:
-        return Applicant.objects.get(saml_id=saml_id)
-    except Applicant.DoesNotExist:
-        pass
-
-    try:
-        return Applicant.objects.get(email=email)
-    except Applicant.DoesNotExist:
-        pass
-
     return None
 
 

@@ -15,6 +15,7 @@ UNRELEASED
 Fixed
 ~~~~~
 * Ensure we don't loose the next= parameter for logins.
+* Don't reuse existing applicants after AAF login.
 
 
 6.0.3 (2019-08-29)
