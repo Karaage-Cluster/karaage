@@ -9,6 +9,14 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Fixed
+~~~~~
+* Unused import in Python code broke builds.
+
+
 6.0.4 (2019-08-30)
 ------------------
 

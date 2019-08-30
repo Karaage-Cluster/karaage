@@ -15,7 +15,6 @@ from karaage.common import aaf_rapid_connect, log
 from karaage.institutes.models import Institute
 from karaage.people.models import Person
 from karaage.plugins.kgapplications import forms
-from karaage.plugins.kgapplications.models import Applicant
 from karaage.plugins.kgapplications.views import base
 from karaage.plugins.kgapplications.views.states import StateWithSteps, Step
 from karaage.projects.models import Project
