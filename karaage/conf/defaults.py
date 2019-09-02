@@ -497,10 +497,6 @@ APPLICATION_PROJECT = {
     'P': {
         'type': 'state',
         'class': 'karaage.plugins.kgapplications.views.states.StatePassword',
-        'on_cancel': {
-            'type': 'goto',
-            'key': 'R',
-        },
         'on_submit': {
             'type': 'goto',
             'key': 'C',
@@ -517,10 +513,6 @@ APPLICATION_PROJECT = {
     'A': {
         'type': 'state',
         'class': 'karaage.plugins.kgapplications.views.states.StateArchived',
-        'on_reopen': {
-            'type': 'goto',
-            'key': 'start',
-        }
     },
     'R': {
         'type': 'state',

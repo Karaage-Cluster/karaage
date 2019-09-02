@@ -163,7 +163,7 @@ class StateWaitingForApproval(base.State):
 class StatePassword(base.State):
     """ This application is completed and processed. """
     name = "Password"
-    actions = {'cancel', 'submit'}
+    actions = {'submit'}
 
     def get_next_action(self, request, application, label, roles):
         """ Django view method. """
@@ -179,8 +179,6 @@ class StatePassword(base.State):
                     data=request.POST or None, person=application.applicant)
                 form_type = "set"
             if request.method == 'POST':
-                if 'cancel' in request.POST:
-                    return 'cancel'
                 if form.is_valid():
                     form.save()
                     messages.success(
@@ -351,12 +349,10 @@ class StateArchived(StateCompleted):
 
     """ This application is archived. """
     name = "Archived"
-    actions = {'reopen'}
+    actions = {}
 
     def get_actions(self, request, application, roles):
         actions = set(self.actions)
-        if 'is_admin' not in roles:
-            actions.remove('reopen')
         return actions
 
 
