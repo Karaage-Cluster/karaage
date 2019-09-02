@@ -31,4 +31,4 @@ ENV SLURM_VER=${SLURM_VER}
 # Specify the command to run when the image is run.
 EXPOSE 8000
 VOLUME '/etc/karaage3' '/var/log' '/var/lib/karaage3'
-CMD /opt/karaage/scripts/docker.sh gunicorn
+CMD /opt/karaage/scripts/docker.sh

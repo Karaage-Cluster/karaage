@@ -15,17 +15,8 @@ python3 -m celery -A karaage.celery beat \
     --logfile=/var/log/karaage3/beat.log \
     --detach
 
-if test "$1" = "gunicorn"
-then
-    # Start Gunicorn processes
-    echo Starting Gunicorn.
-    exec gunicorn karaage.wsgi:application \
-        --bind 0.0.0.0:8000 \
-        --workers 3
-
-elif test "$1" = "apache"
-then
-    service shibd start
-    /usr/sbin/apache2ctl -D FOREGROUND
-
-fi
+# Start Gunicorn processes
+echo Starting Gunicorn.
+exec gunicorn karaage.wsgi:application \
+    --bind 0.0.0.0:8000 \
+    --workers 3
