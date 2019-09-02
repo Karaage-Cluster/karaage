@@ -9,6 +9,19 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Fixed
+~~~~~
+* Remove cancel action from application password screen. It doesn't make
+  sense to cancel an application after it has been approved.
+* Remove reopen action from archive screen. It doesn't make sense
+  to reopen an application after it has been approved, and this could be
+  the case.
+* Remove legacy Apache Docker images
+
+
 6.0.5 (2019-08-30)
 ------------------
 
