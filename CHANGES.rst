@@ -9,6 +9,15 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Removed
+~~~~~~~
+* Removed kgusage plugin, as it is no longer used and no longer
+  meets any known requirements.
+
+
 6.0.6 (2019-09-02)
 ------------------
 

@@ -52,4 +52,3 @@ Adding Slurm
    .. code-block:: bash
 
       service apache2 reload
-      service python-karaage-celery restart

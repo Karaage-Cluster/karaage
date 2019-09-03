@@ -41,7 +41,7 @@ A plugin needs to provide a plugin class that is derived from the
       BasePlugin is derived from :py:class:`django.apps.AppConfig` if Django
       1.7 is detected.
 
-Here is an example, taken from the karaage-usage pugin:
+Here is an example, taken from the legacy karaage-usage pugin:
 
 .. code-block:: python
 

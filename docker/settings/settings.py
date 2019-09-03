@@ -266,7 +266,6 @@ PLUGINS = [
     'karaage.plugins.kgapplications.plugin',
     'karaage.plugins.kgsoftware.plugin',
     'karaage.plugins.kgsoftware.applications.plugin',
-    'karaage.plugins.kgusage.plugin',
 ]
 
 
@@ -283,5 +282,3 @@ PLUGINS = [
 # default:  ALLOW_NEW_PROJECTS = True
 #
 # ALLOW_NEW_PROJECTS = True
-
-CELERY_BROKER_URL = 'redis://redis:6379/0'

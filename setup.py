@@ -146,10 +146,5 @@ setup(
             "karaage[applications]",
             "karaage[usage]",
         ],
-        'usage': [
-            "karaage[software]",
-            "django_celery",
-            "matplotlib",
-        ],
     },
 )

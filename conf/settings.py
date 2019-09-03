@@ -265,7 +265,6 @@ ACCOUNTS_ORG_NAME = 'Example'
 #     'karaage.plugins.kgapplications.plugin',
 #     'karaage.plugins.kgsoftware.plugin',
 #     'karaage.plugins.kgsoftware.applications.plugin',
-#     'karaage.plugins.kgusage.plugin',
 # ]
 
 

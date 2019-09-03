@@ -135,7 +135,6 @@ PLUGINS = [
     'karaage.plugins.kgapplications.plugin',
     'karaage.plugins.kgsoftware.plugin',
     'karaage.plugins.kgsoftware.applications.plugin',
-    'karaage.plugins.kgusage.plugin',
 ]
 
 ALLOW_REGISTRATIONS = True

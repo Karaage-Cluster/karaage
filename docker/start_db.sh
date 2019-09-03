@@ -21,12 +21,3 @@ if [ ! "$(docker ps -q -f name=karaage-mysql)" ]; then
         "$MYSQL_IMAGE" \
         mysql -e "CREATE DATABASE IF NOT EXISTS karaage;"
 fi
-if [ ! "$(docker ps -q -f name=karaage-redis)" ]; then
-    if [ "$(docker ps -aq -f status=exited -f name=karaage-redis)" ]; then
-        # cleanup
-        docker rm karaage-redis
-    fi
-    # run your container
-    docker run --rm --name karaage-redis -d redis
-fi
-

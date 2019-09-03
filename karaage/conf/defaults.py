@@ -74,7 +74,6 @@ INSTALLED_APPS = (
     'django_tables2',
     'tldap.django',
     'pipeline',
-    'django_celery_results',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
@@ -374,16 +373,6 @@ SILENCED_SYSTEM_CHECKS = [
     # BooleanField does not have a default value
     '1_6.W002',
 ]
-
-CELERY_ENABLE_UTC = True
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'django-db'
-CELERY_BEAT_SCHEDULE = {
-    'daily': {
-        'task': 'karaage.tasks.daily',
-        'schedule': 6 * 60 * 60,
-    },
-}
 
 APPLICATION_PROJECT = {
     'start': {

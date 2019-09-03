@@ -70,8 +70,7 @@ def load_plugins(namespace, plugins):
         new_depends = []
         for plugin in depends:
             if plugin.startswith("kgapplications.") \
-                    or plugin.startswith("kgsoftware.") \
-                    or plugin.startswith("kgusage."):
+                    or plugin.startswith("kgsoftware."):
                 new_plugin = "karaage.plugins.%s" % plugin
 
                 warnings.warn(

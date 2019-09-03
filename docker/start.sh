@@ -10,7 +10,6 @@ set -e
   -v $PWD/docker/settings:/etc/karaage3 \
   -v $PWD/local/log:/var/log \
   --link karaage-mysql:mysql \
-  --link karaage-redis:redis \
   brianmay/karaage:slurm17.02 "$@"
 
 # other desirable parameters
