@@ -12,6 +12,10 @@ adheres to `Semantic Versioning`_.
 UNRELEASED
 ----------
 
+Fixed
+~~~~~
+* Don't disable requirement to register with shibboleth.
+
 Removed
 ~~~~~~~
 * Removed kgusage plugin, as it is no longer used and no longer

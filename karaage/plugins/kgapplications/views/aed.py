@@ -123,7 +123,6 @@ class StateStepAaf(Step):
             if 'prev' in request.POST:
                 return 'prev'
 
-            done = True
             if not done:
                 if session_jwt:
                     applicant = _get_applicant_from_token(session_jwt)
