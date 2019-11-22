@@ -170,11 +170,11 @@
         },
         "django-tables2": {
             "hashes": [
-                "sha256:2fdc1eee4eb08a29eceb9dd7ebb0d002612b752b95f7d80e159c8b7e70947df6",
-                "sha256:761943640b2c0f305d566e8ad89a7b13520db08f6a295d33a6b516dff74242f2"
+                "sha256:0d9b17f5c030ba1b5fcaeb206d8397bf58f1fdfc6beaf56e7874841b8647aa94",
+                "sha256:6afa0496695e15b332e98537265d09fe01a55b28c75a85323d8e6b0dc2350280"
             ],
             "index": "pypi",
-            "version": "==2.2.0"
+            "version": "==2.2.1"
         },
         "django-xmlrpc": {
             "hashes": [
