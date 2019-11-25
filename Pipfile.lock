@@ -900,11 +900,11 @@
         },
         "twine": {
             "hashes": [
-                "sha256:8d85e75338c97ea7ed04330b1dce1d948ce83cec333fb9a0e26a11ffdc4a40dd",
-                "sha256:af3a83c627bd609d3ffe0d48f420e28584c448764ceeb203bb8eafdc8eabb250"
+                "sha256:1a87ae3f1e29a87a8ac174809bf0aa996085a0368fe500402196bda94b23aab3",
+                "sha256:ba8ba1b39987f1c22d9162f7dd3b4668388640e5f7158c15226624f88e464836"
             ],
             "index": "pypi",
-            "version": "==3.0.0"
+            "version": "==3.1.0"
         },
         "urllib3": {
             "hashes": [
