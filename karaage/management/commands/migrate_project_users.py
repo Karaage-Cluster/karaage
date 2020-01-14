@@ -6,10 +6,9 @@ import tldap.transaction
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
-
-from karaage.projects.models import Project
-from karaage.people.models import Group, Person
 from karaage.machines.models import Account
+from karaage.people.models import Group, Person
+from karaage.projects.models import Project
 
 
 class Command(BaseCommand):
@@ -92,4 +91,3 @@ class Command(BaseCommand):
                                         sys.stdout.write("user %s appears to have no active account.. this shouldn't happen")
 
                 sys.stdout.write("Done")
-
