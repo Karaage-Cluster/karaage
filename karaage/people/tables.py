@@ -100,7 +100,7 @@ class PersonTable(tables.Table):
     username = tables.LinkColumn(
         'kg_person_detail', args=[A('username')])
     institute = tables.LinkColumn(
-        'kg_institute_detail', args=[A('institute.pk')])
+        'kg_institute_detail', args=[A('institute__pk')])
 
     def render_active(self, record):
         if record.date_deleted is not None:
@@ -120,13 +120,13 @@ class PersonTable(tables.Table):
 
 class LeaderTable(tables.Table):
     leader = tables.LinkColumn(
-        'kg_person_detail', args=[A('leader.username')])
+        'kg_person_detail', args=[A('leader__username')])
     institute = tables.LinkColumn(
         'kg_institute_detail',
-        args=[A('leader.institute.pk')],
-        accessor="leader.institute")
+        args=[A('leader__institute__pk')],
+        accessor="leader__institute")
     project = tables.LinkColumn(
-        'kg_project_detail', args=[A('project.pk')])
+        'kg_project_detail', args=[A('project__pk')])
 
     class Meta:
         fields = ("leader", "institute", "project", )

@@ -91,7 +91,7 @@ class ProjectTable(tables.Table):
     pid = tables.LinkColumn(
         'kg_project_detail', args=[A('id')], verbose_name="PID")
     institute = tables.LinkColumn(
-        'kg_institute_detail', args=[A('institute.pk')])
+        'kg_institute_detail', args=[A('institute__pk')])
     leaders = PeopleColumn(orderable=False)
 
     def render_is_active(self, record):
