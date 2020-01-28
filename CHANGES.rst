@@ -9,8 +9,8 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
-UNRELEASED
-----------
+6.0.8 (2020-01-28)
+------------------
 
 Added
 ~~~~~
