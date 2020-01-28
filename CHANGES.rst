@@ -9,6 +9,14 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Added
+~~~~~
+* Added migrate_project_users management command.
+
+
 6.0.7 (2019-09-04)
 ------------------
 
