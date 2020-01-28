@@ -45,11 +45,11 @@ class AccountTable(tables.Table):
     active = tables.Column(
         empty_values=(), order_by=('date_deleted', '-login_enabled'))
     person = tables.LinkColumn(
-        'kg_person_detail', args=[A('person.username')])
+        'kg_person_detail', args=[A('person__username')])
     username = tables.LinkColumn(
         'kg_account_detail', args=[A('pk')], verbose_name="Account")
     default_project = tables.LinkColumn(
-        'kg_project_detail', args=[A('default_project.id')])
+        'kg_project_detail', args=[A('default_project__id')])
 
     def render_active(self, record):
         if record.date_deleted is not None:

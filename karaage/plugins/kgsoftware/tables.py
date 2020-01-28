@@ -40,7 +40,7 @@ class SoftwareFilter(django_filters.FilterSet):
 
 class SoftwareTable(tables.Table):
     name = tables.LinkColumn('kg_software_detail', args=[A('pk')])
-    group = tables.LinkColumn('kg_group_detail', args=[A('group.name')])
+    group = tables.LinkColumn('kg_group_detail', args=[A('group__name')])
     softwareversion__last_used = tables.Column(verbose_name="Last used")
 
     class Meta:
@@ -52,12 +52,12 @@ class SoftwareTable(tables.Table):
 
 class SoftwareLicenseAgreementTable(tables.Table):
     software = tables.LinkColumn(
-        'kg_software_detail', accessor="license.software",
-        args=[A('license.software.pk')])
+        'kg_software_detail', accessor="license__software",
+        args=[A('license__software__pk')])
     license = tables.LinkColumn(
-        'kg_software_license_detail', args=[A('license.pk')])
+        'kg_software_license_detail', args=[A('license__pk')])
     person = tables.LinkColumn(
-        'kg_person_detail', args=[A('person.username')])
+        'kg_person_detail', args=[A('person__username')])
 
     class Meta:
         model = SoftwareLicenseAgreement

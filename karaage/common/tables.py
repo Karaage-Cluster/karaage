@@ -37,7 +37,7 @@ class LogEntryFilter(django_filters.FilterSet):
 
 
 class LogEntryTable(tables.Table):
-    user = tables.LinkColumn('kg_person_detail', args=[A('user.username')])
+    user = tables.LinkColumn('kg_person_detail', args=[A('user__username')])
     content_object = tables.Column(
         linkify=True,
         verbose_name="Object",
