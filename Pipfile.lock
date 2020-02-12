@@ -104,10 +104,11 @@
         },
         "django-ajax-selects": {
             "hashes": [
-                "sha256:cc2e9b4936601dcdb9c578634f0b70a1b0da50c3e7e13868397d31545033dee5"
+                "sha256:8c14a1cfb69572228f78301be4df1cec149bd74158cf766da690686dd5b5f11f",
+                "sha256:ede00165f9e15077be9ecb1d785b253b75598bbdbccfb61c7f559d4937e257f9"
             ],
             "index": "pypi",
-            "version": "==1.9.0"
+            "version": "==1.9.1"
         },
         "django-environ": {
             "hashes": [
