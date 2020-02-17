@@ -58,33 +58,33 @@ class Command(BaseCommand):
                     account = person.get_account()
                     if projectA == account.default_project:
 
+                        sys.stdout.write("changing default project for %s to " % person)
+                        sys.stdout.write(projectB.pid)
+                        sys.stdout.write("\n")
                         # set default project to projectB
                         person.add_group(projectB.group)
                         account.default_project = projectB
                         account.save()
-                        sys.stdout.write("changing default project for %s to " % person)
-                        sys.stdout.write(projectB.pid)
-                        sys.stdout.write("\n")
                     # remove user from group
-                    person.remove_group(projectA.group)
                     sys.stdout.write("removing %s from group " % person)
                     sys.stdout.write(projectA.pid)
                     sys.stdout.write("\n")
+                    person.remove_group(projectA.group)
                 elif accountlist.count() > 1:
                     # iterate over groups
                     for account in accountlist:
                         if projectA == account.default_project:
                             # set default project to projectB
-                            person.add_group(projectB.group)
-                            account.default_project = projectB
-                            account.save()
                             sys.stdout.write("changing default project for %s to " % person)
                             sys.stdout.write(projectB.pid)
                             sys.stdout.write("\n")
-                    person.remove_group(projectA.group)
+                            person.add_group(projectB.group)
+                            account.default_project = projectB
+                            account.save()
                     sys.stdout.write("removing %s from group " % person)
                     sys.stdout.write(projectA.pid)
                     sys.stdout.write("\n")
+                    person.remove_group(projectA.group)
                 else:
                     sys.stdout.write("user %s appears to have no active account.. this shouldn't happen")
 
