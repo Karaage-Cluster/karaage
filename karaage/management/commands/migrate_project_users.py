@@ -61,6 +61,7 @@ class Command(BaseCommand):
                         # set default project to projectB
                         person.add_group(projectB.group)
                         account.default_project = projectB
+                        account.save()
                         sys.stdout.write("changing default project for %s to " % person)
                         sys.stdout.write(projectB.pid)
                         sys.stdout.write("\n")
@@ -76,6 +77,7 @@ class Command(BaseCommand):
                             # set default project to projectB
                             person.add_group(projectB.group)
                             account.default_project = projectB
+                            account.save()
                             sys.stdout.write("changing default project for %s to " % person)
                             sys.stdout.write(projectB.pid)
                             sys.stdout.write("\n")
