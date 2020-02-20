@@ -1,0 +1,126 @@
+name: Python application
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Databaseless tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v2
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: Install system dependancies
+      run: |
+        sudo apt-get install libcrack2-dev
+    - name: Install pipenv
+      uses: dschep/install-pipenv-action@v1
+    - name: Install python dependancies
+      run: |
+        pipenv sync --dev
+    - name: Run tests
+      run: |
+        pipenv run ./setup.py --version
+        pipenv run make -C docs/admin html
+        pipenv run isort -rc --check --diff karaage
+        pipenv run flake8 karaage
+        pipenv run ./manage.py makemigrations --settings=karaage.tests.settings --check --dry-run
+
+  test-mysql:
+    name: Mysql tests
+    runs-on: ubuntu-latest
+    needs: test
+    env:
+        DATABASE_URL: mysql://root:z9Pm29jg9EfJ6m@127.0.0.1/test
+
+    steps:
+    - name: Shutdown Ubuntu MySQL
+      run: sudo service mysql stop
+    - name: Install mysql
+      uses: mirromutth/mysql-action@v1.1
+      with:
+        mysql version: '8.0'
+        mysql database: 'test'
+        mysql user: 'test'
+        mysql password: 'z9Pm29jg9EfJ6m'
+        mysql root password: 'z9Pm29jg9EfJ6m'
+    - name: Checkout source code
+      uses: actions/checkout@v2
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: Install system dependancies
+      run: |
+        sudo apt-get install libcrack2-dev slapd ldap-utils
+    - name: Remove apparmor restrictions on slapd
+      run: |
+          sudo apt-get install apparmor-utils
+          sudo aa-complain /usr/sbin/slapd
+    - name: Install pipenv
+      uses: dschep/install-pipenv-action@v1
+    - name: Install python dependancies
+      run: |
+        pipenv sync --dev
+    - name: Run tests
+      run: |
+        pipenv run ./manage.py collectstatic --settings=karaage.tests.settings --noinput
+        pipenv run ./manage.py migrate --settings=karaage.tests.settings
+        mkdir test-reports
+        pipenv run python -m tldap.test.slapd python -m pytest --cov=karaage --junitxml=test-reports/junit.xml
+    - name: Upload pytest test results
+      uses: actions/upload-artifact@master
+      with:
+        name: pytest-results
+        path: test-reports/junit.xml
+      if: always()
+
+  test-postgresql:
+    name: Postgresql tests
+    runs-on: ubuntu-latest
+    needs: test
+    env:
+        DATABASE_URL: postgresql://test:z9Pm29jg9EfJ6m@localhost/test?sslmode=disable
+
+    steps:
+    - name: Install postgresql
+      uses: harmon758/postgresql-action@v1
+      with:
+        postgresql version: '11'
+        postgresql db: 'test'
+        postgresql user: 'test'
+        postgresql password: 'z9Pm29jg9EfJ6m'
+    - name: Checkout source code
+      uses: actions/checkout@v2
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: Install system dependancies
+      run: |
+        sudo apt-get install libcrack2-dev slapd ldap-utils
+    - name: Remove apparmor restrictions on slapd
+      run: |
+          sudo apt-get install apparmor-utils
+          sudo aa-complain /usr/sbin/slapd
+    - name: Install pipenv
+      uses: dschep/install-pipenv-action@v1
+    - name: Install python dependancies
+      run: |
+        pipenv sync --dev
+    - name: Run tests
+      run: |
+        pipenv run ./manage.py collectstatic --settings=karaage.tests.settings --noinput
+        pipenv run ./manage.py migrate --settings=karaage.tests.settings
+        mkdir test-reports
+        pipenv run python -m tldap.test.slapd python -m pytest --cov=karaage --junitxml=test-reports/junit.xml
+    - name: Upload pytest test results
+      uses: actions/upload-artifact@master
+      with:
+        name: pytest-results
+        path: test-reports/junit.xml
+      if: always()
