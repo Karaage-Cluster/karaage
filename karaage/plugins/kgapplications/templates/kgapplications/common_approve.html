@@ -35,7 +35,7 @@
         </div>
     </div>
 
-    {% if application.content_type.model == 'applicant' %}
+    {% if not application.existing_person %}
     {% if 'duplicate' in actions %}
     <div>
         <h3>Similar People</h3>

@@ -41,7 +41,6 @@ class TestKgApplicationPages(TestAllPagesCase):
     ]
     variables = {
         'application_id': '1',
-        'applicant_id': '1',
         'project_id': '1',
         'token': '27e889413e2d302b9b2a66c63b208962a3788730',
         'state': 'D',

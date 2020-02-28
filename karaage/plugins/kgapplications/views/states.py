@@ -169,15 +169,19 @@ class StatePassword(base.State):
         """ Django view method. """
         actions = self.get_actions(request, application, roles)
         if label is None and 'is_applicant' in roles:
-            assert application.content_type.model == 'person'
-            if application.applicant.has_usable_password():
-                form = forms.PersonVerifyPassword(
-                    data=request.POST or None, person=application.applicant)
+            assert application.existing_person is not None
+            if application.existing_person.has_usable_password():
+                form_class = forms.PersonVerifyPassword
                 form_type = "verify"
             else:
-                form = forms.PersonSetPassword(
-                    data=request.POST or None, person=application.applicant)
+                form_class = forms.PersonSetPassword
                 form_type = "set"
+
+            form = form_class(
+                data=request.POST or None,
+                person=application.existing_person,
+            )
+
             if request.method == 'POST':
                 if form.is_valid():
                     form.save()

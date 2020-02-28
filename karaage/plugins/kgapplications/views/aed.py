@@ -61,7 +61,7 @@ class StateStepAaf(Step):
             form = None
             done = True
 
-        elif application.content_type.model != 'applicant':
+        elif application.existing_person is not None:
             status = "You are already registered in the system."
             form = None
             done = True
@@ -95,12 +95,6 @@ class StateStepAaf(Step):
                 and form.is_valid()
             ):
                 institute = form.cleaned_data['institute']
-                applicant.institute = institute
-                applicant.save()
-                # We do not set application.insitute here, that happens
-                # when application, if it is a ProjectApplication, is
-                # submitted
-
                 # if institute supports shibboleth, redirect back here via
                 # shibboleth, otherwise redirect directly back he.
                 url = aaf_rapid_connect.build_login_url(
@@ -128,16 +122,17 @@ class StateStepAaf(Step):
                     applicant = _get_applicant_from_token(session_jwt)
                     if applicant is None:
                         applicant = application.applicant
-
-                    aaf_rapid_connect.add_token_data(applicant, session_jwt)
-
-                    if applicant.institute is None:
-                        status = "Could not find institute"
                     else:
-                        done = True
-                        application.applicant = applicant
+                        application.new_applicant = None
+                        application.existing_person = applicant
                         application.save()
 
+                    status, message = aaf_rapid_connect.add_token_data(applicant, session_jwt)
+                    if status != "OK":
+                        log.comment(application.application_ptr, f"Could not use AAF rapid connect: {message}.")
+                        status = f"Could not use AAF rapid connect: {message}. Please contact support."
+                    else:
+                        done = True
                 else:
                     status = "Please login to AAF before proceeding."
 
@@ -180,17 +175,18 @@ class StateStepApplicant(Step):
         status = None
         form = None
 
-        if application.content_type.model != 'applicant':
+        if application.existing_person is not None:
             status = "You are already registered in the system."
-        elif application.content_type.model == 'applicant':
-            if application.applicant.saml_id is not None:
-                form = forms.AafApplicantForm(
-                    request.POST or None,
-                    instance=application.applicant)
+        else:
+            if application.new_applicant.saml_id is not None:
+                form_class = forms.AafApplicantForm
             else:
-                form = forms.UserApplicantForm(
-                    request.POST or None,
-                    instance=application.applicant)
+                form_class = forms.UserApplicantForm
+
+            form = form_class(
+                request.POST or None,
+                instance=application.new_applicant
+            )
 
         # Process the form, if there is one
         if form is not None and request.method == 'POST':
@@ -392,10 +388,10 @@ class StateStepIntroduction(Step):
 
     def view(self, request, application, label, roles, actions):
         """ Django get_next_action method. """
-        if application.content_type.model == 'applicant':
-            if not application.applicant.email_verified:
-                application.applicant.email_verified = True
-                application.applicant.save()
+        if application.new_applicant is not None:
+            if not application.new_applicant.email_verified:
+                application.new_applicant.email_verified = True
+                application.new_applicant.save()
         for action in actions:
             if action in request.POST:
                 return action
@@ -449,8 +445,8 @@ class StateApplicantEnteringDetails(StateWithSteps):
                 saml_id = attributes['edupersontargetedid']
             if saml_id is not None:
                 query = Person.objects.filter(saml_id=saml_id)
-                if application.content_type.model == "person":
-                    query = query.exclude(pk=application.applicant.pk)
+                if application.existing_person is not None:
+                    query = query.exclude(pk=application.existing_person.pk)
                 if query.count() > 0:
                     new_person = Person.objects.get(saml_id=saml_id)
                     reason = "AAF id is already in use by existing person."
@@ -475,7 +471,8 @@ class StateApplicantEnteringDetails(StateWithSteps):
                 if application.applicant != new_person:
                     if 'steal' in request.POST:
                         old_applicant = application.applicant
-                        application.applicant = new_person
+                        application.new_applicant = None
+                        application.existing_person = new_person
                         application.save()
                         log.change(
                             application.application_ptr,

@@ -37,7 +37,7 @@ class ApplicationTable(tables.Table):
     action = tables.Column(
         empty_values=(), order_by=('_class'))
     applicant = tables.Column(
-        linkify=True, order_by=('content_type', 'object_id'))
+        linkify=True, order_by=('new_applicant', 'existing_person'))
 
     def render_action(self, record):
         return record.get_object().info()

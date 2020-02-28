@@ -149,7 +149,7 @@ username,password,short_name,full_name,email,institute,project"""
             applicant.short_name = user["short_name"]
             applicant.full_name = user["full_name"]
             applicant.username = user["username"]
-            application.applicant = applicant
+            application.new_applicant = applicant
             application.project = project
             application.state = ProjectApplication.OPEN
             application.header_message = "Please select your institute and hit the 'AAF login' button when prompted"

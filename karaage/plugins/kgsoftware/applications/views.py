@@ -48,7 +48,8 @@ def new_application(request, software_license):
         return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
     application = SoftwareApplication()
-    application.applicant = request.user
+    application.new_applicant = None
+    application.existing_person = request.user
     application.software_license = software_license
     application.save()
 
