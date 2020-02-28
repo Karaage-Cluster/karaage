@@ -61,7 +61,7 @@ class Command(BaseCommand):
 
         # Delete all orphaned applicants
         for applicant in Applicant.objects.annotate(
-                cc=Count('applications')).filter(cc=0):
+                cc=Count('application')).filter(cc=0):
             if verbose >= 1:
                 print("Deleted orphaned applicant #%s" % applicant.id)
             applicant.delete()

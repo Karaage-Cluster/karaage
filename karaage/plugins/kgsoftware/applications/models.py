@@ -44,7 +44,7 @@ class SoftwareApplication(Application):
     def check_valid(self):
         errors = super(SoftwareApplication, self).check_valid()
 
-        if self.content_type.model != 'person':
+        if self.existing_person is None:
             errors.append("Applicant not already registered person.")
 
         return errors

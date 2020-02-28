@@ -63,36 +63,55 @@
             </div>
         </div>
 
+        {% if application.new_applicant %}
+        {% with applicant=application.new_applicant %}
         <div>
-            <h3>Applicant Details</h3>
+            <h3>Requested Applicant Details</h3>
             <div class="table-container">
                 <table class="keyvalue">
-                    {% if application.content_type.model == 'applicant' %}
-                    <tr><th>Applicant type:</th><td>New applicant {% if is_admin %}<a href="{% url 'kg_applicant_edit' application.applicant.pk %}">[edit]</a>{% endif %}</td>
-                    <tr><th>Username:</th><td>{{ application.applicant.username }}</td></tr>
-                    {% elif application.content_type.model == 'person' %}
-                    <tr><th>Applicant type:</th><td>Existing person</td>
-                    <tr><th>Username:</th><td><a href="{% url 'kg_person_detail' application.applicant.username %}">{{ application.applicant.username }}</a></td></tr>
-                    {% else %}
-                    <tr><th>Applicant type:</th><td>Unknown {{ application.content_type.model }}</td>
-                    <tr><th>Username:</th><td>{{ application.applicant.username }}</td></tr>
-                    {% endif %}
-
-                    <tr><th>Short name:</th><td>{{ application.applicant.get_short_name }}</td></tr>
-                    <tr><th>Full name:</th><td>{{ application.applicant.get_full_name }}</td></tr>
-                    <tr><th>Email:</th><td>{{ application.applicant.email|urlize }}</td></tr>
-                    <tr><th>Institute:</th><td>{% if application.applicant.institute %}<a href="{{ application.applicant.institute.get_absolute_url }}">{{ application.applicant.institute }}</a>{% else %}None{% endif %}</td></tr>
-                    {% if application.applicant.position %}<tr><th>Position:</th><td>{{ application.applicant.position }}</td></tr>{% endif %}
-                    {% if application.applicant.telephone %}<tr><th>Phone:</th><td>{{ application.applicant.telephone }}</td></tr>{% endif %}
-                    {% if application.applicant.mobile %}<tr><th>Mobile:</th><td>{{ application.applicant.mobile }}</td></tr>{% endif %}
-                    {% if application.applicant.department %}<tr><th>Department:</th><td>{{ application.applicant.department }}</td></tr>{% endif %}
-                    {% if application.applicant.supervisor %}<tr><th>Supervisor:</th><td>{{ application.applicant.supervisor }}</td></tr>{% endif %}
-                    {% if application.applicant.fax %}<tr><th>Fax:</th><td>{{ application.applicant.fax }}</td></tr>{% endif %}
+                    <tr><th>Applicant type:</th><td>New applicant {% if is_admin and not application.existing_person %}<a href="{% url 'kg_applicant_edit' applicant.pk %}">[edit]</a>{% endif %}</td>
+                        <tr><th>Username:</th><td>{{ applicant.username }}</td></tr>
+                        <tr><th>Short name:</th><td>{{ applicant.get_short_name }}</td></tr>
+                        <tr><th>Full name:</th><td>{{ applicant.get_full_name }}</td></tr>
+                        <tr><th>Email:</th><td>{{ applicant.email|urlize }}</td></tr>
+                        <tr><th>Institute:</th><td>{% if applicant.institute %}<a href="{{ applicant.institute.get_absolute_url }}">{{ applicant.institute }}</a>{% else %}None{% endif %}</td></tr>
+                        {% if applicant.position %}<tr><th>Position:</th><td>{{ applicant.position }}</td></tr>{% endif %}
+                        {% if applicant.telephone %}<tr><th>Phone:</th><td>{{ applicant.telephone }}</td></tr>{% endif %}
+                        {% if applicant.mobile %}<tr><th>Mobile:</th><td>{{ applicant.mobile }}</td></tr>{% endif %}
+                        {% if applicant.department %}<tr><th>Department:</th><td>{{ applicant.department }}</td></tr>{% endif %}
+                        {% if applicant.supervisor %}<tr><th>Supervisor:</th><td>{{ applicant.supervisor }}</td></tr>{% endif %}
+                        {% if applicant.fax %}<tr><th>Fax:</th><td>{{ applicant.fax }}</td></tr>{% endif %}
                 </table>
             </div>
         </div>
+        {% endwith %}
+        {% endif %}
 
-        {% if application.content_type.model == 'applicant' %}
+        {% if application.existing_person %}
+        {% with applicant=application.existing_person %}
+        <div>
+            <h3>Current Applicant Details</h3>
+            <div class="table-container">
+                <table class="keyvalue">
+                    <tr><th>Applicant type:</th><td>Existing person <a href="{% url 'kg_person_detail' application.applicant.username %}">[view]</a></td>
+                        <tr><th>Username:</th><td>{{ applicant.username }}</td></tr>
+                        <tr><th>Short name:</th><td>{{ applicant.get_short_name }}</td></tr>
+                        <tr><th>Full name:</th><td>{{ applicant.get_full_name }}</td></tr>
+                        <tr><th>Email:</th><td>{{ applicant.email|urlize }}</td></tr>
+                        <tr><th>Institute:</th><td>{% if applicant.institute %}<a href="{{ applicant.institute.get_absolute_url }}">{{ applicant.institute }}</a>{% else %}None{% endif %}</td></tr>
+                        {% if applicant.position %}<tr><th>Position:</th><td>{{ applicant.position }}</td></tr>{% endif %}
+                        {% if applicant.telephone %}<tr><th>Phone:</th><td>{{ applicant.telephone }}</td></tr>{% endif %}
+                        {% if applicant.mobile %}<tr><th>Mobile:</th><td>{{ applicant.mobile }}</td></tr>{% endif %}
+                        {% if applicant.department %}<tr><th>Department:</th><td>{{ applicant.department }}</td></tr>{% endif %}
+                        {% if applicant.supervisor %}<tr><th>Supervisor:</th><td>{{ applicant.supervisor }}</td></tr>{% endif %}
+                    {% if applicant.fax %}<tr><th>Fax:</th><td>{{ applicant.fax }}</td></tr>{% endif %}
+                </table>
+            </div>
+        </div>
+        {% endwith %}
+        {% endif %}
+
+        {% if not application.existing_person %}
         {% if 'duplicate' in actions %}
         <div>
             <h3>Similar People</h3>

@@ -36,7 +36,7 @@ from ..models import Application, ProjectApplication
 
 
 class ApplicationFactory(DjangoModelFactory):
-    applicant = factory.SubFactory(PersonFactory)
+    existing_person = factory.SubFactory(PersonFactory)
 
     class Meta:
         model = Application

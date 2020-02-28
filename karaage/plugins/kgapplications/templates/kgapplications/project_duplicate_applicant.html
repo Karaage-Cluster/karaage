@@ -31,7 +31,7 @@
     </div>
 </div>
 
-{% if application.content_type.model == 'applicant' %}
+{% if not application.existing_person %}
 {% if application.applicant.similar_people %}
 <div class="module">
     <form method="post" action=".">{% csrf_token %}

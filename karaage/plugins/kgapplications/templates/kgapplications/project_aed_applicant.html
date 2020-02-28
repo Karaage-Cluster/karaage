@@ -20,7 +20,7 @@
 <div class="module">
     <h2>3. Applicant</h2>
 
-    <form method="post" action=".">{% csrf_token %}
+    <form method="post" action="." novalidate>{% csrf_token %}
         {% if status %}
             <p>You are already registered in the system.</p>
             <div class="table-container">

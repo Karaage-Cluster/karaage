@@ -82,7 +82,7 @@ def get_url(request, application, roles, label=None):
     elif not request.user.is_authenticated:
         # If applicant is not logged in, we redirect them to secret URL
         require_secret = True
-    elif request.user != application.applicant:
+    elif request.user != application.existing_person:
         # If logged in as different person, we redirect them to secret
         # URL. This could happen if the application was open with a different
         # email address, and the applicant is logged in when accessing it.
@@ -121,8 +121,8 @@ def get_registration_email_link(application):
 def get_email_link(application):
     """ Retrieve a link that can be emailed to the applicant. """
     # don't use secret_token unless we have to
-    if (application.content_type.model == 'person'
-            and application.applicant.has_usable_password()):
+    if (application.existing_person is not None
+            and application.existing_person.has_usable_password()):
         url = '%s/applications/%d/' % (
             settings.REGISTRATION_BASE_URL, application.pk)
         is_secret = False

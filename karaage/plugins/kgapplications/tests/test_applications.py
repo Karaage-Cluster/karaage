@@ -139,7 +139,7 @@ class UserApplicationTestCase(TestCase):
             + reverse('kg_application_unauthenticated', args=[token, 'L']))
         self.assertEqual(response.status_code, 200)
         applicant = Applicant.objects.get(username='jimbob')
-        application = applicant.applications.all()[0]
+        application = applicant.application
         self.assertEqual(
             application.state,
             ProjectApplication.WAITING_FOR_LEADER)
@@ -402,7 +402,7 @@ class ProjectApplicationTestCase(TestCase):
             url_prefix
             + reverse('kg_application_unauthenticated', args=[token, 'D']))
         applicant = Applicant.objects.get(username='jimbob')
-        application = applicant.applications.all()[0]
+        application = applicant.application
         self.assertEqual(
             application.state, ProjectApplication.WAITING_FOR_DELEGATE)
         self.assertEqual(len(mail.outbox), 2)
@@ -573,10 +573,10 @@ class ProjectApplicationTestCase(TestCase):
     def _test_project_make_leader(self, application):
         self._test_project_approval(application)
         if application.make_leader:
-            self.assertIn(application.applicant,
+            self.assertIn(application.existing_person,
                           application.project.leaders.all())
         else:
-            self.assertNotIn(application.applicant,
+            self.assertNotIn(application.existing_person,
                              application.project.leaders.all())
 
     def test_new_project_make_leader(self, make_leader=True):

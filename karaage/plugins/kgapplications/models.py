@@ -19,7 +19,6 @@
 import datetime
 
 import six
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
@@ -41,21 +40,12 @@ except ImportError:
     # Django >= 1.8
     from django.db.models.fields.related import OneToOneRel
 
-try:
-    # Django >= 1.7
-    from django.contrib.contenttypes.fields import GenericForeignKey, \
-        GenericRelation
-except ImportError:
-    # Django < 1.7
-    from django.contrib.contenttypes.generic import GenericForeignKey, \
-        GenericRelation
-
 
 class ApplicationManager(models.Manager):
 
     def get_for_applicant(self, person):
         query = self.get_queryset()
-        query = query.filter(content_type__model="person", object_id=person.pk)
+        query = query.filter(existing_person_id=person.pk)
         query = query.exclude(state__in=[
             Application.COMPLETED, Application.ARCHIVED, Application.DECLINED])
         return query
@@ -90,18 +80,13 @@ class Application(models.Model):
     expires = models.DateTimeField(editable=False)
     created_by = models.ForeignKey(
         Person, editable=False, null=True, blank=True,
-        on_delete=models.SET_NULL)
+        on_delete=models.SET_NULL, related_name="created_applications")
     created_date = models.DateTimeField(auto_now_add=True, editable=False)
     submitted_date = models.DateTimeField(null=True, blank=True)
     state = models.CharField(max_length=5)
     complete_date = models.DateTimeField(null=True, blank=True, editable=False)
-    content_type = models.ForeignKey(
-        ContentType,
-        limit_choices_to={'model__in': ['person', 'applicant']},
-        null=True, blank=True,
-        on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField(null=True, blank=True)
-    applicant = GenericForeignKey()
+    new_applicant = models.OneToOneField('Applicant', null=True, blank=True, on_delete=models.SET_NULL)
+    existing_person = models.ForeignKey(Person, null=True, blank=True, on_delete=models.SET_NULL)
     header_message = models.TextField(
         'Message', null=True, blank=True,
         help_text=six.u(
@@ -196,16 +181,15 @@ class Application(models.Model):
         self.save()
 
     def approve(self, approved_by):
-        assert self.applicant is not None
-        if self.content_type.model == 'applicant':
-            person = self.applicant.approve(approved_by)
-            created_person = True
-        elif self.content_type.model == 'person':
-            person = self.applicant
+        if self.existing_person:
+            person = self.existing_person
             created_person = False
+        elif self.new_applicant:
+            person = self.new_applicant.approve(approved_by)
+            self.existing_person = person
+            created_person = True
         else:
             assert False
-        self.applicant = person
         self.complete_date = datetime.datetime.now()
         self.save()
         return created_person, False
@@ -219,21 +203,30 @@ class Application(models.Model):
     def check_valid(self):
         errors = []
 
-        if self.applicant is None:
-            errors.append("Applicant not set.")
-        elif self.content_type.model == 'applicant':
-            errors.extend(self.applicant.check_valid())
+        if self.existing_person is None:
+            if self.new_applicant is None:
+                errors.append("Applicant not set.")
+            else:
+                errors.extend(self.new_applicant.check_valid())
 
         return errors
 
     def get_roles_for_person(self, person):
         roles = set()
 
-        if person == self.applicant:
+        if person == self.existing_person:
             roles.add('is_applicant')
             roles.add('is_authorised')
 
         return roles
+
+    @property
+    def applicant(application):
+        applicant = application.existing_person
+        if applicant is None:
+            applicant = application.new_applicant
+            assert applicant is not None
+        return applicant
 
 
 class ProjectApplication(Application):
@@ -285,9 +278,8 @@ class ProjectApplication(Application):
     def approve(self, approved_by):
         created_person, created_account = \
             super(ProjectApplication, self).approve(approved_by)
-        assert self.applicant is not None
-        assert self.content_type.model == "person"
-        person = self.applicant
+        assert self.existing_person is not None
+        person = self.existing_person
         if self.project is None:
             assert self.institute is not None
             from karaage.projects.utils import get_new_pid
@@ -383,7 +375,6 @@ class Applicant(models.Model):
     fax = models.CharField(max_length=50, null=True, blank=True)
     saml_id = models.CharField(
         max_length=200, null=True, blank=True, editable=False, unique=False)
-    applications = GenericRelation(Application)
 
     class Meta:
         db_table = "applications_applicant"
@@ -464,11 +455,6 @@ class Applicant(models.Model):
         }
         person = Person.objects.create_user(**data)
         person.activate(approved_by)
-
-        for application in self.applications.all():
-            application.applicant = person
-            application.save()
-        self.delete()
         return person
     approve.alters_data = True
 

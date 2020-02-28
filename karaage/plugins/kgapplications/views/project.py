@@ -49,18 +49,18 @@ def get_applicant_from_email(email):
     """
     Get applicant from email address.
 
-    If the person exists, return (person, True)
+    If the person exists, return (None, person)
 
-    If multiple matches, return (None, True)
+    If multiple matches, return (None, None)
 
-    Otherwise create applicant and return (applicant, False)
+    Otherwise create applicant and return (applicant, None)
     """
     try:
-        applicant = Person.active.get(email=email)
-        existing_person = True
+        applicant = None
+        existing_person = Person.active.get(email=email)
     except Person.DoesNotExist:
         applicant = Applicant.objects.create(email=email)
-        existing_person = False
+        existing_person = None
     except Person.MultipleObjectsReturned:
         applicant = None
         existing_person = False
@@ -78,14 +78,14 @@ def _send_invitation(request, project):
             applicant, existing_person = get_applicant_from_email(email)
 
             # If applicant is None then there were multiple persons found.
-            if applicant is None:
+            if applicant is None and existing_person is None:
                 return render(
                     template_name='kgapplications/'
                                   'project_common_invite_multiple.html',
                     context={'form': form, 'email': email},
                     request=request)
 
-            if existing_person and 'existing' not in request.POST:
+            if existing_person is not None and 'existing' not in request.POST:
                 return render(
                     template_name='kgapplications/'
                                   'project_common_invite_existing.html',
@@ -93,7 +93,8 @@ def _send_invitation(request, project):
                     request=request)
 
             application = form.save(commit=False)
-            application.applicant = applicant
+            application.new_applicant = applicant
+            application.existing_person = existing_person
             application.project = project
             application.save()
             state_machine = get_application_state_machine()
@@ -154,11 +155,11 @@ def new_application(request):
                 # UnauthenticatedInviteUserApplicationForm form disallows
                 # existing users applying unauthenticated.
                 assert applicant is not None
-                # Similarly existing_person should always be False here.
-                assert not existing_person
+                # Similarly existing_person should always be None here.
+                assert existing_person is None
 
                 application = ProjectApplication()
-                application.applicant = applicant
+                application.new_applicant = applicant
                 application.save()
 
                 state_machine = get_application_state_machine()
@@ -177,7 +178,7 @@ def new_application(request):
             person = request.user
 
             application = ProjectApplication()
-            application.applicant = person
+            application.existing_person = person
             application.save()
 
             state_machine = get_application_state_machine()

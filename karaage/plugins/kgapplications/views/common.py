@@ -147,7 +147,7 @@ def application_unauthenticated(request, token, state=None, label=None):
 
     # redirect user to real url if possible.
     if request.user.is_authenticated:
-        if request.user == application.applicant:
+        if request.user == application.existing_person:
             url = base.get_url(
                 request, application, roles, label)
             return HttpResponseRedirect(url)

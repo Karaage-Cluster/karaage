@@ -426,5 +426,6 @@ class ApplicantReplace(forms.Form):
     def save(self, *args, **kwargs):
         replace_applicant = self.cleaned_data['replace_applicant']
         if replace_applicant is not None:
-            self.application.applicant = replace_applicant
+            self.application.new_applicant = None
+            self.application.existing_person = replace_applicant
             self.application.save()
