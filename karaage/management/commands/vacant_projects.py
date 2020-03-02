@@ -1,7 +1,11 @@
 import sys
+
 import django.db.transaction
 from django.core.management.base import BaseCommand
+
 from karaage.projects.models import Project
+
+
 class Command(BaseCommand):
         help = "return a list of projects with no currently active users"
         @django.db.transaction.non_atomic_requests
