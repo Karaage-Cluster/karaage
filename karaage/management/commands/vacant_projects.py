@@ -24,5 +24,5 @@ class Command(BaseCommand):
                 badProjects += 1
                 sys.stdout.write("{}: {} locked users".format(selectedProject.pid, invalidCount))
                 sys.stdout.write("\n")
-    sys.stdout.write("{} inactive/unpopulated projects\n".format(badProjects))
-    sys.stdout.write("Done\n")
+        sys.stdout.write("{} inactive/unpopulated projects\n".format(badProjects))
+        sys.stdout.write("Done\n")
