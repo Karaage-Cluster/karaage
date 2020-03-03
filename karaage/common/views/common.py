@@ -153,7 +153,7 @@ def log_list(request):
             'table': table,
             'filter': q_filter,
             'spec': spec,
-            'title': "Institute list",
+            'title': "Log list",
         },
         request=request)
 
