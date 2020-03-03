@@ -150,10 +150,10 @@ class Application(models.Model):
         super(Application, self).save(*args, **kwargs)
 
         if created:
-            log.add(self, 'Created')
+            log.add(self.application_ptr, 'Created')
         for field in self._tracker.changed():
             log.change(
-                self,
+                self.application_ptr,
                 'Changed %s to %s' % (field, getattr(self, field)))
     save.alters_data = True
 
