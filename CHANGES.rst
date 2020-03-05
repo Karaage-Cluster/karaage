@@ -9,6 +9,20 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Changed
+~~~~~~~
+* Updated application/applicant relationships.
+
+Fixed
+~~~~~
+* Fix error that would allow SAML applications to proceed without an institute.
+* Fix incorrect title for log view.
+* Fix error logging to wrong content_id for applications.
+
+
 6.0.8 (2020-01-28)
 ------------------
 
