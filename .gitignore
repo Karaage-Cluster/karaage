@@ -12,3 +12,5 @@
 /local/
 /file.db
 /.venv/
+/.coverage
+/node_modules/
