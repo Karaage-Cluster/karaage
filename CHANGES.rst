@@ -21,6 +21,7 @@ Fixed
 * Fix error that would allow SAML applications to proceed without an institute.
 * Fix incorrect title for log view.
 * Fix error logging to wrong content_id for applications.
+* Fix error creating new software package.
 
 
 6.0.8 (2020-01-28)

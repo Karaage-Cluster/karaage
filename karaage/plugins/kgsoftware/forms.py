@@ -101,8 +101,7 @@ class AddPackageForm(SoftwareForm):
             module=data['module'],
         )
         version.save()
-        version.machines = data['machines']
-        version.save()
+        version.machines.set(data['machines'])
 
         if data['license_version']:
             SoftwareLicense.objects.create(
