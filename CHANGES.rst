@@ -9,6 +9,14 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Fixed
+~~~~~
+* Log stdin/stderr output from slurm calls.
+
+
 6.1.0 (2020-03-25)
 ------------------
 

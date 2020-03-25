@@ -97,10 +97,13 @@ class SlurmDataStore(base.DataStore):
         cmd.extend(command)
         command = cmd
 
-        logger.debug("Cmd %s" % command)
-        null = open('/dev/null', 'w')
-        retcode = subprocess.call(command, stdout=null, stderr=null)
-        null.close()
+        process = subprocess.Popen(
+            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+        retcode = process.returncode
+
+        logger.debug(f"stdout: {stdout}")
+        logger.debug(f"stderr: {stderr}")
 
         if retcode in ignore_errors:
             logger.debug(
