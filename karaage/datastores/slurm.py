@@ -102,8 +102,8 @@ class SlurmDataStore(base.DataStore):
         stdout, stderr = process.communicate()
         retcode = process.returncode
 
-        logger.debug(f"stdout: {stdout}")
-        logger.debug(f"stderr: {stderr}")
+        logger.debug(f"<-- stdout: {stdout}")
+        logger.debug(f"<-- stderr: {stderr}")
 
         if retcode in ignore_errors:
             logger.debug(
