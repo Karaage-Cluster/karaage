@@ -33,8 +33,8 @@ extensions += ["djangodocs"]
 extensions += ["sphinx.ext.intersphinx"]
 intersphinx_mapping = {
     'django': (
-        'https://docs.djangoproject.com/en/1.9/',
-        'https://docs.djangoproject.com/en/1.9/_objects/'),
+        'https://docs.djangoproject.com/en/2.2/',
+        'https://docs.djangoproject.com/en/2.2/_objects/'),
 }
 
 # The version info for the project you're documenting, acts as replacement for
