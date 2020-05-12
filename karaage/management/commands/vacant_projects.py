@@ -8,6 +8,7 @@ from karaage.projects.models import Project
 
 class Command(BaseCommand):
     help = "return a list of projects with no currently active users"
+
     @django.db.transaction.non_atomic_requests
     def handle(self, *args, **options):
         badProjects = 0

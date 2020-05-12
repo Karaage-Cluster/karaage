@@ -236,7 +236,7 @@ def profile_aaf_rapid_connect(request):
         if person is None:
             auth_logout(request)
             if arc_required:
-                messages.error(request, f"Error: Could not find Karaage person")
+                messages.error(request, "Error: Could not find Karaage person")
         else:
             # We must set the model backend here manually as we skip
             # the call to auth.authenticate().
