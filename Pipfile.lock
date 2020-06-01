@@ -144,11 +144,11 @@
         },
         "django-pipeline": {
             "hashes": [
-                "sha256:00cb9c989ee170dcc57ef8ecc9a4443150e9cfacdcce8c8583f3749e33b379fa",
-                "sha256:15af87416237a735a50e403361b9d13c10f84a3e76bdb6ce88f6e3105a68336a"
+                "sha256:c5d05f11a39327e3b6460d5264ce7c98616b22d7622016a549118d2a9624a003",
+                "sha256:cac66c77211ccaadecf2ba036cb3cc76574010980ad8c3c685b608b316882144"
             ],
             "index": "pypi",
-            "version": "==2.0.2"
+            "version": "==2.0.4"
         },
         "django-ranged-response": {
             "hashes": [
