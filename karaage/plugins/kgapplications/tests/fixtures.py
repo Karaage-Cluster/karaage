@@ -17,9 +17,9 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 try:
+    import factory
     from factory.django import DjangoModelFactory
     from factory.fuzzy import FuzzyText
-    import factory
 except ImportError:
     raise ImportError(
         "factory_boy is required, "

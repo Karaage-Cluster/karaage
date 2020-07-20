@@ -29,9 +29,9 @@ from karaage.projects.utils import add_user_to_project
 
 
 try:
-    from factory.django import DjangoModelFactory
-    from factory.fuzzy import FuzzyText, FuzzyChoice
     import factory
+    from factory.django import DjangoModelFactory
+    from factory.fuzzy import FuzzyChoice, FuzzyText
 except ImportError:
     raise ImportError(
         "factory_boy is required, "

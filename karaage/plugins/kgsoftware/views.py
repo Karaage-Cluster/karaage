@@ -51,8 +51,9 @@ from .tables import SoftwareFilter, SoftwareTable
 
 if apps.is_installed("karaage.plugins.kgsoftware.applications"):
     from karaage.plugins.kgapplications.tables import ApplicationTable
-    from .applications.views import new_application
+
     from .applications.models import SoftwareApplication
+    from .applications.views import new_application
 
     def is_application_pending(person, software_license):
         query = SoftwareApplication.objects.get_for_applicant(person)

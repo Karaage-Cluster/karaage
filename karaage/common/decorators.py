@@ -102,6 +102,7 @@ def xmlrpc_machine_required(function=None):
     def actual_decorator(func):
         def wrapper(machine_name, password, *args):
             from django_xmlrpc.decorators import AuthenticationFailedException
+
             from karaage.machines.models import Machine
             machine = Machine.objects.authenticate(machine_name, password)
             if machine is None:
