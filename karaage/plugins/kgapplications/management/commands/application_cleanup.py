@@ -27,9 +27,11 @@ class Command(BaseCommand):
     @django.db.transaction.atomic
     @tldap.transaction.commit_on_success
     def handle(self, **options):
-        from django.db.models import Count
-        from ...models import Application, Applicant
         import datetime
+
+        from django.db.models import Count
+
+        from ...models import Applicant, Application
         now = datetime.datetime.now()
 
         verbose = int(options.get('verbosity'))

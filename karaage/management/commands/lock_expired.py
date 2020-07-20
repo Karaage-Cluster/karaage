@@ -27,10 +27,12 @@ class Command(BaseCommand):
     @django.db.transaction.atomic
     @tldap.transaction.commit_on_success
     def handle(self, **options):
+        import datetime
+
+        from django.core.mail import mail_admins
+
         from karaage.common import log
         from karaage.people.models import Person
-        from django.core.mail import mail_admins
-        import datetime
         today = datetime.date.today()
 
         verbose = int(options.get('verbosity'))

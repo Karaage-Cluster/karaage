@@ -109,6 +109,7 @@ class log():
 def new_random_token():
     import random
     from hashlib import sha1
+
     # Use the system (hardware-based) random number generator if it exists.
     if hasattr(random, 'SystemRandom'):
         randrange = random.SystemRandom().randrange

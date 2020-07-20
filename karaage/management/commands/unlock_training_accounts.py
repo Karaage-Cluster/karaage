@@ -44,8 +44,8 @@ def nicepass(alpha=8, numeric=4):
     returns a human-readble password (say rol86din instead of
     a difficult to remember K8Yn9muL )
     """
-    import string
     import random
+    import string
     vowels = ['a', 'e', 'i', 'o', 'u']
     consonants = [a for a in string.ascii_lowercase if a not in vowels]
     digits = string.digits

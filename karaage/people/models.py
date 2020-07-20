@@ -460,9 +460,11 @@ class Group(models.Model):
 
 def _add_person_to_group(person, group):
     """ Call datastores after adding a person to a group. """
-    from karaage.datastores import add_accounts_to_group
-    from karaage.datastores import add_accounts_to_project
-    from karaage.datastores import add_accounts_to_institute
+    from karaage.datastores import (
+        add_accounts_to_group,
+        add_accounts_to_institute,
+        add_accounts_to_project,
+    )
 
     a_list = person.account_set
     add_accounts_to_group(a_list, group)
@@ -474,9 +476,11 @@ def _add_person_to_group(person, group):
 
 def _remove_person_from_group(person, group):
     """ Call datastores after removing a person from a group. """
-    from karaage.datastores import remove_accounts_from_group
-    from karaage.datastores import remove_accounts_from_project
-    from karaage.datastores import remove_accounts_from_institute
+    from karaage.datastores import (
+        remove_accounts_from_group,
+        remove_accounts_from_institute,
+        remove_accounts_from_project,
+    )
 
     a_list = person.account_set
     remove_accounts_from_group(a_list, group)

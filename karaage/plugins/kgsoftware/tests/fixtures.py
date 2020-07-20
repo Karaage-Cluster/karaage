@@ -17,8 +17,8 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 try:
-    from factory.django import DjangoModelFactory
     import factory
+    from factory.django import DjangoModelFactory
 except ImportError:
     raise ImportError(
         "factory_boy is required, "
