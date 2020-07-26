@@ -31,6 +31,11 @@ jobs:
         pipenv run flake8 karaage
         pipenv run ./manage.py makemigrations --settings=karaage.tests.settings --check --dry-run
 
+    - name: Verify git tag vs. version
+      run: |
+        pipenv run ./setup.py verify --version ${{ github.event.release.tag_name }}
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+
   test-mysql:
     name: Mysql tests
     runs-on: ubuntu-latest
@@ -127,3 +132,59 @@ jobs:
         name: pytest-results
         path: test-reports/junit.xml
       if: always()
+
+  publish-docker-beta:
+    name: Publish Docker Beta
+    runs-on: ubuntu-latest
+    needs: [test-mysql, test-postgresql]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/master')
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: my-docker-hub-namespace/my-docker-hub-repository
+          build_args: SLURM_VER=17.02, BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ"), VCS_REF=${GITHUB_SHA}
+          tags: slurm17.02-beta
+
+  publish-docker-prod:
+    name: Publish Docker Prod
+    runs-on: ubuntu-latest
+    needs: [test-mysql, test-postgresql]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: my-docker-hub-namespace/my-docker-hub-repository
+          build_args: SLURM_VER=17.02, BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ"), VCS_REF=${{ github.event.release.tag_name }}
+          tags: slurm17.02
+          tag_with_ref: true
+
+  publish-pypi-prod:
+    name: Publish Pypi Prod
+    runs-on: ubuntu-latest
+    needs: [test-mysql, test-postgresql]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+
+    steps:
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: Create packages
+      run: |
+        pipenv run ./setup.py sdist bdist_wheel
+    - name: Publish distribution 📦 to PyPI
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.PYPI_PASSWORD }}
