@@ -80,11 +80,10 @@ jobs:
         mkdir test-reports
         pipenv run python -m tldap.test.slapd python -m pytest --cov=karaage --junitxml=test-reports/junit.xml
     - name: Upload pytest test results
-      uses: actions/upload-artifact@master
+      uses: actions/upload-artifact@v2
       with:
         name: pytest-results
         path: test-reports/junit.xml
-      if: always()
 
   test-postgresql:
     name: Postgresql tests
@@ -127,11 +126,10 @@ jobs:
         mkdir test-reports
         pipenv run python -m tldap.test.slapd python -m pytest --cov=karaage --junitxml=test-reports/junit.xml
     - name: Upload pytest test results
-      uses: actions/upload-artifact@master
+      uses: actions/upload-artifact@v2
       with:
         name: pytest-results
         path: test-reports/junit.xml
-      if: always()
 
   publish-docker-beta:
     name: Publish Docker Beta
@@ -147,7 +145,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: my-docker-hub-namespace/my-docker-hub-repository
+          repository: brianmay/karaage
           build_args: SLURM_VER=17.02, BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ"), VCS_REF=${GITHUB_SHA}
           tags: slurm17.02-beta
 
@@ -165,7 +163,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: my-docker-hub-namespace/my-docker-hub-repository
+          repository: brianmay/karaage
           build_args: SLURM_VER=17.02, BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ"), VCS_REF=${{ github.event.release.tag_name }}
           tags: slurm17.02
           tag_with_ref: true
