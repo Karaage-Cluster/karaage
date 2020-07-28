@@ -30,6 +30,7 @@ def common(request):
         'accounts_email': settings.ACCOUNTS_EMAIL,
         'is_admin': is_admin(request),
         'kgversion': __version__,
+        'VERSION': settings.VERSION,
         'BUILD_DATE': settings.BUILD_DATE,
         'VCS_REF': settings.VCS_REF,
         'SLURM_VER': settings.SLURM_VER,

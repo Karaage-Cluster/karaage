@@ -260,6 +260,7 @@ XMLRPC_METHODS = (
 ###
 
 # SETTINGS FROM DOCKER
+VERSION = env('VERSION', default=None)
 BUILD_DATE = env('BUILD_DATE', default=None)
 VCS_REF = env('VCS_REF', default=None)
 SLURM_VER = env('SLURM_VER', default=None)
