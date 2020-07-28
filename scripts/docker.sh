@@ -3,8 +3,6 @@ set -e
 
 start_slurm
 
-chmod go+rX -R /opt/karaage/
-
 install -d -o www-data -g www-data /var/cache/karaage3
 install -d -o www-data -g www-data /var/log/karaage3
 install -d -o www-data -g www-data /var/lib/karaage3/files
