@@ -1,0 +1,25 @@
+version: '3'
+services:
+  mysql:
+    image: "mysql:5.7"
+    restart: always
+    volumes:
+      - ./docker/mysql.conf:/root/.my.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: q1w2e3r4
+      MYSQL_DATABASE: karaage
+  web:
+    depends_on:
+      - mysql
+    ports:
+      - "8000:8000"
+    build:
+      context: .
+      args:
+        SLURM_VER: 17.02
+        VERSION: local
+        BUILD_DATE: ${BUILD_DATE}
+        VCS_REF: ${VCS_REF}
+    volumes:
+      - ./docker/settings:/etc/karaage3
+      - ./local/log:/var/log
