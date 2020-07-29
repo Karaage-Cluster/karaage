@@ -9,6 +9,17 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Changed
+~~~~~~~
+* Replace circleci entirely with github actions.
+* Upgrade various dependancies.
+* Don't chmod every time container starts
+* Improve logging message for slurm stdin/stdout.
+
+
 6.1.1 (2020-03-27)
 ------------------
 
