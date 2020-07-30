@@ -7,7 +7,7 @@ cd $DIR
 echo ""
 echo "ISORT"
 echo "############################"
-isort -rc --check --diff karaage
+isort --check --diff karaage
 if [ "$?" -ne 0 ]
 then
     exit 1

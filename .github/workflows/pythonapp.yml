@@ -27,7 +27,7 @@ jobs:
       run: |
         pipenv run ./setup.py --version
         pipenv run make -C docs/admin html
-        pipenv run isort -rc --check --diff karaage
+        pipenv run isort --check --diff karaage
         pipenv run flake8 karaage
         pipenv run ./manage.py makemigrations --settings=karaage.tests.settings --check --dry-run
 
