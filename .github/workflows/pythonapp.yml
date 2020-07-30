@@ -33,7 +33,8 @@ jobs:
 
     - name: Verify git tag vs. version
       run: |
-        pipenv run ./setup.py verify --version ${{ github.event.release.tag_name }}
+        VERSION=${GITHUB_REF#refs/tags/}
+        pipenv run ./setup.py verify --version ${VERSION}
       if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
 
   test-mysql:
@@ -157,7 +158,7 @@ jobs:
           DOCKER_PLATFORMS=linux/386,linux/amd64
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-            VERSION=${GITHUB_REF#refs/tags/v}
+            VERSION=${GITHUB_REF#refs/tags/}
             TAG="slurm17.02"
           else
             VERSION=beta
