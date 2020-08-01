@@ -318,11 +318,11 @@
         },
         "python-tldap": {
             "hashes": [
-                "sha256:6f3f904dae9691acb5d42c1512c7d954bd7c3ba9fd6b04b21a536c83a3140304",
-                "sha256:74bf56fa3bae8fa71c79082c70c8a3d74f5f7f127fb55c06e73c7b93a427989b"
+                "sha256:255d80a08f54450ba66e315453464494a06ac8dbd0549f37077270e92b598839",
+                "sha256:458b80f8052c466ee4fab8cf8ed9ddbc0f146950807eff08a072d3fef76b285b"
             ],
             "index": "pypi",
-            "version": "==1.0.4"
+            "version": "==1.0.5"
         },
         "pytz": {
             "hashes": [
