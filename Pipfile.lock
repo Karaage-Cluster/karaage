@@ -558,10 +558,10 @@
         },
         "factory-boy": {
             "hashes": [
-                "sha256:fe0f512a73ed5be36fd190253375f39705c6104c0dd99f14ac21b01b7671cc5b"
+                "sha256:2ce2f665045d9f15145a6310565fcb8255d52fc6fd867f3b783b3ac3de6cf10e"
             ],
             "index": "pypi",
-            "version": "==3.0.0"
+            "version": "==3.0.1"
         },
         "faker": {
             "hashes": [
