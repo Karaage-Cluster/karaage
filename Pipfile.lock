@@ -943,11 +943,11 @@
         },
         "wheel": {
             "hashes": [
-                "sha256:625e645aae0706ad09690bded523196a065fbcf9afcdb2d713b59e01ef8699c0",
-                "sha256:64a0d73747636637479b8b8741f9304bee7a568c80e4029eeb9529ef134b471d"
+                "sha256:497add53525d16c173c2c1c733b8f655510e909ea78cc0e29d374243544b77a2",
+                "sha256:99a22d87add3f634ff917310a3d87e499f19e663413a52eb9232c447aa646c9f"
             ],
             "index": "pypi",
-            "version": "==0.35.0"
+            "version": "==0.35.1"
         },
         "zipp": {
             "hashes": [
