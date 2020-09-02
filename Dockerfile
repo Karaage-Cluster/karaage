@@ -1,4 +1,4 @@
-ARG SLURM_VER=17.02
+ARG SLURM_VER=20.02
 FROM brianmay/slurm:${SLURM_VER}
 MAINTAINER brian@linuxpenguins.xyz
 

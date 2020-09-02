@@ -156,13 +156,14 @@ jobs:
         run: |
           DOCKER_IMAGE=brianmay/karaage
           DOCKER_PLATFORMS=linux/386,linux/amd64
+          SLURM_VER=20.02
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#refs/tags/}
-            TAG="slurm17.02"
+            TAG="slurm20.02"
           else
             VERSION=beta
-            TAG="slurm17.02-beta"
+            TAG="slurm20.02-beta"
           fi
 
           TAGS="--tag ${DOCKER_IMAGE}:${TAG}"
@@ -170,6 +171,7 @@ jobs:
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
           echo ::set-output name=tag::${TAG}
           echo ::set-output name=buildx_args::--platform ${DOCKER_PLATFORMS} \
+            --build-arg SLURM_VER=${SLURM_VER} \
             --build-arg VERSION=${VERSION} \
             --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
             --build-arg VCS_REF=${GITHUB_SHA::8} \
