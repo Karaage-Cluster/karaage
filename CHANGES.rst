@@ -8,6 +8,14 @@ adheres to `Semantic Versioning`_.
 .. _`Keep a Changelog`: http://keepachangelog.com/
 .. _`Semantic Versioning`: http://semver.org/
 
+UNRELEASED
+----------
+
+Changed
+~~~~~~~
+* Build using Python 3.8.
+* Build using Slurm 20.02.
+
 
 6.1.2 (2020-07-30)
 ------------------
