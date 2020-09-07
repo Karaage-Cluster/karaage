@@ -178,11 +178,11 @@
         },
         "ldap3": {
             "hashes": [
-                "sha256:59d1adcd5ead263387039e2a37d7cd772a2006b1cdb3ecfcbaab5192a601c515",
-                "sha256:df27407f4991f25bd669b5bb1bc8cb9ddf44a3e713ff6b3afeb3b3c26502f88f"
+                "sha256:37d633e20fa360c302b1263c96fe932d40622d0119f1bddcb829b03462eeeeb7",
+                "sha256:7c3738570766f5e5e74a56fade15470f339d5c436d821cf476ef27da0a4de8b0"
             ],
             "index": "pypi",
-            "version": "==2.8"
+            "version": "==2.8.1"
         },
         "mysqlclient": {
             "hashes": [
@@ -378,10 +378,10 @@
         },
         "attrs": {
             "hashes": [
-                "sha256:0ef97238856430dcf9228e07f316aefc17e8939fc8507e18c6501b761ef1a42a",
-                "sha256:2867b7b9f8326499ab5b0e2d12801fa5c98842d2cbd22b35112ae04bf85b4dff"
+                "sha256:26b54ddbbb9ee1d34d5d3668dd37d6cf74990ab23c828c2888dccdceee395594",
+                "sha256:fce7fc47dfc976152e82d53ff92fa0407700c21acd20886a13777a0d20e655dc"
             ],
-            "version": "==20.1.0"
+            "version": "==20.2.0"
         },
         "babel": {
             "hashes": [
