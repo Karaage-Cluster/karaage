@@ -610,11 +610,11 @@
         },
         "isort": {
             "hashes": [
-                "sha256:2f510f34ae18a8d0958c53eec51ef84fd099f07c4c639676525acbcd7b5bd3ff",
-                "sha256:dd3211f513f4a92ec1ec1876fc1dc3c686649c349d49523f5b5adbb0814e5960"
+                "sha256:a30c567b88d7b73e448b0f30526eaf2f943f0627809e4f34b9c3271918d96c3e",
+                "sha256:c2cfe5b621f62932677004f96f93c4b128dc457d957b0531f204641fe8adc8a6"
             ],
             "index": "pypi",
-            "version": "==5.6.1"
+            "version": "==5.6.2"
         },
         "jeepney": {
             "hashes": [
