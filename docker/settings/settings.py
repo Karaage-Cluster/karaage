@@ -223,6 +223,7 @@ ACCOUNTS_ORG_NAME = 'Example'
 # default: REGISTRATION_BASE_URL = 'https://%(HOST)s/users'
 #
 # REGISTRATION_BASE_URL = 'https://accounts.example.org/users'
+REGISTRATION_BASE_URL = 'http://localhost:8000'
 
 # Admin base URL - Used in email templates
 # Uncomment to override default
@@ -231,7 +232,7 @@ ACCOUNTS_ORG_NAME = 'Example'
 #
 # default: ADMIN_BASE_URL = 'https://%(HOST)s/kgadmin'
 #
-# ADMIN_BASE_URL = 'https://accounts.example.org/kgadmin'
+ADMIN_BASE_URL = 'http://localhost:8000'
 
 # Path to AUP policy. Note that setting this will not disable the Karaage
 # default page, it might be better to replace the AUP with a file in
@@ -275,10 +276,10 @@ PLUGINS = [
 #
 # default:  ALLOW_REGISTRATIONS = False
 #
-# ALLOW_REGISTRATIONS = False
+ALLOW_REGISTRATIONS = True
 
 # Do we allow new projects applications?
 #
 # default:  ALLOW_NEW_PROJECTS = True
 #
-# ALLOW_NEW_PROJECTS = True
+ALLOW_NEW_PROJECTS = True
