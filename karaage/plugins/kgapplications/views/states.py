@@ -165,6 +165,12 @@ class StatePassword(base.State):
     name = "Password"
     actions = {'submit'}
 
+    def get_actions(self, request, application, roles):
+        actions = set(self.actions)
+        if 'is_applicant' not in roles:
+            actions.remove('submit')
+        return actions
+
     def get_next_action(self, request, application, label, roles):
         """ Django view method. """
         actions = self.get_actions(request, application, roles)
