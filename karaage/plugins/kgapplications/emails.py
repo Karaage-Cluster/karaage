@@ -130,3 +130,21 @@ def send_approved_email(
     to_email = application.applicant.email
 
     send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
+
+
+def send_completed_email(
+        application, has_usable_password, link, is_secret):
+    """Sends an email informing person application has been completed"""
+    if not application.applicant.email:
+        return
+
+    context = CONTEXT.copy()
+    context['receiver'] = application.applicant
+    context['application'] = application
+    context['has_usable_password'] = has_usable_password
+    context['link'] = link
+    context['is_secret'] = is_secret
+    subject, body = render_email('common_completed', context)
+    to_email = application.applicant.email
+
+    send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])

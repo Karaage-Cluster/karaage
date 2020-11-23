@@ -1,0 +1,11 @@
+{% autoescape off %}Hello {{ receiver.get_short_name }},
+
+
+Your {{ org_name }} application to {{ application.info }} has been completed.
+
+You can now login to your new account using ssh, with your username {{ application.applicant.username }}.
+
+For more information on using the cluster, please see:
+https://dashboard.hpc.unimelb.edu.au/started/
+
+{% include "karaage/emails/email_footer.txt" %}{% endautoescape %}

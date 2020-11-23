@@ -176,7 +176,8 @@ class StatePassword(base.State):
         actions = self.get_actions(request, application, roles)
         if label is None and 'is_applicant' in roles:
             assert application.existing_person is not None
-            if application.existing_person.has_usable_password():
+            has_usable_password = application.existing_person.has_usable_password()
+            if has_usable_password:
                 form_class = forms.PersonVerifyPassword
                 form_type = "verify"
             else:
@@ -193,6 +194,10 @@ class StatePassword(base.State):
                     form.save()
                     messages.success(
                         request, 'Password updated. New accounts activated.')
+
+                    link, is_secret = base.get_email_link(application)
+                    emails.send_completed_email(application, has_usable_password, link, is_secret)
+
                     for action in actions:
                         if action in request.POST:
                             return action
