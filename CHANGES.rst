@@ -8,6 +8,20 @@ adheres to `Semantic Versioning`_.
 .. _`Keep a Changelog`: http://keepachangelog.com/
 .. _`Semantic Versioning`: http://semver.org/
 
+
+UNRELEASED
+----------
+
+Added
+~~~~~
+* Add sign up completion email (#802, #811).
+* Set better default values for Docker sample files.
+
+Fixed
+~~~~~
+* Ensure user is applicant before allowing submit on password state (#861).
+
+
 6.1.3 (2020-09-04)
 ------------------
 
