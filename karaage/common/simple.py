@@ -29,7 +29,7 @@ from django.http import (
 from django.template import loader
 
 
-logger = logging.getLogger('django.request')
+logger = logging.getLogger(__name__)
 
 
 def direct_to_template(
