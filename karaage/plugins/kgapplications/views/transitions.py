@@ -1,7 +1,14 @@
-from django.contrib import messages
+import logging
 
+from django.contrib import messages
+from django.db import transaction
+
+from karaage.common import log
 from karaage.plugins.kgapplications import emails
 from karaage.plugins.kgapplications.views import base
+
+
+logger = logging.getLogger(__name__)
 
 
 class TransitionOpen(base.Transition):
@@ -55,20 +62,28 @@ class TransitionApprove(base.Transition):
                 messages.error(request, error)
             return 'error'
 
-        # approve application
-        approved_by = request.user
-        created_person, created_account = application.approve(approved_by)
-
-        # send email
         application.extend()
-        link, is_secret = base.get_email_link(application)
-        emails.send_approved_email(
-            application, created_person, created_account, link, is_secret)
 
-        if created_person or created_account:
-            return 'password_needed'
+        # approve application
+        try:
+            approved_by = request.user
+            with transaction.atomic():
+                created_person, created_account = application.approve(approved_by)
+        except Exception as e:
+            logger.exception("Error approving application")
+            log.comment(application.application_ptr, f"Error approving application: {e}")
+            messages.error(request, e)
+            return 'error'
         else:
-            return 'password_ok'
+            # send email
+            link, is_secret = base.get_email_link(application)
+            emails.send_approved_email(
+                application, created_person, created_account, link, is_secret)
+
+            if created_person or created_account:
+                return 'password_needed'
+            else:
+                return 'password_ok'
 
 
 class TransitionSplit(base.Transition):
