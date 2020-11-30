@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "27f64480a2951e1d2a1f687cb4933584470145a848ab9d94e0c6f6b14c724323"
+            "sha256": "7e3d41a764a7a9a64c1a6c333ac01575dad4cf4548b13524ac3d3845fc8c323a"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -130,11 +130,11 @@
         },
         "django-model-utils": {
             "hashes": [
-                "sha256:2c057f3bf0859aba27f04389f0cedd2d48f8c9b3848acb86fd9970794e58f477",
-                "sha256:8cd377744aa45f9f131d652ec460c57d1aaa88d3e9b586c8e27eb709341b9084"
+                "sha256:70cedefa4c9481be611082a8bd3dd8bba54280c2ead187d982a464be02a8d279",
+                "sha256:83e9d7c1b1fa74273822672a0c6d9f47834a6d2d8af1c7a1539eddda9dbce4f8"
             ],
             "index": "pypi",
-            "version": "==3.1.2"
+            "version": "==4.1.0"
         },
         "django-pipeline": {
             "hashes": [
@@ -692,10 +692,10 @@
         },
         "packaging": {
             "hashes": [
-                "sha256:4357f74f47b9c12db93624a82154e9b120fa8293699949152b22065d556079f8",
-                "sha256:998416ba6962ae7fbd6596850b80e17859a5753ba17c32284f67bfff33784181"
+                "sha256:05af3bb85d320377db281cf254ab050e1a7ebcbf5410685a9a407e18a1f81236",
+                "sha256:eb41423378682dadb7166144a4926e443093863024de508ca5c9737d6bc08376"
             ],
-            "version": "==20.4"
+            "version": "==20.7"
         },
         "pkginfo": {
             "hashes": [
@@ -907,10 +907,10 @@
         },
         "tqdm": {
             "hashes": [
-                "sha256:3d3f1470d26642e88bd3f73353cb6ff4c51ef7d5d7efef763238f4bc1f7e4e81",
-                "sha256:5ff3f5232b19fa4c5531641e480b7fad4598819f708a32eb815e6ea41c5fa313"
+                "sha256:5c0d04e06ccc0da1bd3fa5ae4550effcce42fcad947b4a6cafa77bdc9b09ff22",
+                "sha256:9e7b8ab0ecbdbf0595adadd5f0ebbb9e69010e0bd48bbb0c15e550bf2a5292df"
             ],
-            "version": "==4.53.0"
+            "version": "==4.54.0"
         },
         "twine": {
             "hashes": [
