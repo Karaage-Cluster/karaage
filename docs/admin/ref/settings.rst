@@ -305,15 +305,6 @@ Plugin: kgapplications
 Do we allow applications for new projects?
 
 
-.. setting:: USAGE_IS_PUBLIC
-
-USAGE_IS_PUBLIC
-~~~~~~~~~~~~~~~
-Do we allow any logged in user to access all usage information?
-
-
-.. setting:: PLUGINS
-
 PLUGINS
 ~~~~~~~
 Default: ``[]`` (Empty list)

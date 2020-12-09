@@ -242,12 +242,6 @@ ADMIN_BASE_URL = 'http://localhost:8000'
 #
 # AUP_URL = "https://site.example.org/users/aup/"
 
-# Do we allow any logged in user to access all usage information?
-#
-# default: USAGE_IS_PUBLIC = True
-#
-# USAGE_IS_PUBLIC = False
-
 # Settings to restrict the valid list of email addresses we allow in
 # applications.  EMAIL_MATCH_TYPE can be "include" or "exclude".  If "include"
 # then the email address must match one of the RE entries in EMAIL_MATCH_LIST.

@@ -70,30 +70,6 @@ def login_required(function=None):
     return actual_decorator
 
 
-def usage_required(function=None):
-    """
-    Decorator for views that checks that the user is logged in, redirecting
-    to the log-in page if necessary.
-    """
-    def check_perms(user):
-        # if user not logged in, show login form
-        if not user.is_authenticated:
-            return False
-        # if this is the admin site only admin access
-        if settings.ADMIN_REQUIRED and not user.is_admin:
-            raise PermissionDenied
-        if settings.USAGE_IS_PUBLIC:
-            return True
-        if user.is_admin:
-            return True
-        return False
-
-    actual_decorator = user_passes_test(check_perms, login_url=_login_url)
-    if function:
-        return actual_decorator(function)
-    return actual_decorator
-
-
 def xmlrpc_machine_required(function=None):
     """
     Decorator for views that checks that the user is logged in, redirecting

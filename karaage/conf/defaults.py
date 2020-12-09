@@ -294,9 +294,6 @@ DEFAULT_SHELL = '/bin/bash'
 DATASTORES = [
 ]
 
-# Can any logged in user access the usage information?
-USAGE_IS_PUBLIC = True
-
 # Do we support shibboleth for logins?
 AAF_RAPID_CONNECT_ENABLED = False
 
