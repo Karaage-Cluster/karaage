@@ -92,7 +92,7 @@ setup(
     url='https://github.com/Karaage-Cluster/karaage',
     author='Brian May',
     author_email='brian@v3.org.au',
-    description='Collection of Django apps to manage a clusters',
+    description='Web application to manage a HP cluster',
     packages=packages,
     license="GPL3+",
     long_description=open('README.rst').read(),
