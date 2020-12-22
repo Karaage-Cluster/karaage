@@ -25,11 +25,9 @@ RUN chmod go+rX -R /opt/karaage/
 ARG VERSION=
 ARG BUILD_DATE=
 ARG VCS_REF=
-ARG SLURM_VER=17.02
 ENV VERSION=${VERSION}
 ENV BUILD_DATE=${BUILD_DATE}
 ENV VCS_REF=${VCS_REF}
-ENV SLURM_VER=${SLURM_VER}
 
 # Specify the command to run when the image is run.
 EXPOSE 8000
