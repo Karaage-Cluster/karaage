@@ -343,11 +343,11 @@
         },
         "sentry-sdk": {
             "hashes": [
-                "sha256:9044b616ec6663cd50794fb3362efd87586e476e7b51ef2439a711d6569aede7",
-                "sha256:efc65e5ffd38324797a7e1dfc8a4e74b62ea6f56a59df5bb03217b84d58dff6a"
+                "sha256:4ae8d1ced6c67f1c8ea51d82a16721c166c489b76876c9f2c202b8a50334b237",
+                "sha256:e75c8c58932bda8cd293ea8e4b242527129e1caaec91433d21b8b2f20fee030b"
             ],
             "index": "pypi",
-            "version": "==0.20.2"
+            "version": "==0.20.3"
         },
         "six": {
             "hashes": [
@@ -585,10 +585,10 @@
         },
         "faker": {
             "hashes": [
-                "sha256:bf2a9b3f8d00a5dada61fc4a3f80fe0d6795c7f02a138a7d2ef2db5817c7d017",
-                "sha256:d4aecdb877519d06c2fdc01ffc5ecf70658981acf5e13cd07ded9892994ef5c6"
+                "sha256:3971803f32728314c54ba051139cd433fc93fde371e18d07a2cec960a7a2222a",
+                "sha256:b27f9bc97490a11f14c1501cc25f1109cf68c75f11c6ef97714757a4298c33e5"
             ],
-            "version": "==6.1.1"
+            "version": "==6.3.0"
         },
         "flake8": {
             "hashes": [
@@ -938,10 +938,10 @@
         },
         "tqdm": {
             "hashes": [
-                "sha256:11d544652edbdfc9cc41aa4c8a5c166513e279f3f2d9f1a9e1c89935b51de6ff",
-                "sha256:a89be573bfddb81bb0b395a416d5e55e3ecc73ce95a368a4f6360bedea33195e"
+                "sha256:65185676e9fdf20d154cffd1c5de8e39ef9696ff7e59fe0156b1b08e468736af",
+                "sha256:70657337ec104eb4f3fb229285358f23f045433f6aea26846cdd55f0fd68945c"
             ],
-            "version": "==4.56.2"
+            "version": "==4.57.0"
         },
         "twine": {
             "hashes": [
