@@ -156,10 +156,10 @@
         },
         "django-simple-captcha": {
             "hashes": [
-                "sha256:5e43ba3b61daf690ac0319157837bb57e31df8bddbdc9a59ef42ef1a99e21fa2"
+                "sha256:84b5c188e6ae50e9ecec5e5d734c5bc4d2a50fbbca7f59d2c12da9a3bbee5051"
             ],
             "index": "pypi",
-            "version": "==0.5.13"
+            "version": "==0.5.14"
         },
         "django-tables2": {
             "hashes": [
@@ -594,10 +594,10 @@
         },
         "faker": {
             "hashes": [
-                "sha256:14e23b25d00168f09b2cf8182a17d1fe615ab26666f564248b34ef04f060bd42",
-                "sha256:8814597d2c9d02824d2590e282ea0c57d1f302ae4f91e85ace0b7e710bd628a5"
+                "sha256:60a7263104ef7a14ecfe2af1142d53924aa534ccec85cea82bb67b2b32f84421",
+                "sha256:f43ac743c34affb1c7fccca8b06450371cd482b6ddcb4110e420acb24356e70b"
             ],
-            "version": "==6.6.1"
+            "version": "==6.6.2"
         },
         "flake8": {
             "hashes": [
