@@ -328,11 +328,11 @@
         },
         "python-tldap": {
             "hashes": [
-                "sha256:255d80a08f54450ba66e315453464494a06ac8dbd0549f37077270e92b598839",
-                "sha256:458b80f8052c466ee4fab8cf8ed9ddbc0f146950807eff08a072d3fef76b285b"
+                "sha256:bec2b3d34c7dc4747ae216c306207ae2ba6359613b70bb0d21d81103f0ad47a6",
+                "sha256:fd4e1062771de0ee097b3b35351a85606b5af1e0a8a38272d899903bff90ed2e"
             ],
             "index": "pypi",
-            "version": "==1.0.5"
+            "version": "==1.0.6"
         },
         "pytz": {
             "hashes": [
@@ -397,10 +397,10 @@
         },
         "asgiref": {
             "hashes": [
-                "sha256:34103fa20270d8843a66e5df18547d2e8139534d23e3beffe96647c65ddffd4d",
-                "sha256:c62b616b226d6c2e927b0225f8101f9e2cca08112cff98839ca6726c129ff9e0"
+                "sha256:92906c611ce6c967347bbfea733f13d6313901d54dcca88195eaeb52b2a8e8ee",
+                "sha256:d1216dfbdfb63826470995d31caed36225dcaf34f182e0fa257a4dd9e86f1b78"
             ],
-            "version": "==3.3.2"
+            "version": "==3.3.4"
         },
         "attrs": {
             "hashes": [
