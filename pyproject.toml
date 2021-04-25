@@ -1,0 +1,67 @@
+[tool.poetry]
+name = "karaage"
+version = "6.1.4"
+description = "Web application to manage a HP cluster"
+authors = ["Brian May <brian@linuxpenguins.xyz>"]
+license = "GPL3+"
+packages = [
+    { include = "karaage" },
+]
+readme = "README.rst"
+homepage = "https://github.com/Karaage-Cluster/django/"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.8",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+bcrypt = "*"
+cssmin = "*"
+python-alogger = "*"
+django-xmlrpc = "*"
+django-simple-captcha = "*"
+django-ajax-selects = "*"
+django-jsonfield = "*"
+django-model-utils = "~=3.1.2"
+ldap3 = "*"
+python-tldap = "*"
+django-pipeline = "*"
+django-tables2 = "*"
+django-filter = "*"
+django-environ = "*"
+six = "*"
+slimit = "*"
+whitenoise = "*"
+Django = "~=2.2.20"
+cracklib = "*"
+gunicorn = "*"
+mysqlclient = "*"
+sentry-sdk = "*"
+psycopg2-binary = "*"
+pyjwt = "*"
+sphinx = {version = "*", optional = true}
+
+[tool.poetry.dev-dependencies]
+django-extensions = "*"
+mock = "*"
+flake8 = "*"
+isort = "*"
+factory_boy = "*"
+pytest-django = "*"
+pytest-cov = "*"
+wheel = "*"
+twine = "*"
+bumpversion = "*"
+Sphinx = "*"
+
+[tool.poetry.extras]
+docs = ["sphinx"]
+
+[build-system]
+requires = ["setuptools","poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
