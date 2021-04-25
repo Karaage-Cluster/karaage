@@ -8,34 +8,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout source code
-      uses: actions/checkout@v2
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2.2.2
-      with:
-        python-version: 3.8
-    - name: Install system dependancies
-      run: |
-        sudo apt-get update
-        sudo apt-get install libcrack2-dev
-    - name: Install pipenv
-      uses: dschep/install-pipenv-action@v1
-    - name: Install python dependancies
-      run: |
-        pipenv sync --dev
-    - name: Run tests
-      run: |
-        pipenv run ./setup.py --version
-        pipenv run make -C docs/admin html
-        pipenv run isort --check --diff karaage
-        pipenv run flake8 karaage
-        pipenv run ./manage.py makemigrations --settings=karaage.tests.settings --check --dry-run
-
-    - name: Verify git tag vs. version
-      run: |
-        VERSION=${GITHUB_REF#refs/tags/}
-        pipenv run ./setup.py verify --version ${VERSION}
-      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2.2.2
+        with:
+          python-version: 3.8
+      - name: Install system dependancies
+        run: |
+          sudo apt-get update
+          sudo apt-get install libcrack2-dev
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2.1.0
+        with:
+          poetry-version: 1.1.5
+      - name: Install python dependancies
+        run: |
+          poetry install
+      - name: Run tests
+        run: |
+          poetry run make -C docs/admin html
+          poetry run isort --check --diff karaage
+          poetry run flake8 karaage
+          poetry run ./manage.py makemigrations --settings=karaage.tests.settings --check --dry-run
 
   test-mysql:
     name: Mysql tests
@@ -44,46 +39,48 @@ jobs:
         DATABASE_URL: mysql://root:z9Pm29jg9EfJ6m@127.0.0.1/test
 
     steps:
-    - name: Shutdown Ubuntu MySQL
-      run: sudo service mysql stop
-    - name: Install mysql
-      uses: mirromutth/mysql-action@v1.1
-      with:
-        mysql version: '8.0'
-        mysql database: 'test'
-        mysql user: 'test'
-        mysql password: 'z9Pm29jg9EfJ6m'
-        mysql root password: 'z9Pm29jg9EfJ6m'
-    - name: Checkout source code
-      uses: actions/checkout@v2
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2.2.2
-      with:
-        python-version: 3.8
-    - name: Install system dependancies
-      run: |
-        sudo apt-get update
-        sudo apt-get install libcrack2-dev slapd ldap-utils
-    - name: Remove apparmor restrictions on slapd
-      run: |
-          sudo apt-get install apparmor-utils
-          sudo aa-complain /usr/sbin/slapd
-    - name: Install pipenv
-      uses: dschep/install-pipenv-action@v1
-    - name: Install python dependancies
-      run: |
-        pipenv sync --dev
-    - name: Run tests
-      run: |
-        pipenv run ./manage.py collectstatic --settings=karaage.tests.settings --noinput
-        pipenv run ./manage.py migrate --settings=karaage.tests.settings
-        mkdir test-reports
-        pipenv run python -m tldap.test.slapd python -m pytest --cov=karaage --junitxml=test-reports/junit.xml
-    - name: Upload pytest test results
-      uses: actions/upload-artifact@v2
-      with:
-        name: pytest-results
-        path: test-reports/junit.xml
+      - name: Shutdown Ubuntu MySQL
+        run: sudo service mysql stop
+      - name: Install mysql
+        uses: mirromutth/mysql-action@v1.1
+        with:
+          mysql version: '8.0'
+          mysql database: 'test'
+          mysql user: 'test'
+          mysql password: 'z9Pm29jg9EfJ6m'
+          mysql root password: 'z9Pm29jg9EfJ6m'
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2.2.2
+        with:
+          python-version: 3.8
+      - name: Install system dependancies
+        run: |
+          sudo apt-get update
+          sudo apt-get install libcrack2-dev slapd ldap-utils
+      - name: Remove apparmor restrictions on slapd
+        run: |
+            sudo apt-get install apparmor-utils
+            sudo aa-complain /usr/sbin/slapd
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2.1.0
+        with:
+          poetry-version: 1.1.5
+      - name: Install python dependancies
+        run: |
+          poetry install
+      - name: Run tests
+        run: |
+          poetry run ./manage.py collectstatic --settings=karaage.tests.settings --noinput
+          poetry run ./manage.py migrate --settings=karaage.tests.settings
+          mkdir test-reports
+          poetry run python -m tldap.test.slapd python -m pytest --cov=karaage --junitxml=test-reports/junit.xml
+      - name: Upload pytest test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: pytest-results
+          path: test-reports/junit.xml
 
   test-postgresql:
     name: Postgresql tests
@@ -92,43 +89,45 @@ jobs:
         DATABASE_URL: postgresql://test:z9Pm29jg9EfJ6m@localhost/test?sslmode=disable
 
     steps:
-    - name: Install postgresql
-      uses: harmon758/postgresql-action@v1
-      with:
-        postgresql version: '11'
-        postgresql db: 'test'
-        postgresql user: 'test'
-        postgresql password: 'z9Pm29jg9EfJ6m'
-    - name: Checkout source code
-      uses: actions/checkout@v2
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2.2.2
-      with:
-        python-version: 3.8
-    - name: Install system dependancies
-      run: |
-        sudo apt-get update
-        sudo apt-get install libcrack2-dev slapd ldap-utils
-    - name: Remove apparmor restrictions on slapd
-      run: |
-          sudo apt-get install apparmor-utils
-          sudo aa-complain /usr/sbin/slapd
-    - name: Install pipenv
-      uses: dschep/install-pipenv-action@v1
-    - name: Install python dependancies
-      run: |
-        pipenv sync --dev
-    - name: Run tests
-      run: |
-        pipenv run ./manage.py collectstatic --settings=karaage.tests.settings --noinput
-        pipenv run ./manage.py migrate --settings=karaage.tests.settings
-        mkdir test-reports
-        pipenv run python -m tldap.test.slapd python -m pytest --cov=karaage --junitxml=test-reports/junit.xml
-    - name: Upload pytest test results
-      uses: actions/upload-artifact@v2
-      with:
-        name: pytest-results
-        path: test-reports/junit.xml
+      - name: Install postgresql
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgresql version: '11'
+          postgresql db: 'test'
+          postgresql user: 'test'
+          postgresql password: 'z9Pm29jg9EfJ6m'
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2.2.2
+        with:
+          python-version: 3.8
+      - name: Install system dependancies
+        run: |
+          sudo apt-get update
+          sudo apt-get install libcrack2-dev slapd ldap-utils
+      - name: Remove apparmor restrictions on slapd
+        run: |
+            sudo apt-get install apparmor-utils
+            sudo aa-complain /usr/sbin/slapd
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2.1.0
+        with:
+          poetry-version: 1.1.5
+      - name: Install python dependancies
+        run: |
+          poetry install
+      - name: Run tests
+        run: |
+          poetry run ./manage.py collectstatic --settings=karaage.tests.settings --noinput
+          poetry run ./manage.py migrate --settings=karaage.tests.settings
+          mkdir test-reports
+          poetry run python -m tldap.test.slapd python -m pytest --cov=karaage --junitxml=test-reports/junit.xml
+      - name: Upload pytest test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: pytest-results
+          path: test-reports/junit.xml
 
   setup-build-publish-deploy:
     name: Setup, Build, Publish, and Deploy
@@ -194,12 +193,20 @@ jobs:
         uses: actions/setup-python@v2.2.2
         with:
           python-version: 3.8
-      - name: Install requirements
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2.1.0
+        with:
+          poetry-version: 1.1.5
+      - name: Install python dependancies
         run: |
-          pip install wheel
+          poetry install
+      - name: Verify git tag vs. version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          test "$(poetry version)" = "karaage ${VERSION}"
       - name: Create packages
         run: |
-          ./setup.py sdist bdist_wheel
+          poetry build
       - name: Publish distribution 📦 to PyPI
         uses: pypa/gh-action-pypi-publish@master
         with:

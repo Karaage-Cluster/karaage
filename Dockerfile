@@ -13,9 +13,9 @@ RUN mkdir /opt/karaage /opt/karaage/requirements
 WORKDIR /opt/karaage
 
 # Install our requirements.
-RUN pip install pipenv
-ADD Pipfile Pipfile.lock /opt/karaage/
-RUN pipenv install --system --deploy
+RUN pip install poetry
+ADD pyproject.toml poetry.lock /opt/karaage/
+RUN poetry install --no-dev --no-root
 
 # Copy all our files into the image.
 COPY . /opt/karaage/
