@@ -209,6 +209,7 @@ def profile_aaf_rapid_connect(request):
                 settings.AAF_RAPID_CONNECT_SECRET,
                 audience=settings.AAF_RAPID_CONNECT_AUDIENCE,
                 issuer=settings.AAF_RAPID_CONNECT_ISSUER,
+                algorithms=["HS256"],
             )
         except jwt.PyJWTError as e:
             messages.error(request, f"Error: Could not decode token: {e}")
