@@ -15,6 +15,7 @@ WORKDIR /opt/karaage
 # Install our requirements.
 RUN pip install poetry
 ADD pyproject.toml poetry.lock /opt/karaage/
+RUN poetry config virtualenvs.create false
 RUN poetry install --no-dev --no-root
 
 # Copy all our files into the image.
