@@ -231,6 +231,8 @@ def profile_aaf_rapid_connect(request):
                 try:
                     email = attributes['mail']
                     person = Person.objects.get(email=email)
+                    person.saml_id = saml_id
+                    person.save()
                 except Person.DoesNotExist:
                     pass
 
