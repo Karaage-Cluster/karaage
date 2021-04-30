@@ -236,14 +236,14 @@ six = "*"
 
 [[package]]
 name = "django-model-utils"
-version = "3.1.2"
+version = "4.1.1"
 description = "Django model mixins and utilities"
 category = "main"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-Django = ">=1.8"
+Django = ">=2.0.1"
 
 [[package]]
 name = "django-pipeline"
@@ -1081,7 +1081,7 @@ docs = ["sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "1643607c8e325502d4957891a23112d374d731272b25e264b638f9fd81b59868"
+content-hash = "104e8ceb1c4d9c88295e33b041da1b293346866bac6b7c40d4236aad39ebe368"
 
 [metadata.files]
 alabaster = [
@@ -1273,8 +1273,8 @@ django-jsonfield = [
     {file = "django_jsonfield-1.4.1-py2.py3-none-any.whl", hash = "sha256:ccb2fe623e1bf7799e49c593b0a89a85084ef8d3debbf26d92a54e27b5305d72"},
 ]
 django-model-utils = [
-    {file = "django-model-utils-3.1.2.tar.gz", hash = "sha256:2c057f3bf0859aba27f04389f0cedd2d48f8c9b3848acb86fd9970794e58f477"},
-    {file = "django_model_utils-3.1.2-py2.py3-none-any.whl", hash = "sha256:8cd377744aa45f9f131d652ec460c57d1aaa88d3e9b586c8e27eb709341b9084"},
+    {file = "django-model-utils-4.1.1.tar.gz", hash = "sha256:eb5dd05ef7d7ce6bc79cae54ea7c4a221f6f81e2aad7722933aee66489e7264b"},
+    {file = "django_model_utils-4.1.1-py3-none-any.whl", hash = "sha256:ef7c440024e797796a3811432abdd2be8b5225ae64ef346f8bfc6de7d8e5d73c"},
 ]
 django-pipeline = [
     {file = "django-pipeline-2.0.6.tar.gz", hash = "sha256:443c560000b3202dafa873cf9b9a49018ded4b2090979dec8e8858b8b1f867c0"},
