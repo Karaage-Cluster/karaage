@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
       - name: Set up Python 3.8
         uses: actions/setup-python@v2.2.2
         with:
@@ -50,7 +50,7 @@ jobs:
           mysql password: 'z9Pm29jg9EfJ6m'
           mysql root password: 'z9Pm29jg9EfJ6m'
       - name: Checkout source code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
       - name: Set up Python 3.8
         uses: actions/setup-python@v2.2.2
         with:
@@ -97,7 +97,7 @@ jobs:
           postgresql user: 'test'
           postgresql password: 'z9Pm29jg9EfJ6m'
       - name: Checkout source code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
       - name: Set up Python 3.8
         uses: actions/setup-python@v2.2.2
         with:
@@ -139,7 +139,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
       - name: Docker meta
         id: docker_meta
         uses: crazy-max/ghaction-docker-meta@v3
@@ -188,7 +188,7 @@ jobs:
 
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
       - name: Set up Python 3.8
         uses: actions/setup-python@v2.2.2
         with:
