@@ -283,7 +283,7 @@ test = ["testfixtures"]
 
 [[package]]
 name = "django-tables2"
-version = "2.3.4"
+version = "2.4.0"
 description = "Table/data-grid framework for Django"
 category = "main"
 optional = false
@@ -1289,8 +1289,8 @@ django-simple-captcha = [
     {file = "django_simple_captcha-0.5.14-py3.7.egg", hash = "sha256:1bb2c842bde3ae0e23ce3c84b2f07f608b660c8d18201b0812571bccf38cf867"},
 ]
 django-tables2 = [
-    {file = "django-tables2-2.3.4.tar.gz", hash = "sha256:50ccadbd13740a996d8a4d4f144ef80134745cd0b5ec278061537e341f5ef7a2"},
-    {file = "django_tables2-2.3.4-py2.py3-none-any.whl", hash = "sha256:af5f70a9845fd8690c6b44120b065e55b9771cae99c1dcd0eb4f1cfa3f0a71e4"},
+    {file = "django-tables2-2.4.0.tar.gz", hash = "sha256:4eb526464ee56a0b7d827d1da9a4f257e44edb5e1cbb6a0cfb6ca0fed70d8e4f"},
+    {file = "django_tables2-2.4.0-py2.py3-none-any.whl", hash = "sha256:0f10ecef25708385a9d32d68d7c9478ca8dda31569410cb05a025be3f2c57593"},
 ]
 django-xmlrpc = [
     {file = "django-xmlrpc-0.1.8.tar.gz", hash = "sha256:6e47d760a3ba9d5f7aff987f4d4a3872f3b0ba920d0677feeb70beb3b42f2020"},
