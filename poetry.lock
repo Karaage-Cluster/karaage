@@ -463,7 +463,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 
 [[package]]
 name = "ldap3"
-version = "2.9"
+version = "2.9.1"
 description = "A strictly RFC 4510 conforming LDAP V3 pure Python client library"
 category = "main"
 optional = false
@@ -1363,11 +1363,11 @@ keyring = [
     {file = "keyring-23.0.1.tar.gz", hash = "sha256:045703609dd3fccfcdb27da201684278823b72af515aedec1a8515719a038cb8"},
 ]
 ldap3 = [
-    {file = "ldap3-2.9-py2.6.egg", hash = "sha256:4139c91f0eef9782df7b77c8cbc6243086affcb6a8a249b768a9658438e5da59"},
-    {file = "ldap3-2.9-py2.7.egg", hash = "sha256:afc6fc0d01f02af82cd7bfabd3bbfd5dc96a6ae91e97db0a2dab8a0f1b436056"},
-    {file = "ldap3-2.9-py2.py3-none-any.whl", hash = "sha256:c1df41d89459be6f304e0ceec4b00fdea533dbbcd83c802b1272dcdb94620b57"},
-    {file = "ldap3-2.9-py3.9.egg", hash = "sha256:8c949edbad2be8a03e719ba48bd6779f327ec156929562814b3e84ab56889c8c"},
-    {file = "ldap3-2.9.tar.gz", hash = "sha256:18c3ee656a6775b9b0d60f7c6c5b094d878d1d90fc03d56731039f0a4b546a91"},
+    {file = "ldap3-2.9.1-py2.6.egg", hash = "sha256:5ab7febc00689181375de40c396dcad4f2659cd260fc5e94c508b6d77c17e9d5"},
+    {file = "ldap3-2.9.1-py2.7.egg", hash = "sha256:2bc966556fc4d4fa9f445a1c31dc484ee81d44a51ab0e2d0fd05b62cac75daa6"},
+    {file = "ldap3-2.9.1-py2.py3-none-any.whl", hash = "sha256:5869596fc4948797020d3f03b7939da938778a0f9e2009f7a072ccf92b8e8d70"},
+    {file = "ldap3-2.9.1-py3.9.egg", hash = "sha256:5630d1383e09ba94839e253e013f1aa1a2cf7a547628ba1265cb7b9a844b5687"},
+    {file = "ldap3-2.9.1.tar.gz", hash = "sha256:f3e7fc4718e3f09dda568b57100095e0ce58633bcabbed8667ce3f8fbaa4229f"},
 ]
 markupsafe = [
     {file = "MarkupSafe-1.1.1-cp27-cp27m-macosx_10_6_intel.whl", hash = "sha256:09027a7803a62ca78792ad89403b1b7a73a01c8cb65909cd876f7fcebd79b161"},
