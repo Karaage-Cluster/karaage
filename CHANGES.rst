@@ -9,6 +9,23 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Changed
+~~~~~~~
+* Fix error in logger name.
+* Attempt to deal with application approval errors better.
+* Update Docker build.
+* Run tests in parallel.
+* Remove deprecated USAGE_IS_PUBLIC setting.
+* Update description.
+* Convert from pypi to poetry.
+* Add algorithms parameter to decode jwt token.
+* When logging in using AAF email, set the saml_id.
+* Build using slurm 20.11.
+
+
 6.1.4 (2020-11-24)
 ------------------
 
