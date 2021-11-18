@@ -173,7 +173,7 @@ python-versions = "*"
 
 [[package]]
 name = "django"
-version = "2.2.20"
+version = "2.2.24"
 description = "A high-level Python Web framework that encourages rapid development and clean, pragmatic design."
 category = "main"
 optional = false
@@ -1099,7 +1099,7 @@ docs = ["sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "1643607c8e325502d4957891a23112d374d731272b25e264b638f9fd81b59868"
+content-hash = "0d33e7d9286fbd146291c364c77e4161974bedb09b1cfe2cfef8a020484a50b6"
 
 [metadata.files]
 alabaster = [
@@ -1276,8 +1276,8 @@ cssmin = [
     {file = "cssmin-0.2.0.tar.gz", hash = "sha256:e012f0cc8401efcf2620332339011564738ae32be8c84b2e43ce8beaec1067b6"},
 ]
 django = [
-    {file = "Django-2.2.20-py3-none-any.whl", hash = "sha256:2484f115891ab1a0e9ae153602a641fbc15d7894c036d79fb78662c0965d7954"},
-    {file = "Django-2.2.20.tar.gz", hash = "sha256:2569f9dc5f8e458a5e988b03d6b7a02bda59b006d6782f4ea0fd590ed7336a64"},
+    {file = "Django-2.2.24-py3-none-any.whl", hash = "sha256:f2084ceecff86b1e631c2cd4107d435daf4e12f1efcdf11061a73bf0b5e95f92"},
+    {file = "Django-2.2.24.tar.gz", hash = "sha256:3339ff0e03dee13045aef6ae7b523edff75b6d726adf7a7a48f53d5a501f7db7"},
 ]
 django-ajax-selects = [
     {file = "django-ajax-selects-2.1.0.tar.gz", hash = "sha256:d35a386d6bfc61b45a22de9648237df7f750dd37abf50203bbd694d03460397b"},
