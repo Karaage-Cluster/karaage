@@ -552,14 +552,14 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "pkginfo"
-version = "1.7.0"
+version = "1.8.2"
 description = "Query metadatdata from sdists / bdists / installed packages."
 category = "dev"
 optional = false
 python-versions = "*"
 
 [package.extras]
-testing = ["nose", "coverage"]
+testing = ["coverage", "nose"]
 
 [[package]]
 name = "pluggy"
@@ -1032,7 +1032,7 @@ telegram = ["requests"]
 
 [[package]]
 name = "twine"
-version = "3.6.0"
+version = "3.7.0"
 description = "Collection of utilities for publishing packages on PyPI"
 category = "dev"
 optional = false
@@ -1042,7 +1042,7 @@ python-versions = ">=3.6"
 colorama = ">=0.4.3"
 importlib-metadata = ">=3.6"
 keyring = ">=15.1"
-pkginfo = ">=1.4.2"
+pkginfo = ">=1.8.1"
 readme-renderer = ">=21.0"
 requests = ">=2.20"
 requests-toolbelt = ">=0.8.0,<0.9.0 || >0.9.0"
@@ -1514,8 +1514,8 @@ pillow = [
     {file = "Pillow-8.3.2.tar.gz", hash = "sha256:dde3f3ed8d00c72631bc19cbfff8ad3b6215062a5eed402381ad365f82f0c18c"},
 ]
 pkginfo = [
-    {file = "pkginfo-1.7.0-py2.py3-none-any.whl", hash = "sha256:9fdbea6495622e022cc72c2e5e1b735218e4ffb2a2a69cde2694a6c1f16afb75"},
-    {file = "pkginfo-1.7.0.tar.gz", hash = "sha256:029a70cb45c6171c329dfc890cde0879f8c52d6f3922794796e06f577bb03db4"},
+    {file = "pkginfo-1.8.2-py2.py3-none-any.whl", hash = "sha256:c24c487c6a7f72c66e816ab1796b96ac6c3d14d49338293d2141664330b55ffc"},
+    {file = "pkginfo-1.8.2.tar.gz", hash = "sha256:542e0d0b6750e2e21c20179803e40ab50598d8066d51097a0e382cba9eb02bff"},
 ]
 pluggy = [
     {file = "pluggy-0.13.1-py2.py3-none-any.whl", hash = "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d"},
@@ -1722,8 +1722,8 @@ tqdm = [
     {file = "tqdm-4.60.0.tar.gz", hash = "sha256:ebdebdb95e3477ceea267decfc0784859aa3df3e27e22d23b83e9b272bf157ae"},
 ]
 twine = [
-    {file = "twine-3.6.0-py3-none-any.whl", hash = "sha256:916070f8ecbd1985ebed5dbb02b9bda9a092882a96d7069d542d4fc0bb5c673c"},
-    {file = "twine-3.6.0.tar.gz", hash = "sha256:4caad5ef4722e127b3749052fcbffaaf71719b19d4fd4973b29c469957adeba2"},
+    {file = "twine-3.7.0-py3-none-any.whl", hash = "sha256:5a3e3fb52b926827c99e050f0c1e5d8ae599848f3eb27764f19b886c09134590"},
+    {file = "twine-3.7.0.tar.gz", hash = "sha256:8d6a0ad895576c97e9ad4a5da2d6adea37fd5434ecabace0054013d537ddbc6c"},
 ]
 urllib3 = [
     {file = "urllib3-1.26.5-py2.py3-none-any.whl", hash = "sha256:753a0374df26658f99d826cfe40394a686d05985786d946fbe4165b5148f5a7c"},
