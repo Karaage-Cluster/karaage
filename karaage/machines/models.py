@@ -22,7 +22,6 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from django.urls import reverse
-from django.utils.encoding import python_2_unicode_compatible
 from jsonfield import JSONField
 from model_utils import FieldTracker
 
@@ -31,7 +30,6 @@ from karaage.machines.managers import ActiveMachineManager, MachineManager
 from karaage.people.models import Group, Person
 
 
-@python_2_unicode_compatible
 class Machine(AbstractBaseUser):
     name = models.CharField(max_length=50, unique=True)
     no_cpus = models.IntegerField()
@@ -82,7 +80,6 @@ class Machine(AbstractBaseUser):
         return reverse('kg_machine_detail', args=[self.id])
 
 
-@python_2_unicode_compatible
 class Account(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     username = models.CharField(max_length=255)

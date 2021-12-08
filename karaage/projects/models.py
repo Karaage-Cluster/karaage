@@ -20,7 +20,6 @@ import datetime
 
 from django.db import models
 from django.urls import reverse
-from django.utils.encoding import python_2_unicode_compatible
 from model_utils import FieldTracker
 
 from karaage.common import is_admin, log
@@ -33,7 +32,6 @@ from karaage.projects.managers import (
 )
 
 
-@python_2_unicode_compatible
 class Project(models.Model):
     pid = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=200)
