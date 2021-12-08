@@ -7,6 +7,17 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "asgiref"
+version = "3.4.1"
+description = "ASGI specs, helper code, and adapters"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+tests = ["pytest", "pytest-asyncio", "mypy (>=0.800)"]
+
+[[package]]
 name = "atomicwrites"
 version = "1.4.0"
 description = "Atomic file writes."
@@ -38,6 +49,17 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [package.dependencies]
 pytz = ">=2015.7"
+
+[[package]]
+name = "backports.zoneinfo"
+version = "0.2.1"
+description = "Backport of the standard library zoneinfo module"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+tzdata = ["tzdata"]
 
 [[package]]
 name = "bcrypt"
@@ -173,18 +195,20 @@ python-versions = "*"
 
 [[package]]
 name = "django"
-version = "2.2.24"
-description = "A high-level Python Web framework that encourages rapid development and clean, pragmatic design."
+version = "4.0"
+description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 category = "main"
 optional = false
-python-versions = ">=3.5"
+python-versions = ">=3.8"
 
 [package.dependencies]
-pytz = "*"
+asgiref = ">=3.4.1,<4"
+"backports.zoneinfo" = {version = "*", markers = "python_version < \"3.9\""}
 sqlparse = ">=0.2.2"
+tzdata = {version = "*", markers = "sys_platform == \"win32\""}
 
 [package.extras]
-argon2 = ["argon2-cffi (>=16.1.0)"]
+argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
@@ -1050,6 +1074,14 @@ rfc3986 = ">=1.4.0"
 tqdm = ">=4.14"
 
 [[package]]
+name = "tzdata"
+version = "2021.5"
+description = "Provider of IANA time zone data"
+category = "main"
+optional = false
+python-versions = ">=2"
+
+[[package]]
 name = "urllib3"
 version = "1.26.5"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
@@ -1099,12 +1131,16 @@ docs = ["sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "0d33e7d9286fbd146291c364c77e4161974bedb09b1cfe2cfef8a020484a50b6"
+content-hash = "d142dccf3a49e3ebc98ba76161624a178287f964dfcf162d6de6b6966a1a60e3"
 
 [metadata.files]
 alabaster = [
     {file = "alabaster-0.7.12-py2.py3-none-any.whl", hash = "sha256:446438bdcca0e05bd45ea2de1668c1d9b032e1a9154c2c259092d77031ddd359"},
     {file = "alabaster-0.7.12.tar.gz", hash = "sha256:a661d72d58e6ea8a57f7a86e37d86716863ee5e92788398526d58b26a4e4dc02"},
+]
+asgiref = [
+    {file = "asgiref-3.4.1-py3-none-any.whl", hash = "sha256:ffc141aa908e6f175673e7b1b3b7af4fdb0ecb738fc5c8b88f69f055c2415214"},
+    {file = "asgiref-3.4.1.tar.gz", hash = "sha256:4ef1ab46b484e3c706329cedeff284a5d40824200638503f5768edb6de7d58e9"},
 ]
 atomicwrites = [
     {file = "atomicwrites-1.4.0-py2.py3-none-any.whl", hash = "sha256:6d1784dea7c0c8d4a5172b6c620f40b6e4cbfdf96d783691f2e1302a7b88e197"},
@@ -1117,6 +1153,24 @@ attrs = [
 babel = [
     {file = "Babel-2.9.1-py2.py3-none-any.whl", hash = "sha256:ab49e12b91d937cd11f0b67cb259a57ab4ad2b59ac7a3b41d6c06c0ac5b0def9"},
     {file = "Babel-2.9.1.tar.gz", hash = "sha256:bc0c176f9f6a994582230df350aa6e05ba2ebe4b3ac317eab29d9be5d2768da0"},
+]
+"backports.zoneinfo" = [
+    {file = "backports.zoneinfo-0.2.1-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:da6013fd84a690242c310d77ddb8441a559e9cb3d3d59ebac9aca1a57b2e18bc"},
+    {file = "backports.zoneinfo-0.2.1-cp36-cp36m-manylinux1_i686.whl", hash = "sha256:89a48c0d158a3cc3f654da4c2de1ceba85263fafb861b98b59040a5086259722"},
+    {file = "backports.zoneinfo-0.2.1-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:1c5742112073a563c81f786e77514969acb58649bcdf6cdf0b4ed31a348d4546"},
+    {file = "backports.zoneinfo-0.2.1-cp36-cp36m-win32.whl", hash = "sha256:e8236383a20872c0cdf5a62b554b27538db7fa1bbec52429d8d106effbaeca08"},
+    {file = "backports.zoneinfo-0.2.1-cp36-cp36m-win_amd64.whl", hash = "sha256:8439c030a11780786a2002261569bdf362264f605dfa4d65090b64b05c9f79a7"},
+    {file = "backports.zoneinfo-0.2.1-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:f04e857b59d9d1ccc39ce2da1021d196e47234873820cbeaad210724b1ee28ac"},
+    {file = "backports.zoneinfo-0.2.1-cp37-cp37m-manylinux1_i686.whl", hash = "sha256:17746bd546106fa389c51dbea67c8b7c8f0d14b5526a579ca6ccf5ed72c526cf"},
+    {file = "backports.zoneinfo-0.2.1-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:5c144945a7752ca544b4b78c8c41544cdfaf9786f25fe5ffb10e838e19a27570"},
+    {file = "backports.zoneinfo-0.2.1-cp37-cp37m-win32.whl", hash = "sha256:e55b384612d93be96506932a786bbcde5a2db7a9e6a4bb4bffe8b733f5b9036b"},
+    {file = "backports.zoneinfo-0.2.1-cp37-cp37m-win_amd64.whl", hash = "sha256:a76b38c52400b762e48131494ba26be363491ac4f9a04c1b7e92483d169f6582"},
+    {file = "backports.zoneinfo-0.2.1-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:8961c0f32cd0336fb8e8ead11a1f8cd99ec07145ec2931122faaac1c8f7fd987"},
+    {file = "backports.zoneinfo-0.2.1-cp38-cp38-manylinux1_i686.whl", hash = "sha256:e81b76cace8eda1fca50e345242ba977f9be6ae3945af8d46326d776b4cf78d1"},
+    {file = "backports.zoneinfo-0.2.1-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:7b0a64cda4145548fed9efc10322770f929b944ce5cee6c0dfe0c87bf4c0c8c9"},
+    {file = "backports.zoneinfo-0.2.1-cp38-cp38-win32.whl", hash = "sha256:1b13e654a55cd45672cb54ed12148cd33628f672548f373963b0bff67b217328"},
+    {file = "backports.zoneinfo-0.2.1-cp38-cp38-win_amd64.whl", hash = "sha256:4a0f800587060bf8880f954dbef70de6c11bbe59c673c3d818921f042f9954a6"},
+    {file = "backports.zoneinfo-0.2.1.tar.gz", hash = "sha256:fadbfe37f74051d024037f223b8e001611eac868b5c5b06144ef4d8b799862f2"},
 ]
 bcrypt = [
     {file = "bcrypt-3.2.0-cp36-abi3-macosx_10_9_x86_64.whl", hash = "sha256:c95d4cbebffafcdd28bd28bb4e25b31c50f6da605c81ffd9ad8a3d1b2ab7b1b6"},
@@ -1276,8 +1330,8 @@ cssmin = [
     {file = "cssmin-0.2.0.tar.gz", hash = "sha256:e012f0cc8401efcf2620332339011564738ae32be8c84b2e43ce8beaec1067b6"},
 ]
 django = [
-    {file = "Django-2.2.24-py3-none-any.whl", hash = "sha256:f2084ceecff86b1e631c2cd4107d435daf4e12f1efcdf11061a73bf0b5e95f92"},
-    {file = "Django-2.2.24.tar.gz", hash = "sha256:3339ff0e03dee13045aef6ae7b523edff75b6d726adf7a7a48f53d5a501f7db7"},
+    {file = "Django-4.0-py3-none-any.whl", hash = "sha256:59304646ebc6a77b9b6a59adc67d51ecb03c5e3d63ed1f14c909cdfda84e8010"},
+    {file = "Django-4.0.tar.gz", hash = "sha256:d5a8a14da819a8b9237ee4d8c78dfe056ff6e8a7511987be627192225113ee75"},
 ]
 django-ajax-selects = [
     {file = "django-ajax-selects-2.1.0.tar.gz", hash = "sha256:d35a386d6bfc61b45a22de9648237df7f750dd37abf50203bbd694d03460397b"},
@@ -1724,6 +1778,10 @@ tqdm = [
 twine = [
     {file = "twine-3.7.0-py3-none-any.whl", hash = "sha256:5a3e3fb52b926827c99e050f0c1e5d8ae599848f3eb27764f19b886c09134590"},
     {file = "twine-3.7.0.tar.gz", hash = "sha256:8d6a0ad895576c97e9ad4a5da2d6adea37fd5434ecabace0054013d537ddbc6c"},
+]
+tzdata = [
+    {file = "tzdata-2021.5-py2.py3-none-any.whl", hash = "sha256:3eee491e22ebfe1e5cfcc97a4137cd70f092ce59144d81f8924a844de05ba8f5"},
+    {file = "tzdata-2021.5.tar.gz", hash = "sha256:68dbe41afd01b867894bbdfd54fa03f468cfa4f0086bfb4adcd8de8f24f3ee21"},
 ]
 urllib3 = [
     {file = "urllib3-1.26.5-py2.py3-none-any.whl", hash = "sha256:753a0374df26658f99d826cfe40394a686d05985786d946fbe4165b5148f5a7c"},
