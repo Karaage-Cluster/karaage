@@ -197,7 +197,7 @@ ALLOWED_HOSTS = ["%(HOST)s"]
 # DJANGO PIPELINE
 ###
 
-STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+STATICFILES_STORAGE = 'pipeline.storage.PipelineManifestStorage'
 
 PIPELINE = {
     'EMBED_PATH': r'img/|images/',
