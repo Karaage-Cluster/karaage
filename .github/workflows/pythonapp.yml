@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Dump context
+        uses: crazy-max/ghaction-dump-context@v1
       - name: Checkout source code
         uses: actions/checkout@v2.4.0
       - name: Set up Python 3.9
@@ -139,6 +141,8 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
 
     steps:
+      - name: Dump context
+        uses: crazy-max/ghaction-dump-context@v1
       - name: Checkout
         uses: actions/checkout@v2.4.0
       - name: Docker meta
