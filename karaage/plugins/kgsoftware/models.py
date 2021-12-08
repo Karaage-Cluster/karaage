@@ -18,7 +18,6 @@
 
 from django.db import models
 from django.urls import reverse
-from django.utils.encoding import python_2_unicode_compatible
 from model_utils import FieldTracker
 
 from karaage.common import log
@@ -26,7 +25,6 @@ from karaage.machines.models import Machine
 from karaage.people.models import Group, Person
 
 
-@python_2_unicode_compatible
 class SoftwareCategory(models.Model):
     name = models.CharField(max_length=100)
 
@@ -41,7 +39,6 @@ class SoftwareCategory(models.Model):
         return reverse('kg_software_category_list')
 
 
-@python_2_unicode_compatible
 class Software(models.Model):
     category = models.ForeignKey(
         SoftwareCategory, blank=True, null=True, on_delete=models.CASCADE)
@@ -104,7 +101,6 @@ class Software(models.Model):
             return self.group.members.all()
 
 
-@python_2_unicode_compatible
 class SoftwareVersion(models.Model):
     software = models.ForeignKey(Software, on_delete=models.CASCADE)
     version = models.CharField(max_length=100)

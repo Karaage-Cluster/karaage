@@ -23,7 +23,6 @@ import six
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from django.urls import reverse
-from django.utils.encoding import python_2_unicode_compatible
 from jsonfield import JSONField
 from model_utils import FieldTracker
 
@@ -45,7 +44,6 @@ from karaage.people.managers import (
 # A locked person is a person who has not been deleted but is not allowed
 # access for some reason.
 
-@python_2_unicode_compatible
 class Person(AbstractBaseUser):
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(null=True, db_index=True)
@@ -384,7 +382,6 @@ class Person(AbstractBaseUser):
         return Institute.objects.filter(group__members=self)
 
 
-@python_2_unicode_compatible
 class Group(models.Model):
 
     """Groups represent collections of people, these objects can be

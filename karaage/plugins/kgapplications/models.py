@@ -22,7 +22,6 @@ import six
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
-from django.utils.encoding import python_2_unicode_compatible
 from model_utils import FieldTracker
 
 from karaage.common import get_current_person, is_admin, log, new_random_token
@@ -66,7 +65,6 @@ class ApplicationManager(models.Manager):
         return self.get_queryset().filter(query)
 
 
-@python_2_unicode_compatible
 class Application(models.Model):
 
     """ Generic application for anything. """
@@ -344,7 +342,6 @@ class ProjectApplication(Application):
         return errors
 
 
-@python_2_unicode_compatible
 class Applicant(models.Model):
     """ A person who has completed an application however is not yet officially
     registered on the system yet. """
