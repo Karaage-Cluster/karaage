@@ -10,10 +10,10 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2.4.0
-      - name: Set up Python 3.8
+      - name: Set up Python 3.9
         uses: actions/setup-python@v2.3.1
         with:
-          python-version: 3.8
+          python-version: 3.9
       - name: Install system dependancies
         run: |
           sudo apt-get update
@@ -51,10 +51,10 @@ jobs:
           mysql root password: 'z9Pm29jg9EfJ6m'
       - name: Checkout source code
         uses: actions/checkout@v2.4.0
-      - name: Set up Python 3.8
+      - name: Set up Python 3.9
         uses: actions/setup-python@v2.3.1
         with:
-          python-version: 3.8
+          python-version: 3.9
       - name: Install system dependancies
         run: |
           sudo apt-get update
@@ -98,10 +98,10 @@ jobs:
           postgresql password: 'z9Pm29jg9EfJ6m'
       - name: Checkout source code
         uses: actions/checkout@v2.4.0
-      - name: Set up Python 3.8
+      - name: Set up Python 3.9
         uses: actions/setup-python@v2.3.1
         with:
-          python-version: 3.8
+          python-version: 3.9
       - name: Install system dependancies
         run: |
           sudo apt-get update
@@ -186,10 +186,10 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2.4.0
-      - name: Set up Python 3.8
+      - name: Set up Python 3.9
         uses: actions/setup-python@v2.3.1
         with:
-          python-version: 3.8
+          python-version: 3.9
       - name: Install poetry
         uses: abatilo/actions-poetry@v2.1.4
         with:
