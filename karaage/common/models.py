@@ -20,6 +20,7 @@ from __future__ import absolute_import, unicode_literals
 
 import six
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.encoding import smart_text
@@ -27,14 +28,6 @@ from django.utils.translation import ugettext
 from django.utils.translation import ugettext_lazy as _
 
 from karaage.middleware.threadlocals import get_current_user
-
-
-try:
-    # Django >= 1.7
-    from django.contrib.contenttypes.fields import GenericForeignKey
-except ImportError:
-    # Django < 1.7
-    from django.contrib.contenttypes.generic import GenericForeignKey
 
 
 ADDITION = 1
