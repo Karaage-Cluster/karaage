@@ -17,41 +17,41 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf import settings
-from django.conf.urls import url
+from django.conf.urls import re_path
 
 from karaage.projects import views
 
 
 urlpatterns = [
-    url(r'^$', views.project_list, name='kg_project_list'),
-    url(r'^add/$', views.add_edit_project, name='kg_project_add'),
-    url(r'^no_users/$', views.no_users, name='kg_empty_projects_list'),
+    re_path(r'^$', views.project_list, name='kg_project_list'),
+    re_path(r'^add/$', views.add_edit_project, name='kg_project_add'),
+    re_path(r'^no_users/$', views.no_users, name='kg_empty_projects_list'),
 
-    url(r'^(?P<project_id>\d+)/$',
-        views.project_detail, name='kg_project_detail'),
-    url(r'^(?P<project_id>\d+)/verbose/$',
-        views.project_verbose, name='kg_project_verbose'),
-    url(r'^(?P<project_id>\d+)/edit/$',
-        views.add_edit_project, name='kg_project_edit'),
-    url(r'^(?P<project_id>\d+)/undelete/$',
-        views.undelete_project, name='kg_project_undelete'),
-    url(r'^(?P<project_id>\d+)/delete/$',
-        views.delete_project, name='kg_project_delete'),
-    url(r'^(?P<project_id>\d+)/remove_user/(?P<username>%s)/$'
-        % (settings.USERNAME_VALIDATION_RE,),
-        views.remove_user, name='kg_remove_project_member'),
-    url(r'^(?P<project_id>\d+)/grant/(?P<username>%s)/$'
-        % (settings.USERNAME_VALIDATION_RE,),
-        views.grant_leader, name='kg_grant_leader'),
-    url(r'^(?P<project_id>\d+)/revoke/(?P<username>%s)/$'
-        % (settings.USERNAME_VALIDATION_RE,),
-        views.revoke_leader, name='kg_revoke_leader'),
-    url(r'^(?P<project_id>\d+)/logs/$',
-        views.project_logs, name='kg_project_logs'),
-    url(r'^(?P<project_id>\d+)/add_comment/$',
-        views.add_comment, name='kg_project_add_comment'),
+    re_path(r'^(?P<project_id>\d+)/$',
+            views.project_detail, name='kg_project_detail'),
+    re_path(r'^(?P<project_id>\d+)/verbose/$',
+            views.project_verbose, name='kg_project_verbose'),
+    re_path(r'^(?P<project_id>\d+)/edit/$',
+            views.add_edit_project, name='kg_project_edit'),
+    re_path(r'^(?P<project_id>\d+)/undelete/$',
+            views.undelete_project, name='kg_project_undelete'),
+    re_path(r'^(?P<project_id>\d+)/delete/$',
+            views.delete_project, name='kg_project_delete'),
+    re_path(r'^(?P<project_id>\d+)/remove_user/(?P<username>%s)/$'
+            % (settings.USERNAME_VALIDATION_RE,),
+            views.remove_user, name='kg_remove_project_member'),
+    re_path(r'^(?P<project_id>\d+)/grant/(?P<username>%s)/$'
+            % (settings.USERNAME_VALIDATION_RE,),
+            views.grant_leader, name='kg_grant_leader'),
+    re_path(r'^(?P<project_id>\d+)/revoke/(?P<username>%s)/$'
+            % (settings.USERNAME_VALIDATION_RE,),
+            views.revoke_leader, name='kg_revoke_leader'),
+    re_path(r'^(?P<project_id>\d+)/logs/$',
+            views.project_logs, name='kg_project_logs'),
+    re_path(r'^(?P<project_id>\d+)/add_comment/$',
+            views.add_comment, name='kg_project_add_comment'),
 ]
 
 profile_urlpatterns = [
-    url(r'^projects/$', views.profile_projects, name='kg_profile_projects'),
+    re_path(r'^projects/$', views.profile_projects, name='kg_profile_projects'),
 ]

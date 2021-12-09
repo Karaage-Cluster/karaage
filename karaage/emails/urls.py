@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import url
+from django.conf.urls import re_path
 
 from karaage.emails import views
 
 
 urlpatterns = [
-    url(r'^$', views.send_email, name='kg_emails_index'),
+    re_path(r'^$', views.send_email, name='kg_emails_index'),
 ]

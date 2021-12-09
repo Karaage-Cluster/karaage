@@ -16,22 +16,22 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import url
+from django.conf.urls import re_path
 
 from karaage.machines.views import machines
 
 
 urlpatterns = [
-    url(r'^$', machines.machine_list, name='kg_machine_list'),
-    url(r'^add/$', machines.machine_create, name='kg_machine_add'),
-    url(r'^(?P<machine_id>\d+)/$',
-        machines.machine_detail, name='kg_machine_detail'),
-    url(r'^(?P<machine_id>\d+)/edit/$', machines.machine_edit,
-        name='kg_machine_edit'),
-    url(r'^(?P<machine_id>\d+)/password/$', machines.machine_password,
-        name='kg_machine_password'),
-    url(r'^(?P<machine_id>\d+)/logs/$', machines.machine_logs,
-        name='kg_machine_logs'),
-    url(r'^(?P<machine_id>\d+)/add_comment/$', machines.machine_add_comment,
-        name='kg_machine_add_comment'),
+    re_path(r'^$', machines.machine_list, name='kg_machine_list'),
+    re_path(r'^add/$', machines.machine_create, name='kg_machine_add'),
+    re_path(r'^(?P<machine_id>\d+)/$',
+            machines.machine_detail, name='kg_machine_detail'),
+    re_path(r'^(?P<machine_id>\d+)/edit/$', machines.machine_edit,
+            name='kg_machine_edit'),
+    re_path(r'^(?P<machine_id>\d+)/password/$', machines.machine_password,
+            name='kg_machine_password'),
+    re_path(r'^(?P<machine_id>\d+)/logs/$', machines.machine_logs,
+            name='kg_machine_logs'),
+    re_path(r'^(?P<machine_id>\d+)/add_comment/$', machines.machine_add_comment,
+            name='kg_machine_add_comment'),
 ]

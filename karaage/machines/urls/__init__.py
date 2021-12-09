@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import url
+from django.conf.urls import re_path
 
 from karaage.machines.views import accounts
 
 
 profile_urlpatterns = [
-    url(r'^accounts/$', accounts.profile_accounts, name='kg_profile_accounts'),
+    re_path(r'^accounts/$', accounts.profile_accounts, name='kg_profile_accounts'),
 ]

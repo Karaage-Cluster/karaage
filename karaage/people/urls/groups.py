@@ -17,14 +17,14 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf import settings
-from django.conf.urls import include, url
+from django.conf.urls import include, re_path
 
 from karaage.people.views import groups
 
 
 urlpatterns = [
-    url(r'^$', groups.group_list, name='kg_group_list'),
-    url(r'^add/$', groups.add_group, name='kg_group_add'),
-    url(r'^detail/(?P<group_name>%s)/' % settings.GROUP_VALIDATION_RE,
-        include('karaage.people.urls.group_detail')),
+    re_path(r'^$', groups.group_list, name='kg_group_list'),
+    re_path(r'^add/$', groups.add_group, name='kg_group_add'),
+    re_path(r'^detail/(?P<group_name>%s)/' % settings.GROUP_VALIDATION_RE,
+            include('karaage.people.urls.group_detail')),
 ]

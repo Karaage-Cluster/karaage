@@ -19,7 +19,7 @@
 import django.views.static
 import django_xmlrpc.views
 from django.conf import settings
-from django.conf.urls import include, url
+from django.conf.urls import include, re_path
 
 from karaage.common import get_urls
 from karaage.common.views import common
@@ -55,26 +55,26 @@ for urls in get_urls("profile_urlpatterns"):
 # Standard URLS
 
 urlpatterns = [
-    url(r'^xmlrpc/$', django_xmlrpc.views.handle_xmlrpc),
-    url(r'^captcha/', include('captcha.urls')),
-    url(r'^lookup/', include('ajax_select.urls')),
+    re_path(r'^xmlrpc/$', django_xmlrpc.views.handle_xmlrpc),
+    re_path(r'^captcha/', include('captcha.urls')),
+    re_path(r'^lookup/', include('ajax_select.urls')),
 
-    url(r'^emails/', include('karaage.emails.urls')),
-    url(r'^institutes/', include('karaage.institutes.urls')),
-    url(r'^projects/', include('karaage.projects.urls')),
-    url(r'^persons/', include('karaage.people.urls.persons')),
-    url(r'^groups/', include('karaage.people.urls.groups')),
-    url(r'^accounts/', include('karaage.machines.urls.accounts')),
-    url(r'^machines/', include('karaage.machines.urls.machines')),
-    url(r'^profile/', include(profile_urlpatterns)),
+    re_path(r'^emails/', include('karaage.emails.urls')),
+    re_path(r'^institutes/', include('karaage.institutes.urls')),
+    re_path(r'^projects/', include('karaage.projects.urls')),
+    re_path(r'^persons/', include('karaage.people.urls.persons')),
+    re_path(r'^groups/', include('karaage.people.urls.groups')),
+    re_path(r'^accounts/', include('karaage.machines.urls.accounts')),
+    re_path(r'^machines/', include('karaage.machines.urls.machines')),
+    re_path(r'^profile/', include(profile_urlpatterns)),
 
-    url(r'^$', common.index, name='index'),
-    url(r'^search/$', common.search,
-        name='kg_site_search'),
-    url(r'^misc/$', common.misc, name='kg_misc'),
-    url(r'^logs/$', common.log_list,
-        name='kg_log_list'),
-    url(r'^aup/$', common.aup, name="kg_aup"),
+    re_path(r'^$', common.index, name='index'),
+    re_path(r'^search/$', common.search,
+            name='kg_site_search'),
+    re_path(r'^misc/$', common.misc, name='kg_misc'),
+    re_path(r'^logs/$', common.log_list,
+            name='kg_log_list'),
+    re_path(r'^aup/$', common.aup, name="kg_aup"),
 ]
 
 for urls in get_urls("urlpatterns"):
@@ -83,6 +83,6 @@ for urls in get_urls("urlpatterns"):
 
 if settings.DEBUG:
     urlpatterns += [
-        url(r'^kgfiles/(?P<path>.*)$', django.views.static.serve,
-            {'document_root': settings.FILES_DIR})
+        re_path(r'^kgfiles/(?P<path>.*)$', django.views.static.serve,
+                {'document_root': settings.FILES_DIR})
     ]
