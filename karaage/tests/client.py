@@ -30,7 +30,7 @@ from django.core.exceptions import ViewDoesNotExist
 from django.test import TestCase
 from django.urls import URLPattern, URLResolver
 from django.utils import translation
-from django.utils.encoding import smart_text
+from django.utils.encoding import smart_str
 from django.utils.text import slugify
 
 from karaage.middleware.threadlocals import reset
@@ -163,7 +163,7 @@ class TestAllPagesMeta(type):
             else:
                 func_name = re.sub(r' at 0x[0-9a-f]+', '', repr(func))
 
-            url_pattern = smart_text(simplify_regex(regex))
+            url_pattern = smart_str(simplify_regex(regex))
             name = '_'.join(
                 [
                     'test',
