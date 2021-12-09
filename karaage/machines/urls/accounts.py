@@ -17,7 +17,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf import settings
-from django.conf.urls import re_path
+from django.urls import re_path
 
 from karaage.machines.views import accounts
 
