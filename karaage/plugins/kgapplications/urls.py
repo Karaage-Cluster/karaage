@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import include, re_path
+from django.urls import include, re_path
 
 from karaage.plugins.kgapplications.views import common, project
 
