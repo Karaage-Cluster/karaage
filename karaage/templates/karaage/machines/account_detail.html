@@ -92,7 +92,7 @@
                 <td><a href="{{ p.institute.get_absolute_url }}">{{ p.institute }}</a></td>
                 <td>{% for leader in p.leaders.all %}<a href="{{ leader.get_absolute_url }}">{{ leader }}, </a>{% endfor %}</td>
                 <td>
-                    {% ifequal p account.default_project %}
+                    {% if p == account.default_project %}
                         <span class="yes">Yes</span>
                     {% else %}
                         {% if can_edit %}
@@ -103,13 +103,13 @@
                         {% else %}
                         <span class="no">No</span>
                         {% endif %}
-                    {% endifequal %}
+                    {% endif %}
                 </td>
                 {% if is_admin %}
                 <td>
-                    {% ifnotequal p account.default_project %}
+                    {% if p != account.default_project %}
                     <a href="{% url 'kg_remove_project_member' p.id account.person.username %}" class="deletelink">Remove</a>
-                    {% endifnotequal %}
+                    {% endif %}
                 </td>
                 {% endif %}
             </tr>
