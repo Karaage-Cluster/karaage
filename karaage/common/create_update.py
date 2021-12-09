@@ -5,7 +5,7 @@ from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.forms.models import ModelForm, ModelFormMetaclass
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.template import loader
-from django.utils.translation import ugettext
+from django.utils.translation import gettext
 from django.views.generic import GenericViewError
 
 
@@ -121,7 +121,7 @@ def create_object(
         if form.is_valid():
             new_object = form.save()
 
-            msg = ugettext("The %(verbose_name)s was created successfully.") %\
+            msg = gettext("The %(verbose_name)s was created successfully.") %\
                 {"verbose_name": model._meta.verbose_name}
             messages.success(request, msg, fail_silently=True)
             return redirect(post_save_redirect, new_object)
@@ -168,7 +168,7 @@ def update_object(
         form = form_class(request.POST, request.FILES, instance=obj)
         if form.is_valid():
             obj = form.save()
-            msg = ugettext("The %(verbose_name)s was updated successfully.") %\
+            msg = gettext("The %(verbose_name)s was updated successfully.") %\
                 {"verbose_name": model._meta.verbose_name}
             messages.success(request, msg, fail_silently=True)
             return redirect(post_save_redirect, obj)
@@ -214,7 +214,7 @@ def delete_object(
 
     if request.method == 'POST':
         obj.delete()
-        msg = ugettext("The %(verbose_name)s was deleted.") %\
+        msg = gettext("The %(verbose_name)s was deleted.") %\
             {"verbose_name": model._meta.verbose_name}
         messages.success(request, msg, fail_silently=True)
         return HttpResponseRedirect(post_delete_redirect)
