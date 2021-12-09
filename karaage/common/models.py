@@ -23,7 +23,7 @@ from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.utils.encoding import smart_text
+from django.utils.encoding import smart_str
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
@@ -84,7 +84,7 @@ class LogEntry(models.Model):
         ordering = ('-action_time', '-pk')
 
     def __repr__(self):
-        return smart_text(self.action_time)
+        return smart_str(self.action_time)
 
     def __str__(self):
         if self.action_flag == ADDITION:
