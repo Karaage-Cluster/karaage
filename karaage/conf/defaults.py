@@ -210,7 +210,7 @@ PIPELINE = {
             'variant': 'datauri',
         },
     },
-    'JS_COMPRESSOR': 'pipeline.compressors.slimit.SlimItCompressor',
+    'JS_COMPRESSOR': 'pipeline.compressors.jsmin.JSMinCompressor',
     'JAVASCRIPT': {
         'karaage': {
             'source_filenames': (

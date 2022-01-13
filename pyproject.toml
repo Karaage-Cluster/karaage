@@ -35,7 +35,6 @@ django-tables2 = "*"
 django-filter = "*"
 django-environ = "*"
 six = "*"
-slimit = "*"
 whitenoise = "*"
 Django = "~=2.2.24"
 cracklib = "*"
@@ -45,6 +44,7 @@ sentry-sdk = "*"
 psycopg2-binary = "*"
 pyjwt = "*"
 sphinx = {version = "*", optional = true}
+jsmin = "^3.0.0"
 
 [tool.poetry.dev-dependencies]
 django-extensions = "*"
