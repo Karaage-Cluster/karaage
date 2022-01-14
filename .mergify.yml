@@ -2,6 +2,7 @@ pull_request_rules:
   - name: Automatic merge on approval
     conditions:
       - "#approved-reviews-by>=1"
+      - "check-success=Setup, Build, Publish, and Deploy"
     actions:
       merge:
         method: rebase
