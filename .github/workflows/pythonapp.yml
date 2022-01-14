@@ -6,6 +6,7 @@ jobs:
   test:
     name: Databaseless tests
     runs-on: ubuntu-latest
+    if: ${{ github.repository_owner != 'Karaage-Cluster' || github.event_name != 'pull_request' }}
 
     steps:
       - name: Checkout source code
@@ -35,6 +36,7 @@ jobs:
   test-mysql:
     name: Mysql tests
     runs-on: ubuntu-latest
+    if: ${{ github.repository_owner != 'Karaage-Cluster' || github.event_name != 'pull_request' }}
     env:
         DATABASE_URL: mysql://root:z9Pm29jg9EfJ6m@127.0.0.1/test
 
@@ -85,6 +87,7 @@ jobs:
   test-postgresql:
     name: Postgresql tests
     runs-on: ubuntu-latest
+    if: ${{ github.repository_owner != 'Karaage-Cluster' || github.event_name != 'pull_request' }}
     env:
         DATABASE_URL: postgresql://test:z9Pm29jg9EfJ6m@localhost/test?sslmode=disable
 
@@ -135,22 +138,24 @@ jobs:
     needs: [test, test-mysql, test-postgresql]
     if: ${{ github.repository_owner != 'Karaage-Cluster' || github.event_name == 'push' }}
 
-    env:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2.4.0
       - name: Docker meta
-        id: docker_meta
-        uses: crazy-max/ghaction-docker-meta@v3.6.2
+        id: meta
+        uses: docker/metadata-action@e5622373a38e60fb6d795a4421e56882f2d7a681
         with:
           images: ${{ secrets.DOCKERHUB_USERNAME }}/karaage
-          tag-semver: |
-            {{version}}
-            {{major}}.{{minor}}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=ref,event=branch
+            type=ref,event=tag
+            type=ref,event=pr
+            type=sha, format=long
       - name: Docker meta
-        id: meta
+        id: brianmay_meta
         uses: brianmay/docker-meta@main
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
@@ -165,17 +170,16 @@ jobs:
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2.7.0
-        if: ${{env.DOCKERHUB_USERNAME != 0}}
         with:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64
           push: ${{ github.repository_owner == 'Karaage-Cluster' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags')) && github.event_name == 'push' }}
-          tags: ${{ steps.docker_meta.outputs.tags }}
-          labels: ${{ steps.docker_meta.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/karaage:master
           cache-to: type=inline
-          build-args: ${{ steps.meta.outputs.build-args }}
+          build-args: ${{ steps.brianmay_meta.outputs.build-args }}
 
   publish-pypi-prod:
     name: Publish Pypi Prod
