@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - name: Set up Python 3.9
         uses: actions/setup-python@v3
         with:
@@ -52,7 +52,7 @@ jobs:
           mysql password: 'z9Pm29jg9EfJ6m'
           mysql root password: 'z9Pm29jg9EfJ6m'
       - name: Checkout source code
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - name: Set up Python 3.9
         uses: actions/setup-python@v3
         with:
@@ -100,7 +100,7 @@ jobs:
           postgresql user: 'test'
           postgresql password: 'z9Pm29jg9EfJ6m'
       - name: Checkout source code
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - name: Set up Python 3.9
         uses: actions/setup-python@v3
         with:
@@ -140,7 +140,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@e5622373a38e60fb6d795a4421e56882f2d7a681
@@ -189,7 +189,7 @@ jobs:
 
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - name: Set up Python 3.9
         uses: actions/setup-python@v3
         with:
