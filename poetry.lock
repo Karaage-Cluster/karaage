@@ -274,7 +274,7 @@ django = "*"
 
 [[package]]
 name = "django-simple-captcha"
-version = "0.5.14"
+version = "0.5.16"
 description = "A very simple, yet powerful, Django captcha application"
 category = "main"
 optional = false
@@ -284,7 +284,6 @@ python-versions = "*"
 Django = ">=2.2"
 django-ranged-response = "0.2.0"
 Pillow = ">=6.2.0"
-six = ">=1.2.0"
 
 [package.extras]
 test = ["testfixtures"]
@@ -1301,8 +1300,8 @@ django-ranged-response = [
     {file = "django-ranged-response-0.2.0.tar.gz", hash = "sha256:f71fff352a37316b9bead717fc76e4ddd6c9b99c4680cdf4783b9755af1cf985"},
 ]
 django-simple-captcha = [
-    {file = "django-simple-captcha-0.5.14.zip", hash = "sha256:84b5c188e6ae50e9ecec5e5d734c5bc4d2a50fbbca7f59d2c12da9a3bbee5051"},
-    {file = "django_simple_captcha-0.5.14-py3.7.egg", hash = "sha256:1bb2c842bde3ae0e23ce3c84b2f07f608b660c8d18201b0812571bccf38cf867"},
+    {file = "django-simple-captcha-0.5.16.tar.gz", hash = "sha256:16944a128770eec65816f04fcd197471a1e17edaa2bd5041c7b163e88a1aca26"},
+    {file = "django_simple_captcha-0.5.16-py2.py3-none-any.whl", hash = "sha256:733da391d5bec5c154c8e739ad765596a29c247ae98e84bf9b893449a9b34f51"},
 ]
 django-tables2 = [
     {file = "django-tables2-2.4.1.tar.gz", hash = "sha256:6c72dd208358539e789e4c0efd7d151e43283a4aa4093a35f44c43489e7ddeaa"},
