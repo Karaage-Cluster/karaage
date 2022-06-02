@@ -770,20 +770,19 @@ python-versions = "*"
 
 [[package]]
 name = "readme-renderer"
-version = "29.0"
+version = "35.0"
 description = "readme_renderer is a library for rendering \"readme\" descriptions for Warehouse"
 category = "dev"
 optional = false
-python-versions = "*"
+python-versions = ">=3.7"
 
 [package.dependencies]
 bleach = ">=2.1.0"
 docutils = ">=0.13.1"
 Pygments = ">=2.5.1"
-six = "*"
 
 [package.extras]
-md = ["cmarkgfm (>=0.5.0,<0.6.0)"]
+md = ["cmarkgfm (>=0.8.0)"]
 
 [[package]]
 name = "requests"
@@ -1035,7 +1034,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "twine"
-version = "4.0.0"
+version = "4.0.1"
 description = "Collection of utilities for publishing packages on PyPI"
 category = "dev"
 optional = false
@@ -1045,7 +1044,7 @@ python-versions = ">=3.7"
 importlib-metadata = ">=3.6"
 keyring = ">=15.1"
 pkginfo = ">=1.8.1"
-readme-renderer = ">=21.0"
+readme-renderer = ">=35.0"
 requests = ">=2.20"
 requests-toolbelt = ">=0.8.0,<0.9.0 || >0.9.0"
 rfc3986 = ">=1.4.0"
@@ -1644,8 +1643,8 @@ pywin32-ctypes = [
     {file = "pywin32_ctypes-0.2.0-py2.py3-none-any.whl", hash = "sha256:9dc2d991b3479cc2df15930958b674a48a227d5361d413827a4cfd0b5876fc98"},
 ]
 readme-renderer = [
-    {file = "readme_renderer-29.0-py2.py3-none-any.whl", hash = "sha256:63b4075c6698fcfa78e584930f07f39e05d46f3ec97f65006e430b595ca6348c"},
-    {file = "readme_renderer-29.0.tar.gz", hash = "sha256:92fd5ac2bf8677f310f3303aa4bce5b9d5f9f2094ab98c29f13791d7b805a3db"},
+    {file = "readme_renderer-35.0-py3-none-any.whl", hash = "sha256:73b84905d091c31f36e50b4ae05ae2acead661f6a09a9abb4df7d2ddcdb6a698"},
+    {file = "readme_renderer-35.0.tar.gz", hash = "sha256:a727999acfc222fc21d82a12ed48c957c4989785e5865807c65a487d21677497"},
 ]
 requests = [
     {file = "requests-2.25.1-py2.py3-none-any.whl", hash = "sha256:c210084e36a42ae6b9219e00e48287def368a26d03a048ddad7bfee44f75871e"},
@@ -1724,8 +1723,8 @@ tomli = [
     {file = "tomli-1.2.1.tar.gz", hash = "sha256:a5b75cb6f3968abb47af1b40c1819dc519ea82bcc065776a866e8d74c5ca9442"},
 ]
 twine = [
-    {file = "twine-4.0.0-py3-none-any.whl", hash = "sha256:6f7496cf14a3a8903474552d5271c79c71916519edb42554f23f42a8563498a9"},
-    {file = "twine-4.0.0.tar.gz", hash = "sha256:817aa0c0bdc02a5ebe32051e168e23c71a0608334e624c793011f120dbbc05b7"},
+    {file = "twine-4.0.1-py3-none-any.whl", hash = "sha256:42026c18e394eac3e06693ee52010baa5313e4811d5a11050e7d48436cf41b9e"},
+    {file = "twine-4.0.1.tar.gz", hash = "sha256:96b1cf12f7ae611a4a40b6ae8e9570215daff0611828f5fe1f37a16255ab24a0"},
 ]
 urllib3 = [
     {file = "urllib3-1.26.5-py2.py3-none-any.whl", hash = "sha256:753a0374df26658f99d826cfe40394a686d05985786d946fbe4165b5148f5a7c"},
