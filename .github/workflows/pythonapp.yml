@@ -20,7 +20,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install libcrack2-dev
       - name: Install poetry
-        uses: abatilo/actions-poetry@v2.1.5
+        uses: abatilo/actions-poetry@v2.1.6
         with:
           poetry-version: 1.1.5
       - name: Install python dependancies
@@ -66,7 +66,7 @@ jobs:
             sudo apt-get install apparmor-utils
             sudo aa-complain /usr/sbin/slapd
       - name: Install poetry
-        uses: abatilo/actions-poetry@v2.1.5
+        uses: abatilo/actions-poetry@v2.1.6
         with:
           poetry-version: 1.1.5
       - name: Install python dependancies
@@ -114,7 +114,7 @@ jobs:
             sudo apt-get install apparmor-utils
             sudo aa-complain /usr/sbin/slapd
       - name: Install poetry
-        uses: abatilo/actions-poetry@v2.1.5
+        uses: abatilo/actions-poetry@v2.1.6
         with:
           poetry-version: 1.1.5
       - name: Install python dependancies
@@ -195,7 +195,7 @@ jobs:
         with:
           python-version: 3.9
       - name: Install poetry
-        uses: abatilo/actions-poetry@v2.1.5
+        uses: abatilo/actions-poetry@v2.1.6
         with:
           poetry-version: 1.1.5
       - name: Install system dependancies
