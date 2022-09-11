@@ -42,7 +42,7 @@ class Command(BaseCommand):
         for person in members:
             # determine if the user is a leader of the given project, abort if true.
 
-            if(person in leaders):
+            if (person in leaders):
 
                 # do nothing
                 sys.stdout.write("ignoring %s, project leader\n" % person)
