@@ -26,7 +26,7 @@ from django.contrib.auth import logout as auth_logout
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.utils.http import is_safe_url
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.debug import sensitive_post_parameters
 
@@ -252,7 +252,7 @@ def profile_aaf_rapid_connect(request):
 
         url = request.COOKIES.get('arc_url', None)
         if url is not None:
-            if not is_safe_url(
+            if not url_has_allowed_host_and_scheme(
                 url=url,
                 allowed_hosts={request.get_host()},
                 require_https=request.is_secure(),
