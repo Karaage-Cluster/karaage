@@ -23,7 +23,6 @@ import six
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from django.urls import reverse
-from jsonfield import JSONField
 from model_utils import FieldTracker
 
 from karaage.common import is_admin, log
@@ -392,8 +391,9 @@ class Group(models.Model):
         help_text='The foreign identifier from the datastore.')
     members = models.ManyToManyField(Person, related_name='groups')
     description = models.TextField(null=True, blank=True)
-    extra_data = JSONField(
-        default={},
+    extra_data = models.JSONField(
+        default=dict,
+        blank=True,
         help_text='Datastore specific values should be stored in this field.')
 
     _tracker = FieldTracker()

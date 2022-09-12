@@ -4,9 +4,7 @@ version = "6.1.5"
 description = "Web application to manage a HP cluster"
 authors = ["Brian May <brian@linuxpenguins.xyz>"]
 license = "GPL3+"
-packages = [
-    { include = "karaage" },
-]
+packages = [{ include = "karaage" }]
 readme = "README.rst"
 homepage = "https://github.com/Karaage-Cluster/django/"
 classifiers = [
@@ -26,7 +24,6 @@ python-alogger = "*"
 django-xmlrpc = "*"
 django-simple-captcha = "*"
 django-ajax-selects = "*"
-django-jsonfield = "*"
 django-model-utils = "~=4.2.0"
 ldap3 = "*"
 python-tldap = "*"
@@ -43,7 +40,7 @@ mysqlclient = "*"
 sentry-sdk = "*"
 psycopg2-binary = "*"
 pyjwt = "*"
-sphinx = {version = "*", optional = true}
+sphinx = { version = "*", optional = true }
 jsmin = "^3.0.1"
 
 [tool.poetry.dev-dependencies]
@@ -63,8 +60,8 @@ Sphinx = "*"
 docs = ["sphinx"]
 
 [tool.poetry.group.dev.dependencies]
-black = {version = "^22.8.0", allow-prereleases = true}
+black = { version = "^22.8.0", allow-prereleases = true }
 
 [build-system]
-requires = ["setuptools","poetry-core>=1.0.0"]
+requires = ["setuptools", "poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
