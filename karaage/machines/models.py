@@ -22,7 +22,6 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from django.urls import reverse
-from jsonfield import JSONField
 from model_utils import FieldTracker
 
 from karaage.common import is_admin, log
@@ -94,8 +93,9 @@ class Account(models.Model):
     disk_quota = models.IntegerField(null=True, blank=True, help_text="In GB")
     shell = models.CharField(max_length=50)
     login_enabled = models.BooleanField(default=True)
-    extra_data = JSONField(
-        default={},
+    extra_data = models.JSONField(
+        default=dict,
+        blank=True,
         help_text='Datastore specific values should be stored in this field.')
 
     _tracker = FieldTracker()

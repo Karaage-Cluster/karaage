@@ -293,18 +293,6 @@ python-versions = ">=3.7"
 Django = ">=3.2"
 
 [[package]]
-name = "django-jsonfield"
-version = "1.4.1"
-description = "JSONField for django models"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-Django = ">=1.11"
-six = "*"
-
-[[package]]
 name = "django-model-utils"
 version = "4.2.0"
 description = "Django model mixins and utilities"
@@ -1254,7 +1242,7 @@ docs = ["sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "bfffdaa02e1d6a2a2826cb5b5a47fc09c50bbd5ca9363bc4259c2e8924ed3f90"
+content-hash = "ee160cf53ffeb2d37c884b95062fe14edb4278a3d33f42839bd5f9c317097d90"
 
 [metadata.files]
 alabaster = [
@@ -1534,10 +1522,6 @@ django-extensions = [
 django-filter = [
     {file = "django-filter-22.1.tar.gz", hash = "sha256:ed473b76e84f7e83b2511bb2050c3efb36d135207d0128dfe3ae4b36e3594ba5"},
     {file = "django_filter-22.1-py3-none-any.whl", hash = "sha256:ed429e34760127e3520a67f415bec4c905d4649fbe45d0d6da37e6ff5e0287eb"},
-]
-django-jsonfield = [
-    {file = "django-jsonfield-1.4.1.tar.gz", hash = "sha256:f789a0ea1f80b48aff7d6c36dd356ce125dbf1b7cd97a82d315607ac758f50ff"},
-    {file = "django_jsonfield-1.4.1-py2.py3-none-any.whl", hash = "sha256:ccb2fe623e1bf7799e49c593b0a89a85084ef8d3debbf26d92a54e27b5305d72"},
 ]
 django-model-utils = [
     {file = "django-model-utils-4.2.0.tar.gz", hash = "sha256:e7a95e102f9c9653427eadab980d5d59e1dea972913b9c9e01ac37f86bba0ddf"},

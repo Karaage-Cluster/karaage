@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 import django.utils.timezone
-import jsonfield.fields
 import datetime
 
 
@@ -69,7 +68,7 @@ class Migration(migrations.Migration):
                 ('disk_quota', models.IntegerField(help_text='In GB', null=True, blank=True)),
                 ('shell', models.CharField(max_length=50)),
                 ('login_enabled', models.BooleanField(default=True)),
-                ('extra_data', jsonfield.fields.JSONField(default={}, help_text='Datastore specific values should be stored in this field.')),
+                ('extra_data', models.JSONField(blank=True, default=dict, help_text='Datastore specific values should be stored in this field.')),
             ],
             options={
                 'ordering': ['person'],
@@ -84,7 +83,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(unique=True, max_length=255)),
                 ('foreign_id', models.CharField(help_text='The foreign identifier from the datastore.', max_length=255, unique=True, null=True)),
                 ('description', models.TextField(null=True, blank=True)),
-                ('extra_data', jsonfield.fields.JSONField(default={}, help_text='Datastore specific values should be stored in this field.')),
+                ('extra_data', models.JSONField(blank=True, default=dict, help_text='Datastore specific values should be stored in this field.')),
                 ('members', models.ManyToManyField(related_name='groups', to='karaage.Person')),
             ],
             options={

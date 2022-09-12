@@ -70,7 +70,6 @@ INSTALLED_APPS = (
     'django_xmlrpc',
     'captcha',
     'ajax_select',
-    'jsonfield',
     'django_tables2',
     'tldap.django',
     'pipeline',
