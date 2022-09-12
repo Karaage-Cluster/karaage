@@ -51,6 +51,9 @@ DEBUG = False
 # for karaage-registration.
 AUTH_USER_MODEL = 'karaage.Person'
 
+# Default Auto field type
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 # Do not change: A tuple of strings designating all applications that are
 # enabled in this Django installation. Each string should be a dotted Python
 # path to:
