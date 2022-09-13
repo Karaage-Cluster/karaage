@@ -16,20 +16,21 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import copy
 import datetime
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from django.urls import reverse
-from model_utils import FieldTracker
+from tracking_model import TrackingModelMixin
 
 from karaage.common import is_admin, log
 from karaage.machines.managers import ActiveMachineManager, MachineManager
 from karaage.people.models import Group, Person
 
 
-class Machine(AbstractBaseUser):
+class Machine(TrackingModelMixin, AbstractBaseUser):
     name = models.CharField(max_length=50, unique=True)
     no_cpus = models.IntegerField()
     no_nodes = models.IntegerField()
@@ -45,17 +46,19 @@ class Machine(AbstractBaseUser):
 
     USERNAME_FIELD = 'name'
 
-    _tracker = FieldTracker()
-
     def save(self, *args, **kwargs):
         created = self.pk is None
+        if created:
+            changed = {field: None for field in self.tracker.tracked_fields}
+        else:
+            changed = copy.deepcopy(self.tracker.changed)
 
         # save the object
         super(Machine, self).save(*args, **kwargs)
 
         if created:
             log.add(self, 'Created')
-        for field in self._tracker.changed():
+        for field in changed.keys():
             if field == "password":
                 log.change(self, 'Changed %s' % field)
             else:
@@ -79,7 +82,7 @@ class Machine(AbstractBaseUser):
         return reverse('kg_machine_detail', args=[self.id])
 
 
-class Account(models.Model):
+class Account(TrackingModelMixin, models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     username = models.CharField(max_length=255)
     foreign_id = models.CharField(
@@ -97,8 +100,6 @@ class Account(models.Model):
         default=dict,
         blank=True,
         help_text='Datastore specific values should be stored in this field.')
-
-    _tracker = FieldTracker()
 
     def __init__(self, *args, **kwargs):
         super(Account, self).__init__(*args, **kwargs)
@@ -135,6 +136,10 @@ class Account(models.Model):
 
     def save(self, *args, **kwargs):
         created = self.pk is None
+        if created:
+            changed = {field: None for field in self.tracker.tracked_fields}
+        else:
+            changed = copy.deepcopy(self.tracker.changed)
 
         # save the object
         super(Account, self).save(*args, **kwargs)
@@ -143,7 +148,7 @@ class Account(models.Model):
             log.add(
                 self.person,
                 'Account %s: Created' % self)
-        for field in self._tracker.changed():
+        for field in changed.keys():
             if field != "password":
                 log.change(
                     self.person,
@@ -151,8 +156,8 @@ class Account(models.Model):
                     % (self, field, getattr(self, field)))
 
         # check if it was renamed
-        if self._tracker.has_changed('username'):
-            old_username = self._tracker.previous('username')
+        if "username" in changed:
+            old_username = changed['username']
             if old_username is not None:
                 new_username = self.username
                 if self.date_deleted is None:
@@ -164,7 +169,7 @@ class Account(models.Model):
                     (self, old_username, new_username))
 
         # check if deleted status changed
-        if self._tracker.has_changed('date_deleted'):
+        if "date_deleted" in changed:
             if self.date_deleted is not None:
                 # account is deactivated
                 from karaage.datastores import delete_account

@@ -293,17 +293,6 @@ python-versions = ">=3.7"
 Django = ">=3.2"
 
 [[package]]
-name = "django-model-utils"
-version = "4.2.0"
-description = "Django model mixins and utilities"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-Django = ">=2.0.1"
-
-[[package]]
 name = "django-pipeline"
 version = "2.0.8"
 description = "Pipeline is an asset packaging library for Django."
@@ -351,6 +340,17 @@ Django = ">=1.11"
 
 [package.extras]
 tablib = ["tablib"]
+
+[[package]]
+name = "django-tracking-model"
+version = "0.1.5"
+description = "Track changes made to django model instance fields."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+Django = ">=1.11"
 
 [[package]]
 name = "django-xmlrpc"
@@ -1242,7 +1242,7 @@ docs = ["sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "ee160cf53ffeb2d37c884b95062fe14edb4278a3d33f42839bd5f9c317097d90"
+content-hash = "e02ca425f4f261c5e5bac54d1e754c5f3974f2e483101e0e06432e67eb7ccc16"
 
 [metadata.files]
 alabaster = [
@@ -1523,10 +1523,6 @@ django-filter = [
     {file = "django-filter-22.1.tar.gz", hash = "sha256:ed473b76e84f7e83b2511bb2050c3efb36d135207d0128dfe3ae4b36e3594ba5"},
     {file = "django_filter-22.1-py3-none-any.whl", hash = "sha256:ed429e34760127e3520a67f415bec4c905d4649fbe45d0d6da37e6ff5e0287eb"},
 ]
-django-model-utils = [
-    {file = "django-model-utils-4.2.0.tar.gz", hash = "sha256:e7a95e102f9c9653427eadab980d5d59e1dea972913b9c9e01ac37f86bba0ddf"},
-    {file = "django_model_utils-4.2.0-py3-none-any.whl", hash = "sha256:a768a25c80514e0ad4e4a6f9c02c44498985f36c5dfdea47b5b1e8cf994beba6"},
-]
 django-pipeline = [
     {file = "django-pipeline-2.0.8.tar.gz", hash = "sha256:56c299cec0e644e77d5f928f4cebfff804b919cc10ff5c0bfaa070ff57e8da44"},
     {file = "django_pipeline-2.0.8-py3-none-any.whl", hash = "sha256:26f1d344a7bf39bc92c9dc520093471d912de53abd7d22ac715e77d779a831c8"},
@@ -1541,6 +1537,10 @@ django-simple-captcha = [
 django-tables2 = [
     {file = "django-tables2-2.4.1.tar.gz", hash = "sha256:6c72dd208358539e789e4c0efd7d151e43283a4aa4093a35f44c43489e7ddeaa"},
     {file = "django_tables2-2.4.1-py2.py3-none-any.whl", hash = "sha256:50762bf3d7c61a4eb70e763c3e278650d7266bb78d0497fc8fafcf4e507c9a64"},
+]
+django-tracking-model = [
+    {file = "django-tracking-model-0.1.5.tar.gz", hash = "sha256:3e97129aba2cf7fca6ace575fe9a048307ab12c812baf1e75a5e3b1ac3778644"},
+    {file = "django_tracking_model-0.1.5-py2.py3-none-any.whl", hash = "sha256:58003868213a6623c59471b280e1eff198500b7984b050af0023e80df31a4a87"},
 ]
 django-xmlrpc = [
     {file = "django-xmlrpc-0.1.8.tar.gz", hash = "sha256:6e47d760a3ba9d5f7aff987f4d4a3872f3b0ba920d0677feeb70beb3b42f2020"},

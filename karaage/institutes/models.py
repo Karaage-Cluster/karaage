@@ -16,9 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import copy
+
 from django.db import models
 from django.urls import reverse
-from model_utils import FieldTracker
+from tracking_model import TrackingModelMixin
 
 from karaage.common import is_admin, log
 from karaage.institutes.managers import ActiveInstituteManager
@@ -26,7 +28,7 @@ from karaage.machines.models import Account
 from karaage.people.models import Group, Person
 
 
-class Institute(models.Model):
+class Institute(TrackingModelMixin, models.Model):
     name = models.CharField(max_length=255, unique=True)
     delegates = models.ManyToManyField(
         Person, related_name='delegate_for',
@@ -42,8 +44,6 @@ class Institute(models.Model):
     objects = models.Manager()
     active = ActiveInstituteManager()
 
-    _tracker = FieldTracker()
-
     class Meta:
         ordering = ['name']
         db_table = 'institute'
@@ -51,13 +51,17 @@ class Institute(models.Model):
 
     def save(self, *args, **kwargs):
         created = self.pk is None
+        if created:
+            changed = {field: None for field in self.tracker.tracked_fields}
+        else:
+            changed = copy.deepcopy(self.tracker.changed)
 
         # save the object
         super(Institute, self).save(*args, **kwargs)
 
         if created:
             log.add(self, 'Created')
-        for field in self._tracker.changed():
+        for field in changed.keys():
             log.change(self, 'Changed %s to %s'
                        % (field, getattr(self, field)))
 
@@ -66,8 +70,8 @@ class Institute(models.Model):
         save_institute(self)
 
         # has group changed?
-        if self._tracker.has_changed("group_id"):
-            old_group_pk = self._tracker.previous("group_id")
+        if "group_id" in changed:
+            old_group_pk = changed.get("group_id")
             new_group = self.group
             if old_group_pk is not None:
                 old_group = Group.objects.get(pk=old_group_pk)
@@ -84,7 +88,7 @@ class Institute(models.Model):
         # Get list of accounts.
         # This must happen before we call the super method,
         # as this will delete accounts that use this institute.
-        old_group_pk = self._tracker.previous("group_id")
+        old_group_pk = self.tracker.changed.get("group_id", self.group_id)
         if old_group_pk is not None:
             old_group = Group.objects.get(pk=old_group_pk)
             query = Account.objects.filter(person__groups=old_group)
@@ -139,21 +143,25 @@ class Institute(models.Model):
         return False
 
 
-class InstituteDelegate(models.Model):
+class InstituteDelegate(TrackingModelMixin, models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
     send_email = models.BooleanField()
-
-    _tracker = FieldTracker()
 
     class Meta:
         db_table = 'institutedelegate'
         app_label = 'karaage'
 
     def save(self, *args, **kwargs):
+        created = self.pk is None
+        if created:
+            changed = {field: None for field in self.tracker.tracked_fields}
+        else:
+            changed = copy.deepcopy(self.tracker.changed)
+
         super(InstituteDelegate, self).save(*args, **kwargs)
 
-        for field in self._tracker.changed():
+        for field in changed.keys():
             log.change(
                 self.institute,
                 'Delegate %s: Changed %s to %s' %

@@ -16,13 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import copy
 import datetime
 
 import six
 from django.db import models
 from django.db.models import Q
+from django.db.models.fields.related import OneToOneRel
 from django.urls import reverse
-from model_utils import FieldTracker
+from tracking_model import TrackingModelMixin
 
 from karaage.common import get_current_person, is_admin, log, new_random_token
 from karaage.common.constants import COUNTRIES, TITLES
@@ -30,14 +32,6 @@ from karaage.institutes.models import Institute
 from karaage.machines.models import Account
 from karaage.people.models import Person
 from karaage.projects.models import Project
-
-
-try:
-    # Django < 1.8
-    from django.db.models.related import RelatedObject as OneToOneRel
-except ImportError:
-    # Django >= 1.8
-    from django.db.models.fields.related import OneToOneRel
 
 
 class ApplicationManager(models.Manager):
@@ -65,7 +59,7 @@ class ApplicationManager(models.Manager):
         return self.get_queryset().filter(query)
 
 
-class Application(models.Model):
+class Application(TrackingModelMixin, models.Model):
 
     """ Generic application for anything. """
     WAITING_FOR_ADMIN = 'K'
@@ -94,8 +88,6 @@ class Application(models.Model):
 
     objects = ApplicationManager()
 
-    _tracker = FieldTracker()
-
     class Meta:
         db_table = "applications_application"
 
@@ -113,31 +105,24 @@ class Application(models.Model):
 
     def save(self, *args, **kwargs):
         created = self.pk is None
+        if created:
+            changed = {field: None for field in self.tracker.tracked_fields}
+        else:
+            changed = copy.deepcopy(self.tracker.changed)
+
         if not self.expires:
             self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
         if not self.pk:
             self.created_by = get_current_person()
 
-            # Find the accessor from Application to type(self) class
-            if hasattr(Application._meta, 'get_fields'):
-                # Django >= 1.8
-                fields = [
-                    f for f in Application._meta.get_fields()
-                    if isinstance(f, OneToOneRel)
-                    and f.field.primary_key
-                    and f.auto_created
-                ]
-
-            else:
-                # Django <= 1.8
-                fields = [
-                    f for f in Application._meta.get_all_related_objects()
-                    if isinstance(f, OneToOneRel)
-                    and f.field.primary_key
-                ]
+            fields = [
+                f for f in Application._meta.get_fields()
+                if isinstance(f, OneToOneRel)
+                and f.field.primary_key
+                and f.auto_created
+            ]
 
             for rel in fields:
-                # Works with Django < 1.8 and => 1.8
                 related_model = getattr(rel, 'related_model', rel.model)
 
                 # if we find it, save the name
@@ -149,7 +134,7 @@ class Application(models.Model):
 
         if created:
             log.add(self.application_ptr, 'Created')
-        for field in self._tracker.changed():
+        for field in changed.keys():
             log.change(
                 self.application_ptr,
                 'Changed %s to %s' % (field, getattr(self, field)))

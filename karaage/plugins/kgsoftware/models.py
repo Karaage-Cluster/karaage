@@ -16,9 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import copy
+
 from django.db import models
 from django.urls import reverse
-from model_utils import FieldTracker
+from tracking_model import TrackingModelMixin
 
 from karaage.common import log
 from karaage.machines.models import Machine
@@ -39,7 +41,7 @@ class SoftwareCategory(models.Model):
         return reverse('kg_software_category_list')
 
 
-class Software(models.Model):
+class Software(TrackingModelMixin, models.Model):
     category = models.ForeignKey(
         SoftwareCategory, blank=True, null=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, unique=True)
@@ -52,21 +54,23 @@ class Software(models.Model):
     restricted = models.BooleanField(
         help_text="Will require admin approval", default=False)
 
-    _tracker = FieldTracker()
-
     class Meta:
         ordering = ['name']
         db_table = 'software'
 
     def save(self, *args, **kwargs):
         created = self.pk is None
+        if created:
+            changed = {field: None for field in self.tracker.tracked_fields}
+        else:
+            changed = copy.deepcopy(self.tracker.changed)
 
         # save the object
         super(Software, self).save(*args, **kwargs)
 
         if created:
             log.add(self, 'Created')
-        for field in self._tracker.changed():
+        for field in changed.keys():
             log.change(self, 'Changed %s to %s'
                        % (field, getattr(self, field)))
 
