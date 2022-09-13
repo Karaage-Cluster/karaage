@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+
+import copy
 import datetime
 import warnings
 
@@ -23,7 +25,7 @@ import six
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from django.urls import reverse
-from model_utils import FieldTracker
+from tracking_model import TrackingModelMixin
 
 from karaage.common import is_admin, log
 from karaage.common.constants import COUNTRIES, STATES, TITLES
@@ -43,7 +45,7 @@ from karaage.people.managers import (
 # A locked person is a person who has not been deleted but is not allowed
 # access for some reason.
 
-class Person(AbstractBaseUser):
+class Person(TrackingModelMixin, AbstractBaseUser):
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(null=True, db_index=True)
     short_name = models.CharField(max_length=100)
@@ -93,8 +95,6 @@ class Person(AbstractBaseUser):
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'short_name', 'full_name', 'institute']
 
-    _tracker = FieldTracker()
-
     def __init__(self, *args, **kwargs):
         super(Person, self).__init__(*args, **kwargs)
         self._raw_password = None
@@ -116,13 +116,17 @@ class Person(AbstractBaseUser):
 
     def save(self, *args, **kwargs):
         created = self.pk is None
+        if created:
+            changed = {field: None for field in self.tracker.tracked_fields}
+        else:
+            changed = copy.deepcopy(self.tracker.changed)
 
         # save the object
         super(Person, self).save(*args, **kwargs)
 
         if created:
             log.add(self, 'Created')
-        for field in self._tracker.changed():
+        for field in changed.keys():
             if field != "password":
                 log.change(
                     self,
@@ -134,7 +138,7 @@ class Person(AbstractBaseUser):
             save_account(ua)
 
         # has locked status changed?
-        if self._tracker.has_changed("login_enabled"):
+        if "login_enabled" in changed:
             if self.login_enabled:
                 for ua in self.account_set.filter(date_deleted__isnull=True):
                     ua.unlock()
@@ -143,9 +147,9 @@ class Person(AbstractBaseUser):
                     ua.lock()
 
         # has the institute changed?
-        if self._tracker.has_changed("institute_id"):
+        if "institute_id" in changed:
             from karaage.institutes.models import Institute
-            old_institute_pk = self._tracker.previous("institute_id")
+            old_institute_pk = changed["institute_id"]
             new_institute = self.institute
             if old_institute_pk is not None:
                 old_institute = Institute.objects.get(pk=old_institute_pk)
@@ -381,7 +385,7 @@ class Person(AbstractBaseUser):
         return Institute.objects.filter(group__members=self)
 
 
-class Group(models.Model):
+class Group(TrackingModelMixin, models.Model):
 
     """Groups represent collections of people, these objects can be
     expressed externally in a datastore."""
@@ -396,8 +400,6 @@ class Group(models.Model):
         blank=True,
         help_text='Datastore specific values should be stored in this field.')
 
-    _tracker = FieldTracker()
-
     class Meta:
         ordering = ['name']
         db_table = 'people_group'
@@ -411,16 +413,20 @@ class Group(models.Model):
 
     def save(self, *args, **kwargs):
         created = self.pk is None
+        if created:
+            changed = {field: None for field in self.tracker.tracked_fields}
+        else:
+            changed = copy.deepcopy(self.tracker.changed)
 
         # save the object
         super(Group, self).save(*args, **kwargs)
 
         if created:
             log.add(self, 'Created')
-        for field in self._tracker.changed():
+        for field in changed.keys():
             log.field_change(self, field=field, new_value=getattr(self, field))
 
-        old_name = self._tracker.previous("name")
+        old_name = changed.get("name")
         new_name = self.name
         if old_name is not None and old_name != new_name:
             from karaage.datastores import set_group_name

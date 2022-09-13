@@ -16,11 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import copy
 import datetime
 
 from django.db import models
 from django.urls import reverse
-from model_utils import FieldTracker
+from tracking_model import TrackingModelMixin
 
 from karaage.common import is_admin, log
 from karaage.institutes.models import Institute
@@ -32,7 +33,7 @@ from karaage.projects.managers import (
 )
 
 
-class Project(models.Model):
+class Project(TrackingModelMixin, models.Model):
     pid = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=200)
     group = models.ForeignKey(Group, on_delete=models.PROTECT)
@@ -59,8 +60,6 @@ class Project(models.Model):
     active = ActiveProjectManager()
     deleted = DeletedProjectManager()
 
-    _tracker = FieldTracker()
-
     class Meta:
         ordering = ['pid']
         db_table = 'project'
@@ -74,6 +73,10 @@ class Project(models.Model):
 
     def save(self, *args, **kwargs):
         created = self.pk is None
+        if created:
+            changed = {field: None for field in self.tracker.tracked_fields}
+        else:
+            changed = copy.deepcopy(self.tracker.changed)
 
         # set group if not already set
         if self.group_id is None:
@@ -85,14 +88,13 @@ class Project(models.Model):
 
         if created:
             log.add(self, 'Created')
-        for field in self._tracker.changed():
+        for field in changed.keys():
             log.change(self, 'Changed %s to %s'
                        % (field, getattr(self, field)))
 
         # has pid changed?
-        self._tracker.has_changed("pid")
-        if self._tracker.has_changed("pid"):
-            old_pid = self._tracker.previous('pid')
+        if "pid" in changed:
+            old_pid = changed["pid"]
             if old_pid is not None:
                 from karaage.datastores import set_project_pid
                 set_project_pid(self, old_pid, self.pid)
@@ -103,8 +105,8 @@ class Project(models.Model):
         save_project(self)
 
         # has group changed?
-        if self._tracker.has_changed("group_id"):
-            old_group_pk = self._tracker.previous("group_id")
+        if "group_id" in changed:
+            old_group_pk = changed.get("group_id")
             new_group = self.group
             if old_group_pk is not None:
                 old_group = Group.objects.get(pk=old_group_pk)
@@ -125,7 +127,7 @@ class Project(models.Model):
         # Get list of accounts.
         # We do this here to ensure nothing gets deleted when
         # we call the super method.
-        old_group_pk = self._tracker.previous("group_id")
+        old_group_pk = self.tracker.changed.get("group_id", self.group_id)
         if old_group_pk is not None:
             old_group = Group.objects.get(pk=old_group_pk)
             query = Account.objects.filter(person__groups=old_group)
