@@ -23,6 +23,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from tracking_model import TrackingModelMixin
 
 from karaage.common import is_admin, log
@@ -263,7 +264,7 @@ class Account(TrackingModelMixin, models.Model):
         if self.date_deleted is not None:
             raise RuntimeError("Account is deactivated")
         # save the object
-        self.date_deleted = datetime.datetime.now()
+        self.date_deleted = timezone.now()
         self.login_enabled = False
         self.save()
         # self.save() will delete the datastore for us.

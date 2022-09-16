@@ -19,6 +19,7 @@
 import django.db.transaction
 import tldap.transaction
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 
 class Command(BaseCommand):
@@ -32,7 +33,7 @@ class Command(BaseCommand):
         from django.db.models import Count
 
         from ...models import Applicant, Application
-        now = datetime.datetime.now()
+        now = timezone.now()
 
         verbose = int(options.get('verbosity'))
 

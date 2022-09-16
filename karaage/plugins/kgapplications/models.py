@@ -24,6 +24,7 @@ from django.db import models
 from django.db.models import Q
 from django.db.models.fields.related import OneToOneRel
 from django.urls import reverse
+from django.utils import timezone
 from tracking_model import TrackingModelMixin
 
 from karaage.common import get_current_person, is_admin, log, new_random_token
@@ -111,7 +112,7 @@ class Application(TrackingModelMixin, models.Model):
             changed = copy.deepcopy(self.tracker.changed)
 
         if not self.expires:
-            self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
+            self.expires = timezone.now() + datetime.timedelta(days=7)
         if not self.pk:
             self.created_by = get_current_person()
 
@@ -152,15 +153,15 @@ class Application(TrackingModelMixin, models.Model):
     def reopen(self):
         self.submitted_date = None
         self.complete_date = None
-        self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
+        self.expires = timezone.now() + datetime.timedelta(days=7)
         self.save()
 
     def extend(self):
-        self.expires = datetime.datetime.now() + datetime.timedelta(days=7)
+        self.expires = timezone.now() + datetime.timedelta(days=7)
         self.save()
 
     def submit(self):
-        self.submitted_date = datetime.datetime.now()
+        self.submitted_date = timezone.now()
         self.save()
 
     def approve(self, approved_by):
@@ -173,13 +174,13 @@ class Application(TrackingModelMixin, models.Model):
             created_person = True
         else:
             assert False
-        self.complete_date = datetime.datetime.now()
+        self.complete_date = timezone.now()
         self.save()
         return created_person, False
     approve.alters_data = True
 
     def decline(self):
-        self.complete_date = datetime.datetime.now()
+        self.complete_date = timezone.now()
         self.save()
     decline.alters_data = True
 

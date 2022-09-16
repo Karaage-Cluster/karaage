@@ -28,13 +28,13 @@
             "_class": "projectapplication",
             "complete_date": null,
             "created_by": 1,
-            "created_date": "2014-11-04T17:22:36",
-            "expires": "2010-12-22T11:12:27",
+            "created_date": "2014-11-04T17:22:36+0000",
+            "expires": "2010-12-22T11:12:27+0000",
             "header_message": "",
             "new_applicant_id": 1,
             "secret_token": "27e889413e2d302b9b2a66c63b208962a3788730",
             "state": "C",
-            "submitted_date": "2010-12-15T16:38:01"
+            "submitted_date": "2010-12-15T16:38:01+0000"
         },
         "model": "kgapplications.application",
         "pk": 1

@@ -22,6 +22,7 @@ import pytest
 from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
 from karaage.machines.models import Machine
 from karaage.middleware.threadlocals import reset
@@ -178,7 +179,7 @@ class AccountTestCase(TestCase):
 class MachineTestCase(TestCase):
 
     def setUp(self):
-        today = datetime.datetime.now()
+        today = timezone.now()
         # 10cpus
         mach1 = Machine.objects.get(pk=1)
         mach1.start_date = today - datetime.timedelta(days=80)
