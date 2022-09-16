@@ -50,9 +50,8 @@ from .tables import SoftwareFilter, SoftwareTable
 
 
 if apps.is_installed("karaage.plugins.kgsoftware.applications"):
-    from karaage.plugins.kgapplications.tables import ApplicationTable
-
     from .applications.models import SoftwareApplication
+    from .applications.tables import SoftwareApplicationTable
     from .applications.views import new_application
 
     def is_application_pending(person, software_license):
@@ -73,7 +72,7 @@ if apps.is_installed("karaage.plugins.kgsoftware.applications"):
         return applications
 
     def get_application_table(request, applications):
-        applications_table = ApplicationTable(applications)
+        applications_table = SoftwareApplicationTable(applications)
         config = tables.RequestConfig(request, paginate={"per_page": 5})
         config.configure(applications_table)
         return applications_table
