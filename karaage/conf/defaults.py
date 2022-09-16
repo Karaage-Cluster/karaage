@@ -112,6 +112,7 @@ TEMPLATES = [
         },
     },
 ]
+FORM_RENDERER = "django.forms.renderers.DjangoDivFormRenderer"
 
 # A boolean that specifies whether Django’s translation system should be
 # enabled. This provides an easy way to turn it off, for performance. If this
