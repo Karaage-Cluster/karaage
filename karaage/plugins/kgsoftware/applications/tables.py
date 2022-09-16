@@ -17,6 +17,7 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 from karaage.plugins.kgapplications.tables import ApplicationTable
+
 from .models import SoftwareApplication
 
 
