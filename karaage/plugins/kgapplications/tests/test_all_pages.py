@@ -23,6 +23,7 @@ from __future__ import print_function, unicode_literals
 import datetime
 
 import pytest
+from django.utils import timezone
 
 from karaage.tests.client import TestAllPagesCase
 
@@ -52,5 +53,5 @@ class TestKgApplicationPages(TestAllPagesCase):
         super(TestKgApplicationPages, self).setUp()
 
         # we have to make sure the application isn't expired
-        new_expires = datetime.datetime.now() + datetime.timedelta(days=7)
+        new_expires = timezone.now() + datetime.timedelta(days=7)
         Application.objects.all().update(expires=new_expires)

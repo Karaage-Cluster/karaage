@@ -16,14 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-import datetime
-
 import django_tables2 as tables
 import six
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+from django.utils import timezone
 
 import karaage.common as util
 from karaage.common.decorators import admin_required, login_required
@@ -137,7 +136,7 @@ def application_detail(request, application_id, state=None, label=None):
 def application_unauthenticated(request, token, state=None, label=None):
     """ An somebody is trying to access an application. """
     application = base.get_application(secret_token=token)
-    if application.expires < datetime.datetime.now():
+    if application.expires < timezone.now():
         return render(
             template_name='kgapplications/common_expired.html',
             context={'application': application},
