@@ -70,7 +70,6 @@ else:
     )
 
 INSTALLED_APPS = (
-    'django_xmlrpc',
     'captcha',
     'ajax_select',
     'django_tables2',
@@ -245,20 +244,6 @@ AJAX_LOOKUP_CHANNELS = {
 AJAX_SELECT_BOOTSTRAP = True
 
 
-##
-# XMLRPC
-##
-
-# List of all XMLRPC methods that we support.
-XMLRPC_METHODS = (
-    ('karaage.machines.xmlrpc.get_disk_quota', 'get_disk_quota',),
-    ('karaage.projects.xmlrpc.get_project', 'get_project',),
-    ('karaage.projects.xmlrpc.get_project_members', 'get_project_members',),
-    ('karaage.projects.xmlrpc.get_projects', 'get_projects',),
-    ('karaage.projects.xmlrpc.get_users_projects', 'get_users_projects',),
-)
-
-
 ###
 # KARAAGE SETTINGS
 ###
@@ -277,10 +262,6 @@ FILES_DIR = "/var/lib/karaage3/files/"
 
 # URL FOR SHARED FILES
 FILES_URL = "/kgfiles/"
-
-# Default machine category, used by legacy XMLRPC when client doesn't specify
-# a machine name.
-DEFAULT_MC = 1
 
 # List of shells that we support.
 SHELLS = (

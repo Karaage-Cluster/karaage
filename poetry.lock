@@ -353,14 +353,6 @@ python-versions = "*"
 Django = ">=1.11"
 
 [[package]]
-name = "django-xmlrpc"
-version = "0.1.8"
-description = "XML-RPC Server App for the Django framework."
-category = "main"
-optional = false
-python-versions = "*"
-
-[[package]]
 name = "docutils"
 version = "0.19"
 description = "Docutils -- Python Documentation Utilities"
@@ -1242,7 +1234,7 @@ docs = ["sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "e02ca425f4f261c5e5bac54d1e754c5f3974f2e483101e0e06432e67eb7ccc16"
+content-hash = "7eca61b88b80b3355a66134fa9d0451b23078b5e9297b664c3a212f076c8383a"
 
 [metadata.files]
 alabaster = [
@@ -1541,10 +1533,6 @@ django-tables2 = [
 django-tracking-model = [
     {file = "django-tracking-model-0.1.5.tar.gz", hash = "sha256:3e97129aba2cf7fca6ace575fe9a048307ab12c812baf1e75a5e3b1ac3778644"},
     {file = "django_tracking_model-0.1.5-py2.py3-none-any.whl", hash = "sha256:58003868213a6623c59471b280e1eff198500b7984b050af0023e80df31a4a87"},
-]
-django-xmlrpc = [
-    {file = "django-xmlrpc-0.1.8.tar.gz", hash = "sha256:6e47d760a3ba9d5f7aff987f4d4a3872f3b0ba920d0677feeb70beb3b42f2020"},
-    {file = "django_xmlrpc-0.1.8-py2.py3-none-any.whl", hash = "sha256:ffa439964e7b4f32e87b9c072c50f6c643074e6830af54542b817210b8b5fe02"},
 ]
 docutils = [
     {file = "docutils-0.19-py3-none-any.whl", hash = "sha256:5e1de4d849fee02c63b040a4a3fd567f4ab104defd8a5511fbbc24a8a017efbc"},

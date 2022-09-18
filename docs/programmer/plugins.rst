@@ -37,7 +37,7 @@ A plugin needs to provide a plugin class that is derived from the
    plugins in Karaaage.
 
    .. versionchanged:: 3.1.5
- 
+
       BasePlugin is derived from :py:class:`django.apps.AppConfig` if Django
       1.7 is detected.
 
@@ -49,9 +49,6 @@ Here is an example, taken from the legacy karaage-usage pugin:
 
     class plugin(BasePlugin):
         name = "karaage.plugins.kgusage"
-        xmlrpc_methods = (
-            ('karaage.plugins.kgusage.xmlrpc.parse_usage', 'parse_usage',),
-        )
         settings = {
             'GRAPH_DEBUG': False,
             'GRAPH_DIR': 'kgusage/',
