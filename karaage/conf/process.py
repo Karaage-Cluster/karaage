@@ -48,9 +48,6 @@ def add_plugin(namespace, plugin_name, django_apps, depends):
     value = descriptor.django_apps
     django_apps.extend(value)
 
-    value = descriptor.xmlrpc_methods
-    namespace.XMLRPC_METHODS += value
-
     value = descriptor.template_context_processors
     namespace.TEMPLATES[0]['OPTIONS']['context_processors'] += value
 

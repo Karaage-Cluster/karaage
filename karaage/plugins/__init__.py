@@ -30,6 +30,5 @@ class BasePlugin(parent):
     name = None
     django_apps = ()
     depends = ()
-    xmlrpc_methods = ()
     settings = {}
     template_context_processors = ()

@@ -17,7 +17,6 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import django.views.static
-import django_xmlrpc.views
 from django.conf import settings
 from django.urls import include, re_path
 
@@ -55,7 +54,6 @@ for urls in get_urls("profile_urlpatterns"):
 # Standard URLS
 
 urlpatterns = [
-    re_path(r'^xmlrpc/$', django_xmlrpc.views.handle_xmlrpc),
     re_path(r'^captcha/', include('captcha.urls')),
     re_path(r'^lookup/', include('ajax_select.urls')),
 
