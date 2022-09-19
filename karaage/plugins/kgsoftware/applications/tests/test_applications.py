@@ -62,7 +62,7 @@ class SoftwareApplicationTestCase(TestCase):
         SoftwareLicense.objects.create(
             software=software,
             version="3.11",
-            text="You give your soal to the author " "if you wish to access this software.",
+            text="You give your soal to the author if you wish to access this software.",
         )
 
         set_no_admin()

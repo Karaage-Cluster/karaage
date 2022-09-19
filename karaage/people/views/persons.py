@@ -166,7 +166,7 @@ def user_detail(request, username):
     person = get_object_or_404(Person, username=username)
     if not person.can_view(request):
         return HttpResponseForbidden(
-            "<h1>Access Denied</h1>" "<p>You do not have permission to view details " "about this person.</p>"
+            "<h1>Access Denied</h1><p>You do not have permission to view details about this person.</p>"
         )
 
     leader_project_list = Project.objects.filter(leaders=person, is_active=True)
@@ -305,7 +305,7 @@ def password_request(request, username):
 
     if not person.can_view(request):
         return HttpResponseForbidden(
-            "<h1>Access Denied</h1>" "<p>You do not have permission to view details " "about this user.</p>"
+            "<h1>Access Denied</h1><p>You do not have permission to view details about this user.</p>"
         )
 
     elif not person.is_active:
@@ -331,7 +331,7 @@ def password_request_done(request, username):
 
     if not person.can_view(request):
         return HttpResponseForbidden(
-            "<h1>Access Denied</h1>" "<p>You do not have permission to view details " "about this user.</p>"
+            "<h1>Access Denied</h1><p>You do not have permission to view details about this user.</p>"
         )
 
     var = {

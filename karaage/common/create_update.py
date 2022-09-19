@@ -45,7 +45,7 @@ def get_model_and_form_class(model, form_class):
         class_name = model.__name__ + "Form"
         form_class = ModelFormMetaclass(class_name, (ModelForm,), {"Meta": Meta})
         return model, form_class
-    raise GenericViewError("Generic view must be called with either a model or" " form_class argument.")
+    raise GenericViewError("Generic view must be called with either a model or form_class argument.")
 
 
 def redirect(post_save_redirect, obj):
@@ -87,7 +87,7 @@ def lookup_object(model, object_id, slug, slug_field):
     elif slug and slug_field:
         lookup_kwargs["%s__exact" % slug_field] = slug
     else:
-        raise GenericViewError("Generic view must be called with either an object_id or a" " slug/slug_field.")
+        raise GenericViewError("Generic view must be called with either an object_id or a slug/slug_field.")
     try:
         return model.objects.get(**lookup_kwargs)
     except ObjectDoesNotExist:

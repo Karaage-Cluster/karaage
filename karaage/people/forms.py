@@ -62,12 +62,12 @@ class PersonForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(PersonForm, self).__init__(*args, **kwargs)
-        self.fields["short_name"].help_text = (
-            "This is typically the person's given name. " "For example enter 'Fred' here."
-        )
-        self.fields["full_name"].help_text = (
-            "This is typically the person's full name. " "For example enter 'Fred Smith' here."
-        )
+        self.fields[
+            "short_name"
+        ].help_text = "This is typically the person's given name. For example enter 'Fred' here."
+        self.fields[
+            "full_name"
+        ].help_text = "This is typically the person's full name. For example enter 'Fred Smith' here."
 
     def clean(self):
         data = super(PersonForm, self).clean()
@@ -113,7 +113,7 @@ class PersonForm(forms.ModelForm):
             users = users.exclude(pk=self.instance.pk)
         if users.count() > 0:
             raise forms.ValidationError(
-                six.u("An account with this email already exists. " "Please email %s") % settings.ACCOUNTS_EMAIL
+                six.u("An account with this email already exists. Please email %s") % settings.ACCOUNTS_EMAIL
             )
         clean_email(email)
         return email
@@ -125,7 +125,7 @@ class AdminPersonForm(PersonForm):
     expires = forms.DateField(widget=AdminDateWidget, required=False)
     is_admin = forms.BooleanField(help_text="Designates whether the user can log into this admin site.", required=False)
     is_systemuser = forms.BooleanField(
-        help_text="Designates that this user is a system process, " "not a person.", required=False
+        help_text="Designates that this user is a system process, not a person.", required=False
     )
 
     def __init__(self, *args, **kwargs):

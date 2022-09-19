@@ -198,8 +198,8 @@ class SlurmDataStore(base.DataStore):
         the_result = results[0]
         the_project = the_result["Account"]
         if projectname.lower() != the_project.lower():
-            logger.error("We expected projectname '%s' " "but got projectname '%s'." % (projectname, the_project))
-            raise RuntimeError("We expected projectname '%s' " "but got projectname '%s'." % (projectname, the_project))
+            logger.error("We expected projectname '%s' but got projectname '%s'." % (projectname, the_project))
+            raise RuntimeError("We expected projectname '%s' but got projectname '%s'." % (projectname, the_project))
 
         return the_result
 

@@ -136,7 +136,7 @@ def delete_project(request, project_id):
 
     error = None
     if query.count() > 0:
-        error = "There are accounts that use this project " "as the default_project."
+        error = "There are accounts that use this project as the default_project."
 
     elif request.method == "POST":
         deleted_by = request.user
@@ -238,7 +238,7 @@ def remove_user(request, project_id, username):
 
     error = None
     if query.count() > 0:
-        error = "The person has accounts that use this project " "as the default_project."
+        error = "The person has accounts that use this project as the default_project."
 
     elif request.method == "POST":
         remove_user_from_project(person, project)

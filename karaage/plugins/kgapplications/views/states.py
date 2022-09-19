@@ -342,7 +342,7 @@ class StateDuplicateApplicant(base.State):
                     return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
             return render(
-                template_name="kgapplications/" "project_duplicate_applicant.html",
+                template_name="kgapplications/project_duplicate_applicant.html",
                 context={
                     "application": application,
                     "form": form,

@@ -443,9 +443,7 @@ def __lookup_builtin(name):
                     try:
                         defaults[param] = __builtin_defaults[value]
                     except KeyError:
-                        raise ValueError(
-                            "builtin function %s: parameter %s: " "unknown default %r" % (name, param, value)
-                        )
+                        raise ValueError("builtin function %s: parameter %s: unknown default %r" % (name, param, value))
                 params.append(param)
             builtins[name] = (params, defaults)
         __builtin_functions = builtins

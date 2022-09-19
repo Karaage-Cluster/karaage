@@ -98,7 +98,7 @@ username,password,short_name,full_name,email,institute,project"""
                 fail = True
 
             if not RE_VALID_USERNAME.match(user["username"]):
-                sys.stderr.write("Error: Username is invalid. " "Use only letters, digits and underscores.\n")
+                sys.stderr.write("Error: Username is invalid. Use only letters, digits and underscores.\n")
                 fail = True
 
             try:

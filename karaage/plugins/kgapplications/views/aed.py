@@ -247,7 +247,7 @@ class StateStepProject(Step):
                 leader_list = leader_list.filter(query)
                 resp["leader_list"] = [(p.pk, "%s (%s)" % (p, p.username)) for p in leader_list]
             else:
-                resp["error"] = "Please enter at lease three " "characters for search."
+                resp["error"] = "Please enter at lease three characters for search."
                 resp["leader_list"] = []
 
         return resp
@@ -450,7 +450,7 @@ class StateApplicantEnteringDetails(StateWithSteps):
 
             if request.user.is_authenticated:
                 new_person = request.user
-                reason = "%s was logged in " "and accessed the secret URL." % new_person
+                reason = "%s was logged in and accessed the secret URL." % new_person
                 details = (
                     "If you want to access this application "
                     + "as %s " % application.applicant
@@ -472,7 +472,7 @@ class StateApplicantEnteringDetails(StateWithSteps):
                         return HttpResponseRedirect(url)
                     else:
                         return render(
-                            template_name="kgapplications" "/project_aed_steal.html",
+                            template_name="kgapplications/project_aed_steal.html",
                             context={
                                 "application": application,
                                 "person": new_person,

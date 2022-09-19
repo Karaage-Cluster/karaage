@@ -33,7 +33,7 @@ try:
     from factory.django import DjangoModelFactory
     from factory.fuzzy import FuzzyChoice, FuzzyText
 except ImportError:
-    raise ImportError("factory_boy is required, " "either install from a package or using 'pip install -e .[tests]'")
+    raise ImportError("factory_boy is required, either install from a package or using 'pip install -e .[tests]'")
 
 
 def fuzzy_lower_text(*args, **kwargs):

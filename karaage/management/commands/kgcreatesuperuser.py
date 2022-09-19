@@ -160,7 +160,7 @@ class Command(BaseCommand):
             while 1:
                 if not institute_name:
                     if Institute.objects.count() > 0:
-                        print("Choose an existing institute " "for new superuser.")
+                        print("Choose an existing institute for new superuser.")
                         print("Alternatively enter a new name to create one.")
                         print("")
                         print("Valid choices are:")

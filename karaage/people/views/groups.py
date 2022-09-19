@@ -177,7 +177,7 @@ def remove_group_member(request, group_name, username):
         count = group.project_set.filter(pk=account.default_project.pk).count()
         # If yes, error
         if count > 0:
-            error = "The person has accounts that use " "this group as the default_project."
+            error = "The person has accounts that use this group as the default_project."
 
     if error is None and request.method == "POST":
         group.remove_person(person)

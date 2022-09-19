@@ -44,7 +44,7 @@ class Command(BaseCommand):
                     p.lock()
                     p.expires = None
                     p.save()
-                    message = "%s's account has expired and their account " "has been locked. %s does not know this" % (
+                    message = "%s's account has expired and their account has been locked. %s does not know this" % (
                         p,
                         p,
                     )

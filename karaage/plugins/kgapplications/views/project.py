@@ -78,14 +78,14 @@ def _send_invitation(request, project):
             # If applicant is None then there were multiple persons found.
             if applicant is None and existing_person is None:
                 return render(
-                    template_name="kgapplications/" "project_common_invite_multiple.html",
+                    template_name="kgapplications/project_common_invite_multiple.html",
                     context={"form": form, "email": email},
                     request=request,
                 )
 
             if existing_person is not None and "existing" not in request.POST:
                 return render(
-                    template_name="kgapplications/" "project_common_invite_existing.html",
+                    template_name="kgapplications/project_common_invite_existing.html",
                     context={"form": form, "person": applicant},
                     request=request,
                 )
@@ -166,7 +166,7 @@ def new_application(request):
                 url = reverse("index")
                 return HttpResponseRedirect(url)
         return render(
-            template_name="kgapplications/" "project_common_invite_unauthenticated.html",
+            template_name="kgapplications/project_common_invite_unauthenticated.html",
             context={
                 "form": form,
             },
@@ -184,5 +184,5 @@ def new_application(request):
             response = state_machine.start(request, application, roles)
             return response
         return render(
-            template_name="kgapplications/" "project_common_invite_authenticated.html", context={}, request=request
+            template_name="kgapplications/project_common_invite_authenticated.html", context={}, request=request
         )

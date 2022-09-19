@@ -122,9 +122,9 @@ class ApplicantForm(forms.ModelForm):
         super(ApplicantForm, self).__init__(*args, **kwargs)
         self.fields["title"].required = True
         self.fields["short_name"].required = True
-        self.fields["short_name"].help_text = "This is typically your given name. " "For example enter 'Fred' here."
+        self.fields["short_name"].help_text = "This is typically your given name. For example enter 'Fred' here."
         self.fields["full_name"].required = True
-        self.fields["full_name"].help_text = "This is typically your full name. " "For example enter 'Fred Smith' here."
+        self.fields["full_name"].help_text = "This is typically your full name. For example enter 'Fred Smith' here."
         self.fields["username"].label = "Requested username"
         self.fields["username"].required = True
         self.fields["institute"].required = True
@@ -148,7 +148,7 @@ class ApplicantForm(forms.ModelForm):
         users = Person.objects.filter(email__exact=email)
         if users.count() > 0:
             raise forms.ValidationError(
-                six.u("An account with this email already exists. " "Please email %s") % settings.ACCOUNTS_EMAIL
+                six.u("An account with this email already exists. Please email %s") % settings.ACCOUNTS_EMAIL
             )
         clean_email(email)
         return email
@@ -268,7 +268,7 @@ class UnauthenticatedInviteUserApplicationForm(forms.Form):
         query = Person.active.filter(email=email)
         if query.count() > 0:
             raise forms.ValidationError(
-                six.u("E-Mail address is already in use. " "If you already have an account, please login.")
+                six.u("E-Mail address is already in use. If you already have an account, please login.")
             )
 
         clean_email(email)

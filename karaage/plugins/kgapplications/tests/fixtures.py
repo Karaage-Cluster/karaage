@@ -21,7 +21,7 @@ try:
     from factory.django import DjangoModelFactory
     from factory.fuzzy import FuzzyText
 except ImportError:
-    raise ImportError("factory_boy is required, " "either install from a package or using 'pip install -e .[tests]'")
+    raise ImportError("factory_boy is required, either install from a package or using 'pip install -e .[tests]'")
 
 from karaage.tests.fixtures import (
     InstituteFactory,

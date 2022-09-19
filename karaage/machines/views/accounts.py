@@ -72,7 +72,7 @@ def account_detail(request, account_id):
 
     if not account.can_view(request):
         return HttpResponseForbidden(
-            "<h1>Access Denied</h1>" "<p>You do not have permission to view details " "about this account.</p>"
+            "<h1>Access Denied</h1><p>You do not have permission to view details about this account.</p>"
         )
 
     return render(
@@ -88,7 +88,7 @@ def edit_account(request, account_id):
 
     if not account.can_edit(request):
         return HttpResponseForbidden(
-            "<h1>Access Denied</h1>" "<p>You do not have permission to edit details " "of this account.</p>"
+            "<h1>Access Denied</h1><p>You do not have permission to edit details of this account.</p>"
         )
 
     if common.is_admin(request):
@@ -195,13 +195,13 @@ def make_default(request, account_id, project_id):
 
     if not account.can_edit(request):
         return HttpResponseForbidden(
-            "<h1>Access Denied</h1>" "<p>You do not have permission to edit details " "of this account.</p>"
+            "<h1>Access Denied</h1><p>You do not have permission to edit details of this account.</p>"
         )
 
     try:
         project = account.person.projects.get(pid=project_id)
     except Project.DoesNotExist:
-        return HttpResponseForbidden("<h1>Access Denied</h1>" "<p>Person owning account is not in this project.</p>")
+        return HttpResponseForbidden("<h1>Access Denied</h1><p>Person owning account is not in this project.</p>")
 
     if request.method != "POST":
         return HttpResponseBadRequest("<h1>Bad Request</h1>")

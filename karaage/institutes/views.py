@@ -69,7 +69,7 @@ def institute_detail(request, institute_id):
     institute = get_object_or_404(Institute, pk=institute_id)
     if not institute.can_view(request):
         return HttpResponseForbidden(
-            "<h1>Access Denied</h1>" "<p>You do not have permission to view details" "about this institute.</p>"
+            "<h1>Access Denied</h1><p>You do not have permission to view details about this institute.</p>"
         )
 
     project_list = institute.project_set.select_related()

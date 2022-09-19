@@ -78,7 +78,7 @@ class Application(TrackingModelMixin, models.Model):
         "Message",
         null=True,
         blank=True,
-        help_text=six.u("Message displayed at top of application form " "for the invitee and also in invitation email"),
+        help_text=six.u("Message displayed at top of application form for the invitee and also in invitation email"),
     )
     _class = models.CharField(max_length=100, editable=False)
 
@@ -373,17 +373,17 @@ class Applicant(models.Model):
         # check for username conflict
         query = Person.objects.filter(username=self.username)
         if self.username and query.count() > 0:
-            errors.append("Application username address conflicts " "with existing person.")
+            errors.append("Application username address conflicts with existing person.")
 
         # check for saml_id conflict
         query = Person.objects.filter(saml_id=self.saml_id)
         if self.saml_id and query.count() > 0:
-            errors.append("Application saml_id address conflicts " "with existing person.")
+            errors.append("Application saml_id address conflicts with existing person.")
 
         # check for email conflict
         query = Person.objects.filter(email=self.email)
         if self.email and query.count() > 0:
-            errors.append("Application email address conflicts " "with existing person.")
+            errors.append("Application email address conflicts with existing person.")
 
         return errors
 
