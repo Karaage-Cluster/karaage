@@ -24,4 +24,4 @@ from karaage.signals import daily_cleanup
 
 @receiver(daily_cleanup)
 def daily_cleanup(sender, **kwargs):
-    management.call_command('application_cleanup')
+    management.call_command("application_cleanup")

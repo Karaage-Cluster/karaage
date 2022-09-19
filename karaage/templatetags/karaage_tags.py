@@ -35,20 +35,24 @@ register = template.Library()
 
 
 class UrlWithParamNode(template.Node):
-
     def __init__(self, copy, nopage, changes):
         self.copy = copy
         self.nopage = nopage
         self.changes = []
         for key, newvalue in changes:
             newvalue = template.Variable(newvalue)
-            self.changes.append((key, newvalue,))
+            self.changes.append(
+                (
+                    key,
+                    newvalue,
+                )
+            )
 
     def render(self, context):
-        if 'request' not in context:
+        if "request" not in context:
             return ""
 
-        request = context['request']
+        request = context["request"]
 
         result = {}
 
@@ -86,48 +90,45 @@ def url_with_param(parser, token):
 
     for i in bits:
         try:
-            key, newvalue = i.split('=', 1)
-            qschanges.append((key, newvalue,))
+            key, newvalue = i.split("=", 1)
+            qschanges.append(
+                (
+                    key,
+                    newvalue,
+                )
+            )
         except ValueError:
-            raise template.TemplateSyntaxError(
-                "Argument syntax wrong: should be key=value")
+            raise template.TemplateSyntaxError("Argument syntax wrong: should be key=value")
     return UrlWithParamNode(copy, nopage, qschanges)
 
 
-@register.inclusion_tag('karaage/common/comments.html', takes_context=True)
+@register.inclusion_tag("karaage/common/comments.html", takes_context=True)
 def comments(context, obj):
-    """ Render comments for obj. """
+    """Render comments for obj."""
     content_type = ContentType.objects.get_for_model(obj.__class__)
-    comment_list = LogEntry.objects.filter(
-        content_type=content_type,
-        object_id=obj.pk,
-        action_flag=COMMENT
-    )
+    comment_list = LogEntry.objects.filter(content_type=content_type, object_id=obj.pk, action_flag=COMMENT)
     return {
-        'obj': obj,
-        'comment_list': comment_list,
-        'is_admin': context['is_admin'],
+        "obj": obj,
+        "comment_list": comment_list,
+        "is_admin": context["is_admin"],
     }
 
 
 @register.simple_tag
 def comment_count(obj):
     content_type = ContentType.objects.get_for_model(obj.__class__)
-    comment_list = LogEntry.objects.filter(
-        content_type=content_type,
-        object_id=obj.pk,
-        action_flag=COMMENT
-    )
+    comment_list = LogEntry.objects.filter(content_type=content_type, object_id=obj.pk, action_flag=COMMENT)
     return int(comment_list.count())
 
 
 @register.simple_tag
 def active(request, pattern):
     import re
-    spec = '^%s/%s' % (request.META['SCRIPT_NAME'], pattern)
+
+    spec = "^%s/%s" % (request.META["SCRIPT_NAME"], pattern)
     if re.search(spec, request.path):
-        return 'active'
-    return ''
+        return "active"
+    return ""
 
 
 @register.simple_tag
@@ -136,9 +137,9 @@ def date_filter(start, end):
 
     today = datetime.date.today()
 
-    last_7 = (today - datetime.timedelta(days=7)).strftime('%Y-%m-%d')
-    last_90 = (today - datetime.timedelta(days=90)).strftime('%Y-%m-%d')
-    last_365 = (today - datetime.timedelta(days=365)).strftime('%Y-%m-%d')
+    last_7 = (today - datetime.timedelta(days=7)).strftime("%Y-%m-%d")
+    last_90 = (today - datetime.timedelta(days=90)).strftime("%Y-%m-%d")
+    last_365 = (today - datetime.timedelta(days=365)).strftime("%Y-%m-%d")
 
     view_7, view_90, view_365 = False, False, False
 
@@ -153,7 +154,7 @@ def date_filter(start, end):
     s = []
 
     if view_7:
-        s.append('Last 7 Days')
+        s.append("Last 7 Days")
     else:
         result["start"] = last_7
         url = ".?" + result.urlencode()
@@ -177,8 +178,8 @@ def date_filter(start, end):
 
 
 @register.simple_tag
-def yes_no(boolean, true_msg='Yes', false_msg='No'):
-    if reversed == 'reversed':
+def yes_no(boolean, true_msg="Yes", false_msg="No"):
+    if reversed == "reversed":
         if boolean:
             boolean = False
         else:
@@ -191,15 +192,13 @@ def yes_no(boolean, true_msg='Yes', false_msg='No'):
 
 
 class SearchFormNode(template.Node):
-
     def __init__(self, post_url):
         self.post_url = post_url
 
     def render(self, context):
-        template_obj = template.loader.get_template(
-            'karaage/common/search_form.html')
+        template_obj = template.loader.get_template("karaage/common/search_form.html")
         context.push()
-        context['post_url'] = self.post_url
+        context["post_url"] = self.post_url
         output = template_obj.render(context)
         context.pop()
         return output
@@ -211,7 +210,7 @@ def divide(a, b):
     try:
         return (Decimal(a) / Decimal(b) * 100).quantize(two_places)
     except (DivisionByZero, InvalidOperation):
-        return ''
+        return ""
 
 
 def get_app_labels():
@@ -222,13 +221,13 @@ def get_app_labels():
                 yield label
     else:
         from django.apps import apps
+
         for config in apps.get_app_configs():
             if isinstance(config, BasePlugin):
                 yield config.label
 
 
 class ForEachAppIncludeNode(template.Node):
-
     def __init__(self, template_name):
         self.template_name = template.Variable(template_name)
 
@@ -256,8 +255,7 @@ def for_each_app_include(parser, token):
     try:
         tag_name, template_name = token.split_contents()
     except ValueError:
-        raise template.TemplateSyntaxError(
-            "%r tag requires one arguments" % token.contents.split()[0])
+        raise template.TemplateSyntaxError("%r tag requires one arguments" % token.contents.split()[0])
     return ForEachAppIncludeNode(template_name)
 
 

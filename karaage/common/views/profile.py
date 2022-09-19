@@ -27,15 +27,13 @@ from karaage.common.decorators import login_required
 @login_required
 def profile(request):
     person = request.user
-    return render(
-        template_name='karaage/common/profile.html',
-        context=locals(),
-        request=request)
+    return render(template_name="karaage/common/profile.html", context=locals(), request=request)
 
 
 def logout(request, username=None):
     from django.contrib.auth import logout
+
     logout(request)
     url = reverse("index")
-    messages.success(request, 'Logout was successful.')
+    messages.success(request, "Logout was successful.")
     return HttpResponseRedirect(url)

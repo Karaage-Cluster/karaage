@@ -8,17 +8,17 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kgapplications', '0002_auto_20161007_1821'),
-        ('karaage', '0004_auto_20160429_0927'),
+        ("kgapplications", "0002_auto_20161007_1821"),
+        ("karaage", "0004_auto_20160429_0927"),
     ]
 
     run_before = [
-        ('karaage', '0005_auto_20171215_1831'),
+        ("karaage", "0005_auto_20171215_1831"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='projectapplication',
-            name='machine_categories',
+            model_name="projectapplication",
+            name="machine_categories",
         ),
     ]

@@ -41,9 +41,8 @@ def set_no_admin():
 
 @pytest.mark.django_db
 class SoftwareApplicationTestCase(TestCase):
-
     def setUp(self):
-        call_command('loaddata', 'test_karaage', **{'verbosity': 0})
+        call_command("loaddata", "test_karaage", **{"verbosity": 0})
 
     def tearDown(self):
         set_admin()
@@ -52,7 +51,7 @@ class SoftwareApplicationTestCase(TestCase):
         if django.VERSION >= (1, 9):
             url_prefix = ""
         else:
-            url_prefix = 'http://testserver'
+            url_prefix = "http://testserver"
 
         group = Group.objects.create(name="windows")
         software = Software.objects.create(
@@ -63,112 +62,91 @@ class SoftwareApplicationTestCase(TestCase):
         SoftwareLicense.objects.create(
             software=software,
             version="3.11",
-            text="You give your soal to the author "
-            "if you wish to access this software.",
+            text="You give your soal to the author " "if you wish to access this software.",
         )
 
         set_no_admin()
 
         # APPLICANT LOGS IN
-        logged_in = self.client.login(
-            username='kgtestuser1', password='aq12ws')
+        logged_in = self.client.login(username="kgtestuser1", password="aq12ws")
         self.assertEqual(logged_in, True)
         self.assertEqual(len(mail.outbox), 0)
 
-        response = self.client.get(
-            reverse('kg_software_detail', args=[software.pk]))
+        response = self.client.get(reverse("kg_software_detail", args=[software.pk]))
         self.assertEqual(response.status_code, 200)
 
         # OPEN APPLICATION
-        form_data = {
-        }
+        form_data = {}
 
-        response = self.client.post(
-            reverse('kg_software_detail', args=[software.pk]),
-            form_data, follow=True)
+        response = self.client.post(reverse("kg_software_detail", args=[software.pk]), form_data, follow=True)
         self.assertEqual(response.status_code, 200)
         application = Application.objects.get()
         self.assertEqual(
-            response.redirect_chain[0][0],
-            url_prefix
-            + reverse('kg_application_detail', args=[application.pk, 'O']))
+            response.redirect_chain[0][0], url_prefix + reverse("kg_application_detail", args=[application.pk, "O"])
+        )
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(
-            mail.outbox[0].subject,
-            'TestOrg invitation: access software windows')
+        self.assertEqual(mail.outbox[0].subject, "TestOrg invitation: access software windows")
         self.assertEqual(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL)
-        self.assertEqual(mail.outbox[0].to[0], 'leader@example.com')
+        self.assertEqual(mail.outbox[0].to[0], "leader@example.com")
 
         # SUBMIT APPLICATION
         form_data = {
-            'submit': True,
+            "submit": True,
         }
 
         response = self.client.post(
-            reverse('kg_application_detail', args=[application.pk, 'O']),
-            form_data, follow=True)
+            reverse("kg_application_detail", args=[application.pk, "O"]), form_data, follow=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.redirect_chain[0][0],
-            url_prefix
-            + reverse('kg_application_detail', args=[application.pk, 'K']))
+            response.redirect_chain[0][0], url_prefix + reverse("kg_application_detail", args=[application.pk, "K"])
+        )
 
         self.assertEqual(len(mail.outbox), 2)
-        self.assertEqual(
-            mail.outbox[1].subject, 'TestOrg request: access software windows')
+        self.assertEqual(mail.outbox[1].subject, "TestOrg request: access software windows")
         self.assertEqual(mail.outbox[1].from_email, settings.ACCOUNTS_EMAIL)
-        self.assertEqual(mail.outbox[1].to[0], 'sam@vpac.org')
+        self.assertEqual(mail.outbox[1].to[0], "sam@vpac.org")
 
         # ADMIN LOGS IN TO APPROVE
         set_admin()
-        logged_in = self.client.login(username='kgsuper', password='aq12ws')
+        logged_in = self.client.login(username="kgsuper", password="aq12ws")
         self.assertEqual(logged_in, True)
 
         # ADMIN GET DETAILS
-        response = self.client.get(
-            reverse('kg_application_detail', args=[application.pk, 'K']))
+        response = self.client.get(reverse("kg_application_detail", args=[application.pk, "K"]))
         self.assertEqual(response.status_code, 200)
 
         # ADMIN GET DECLINE PAGE
-        response = self.client.get(
-            reverse('kg_application_detail',
-                    args=[application.pk, 'K', 'cancel']))
+        response = self.client.get(reverse("kg_application_detail", args=[application.pk, "K", "cancel"]))
         self.assertEqual(response.status_code, 200)
 
         # ADMIN GET APPROVE PAGE
-        response = self.client.get(
-            reverse('kg_application_detail',
-                    args=[application.pk, 'K', 'approve']))
+        response = self.client.get(reverse("kg_application_detail", args=[application.pk, "K", "approve"]))
         self.assertEqual(response.status_code, 200)
 
         # ADMIN APPROVE
         form_data = {
-            'make_leader': False,
-            'additional_req': 'Woof',
-            'needs_account': False,
-            'approve': True,
+            "make_leader": False,
+            "additional_req": "Woof",
+            "needs_account": False,
+            "approve": True,
         }
         response = self.client.post(
-            reverse('kg_application_detail',
-                    args=[application.pk, 'K', 'approve']),
-            form_data, follow=True)
+            reverse("kg_application_detail", args=[application.pk, "K", "approve"]), form_data, follow=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.redirect_chain[0][0],
-            url_prefix
-            + reverse('kg_application_detail', args=[application.pk, 'C']))
+            response.redirect_chain[0][0], url_prefix + reverse("kg_application_detail", args=[application.pk, "C"])
+        )
         application = Application.objects.get(pk=application.id)
         self.assertEqual(application.state, SoftwareApplication.COMPLETED)
         self.assertEqual(len(mail.outbox), 3)
-        self.assertEqual(
-            mail.outbox[2].subject,
-            'TestOrg approved: access software windows')
+        self.assertEqual(mail.outbox[2].subject, "TestOrg approved: access software windows")
         self.assertEqual(mail.outbox[2].from_email, settings.ACCOUNTS_EMAIL)
-        self.assertEqual(mail.outbox[2].to[0], 'leader@example.com')
+        self.assertEqual(mail.outbox[2].to[0], "leader@example.com")
         self.client.logout()
         set_no_admin()
 
         # test group
-        groups = Group.objects.filter(
-            name="windows", members__username="kgtestuser1")
+        groups = Group.objects.filter(name="windows", members__username="kgtestuser1")
         self.assertEqual(len(groups), 1)

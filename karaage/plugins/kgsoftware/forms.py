@@ -38,18 +38,22 @@ class SoftwareForm(forms.ModelForm):
     homepage = forms.URLField(required=False)
     tutorial_url = forms.URLField(required=False)
     academic_only = forms.BooleanField(required=False)
-    restricted = forms.BooleanField(required=False,
-                                    help_text="Will require admin approval")
+    restricted = forms.BooleanField(required=False, help_text="Will require admin approval")
 
     def __init__(self, *args, **kwargs):
         super(SoftwareForm, self).__init__(*args, **kwargs)
-        self.fields['category'].queryset = SoftwareCategory.objects.all()
+        self.fields["category"].queryset = SoftwareCategory.objects.all()
 
     class Meta:
         model = Software
         fields = [
-            'category', 'name', 'description', 'homepage', 'tutorial_url',
-            'academic_only', 'restricted',
+            "category",
+            "name",
+            "description",
+            "homepage",
+            "tutorial_url",
+            "academic_only",
+            "restricted",
         ]
 
 
@@ -57,7 +61,8 @@ class AddPackageForm(SoftwareForm):
     group_name = forms.RegexField(
         "^%s$" % settings.GROUP_VALIDATION_RE,
         required=True,
-        error_messages={'invalid': settings.GROUP_VALIDATION_ERROR_MSG})
+        error_messages={"invalid": settings.GROUP_VALIDATION_ERROR_MSG},
+    )
     version = forms.CharField()
     module = forms.CharField(required=False)
     machines = forms.ModelMultipleChoiceField(queryset=None)
@@ -67,21 +72,21 @@ class AddPackageForm(SoftwareForm):
 
     def __init__(self, *args, **kwargs):
         super(AddPackageForm, self).__init__(*args, **kwargs)
-        self.fields['machines'].queryset = Machine.active.all()
+        self.fields["machines"].queryset = Machine.active.all()
 
     def clean(self):
 
         data = self.cleaned_data
 
-        if 'license_version' in data and data['license_version']:
-            if (not data['license_version']
-                    or 'license_date' not in data
-                    or not data['license_date']
-                    or 'license_text' not in data
-                    or not data['license_text']):
-                raise forms.ValidationError(
-                    six.u('You must specify all fields in the license section')
-                )
+        if "license_version" in data and data["license_version"]:
+            if (
+                not data["license_version"]
+                or "license_date" not in data
+                or not data["license_date"]
+                or "license_text" not in data
+                or not data["license_text"]
+            ):
+                raise forms.ValidationError(six.u("You must specify all fields in the license section"))
 
         return data
 
@@ -91,47 +96,44 @@ class AddPackageForm(SoftwareForm):
         data = self.cleaned_data
 
         software = super(AddPackageForm, self).save(commit=False)
-        name = self.cleaned_data['group_name']
+        name = self.cleaned_data["group_name"]
         software.group, _ = Group.objects.get_or_create(name=name)
         software.save()
 
         version = SoftwareVersion(
             software=software,
-            version=data['version'],
-            module=data['module'],
+            version=data["version"],
+            module=data["module"],
         )
         version.save()
-        version.machines.set(data['machines'])
+        version.machines.set(data["machines"])
 
-        if data['license_version']:
+        if data["license_version"]:
             SoftwareLicense.objects.create(
                 software=software,
-                version=data['license_version'],
-                date=data['license_date'],
-                text=data['license_text'],
+                version=data["license_version"],
+                date=data["license_date"],
+                text=data["license_text"],
             )
 
         return software
 
 
 class LicenseForm(forms.ModelForm):
-
     class Meta:
         model = SoftwareLicense
-        fields = ['software', 'version', 'date', 'text']
+        fields = ["software", "version", "date", "text"]
 
 
 class SoftwareVersionForm(forms.ModelForm):
-
     class Meta:
         model = SoftwareVersion
-        fields = ['software', 'version', 'machines', 'module', 'last_used']
+        fields = ["software", "version", "machines", "module", "last_used"]
 
 
 class SoftwareCategoryForm(forms.ModelForm):
-
     class Meta:
         model = SoftwareCategory
         fields = [
-            'name',
+            "name",
         ]

@@ -31,19 +31,17 @@ class TestKaraagePages(TestAllPagesCase):
     """Discover all URLs, do a HTTP GET and
     confirm 200 OK and no DB changes."""
 
-    fixtures = [
-        'test_karaage.json'
-    ]
+    fixtures = ["test_karaage.json"]
     variables = {
-        'username': 'kgsuper',
-        'group_name': 'example',
-        'account_id': '1',
-        'project_id': '1',
-        'projectquota_id': '1',
-        'institute_id': '1',
-        'institutequota_id': '1',
-        'machine_id': '1',
-        'category_id': '1',
+        "username": "kgsuper",
+        "group_name": "example",
+        "account_id": "1",
+        "project_id": "1",
+        "projectquota_id": "1",
+        "institute_id": "1",
+        "institutequota_id": "1",
+        "machine_id": "1",
+        "category_id": "1",
     }
     module = "karaage"
     module_exclude = "karaage.plugins"

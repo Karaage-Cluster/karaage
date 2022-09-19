@@ -31,175 +31,154 @@ from karaage.tests.integration import IntegrationTestCase
 
 @pytest.mark.django_db
 class ProjectTestCase(IntegrationTestCase):
-
     def setUp(self):
         super(ProjectTestCase, self).setUp()
-        call_command('loaddata', 'test_karaage', **{'verbosity': 0})
+        call_command("loaddata", "test_karaage", **{"verbosity": 0})
 
     def test_admin_add_project(self):
 
         Project.objects.count()
 
-        self.client.login(username='kgsuper', password='aq12ws')
-        response = self.client.get(reverse('kg_project_add'))
+        self.client.login(username="kgsuper", password="aq12ws")
+        response = self.client.get(reverse("kg_project_add"))
         self.assertEqual(response.status_code, 200)
 
         form_data = {
-            'name': 'Test Project 4',
-            'description': 'Test',
-            'institute': 1,
-            'leaders': "|2|3|",
-            'start_date': datetime.date.today(),
+            "name": "Test Project 4",
+            "description": "Test",
+            "institute": 1,
+            "leaders": "|2|3|",
+            "start_date": datetime.date.today(),
         }
 
-        response = self.client.post(reverse('kg_project_add'), form_data)
+        response = self.client.post(reverse("kg_project_add"), form_data)
         self.assertEqual(response.status_code, 302)
 
-        project = Project.objects.get(name='Test Project 4')
+        project = Project.objects.get(name="Test Project 4")
 
         self.assertEqual(project.is_active, True)
         self.assertEqual(project.date_approved, datetime.date.today())
-        self.assertEqual(
-            project.approved_by,
-            Person.objects.get(username='kgsuper'))
-        self.assertEqual(project.pid, 'pExam0001')
+        self.assertEqual(project.approved_by, Person.objects.get(username="kgsuper"))
+        self.assertEqual(project.pid, "pExam0001")
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
         self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())
         lgroup = self._ldap_datastore._get_group(cn=project.pid)
-        self.assertEqual(lgroup['cn'], [project.pid])
+        self.assertEqual(lgroup["cn"], [project.pid])
 
     def test_admin_add_project_pid(self):
         Project.objects.count()
 
-        self.client.login(username='kgsuper', password='aq12ws')
-        response = self.client.get(reverse('kg_project_add'))
+        self.client.login(username="kgsuper", password="aq12ws")
+        response = self.client.get(reverse("kg_project_add"))
         self.assertEqual(response.status_code, 200)
 
         form_data = {
-            'pid': "Enrico",
-            'name': 'Test Project 4',
-            'description': 'Test',
-            'institute': 1,
-            'leaders': "|2|3|",
-            'start_date': datetime.date.today(),
+            "pid": "Enrico",
+            "name": "Test Project 4",
+            "description": "Test",
+            "institute": 1,
+            "leaders": "|2|3|",
+            "start_date": datetime.date.today(),
         }
 
-        response = self.client.post(reverse('kg_project_add'), form_data)
+        response = self.client.post(reverse("kg_project_add"), form_data)
         self.assertEqual(response.status_code, 302)
 
         project = Project.objects.get(pid="Enrico")
 
         self.assertEqual(project.is_active, True)
         self.assertEqual(project.date_approved, datetime.date.today())
-        self.assertEqual(
-            project.approved_by,
-            Person.objects.get(username='kgsuper'))
-        self.assertEqual(project.pid, 'Enrico')
+        self.assertEqual(project.approved_by, Person.objects.get(username="kgsuper"))
+        self.assertEqual(project.pid, "Enrico")
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
         self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())
         lgroup = self._ldap_datastore._get_group(cn=project.pid)
-        self.assertEqual(lgroup['cn'], [project.pid])
+        self.assertEqual(lgroup["cn"], [project.pid])
 
     def test_add_remove_user_to_project(self):
-        self.assertRaises(
-            ObjectDoesNotExist,
-            self._ldap_datastore._get_account, uid='kgtestuser2')
+        self.assertRaises(ObjectDoesNotExist, self._ldap_datastore._get_account, uid="kgtestuser2")
 
         # login
-        self.client.login(username='kgsuper', password='aq12ws')
+        self.client.login(username="kgsuper", password="aq12ws")
 
         # get project details
-        project = Project.objects.get(pid='TestProject1')
+        project = Project.objects.get(pid="TestProject1")
         self.assertEqual(project.group.members.count(), 1)
-        response = self.client.get(
-            reverse('kg_project_detail', args=[project.id]))
+        response = self.client.get(reverse("kg_project_detail", args=[project.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertRaises(
-            ObjectDoesNotExist,
-            self._ldap_datastore._get_account, uid='kgtestuser2')
+        self.assertRaises(ObjectDoesNotExist, self._ldap_datastore._get_account, uid="kgtestuser2")
 
         # add kgtestuser2 to project
-        new_user = Person.objects.get(username='kgtestuser2')
-        response = self.client.post(
-            reverse('kg_project_detail', args=[project.id]),
-            {'person': new_user.id})
+        new_user = Person.objects.get(username="kgtestuser2")
+        response = self.client.post(reverse("kg_project_detail", args=[project.id]), {"person": new_user.id})
         self.assertEqual(response.status_code, 302)
-        project = Project.objects.get(pid='TestProject1')
+        project = Project.objects.get(pid="TestProject1")
         self.assertEqual(project.group.members.count(), 2)
 
-        account = self._ldap_datastore._get_account(uid='kgtestuser2')
-        groups = account['groups'].load(self._ldap_datastore._database)
+        account = self._ldap_datastore._get_account(uid="kgtestuser2")
+        groups = account["groups"].load(self._ldap_datastore._database)
         assert len(groups) == 1
-        assert groups[0]['cn'] == ['TestProject1']
+        assert groups[0]["cn"] == ["TestProject1"]
 
         # remove user
         for account in new_user.account_set.all():
             account.default_project = None
             account.save()
-        response = self.client.post(
-            reverse('kg_remove_project_member',
-                    args=[project.id, new_user.username]))
+        response = self.client.post(reverse("kg_remove_project_member", args=[project.id, new_user.username]))
         self.assertEqual(response.status_code, 302)
-        project = Project.objects.get(pid='TestProject1')
+        project = Project.objects.get(pid="TestProject1")
         self.assertEqual(project.group.members.count(), 1)
         lgroup = self._ldap_datastore._get_group(cn=project.pid)
-        assert 'kgtestuser2' not in lgroup['memberUid']
+        assert "kgtestuser2" not in lgroup["memberUid"]
 
     def test_delete_project(self):
 
-        self.client.login(username='kgsuper', password='aq12ws')
+        self.client.login(username="kgsuper", password="aq12ws")
 
-        project = Project.objects.get(pid='TestProject1')
+        project = Project.objects.get(pid="TestProject1")
         for account in Account.objects.filter(default_project=project):
             account.default_project = None
             account.save()
 
         self.assertEqual(project.is_active, True)
 
-        response = self.client.post(
-            reverse('kg_project_delete', args=[project.id]))
+        response = self.client.post(reverse("kg_project_delete", args=[project.id]))
         self.assertEqual(response.status_code, 302)
 
-        project = Project.objects.get(pid='TestProject1')
+        project = Project.objects.get(pid="TestProject1")
 
         self.assertEqual(project.is_active, False)
         self.assertEqual(project.group.members.count(), 0)
         self.assertEqual(project.date_deleted, datetime.date.today())
-        self.assertEqual(
-            project.deleted_by,
-            Person.objects.get(username='kgsuper'))
+        self.assertEqual(project.deleted_by, Person.objects.get(username="kgsuper"))
 
     def test_change_default(self):
         pass
 
     def test_admin_edit_project(self):
-        project = Project.objects.get(pid='TestProject1')
+        project = Project.objects.get(pid="TestProject1")
         self.assertEqual(project.is_active, True)
-        self.assertEqual(project.name, 'Test Project 1')
+        self.assertEqual(project.name, "Test Project 1")
         self.assertTrue(Person.objects.get(pk=1) in project.leaders.all())
         self.assertFalse(Person.objects.get(pk=2) in project.leaders.all())
         self.assertFalse(Person.objects.get(pk=3) in project.leaders.all())
-        self.assertTrue(
-            Person.objects.get(pk=3) in project.group.members.all())
+        self.assertTrue(Person.objects.get(pk=3) in project.group.members.all())
 
-        self.client.login(username='kgsuper', password='aq12ws')
-        response = self.client.get(
-            reverse('kg_project_edit', args=[project.id]))
+        self.client.login(username="kgsuper", password="aq12ws")
+        response = self.client.get(reverse("kg_project_edit", args=[project.id]))
         self.assertEqual(response.status_code, 200)
 
         form_data = {
-            'name': 'Test Project 1 was 4',
-            'description': 'Test',
-            'institute': 1,
-            'leaders': "|2|3|",
-            'start_date': project.start_date,
+            "name": "Test Project 1 was 4",
+            "description": "Test",
+            "institute": 1,
+            "leaders": "|2|3|",
+            "start_date": project.start_date,
         }
 
-        response = self.client.post(
-            reverse('kg_project_edit', args=[project.id]),
-            form_data)
+        response = self.client.post(reverse("kg_project_edit", args=[project.id]), form_data)
         self.assertEqual(response.status_code, 302)
-        project = Project.objects.get(pid='TestProject1')
+        project = Project.objects.get(pid="TestProject1")
         self.assertEqual(project.is_active, True)
         # this is not changed because we don't support editing leaders with
         # this interface any more
@@ -207,7 +186,7 @@ class ProjectTestCase(IntegrationTestCase):
         self.assertFalse(Person.objects.get(pk=2) in project.leaders.all())
         self.assertFalse(Person.objects.get(pk=3) in project.leaders.all())
         lgroup = self._ldap_datastore._get_group(cn=project.pid)
-        self.assertEqual(lgroup['cn'], [project.pid])
+        self.assertEqual(lgroup["cn"], [project.pid])
 
     def test_user_add_project(self):
         pass
@@ -216,7 +195,7 @@ class ProjectTestCase(IntegrationTestCase):
         pass
 
     def test_change_group(self):
-        group, _ = Group.objects.get_or_create(name='example')
-        project = Project.objects.get(pid='TestProject1')
+        group, _ = Group.objects.get_or_create(name="example")
+        project = Project.objects.get(pid="TestProject1")
         project.group = group
         project.save()

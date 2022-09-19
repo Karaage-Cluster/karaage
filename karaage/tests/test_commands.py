@@ -24,13 +24,12 @@ from karaage.signals import daily_cleanup
 
 
 class CommandsTestCase(TestCase):
-
     def test_daily_cleanup(self):
         callback = Mock()
         daily_cleanup.connect(callback)
 
         try:
-            call_command('daily_cleanup')
+            call_command("daily_cleanup")
         finally:
             daily_cleanup.disconnect(daily_cleanup)
 

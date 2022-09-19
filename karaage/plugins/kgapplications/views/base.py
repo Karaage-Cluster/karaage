@@ -38,8 +38,8 @@ from ..models import Application
 
 
 def load_state_instance(config):
-    assert config['type'] == 'state'
-    name = config['class']
+    assert config["type"] == "state"
+    name = config["class"]
     module_name, class_name = name.rsplit(".", 1)
     module = importlib.import_module(module_name)
     klass = getattr(module, class_name)
@@ -48,8 +48,8 @@ def load_state_instance(config):
 
 
 def load_transition_instance(config):
-    assert config['type'] == 'transition'
-    name = config['class']
+    assert config["type"] == "transition"
+    name = config["class"]
     module_name, class_name = name.rsplit(".", 1)
     module = importlib.import_module(module_name)
     klass = getattr(module, class_name)
@@ -58,25 +58,25 @@ def load_transition_instance(config):
 
 
 def load_instance(config):
-    if config['type'] == 'state':
+    if config["type"] == "state":
         return load_state_instance(config)
-    if config['type'] == 'transition':
+    if config["type"] == "transition":
         return load_transition_instance(config)
     else:
         assert False
 
 
 def get_url(request, application, roles, label=None):
-    """ Retrieve a link that will work for the current user. """
+    """Retrieve a link that will work for the current user."""
     args = []
     if label is not None:
         args.append(label)
 
     # don't use secret_token unless we have to
-    if 'is_admin' in roles:
+    if "is_admin" in roles:
         # Administrators can access anything without secrets
         require_secret = False
-    elif 'is_applicant' not in roles:
+    elif "is_applicant" not in roles:
         # we never give secrets to anybody but the applicant
         require_secret = False
     elif not request.user.is_authenticated:
@@ -93,48 +93,40 @@ def get_url(request, application, roles, label=None):
 
     # return required url
     if not require_secret:
-        url = reverse(
-            'kg_application_detail',
-            args=[application.pk, application.state] + args)
+        url = reverse("kg_application_detail", args=[application.pk, application.state] + args)
     else:
-        url = reverse(
-            'kg_application_unauthenticated',
-            args=[application.secret_token, application.state] + args)
+        url = reverse("kg_application_unauthenticated", args=[application.secret_token, application.state] + args)
     return url
 
 
 def get_admin_email_link(application):
-    """ Retrieve a link that can be emailed to the administrator. """
-    url = '%s/applications/%d/' % (settings.ADMIN_BASE_URL, application.pk)
+    """Retrieve a link that can be emailed to the administrator."""
+    url = "%s/applications/%d/" % (settings.ADMIN_BASE_URL, application.pk)
     is_secret = False
     return url, is_secret
 
 
 def get_registration_email_link(application):
-    """ Retrieve a link that can be emailed to the logged other users. """
-    url = '%s/applications/%d/' % (
-        settings.REGISTRATION_BASE_URL, application.pk)
+    """Retrieve a link that can be emailed to the logged other users."""
+    url = "%s/applications/%d/" % (settings.REGISTRATION_BASE_URL, application.pk)
     is_secret = False
     return url, is_secret
 
 
 def get_email_link(application):
-    """ Retrieve a link that can be emailed to the applicant. """
+    """Retrieve a link that can be emailed to the applicant."""
     # don't use secret_token unless we have to
-    if (application.existing_person is not None
-            and application.existing_person.has_usable_password()):
-        url = '%s/applications/%d/' % (
-            settings.REGISTRATION_BASE_URL, application.pk)
+    if application.existing_person is not None and application.existing_person.has_usable_password():
+        url = "%s/applications/%d/" % (settings.REGISTRATION_BASE_URL, application.pk)
         is_secret = False
     else:
-        url = '%s/applications/%s/' % (
-            settings.REGISTRATION_BASE_URL, application.secret_token)
+        url = "%s/applications/%s/" % (settings.REGISTRATION_BASE_URL, application.secret_token)
         is_secret = True
     return url, is_secret
 
 
 class StateMachine(object):
-    """ State machine, for processing states. """
+    """State machine, for processing states."""
 
     ##################
     # PUBLIC METHODS #
@@ -142,8 +134,8 @@ class StateMachine(object):
 
     def __init__(self, config):
         self._first_state = {
-            'type': 'goto',
-            'key': 'start',
+            "type": "goto",
+            "key": "start",
         }
         self._config = config
         super(StateMachine, self).__init__()
@@ -156,7 +148,7 @@ class StateMachine(object):
         return instance
 
     def start(self, request, application, extra_roles=None):
-        """ Continue the state machine at first state. """
+        """Continue the state machine at first state."""
         # Get the authentication of the current user
         roles = self._get_roles_for_request(request, application)
         if extra_roles is not None:
@@ -164,16 +156,14 @@ class StateMachine(object):
 
         # Ensure current user is authenticated. If user isn't applicant,
         # leader, delegate or admin, they probably shouldn't be here.
-        if 'is_authorised' not in roles:
-            return HttpResponseForbidden('<h1>Access Denied</h1>')
+        if "is_authorised" not in roles:
+            return HttpResponseForbidden("<h1>Access Denied</h1>")
 
         # Go to first state.
         return self._next(request, application, roles, self._first_state)
 
-    def process(
-            self, request, application,
-            expected_state, label, extra_roles=None):
-        """ Process the view request at the current state. """
+    def process(self, request, application, expected_state, label, extra_roles=None):
+        """Process the view request at the current state."""
 
         # Get the authentication of the current user
         roles = self._get_roles_for_request(request, application)
@@ -182,8 +172,8 @@ class StateMachine(object):
 
         # Ensure current user is authenticated. If user isn't applicant,
         # leader, delegate or admin, they probably shouldn't be here.
-        if 'is_authorised' not in roles:
-            return HttpResponseForbidden('<h1>Access Denied</h1>')
+        if "is_authorised" not in roles:
+            return HttpResponseForbidden("<h1>Access Denied</h1>")
 
         # If user didn't supply state on URL, redirect to full URL.
         if expected_state is None:
@@ -199,9 +189,7 @@ class StateMachine(object):
         if expected_state != application.state:
             # post data will be lost
             if request.method == "POST":
-                messages.warning(
-                    request,
-                    "Discarding request and jumping to current state.")
+                messages.warning(request, "Discarding request and jumping to current state.")
             # note we discard the label, it probably isn't relevant for new
             # state
             url = get_url(request, application, roles)
@@ -241,17 +229,17 @@ class StateMachine(object):
     ###################
     @staticmethod
     def _get_roles_for_request(request, application):
-        """ Check the authentication of the current user. """
+        """Check the authentication of the current user."""
         roles = application.get_roles_for_person(request.user)
 
         if common.is_admin(request):
             roles.add("is_admin")
-            roles.add('is_authorised')
+            roles.add("is_authorised")
 
         return roles
 
     def _next(self, request, application, roles, next_config):
-        """ Continue the state machine at given state. """
+        """Continue the state machine at given state."""
         # we only support state changes for POST requests
         if request.method == "POST":
             key = None
@@ -259,10 +247,10 @@ class StateMachine(object):
             # If next state is a transition, process it
             while True:
                 # We do not expect to get a direct state transition here.
-                assert next_config['type'] in ['goto', 'transition']
+                assert next_config["type"] in ["goto", "transition"]
 
-                while next_config['type'] == 'goto':
-                    key = next_config['key']
+                while next_config["type"] == "goto":
+                    key = next_config["key"]
                     next_config = self._config[key]
 
                 instance = load_instance(next_config)
@@ -292,7 +280,8 @@ class StateMachine(object):
 
 
 class State(object):
-    """ A abstract class that is the base for all application states. """
+    """A abstract class that is the base for all application states."""
+
     name = "Abstract State"
     actions = set()
 
@@ -300,11 +289,11 @@ class State(object):
         self.context = {}
         self._config = config
         for action_key in self.actions:
-            key = 'on_%s' % action_key
+            key = "on_%s" % action_key
             assert key in config
         actions = self.actions
         for key, value in config.items():
-            if key.startswith('on_'):
+            if key.startswith("on_"):
                 action_key = key[3:]
                 assert action_key in actions
 
@@ -312,7 +301,7 @@ class State(object):
         return self.actions
 
     def enter_state(self, request, application):
-        """ This is becoming the new current state. """
+        """This is becoming the new current state."""
         pass
 
     def get_next_config(self, request, application, label, roles):
@@ -320,12 +309,12 @@ class State(object):
         if isinstance(response, HttpResponse):
             return response
         assert response in self.get_actions(request, application, roles)
-        key = 'on_%s' % response
+        key = "on_%s" % response
         return self._config[key]
 
     def get_next_action(self, request, application, label, roles):
-        """ Django view method. We provide a default detail view for
-        applications. """
+        """Django view method. We provide a default detail view for
+        applications."""
 
         # We only provide a view for when no label provided
         if label is not None:
@@ -337,15 +326,8 @@ class State(object):
         # process the request in default view
         if request.method == "GET":
             context = self.context
-            context.update({
-                'application': application,
-                'actions': actions,
-                'state': self.name,
-                'roles': roles})
-            return render(
-                template_name='kgapplications/common_detail.html',
-                context=context,
-                request=request)
+            context.update({"application": application, "actions": actions, "state": self.name, "roles": roles})
+            return render(template_name="kgapplications/common_detail.html", context=context, request=request)
         elif request.method == "POST":
             for action in actions:
                 if action in request.POST:
@@ -356,13 +338,14 @@ class State(object):
 
 
 class Transition(object):
-    """ A transition from one state to another. """
+    """A transition from one state to another."""
+
     actions = set()
 
     def __init__(self, config):
         self._config = config
         for action in self.actions:
-            key = 'on_%s' % action
+            key = "on_%s" % action
             assert key in config
 
     def get_actions(self, request, application, roles):
@@ -371,11 +354,11 @@ class Transition(object):
     def get_next_config(self, request, application, roles):
         action = self.get_next_action(request, application, roles)
         assert action in self.get_actions(request, application, roles)
-        key = 'on_%s' % action
+        key = "on_%s" % action
         return self._config[key]
 
     def get_next_action(self, request, application, roles):
-        """ Retrieve the next state. """
+        """Retrieve the next state."""
         raise NotImplementedError()
 
 

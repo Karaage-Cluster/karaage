@@ -32,24 +32,21 @@ from django.template import loader
 logger = logging.getLogger(__name__)
 
 
-def direct_to_template(
-        request, template, extra_context=None, mimetype=None, **kwargs):
+def direct_to_template(request, template, extra_context=None, mimetype=None, **kwargs):
     """
     Render a given template with any extra URL parameters in the context as
     ``{{ params }}``.
     """
     if extra_context is None:
         extra_context = {}
-    dictionary = {'params': kwargs}
+    dictionary = {"params": kwargs}
     for key, value in extra_context.items():
         if callable(value):
             dictionary[key] = value()
         else:
             dictionary[key] = value
     t = loader.get_template(template)
-    return HttpResponse(
-        t.render(context=dictionary, request=request),
-        content_type=mimetype)
+    return HttpResponse(t.render(context=dictionary, request=request), content_type=mimetype)
 
 
 def redirect_to(request, url, permanent=True, query_string=False, **kwargs):
@@ -75,7 +72,7 @@ def redirect_to(request, url, permanent=True, query_string=False, **kwargs):
     from the request is appended to the URL.
 
     """
-    args = request.META.get('QUERY_STRING', '')
+    args = request.META.get("QUERY_STRING", "")
 
     if url is not None:
         if kwargs:
@@ -84,15 +81,8 @@ def redirect_to(request, url, permanent=True, query_string=False, **kwargs):
         if args and query_string:
             url = "%s?%s" % (url, args)
 
-        klass = (permanent and HttpResponsePermanentRedirect
-                 or HttpResponseRedirect)
+        klass = permanent and HttpResponsePermanentRedirect or HttpResponseRedirect
         return klass(url)
     else:
-        logger.warning(
-            'Gone: %s',
-            request.path,
-            extra={
-                'status_code': 410,
-                'request': request
-            })
+        logger.warning("Gone: %s", request.path, extra={"status_code": 410, "request": request})
         return HttpResponseGone()

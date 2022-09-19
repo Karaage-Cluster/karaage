@@ -32,12 +32,11 @@ from .models import Project
 
 
 class ActiveFilter(django_filters.ChoiceFilter):
-
     def __init__(self, *args, **kwargs):
         choices = [
-            ('', 'Unknown'),
-            ('deleted', 'Deleted'),
-            ('yes', 'Yes'),
+            ("", "Unknown"),
+            ("deleted", "Deleted"),
+            ("yes", "Yes"),
         ]
 
         super(ActiveFilter, self).__init__(*args, choices=choices, **kwargs)
@@ -52,24 +51,22 @@ class ActiveFilter(django_filters.ChoiceFilter):
 
 
 class ProjectColumn(tables.Column):
-
     def __init__(self, *args, **kwargs):
         super(ProjectColumn, self).__init__(*args, empty_values=(), **kwargs)
 
     def render_link(self, uri, value, attrs=None):
-        attrs = AttributeDict(attrs if attrs is not None else
-                              self.attrs.get('a', {}))
-        attrs['href'] = uri
+        attrs = AttributeDict(attrs if attrs is not None else self.attrs.get("a", {}))
+        attrs["href"] = uri
 
         return format_html(
-            '<a {attrs}>{text}</a>',
+            "<a {attrs}>{text}</a>",
             attrs=attrs.as_html(),
             text=value,
         )
 
     def render(self, value):
         if value is not None:
-            url = reverse('kg_project_detail', args=[value.id])
+            url = reverse("kg_project_detail", args=[value.id])
             link = self.render_link(url, value=six.text_type(value.pid))
             return link
         else:
@@ -83,15 +80,13 @@ class ProjectFilter(django_filters.FilterSet):
 
     class Meta:
         model = Project
-        fields = ('pid', 'name', 'institute', 'is_approved', 'active')
+        fields = ("pid", "name", "institute", "is_approved", "active")
 
 
 class ProjectTable(tables.Table):
-    is_active = tables.Column(order_by='-is_active', verbose_name="active")
-    pid = tables.LinkColumn(
-        'kg_project_detail', args=[A('id')], verbose_name="PID")
-    institute = tables.LinkColumn(
-        'kg_institute_detail', args=[A('institute__pk')])
+    is_active = tables.Column(order_by="-is_active", verbose_name="active")
+    pid = tables.LinkColumn("kg_project_detail", args=[A("id")], verbose_name="PID")
+    institute = tables.LinkColumn("kg_institute_detail", args=[A("institute__pk")])
     leaders = PeopleColumn(orderable=False)
 
     def render_is_active(self, record):
@@ -105,6 +100,5 @@ class ProjectTable(tables.Table):
 
     class Meta:
         model = Project
-        fields = ('is_active', 'pid', 'name', 'institute',
-                  'leaders', 'last_usage')
+        fields = ("is_active", "pid", "name", "institute", "leaders", "last_usage")
         empty_text = "No items"

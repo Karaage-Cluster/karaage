@@ -25,7 +25,7 @@ from karaage.conf.process import post_process
 exec(open("/etc/karaage3/settings.py", "rb").read())
 
 PLUGINS = [
-    'karaage.plugins.kgapplications.plugin',
+    "karaage.plugins.kgapplications.plugin",
 ]
 
 post_process(sys.modules[__name__])

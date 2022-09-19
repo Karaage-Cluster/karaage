@@ -23,22 +23,20 @@ from karaage.people.views import persons
 
 
 urlpatterns = [
-    re_path(r'^$', persons.user_list, name='kg_person_list'),
-    re_path(r'^struggling/$', persons.struggling, name='kg_person_struggling'),
-    re_path(r'^locked/$', persons.locked_list, name='kg_person_locked'),
-
-    re_path(r'^add/$', persons.add_user, name='kg_person_add'),
-
-    re_path(r'^detail/(?P<username>%s)/' % settings.USERNAME_VALIDATION_RE,
-            include('karaage.people.urls.person_detail')),
+    re_path(r"^$", persons.user_list, name="kg_person_list"),
+    re_path(r"^struggling/$", persons.struggling, name="kg_person_struggling"),
+    re_path(r"^locked/$", persons.locked_list, name="kg_person_locked"),
+    re_path(r"^add/$", persons.add_user, name="kg_person_add"),
+    re_path(
+        r"^detail/(?P<username>%s)/" % settings.USERNAME_VALIDATION_RE, include("karaage.people.urls.person_detail")
+    ),
 ]
 
 urlpatterns += [
-    re_path(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/'
-            r'(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,32})/$',
-            persons.PasswordResetConfirmView.as_view(),
-            name='password_reset_confirm'),
-    re_path(r'^reset/done/$',
-            persons.PasswordResetCompleteView.as_view(),
-            name='password_reset_complete'),
+    re_path(
+        r"^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/" r"(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,32})/$",
+        persons.PasswordResetConfirmView.as_view(),
+        name="password_reset_confirm",
+    ),
+    re_path(r"^reset/done/$", persons.PasswordResetCompleteView.as_view(), name="password_reset_complete"),
 ]

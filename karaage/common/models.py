@@ -37,11 +37,10 @@ COMMENT = 4
 
 
 class LogEntryManager(models.Manager):
-
-    def log_action(self, user_id, content_type_id, object_id,
-                   object_repr, action_flag, change_message=''):
-        msg = self.model(None, None, user_id, content_type_id, object_id,
-                         object_repr[:200], action_flag, change_message)
+    def log_action(self, user_id, content_type_id, object_id, object_repr, action_flag, change_message=""):
+        msg = self.model(
+            None, None, user_id, content_type_id, object_id, object_repr[:200], action_flag, change_message
+        )
         msg.save()
         return msg
 
@@ -60,51 +59,49 @@ class LogEntryManager(models.Manager):
             object_id=obj.pk,
             object_repr=six.text_type(obj),
             action_flag=flag,
-            change_message=message)
+            change_message=message,
+        )
 
 
 class LogEntry(models.Model):
-    action_time = models.DateTimeField(_('action time'), auto_now_add=True)
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
+    action_time = models.DateTimeField(_("action time"), auto_now_add=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.TextField(_('object id'), blank=True, null=True)
-    content_object = GenericForeignKey('content_type', 'object_id')
-    object_repr = models.CharField(_('object repr'), max_length=200)
-    action_flag = models.PositiveSmallIntegerField(_('action flag'))
-    change_message = models.TextField(_('change message'), blank=True)
+    object_id = models.TextField(_("object id"), blank=True, null=True)
+    content_object = GenericForeignKey("content_type", "object_id")
+    object_repr = models.CharField(_("object repr"), max_length=200)
+    action_flag = models.PositiveSmallIntegerField(_("action flag"))
+    change_message = models.TextField(_("change message"), blank=True)
 
     objects = LogEntryManager()
 
     class Meta:
-        verbose_name = _('log entry')
-        verbose_name_plural = _('log entries')
-        db_table = 'admin_log'
-        app_label = 'karaage'
-        ordering = ('-action_time', '-pk')
+        verbose_name = _("log entry")
+        verbose_name_plural = _("log entries")
+        db_table = "admin_log"
+        app_label = "karaage"
+        ordering = ("-action_time", "-pk")
 
     def __repr__(self):
         return smart_str(self.action_time)
 
     def __str__(self):
         if self.action_flag == ADDITION:
-            return gettext('Added "%(object)s".') % \
-                {'object': self.object_repr}
+            return gettext('Added "%(object)s".') % {"object": self.object_repr}
         elif self.action_flag == CHANGE:
             return gettext('Changed "%(object)s" - %(changes)s') % {
-                'object': self.object_repr,
-                'changes': self.change_message,
+                "object": self.object_repr,
+                "changes": self.change_message,
             }
         elif self.action_flag == DELETION:
-            return gettext('Deleted "%(object)s."') % \
-                {'object': self.object_repr}
+            return gettext('Deleted "%(object)s."') % {"object": self.object_repr}
         elif self.action_flag == COMMENT:
             return gettext('Comment "%(object)s" - %(changes)s') % {
-                'object': self.object_repr,
-                'changes': self.change_message,
+                "object": self.object_repr,
+                "changes": self.change_message,
             }
 
-        return gettext('LogEntry Object')
+        return gettext("LogEntry Object")
 
     def is_addition(self):
         return self.action_flag == ADDITION

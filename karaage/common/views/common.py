@@ -38,55 +38,49 @@ from karaage.projects.tables import ProjectTable
 def admin_index(request):
     config = tables.RequestConfig(request, paginate={"per_page": 5})
 
-    newest_people = Person.objects.order_by('-date_approved', '-id')
+    newest_people = Person.objects.order_by("-date_approved", "-id")
     newest_people = newest_people.filter(date_approved__isnull=False)
     newest_people = newest_people.select_related()
-    newest_people = PersonTable(
-        newest_people, orderable=False, prefix="people-")
+    newest_people = PersonTable(newest_people, orderable=False, prefix="people-")
     config.configure(newest_people)
 
-    newest_projects = Project.objects.order_by('-date_approved')
+    newest_projects = Project.objects.order_by("-date_approved")
     newest_projects = newest_projects.filter(date_approved__isnull=False)
     newest_projects = newest_projects.filter(is_active=True)
     newest_projects = newest_projects.select_related()
-    newest_projects = ProjectTable(
-        newest_projects, orderable=False, prefix="projects-")
+    newest_projects = ProjectTable(newest_projects, orderable=False, prefix="projects-")
     config.configure(newest_projects)
 
-    recent_actions = LogEntry.objects.order_by('-action_time', '-id')
-    recent_actions = LogEntryTable(
-        recent_actions, orderable=False, prefix="actions-")
+    recent_actions = LogEntry.objects.order_by("-action_time", "-id")
+    recent_actions = LogEntryTable(recent_actions, orderable=False, prefix="actions-")
     config.configure(recent_actions)
 
     var = {
-        'newest_people': newest_people,
-        'newest_projects': newest_projects,
-        'recent_actions': recent_actions,
+        "newest_people": newest_people,
+        "newest_projects": newest_projects,
+        "recent_actions": recent_actions,
     }
-    return render(
-        template_name='karaage/common/index.html', context=var,
-        request=request)
+    return render(template_name="karaage/common/index.html", context=var, request=request)
 
 
 def index(request):
     if settings.ADMIN_REQUIRED or is_admin(request):
         return admin_index(request)
-    return render(
-        template_name='karaage/common/index.html', request=request)
+    return render(template_name="karaage/common/index.html", request=request)
 
 
 @admin_required
 def search(request):
     config = tables.RequestConfig(request, paginate={"per_page": 5})
 
-    if 'sitesearch' in request.GET and request.GET['sitesearch'].strip() != "":
+    if "sitesearch" in request.GET and request.GET["sitesearch"].strip() != "":
         people_list = Person.objects.all()
         group_list = Group.objects.all()
         project_list = Project.objects.all()
 
         new_data = request.GET.copy()
-        siteterms = new_data['sitesearch'].lower()
-        term_list = siteterms.split(' ')
+        siteterms = new_data["sitesearch"].lower()
+        term_list = siteterms.split(" ")
 
         # people
         query = Q()
@@ -125,12 +119,9 @@ def search(request):
         project_list = ProjectTable(project_list, prefix="project-")
         config.configure(project_list)
 
-        return render(
-            template_name='karaage/common/site_search.html',
-            context=locals(),
-            request=request)
+        return render(template_name="karaage/common/site_search.html", context=locals(), request=request)
     else:
-        return HttpResponseRedirect(reverse('index'))
+        return HttpResponseRedirect(reverse("index"))
 
 
 @admin_required
@@ -144,30 +135,29 @@ def log_list(request):
     spec = []
     for name, value in six.iteritems(q_filter.form.cleaned_data):
         if value is not None and value != "":
-            name = name.replace('_', ' ').capitalize()
+            name = name.replace("_", " ").capitalize()
             spec.append((name, value))
 
     return render(
-        template_name='karaage/common/log_list.html',
+        template_name="karaage/common/log_list.html",
         context={
-            'table': table,
-            'filter': q_filter,
-            'spec': spec,
-            'title': "Log list",
+            "table": table,
+            "filter": q_filter,
+            "spec": spec,
+            "title": "Log list",
         },
-        request=request)
+        request=request,
+    )
 
 
 @admin_required
 def misc(request):
     from karaage.common.simple import direct_to_template
-    return direct_to_template(
-        request,
-        template='karaage/common/misc_detail.html')
+
+    return direct_to_template(request, template="karaage/common/misc_detail.html")
 
 
 def aup(request):
     from karaage.common.simple import direct_to_template
-    return direct_to_template(
-        request,
-        template='karaage/common/aup_detail.html')
+
+    return direct_to_template(request, template="karaage/common/aup_detail.html")

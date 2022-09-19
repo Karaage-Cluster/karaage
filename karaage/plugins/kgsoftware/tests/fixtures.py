@@ -20,9 +20,7 @@ try:
     import factory
     from factory.django import DjangoModelFactory
 except ImportError:
-    raise ImportError(
-        "factory_boy is required, "
-        "either install from a package or using \'pip install -e .[tests]\'")
+    raise ImportError("factory_boy is required, " "either install from a package or using 'pip install -e .[tests]'")
 
 from karaage.tests.fixtures import GroupFactory, fuzzy_lower_text
 
@@ -30,9 +28,9 @@ from ..models import Software
 
 
 class SoftwareFactory(DjangoModelFactory):
-    name = fuzzy_lower_text(prefix='soft-')
+    name = fuzzy_lower_text(prefix="soft-")
     group = factory.SubFactory(GroupFactory)
 
     class Meta:
         model = Software
-        django_get_or_create = ('name',)
+        django_get_or_create = ("name",)

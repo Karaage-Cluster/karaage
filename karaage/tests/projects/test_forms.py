@@ -26,43 +26,41 @@ from karaage.tests.fixtures import ProjectFactory
 
 @pytest.mark.django_db
 class ProjectFormTestCase(TestCase):
-
     def setUp(self):
         super(ProjectFormTestCase, self).setUp()
         self.project = ProjectFactory()
 
     def _valid_form_data(self):
         data = {
-            'pid': self.project.pid,
-            'name': self.project.name,
-            'description': self.project.description,
-            'institute': self.project.institute.id,
-            'additional_req': self.project.additional_req,
-            'start_date': self.project.start_date,
-            'end_date': self.project.end_date
+            "pid": self.project.pid,
+            "name": self.project.name,
+            "description": self.project.description,
+            "institute": self.project.institute.id,
+            "additional_req": self.project.additional_req,
+            "start_date": self.project.start_date,
+            "end_date": self.project.end_date,
         }
         return data
 
     def test_valid_data(self):
         form_data = self._valid_form_data()
-        form_data['name'] = 'test-project'
-        form = ProjectForm(data=form_data,
-                           instance=self.project)
+        form_data["name"] = "test-project"
+        form = ProjectForm(data=form_data, instance=self.project)
         self.assertEqual(form.is_valid(), True, form.errors.items())
         form.save()
-        self.assertEqual(self.project.name, 'test-project')
+        self.assertEqual(self.project.name, "test-project")
 
     def test_invalid_pid(self):
         form_data = self._valid_form_data()
-        form_data['pid'] = '!test-project'
+        form_data["pid"] = "!test-project"
         form = ProjectForm(data=form_data)
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
-            dict.items({
-                'leaders': [six.u('This field is required.')],
-                'pid': [six.u(
-                    'Project names can only contain letters,'
-                    ' numbers and underscores')]
-            })
+            dict.items(
+                {
+                    "leaders": [six.u("This field is required.")],
+                    "pid": [six.u("Project names can only contain letters," " numbers and underscores")],
+                }
+            ),
         )

@@ -32,24 +32,30 @@ from karaage.people.utils import (
 
 
 class MachineForm(forms.ModelForm):
-
     class Meta:
         model = Machine
         fields = (
-            'name', 'no_cpus', 'no_nodes', 'type',
-            'start_date', 'end_date', 'pbs_server_host',
-            'mem_per_core', 'scaling_factor')
+            "name",
+            "no_cpus",
+            "no_nodes",
+            "type",
+            "start_date",
+            "end_date",
+            "pbs_server_host",
+            "mem_per_core",
+            "scaling_factor",
+        )
 
 
 class AdminAccountForm(forms.ModelForm):
     username = forms.CharField(
         label=six.u("Requested username"),
         max_length=settings.USERNAME_MAX_LENGTH,
-        help_text=((settings.USERNAME_VALIDATION_ERROR_MSG
-                    + " and has a max length of %s.")
-                   % settings.USERNAME_MAX_LENGTH))
-    default_project = ajax_select.fields.AutoCompleteSelectField(
-        'project', required=True)
+        help_text=(
+            (settings.USERNAME_VALIDATION_ERROR_MSG + " and has a max length of %s.") % settings.USERNAME_MAX_LENGTH
+        ),
+    )
+    default_project = ajax_select.fields.AutoCompleteSelectField("project", required=True)
     shell = forms.ChoiceField(choices=settings.SHELLS)
 
     def __init__(self, person, **kwargs):
@@ -58,7 +64,7 @@ class AdminAccountForm(forms.ModelForm):
         self.old_username = self.instance.username
 
     def clean_username(self):
-        username = self.cleaned_data['username']
+        username = self.cleaned_data["username"]
         try:
             validate_username_for_new_account(self.person, username)
         except UsernameException as e:
@@ -67,25 +73,23 @@ class AdminAccountForm(forms.ModelForm):
 
     def clean_default_project(self):
         data = self.cleaned_data
-        if 'default_project' not in data:
+        if "default_project" not in data:
             return data
-        default_project = data['default_project']
+        default_project = data["default_project"]
 
         query = self.person.projects.filter(pk=default_project.pk)
         if query.count() == 0:
-            raise forms.ValidationError(
-                six.u('Person does not belong to default project.'))
+            raise forms.ValidationError(six.u("Person does not belong to default project."))
 
         return default_project
 
     def clean(self):
         data = self.cleaned_data
-        if 'username' not in data:
+        if "username" not in data:
             return data
-        username = data['username']
+        username = data["username"]
 
-        if (self.old_username is None
-                or self.old_username != username):
+        if self.old_username is None or self.old_username != username:
             try:
                 check_username_for_new_account(self.person, username)
             except UsernameException as e:
@@ -101,9 +105,7 @@ class AdminAccountForm(forms.ModelForm):
 
     class Meta:
         model = Account
-        fields = (
-            'username',
-            'default_project', 'disk_quota', 'shell')
+        fields = ("username", "default_project", "disk_quota", "shell")
 
 
 class UserAccountForm(forms.ModelForm):
@@ -111,9 +113,8 @@ class UserAccountForm(forms.ModelForm):
 
     class Meta:
         model = Account
-        fields = ('shell',)
+        fields = ("shell",)
 
 
 class AddProjectForm(forms.Form):
-    project = ajax_select.fields.AutoCompleteSelectField(
-        'project', required=True, label='Add to existing project')
+    project = ajax_select.fields.AutoCompleteSelectField("project", required=True, label="Add to existing project")

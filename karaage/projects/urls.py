@@ -23,35 +23,33 @@ from karaage.projects import views
 
 
 urlpatterns = [
-    re_path(r'^$', views.project_list, name='kg_project_list'),
-    re_path(r'^add/$', views.add_edit_project, name='kg_project_add'),
-    re_path(r'^no_users/$', views.no_users, name='kg_empty_projects_list'),
-
-    re_path(r'^(?P<project_id>\d+)/$',
-            views.project_detail, name='kg_project_detail'),
-    re_path(r'^(?P<project_id>\d+)/verbose/$',
-            views.project_verbose, name='kg_project_verbose'),
-    re_path(r'^(?P<project_id>\d+)/edit/$',
-            views.add_edit_project, name='kg_project_edit'),
-    re_path(r'^(?P<project_id>\d+)/undelete/$',
-            views.undelete_project, name='kg_project_undelete'),
-    re_path(r'^(?P<project_id>\d+)/delete/$',
-            views.delete_project, name='kg_project_delete'),
-    re_path(r'^(?P<project_id>\d+)/remove_user/(?P<username>%s)/$'
-            % (settings.USERNAME_VALIDATION_RE,),
-            views.remove_user, name='kg_remove_project_member'),
-    re_path(r'^(?P<project_id>\d+)/grant/(?P<username>%s)/$'
-            % (settings.USERNAME_VALIDATION_RE,),
-            views.grant_leader, name='kg_grant_leader'),
-    re_path(r'^(?P<project_id>\d+)/revoke/(?P<username>%s)/$'
-            % (settings.USERNAME_VALIDATION_RE,),
-            views.revoke_leader, name='kg_revoke_leader'),
-    re_path(r'^(?P<project_id>\d+)/logs/$',
-            views.project_logs, name='kg_project_logs'),
-    re_path(r'^(?P<project_id>\d+)/add_comment/$',
-            views.add_comment, name='kg_project_add_comment'),
+    re_path(r"^$", views.project_list, name="kg_project_list"),
+    re_path(r"^add/$", views.add_edit_project, name="kg_project_add"),
+    re_path(r"^no_users/$", views.no_users, name="kg_empty_projects_list"),
+    re_path(r"^(?P<project_id>\d+)/$", views.project_detail, name="kg_project_detail"),
+    re_path(r"^(?P<project_id>\d+)/verbose/$", views.project_verbose, name="kg_project_verbose"),
+    re_path(r"^(?P<project_id>\d+)/edit/$", views.add_edit_project, name="kg_project_edit"),
+    re_path(r"^(?P<project_id>\d+)/undelete/$", views.undelete_project, name="kg_project_undelete"),
+    re_path(r"^(?P<project_id>\d+)/delete/$", views.delete_project, name="kg_project_delete"),
+    re_path(
+        r"^(?P<project_id>\d+)/remove_user/(?P<username>%s)/$" % (settings.USERNAME_VALIDATION_RE,),
+        views.remove_user,
+        name="kg_remove_project_member",
+    ),
+    re_path(
+        r"^(?P<project_id>\d+)/grant/(?P<username>%s)/$" % (settings.USERNAME_VALIDATION_RE,),
+        views.grant_leader,
+        name="kg_grant_leader",
+    ),
+    re_path(
+        r"^(?P<project_id>\d+)/revoke/(?P<username>%s)/$" % (settings.USERNAME_VALIDATION_RE,),
+        views.revoke_leader,
+        name="kg_revoke_leader",
+    ),
+    re_path(r"^(?P<project_id>\d+)/logs/$", views.project_logs, name="kg_project_logs"),
+    re_path(r"^(?P<project_id>\d+)/add_comment/$", views.add_comment, name="kg_project_add_comment"),
 ]
 
 profile_urlpatterns = [
-    re_path(r'^projects/$', views.profile_projects, name='kg_profile_projects'),
+    re_path(r"^projects/$", views.profile_projects, name="kg_profile_projects"),
 ]

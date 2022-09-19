@@ -37,24 +37,20 @@ def _get_emails(person_query, subject, body):
         subject_t = Template(subject)
         body_t = Template(body)
 
-        person_query = person_query.filter(
-            is_systemuser=False, login_enabled=True)
+        person_query = person_query.filter(is_systemuser=False, login_enabled=True)
 
         for person in person_query:
             if person.email not in email_list:
-                projects = ", ".join(
-                    [str(project) for project in person.leads.all()]
+                projects = ", ".join([str(project) for project in person.leads.all()])
+                ctx = Context(
+                    {
+                        "projects": projects,
+                        "receiver": person,
+                    }
                 )
-                ctx = Context({
-                    'projects': projects,
-                    'receiver': person,
-                })
                 subject = subject_t.render(ctx)
                 body = body_t.render(ctx)
-                emails.append(
-                    (subject, body, settings.ACCOUNTS_EMAIL,
-                        [person.email])
-                )
+                emails.append((subject, body, settings.ACCOUNTS_EMAIL, [person.email]))
                 email_list.append(person.email)
 
     return emails
@@ -64,15 +60,15 @@ def _get_emails(person_query, subject, body):
 def send_email(request):
 
     form = BulkEmailForm(request.POST or None)
-    if request.method == 'POST':
+    if request.method == "POST":
 
         if form.is_valid():
-            subject = form.cleaned_data['subject']
-            body = form.cleaned_data['body']
+            subject = form.cleaned_data["subject"]
+            body = form.cleaned_data["body"]
             person_query = form.get_person_query()
             emails = _get_emails(person_query, subject, body)
 
-            if 'preview' in request.POST:
+            if "preview" in request.POST:
                 try:
                     preview = emails[0]
                 except IndexError:
@@ -81,8 +77,6 @@ def send_email(request):
                 send_mass_mail(emails)
                 messages.success(request, "Emails sent successfully")
 
-                return HttpResponseRedirect(reverse('index'))
+                return HttpResponseRedirect(reverse("index"))
 
-    return render(
-        template_name='karaage/emails/send_email_form.html', context=locals(),
-        request=request)
+    return render(template_name="karaage/emails/send_email_form.html", context=locals(), request=request)

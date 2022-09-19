@@ -32,6 +32,7 @@ def admin_required(function=None):
     Decorator for views that checks that the user is an administrator,
     redirecting to the log-in page if necessary.
     """
+
     def check_perms(user):
         # if user not logged in, show login form
         if not user.is_authenticated:
@@ -55,6 +56,7 @@ def login_required(function=None):
     Decorator for views that checks that the user is logged in, redirecting
     to the log-in page if necessary.
     """
+
     def check_perms(user):
         # if user not logged in, show login form
         if not user.is_authenticated:

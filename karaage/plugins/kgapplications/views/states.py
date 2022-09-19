@@ -36,13 +36,14 @@ from . import base
 
 
 class StateWaitingForApproval(base.State):
-    """ We need the somebody to provide approval. """
+    """We need the somebody to provide approval."""
+
     name = "Waiting for X"
     authorised_text = "X"
     authorised_role = None
     template_approve = "kgapplications/common_approve.html"
     template_decline = "kgapplications/common_decline.html"
-    actions = {'approve', 'duplicate', 'cancel'}
+    actions = {"approve", "duplicate", "cancel"}
 
     def get_authorised_persons(self, application):
         raise NotImplementedError()
@@ -55,7 +56,7 @@ class StateWaitingForApproval(base.State):
         raise NotImplementedError()
 
     def check_can_approve(self, request, application, roles):
-        """ Check the person's authorization. """
+        """Check the person's authorization."""
         try:
             authorised_persons = self.get_authorised_persons(application)
             authorised_persons.get(pk=request.user.pk)
@@ -66,84 +67,84 @@ class StateWaitingForApproval(base.State):
     def get_actions(self, request, application, roles):
         actions = set(self.actions)
         if not self.check_can_approve(request, application, roles):
-            actions.remove('approve')
-            actions.remove('duplicate')
+            actions.remove("approve")
+            actions.remove("duplicate")
         return actions
 
     def enter_state(self, request, application):
-        """ This is becoming the new current state. """
+        """This is becoming the new current state."""
         authorised_persons = self.get_email_persons(application)
         link, is_secret = self.get_request_email_link(application)
         emails.send_request_email(
-            self.authorised_text,
-            self.authorised_role,
-            authorised_persons,
-            application,
-            link, is_secret)
+            self.authorised_text, self.authorised_role, authorised_persons, application, link, is_secret
+        )
 
     def get_request_email_link(self, application):
         link, is_secret = base.get_registration_email_link(application)
         return link, is_secret
 
     def get_next_action(self, request, application, label, roles):
-        """ Django view method. """
+        """Django view method."""
         actions = self.get_actions(request, application, roles)
-        if label == "approve" and 'approve' in actions:
-            application_form = self.get_approve_form(
-                request, application, roles)
+        if label == "approve" and "approve" in actions:
+            application_form = self.get_approve_form(request, application, roles)
             form = application_form(request.POST or None, instance=application)
-            if request.method == 'POST':
-                if 'back' in request.POST:
+            if request.method == "POST":
+                if "back" in request.POST:
                     url = base.get_url(request, application, roles)
                     return HttpResponseRedirect(url)
-                if 'approve' in request.POST and form.is_valid():
+                if "approve" in request.POST and form.is_valid():
                     form.save()
                     return "approve"
             return render(
                 template_name=self.template_approve,
                 context={
-                    'application': application,
-                    'form': form,
-                    'authorised_text': self.authorised_text,
-                    'actions': self.get_actions(request, application, roles),
-                    'roles': roles
+                    "application": application,
+                    "form": form,
+                    "authorised_text": self.authorised_text,
+                    "actions": self.get_actions(request, application, roles),
+                    "roles": roles,
                 },
-                request=request)
-        elif label == "cancel" and 'cancel' in actions:
-            if request.method == 'POST':
+                request=request,
+            )
+        elif label == "cancel" and "cancel" in actions:
+            if request.method == "POST":
                 form = EmailForm(request.POST)
-                if 'back' in request.POST:
+                if "back" in request.POST:
                     url = base.get_url(request, application, roles)
                     return HttpResponseRedirect(url)
-                if 'cancel' in request.POST and form.is_valid():
+                if "cancel" in request.POST and form.is_valid():
                     to_email = application.applicant.email
                     subject, body = form.get_data()
-                    emails.send_mail(
-                        subject, body,
-                        settings.ACCOUNTS_EMAIL, [to_email])
+                    emails.send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
                     return "cancel"
             else:
                 link, is_secret = base.get_email_link(application)
                 subject, body = emails.render_email(
-                    'common_declined',
-                    {'receiver': application.applicant,
-                        'authorised_text': self.authorised_text,
-                        'application': application,
-                        'link': link, 'is_secret': is_secret})
-                initial_data = {'body': body, 'subject': subject}
+                    "common_declined",
+                    {
+                        "receiver": application.applicant,
+                        "authorised_text": self.authorised_text,
+                        "application": application,
+                        "link": link,
+                        "is_secret": is_secret,
+                    },
+                )
+                initial_data = {"body": body, "subject": subject}
                 form = EmailForm(initial=initial_data)
             return render(
                 template_name=self.template_decline,
                 context={
-                    'application': application,
-                    'form': form,
-                    'authorised_text': self.authorised_text,
-                    'actions': self.get_actions(request, application, roles),
-                    'roles': roles
+                    "application": application,
+                    "form": form,
+                    "authorised_text": self.authorised_text,
+                    "actions": self.get_actions(request, application, roles),
+                    "roles": roles,
                 },
-                request=request)
+                request=request,
+            )
         elif request.method == "POST":
-            for action in ['approve', 'cancel']:
+            for action in ["approve", "cancel"]:
                 if action in request.POST:
                     url = base.get_url(request, application, roles, action)
                     return HttpResponseRedirect(url)
@@ -154,27 +155,27 @@ class StateWaitingForApproval(base.State):
             return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
         self.context = {
-            'authorised_text': self.authorised_text,
+            "authorised_text": self.authorised_text,
         }
-        return super(StateWaitingForApproval, self).get_next_action(
-            request, application, label, roles)
+        return super(StateWaitingForApproval, self).get_next_action(request, application, label, roles)
 
 
 class StatePassword(base.State):
-    """ This application is completed and processed. """
+    """This application is completed and processed."""
+
     name = "Password"
-    actions = {'submit'}
+    actions = {"submit"}
 
     def get_actions(self, request, application, roles):
         actions = set(self.actions)
-        if 'is_applicant' not in roles:
-            actions.remove('submit')
+        if "is_applicant" not in roles:
+            actions.remove("submit")
         return actions
 
     def get_next_action(self, request, application, label, roles):
-        """ Django view method. """
+        """Django view method."""
         actions = self.get_actions(request, application, roles)
-        if label is None and 'is_applicant' in roles:
+        if label is None and "is_applicant" in roles:
             assert application.existing_person is not None
             has_usable_password = application.existing_person.has_usable_password()
             if has_usable_password:
@@ -189,11 +190,10 @@ class StatePassword(base.State):
                 person=application.existing_person,
             )
 
-            if request.method == 'POST':
+            if request.method == "POST":
                 if form.is_valid():
                     form.save()
-                    messages.success(
-                        request, 'Password updated. New accounts activated.')
+                    messages.success(request, "Password updated. New accounts activated.")
 
                     link, is_secret = base.get_email_link(application)
                     emails.send_completed_email(application, has_usable_password, link, is_secret)
@@ -203,82 +203,79 @@ class StatePassword(base.State):
                             return action
                     return HttpResponseBadRequest("<h1>Bad Request</h1>")
             return render(
-                template_name='kgapplications/common_password.html',
+                template_name="kgapplications/common_password.html",
                 context={
-                    'application': application,
-                    'form': form,
-                    'actions': actions,
-                    'roles': roles,
-                    'type': form_type
+                    "application": application,
+                    "form": form,
+                    "actions": actions,
+                    "roles": roles,
+                    "type": form_type,
                 },
-                request=request)
+                request=request,
+            )
         return super(StatePassword, self).get_next_action(request, application, label, roles)
 
 
 class StateCompleted(base.State):
-    """ This application is completed and processed. """
+    """This application is completed and processed."""
+
     name = "Completed"
-    actions = {'archive'}
+    actions = {"archive"}
 
     def get_actions(self, request, application, roles):
         actions = set(self.actions)
-        if 'is_admin' not in roles:
-            actions.remove('archive')
+        if "is_admin" not in roles:
+            actions.remove("archive")
         return actions
 
 
 class StateDeclined(base.State):
-    """ This application declined. """
+    """This application declined."""
+
     name = "Declined"
-    actions = {'reopen', 'archive'}
+    actions = {"reopen", "archive"}
 
     def get_actions(self, request, application, roles):
         actions = set(self.actions)
-        if 'is_admin' not in roles:
-            actions.remove('archive')
+        if "is_admin" not in roles:
+            actions.remove("archive")
         return actions
 
     def enter_state(self, request, application):
-        """ This is becoming the new current state. """
+        """This is becoming the new current state."""
         application.decline()
 
     def get_next_action(self, request, application, label, roles):
-        """ Django view method. """
+        """Django view method."""
         actions = self.get_actions(request, application, roles)
-        if label is None and \
-                'is_applicant' in roles and 'is_admin' not in roles:
+        if label is None and "is_applicant" in roles and "is_admin" not in roles:
             # applicant, admin, leader can reopen an application
             for action in actions:
                 if action in request.POST:
                     return action
             return render(
-                template_name='kgapplications/common_declined.html',
-                context={
-                    'application': application,
-                    'actions': actions,
-                    'roles': roles
-                },
-                request=request)
-        return super(StateDeclined, self).get_next_action(
-            request, application, label, roles)
+                template_name="kgapplications/common_declined.html",
+                context={"application": application, "actions": actions, "roles": roles},
+                request=request,
+            )
+        return super(StateDeclined, self).get_next_action(request, application, label, roles)
 
 
 class StateWaitingForDelegate(StateWaitingForApproval):
 
-    """ We need the delegate to provide approval. """
+    """We need the delegate to provide approval."""
+
     name = "Waiting for delegate"
     authorised_text = "an institute delegate"
     authorised_role = "institute delegate"
 
     def get_authorised_persons(self, application):
-        return application.institute.delegates \
-            .filter(is_active=True, login_enabled=True)
+        return application.institute.delegates.filter(is_active=True, login_enabled=True)
 
     def get_email_persons(self, application):
-        return application.institute.delegates \
-            .filter(
-                institutedelegate__send_email=True,
-                is_active=True, login_enabled=True)
+        return application.institute.delegates.filter(
+            institutedelegate__send_email=True, is_active=True, login_enabled=True
+        )
 
     def get_approve_form(self, request, application, roles):
         return forms.approve_project_form_generator(application, roles)
@@ -286,22 +283,21 @@ class StateWaitingForDelegate(StateWaitingForApproval):
 
 class StateWaitingForAdmin(StateWaitingForApproval):
 
-    """ We need the administrator to provide approval. """
+    """We need the administrator to provide approval."""
+
     name = "Waiting for administrator"
     authorised_text = "an administrator"
     authorised_role = "administrator"
 
     def get_authorised_persons(self, application):
-        return Person.objects.filter(
-            is_admin=True, is_active=True, login_enabled=True)
+        return Person.objects.filter(is_admin=True, is_active=True, login_enabled=True)
 
     def check_authorised(self, request, application, roles):
-        """ Check the person's authorization. """
-        return 'is_admin' in roles
+        """Check the person's authorization."""
+        return "is_admin" in roles
 
     def get_approve_form(self, request, application, roles):
-        return forms.admin_approve_project_form_generator(
-            application, roles)
+        return forms.admin_approve_project_form_generator(application, roles)
 
     def get_request_email_link(self, application):
         link, is_secret = base.get_admin_email_link(application)
@@ -310,37 +306,32 @@ class StateWaitingForAdmin(StateWaitingForApproval):
 
 class StateDuplicateApplicant(base.State):
 
-    """ Somebody has declared application is existing user. """
+    """Somebody has declared application is existing user."""
+
     name = "Duplicate Applicant"
-    actions = {'cancel', 'reopen'}
+    actions = {"cancel", "reopen"}
 
     def get_actions(self, request, reapplication, roles):
         actions = set(self.actions)
-        if 'is_admin' not in roles:
-            actions.remove('reopen')
+        if "is_admin" not in roles:
+            actions.remove("reopen")
         return actions
 
     def enter_state(self, request, application):
-        authorised_persons = Person.objects.filter(
-            is_admin=True, is_active=True, login_enabled=True)
+        authorised_persons = Person.objects.filter(is_admin=True, is_active=True, login_enabled=True)
         link, is_secret = base.get_registration_email_link(application)
         emails.send_duplicate_email(
-            "an administrator",
-            "administrator",
-            authorised_persons,
-            application,
-            link, is_secret)
+            "an administrator", "administrator", authorised_persons, application, link, is_secret
+        )
 
     def get_next_action(self, request, application, label, roles):
         # if not admin, don't allow reopen
         actions = self.get_actions(request, application, roles)
-        if label is None and 'is_admin' in roles:
-            form = forms.ApplicantReplace(
-                data=request.POST or None,
-                application=application)
+        if label is None and "is_admin" in roles:
+            form = forms.ApplicantReplace(data=request.POST or None, application=application)
 
-            if request.method == 'POST':
-                if 'replace' in request.POST:
+            if request.method == "POST":
+                if "replace" in request.POST:
                     if form.is_valid():
                         form.save()
                         return "reopen"
@@ -351,18 +342,22 @@ class StateDuplicateApplicant(base.State):
                     return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
             return render(
-                template_name='kgapplications/'
-                              'project_duplicate_applicant.html',
-                context={'application': application, 'form': form,
-                         'actions': actions, 'roles': roles, },
-                request=request)
-        return super(StateDuplicateApplicant, self).get_next_action(
-            request, application, label, roles)
+                template_name="kgapplications/" "project_duplicate_applicant.html",
+                context={
+                    "application": application,
+                    "form": form,
+                    "actions": actions,
+                    "roles": roles,
+                },
+                request=request,
+            )
+        return super(StateDuplicateApplicant, self).get_next_action(request, application, label, roles)
 
 
 class StateArchived(StateCompleted):
 
-    """ This application is archived. """
+    """This application is archived."""
+
     name = "Archived"
     actions = {}
 
@@ -373,7 +368,7 @@ class StateArchived(StateCompleted):
 
 class Step(object):
 
-    """ A single step in a StateWithStep state. """
+    """A single step in a StateWithStep state."""
 
     def view(self, request, application, label, roles, actions):
         raise NotImplementedError()
@@ -381,7 +376,7 @@ class Step(object):
 
 class StateWithSteps(base.State):
 
-    """ A state that has a number of steps to complete. """
+    """A state that has a number of steps to complete."""
 
     def __init__(self, config):
         self._first_step = None
@@ -390,8 +385,8 @@ class StateWithSteps(base.State):
         super(StateWithSteps, self).__init__(config)
 
     def add_step(self, step, step_id):
-        """ Add a step to the list. The first step added becomes the initial
-        step. """
+        """Add a step to the list. The first step added becomes the initial
+        step."""
         assert step_id not in self._steps
         assert step_id not in self._order
         assert isinstance(step, Step)
@@ -400,13 +395,12 @@ class StateWithSteps(base.State):
         self._order.append(step_id)
 
     def get_next_action(self, request, application, label, roles):
-        """ Process the get_next_action request at the current step. """
+        """Process the get_next_action request at the current step."""
         actions = self.get_actions(request, application, roles)
 
         # if the user is not the applicant, the steps don't apply.
-        if 'is_applicant' not in roles:
-            return super(StateWithSteps, self).get_next_action(
-                request, application, label, roles)
+        if "is_applicant" not in roles:
+            return super(StateWithSteps, self).get_next_action(request, application, label, roles)
 
         # was label supplied?
         if label is None:
@@ -426,26 +420,24 @@ class StateWithSteps(base.State):
 
         # define list of allowed actions for step
         step_actions = {}
-        if 'cancel' in actions:
-            step_actions['cancel'] = "state:cancel"
-        if 'submit' in actions and position == len(self._order) - 1:
-            step_actions['submit'] = "state:submit"
+        if "cancel" in actions:
+            step_actions["cancel"] = "state:cancel"
+        if "submit" in actions and position == len(self._order) - 1:
+            step_actions["submit"] = "state:submit"
         if position > 0:
-            step_actions['prev'] = self._order[position - 1]
+            step_actions["prev"] = self._order[position - 1]
         if position < len(self._order) - 1:
-            step_actions['next'] = self._order[position + 1]
+            step_actions["next"] = self._order[position + 1]
 
         # process the request
         if request.method == "GET":
             # if GET request, state changes are not allowed
-            response = this_step.view(
-                request, application, this_id, roles, step_actions.keys())
+            response = this_step.view(request, application, this_id, roles, step_actions.keys())
             assert isinstance(response, HttpResponse)
             return response
         elif request.method == "POST":
             # if POST request, state changes are allowed
-            response = this_step.view(
-                request, application, this_id, roles, step_actions.keys())
+            response = this_step.view(request, application, this_id, roles, step_actions.keys())
             assert response is not None
 
             # If it was a HttpResponse, just return it
@@ -454,9 +446,7 @@ class StateWithSteps(base.State):
             else:
                 # try to lookup the response
                 if response not in step_actions:
-                    raise RuntimeError(
-                        "Invalid response '%s' from step '%s'"
-                        % (response, this_step))
+                    raise RuntimeError("Invalid response '%s' from step '%s'" % (response, this_step))
                 action = step_actions[response]
 
                 # process the required action
@@ -472,49 +462,50 @@ class StateWithSteps(base.State):
 
 class StateWaitingForLeader(StateWaitingForApproval):
 
-    """ We need the leader to provide approval. """
+    """We need the leader to provide approval."""
+
     name = "Waiting for leader"
     authorised_text = "a project leader"
     authorised_role = "project leader"
 
     def get_authorised_persons(self, application):
-        return application.project.leaders.filter(
-            is_active=True, login_enabled=True)
+        return application.project.leaders.filter(is_active=True, login_enabled=True)
 
     def get_approve_form(self, request, application, roles):
         return forms.approve_project_form_generator(application, roles)
 
 
 class StateIntroduction(base.State):
-    """ Invitation has been sent to applicant. """
+    """Invitation has been sent to applicant."""
+
     name = "Read introduction"
-    actions = {'cancel', 'submit'}
+    actions = {"cancel", "submit"}
 
     def get_next_action(self, request, application, label, roles):
-        """ Django get_next_action method. """
+        """Django get_next_action method."""
         actions = self.get_actions(request, application, roles)
-        if label is None and \
-                'is_applicant' in roles and 'is_admin' not in roles:
+        if label is None and "is_applicant" in roles and "is_admin" not in roles:
             for action in actions:
                 if action in request.POST:
                     return action
             link, is_secret = base.get_email_link(application)
             return render(
-                template_name='kgapplications/software_introduction.html',
+                template_name="kgapplications/software_introduction.html",
                 context={
-                    'actions': actions,
-                    'application': application,
-                    'roles': roles,
-                    'link': link,
-                    'is_secret': is_secret
+                    "actions": actions,
+                    "application": application,
+                    "roles": roles,
+                    "link": link,
+                    "is_secret": is_secret,
                 },
-                request=request)
-        return super(StateIntroduction, self).get_next_action(
-            request, application, label, roles)
+                request=request,
+            )
+        return super(StateIntroduction, self).get_next_action(request, application, label, roles)
 
 
 class StateWaitingForAdminSoftware(StateWaitingForApproval):
-    """ We need the administrator to provide approval. """
+    """We need the administrator to provide approval."""
+
     name = "Waiting for administrator"
     authorised_text = "an administrator"
     authorised_role = "administrator"
@@ -523,8 +514,8 @@ class StateWaitingForAdminSoftware(StateWaitingForApproval):
         return Person.objects.filter(is_admin=True)
 
     def check_can_approve(self, request, application, roles):
-        """ Check the person's authorization. """
-        return 'is_admin' in roles
+        """Check the person's authorization."""
+        return "is_admin" in roles
 
     def get_approve_form(self, request, application, roles):
         return ApproveSoftwareForm

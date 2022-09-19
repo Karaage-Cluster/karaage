@@ -20,7 +20,7 @@
 
 
 class DataStore(object):
-    """ Base class used for all MC datastores. """
+    """Base class used for all MC datastores."""
 
     def __init__(self, config):
         self.config = config
@@ -30,51 +30,51 @@ class DataStore(object):
     ###########
 
     def save_account(self, account):
-        """ Account was saved. """
+        """Account was saved."""
         return
 
     def delete_account(self, account):
-        """ Account was deleted. """
+        """Account was deleted."""
         return
 
     def set_account_password(self, account, raw_password):
-        """ Account's password was changed. """
+        """Account's password was changed."""
         return
 
     def set_account_username(self, account, old_username, new_username):
-        """ Account's username was changed. """
+        """Account's username was changed."""
         return
 
     def add_account_to_group(self, account, group):
-        """ Add account to group. """
+        """Add account to group."""
         return
 
     def remove_account_from_group(self, account, group):
-        """ Remove account from group. """
+        """Remove account from group."""
         return
 
     def add_account_to_project(self, account, project):
-        """ Add account to project. """
+        """Add account to project."""
         return
 
     def remove_account_from_project(self, account, project):
-        """ Remove account from project. """
+        """Remove account from project."""
         return
 
     def add_account_to_institute(self, account, institute):
-        """ Add account to institute. """
+        """Add account to institute."""
         return
 
     def remove_account_from_institute(self, account, institute):
-        """ Remove account from institute. """
+        """Remove account from institute."""
         return
 
     def account_exists(self, username):
-        """ Does the account exist? """
+        """Does the account exist?"""
         return False
 
     def get_account_details(self, account):
-        """ Get the account details """
+        """Get the account details"""
         return {}
 
     #########
@@ -82,19 +82,19 @@ class DataStore(object):
     #########
 
     def save_group(self, group):
-        """ Group was saved. """
+        """Group was saved."""
         return
 
     def delete_group(self, group):
-        """ Group was deleted. """
+        """Group was deleted."""
         return
 
     def set_group_name(self, group, old_name, new_name):
-        """ Group was renamed. """
+        """Group was renamed."""
         return
 
     def get_group_details(self, group):
-        """ Get the group details. """
+        """Get the group details."""
         return {}
 
     ###########
@@ -102,19 +102,19 @@ class DataStore(object):
     ###########
 
     def save_project(self, project):
-        """ Project was saved. """
+        """Project was saved."""
         return
 
     def delete_project(self, project):
-        """ Project was deleted. """
+        """Project was deleted."""
         return
 
     def get_project_details(self, project):
-        """ Get project's details. """
+        """Get project's details."""
         return {}
 
     def set_project_pid(self, project, old_pid, new_pid):
-        """ Project's pid was changed. """
+        """Project's pid was changed."""
         return
 
     #############
@@ -122,13 +122,13 @@ class DataStore(object):
     #############
 
     def save_institute(self, institute):
-        """ Institute was saved. """
+        """Institute was saved."""
         return
 
     def delete_institute(self, institute):
-        """ Institute was deleted. """
+        """Institute was deleted."""
         return
 
     def get_institute_details(self, institute):
-        """ Get institute's details. """
+        """Get institute's details."""
         return {}

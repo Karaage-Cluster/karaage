@@ -23,55 +23,46 @@ from karaage.people.models import Person
 
 
 EMAIL_GROUPS = (
-    ('leaders', 'All Project Leaders (active projects only)'),
-    ('users', 'All Active Users'),
-    ('cluster_users', 'All Users with cluster accounts'),
+    ("leaders", "All Project Leaders (active projects only)"),
+    ("users", "All Active Users"),
+    ("cluster_users", "All Users with cluster accounts"),
 )
 
 
 class EmailForm(forms.Form):
-    subject = forms.CharField(widget=forms.TextInput(attrs={'size': 60}))
-    body = forms.CharField(widget=forms.Textarea(
-        attrs={'class': 'vLargeTextField', 'rows': 10, 'cols': 40}))
+    subject = forms.CharField(widget=forms.TextInput(attrs={"size": 60}))
+    body = forms.CharField(widget=forms.Textarea(attrs={"class": "vLargeTextField", "rows": 10, "cols": 40}))
 
     def get_data(self):
-        return self.cleaned_data['subject'], self.cleaned_data['body']
+        return self.cleaned_data["subject"], self.cleaned_data["body"]
 
 
 class BulkEmailForm(EmailForm):
     group = forms.ChoiceField(choices=EMAIL_GROUPS)
-    institute = AutoCompleteSelectField(
-        'institute',
-        required=False,
-        label="Institute"
-    )
-    project = AutoCompleteSelectField(
-        'project',
-        required=False,
-        label="Project"
-    )
+    institute = AutoCompleteSelectField("institute", required=False, label="Institute")
+    project = AutoCompleteSelectField("project", required=False, label="Project")
 
     def get_person_query(self):
         person_query = Person.active.all()
 
-        group = self.cleaned_data['group']
-        if group == 'leaders':
+        group = self.cleaned_data["group"]
+        if group == "leaders":
             person_query = person_query.filter(leads__isnull=False)
 
-        elif group == 'users':
+        elif group == "users":
             pass
 
-        elif group == 'cluster_users':
+        elif group == "cluster_users":
             person_query = person_query.filter(account__isnull=False)
 
         else:
             person_query = None
 
-        institute = self.cleaned_data['institute']
+        institute = self.cleaned_data["institute"]
         if institute is not None:
             person_query = person_query.filter(institute=institute)
 
-        project = self.cleaned_data['project']
+        project = self.cleaned_data["project"]
         if project is not None:
             person_query = person_query.filter(groups__project=project)
 

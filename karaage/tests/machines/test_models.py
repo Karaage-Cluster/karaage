@@ -27,7 +27,6 @@ from karaage.tests.fixtures import AccountFactory
 
 @pytest.mark.django_db
 class AccountTestCase(TestCase):
-
     @unittest.skip("broken with mysql/postgresql")
     def test_username(self):
         assert_raises = self.assertRaises(django_exceptions.ValidationError)

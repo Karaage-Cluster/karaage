@@ -32,53 +32,51 @@ from karaage.projects.models import Project
 
 @pytest.mark.django_db
 class AccountTestCase(TestCase):
-
     def setUp(self):
         def cleanup():
             reset()
+
         self.addCleanup(cleanup)
 
-        call_command('loaddata', 'test_karaage', **{'verbosity': 0})
+        call_command("loaddata", "test_karaage", **{"verbosity": 0})
         form_data = {
-            'title': 'Mr',
-            'short_name': 'Sam',
-            'full_name': 'Sam Morrison2',
-            'position': 'Sys Admin',
-            'institute': 1,
-            'department': 'eddf',
-            'email': 'sam2@vpac.org',
-            'country': 'AU',
-            'telephone': '4444444',
-            'username': 'samtest2',
-            'password1': 'Exaiquouxei0',
-            'password2': 'Exaiquouxei0',
-            'needs_account': False,
+            "title": "Mr",
+            "short_name": "Sam",
+            "full_name": "Sam Morrison2",
+            "position": "Sys Admin",
+            "institute": 1,
+            "department": "eddf",
+            "email": "sam2@vpac.org",
+            "country": "AU",
+            "telephone": "4444444",
+            "username": "samtest2",
+            "password1": "Exaiquouxei0",
+            "password2": "Exaiquouxei0",
+            "needs_account": False,
         }
-        self.client.login(username='kgsuper', password='aq12ws')
-        response = self.client.post(reverse('kg_person_add'), form_data)
+        self.client.login(username="kgsuper", password="aq12ws")
+        response = self.client.post(reverse("kg_person_add"), form_data)
         self.assertEqual(response.status_code, 302)
 
-        person = Person.objects.get(username='kgsuper')
-        self.assertEqual(person.short_name, 'Super')
-        self.assertEqual(person.full_name, 'Super User')
+        person = Person.objects.get(username="kgsuper")
+        self.assertEqual(person.short_name, "Super")
+        self.assertEqual(person.full_name, "Super User")
 
     def test_add_account(self):
         project = Project.objects.get(pk=1)
         person = Person.objects.get(username="samtest2")
         person.groups.add(project.group)
 
-        response = self.client.get(
-            reverse('kg_account_add', args=['samtest2']))
+        response = self.client.get(reverse("kg_account_add", args=["samtest2"]))
         self.assertEqual(response.status_code, 200)
 
         form_data = {
-            'username': person.username,
-            'shell': '/bin/bash',
-            'default_project': 1,
+            "username": person.username,
+            "shell": "/bin/bash",
+            "default_project": 1,
         }
 
-        response = self.client.post(
-            reverse('kg_account_add', args=['samtest2']), form_data)
+        response = self.client.post(reverse("kg_account_add", args=["samtest2"]), form_data)
         self.assertEqual(response.status_code, 302)
         person = Person.objects.get(username="samtest2")
         self.assertTrue(person.has_account())
@@ -89,95 +87,82 @@ class AccountTestCase(TestCase):
         person.groups.add(project.group)
 
         form_data = {
-            'username': person.username,
-            'shell': '/bin/bash',
-            'default_project': 1,
+            "username": person.username,
+            "shell": "/bin/bash",
+            "default_project": 1,
         }
-        response = self.client.post(
-            reverse('kg_account_add', args=['samtest2']), form_data)
+        response = self.client.post(reverse("kg_account_add", args=["samtest2"]), form_data)
         self.assertEqual(response.status_code, 302)
 
-        response = self.client.post(
-            reverse('kg_account_add', args=['samtest2']), form_data)
-        self.assertContains(
-            response, "Username already in use.")
+        response = self.client.post(reverse("kg_account_add", args=["samtest2"]), form_data)
+        self.assertContains(response, "Username already in use.")
 
     def test_fail_add_accounts_project(self):
         form_data = {
-            'username': 'samtest2',
-            'shell': '/bin/bash',
-            'default_project': 1,
+            "username": "samtest2",
+            "shell": "/bin/bash",
+            "default_project": 1,
         }
-        response = self.client.post(
-            reverse('kg_account_add', args=['samtest2']), form_data)
-        self.assertContains(
-            response, "Person does not belong to default project")
+        response = self.client.post(reverse("kg_account_add", args=["samtest2"]), form_data)
+        self.assertContains(response, "Person does not belong to default project")
 
         project = Project.objects.get(pk=1)
         person = Person.objects.get(username="samtest2")
         person.groups.add(project.group)
 
         form_data = {
-            'username': person.username,
-            'shell': '/bin/bash',
-            'default_project': 1,
+            "username": person.username,
+            "shell": "/bin/bash",
+            "default_project": 1,
         }
-        response = self.client.post(
-            reverse('kg_account_add', args=['samtest2']), form_data)
+        response = self.client.post(reverse("kg_account_add", args=["samtest2"]), form_data)
         self.assertEqual(response.status_code, 302)
 
         form_data = {
-            'username': person.username,
-            'shell': '/bin/bash',
-            'default_project': 1,
+            "username": person.username,
+            "shell": "/bin/bash",
+            "default_project": 1,
         }
 
-        response = self.client.post(
-            reverse('kg_account_add', args=['samtest2']), form_data)
-        self.assertContains(
-            response, "Username already in use.")
+        response = self.client.post(reverse("kg_account_add", args=["samtest2"]), form_data)
+        self.assertContains(response, "Username already in use.")
 
     def test_lock_unlock_account(self):
         project = Project.objects.get(pk=1)
         person = Person.objects.get(username="samtest2")
         person.groups.add(project.group)
 
-        response = self.client.get(reverse('kg_account_add',
-                                           args=['samtest2']))
+        response = self.client.get(reverse("kg_account_add", args=["samtest2"]))
         self.assertEqual(response.status_code, 200)
 
         form_data = {
-            'username': person.username,
-            'shell': '/bin/bash',
-            'default_project': 1,
+            "username": person.username,
+            "shell": "/bin/bash",
+            "default_project": 1,
         }
 
-        response = self.client.post(
-            reverse('kg_account_add', args=['samtest2']), form_data)
+        response = self.client.post(reverse("kg_account_add", args=["samtest2"]), form_data)
         self.assertEqual(response.status_code, 302)
-        person = Person.objects.get(username='samtest2')
+        person = Person.objects.get(username="samtest2")
         ua = person.get_account()
         self.assertEqual(person.is_locked(), False)
-        self.assertEqual(ua.login_shell(), '/bin/bash')
+        self.assertEqual(ua.login_shell(), "/bin/bash")
 
-        response = self.client.post(
-            reverse('kg_person_lock', args=['samtest2']))
-        person = Person.objects.get(username='samtest2')
+        response = self.client.post(reverse("kg_person_lock", args=["samtest2"]))
+        person = Person.objects.get(username="samtest2")
         ua = person.get_account()
         self.assertEqual(person.is_locked(), True)
-        self.assertEqual(ua.login_shell(), '/bin/bash')
+        self.assertEqual(ua.login_shell(), "/bin/bash")
 
-        response = self.client.post(
-            reverse('kg_person_unlock', args=['samtest2']))
-        person = Person.objects.get(username='samtest2')
+        response = self.client.post(reverse("kg_person_unlock", args=["samtest2"]))
+        person = Person.objects.get(username="samtest2")
         ua = person.get_account()
         self.assertEqual(person.is_locked(), False)
-        self.assertEqual(ua.login_shell(), '/bin/bash')
+        self.assertEqual(ua.login_shell(), "/bin/bash")
 
 
 @pytest.mark.django_db
 class MachineTestCase(TestCase):
-
     def setUp(self):
         today = timezone.now()
         # 10cpus

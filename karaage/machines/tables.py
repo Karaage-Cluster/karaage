@@ -24,10 +24,8 @@ from .models import Account, Machine
 
 
 class MachineTable(tables.Table):
-    name = tables.LinkColumn(
-        'kg_machine_detail', args=[A('pk')])
-    status = tables.Column(
-        empty_values=(), order_by=('end_date', 'start_date'))
+    name = tables.LinkColumn("kg_machine_detail", args=[A("pk")])
+    status = tables.Column(empty_values=(), order_by=("end_date", "start_date"))
 
     def render_status(self, record):
         if record.end_date is not None:
@@ -37,19 +35,15 @@ class MachineTable(tables.Table):
 
     class Meta:
         model = Machine
-        fields = ("name", )
+        fields = ("name",)
         empty_text = "No items"
 
 
 class AccountTable(tables.Table):
-    active = tables.Column(
-        empty_values=(), order_by=('date_deleted', '-login_enabled'))
-    person = tables.LinkColumn(
-        'kg_person_detail', args=[A('person__username')])
-    username = tables.LinkColumn(
-        'kg_account_detail', args=[A('pk')], verbose_name="Account")
-    default_project = tables.LinkColumn(
-        'kg_project_detail', args=[A('default_project__id')])
+    active = tables.Column(empty_values=(), order_by=("date_deleted", "-login_enabled"))
+    person = tables.LinkColumn("kg_person_detail", args=[A("person__username")])
+    username = tables.LinkColumn("kg_account_detail", args=[A("pk")], verbose_name="Account")
+    default_project = tables.LinkColumn("kg_project_detail", args=[A("default_project__id")])
 
     def render_active(self, record):
         if record.date_deleted is not None:
@@ -62,5 +56,4 @@ class AccountTable(tables.Table):
 
     class Meta:
         model = Account
-        fields = ("active", "username", "person",
-                  "default_project", "date_created", "date_deleted")
+        fields = ("active", "username", "person", "default_project", "date_created", "date_deleted")

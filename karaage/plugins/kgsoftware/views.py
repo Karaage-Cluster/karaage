@@ -61,9 +61,8 @@ if apps.is_installed("karaage.plugins.kgsoftware.applications"):
             return True
 
     def get_applications(software_license):
-        applications = SoftwareApplication.objects.filter(
-            software_license=software_license)
-        applications = applications.exclude(state='C')
+        applications = SoftwareApplication.objects.filter(software_license=software_license)
+        applications = applications.exclude(state="C")
         return applications
 
     def get_applications_for_person(person, software_license):
@@ -102,9 +101,10 @@ def profile_software(request):
     person = request.user
     agreement_list = person.softwarelicenseagreement_set.all()
     return render(
-        template_name='kgsoftware/profile_software.html',
-        context={'person': person, 'agreement_list': agreement_list},
-        request=request)
+        template_name="kgsoftware/profile_software.html",
+        context={"person": person, "agreement_list": agreement_list},
+        request=request,
+    )
 
 
 @login_required
@@ -120,18 +120,19 @@ def software_list(request):
     spec = []
     for name, value in six.iteritems(q_filter.form.cleaned_data):
         if value is not None and value != "":
-            name = name.replace('_', ' ').capitalize()
+            name = name.replace("_", " ").capitalize()
             spec.append((name, value))
 
     return render(
-        template_name='kgsoftware/software_list.html',
+        template_name="kgsoftware/software_list.html",
         context={
-            'table': table,
-            'filter': q_filter,
-            'spec': spec,
-            'title': "Software list",
+            "table": table,
+            "filter": q_filter,
+            "spec": spec,
+            "title": "Software list",
         },
-        request=request)
+        request=request,
+    )
 
 
 @login_required
@@ -142,22 +143,18 @@ def _software_list_non_admin(request):
     query = Software.objects.filter(softwarelicense__isnull=False).distinct()
     software_list = []
     for software in query:
-        data = {'software': software}
-        license_agreements = SoftwareLicenseAgreement.objects.filter(
-            person=person, license__software=software)
+        data = {"software": software}
+        license_agreements = SoftwareLicenseAgreement.objects.filter(person=person, license__software=software)
         if license_agreements.count() > 0:
             la = license_agreements.latest()
-            data['accepted'] = True
-            data['accepted_date'] = la.date
+            data["accepted"] = True
+            data["accepted_date"] = la.date
 
         software_license = software.get_current_license()
-        data['pending'] = is_application_pending(person, software_license)
+        data["pending"] = is_application_pending(person, software_license)
         software_list.append(data)
 
-    return render(
-        template_name='kgsoftware/add_package_list.html',
-        context=locals(),
-        request=request)
+    return render(template_name="kgsoftware/add_package_list.html", context=locals(), request=request)
 
 
 @login_required
@@ -165,8 +162,7 @@ def software_detail(request, software_id):
     software = get_object_or_404(Software, pk=software_id)
     software_license = software.get_current_license()
     person = request.user
-    license_agreements = SoftwareLicenseAgreement.objects \
-        .filter(person=person, license=software_license)
+    license_agreements = SoftwareLicenseAgreement.objects.filter(person=person, license=software_license)
     agreement = None
     if license_agreements.count() > 0:
         agreement = license_agreements.latest()
@@ -177,8 +173,7 @@ def software_detail(request, software_id):
     application_table = get_application_table(request, applications)
     open_applications = get_applications_for_person(person, software_license)
 
-    if agreement is None and software_license is not None \
-            and len(open_applications) == 0 and request.method == 'POST':
+    if agreement is None and software_license is not None and len(open_applications) == 0 and request.method == "POST":
 
         if software.restricted and not util.is_admin(request):
             log.add(software, "New application created for %s" % request.user)
@@ -190,21 +185,16 @@ def software_detail(request, software_id):
             date=datetime.datetime.today(),
         )
         person.add_group(software.group)
-        log.add(
-            software,
-            "Approved join (not restricted) for %s" % request.user)
+        log.add(software, "Approved join (not restricted) for %s" % request.user)
         messages.success(request, "Approved access to %s." % software)
-        return HttpResponseRedirect(reverse('kg_profile_software'))
+        return HttpResponseRedirect(reverse("kg_profile_software"))
 
-    return render(
-        template_name='kgsoftware/software_detail.html',
-        context=locals(),
-        request=request)
+    return render(template_name="kgsoftware/software_detail.html", context=locals(), request=request)
 
 
 @admin_required
 def add_package(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = AddPackageForm(request.POST)
 
         if form.is_valid():
@@ -213,26 +203,23 @@ def add_package(request):
     else:
         form = AddPackageForm()
 
-    return render(
-        template_name='kgsoftware/add_package_form.html',
-        context=locals(),
-        request=request)
+    return render(template_name="kgsoftware/add_package_form.html", context=locals(), request=request)
 
 
 @admin_required
 def software_edit(request, software_id):
     from karaage.common.create_update import update_object
-    return update_object(
-        request, object_id=software_id, model=Software,
-        form_class=SoftwareForm)
+
+    return update_object(request, object_id=software_id, model=Software, form_class=SoftwareForm)
 
 
 @admin_required
 def software_delete(request, software_id):
     from karaage.common.create_update import delete_object
+
     return delete_object(
-        request, post_delete_redirect=reverse('kg_software_list'),
-        object_id=software_id, model=Software)
+        request, post_delete_redirect=reverse("kg_software_list"), object_id=software_id, model=Software
+    )
 
 
 @admin_required
@@ -240,7 +227,7 @@ def software_logs(request, software_id):
     obj = get_object_or_404(Software, pk=software_id)
     breadcrumbs = [
         ("Softwares", reverse("kg_software_list")),
-        (six.text_type(obj), reverse("kg_software_detail", args=[obj.pk]))
+        (six.text_type(obj), reverse("kg_software_detail", args=[obj.pk])),
     ]
     return util.log_list(request, breadcrumbs, obj)
 
@@ -250,7 +237,7 @@ def add_comment(request, software_id):
     obj = get_object_or_404(Software, pk=software_id)
     breadcrumbs = [
         ("Softwares", reverse("kg_software_list")),
-        (six.text_type(obj), reverse("kg_software_detail", args=[obj.pk]))
+        (six.text_type(obj), reverse("kg_software_detail", args=[obj.pk])),
     ]
     return util.add_comment(request, breadcrumbs, obj)
 
@@ -258,10 +245,7 @@ def add_comment(request, software_id):
 @login_required
 def license_detail(request, license_id):
     l = get_object_or_404(SoftwareLicense, pk=license_id)
-    return render(
-        template_name='kgsoftware/license_detail.html',
-        context=locals(),
-        request=request)
+    return render(template_name="kgsoftware/license_detail.html", context=locals(), request=request)
 
 
 @admin_required
@@ -269,16 +253,13 @@ def add_license(request, software_id):
     software = get_object_or_404(Software, pk=software_id)
 
     form = LicenseForm(request.POST or None)
-    if request.method == 'POST':
+    if request.method == "POST":
         if form.is_valid():
             l = form.save()
             log.add(software, "license: %s added" % l)
             return HttpResponseRedirect(software.get_absolute_url())
 
-    return render(
-        template_name='kgsoftware/license_form.html',
-        context=locals(),
-        request=request)
+    return render(template_name="kgsoftware/license_form.html", context=locals(), request=request)
 
 
 @admin_required
@@ -287,42 +268,35 @@ def edit_license(request, license_id):
     software = l.software
 
     form = LicenseForm(request.POST or None, instance=l)
-    if request.method == 'POST':
+    if request.method == "POST":
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(software.get_absolute_url())
 
-    return render(
-        template_name='kgsoftware/license_form.html',
-        context=locals(),
-        request=request)
+    return render(template_name="kgsoftware/license_form.html", context=locals(), request=request)
 
 
 @admin_required
 def license_delete(request, license_id):
     from karaage.common.create_update import delete_object
+
     return delete_object(
-        request,
-        post_delete_redirect=reverse('kg_software_list'),
-        object_id=license_id, model=SoftwareLicense)
+        request, post_delete_redirect=reverse("kg_software_list"), object_id=license_id, model=SoftwareLicense
+    )
 
 
 @admin_required
 def delete_version(request, version_id):
     version = get_object_or_404(SoftwareVersion, pk=version_id)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         version.delete()
-        log.delete(version.software, 'Deleted version: %s' % version)
+        log.delete(version.software, "Deleted version: %s" % version)
 
-        messages.success(
-            request, "Version '%s' was deleted succesfully" % version)
+        messages.success(request, "Version '%s' was deleted succesfully" % version)
         return HttpResponseRedirect(version.get_absolute_url())
 
-    return render(
-        template_name='kgsoftware/version_confirm_delete.html',
-        context=locals(),
-        request=request)
+    return render(template_name="kgsoftware/version_confirm_delete.html", context=locals(), request=request)
 
 
 @admin_required
@@ -330,15 +304,12 @@ def add_version(request, software_id):
     software = get_object_or_404(Software, pk=software_id)
 
     form = SoftwareVersionForm(request.POST or None)
-    if request.method == 'POST':
+    if request.method == "POST":
         if form.is_valid():
             version = form.save()
             return HttpResponseRedirect(software.get_absolute_url())
 
-    return render(
-        template_name='kgsoftware/version_form.html',
-        context=locals(),
-        request=request)
+    return render(template_name="kgsoftware/version_form.html", context=locals(), request=request)
 
 
 @admin_required
@@ -347,40 +318,34 @@ def edit_version(request, version_id):
     software = version.software
 
     form = SoftwareVersionForm(request.POST or None, instance=version)
-    if request.method == 'POST':
+    if request.method == "POST":
         if form.is_valid():
             version = form.save()
             return HttpResponseRedirect(software.get_absolute_url())
 
-    return render(
-        template_name='kgsoftware/version_form.html',
-        context=locals(),
-        request=request)
+    return render(template_name="kgsoftware/version_form.html", context=locals(), request=request)
 
 
 @admin_required
 def category_list(request):
     category_list = SoftwareCategory.objects.all()
     return render(
-        template_name='kgsoftware/category_list.html',
-        context={'category_list': category_list},
-        request=request)
+        template_name="kgsoftware/category_list.html", context={"category_list": category_list}, request=request
+    )
 
 
 @admin_required
 def category_create(request):
     from karaage.common.create_update import create_object
-    return create_object(
-        request, model=SoftwareCategory,
-        form_class=SoftwareCategoryForm)
+
+    return create_object(request, model=SoftwareCategory, form_class=SoftwareCategoryForm)
 
 
 @admin_required
 def category_edit(request, category_id):
     from karaage.common.create_update import update_object
-    return update_object(
-        request, object_id=category_id, model=SoftwareCategory,
-        form_class=SoftwareCategoryForm)
+
+    return update_object(request, object_id=category_id, model=SoftwareCategory, form_class=SoftwareCategoryForm)
 
 
 @admin_required
@@ -388,16 +353,13 @@ def remove_member(request, software_id, person_id):
     software = get_object_or_404(Software, pk=software_id)
     person = get_object_or_404(Person, pk=person_id)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         person.remove_group(software.group)
         messages.success(request, "User '%s' removed successfuly" % person)
 
         return HttpResponseRedirect(software.get_absolute_url())
 
-    return render(
-        template_name='kgsoftware/person_confirm_remove.html',
-        context=locals(),
-        request=request)
+    return render(template_name="kgsoftware/person_confirm_remove.html", context=locals(), request=request)
 
 
 @login_required
@@ -407,8 +369,6 @@ def license_txt(request, software_id):
     software_license = software.get_current_license()
 
     if software_license is None:
-        raise Http404('No license found for software')
+        raise Http404("No license found for software")
 
-    return HttpResponse(
-        wordwrap(software_license.text, 80),
-        content_type="text/plain")
+    return HttpResponse(wordwrap(software_license.text, 80), content_type="text/plain")

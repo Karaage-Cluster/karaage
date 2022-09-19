@@ -49,7 +49,7 @@ def add_plugin(namespace, plugin_name, django_apps, depends):
     django_apps.extend(value)
 
     value = descriptor.template_context_processors
-    namespace.TEMPLATES[0]['OPTIONS']['context_processors'] += value
+    namespace.TEMPLATES[0]["OPTIONS"]["context_processors"] += value
 
     for key, value in descriptor.settings.items():
         try:
@@ -66,13 +66,10 @@ def load_plugins(namespace, plugins):
     while len(depends) > 0:
         new_depends = []
         for plugin in depends:
-            if plugin.startswith("kgapplications.") \
-                    or plugin.startswith("kgsoftware."):
+            if plugin.startswith("kgapplications.") or plugin.startswith("kgsoftware."):
                 new_plugin = "karaage.plugins.%s" % plugin
 
-                warnings.warn(
-                    "%s is legacy, use %s instead"
-                    % (plugin, new_plugin), DeprecationWarning)
+                warnings.warn("%s is legacy, use %s instead" % (plugin, new_plugin), DeprecationWarning)
                 plugin = new_plugin
 
             if plugin not in done:
@@ -101,9 +98,7 @@ def load_plugins(namespace, plugins):
 def post_process(namespace):
     http_host = namespace.HTTP_HOST
     for i, host in enumerate(namespace.ALLOWED_HOSTS):
-        namespace.ALLOWED_HOSTS[i] = host % {'HOST': http_host}
-    namespace.REGISTRATION_BASE_URL = \
-        namespace.REGISTRATION_BASE_URL % {'HOST': http_host}
-    namespace.ADMIN_BASE_URL = \
-        namespace.ADMIN_BASE_URL % {'HOST': http_host}
+        namespace.ALLOWED_HOSTS[i] = host % {"HOST": http_host}
+    namespace.REGISTRATION_BASE_URL = namespace.REGISTRATION_BASE_URL % {"HOST": http_host}
+    namespace.ADMIN_BASE_URL = namespace.ADMIN_BASE_URL % {"HOST": http_host}
     load_plugins(namespace, namespace.PLUGINS)

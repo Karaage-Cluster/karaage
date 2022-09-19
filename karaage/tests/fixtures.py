@@ -33,58 +33,51 @@ try:
     from factory.django import DjangoModelFactory
     from factory.fuzzy import FuzzyChoice, FuzzyText
 except ImportError:
-    raise ImportError(
-        "factory_boy is required, "
-        "either install from a package or using \'pip install -e .[tests]\'")
+    raise ImportError("factory_boy is required, " "either install from a package or using 'pip install -e .[tests]'")
 
 
 def fuzzy_lower_text(*args, **kwargs):
-    if 'chars' not in kwargs:
-        kwargs['chars'] = 'abcdefghijklmnopqrstuvwxyz'
+    if "chars" not in kwargs:
+        kwargs["chars"] = "abcdefghijklmnopqrstuvwxyz"
     return FuzzyText(*args, **kwargs)
 
 
 class GroupFactory(DjangoModelFactory):
-    name = fuzzy_lower_text(prefix='group-')
+    name = fuzzy_lower_text(prefix="group-")
 
     class Meta:
         model = karaage.people.models.Group
-        django_get_or_create = ('name',)
+        django_get_or_create = ("name",)
 
 
 class PersonFactory(DjangoModelFactory):
-    username = fuzzy_lower_text(prefix='person-')
-    password = make_password('test')
+    username = fuzzy_lower_text(prefix="person-")
+    password = make_password("test")
     full_name = factory.LazyAttribute(lambda a: a.username.title()[:50])
     short_name = factory.LazyAttribute(lambda a: a.username.title()[:30])
-    email = factory.LazyAttribute(
-        lambda a: '{0}@example.com'.format(a.username[:62]).lower())
-    institute = factory.LazyAttribute(
-        lambda a: InstituteFactory(
-            name=fuzzy_lower_text(prefix='%s-inst-' % a.username)))
+    email = factory.LazyAttribute(lambda a: "{0}@example.com".format(a.username[:62]).lower())
+    institute = factory.LazyAttribute(lambda a: InstituteFactory(name=fuzzy_lower_text(prefix="%s-inst-" % a.username)))
 
     class Meta:
         model = karaage.people.models.Person
-        django_get_or_create = ('username',)
+        django_get_or_create = ("username",)
 
 
 class InstituteFactory(DjangoModelFactory):
-    name = fuzzy_lower_text(prefix='inst-')
+    name = fuzzy_lower_text(prefix="inst-")
     group = factory.SubFactory(GroupFactory)
 
     class Meta:
         model = karaage.institutes.models.Institute
-        django_get_or_create = ('name',)
+        django_get_or_create = ("name",)
 
 
 class ProjectFactory(DjangoModelFactory):
-    pid = fuzzy_lower_text(prefix='proj-')
+    pid = fuzzy_lower_text(prefix="proj-")
     name = factory.LazyAttribute(lambda a: a.pid.title()[:200])
     institute = factory.SubFactory(InstituteFactory)
     is_approved = True
-    approved_by = factory.LazyAttribute(
-        lambda a: PersonFactory(
-            username=fuzzy_lower_text(prefix='%s-acc-' % a.pid)))
+    approved_by = factory.LazyAttribute(lambda a: PersonFactory(username=fuzzy_lower_text(prefix="%s-acc-" % a.pid)))
     is_active = True
 
     class Meta:
@@ -92,7 +85,7 @@ class ProjectFactory(DjangoModelFactory):
 
 
 class AccountFactory(DjangoModelFactory):
-    username = fuzzy_lower_text(prefix='account-')
+    username = fuzzy_lower_text(prefix="account-")
     foreign_id = FuzzyText()
     person = factory.SubFactory(PersonFactory)
     date_created = factory.LazyAttribute(lambda a: datetime.datetime.today())
@@ -101,17 +94,14 @@ class AccountFactory(DjangoModelFactory):
 
     class Meta:
         model = karaage.machines.models.Account
-        django_get_or_create = ('person', 'username')
+        django_get_or_create = ("person", "username")
 
 
 def simple_account(institute=None):
     if not institute:
         institute = InstituteFactory()
     person = PersonFactory(institute=institute)
-    project = ProjectFactory(pid=fuzzy_lower_text(prefix='proj-default-'),
-                             institute=institute,
-                             approved_by=person)
-    account = AccountFactory(person=person,
-                             default_project=project)
+    project = ProjectFactory(pid=fuzzy_lower_text(prefix="proj-default-"), institute=institute, approved_by=person)
+    account = AccountFactory(person=person, default_project=project)
     add_user_to_project(account.person, project)
     return account

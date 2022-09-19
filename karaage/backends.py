@@ -23,7 +23,6 @@ from karaage.people.models import Person
 
 
 class LDAPBackend(ModelBackend):
-
     def authenticate(self, username=None, password=None, **kwargs):
         try:
             person = Person.objects.get(username__exact=username)
@@ -33,8 +32,7 @@ class LDAPBackend(ModelBackend):
         if person.legacy_ldap_password is None:
             return None
 
-        if not tldap.ldap_passwd.check_password(
-                password, person.legacy_ldap_password):
+        if not tldap.ldap_passwd.check_password(password, person.legacy_ldap_password):
             return None
 
         # Success.

@@ -41,25 +41,25 @@ def profile_institutes(request):
 
     person = request.user
 
-    my_institute_list = Institute.objects.filter(
-        Q(pk=person.institute_id) | Q(group__members=person))
+    my_institute_list = Institute.objects.filter(Q(pk=person.institute_id) | Q(group__members=person))
     my_institute_list = my_institute_list.select_related()
     my_institute_list = InstituteTable(my_institute_list, prefix="mine")
     config.configure(my_institute_list)
 
     delegate_institute_list = person.delegate_for.all()
     delegate_institute_list = delegate_institute_list.select_related()
-    delegate_institute_list = InstituteTable(
-        delegate_institute_list, prefix="delegate")
+    delegate_institute_list = InstituteTable(delegate_institute_list, prefix="delegate")
     config.configure(delegate_institute_list)
 
     return render(
-        template_name='karaage/institutes/profile_institutes.html',
+        template_name="karaage/institutes/profile_institutes.html",
         context={
-            'person': person,
-            'my_institute_list': my_institute_list,
-            'delegate_institute_list': delegate_institute_list},
-        request=request)
+            "person": person,
+            "my_institute_list": my_institute_list,
+            "delegate_institute_list": delegate_institute_list,
+        },
+        request=request,
+    )
 
 
 @login_required
@@ -69,24 +69,19 @@ def institute_detail(request, institute_id):
     institute = get_object_or_404(Institute, pk=institute_id)
     if not institute.can_view(request):
         return HttpResponseForbidden(
-            '<h1>Access Denied</h1>'
-            '<p>You do not have permission to view details'
-            'about this institute.</p>')
+            "<h1>Access Denied</h1>" "<p>You do not have permission to view details" "about this institute.</p>"
+        )
 
     project_list = institute.project_set.select_related()
     project_list = ProjectTable(project_list, prefix="project-")
     config.configure(project_list)
 
-    person_list = Person.objects.filter(
-        Q(institute__pk=institute_id) | Q(groups__institute=institute_id))
+    person_list = Person.objects.filter(Q(institute__pk=institute_id) | Q(groups__institute=institute_id))
     person_list = person_list.select_related()
     person_list = PersonTable(person_list, prefix="person-")
     config.configure(person_list)
 
-    return render(
-        template_name='karaage/institutes/institute_detail.html',
-        context=locals(),
-        request=request)
+    return render(template_name="karaage/institutes/institute_detail.html", context=locals(), request=request)
 
 
 @admin_required
@@ -94,12 +89,10 @@ def institute_verbose(request, institute_id):
     institute = get_object_or_404(Institute, pk=institute_id)
 
     from karaage.datastores import get_institute_details
+
     institute_details = get_institute_details(institute)
 
-    return render(
-        template_name='karaage/institutes/institute_verbose.html',
-        context=locals(),
-        request=request)
+    return render(template_name="karaage/institutes/institute_verbose.html", context=locals(), request=request)
 
 
 @login_required
@@ -107,8 +100,7 @@ def institute_list(request):
 
     queryset = Institute.objects.all()
     if not is_admin(request):
-        queryset = queryset.filter(
-            is_active=True, delegates=request.user)
+        queryset = queryset.filter(is_active=True, delegates=request.user)
 
     q_filter = InstituteFilter(request.GET, queryset=queryset)
     table = InstituteTable(q_filter.qs)
@@ -117,18 +109,19 @@ def institute_list(request):
     spec = []
     for name, value in six.iteritems(q_filter.form.cleaned_data):
         if value is not None and value != "":
-            name = name.replace('_', ' ').capitalize()
+            name = name.replace("_", " ").capitalize()
             spec.append((name, value))
 
     return render(
-        template_name='karaage/institutes/institute_list.html',
+        template_name="karaage/institutes/institute_list.html",
         context={
-            'table': table,
-            'filter': q_filter,
-            'spec': spec,
-            'title': "Institute list",
+            "table": table,
+            "filter": q_filter,
+            "spec": spec,
+            "title": "Institute list",
         },
-        request=request)
+        request=request,
+    )
 
 
 @admin_required
@@ -140,17 +133,16 @@ def add_edit_institute(request, institute_id=None):
         institute = None
 
     delegate_formset_class = inlineformset_factory(
-        Institute, InstituteDelegate, form=DelegateForm, extra=3,
-        min_num=1, validate_min=True)
+        Institute, InstituteDelegate, form=DelegateForm, extra=3, min_num=1, validate_min=True
+    )
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = InstituteForm(request.POST, instance=institute)
 
         if form.is_valid():
             institute = form.save()
 
-            delegate_formset = delegate_formset_class(
-                request.POST, instance=institute)
+            delegate_formset = delegate_formset_class(request.POST, instance=institute)
 
             if delegate_formset.is_valid():
                 delegate_formset.save()
@@ -164,11 +156,10 @@ def add_edit_institute(request, institute_id=None):
         media = media + dform.media
 
     return render(
-        template_name='karaage/institutes/institute_form.html',
-        context={
-            'institute': institute, 'form': form,
-            'media': media, 'delegate_formset': delegate_formset},
-        request=request)
+        template_name="karaage/institutes/institute_form.html",
+        context={"institute": institute, "form": form, "media": media, "delegate_formset": delegate_formset},
+        request=request,
+    )
 
 
 @admin_required
@@ -176,7 +167,7 @@ def institute_logs(request, institute_id):
     obj = get_object_or_404(Institute, pk=institute_id)
     breadcrumbs = [
         ("Institutes", reverse("kg_institute_list")),
-        (six.text_type(obj), reverse("kg_institute_detail", args=[obj.pk]))
+        (six.text_type(obj), reverse("kg_institute_detail", args=[obj.pk])),
     ]
     return util.log_list(request, breadcrumbs, obj)
 
@@ -186,6 +177,6 @@ def add_comment(request, institute_id):
     obj = get_object_or_404(Institute, pk=institute_id)
     breadcrumbs = [
         ("Institutes", reverse("kg_institute_list")),
-        (six.text_type(obj), reverse("kg_institute_detail", args=[obj.pk]))
+        (six.text_type(obj), reverse("kg_institute_detail", args=[obj.pk])),
     ]
     return util.add_comment(request, breadcrumbs, obj)

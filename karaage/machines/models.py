@@ -39,13 +39,12 @@ class Machine(TrackingModelMixin, AbstractBaseUser):
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
     pbs_server_host = models.CharField(max_length=50, null=True, blank=True)
-    mem_per_core = models.IntegerField(
-        help_text="In GB", null=True, blank=True)
+    mem_per_core = models.IntegerField(help_text="In GB", null=True, blank=True)
     objects = MachineManager()
     active = ActiveMachineManager()
     scaling_factor = models.IntegerField(default=1)
 
-    USERNAME_FIELD = 'name'
+    USERNAME_FIELD = "name"
 
     def save(self, *args, **kwargs):
         created = self.pk is None
@@ -58,74 +57,72 @@ class Machine(TrackingModelMixin, AbstractBaseUser):
         super(Machine, self).save(*args, **kwargs)
 
         if created:
-            log.add(self, 'Created')
+            log.add(self, "Created")
         for field in changed.keys():
             if field == "password":
-                log.change(self, 'Changed %s' % field)
+                log.change(self, "Changed %s" % field)
             else:
-                log.change(
-                    self,
-                    'Changed %s to %s' % (field, getattr(self, field)))
+                log.change(self, "Changed %s to %s" % (field, getattr(self, field)))
 
     def delete(self, *args, **kwargs):
         # delete the object
-        log.delete(self, 'Deleted')
+        log.delete(self, "Deleted")
         super(Machine, self).delete(*args, **kwargs)
 
     class Meta:
-        db_table = 'machine'
-        app_label = 'karaage'
+        db_table = "machine"
+        app_label = "karaage"
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('kg_machine_detail', args=[self.id])
+        return reverse("kg_machine_detail", args=[self.id])
 
 
 class Account(TrackingModelMixin, models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     username = models.CharField(max_length=255)
     foreign_id = models.CharField(
-        max_length=255, null=True, unique=True,
-        help_text='The foreign identifier from the datastore.')
-    default_project = models.ForeignKey(
-        'karaage.Project', null=True, blank=True,
-        on_delete=models.SET_NULL)
+        max_length=255, null=True, unique=True, help_text="The foreign identifier from the datastore."
+    )
+    default_project = models.ForeignKey("karaage.Project", null=True, blank=True, on_delete=models.SET_NULL)
     date_created = models.DateField()
     date_deleted = models.DateField(null=True, blank=True)
     disk_quota = models.IntegerField(null=True, blank=True, help_text="In GB")
     shell = models.CharField(max_length=50)
     login_enabled = models.BooleanField(default=True)
     extra_data = models.JSONField(
-        default=dict,
-        blank=True,
-        help_text='Datastore specific values should be stored in this field.')
+        default=dict, blank=True, help_text="Datastore specific values should be stored in this field."
+    )
 
     def __init__(self, *args, **kwargs):
         super(Account, self).__init__(*args, **kwargs)
         self._password = None
 
     class Meta:
-        ordering = ['person', ]
-        db_table = 'account'
-        app_label = 'karaage'
+        ordering = [
+            "person",
+        ]
+        db_table = "account"
+        app_label = "karaage"
 
     def __str__(self):
-        return '%s' % self.username
+        return "%s" % self.username
 
     def get_absolute_url(self):
-        return reverse('kg_account_detail', args=[self.pk])
+        return reverse("kg_account_detail", args=[self.pk])
 
     @classmethod
     def create(cls, person, default_project):
-        """Creates a Account (if needed) and activates person.
-        """
+        """Creates a Account (if needed) and activates person."""
         ua = Account.objects.create(
-            person=person, username=person.username,
+            person=person,
+            username=person.username,
             shell=settings.DEFAULT_SHELL,
             default_project=default_project,
-            date_created=datetime.datetime.today())
+            date_created=datetime.datetime.today(),
+        )
 
         if default_project is not None:
             person.add_group(default_project.group)
@@ -146,44 +143,36 @@ class Account(TrackingModelMixin, models.Model):
         super(Account, self).save(*args, **kwargs)
 
         if created:
-            log.add(
-                self.person,
-                'Account %s: Created' % self)
+            log.add(self.person, "Account %s: Created" % self)
         for field in changed.keys():
             if field != "password":
-                log.change(
-                    self.person,
-                    'Account %s: Changed %s to %s'
-                    % (self, field, getattr(self, field)))
+                log.change(self.person, "Account %s: Changed %s to %s" % (self, field, getattr(self, field)))
 
         # check if it was renamed
         if "username" in changed:
-            old_username = changed['username']
+            old_username = changed["username"]
             if old_username is not None:
                 new_username = self.username
                 if self.date_deleted is None:
                     from karaage.datastores import set_account_username
+
                     set_account_username(self, old_username, new_username)
                 log.change(
-                    self.person,
-                    'Account %s: Changed username from %s to %s' %
-                    (self, old_username, new_username))
+                    self.person, "Account %s: Changed username from %s to %s" % (self, old_username, new_username)
+                )
 
         # check if deleted status changed
         if "date_deleted" in changed:
             if self.date_deleted is not None:
                 # account is deactivated
                 from karaage.datastores import delete_account
+
                 delete_account(self)
-                log.delete(
-                    self.person,
-                    'Account %s: Deactivated account' % self)
+                log.delete(self.person, "Account %s: Deactivated account" % self)
                 # deleted
             else:
                 # account is reactivated
-                log.add(
-                    self.person,
-                    'Account %s: Activated' % self)
+                log.add(self.person, "Account %s: Activated" % self)
 
         # makes sense to lock non-existant account
         if self.date_deleted is not None:
@@ -192,15 +181,16 @@ class Account(TrackingModelMixin, models.Model):
         # update the datastore
         if self.date_deleted is None:
             from karaage.datastores import save_account
+
             save_account(self)
 
             if self._password is not None:
                 from karaage.datastores import set_account_password
+
                 set_account_password(self, self._password)
-                log.change(
-                    self.person,
-                    'Account %s: Changed Password' % self)
+                log.change(self.person, "Account %s: Changed Password" % self)
                 self._password = None
+
     save.alters_data = True
 
     def can_view(self, request):
@@ -252,12 +242,14 @@ class Account(TrackingModelMixin, models.Model):
 
     def delete(self, **kwargs):
         # delete the object
-        log.delete(self.person, 'Account %s: Deleted' % self)
+        log.delete(self.person, "Account %s: Deleted" % self)
         super(Account, self).delete(**kwargs)
         if self.date_deleted is None:
             # delete the datastore
             from karaage.datastores import delete_account
+
             delete_account(self)
+
     delete.alters_data = True
 
     def deactivate(self):
@@ -268,18 +260,21 @@ class Account(TrackingModelMixin, models.Model):
         self.login_enabled = False
         self.save()
         # self.save() will delete the datastore for us.
+
     deactivate.alters_data = True
 
     def change_shell(self, shell):
         self.shell = shell
         self.save()
         # self.save() will update the datastore for us.
+
     change_shell.alters_data = True
 
     def set_password(self, password):
         if self.date_deleted is not None:
             raise RuntimeError("Account is deactivated")
         self._password = password
+
     set_password.alters_data = True
 
     def get_disk_quota(self):
@@ -294,6 +289,7 @@ class Account(TrackingModelMixin, models.Model):
             raise RuntimeError("Account is deactivated")
         self.login_enabled = False
         self.save()
+
     lock.alters_data = True
 
     def unlock(self):
@@ -301,6 +297,7 @@ class Account(TrackingModelMixin, models.Model):
             raise RuntimeError("Account is deactivated")
         self.login_enabled = True
         self.save()
+
     unlock.alters_data = True
 
     def is_locked(self):
@@ -309,8 +306,7 @@ class Account(TrackingModelMixin, models.Model):
 
 def _remove_group(group, person):
     # if removing default project from person, then break link first
-    for ua in person.account_set.filter(
-            date_deleted__isnull=True, default_project__isnull=False):
+    for ua in person.account_set.filter(date_deleted__isnull=True, default_project__isnull=False):
         # Does the default_project for ua belong to this group?
         count = group.project_set.filter(pk=ua.default_project.pk).count()
         # If yes, deactivate the ua
@@ -319,8 +315,7 @@ def _remove_group(group, person):
             ua.save()
 
 
-def _members_changed(
-        sender, instance, action, reverse, model, pk_set, **kwargs):
+def _members_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
     """
     Hook that executes whenever the group members are changed.
     """
@@ -347,5 +342,4 @@ def _members_changed(
                 _remove_group(group, person)
 
 
-models.signals.m2m_changed.connect(
-    _members_changed, sender=Group.members.through)
+models.signals.m2m_changed.connect(_members_changed, sender=Group.members.through)

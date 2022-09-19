@@ -28,6 +28,6 @@ register = template.Library()
 @register.simple_tag(takes_context=True)
 def get_account_table(context, queryset):
     table = AccountTable(queryset)
-    config = tables.RequestConfig(context['request'], paginate={"per_page": 5})
+    config = tables.RequestConfig(context["request"], paginate={"per_page": 5})
     config.configure(table)
     return table

@@ -41,18 +41,19 @@ def group_list(request):
     spec = []
     for name, value in six.iteritems(q_filter.form.cleaned_data):
         if value is not None and value != "":
-            name = name.replace('_', ' ').capitalize()
+            name = name.replace("_", " ").capitalize()
             spec.append((name, value))
 
     return render(
-        template_name='karaage/people/group_list.html',
+        template_name="karaage/people/group_list.html",
         context={
-            'table': table,
-            'filter': q_filter,
-            'spec': spec,
-            'title': "Group list",
+            "table": table,
+            "filter": q_filter,
+            "spec": spec,
+            "title": "Group list",
         },
-        request=request)
+        request=request,
+    )
 
 
 def _add_edit_group(request, form_class, group_name):
@@ -63,28 +64,25 @@ def _add_edit_group(request, form_class, group_name):
     else:
         group = get_object_or_404(Group, name=group_name)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = group_form(request.POST, instance=group)
         if form.is_valid():
             if group:
                 # edit
                 group = form.save()
-                messages.success(
-                    request, "Group '%s' was edited succesfully" % group)
+                messages.success(request, "Group '%s' was edited succesfully" % group)
             else:
                 # add
                 group = form.save()
-                messages.success(
-                    request, "Group '%s' was created succesfully" % group)
+                messages.success(request, "Group '%s' was created succesfully" % group)
 
             return HttpResponseRedirect(group.get_absolute_url())
     else:
         form = group_form(instance=group)
 
     return render(
-        template_name='karaage/people/group_form.html',
-        context={'group': group, 'form': form},
-        request=request)
+        template_name="karaage/people/group_form.html", context={"group": group, "form": form}, request=request
+    )
 
 
 @admin_required
@@ -107,15 +105,12 @@ def delete_group(request, group_name):
         error = "An institute is using this group."
     elif group.project_set.all().count() > 0:
         error = "A project is using this group."
-    elif request.method == 'POST':
+    elif request.method == "POST":
         group.delete()
         messages.success(request, "Group '%s' was deleted succesfully" % group)
         return HttpResponseRedirect(reverse("kg_group_list"))
 
-    return render(
-        template_name='karaage/people/group_confirm_delete.html',
-        context=locals(),
-        request=request)
+    return render(template_name="karaage/people/group_confirm_delete.html", context=locals(), request=request)
 
 
 @admin_required
@@ -123,10 +118,7 @@ def group_detail(request, group_name):
     group = get_object_or_404(Group, name=group_name)
     form = AddGroupMemberForm(instance=group)
 
-    return render(
-        template_name='karaage/people/group_detail.html',
-        context=locals(),
-        request=request)
+    return render(template_name="karaage/people/group_detail.html", context=locals(), request=request)
 
 
 @admin_required
@@ -134,12 +126,10 @@ def group_verbose(request, group_name):
     group = get_object_or_404(Group, name=group_name)
 
     from karaage.datastores import get_group_details
+
     group_details = get_group_details(group)
 
-    return render(
-        template_name='karaage/people/group_verbose.html',
-        context=locals(),
-        request=request)
+    return render(template_name="karaage/people/group_verbose.html", context=locals(), request=request)
 
 
 @admin_required
@@ -147,7 +137,7 @@ def group_logs(request, group_name):
     obj = get_object_or_404(Group, name=group_name)
     breadcrumbs = [
         ("Groups", reverse("kg_group_list")),
-        (six.text_type(obj), reverse("kg_group_detail", args=[obj.name]))
+        (six.text_type(obj), reverse("kg_group_detail", args=[obj.name])),
     ]
     return util.log_list(request, breadcrumbs, obj)
 
@@ -157,7 +147,7 @@ def add_comment(request, group_name):
     obj = get_object_or_404(Group, name=group_name)
     breadcrumbs = [
         ("Groups", reverse("kg_group_list")),
-        (six.text_type(obj), reverse("kg_group_detail", args=[obj.name]))
+        (six.text_type(obj), reverse("kg_group_detail", args=[obj.name])),
     ]
     return util.add_comment(request, breadcrumbs, obj)
 
@@ -165,7 +155,7 @@ def add_comment(request, group_name):
 @admin_required
 def add_group_member(request, group_name):
     group = get_object_or_404(Group, name=group_name)
-    if request.method == 'POST':
+    if request.method == "POST":
         form = AddGroupMemberForm(request.POST, instance=group)
         if form.is_valid():
             form.save()
@@ -173,10 +163,7 @@ def add_group_member(request, group_name):
     else:
         form = AddGroupMemberForm(instance=group)
 
-    return render(
-        template_name='karaage/people/group_add_member.html',
-        context=locals(),
-        request=request)
+    return render(template_name="karaage/people/group_add_member.html", context=locals(), request=request)
 
 
 @admin_required
@@ -190,14 +177,10 @@ def remove_group_member(request, group_name, username):
         count = group.project_set.filter(pk=account.default_project.pk).count()
         # If yes, error
         if count > 0:
-            error = "The person has accounts that use " \
-                    "this group as the default_project."
+            error = "The person has accounts that use " "this group as the default_project."
 
-    if error is None and request.method == 'POST':
+    if error is None and request.method == "POST":
         group.remove_person(person)
         return HttpResponseRedirect(group.get_absolute_url())
 
-    return render(
-        template_name='karaage/people/group_remove_member.html',
-        context=locals(),
-        request=request)
+    return render(template_name="karaage/people/group_remove_member.html", context=locals(), request=request)

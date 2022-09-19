@@ -4,12 +4,12 @@ from django.db import migrations
 
 
 def forward(apps, schema_editor):
-    person_class = apps.get_model('karaage', 'person')
-    applicant_class = apps.get_model('kgapplications', 'applicant')
-    application_class = apps.get_model('kgapplications', 'application')
+    person_class = apps.get_model("karaage", "person")
+    applicant_class = apps.get_model("kgapplications", "applicant")
+    application_class = apps.get_model("kgapplications", "application")
 
     for application in application_class.objects.all():
-        if application.content_type.model == 'applicant':
+        if application.content_type.model == "applicant":
             applicant = applicant_class.objects.get(pk=application.object_id)
 
             clash = application_class.objects.filter(new_applicant=application.object_id).all()
@@ -19,7 +19,7 @@ def forward(apps, schema_editor):
 
             application.new_applicant = applicant
             application.existing_person = None
-        elif application.content_type.model == 'person':
+        elif application.content_type.model == "person":
             person = person_class.objects.get(pk=application.object_id)
             application.new_applicant = None
             application.existing_person = person
@@ -32,7 +32,7 @@ def reverse(apps, schema_editor):
     content_type = apps.get_model("contenttypes", "ContentType")
     person_type = content_type.objects.get(app_label="karaage", model="person")
     applicant_type = content_type.objects.get(app_label="kgapplications", model="applicant")
-    application_class = apps.get_model('kgapplications', 'application')
+    application_class = apps.get_model("kgapplications", "application")
 
     for application in application_class.objects.all():
         if application.existing_person is not None:
@@ -49,7 +49,7 @@ def reverse(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kgapplications', '0009_auto_20200227_1655'),
+        ("kgapplications", "0009_auto_20200227_1655"),
     ]
 
     operations = [

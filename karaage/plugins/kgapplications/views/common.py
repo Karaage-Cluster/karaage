@@ -35,7 +35,7 @@ from . import base
 
 @login_required
 def application_list(request):
-    """ a user wants to see all applications possible. """
+    """a user wants to see all applications possible."""
 
     if util.is_admin(request):
         queryset = Application.objects.all()
@@ -50,23 +50,24 @@ def application_list(request):
     spec = []
     for name, value in six.iteritems(q_filter.form.cleaned_data):
         if value is not None and value != "":
-            name = name.replace('_', ' ').capitalize()
+            name = name.replace("_", " ").capitalize()
             spec.append((name, value))
 
     return render(
         template_name="kgapplications/application_list.html",
         context={
-            'table': table,
-            'filter': q_filter,
-            'spec': spec,
-            'title': "Application list",
+            "table": table,
+            "filter": q_filter,
+            "spec": spec,
+            "title": "Application list",
         },
-        request=request)
+        request=request,
+    )
 
 
 @login_required
 def profile_application_list(request):
-    """ a logged in user wants to see all his pending applications. """
+    """a logged in user wants to see all his pending applications."""
     config = tables.RequestConfig(request, paginate={"per_page": 5})
 
     person = request.user
@@ -79,13 +80,14 @@ def profile_application_list(request):
     config.configure(requires_attention)
 
     return render(
-        template_name='kgapplications/profile_applications.html',
+        template_name="kgapplications/profile_applications.html",
         context={
-            'person': request.user,
-            'my_applications': my_applications,
-            'requires_attention': requires_attention,
+            "person": request.user,
+            "my_applications": my_applications,
+            "requires_attention": requires_attention,
         },
-        request=request)
+        request=request,
+    )
 
 
 @admin_required
@@ -93,16 +95,13 @@ def applicant_edit(request, applicant_id):
     applicant = get_object_or_404(Applicant, id=applicant_id)
 
     form = ApplicantForm(request.POST or None, instance=applicant)
-    if request.method == 'POST':
+    if request.method == "POST":
         if form.is_valid():
             applicant = form.save()
             messages.success(request, "%s modified successfully." % applicant)
-            return HttpResponseRedirect(reverse('kg_application_list'))
+            return HttpResponseRedirect(reverse("kg_application_list"))
 
-    return render(
-        template_name='kgapplications/applicant_form.html',
-        context={'form': form},
-        request=request)
+    return render(template_name="kgapplications/applicant_form.html", context={"form": form}, request=request)
 
 
 @admin_required
@@ -110,7 +109,7 @@ def application_logs(request, application_id):
     obj = get_object_or_404(Application, pk=application_id)
     breadcrumbs = [
         ("Applications", reverse("kg_application_list")),
-        (six.text_type(obj), reverse("kg_application_detail", args=[obj.pk]))
+        (six.text_type(obj), reverse("kg_application_detail", args=[obj.pk])),
     ]
     return util.log_list(request, breadcrumbs, obj)
 
@@ -120,37 +119,34 @@ def add_comment(request, application_id):
     obj = get_object_or_404(Application, pk=application_id)
     breadcrumbs = [
         ("Applications", reverse("kg_application_list")),
-        (six.text_type(obj), reverse("kg_application_detail", args=[obj.pk]))
+        (six.text_type(obj), reverse("kg_application_detail", args=[obj.pk])),
     ]
     return util.add_comment(request, breadcrumbs, obj)
 
 
 @login_required
 def application_detail(request, application_id, state=None, label=None):
-    """ A authenticated used is trying to access an application. """
+    """A authenticated used is trying to access an application."""
     application = base.get_application(pk=application_id)
     state_machine = base.get_state_machine(application)
     return state_machine.process(request, application, state, label)
 
 
 def application_unauthenticated(request, token, state=None, label=None):
-    """ An somebody is trying to access an application. """
+    """An somebody is trying to access an application."""
     application = base.get_application(secret_token=token)
     if application.expires < timezone.now():
         return render(
-            template_name='kgapplications/common_expired.html',
-            context={'application': application},
-            request=request)
+            template_name="kgapplications/common_expired.html", context={"application": application}, request=request
+        )
 
-    roles = {'is_applicant', 'is_authorised'}
+    roles = {"is_applicant", "is_authorised"}
 
     # redirect user to real url if possible.
     if request.user.is_authenticated:
         if request.user == application.existing_person:
-            url = base.get_url(
-                request, application, roles, label)
+            url = base.get_url(request, application, roles, label)
             return HttpResponseRedirect(url)
 
     state_machine = base.get_state_machine(application)
-    return state_machine.process(
-        request, application, state, label, roles)
+    return state_machine.process(request, application, state, label, roles)

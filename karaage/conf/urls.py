@@ -26,18 +26,18 @@ from karaage.common.views import common
 
 # Profile URLS
 
-profile_urlpatterns = [
-]
+profile_urlpatterns = []
 
 
 def _load_profile_urls():
     import importlib
+
     global profile_urlpatterns
     modules = [
-        'karaage.institutes.urls',
-        'karaage.projects.urls',
-        'karaage.people.urls',
-        'karaage.machines.urls',
+        "karaage.institutes.urls",
+        "karaage.projects.urls",
+        "karaage.people.urls",
+        "karaage.machines.urls",
     ]
     for module_name in modules:
         module = importlib.import_module(module_name)
@@ -54,25 +54,21 @@ for urls in get_urls("profile_urlpatterns"):
 # Standard URLS
 
 urlpatterns = [
-    re_path(r'^captcha/', include('captcha.urls')),
-    re_path(r'^lookup/', include('ajax_select.urls')),
-
-    re_path(r'^emails/', include('karaage.emails.urls')),
-    re_path(r'^institutes/', include('karaage.institutes.urls')),
-    re_path(r'^projects/', include('karaage.projects.urls')),
-    re_path(r'^persons/', include('karaage.people.urls.persons')),
-    re_path(r'^groups/', include('karaage.people.urls.groups')),
-    re_path(r'^accounts/', include('karaage.machines.urls.accounts')),
-    re_path(r'^machines/', include('karaage.machines.urls.machines')),
-    re_path(r'^profile/', include(profile_urlpatterns)),
-
-    re_path(r'^$', common.index, name='index'),
-    re_path(r'^search/$', common.search,
-            name='kg_site_search'),
-    re_path(r'^misc/$', common.misc, name='kg_misc'),
-    re_path(r'^logs/$', common.log_list,
-            name='kg_log_list'),
-    re_path(r'^aup/$', common.aup, name="kg_aup"),
+    re_path(r"^captcha/", include("captcha.urls")),
+    re_path(r"^lookup/", include("ajax_select.urls")),
+    re_path(r"^emails/", include("karaage.emails.urls")),
+    re_path(r"^institutes/", include("karaage.institutes.urls")),
+    re_path(r"^projects/", include("karaage.projects.urls")),
+    re_path(r"^persons/", include("karaage.people.urls.persons")),
+    re_path(r"^groups/", include("karaage.people.urls.groups")),
+    re_path(r"^accounts/", include("karaage.machines.urls.accounts")),
+    re_path(r"^machines/", include("karaage.machines.urls.machines")),
+    re_path(r"^profile/", include(profile_urlpatterns)),
+    re_path(r"^$", common.index, name="index"),
+    re_path(r"^search/$", common.search, name="kg_site_search"),
+    re_path(r"^misc/$", common.misc, name="kg_misc"),
+    re_path(r"^logs/$", common.log_list, name="kg_log_list"),
+    re_path(r"^aup/$", common.aup, name="kg_aup"),
 ]
 
 for urls in get_urls("urlpatterns"):
@@ -81,6 +77,5 @@ for urls in get_urls("urlpatterns"):
 
 if settings.DEBUG:
     urlpatterns += [
-        re_path(r'^kgfiles/(?P<path>.*)$', django.views.static.serve,
-                {'document_root': settings.FILES_DIR})
+        re_path(r"^kgfiles/(?P<path>.*)$", django.views.static.serve, {"document_root": settings.FILES_DIR})
     ]

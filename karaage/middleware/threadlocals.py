@@ -36,7 +36,7 @@ _thread_locals = local()
 
 
 def get_current_user():
-    return getattr(_thread_locals, 'user', None)
+    return getattr(_thread_locals, "user", None)
 
 
 def reset():

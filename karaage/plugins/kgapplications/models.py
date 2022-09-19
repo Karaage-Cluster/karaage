@@ -36,55 +36,50 @@ from karaage.projects.models import Project
 
 
 class ApplicationManager(models.Manager):
-
     def get_for_applicant(self, person):
         query = self.get_queryset()
         query = query.filter(existing_person_id=person.pk)
-        query = query.exclude(state__in=[
-            Application.COMPLETED, Application.ARCHIVED, Application.DECLINED])
+        query = query.exclude(state__in=[Application.COMPLETED, Application.ARCHIVED, Application.DECLINED])
         return query
 
     def requires_attention(self, request):
         person = request.user
-        query = Q(
-            projectapplication__project__in=person.leads.all(),
-            state=ProjectApplication.WAITING_FOR_LEADER)
+        query = Q(projectapplication__project__in=person.leads.all(), state=ProjectApplication.WAITING_FOR_LEADER)
         query = query | Q(
-            projectapplication__institute__in=person.delegate_for.all(),
-            state=ProjectApplication.WAITING_FOR_DELEGATE)
+            projectapplication__institute__in=person.delegate_for.all(), state=ProjectApplication.WAITING_FOR_DELEGATE
+        )
         if is_admin(request):
             query = query | Q(state=Application.WAITING_FOR_ADMIN)
-            query = query | Q(
-                state=ProjectApplication.DUPLICATE,
-                projectapplication__isnull=False)
+            query = query | Q(state=ProjectApplication.DUPLICATE, projectapplication__isnull=False)
         return self.get_queryset().filter(query)
 
 
 class Application(TrackingModelMixin, models.Model):
 
-    """ Generic application for anything. """
-    WAITING_FOR_ADMIN = 'K'
-    COMPLETED = 'C'
-    ARCHIVED = 'A'
-    DECLINED = 'R'
+    """Generic application for anything."""
 
-    secret_token = models.CharField(
-        max_length=64, default=new_random_token, editable=False, unique=True)
+    WAITING_FOR_ADMIN = "K"
+    COMPLETED = "C"
+    ARCHIVED = "A"
+    DECLINED = "R"
+
+    secret_token = models.CharField(max_length=64, default=new_random_token, editable=False, unique=True)
     expires = models.DateTimeField(editable=False)
     created_by = models.ForeignKey(
-        Person, editable=False, null=True, blank=True,
-        on_delete=models.SET_NULL, related_name="created_applications")
+        Person, editable=False, null=True, blank=True, on_delete=models.SET_NULL, related_name="created_applications"
+    )
     created_date = models.DateTimeField(auto_now_add=True, editable=False)
     submitted_date = models.DateTimeField(null=True, blank=True)
     state = models.CharField(max_length=5)
     complete_date = models.DateTimeField(null=True, blank=True, editable=False)
-    new_applicant = models.OneToOneField('Applicant', null=True, blank=True, on_delete=models.SET_NULL)
+    new_applicant = models.OneToOneField("Applicant", null=True, blank=True, on_delete=models.SET_NULL)
     existing_person = models.ForeignKey(Person, null=True, blank=True, on_delete=models.SET_NULL)
     header_message = models.TextField(
-        'Message', null=True, blank=True,
-        help_text=six.u(
-            "Message displayed at top of application form "
-            "for the invitee and also in invitation email"))
+        "Message",
+        null=True,
+        blank=True,
+        help_text=six.u("Message displayed at top of application form " "for the invitee and also in invitation email"),
+    )
     _class = models.CharField(max_length=100, editable=False)
 
     objects = ApplicationManager()
@@ -102,7 +97,7 @@ class Application(TrackingModelMixin, models.Model):
         return self._class
 
     def get_absolute_url(self):
-        return reverse('kg_application_detail', args=[self.id])
+        return reverse("kg_application_detail", args=[self.id])
 
     def save(self, *args, **kwargs):
         created = self.pk is None
@@ -117,14 +112,13 @@ class Application(TrackingModelMixin, models.Model):
             self.created_by = get_current_person()
 
             fields = [
-                f for f in Application._meta.get_fields()
-                if isinstance(f, OneToOneRel)
-                and f.field.primary_key
-                and f.auto_created
+                f
+                for f in Application._meta.get_fields()
+                if isinstance(f, OneToOneRel) and f.field.primary_key and f.auto_created
             ]
 
             for rel in fields:
-                related_model = getattr(rel, 'related_model', rel.model)
+                related_model = getattr(rel, "related_model", rel.model)
 
                 # if we find it, save the name
                 if related_model == type(self):
@@ -134,15 +128,14 @@ class Application(TrackingModelMixin, models.Model):
         super(Application, self).save(*args, **kwargs)
 
         if created:
-            log.add(self.application_ptr, 'Created')
+            log.add(self.application_ptr, "Created")
         for field in changed.keys():
-            log.change(
-                self.application_ptr,
-                'Changed %s to %s' % (field, getattr(self, field)))
+            log.change(self.application_ptr, "Changed %s to %s" % (field, getattr(self, field)))
+
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
-        log.delete(self, 'Deleted')
+        log.delete(self, "Deleted")
         super(Application, self).delete(*args, **kwargs)
 
     def get_object(self):
@@ -177,11 +170,13 @@ class Application(TrackingModelMixin, models.Model):
         self.complete_date = timezone.now()
         self.save()
         return created_person, False
+
     approve.alters_data = True
 
     def decline(self):
         self.complete_date = timezone.now()
         self.save()
+
     decline.alters_data = True
 
     def check_valid(self):
@@ -199,8 +194,8 @@ class Application(TrackingModelMixin, models.Model):
         roles = set()
 
         if person == self.existing_person:
-            roles.add('is_applicant')
-            roles.add('is_authorised')
+            roles.add("is_applicant")
+            roles.add("is_authorised")
 
         return roles
 
@@ -216,35 +211,33 @@ class Application(TrackingModelMixin, models.Model):
 class ProjectApplication(Application):
     type = "project"
 
-    OPEN = 'O'
-    WAITING_FOR_LEADER = 'L'
-    WAITING_FOR_DELEGATE = 'D'
-    PASSWORD = 'P'
-    DUPLICATE = 'DUP'
+    OPEN = "O"
+    WAITING_FOR_LEADER = "L"
+    WAITING_FOR_DELEGATE = "D"
+    PASSWORD = "P"
+    DUPLICATE = "DUP"
 
     """ Application for an Applicant or a Person to create a new project or
     join an existing project. """
     # common properties
     needs_account = models.BooleanField(
         six.u("Do you need a personal cluster account?"),
-        help_text=six.u(
-            "Required if you will be working on the project yourself."),
-        default=True)
-    make_leader = models.BooleanField(
-        help_text="Make this person a project leader", default=False)
+        help_text=six.u("Required if you will be working on the project yourself."),
+        default=True,
+    )
+    make_leader = models.BooleanField(help_text="Make this person a project leader", default=False)
 
     # new project request
-    name = models.CharField('Title', max_length=200)
+    name = models.CharField("Title", max_length=200)
     institute = models.ForeignKey(
-        Institute, limit_choices_to={'is_active': True}, null=True, blank=True,
-        on_delete=models.CASCADE)
+        Institute, limit_choices_to={"is_active": True}, null=True, blank=True, on_delete=models.CASCADE
+    )
     description = models.TextField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
     pid = models.CharField(max_length=50, null=True, blank=True)
 
     # existing project request
-    project = models.ForeignKey(
-        Project, null=True, blank=True, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, null=True, blank=True, on_delete=models.CASCADE)
 
     objects = ApplicationManager()
 
@@ -260,13 +253,13 @@ class ProjectApplication(Application):
             return six.u("create/join a project")
 
     def approve(self, approved_by):
-        created_person, created_account = \
-            super(ProjectApplication, self).approve(approved_by)
+        created_person, created_account = super(ProjectApplication, self).approve(approved_by)
         assert self.existing_person is not None
         person = self.existing_person
         if self.project is None:
             assert self.institute is not None
             from karaage.projects.utils import get_new_pid
+
             project = Project(
                 pid=self.pid or get_new_pid(self.institute),
                 name=self.name,
@@ -274,29 +267,23 @@ class ProjectApplication(Application):
                 institute=self.institute,
                 additional_req=self.additional_req,
                 start_date=datetime.datetime.today(),
-                end_date=datetime.datetime.today()
-                + datetime.timedelta(days=365),
+                end_date=datetime.datetime.today() + datetime.timedelta(days=365),
             )
-            project.activate(approved_by)   # Activate has implied call to save().
+            project.activate(approved_by)  # Activate has implied call to save().
             self.project = project
             self.save()
         if self.make_leader:
             self.project.leaders.add(person)
         if self.needs_account:
             if not person.has_account():
-                log.add(
-                    self.application_ptr,
-                    'Created account.'
-                )
+                log.add(self.application_ptr, "Created account.")
                 Account.create(person, self.project)
                 created_account = True
             else:
-                log.change(
-                    self.application_ptr,
-                    'Account already exists'
-                )
+                log.change(self.application_ptr, "Account already exists")
         self.project.group.members.add(person)
         return created_person, created_account
+
     approve.alters_data = True
 
     def get_roles_for_person(self, person):
@@ -304,13 +291,13 @@ class ProjectApplication(Application):
 
         if self.project is not None:
             if person in self.project.leaders.all():
-                roles.add('is_leader')
-                roles.add('is_authorised')
+                roles.add("is_leader")
+                roles.add("is_authorised")
 
         if self.institute is not None:
             if person in self.institute.delegates.all():
-                roles.add('is_delegate')
-                roles.add('is_authorised')
+                roles.add("is_delegate")
+                roles.add("is_authorised")
 
         return roles
 
@@ -319,45 +306,37 @@ class ProjectApplication(Application):
 
         if self.project is None:
             if not self.name:
-                errors.append(
-                    "New project application with no name")
+                errors.append("New project application with no name")
             if self.institute is None:
-                errors.append(
-                    "New project application with no institute")
+                errors.append("New project application with no institute")
 
         return errors
 
 
 class Applicant(models.Model):
-    """ A person who has completed an application however is not yet officially
-    registered on the system yet. """
+    """A person who has completed an application however is not yet officially
+    registered on the system yet."""
+
     email = models.EmailField(unique=False)
     email_verified = models.BooleanField(editable=False, default=False)
-    username = models.CharField(max_length=255, unique=False,
-                                null=True, blank=True)
-    title = models.CharField(
-        choices=TITLES, max_length=10, null=True, blank=True)
+    username = models.CharField(max_length=255, unique=False, null=True, blank=True)
+    title = models.CharField(choices=TITLES, max_length=10, null=True, blank=True)
     short_name = models.CharField(max_length=100)
     full_name = models.CharField(max_length=100)
     institute = models.ForeignKey(
-        Institute,
-        limit_choices_to={'is_active': True},
-        null=True, blank=True,
-        on_delete=models.CASCADE)
+        Institute, limit_choices_to={"is_active": True}, null=True, blank=True, on_delete=models.CASCADE
+    )
     department = models.CharField(max_length=200, null=True, blank=True)
     position = models.CharField(max_length=200, null=True, blank=True)
-    telephone = models.CharField(
-        "Office Telephone", max_length=200, null=True, blank=True)
+    telephone = models.CharField("Office Telephone", max_length=200, null=True, blank=True)
     mobile = models.CharField(max_length=200, null=True, blank=True)
     supervisor = models.CharField(max_length=100, null=True, blank=True)
     address = models.CharField(max_length=200, null=True, blank=True)
     city = models.CharField(max_length=100, null=True, blank=True)
     postcode = models.CharField(max_length=8, null=True, blank=True)
-    country = models.CharField(
-        max_length=2, choices=COUNTRIES, null=True, blank=True)
+    country = models.CharField(max_length=2, choices=COUNTRIES, null=True, blank=True)
     fax = models.CharField(max_length=50, null=True, blank=True)
-    saml_id = models.CharField(
-        max_length=200, null=True, blank=True, editable=False, unique=False)
+    saml_id = models.CharField(max_length=200, null=True, blank=True, editable=False, unique=False)
 
     class Meta:
         db_table = "applications_applicant"
@@ -372,11 +351,11 @@ class Applicant(models.Model):
         return False
 
     def get_full_name(self):
-        """ Get the full name of the person. """
+        """Get the full name of the person."""
         return self.full_name
 
     def get_short_name(self):
-        """ Get the abbreviated name of the person. """
+        """Get the abbreviated name of the person."""
         return self.short_name
 
     def check_valid(self):
@@ -394,51 +373,46 @@ class Applicant(models.Model):
         # check for username conflict
         query = Person.objects.filter(username=self.username)
         if self.username and query.count() > 0:
-            errors.append(
-                "Application username address conflicts "
-                "with existing person.")
+            errors.append("Application username address conflicts " "with existing person.")
 
         # check for saml_id conflict
         query = Person.objects.filter(saml_id=self.saml_id)
         if self.saml_id and query.count() > 0:
-            errors.append(
-                "Application saml_id address conflicts "
-                "with existing person.")
+            errors.append("Application saml_id address conflicts " "with existing person.")
 
         # check for email conflict
         query = Person.objects.filter(email=self.email)
         if self.email and query.count() > 0:
-            errors.append(
-                "Application email address conflicts "
-                "with existing person.")
+            errors.append("Application email address conflicts " "with existing person.")
 
         return errors
 
     def approve(self, approved_by):
-        """ Create a new user from an applicant. """
+        """Create a new user from an applicant."""
         data = {
-            'email': self.email,
-            'username': self.username,
-            'title': self.title,
-            'short_name': self.short_name,
-            'full_name': self.full_name,
-            'institute': self.institute,
-            'department': self.department,
-            'position': self.position,
-            'telephone': self.telephone,
-            'mobile': self.mobile,
-            'supervisor': self.supervisor,
-            'address': self.address,
-            'city': self.city,
-            'postcode': self.postcode,
-            'country': self.country,
-            'fax': self.fax,
-            'saml_id': self.saml_id,
-            'is_active': False,
+            "email": self.email,
+            "username": self.username,
+            "title": self.title,
+            "short_name": self.short_name,
+            "full_name": self.full_name,
+            "institute": self.institute,
+            "department": self.department,
+            "position": self.position,
+            "telephone": self.telephone,
+            "mobile": self.mobile,
+            "supervisor": self.supervisor,
+            "address": self.address,
+            "city": self.city,
+            "postcode": self.postcode,
+            "country": self.country,
+            "fax": self.fax,
+            "saml_id": self.saml_id,
+            "is_active": False,
         }
         person = Person.objects.create_user(**data)
         person.activate(approved_by)
         return person
+
     approve.alters_data = True
 
     def similar_people(self):

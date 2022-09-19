@@ -45,7 +45,7 @@ from karaage.plugins.kgapplications.views.project import (
 from karaage.projects.models import Project
 
 
-RE_VALID_USERNAME = re.compile(r'[\w.@+-]+$')
+RE_VALID_USERNAME = re.compile(r"[\w.@+-]+$")
 
 
 class Command(BaseCommand):
@@ -53,13 +53,13 @@ class Command(BaseCommand):
 username,password,short_name,full_name,email,institute,project"""
 
     def add_arguments(self, parser):
-        parser.add_argument('csvfile', type=str)
+        parser.add_argument("csvfile", type=str)
 
     @django.db.transaction.non_atomic_requests
     @tldap.transaction.commit_on_success
     def handle(self, *args, **options):
-        csvfile = options.get('csvfile')
-        verbosity = int(options.get('verbosity', 1))
+        csvfile = options.get("csvfile")
+        verbosity = int(options.get("verbosity", 1))
 
         try:
             data = csv.DictReader(open(csvfile))
@@ -74,74 +74,65 @@ username,password,short_name,full_name,email,institute,project"""
             fail = False
 
             if verbosity >= 1:
-                print("Attempting to send an invite to user '%s' at '%s'" % (user.get('username'), user.get('email')))
+                print("Attempting to send an invite to user '%s' at '%s'" % (user.get("username"), user.get("email")))
 
-            if 'username' not in user:
+            if "username" not in user:
                 sys.stderr.write("Error: Failed to find username column.\n")
                 fail = True
-            if 'password' not in user:
+            if "password" not in user:
                 sys.stderr.write("Error: Failed to find password column.\n")
                 fail = True
-            if 'short_name' not in user:
+            if "short_name" not in user:
                 sys.stderr.write("Error: Failed to find short_name column.\n")
                 fail = True
-            if 'full_name' not in user:
+            if "full_name" not in user:
                 sys.stderr.write("Error: Failed to find full_name column.\n")
                 fail = True
-            if 'email' not in user:
+            if "email" not in user:
                 sys.stderr.write("Error: Failed to find email column.\n")
                 fail = True
-            if 'institute' not in user:
+            if "institute" not in user:
                 sys.stderr.write("Error: Failed to find institute column.\n")
                 fail = True
-            if 'project' not in user:
+            if "project" not in user:
                 sys.stderr.write("Error: Failed to find project column.\n")
                 fail = True
 
-            if not RE_VALID_USERNAME.match(user['username']):
-                sys.stderr.write(
-                    "Error: Username is invalid. "
-                    "Use only letters, digits and underscores.\n")
+            if not RE_VALID_USERNAME.match(user["username"]):
+                sys.stderr.write("Error: Username is invalid. " "Use only letters, digits and underscores.\n")
                 fail = True
 
             try:
-                validate_email(user['email'])
+                validate_email(user["email"])
             except exceptions.ValidationError:
-                sys.stderr.write(
-                    "Error: E-mail address '%s' is invalid.\n" % user['email'])
+                sys.stderr.write("Error: E-mail address '%s' is invalid.\n" % user["email"])
                 fail = True
 
             if fail:
-                sys.stderr.write(
-                    "Skipping row for username '%s' due to errors\n"
-                    % user['username'])
+                sys.stderr.write("Skipping row for username '%s' due to errors\n" % user["username"])
                 fail_count += 1
                 continue
 
             try:
-                institute = Institute.objects.get(name=user['institute'])
-                user['institute'] = institute
+                institute = Institute.objects.get(name=user["institute"])
+                user["institute"] = institute
             except Institute.DoesNotExist:
-                sys.stderr.write(
-                    "Error: Institute '%s' does not exist. Skipping\n"
-                    % user['institute'])
+                sys.stderr.write("Error: Institute '%s' does not exist. Skipping\n" % user["institute"])
                 fail_count += 1
                 continue
 
             project = None
-            if user['project']:
+            if user["project"]:
                 try:
-                    project = Project.objects.get(pid=user['project'])
+                    project = Project.objects.get(pid=user["project"])
                 except Project.DoesNotExist:
-                    sys.stderr.write(
-                        "Error: Project '%s' does not exist. Skipping\n"
-                        % user['project'])
+                    sys.stderr.write("Error: Project '%s' does not exist. Skipping\n" % user["project"])
                     fail_count += 1
                     continue
 
-            applicant, existing_person = get_applicant_from_email(user['email'])
+            applicant, existing_person = get_applicant_from_email(user["email"])
             if existing_person:
-                print("skipping %s:%s, user already exists" % (user['username'], user['email']))
+                print("skipping %s:%s, user already exists" % (user["username"], user["email"]))
                 skip += 1
                 continue
 
@@ -159,9 +150,9 @@ username,password,short_name,full_name,email,institute,project"""
             emails.send_invite_email(application, email_link, is_secret)
             success += 1
 
-        print('')
-        print('Added:   %s' % success)
-        print('Skipped: %s' % skip)
-        print('Failed:  %s' % fail_count)
+        print("")
+        print("Added:   %s" % success)
+        print("Skipped: %s" % skip)
+        print("Failed:  %s" % fail_count)
 
         sys.exit(0)

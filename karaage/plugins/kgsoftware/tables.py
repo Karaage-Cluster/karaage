@@ -25,39 +25,36 @@ from .models import Software, SoftwareLicenseAgreement
 
 class SoftwareFilter(django_filters.FilterSet):
     description = django_filters.CharFilter(lookup_expr="icontains")
-    begin__last_used = django_filters.DateFilter(
-        field_name="softwareversion__last_used",
-        lookup_expr="gte")
-    end_last_used = django_filters.DateFilter(
-        field_name="softwareversion__last_used",
-        lookup_expr="lte")
+    begin__last_used = django_filters.DateFilter(field_name="softwareversion__last_used", lookup_expr="gte")
+    end_last_used = django_filters.DateFilter(field_name="softwareversion__last_used", lookup_expr="lte")
 
     class Meta:
         model = Software
-        fields = ('name', 'description', 'group', 'category', 'academic_only',
-                  'restricted',)
+        fields = (
+            "name",
+            "description",
+            "group",
+            "category",
+            "academic_only",
+            "restricted",
+        )
 
 
 class SoftwareTable(tables.Table):
-    name = tables.LinkColumn('kg_software_detail', args=[A('pk')])
-    group = tables.LinkColumn('kg_group_detail', args=[A('group__name')])
+    name = tables.LinkColumn("kg_software_detail", args=[A("pk")])
+    group = tables.LinkColumn("kg_group_detail", args=[A("group__name")])
     softwareversion__last_used = tables.Column(verbose_name="Last used")
 
     class Meta:
         model = Software
-        fields = ('name', 'description', 'group', 'category',
-                  'softwareversion__last_used')
+        fields = ("name", "description", "group", "category", "softwareversion__last_used")
         empty_text = "No items"
 
 
 class SoftwareLicenseAgreementTable(tables.Table):
-    software = tables.LinkColumn(
-        'kg_software_detail', accessor="license__software",
-        args=[A('license__software__pk')])
-    license = tables.LinkColumn(
-        'kg_software_license_detail', args=[A('license__pk')])
-    person = tables.LinkColumn(
-        'kg_person_detail', args=[A('person__username')])
+    software = tables.LinkColumn("kg_software_detail", accessor="license__software", args=[A("license__software__pk")])
+    license = tables.LinkColumn("kg_software_license_detail", args=[A("license__pk")])
+    person = tables.LinkColumn("kg_person_detail", args=[A("person__username")])
 
     class Meta:
         model = SoftwareLicenseAgreement

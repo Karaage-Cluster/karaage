@@ -28,46 +28,46 @@ logger = logging.getLogger(__name__)
 
 
 class DataStore(base.DataStore):
-    """ LDAP Account and group datastore. """
+    """LDAP Account and group datastore."""
 
     def __init__(self, config):
         super(DataStore, self).__init__(config)
-        self.value = config.get('value', 'Metrotrains forgot')
+        self.value = config.get("value", "Metrotrains forgot")
 
     def get_account_details(self, account):
-        """ Get the account details. """
+        """Get the account details."""
         return {
-            'type': 'account',
-            'answer': '42',
-            'value': self.value,
+            "type": "account",
+            "answer": "42",
+            "value": self.value,
         }
 
     def account_exists(self, username):
-        """ Does the account exist? """
+        """Does the account exist?"""
         return False
 
     def get_group_details(self, group):
-        """ Get the group details. """
+        """Get the group details."""
         return {
-            'type': 'group',
-            'answer': '42',
-            'value': self.value,
+            "type": "group",
+            "answer": "42",
+            "value": self.value,
         }
 
     def get_project_details(self, project):
-        """ Get project's details. """
+        """Get project's details."""
         return {
-            'type': 'project',
-            'answer': '42',
-            'value': self.value,
+            "type": "project",
+            "answer": "42",
+            "value": self.value,
         }
 
     def get_institute_details(self, institute):
-        """ Get institute's details. """
+        """Get institute's details."""
         return {
-            'type': 'institute',
-            'answer': '42',
-            'value': self.value,
+            "type": "institute",
+            "answer": "42",
+            "value": self.value,
         }
 
 

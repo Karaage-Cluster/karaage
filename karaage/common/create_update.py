@@ -42,12 +42,10 @@ def get_model_and_form_class(model, form_class):
         class Meta:
             model = tmp_model
 
-        class_name = model.__name__ + 'Form'
-        form_class = ModelFormMetaclass(
-            class_name, (ModelForm,), {'Meta': Meta})
+        class_name = model.__name__ + "Form"
+        form_class = ModelFormMetaclass(class_name, (ModelForm,), {"Meta": Meta})
         return model, form_class
-    raise GenericViewError("Generic view must be called with either a model or"
-                           " form_class argument.")
+    raise GenericViewError("Generic view must be called with either a model or" " form_class argument.")
 
 
 def redirect(post_save_redirect, obj):
@@ -66,13 +64,14 @@ def redirect(post_save_redirect, obj):
     """
     if post_save_redirect:
         return HttpResponseRedirect(post_save_redirect % obj.__dict__)
-    elif hasattr(obj, 'get_absolute_url'):
+    elif hasattr(obj, "get_absolute_url"):
         return HttpResponseRedirect(obj.get_absolute_url())
     else:
         raise ImproperlyConfigured(
             "No URL to redirect to.  Either pass a post_save_redirect"
             " parameter to the generic view or define a get_absolute_url"
-            " method on the Model.")
+            " method on the Model."
+        )
 
 
 def lookup_object(model, object_id, slug, slug_field):
@@ -84,24 +83,28 @@ def lookup_object(model, object_id, slug, slug_field):
     """
     lookup_kwargs = {}
     if object_id:
-        lookup_kwargs['%s__exact' % model._meta.pk.name] = object_id
+        lookup_kwargs["%s__exact" % model._meta.pk.name] = object_id
     elif slug and slug_field:
-        lookup_kwargs['%s__exact' % slug_field] = slug
+        lookup_kwargs["%s__exact" % slug_field] = slug
     else:
-        raise GenericViewError(
-            "Generic view must be called with either an object_id or a"
-            " slug/slug_field.")
+        raise GenericViewError("Generic view must be called with either an object_id or a" " slug/slug_field.")
     try:
         return model.objects.get(**lookup_kwargs)
     except ObjectDoesNotExist:
-        raise Http404("No %s found for %s"
-                      % (model._meta.verbose_name, lookup_kwargs))
+        raise Http404("No %s found for %s" % (model._meta.verbose_name, lookup_kwargs))
 
 
 def create_object(
-        request, model=None, template_name=None,
-        template_loader=loader, extra_context=None, post_save_redirect=None,
-        login_required=False, context_processors=None, form_class=None):
+    request,
+    model=None,
+    template_name=None,
+    template_loader=loader,
+    extra_context=None,
+    post_save_redirect=None,
+    login_required=False,
+    context_processors=None,
+    form_class=None,
+):
     """
     Generic object-creation function.
 
@@ -116,13 +119,12 @@ def create_object(
         return redirect_to_login(request.path)
 
     model, form_class = get_model_and_form_class(model, form_class)
-    if request.method == 'POST':
+    if request.method == "POST":
         form = form_class(request.POST, request.FILES)
         if form.is_valid():
             new_object = form.save()
 
-            msg = gettext("The %(verbose_name)s was created successfully.") %\
-                {"verbose_name": model._meta.verbose_name}
+            msg = gettext("The %(verbose_name)s was created successfully.") % {"verbose_name": model._meta.verbose_name}
             messages.success(request, msg, fail_silently=True)
             return redirect(post_save_redirect, new_object)
     else:
@@ -130,22 +132,30 @@ def create_object(
 
     # Create the template, context, response
     if not template_name:
-        template_name = "%s/%s_form.html" % (
-            model._meta.app_label, model._meta.object_name.lower())
+        template_name = "%s/%s_form.html" % (model._meta.app_label, model._meta.object_name.lower())
     t = template_loader.get_template(template_name)
     c = {
-        'form': form,
+        "form": form,
     }
     apply_extra_context(extra_context, c)
     return HttpResponse(t.render(context=c, request=request))
 
 
 def update_object(
-        request, model=None, object_id=None, slug=None,
-        slug_field='slug', template_name=None, template_loader=loader,
-        extra_context=None, post_save_redirect=None, login_required=False,
-        context_processors=None, template_object_name='object',
-        form_class=None):
+    request,
+    model=None,
+    object_id=None,
+    slug=None,
+    slug_field="slug",
+    template_name=None,
+    template_loader=loader,
+    extra_context=None,
+    post_save_redirect=None,
+    login_required=False,
+    context_processors=None,
+    template_object_name="object",
+    form_class=None,
+):
     """
     Generic object-update function.
 
@@ -164,23 +174,21 @@ def update_object(
     model, form_class = get_model_and_form_class(model, form_class)
     obj = lookup_object(model, object_id, slug, slug_field)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = form_class(request.POST, request.FILES, instance=obj)
         if form.is_valid():
             obj = form.save()
-            msg = gettext("The %(verbose_name)s was updated successfully.") %\
-                {"verbose_name": model._meta.verbose_name}
+            msg = gettext("The %(verbose_name)s was updated successfully.") % {"verbose_name": model._meta.verbose_name}
             messages.success(request, msg, fail_silently=True)
             return redirect(post_save_redirect, obj)
     else:
         form = form_class(instance=obj)
 
     if not template_name:
-        template_name = "%s/%s_form.html" % (
-            model._meta.app_label, model._meta.object_name.lower())
+        template_name = "%s/%s_form.html" % (model._meta.app_label, model._meta.object_name.lower())
     t = template_loader.get_template(template_name)
     c = {
-        'form': form,
+        "form": form,
         template_object_name: obj,
     }
     apply_extra_context(extra_context, c)
@@ -189,10 +197,19 @@ def update_object(
 
 
 def delete_object(
-        request, model, post_delete_redirect, object_id=None,
-        slug=None, slug_field='slug', template_name=None,
-        template_loader=loader, extra_context=None, login_required=False,
-        context_processors=None, template_object_name='object'):
+    request,
+    model,
+    post_delete_redirect,
+    object_id=None,
+    slug=None,
+    slug_field="slug",
+    template_name=None,
+    template_loader=loader,
+    extra_context=None,
+    login_required=False,
+    context_processors=None,
+    template_object_name="object",
+):
     """
     Generic object-delete function.
 
@@ -212,16 +229,14 @@ def delete_object(
 
     obj = lookup_object(model, object_id, slug, slug_field)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         obj.delete()
-        msg = gettext("The %(verbose_name)s was deleted.") %\
-            {"verbose_name": model._meta.verbose_name}
+        msg = gettext("The %(verbose_name)s was deleted.") % {"verbose_name": model._meta.verbose_name}
         messages.success(request, msg, fail_silently=True)
         return HttpResponseRedirect(post_delete_redirect)
     else:
         if not template_name:
-            template_name = "%s/%s_confirm_delete.html" % (
-                model._meta.app_label, model._meta.object_name.lower())
+            template_name = "%s/%s_confirm_delete.html" % (model._meta.app_label, model._meta.object_name.lower())
         t = template_loader.get_template(template_name)
         c = {
             template_object_name: obj,

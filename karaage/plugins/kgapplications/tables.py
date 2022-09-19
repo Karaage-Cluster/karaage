@@ -25,19 +25,15 @@ from .views.base import get_state_machine
 
 
 class ApplicationFilter(django_filters.FilterSet):
-
     class Meta:
         model = Application
-        fields = ('secret_token',)
+        fields = ("secret_token",)
 
 
 class ApplicationTable(tables.Table):
-    id = tables.LinkColumn(
-        'kg_application_detail', args=[A('pk')], verbose_name="ID")
-    action = tables.Column(
-        empty_values=(), order_by=('_class'))
-    applicant = tables.Column(
-        linkify=True, order_by=('new_applicant', 'existing_person'))
+    id = tables.LinkColumn("kg_application_detail", args=[A("pk")], verbose_name="ID")
+    action = tables.Column(empty_values=(), order_by=("_class"))
+    applicant = tables.Column(linkify=True, order_by=("new_applicant", "existing_person"))
 
     def render_action(self, record):
         return record.get_object().info()
@@ -49,5 +45,5 @@ class ApplicationTable(tables.Table):
 
     class Meta:
         model = Application
-        fields = ('id', 'action', 'applicant', 'state', 'expires')
+        fields = ("id", "action", "applicant", "state", "expires")
         empty_text = "No items"

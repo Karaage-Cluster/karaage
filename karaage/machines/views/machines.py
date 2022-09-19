@@ -36,35 +36,30 @@ def machine_list(request):
     tables.RequestConfig(request).configure(table)
 
     return render(
-        template_name='karaage/machines/machine_list.html',
+        template_name="karaage/machines/machine_list.html",
         context={
-            'table': table,
-            'title': "Machine list",
+            "table": table,
+            "title": "Machine list",
         },
-        request=request)
+        request=request,
+    )
 
 
 @login_required
 def machine_detail(request, machine_id):
     machine = get_object_or_404(Machine, pk=machine_id)
-    return render(
-        template_name='karaage/machines/machine_detail.html',
-        context={'machine': machine},
-        request=request)
+    return render(template_name="karaage/machines/machine_detail.html", context={"machine": machine}, request=request)
 
 
 @admin_required
 def machine_create(request):
     form = MachineForm(request.POST or None)
-    if request.method == 'POST':
+    if request.method == "POST":
         if form.is_valid():
             machine = form.save()
             return HttpResponseRedirect(machine.get_absolute_url())
 
-    return render(
-        template_name='karaage/machines/machine_form.html',
-        context=locals(),
-        request=request)
+    return render(template_name="karaage/machines/machine_form.html", context=locals(), request=request)
 
 
 @admin_required
@@ -72,29 +67,27 @@ def machine_edit(request, machine_id):
     machine = get_object_or_404(Machine, pk=machine_id)
 
     form = MachineForm(request.POST or None, instance=machine)
-    if request.method == 'POST':
+    if request.method == "POST":
         if form.is_valid():
             machine = form.save()
             return HttpResponseRedirect(machine.get_absolute_url())
 
-    return render(
-        template_name='karaage/machines/machine_form.html',
-        context=locals(),
-        request=request)
+    return render(template_name="karaage/machines/machine_form.html", context=locals(), request=request)
 
 
 @admin_required
 def machine_password(request, machine_id):
     machine = get_object_or_404(Machine, pk=machine_id)
     password = None
-    if request.method == 'POST':
+    if request.method == "POST":
         password = Machine.objects.make_random_password()
         machine.set_password(password)
         machine.save()
     return render(
-        template_name='karaage/machines/machine_password.html',
-        context={'machine': machine, 'password': password},
-        request=request)
+        template_name="karaage/machines/machine_password.html",
+        context={"machine": machine, "password": password},
+        request=request,
+    )
 
 
 @admin_required
@@ -102,7 +95,7 @@ def machine_logs(request, machine_id):
     obj = get_object_or_404(Machine, pk=machine_id)
     breadcrumbs = [
         ("Machines", reverse("kg_machine_list")),
-        (six.text_type(obj), reverse("kg_machine_detail", args=[obj.pk]))
+        (six.text_type(obj), reverse("kg_machine_detail", args=[obj.pk])),
     ]
     return util.log_list(request, breadcrumbs, obj)
 
@@ -112,6 +105,6 @@ def machine_add_comment(request, machine_id):
     obj = get_object_or_404(Machine, pk=machine_id)
     breadcrumbs = [
         ("Machines", reverse("kg_machine_list")),
-        (six.text_type(obj), reverse("kg_machine_detail", args=[obj.pk]))
+        (six.text_type(obj), reverse("kg_machine_detail", args=[obj.pk])),
     ]
     return util.add_comment(request, breadcrumbs, obj)

@@ -33,20 +33,14 @@ from karaage.tests.unit import UnitTestCase
 
 @pytest.mark.django_db
 class InstituteTestCase(UnitTestCase):
-
     def test_add(self):
-        InstituteFactory(name='TestInstitute54')
+        InstituteFactory(name="TestInstitute54")
 
     def test_add_existing_name(self):
-        group, _ = Group.objects.get_or_create(name='testinstitute27')
-        institute = InstituteFactory(
-            name='Test Institute 27', group=group)
-        self.assertEqual(
-            institute.group.name,
-            'testinstitute27')
-        self.assertEqual(
-            institute.group.name,
-            institute.name.lower().replace(' ', ''))
+        group, _ = Group.objects.get_or_create(name="testinstitute27")
+        institute = InstituteFactory(name="Test Institute 27", group=group)
+        self.assertEqual(institute.group.name, "testinstitute27")
+        self.assertEqual(institute.group.name, institute.name.lower().replace(" ", ""))
 
     @unittest.skip("broken with mysql/postgresql")
     def test_username(self):
@@ -72,9 +66,7 @@ class InstituteTestCase(UnitTestCase):
         # Test initial creation of the institute
         self.resetDatastore()
         institute = InstituteFactory(group=group1)
-        self.assertEqual(
-            self.datastore.method_calls,
-            [mock.call.save_institute(institute)])
+        self.assertEqual(self.datastore.method_calls, [mock.call.save_institute(institute)])
 
         # Test setting up initial group for institute
         self.resetDatastore()
@@ -82,9 +74,12 @@ class InstituteTestCase(UnitTestCase):
         group1.add_person(account1.person)
         self.assertEqual(
             self.datastore.method_calls,
-            [mock.call.save_group(group1),
-             mock.call.add_account_to_group(account1, group1),
-             mock.call.add_account_to_institute(account1, institute)])
+            [
+                mock.call.save_group(group1),
+                mock.call.add_account_to_group(account1, group1),
+                mock.call.add_account_to_institute(account1, institute),
+            ],
+        )
 
         # Test changing an existing institutions group
         account2 = simple_account(institute=institute)
@@ -96,19 +91,22 @@ class InstituteTestCase(UnitTestCase):
         institute.save()
         self.assertEqual(
             self.datastore.method_calls,
-            [mock.call.save_group(group2),
-             mock.call.add_account_to_group(account2, group2),
-             mock.call.save_group(group2),
-             mock.call.save_institute(institute),
-             # old accounts are removed
-             mock.call.remove_account_from_institute(account1, institute),
-             # new accounts are added
-             mock.call.add_account_to_institute(account2, institute)])
+            [
+                mock.call.save_group(group2),
+                mock.call.add_account_to_group(account2, group2),
+                mock.call.save_group(group2),
+                mock.call.save_institute(institute),
+                # old accounts are removed
+                mock.call.remove_account_from_institute(account1, institute),
+                # new accounts are added
+                mock.call.add_account_to_institute(account2, institute),
+            ],
+        )
 
         # Test deleting institute
         self.resetDatastore()
         institute.delete()
         self.assertEqual(
             self.datastore.method_calls,
-            [mock.call.remove_account_from_institute(account2, institute),
-             mock.call.delete_institute(institute)])
+            [mock.call.remove_account_from_institute(account2, institute), mock.call.delete_institute(institute)],
+        )

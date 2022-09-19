@@ -11,16 +11,17 @@ class Command(BaseCommand):
     help = "Move all project users (except leaders) out of project safely"
 
     def add_arguments(self, parser):
-        parser.add_argument(action='store', dest='Project1', type=str, help='Project to move users from')
-        parser.add_argument(action='store', dest='Project2', type=str,
-                            help='Catchall project for users with no remaining project')
+        parser.add_argument(action="store", dest="Project1", type=str, help="Project to move users from")
+        parser.add_argument(
+            action="store", dest="Project2", type=str, help="Catchall project for users with no remaining project"
+        )
 
     @django.db.transaction.non_atomic_requests
     @tldap.transaction.commit_on_success
     def handle(self, *args, **options):
 
-        Project1 = options.get('Project1')
-        Project2 = options.get('Project2')
+        Project1 = options.get("Project1")
+        Project2 = options.get("Project2")
 
         # get list of project members
         # first verify projects exist
@@ -42,7 +43,7 @@ class Command(BaseCommand):
         for person in members:
             # determine if the user is a leader of the given project, abort if true.
 
-            if (person in leaders):
+            if person in leaders:
 
                 # do nothing
                 sys.stdout.write("ignoring %s, project leader\n" % person)

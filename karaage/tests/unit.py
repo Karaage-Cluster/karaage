@@ -19,9 +19,7 @@
 try:
     from mock import Mock
 except ImportError:
-    raise ImportError(
-        "mock is required, "
-        "either install from a package or using \'pip install -e .[tests]\'")
+    raise ImportError("mock is required, " "either install from a package or using 'pip install -e .[tests]'")
 from django.test import TestCase
 
 from karaage.datastores import _DATASTORES
@@ -29,7 +27,6 @@ from karaage.middleware.threadlocals import reset
 
 
 class UnitTestCase(TestCase):
-
     def setUp(self):
         super(TestCase, self).setUp()
         self.resetDatastore()
@@ -37,6 +34,7 @@ class UnitTestCase(TestCase):
         def cleanup():
             _DATASTORES.clear()
             reset()
+
         self.addCleanup(cleanup)
 
     def resetDatastore(self):

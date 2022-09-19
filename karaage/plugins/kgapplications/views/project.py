@@ -34,15 +34,14 @@ from . import base
 
 
 def get_application_state_machine():
-    """ Get the default state machine for applications. """
+    """Get the default state machine for applications."""
     config = settings.APPLICATION_PROJECT
     state_machine = base.StateMachine(config)
     return state_machine
 
 
 def register():
-    base.setup_application_type(
-        ProjectApplication, get_application_state_machine())
+    base.setup_application_type(ProjectApplication, get_application_state_machine())
 
 
 def get_applicant_from_email(email):
@@ -68,29 +67,28 @@ def get_applicant_from_email(email):
 
 
 def _send_invitation(request, project):
-    """ The logged in project leader OR administrator wants to invite somebody.
-    """
+    """The logged in project leader OR administrator wants to invite somebody."""
     form = forms.InviteUserApplicationForm(request.POST or None)
-    if request.method == 'POST':
+    if request.method == "POST":
         if form.is_valid():
 
-            email = form.cleaned_data['email']
+            email = form.cleaned_data["email"]
             applicant, existing_person = get_applicant_from_email(email)
 
             # If applicant is None then there were multiple persons found.
             if applicant is None and existing_person is None:
                 return render(
-                    template_name='kgapplications/'
-                                  'project_common_invite_multiple.html',
-                    context={'form': form, 'email': email},
-                    request=request)
+                    template_name="kgapplications/" "project_common_invite_multiple.html",
+                    context={"form": form, "email": email},
+                    request=request,
+                )
 
-            if existing_person is not None and 'existing' not in request.POST:
+            if existing_person is not None and "existing" not in request.POST:
                 return render(
-                    template_name='kgapplications/'
-                                  'project_common_invite_existing.html',
-                    context={'form': form, 'person': applicant},
-                    request=request)
+                    template_name="kgapplications/" "project_common_invite_existing.html",
+                    context={"form": form, "person": applicant},
+                    request=request,
+                )
 
             application = form.save(commit=False)
             application.new_applicant = applicant
@@ -102,15 +100,18 @@ def _send_invitation(request, project):
             return response
 
     return render(
-        template_name='kgapplications/project_common_invite_other.html',
-        context={'form': form, 'project': project, },
-        request=request)
+        template_name="kgapplications/project_common_invite_other.html",
+        context={
+            "form": form,
+            "project": project,
+        },
+        request=request,
+    )
 
 
 @login_required
 def send_invitation(request, project_id=None):
-    """ The logged in project leader wants to invite somebody to their project.
-    """
+    """The logged in project leader wants to invite somebody to their project."""
 
     project = None
     if project_id is not None:
@@ -119,35 +120,31 @@ def send_invitation(request, project_id=None):
     if project is None:
 
         if not is_admin(request):
-            return HttpResponseForbidden('<h1>Access Denied</h1>')
+            return HttpResponseForbidden("<h1>Access Denied</h1>")
 
     else:
 
         if not project.can_edit(request):
-            return HttpResponseForbidden('<h1>Access Denied</h1>')
+            return HttpResponseForbidden("<h1>Access Denied</h1>")
 
     return _send_invitation(request, project)
 
 
 def new_application(request):
-    """ A new application by a user to start a new project. """
+    """A new application by a user to start a new project."""
     # Note default kgapplications/index.html will display error if user logged
     # in.
     if not settings.ALLOW_REGISTRATIONS:
-        return render(
-            template_name='kgapplications/project_common_disabled.html',
-            context={},
-            request=request)
+        return render(template_name="kgapplications/project_common_disabled.html", context={}, request=request)
 
-    roles = {'is_applicant', 'is_authorised'}
+    roles = {"is_applicant", "is_authorised"}
 
     if not request.user.is_authenticated:
         defaults = {}
-        form = forms.UnauthenticatedInviteUserApplicationForm(
-            request.POST or None, initial=defaults)
-        if request.method == 'POST':
+        form = forms.UnauthenticatedInviteUserApplicationForm(request.POST or None, initial=defaults)
+        if request.method == "POST":
             if form.is_valid():
-                email = form.cleaned_data['email']
+                email = form.cleaned_data["email"]
                 applicant, existing_person = get_applicant_from_email(email)
 
                 # If applicant is None then there were multiple persons found.
@@ -166,15 +163,17 @@ def new_application(request):
                 state_machine.start(request, application, roles)
                 # we do not show unauthenticated users the application at this
                 # stage.
-                url = reverse('index')
+                url = reverse("index")
                 return HttpResponseRedirect(url)
         return render(
-            template_name='kgapplications/'
-            'project_common_invite_unauthenticated.html',
-            context={'form': form, },
-            request=request)
+            template_name="kgapplications/" "project_common_invite_unauthenticated.html",
+            context={
+                "form": form,
+            },
+            request=request,
+        )
     else:
-        if request.method == 'POST':
+        if request.method == "POST":
             person = request.user
 
             application = ProjectApplication()
@@ -185,7 +184,5 @@ def new_application(request):
             response = state_machine.start(request, application, roles)
             return response
         return render(
-            template_name='kgapplications/'
-            'project_common_invite_authenticated.html',
-            context={},
-            request=request)
+            template_name="kgapplications/" "project_common_invite_authenticated.html", context={}, request=request
+        )

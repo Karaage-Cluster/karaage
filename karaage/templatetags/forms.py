@@ -24,14 +24,16 @@ from django.template import Library
 register = Library()
 
 
-@register.inclusion_tag('karaage/common/inlineformfield.html')
+@register.inclusion_tag("karaage/common/inlineformfield.html")
 def inlineformfield(field1, field2, field3=False):
     return locals()
 
 
-@register.inclusion_tag('karaage/common/form_as_div.html')
+@register.inclusion_tag("karaage/common/form_as_div.html")
 def form_as_div(form):
-    return {'form': form, }
+    return {
+        "form": form,
+    }
 
 
 @register.tag
@@ -39,47 +41,42 @@ def formfield(parser, token):
     try:
         tag_name, field = token.split_contents()
     except ValueError:
-        raise template.TemplateSyntaxError(
-            "%r tag requires exactly one argument" % token.contents.split()[0])
+        raise template.TemplateSyntaxError("%r tag requires exactly one argument" % token.contents.split()[0])
     return FormFieldNode(field)
 
 
 class FormFieldNode(template.Node):
-
     def __init__(self, field):
         self.field = template.Variable(field)
 
     def get_template(self, class_name):
         try:
-            template_name = 'formfield/%s.html' % class_name
+            template_name = "formfield/%s.html" % class_name
             return template.loader.get_template(template_name)
         except template.TemplateDoesNotExist:
-            return template.loader.get_template('formfield/default.html')
+            return template.loader.get_template("formfield/default.html")
 
     def render(self, context):
         try:
             field = self.field.resolve(context)
         except template.VariableDoesNotExist:
-            return ''
+            return ""
 
         label_class_names = []
         if field.field.required:
-            label_class_names.append('required')
+            label_class_names.append("required")
 
         widget_class_name = field.field.widget.__class__.__name__.lower()
-        if widget_class_name == 'checkboxinput':
-            label_class_names.append('vCheckboxLabel')
+        if widget_class_name == "checkboxinput":
+            label_class_names.append("vCheckboxLabel")
 
-        class_str = label_class_names and \
-            six.u(' ').join(label_class_names) or six.u('')
+        class_str = label_class_names and six.u(" ").join(label_class_names) or six.u("")
 
         context.push()
         context.push()
-        context['class'] = class_str
-        context['formfield'] = field
-        output = self.get_template(
-            field.field.widget.__class__.__name__.lower()).render(
-                context.flatten())
+        context["class"] = class_str
+        context["formfield"] = field
+        output = self.get_template(field.field.widget.__class__.__name__.lower()).render(context.flatten())
         context.pop()
         context.pop()
         return output

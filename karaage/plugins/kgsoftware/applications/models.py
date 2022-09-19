@@ -36,7 +36,7 @@ class SoftwareApplication(Application):
     objects = ApplicationManager()
 
     class Meta:
-        db_table = 'applications_softwareapplication'
+        db_table = "applications_softwareapplication"
 
     def info(self):
         return six.u("access software %s") % self.software_license.software

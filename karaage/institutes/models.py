@@ -30,24 +30,18 @@ from karaage.people.models import Group, Person
 
 class Institute(TrackingModelMixin, models.Model):
     name = models.CharField(max_length=255, unique=True)
-    delegates = models.ManyToManyField(
-        Person, related_name='delegate_for',
-        blank=True, through='InstituteDelegate')
+    delegates = models.ManyToManyField(Person, related_name="delegate_for", blank=True, through="InstituteDelegate")
     group = models.ForeignKey(Group, on_delete=models.PROTECT)
-    saml_scoped_affiliation = models.CharField(
-        max_length=200,
-        null=True, blank=True, unique=True)
-    saml_entityid = models.CharField(
-        max_length=200,
-        null=True, blank=True, unique=True)
+    saml_scoped_affiliation = models.CharField(max_length=200, null=True, blank=True, unique=True)
+    saml_entityid = models.CharField(max_length=200, null=True, blank=True, unique=True)
     is_active = models.BooleanField(default=True)
     objects = models.Manager()
     active = ActiveInstituteManager()
 
     class Meta:
-        ordering = ['name']
-        db_table = 'institute'
-        app_label = 'karaage'
+        ordering = ["name"]
+        db_table = "institute"
+        app_label = "karaage"
 
     def save(self, *args, **kwargs):
         created = self.pk is None
@@ -60,13 +54,13 @@ class Institute(TrackingModelMixin, models.Model):
         super(Institute, self).save(*args, **kwargs)
 
         if created:
-            log.add(self, 'Created')
+            log.add(self, "Created")
         for field in changed.keys():
-            log.change(self, 'Changed %s to %s'
-                       % (field, getattr(self, field)))
+            log.change(self, "Changed %s to %s" % (field, getattr(self, field)))
 
         # update the datastore
         from karaage.datastores import save_institute
+
         save_institute(self)
 
         # has group changed?
@@ -76,12 +70,15 @@ class Institute(TrackingModelMixin, models.Model):
             if old_group_pk is not None:
                 old_group = Group.objects.get(pk=old_group_pk)
                 from karaage.datastores import remove_accounts_from_institute
+
                 query = Account.objects.filter(person__groups=old_group)
                 remove_accounts_from_institute(query, self)
             if new_group is not None:
                 from karaage.datastores import add_accounts_to_institute
+
                 query = Account.objects.filter(person__groups=new_group)
                 add_accounts_to_institute(query, self)
+
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
@@ -98,24 +95,27 @@ class Institute(TrackingModelMixin, models.Model):
             accounts = []
 
         # delete the object
-        log.delete(self, 'Deleted')
+        log.delete(self, "Deleted")
         super(Institute, self).delete(*args, **kwargs)
 
         # update datastore associations
         for account in accounts:
             from karaage.datastores import remove_account_from_institute
+
             remove_account_from_institute(account, self)
 
         # update the datastore
         from karaage.datastores import delete_institute
+
         delete_institute(self)
+
     delete.alters_data = True
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('kg_institute_detail', args=[self.id])
+        return reverse("kg_institute_detail", args=[self.id])
 
     def can_view(self, request):
         person = request.user
@@ -149,8 +149,8 @@ class InstituteDelegate(TrackingModelMixin, models.Model):
     send_email = models.BooleanField()
 
     class Meta:
-        db_table = 'institutedelegate'
-        app_label = 'karaage'
+        db_table = "institutedelegate"
+        app_label = "karaage"
 
     def save(self, *args, **kwargs):
         created = self.pk is None
@@ -162,14 +162,9 @@ class InstituteDelegate(TrackingModelMixin, models.Model):
         super(InstituteDelegate, self).save(*args, **kwargs)
 
         for field in changed.keys():
-            log.change(
-                self.institute,
-                'Delegate %s: Changed %s to %s' %
-                (self.person, field, getattr(self, field)))
+            log.change(self.institute, "Delegate %s: Changed %s to %s" % (self.person, field, getattr(self, field)))
 
     def delete(self, *args, **kwargs):
         super(InstituteDelegate, self).delete(*args, **kwargs)
 
-        log.delete(
-            self.institute,
-            'Delegate %s: Deleted' % self.person)
+        log.delete(self.institute, "Delegate %s: Deleted" % self.person)

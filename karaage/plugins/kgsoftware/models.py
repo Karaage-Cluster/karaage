@@ -31,32 +31,29 @@ class SoftwareCategory(models.Model):
     name = models.CharField(max_length=100)
 
     class Meta:
-        db_table = 'software_category'
-        ordering = ['name']
+        db_table = "software_category"
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('kg_software_category_list')
+        return reverse("kg_software_category_list")
 
 
 class Software(TrackingModelMixin, models.Model):
-    category = models.ForeignKey(
-        SoftwareCategory, blank=True, null=True, on_delete=models.CASCADE)
+    category = models.ForeignKey(SoftwareCategory, blank=True, null=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, unique=True)
     description = models.TextField(blank=True, null=True)
-    group = models.ForeignKey(
-        Group, blank=True, null=True, on_delete=models.SET_NULL)
+    group = models.ForeignKey(Group, blank=True, null=True, on_delete=models.SET_NULL)
     homepage = models.URLField(blank=True, null=True)
     tutorial_url = models.URLField(blank=True, null=True)
     academic_only = models.BooleanField(default=False)
-    restricted = models.BooleanField(
-        help_text="Will require admin approval", default=False)
+    restricted = models.BooleanField(help_text="Will require admin approval", default=False)
 
     class Meta:
-        ordering = ['name']
-        db_table = 'software'
+        ordering = ["name"]
+        db_table = "software"
 
     def save(self, *args, **kwargs):
         created = self.pk is None
@@ -69,16 +66,15 @@ class Software(TrackingModelMixin, models.Model):
         super(Software, self).save(*args, **kwargs)
 
         if created:
-            log.add(self, 'Created')
+            log.add(self, "Created")
         for field in changed.keys():
-            log.change(self, 'Changed %s to %s'
-                       % (field, getattr(self, field)))
+            log.change(self, "Changed %s to %s" % (field, getattr(self, field)))
 
     save.alters_data = True
 
     def delete(self, *args, **kwargs):
         # delete the object
-        log.delete(self, 'Deleted')
+        log.delete(self, "Deleted")
         super(Software, self).delete(*args, **kwargs)
 
     delete.alters_data = True
@@ -87,7 +83,7 @@ class Software(TrackingModelMixin, models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('kg_software_detail', args=[self.id])
+        return reverse("kg_software_detail", args=[self.id])
 
     def get_current_license(self):
         try:
@@ -113,20 +109,20 @@ class SoftwareVersion(models.Model):
     last_used = models.DateField(blank=True, null=True)
 
     class Meta:
-        db_table = 'software_version'
-        ordering = ['-version']
+        db_table = "software_version"
+        ordering = ["-version"]
 
     def __str__(self):
-        return '%s - %s' % (self.software.name, self.version)
+        return "%s - %s" % (self.software.name, self.version)
 
     def get_absolute_url(self):
         return self.software.get_absolute_url()
 
     def machine_list(self):
-        machines = ''
+        machines = ""
         if self.machines.all():
             for m in self.machines.all():
-                machines += '%s, ' % m.name
+                machines += "%s, " % m.name
         return machines
 
 
@@ -137,15 +133,15 @@ class SoftwareLicense(models.Model):
     text = models.TextField()
 
     class Meta:
-        db_table = 'software_license'
+        db_table = "software_license"
         get_latest_by = "date"
-        ordering = ['-version']
+        ordering = ["-version"]
 
     def __str__(self):
-        return '%s - %s' % (self.software.name, self.version)
+        return "%s - %s" % (self.software.name, self.version)
 
     def get_absolute_url(self):
-        return reverse('kg_software_license_detail', args=[self.id])
+        return reverse("kg_software_license_detail", args=[self.id])
 
 
 class SoftwareLicenseAgreement(models.Model):
@@ -154,5 +150,5 @@ class SoftwareLicenseAgreement(models.Model):
     date = models.DateField()
 
     class Meta:
-        db_table = 'software_license_agreement'
-        get_latest_by = 'date'
+        db_table = "software_license_agreement"
+        get_latest_by = "date"

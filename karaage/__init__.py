@@ -19,8 +19,8 @@
 # Django 1.7 style AppConfig, see
 # http://docs.djangoproject.com/en/1.7/ref/applications/
 
-default_app_config = 'karaage.apps.Karaage'
+default_app_config = "karaage.apps.Karaage"
 
 __author__ = """Brian May"""
-__email__ = 'brian@linuxpenguins.xyz'
-__version__ = '6.1.5'
+__email__ = "brian@linuxpenguins.xyz"
+__version__ = "6.1.5"

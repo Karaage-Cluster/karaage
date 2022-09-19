@@ -24,36 +24,32 @@ from karaage.people.views import profile as people_profile
 
 
 profile_urlpatterns = [
-    re_path(r'^$', common_profile.profile, name='kg_profile'),
-    re_path(r'^logout/$', common_profile.logout, name='kg_profile_logout'),
+    re_path(r"^$", common_profile.profile, name="kg_profile"),
+    re_path(r"^logout/$", common_profile.logout, name="kg_profile_logout"),
 ]
 
 profile_urlpatterns += [
-    re_path(r'^personal/$',
-            people_profile.profile_personal, name='kg_profile_personal'),
-    re_path(r'^edit/$',
-            people_profile.edit_profile, name='kg_profile_edit'),
-    re_path(r'^password/$',
-            people_profile.password_change, name='kg_profile_password'),
-    re_path(r'^password_request/$',
-            people_profile.password_request, name='kg_profile_reset'),
-    re_path(r'^password_request/done/$',
-            people_profile.password_request_done, name='kg_profile_reset_done'),
-    re_path(r'^login/$', people_profile.login, name='kg_profile_login'),
-    re_path(r'^login/(?P<username>%s)/$' % settings.USERNAME_VALIDATION_RE,
-            people_profile.login, name="kg_profile_login"),
+    re_path(r"^personal/$", people_profile.profile_personal, name="kg_profile_personal"),
+    re_path(r"^edit/$", people_profile.edit_profile, name="kg_profile_edit"),
+    re_path(r"^password/$", people_profile.password_change, name="kg_profile_password"),
+    re_path(r"^password_request/$", people_profile.password_request, name="kg_profile_reset"),
+    re_path(r"^password_request/done/$", people_profile.password_request_done, name="kg_profile_reset_done"),
+    re_path(r"^login/$", people_profile.login, name="kg_profile_login"),
+    re_path(
+        r"^login/(?P<username>%s)/$" % settings.USERNAME_VALIDATION_RE, people_profile.login, name="kg_profile_login"
+    ),
 ]
 
 if settings.AAF_RAPID_CONNECT_ENABLED:
     profile_urlpatterns += [
         re_path(
-            r'^arc/$',
+            r"^arc/$",
             people_profile.profile_aaf_rapid_connect,
-            name='kg_profile_arc',
+            name="kg_profile_arc",
         ),
         re_path(
-            r'^slogin/$',
+            r"^slogin/$",
             people_profile.aaf_rapid_connect_login,
-            name='kg_profile_login_arc',
+            name="kg_profile_login_arc",
         ),
     ]

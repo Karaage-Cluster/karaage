@@ -32,32 +32,25 @@ from .passwords import assert_strong_password
 
 def validate_phone_number(value):
     if re.match(r"^[0-9a-zA-Z\.( )+-]+$", value) is None:
-        raise ValidationError(
-            f'{value} contains invalid characters'
-        )
+        raise ValidationError(f"{value} contains invalid characters")
     if re.search(r"[0-9]", value) is None:
-        raise ValidationError(
-            f'{value} should contain at least one digit'
-        )
+        raise ValidationError(f"{value} should contain at least one digit")
 
 
 def validate_password(username, password1, password2=None, old_password=None):
     # password1 is mandatory, it must be given in order to proceed.
     if password1 is None:
-        raise forms.ValidationError(
-            six.u("The first password was not given."))
+        raise forms.ValidationError(six.u("The first password was not given."))
 
     # password2 is an optional parameter, and may be None
     if password2 is not None and password1 != password2:
-        raise forms.ValidationError(
-            six.u("The two password fields didn't match."))
+        raise forms.ValidationError(six.u("The two password fields didn't match."))
 
     # Now we can check password1
     try:
         assert_strong_password(username, password1, old_password)
     except ValueError as e:
-        raise forms.ValidationError(six.u(
-            'Your password was found to be insecure: %s.' % str(e)))
+        raise forms.ValidationError(six.u("Your password was found to be insecure: %s." % str(e)))
 
     # If password1 is ok, return it.
     return password1
@@ -66,9 +59,9 @@ def validate_password(username, password1, password2=None, old_password=None):
 def clean_email(email):
     email_match_type = "exclude"
     email_match_list = []
-    if hasattr(settings, 'EMAIL_MATCH_TYPE'):
+    if hasattr(settings, "EMAIL_MATCH_TYPE"):
         email_match_type = settings.EMAIL_MATCH_TYPE
-    if hasattr(settings, 'EMAIL_MATCH_LIST'):
+    if hasattr(settings, "EMAIL_MATCH_LIST"):
         email_match_list = settings.EMAIL_MATCH_LIST
 
     found = False
@@ -79,7 +72,7 @@ def clean_email(email):
             break
 
     message = "This email address cannot be used."
-    if hasattr(settings, 'EMAIL_MATCH_MSG'):
+    if hasattr(settings, "EMAIL_MATCH_MSG"):
         message = settings.EMAIL_MATCH_MSG
     if email_match_type == "include":
         if not found:
@@ -92,7 +85,7 @@ def clean_email(email):
 
 
 class CommentForm(forms.ModelForm):
-    """ Comment form. """
+    """Comment form."""
 
     class Meta:
         model = LogEntry

@@ -25,39 +25,35 @@ from karaage.institutes.models import Institute
 def build_login_url(request, entityid=None):
     url = settings.AAF_RAPID_CONNECT_URL
     if entityid:
-        url += '?entityID=%s' % entityid
+        url += "?entityID=%s" % entityid
     return url
 
 
 def get_institute_from_token(verified_jwt):
-    attrs = verified_jwt['https://aaf.edu.au/attributes']
-    value_list = attrs['edupersonscopedaffiliation'].split(";")
-    value_list = [
-        item for item in value_list if item
-    ]
+    attrs = verified_jwt["https://aaf.edu.au/attributes"]
+    value_list = attrs["edupersonscopedaffiliation"].split(";")
+    value_list = [item for item in value_list if item]
     try:
-        institute = Institute.objects.get(
-            saml_scoped_affiliation__in=value_list
-        )
+        institute = Institute.objects.get(saml_scoped_affiliation__in=value_list)
     except Institute.DoesNotExist:
         institute = None
     return institute
 
 
 def add_token_data(person, verified_jwt):
-    attrs = verified_jwt['https://aaf.edu.au/attributes']
+    attrs = verified_jwt["https://aaf.edu.au/attributes"]
 
     institute = get_institute_from_token(verified_jwt)
     if institute is None:
         return "ERR", f"No institute could be found for {attrs['edupersonscopedaffiliation']}"
 
     # short_name and full_name cannot be None
-    person.short_name = attrs['givenname']
-    person.full_name = attrs['cn']
+    person.short_name = attrs["givenname"]
+    person.full_name = attrs["cn"]
 
     # fill in mandatory attributes
-    person.email = attrs['mail']
-    person.saml_id = attrs['edupersontargetedid']
+    person.email = attrs["mail"]
+    person.saml_id = attrs["edupersontargetedid"]
     person.institute = institute
     person.email_verified = True
 
@@ -75,4 +71,4 @@ class AafInstituteForm(forms.Form):
         queryset = Institute.active.filter(saml_entityid__isnull=False)
         queryset = queryset.exclude(saml_entityid="")
 
-        self.fields['institute'].queryset = queryset
+        self.fields["institute"].queryset = queryset

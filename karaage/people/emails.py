@@ -28,14 +28,10 @@ from karaage.common.emails import CONTEXT, send_mail
 
 def render_email(name, context):
     subject = render_to_string(
-        ['karaage/emails/%s_subject.txt' % name,
-            'karaage/people/emails/%s_subject.txt' % name],
-        context)
-    subject = subject.replace('\n', '')
-    body = render_to_string(
-        ['karaage/emails/%s_body.txt' % name,
-            'karaage/people/emails/%s_body.txt' % name],
-        context)
+        ["karaage/emails/%s_subject.txt" % name, "karaage/people/emails/%s_subject.txt" % name], context
+    )
+    subject = subject.replace("\n", "")
+    body = render_to_string(["karaage/emails/%s_body.txt" % name, "karaage/people/emails/%s_body.txt" % name], context)
     return subject, body
 
 
@@ -43,58 +39,54 @@ def send_bounced_warning(person, leader_list):
     """Sends an email to each project leader for person
     informing them that person's email has bounced"""
     context = CONTEXT.copy()
-    context['person'] = person
+    context["person"] = person
 
     for lp in leader_list:
-        leader = lp['leader']
+        leader = lp["leader"]
 
-        context['project'] = lp['project']
-        context['receiver'] = leader
+        context["project"] = lp["project"]
+        context["receiver"] = leader
 
         to_email = leader.email
-        subject = render_to_string(
-            'karaage/people/emails/bounced_email_subject.txt', context)
-        body = render_to_string(
-            'karaage/people/emails/bounced_email_body.txt', context)
-        send_mail(
-            subject.replace('\n', ''), body,
-            settings.ACCOUNTS_EMAIL, [to_email])
-        log.change(
-            leader,
-            'Sent email about bounced emails from %s' % person)
+        subject = render_to_string("karaage/people/emails/bounced_email_subject.txt", context)
+        body = render_to_string("karaage/people/emails/bounced_email_body.txt", context)
+        send_mail(subject.replace("\n", ""), body, settings.ACCOUNTS_EMAIL, [to_email])
+        log.change(leader, "Sent email about bounced emails from %s" % person)
 
 
 def send_reset_password_email(person):
     """Sends an email to user allowing them to set their password."""
     uid = urlsafe_base64_encode(force_bytes(person.pk))
     token = default_token_generator.make_token(person)
-    url = '%s/persons/reset/%s/%s/' % (
-        settings.REGISTRATION_BASE_URL, uid, token)
+    url = "%s/persons/reset/%s/%s/" % (settings.REGISTRATION_BASE_URL, uid, token)
 
     context = CONTEXT.copy()
-    context.update({
-        'url': url,
-        'receiver': person,
-    })
+    context.update(
+        {
+            "url": url,
+            "receiver": person,
+        }
+    )
 
     to_email = person.email
-    subject, body = render_email('reset_password', context)
+    subject, body = render_email("reset_password", context)
 
     send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
 
 
 def send_confirm_password_email(person):
     """Sends an email to user allowing them to confirm their password."""
-    url = '%s/profile/login/%s/' % (
-        settings.REGISTRATION_BASE_URL, person.username)
+    url = "%s/profile/login/%s/" % (settings.REGISTRATION_BASE_URL, person.username)
 
     context = CONTEXT.copy()
-    context.update({
-        'url': url,
-        'receiver': person,
-    })
+    context.update(
+        {
+            "url": url,
+            "receiver": person,
+        }
+    )
 
     to_email = person.email
-    subject, body = render_email('confirm_password', context)
+    subject, body = render_email("confirm_password", context)
 
     send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])

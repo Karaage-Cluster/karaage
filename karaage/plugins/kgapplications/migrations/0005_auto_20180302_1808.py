@@ -10,13 +10,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kgapplications', '0004_auto_20180301_1721'),
+        ("kgapplications", "0004_auto_20180301_1721"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='application',
-            name='created_by',
-            field=models.ForeignKey(blank=True, editable=False, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
+            model_name="application",
+            name="created_by",
+            field=models.ForeignKey(
+                blank=True,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

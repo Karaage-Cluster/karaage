@@ -27,12 +27,11 @@ from .models import Institute
 
 
 class ActiveFilter(django_filters.ChoiceFilter):
-
     def __init__(self, *args, **kwargs):
         choices = [
-            ('', 'Unknown'),
-            ('deleted', 'Deleted'),
-            ('yes', 'Yes'),
+            ("", "Unknown"),
+            ("deleted", "Deleted"),
+            ("yes", "Yes"),
         ]
 
         super(ActiveFilter, self).__init__(*args, choices=choices, **kwargs)
@@ -52,12 +51,12 @@ class InstituteFilter(django_filters.FilterSet):
 
     class Meta:
         model = Institute
-        fields = ('name', 'active')
+        fields = ("name", "active")
 
 
 class InstituteTable(tables.Table):
-    is_active = tables.Column(order_by='-is_active', verbose_name="active")
-    name = tables.LinkColumn('kg_institute_detail', args=[A('pk')])
+    is_active = tables.Column(order_by="-is_active", verbose_name="active")
+    name = tables.LinkColumn("kg_institute_detail", args=[A("pk")])
     delegates = PeopleColumn(orderable=False)
 
     def render_is_active(self, record):
@@ -69,5 +68,5 @@ class InstituteTable(tables.Table):
 
     class Meta:
         model = Institute
-        fields = ('is_active', 'name')
+        fields = ("is_active", "name")
         empty_text = "No items"

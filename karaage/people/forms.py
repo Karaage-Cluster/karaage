@@ -49,8 +49,7 @@ class PersonForm(forms.ModelForm):
     telephone = forms.CharField(
         required=True,
         label=six.u("Office Telephone"),
-        help_text=six.u(
-            "Used for emergency contact and password reset service."),
+        help_text=six.u("Used for emergency contact and password reset service."),
         validators=[validate_phone_number],
     )
     mobile = forms.CharField(
@@ -58,29 +57,33 @@ class PersonForm(forms.ModelForm):
         validators=[validate_phone_number],
     )
     fax = forms.CharField(required=False, validators=[validate_phone_number])
-    address = forms.CharField(
-        label=six.u("Mailing Address"),
-        required=False,
-        widget=forms.Textarea())
-    country = forms.ChoiceField(
-        choices=COUNTRIES, initial='AU', required=False)
+    address = forms.CharField(label=six.u("Mailing Address"), required=False, widget=forms.Textarea())
+    country = forms.ChoiceField(choices=COUNTRIES, initial="AU", required=False)
 
     def __init__(self, *args, **kwargs):
         super(PersonForm, self).__init__(*args, **kwargs)
-        self.fields['short_name'].help_text = \
-            "This is typically the person's given name. "\
-            "For example enter 'Fred' here."
-        self.fields['full_name'].help_text = \
-            "This is typically the person's full name. " \
-            "For example enter 'Fred Smith' here."
+        self.fields["short_name"].help_text = (
+            "This is typically the person's given name. " "For example enter 'Fred' here."
+        )
+        self.fields["full_name"].help_text = (
+            "This is typically the person's full name. " "For example enter 'Fred Smith' here."
+        )
 
     def clean(self):
         data = super(PersonForm, self).clean()
 
         for key in [
-                'short_name', 'full_name', 'email', 'position',
-                'supervisor', 'department', 'telephone', 'mobile', 'fax',
-                'address', ]:
+            "short_name",
+            "full_name",
+            "email",
+            "position",
+            "supervisor",
+            "department",
+            "telephone",
+            "mobile",
+            "fax",
+            "address",
+        ]:
             if key in data and data[key]:
                 data[key] = data[key].strip()
 
@@ -89,22 +92,29 @@ class PersonForm(forms.ModelForm):
     class Meta:
         model = Person
         fields = [
-            'short_name', 'full_name', 'email', 'title', 'position',
-            'supervisor', 'department', 'telephone', 'mobile', 'fax',
-            'address', 'country'
+            "short_name",
+            "full_name",
+            "email",
+            "title",
+            "position",
+            "supervisor",
+            "department",
+            "telephone",
+            "mobile",
+            "fax",
+            "address",
+            "country",
         ]
 
     def clean_email(self):
-        email = self.cleaned_data['email']
+        email = self.cleaned_data["email"]
         users = Person.objects.filter(email__exact=email)
         if self.instance:
             users = users.exclude(pk=self.instance.pk)
         if users.count() > 0:
             raise forms.ValidationError(
-                six.u(
-                    'An account with this email already exists. '
-                    'Please email %s')
-                % settings.ACCOUNTS_EMAIL)
+                six.u("An account with this email already exists. " "Please email %s") % settings.ACCOUNTS_EMAIL
+            )
         clean_email(email)
         return email
 
@@ -113,53 +123,61 @@ class AdminPersonForm(PersonForm):
     institute = forms.ModelChoiceField(queryset=None)
     comment = forms.CharField(widget=forms.Textarea(), required=False)
     expires = forms.DateField(widget=AdminDateWidget, required=False)
-    is_admin = forms.BooleanField(
-        help_text="Designates whether the user can log into this admin site.",
-        required=False)
+    is_admin = forms.BooleanField(help_text="Designates whether the user can log into this admin site.", required=False)
     is_systemuser = forms.BooleanField(
-        help_text="Designates that this user is a system process, "
-                  "not a person.",
-        required=False)
+        help_text="Designates that this user is a system process, " "not a person.", required=False
+    )
 
     def __init__(self, *args, **kwargs):
         super(AdminPersonForm, self).__init__(*args, **kwargs)
-        self.fields['institute'].queryset = Institute.active.all()
+        self.fields["institute"].queryset = Institute.active.all()
 
     class Meta:
         model = Person
         fields = [
-            'short_name', 'full_name', 'email', 'title', 'position',
-            'supervisor', 'department', 'institute', 'telephone', 'mobile',
-            'fax', 'address', 'country', 'expires', 'comment',
-            'is_systemuser', 'is_admin', ]
+            "short_name",
+            "full_name",
+            "email",
+            "title",
+            "position",
+            "supervisor",
+            "department",
+            "institute",
+            "telephone",
+            "mobile",
+            "fax",
+            "address",
+            "country",
+            "expires",
+            "comment",
+            "is_systemuser",
+            "is_admin",
+        ]
 
 
 class AddPersonForm(AdminPersonForm):
-    project = forms.ModelChoiceField(
-        queryset=None,
-        label=six.u("Default Project"), required=False)
+    project = forms.ModelChoiceField(queryset=None, label=six.u("Default Project"), required=False)
     needs_account = forms.BooleanField(
-        required=False, label=six.u("Do you require a cluster account"),
-        help_text=six.u("eg. Will you be working on the project yourself"))
+        required=False,
+        label=six.u("Do you require a cluster account"),
+        help_text=six.u("eg. Will you be working on the project yourself"),
+    )
     username = forms.CharField(
         label=six.u("Requested username"),
         max_length=settings.USERNAME_MAX_LENGTH,
-        help_text=(settings.USERNAME_VALIDATION_ERROR_MSG
-                   + " and has a max length of %s."
-                   % settings.USERNAME_MAX_LENGTH))
-    password1 = forms.CharField(
-        widget=forms.PasswordInput(render_value=False),
-        label=six.u('Password'))
-    password2 = forms.CharField(
-        widget=forms.PasswordInput(render_value=False),
-        label=six.u('Password (again)'))
+        help_text=(
+            settings.USERNAME_VALIDATION_ERROR_MSG + " and has a max length of %s." % settings.USERNAME_MAX_LENGTH
+        ),
+    )
+    password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=six.u("Password"))
+    password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label=six.u("Password (again)"))
 
     def __init__(self, *args, **kwargs):
         super(AddPersonForm, self).__init__(*args, **kwargs)
-        self.fields['project'].queryset = Project.objects.all()
+        self.fields["project"].queryset = Project.objects.all()
 
     def clean_username(self):
-        username = self.cleaned_data['username']
+        username = self.cleaned_data["username"]
         try:
             validate_username_for_new_person(username)
         except UsernameException as e:
@@ -167,9 +185,9 @@ class AddPersonForm(AdminPersonForm):
         return username
 
     def clean_password2(self):
-        username = self.cleaned_data.get('username')
-        password1 = self.cleaned_data.get('password1')
-        password2 = self.cleaned_data.get('password2')
+        username = self.cleaned_data.get("username")
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
         return validate_password(username, password1, password2)
 
     def save(self, commit=True):
@@ -178,26 +196,22 @@ class AddPersonForm(AdminPersonForm):
         data = self.cleaned_data
 
         person = super(AddPersonForm, self).save(commit=False)
-        person.username = data['username']
-        person.is_admin = data['is_admin']
+        person.username = data["username"]
+        person.is_admin = data["is_admin"]
         person.is_active = True
         person.approved_by = get_current_person()
-        person.set_password(data['password2'])
+        person.set_password(data["password2"])
         person.save()
 
-        if data['needs_account'] and data['project']:
-            add_user_to_project(person, data['project'])
+        if data["needs_account"] and data["project"]:
+            add_user_to_project(person, data["project"])
 
         return person
 
 
 class AdminPasswordChangeForm(forms.Form):
-    new1 = forms.CharField(
-        widget=forms.PasswordInput(),
-        label=six.u('New Password'))
-    new2 = forms.CharField(
-        widget=forms.PasswordInput(),
-        label=six.u('New Password (again)'))
+    new1 = forms.CharField(widget=forms.PasswordInput(), label=six.u("New Password"))
+    new2 = forms.CharField(widget=forms.PasswordInput(), label=six.u("New Password (again)"))
 
     def __init__(self, person, *args, **kwargs):
         self.person = person
@@ -205,42 +219,38 @@ class AdminPasswordChangeForm(forms.Form):
 
     def clean_new2(self):
         username = self.person.username
-        password1 = self.cleaned_data.get('new1')
-        password2 = self.cleaned_data.get('new2')
+        password1 = self.cleaned_data.get("new1")
+        password2 = self.cleaned_data.get("new2")
         return validate_password(username, password1, password2)
 
     def save(self):
         data = self.cleaned_data
         person = self.person
-        person.set_password(data['new1'])
+        person.set_password(data["new1"])
         person.save()
 
 
 class PasswordChangeForm(AdminPasswordChangeForm):
-    old = forms.CharField(widget=forms.PasswordInput(), label='Old password')
+    old = forms.CharField(widget=forms.PasswordInput(), label="Old password")
 
     def clean_new2(self):
         username = self.person.username
-        password1 = self.cleaned_data.get('new1')
-        password2 = self.cleaned_data.get('new2')
-        old_password = self.cleaned_data.get('old', None)
+        password1 = self.cleaned_data.get("new1")
+        password2 = self.cleaned_data.get("new2")
+        old_password = self.cleaned_data.get("old", None)
         return validate_password(username, password1, password2, old_password)
 
     def clean_old(self):
-        person = Person.objects.authenticate(
-            username=self.person.username,
-            password=self.cleaned_data['old'])
+        person = Person.objects.authenticate(username=self.person.username, password=self.cleaned_data["old"])
         if person is None:
-            raise forms.ValidationError(
-                six.u('Your old password was incorrect'))
+            raise forms.ValidationError(six.u("Your old password was incorrect"))
 
-        return self.cleaned_data['old']
+        return self.cleaned_data["old"]
 
 
 class SetPasswordForm(BaseSetPasswordForm):
-
     def clean_new_password1(self):
-        password1 = self.cleaned_data.get('new_password1')
+        password1 = self.cleaned_data.get("new_password1")
         return validate_password(self.user.username, password1)
 
 
@@ -248,11 +258,12 @@ class AdminGroupForm(forms.Form):
     name = forms.RegexField(
         "^%s$" % settings.GROUP_VALIDATION_RE,
         required=True,
-        error_messages={'invalid': settings.GROUP_VALIDATION_ERROR_MSG})
+        error_messages={"invalid": settings.GROUP_VALIDATION_ERROR_MSG},
+    )
     description = forms.CharField()
 
     def __init__(self, *args, **kwargs):
-        self.instance = kwargs.pop('instance', None)
+        self.instance = kwargs.pop("instance", None)
         super(AdminGroupForm, self).__init__(*args, **kwargs)
         if self.instance is not None:
             self.initial = self.instance.__dict__
@@ -274,8 +285,8 @@ class AdminGroupForm(forms.Form):
         else:
             group = self.instance
 
-        group.name = data['name']
-        group.description = data['description']
+        group.name = data["name"]
+        group.description = data["description"]
         group.save()
 
         return group
@@ -283,15 +294,15 @@ class AdminGroupForm(forms.Form):
 
 class AddGroupMemberForm(forms.Form):
 
-    """ Add a user to a group form """
-    person = ajax_select.fields.AutoCompleteSelectField(
-        'person', required=True, label="Add person")
+    """Add a user to a group form"""
+
+    person = ajax_select.fields.AutoCompleteSelectField("person", required=True, label="Add person")
 
     def __init__(self, *args, **kwargs):
-        self.instance = kwargs.pop('instance', None)
+        self.instance = kwargs.pop("instance", None)
         super(AddGroupMemberForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
-        person = self.cleaned_data['person']
+        person = self.cleaned_data["person"]
         self.instance.add_person(person)
         return self.instance

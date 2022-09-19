@@ -28,24 +28,24 @@ from karaage.tests.fixtures import InstituteFactory, PersonFactory
 
 @pytest.mark.django_db
 class PersonTestCase(TestCase):
-
     def test_minimum_create(self):
         institute = InstituteFactory()
         person = Person.objects.create(
-            username='mchagr',
-            password='test',
-            short_name='RK',
-            full_name='Rick Spicy McHaggis',
-            email='test@example.com',
-            institute=institute)
+            username="mchagr",
+            password="test",
+            short_name="RK",
+            full_name="Rick Spicy McHaggis",
+            email="test@example.com",
+            institute=institute,
+        )
         person.full_clean()
         self.assertFalse(person.is_admin)
         self.assertFalse(person.is_systemuser)
-        self.assertEqual(str(person), 'Rick Spicy McHaggis')
-        self.assertEqual(person.short_name, 'RK')
-        self.assertEqual(person.email, 'test@example.com')
-        self.assertEqual(person.first_name, 'Rick Spicy')
-        self.assertEqual(person.last_name, 'McHaggis')
+        self.assertEqual(str(person), "Rick Spicy McHaggis")
+        self.assertEqual(person.short_name, "RK")
+        self.assertEqual(person.email, "test@example.com")
+        self.assertEqual(person.first_name, "Rick Spicy")
+        self.assertEqual(person.last_name, "McHaggis")
 
     @unittest.skip("broken with mysql/postgresql")
     def test_username(self):
@@ -75,7 +75,6 @@ class PersonTestCase(TestCase):
 
 @pytest.mark.django_db
 class GroupTestCase(TestCase):
-
     def test_minimum_create(self):
-        group = Group.objects.create(foreign_id='1111', name='test_group')
+        group = Group.objects.create(foreign_id="1111", name="test_group")
         group.full_clean()

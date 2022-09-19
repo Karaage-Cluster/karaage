@@ -37,22 +37,22 @@ except NameError:
 
 
 class Command(BaseCommand):
-    help = 'Change a username for a person and all accounts for that person'
+    help = "Change a username for a person and all accounts for that person"
 
     def add_arguments(self, parser):
-        parser.add_argument('old_username', type=str)
-        parser.add_argument('new_username', type=str)
+        parser.add_argument("old_username", type=str)
+        parser.add_argument("new_username", type=str)
 
     @django.db.transaction.atomic
     @tldap.transaction.commit_on_success
     def handle(self, *args, **options):
-        old = options['old_username']
-        new = options['new_username']
+        old = options["old_username"]
+        new = options["new_username"]
 
         try:
             person = Person.objects.get(username=old)
         except Person.DoesNotExist:
-            raise CommandError('person %s does not exist' % old)
+            raise CommandError("person %s does not exist" % old)
 
         try:
             validate_username_for_rename_person(new, person)
@@ -62,12 +62,10 @@ class Command(BaseCommand):
             raise CommandError(e.args[0])
 
         while 1:
-            confirm = input(
-                'Change person "%s" and accounts to "%s (yes,no): '
-                % (old, new))
-            if confirm == 'yes':
+            confirm = input('Change person "%s" and accounts to "%s (yes,no): ' % (old, new))
+            if confirm == "yes":
                 break
-            elif confirm == 'no':
+            elif confirm == "no":
                 return sys.exit(0)
             else:
                 print("Please enter yes or no")

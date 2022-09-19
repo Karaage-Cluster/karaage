@@ -33,67 +33,55 @@ class ProjectForm(forms.ModelForm):
         "^%s$" % settings.PROJECT_VALIDATION_RE,
         max_length=settings.PROJECT_ID_MAX_LENGTH,
         required=False,
-        label='PID',
-        help_text='Leave blank for auto generation',
-        error_messages={'invalid': settings.PROJECT_VALIDATION_ERROR_MSG})
-    name = forms.CharField(
-        label='Project Title', widget=forms.TextInput(attrs={'size': 60}))
+        label="PID",
+        help_text="Leave blank for auto generation",
+        error_messages={"invalid": settings.PROJECT_VALIDATION_ERROR_MSG},
+    )
+    name = forms.CharField(label="Project Title", widget=forms.TextInput(attrs={"size": 60}))
     description = forms.CharField(
-        widget=forms.Textarea(attrs={
-            'class': 'vLargeTextField', 'rows': 10, 'cols': 40}),
-        required=False)
+        widget=forms.Textarea(attrs={"class": "vLargeTextField", "rows": 10, "cols": 40}), required=False
+    )
     institute = forms.ModelChoiceField(queryset=Institute.active.all())
     additional_req = forms.CharField(
-        widget=forms.Textarea(attrs={
-            'class': 'vLargeTextField', 'rows': 10, 'cols': 40}),
-        required=False)
-    leaders = ajax_select.fields.AutoCompleteSelectMultipleField(
-        'person', required=True)
-    start_date = forms.DateField(
-        widget=AdminDateWidget, initial=datetime.datetime.today)
+        widget=forms.Textarea(attrs={"class": "vLargeTextField", "rows": 10, "cols": 40}), required=False
+    )
+    leaders = ajax_select.fields.AutoCompleteSelectMultipleField("person", required=True)
+    start_date = forms.DateField(widget=AdminDateWidget, initial=datetime.datetime.today)
     end_date = forms.DateField(widget=AdminDateWidget, required=False)
 
     class Meta:
         model = Project
-        fields = (
-            'pid', 'name', 'institute', 'leaders', 'description',
-            'start_date', 'end_date', 'additional_req')
+        fields = ("pid", "name", "institute", "leaders", "description", "start_date", "end_date", "additional_req")
 
     def __init__(self, *args, **kwargs):
         # Make PID field read only if we are editing a project
         super(ProjectForm, self).__init__(*args, **kwargs)
-        instance = getattr(self, 'instance', None)
+        instance = getattr(self, "instance", None)
         if instance and instance.pid:
-            self.fields['pid'].widget.attrs['readonly'] = "readonly"
-            self.fields['pid'].help_text = \
-                "You can't change the PID of an existing project"
-            del self.fields['leaders']
+            self.fields["pid"].widget.attrs["readonly"] = "readonly"
+            self.fields["pid"].help_text = "You can't change the PID of an existing project"
+            del self.fields["leaders"]
 
     def clean_pid(self):
-        pid = self.cleaned_data['pid']
+        pid = self.cleaned_data["pid"]
         try:
             Institute.objects.get(name=pid)
-            raise forms.ValidationError(six.u('Project ID not available'))
+            raise forms.ValidationError(six.u("Project ID not available"))
         except Institute.DoesNotExist:
             return pid
 
 
 class UserProjectForm(forms.ModelForm):
-    name = forms.CharField(
-        label='Project Title', widget=forms.TextInput(attrs={'size': 60}))
-    description = forms.CharField(
-        widget=forms.Textarea(attrs={
-            'class': 'vLargeTextField', 'rows': 10, 'cols': 40}))
+    name = forms.CharField(label="Project Title", widget=forms.TextInput(attrs={"size": 60}))
+    description = forms.CharField(widget=forms.Textarea(attrs={"class": "vLargeTextField", "rows": 10, "cols": 40}))
     additional_req = forms.CharField(
-        widget=forms.Textarea(attrs={
-            'class': 'vLargeTextField', 'rows': 10, 'cols': 40}),
-        required=False)
+        widget=forms.Textarea(attrs={"class": "vLargeTextField", "rows": 10, "cols": 40}), required=False
+    )
 
     class Meta:
         model = Project
-        fields = ('name', 'description', 'additional_req')
+        fields = ("name", "description", "additional_req")
 
 
 class AddPersonForm(forms.Form):
-    person = ajax_select.fields.AutoCompleteSelectField(
-        'person', required=True, label='Add user to project')
+    person = ajax_select.fields.AutoCompleteSelectField("person", required=True, label="Add user to project")

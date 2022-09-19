@@ -46,13 +46,14 @@ def nicepass(alpha=8, numeric=4):
     """
     import random
     import string
-    vowels = ['a', 'e', 'i', 'o', 'u']
+
+    vowels = ["a", "e", "i", "o", "u"]
     consonants = [a for a in string.ascii_lowercase if a not in vowels]
     digits = string.digits
 
     # utility functions
     def a_part(slen):
-        ret = ''
+        ret = ""
         for i in range(slen):
             if i % 2 == 0:
                 randid = random.randint(0, 20)  # number of consonants
@@ -63,7 +64,7 @@ def nicepass(alpha=8, numeric=4):
         return ret
 
     def n_part(slen):
-        ret = ''
+        ret = ""
         for i in range(slen):
             randid = random.randint(0, 9)  # number of digits
             ret += digits[randid]
@@ -87,30 +88,27 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--password', dest="password",
-            action='store_true', default=False,
-            help="Read password to use on stdin."),
-        parser.add_argument(
-            '--number', dest="number",
-            type=int, help="Number of accounts to unlock"),
+            "--password", dest="password", action="store_true", default=False, help="Read password to use on stdin."
+        ),
+        parser.add_argument("--number", dest="number", type=int, help="Number of accounts to unlock"),
 
     @django.db.transaction.atomic
     @tldap.transaction.commit_on_success
     def handle(self, *args, **options):
-        verbose = int(options.get('verbosity'))
-        training_prefix = getattr(settings, 'TRAINING_ACCOUNT_PREFIX', 'train')
+        verbose = int(options.get("verbosity"))
+        training_prefix = getattr(settings, "TRAINING_ACCOUNT_PREFIX", "train")
 
         # If training accounts are system users, they will be found by
         # Person.objects.all() but not Person.active.all()
         query = Person.objects.all()
         query = query.filter(username__iregex=training_prefix)
-        query = query.order_by('username')
+        query = query.order_by("username")
 
-        if options['number'] is not None:
-            query = query[:options['number']]
+        if options["number"] is not None:
+            query = query[: options["number"]]
 
         password = None
-        if options['password']:
+        if options["password"]:
             password = sys.stdin.readline().strip()
         else:
             password = nicepass(8, 4)

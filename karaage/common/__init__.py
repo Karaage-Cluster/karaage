@@ -43,9 +43,9 @@ def get_date_range(request, default_start=None, default_end=None):
 
     today = datetime.date.today()
 
-    if 'start' in request.GET:
+    if "start" in request.GET:
         try:
-            years, months, days = request.GET['start'].split('-')
+            years, months, days = request.GET["start"].split("-")
             start = datetime.datetime(int(years), int(months), int(days))
             start = start.date()
         except ValueError:
@@ -53,9 +53,9 @@ def get_date_range(request, default_start=None, default_end=None):
     else:
         start = default_start
 
-    if 'end' in request.GET:
+    if "end" in request.GET:
         try:
-            years, months, days = request.GET['end'].split('-')
+            years, months, days = request.GET["end"].split("-")
             end = datetime.datetime(int(years), int(months), int(days))
             end = end.date()
         except ValueError:
@@ -75,13 +75,14 @@ def get_current_person():
     return user
 
 
-class log():
-
+class log:
     def __init__(self, user, obj, flag, message):
-        warnings.warn("Calling karaage.common.log directly has been"
-                      " deprecated. You should use the API "
-                      "log.(add|change|field_change|delete|comment)",
-                      DeprecationWarning)
+        warnings.warn(
+            "Calling karaage.common.log directly has been"
+            " deprecated. You should use the API "
+            "log.(add|change|field_change|delete|comment)",
+            DeprecationWarning,
+        )
         LogEntry.objects.log_object(obj, flag, message, user)
 
     @classmethod
@@ -94,8 +95,7 @@ class log():
 
     @classmethod
     def field_change(cls, obj, user=None, field=None, new_value=None):
-        return LogEntry.objects.log_object(
-            obj, CHANGE, 'Changed %s to %s' % (field, new_value), user)
+        return LogEntry.objects.log_object(obj, CHANGE, "Changed %s to %s" % (field, new_value), user)
 
     @classmethod
     def delete(cls, obj, message, user=None):
@@ -111,11 +111,11 @@ def new_random_token():
     from hashlib import sha1
 
     # Use the system (hardware-based) random number generator if it exists.
-    if hasattr(random, 'SystemRandom'):
+    if hasattr(random, "SystemRandom"):
         randrange = random.SystemRandom().randrange
     else:
         randrange = random.randrange
-    max_key = 18446744073709551616     # 2 << 63
+    max_key = 18446744073709551616  # 2 << 63
 
     string = six.u("%s%s") % (randrange(0, max_key), settings.SECRET_KEY)
     return sha1(string.encode("ascii")).hexdigest()
@@ -123,29 +123,29 @@ def new_random_token():
 
 def log_list(request, breadcrumbs, obj):
     result = QueryDict("", mutable=True)
-    result['content_type'] = ContentType.objects.get_for_model(obj).pk
-    result['object_id'] = obj.pk
-    url = reverse('kg_log_list') + "?" + result.urlencode()
+    result["content_type"] = ContentType.objects.get_for_model(obj).pk
+    result["object_id"] = obj.pk
+    url = reverse("kg_log_list") + "?" + result.urlencode()
     return HttpResponseRedirect(url)
 
 
 def add_comment(request, breadcrumbs, obj):
     assert obj is not None
     assert obj.pk is not None
-    form = CommentForm(
-        data=request.POST or None, obj=obj,
-        request=request, instance=None)
-    if request.method == 'POST':
+    form = CommentForm(data=request.POST or None, obj=obj, request=request, instance=None)
+    if request.method == "POST":
         form.save()
         return HttpResponseRedirect(obj.get_absolute_url())
 
     return render(
-        template_name='karaage/common/add_comment.html',
+        template_name="karaage/common/add_comment.html",
         context={
-            'form': form, 'obj': obj,
-            'breadcrumbs': breadcrumbs,
+            "form": form,
+            "obj": obj,
+            "breadcrumbs": breadcrumbs,
         },
-        request=request)
+        request=request,
+    )
 
 
 def is_admin(request):
@@ -167,6 +167,7 @@ def get_app_modules(name):
                 pass
     else:
         from django.apps import apps
+
         for config in apps.get_app_configs():
             if isinstance(config, BasePlugin):
                 module_name = config.name + "." + name

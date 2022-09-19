@@ -33,9 +33,10 @@ class Command(BaseCommand):
 
         from karaage.common import log
         from karaage.people.models import Person
+
         today = datetime.date.today()
 
-        verbose = int(options.get('verbosity'))
+        verbose = int(options.get("verbosity"))
 
         for p in Person.objects.filter(expires__lte=today):
             try:
@@ -43,12 +44,12 @@ class Command(BaseCommand):
                     p.lock()
                     p.expires = None
                     p.save()
-                    message = "%s's account has expired and their account " \
-                        "has been locked. %s does not know this" % (p, p)
-                    mail_admins(
-                        'Locked expired user %s' % p,
-                        message, fail_silently=False)
-                    log.change(p, 'Account auto expired')
+                    message = "%s's account has expired and their account " "has been locked. %s does not know this" % (
+                        p,
+                        p,
+                    )
+                    mail_admins("Locked expired user %s" % p, message, fail_silently=False)
+                    log.change(p, "Account auto expired")
                     if verbose >= 1:
                         print("Locked account for %s - %s" % (p.username, p))
             except Exception:

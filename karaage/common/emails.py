@@ -24,17 +24,16 @@ from django.core.mail import EmailMessage
 
 
 CONTEXT = {
-    'org_email': settings.ACCOUNTS_EMAIL,
-    'org_name': settings.ACCOUNTS_ORG_NAME,
+    "org_email": settings.ACCOUNTS_EMAIL,
+    "org_name": settings.ACCOUNTS_ORG_NAME,
 }
 
 
 def send_mail(subject, message, from_email, recipient_list):
     headers = {
-        'Precedence': 'bulk',
-        'Auto-Submitted': 'auto-replied',
+        "Precedence": "bulk",
+        "Auto-Submitted": "auto-replied",
     }
 
-    email = EmailMessage(subject, message, from_email, recipient_list,
-                         headers=headers)
+    email = EmailMessage(subject, message, from_email, recipient_list, headers=headers)
     return email.send()

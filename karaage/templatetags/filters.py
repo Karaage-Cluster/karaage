@@ -26,17 +26,17 @@ register = Library()
 @register.filter
 def timeformat(value):
 
-    if value == '':
-        return ''
+    if value == "":
+        return ""
 
     if value is None:
-        return '0s'
+        return "0s"
     if value < 60:
-        return '%ss' % intcomma(int(value))
+        return "%ss" % intcomma(int(value))
     # less than 1 hour
     elif value < 3600:
         v = int(value / 60)
-        return '%sm' % intcomma(v)
+        return "%sm" % intcomma(v)
     # less than 1 day
     # elif value < 86400:
     #    v = int(value/3600)
@@ -51,7 +51,7 @@ def timeformat(value):
     #    return '%smonth' % intcomma(v)
     else:
         v = int(value / 3600)
-        return '%sh' % intcomma(v)
+        return "%sh" % intcomma(v)
 
 
 @register.filter

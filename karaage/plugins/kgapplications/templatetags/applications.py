@@ -31,61 +31,58 @@ register = template.Library()
 
 @register.simple_tag(takes_context=True)
 def application_state(context, application):
-    """ Render current state of application, verbose. """
+    """Render current state of application, verbose."""
     new_context = {
-        'roles': context['roles'],
-        'org_name': context['org_name'],
-        'application': application,
+        "roles": context["roles"],
+        "org_name": context["org_name"],
+        "application": application,
     }
-    nodelist = template.loader.get_template(
-        'kgapplications/%s_common_state.html' % application.type)
+    nodelist = template.loader.get_template("kgapplications/%s_common_state.html" % application.type)
     output = nodelist.render(new_context)
     return output
 
 
 @register.simple_tag(takes_context=True)
 def application_request(context, application):
-    """ Render current detail of application, verbose. """
+    """Render current detail of application, verbose."""
     new_context = {
-        'roles': context['roles'],
-        'org_name': context['org_name'],
-        'application': application,
+        "roles": context["roles"],
+        "org_name": context["org_name"],
+        "application": application,
     }
-    nodelist = template.loader.get_template(
-        'kgapplications/%s_common_request.html' % application.type)
+    nodelist = template.loader.get_template("kgapplications/%s_common_request.html" % application.type)
     output = nodelist.render(new_context)
     return output
 
 
 @register.simple_tag(takes_context=True)
 def application_simple_state(context, application):
-    """ Render current state of application, verbose. """
+    """Render current state of application, verbose."""
     state_machine = get_state_machine(application)
     state = state_machine.get_state(application)
     return state.name
 
 
-@register.inclusion_tag(
-    'kgapplications/common_actions.html', takes_context=True)
+@register.inclusion_tag("kgapplications/common_actions.html", takes_context=True)
 def application_actions(context):
-    """ Render actions available. """
+    """Render actions available."""
     return {
-        'roles': context['roles'],
-        'actions': context['actions'],
-        'extra': "",
+        "roles": context["roles"],
+        "actions": context["actions"],
+        "extra": "",
     }
 
 
 @register.tag(name="application_actions_plus")
 def do_application_actions_plus(parser, token):
-    """ Render actions available with extra text. """
-    nodelist = parser.parse(('end_application_actions',))
+    """Render actions available with extra text."""
+    nodelist = parser.parse(("end_application_actions",))
     parser.delete_first_token()
     return ApplicationActionsPlus(nodelist)
 
 
 class ApplicationActionsPlus(template.Node):
-    """ Node for rendering actions available with extra text. """
+    """Node for rendering actions available with extra text."""
 
     def __init__(self, nodelist):
         super(ApplicationActionsPlus, self).__init__()
@@ -93,12 +90,11 @@ class ApplicationActionsPlus(template.Node):
 
     def render(self, context):
         extra = self.nodelist.render(context)
-        nodelist = template.loader.get_template(
-            'kgapplications/common_actions.html')
+        nodelist = template.loader.get_template("kgapplications/common_actions.html")
         new_context = {
-            'roles': context['roles'],
-            'extra': extra,
-            'actions': context['actions'],
+            "roles": context["roles"],
+            "extra": extra,
+            "actions": context["actions"],
         }
         output = nodelist.render(new_context)
         return output
@@ -107,9 +103,7 @@ class ApplicationActionsPlus(template.Node):
 @register.simple_tag(takes_context=True)
 def get_similar_people_table(context, applicant):
     queryset = applicant.similar_people()
-    table = PersonTable(
-        queryset,
-        empty_text="(No potential duplicates found, please check manually)")
-    config = tables.RequestConfig(context['request'], paginate={"per_page": 5})
+    table = PersonTable(queryset, empty_text="(No potential duplicates found, please check manually)")
+    config = tables.RequestConfig(context["request"], paginate={"per_page": 5})
     config.configure(table)
     return table

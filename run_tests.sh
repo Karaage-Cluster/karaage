@@ -5,9 +5,9 @@ RETURN=0
 cd $DIR
 
 echo ""
-echo "ISORT"
+echo "BLACK"
 echo "############################"
-isort --check --diff karaage
+black --check karaage
 if [ "$?" -ne 0 ]
 then
     exit 1

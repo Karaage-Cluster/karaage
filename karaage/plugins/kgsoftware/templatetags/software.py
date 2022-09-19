@@ -30,6 +30,6 @@ register = template.Library()
 @register.simple_tag(takes_context=True)
 def get_software_license_agreement_table(context, queryset):
     table = SoftwareLicenseAgreementTable(queryset)
-    config = tables.RequestConfig(context['request'], paginate={"per_page": 5})
+    config = tables.RequestConfig(context["request"], paginate={"per_page": 5})
     config.configure(table)
     return table

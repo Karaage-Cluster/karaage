@@ -26,7 +26,6 @@ from .fixtures import SoftwareFactory
 
 @pytest.mark.django_db
 class SoftwareTestCase(TestCase):
-
     def test_change_group(self):
         """Check that when changing an software group, old accounts are
         removed from the software and new ones are added.

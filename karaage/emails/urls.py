@@ -22,5 +22,5 @@ from karaage.emails import views
 
 
 urlpatterns = [
-    re_path(r'^$', views.send_email, name='kg_emails_index'),
+    re_path(r"^$", views.send_email, name="kg_emails_index"),
 ]

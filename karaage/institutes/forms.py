@@ -27,40 +27,36 @@ from karaage.projects.models import Project
 
 
 class InstituteForm(forms.ModelForm):
-
     def __init__(self, *args, **kwargs):
         super(InstituteForm, self).__init__(*args, **kwargs)
         if self.instance.group_id is None:
-            self.fields['group_name'] = forms.RegexField(
+            self.fields["group_name"] = forms.RegexField(
                 "^%s$" % settings.GROUP_VALIDATION_RE,
                 required=True,
-                error_messages={
-                    'invalid': settings.GROUP_VALIDATION_ERROR_MSG})
+                error_messages={"invalid": settings.GROUP_VALIDATION_ERROR_MSG},
+            )
 
     def clean_saml_entityid(self):
-        if self.cleaned_data['saml_entityid'] == "":
+        if self.cleaned_data["saml_entityid"] == "":
             return None
-        return self.cleaned_data['saml_entityid']
+        return self.cleaned_data["saml_entityid"]
 
     class Meta:
         model = Institute
-        fields = (
-            'name', 'saml_entityid', 'saml_scoped_affiliation', 'is_active'
-        )
+        fields = ("name", "saml_entityid", "saml_scoped_affiliation", "is_active")
 
     def clean_name(self):
-        name = self.cleaned_data['name']
+        name = self.cleaned_data["name"]
         try:
             Project.objects.get(pid=name)
-            raise forms.ValidationError(
-                six.u('Institute name already in system'))
+            raise forms.ValidationError(six.u("Institute name already in system"))
         except Project.DoesNotExist:
             return name
 
     def save(self, commit=True):
         institute = super(InstituteForm, self).save(commit=False)
         if institute.group_id is None:
-            name = self.cleaned_data['group_name']
+            name = self.cleaned_data["group_name"]
             institute.group, _ = Group.objects.get_or_create(name=name)
         if commit:
             institute.save()
@@ -68,9 +64,8 @@ class InstituteForm(forms.ModelForm):
 
 
 class DelegateForm(forms.ModelForm):
-    person = ajax_select.fields.AutoCompleteSelectField(
-        'person', required=True)
+    person = ajax_select.fields.AutoCompleteSelectField("person", required=True)
 
     class Meta:
         model = InstituteDelegate
-        fields = ('person', 'send_email')
+        fields = ("person", "send_email")

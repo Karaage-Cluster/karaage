@@ -36,7 +36,7 @@ from django.utils.text import slugify
 from karaage.middleware.threadlocals import reset
 
 
-urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
+urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [""])
 
 
 class RegexURLPattern:  # type: ignore
@@ -55,13 +55,13 @@ def describe_pattern(p):
     return str(p.pattern)
 
 
-def extract_views_from_urlpatterns(urlpatterns, base='', namespace=None):
+def extract_views_from_urlpatterns(urlpatterns, base="", namespace=None):
     """
     Return a list of views from a list of urlpatterns.
 
     Each object in the returned list is a three-tuple: (view_func, regex, name)
     """
-    LANGUAGES = getattr(settings, 'LANGUAGES', ((None, None), ))
+    LANGUAGES = getattr(settings, "LANGUAGES", ((None, None),))
 
     views = []
     for p in urlpatterns:
@@ -70,7 +70,7 @@ def extract_views_from_urlpatterns(urlpatterns, base='', namespace=None):
                 if not p.name:
                     name = p.name
                 elif namespace:
-                    name = '{0}:{1}'.format(namespace, p.name)
+                    name = "{0}:{1}".format(namespace, p.name)
                 else:
                     name = p.name
                 pattern = describe_pattern(p)
@@ -83,9 +83,9 @@ def extract_views_from_urlpatterns(urlpatterns, base='', namespace=None):
             except ImportError:
                 continue
             if namespace and p.namespace:
-                _namespace = '{0}:{1}'.format(namespace, p.namespace)
+                _namespace = "{0}:{1}".format(namespace, p.namespace)
             else:
-                _namespace = (p.namespace or namespace)
+                _namespace = p.namespace or namespace
             pattern = describe_pattern(p)
             if isinstance(p, LocaleRegexURLResolver):
                 for language in LANGUAGES:
@@ -93,12 +93,12 @@ def extract_views_from_urlpatterns(urlpatterns, base='', namespace=None):
                         views.extend(extract_views_from_urlpatterns(patterns, base + pattern, namespace=_namespace))
             else:
                 views.extend(extract_views_from_urlpatterns(patterns, base + pattern, namespace=_namespace))
-        elif hasattr(p, '_get_callback'):
+        elif hasattr(p, "_get_callback"):
             try:
                 views.append((p._get_callback(), base + describe_pattern(p), p.name))
             except ViewDoesNotExist:
                 continue
-        elif hasattr(p, 'url_patterns') or hasattr(p, '_get_url_patterns'):
+        elif hasattr(p, "url_patterns") or hasattr(p, "_get_url_patterns"):
             try:
                 patterns = p.url_patterns
             except ImportError:
@@ -112,82 +112,79 @@ def extract_views_from_urlpatterns(urlpatterns, base='', namespace=None):
 def make_test_get_function(name, url, url_pattern):
     def test_get(self):
         self.assertEqual(
-            self.client.login(username='kgsuper', password='aq12ws'),
+            self.client.login(username="kgsuper", password="aq12ws"),
             True,
-            'Login failed.',
+            "Login failed.",
         )
         resp = self.client.get(url, follow=True)
         self.assertIn(
             resp.status_code,
             [200, 400, 403],
-            'HTTP Error {}: {} > {}'.format(
+            "HTTP Error {}: {} > {}".format(
                 resp.status_code,
                 url_pattern,
                 url,
             ),
         )
+
     test_get.__name__ = str(name)
     return test_get
 
 
 class TestAllPagesMeta(type):
-
     @classmethod
     def _add_test_methods(mcs, attrs, urlpatterns):
         # loop through every URL pattern
-        for index, (func, regex, url_name) in enumerate(
-                extract_views_from_urlpatterns(urlpatterns)):
+        for index, (func, regex, url_name) in enumerate(extract_views_from_urlpatterns(urlpatterns)):
 
-            if 'module_exclude' not in attrs:
-                attrs['module_exclude'] = None
+            if "module_exclude" not in attrs:
+                attrs["module_exclude"] = None
 
-            if attrs['module_exclude'] is not None:
-                if func.__module__.startswith("%s." % attrs['module_exclude']):
+            if attrs["module_exclude"] is not None:
+                if func.__module__.startswith("%s." % attrs["module_exclude"]):
                     continue
-                elif func.__module__ == attrs['module_exclude']:
+                elif func.__module__ == attrs["module_exclude"]:
                     continue
                 else:
                     pass
 
-            if func.__module__.startswith("%s." % attrs['module']):
+            if func.__module__.startswith("%s." % attrs["module"]):
                 pass
-            elif func.__module__ == attrs['module']:
+            elif func.__module__ == attrs["module"]:
                 pass
             else:
                 continue
 
-            if hasattr(func, '__name__'):
+            if hasattr(func, "__name__"):
                 func_name = func.__name__
-            elif hasattr(func, '__class__'):
-                func_name = '%s()' % func.__class__.__name__
+            elif hasattr(func, "__class__"):
+                func_name = "%s()" % func.__class__.__name__
             else:
-                func_name = re.sub(r' at 0x[0-9a-f]+', '', repr(func))
+                func_name = re.sub(r" at 0x[0-9a-f]+", "", repr(func))
 
             url_pattern = smart_str(simplify_regex(regex))
-            name = '_'.join(
+            name = "_".join(
                 [
-                    'test',
-                    func.__module__.replace('.', '_'),
-                    slugify('%s' % func_name),
-                ] + slugify(
-                    url_pattern.replace('/', '_') or 'root'
-                ).replace('_', ' ').split(),
+                    "test",
+                    func.__module__.replace(".", "_"),
+                    slugify("%s" % func_name),
+                ]
+                + slugify(url_pattern.replace("/", "_") or "root").replace("_", " ").split(),
             )
             url = url_pattern
 
-            for key, value in attrs['variables'].items():
-                url = url.replace('<%s>' % key, value)
+            for key, value in attrs["variables"].items():
+                url = url.replace("<%s>" % key, value)
 
             # bail out if we don't know how to visit this URL properly
             testfunc = unittest.skipIf(
                 any(
                     re.search(stop_pattern, url)
-                    for stop_pattern
-                    in [
-                        r'<.*>',
+                    for stop_pattern in [
+                        r"<.*>",
                     ]
                 ),
-                'URL pattern %r contains stop pattern.' % url,
+                "URL pattern %r contains stop pattern." % url,
             )(
                 make_test_get_function(name, url, url_pattern),
             )
@@ -202,10 +199,10 @@ class TestAllPagesMeta(type):
 
 @six.add_metaclass(TestAllPagesMeta)
 class TestAllPagesCase(TestCase):
-
     def setUp(self):
         super(TestAllPagesCase, self).setUp()
 
         def cleanup():
             reset()
+
         self.addCleanup(cleanup)

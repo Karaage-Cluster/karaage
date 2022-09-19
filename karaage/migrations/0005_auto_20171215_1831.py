@@ -8,49 +8,49 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('karaage', '0004_auto_20160429_0927'),
+        ("karaage", "0004_auto_20160429_0927"),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='institutequota',
+            name="institutequota",
             unique_together=set([]),
         ),
         migrations.RemoveField(
-            model_name='institutequota',
-            name='institute',
+            model_name="institutequota",
+            name="institute",
         ),
         migrations.RemoveField(
-            model_name='institutequota',
-            name='machine_category',
+            model_name="institutequota",
+            name="machine_category",
         ),
         migrations.AlterUniqueTogether(
-            name='projectquota',
+            name="projectquota",
             unique_together=set([]),
         ),
         migrations.RemoveField(
-            model_name='projectquota',
-            name='machine_category',
+            model_name="projectquota",
+            name="machine_category",
         ),
         migrations.RemoveField(
-            model_name='projectquota',
-            name='project',
+            model_name="projectquota",
+            name="project",
         ),
         migrations.RemoveField(
-            model_name='account',
-            name='machine_category',
+            model_name="account",
+            name="machine_category",
         ),
         migrations.RemoveField(
-            model_name='machine',
-            name='category',
+            model_name="machine",
+            name="category",
         ),
         migrations.DeleteModel(
-            name='MachineCategory',
+            name="MachineCategory",
         ),
         migrations.DeleteModel(
-            name='ProjectQuota',
+            name="ProjectQuota",
         ),
         migrations.DeleteModel(
-            name='InstituteQuota',
+            name="InstituteQuota",
         ),
     ]

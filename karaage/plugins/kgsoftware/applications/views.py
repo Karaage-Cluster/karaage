@@ -28,15 +28,14 @@ from .models import SoftwareApplication
 
 
 def get_application_state_machine():
-    """ Get the default state machine for applications. """
+    """Get the default state machine for applications."""
     config = settings.APPLICATION_SOFTWARE
     state_machine = base.StateMachine(config)
     return state_machine
 
 
 def register():
-    base.setup_application_type(
-        SoftwareApplication, get_application_state_machine())
+    base.setup_application_type(SoftwareApplication, get_application_state_machine())
 
 
 @login_required
@@ -44,7 +43,7 @@ def new_application(request, software_license):
     # Called automatically by hook.
     assert software_license is not None
 
-    if request.method != 'POST':
+    if request.method != "POST":
         return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
     application = SoftwareApplication()

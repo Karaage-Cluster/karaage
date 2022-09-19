@@ -21,13 +21,12 @@ from karaage.plugins import BasePlugin
 
 class plugin(BasePlugin):
     name = "karaage.plugins.kgapplications"
-    template_context_processors = (
-        "karaage.plugins.kgapplications.context_processor",)
+    template_context_processors = ("karaage.plugins.kgapplications.context_processor",)
 
     settings = {
-        'ALLOW_REGISTRATIONS': False,
-        'ALLOW_NEW_PROJECTS': True,
-        'APPROVE_ACCOUNTS_EMAIL': None,
+        "ALLOW_REGISTRATIONS": False,
+        "ALLOW_NEW_PROJECTS": True,
+        "APPROVE_ACCOUNTS_EMAIL": None,
     }
 
     def ready(self):
@@ -35,8 +34,9 @@ class plugin(BasePlugin):
 
 
 def context_processor(request):
-    """ Set context with common variables. """
+    """Set context with common variables."""
     from .models import Application
+
     ctx = {}
 
     if request.user.is_authenticated:
@@ -44,8 +44,6 @@ def context_processor(request):
         my_applications = Application.objects.get_for_applicant(person)
         requires_attention = Application.objects.requires_attention(request)
 
-        ctx['pending_applications'] = (
-            my_applications.count() + requires_attention.count()
-        )
+        ctx["pending_applications"] = my_applications.count() + requires_attention.count()
 
     return ctx

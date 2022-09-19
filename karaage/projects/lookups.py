@@ -27,7 +27,7 @@ from karaage.projects.models import Project
 
 
 class LookupChannel(ajax_select.LookupChannel):
-    """ Base clase for lookups. """
+    """Base clase for lookups."""
 
     def check_auth(self, request):
         """
@@ -47,14 +47,11 @@ class ProjectLookup(LookupChannel):
     model = Project
 
     def get_query(self, q, request):
-        """ return a query set searching for the query string q
-            either implement this method yourself or set the search_field
-            in the LookupChannel class definition
+        """return a query set searching for the query string q
+        either implement this method yourself or set the search_field
+        in the LookupChannel class definition
         """
-        return Project.objects.filter(
-            Q(pid__icontains=q)
-            | Q(name__icontains=q)
-        )
+        return Project.objects.filter(Q(pid__icontains=q) | Q(name__icontains=q))
 
     def get_result(self, obj):
         """

@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 def _input_csv(unicode_csv_data):
     for line in unicode_csv_data:
         assert isinstance(line, bytes)
-        line = line.decode("ascii", errors='ignore')
+        line = line.decode("ascii", errors="ignore")
         assert isinstance(line, str)
         yield line
 
@@ -44,18 +44,19 @@ def _output_csv(csv_line):
 
 
 class MamDataStoreBase(base.DataStore):
-    """ MAM datastore. """
+    """MAM datastore."""
+
     version = None
 
     def __init__(self, config):
         super(MamDataStoreBase, self).__init__(config)
-        self._prefix = config.get('PREFIX', [])
-        self._path = config.get('PATH', "/usr/local/mam/bin")
-        self._null_project = config.get('NULL_PROJECT', "default")
+        self._prefix = config.get("PREFIX", [])
+        self._path = config.get("PATH", "/usr/local/mam/bin")
+        self._null_project = config.get("NULL_PROJECT", "default")
 
     @staticmethod
     def _filter_string(value):
-        """ Filter the string so MAM doesn't have heart failure."""
+        """Filter the string so MAM doesn't have heart failure."""
         if value is None:
             value = ""
 
@@ -73,7 +74,7 @@ class MamDataStoreBase(base.DataStore):
         value = value.replace("\\", "")
 
         # Used for stripping non-ascii characters
-        value = ''.join(c for c in value if 31 < ord(c) < 127)
+        value = "".join(c for c in value if 31 < ord(c) < 127)
 
         return value
 
@@ -112,8 +113,7 @@ class MamDataStoreBase(base.DataStore):
                     path = tmp_path
                     break
         if path is None:
-            raise RuntimeError(
-                "Cannot find %s in %s" % (command[0], split_path))
+            raise RuntimeError("Cannot find %s in %s" % (command[0], split_path))
 
         cmd = []
         cmd.extend(self._prefix)
@@ -123,35 +123,32 @@ class MamDataStoreBase(base.DataStore):
         return cmd
 
     def _call(self, command, ignore_errors=None):
-        """ Call remote command with logging. """
+        """Call remote command with logging."""
         if ignore_errors is None:
             ignore_errors = []
 
         command = self._get_command(command)
         logger.debug("Cmd %s" % command)
-        null = open('/dev/null', 'w')
+        null = open("/dev/null", "w")
         retcode = subprocess.call(command, stdout=null, stderr=null)
         null.close()
 
         if retcode in ignore_errors:
-            logger.debug(
-                "<-- Cmd %s returned %d (ignored)" % (command, retcode))
+            logger.debug("<-- Cmd %s returned %d (ignored)" % (command, retcode))
             return
 
         if retcode:
-            logger.error(
-                "<-- Cmd %s returned: %d (error)" % (command, retcode))
+            logger.error("<-- Cmd %s returned: %d (error)" % (command, retcode))
             raise subprocess.CalledProcessError(retcode, command)
 
         logger.debug("<-- Returned %d (good)" % retcode)
         return
 
     def _read_output(self, command):
-        """ Read CSV delimited input from MAM. """
+        """Read CSV delimited input from MAM."""
         command = self._get_command(command)
-        null = open('/dev/null', 'w')
-        process = subprocess.Popen(
-            command, stdout=subprocess.PIPE, stderr=null)
+        null = open("/dev/null", "w")
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=null)
         null.close()
 
         results = []
@@ -197,41 +194,35 @@ class MamDataStoreBase(base.DataStore):
         results = self._read_output(cmd)
 
         for row in results:
-            if row['Name'] != "Moab Accounting Manager":
+            if row["Name"] != "Moab Accounting Manager":
                 continue
-            if row['Version'] == self.version:
+            if row["Version"] == self.version:
                 logger.info("Found MAM version %s" % self.version)
                 return True
             else:
                 return False
 
     def get_user(self, username):
-        """ Get the user details from MAM. """
+        """Get the user details from MAM."""
         cmd = ["glsuser", "-u", username, "--raw"]
         results = self._read_output(cmd)
 
         if len(results) == 0:
             return None
         elif len(results) > 1:
-            logger.error(
-                "Command returned multiple results for '%s'." % username)
-            raise RuntimeError(
-                "Command returned multiple results for '%s'." % username)
+            logger.error("Command returned multiple results for '%s'." % username)
+            raise RuntimeError("Command returned multiple results for '%s'." % username)
 
         the_result = results[0]
         the_name = the_result["Name"]
         if username.lower() != the_name.lower():
-            logger.error(
-                "We expected username '%s' but got username '%s'."
-                % (username, the_name))
-            raise RuntimeError(
-                "We expected username '%s' but got username '%s'."
-                % (username, the_name))
+            logger.error("We expected username '%s' but got username '%s'." % (username, the_name))
+            raise RuntimeError("We expected username '%s' but got username '%s'." % (username, the_name))
 
         return the_result
 
     def get_user_balance(self, username):
-        """ Get the user balance details from MAM. """
+        """Get the user balance details from MAM."""
         cmd = ["gbalance", "-u", username, "--raw"]
         results = self._read_output(cmd)
 
@@ -244,38 +235,30 @@ class MamDataStoreBase(base.DataStore):
         raise NotImplementedError()
 
     def get_project(self, projectname):
-        """ Get the project details from MAM. """
+        """Get the project details from MAM."""
         cmd = self._get_project_cmd(projectname)
         results = self._read_output(cmd)
 
         if len(results) == 0:
             return None
         elif len(results) > 1:
-            logger.error(
-                "Command returned multiple results for '%s'." % projectname)
-            raise RuntimeError(
-                "Command returned multiple results for '%s'." % projectname)
+            logger.error("Command returned multiple results for '%s'." % projectname)
+            raise RuntimeError("Command returned multiple results for '%s'." % projectname)
 
         the_result = results[0]
         the_project = the_result["Name"]
         if projectname.lower() != the_project.lower():
-            logger.error(
-                "We expected projectname '%s' "
-                "but got projectname '%s'." % (projectname, the_project))
-            raise RuntimeError(
-                "We expected projectname '%s' "
-                "but got projectname '%s'." % (projectname, the_project))
+            logger.error("We expected projectname '%s' " "but got projectname '%s'." % (projectname, the_project))
+            raise RuntimeError("We expected projectname '%s' " "but got projectname '%s'." % (projectname, the_project))
 
         return the_result
 
     def get_users_in_project(self, projectname):
-        """ Get list of users in project from MAM. """
+        """Get list of users in project from MAM."""
         ds_project = self.get_project(projectname)
         if ds_project is None:
-            logger.error(
-                "Project '%s' does not exist in MAM" % projectname)
-            raise RuntimeError(
-                "Project '%s' does not exist in MAM" % projectname)
+            logger.error("Project '%s' does not exist in MAM" % projectname)
+            raise RuntimeError("Project '%s' does not exist in MAM" % projectname)
 
         user_list = []
         if ds_project["Users"] != "":
@@ -283,7 +266,7 @@ class MamDataStoreBase(base.DataStore):
         return user_list
 
     def get_projects_in_user(self, username):
-        """ Get list of projects in user from MAM. """
+        """Get list of projects in user from MAM."""
         ds_balance = self.get_user_balance(username)
         if ds_balance is None:
             return []
@@ -300,7 +283,7 @@ class MamDataStoreBase(base.DataStore):
         raise NotImplementedError()
 
     def _save_account(self, account, username):
-        """ Called when account is created/updated. With username override. """
+        """Called when account is created/updated. With username override."""
 
         # retrieve default project, or use null project if none
         default_project_name = self._null_project
@@ -323,14 +306,8 @@ class MamDataStoreBase(base.DataStore):
                 self._set_user_default_project(username, default_project_name)
 
             # update user meta information
-            self._call([
-                "gchuser",
-                "-n", self._filter_string(account.person.get_full_name()),
-                "-u", username])
-            self._call([
-                "gchuser",
-                "-E", self._filter_string(account.person.email),
-                "-u", username])
+            self._call(["gchuser", "-n", self._filter_string(account.person.get_full_name()), "-u", username])
+            self._call(["gchuser", "-E", self._filter_string(account.person.email), "-u", username])
 
             # add rest of projects user belongs to
             mam_projects = self.get_projects_in_user(username)
@@ -347,11 +324,11 @@ class MamDataStoreBase(base.DataStore):
         return
 
     def save_account(self, account):
-        """ Called when account is created/updated. """
+        """Called when account is created/updated."""
         self._save_account(account, account.username)
 
     def _delete_account(self, account, username):
-        """ Called when account is deleted. With username override. """
+        """Called when account is deleted. With username override."""
 
         # account deleted
 
@@ -362,48 +339,48 @@ class MamDataStoreBase(base.DataStore):
         return
 
     def delete_account(self, account):
-        """ Called when account is deleted. """
+        """Called when account is deleted."""
         self._delete_account(account, account.username)
 
     def set_account_password(self, account, raw_password):
-        """ Account's password was changed. """
+        """Account's password was changed."""
         pass
 
     def set_account_username(self, account, old_username, new_username):
-        """ Account's username was changed. """
+        """Account's username was changed."""
         self._delete_account(account, old_username)
         self._save_account(account, new_username)
 
     def add_account_to_project(self, account, project):
-        """ Add account to project. """
+        """Add account to project."""
         raise NotImplementedError()
 
     def remove_account_from_project(self, account, project):
-        """ Remove account from project. """
+        """Remove account from project."""
         raise NotImplementedError()
 
     def account_exists(self, username):
-        """ Does the account exist? """
+        """Does the account exist?"""
         ds_user = self.get_user(username)
         return ds_user is not None
 
     def get_account_details(self, account):
-        """ Get the account details """
+        """Get the account details"""
         result = self.get_user(account.username)
         if result is None:
             result = {}
         return result
 
     def save_group(self, group):
-        """ Group was saved. """
+        """Group was saved."""
         pass
 
     def delete_group(self, group):
-        """ Group was deleted. """
+        """Group was deleted."""
         pass
 
     def set_group_name(self, group, old_name, new_name):
-        """ Group was renamed. """
+        """Group was renamed."""
         pass
 
     def _create_project(self, pid):
@@ -416,7 +393,7 @@ class MamDataStoreBase(base.DataStore):
         raise NotImplementedError()
 
     def save_project(self, project):
-        """ Called when project is saved/updated. """
+        """Called when project is saved/updated."""
         pid = project.pid
 
         # project created
@@ -442,7 +419,7 @@ class MamDataStoreBase(base.DataStore):
         return
 
     def delete_project(self, project):
-        """ Called when project is deleted. """
+        """Called when project is deleted."""
         pid = project.pid
 
         # project deleted
@@ -454,19 +431,19 @@ class MamDataStoreBase(base.DataStore):
         return
 
     def get_project_details(self, project):
-        """ Get the project details. """
+        """Get the project details."""
         result = self.get_project(project.pid)
         if result is None:
             result = {}
         return result
 
     def set_project_pid(self, project, old_pid, new_pid):
-        """ Project's pid was changed. """
+        """Project's pid was changed."""
         # FIXME
         return
 
     def save_institute(self, institute):
-        """ Called when institute is created/updated. """
+        """Called when institute is created/updated."""
         name = institute.name
         logger.debug("save_institute '%s'" % name)
 
@@ -477,9 +454,7 @@ class MamDataStoreBase(base.DataStore):
             # date_deleted is not set, user should exist
             logger.debug("institute is active")
 
-            self._call(
-                ["goldsh", "Organization", "Create", "Name=%s" % name],
-                ignore_errors=[185])
+            self._call(["goldsh", "Organization", "Create", "Name=%s" % name], ignore_errors=[185])
         else:
             # date_deleted is not set, user should not exist
             logger.debug("institute is not active")
@@ -490,7 +465,7 @@ class MamDataStoreBase(base.DataStore):
         return
 
     def delete_institute(self, institute):
-        """ Called when institute is deleted. """
+        """Called when institute is deleted."""
         name = institute.name
         logger.debug("institute_deleted '%s'" % name)
 
@@ -509,49 +484,29 @@ class MamDataStore71(MamDataStoreBase):
         return cmd
 
     def _create_user(self, username, default_project_name):
-        self._call([
-            "gmkuser", "-A",
-            "-p", default_project_name,
-            "-u", username])
+        self._call(["gmkuser", "-A", "-p", default_project_name, "-u", username])
 
     def _set_user_default_project(self, username, default_project_name):
-        self._call([
-            "gchuser",
-            "-p", default_project_name,
-            "-u", username])
+        self._call(["gchuser", "-p", default_project_name, "-u", username])
 
     def add_account_to_project(self, account, project):
-        """ Add account to project. """
+        """Add account to project."""
         username = account.username
         projectname = project.pid
-        self._call([
-            "gchproject",
-            "--add-user", username,
-            "-p", projectname],
-            ignore_errors=[74])
+        self._call(["gchproject", "--add-user", username, "-p", projectname], ignore_errors=[74])
 
     def remove_account_from_project(self, account, project):
-        """ Remove account from project. """
+        """Remove account from project."""
         username = account.username
         projectname = project.pid
-        self._call([
-            "gchproject",
-            "--del-users", username,
-            "-p", projectname])
+        self._call(["gchproject", "--del-users", username, "-p", projectname])
 
     def _create_project(self, pid):
         self._call(["gmkproject", "-p", pid, "-u", "MEMBERS"])
 
     def _set_project(self, pid, description, institute):
-        self._call([
-            "gchproject",
-            "-d", self._filter_string(description),
-            "-p", pid])
-        self._call([
-            "gchproject",
-            "-X", "Organization=%s"
-            % self._filter_string(institute.name),
-            "-p", pid])
+        self._call(["gchproject", "-d", self._filter_string(description), "-p", pid])
+        self._call(["gchproject", "-X", "Organization=%s" % self._filter_string(institute.name), "-p", pid])
 
     def _delete_project(self, pid):
         self._call(["grmproject", "-p", pid])
@@ -565,49 +520,29 @@ class MamDataStore72(MamDataStoreBase):
         return cmd
 
     def _create_user(self, username, default_project_name):
-        self._call([
-            "gmkuser", "-A",
-            "-a", default_project_name,
-            "-u", username])
+        self._call(["gmkuser", "-A", "-a", default_project_name, "-u", username])
 
     def _set_user_default_project(self, username, default_project_name):
-        self._call([
-            "gchuser",
-            "-a", default_project_name,
-            "-u", username])
+        self._call(["gchuser", "-a", default_project_name, "-u", username])
 
     def add_account_to_project(self, account, project):
-        """ Add account to project. """
+        """Add account to project."""
         username = account.username
         projectname = project.pid
-        self._call([
-            "gchaccount",
-            "--add-user", username,
-            "-a", projectname],
-            ignore_errors=[74])
+        self._call(["gchaccount", "--add-user", username, "-a", projectname], ignore_errors=[74])
 
     def remove_account_from_project(self, account, project):
-        """ Remove account from project. """
+        """Remove account from project."""
         username = account.username
         projectname = project.pid
-        self._call([
-            "gchaccount",
-            "--del-users", username,
-            "-a", projectname])
+        self._call(["gchaccount", "--del-users", username, "-a", projectname])
 
     def _create_project(self, pid):
         self._call(["gmkaccount", "-a", pid, "-u", "MEMBERS"])
 
     def _set_project(self, pid, description, institute):
-        self._call([
-            "gchaccount",
-            "-d", self._filter_string(description),
-            "-a", pid])
-        self._call([
-            "gchaccount",
-            "-X", "Organization=%s"
-            % self._filter_string(institute.name),
-            "-a", pid])
+        self._call(["gchaccount", "-d", self._filter_string(description), "-a", pid])
+        self._call(["gchaccount", "-X", "Organization=%s" % self._filter_string(institute.name), "-a", pid])
 
     def _delete_project(self, pid):
         self._call(["grmaccount", "-a", pid])

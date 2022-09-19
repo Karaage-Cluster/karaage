@@ -27,7 +27,7 @@ class Command(BaseCommand):
     help = "Change a person's password for Karaage."
 
     def add_arguments(self, parser):
-        parser.add_argument('username', nargs='?', type=str)
+        parser.add_argument("username", nargs="?", type=str)
 
     def _get_pass(self, prompt="Password: "):
         p = getpass.getpass(prompt=prompt)
@@ -37,11 +37,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if len(args) > 1:
-            raise CommandError(
-                "need exactly one or zero arguments for username")
+            raise CommandError("need exactly one or zero arguments for username")
 
-        if options['username'] is not None:
-            username = options['username']
+        if options["username"] is not None:
+            username = options["username"]
         else:
             username = getpass.getuser()
 
@@ -59,14 +58,11 @@ class Command(BaseCommand):
             p1 = self._get_pass()
             p2 = self._get_pass("Password (again): ")
             if p1 != p2:
-                self.stdout.write(
-                    "Passwords do not match. Please try again.\n")
+                self.stdout.write("Passwords do not match. Please try again.\n")
                 count = count + 1
 
         if count == max_tries:
-            raise CommandError(
-                "Aborting password change for user '%s' after %s attempts"
-                % (username, count))
+            raise CommandError("Aborting password change for user '%s' after %s attempts" % (username, count))
 
         person.set_password(p1)
         person.save()

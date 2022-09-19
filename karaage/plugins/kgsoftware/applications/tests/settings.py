@@ -24,8 +24,8 @@ from karaage.tests.defaults import *  # NOQA
 
 
 PLUGINS = [
-    'karaage.plugins.kgsoftware.plugin',
-    'karaage.plugins.kgsoftware.applications.plugin',
+    "karaage.plugins.kgsoftware.plugin",
+    "karaage.plugins.kgsoftware.applications.plugin",
 ]
 DEBUG = False
 ALLOWED_HOSTS = ["localhost"]

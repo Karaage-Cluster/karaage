@@ -26,7 +26,7 @@ from karaage.machines.models import Account
 from karaage.people.models import Person
 
 
-username_re = re.compile(r'^%s$' % settings.USERNAME_VALIDATION_RE)
+username_re = re.compile(r"^%s$" % settings.USERNAME_VALIDATION_RE)
 
 
 class UsernameException(Exception):
@@ -42,7 +42,7 @@ class UsernameTaken(UsernameException):
 
 
 def validate_username(username):
-    """ Validate the new username. If the username is invalid, raises
+    """Validate the new username. If the username is invalid, raises
     :py:exc:`UsernameInvalid`.
 
     :param username: Username to validate.
@@ -51,9 +51,9 @@ def validate_username(username):
     # Check username looks ok
 
     if not username.islower():
-        raise UsernameInvalid(six.u('Username must be all lowercase'))
+        raise UsernameInvalid(six.u("Username must be all lowercase"))
     if len(username) < 2:
-        raise UsernameInvalid(six.u('Username must be at least 2 characters'))
+        raise UsernameInvalid(six.u("Username must be at least 2 characters"))
     if not username_re.search(username):
         raise UsernameInvalid(settings.USERNAME_VALIDATION_ERROR_MSG)
 
@@ -61,7 +61,7 @@ def validate_username(username):
 
 
 def validate_username_for_new_person(username):
-    """ Validate the new username for a new person. If the username is invalid
+    """Validate the new username for a new person. If the username is invalid
     or in use, raises :py:exc:`UsernameInvalid` or :py:exc:`UsernameTaken`.
 
     :param username: Username to validate.
@@ -75,31 +75,36 @@ def validate_username_for_new_person(username):
 
     count = Person.objects.filter(username__exact=username).count()
     if count >= 1:
-        raise UsernameTaken(six.u(
-            'The username is already taken. Please choose another. '
-            'If this was the name of your old account please email %s')
-            % settings.ACCOUNTS_EMAIL)
+        raise UsernameTaken(
+            six.u(
+                "The username is already taken. Please choose another. "
+                "If this was the name of your old account please email %s"
+            )
+            % settings.ACCOUNTS_EMAIL
+        )
 
     # Check for existing accounts
 
     count = Account.objects.filter(username__exact=username).count()
     if count >= 1:
-        raise UsernameTaken(six.u(
-            'The username is already taken. Please choose another. '
-            'If this was the name of your old account please email %s')
-            % settings.ACCOUNTS_EMAIL)
+        raise UsernameTaken(
+            six.u(
+                "The username is already taken. Please choose another. "
+                "If this was the name of your old account please email %s"
+            )
+            % settings.ACCOUNTS_EMAIL
+        )
 
     # Check account datastore, in case username created outside Karaage.
 
     if account_exists(username):
-        raise UsernameTaken(
-            six.u('Username is already in external account datastore.'))
+        raise UsernameTaken(six.u("Username is already in external account datastore."))
 
     return username
 
 
 def validate_username_for_new_account(person, username):
-    """ Validate the new username for a new account. If the username is invalid
+    """Validate the new username for a new account. If the username is invalid
     or in use, raises :py:exc:`UsernameInvalid` or :py:exc:`UsernameTaken`.
 
     :param person: Owner of new account.
@@ -118,20 +123,26 @@ def validate_username_for_new_account(person, username):
     query = Person.objects.filter(username__exact=username)
     count = query.exclude(pk=person.pk).count()
     if count >= 1:
-        raise UsernameTaken(six.u(
-            'The username is already taken. Please choose another. '
-            'If this was the name of your old account please email %s')
-            % settings.ACCOUNTS_EMAIL)
+        raise UsernameTaken(
+            six.u(
+                "The username is already taken. Please choose another. "
+                "If this was the name of your old account please email %s"
+            )
+            % settings.ACCOUNTS_EMAIL
+        )
 
     # Check for existing accounts not belonging to this person
 
     query = Account.objects.filter(username__exact=username)
     count = query.exclude(person__pk=person.pk).count()
     if count >= 1:
-        raise UsernameTaken(six.u(
-            'The username is already taken. Please choose another. '
-            'If this was the name of your old account please email %s')
-            % settings.ACCOUNTS_EMAIL)
+        raise UsernameTaken(
+            six.u(
+                "The username is already taken. Please choose another. "
+                "If this was the name of your old account please email %s"
+            )
+            % settings.ACCOUNTS_EMAIL
+        )
 
     # Check datastore, in case username created outside Karaage.
     # Make sure we don't count the entry for person.
@@ -139,37 +150,30 @@ def validate_username_for_new_account(person, username):
     query = Person.objects.filter(username__exact=username)
     count = query.filter(pk=person.pk).count()
     if count == 0 and account_exists(username):
-        raise UsernameTaken(
-            six.u('Username is already in external personal datastore.'))
+        raise UsernameTaken(six.u("Username is already in external personal datastore."))
 
 
 def check_username_for_new_account(person, username):
-    """ Check the new username for a new account. If the username  is
+    """Check the new username for a new account. If the username  is
     in use, raises :py:exc:`UsernameTaken`.
 
     :param person: Owner of new account.
     :param username: Username to validate.
     """
 
-    query = Account.objects.filter(
-        username__exact=username,
-        date_deleted__isnull=True)
+    query = Account.objects.filter(username__exact=username, date_deleted__isnull=True)
 
     if query.count() > 0:
-        raise UsernameTaken(
-            six.u('Username already in use.')
-        )
+        raise UsernameTaken(six.u("Username already in use."))
 
     if account_exists(username):
-        raise UsernameTaken(
-            six.u('Username is already in datastore.')
-        )
+        raise UsernameTaken(six.u("Username is already in datastore."))
 
     return username
 
 
 def validate_username_for_rename_person(username, person):
-    """ Validate the new username to rename a person. If the username is
+    """Validate the new username to rename a person. If the username is
     invalid or in use, raises :py:exc:`UsernameInvalid` or
     :py:exc:`UsernameTaken`.
 
@@ -183,27 +187,19 @@ def validate_username_for_rename_person(username, person):
 
     # Check for existing people
 
-    count = Person.objects.filter(username__exact=username) \
-        .exclude(pk=person.pk).count()
+    count = Person.objects.filter(username__exact=username).exclude(pk=person.pk).count()
     if count >= 1:
-        raise UsernameTaken(
-            six.u('The username is already taken by an existing person.'))
+        raise UsernameTaken(six.u("The username is already taken by an existing person."))
 
     # Check for existing accounts not owned by person.
     # If there is a conflicting account owned by person it doesn't matter.
 
-    count = Account.objects.filter(username__exact=username) \
-        .exclude(person=person).count()
+    count = Account.objects.filter(username__exact=username).exclude(person=person).count()
     if count >= 1:
-        raise UsernameTaken(
-            six.u('The username is already taken by an existing account.'))
+        raise UsernameTaken(six.u("The username is already taken by an existing account."))
 
     # Check datastore, in case username created outside Karaage.
 
-    count = Account.objects.filter(
-        username__exact=username,
-        person=person,
-        date_deleted__isnull=True).count()
+    count = Account.objects.filter(username__exact=username, person=person, date_deleted__isnull=True).count()
     if count == 0 and account_exists(username):
-        raise UsernameTaken(
-            six.u('Username is already in external account datastore.'))
+        raise UsernameTaken(six.u("Username is already in external account datastore."))

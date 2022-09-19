@@ -25,11 +25,10 @@ import pwd
 
 
 class FileHandler(logging.FileHandler):
-
     def __init__(self, filename, owner=None, **kwargs):
         if owner:
             if not os.path.exists(filename):
-                open(filename, 'a').close()
+                open(filename, "a").close()
             uid = pwd.getpwnam(owner[0]).pw_uid
             gid = grp.getgrnam(owner[1]).gr_gid
             try:

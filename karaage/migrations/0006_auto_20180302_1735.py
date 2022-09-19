@@ -10,48 +10,78 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('karaage', '0005_auto_20171215_1831'),
+        ("karaage", "0005_auto_20171215_1831"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='account',
-            name='default_project',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='karaage.Project'),
+            model_name="account",
+            name="default_project",
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to="karaage.Project"
+            ),
         ),
         migrations.AlterField(
-            model_name='institute',
-            name='group',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='karaage.Group'),
+            model_name="institute",
+            name="group",
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to="karaage.Group"),
         ),
         migrations.AlterField(
-            model_name='logentry',
-            name='user',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
+            model_name="logentry",
+            name="user",
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AlterField(
-            model_name='person',
-            name='approved_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='user_approver', to=settings.AUTH_USER_MODEL),
+            model_name="person",
+            name="approved_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="user_approver",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='person',
-            name='deleted_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='user_deletor', to=settings.AUTH_USER_MODEL),
+            model_name="person",
+            name="deleted_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="user_deletor",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='project',
-            name='approved_by',
-            field=models.ForeignKey(blank=True, editable=False, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='project_approver', to=settings.AUTH_USER_MODEL),
+            model_name="project",
+            name="approved_by",
+            field=models.ForeignKey(
+                blank=True,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="project_approver",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='project',
-            name='deleted_by',
-            field=models.ForeignKey(blank=True, editable=False, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='project_deletor', to=settings.AUTH_USER_MODEL),
+            model_name="project",
+            name="deleted_by",
+            field=models.ForeignKey(
+                blank=True,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="project_deletor",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='project',
-            name='group',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='karaage.Group'),
+            model_name="project",
+            name="group",
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to="karaage.Group"),
         ),
     ]

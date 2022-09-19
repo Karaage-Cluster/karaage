@@ -43,10 +43,7 @@ from karaage.projects.utils import add_user_to_project
 def profile_accounts(request):
     person = request.user
     accounts = person.account_set.filter(date_deleted__isnull=True)
-    return render(
-        template_name='karaage/machines/profile_accounts.html',
-        context=locals(),
-        request=request)
+    return render(template_name="karaage/machines/profile_accounts.html", context=locals(), request=request)
 
 
 @admin_required
@@ -54,20 +51,19 @@ def add_account(request, username=None):
     person = get_object_or_404(Person, username=username)
     account = None
 
-    form = AdminAccountForm(
-        data=request.POST or None,
-        instance=account, person=person, initial={'username': username})
+    form = AdminAccountForm(data=request.POST or None, instance=account, person=person, initial={"username": username})
 
-    if request.method == 'POST':
+    if request.method == "POST":
         if form.is_valid():
             account = form.save()
             person = account.person
             return HttpResponseRedirect(person.get_absolute_url())
 
     return render(
-        template_name='karaage/machines/account_form.html',
-        context={'form': form, 'person': person, 'account': account},
-        request=request)
+        template_name="karaage/machines/account_form.html",
+        context={"form": form, "person": person, "account": account},
+        request=request,
+    )
 
 
 @login_required
@@ -76,14 +72,14 @@ def account_detail(request, account_id):
 
     if not account.can_view(request):
         return HttpResponseForbidden(
-            '<h1>Access Denied</h1>'
-            '<p>You do not have permission to view details '
-            'about this account.</p>')
+            "<h1>Access Denied</h1>" "<p>You do not have permission to view details " "about this account.</p>"
+        )
 
     return render(
-        template_name='karaage/machines/account_detail.html',
-        context={'account': account, 'can_edit': account.can_edit(request)},
-        request=request)
+        template_name="karaage/machines/account_detail.html",
+        context={"account": account, "can_edit": account.can_edit(request)},
+        request=request,
+    )
 
 
 @login_required
@@ -92,32 +88,31 @@ def edit_account(request, account_id):
 
     if not account.can_edit(request):
         return HttpResponseForbidden(
-            '<h1>Access Denied</h1>'
-            '<p>You do not have permission to edit details '
-            'of this account.</p>')
+            "<h1>Access Denied</h1>" "<p>You do not have permission to edit details " "of this account.</p>"
+        )
 
     if common.is_admin(request):
         person = account.person
         username = account.username
         form = AdminAccountForm(
-            data=request.POST or None,
-            instance=account, person=person, initial={'username': username})
+            data=request.POST or None, instance=account, person=person, initial={"username": username}
+        )
     else:
         person = request.user
         assert account.person == person
-        form = UserAccountForm(
-            data=request.POST or None, instance=account)
+        form = UserAccountForm(data=request.POST or None, instance=account)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         if form.is_valid():
             account = form.save()
             person = account.person
             return HttpResponseRedirect(person.get_absolute_url())
 
     return render(
-        template_name='karaage/machines/account_form.html',
-        context={'form': form, 'person': person, 'account': account},
-        request=request)
+        template_name="karaage/machines/account_form.html",
+        context={"form": form, "person": person, "account": account},
+        request=request,
+    )
 
 
 @admin_required
@@ -126,20 +121,15 @@ def add_project(request, username):
 
     # Add to project form
     form = AddProjectForm(request.POST or None)
-    if request.method == 'POST':
+    if request.method == "POST":
         # Post means adding this user to a project
         if form.is_valid():
-            project = form.cleaned_data['project']
+            project = form.cleaned_data["project"]
             add_user_to_project(person, project)
-            messages.success(
-                request,
-                "User '%s' was added to %s succesfully" % (person, project))
+            messages.success(request, "User '%s' was added to %s succesfully" % (person, project))
             return HttpResponseRedirect(person.get_absolute_url())
 
-    return render(
-        template_name='karaage/machines/person_add_project.html',
-        context=locals(),
-        request=request)
+    return render(template_name="karaage/machines/person_add_project.html", context=locals(), request=request)
 
 
 @admin_required
@@ -147,33 +137,26 @@ def delete_account(request, account_id):
 
     account = get_object_or_404(Account, pk=account_id)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         account.deactivate()
-        messages.success(
-            request,
-            "User account for '%s' deleted succesfully" % account.person)
+        messages.success(request, "User account for '%s' deleted succesfully" % account.person)
         return HttpResponseRedirect(account.get_absolute_url())
 
-    return render(
-        template_name='karaage/machines/account_confirm_delete.html',
-        context=locals(),
-        request=request)
+    return render(template_name="karaage/machines/account_confirm_delete.html", context=locals(), request=request)
 
 
 @admin_required
 def no_project_list(request):
-    persons = Person.active.filter(
-        groups__project__isnull=True, account__isnull=False)
-    return user_list(request, persons, 'No projects')
+    persons = Person.active.filter(groups__project__isnull=True, account__isnull=False)
+    return user_list(request, persons, "No projects")
 
 
 @admin_required
 def no_default_list(request):
     persons = Person.objects.filter(
-        account__isnull=False,
-        account__default_project__isnull=True,
-        account__date_deleted__isnull=True)
-    return user_list(request, persons, 'No default projects')
+        account__isnull=False, account__default_project__isnull=True, account__date_deleted__isnull=True
+    )
+    return user_list(request, persons, "No default projects")
 
 
 @admin_required
@@ -185,7 +168,7 @@ def no_account_list(request):
             person_id_list.append(u.id)
 
     persons = Person.objects.filter(id__in=person_id_list)
-    return user_list(request, persons, 'No accounts')
+    return user_list(request, persons, "No accounts")
 
 
 @admin_required
@@ -202,28 +185,25 @@ def wrong_default_list(request):
                     wrong.append(u.id)
 
     persons = Person.objects.filter(id__in=wrong)
-    return user_list(request, persons, 'Wrong default projects')
+    return user_list(request, persons, "Wrong default projects")
 
 
 @login_required
 def make_default(request, account_id, project_id):
     account = get_object_or_404(Account, pk=account_id)
-    redirect = reverse('kg_account_detail', args=[account.pk])
+    redirect = reverse("kg_account_detail", args=[account.pk])
 
     if not account.can_edit(request):
         return HttpResponseForbidden(
-            '<h1>Access Denied</h1>'
-            '<p>You do not have permission to edit details '
-            'of this account.</p>')
+            "<h1>Access Denied</h1>" "<p>You do not have permission to edit details " "of this account.</p>"
+        )
 
     try:
         project = account.person.projects.get(pid=project_id)
     except Project.DoesNotExist:
-        return HttpResponseForbidden(
-            '<h1>Access Denied</h1>'
-            '<p>Person owning account is not in this project.</p>')
+        return HttpResponseForbidden("<h1>Access Denied</h1>" "<p>Person owning account is not in this project.</p>")
 
-    if request.method != 'POST':
+    if request.method != "POST":
         return HttpResponseBadRequest("<h1>Bad Request</h1>")
 
     account.default_project = project

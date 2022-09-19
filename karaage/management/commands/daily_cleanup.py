@@ -26,5 +26,5 @@ class Command(BaseCommand):
     help = "Karaage Daily cleanup"
 
     def handle(self, **options):
-        management.call_command('lock_expired')
+        management.call_command("lock_expired")
         daily_cleanup.send(sender=self.__class__)

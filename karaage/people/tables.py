@@ -28,13 +28,12 @@ from .models import Group, Person
 
 
 class ActiveFilter(django_filters.ChoiceFilter):
-
     def __init__(self, *args, **kwargs):
         choices = [
-            ('', 'Unknown'),
-            ('deleted', 'Deleted'),
-            ('locked', 'Locked'),
-            ('yes', 'Yes'),
+            ("", "Unknown"),
+            ("deleted", "Deleted"),
+            ("locked", "Locked"),
+            ("yes", "Yes"),
         ]
 
         super(ActiveFilter, self).__init__(*args, choices=choices, **kwargs)
@@ -51,14 +50,12 @@ class ActiveFilter(django_filters.ChoiceFilter):
 
 
 class PeopleColumn(tables.Column):
-
     def render_link(self, uri, value, attrs=None):
-        attrs = AttributeDict(attrs if attrs is not None else
-                              self.attrs.get('a', {}))
-        attrs['href'] = uri
+        attrs = AttributeDict(attrs if attrs is not None else self.attrs.get("a", {}))
+        attrs["href"] = uri
 
         return format_html(
-            '<a {attrs}>{text}</a>',
+            "<a {attrs}>{text}</a>",
             attrs=attrs.as_html(),
             text=value,
         )
@@ -77,30 +74,28 @@ class PersonFilter(django_filters.FilterSet):
     username = django_filters.CharFilter(lookup_expr="icontains")
     full_name = django_filters.CharFilter(lookup_expr="icontains")
     email = django_filters.CharFilter(lookup_expr="icontains")
-    no_last_usage = django_filters.BooleanFilter(
-        field_name="last_usage", lookup_expr="isnull")
-    begin_last_usage = django_filters.DateFilter(
-        field_name="last_usage", lookup_expr="gte")
-    end_last_usage = django_filters.DateFilter(
-        field_name="last_usage", lookup_expr="lte")
-    begin_date_approved = django_filters.DateFilter(
-        field_name="date_approved", lookup_expr="gte")
-    end_date_approved = django_filters.DateFilter(
-        field_name="date_approved", lookup_expr="lte")
+    no_last_usage = django_filters.BooleanFilter(field_name="last_usage", lookup_expr="isnull")
+    begin_last_usage = django_filters.DateFilter(field_name="last_usage", lookup_expr="gte")
+    end_last_usage = django_filters.DateFilter(field_name="last_usage", lookup_expr="lte")
+    begin_date_approved = django_filters.DateFilter(field_name="date_approved", lookup_expr="gte")
+    end_date_approved = django_filters.DateFilter(field_name="date_approved", lookup_expr="lte")
 
     class Meta:
         model = Person
-        fields = ("active", "username", "full_name", "email", "institute",
-                  "is_admin", )
+        fields = (
+            "active",
+            "username",
+            "full_name",
+            "email",
+            "institute",
+            "is_admin",
+        )
 
 
 class PersonTable(tables.Table):
-    active = tables.Column(
-        empty_values=(), order_by=('date_deleted', '-login_enabled'))
-    username = tables.LinkColumn(
-        'kg_person_detail', args=[A('username')])
-    institute = tables.LinkColumn(
-        'kg_institute_detail', args=[A('institute__pk')])
+    active = tables.Column(empty_values=(), order_by=("date_deleted", "-login_enabled"))
+    username = tables.LinkColumn("kg_person_detail", args=[A("username")])
+    institute = tables.LinkColumn("kg_institute_detail", args=[A("institute__pk")])
 
     def render_active(self, record):
         if record.date_deleted is not None:
@@ -113,23 +108,23 @@ class PersonTable(tables.Table):
 
     class Meta:
         model = Person
-        fields = ("active", "username", "full_name", "institute",
-                  "is_admin", "last_usage", "date_approved")
+        fields = ("active", "username", "full_name", "institute", "is_admin", "last_usage", "date_approved")
         empty_text = "No items"
 
 
 class LeaderTable(tables.Table):
-    leader = tables.LinkColumn(
-        'kg_person_detail', args=[A('leader__username')])
+    leader = tables.LinkColumn("kg_person_detail", args=[A("leader__username")])
     institute = tables.LinkColumn(
-        'kg_institute_detail',
-        args=[A('leader__institute__pk')],
-        accessor="leader__institute")
-    project = tables.LinkColumn(
-        'kg_project_detail', args=[A('project__pk')])
+        "kg_institute_detail", args=[A("leader__institute__pk")], accessor="leader__institute"
+    )
+    project = tables.LinkColumn("kg_project_detail", args=[A("project__pk")])
 
     class Meta:
-        fields = ("leader", "institute", "project", )
+        fields = (
+            "leader",
+            "institute",
+            "project",
+        )
         empty_text = "No items"
 
 
@@ -143,8 +138,7 @@ class GroupFilter(django_filters.FilterSet):
 
 
 class GroupTable(tables.Table):
-    name = tables.LinkColumn(
-        'kg_group_detail', args=[A('name')])
+    name = tables.LinkColumn("kg_group_detail", args=[A("name")])
     members = PeopleColumn(orderable=False)
 
     class Meta:

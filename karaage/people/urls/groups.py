@@ -23,8 +23,7 @@ from karaage.people.views import groups
 
 
 urlpatterns = [
-    re_path(r'^$', groups.group_list, name='kg_group_list'),
-    re_path(r'^add/$', groups.add_group, name='kg_group_add'),
-    re_path(r'^detail/(?P<group_name>%s)/' % settings.GROUP_VALIDATION_RE,
-            include('karaage.people.urls.group_detail')),
+    re_path(r"^$", groups.group_list, name="kg_group_list"),
+    re_path(r"^add/$", groups.add_group, name="kg_group_add"),
+    re_path(r"^detail/(?P<group_name>%s)/" % settings.GROUP_VALIDATION_RE, include("karaage.people.urls.group_detail")),
 ]

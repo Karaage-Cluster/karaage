@@ -12,7 +12,7 @@ def fix_applications(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kgsoftware', '0001_initial'),
+        ("kgsoftware", "0001_initial"),
     ]
 
     operations = [

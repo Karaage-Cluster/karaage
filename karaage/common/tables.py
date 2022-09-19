@@ -25,24 +25,17 @@ from .models import LogEntry
 
 
 class LogEntryFilter(django_filters.FilterSet):
-    begin_action_time = django_filters.DateFilter(
-        field_name="action_time", lookup_expr="gte")
-    end_action_time = django_filters.DateFilter(
-        field_name="action_time", lookup_expr="lte")
+    begin_action_time = django_filters.DateFilter(field_name="action_time", lookup_expr="gte")
+    end_action_time = django_filters.DateFilter(field_name="action_time", lookup_expr="lte")
 
     class Meta:
         model = LogEntry
-        fields = ("begin_action_time", "end_action_time",
-                  "content_type", "object_id")
+        fields = ("begin_action_time", "end_action_time", "content_type", "object_id")
 
 
 class LogEntryTable(tables.Table):
-    user = tables.LinkColumn('kg_person_detail', args=[A('user__username')])
-    content_object = tables.Column(
-        linkify=True,
-        verbose_name="Object",
-        order_by=['content_type', 'object_id']
-    )
+    user = tables.LinkColumn("kg_person_detail", args=[A("user__username")])
+    content_object = tables.Column(linkify=True, verbose_name="Object", order_by=["content_type", "object_id"])
 
     def render_action_flag(self, record):
         if record.is_addition():
@@ -54,11 +47,10 @@ class LogEntryTable(tables.Table):
         elif record.is_comment():
             html = '<span class="commentlink">Comment</span>'
         else:
-            html = '-'
+            html = "-"
         return mark_safe(html)
 
     class Meta:
         model = LogEntry
-        fields = ('action_time', 'user', 'obj', 'action_flag',
-                  'change_message')
+        fields = ("action_time", "user", "obj", "action_flag", "change_message")
         empty_text = "No items"

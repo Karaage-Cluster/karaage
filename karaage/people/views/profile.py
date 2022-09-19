@@ -39,69 +39,69 @@ from karaage.people.forms import PasswordChangeForm, PersonForm
 from karaage.people.models import Person
 
 
-@sensitive_post_parameters('password')
+@sensitive_post_parameters("password")
 def login(request, username=None):
-    error = ''
-    redirect_to = reverse('index')
-    if 'next' in request.GET:
-        redirect_to = request.GET['next']
+    error = ""
+    redirect_to = reverse("index")
+    if "next" in request.GET:
+        redirect_to = request.GET["next"]
 
     if request.POST:
 
         form = LoginForm(request.POST)
         if form.is_valid():
 
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            person = Person.objects.authenticate(
-                username=username, password=password)
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            person = Person.objects.authenticate(username=username, password=password)
             if person is not None:
                 if person.is_active and not person.is_locked():
                     auth_login(request, person)
                     return HttpResponseRedirect(redirect_to)
                 else:
-                    error = 'User account is inactive or locked'
+                    error = "User account is inactive or locked"
             else:
-                error = 'Username or password was incorrect'
+                error = "Username or password was incorrect"
     else:
-        form = LoginForm(initial={'username': username})
+        form = LoginForm(initial={"username": username})
 
-    querystring = request.META.get('QUERY_STRING', '')
+    querystring = request.META.get("QUERY_STRING", "")
 
     return render(
-        template_name='karaage/people/profile_login.html',
+        template_name="karaage/people/profile_login.html",
         context={
-            'form': form,
-            'next': redirect_to,
-            'error': error,
-            'querystring': querystring,
-        }, request=request)
+            "form": form,
+            "next": redirect_to,
+            "error": error,
+            "querystring": querystring,
+        },
+        request=request,
+    )
 
 
 def aaf_rapid_connect_login(request):
-    redirect_to = reverse('index')
-    if 'next' in request.GET:
-        redirect_to = request.GET['next']
+    redirect_to = reverse("index")
+    if "next" in request.GET:
+        redirect_to = request.GET["next"]
     error = None
 
     form = aaf_rapid_connect.AafInstituteForm(request.POST or None)
-    if request.method == 'POST':
+    if request.method == "POST":
         if form.is_valid():
-            institute = form.cleaned_data['institute']
-            url = aaf_rapid_connect.build_login_url(
-                request, institute.saml_entityid
-            )
+            institute = form.cleaned_data["institute"]
+            url = aaf_rapid_connect.build_login_url(request, institute.saml_entityid)
             response = HttpResponseRedirect(url)
-            response.set_cookie('arc_url', redirect_to)
-            response.set_cookie('arc_required', True)
+            response.set_cookie("arc_url", redirect_to)
+            response.set_cookie("arc_required", True)
             return response
 
-    querystring = request.META.get('QUERY_STRING', '')
+    querystring = request.META.get("QUERY_STRING", "")
 
     return render(
-        template_name='karaage/people/profile_login_aaf_rapid_connect.html',
-        context={'form': form, 'error': error, 'querystring': querystring},
-        request=request)
+        template_name="karaage/people/profile_login_aaf_rapid_connect.html",
+        context={"form": form, "error": error, "querystring": querystring},
+        request=request,
+    )
 
 
 @login_required
@@ -113,31 +113,26 @@ def profile_personal(request):
     user_applications = []
     start, end = common.get_date_range(request)
 
-    return render(
-        template_name='karaage/people/profile_personal.html',
-        context=locals(),
-        request=request)
+    return render(template_name="karaage/people/profile_personal.html", context=locals(), request=request)
 
 
 @login_required
 def edit_profile(request):
     person = request.user
     form = PersonForm(request.POST or None, instance=person)
-    if request.method == 'POST':
+    if request.method == "POST":
         if form.is_valid():
             person = form.save()
             assert person is not None
-            messages.success(
-                request, "User '%s' was edited succesfully" % person)
+            messages.success(request, "User '%s' was edited succesfully" % person)
             return HttpResponseRedirect(person.get_absolute_url())
 
     return render(
-        template_name='karaage/people/profile_edit.html',
-        context={'person': person, 'form': form},
-        request=request)
+        template_name="karaage/people/profile_edit.html", context={"person": person, "form": form}, request=request
+    )
 
 
-@sensitive_post_parameters('new1', 'new2')
+@sensitive_post_parameters("new1", "new2")
 @login_required
 def password_change(request):
 
@@ -149,45 +144,38 @@ def password_change(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Password changed successfully")
-            return HttpResponseRedirect(reverse('kg_profile'))
+            return HttpResponseRedirect(reverse("kg_profile"))
     else:
         form = PasswordChangeForm(person=person)
 
     return render(
-        template_name='karaage/common/profile_password.html',
-        context={'person': person, 'form': form},
-        request=request)
+        template_name="karaage/common/profile_password.html", context={"person": person, "form": form}, request=request
+    )
 
 
 @login_required
 def password_request(request):
     person = request.user
 
-    post_reset_redirect = reverse('kg_profile_reset_done')
+    post_reset_redirect = reverse("kg_profile_reset_done")
 
     if request.method == "POST":
         send_reset_password_email(person)
         return HttpResponseRedirect(post_reset_redirect)
 
     var = {
-        'person': person,
+        "person": person,
     }
-    return render(
-        template_name='karaage/common/profile_password_request.html',
-        context=var,
-        request=request)
+    return render(template_name="karaage/common/profile_password_request.html", context=var, request=request)
 
 
 @login_required
 def password_request_done(request):
     person = request.user
     var = {
-        'person': person,
+        "person": person,
     }
-    return render(
-        template_name='karaage/common/profile_password_request_done.html',
-        context=var,
-        request=request)
+    return render(template_name="karaage/common/profile_password_request_done.html", context=var, request=request)
 
 
 @csrf_exempt
@@ -197,10 +185,10 @@ def profile_aaf_rapid_connect(request):
 
     if request.method == "POST":
 
-        if 'assertion' not in request.POST:
+        if "assertion" not in request.POST:
             return HttpResponseBadRequest()
 
-        assertion = request.POST['assertion']
+        assertion = request.POST["assertion"]
 
         try:
             # Verifies signature and expiry time
@@ -214,13 +202,13 @@ def profile_aaf_rapid_connect(request):
         except jwt.PyJWTError as e:
             messages.error(request, f"Error: Could not decode token: {e}")
 
-        arc_required = request.COOKIES.get('arc_required', False)
+        arc_required = request.COOKIES.get("arc_required", False)
 
         # We are seeing this user for the first time in this session, attempt
         # to authenticate the user.
         if verified_jwt:
-            attributes = verified_jwt['https://aaf.edu.au/attributes']
-            saml_id = attributes['edupersontargetedid']
+            attributes = verified_jwt["https://aaf.edu.au/attributes"]
+            saml_id = attributes["edupersontargetedid"]
 
             try:
                 person = Person.objects.get(saml_id=saml_id)
@@ -229,7 +217,7 @@ def profile_aaf_rapid_connect(request):
 
             if person is None:
                 try:
-                    email = attributes['mail']
+                    email = attributes["mail"]
                     person = Person.objects.get(email=email)
                     person.saml_id = saml_id
                     person.save()
@@ -244,13 +232,13 @@ def profile_aaf_rapid_connect(request):
             # We must set the model backend here manually as we skip
             # the call to auth.authenticate().
             request.user = person
-            request.user.backend = 'django.contrib.auth.backends.ModelBackend'
+            request.user.backend = "django.contrib.auth.backends.ModelBackend"
             auth_login(request, person)
 
         # We must setup the session after logging in / logging out.
-        request.session['arc_jwt'] = verified_jwt
+        request.session["arc_jwt"] = verified_jwt
 
-        url = request.COOKIES.get('arc_url', None)
+        url = request.COOKIES.get("arc_url", None)
         if url is not None:
             if not url_has_allowed_host_and_scheme(
                 url=url,
@@ -261,11 +249,11 @@ def profile_aaf_rapid_connect(request):
 
         if url is not None:
             response = HttpResponseRedirect(url)
-            response.delete_cookie('arc_url')
-            response.delete_cookie('arc_required')
+            response.delete_cookie("arc_url")
+            response.delete_cookie("arc_required")
             return response
 
-    session_jwt = request.session.get('arc_jwt', None)
+    session_jwt = request.session.get("arc_jwt", None)
 
     if verified_jwt:
         verified_jwt = json.dumps(verified_jwt, indent=4)
@@ -274,13 +262,9 @@ def profile_aaf_rapid_connect(request):
         session_jwt = json.dumps(session_jwt, indent=4)
 
     var = {
-        'arc_url': settings.AAF_RAPID_CONNECT_URL,
-        'person': person,
-        'verified_jwt': verified_jwt,
-        'session_jwt': session_jwt,
+        "arc_url": settings.AAF_RAPID_CONNECT_URL,
+        "person": person,
+        "verified_jwt": verified_jwt,
+        "session_jwt": session_jwt,
     }
-    return render(
-        template_name='karaage/people/profile_aaf_rapid_connect.html',
-        context=var,
-        request=request
-    )
+    return render(template_name="karaage/people/profile_aaf_rapid_connect.html", context=var, request=request)

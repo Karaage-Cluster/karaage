@@ -31,12 +31,12 @@ def remove_user_from_project(person, project):
 
 
 def get_new_pid(institute):
-    """ Return a new Project ID
+    """Return a new Project ID
     Keyword arguments:
     institute_id -- Institute id
     """
-    number = '0001'
-    prefix = 'p%s' % institute.name.replace(' ', '')[:4]
+    number = "0001"
+    prefix = "p%s" % institute.name.replace(" ", "")[:4]
 
     found = True
     while found:
@@ -44,11 +44,11 @@ def get_new_pid(institute):
             Project.objects.get(pid=prefix + number)
             number = str(int(number) + 1)
             if len(number) == 1:
-                number = '000' + number
+                number = "000" + number
             elif len(number) == 2:
-                number = '00' + number
+                number = "00" + number
             elif len(number) == 3:
-                number = '0' + number
+                number = "0" + number
         except Project.DoesNotExist:
             found = False
 

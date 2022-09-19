@@ -7,23 +7,41 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kgapplications', '0007_auto_20190315_1515'),
+        ("kgapplications", "0007_auto_20190315_1515"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='applicant',
-            name='institute',
-            field=models.ForeignKey(blank=True, limit_choices_to={'is_active': True}, null=True, on_delete=django.db.models.deletion.CASCADE, to='karaage.Institute'),
+            model_name="applicant",
+            name="institute",
+            field=models.ForeignKey(
+                blank=True,
+                limit_choices_to={"is_active": True},
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="karaage.Institute",
+            ),
         ),
         migrations.AlterField(
-            model_name='application',
-            name='content_type',
-            field=models.ForeignKey(blank=True, limit_choices_to={'model__in': ['person', 'applicant']}, null=True, on_delete=django.db.models.deletion.CASCADE, to='contenttypes.ContentType'),
+            model_name="application",
+            name="content_type",
+            field=models.ForeignKey(
+                blank=True,
+                limit_choices_to={"model__in": ["person", "applicant"]},
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="contenttypes.ContentType",
+            ),
         ),
         migrations.AlterField(
-            model_name='projectapplication',
-            name='institute',
-            field=models.ForeignKey(blank=True, limit_choices_to={'is_active': True}, null=True, on_delete=django.db.models.deletion.CASCADE, to='karaage.Institute'),
+            model_name="projectapplication",
+            name="institute",
+            field=models.ForeignKey(
+                blank=True,
+                limit_choices_to={"is_active": True},
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="karaage.Institute",
+            ),
         ),
     ]

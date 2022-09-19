@@ -19,4 +19,4 @@ from django.apps import AppConfig
 
 
 class Karaage(AppConfig):
-    name = 'karaage'
+    name = "karaage"

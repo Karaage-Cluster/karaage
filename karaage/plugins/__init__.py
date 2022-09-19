@@ -23,6 +23,7 @@ if django.VERSION < (1, 7):
     parent = object
 else:
     from django.apps import AppConfig
+
     parent = AppConfig
 
 

@@ -23,17 +23,17 @@ from karaage.common import is_admin
 
 
 def common(request):
-    """ Set context with common variables. """
+    """Set context with common variables."""
     ctx = {
-        'AAF_RAPID_CONNECT_ENABLED': settings.AAF_RAPID_CONNECT_ENABLED,
-        'org_name': settings.ACCOUNTS_ORG_NAME,
-        'accounts_email': settings.ACCOUNTS_EMAIL,
-        'is_admin': is_admin(request),
-        'kgversion': __version__,
-        'VERSION': settings.VERSION,
-        'BUILD_DATE': settings.BUILD_DATE,
-        'VCS_REF': settings.VCS_REF,
-        'SLURM_VER': settings.SLURM_VER,
+        "AAF_RAPID_CONNECT_ENABLED": settings.AAF_RAPID_CONNECT_ENABLED,
+        "org_name": settings.ACCOUNTS_ORG_NAME,
+        "accounts_email": settings.ACCOUNTS_EMAIL,
+        "is_admin": is_admin(request),
+        "kgversion": __version__,
+        "VERSION": settings.VERSION,
+        "BUILD_DATE": settings.BUILD_DATE,
+        "VCS_REF": settings.VCS_REF,
+        "SLURM_VER": settings.SLURM_VER,
     }
 
     return ctx

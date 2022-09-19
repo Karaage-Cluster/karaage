@@ -22,7 +22,6 @@ from .models import SoftwareApplication
 
 
 class ApproveSoftwareForm(forms.ModelForm):
-
     class Meta:
         model = SoftwareApplication
         fields = []

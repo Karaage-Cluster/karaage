@@ -8,23 +8,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kgapplications', '0001_initial'),
+        ("kgapplications", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='applicant',
-            name='email',
+            model_name="applicant",
+            name="email",
             field=models.EmailField(max_length=254),
         ),
         migrations.AlterField(
-            model_name='applicant',
-            name='username',
+            model_name="applicant",
+            name="username",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AlterField(
-            model_name='projectapplication',
-            name='machine_categories',
-            field=models.ManyToManyField(blank=True, to='karaage.MachineCategory'),
+            model_name="projectapplication",
+            name="machine_categories",
+            field=models.ManyToManyField(blank=True, to="karaage.MachineCategory"),
         ),
     ]

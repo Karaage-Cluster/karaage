@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 def _input_csv(unicode_csv_data):
     for line in unicode_csv_data:
         assert isinstance(line, bytes)
-        line = line.decode("ascii", errors='ignore')
+        line = line.decode("ascii", errors="ignore")
         assert isinstance(line, str)
         yield line
 
@@ -43,18 +43,18 @@ def _output_csv(csv_line):
 
 
 class SlurmDataStore(base.DataStore):
-    """ Slurm datastore. """
+    """Slurm datastore."""
 
     def __init__(self, config):
         super(SlurmDataStore, self).__init__(config)
-        self._prefix = config.get('PREFIX', ["sudo", "-uslurm"])
-        self._path = config.get('PATH', "/usr/local/slurm/latest/bin/sacctmgr")
-        self._null_project = config.get('NULL_PROJECT', "default")
-        self._add_account_extra = config.get('ADD_ACCOUNT_EXTRA', ['grpcpumins=0'])
+        self._prefix = config.get("PREFIX", ["sudo", "-uslurm"])
+        self._path = config.get("PATH", "/usr/local/slurm/latest/bin/sacctmgr")
+        self._null_project = config.get("NULL_PROJECT", "default")
+        self._add_account_extra = config.get("ADD_ACCOUNT_EXTRA", ["grpcpumins=0"])
 
     @staticmethod
     def _filter_string(value):
-        """ Filter the string so Gold doesn't have heart failure."""
+        """Filter the string so Gold doesn't have heart failure."""
         if value is None:
             value = ""
 
@@ -69,7 +69,7 @@ class SlurmDataStore(base.DataStore):
         value = value.strip()
 
         # Used for stripping non-ascii characters
-        value = ''.join(c for c in value if 31 < ord(c) < 127)
+        value = "".join(c for c in value if 31 < ord(c) < 127)
 
         return value
 
@@ -88,7 +88,7 @@ class SlurmDataStore(base.DataStore):
             return value
 
     def _call(self, command, ignore_errors=None):
-        """ Call remote command with logging. """
+        """Call remote command with logging."""
         if ignore_errors is None:
             ignore_errors = []
         cmd = []
@@ -97,8 +97,7 @@ class SlurmDataStore(base.DataStore):
         cmd.extend(command)
         command = cmd
 
-        process = subprocess.Popen(
-            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
         retcode = process.returncode
 
@@ -106,20 +105,18 @@ class SlurmDataStore(base.DataStore):
         logger.debug(f"<-- stderr: {stderr}")
 
         if retcode in ignore_errors:
-            logger.debug(
-                "<-- Cmd %s returned %d (ignored)" % (command, retcode))
+            logger.debug("<-- Cmd %s returned %d (ignored)" % (command, retcode))
             return
 
         if retcode:
-            logger.error(
-                "<-- Cmd %s returned: %d (error)" % (command, retcode))
+            logger.error("<-- Cmd %s returned: %d (error)" % (command, retcode))
             raise subprocess.CalledProcessError(retcode, command)
 
         logger.debug("<-- Returned %d (good)" % retcode)
         return
 
     def _read_output(self, command):
-        """ Read CSV delimited input from Slurm. """
+        """Read CSV delimited input from Slurm."""
         cmd = []
         cmd.extend(self._prefix)
         cmd.extend([self._path, "-iP"])
@@ -127,9 +124,8 @@ class SlurmDataStore(base.DataStore):
         command = cmd
 
         logger.debug("Cmd %s" % command)
-        null = open('/dev/null', 'w')
-        process = subprocess.Popen(
-            command, stdout=subprocess.PIPE, stderr=null)
+        null = open("/dev/null", "w")
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=null)
         null.close()
 
         results = []
@@ -170,57 +166,45 @@ class SlurmDataStore(base.DataStore):
         return results
 
     def get_user(self, username):
-        """ Get the user details from Slurm. """
+        """Get the user details from Slurm."""
         cmd = ["list", "user", "where", "name=%s" % username]
         results = self._read_output(cmd)
 
         if len(results) == 0:
             return None
         elif len(results) > 1:
-            logger.error(
-                "Command returned multiple results for '%s'." % username)
-            raise RuntimeError(
-                "Command returned multiple results for '%s'." % username)
+            logger.error("Command returned multiple results for '%s'." % username)
+            raise RuntimeError("Command returned multiple results for '%s'." % username)
 
         the_result = results[0]
         the_name = the_result["User"]
         if username.lower() != the_name.lower():
-            logger.error(
-                "We expected username '%s' but got username '%s'."
-                % (username, the_name))
-            raise RuntimeError(
-                "We expected username '%s' but got username '%s'."
-                % (username, the_name))
+            logger.error("We expected username '%s' but got username '%s'." % (username, the_name))
+            raise RuntimeError("We expected username '%s' but got username '%s'." % (username, the_name))
 
         return the_result
 
     def get_project(self, projectname):
-        """ Get the project details from Slurm. """
+        """Get the project details from Slurm."""
         cmd = ["list", "accounts", "where", "name=%s" % projectname]
         results = self._read_output(cmd)
 
         if len(results) == 0:
             return None
         elif len(results) > 1:
-            logger.error(
-                "Command returned multiple results for '%s'." % projectname)
-            raise RuntimeError(
-                "Command returned multiple results for '%s'." % projectname)
+            logger.error("Command returned multiple results for '%s'." % projectname)
+            raise RuntimeError("Command returned multiple results for '%s'." % projectname)
 
         the_result = results[0]
         the_project = the_result["Account"]
         if projectname.lower() != the_project.lower():
-            logger.error(
-                "We expected projectname '%s' "
-                "but got projectname '%s'." % (projectname, the_project))
-            raise RuntimeError(
-                "We expected projectname '%s' "
-                "but got projectname '%s'." % (projectname, the_project))
+            logger.error("We expected projectname '%s' " "but got projectname '%s'." % (projectname, the_project))
+            raise RuntimeError("We expected projectname '%s' " "but got projectname '%s'." % (projectname, the_project))
 
         return the_result
 
     def get_users_in_project(self, projectname):
-        """ Get list of users in project from Slurm. """
+        """Get list of users in project from Slurm."""
         cmd = ["list", "assoc", "where", "account=%s" % projectname]
         results = self._read_output(cmd)
 
@@ -231,7 +215,7 @@ class SlurmDataStore(base.DataStore):
         return user_list
 
     def get_projects_in_user(self, username):
-        """ Get list of projects in user from Slurm. """
+        """Get list of projects in user from Slurm."""
         cmd = ["list", "assoc", "where", "user=%s" % username]
         results = self._read_output(cmd)
 
@@ -241,13 +225,12 @@ class SlurmDataStore(base.DataStore):
         return project_list
 
     def is_user_in_project(self, username, projectname):
-        cmd = ["list", "assoc", "where",
-               "user=%s" % username, "account=%s" % projectname]
+        cmd = ["list", "assoc", "where", "user=%s" % username, "account=%s" % projectname]
         results = self._read_output(cmd)
         return len(results) > 0
 
     def _save_account(self, account, username):
-        """ Called when account is created/updated. With username override. """
+        """Called when account is created/updated. With username override."""
 
         # retrieve default project, or use null project if none
         default_project_name = self._null_project
@@ -264,17 +247,20 @@ class SlurmDataStore(base.DataStore):
 
             if ds_user is None:
                 # create user if doesn't exist
-                self._call([
-                    "add", "user",
-                    "accounts=%s" % default_project_name,
-                    "defaultaccount=%s" % default_project_name,
-                    "name=%s" % username])
+                self._call(
+                    [
+                        "add",
+                        "user",
+                        "accounts=%s" % default_project_name,
+                        "defaultaccount=%s" % default_project_name,
+                        "name=%s" % username,
+                    ]
+                )
             else:
                 # or just set default project
-                self._call([
-                    "modify", "user",
-                    "set", "defaultaccount=%s" % default_project_name,
-                    "where", "name=%s" % username])
+                self._call(
+                    ["modify", "user", "set", "defaultaccount=%s" % default_project_name, "where", "name=%s" % username]
+                )
 
             # update user meta information
 
@@ -284,10 +270,7 @@ class SlurmDataStore(base.DataStore):
             slurm_projects = set(slurm_projects)
             for project in account.person.projects.all():
                 if project.pid.lower() not in slurm_projects:
-                    self._call([
-                        "add", "user",
-                        "name=%s" % username,
-                        "accounts=%s" % project.pid])
+                    self._call(["add", "user", "name=%s" % username, "accounts=%s" % project.pid])
         else:
             # date_deleted is not set, user should not exist
             logger.debug("account is not active")
@@ -296,11 +279,11 @@ class SlurmDataStore(base.DataStore):
         return
 
     def save_account(self, account):
-        """ Called when account is created/updated. """
+        """Called when account is created/updated."""
         self._save_account(account, account.username)
 
     def _delete_account(self, username):
-        """ Called when account is deleted. With username override. """
+        """Called when account is deleted. With username override."""
 
         # account deleted
 
@@ -311,64 +294,58 @@ class SlurmDataStore(base.DataStore):
         return
 
     def delete_account(self, account):
-        """ Called when account is deleted. """
+        """Called when account is deleted."""
         self._delete_account(account.username)
 
     def set_account_password(self, account, raw_password):
-        """ Account's password was changed. """
+        """Account's password was changed."""
         pass
 
     def set_account_username(self, account, old_username, new_username):
-        """ Account's username was changed. """
+        """Account's username was changed."""
         self._delete_account(old_username)
         self._save_account(account, new_username)
 
     def add_account_to_project(self, account, project):
-        """ Add account to project. """
+        """Add account to project."""
         username = account.username
         projectname = project.pid
         if not self.is_user_in_project(username, projectname):
-            self._call([
-                "add", "user",
-                "accounts=%s" % projectname,
-                "name=%s" % username])
+            self._call(["add", "user", "accounts=%s" % projectname, "name=%s" % username])
 
     def remove_account_from_project(self, account, project):
-        """ Remove account from project. """
+        """Remove account from project."""
         username = account.username
         projectname = project.pid
         if self.is_user_in_project(username, projectname):
-            self._call([
-                "delete", "user",
-                "name=%s" % username,
-                "account=%s" % projectname])
+            self._call(["delete", "user", "name=%s" % username, "account=%s" % projectname])
 
     def account_exists(self, username):
-        """ Does the account exist? """
+        """Does the account exist?"""
         ds_user = self.get_user(username)
         return ds_user is not None
 
     def get_account_details(self, account):
-        """ Get the account details """
+        """Get the account details"""
         result = self.get_user(account.username)
         if result is None:
             result = {}
         return result
 
     def save_group(self, group):
-        """ Group was saved. """
+        """Group was saved."""
         pass
 
     def delete_group(self, group):
-        """ Group was deleted. """
+        """Group was deleted."""
         pass
 
     def set_group_name(self, group, old_name, new_name):
-        """ Group was renamed. """
+        """Group was renamed."""
         pass
 
     def save_project(self, project):
-        """ Called when project is saved/updated. """
+        """Called when project is saved/updated."""
         pid = project.pid
 
         # project created
@@ -383,15 +360,19 @@ class SlurmDataStore(base.DataStore):
 
             # update project meta information
             name = self._truncate(project.name, 40)
-            self._call([
-                "modify", "account",
-                "set", "Description=%s" % self._filter_string(name),
-                "where", "name=%s" % pid])
-            self._call([
-                "modify", "account",
-                "set", "Organization=%s"
-                % self._filter_string(project.institute.name),
-                "where", "name=%s" % pid])
+            self._call(
+                ["modify", "account", "set", "Description=%s" % self._filter_string(name), "where", "name=%s" % pid]
+            )
+            self._call(
+                [
+                    "modify",
+                    "account",
+                    "set",
+                    "Organization=%s" % self._filter_string(project.institute.name),
+                    "where",
+                    "name=%s" % pid,
+                ]
+            )
         else:
             # project is deleted
             logger.debug("project is not active")
@@ -402,7 +383,7 @@ class SlurmDataStore(base.DataStore):
         return
 
     def delete_project(self, project):
-        """ Called when project is deleted. """
+        """Called when project is deleted."""
         pid = project.pid
 
         # project deleted
@@ -414,14 +395,14 @@ class SlurmDataStore(base.DataStore):
         return
 
     def get_project_details(self, project):
-        """ Get the project details. """
+        """Get the project details."""
         result = self.get_project(project.pid)
         if result is None:
             result = {}
         return result
 
     def set_project_pid(self, project, old_pid, new_pid):
-        """ Project's pid was changed. """
+        """Project's pid was changed."""
         # FIXME
         return
 

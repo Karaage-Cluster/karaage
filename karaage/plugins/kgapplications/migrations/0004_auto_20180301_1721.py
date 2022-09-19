@@ -9,13 +9,15 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kgapplications', '0003_remove_projectapplication_machine_categories'),
+        ("kgapplications", "0003_remove_projectapplication_machine_categories"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='applicant',
-            name='institute',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='karaage.Institute'),
+            model_name="applicant",
+            name="institute",
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to="karaage.Institute"
+            ),
         ),
     ]

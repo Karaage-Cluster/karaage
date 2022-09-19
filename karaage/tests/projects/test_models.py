@@ -34,19 +34,15 @@ from karaage.tests.unit import UnitTestCase
 
 @pytest.mark.django_db
 class ProjectTestCase(UnitTestCase):
-
     def test_minimum_create(self):
         institute = InstituteFactory()
-        project = Project.objects.create(
-            pid='test',
-            name='Test',
-            institute=institute)
+        project = Project.objects.create(pid="test", name="Test", institute=institute)
 
         project.full_clean()
-        self.assertEqual(project.name, 'Test')
-        self.assertEqual(project.pid, 'test')
+        self.assertEqual(project.name, "Test")
+        self.assertEqual(project.pid, "test")
         self.assertEqual(project.institute, institute)
-        self.assertEqual(project.group.name, 'test')
+        self.assertEqual(project.group.name, "test")
         self.assertFalse(project.is_approved)
         self.assertEqual(project.leaders.count(), 0)
         self.assertTrue(project.description is None)
@@ -85,8 +81,8 @@ class ProjectTestCase(UnitTestCase):
         project = Project.objects.create(group=group1, institute=institute)
         self.assertEqual(
             self.datastore.method_calls,
-            [mock.call.save_project(project),
-             mock.call.add_account_to_project(account1, project)])
+            [mock.call.save_project(project), mock.call.add_account_to_project(account1, project)],
+        )
 
         # Test changing an existing projects group
         account2 = simple_account()
@@ -97,18 +93,21 @@ class ProjectTestCase(UnitTestCase):
         project.save()
         self.assertEqual(
             self.datastore.method_calls,
-            [mock.call.save_group(group2),
-             mock.call.add_account_to_group(account2, group2),
-             mock.call.save_project(project),
-             # old accounts are removed
-             mock.call.remove_account_from_project(account1, project),
-             # new accounts are added
-             mock.call.add_account_to_project(account2, project)])
+            [
+                mock.call.save_group(group2),
+                mock.call.add_account_to_group(account2, group2),
+                mock.call.save_project(project),
+                # old accounts are removed
+                mock.call.remove_account_from_project(account1, project),
+                # new accounts are added
+                mock.call.add_account_to_project(account2, project),
+            ],
+        )
 
         # Test deleting project
         self.resetDatastore()
         project.delete()
         self.assertEqual(
             self.datastore.method_calls,
-            [mock.call.remove_account_from_project(account2, project),
-             mock.call.delete_project(project)])
+            [mock.call.remove_account_from_project(account2, project), mock.call.delete_project(project)],
+        )

@@ -32,14 +32,14 @@ class TestKgApplicationPages(TestAllPagesCase):
     confirm 200 OK and no DB changes."""
 
     fixtures = [
-        'test_karaage.json',
-        'test_kgsoftware.json',
+        "test_karaage.json",
+        "test_kgsoftware.json",
     ]
     variables = {
-        'software_id': '1',
-        'category_id': '1',
-        'license_id': '1',
-        'version_id': '1',
-        'person_id': '1',
+        "software_id": "1",
+        "category_id": "1",
+        "license_id": "1",
+        "version_id": "1",
+        "person_id": "1",
     }
     module = "karaage.plugins.kgsoftware"

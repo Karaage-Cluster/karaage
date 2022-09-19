@@ -9,13 +9,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('karaage', '0003_auto_20150410_1032'),
+        ("karaage", "0003_auto_20150410_1032"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='institute',
-            name='delegates',
-            field=models.ManyToManyField(blank=True, related_name='delegate_for', through='karaage.InstituteDelegate', to=settings.AUTH_USER_MODEL),
+            model_name="institute",
+            name="delegates",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="delegate_for",
+                through="karaage.InstituteDelegate",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

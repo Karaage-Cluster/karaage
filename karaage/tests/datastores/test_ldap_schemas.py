@@ -23,14 +23,10 @@ from karaage.tests.integration import IntegrationTestCase
 
 @pytest.mark.django_db
 class OpenldapAccountTestCase(IntegrationTestCase):
-
     def setUp(self):
         super(OpenldapAccountTestCase, self).setUp()
 
     def test_kAccountMixin(self):
         account = AccountFactory()
         ldap_account = self._ldap_datastore._get_account(account.username)
-        self.assertEqual(
-            ldap_account.get_as_single('uid'),
-            account.username
-        )
+        self.assertEqual(ldap_account.get_as_single("uid"), account.username)

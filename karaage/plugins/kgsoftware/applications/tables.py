@@ -22,8 +22,7 @@ from .models import SoftwareApplication
 
 
 class SoftwareApplicationTable(ApplicationTable):
-
     class Meta:
         model = SoftwareApplication
-        fields = ('id', 'action', 'applicant', 'state', 'expires')
+        fields = ("id", "action", "applicant", "state", "expires")
         empty_text = "No items"

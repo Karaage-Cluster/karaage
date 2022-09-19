@@ -28,9 +28,9 @@ LOG = logging.getLogger(__name__)
 
 def assert_password_simple(password, old=None):
     if old and password == old:
-        raise ValueError('Old and new passwords are the same.')
+        raise ValueError("Old and new passwords are the same.")
     elif len(password) < 6:
-        raise ValueError('Password is less than six characters.')
+        raise ValueError("Password is less than six characters.")
     return password
 
 
@@ -40,7 +40,7 @@ try:
     # Some configuration errors are only apparent when cracklib
     # tests a password for the first time, so test a strong password to
     # verify that cracklib is working as intended.
-    _assert_password('thaeliez4niore0U')
+    _assert_password("thaeliez4niore0U")
 except ImportError:
     _assert_password = assert_password_simple
 except (OSError, ValueError) as e:
@@ -59,8 +59,7 @@ def assert_strong_password(username, password, old_password=None):
     except AttributeError:
         minlength = 12
     if len(password) < minlength:
-        raise ValueError(
-            "Password must be at least %s characters long" % minlength)
+        raise ValueError("Password must be at least %s characters long" % minlength)
 
     if username is not None and username in password:
         raise ValueError("Password contains username")
