@@ -340,7 +340,8 @@ class Migration(migrations.Migration):
                 (
                     "header_message",
                     models.TextField(
-                        help_text="Message displayed at top of application form for the invitee and also in invitation email",
+                        help_text="Message displayed at top of application "
+                        "form for the invitee and also in invitation email",
                         null=True,
                         verbose_name="Message",
                         blank=True,

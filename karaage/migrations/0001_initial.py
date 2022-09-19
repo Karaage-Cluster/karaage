@@ -512,7 +512,8 @@ class Migration(migrations.Migration):
                 (
                     "datastore",
                     models.CharField(
-                        help_text="Modifying this value on existing categories will affect accounts created under the old datastore",
+                        help_text="Modifying this value on existing "
+                        "categories will affect accounts created under the old datastore",
                         max_length=255,
                         choices=[("dummy", "dummy"), ("ldap", "ldap")],
                     ),
