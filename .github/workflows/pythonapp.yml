@@ -22,7 +22,7 @@ jobs:
       - name: Install poetry
         uses: abatilo/actions-poetry@v2.1.6
         with:
-          poetry-version: 1.2.0
+          poetry-version: 1.2.1
       - name: Install python dependancies
         run: |
           poetry install
@@ -68,7 +68,7 @@ jobs:
       - name: Install poetry
         uses: abatilo/actions-poetry@v2.1.6
         with:
-          poetry-version: 1.2.0
+          poetry-version: 1.2.1
       - name: Install python dependancies
         run: |
           poetry install
@@ -116,7 +116,7 @@ jobs:
       - name: Install poetry
         uses: abatilo/actions-poetry@v2.1.6
         with:
-          poetry-version: 1.2.0
+          poetry-version: 1.2.1
       - name: Install python dependancies
         run: |
           poetry install
@@ -197,7 +197,7 @@ jobs:
       - name: Install poetry
         uses: abatilo/actions-poetry@v2.1.6
         with:
-          poetry-version: 1.2.0
+          poetry-version: 1.2.1
       - name: Install system dependancies
         run: |
           sudo apt-get update
