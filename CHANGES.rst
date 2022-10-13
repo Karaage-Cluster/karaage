@@ -9,6 +9,26 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Changed:
+~~~~~~~~
+* Upgrade Django to 4.1
+* Delete django-xmlrpc stuff.
+* Add native timezone support.
+
+Broken:
+~~~~~~~
+There are no db migrations changes.
+
+Some things that might be broken and require fixing in this update:
+
+* Run sql `UPDATE django_migrations SET app="kgsoftware_applications" where app="kgsoftware.applications";`
+* Add `CSRF_TRUSTED_ORIGINS = ["https://domainname.com"]` in `settings.py`.
+* Remove deprecated staticfiles references to local copies of templates (if any).
+
+
 6.1.5 (2021-08-03)
 ------------------
 
