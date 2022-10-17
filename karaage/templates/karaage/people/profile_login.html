@@ -12,56 +12,59 @@
 {% block userlinks %}{% endblock %}
 
 {% block content %}
-{% if form.errors and not form.non_field_errors and not form.this_is_the_login_form.errors %}
-<p class="errornote">
-{% blocktrans count counter=form.errors.items|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
-</p>
-{% endif %}
+<div id="login-form">
+    <div class="w700-center">
+        {% if form.errors and not form.non_field_errors and not form.this_is_the_login_form.errors %}
+        <p class="errornote">
+            {% blocktrans count counter=form.errors.items|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
+            </p>
+        {% endif %}
 
-{% if form.non_field_errors or form.this_is_the_login_form.errors %}
-{% for error in form.non_field_errors|add:form.this_is_the_login_form.errors %}
-<p class="errornote">
-    {{ error }}
-</p>
-{% endfor %}
-{% endif %}
+        {% if form.non_field_errors or form.this_is_the_login_form.errors %}
+            {% for error in form.non_field_errors|add:form.this_is_the_login_form.errors %}
+                <p class="errornote">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        {% endif %}
 
-{% if error %}
-<p class="errornote">
-    {{ error }}
-</p>
-{% endif %}
+        {% if error %}
+        <p class="errornote">
+            {{ error }}
+        </p>
+        {% endif %}
 
-  {% if AAF_RAPID_CONNECT_ENABLED %}
-    <p>You can also login using <a href="{% url 'kg_profile_login_arc' %}?{{ querystring }}">
-    AAF authentication</a>.</p>
-  {% endif %}
+        {% if SHIB_SUPPORTED %}
+            <p>You can also login using <a href="{% url 'kg_profile_login_saml' %}">Shibboleth
+            authentication</a>.</p>
+        {% endif %}
+    </div>
+    <form action="" method="post" id="login-form">{% csrf_token %}
+    <fieldset>
+      <div class="form-row">
+        {% if not form.this_is_the_login_form.errors %}{{ form.username.errors }}{% endif %}
+        <label for="id_username" class="required">{% trans 'Username:' %}</label> {{ form.username }}
+      </div>
+      <div class="form-row">
+        {% if not form.this_is_the_login_form.errors %}{{ form.password.errors }}{% endif %}
+        <label for="id_password" class="required">{% trans 'Password:' %}</label> {{ form.password }}
+        <input type="hidden" name="this_is_the_login_form" value="1" />
+        <input type="hidden" name="next" value="{{ next }}" />
+      </div>
+      {% url 'admin_password_reset' as password_reset_url %}
+      {% if password_reset_url %}
+      <div class="password-reset-link">
+        <a href="{{ password_reset_url }}">{% trans 'Forgotten your password or username?' %}</a>
+      </div>
+      {% endif %}
+      <div class="form-row">
+        <input type="submit" value="{% trans 'Log in' %}" />
+      </div>
+    </fieldset>
+    </form>
 
-<div id="content-main">
-<form action="" method="post" id="login-form">{% csrf_token %}
-  <div class="form-row">
-    {% if not form.this_is_the_login_form.errors %}{{ form.username.errors }}{% endif %}
-    <label for="id_username" class="required">{% trans 'Username:' %}</label> {{ form.username }}
-  </div>
-  <div class="form-row">
-    {% if not form.this_is_the_login_form.errors %}{{ form.password.errors }}{% endif %}
-    <label for="id_password" class="required">{% trans 'Password:' %}</label> {{ form.password }}
-    <input type="hidden" name="this_is_the_login_form" value="1" />
-    <input type="hidden" name="next" value="{{ next }}" />
-  </div>
-  {% url 'admin_password_reset' as password_reset_url %}
-  {% if password_reset_url %}
-  <div class="password-reset-link">
-    <a href="{{ password_reset_url }}">{% trans 'Forgotten your password or username?' %}</a>
-  </div>
-  {% endif %}
-  <div class="submit-row">
-    <label>&nbsp;</label><input type="submit" value="{% trans 'Log in' %}" />
-  </div>
-</form>
-
-<script type="text/javascript">
-document.getElementById('id_username').focus()
-</script>
+    <script type="text/javascript">
+    document.getElementById('id_username').focus()
+    </script>
 </div>
 {% endblock %}

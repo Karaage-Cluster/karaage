@@ -1,0 +1,233 @@
+/*
+*	Custom stylesheet to match with University Web Template
+*	Author: David Nguyen
+*	Date:	14/05/2018
+*/
+
+/* Show the Home link */
+.uomcontent nav.page-header-navigation ol.page-local-history {
+	display: contents;
+}
+
+/* Banner text stlye */
+h1#site-name {
+	color: white;
+	margin: auto;
+}
+
+/* ========================================
+* Style for main content (module DIV) 
+* ========================================= */
+
+.uomcontent h1, .uomcontent h2, .uomcontent h3, .uomcontent ol, .uomcontent ul, .uomcontent li, .uomcontent p, .uomcontent table {
+	max-width: 100%;
+}
+
+.uomcontent .w700-center {
+	max-width: 43.75rem;
+	margin: 0 auto;
+}
+
+#content .module, .module {
+	padding: 0.75rem;
+}
+
+#content-main {
+	padding-left: 1.5rem;
+}
+
+#content-main .module {
+	border: none;
+}
+
+#content-main .module h2, .module h2 {
+	padding: 1rem 0.5rem 0.5rem 0.5rem;
+	background: none;
+	font-size: 1.25rem;
+	font-weight: 550;
+}
+
+#content-main .module h3 {
+	padding: 1rem 10px;
+	background-color: #f2f5f8;
+}
+
+#content-main p {
+	padding-top: 0.3rem;
+}
+
+#content-main .object-tools {
+	border: 1px solid #ccc;
+	margin: 0 auto;
+	padding: 0.3rem;
+}
+
+#content-main .object-tools ul {
+	margin: 0;
+	padding: 2px 1px 0px 0px;
+	text-decoration: none;
+	display: inline;
+}
+
+#content-main .object-tools li {
+	display: inline-block;
+	list-style-type: square;
+	padding: 1px 0;
+	margin-left: 1px;
+	margin-right: 0px;
+	margin-bottom: 2px;
+	vertical-align: bottom;
+	width: 120px;
+	height: 40px;
+}
+
+#content-main .object-tools a {
+	display: block;
+	width: 120px;
+	height: 40px;
+	text-decoration: none;
+	font-size: 0.7rem;
+	padding: 4px 8px 4px 20px; 
+	background: #ddd;
+	vertical-align: bottom;
+	word-wrap: break-word;
+}
+
+.uomcontet [role=main] table, .uomcontent [role=main] table.mobile-friendly {
+	max-width: 100%;
+}
+
+.uomcontent [role=main] table.mobile-friendly tr td, .uomcontent [role=main] table.mobile-friendly tr th {
+	font-size: 0.9rem;
+}
+
+th {
+	background: #e9e9e9;
+}
+
+tbody tr:nth-child(even), tr.odd {
+	background: #f0f0f0;
+}
+
+ul.pagination {
+	font-size: 0.75rem;
+	padding: 10px 0;
+}
+
+.uomcontent ul.pagination li {
+	display: inline;
+}
+
+
+/* ====================================
+* Style for top horizontal menu 
+* ==================================== */
+
+#mainmenu {
+	background: #dcdcdc repeat-x left top;
+	height: 50px;
+	margin: auto;
+}
+
+#mainmenu div {
+	padding: 15px 30px;
+	margin: 0 auto;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+#mainmenu .user-tools {
+	float: right;
+}
+
+div.breadcrumbs {
+	background: #dcdcdc;
+	height: 50px;
+	border: none;
+	float: left;
+}
+
+/* ========================================
+* Style for left hand side (vertical) menu 
+* ========================================= */
+
+#content-related {
+	border-right: 1px solid #ddd;
+	padding-right: 1rem;
+}
+
+#content #content-related .module {
+	margin-right: 10px;
+	padding: 0;
+}
+
+#content #content-related .module h2 {
+	background: none;
+	color: #666;
+	padding: 1rem 0 0 0.3rem; 
+	margin: 0 10px;
+	border-bottom: 1px solit #e0e0e0;
+	font-size: 14px;
+	font-weight: 400;
+	letter-spacing: 1px;
+}
+#content #content-related .module.object-tools {
+	border: 0px;
+}
+
+#content-related .object-tools li {
+	color: #666;
+	display: inline-block;
+	font-size: 14px;
+	font-weight: 400;
+	list-style-type: none;
+	margin-bottom: 0;
+	margin-left: 0;
+	padding-bottom: 0;
+	vertical-align: top;
+	white-space: normal;
+	letter-spacing: 0.0125rem;
+}
+
+#content-related .object-tools a {
+	background-color: white;
+	color: #006fdc;
+	text-decoration: none;
+	border-bottom: 1px solid #e0e0e0;
+	padding-bottom: .4375rem;
+	padding-top: .4375rem;
+	padding-left: 0;
+	display: block;
+	font-weight: 300;
+	white-space: normal;
+}
+
+#content-related .object-tools a.active {
+	background-color: #e0e0e0;
+	padding-left: 10px;
+}
+
+/*===================================
+* General style fix
+*====================================*/
+
+.uomcontent ul.messagelist {
+	max-width: 43.75rem;
+	margin-left: 0;
+	margin-top: 1rem;
+	padding-left: 0;
+}
+
+.uomcontent ul.messagelist li {
+	list-style-type: none;	
+}
+
+
+/*===================================
+* Style fix for applications
+*====================================*/
+
+li.selected {
+    font-weight: bold;
+}
+

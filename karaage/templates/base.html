@@ -1,92 +1,126 @@
 <!DOCTYPE html>
-<html {% if LANGUAGE_CODE %}lang="{{ LANGUAGE_CODE|default:"en-us" }}"{% endif %} {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<html lang="en" class="no-js"> 
 <head>
+<meta charset="utf-8" />
+<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+<meta content="IE=edge" http-equiv="X-UA-Compatible" />
 <title>{% block title %}{% endblock %}&nbsp;|&nbsp;{% block site_name_title %}{% endblock %}</title>
 {% load karaage_tags %}
 {% load pipeline %}
 {% stylesheet 'karaage' %}
 {% javascript 'karaage' %}
-<link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% endblock %}" />
+<link rel="stylesheet" type="text/css" href="/kgstatic/css/local/custom-transition.css" />
+<!--
+-->
+<link href="/kgstatic/css/uom.css" rel="stylesheet" />
+<script src="/kgstatic/js/uom.js"></script>
+<link rel="stylesheet" type="text/css" href="/kgstatic/css/local/custom-base.css" />
+<link rel="stylesheet" type="text/css" href="/kgstatic/css/local/custom-form.css" />
 {% block extrastyle %}{% endblock %}
 {% block extrahead %}{% endblock %}
 {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
 </head>
 {% load i18n %}
 
-<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}">
+<body> 
 
 <!-- Container -->
-<div id="container">
+<div class="uomcontent">
+    <div class="page-inner">
+<!--
+-->
+    <ol class="page-local-history" itemscope="" itemtype="http://schema.org/BreadcrumbList">
+  <li class="root" itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+    <a href="/karaage/" title="Home" itemprop="item">
+      <span itemprop="name">Home</span>
+    </a>
+    <meta content="1" itemprop="position" />
+  </li>
+</ol>
+	<div role="main">
+	    {% if not is_popup %}
+	    <!-- Header -->
+	    <header>
+		<div class="mid-align">
+		    <h1>{% block branding %}{% endblock %}</h1>
+		</div>
+            </header>
+	    <div id="mainmenu">
+		{% block breadcrumbs %}
+<!--
+	    	<div class="breadcrumbs">
+	    	    <a href="{% url "index" %}">{% trans 'Home' %}</a>
+	    	    {% if title %} &rsaquo; {{ title }}{% endif %}
+	    	</div>
+-->
+		{% endblock %}
+		{% block usertools %}
+		<div class="user-tools">
+		    {% trans 'Welcome,' %}
+		    {% if user.is_active %}
+		    <strong>{% firstof user.get_short_name user.username %}</strong>.
+		    {% else %}
+		    <strong>{% trans 'Guest' %}</strong>
+		    {% endif %}
+		    {% block userlinks %}
+			{% if user.is_active %}
+			{% url 'django-admindocs-docroot' as docsroot %}
+			{% if docsroot %}
+			    <a href="{{ docsroot }}">{% trans 'Documentation' %}</a> /
+			{% endif %}
+			<a href="{% url 'kg_profile_password' %}">{% trans 'Change password' %}</a> /
+			<a href="{% url 'kg_profile_logout' %}">{% trans 'Log out' %}</a>
+			{% elif AAF_RAPID_CONNECT_ENABLED %}
+			<a href="{% url 'kg_profile_login_arc' %}{% url_with_param next=request.path %}">{% trans 'Log in' %}</a>
+			{% else %}
+			<a href="{% url 'kg_profile_login' %}{% url_with_param next=request.path %}">{% trans 'Log in' %}</a>
+			{% endif %}
+		    {% endblock %}
+		</div>
+		{% endblock %}
+		{% block nav-global %}{% endblock %}
+	    </div>
+	    <!-- END mainmenu DIV -->
+	    {% endif %}
 
-    {% if not is_popup %}
-    <!-- Header -->
-    <div id="header">
-        <div id="branding">
-        {% block branding %}{% endblock %}
-        </div>
-        {% block usertools %}
-        <div id="user-tools">
-            {% trans 'Welcome,' %}
-            {% if user.is_active %}
-            <strong>{% firstof user.get_short_name user.username %}</strong>.
-            {% else %}
-            <strong>{% trans 'Guest' %}</strong>
-            {% endif %}
-            {% block userlinks %}
-                {% if user.is_active %}
-                {% url 'django-admindocs-docroot' as docsroot %}
-                {% if docsroot %}
-                    <a href="{{ docsroot }}">{% trans 'Documentation' %}</a> /
-                {% endif %}
-                <a href="{% url 'kg_profile_password' %}">{% trans 'Change password' %}</a> /
-                <a href="{% url 'kg_profile_logout' %}">{% trans 'Log out' %}</a>
-                {% elif AAF_RAPID_CONNECT_ENABLED %}
-                <a href="{% url 'kg_profile_login_arc' %}{% url_with_param next=request.path %}">{% trans 'Log in' %}</a>
-                {% else %}
-                <a href="{% url 'kg_profile_login' %}{% url_with_param next=request.path %}">{% trans 'Log in' %}</a>
-                {% endif %}
-            {% endblock %}
-        </div>
-        {% endblock %}
-        {% block nav-global %}{% endblock %}
-    </div>
-    <!-- END Header -->
-    {% block breadcrumbs %}
-    <div class="breadcrumbs">
-    <a href="{% url "index" %}">{% trans 'Home' %}</a>
-    {% if title %} &rsaquo; {{ title }}{% endif %}
-    </div>
-    {% endblock %}
-    {% endif %}
+	    {% block messages %}
+		{% if messages %}
+            <div class="w700-center">                         
+            <ul class="messagelist">
+                {% for message in messages %}
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            </div>
+		{% endif %}
+	    {% endblock messages %}
 
-    {% block messages %}
-        {% if messages %}
-        <ul class="messagelist">{% for message in messages %}
-          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}</ul>
-        {% endif %}
-    {% endblock messages %}
-
-    <!-- Content -->
-    <div id="content" class="{% block coltype %}colM{% endblock %}">
-        {% block pretitle %}{% endblock %}
-        {% block content %}
-        {{ content }}
-        {% endblock %}
-        {% block sidebar %}{% endblock %}
-        <br class="clear" />
-    </div>
-    <!-- END Content -->
-
+	    <!-- Content -->
+	    <div id="content" class="{% block coltype %}colM{% endblock %}">
+		{% block pretitle %}{% endblock %}
+		{% block content %}
+		{{ content }}
+		{% endblock %}
+		{% block sidebar %}{% endblock %}
+		<br class="clear" />
+	    </div>
+	    <!-- END Content -->
     {% block footer %}
-        <div id="footer">
+       <div id="footer">
+          <small>
             Karaage {{ kgversion }}
             {% if VERSION %}{{ VERSION }}{% endif %}
             {% if VCS_REF %}{{ VCS_REF }}{% endif %}
             {% if BUILD_DATE %}{{ BUILD_DATE }}{% endif %}
             {% if SLURM_VER %}Slurm {{ SLURM_VER }}{% endif %}
+          </small>
         </div>
     {% endblock %}
+
+	</div> <!-- End role="main" DIV -->
+
+    </div>
+    <!-- END inner-page DIV -->
 </div>
 <!-- END Container -->
 

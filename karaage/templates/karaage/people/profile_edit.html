@@ -16,11 +16,17 @@
             <fieldset class="aligned ()">
             {{ form.non_field_errors }}
             {% formfield form.title %}
-            {% inlineformfield form.short_name form.full_name %}
-            {% inlineformfield form.department form.position %}
+            {#% inlineformfield form.short_name form.full_name %#}
+            {% formfield form.short_name %}
+            {% formfield form.full_name %}
+            {#% inlineformfield form.department form.position %#}
+            {% formfield form.department %}
+            {% formfield form.position %}
             {% formfield form.supervisor %}
             {% formfield form.email %}
-            {% inlineformfield form.telephone form.mobile %}
+            {#% inlineformfield form.telephone form.mobile %#}
+            {% formfield form.telephone %}
+            {% formfield form.mobile %}
             {% formfield form.fax %}
             {% formfield form.address %}
             </fieldset>

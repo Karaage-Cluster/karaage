@@ -1,0 +1,101 @@
+/*
+*	Custom style sheet for form.css to align with University web template
+*	Author: David Nguyen
+*	Date: 14/05/2018
+*/
+
+.form-row, .submit-row, .uomcontent [role=main] fieldset {
+	border: none;
+	background: none;
+	max-width: 43.75rem;
+	padding-left: 0px;
+	margin: 0;
+}
+
+[role=main] form {
+	padding-left: 0.5rem;
+	margin: 0;
+	max-width: 75rem;
+}
+
+/* style for the two login forms */
+[role=main] form#login-form {
+	margin: 0 auto;
+	max-width: 43.75rem;
+}
+div#login-form {margin: auto;}
+
+.form-row ul li{
+	list-style-type: none;
+}
+
+.form-row input {
+	margin-right: 10px;
+}
+
+.submit-row {
+	padding: 8px 0px;
+	margin: 0;
+}
+
+.uomcontent fieldset label {
+	display: block;
+}
+
+.uomcontent input[type=submit], input[type=submit].default, input[type=button] {
+	background: none;
+	background-color: #0c304a;
+	float: left;
+	margin: 20px 40px 20px 0;
+	padding: 0.8rem 1.2rem;
+}
+
+.uomcontent p.errornote {
+	padding: 10px 30px;
+	background: #ffc url(../../img/icon_error.gif) 10px 12px no-repeat;
+	margin: 1.5rem 0;
+}
+
+.uomcontent form:not(.unstyled-controls) fieldset input[type=radio]:not(.unstyled), .uomcontent form:not(.unstyled-controls) fieldset input[type=checkbox]:not(.unstyled) {
+	position: relative!important;
+}
+
+.uomcontent form:not(.unstyled-controls) fieldset input[type=radio]:not(.unstyled)+label, .uomcontent form:not(.unstyled-controls) fieldset input[type=checkbox]:not(.unstyled)+label {
+	display: inline-block;
+	padding-top: 0;
+	width: 80%;
+}
+
+.uomcontent form:not(.unstyled-controls) fieldset input[type=checkbox]:not(.unstyled)+label:after {
+	display: none;
+}
+
+.aligned input + label {
+	padding-top: 22px;
+	padding-left: 0;
+}
+
+p.help {
+	padding-bottom: 0;
+}
+
+/*======================================
+*	Styles for the Quick Search form 
+*======================================*/
+
+#content-related form {
+	padding: 0.8rem;
+}
+
+#content-related input[type=submit]{
+	float: right;
+	vertical-align: top;
+	padding: 5px 5px;
+	margin: 0;
+	width: 3rem;
+}
+
+#content-related input[type=text]#sitesearch {
+	margin-left: 0px;
+	width: 9rem;
+}

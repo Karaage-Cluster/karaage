@@ -1,0 +1,11 @@
+.uomcontent ol.page-local-history{
+	display: none;
+}
+
+h1#site-name, #mainmenu {
+	margin: 1rem;
+}
+
+div#login-form {
+	max-width: 500px;
+}
