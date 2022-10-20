@@ -13,32 +13,30 @@
 
 {% block content %}
 <div id="login-form">
-    <div class="w700-center">
-        {% if form.errors and not form.non_field_errors and not form.this_is_the_login_form.errors %}
-        <p class="errornote">
-            {% blocktrans count counter=form.errors.items|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
-            </p>
-        {% endif %}
-
-        {% if form.non_field_errors or form.this_is_the_login_form.errors %}
-            {% for error in form.non_field_errors|add:form.this_is_the_login_form.errors %}
-                <p class="errornote">
-                    {{ error }}
-                </p>
-            {% endfor %}
-        {% endif %}
-
-        {% if error %}
-        <p class="errornote">
-            {{ error }}
+    {% if form.errors and not form.non_field_errors and not form.this_is_the_login_form.errors %}
+    <p class="errornote">
+        {% blocktrans count counter=form.errors.items|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
         </p>
-        {% endif %}
+    {% endif %}
 
-        {% if SHIB_SUPPORTED %}
-            <p>You can also login using <a href="{% url 'kg_profile_login_saml' %}">Shibboleth
-            authentication</a>.</p>
-        {% endif %}
-    </div>
+    {% if form.non_field_errors or form.this_is_the_login_form.errors %}
+        {% for error in form.non_field_errors|add:form.this_is_the_login_form.errors %}
+            <p class="errornote">
+                {{ error }}
+            </p>
+        {% endfor %}
+    {% endif %}
+
+    {% if error %}
+    <p class="errornote">
+        {{ error }}
+    </p>
+    {% endif %}
+
+    {% if SHIB_SUPPORTED %}
+        <p>You can also login using <a href="{% url 'kg_profile_login_saml' %}">Shibboleth
+        authentication</a>.</p>
+    {% endif %}
     <form action="" method="post" id="login-form">{% csrf_token %}
     <fieldset>
       <div class="form-row">

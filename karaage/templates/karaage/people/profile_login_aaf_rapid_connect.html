@@ -14,7 +14,6 @@
 
 {% block content %}
 <div id="login-form">
-    <div class="w700-center">
     {% if form.errors and not form.non_field_errors and not form.this_is_the_login_form.errors %}
     <p class="errornote">
     {% blocktrans count counter=form.errors.items|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
@@ -40,6 +39,5 @@
     <script type="text/javascript">
         document.getElementById('id_institute').focus()
     </script>
-    </div>
 </div>
 {% endblock %}

@@ -1,3 +1,9 @@
 {% extends "base_site.html" %}
 
 {% block bodyclass %}change-form{% endblock %}
+
+{% block wrapped_content %}
+<div class="w700-center">
+    {{ block.super}}
+</div>
+{% endblock %}

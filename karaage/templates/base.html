@@ -85,7 +85,7 @@
 
 	    {% block messages %}
 		{% if messages %}
-            <div class="w700-center">                         
+            <div class="w700-center">
             <ul class="messagelist">
                 {% for message in messages %}
                   <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
@@ -98,8 +98,10 @@
 	    <!-- Content -->
 	    <div id="content" class="{% block coltype %}colM{% endblock %}">
 		{% block pretitle %}{% endblock %}
+		{% block wrapped_content %}
 		{% block content %}
 		{{ content }}
+		{% endblock %}
 		{% endblock %}
 		{% block sidebar %}{% endblock %}
 		<br class="clear" />
