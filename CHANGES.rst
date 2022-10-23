@@ -9,6 +9,17 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Changed
+~~~~~~~
+* Merged in University of Melbourne styling. If Karaage is used by anyone else please let me know.
+* Fixed some issues in the University of Melbourne styling. In particular:
+* Fixed the checkboxes in the institute edit page.
+* Fixed the email body element, when resized it would be clipped.
+
+
 6.2.0 (2022-10-14)
 ------------------
 
