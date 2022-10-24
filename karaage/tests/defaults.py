@@ -37,7 +37,6 @@ class InvalidString(str):
 
 DEBUG = True
 SESSION_COOKIE_SECURE = False
-PIPELINE_ENABLED = True
 SOUTH_TESTS_MIGRATE = False
 
 LOGGING = {

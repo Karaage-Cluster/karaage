@@ -19,7 +19,8 @@ fieldset {
     border-bottom: 1px solid #eee;
 }
 
-.form-row img, .form-row input {
+.form-row img,
+.form-row input {
     vertical-align: middle;
 }
 
@@ -42,7 +43,8 @@ label {
     font-size: 12px;
 }
 
-.required label, label.required {
+.required label,
+label.required {
     font-weight: bold !important;
     color: #333 !important;
 }
@@ -71,15 +73,15 @@ form ul.inline li {
     width: 8em;
 }
 
-.aligned .ajaxselect + label {
+.aligned .ajaxselect+label {
     padding: 3px 10px 0 50px;
 }
 
-.aligned input + label {
+.aligned input+label {
     padding: 3px 10px 0 50px;
 }
 
-.aligned .ajax-select + label {
+.aligned .ajax-select+label {
     padding: 3px 10px 0 50px;
 }
 
@@ -127,7 +129,7 @@ fieldset.collapsed h2 {
 /* MONOSPACE TEXTAREAS */
 
 fieldset.monospace textarea {
-    font-family: "Bitstream Vera Sans Mono",Monaco,"Courier New",Courier,monospace;
+    font-family: "Bitstream Vera Sans Mono", Monaco, "Courier New", Courier, monospace;
 }
 
 /* SUBMIT ROW */
@@ -259,5 +261,6 @@ body.popup .submit-row {
     background: url(../img/icon_addlink.gif) 0 50% no-repeat;
     padding-left: 14px;
     font-size: 11px;
-    outline: 0; /* Remove dotted border around link */
+    outline: 0;
+    /* Remove dotted border around link */
 }

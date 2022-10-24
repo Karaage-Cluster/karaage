@@ -4,7 +4,9 @@
 *	Date: 14/05/2018
 */
 
-.form-row, .submit-row, .uomcontent [role=main] fieldset {
+.form-row,
+.submit-row,
+.uomcontent [role=main] fieldset {
 	border: none;
 	background: none;
 	max-width: 43.75rem;
@@ -23,9 +25,12 @@
 	margin: 0 auto;
 	max-width: 43.75rem;
 }
-div#login-form {margin: auto;}
 
-.form-row ul li{
+div#login-form {
+	margin: auto;
+}
+
+.form-row ul li {
 	list-style-type: none;
 }
 
@@ -42,7 +47,9 @@ div#login-form {margin: auto;}
 	display: block;
 }
 
-.uomcontent input[type=submit], input[type=submit].default, input[type=button] {
+.uomcontent input[type=submit],
+input[type=submit].default,
+input[type=button] {
 	background: none;
 	background-color: #0c304a;
 	float: left;
@@ -56,11 +63,13 @@ div#login-form {margin: auto;}
 	margin: 1.5rem 0;
 }
 
-.uomcontent form:not(.unstyled-controls) fieldset input[type=radio]:not(.unstyled), .uomcontent form:not(.unstyled-controls) fieldset input[type=checkbox]:not(.unstyled) {
-	position: relative!important;
+.uomcontent form:not(.unstyled-controls) fieldset input[type=radio]:not(.unstyled),
+.uomcontent form:not(.unstyled-controls) fieldset input[type=checkbox]:not(.unstyled) {
+	position: relative !important;
 }
 
-.uomcontent form:not(.unstyled-controls) fieldset input[type=radio]:not(.unstyled)+label, .uomcontent form:not(.unstyled-controls) fieldset input[type=checkbox]:not(.unstyled)+label {
+.uomcontent form:not(.unstyled-controls) fieldset input[type=radio]:not(.unstyled)+label,
+.uomcontent form:not(.unstyled-controls) fieldset input[type=checkbox]:not(.unstyled)+label {
 	display: inline-block;
 	padding-top: 0;
 	width: 80%;
@@ -70,7 +79,7 @@ div#login-form {margin: auto;}
 	display: none;
 }
 
-.aligned input + label {
+.aligned input+label {
 	padding-top: 22px;
 	padding-left: 0;
 }
@@ -80,14 +89,14 @@ p.help {
 }
 
 /*======================================
-*	Styles for the Quick Search form 
+*	Styles for the Quick Search form
 *======================================*/
 
 #content-related form {
 	padding: 0.8rem;
 }
 
-#content-related input[type=submit]{
+#content-related input[type=submit] {
 	float: right;
 	vertical-align: top;
 	padding: 5px 5px;

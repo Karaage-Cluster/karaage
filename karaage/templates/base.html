@@ -1,28 +1,31 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js"> 
+<html lang="en" class="no-js">
 <head>
 <meta charset="utf-8" />
 <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 <meta content="IE=edge" http-equiv="X-UA-Compatible" />
 <title>{% block title %}{% endblock %}&nbsp;|&nbsp;{% block site_name_title %}{% endblock %}</title>
-{% load karaage_tags %}
-{% load pipeline %}
-{% stylesheet 'karaage' %}
-{% javascript 'karaage' %}
-<link rel="stylesheet" type="text/css" href="/kgstatic/css/local/custom-transition.css" />
-<!--
--->
-<link href="/kgstatic/css/uom.css" rel="stylesheet" />
-<script src="/kgstatic/js/uom.js"></script>
-<link rel="stylesheet" type="text/css" href="/kgstatic/css/local/custom-base.css" />
-<link rel="stylesheet" type="text/css" href="/kgstatic/css/local/custom-form.css" />
+{% load karaage_tags static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/local/custom-transition.css' %}" />
+<link href="{% static 'css/base.css' %}" rel="stylesheet" />
+<link href="{% static 'css/forms.css' %}" rel="stylesheet" />
+<link href="{% static 'css/login.css' %}" rel="stylesheet" />
+<link href="{% static 'css/widgets.css' %}" rel="stylesheet" />
+<link href="{% static 'css/uom.css' %}" rel="stylesheet" />
+<script src="{% static 'js/jquery-1.11.2.js' %}"></script>
+<script src="{% static 'js/jquery-ui-1.11.4.js' %}"></script>
+<script src="{% static 'js/jcookie.js' %}"></script>
+<script src="{% static 'js/karaage.js' %}"></script>
+<script src="{% static 'js/uom.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/local/custom-base.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/local/custom-form.css' %}" />
 {% block extrastyle %}{% endblock %}
 {% block extrahead %}{% endblock %}
 {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
 </head>
 {% load i18n %}
 
-<body> 
+<body>
 
 <!-- Container -->
 <div class="uomcontent">

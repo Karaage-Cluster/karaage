@@ -194,39 +194,6 @@ configuration method described in :setting:`LOGGING_CONFIG`.
 See :setting:`django:LOGGING`.
 
 
-Django Pipeline settings
-------------------------
-Pipeline is an asset packaging library for Django, providing both CSS and
-JavaScript concatenation and compression, built-in JavaScript template support,
-and optional data-URI image and font embedding.
-
-
-.. setting:: PIPELINE_CSS_COMPRESSOR
-
-PIPELINE_CSS_COMPRESSOR
-~~~~~~~~~~~~~~~~~~~~~~~
-Default: ``'pipeline.compressors.yui.YUICompressor'``
-
-Django pipeline setting.
-
-Compressor class to be applied to CSS files.
-
-If empty or None, CSS files won’t be compressed.
-
-
-.. setting:: PIPELINE_JS_COMPRESSOR
-
-PIPELINE_JS_COMPRESSOR
-~~~~~~~~~~~~~~~~~~~~~~
-Default: ``'pipeline.compressors.yui.YUICompressor'``
-
-Django pipeline setting.
-
-Compressor class to be applied to JS files.
-
-If empty or None, JavaScript files won’t be compressed.
-
-
 Karaage core settings
 ---------------------
 These are settings defined and used by Karaage core.

@@ -70,7 +70,6 @@ INSTALLED_APPS = (
     "ajax_select",
     "django_tables2",
     "tldap.django",
-    "pipeline",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.sites",
@@ -179,9 +178,11 @@ LOGIN_URL = "kg_profile_login"
 # files for deployment.
 STATIC_ROOT = "/var/lib/karaage3/static"
 
-
 # URL to use when referring to static files located in STATIC_ROOT.
 STATIC_URL = "/kgstatic/"
+
+# Hash static filenames.
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 
 # A list of strings representing the host/domain names that this Django site
 # can serve. This is a security measure to prevent an attacker from poisoning
@@ -189,39 +190,6 @@ STATIC_URL = "/kgstatic/"
 # requests with a fake HTTP Host header, which is possible even under many
 # seemingly-safe web server configurations.
 ALLOWED_HOSTS = ["%(HOST)s"]
-
-###
-# DJANGO PIPELINE
-###
-
-STATICFILES_STORAGE = "pipeline.storage.PipelineManifestStorage"
-
-PIPELINE = {
-    "EMBED_PATH": r"img/|images/",
-    "CSS_COMPRESSOR": "pipeline.compressors.cssmin.CSSMinCompressor",
-    "STYLESHEETS": {
-        "karaage": {
-            "source_filenames": (
-                "css/*.css",
-                "ajax_select/css/ajax_select.css",
-            ),
-            "output_filename": "min.css",
-            "variant": "datauri",
-        },
-    },
-    "JS_COMPRESSOR": "pipeline.compressors.jsmin.JSMinCompressor",
-    "JAVASCRIPT": {
-        "karaage": {
-            "source_filenames": (
-                "js/jquery-1.11.2.js",
-                "js/jquery-ui-1.11.4.js",
-                "js/*.js",
-                "ajax_select/js/ajax_select.js",
-            ),
-            "output_filename": "min.js",
-        }
-    },
-}
 
 
 ###

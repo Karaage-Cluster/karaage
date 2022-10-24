@@ -1,11 +1,10 @@
 ARG SLURM_VER=20.11
 FROM brianmay/slurm:${SLURM_VER}
-MAINTAINER brian@linuxpenguins.xyz
 
 # Install OS dependencies
 RUN apt-get update \
   && apt-get install -y \
-    gcc sudo libcrack2-dev \
+  gcc sudo libcrack2-dev \
   && rm -rf /var/lib/apt/lists/*
 
 # Make application directory
