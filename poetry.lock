@@ -321,14 +321,14 @@ test = ["testfixtures"]
 
 [[package]]
 name = "django-tables2"
-version = "2.4.1"
+version = "2.5.1"
 description = "Table/data-grid framework for Django"
 category = "main"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-Django = ">=1.11"
+Django = ">=3.2"
 
 [package.extras]
 tablib = ["tablib"]
@@ -1522,8 +1522,8 @@ django-simple-captcha = [
     {file = "django_simple_captcha-0.5.17-py2.py3-none-any.whl", hash = "sha256:f9a07e5e9de264ba4039c9eaad66bc48188a21ceda5fcdc2fa13c5512141c2c9"},
 ]
 django-tables2 = [
-    {file = "django-tables2-2.4.1.tar.gz", hash = "sha256:6c72dd208358539e789e4c0efd7d151e43283a4aa4093a35f44c43489e7ddeaa"},
-    {file = "django_tables2-2.4.1-py2.py3-none-any.whl", hash = "sha256:50762bf3d7c61a4eb70e763c3e278650d7266bb78d0497fc8fafcf4e507c9a64"},
+    {file = "django-tables2-2.5.1.tar.gz", hash = "sha256:25ed2c28d3508558a4246a255c381784b20b439ef175e3954a103ffbc3a63757"},
+    {file = "django_tables2-2.5.1-py2.py3-none-any.whl", hash = "sha256:62d65e745073892741ccdb6137bfdbcae7f83142d07494fe865d389af1f2befd"},
 ]
 django-tracking-model = [
     {file = "django-tracking-model-0.1.5.tar.gz", hash = "sha256:3e97129aba2cf7fca6ace575fe9a048307ab12c812baf1e75a5e3b1ac3778644"},
