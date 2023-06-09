@@ -16,7 +16,7 @@ services:
     build:
       context: .
       args:
-        SLURM_VER: 17.02
+        SLURM_VER: 23.02
         VERSION: local
         BUILD_DATE: ${BUILD_DATE}
         VCS_REF: ${VCS_REF}
