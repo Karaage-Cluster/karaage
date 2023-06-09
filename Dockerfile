@@ -12,7 +12,7 @@ RUN mkdir /opt/karaage /opt/karaage/requirements
 WORKDIR /opt/karaage
 
 # Install our requirements.
-RUN pip install poetry
+RUN pip install poetry==1.3.0
 ADD pyproject.toml poetry.lock /opt/karaage/
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-dev --no-root
