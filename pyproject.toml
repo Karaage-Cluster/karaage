@@ -37,7 +37,7 @@ mysqlclient = "*"
 sentry-sdk = "*"
 psycopg2-binary = "*"
 pyjwt = "*"
-sphinx = { version = "*", optional = true }
+sphinx = { version = "<7", optional = true }
 jsmin = "^3.0.1"
 django-tracking-model = "^0.1.5"
 
