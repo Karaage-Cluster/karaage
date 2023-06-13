@@ -5,6 +5,8 @@ sphinx:
 
 build:
   os: ubuntu-22.04
+  apt_packages:
+    - libcrack2-dev
   tools:
     python: "3.10"
 
