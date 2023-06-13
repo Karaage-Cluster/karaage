@@ -38,7 +38,6 @@ sentry-sdk = "*"
 psycopg2-binary = "*"
 pyjwt = "*"
 sphinx = { version = "<7", optional = true }
-django-docs = { version = "*", optional = true }
 jsmin = "^3.0.1"
 django-tracking-model = "^0.1.5"
 
@@ -56,7 +55,7 @@ bumpversion = "*"
 Sphinx = "*"
 
 [tool.poetry.extras]
-docs = ["sphinx", "django-docs"]
+docs = ["sphinx"]
 
 [tool.poetry.group.dev.dependencies]
 black = { version = "^22.8.0", allow-prereleases = true }
