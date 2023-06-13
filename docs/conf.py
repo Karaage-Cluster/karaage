@@ -19,22 +19,20 @@ import sys
 import re
 from os.path import abspath, dirname, join
 
-sys.path.insert(0, abspath('../..'))
+sys.path.insert(0, abspath("../.."))
 import karaage  # NOQA
 
 
-sys.path.append(abspath(join(dirname(dirname(__file__)), "ext")))
+sys.path.append(abspath("../ext"))
 
 html_translator_class = "djangodocs.KaraageHTMLTranslator"
 
 extensions = []
-extensions += ['sphinx.ext.todo']
+extensions += ["sphinx.ext.todo"]
 extensions += ["djangodocs"]
 extensions += ["sphinx.ext.intersphinx"]
 intersphinx_mapping = {
-    'django': (
-        'https://docs.djangoproject.com/en/2.2/',
-        'https://docs.djangoproject.com/en/2.2/_objects/'),
+    "django": ("https://docs.djangoproject.com/en/2.2/", "https://docs.djangoproject.com/en/2.2/_objects/"),
 }
 
 # The version info for the project you're documenting, acts as replacement for
@@ -45,16 +43,16 @@ intersphinx_mapping = {
 # The full version, including alpha/beta/rc tags.
 release = karaage.__version__
 # The short X.Y version.
-version = '.'.join(release.split('.')[:2])
+version = ".".join(release.split(".")[:2])
 
 
 def guess_next_version(tag_version):
     version = str(tag_version)
-    if '.dev' in version:
-        version, tail = version.rsplit('.dev', 1)
+    if ".dev" in version:
+        version, tail = version.rsplit(".dev", 1)
 
-    prefix, tail = re.match('(.*?)(\d+)$', version).groups()
-    return '%s%d' % (prefix, int(tail) + 1)
+    prefix, tail = re.match("(.*?)(\d+)$", version).groups()
+    return "%s%d" % (prefix, int(tail) + 1)
 
 
 karaage_next_version = guess_next_version(version)
