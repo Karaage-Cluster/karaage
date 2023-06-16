@@ -25,7 +25,6 @@ register = Library()
 
 @register.filter
 def timeformat(value):
-
     if value == "":
         return ""
 

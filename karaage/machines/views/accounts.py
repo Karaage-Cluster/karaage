@@ -134,7 +134,6 @@ def add_project(request, username):
 
 @admin_required
 def delete_account(request, account_id):
-
     account = get_object_or_404(Account, pk=account_id)
 
     if request.method == "POST":

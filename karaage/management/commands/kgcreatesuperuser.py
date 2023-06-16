@@ -60,7 +60,6 @@ class Command(BaseCommand):
     @django.db.transaction.atomic
     @tldap.transaction.commit_on_success
     def handle(self, *args, **options):
-
         username = options["username"]
         email = options["email"]
         short_name = options["short_name"]

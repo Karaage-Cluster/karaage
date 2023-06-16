@@ -47,7 +47,6 @@ def reverse(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("kgapplications", "0009_auto_20200227_1655"),
     ]

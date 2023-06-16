@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("kgapplications", "0007_auto_20190315_1515"),
     ]

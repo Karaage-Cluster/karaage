@@ -6,7 +6,6 @@ import karaage.common
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("karaage", "0001_initial"),
         ("contenttypes", "0001_initial"),

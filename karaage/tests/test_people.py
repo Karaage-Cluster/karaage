@@ -443,7 +443,6 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(person.project_set.count(), 0)
 
     def stest_default_projects(self):
-
         person = Person.objects.get(pk=Person.objects.count())
         ua = person.account_set.all()[0]
 
@@ -473,7 +472,6 @@ class PersonTestCase(IntegrationTestCase):
         self.assertEqual(project, ua.default_project)
 
     def stest_add_user_to_project(self):
-
         person = Person.objects.get(pk=Person.objects.count())
         assert len(person.account_set.all()) == 1
 

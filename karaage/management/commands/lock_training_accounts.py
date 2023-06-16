@@ -30,7 +30,6 @@ class Command(BaseCommand):
     @django.db.transaction.atomic
     @tldap.transaction.commit_on_success
     def handle(self, **options):
-
         verbose = int(options.get("verbosity"))
         training_prefix = getattr(settings, "TRAINING_ACCOUNT_PREFIX", "train")
 

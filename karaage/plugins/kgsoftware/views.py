@@ -137,7 +137,6 @@ def software_list(request):
 
 @login_required
 def _software_list_non_admin(request):
-
     person = request.user
 
     query = Software.objects.filter(softwarelicense__isnull=False).distinct()
@@ -174,7 +173,6 @@ def software_detail(request, software_id):
     open_applications = get_applications_for_person(person, software_license)
 
     if agreement is None and software_license is not None and len(open_applications) == 0 and request.method == "POST":
-
         if software.restricted and not util.is_admin(request):
             log.add(software, "New application created for %s" % request.user)
             return new_application(request, software_license)
@@ -364,7 +362,6 @@ def remove_member(request, software_id, person_id):
 
 @login_required
 def license_txt(request, software_id):
-
     software = get_object_or_404(Software, pk=software_id)
     software_license = software.get_current_license()
 

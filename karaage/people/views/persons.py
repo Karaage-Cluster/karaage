@@ -124,7 +124,6 @@ def user_list(request, queryset=None, title=None):
 
 @admin_required
 def locked_list(request):
-
     result = QueryDict("", mutable=True)
     result["active"] = "locked"
     url = reverse("kg_person_list") + "?" + result.urlencode()
@@ -147,7 +146,6 @@ def struggling(request):
 
 @admin_required
 def delete_user(request, username):
-
     person = get_object_or_404(Person, username=username)
 
     if request.method == "POST":

@@ -7,7 +7,6 @@ import datetime
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("contenttypes", "0001_initial"),
     ]

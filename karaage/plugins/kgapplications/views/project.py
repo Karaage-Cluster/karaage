@@ -71,7 +71,6 @@ def _send_invitation(request, project):
     form = forms.InviteUserApplicationForm(request.POST or None)
     if request.method == "POST":
         if form.is_valid():
-
             email = form.cleaned_data["email"]
             applicant, existing_person = get_applicant_from_email(email)
 
@@ -118,12 +117,10 @@ def send_invitation(request, project_id=None):
         project = get_object_or_404(Project, id=project_id)
 
     if project is None:
-
         if not is_admin(request):
             return HttpResponseForbidden("<h1>Access Denied</h1>")
 
     else:
-
         if not project.can_edit(request):
             return HttpResponseForbidden("<h1>Access Denied</h1>")
 

@@ -7,7 +7,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("kgapplications", "0003_remove_projectapplication_machine_categories"),
     ]

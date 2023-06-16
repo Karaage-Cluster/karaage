@@ -35,7 +35,6 @@ from karaage.plugins import BasePlugin
 
 
 def get_date_range(request, default_start=None, default_end=None):
-
     if default_start is None:
         default_start = datetime.date.today() - datetime.timedelta(days=90)
     if default_end is None:

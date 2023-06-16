@@ -136,7 +136,6 @@ class TestAllPagesMeta(type):
     def _add_test_methods(mcs, attrs, urlpatterns):
         # loop through every URL pattern
         for index, (func, regex, url_name) in enumerate(extract_views_from_urlpatterns(urlpatterns)):
-
             if "module_exclude" not in attrs:
                 attrs["module_exclude"] = None
 
