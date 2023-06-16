@@ -75,7 +75,6 @@ class AddPackageForm(SoftwareForm):
         self.fields["machines"].queryset = Machine.active.all()
 
     def clean(self):
-
         data = self.cleaned_data
 
         if "license_version" in data and data["license_version"]:

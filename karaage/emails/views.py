@@ -58,10 +58,8 @@ def _get_emails(person_query, subject, body):
 
 @admin_required
 def send_email(request):
-
     form = BulkEmailForm(request.POST or None)
     if request.method == "POST":
-
         if form.is_valid():
             subject = form.cleaned_data["subject"]
             body = form.cleaned_data["body"]

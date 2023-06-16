@@ -69,7 +69,6 @@ def profile_projects(request):
 
 @login_required
 def add_edit_project(request, project_id=None):
-
     if project_id is None:
         project = None
         old_pid = None
@@ -113,7 +112,6 @@ def add_edit_project(request, project_id=None):
 
 @admin_required
 def undelete_project(request, project_id):
-
     project = get_object_or_404(Project, id=project_id)
 
     if request.method == "POST":
@@ -129,7 +127,6 @@ def undelete_project(request, project_id):
 
 @admin_required
 def delete_project(request, project_id):
-
     project = get_object_or_404(Project, id=project_id)
 
     query = Account.objects.filter(date_deleted__isnull=True, default_project=project)
@@ -155,7 +152,6 @@ def delete_project(request, project_id):
 
 @login_required
 def project_detail(request, project_id):
-
     project = get_object_or_404(Project, id=project_id)
 
     if not project.can_view(request):
@@ -190,7 +186,6 @@ def project_verbose(request, project_id):
 
 @login_required
 def project_list(request, queryset=None):
-
     if queryset is None:
         queryset = Project.objects.all()
 
@@ -227,7 +222,6 @@ def project_list(request, queryset=None):
 
 @login_required
 def remove_user(request, project_id, username):
-
     project = get_object_or_404(Project, id=project_id)
     person = get_object_or_404(Person, username=username)
 
@@ -315,7 +309,6 @@ def revoke_leader(request, project_id, username):
 
 @admin_required
 def no_users(request):
-
     project_ids = []
     for p in Project.active.all():
         if p.group.members.count() == 0:

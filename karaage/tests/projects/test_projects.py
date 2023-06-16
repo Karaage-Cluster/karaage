@@ -36,7 +36,6 @@ class ProjectTestCase(IntegrationTestCase):
         call_command("loaddata", "test_karaage", **{"verbosity": 0})
 
     def test_admin_add_project(self):
-
         Project.objects.count()
 
         self.client.login(username="kgsuper", password="aq12ws")
@@ -132,7 +131,6 @@ class ProjectTestCase(IntegrationTestCase):
         assert "kgtestuser2" not in lgroup["memberUid"]
 
     def test_delete_project(self):
-
         self.client.login(username="kgsuper", password="aq12ws")
 
         project = Project.objects.get(pid="TestProject1")

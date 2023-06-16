@@ -35,7 +35,6 @@ def _send_request_email(context, role, persons, template):
     # if APPROVE_ACCOUNTS_EMAIL and this email to administrator role, use this
     # value instead of emailing individual administrators.
     if role == "administrator" and settings.APPROVE_ACCOUNTS_EMAIL is not None:
-
         context["receiver"] = None
         context["receiver_text"] = "Administrator"
 

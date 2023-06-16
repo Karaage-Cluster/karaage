@@ -19,7 +19,6 @@ class Command(BaseCommand):
     @django.db.transaction.non_atomic_requests
     @tldap.transaction.commit_on_success
     def handle(self, *args, **options):
-
         Project1 = options.get("Project1")
         Project2 = options.get("Project2")
 
@@ -44,11 +43,9 @@ class Command(BaseCommand):
             # determine if the user is a leader of the given project, abort if true.
 
             if person in leaders:
-
                 # do nothing
                 sys.stdout.write("ignoring %s, project leader\n" % person)
             else:
-
                 # determine if the project is the default for any of the user's
                 # accounts... but first sort out whether we've got a single
                 # case or a list.
@@ -58,7 +55,6 @@ class Command(BaseCommand):
                 if accountlist.count() == 1:
                     account = person.get_account()
                     if projectA == account.default_project:
-
                         sys.stdout.write("changing default project for %s to " % person)
                         sys.stdout.write(projectB.pid)
                         sys.stdout.write("\n")

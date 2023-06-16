@@ -29,7 +29,6 @@ from karaage.plugins import BasePlugin
 
 
 def add_plugin(namespace, plugin_name, django_apps, depends):
-
     module_name, descriptor_name = plugin_name.rsplit(".", 1)
     module = importlib.import_module(module_name)
     descriptor = getattr(module, descriptor_name)

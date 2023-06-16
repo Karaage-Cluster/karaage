@@ -47,10 +47,8 @@ def login(request, username=None):
         redirect_to = request.GET["next"]
 
     if request.POST:
-
         form = LoginForm(request.POST)
         if form.is_valid():
-
             username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
             person = Person.objects.authenticate(username=username, password=password)
@@ -106,7 +104,6 @@ def aaf_rapid_connect_login(request):
 
 @login_required
 def profile_personal(request):
-
     person = request.user
     project_list = person.projects.all()
     project_requests = []
@@ -135,7 +132,6 @@ def edit_profile(request):
 @sensitive_post_parameters("new1", "new2")
 @login_required
 def password_change(request):
-
     person = request.user
 
     if request.POST:
@@ -184,7 +180,6 @@ def profile_aaf_rapid_connect(request):
     verified_jwt = None
 
     if request.method == "POST":
-
         if "assertion" not in request.POST:
             return HttpResponseBadRequest()
 

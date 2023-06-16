@@ -97,7 +97,6 @@ def institute_verbose(request, institute_id):
 
 @login_required
 def institute_list(request):
-
     queryset = Institute.objects.all()
     if not is_admin(request):
         queryset = queryset.filter(is_active=True, delegates=request.user)
@@ -126,7 +125,6 @@ def institute_list(request):
 
 @admin_required
 def add_edit_institute(request, institute_id=None):
-
     if institute_id:
         institute = get_object_or_404(Institute, pk=institute_id)
     else:
