@@ -4,7 +4,7 @@ FROM brianmay/slurm:${SLURM_VER}
 # Install OS dependencies
 RUN apt-get update \
   && apt-get install -y \
-  gcc sudo libcrack2-dev \
+  gcc sudo libcrack2-dev netcat \
   && rm -rf /var/lib/apt/lists/*
 
 # Make application directory
@@ -31,5 +31,5 @@ ENV VCS_REF=${VCS_REF}
 
 # Specify the command to run when the image is run.
 EXPOSE 8000
-VOLUME '/etc/karaage3' '/var/log' '/var/lib/karaage3'
+VOLUME '/etc/karaage3' '/var/log' '/var/lib/karaage3' '/var/cache/karaage3'
 CMD /opt/karaage/scripts/docker.sh
