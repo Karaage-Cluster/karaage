@@ -2,6 +2,10 @@ name: Python application
 
 on: [push, pull_request]
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   test:
     name: Databaseless tests
@@ -145,7 +149,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@818d4b7b91585d195f67373fd9cb0332e31a7175
         with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/karaage
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -165,8 +169,9 @@ jobs:
         uses: docker/login-action@v2.2.0
         if: ${{ github.repository_owner == 'Karaage-Cluster' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags')) && github.event_name == 'push' }}
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v4.1.1
@@ -177,7 +182,7 @@ jobs:
           push: ${{ github.repository_owner == 'Karaage-Cluster' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags')) && github.event_name == 'push' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/karaage:master
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
           cache-to: type=inline
           build-args: ${{ steps.brianmay_meta.outputs.build-args }}
 
