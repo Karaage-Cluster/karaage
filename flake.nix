@@ -32,6 +32,7 @@
             pkgs.openldap
             pkgs.libmysqlclient
             pkgs.cracklib
+            pkgs.pkg-config
           ];
         };
       });
