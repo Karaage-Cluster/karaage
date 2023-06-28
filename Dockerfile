@@ -1,4 +1,4 @@
-ARG SLURM_VER=23.02
+ARG SLURM_VER=21.08
 FROM brianmay/slurm:${SLURM_VER}
 
 # Install OS dependencies
