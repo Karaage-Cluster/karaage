@@ -20,7 +20,6 @@ import ajax_select.fields
 import six
 from django import forms
 from django.conf import settings
-from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 
 from karaage.common import get_current_person
@@ -122,7 +121,7 @@ class PersonForm(forms.ModelForm):
 class AdminPersonForm(PersonForm):
     institute = forms.ModelChoiceField(queryset=None)
     comment = forms.CharField(widget=forms.Textarea(), required=False)
-    expires = forms.DateField(widget=AdminDateWidget, required=False)
+    expires = forms.DateField(required=False)
     is_admin = forms.BooleanField(help_text="Designates whether the user can log into this admin site.", required=False)
     is_systemuser = forms.BooleanField(
         help_text="Designates that this user is a system process, not a person.", required=False
