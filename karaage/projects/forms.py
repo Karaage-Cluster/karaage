@@ -22,7 +22,6 @@ import ajax_select.fields
 import six
 from django import forms
 from django.conf import settings
-from django.contrib.admin.widgets import AdminDateWidget
 
 from karaage.institutes.models import Institute
 from karaage.projects.models import Project
@@ -46,8 +45,8 @@ class ProjectForm(forms.ModelForm):
         widget=forms.Textarea(attrs={"class": "vLargeTextField", "rows": 10, "cols": 40}), required=False
     )
     leaders = ajax_select.fields.AutoCompleteSelectMultipleField("person", required=True)
-    start_date = forms.DateField(widget=AdminDateWidget, initial=datetime.datetime.today)
-    end_date = forms.DateField(widget=AdminDateWidget, required=False)
+    start_date = forms.DateField(initial=datetime.datetime.today)
+    end_date = forms.DateField(required=False)
 
     class Meta:
         model = Project
