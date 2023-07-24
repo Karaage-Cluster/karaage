@@ -1,0 +1,13 @@
+Hello {{ receiver.get_short_name }},
+
+This is in reference to your {{ org_name }} project:
+
+-------------------------------------------------------------
+  {{ project }}.
+-------------------------------------------------------------
+
+This project has expired.
+
+Thank you,
+
+{% include "karaage/emails/email_footer.txt" %}

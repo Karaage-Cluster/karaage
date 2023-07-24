@@ -90,3 +90,18 @@ def send_confirm_password_email(person):
     subject, body = render_email("confirm_password", context)
 
     send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
+
+
+def send_project_expired_email(project):
+    """Sends an email to project leaders informing them that the project has expired."""
+    context = CONTEXT.copy()
+    context["project"] = project
+
+    for leader in project.leaders.all():
+        context["receiver"] = leader
+
+        to_email = leader.email
+        subject, body = render_email("project_expired", context)
+
+        send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
+        log.change(leader, "Sent email about expired project %s" % project)
