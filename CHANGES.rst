@@ -9,6 +9,19 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+6.2.2 (2023-08-29)
+~~~~~~~~~~~~~~~~~~
+
+Changed
+~~~~~~~
+* Update slurm to 23.02.4
+* Delete references to LIEF GPGPU
+* Update python-tldap to support CIPHERS ldap setting
+* Attempt to use LC version of IMAGE_NAME
+* Change docs to furo style
+* Upgrade postgresql version for tests
+
+
 6.2.1 (2022-10-24)
 ------------------
 
