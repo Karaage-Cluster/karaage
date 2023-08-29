@@ -33,6 +33,8 @@
             pkgs.libmysqlclient
             pkgs.cracklib
             pkgs.pkg-config
+            pkgs.sentry-cli
+            pkgs.nodejs
           ];
         };
       });

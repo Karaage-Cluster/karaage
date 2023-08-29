@@ -1,0 +1,12 @@
+#!/bin/sh
+set -ex
+TAG_1="6.2.0"
+TAG_2="6.2.1"
+
+COMMIT_1=$(git rev-list -n1 "$TAG_1")
+COMMIT_2=$(git rev-list -n1 "$TAG_2")
+
+PATH="$PWD/node_modules/.bin:$PATH"
+sentry-cli releases --org linux-penguins new -p karaage-spartan "karaage@$TAG_2"
+sentry-cli releases --org linux-penguins set-commits --commit "Karaage-Cluster/karaage@$COMMIT_1..$COMMIT_2" "karaage@$TAG_2"
+sentry-cli releases --org linux-penguins deploys "karaage@$TAG_2" new -e spartan
