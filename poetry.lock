@@ -641,13 +641,12 @@ tablib = ["tablib"]
 
 [[package]]
 name = "django-tracking-model"
-version = "0.1.5"
+version = "0.1.7"
 description = "Track changes made to django model instance fields."
 optional = false
 python-versions = "*"
 files = [
-    {file = "django-tracking-model-0.1.5.tar.gz", hash = "sha256:3e97129aba2cf7fca6ace575fe9a048307ab12c812baf1e75a5e3b1ac3778644"},
-    {file = "django_tracking_model-0.1.5-py2.py3-none-any.whl", hash = "sha256:58003868213a6623c59471b280e1eff198500b7984b050af0023e80df31a4a87"},
+    {file = "django_tracking_model-0.1.7-py2.py3-none-any.whl", hash = "sha256:719df534c450fbe841dd77e55f26fb69741723780add13ddb77961e90b64ec46"},
 ]
 
 [package.dependencies]
