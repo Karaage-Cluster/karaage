@@ -9,6 +9,15 @@ adheres to `Semantic Versioning`_.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+UNRELEASED
+----------
+
+Changed
+~~~~~~~
+
+* Fix broken ajax selects (#1265).
+
+
 6.2.2 (2023-08-29)
 ~~~~~~~~~~~~~~~~~~
 
