@@ -52,7 +52,7 @@ pytest-django = "*"
 pytest-cov = "*"
 wheel = "*"
 twine = "*"
-bumpversion = "*"
+bump2version = "*"
 
 [tool.poetry.extras]
 docs = ["sphinx", "furo"]
