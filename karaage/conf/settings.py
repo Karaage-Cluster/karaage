@@ -17,12 +17,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import sys
 
 from .defaults import *  # NOQA
 from .process import post_process
 
 
-exec(open("/etc/karaage3/settings.py", "rb").read())
+exec(open(os.environ.get("KARAAGE_CONFIG_FILE"), "rb").read())
 
 post_process(sys.modules[__name__])
