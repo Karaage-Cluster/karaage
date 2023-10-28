@@ -66,3 +66,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 line-length = 120
+
+[tool.poetry.scripts]
+karaage = "karaage.cli:manage"

@@ -20,7 +20,7 @@
 
       in {
         packages = {
-          karaage = mkPoetryApplication {
+          karaage = p2n.mkPoetryApplication {
             projectDir = self;
             overrides = p2n.overrides.withDefaults (final: prev: {
               #nh3 = prev.nh3.override { preferWheel = true; };
