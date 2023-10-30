@@ -1,14 +1,18 @@
 {
   description = "Cluster account management";
 
-  inputs.flake-utils.url = "github:numtide/flake-utils";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-  inputs.poetry2nix = {
-    url = "github:nix-community/poetry2nix";
-    inputs.nixpkgs.follows = "nixpkgs";
+  inputs = {
+    flake-utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    poetry2nix = {
+      url = "github:nix-community/poetry2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    # See https://github.com/cachix/devenv/issues/756
+    devenv.url = "github:cachix/devenv/v0.6.3";
   };
 
-  outputs = { self, nixpkgs, flake-utils, poetry2nix }:
+  outputs = inputs@{ self, nixpkgs, flake-utils, poetry2nix, devenv }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         p2n = import poetry2nix { inherit pkgs; };
@@ -52,18 +56,34 @@
           default = self.packages.${system}.karaage;
         };
 
-        devShells.default = pkgs.mkShell {
-          packages = [
-            pkgs.poetry
-            pkgs.libffi
-            slapd
-            pkgs.openldap
-            pkgs.libmysqlclient
-            pkgs.cracklib
-            pkgs.pkg-config
-            pkgs.sentry-cli
-            pkgs.nodejs
-          ];
+        devShells.default = devenv.lib.mkShell {
+          inherit inputs pkgs;
+          modules = [{
+            packages = [
+              pkgs.poetry
+              pkgs.libffi
+              slapd
+              pkgs.openldap
+              pkgs.libmysqlclient
+              pkgs.cracklib
+              pkgs.pkg-config
+              pkgs.sentry-cli
+              pkgs.nodejs
+            ];
+            enterShell = ''
+              export KARAAGE_CONFIG_FILE=./dev_settings.py
+            '';
+            services.mysql = {
+              enable = true;
+              package = pkgs.mariadb;
+              ensureUsers = [{
+                name = "karaage";
+                password = "q1w2e3r4";
+                ensurePermissions = { "karaage.*" = "ALL PRIVILEGES"; };
+              }];
+              initialDatabases = [{ name = "karaage"; }];
+            };
+          }];
         };
       });
 }
