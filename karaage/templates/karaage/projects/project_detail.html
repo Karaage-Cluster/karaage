@@ -21,6 +21,11 @@
     <div class="module">
         <h2>Project Details</h2>
         <h3>{{ project }}</h3>
+        {% if project.has_notified_pending_expiration %}
+        <ul class="messagelist">
+        <li class="warning">This project will expire in {{ project.days_until_expiration }} days. <a href="{%url 'kg_project_renew' project.id%}">Renew Project</a>.</li>
+        </ul>
+        {% endif %}
         <div class="table-container">
             <table class="keyvalue">
                 <tr>
@@ -87,6 +92,7 @@
                 <tr><th>Deleted by:</th><td><a href="{{ project.deleted_by.get_absolute_url }}">{{ project.deleted_by }}</a></td></tr>
                 <tr><th>Date Deleted:</th><td>{{ project.date_deleted|date }}</td></tr>
                 {% endif %}
+                <tr><th>Has notifed pending expiration:</th><td>{% yes_no project.has_notified_pending_expiration %}</td></tr>
                 {% endif %}
             </table>
         </div>

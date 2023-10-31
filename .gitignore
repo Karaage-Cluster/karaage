@@ -14,4 +14,6 @@
 /.venv/
 /.coverage
 /node_modules/
+/.devenv
 /.direnv
+/result

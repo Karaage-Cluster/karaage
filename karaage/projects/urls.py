@@ -48,6 +48,7 @@ urlpatterns = [
     ),
     re_path(r"^(?P<project_id>\d+)/logs/$", views.project_logs, name="kg_project_logs"),
     re_path(r"^(?P<project_id>\d+)/add_comment/$", views.add_comment, name="kg_project_add_comment"),
+    re_path(r"^(?P<project_id>\d+)/renew_project/$", views.renew_project, name="kg_project_renew"),
 ]
 
 profile_urlpatterns = [

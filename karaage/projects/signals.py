@@ -17,14 +17,37 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
-from django.dispatch import receiver
-from karaage.people.emails import send_project_expired_email
+from karaage.people.emails import send_project_pending_expiration_email
 
-from karaage.projects.models import Projects
-from karaage.signals import daily_cleanup
+from karaage.common import log
+from karaage.projects.models import Project
 
 
-@receiver(daily_cleanup)
-def daily_cleanup(sender, **kwargs):
-    for project in Projects.objects.filter(end_date__eq=datetime.datetime.today()):
-        send_project_expired_email(project)
+def daily_cleanup():
+    today = datetime.datetime.today()
+    threshold = today + datetime.timedelta(days=30)
+
+    Project.objects.filter(is_active=False, has_notified_pending_expiration=True).update(
+        has_notified_pending_expiration=False
+    )
+
+    Project.objects.filter(end_date__isnull=True, has_notified_pending_expiration=True).update(
+        has_notified_pending_expiration=False
+    )
+
+    Project.objects.filter(end_date__gt=threshold, has_notified_pending_expiration=True).update(
+        has_notified_pending_expiration=False
+    )
+
+    for project in Project.objects.filter(end_date__lt=today, is_active=True):
+        project.has_notified_pending_expiration = True
+        project.deactivate()
+        log.delete(project, "Project expired")
+
+    for project in Project.objects.filter(
+        end_date__lte=threshold, has_notified_pending_expiration=False, is_active=True
+    ):
+        send_project_pending_expiration_email(project)
+        project.has_notified_pending_expiration = True
+        project.save()
+        log.delete(project, "Project renewal reminder sent")

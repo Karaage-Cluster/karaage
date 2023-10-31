@@ -6,8 +6,9 @@ This is in reference to your {{ org_name }} project:
   {{ project }}.
 -------------------------------------------------------------
 
-This project has expired.
+This project will expire in {{ project.days_until_expiration }} days.
+Please renew the project by following the link:
 
-Thank you,
+{{ url }}
 
 {% include "karaage/emails/email_footer.txt" %}

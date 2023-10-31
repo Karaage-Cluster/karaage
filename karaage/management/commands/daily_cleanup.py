@@ -26,5 +26,8 @@ class Command(BaseCommand):
     help = "Karaage Daily cleanup"
 
     def handle(self, **options):
+        from karaage.projects.signals import daily_cleanup as project_daily_cleanup
+
         management.call_command("lock_expired")
+        project_daily_cleanup()
         daily_cleanup.send(sender=self.__class__)

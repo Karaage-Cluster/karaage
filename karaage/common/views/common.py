@@ -55,7 +55,14 @@ def admin_index(request):
     recent_actions = LogEntryTable(recent_actions, orderable=False, prefix="actions-")
     config.configure(recent_actions)
 
+    projects_pending_expiration = Project.objects.filter(
+        end_date__isnull=False, has_notified_pending_expiration=True, is_active=True
+    ).order_by("end_date")
+    projects_pending_expiration = ProjectTable(projects_pending_expiration, orderable=False, prefix="ppe-")
+    config.configure(projects_pending_expiration)
+
     var = {
+        "projects_pending_expiration": projects_pending_expiration,
         "newest_people": newest_people,
         "newest_projects": newest_projects,
         "recent_actions": recent_actions,
@@ -66,6 +73,15 @@ def admin_index(request):
 def index(request):
     if settings.ADMIN_REQUIRED or is_admin(request):
         return admin_index(request)
+
+    if request.user.is_authenticated:
+        var = {
+            "projects_pending_expiration": Project.objects.filter(
+                end_date__isnull=False, has_notified_pending_expiration=True, is_active=True, leaders__in=[request.user]
+            ).order_by("end_date")
+        }
+        return render(template_name="karaage/common/index.html", context=var, request=request)
+
     return render(template_name="karaage/common/index.html", request=request)
 
 

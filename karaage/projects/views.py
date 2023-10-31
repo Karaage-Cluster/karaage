@@ -18,6 +18,7 @@
 
 import django_tables2 as tables
 import six
+from datetime import timedelta
 from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponseForbidden, HttpResponseRedirect
@@ -25,6 +26,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
 import karaage.common as util
+from karaage.common import log
 from karaage.common.decorators import admin_required, login_required
 from karaage.machines.models import Account
 from karaage.people.models import Person
@@ -163,7 +165,7 @@ def project_detail(request, project_id):
         if form.is_valid():
             person = form.cleaned_data["person"]
             add_user_to_project(person, project)
-            messages.success(request, "User '%s' was added to %s succesfully" % (person, project))
+            messages.success(request, "User '%s' was added to %s successfully" % (person, project))
             return HttpResponseRedirect(project.get_absolute_url())
 
     return render(
@@ -335,3 +337,29 @@ def add_comment(request, project_id):
         (six.text_type(obj.pid), reverse("kg_project_detail", args=[obj.id])),
     ]
     return util.add_comment(request, breadcrumbs, obj)
+
+
+@login_required
+def renew_project(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+
+    if not project.can_edit(request):
+        return HttpResponseForbidden("<h1>Access Denied</h1>")
+
+    if not project.has_notified_pending_expiration:
+        messages.error(request, "Project '%s' cannot be renewed yet" % project)
+        return HttpResponseRedirect(project.get_absolute_url())
+
+    if request.method == "POST":
+        project.end_date = project.end_date + timedelta(days=365)
+        project.has_notified_pending_expiration = False
+        project.save()
+        log.delete(project, "Project was renewed")
+        messages.success(request, "Project '%s' renewed succesfully" % project)
+        return HttpResponseRedirect(project.get_absolute_url())
+
+    return render(
+        template_name="karaage/projects/project_confirm_renew.html",
+        context={"project": project},
+        request=request,
+    )

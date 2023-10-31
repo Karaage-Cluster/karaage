@@ -21,6 +21,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
+from django.urls import reverse
 
 from karaage.common import log
 from karaage.common.emails import CONTEXT, send_mail
@@ -92,16 +93,17 @@ def send_confirm_password_email(person):
     send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
 
 
-def send_project_expired_email(project):
+def send_project_pending_expiration_email(project):
     """Sends an email to project leaders informing them that the project has expired."""
     context = CONTEXT.copy()
     context["project"] = project
+    context["url"] = "%s/%s" % (settings.REGISTRATION_BASE_URL, reverse("kg_project_renew", args=[project.id]))
 
     for leader in project.leaders.all():
         context["receiver"] = leader
 
         to_email = leader.email
-        subject, body = render_email("project_expired", context)
+        subject, body = render_email("project_pending_expiration", context)
 
         send_mail(subject, body, settings.ACCOUNTS_EMAIL, [to_email])
-        log.change(leader, "Sent email about expired project %s" % project)
+        log.change(leader, "Sent email about  project %s pending expiration" % project)

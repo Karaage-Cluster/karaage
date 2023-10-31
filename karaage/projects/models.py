@@ -54,6 +54,7 @@ class Project(TrackingModelMixin, models.Model):
     )
     date_deleted = models.DateField(null=True, blank=True, editable=False)
     last_usage = models.DateField(null=True, blank=True, editable=False)
+    has_notified_pending_expiration = models.BooleanField(default=False)
     objects = models.Manager()
     active = ActiveProjectManager()
     deleted = DeletedProjectManager()
@@ -232,6 +233,11 @@ class Project(TrackingModelMixin, models.Model):
         self.is_approved = True
         self.date_approved = datetime.datetime.today()
         self.approved_by = approved_by
+        self.has_notified_pending_expiration = False
+        # if activating project that has already expired, make sure we
+        # don't automatically expire it immediately.
+        if self.end_date <= datetime.date.today():
+            self.end_date = None
         self.save()
         log.change(self, "Activated by %s" % approved_by)
 
@@ -242,10 +248,16 @@ class Project(TrackingModelMixin, models.Model):
         self.deleted_by = deleted_by
         self.date_deleted = datetime.datetime.today()
         self.group.members.clear()
+        self.has_notified_pending_expiration = False
         self.save()
         log.change(self, "Deactivated by %s" % deleted_by)
 
     deactivate.alters_data = True
+
+    def days_until_expiration(self):
+        if self.end_date is None:
+            return None
+        return (self.end_date - datetime.date.today()).days
 
 
 def _leaders_changed(sender, instance, action, reverse, model, pk_set, **kwargs):

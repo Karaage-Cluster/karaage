@@ -12,6 +12,11 @@
     {% if is_admin %}
 
     <div class="module">
+        <h2>Projects Pending Expiration</h2>
+        {% render_table projects_pending_expiration %}
+    </div>
+
+    <div class="module">
         <h2>Newest People</h2>
         {% render_table newest_people %}
     </div>
@@ -33,6 +38,14 @@
             <li>Change your password</li>
         </ul>
     </div>
+
+    {% if request.user.is_authenticated and projects_pending_expiration %}
+    <ul class="messagelist">
+        {% for project in projects_pending_expiration %}
+        <li class="warning">Project {{ project.name }} will expire in {{ project.days_until_expiration }} days. <a href="{%url 'kg_project_renew' project.id%}">Renew Project</a>.</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
     {% endif %}
 
