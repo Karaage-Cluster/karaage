@@ -18,6 +18,7 @@
 
 import copy
 
+from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse
 from tracking_model import TrackingModelMixin
@@ -30,6 +31,7 @@ from karaage.people.models import Group, Person
 
 class Institute(TrackingModelMixin, models.Model):
     name = models.CharField(max_length=255, unique=True)
+    project_prefix = models.CharField(max_length=4, validators=[RegexValidator(r"^[a-zA-Z]{4}$")])
     delegates = models.ManyToManyField(Person, related_name="delegate_for", blank=True, through="InstituteDelegate")
     group = models.ForeignKey(Group, on_delete=models.PROTECT)
     saml_scoped_affiliation = models.CharField(max_length=200, null=True, blank=True, unique=True)

@@ -58,7 +58,7 @@ class ProjectTestCase(IntegrationTestCase):
         self.assertEqual(project.is_active, True)
         self.assertEqual(project.date_approved, datetime.date.today())
         self.assertEqual(project.approved_by, Person.objects.get(username="kgsuper"))
-        self.assertEqual(project.pid, "pExam0001")
+        self.assertEqual(project.pid, "pEx0001")
         self.assertTrue(Person.objects.get(pk=2) in project.leaders.all())
         self.assertTrue(Person.objects.get(pk=3) in project.leaders.all())
         lgroup = self._ldap_datastore._get_group(cn=project.pid)

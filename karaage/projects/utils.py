@@ -36,7 +36,7 @@ def get_new_pid(institute):
     institute_id -- Institute id
     """
     number = "0001"
-    prefix = "p%s" % institute.name.replace(" ", "")[:4]
+    prefix = "p%s" % institute.project_prefix
 
     found = True
     while found:

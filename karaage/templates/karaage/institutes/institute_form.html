@@ -45,6 +45,7 @@
     </div>
 </form>
 
+{% if not institute %}
 <script type="text/javascript">
 $(document).ready(function(){
     var name = $("#id_name");
@@ -52,10 +53,14 @@ $(document).ready(function(){
     name.on('change keyup paste mouseup', function() {
         if (name.val() != lastValue) {
             lastValue = name.val();
+            var newValue = lastValue.replace(/[^A-Za-z]/g, "").substring(0, 4);
+            $("#id_project_prefix").val(newValue);
             var newValue = lastValue.split(" ").join("").toLowerCase();
-            $("#id_group_name").val(newValue)
+            $("#id_group_name").val(newValue);
         }
     })
 })
 </script>
+{% endif %}
+
 {% endblock %}

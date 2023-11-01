@@ -32,6 +32,7 @@
         "fields": {
             "group": 500,
             "name": "Example",
+            "project_prefix": "Ex",
             "saml_entityid": null,
             "is_active": 1
         }
@@ -42,6 +43,7 @@
         "fields": {
             "group": 501,
             "name": "OtherInst",
+            "project_prefix": "Ot",
             "saml_entityid": "",
             "is_active": 1
         }
