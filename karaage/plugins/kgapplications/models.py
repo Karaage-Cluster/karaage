@@ -267,7 +267,7 @@ class ProjectApplication(Application):
                 institute=self.institute,
                 additional_req=self.additional_req,
                 start_date=datetime.datetime.today(),
-                end_date=datetime.datetime.today() + datetime.timedelta(days=365),
+                end_date=datetime.date.today() + datetime.timedelta(days=365),
             )
             project.activate(approved_by)  # Activate has implied call to save().
             self.project = project
