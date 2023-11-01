@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+unset DJANGO_SETTINGS_MODULE
+
 DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 
 RETURN=0
