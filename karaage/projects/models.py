@@ -236,7 +236,7 @@ class Project(TrackingModelMixin, models.Model):
         self.has_notified_pending_expiration = False
         # if activating project that has already expired, make sure we
         # don't automatically expire it immediately.
-        if self.end_date <= datetime.date.today():
+        if self.end_date is not None and self.end_date <= datetime.date.today():
             self.end_date = None
         self.save()
         log.change(self, "Activated by %s" % approved_by)
