@@ -55,6 +55,7 @@ class Project(TrackingModelMixin, models.Model):
     date_deleted = models.DateField(null=True, blank=True, editable=False)
     last_usage = models.DateField(null=True, blank=True, editable=False)
     has_notified_pending_expiration = models.BooleanField(default=False)
+    rcao = models.EmailField(null=True, blank=True, verbose_name="RCAO Email")
     objects = models.Manager()
     active = ActiveProjectManager()
     deleted = DeletedProjectManager()

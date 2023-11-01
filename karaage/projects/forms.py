@@ -50,7 +50,17 @@ class ProjectForm(forms.ModelForm):
 
     class Meta:
         model = Project
-        fields = ("pid", "name", "institute", "leaders", "description", "start_date", "end_date", "additional_req")
+        fields = (
+            "pid",
+            "name",
+            "institute",
+            "leaders",
+            "description",
+            "start_date",
+            "end_date",
+            "additional_req",
+            "rcao",
+        )
 
     def __init__(self, *args, **kwargs):
         # Make PID field read only if we are editing a project
