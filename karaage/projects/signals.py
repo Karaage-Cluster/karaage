@@ -41,7 +41,7 @@ def daily_cleanup():
 
     for project in Project.objects.filter(end_date__lt=today, is_active=True):
         project.has_notified_pending_expiration = True
-        project.deactivate()
+        project.deactivate(deleted_by=None)
         log.delete(project, "Project expired")
 
     for project in Project.objects.filter(
