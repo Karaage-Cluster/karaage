@@ -29,6 +29,8 @@ ENV VERSION=${VERSION}
 ENV BUILD_DATE=${BUILD_DATE}
 ENV VCS_REF=${VCS_REF}
 
+ENV KARAAGE_CONFIG_FILE=/etc/karaage3/settings.py
+
 # Specify the command to run when the image is run.
 EXPOSE 8000
 VOLUME '/etc/karaage3' '/var/log' '/var/lib/karaage3' '/var/cache/karaage3'
