@@ -97,7 +97,7 @@ def send_project_pending_expiration_email(project):
     """Sends an email to project leaders informing them that the project has expired."""
     context = CONTEXT.copy()
     context["project"] = project
-    context["url"] = "%s/%s" % (settings.REGISTRATION_BASE_URL, reverse("kg_project_renew", args=[project.id]))
+    context["url"] = "%s%s" % (settings.REGISTRATION_BASE_URL, reverse("kg_project_renew", args=[project.id]))
 
     for leader in project.leaders.all():
         context["receiver"] = leader
