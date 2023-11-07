@@ -34,4 +34,5 @@ ENV KARAAGE_CONFIG_FILE=/etc/karaage3/settings.py
 # Specify the command to run when the image is run.
 EXPOSE 8000
 VOLUME '/etc/karaage3' '/var/log' '/var/lib/karaage3' '/var/cache/karaage3'
-CMD /opt/karaage/scripts/docker.sh
+ENTRYPOINT [ "/opt/karaage/scripts/docker.sh" ]
+CMD /opt/karaage/scripts/start.sh
