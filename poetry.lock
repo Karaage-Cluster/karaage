@@ -602,13 +602,13 @@ test = ["testfixtures"]
 
 [[package]]
 name = "django-tables2"
-version = "2.6.0"
+version = "2.7.0"
 description = "Table/data-grid framework for Django"
 optional = false
 python-versions = "*"
 files = [
-    {file = "django-tables2-2.6.0.tar.gz", hash = "sha256:479eed04007cc04bcf764a6fb7a5e3955d94b878ba7f3a4bd4edbd2f7769e08d"},
-    {file = "django_tables2-2.6.0-py2.py3-none-any.whl", hash = "sha256:04f23c1181d93716c67085a3c324b449180fd0c5162ef4619acb0b2d9a166133"},
+    {file = "django-tables2-2.7.0.tar.gz", hash = "sha256:4113fcc575eb438a12e83a4d4ea01452e4800d970e8bdd0e4122ac171af1900d"},
+    {file = "django_tables2-2.7.0-py2.py3-none-any.whl", hash = "sha256:99e06d966ca8ac69fd74092eb45c79a280dd5ca0ccb81395d96261f62128e1af"},
 ]
 
 [package.dependencies]
