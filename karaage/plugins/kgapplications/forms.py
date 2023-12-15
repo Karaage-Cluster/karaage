@@ -211,6 +211,7 @@ class NewProjectApplicationForm(forms.ModelForm):
         help_text=six.u("Do you have any special requirements?"),
         required=False,
     )
+    rcao = forms.EmailField(required=True)
 
     def __init__(self, *args, **kwargs):
         super(NewProjectApplicationForm, self).__init__(*args, **kwargs)
@@ -221,6 +222,7 @@ class NewProjectApplicationForm(forms.ModelForm):
             "name",
             "description",
             "additional_req",
+            "rcao",
         ]
 
 

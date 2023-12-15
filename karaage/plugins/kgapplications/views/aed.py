@@ -317,6 +317,7 @@ class StateStepProject(Step):
                 application.additional_req = None
                 application.machine_categories = []
                 application.pid = None
+                application.rcao = None
 
             # save the values
             application.save()

@@ -235,6 +235,7 @@ class ProjectApplication(Application):
     description = models.TextField(null=True, blank=True)
     additional_req = models.TextField(null=True, blank=True)
     pid = models.CharField(max_length=50, null=True, blank=True)
+    rcao = models.EmailField(null=True, blank=True, verbose_name="RCAO Email")
 
     # existing project request
     project = models.ForeignKey(Project, null=True, blank=True, on_delete=models.CASCADE)
@@ -268,6 +269,7 @@ class ProjectApplication(Application):
                 additional_req=self.additional_req,
                 start_date=datetime.datetime.today(),
                 end_date=datetime.date.today() + datetime.timedelta(days=365),
+                rcao=self.rcao,
             )
             project.activate(approved_by)  # Activate has implied call to save().
             self.project = project

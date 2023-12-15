@@ -346,6 +346,7 @@ class ProjectApplicationTestCase(TestCase):
             "additional_req": "Meow",
             "needs_account": False,
             "machine_categories": [1],
+            "rcao": "email@example.org",
             "submit": "string",
         }
 
