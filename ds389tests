@@ -1,0 +1,10 @@
+#!/bin/sh
+set -e
+set -x
+export LDAP_TYPE=ds389
+export LDAP_URL="ldap://silverfish.pri:38911/"
+export LDAP_DN="cn=Directory Manager"
+export LDAP_PASSWORD="password123"
+export LDAP_ACCOUNT_BASE="ou=People,dc=python-ldap,dc=org"
+export LDAP_GROUP_BASE="ou=Groups,dc=python-ldap,dc=org"
+"$@"
