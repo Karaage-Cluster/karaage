@@ -1,0 +1,6 @@
+{
+  "dependencies": {},
+  "devDependencies": {
+    "@sentry/cli": "^1.40.0"
+  }
+}
