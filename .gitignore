@@ -17,3 +17,5 @@
 /.devenv
 /.direnv
 /result
+/old
+/static
