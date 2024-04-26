@@ -61,12 +61,12 @@ class PersonForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(PersonForm, self).__init__(*args, **kwargs)
-        self.fields[
-            "short_name"
-        ].help_text = "This is typically the person's given name. For example enter 'Fred' here."
-        self.fields[
-            "full_name"
-        ].help_text = "This is typically the person's full name. For example enter 'Fred Smith' here."
+        self.fields["short_name"].help_text = (
+            "This is typically the person's given name. For example enter 'Fred' here."
+        )
+        self.fields["full_name"].help_text = (
+            "This is typically the person's full name. For example enter 'Fred Smith' here."
+        )
 
     def clean(self):
         data = super(PersonForm, self).clean()
@@ -292,7 +292,6 @@ class AdminGroupForm(forms.Form):
 
 
 class AddGroupMemberForm(forms.Form):
-
     """Add a user to a group form"""
 
     person = ajax_select.fields.AutoCompleteSelectField("person", required=True, label="Add person")

@@ -175,7 +175,6 @@ def set_logger_factory(factory):
 
 
 class PrependLoggerFactory(object):
-
     """This is a convenience class for creating new loggers for the
     "trace" decorator.  All loggers created via this class will have a
     user specified prefix prepended to the name of the logger to
@@ -208,7 +207,6 @@ class PrependLoggerFactory(object):
 
 
 class ThreadLocal(object):
-
     """Instances of this class provide a thread-local variable."""
 
     def __init__(self):
@@ -710,7 +708,6 @@ def attach(decorator, obj, recursive=True):
 
 
 class TraceMetaClass(type):
-
     """Metaclass to automatically attach the 'trace' decorator to all
     methods, static method and class methods of the class.
     """

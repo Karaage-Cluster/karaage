@@ -387,7 +387,6 @@ class Person(TrackingModelMixin, AbstractBaseUser):
 
 
 class Group(TrackingModelMixin, models.Model):
-
     """Groups represent collections of people, these objects can be
     expressed externally in a datastore."""
 

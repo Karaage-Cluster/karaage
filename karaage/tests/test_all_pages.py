@@ -27,7 +27,6 @@ from .client import TestAllPagesCase
 
 @pytest.mark.django_db
 class TestKaraagePages(TestAllPagesCase):
-
     """Discover all URLs, do a HTTP GET and
     confirm 200 OK and no DB changes."""
 
