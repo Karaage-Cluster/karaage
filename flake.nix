@@ -3,7 +3,7 @@
 
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
     poetry2nix = {
       url = "github:nix-community/poetry2nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -39,7 +39,8 @@
                 });
               django-ajax-selects = prev.django-ajax-selects.overridePythonAttrs
                 (oldattrs: {
-                  buildInputs = oldattrs.buildInputs ++ [ final.setuptools ];
+                  buildInputs = oldattrs.buildInputs
+                    ++ [ final.setuptools final.poetry ];
                 });
               python-alogger = prev.python-alogger.overridePythonAttrs
                 (oldattrs: {
