@@ -70,6 +70,7 @@
               pkgs.pkg-config
               pkgs.sentry-cli
               pkgs.nodejs
+              pkgs.gcc
             ];
             enterShell = ''
               export KARAAGE_CONFIG_FILE=./dev_settings.py
