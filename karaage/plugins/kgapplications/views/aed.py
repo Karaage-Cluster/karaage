@@ -39,7 +39,6 @@ def _get_applicant_from_token(session_jwt):
 
 
 class StateStepAaf(Step):
-
     """Invitation has been sent to applicant."""
 
     name = "Invitation sent"
@@ -155,7 +154,6 @@ class StateStepAaf(Step):
 
 
 class StateStepApplicant(Step):
-
     """Application is open and user is can edit it."""
 
     name = "Open"
@@ -213,7 +211,6 @@ class StateStepApplicant(Step):
 
 
 class StateStepProject(Step):
-
     """Applicant is able to choose the project for the application."""
 
     name = "Choose project"
@@ -370,7 +367,6 @@ class StateStepProject(Step):
 
 
 class StateStepIntroduction(Step):
-
     """Invitation has been sent to applicant."""
 
     name = "Read introduction"

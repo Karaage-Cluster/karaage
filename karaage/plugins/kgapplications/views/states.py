@@ -262,7 +262,6 @@ class StateDeclined(base.State):
 
 
 class StateWaitingForDelegate(StateWaitingForApproval):
-
     """We need the delegate to provide approval."""
 
     name = "Waiting for delegate"
@@ -282,7 +281,6 @@ class StateWaitingForDelegate(StateWaitingForApproval):
 
 
 class StateWaitingForAdmin(StateWaitingForApproval):
-
     """We need the administrator to provide approval."""
 
     name = "Waiting for administrator"
@@ -305,7 +303,6 @@ class StateWaitingForAdmin(StateWaitingForApproval):
 
 
 class StateDuplicateApplicant(base.State):
-
     """Somebody has declared application is existing user."""
 
     name = "Duplicate Applicant"
@@ -355,7 +352,6 @@ class StateDuplicateApplicant(base.State):
 
 
 class StateArchived(StateCompleted):
-
     """This application is archived."""
 
     name = "Archived"
@@ -367,7 +363,6 @@ class StateArchived(StateCompleted):
 
 
 class Step(object):
-
     """A single step in a StateWithStep state."""
 
     def view(self, request, application, label, roles, actions):
@@ -375,7 +370,6 @@ class Step(object):
 
 
 class StateWithSteps(base.State):
-
     """A state that has a number of steps to complete."""
 
     def __init__(self, config):
@@ -461,7 +455,6 @@ class StateWithSteps(base.State):
 
 
 class StateWaitingForLeader(StateWaitingForApproval):
-
     """We need the leader to provide approval."""
 
     name = "Waiting for leader"

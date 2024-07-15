@@ -55,7 +55,6 @@ class ApplicationManager(models.Manager):
 
 
 class Application(TrackingModelMixin, models.Model):
-
     """Generic application for anything."""
 
     WAITING_FOR_ADMIN = "K"
