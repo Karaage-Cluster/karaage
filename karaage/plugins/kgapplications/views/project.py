@@ -85,7 +85,7 @@ def _send_invitation(request, project):
             if existing_person is not None and "existing" not in request.POST:
                 return render(
                     template_name="kgapplications/project_common_invite_existing.html",
-                    context={"form": form, "person": applicant},
+                    context={"form": form, "person": existing_person},
                     request=request,
                 )
 
