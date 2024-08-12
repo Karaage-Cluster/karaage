@@ -32,9 +32,6 @@
                 buildInputs = oldattrs.buildInputs
                   ++ [ final.setuptools pkgs.cracklib ];
               });
-              docutils = prev.docutils.overridePythonAttrs (oldattrs: {
-                buildInputs = oldattrs.buildInputs ++ [ final.flit-core ];
-              });
               django-filter = prev.django-filter.overridePythonAttrs
                 (oldattrs: {
                   buildInputs = oldattrs.buildInputs ++ [ final.flit-core ];
