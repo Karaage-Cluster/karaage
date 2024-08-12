@@ -26,14 +26,6 @@ from django.conf import settings
 LOG = logging.getLogger(__name__)
 
 
-def assert_password_simple(password, old=None):
-    if old and password == old:
-        raise ValueError("Old and new passwords are the same.")
-    elif len(password) < 6:
-        raise ValueError("Password is less than six characters.")
-    return password
-
-
 try:
     from cracklib import VeryFascistCheck as _assert_password
 
@@ -41,11 +33,12 @@ try:
     # tests a password for the first time, so test a strong password to
     # verify that cracklib is working as intended.
     _assert_password("thaeliez4niore0U")
-except ImportError:
-    _assert_password = assert_password_simple
+except ImportError as e:
+    LOG.error("Cracklib misconfigured: %s", str(e))
+    raise e
 except (OSError, ValueError) as e:
-    LOG.warning("Cracklib misconfigured: %s", str(e))
-    _assert_password = assert_password_simple
+    LOG.error("Cracklib misconfigured: %s", str(e))
+    raise ImportError("Cracklib misconfigured: %s" % str(e))
 
 
 def assert_strong_password(username, password, old_password=None):
