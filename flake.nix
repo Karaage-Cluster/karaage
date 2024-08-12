@@ -73,6 +73,7 @@
             ];
             enterShell = ''
               export KARAAGE_CONFIG_FILE=./dev_settings.py
+              export LD_LIBRARY_PATH="${pkgs.cracklib}/lib:$LD_LIBRARY_PATH"
             '';
             services.mysql = {
               enable = true;
