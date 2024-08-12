@@ -146,7 +146,8 @@ PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
     # Commented out as not supported by Django 1.8:
     # 'django.contrib.auth.hashers.Argon2PasswordHasher',
-    "django.contrib.auth.hashers.SHA1PasswordHasher",
+    # Commented out as not supported by Django 5.1:
+    # "django.contrib.auth.hashers.SHA1PasswordHasher",
 ]
 
 # The default value for the X-Frame-Options header used by
