@@ -20,9 +20,40 @@
         slapd = pkgs.writeShellScriptBin "slapd" ''
           exec ${pkgs.openldap}/libexec/slapd "$@"
         '';
-
+        devShell = devenv.lib.mkShell {
+          inherit inputs pkgs;
+          modules = [{
+            packages = [
+              pkgs.poetry
+              pkgs.libffi
+              slapd
+              pkgs.openldap
+              pkgs.libmysqlclient
+              pkgs.cracklib
+              pkgs.pkg-config
+              pkgs.sentry-cli
+              pkgs.nodejs
+              pkgs.gcc
+            ];
+            enterShell = ''
+              export KARAAGE_CONFIG_FILE=./dev_settings.py
+              export LD_LIBRARY_PATH="${pkgs.cracklib}/lib:$LD_LIBRARY_PATH"
+            '';
+            services.mysql = {
+              enable = true;
+              package = pkgs.mariadb;
+              ensureUsers = [{
+                name = "karaage";
+                password = "q1w2e3r4";
+                ensurePermissions = { "karaage.*" = "ALL PRIVILEGES"; };
+              }];
+              initialDatabases = [{ name = "karaage"; }];
+            };
+          }];
+        };
       in {
         packages = {
+          devenv-up = devShell.config.procfileScript;
           karaage = p2n.mkPoetryApplication {
             projectDir = self;
             overrides = p2n.overrides.withDefaults (final: prev: {
@@ -56,36 +87,6 @@
           default = self.packages.${system}.karaage;
         };
 
-        devShells.default = devenv.lib.mkShell {
-          inherit inputs pkgs;
-          modules = [{
-            packages = [
-              pkgs.poetry
-              pkgs.libffi
-              slapd
-              pkgs.openldap
-              pkgs.libmysqlclient
-              pkgs.cracklib
-              pkgs.pkg-config
-              pkgs.sentry-cli
-              pkgs.nodejs
-              pkgs.gcc
-            ];
-            enterShell = ''
-              export KARAAGE_CONFIG_FILE=./dev_settings.py
-              export LD_LIBRARY_PATH="${pkgs.cracklib}/lib:$LD_LIBRARY_PATH"
-            '';
-            services.mysql = {
-              enable = true;
-              package = pkgs.mariadb;
-              ensureUsers = [{
-                name = "karaage";
-                password = "q1w2e3r4";
-                ensurePermissions = { "karaage.*" = "ALL PRIVILEGES"; };
-              }];
-              initialDatabases = [{ name = "karaage"; }];
-            };
-          }];
-        };
+        devShells.default = devShell;
       });
 }

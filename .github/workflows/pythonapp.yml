@@ -99,7 +99,7 @@ jobs:
       - name: Install postgresql
         uses: harmon758/postgresql-action@v1
         with:
-          postgresql version: '12'
+          postgresql version: '16'
           postgresql db: 'test'
           postgresql user: 'test'
           postgresql password: 'z9Pm29jg9EfJ6m'
