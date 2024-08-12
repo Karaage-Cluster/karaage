@@ -341,7 +341,7 @@ class ProjectApplicationTestCase(TestCase):
         form_data = {
             "application_type": "P",
             "name": "NewProject1",
-            "description": "I like chocoloate.",
+            "description": "I like chocolate.",
             "aup": True,
             "additional_req": "Meow",
             "needs_account": False,
