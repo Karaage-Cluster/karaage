@@ -8,8 +8,7 @@
       url = "github:nix-community/poetry2nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # See https://github.com/cachix/devenv/issues/756
-    devenv.url = "github:cachix/devenv/v0.6.3";
+    devenv.url = "github:cachix/devenv";
   };
 
   outputs = inputs@{ self, nixpkgs, flake-utils, poetry2nix, devenv }:
@@ -32,6 +31,9 @@
               cracklib = prev.cracklib.overridePythonAttrs (oldattrs: {
                 buildInputs = oldattrs.buildInputs
                   ++ [ final.setuptools pkgs.cracklib ];
+              });
+              docutils = prev.docutils.overridePythonAttrs (oldattrs: {
+                buildInputs = oldattrs.buildInputs ++ [ final.flit-core ];
               });
               django-filter = prev.django-filter.overridePythonAttrs
                 (oldattrs: {
