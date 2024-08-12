@@ -83,7 +83,7 @@ jobs:
           mkdir test-reports
           poetry run python -m tldap.test.slapd python -m pytest --cov=karaage --junitxml=test-reports/junit.xml
       - name: Upload pytest test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pytest-results-mysql
           path: test-reports/junit.xml
@@ -131,7 +131,7 @@ jobs:
           mkdir test-reports
           poetry run python -m tldap.test.slapd python -m pytest --cov=karaage --junitxml=test-reports/junit.xml
       - name: Upload pytest test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pytest-results-postgresql
           path: test-reports/junit.xml
