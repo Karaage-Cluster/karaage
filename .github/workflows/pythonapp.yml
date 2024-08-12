@@ -85,7 +85,7 @@ jobs:
       - name: Upload pytest test results
         uses: actions/upload-artifact@v3
         with:
-          name: pytest-results
+          name: pytest-results-mysql
           path: test-reports/junit.xml
 
   test-postgresql:
@@ -133,7 +133,7 @@ jobs:
       - name: Upload pytest test results
         uses: actions/upload-artifact@v3
         with:
-          name: pytest-results
+          name: pytest-results-postgresql
           path: test-reports/junit.xml
 
   setup-build-publish-deploy:
