@@ -274,7 +274,7 @@ PROJECT_ID_MAX_LENGTH = 255
 PROJECT_VALIDATION_ERROR_MSG = six.u("Project names can only contain letters, numbers and underscores")
 
 # Project deactivation expired projects
-PROJECT_DEACTIVE_AFTER_EXPIRATION = False
+PROJECT_DEACTIVATE_AFTER_EXPIRATION = False
 
 # RE for validing a group id.
 GROUP_VALIDATION_RE = r"[-\w]+"
