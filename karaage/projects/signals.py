@@ -17,8 +17,9 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
-from karaage.people.emails import send_project_pending_expiration_email
+from django.conf import settings
 
+from karaage.people.emails import send_project_pending_expiration_email
 from karaage.common import log
 from karaage.projects.models import Project
 
@@ -39,10 +40,10 @@ def daily_cleanup():
         has_notified_pending_expiration=False
     )
 
-    for project in Project.objects.filter(end_date__lt=today, is_active=True):
-        project.has_notified_pending_expiration = True
-        project.deactivate(deleted_by=None)
-        log.delete(project, "Project expired")
+    if settings.PROJECT_DEACTIVE_AFTER_EXPIRATION:
+        for project in Project.objects.filter(end_date__lt=today, is_active=True):
+            project.deactivate(deleted_by=None)
+            log.delete(project, "Project expired")
 
     for project in Project.objects.filter(
         end_date__lte=threshold, has_notified_pending_expiration=False, is_active=True
