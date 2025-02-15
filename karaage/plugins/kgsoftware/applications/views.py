@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-""" This file shows the project application views using a state machine. """
+"""This file shows the project application views using a state machine."""
 
 from django.conf import settings
 from django.http import HttpResponseBadRequest

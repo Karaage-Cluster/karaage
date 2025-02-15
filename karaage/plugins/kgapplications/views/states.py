@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-""" This file is for common state or transitions that can be shared. """
+"""This file is for common state or transitions that can be shared."""
 
 from django.conf import settings
 from django.contrib import messages

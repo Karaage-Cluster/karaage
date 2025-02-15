@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-""" Test LDAP Data"""
+"""Test LDAP Data"""
 
 GROUP_DN = "ou=Group, dc=python-ldap,dc=org"
 ACCOUNT_DN = "ou=Account, dc=python-ldap,dc=org"

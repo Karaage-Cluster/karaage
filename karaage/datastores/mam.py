@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-""" MOAB Account Manager datastore. """
+"""MOAB Account Manager datastore."""
 
 import csv
 import logging

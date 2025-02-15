@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-""" Default Karaage Settings. """
+"""Default Karaage Settings."""
 from socket import getfqdn
 
 import django

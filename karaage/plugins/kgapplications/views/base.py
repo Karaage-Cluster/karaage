@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-""" This file implements a state machine for the views. """
+"""This file implements a state machine for the views."""
 import importlib
 
 from django.conf import settings

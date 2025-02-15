@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-""" Application specific tags. """
+"""Application specific tags."""
 
 import django_tables2 as tables
 from django import template

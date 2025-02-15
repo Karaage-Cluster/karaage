@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 
-""" Forms for Karaage use. """
+"""Forms for Karaage use."""
 
 import re
 

@@ -55,7 +55,7 @@ class AdminAccountFormTestCase(TestCase):
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(
             form.errors.items(),
-            dict.items({"username": [(six.u("Usernames can only contain letters, numbers and underscores"))]}),
+            dict.items({"username": [six.u("Usernames can only contain letters, numbers and underscores")]}),
         )
 
     def test_upper_username(self):
