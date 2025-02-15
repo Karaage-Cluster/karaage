@@ -39,7 +39,7 @@ jobs:
 
   test-mysql:
     name: Mysql tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: ${{ github.repository_owner != 'Karaage-Cluster' || github.event_name != 'pull_request' }}
     env:
         DATABASE_URL: mysql://root:z9Pm29jg9EfJ6m@127.0.0.1/test
@@ -90,7 +90,7 @@ jobs:
 
   test-postgresql:
     name: Postgresql tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: ${{ github.repository_owner != 'Karaage-Cluster' || github.event_name != 'pull_request' }}
     env:
         DATABASE_URL: postgresql://test:z9Pm29jg9EfJ6m@localhost/test?sslmode=disable
