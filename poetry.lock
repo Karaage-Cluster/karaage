@@ -612,19 +612,18 @@ django = "*"
 
 [[package]]
 name = "django-simple-captcha"
-version = "0.6.1"
+version = "0.6.2"
 description = "A very simple, yet powerful, Django captcha application"
 optional = false
 python-versions = "*"
 files = [
-    {file = "django_simple_captcha-0.6.1-py2.py3-none-any.whl", hash = "sha256:75c4a89cf54011be54dd96fc4bfc2286f92bed88c46d247b9e504b7fc4c7cfe5"},
-    {file = "django_simple_captcha-0.6.1.tar.gz", hash = "sha256:9df5cf24e38b91af62d601f8e5189b0f6d28dbaa55a363a8b9d727703f9c35de"},
+    {file = "django_simple_captcha-0.6.2-py2.py3-none-any.whl", hash = "sha256:f5b7eee6bfeba6c55b47f2f8414557d5609fc29c4758da2c91ba9a91d6ac349d"},
+    {file = "django_simple_captcha-0.6.2.tar.gz", hash = "sha256:24db2bd1386c1833618465862e3518d310246d88f5e7f3bec23a5bda768ef834"},
 ]
 
 [package.dependencies]
 Django = ">=4.2"
 django-ranged-response = "0.2.0"
-djangorestframework = ">=3.15.0"
 Pillow = ">=6.2.0"
 
 [package.extras]
@@ -659,20 +658,6 @@ files = [
 
 [package.dependencies]
 Django = ">=1.11"
-
-[[package]]
-name = "djangorestframework"
-version = "3.15.2"
-description = "Web APIs for Django, made easy."
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "djangorestframework-3.15.2-py3-none-any.whl", hash = "sha256:2b8871b062ba1aefc2de01f773875441a961fefbf79f5eed1e32b2f096944b20"},
-    {file = "djangorestframework-3.15.2.tar.gz", hash = "sha256:36fe88cd2d6c6bec23dca9804bab2ba5517a8bb9d8f47ebc68981b56840107ad"},
-]
-
-[package.dependencies]
-django = ">=4.2"
 
 [[package]]
 name = "docutils"
