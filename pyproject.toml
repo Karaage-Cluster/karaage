@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "karaage"
-version = "6.2.3"
+version = "6.3.0"
 description = "Web application to manage a HP cluster"
 authors = ["Brian May <brian@linuxpenguins.xyz>"]
 license = "GPL3+"
