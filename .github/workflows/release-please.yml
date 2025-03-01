@@ -24,8 +24,8 @@ jobs:
 
   upload-pypi:
     name: Upload to pypi
-    needs: [release-please]
-    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    # needs: [release-please]
+    # if: ${{ needs.release-please.outputs.release_created == 'true' }}
     runs-on: ubuntu-latest
     environment:
       name: pypi
@@ -51,6 +51,10 @@ jobs:
       with:
         path: ./.venv
         key: venv-${{ hashFiles('poetry.lock') }}
+    - name: Install system dependancies
+      run: |
+        sudo apt-get update
+        sudo apt-get install libcrack2-dev
     - name: Install the project dependencies
       run: poetry install
     - name: Package project
