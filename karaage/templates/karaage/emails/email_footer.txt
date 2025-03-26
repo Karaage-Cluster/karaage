@@ -1,3 +1,5 @@
 Thanks,
 
-{{ org_name }} accounts team
+Spartan HPC accounts team
+
+If you have any questions, please contact us using the forms here - https://dashboard.hpc.unimelb.edu.au/training_help/
