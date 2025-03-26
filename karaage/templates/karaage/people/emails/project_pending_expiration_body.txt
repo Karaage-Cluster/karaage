@@ -1,6 +1,6 @@
 Hello {{ receiver.get_short_name }},
 
-This is in reference to your {{ org_name }} project:
+This is in reference to your Spartan project:
 
 -------------------------------------------------------------
   {{ project }}.
@@ -10,5 +10,7 @@ This project will expire in {{ project.days_until_expiration }} days.
 Please renew the project by following the link:
 
 {{ url }}
+
+Our policies on what we do with expired projects can be found here - https://dashboard.hpc.unimelb.edu.au/policies/#expiration-of-the-project
 
 {% include "karaage/emails/email_footer.txt" %}
