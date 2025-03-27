@@ -23,19 +23,20 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install libcrack2-dev
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v4.0.0
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          poetry-version: 1.3.0
-      - name: Install python dependancies
-        run: |
-          poetry install --extras=docs
+          version: "0.4.30"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+      - name: Install the project
+        run: uv sync --all-extras --dev --group docs
       - name: Run tests
         run: |
-          poetry run make -C docs/admin html
-          poetry run black --check karaage
-          poetry run flake8 karaage
-          poetry run ./manage.py makemigrations --settings=karaage.tests.settings --check --dry-run
+          uv run make -C docs/admin html
+          uv run black --check karaage
+          uv run flake8 karaage
+          uv run ./manage.py makemigrations --settings=karaage.tests.settings --check --dry-run
 
   test-mysql:
     name: Mysql tests
@@ -69,19 +70,20 @@ jobs:
         run: |
             sudo apt-get install apparmor-utils
             sudo aa-complain /usr/sbin/slapd
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v4.0.0
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          poetry-version: 1.3.0
-      - name: Install python dependancies
-        run: |
-          poetry install
+          version: "0.4.30"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+      - name: Install the project
+        run: uv sync --all-extras --dev
       - name: Run tests
         run: |
-          poetry run ./manage.py collectstatic --settings=karaage.tests.settings --noinput
-          poetry run ./manage.py migrate --settings=karaage.tests.settings
+          uv run ./manage.py collectstatic --settings=karaage.tests.settings --noinput
+          uv run ./manage.py migrate --settings=karaage.tests.settings
           mkdir test-reports
-          poetry run python -m tldap.test.slapd python -m pytest --cov=karaage --junitxml=test-reports/junit.xml
+          uv run python -m tldap.test.slapd python -m pytest --cov=karaage --junitxml=test-reports/junit.xml
       - name: Upload pytest test results
         uses: actions/upload-artifact@v4
         with:
@@ -117,19 +119,20 @@ jobs:
         run: |
             sudo apt-get install apparmor-utils
             sudo aa-complain /usr/sbin/slapd
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v4.0.0
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          poetry-version: 1.3.0
-      - name: Install python dependancies
-        run: |
-          poetry install
+          version: "0.4.30"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+      - name: Install the project
+        run: uv sync --all-extras --dev
       - name: Run tests
         run: |
-          poetry run ./manage.py collectstatic --settings=karaage.tests.settings --noinput
-          poetry run ./manage.py migrate --settings=karaage.tests.settings
+          uv run ./manage.py collectstatic --settings=karaage.tests.settings --noinput
+          uv run ./manage.py migrate --settings=karaage.tests.settings
           mkdir test-reports
-          poetry run python -m tldap.test.slapd python -m pytest --cov=karaage --junitxml=test-reports/junit.xml
+          uv run python -m tldap.test.slapd python -m pytest --cov=karaage --junitxml=test-reports/junit.xml
       - name: Upload pytest test results
         uses: actions/upload-artifact@v4
         with:
