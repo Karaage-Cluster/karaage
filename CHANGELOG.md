@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.3.1](https://github.com/Karaage-Cluster/karaage/compare/v6.3.0...v6.3.1) (2025-03-27)
+
+
+### Bug Fixes
+
+* update email templates ([#1549](https://github.com/Karaage-Cluster/karaage/issues/1549)) ([6bccdf3](https://github.com/Karaage-Cluster/karaage/commit/6bccdf326183dcc630527815f1ee950fb3b7e1e4))
+
 ## 6.3.0 (2025-03-01)
 
 
