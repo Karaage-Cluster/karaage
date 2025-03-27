@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+export PATH="/opt/karaage/.venv/bin:$PATH"
 python3 manage.py migrate --noinput
 
 # Start Gunicorn processes
