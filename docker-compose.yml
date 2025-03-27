@@ -1,4 +1,3 @@
-version: '3'
 services:
   mysql:
     image: "mysql:8.0"
@@ -8,9 +7,15 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: q1w2e3r4
       MYSQL_DATABASE: karaage
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 3s
+      retries: 5
+      timeout: 5s
   web:
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     ports:
       - "8000:8000"
     build:

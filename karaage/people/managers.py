@@ -38,7 +38,7 @@ class PersonManager(BaseUserManager):
             full_name=full_name,
             is_admin=is_admin,
             institute=institute,
-            **extra_fields
+            **extra_fields,
         )
         person.set_password(password)
         person.save()
@@ -54,7 +54,7 @@ class PersonManager(BaseUserManager):
             institute=institute,
             password=password,
             is_admin=False,
-            **extra_fields
+            **extra_fields,
         )
 
     def create_superuser(self, username, email, short_name, full_name, institute, password, **extra_fields):
@@ -67,7 +67,7 @@ class PersonManager(BaseUserManager):
             short_name=short_name,
             full_name=full_name,
             is_admin=True,
-            **extra_fields
+            **extra_fields,
         )
 
 

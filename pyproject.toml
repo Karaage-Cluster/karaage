@@ -1,12 +1,13 @@
-[tool.poetry]
+[project]
 name = "karaage"
 version = "6.3.1"
 description = "Web application to manage a HP cluster"
-authors = ["Brian May <brian@linuxpenguins.xyz>"]
-license = "GPL3+"
-packages = [{ include = "karaage" }]
+authors = [
+    {name = "Brian May", email = "brian@linuxpenguins.xyz"},
+]
+license = {text = "GPL3+"}
 readme = "README.rst"
-homepage = "https://github.com/Karaage-Cluster/django/"
+requires-python = ">=3.10"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -15,57 +16,56 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3.8",
 ]
+dependencies = [
+    "bcrypt",
+    "cssmin",
+    "python-alogger",
+    "django-simple-captcha",
+    "django-ajax-selects",
+    "ldap3",
+    "python-tldap",
+    "django-tables2",
+    "django-filter",
+    "django-environ",
+    "six",
+    "whitenoise",
+    "Django>=4.1.2,<5.2.0",
+    "cracklib",
+    "gunicorn",
+    "mysqlclient",
+    "sentry-sdk",
+    "psycopg2-binary",
+    "pyjwt",
+    "jsmin>=3.0.1",
+    "django-tracking-model>=0.1.5",
+]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-bcrypt = "*"
-cssmin = "*"
-python-alogger = "*"
-django-simple-captcha = "*"
-django-ajax-selects = "*"
-ldap3 = "*"
-python-tldap = "*"
-django-tables2 = "*"
-django-filter = "*"
-django-environ = "*"
-six = "*"
-whitenoise = "*"
-Django = ">=4.1.2,<5.2.0"
-cracklib = "*"
-gunicorn = "*"
-mysqlclient = "*"
-sentry-sdk = "*"
-psycopg2-binary = "*"
-pyjwt = "*"
-sphinx = { version = "*", optional = true }
-furo = { version = "*", optional = true }
-jsmin = "^3.0.1"
-django-tracking-model = "^0.1.5"
+[project.scripts]
+kg-manage = "karaage.cli:manage"
 
-[tool.poetry.dev-dependencies]
-django-extensions = "*"
-mock = "*"
-flake8 = "*"
-isort = "*"
-factory_boy = "*"
-pytest-django = "*"
-pytest-cov = "*"
-wheel = "*"
-twine = "*"
-bump2version = "*"
-
-[tool.poetry.extras]
+[dependency-groups]
+dev = [
+    "pytest<9.0.0,>=8.0.1",
+    "pytest-cov<7.0,>=4.1",
+    "flake8<8.0.0,>=7.0.0",
+    "black>=25.1.0",
+    "jedi-language-server>=0.44.0",
+    "pylsp-mypy>=0.7.0",
+    "python-lsp-server>=1.12.2",
+    "ruff>=0.11.2",
+    "mock>=5.2.0",
+    "pytest-django>=4.10.0",
+    "setuptools>=78.1.0",
+    "factory-boy>=3.3.3",
+]
 docs = ["sphinx", "furo"]
 
-[tool.poetry.group.dev.dependencies]
-black = { version = ">=22.8,<26.0", allow-prereleases = true }
-
 [build-system]
-requires = ["setuptools", "poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.black]
 line-length = 120
 
-[tool.poetry.scripts]
-kg-manage = "karaage.cli:manage"
+[tool.hatch.build.targets.wheel]
+packages = ["karaage"]
