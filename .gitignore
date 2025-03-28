@@ -1,5 +1,6 @@
 *.pyc
 *.bak
+/.venv/
 /karaage.egg-info/
 /docs/*/_build/
 /tmp/
