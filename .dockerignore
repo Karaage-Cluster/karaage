@@ -1,5 +1,6 @@
 **/*.pyc
 **/*.bak
+.venv/
 karaage.egg-info/
 docs/*/_build/
 tmp/
@@ -11,3 +12,6 @@ dist/
 local/
 file.db
 .git/
+result
+.direnv
+.devenv
