@@ -10,8 +10,8 @@ install -d -o root -g root /var/lib/karaage3/static
 
 if test "$1" = "root"; then
     shift
-    "$@"
+    uv run "$@"
 else
-    python3 manage.py collectstatic --noinput
+    uv run python3 manage.py collectstatic --noinput
     sudo -u www-data -E "$@"
 fi

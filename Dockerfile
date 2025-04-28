@@ -12,14 +12,15 @@ RUN mkdir /opt/karaage /opt/karaage/requirements
 WORKDIR /opt/karaage
 
 # Install our requirements.
-RUN pip install poetry==1.3.0
-ADD pyproject.toml poetry.lock /opt/karaage/
-RUN poetry config virtualenvs.create false
-RUN poetry install --no-dev --no-root
+RUN pip install uv==0.4.20
+ADD pyproject.toml uv.lock README.rst /opt/karaage/
+RUN uv sync --frozen
 
 # Copy all our files into the image.
-COPY . /opt/karaage/
-RUN chmod go+rX -R /opt/karaage/
+COPY --chmod=0444 . /opt/karaage/
+RUN chmod 0755 /opt/karaage/manage.py /opt/karaage/scripts/*
+# kluge because chmod above gives directories wrong permissions
+RUN find -type d -print0 | xargs -0 chmod 755
 
 # Setup access to version information
 ARG VERSION=
@@ -35,4 +36,4 @@ ENV KARAAGE_CONFIG_FILE=/etc/karaage3/settings.py
 EXPOSE 8000
 VOLUME '/etc/karaage3' '/var/log' '/var/lib/karaage3' '/var/cache/karaage3'
 ENTRYPOINT [ "/opt/karaage/scripts/docker.sh" ]
-CMD /opt/karaage/scripts/start.sh
+CMD ["/opt/karaage/scripts/start.sh"]
