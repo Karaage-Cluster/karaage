@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
@@ -57,7 +57,7 @@ jobs:
           mysql password: 'z9Pm29jg9EfJ6m'
           mysql root password: 'z9Pm29jg9EfJ6m'
       - name: Checkout source code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
@@ -106,7 +106,7 @@ jobs:
           postgresql user: 'test'
           postgresql password: 'z9Pm29jg9EfJ6m'
       - name: Checkout source code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
@@ -150,7 +150,7 @@ jobs:
         run: |
           echo "IMAGE_NAME_LC=${IMAGE_NAME,,}" >>${GITHUB_ENV}
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f
