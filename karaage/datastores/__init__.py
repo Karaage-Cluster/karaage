@@ -59,7 +59,7 @@ def _init_datastores():
     legacy_settings = getattr(settings, "MACHINE_CATEGORY_DATASTORES", None)
     if legacy_settings is not None:
         warnings.warn(
-            "MACHINE_CATEGORY_DATASTORES is deprecated, please change to use DATASTORES",
+            "MACHINE_CATEGORY_DATASTORES is deprecated, " "please change to use DATASTORES",
         )
         for name in ["ldap"]:
             array = settings.MACHINE_CATEGORY_DATASTORES.get(name, [])
