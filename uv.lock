@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 2
 requires-python = ">=3.10"
 
 [[package]]
@@ -399,6 +399,40 @@ wheels = [
 ]
 
 [[package]]
+name = "django-stubs"
+version = "5.2.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "django-stubs-ext" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
+    { name = "types-pyyaml" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/bc/27/ab9813da817a29ae69ec92af31ad8fc58ce3c904f23ea604bd3bdd9adc37/django_stubs-5.2.2.tar.gz", hash = "sha256:2a04b510c7a812f88223fd7e6d87fb4ea98717f19c8e5c8b59691d83ad40a8a6", size = 243049, upload-time = "2025-07-17T08:35:02.747Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/55/cb/bb387a1d40691ad54fec2be9e5093becebd63cca0ccb9348cbb27602e1d1/django_stubs-5.2.2-py3-none-any.whl", hash = "sha256:79bd0fdbc78958a8f63e0b062bd9d03f1de539664476c0be62ade5f063c9e41e", size = 485188, upload-time = "2025-07-17T08:35:00.356Z" },
+]
+
+[package.optional-dependencies]
+compatible-mypy = [
+    { name = "mypy" },
+]
+
+[[package]]
+name = "django-stubs-ext"
+version = "5.2.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fc/06/5e94715d103e6cc72380cb0d0b6682a7d5ad2c366cee478c94d77aad777d/django_stubs_ext-5.2.2.tar.gz", hash = "sha256:d9d151b919fe2438760f5bd938f03e1cb08c84d0651f9e5917f1313907e42683", size = 6244, upload-time = "2025-07-17T08:34:35.054Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4e/38/2903676f97f7902ee31984a06756b0e8836e897f4b617e1a03be4a43eb4f/django_stubs_ext-5.2.2-py3-none-any.whl", hash = "sha256:8833bbe32405a2a0ce168d3f75a87168f61bd16939caf0e8bf173bccbd8a44c5", size = 8816, upload-time = "2025-07-17T08:34:33.715Z" },
+]
+
+[[package]]
 name = "django-tables2"
 version = "2.7.5"
 source = { registry = "https://pypi.org/simple" }
@@ -478,16 +512,16 @@ wheels = [
 
 [[package]]
 name = "flake8"
-version = "7.1.2"
+version = "7.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "mccabe" },
     { name = "pycodestyle" },
     { name = "pyflakes" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/58/16/3f2a0bb700ad65ac9663262905a025917c020a3f92f014d2ba8964b4602c/flake8-7.1.2.tar.gz", hash = "sha256:c586ffd0b41540951ae41af572e6790dbd49fc12b3aa2541685d253d9bd504bd", size = 48119, upload-time = "2025-02-16T18:45:44.296Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9b/af/fbfe3c4b5a657d79e5c47a2827a362f9e1b763336a52f926126aa6dc7123/flake8-7.3.0.tar.gz", hash = "sha256:fe044858146b9fc69b551a4b490d69cf960fcb78ad1edcb84e7fbb1b4a8e3872", size = 48326, upload-time = "2025-06-20T19:31:35.838Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/35/f8/08d37b2cd89da306e3520bd27f8a85692122b42b56c0c2c3784ff09c022f/flake8-7.1.2-py2.py3-none-any.whl", hash = "sha256:1cbc62e65536f65e6d754dfe6f1bada7f5cf392d6f5db3c2b85892466c3e7c1a", size = 57745, upload-time = "2025-02-16T18:45:42.351Z" },
+    { url = "https://files.pythonhosted.org/packages/9f/56/13ab06b4f93ca7cac71078fbe37fcea175d3216f31f85c3168a6bbd0bb9a/flake8-7.3.0-py2.py3-none-any.whl", hash = "sha256:b9696257b9ce8beb888cdbe31cf885c90d31928fe202be0889a7cdafad32f01e", size = 57922, upload-time = "2025-06-20T19:31:34.425Z" },
 ]
 
 [[package]]
@@ -633,6 +667,7 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "black" },
+    { name = "django-stubs", extra = ["compatible-mypy"] },
     { name = "factory-boy" },
     { name = "flake8" },
     { name = "jedi-language-server" },
@@ -644,6 +679,7 @@ dev = [
     { name = "python-lsp-server" },
     { name = "ruff" },
     { name = "setuptools" },
+    { name = "types-six" },
 ]
 docs = [
     { name = "furo" },
@@ -678,6 +714,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "black", specifier = ">=25.1.0" },
+    { name = "django-stubs", extras = ["compatible-mypy"], specifier = ">=5.2.2" },
     { name = "factory-boy", specifier = ">=3.3.3" },
     { name = "flake8", specifier = ">=7.0.0,<8.0.0" },
     { name = "jedi-language-server", specifier = ">=0.44.0" },
@@ -689,6 +726,7 @@ dev = [
     { name = "python-lsp-server", specifier = ">=1.12.2" },
     { name = "ruff", specifier = ">=0.11.2" },
     { name = "setuptools", specifier = ">=78.1.0" },
+    { name = "types-six", specifier = ">=1.17.0.20250515" },
 ]
 docs = [
     { name = "furo" },
@@ -1052,20 +1090,20 @@ wheels = [
 
 [[package]]
 name = "pycodestyle"
-version = "2.12.1"
+version = "2.14.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/43/aa/210b2c9aedd8c1cbeea31a50e42050ad56187754b34eb214c46709445801/pycodestyle-2.12.1.tar.gz", hash = "sha256:6838eae08bbce4f6accd5d5572075c63626a15ee3e6f842df996bf62f6d73521", size = 39232, upload-time = "2024-08-04T20:26:54.576Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/11/e0/abfd2a0d2efe47670df87f3e3a0e2edda42f055053c85361f19c0e2c1ca8/pycodestyle-2.14.0.tar.gz", hash = "sha256:c4b5b517d278089ff9d0abdec919cd97262a3367449ea1c8b49b91529167b783", size = 39472, upload-time = "2025-06-20T18:49:48.75Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3a/d8/a211b3f85e99a0daa2ddec96c949cac6824bd305b040571b82a03dd62636/pycodestyle-2.12.1-py2.py3-none-any.whl", hash = "sha256:46f0fb92069a7c28ab7bb558f05bfc0110dac69a0cd23c61ea0040283a9d78b3", size = 31284, upload-time = "2024-08-04T20:26:53.173Z" },
+    { url = "https://files.pythonhosted.org/packages/d7/27/a58ddaf8c588a3ef080db9d0b7e0b97215cee3a45df74f3a94dbbf5c893a/pycodestyle-2.14.0-py2.py3-none-any.whl", hash = "sha256:dd6bf7cb4ee77f8e016f9c8e74a35ddd9f67e1d5fd4184d86c3b98e07099f42d", size = 31594, upload-time = "2025-06-20T18:49:47.491Z" },
 ]
 
 [[package]]
 name = "pyflakes"
-version = "3.2.0"
+version = "3.4.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/57/f9/669d8c9c86613c9d568757c7f5824bd3197d7b1c6c27553bc5618a27cce2/pyflakes-3.2.0.tar.gz", hash = "sha256:1c61603ff154621fb2a9172037d84dca3500def8c8b630657d1701f026f8af3f", size = 63788, upload-time = "2024-01-05T00:28:47.703Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/45/dc/fd034dc20b4b264b3d015808458391acbf9df40b1e54750ef175d39180b1/pyflakes-3.4.0.tar.gz", hash = "sha256:b24f96fafb7d2ab0ec5075b7350b3d2d2218eab42003821c06344973d3ea2f58", size = 64669, upload-time = "2025-06-20T18:45:27.834Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d4/d7/f1b7db88d8e4417c5d47adad627a93547f44bdc9028372dbd2313f34a855/pyflakes-3.2.0-py2.py3-none-any.whl", hash = "sha256:84b5be138a2dfbb40689ca07e2152deb896a65c3a3e24c251c5c62489568074a", size = 62725, upload-time = "2024-01-05T00:28:45.903Z" },
+    { url = "https://files.pythonhosted.org/packages/c2/2f/81d580a0fb83baeb066698975cb14a618bdbed7720678566f1b046a95fe8/pyflakes-3.4.0-py2.py3-none-any.whl", hash = "sha256:f742a7dbd0d9cb9ea41e9a24a918996e8170c799fa528688d40dd582c8265f4f", size = 63551, upload-time = "2025-06-20T18:45:26.937Z" },
 ]
 
 [[package]]
@@ -1441,6 +1479,24 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/5b/b9/1ed31d167be802da0fc95020d04cd27b7d7065cc6fbefdd2f9186f60d7bd/tomli-2.2.1-cp313-cp313-win32.whl", hash = "sha256:d3f5614314d758649ab2ab3a62d4f2004c825922f9e370b29416484086b264ec", size = 98724, upload-time = "2024-11-27T22:38:32.837Z" },
     { url = "https://files.pythonhosted.org/packages/c7/32/b0963458706accd9afcfeb867c0f9175a741bf7b19cd424230714d722198/tomli-2.2.1-cp313-cp313-win_amd64.whl", hash = "sha256:a38aa0308e754b0e3c67e344754dff64999ff9b513e691d0e786265c93583c69", size = 109383, upload-time = "2024-11-27T22:38:34.455Z" },
     { url = "https://files.pythonhosted.org/packages/6e/c2/61d3e0f47e2b74ef40a68b9e6ad5984f6241a942f7cd3bbfbdbd03861ea9/tomli-2.2.1-py3-none-any.whl", hash = "sha256:cb55c73c5f4408779d0cf3eef9f762b9c9f147a77de7b258bef0a5628adc85cc", size = 14257, upload-time = "2024-11-27T22:38:35.385Z" },
+]
+
+[[package]]
+name = "types-pyyaml"
+version = "6.0.12.20250809"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/36/21/52ffdbddea3c826bc2758d811ccd7f766912de009c5cf096bd5ebba44680/types_pyyaml-6.0.12.20250809.tar.gz", hash = "sha256:af4a1aca028f18e75297da2ee0da465f799627370d74073e96fee876524f61b5", size = 17385, upload-time = "2025-08-09T03:14:34.867Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/35/3e/0346d09d6e338401ebf406f12eaf9d0b54b315b86f1ec29e34f1a0aedae9/types_pyyaml-6.0.12.20250809-py3-none-any.whl", hash = "sha256:032b6003b798e7de1a1ddfeefee32fac6486bdfe4845e0ae0e7fb3ee4512b52f", size = 20277, upload-time = "2025-08-09T03:14:34.055Z" },
+]
+
+[[package]]
+name = "types-six"
+version = "1.17.0.20250515"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/cc/78/344047eeced8d230140aa3d9503aa969acb61c6095e7308bbc1ff1de3865/types_six-1.17.0.20250515.tar.gz", hash = "sha256:f4f7f0398cb79304e88397336e642b15e96fbeacf5b96d7625da366b069d2d18", size = 15598, upload-time = "2025-05-15T03:04:19.806Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d1/85/5ee1c8e35b33b9c8ea1816d5a4e119c27f8bb1539b73b1f636f07aa64750/types_six-1.17.0.20250515-py3-none-any.whl", hash = "sha256:adfaa9568caf35e03d80ffa4ed765c33b282579c869b40bf4b6009c7d8db3fb1", size = 19987, upload-time = "2025-05-15T03:04:18.556Z" },
 ]
 
 [[package]]

@@ -51,7 +51,6 @@ def _get_datastore(cls, expected, config):
 
 def _init_datastores():
     """Initialize all datastores."""
-    global _DATASTORES
     array = settings.DATASTORES
     for config in array:
         cls = _lookup(config["ENGINE"])
@@ -60,7 +59,7 @@ def _init_datastores():
     legacy_settings = getattr(settings, "MACHINE_CATEGORY_DATASTORES", None)
     if legacy_settings is not None:
         warnings.warn(
-            "MACHINE_CATEGORY_DATASTORES is deprecated, please change to use DATASTORES",
+            "MACHINE_CATEGORY_DATASTORES is deprecated, " "please change to use DATASTORES",
         )
         for name in ["ldap"]:
             array = settings.MACHINE_CATEGORY_DATASTORES.get(name, [])
@@ -71,7 +70,6 @@ def _init_datastores():
 
 
 def _get_datastores():
-    global _DATASTORES
     return _DATASTORES
 
 

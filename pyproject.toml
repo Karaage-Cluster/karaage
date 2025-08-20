@@ -12,7 +12,6 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Intended Audience :: System Administrators",
-    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3.8",
 ]
@@ -57,6 +56,8 @@ dev = [
     "pytest-django>=4.10.0",
     "setuptools>=78.1.0",
     "factory-boy>=3.3.3",
+    "django-stubs[compatible-mypy]>=5.2.2",
+    "types-six>=1.17.0.20250515",
 ]
 docs = ["sphinx", "furo"]
 
@@ -69,3 +70,9 @@ line-length = 120
 
 [tool.hatch.build.targets.wheel]
 packages = ["karaage"]
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+
+[tool.django-stubs]
+django_settings_module = "karaage.tests.settings"

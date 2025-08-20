@@ -52,6 +52,7 @@ attach(trace(logger), PostDecorate)
 
 You can also attach a decorator to an existing module.
 """
+
 from __future__ import absolute_import, print_function
 
 import inspect
@@ -64,10 +65,7 @@ from itertools import chain
 import six
 
 
-try:
-    import _thread as thread
-except ImportError:
-    import thread
+import _thread as thread
 
 
 FunctionTypes = tuple({types.BuiltinFunctionType, types.FunctionType})
@@ -98,7 +96,13 @@ StaticMethodType = _C.staticMethodType
 PropertyType = type(_C.property_method)
 
 CallableTypes = tuple(
-    {types.BuiltinFunctionType, types.FunctionType, types.BuiltinMethodType, types.MethodType, ClassMethodType}
+    {
+        types.BuiltinFunctionType,
+        types.FunctionType,
+        types.BuiltinMethodType,
+        types.MethodType,
+        ClassMethodType,
+    }
 )
 
 __all__ = (
@@ -154,7 +158,6 @@ def get_logger_factory():
     """Retrieve the current factory object for creating loggers.
     The default is to use the logging module.
     """
-    global _logger_factory
     return _logger_factory
 
 
@@ -247,7 +250,12 @@ def _formatter_self(name, value):
     """Format the "self" variable and value on instance methods."""
     __mname = value.__module__
     if __mname != "__main__":
-        return "%s = <%s.%s object at 0x%x>" % (name, __mname, value.__class__.__name__, id(value))
+        return "%s = <%s.%s object at 0x%x>" % (
+            name,
+            __mname,
+            value.__class__.__name__,
+            id(value),
+        )
     else:
         return "%s = <%s object at 0x%x>" % (name, value.__class__.__name__, id(value))
 
@@ -726,7 +734,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     logger = logging.root
 
-    class Test(object):
+    class Test1(object):
         __logger__ = logger
         __metaclass__ = TraceMetaClass
 
@@ -751,14 +759,14 @@ if __name__ == "__main__":
         def method(self):
             pass
 
-    Test.class_method()
-    Test.static_method()
-    test = Test()
-    test.test = 1
-    assert 1 == test.test
-    test.method()
+    Test1.class_method()
+    Test1.static_method()
+    test1 = Test1()
+    test1.test = 1
+    assert 1 == test1.test
+    test1.method()
 
-    class Test(object):
+    class Test2(object):
         @classmethod
         def class_method(cls):
             pass
@@ -783,14 +791,14 @@ if __name__ == "__main__":
         def __str__(self):
             return "Test(" + str(self.test) + ")"
 
-    attach(trace(logger), Test)
-    Test.class_method()
-    Test.static_method()
-    test = Test()
-    test.test = 1
-    assert 1 == test.test
-    test.method()
-    print(str(test))
+    attach(trace(logger), Test1)
+    Test2.class_method()
+    Test2.static_method()
+    test2 = Test2()
+    test2.test = 1
+    assert 1 == test2.test
+    test2.method()
+    print(str(test2))
 
     @trace(logger)
     def test(x, y, z=True):
