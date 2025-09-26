@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.3.2](https://github.com/Karaage-Cluster/karaage/compare/v6.3.1...v6.3.2) (2025-09-26)
+
+
+### Bug Fixes
+
+* convert poetry to uv ([#1551](https://github.com/Karaage-Cluster/karaage/issues/1551)) ([c68d310](https://github.com/Karaage-Cluster/karaage/commit/c68d3107c981a268b737dfaad4d36de1a0cfb93e))
+
 ## [6.3.1](https://github.com/Karaage-Cluster/karaage/compare/v6.3.0...v6.3.1) (2025-03-27)
 
 
