@@ -45,7 +45,7 @@ kg-manage = "karaage.cli:manage"
 [dependency-groups]
 dev = [
     "pytest>=8.0.1,<10.0.0",
-    "pytest-cov<7.0,>=4.1",
+    "pytest-cov>=4.1,<8.0",
     "flake8<8.0.0,>=7.0.0",
     "black>=25.1.0",
     "jedi-language-server>=0.44.0",
