@@ -44,7 +44,7 @@ kg-manage = "karaage.cli:manage"
 
 [dependency-groups]
 dev = [
-    "pytest<9.0.0,>=8.0.1",
+    "pytest>=8.0.1,<10.0.0",
     "pytest-cov<7.0,>=4.1",
     "flake8<8.0.0,>=7.0.0",
     "black>=25.1.0",
