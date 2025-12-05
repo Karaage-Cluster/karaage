@@ -19,7 +19,7 @@ dependencies = [
     "bcrypt",
     "cssmin",
     "python-alogger",
-    "django-simple-captcha",
+    "django>=4.1.2,<5.3.0",
     "django-ajax-selects",
     "ldap3",
     "python-tldap",
