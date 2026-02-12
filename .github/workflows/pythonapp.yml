@@ -43,19 +43,25 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.repository_owner != 'Karaage-Cluster' || github.event_name != 'pull_request' }}
     env:
-        DATABASE_URL: mysql://root:z9Pm29jg9EfJ6m@127.0.0.1/test
+        DATABASE_URL: mysql://root:z9Pm29jg9EfJ6m@127.0.0.1:3306/test
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: z9Pm29jg9EfJ6m
+          MYSQL_DATABASE: test
+          MYSQL_USER: test
+          MYSQL_PASSWORD: z9Pm29jg9EfJ6m
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+        ports:
+          - 3306:3306
 
     steps:
-      - name: Shutdown Ubuntu MySQL
-        run: sudo service mysql stop
-      - name: Install mysql
-        uses: mirromutth/mysql-action@v1.1
-        with:
-          mysql version: '8.0'
-          mysql database: 'test'
-          mysql user: 'test'
-          mysql password: 'z9Pm29jg9EfJ6m'
-          mysql root password: 'z9Pm29jg9EfJ6m'
       - name: Checkout source code
         uses: actions/checkout@v6
       - name: Set up Python 3.10
@@ -95,16 +101,24 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.repository_owner != 'Karaage-Cluster' || github.event_name != 'pull_request' }}
     env:
-        DATABASE_URL: postgresql://test:z9Pm29jg9EfJ6m@localhost/test?sslmode=disable
+        DATABASE_URL: postgresql://test:z9Pm29jg9EfJ6m@localhost:5432/test?sslmode=disable
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: z9Pm29jg9EfJ6m
+          POSTGRES_DB: test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
-      - name: Install postgresql
-        uses: harmon758/postgresql-action@v1
-        with:
-          postgresql version: '16'
-          postgresql db: 'test'
-          postgresql user: 'test'
-          postgresql password: 'z9Pm29jg9EfJ6m'
       - name: Checkout source code
         uses: actions/checkout@v6
       - name: Set up Python 3.10
