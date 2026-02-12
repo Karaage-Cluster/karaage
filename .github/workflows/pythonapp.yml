@@ -43,19 +43,25 @@ jobs:
     runs-on: ubuntu-22.04
     if: ${{ github.repository_owner != 'Karaage-Cluster' || github.event_name != 'pull_request' }}
     env:
-        DATABASE_URL: mysql://root:z9Pm29jg9EfJ6m@127.0.0.1/test
+        DATABASE_URL: mysql://root:z9Pm29jg9EfJ6m@127.0.0.1:3306/test
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: z9Pm29jg9EfJ6m
+          MYSQL_DATABASE: test
+          MYSQL_USER: test
+          MYSQL_PASSWORD: z9Pm29jg9EfJ6m
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+        ports:
+          - 3306:3306
 
     steps:
-      - name: Shutdown Ubuntu MySQL
-        run: sudo service mysql stop
-      - name: Install mysql
-        uses: mirromutth/mysql-action@v1.1
-        with:
-          mysql version: '8.0'
-          mysql database: 'test'
-          mysql user: 'test'
-          mysql password: 'z9Pm29jg9EfJ6m'
-          mysql root password: 'z9Pm29jg9EfJ6m'
       - name: Checkout source code
         uses: actions/checkout@v6
       - name: Set up Python 3.10
