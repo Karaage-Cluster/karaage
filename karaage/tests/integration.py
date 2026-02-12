@@ -29,6 +29,11 @@ from karaage.middleware.threadlocals import reset
 
 
 def skip_if_missing_requirements(*requirements):
+    """Skip test if required packages are not installed.
+    
+    Note: This only checks if the package exists, not version constraints.
+    For the current usage (simple package names like 'cracklib'), this is sufficient.
+    """
     try:
         for req in requirements:
             # Parse requirement string to extract package name
