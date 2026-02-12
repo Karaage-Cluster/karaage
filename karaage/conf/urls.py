@@ -23,7 +23,6 @@ from django.urls import include, re_path
 from karaage.common import get_urls
 from karaage.common.views import common
 
-
 # Profile URLS
 
 profile_urlpatterns = []

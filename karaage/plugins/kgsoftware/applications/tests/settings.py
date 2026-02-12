@@ -22,7 +22,6 @@ from karaage.conf.defaults import *  # NOQA
 from karaage.conf.process import post_process
 from karaage.tests.defaults import *  # NOQA
 
-
 PLUGINS = [
     "karaage.plugins.kgsoftware.plugin",
     "karaage.plugins.kgsoftware.applications.plugin",

@@ -18,5 +18,4 @@
 
 from .views import register as register_software
 
-
 register_software()

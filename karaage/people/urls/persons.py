@@ -21,7 +21,6 @@ from django.urls import include, re_path
 
 from karaage.people.views import persons
 
-
 urlpatterns = [
     re_path(r"^$", persons.user_list, name="kg_person_list"),
     re_path(r"^struggling/$", persons.struggling, name="kg_person_struggling"),

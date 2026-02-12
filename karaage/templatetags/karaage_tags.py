@@ -30,7 +30,6 @@ from django.utils.safestring import mark_safe
 from karaage.common.models import COMMENT, LogEntry
 from karaage.plugins import BasePlugin
 
-
 register = template.Library()
 
 

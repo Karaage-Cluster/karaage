@@ -17,5 +17,4 @@
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 import django.dispatch
 
-
 daily_cleanup = django.dispatch.Signal()

@@ -21,7 +21,6 @@ from django import forms
 
 from karaage.people.models import Person
 
-
 EMAIL_GROUPS = (
     ("leaders", "All Project Leaders (active projects only)"),
     ("users", "All Active Users"),

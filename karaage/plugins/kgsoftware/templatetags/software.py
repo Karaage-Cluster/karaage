@@ -23,7 +23,6 @@ from django import template
 
 from ..tables import SoftwareLicenseAgreementTable
 
-
 register = template.Library()
 
 

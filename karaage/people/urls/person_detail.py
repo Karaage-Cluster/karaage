@@ -20,7 +20,6 @@ from django.urls import re_path
 
 from karaage.people.views import persons
 
-
 urlpatterns = [
     re_path(r"^$", persons.user_detail, name="kg_person_detail"),
     re_path(r"^verbose/$", persons.user_verbose, name="kg_person_verbose"),

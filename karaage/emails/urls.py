@@ -20,7 +20,6 @@ from django.urls import re_path
 
 from karaage.emails import views
 
-
 urlpatterns = [
     re_path(r"^$", views.send_email, name="kg_emails_index"),
 ]
