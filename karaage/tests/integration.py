@@ -16,9 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Karaage  If not, see <http://www.gnu.org/licenses/>.
 import os
+from importlib.metadata import PackageNotFoundError, version
 from unittest import skipUnless
 
-import pkg_resources
 import tldap.database
 import tldap.transaction
 from django.test import TestCase
@@ -30,9 +30,12 @@ from karaage.middleware.threadlocals import reset
 
 def skip_if_missing_requirements(*requirements):
     try:
-        pkg_resources.require(*requirements)
+        for req in requirements:
+            # Parse requirement string (e.g., "package>=1.0")
+            pkg_name = req.split('>=')[0].split('==')[0].split('<')[0].strip()
+            version(pkg_name)
         msg = ""
-    except pkg_resources.DistributionNotFound:
+    except PackageNotFoundError:
         msg = "Missing one or more requirements (%s)" % "|".join(requirements)
     return skipUnless(msg == "", msg)
 
