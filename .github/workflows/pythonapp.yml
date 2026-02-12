@@ -95,16 +95,24 @@ jobs:
     runs-on: ubuntu-22.04
     if: ${{ github.repository_owner != 'Karaage-Cluster' || github.event_name != 'pull_request' }}
     env:
-        DATABASE_URL: postgresql://test:z9Pm29jg9EfJ6m@localhost/test?sslmode=disable
+        DATABASE_URL: postgresql://test:z9Pm29jg9EfJ6m@localhost:5432/test?sslmode=disable
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: z9Pm29jg9EfJ6m
+          POSTGRES_DB: test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
-      - name: Install postgresql
-        uses: harmon758/postgresql-action@v1
-        with:
-          postgresql version: '16'
-          postgresql db: 'test'
-          postgresql user: 'test'
-          postgresql password: 'z9Pm29jg9EfJ6m'
       - name: Checkout source code
         uses: actions/checkout@v6
       - name: Set up Python 3.10
