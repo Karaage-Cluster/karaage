@@ -21,7 +21,6 @@ import django
 from django.contrib import auth
 from django.utils.deprecation import MiddlewareMixin
 
-
 if django.VERSION < (1, 7):
     import tldap.django  # NOQA
 

@@ -26,7 +26,6 @@ import subprocess
 import karaage.common.trace as trace
 from karaage.datastores import base
 
-
 logger = logging.getLogger(__name__)
 
 

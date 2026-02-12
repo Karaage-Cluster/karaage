@@ -7,7 +7,6 @@ from karaage.common import log
 from karaage.plugins.kgapplications import emails
 from karaage.plugins.kgapplications.views import base
 
-
 logger = logging.getLogger(__name__)
 
 

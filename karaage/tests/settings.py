@@ -22,5 +22,4 @@ from karaage.conf.process import post_process
 
 from .defaults import *  # NOQA
 
-
 post_process(sys.modules[__name__])

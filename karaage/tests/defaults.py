@@ -20,7 +20,6 @@ import os.path
 
 import environ
 
-
 env = environ.Env()
 
 

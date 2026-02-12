@@ -67,7 +67,6 @@ import six
 
 import _thread as thread
 
-
 FunctionTypes = tuple({types.BuiltinFunctionType, types.FunctionType})
 
 MethodTypes = tuple({types.BuiltinMethodType, types.MethodType})

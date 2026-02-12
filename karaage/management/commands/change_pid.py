@@ -26,7 +26,6 @@ from django.core.management.base import BaseCommand, CommandError
 
 from karaage.projects.models import Project
 
-
 try:
     input = raw_input
 except NameError:

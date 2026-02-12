@@ -22,7 +22,6 @@ from karaage.plugins.kgapplications.views import common, project
 
 from .views.project import register as register_project
 
-
 register_project()
 
 urlpatterns = [

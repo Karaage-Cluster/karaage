@@ -48,7 +48,6 @@ from .models import (
 )
 from .tables import SoftwareFilter, SoftwareTable
 
-
 if apps.is_installed("karaage.plugins.kgsoftware.applications"):
     from .applications.models import SoftwareApplication
     from .applications.tables import SoftwareApplicationTable

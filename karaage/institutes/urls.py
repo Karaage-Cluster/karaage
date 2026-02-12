@@ -20,7 +20,6 @@ from django.urls import re_path
 
 from karaage.institutes import views
 
-
 urlpatterns = [
     re_path(r"^$", views.institute_list, name="kg_institute_list"),
     re_path(r"^add/$", views.add_edit_institute, name="kg_institute_add"),

@@ -21,7 +21,6 @@ from django.urls import re_path
 
 from karaage.machines.views import accounts
 
-
 urlpatterns = [
     re_path(r"^add/(?P<username>%s)/$" % settings.USERNAME_VALIDATION_RE, accounts.add_account, name="kg_account_add"),
     re_path(

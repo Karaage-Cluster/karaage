@@ -25,7 +25,6 @@ from karaage.datastores import account_exists
 from karaage.machines.models import Account
 from karaage.people.models import Person
 
-
 username_re = re.compile(r"^%s$" % settings.USERNAME_VALIDATION_RE)
 
 
