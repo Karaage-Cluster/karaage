@@ -30,7 +30,7 @@ from karaage.middleware.threadlocals import reset
 
 def skip_if_missing_requirements(*requirements):
     """Skip test if required packages are not installed.
-    
+
     Note: This only checks if the package exists, not version constraints.
     For the current usage (simple package names like 'cracklib'), this is sufficient.
     """
@@ -39,7 +39,17 @@ def skip_if_missing_requirements(*requirements):
             # Parse requirement string to extract package name
             # Handle simple cases: "package", "package>=1.0", "package==1.0", "package<2.0"
             # Strip extras like "package[extra]" -> "package"
-            pkg_name = req.split('[')[0].split('>=')[0].split('==')[0].split('!=')[0].split('<=')[0].split('<')[0].split('>')[0].split('~=')[0].strip()
+            pkg_name = (
+                req.split("[")[0]
+                .split(">=")[0]
+                .split("==")[0]
+                .split("!=")[0]
+                .split("<=")[0]
+                .split("<")[0]
+                .split(">")[0]
+                .split("~=")[0]
+                .strip()
+            )
             version(pkg_name)
         msg = ""
     except PackageNotFoundError:
