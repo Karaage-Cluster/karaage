@@ -27,7 +27,6 @@ import karaage.people.models
 import karaage.projects.models
 from karaage.projects.utils import add_user_to_project
 
-
 try:
     import factory
     from factory.django import DjangoModelFactory

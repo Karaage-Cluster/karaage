@@ -40,7 +40,6 @@ from karaage.projects.models import Project
 
 from .models import Applicant, ProjectApplication
 
-
 APP_CHOICES = (("U", "Join an existing project"),)
 
 if settings.ALLOW_NEW_PROJECTS:

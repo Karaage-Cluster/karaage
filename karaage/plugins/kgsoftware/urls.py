@@ -20,7 +20,6 @@ from django.urls import include, re_path
 
 from karaage.plugins.kgsoftware import views
 
-
 urlpatterns = [
     re_path(r"^$", views.software_list, name="kg_software_list"),
     re_path(r"^add/$", views.add_package, name="kg_software_add"),

@@ -23,7 +23,6 @@ import sys
 from .defaults import *  # NOQA
 from .process import post_process
 
-
 exec(open(os.environ.get("KARAAGE_CONFIG_FILE"), "rb").read())
 
 post_process(sys.modules[__name__])

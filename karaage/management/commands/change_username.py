@@ -29,7 +29,6 @@ from karaage.people.utils import (
     validate_username_for_rename_person,
 )
 
-
 try:
     input = raw_input
 except NameError:

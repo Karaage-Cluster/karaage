@@ -22,7 +22,6 @@ from django.urls import re_path
 from karaage.common.views import profile as common_profile
 from karaage.people.views import profile as people_profile
 
-
 profile_urlpatterns = [
     re_path(r"^$", common_profile.profile, name="kg_profile"),
     re_path(r"^logout/$", common_profile.logout, name="kg_profile_logout"),

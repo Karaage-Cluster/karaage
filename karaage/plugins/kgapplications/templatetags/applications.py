@@ -25,7 +25,6 @@ from karaage.people.tables import PersonTable
 
 from ..views.base import get_state_machine
 
-
 register = template.Library()
 
 

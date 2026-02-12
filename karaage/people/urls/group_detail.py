@@ -21,7 +21,6 @@ from django.urls import re_path
 
 from karaage.people.views import groups
 
-
 urlpatterns = [
     re_path(r"^$", groups.group_detail, name="kg_group_detail"),
     re_path(r"^verbose/$", groups.group_verbose, name="kg_group_verbose"),

@@ -41,7 +41,6 @@ from karaage.datastores import base
 from karaage.datastores.ldap_schemas import OpenldapAccount, OpenldapGroup
 from karaage.machines.models import Account
 
-
 logger = logging.getLogger(__name__)
 
 

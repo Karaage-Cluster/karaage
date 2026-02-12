@@ -36,7 +36,6 @@ from karaage.people.managers import (
     PersonManager,
 )
 
-
 # Note on terminology:
 #
 # A inactive person is a person who has been deleted. We keep there entry

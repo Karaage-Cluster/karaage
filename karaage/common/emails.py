@@ -19,9 +19,9 @@
 """
 All email sending is done from this module
 """
+
 from django.conf import settings
 from django.core.mail import EmailMessage
-
 
 CONTEXT = {
     "org_email": settings.ACCOUNTS_EMAIL,

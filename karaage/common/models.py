@@ -29,7 +29,6 @@ from django.utils.translation import gettext_lazy as _
 
 from karaage.middleware.threadlocals import get_current_user
 
-
 ADDITION = 1
 CHANGE = 2
 DELETION = 3

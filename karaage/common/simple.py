@@ -28,7 +28,6 @@ from django.http import (
 )
 from django.template import loader
 
-
 logger = logging.getLogger(__name__)
 
 

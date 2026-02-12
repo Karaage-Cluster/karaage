@@ -43,7 +43,6 @@ from karaage.people.models import Person
 from karaage.projects.models import Project
 from karaage.projects.utils import add_user_to_project
 
-
 RE_VALID_USERNAME = re.compile(r"[\w.@+-]+$")
 
 

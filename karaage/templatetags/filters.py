@@ -19,7 +19,6 @@ from django.contrib.humanize.templatetags.humanize import intcomma
 from django.template import Library
 from django.template.defaultfilters import filesizeformat
 
-
 register = Library()
 
 

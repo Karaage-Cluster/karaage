@@ -44,7 +44,6 @@ from karaage.plugins.kgapplications.views.project import (
 )
 from karaage.projects.models import Project
 
-
 RE_VALID_USERNAME = re.compile(r"[\w.@+-]+$")
 
 

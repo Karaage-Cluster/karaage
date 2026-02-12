@@ -20,7 +20,6 @@ from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
 
-
 if settings.AAF_RAPID_CONNECT_ENABLED:
     _login_url = "kg_profile_login_arc"
 else:

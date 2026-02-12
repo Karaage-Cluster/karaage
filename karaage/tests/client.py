@@ -35,7 +35,6 @@ from django.utils.text import slugify
 
 from karaage.middleware.threadlocals import reset
 
-
 urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [""])
 
 

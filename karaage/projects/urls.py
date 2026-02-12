@@ -21,7 +21,6 @@ from django.urls import re_path
 
 from karaage.projects import views
 
-
 urlpatterns = [
     re_path(r"^$", views.project_list, name="kg_project_list"),
     re_path(r"^add/$", views.add_edit_project, name="kg_project_add"),
