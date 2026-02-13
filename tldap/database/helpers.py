@@ -18,7 +18,7 @@
 
 import base64
 import datetime
-from hashlib import sha1
+from hashlib import sha256
 from typing import Dict, List, Optional, Set
 
 import tldap.exceptions
@@ -409,7 +409,7 @@ def save_shibboleth(changes: Changeset, database: Database) -> Changeset:
         if token is None:
             entity_id = settings["SHIBBOLETH_URL"]
             salt = settings["SHIBBOLETH_SALT"]
-            token = base64.urlsafe_b64encode(sha1(uid + entity_id + salt).digest())[:-1]
+            token = base64.urlsafe_b64encode(sha256(uid + entity_id + salt).digest())[:-1]
             d["auEduPersonSharedToken"] = token
 
     if "locked" in changes:
