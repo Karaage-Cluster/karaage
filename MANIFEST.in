@@ -11,10 +11,12 @@ include Dockerfile*
 recursive-include docs *.py
 recursive-include docs *.rst
 recursive-include karaage *.sql
+recursive-include tldap *.py
 recursive-include sbin *
 recursive-include conf *
 recursive-include docs Makefile
 recursive-include hooks *
 recursive-exclude karaage *.pyc
+recursive-exclude tldap *.pyc
 recursive-include requirements *.txt
 recursive-include scripts *.sh

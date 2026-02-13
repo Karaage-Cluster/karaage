@@ -22,7 +22,8 @@ dependencies = [
     "django-simple-captcha",
     "django-ajax-selects",
     "ldap3",
-    "python-tldap",
+    "passlib",
+    "cryptography>=46.0.5",
     "django-tables2",
     "django-filter",
     "django-environ",
@@ -69,7 +70,7 @@ build-backend = "hatchling.build"
 line-length = 120
 
 [tool.hatch.build.targets.wheel]
-packages = ["karaage"]
+packages = ["karaage", "tldap"]
 
 [tool.mypy]
 plugins = ["mypy_django_plugin.main"]
