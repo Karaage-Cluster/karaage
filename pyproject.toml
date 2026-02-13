@@ -23,7 +23,6 @@ dependencies = [
     "django-ajax-selects",
     "ldap3",
     "passlib",
-    "pyasn1",
     "cryptography>=46.0.5",
     "django-tables2",
     "django-filter",

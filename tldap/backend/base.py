@@ -38,7 +38,7 @@ Entity = TypeVar("Entity")
 
 
 class LdapBase(object):
-    """The vase LDAP connection class."""
+    """The base LDAP connection class."""
 
     def __init__(self, settings_dict: dict) -> None:
         self.settings_dict = settings_dict
