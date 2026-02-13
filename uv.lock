@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 2
 requires-python = ">=3.10"
 
 [[package]]
@@ -403,16 +403,16 @@ sdist = { url = "https://files.pythonhosted.org/packages/8e/d8/dc9da69bb186303f7
 
 [[package]]
 name = "django"
-version = "5.1.15"
+version = "5.2.11"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asgiref" },
     { name = "sqlparse" },
     { name = "tzdata", marker = "sys_platform == 'win32'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/10/45/1ac68964193cfcc0b0912a0f68025d5bdb54f71ba7b8716e85b959874bd0/django-5.1.15.tar.gz", hash = "sha256:46a356b5ff867bece73fc6365e081f21c569973403ee7e9b9a0316f27d0eb947", size = 10719662, upload-time = "2025-12-02T14:01:31.931Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/17/f2/3e57ef696b95067e05ae206171e47a8e53b9c84eec56198671ef9eaa51a6/django-5.2.11.tar.gz", hash = "sha256:7f2d292ad8b9ee35e405d965fbbad293758b858c34bbf7f3df551aeeac6f02d3", size = 10885017, upload-time = "2026-02-03T13:52:50.554Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/27/79/372e091f0eba4ddb8228245ccd1baaa140e9658711f5e3a0056e540b4c1e/django-5.1.15-py3-none-any.whl", hash = "sha256:117871e58d6eda37f09870b7d73a3d66567b03aecd515b386b1751177c413432", size = 8260901, upload-time = "2025-12-02T14:01:27.352Z" },
+    { url = "https://files.pythonhosted.org/packages/91/a7/2b112ab430575bf3135b8304ac372248500d99c352f777485f53fdb9537e/django-5.2.11-py3-none-any.whl", hash = "sha256:e7130df33ada9ab5e5e929bc19346a20fe383f5454acb2cc004508f242ee92c0", size = 8291375, upload-time = "2026-02-03T13:52:42.47Z" },
 ]
 
 [[package]]
@@ -765,7 +765,7 @@ requires-dist = [
     { name = "bcrypt" },
     { name = "cracklib" },
     { name = "cssmin" },
-    { name = "django", specifier = ">=4.1.2,<5.2.0" },
+    { name = "django", specifier = ">=5.2.8,<5.3.0" },
     { name = "django-ajax-selects" },
     { name = "django-environ" },
     { name = "django-filter" },
