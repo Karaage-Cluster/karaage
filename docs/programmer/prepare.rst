@@ -14,7 +14,6 @@ These steps only need to be done once for a system.
 
         apt-get install dput-ng dpkg-dev schroot sbuild slapd
         apt-get install python-django python3-django
-        apt-get install python-tldap python3-tldap
         apt-get install python-schroot python3-schroot
 
     The above list is probably incomplete. Any omissions will cause
