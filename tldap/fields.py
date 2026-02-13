@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with python-tldap  If not, see <http://www.gnu.org/licenses/>.
 
-""" LDAP field types. """
+"""LDAP field types."""
 
 import datetime
 import struct
@@ -28,7 +28,8 @@ import tldap.exceptions
 
 
 class Field(object):
-    """ The base field type. """
+    """The base field type."""
+
     db_field = True
 
     def __init__(self, max_instances=1, required=False):
@@ -40,7 +41,7 @@ class Field(object):
         return self._max_instances != 1
 
     def to_db(self, value):
-        """ Returns field's single value prepared for saving into a database. """
+        """Returns field's single value prepared for saving into a database."""
 
         # ensure value is valid
         self.validate(value)
@@ -77,20 +78,14 @@ class Field(object):
         """
         # check object type
         if not isinstance(value, list):
-            raise tldap.exceptions.ValidationError(
-                "is not a list and max_instances is %s" %
-                self._max_instances)
+            raise tldap.exceptions.ValidationError("is not a list and max_instances is %s" % self._max_instances)
         # check maximum instances
-        if (self._max_instances is not None and
-                len(value) > self._max_instances):
-            raise tldap.exceptions.ValidationError(
-                "exceeds max_instances of %d" %
-                self._max_instances)
+        if self._max_instances is not None and len(value) > self._max_instances:
+            raise tldap.exceptions.ValidationError("exceeds max_instances of %d" % self._max_instances)
         # check this required value is given
         if self._required:
             if len(value) == 0:
-                raise tldap.exceptions.ValidationError(
-                    "is required")
+                raise tldap.exceptions.ValidationError("is required")
         # validate the value
         for i, v in enumerate(value):
             self.value_validate(v)
@@ -106,7 +101,7 @@ class Field(object):
         return value
 
     def value_to_db(self, value):
-        """ Returns field's single value prepared for saving into a database. """
+        """Returns field's single value prepared for saving into a database."""
         raise RuntimeError("Not implemented")
 
     def value_to_filter(self, value):
@@ -141,7 +136,7 @@ class FakeField(Field):
     #     pass
 
     def value_to_db(self, value):
-        """ Returns field's single value prepared for saving into a database. """
+        """Returns field's single value prepared for saving into a database."""
         return None
 
     def value_to_python(self, value):
@@ -161,11 +156,10 @@ class FakeField(Field):
 
 
 class BinaryField(Field):
-    """ Field contains a binary value that can not be interpreted in anyway.
-    """
+    """Field contains a binary value that can not be interpreted in anyway."""
 
     def value_to_db(self, value):
-        """ Returns field's single value prepared for saving into a database. """
+        """Returns field's single value prepared for saving into a database."""
         assert value is None or isinstance(value, bytes)
         return value
 
@@ -190,10 +184,10 @@ class BinaryField(Field):
 
 
 class CharField(Field):
-    """ Field contains a UTF8 character string. """
+    """Field contains a UTF8 character string."""
 
     def value_to_db(self, value):
-        """ Returns field's single value prepared for saving into a database. """
+        """Returns field's single value prepared for saving into a database."""
         if isinstance(value, six.string_types):
             value = value.encode("utf_8")
         return value
@@ -220,10 +214,10 @@ class CharField(Field):
 
 
 class UnicodeField(Field):
-    """ Field contains a UTF16 character string. """
+    """Field contains a UTF16 character string."""
 
     def value_to_db(self, value):
-        """ Returns field's single value prepared for saving into a database. """
+        """Returns field's single value prepared for saving into a database."""
         value = value.encode("utf_16le")
         return value
 
@@ -249,7 +243,7 @@ class UnicodeField(Field):
 
 
 class IntegerField(Field):
-    """ Field contains an integer value. """
+    """Field contains an integer value."""
 
     def value_to_python(self, value):
         """
@@ -268,7 +262,7 @@ class IntegerField(Field):
             raise tldap.exceptions.ValidationError("is invalid integer")
 
     def value_to_db(self, value):
-        """ Returns field's single value prepared for saving into a database. """
+        """Returns field's single value prepared for saving into a database."""
         assert isinstance(value, six.integer_types)
         return str(value).encode("utf_8")
 
@@ -289,7 +283,7 @@ class IntegerField(Field):
 
 
 class DaysSinceEpochField(Field):
-    """ Field is an integer containing number of days since epoch. """
+    """Field is an integer containing number of days since epoch."""
 
     def value_to_python(self, value):
         """
@@ -314,7 +308,7 @@ class DaysSinceEpochField(Field):
         return value
 
     def value_to_db(self, value):
-        """ Returns field's single value prepared for saving into a database. """
+        """Returns field's single value prepared for saving into a database."""
         assert isinstance(value, datetime.date)
         assert not isinstance(value, datetime.datetime)
 
@@ -340,7 +334,7 @@ class DaysSinceEpochField(Field):
 
 
 class SecondsSinceEpochField(Field):
-    """ Field is an integer containing number of seconds since epoch. """
+    """Field is an integer containing number of seconds since epoch."""
 
     def value_to_python(self, value):
         """
@@ -365,7 +359,7 @@ class SecondsSinceEpochField(Field):
         return value
 
     def value_to_db(self, value):
-        """ Returns field's single value prepared for saving into a database. """
+        """Returns field's single value prepared for saving into a database."""
         assert isinstance(value, datetime.datetime)
 
         try:
@@ -390,7 +384,7 @@ class SecondsSinceEpochField(Field):
 
 
 class SidField(Field):
-    """ Field is a binary representation of a Microsoft SID. """
+    """Field is a binary representation of a Microsoft SID."""
 
     def value_to_python(self, value):
         """
@@ -408,7 +402,7 @@ class SidField(Field):
 
         length = length // 4
 
-        array = struct.unpack('<bbbbbbbb' + 'I' * length, value)
+        array = struct.unpack("<bbbbbbbb" + "I" * length, value)
 
         if array[1] != length:
             raise tldap.exceptions.ValidationError("Invalid sid")
@@ -416,11 +410,11 @@ class SidField(Field):
         if array[2:7] != (0, 0, 0, 0, 0):
             raise tldap.exceptions.ValidationError("Invalid sid")
 
-        array = ("S", ) + array[0:1] + array[7:]
+        array = ("S",) + array[0:1] + array[7:]
         return "-".join([str(i) for i in array])
 
     def value_to_db(self, value):
-        """ Returns field's single value prepared for saving into a database. """
+        """Returns field's single value prepared for saving into a database."""
 
         assert isinstance(value, str)
 
@@ -428,12 +422,12 @@ class SidField(Field):
         length = len(array) - 3
 
         assert length >= 0
-        assert array[0] == 'S'
+        assert array[0] == "S"
 
         array = array[1:2] + [length, 0, 0, 0, 0, 0] + array[2:]
         array = [int(i) for i in array]
 
-        return struct.pack('<bbbbbbbb' + 'I' * length, *array)
+        return struct.pack("<bbbbbbbb" + "I" * length, *array)
 
     def value_validate(self, value):
         """

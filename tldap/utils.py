@@ -15,11 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with python-tldap  If not, see <http://www.gnu.org/licenses/>.
 
-""" Contains ConnectionHandler which represents a list of connections. """
+"""Contains ConnectionHandler which represents a list of connections."""
 
 import sys
 from threading import local
-
 
 DEFAULT_LDAP_ALIAS = "default"
 
@@ -30,7 +29,7 @@ def load_backend(backend_name):
 
 
 class ConnectionHandler(object):
-    """ Contains a list of known LDAP connections. """
+    """Contains a list of known LDAP connections."""
 
     def __init__(self, databases):
         self.databases = databases
@@ -42,7 +41,7 @@ class ConnectionHandler(object):
 
         db = self.databases[alias]
 
-        backend = load_backend(db['ENGINE'])
+        backend = load_backend(db["ENGINE"])
         conn = backend.LDAPwrapper(db)
         setattr(self._connections, alias, conn)
         return conn
@@ -51,5 +50,5 @@ class ConnectionHandler(object):
         return iter(self.databases)
 
     def all(self):
-        """ Return list of all connections. """
+        """Return list of all connections."""
         return [self[alias] for alias in self]

@@ -16,13 +16,12 @@
 # along with python-tldap  If not, see <http://www.gnu.org/licenses/>.
 from tldap.utils import DEFAULT_LDAP_ALIAS, ConnectionHandler
 
-
 connections = None
 """An object containing a list of all LDAP connections."""
 
 
 def setup(settings):
-    """ Function used to initialize LDAP settings. """
+    """Function used to initialize LDAP settings."""
     global connections
     connections = ConnectionHandler(settings)
 
@@ -34,12 +33,14 @@ def setup(settings):
 # We load all these up for backwards compatibility, you should use
 # connections['default'] instead.
 
+
 class DefaultConnectionProxy(object):
     """
     Proxy for accessing the default DatabaseWrapper object's attributes. If you
     need to access the DatabaseWrapper object itself, use
     connections[DEFAULT_LDAP_ALIAS] instead.
     """
+
     def __getattr__(self, item):
         return getattr(connections[DEFAULT_LDAP_ALIAS], item)
 

@@ -12,9 +12,10 @@ class Node(object):
     connection (the root) with the children being either leaf nodes or other
     Node instances.
     """
+
     # Standard connector type. Clients usually won't use this at all and
     # subclasses will usually override the value.
-    default = 'DEFAULT'
+    default = "DEFAULT"
 
     def __init__(self, children=None, connector=None, negated=False):
         """
@@ -43,10 +44,8 @@ class Node(object):
 
     def __str__(self):
         if self.negated:
-            return '(NOT (%s: %s))' % (self.connector, ', '.join(str(c) for c
-                                       in self.children))
-        return '(%s: %s)' % (self.connector, ', '.join(str(c) for c in
-                             self.children))
+            return "(NOT (%s: %s))" % (self.connector, ", ".join(str(c) for c in self.children))
+        return "(%s: %s)" % (self.connector, ", ".join(str(c) for c in self.children))
 
     def __repr__(self):
         return "<%s: %s>" % (self.__class__.__name__, self)
@@ -72,7 +71,7 @@ class Node(object):
         """
         return bool(self.children)
 
-    def __nonzero__(self):      # Python 2 compatibility
+    def __nonzero__(self):  # Python 2 compatibility
         return type(self).__bool__(self)
 
     def __contains__(self, other):
@@ -103,8 +102,7 @@ class Node(object):
             return data
         if self.connector == conn_type:
             # We can reuse self.children to append or squash the node other.
-            if (isinstance(data, Node) and not data.negated
-                    and (data.connector == conn_type or len(data) == 1)):
+            if isinstance(data, Node) and not data.negated and (data.connector == conn_type or len(data) == 1):
                 # We can squash the other node's children directly into this
                 # node. We are just doing (AB)(CD) == (ABCD) here, with the
                 # addition that if the length of the other node is 1 the
@@ -119,8 +117,7 @@ class Node(object):
                 self.children.append(data)
                 return data
         else:
-            obj = self._new_instance(self.children, self.connector,
-                                     self.negated)
+            obj = self._new_instance(self.children, self.connector, self.negated)
             self.connector = conn_type
             self.children = [obj, data]
             return data

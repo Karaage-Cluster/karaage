@@ -28,6 +28,7 @@ called, a commit is made.
 Managed transactions don't do those commits, but will need some kind of manual
 or implicit commits or rollbacks.
 """
+
 import sys
 from functools import wraps
 
@@ -39,6 +40,7 @@ class TransactionManagementError(Exception):
     This exception is thrown when something bad happens with transaction
     management.
     """
+
     pass
 
 
@@ -132,6 +134,7 @@ def rollback(using=None):
     connection = tldap.backend.connections[using]
     connection.rollback()
 
+
 ##############
 # DECORATORS #
 ##############
@@ -147,6 +150,7 @@ class Transaction(object):
     autocommit, commit_on_success, and commit_manually contain the
     implementations of entering and exiting.
     """
+
     def __init__(self, entering, exiting, using):
         self.entering = entering
         self.exiting = exiting
@@ -173,6 +177,7 @@ class Transaction(object):
             else:
                 self.__exit__(None, None, None)
                 return res
+
         return inner
 
 
@@ -202,6 +207,7 @@ def commit_on_success(using=None):
     a rollback is made. This is one of the most common ways to do transaction
     control in Web apps.
     """
+
     def entering(using):
         enter_transaction_management(using=using)
 
@@ -225,6 +231,7 @@ def commit_manually(using=None):
     own -- it's up to the user to call the commit and rollback functions
     themselves.
     """
+
     def entering(using):
         enter_transaction_management(using=using)
 

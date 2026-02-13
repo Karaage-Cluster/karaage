@@ -81,14 +81,14 @@ def get_filter(q: tldap.Q, fields: Dict[str, tldap.fields.Field], pk: str):
                     s = []
                     for v in value:
                         assert isinstance(v, str)
-                        v = v.encode('utf_8')
+                        v = v.encode("utf_8")
                         s.append(get_filter_item(dn_name, operation, v))
                     search.append("(&".join(search) + ")")
 
                 # or process just the single value
                 else:
                     assert isinstance(value, str)
-                    v = value.encode('utf_8')
+                    v = value.encode("utf_8")
                     search.append(get_filter_item(dn_name, operation, v))
                 continue
 
@@ -120,8 +120,9 @@ def get_filter(q: tldap.Q, fields: Dict[str, tldap.fields.Field], pk: str):
         return b"(" + op + b"".join(search) + b")"
 
 
-def _get_search_params(query: Optional[tldap.Q], fields: Dict[str, tldap.fields.Field],
-                       object_classes: Set[str], pk: str):
+def _get_search_params(
+    query: Optional[tldap.Q], fields: Dict[str, tldap.fields.Field], object_classes: Set[str], pk: str
+):
     # add object classes to search array
     oc_query = tldap.Q()
     for oc in sorted(object_classes):
@@ -145,8 +146,13 @@ def _get_search_params(query: Optional[tldap.Q], fields: Dict[str, tldap.fields.
 
 
 def search(
-        connection: LdapBase, query: Optional[tldap.Q], fields: Dict[str, tldap.fields.Field],
-        base_dn: str, object_classes: Set[str], pk: str) -> Iterator[Tuple[str, dict]]:
+    connection: LdapBase,
+    query: Optional[tldap.Q],
+    fields: Dict[str, tldap.fields.Field],
+    base_dn: str,
+    object_classes: Set[str],
+    pk: str,
+) -> Iterator[Tuple[str, dict]]:
     field_names = list(fields.keys())
 
     scope, search_filter = _get_search_params(query, fields, object_classes, pk)

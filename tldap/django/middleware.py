@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with python-tldap  If not, see <http://www.gnu.org/licenses/>.
 
-""" Transaction middleware for Django. """
+"""Transaction middleware for Django."""
 
 from django.utils.deprecation import MiddlewareMixin
 
@@ -29,6 +29,7 @@ class TransactionMiddleware(MiddlewareMixin):
     commit, the commit is done when a successful response is created. If an
     exception happens, the database is rolled back.
     """
+
     def process_request(self, request):
         """Enters transaction management"""
         tldap.transaction.enter_transaction_management()

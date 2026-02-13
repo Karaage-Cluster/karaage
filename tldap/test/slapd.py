@@ -2,6 +2,7 @@
 Utilities for starting up a test slapd server
 and talking to it with ldapsearch/ldapadd.
 """
+
 import base64
 import logging
 import os
@@ -14,7 +15,6 @@ from typing import Dict, List, Optional, Tuple
 
 import tldap.ldap_passwd as lp
 
-
 _log = logging.getLogger("slapd")
 
 
@@ -22,7 +22,7 @@ def quote(s: str) -> str:
     """
     Quotes the '"' and '\' characters in a string and surrounds with "..."
     """
-    return '"' + s.replace('\\', '\\\\').replace('"', '\\"') + '"'
+    return '"' + s.replace("\\", "\\\\").replace('"', '\\"') + '"'
 
 
 def mkdirs(path: str) -> str:
@@ -43,7 +43,7 @@ def delete_directory_content(path: str) -> None:
             os.rmdir(os.path.join(dirpath, n))
 
 
-LOCALHOST = '127.0.0.1'
+LOCALHOST = "127.0.0.1"
 
 
 def is_port_in_use(port: int, host: str = LOCALHOST) -> bool:
@@ -95,9 +95,7 @@ class Slapd:
         self._root_cn: str = "Manager"
         self._root_password: str = "password"
         self._slapd_debug_level: int or str = 0
-        self._env: Dict[str, str] = {
-            'PATH': os.getenv('PATH')
-        }
+        self._env: Dict[str, str] = {"PATH": os.getenv("PATH")}
 
     # Setters
     def set_port(self, port: int) -> None:
@@ -117,7 +115,7 @@ class Slapd:
 
     def set_debug(self) -> None:
         self._log.setLevel(logging.DEBUG)
-        self.set_slapd_debug_level('Any')
+        self.set_slapd_debug_level("Any")
 
     # getters
     def get_url(self) -> str:
@@ -165,26 +163,25 @@ class Slapd:
         # Database
         cfg.append("moduleload back_mdb")
         cfg.append("moduleload ppolicy")
-        cfg.append('')
+        cfg.append("")
 
         cfg.append("database mdb")
         cfg.append("directory " + quote(ldif_dir))
 
         cfg.append("suffix " + quote(self.get_dn_suffix()))
         cfg.append("overlay ppolicy")
-        cfg.append(f'ppolicy_default {quote("cn=default,"+self.get_dn_suffix())}')
+        cfg.append(f'ppolicy_default {quote("cn=default," + self.get_dn_suffix())}')
         cfg.append("# rootdn " + quote(self.get_root_dn()))
-        cfg.append("# rootpw " + quote(
-            lp.encode_password(self.get_root_password())))
-        cfg.append('')
+        cfg.append("# rootpw " + quote(lp.encode_password(self.get_root_password())))
+        cfg.append("")
 
-        cfg.append(f'access to dn.sub={quote(self.get_dn_suffix())} attrs=userPassword')
-        cfg.append('   by anonymous auth')
-        cfg.append('')
+        cfg.append(f"access to dn.sub={quote(self.get_dn_suffix())} attrs=userPassword")
+        cfg.append("   by anonymous auth")
+        cfg.append("")
 
-        cfg.append(f'access to dn.sub={quote(self.get_dn_suffix())}')
-        cfg.append(f'   by dn.exact={quote(self.get_root_dn())} write')
-        cfg.append('')
+        cfg.append(f"access to dn.sub={quote(self.get_dn_suffix())}")
+        cfg.append(f"   by dn.exact={quote(self.get_root_dn())} write")
+        cfg.append("")
 
         return cfg
 
@@ -203,8 +200,8 @@ class Slapd:
         f.close()
 
     def _populate(self) -> None:
-        suffix_dc = self.get_dn_suffix().split(',')[0][3:]
-        root_cn = self.get_root_dn().split(',')[0][3:]
+        suffix_dc = self.get_dn_suffix().split(",")[0][3:]
+        root_cn = self.get_root_dn().split(",")[0][3:]
 
         p = os.path.join(self._tmpdir, "admin.ldif")
         with open(p, "w") as f:
@@ -220,22 +217,22 @@ class Slapd:
             f.write("objectClass: organizationalRole\n")
             f.write(f"userPassword: {lp.encode_password(self.get_root_password())}\n")
             f.write("\n")
-            f.write(f'dn: cn=default,{self.get_dn_suffix()}\n')
-            f.write('objectClass: top\n')
-            f.write('objectClass: device\n')
-            f.write('objectClass: pwdPolicy\n')
-            f.write('pwdAttribute: userPassword\n')
-            f.write('pwdLockout: TRUE\n')
+            f.write(f"dn: cn=default,{self.get_dn_suffix()}\n")
+            f.write("objectClass: top\n")
+            f.write("objectClass: device\n")
+            f.write("objectClass: pwdPolicy\n")
+            f.write("pwdAttribute: userPassword\n")
+            f.write("pwdLockout: TRUE\n")
             f.write("\n")
-            f.write(f'dn: ou=People,{self.get_dn_suffix()}\n')
-            f.write('objectClass: top\n')
-            f.write('objectClass: OrganizationalUnit\n')
-            f.write('ou: People\n')
+            f.write(f"dn: ou=People,{self.get_dn_suffix()}\n")
+            f.write("objectClass: top\n")
+            f.write("objectClass: OrganizationalUnit\n")
+            f.write("ou: People\n")
             f.write("\n")
-            f.write(f'dn: ou=Groups,{self.get_dn_suffix()}\n')
-            f.write('objectClass: top\n')
-            f.write('objectClass: OrganizationalUnit\n')
-            f.write('ou: Groups\n')
+            f.write(f"dn: ou=Groups,{self.get_dn_suffix()}\n")
+            f.write("objectClass: top\n")
+            f.write("objectClass: OrganizationalUnit\n")
+            f.write("ou: Groups\n")
 
         config_path = os.path.join(self._tmpdir, "slapd.conf")
         subprocess.check_call(["slapadd", "-n", "1", "-f", config_path, "-l", p])
@@ -252,7 +249,7 @@ class Slapd:
                 self._populate()
                 self._test_configuration()
                 if is_port_in_use(self._port):
-                    raise Exception('Port %s is already in use' % self._port)
+                    raise Exception("Port %s is already in use" % self._port)
                 self._start_slapd()
                 self._wait_for_slapd()
                 ok = True
@@ -265,12 +262,18 @@ class Slapd:
     def _start_slapd(self) -> None:
         # Spawns/forks the slapd process
         self._log.info("starting slapd")
-        self._proc = subprocess.Popen([
-            self.PATH_SLAPD,
-            "-f", self._proc_config,
-            "-h", self.get_url(),
-            "-d", str(self._slapd_debug_level),
-        ], env=self._env)
+        self._proc = subprocess.Popen(
+            [
+                self.PATH_SLAPD,
+                "-f",
+                self._proc_config,
+                "-h",
+                self.get_url(),
+                "-d",
+                str(self._slapd_debug_level),
+            ],
+            env=self._env,
+        )
 
     def _wait_for_slapd(self) -> None:
         # Waits until the LDAP server socket is open, or slapd crashed
@@ -291,11 +294,12 @@ class Slapd:
         """Stops the slapd server, and waits for it to terminate"""
         if self._proc is not None:
             self._log.debug("stopping slapd")
-            if hasattr(self._proc, 'terminate'):
+            if hasattr(self._proc, "terminate"):
                 self._proc.terminate()
             else:
                 import posix
                 import signal
+
                 posix.kill(self._proc.pid, signal.SIGHUP)
                 # time.sleep(1)
                 # posix.kill(self._proc.pid, signal.SIGTERM)
@@ -324,6 +328,7 @@ class Slapd:
             self._proc_config = None
         if self._tmpdir is not None:
             import shutil
+
             shutil.rmtree(self._tmpdir)
             self._tmpdir = None
 
@@ -336,8 +341,11 @@ class Slapd:
             [
                 self.PATH_SLAP_TEST,
                 verbose_flag,
-                "-f", self._proc_config,
-            ], env=self._env)
+                "-f",
+                self._proc_config,
+            ],
+            env=self._env,
+        )
         if p.wait() != 0:
             raise RuntimeError("configuration test failed")
         self._log.debug("configuration seems ok")
@@ -347,23 +355,25 @@ class Slapd:
         if extra_args is None:
             extra_args = []
         self._log.debug("adding %s", repr(ldif))
-        p = subprocess.Popen([
-            self.PATH_LDAPADD,
-            "-x",
-            "-D", self.get_root_dn(),
-            "-w", self.get_root_password(),
-            "-H", self.get_url()] + extra_args,
-            stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-            env=self._env)
+        p = subprocess.Popen(
+            [self.PATH_LDAPADD, "-x", "-D", self.get_root_dn(), "-w", self.get_root_password(), "-H", self.get_url()]
+            + extra_args,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            env=self._env,
+        )
         p.communicate(ldif.encode("utf_8"))
         if p.wait() != 0:
             raise RuntimeError("ldapadd process failed")
 
-    def ldap_search(self, base: Optional[str] = None,
-                    filter: str = '(objectClass=*)',
-                    attrs: Optional[List[str]] = None,
-                    scope: str = 'sub',
-                    extra_args: Optional[List[str]] = None):
+    def ldap_search(
+        self,
+        base: Optional[str] = None,
+        filter: str = "(objectClass=*)",
+        attrs: Optional[List[str]] = None,
+        scope: str = "sub",
+        extra_args: Optional[List[str]] = None,
+    ):
         if base is None:
             base = self.get_dn_suffix()
         if attrs is None:
@@ -371,17 +381,28 @@ class Slapd:
         if extra_args is None:
             extra_args = []
         self._log.debug("ldapsearch filter=%s", repr(filter))
-        p = subprocess.Popen([
-            self.PATH_LDAPSEARCH,
-            "-x",
-            "-D", self.get_root_dn(),
-            "-w", self.get_root_password(),
-            "-H", self.get_url(),
-            "-b", base,
-            "-s", scope,
-            "-LL", ] + extra_args + [filter] + attrs,
+        p = subprocess.Popen(
+            [
+                self.PATH_LDAPSEARCH,
+                "-x",
+                "-D",
+                self.get_root_dn(),
+                "-w",
+                self.get_root_password(),
+                "-H",
+                self.get_url(),
+                "-b",
+                base,
+                "-s",
+                scope,
+                "-LL",
+            ]
+            + extra_args
+            + [filter]
+            + attrs,
             stdout=subprocess.PIPE,
-            env=self._env)
+            env=self._env,
+        )
         output = p.communicate()[0]
         if p.wait() != 0:
             raise RuntimeError("ldapadd process failed")
@@ -390,10 +411,10 @@ class Slapd:
         # unfold
         lines = []
         output = output.decode("utf_8")
-        for line in output.split('\n'):
-            if line.startswith(' '):
+        for line in output.split("\n"):
+            if line.startswith(" "):
                 lines[-1] = lines[-1] + line[1:]
-            elif line == '' and lines and lines[-1] == '':
+            elif line == "" and lines and lines[-1] == "":
                 pass  # ignore multiple blank lines
             else:
                 lines.append(line)
@@ -401,31 +422,31 @@ class Slapd:
         lines = [line for line in lines if not line.startswith("#")]
 
         # Remove leading version and blank line(s)
-        if lines and lines[0] == '':
+        if lines and lines[0] == "":
             del lines[0]
-        if not lines or lines[0] != 'version: 1':
+        if not lines or lines[0] != "version: 1":
             raise RuntimeError("expected 'version: 1', got " + repr(lines[:1]))
         del lines[0]
-        if lines and lines[0] == '':
+        if lines and lines[0] == "":
             del lines[0]
 
         # ensure the ldif ends with a blank line (unless it is just blank)
-        if lines and lines[-1] != '':
-            lines.append('')
+        if lines and lines[-1] != "":
+            lines.append("")
 
         objects = []
         obj = []
         for line in lines:
-            if line == '':  # end of an object
-                if obj[0][0] != 'dn':
+            if line == "":  # end of an object
+                if obj[0][0] != "dn":
                     raise RuntimeError("first line not dn", repr(obj))
                 objects.append((obj[0][1], obj[1:]))
                 obj = []
             else:
-                attr, value = line.split(':', 2)
-                if value.startswith(': '):
+                attr, value = line.split(":", 2)
+                if value.startswith(": "):
                     value = base64.decodebytes(value[2:])
-                elif value.startswith(' '):
+                elif value.startswith(" "):
                     value = value[1:]
                 else:
                     raise RuntimeError("bad line: " + repr(line))
@@ -452,12 +473,12 @@ def test() -> None:
             args = sys.argv[1:]
             env = {
                 **os.environ,
-                'LDAP_TYPE': "openldap",
-                'LDAP_URL': slapd.get_url(),
-                'LDAP_DN': slapd.get_root_dn(),
-                'LDAP_PASSWORD': slapd.get_root_password(),
-                'LDAP_ACCOUNT_BASE':  f"ou=People,{slapd.get_dn_suffix()}",
-                'LDAP_GROUP_BASE':  f"ou=Groups,{slapd.get_dn_suffix()}",
+                "LDAP_TYPE": "openldap",
+                "LDAP_URL": slapd.get_url(),
+                "LDAP_DN": slapd.get_root_dn(),
+                "LDAP_PASSWORD": slapd.get_root_password(),
+                "LDAP_ACCOUNT_BASE": f"ou=People,{slapd.get_dn_suffix()}",
+                "LDAP_GROUP_BASE": f"ou=Groups,{slapd.get_dn_suffix()}",
             }
             print(f"Running command {args}...")
             subprocess.check_call(args, env=env)
@@ -472,5 +493,5 @@ def test() -> None:
         slapd.stop()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

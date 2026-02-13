@@ -15,8 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with python-tldap  If not, see <http://www.gnu.org/licenses/>.
 
-""" This module provides the LDAP base functions
-with a subset of the functions from the real ldap module. """
+"""This module provides the LDAP base functions
+with a subset of the functions from the real ldap module."""
 
 import logging
 import ssl
@@ -26,7 +26,6 @@ from urllib.parse import urlparse
 import ldap3
 import ldap3.core.exceptions as exceptions
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -35,11 +34,11 @@ def _debug(*argv):
     logger.debug(" ".join(argv))
 
 
-Entity = TypeVar('Entity')
+Entity = TypeVar("Entity")
 
 
 class LdapBase(object):
-    """ The vase LDAP connection class. """
+    """The vase LDAP connection class."""
 
     def __init__(self, settings_dict: dict) -> None:
         self.settings_dict = settings_dict
@@ -72,7 +71,7 @@ class LdapBase(object):
         settings = self.settings_dict
 
         _debug("connecting")
-        url = urlparse(settings['URI'])
+        url = urlparse(settings["URI"])
 
         if url.scheme == "ldaps":
             use_ssl = True
@@ -92,26 +91,29 @@ class LdapBase(object):
                 port = 389
 
         start_tls = False
-        if 'START_TLS' in settings and settings['START_TLS']:
+        if "START_TLS" in settings and settings["START_TLS"]:
             start_tls = True
 
         tls = None
         if use_ssl or start_tls:
             tls = ldap3.Tls()
 
-            if 'CIPHERS' in settings:
-                tls.ciphers = settings['CIPHERS']
+            if "CIPHERS" in settings:
+                tls.ciphers = settings["CIPHERS"]
 
-            if 'TLS_CA' in settings and settings['TLS_CA']:
-                tls.ca_certs_file = settings['TLS_CA']
+            if "TLS_CA" in settings and settings["TLS_CA"]:
+                tls.ca_certs_file = settings["TLS_CA"]
 
-            if 'REQUIRE_TLS' in settings and settings['REQUIRE_TLS']:
+            if "REQUIRE_TLS" in settings and settings["REQUIRE_TLS"]:
                 tls.validate = ssl.CERT_REQUIRED
 
         s = ldap3.Server(host, port=port, use_ssl=use_ssl, tls=tls)
         c = self._connection_class(
             s,  # client_strategy=ldap3.STRATEGY_SYNC_RESTARTABLE,
-            user=user, password=password, authentication=ldap3.SIMPLE)
+            user=user,
+            password=password,
+            authentication=ldap3.SIMPLE,
+        )
         c.strategy.restartable_sleep_time = 0
         c.strategy.restartable_tries = 1
         c.raise_exceptions = True
@@ -132,8 +134,7 @@ class LdapBase(object):
     def _reconnect(self) -> None:
         settings = self.settings_dict
         try:
-            self._obj = self._connect(
-                user=settings['USER'], password=settings['PASSWORD'])
+            self._obj = self._connect(user=settings["USER"], password=settings["PASSWORD"])
         except Exception:
             self._obj = None
             raise
@@ -156,8 +157,9 @@ class LdapBase(object):
     # read only stuff #
     ###################
 
-    def search(self, base, scope, filterstr='(objectClass=*)',
-               attrlist=None, limit=None) -> Generator[Tuple[str, dict], None, None]:
+    def search(
+        self, base, scope, filterstr="(objectClass=*)", attrlist=None, limit=None
+    ) -> Generator[Tuple[str, dict], None, None]:
         """
         Search for entries in LDAP database.
         """
@@ -172,8 +174,7 @@ class LdapBase(object):
 
         def first_results(obj):
             _debug("---> searching ldap", limit)
-            obj.search(
-                base, filterstr, scope, attributes=attrlist, paged_size=limit)
+            obj.search(base, filterstr, scope, attributes=attrlist, paged_size=limit)
             return obj.response
 
         # get the 1st result
@@ -182,10 +183,10 @@ class LdapBase(object):
         # Loop over list of search results
         for result_item in result_list:
             # skip searchResRef for now
-            if result_item['type'] != "searchResEntry":
+            if result_item["type"] != "searchResEntry":
                 continue
-            dn = result_item['dn']
-            attributes = result_item['raw_attributes']
+            dn = result_item["dn"]
+            attributes = result_item["raw_attributes"]
             # did we already retrieve this from cache?
             _debug("---> got ldap result", dn)
             _debug("---> yielding", result_item)
@@ -213,15 +214,15 @@ class LdapBase(object):
     # Fake it
 
     def is_dirty(self) -> bool:
-        """ Are there uncommitted changes? """
+        """Are there uncommitted changes?"""
         raise NotImplementedError()
 
     def is_managed(self) -> bool:
-        """ Are we inside transaction management? """
+        """Are we inside transaction management?"""
         raise NotImplementedError()
 
     def enter_transaction_management(self) -> None:
-        """ Start a transaction. """
+        """Start a transaction."""
         raise NotImplementedError()
 
     def leave_transaction_management(self) -> None:

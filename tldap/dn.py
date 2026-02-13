@@ -1,6 +1,7 @@
 """
 dn.py - misc stuff for handling distinguished names (see RFC 4514)
 """
+
 import six
 
 import tldap.exceptions
@@ -13,19 +14,19 @@ def escape_dn_chars(s):
     """
     if s:
         assert isinstance(s, six.string_types)
-        s = s.replace('\\', '\\\\')
-        s = s.replace(',', '\\,')
-        s = s.replace('+', '\\+')
+        s = s.replace("\\", "\\\\")
+        s = s.replace(",", "\\,")
+        s = s.replace("+", "\\+")
         s = s.replace('"', '\\"')
-        s = s.replace('<', '\\<')
-        s = s.replace('>', '\\>')
-        s = s.replace(';', '\\;')
-        s = s.replace('=', '\\=')
-        s = s.replace('\000', '\\\000')
-        if s[0] == '#' or s[0] == ' ':
-            s = ''.join(('\\', s))
-        if s[-1] == ' ':
-            s = ''.join((s[:-1], '\\ '))
+        s = s.replace("<", "\\<")
+        s = s.replace(">", "\\>")
+        s = s.replace(";", "\\;")
+        s = s.replace("=", "\\=")
+        s = s.replace("\000", "\\\000")
+        if s[0] == "#" or s[0] == " ":
+            s = "".join(("\\", s))
+        if s[-1] == " ":
+            s = "".join((s[:-1], "\\ "))
     return s
 
 
@@ -42,9 +43,10 @@ def _whitespace(value, i):
 
 # --- RFC4512: SINGLE CHARACTERS ---
 
+
 def _isALPHA(char):
     assert len(char) == 1
-    return (char >= 'A' and char <= 'Z') or (char >= 'a' and char <= 'z')
+    return (char >= "A" and char <= "Z") or (char >= "a" and char <= "z")
 
 
 def _isleadkeychar(char):
@@ -59,19 +61,17 @@ def _iskeychar(char):
 
 def _isDIGIT(char):
     assert len(char) == 1
-    return char >= '0' and char <= '9'
+    return char >= "0" and char <= "9"
 
 
 def _isHEX(char):
     assert len(char) == 1
-    return (char >= '0' and char <= '9') \
-        or (char >= 'A' and char <= 'F') \
-        or (char >= 'a' and char <= 'f')
+    return (char >= "0" and char <= "9") or (char >= "A" and char <= "F") or (char >= "a" and char <= "f")
 
 
 def _isSPACE(char):
     assert len(char) == 1
-    return char == ' '
+    return char == " "
 
 
 def _isDQUOTE(char):
@@ -81,17 +81,17 @@ def _isDQUOTE(char):
 
 def _isSHARP(char):
     assert len(char) == 1
-    return char == '#'
+    return char == "#"
 
 
 def _isPLUS(char):
     assert len(char) == 1
-    return char == '+'
+    return char == "+"
 
 
 def _isCOMMA(char):
     assert len(char) == 1
-    return char == ','
+    return char == ","
 
 
 def _isDOT(char):
@@ -125,6 +125,7 @@ def _isESC(char):
 
 
 # --- RFC4512: STRINGS ---
+
 
 def _keystring(value, i):
     start = i
@@ -164,7 +165,7 @@ def _numericoid(value, i):
     start = i
 
     while True:
-        (number, i) = _number(value, i)
+        number, i = _number(value, i)
         if number is None:
             return (None, i)
 
@@ -189,14 +190,15 @@ def _UTFMB(value, i):
 
 # --- RFC 4514: CHARACTERS ---
 
+
 def _isspecial(value):
-    return _isescaped(value) or _isSPACE(value) \
-        or _isSHARP(value) or _isEQUALS(value)
+    return _isescaped(value) or _isSPACE(value) or _isSHARP(value) or _isEQUALS(value)
 
 
 def _isescaped(value):
-    return _isDQUOTE(value) or _isPLUS(value) or _isCOMMA(value) \
-        or _isSEMI(value) or _isLANGLE(value) or _isRANGLE(value)
+    return (
+        _isDQUOTE(value) or _isPLUS(value) or _isCOMMA(value) or _isSEMI(value) or _isLANGLE(value) or _isRANGLE(value)
+    )
 
 
 def _isLUTF1(char):
@@ -206,13 +208,15 @@ def _isLUTF1(char):
     # 0x23 '#' not allowed
     assert len(char) == 1
     n = ord(char)
-    return (n >= 0x01 and n <= 0x1F) \
-        or (n == 0x21) \
-        or (n >= 0x24 and n <= 0x2A) \
-        or (n >= 0x2D and n <= 0x3A) \
-        or (n == 0x3D) \
-        or (n >= 0x3F and n <= 0x5B) \
+    return (
+        (n >= 0x01 and n <= 0x1F)
+        or (n == 0x21)
+        or (n >= 0x24 and n <= 0x2A)
+        or (n >= 0x2D and n <= 0x3A)
+        or (n == 0x3D)
+        or (n >= 0x3F and n <= 0x5B)
         or (n >= 0x5D and n <= 0x7F)
+    )
 
 
 def _isTUTF1(char):
@@ -222,13 +226,15 @@ def _isTUTF1(char):
     # 0x23 '#' allowed
     assert len(char) == 1
     n = ord(char)
-    return (n >= 0x01 and n <= 0x1F) \
-        or (n == 0x21) \
-        or (n >= 0x23 and n <= 0x2A) \
-        or (n >= 0x2D and n <= 0x3A) \
-        or (n == 0x3D) \
-        or (n >= 0x3F and n <= 0x5B) \
+    return (
+        (n >= 0x01 and n <= 0x1F)
+        or (n == 0x21)
+        or (n >= 0x23 and n <= 0x2A)
+        or (n >= 0x2D and n <= 0x3A)
+        or (n == 0x3D)
+        or (n >= 0x3F and n <= 0x5B)
         or (n >= 0x5D and n <= 0x7F)
+    )
 
 
 def _isSUTF1(char):
@@ -238,15 +244,18 @@ def _isSUTF1(char):
     # 0x23 '#' allowed
     assert len(char) == 1
     n = ord(char)
-    return (n >= 0x01 and n <= 0x21) \
-        or (n >= 0x23 and n <= 0x2A) \
-        or (n >= 0x2D and n <= 0x3A) \
-        or (n == 0x3D) \
-        or (n >= 0x3F and n <= 0x5B) \
+    return (
+        (n >= 0x01 and n <= 0x21)
+        or (n >= 0x23 and n <= 0x2A)
+        or (n >= 0x2D and n <= 0x3A)
+        or (n == 0x3D)
+        or (n >= 0x3F and n <= 0x5B)
         or (n >= 0x5D and n <= 0x7F)
+    )
 
 
 # --- RFC 4514: STRINGS ---
+
 
 def _leadchar(value, i):
     start = i
@@ -257,7 +266,7 @@ def _leadchar(value, i):
     if _isLUTF1(value[i]):
         return (value[i], i + 1)
 
-    (utfmb, i) = _UTFMB(value, i)
+    utfmb, i = _UTFMB(value, i)
     if utfmb is not None:
         return (utfmb, i)
 
@@ -273,7 +282,7 @@ def _trailchar(value, i):
     if _isTUTF1(value[i]):
         return (value[i], i + 1)
 
-    (utfmb, i) = _UTFMB(value, i)
+    utfmb, i = _UTFMB(value, i)
     if utfmb is not None:
         return (utfmb, i)
 
@@ -289,7 +298,7 @@ def _stringchar(value, i):
     if _isSUTF1(value[i]):
         return (value[i], i + 1)
 
-    (utfmb, i) = _UTFMB(value, i)
+    utfmb, i = _UTFMB(value, i)
     if utfmb is not None:
         return (utfmb, i)
 
@@ -300,7 +309,7 @@ def _distinguishedName(value, i):
     start = i
     result = []
 
-    (relativeDistinguishedName, i) = _relativeDistinguishedName(value, i)
+    relativeDistinguishedName, i = _relativeDistinguishedName(value, i)
     if relativeDistinguishedName is None:
         return (None, start)
     result.append(relativeDistinguishedName)
@@ -320,7 +329,7 @@ def _distinguishedName(value, i):
         # backword compatability.
         _, i = _whitespace(value, i)
 
-        (relativeDistinguishedName, i) = _relativeDistinguishedName(value, i)
+        relativeDistinguishedName, i = _relativeDistinguishedName(value, i)
         if relativeDistinguishedName is None:
             return (None, start)
 
@@ -331,7 +340,7 @@ def _relativeDistinguishedName(value, i):
     start = i
     result = []
 
-    (attributeTypeAndValue, i) = _attributeTypeAndValue(value, i)
+    attributeTypeAndValue, i = _attributeTypeAndValue(value, i)
     if attributeTypeAndValue is None:
         return (None, start)
     result.append(attributeTypeAndValue)
@@ -343,7 +352,7 @@ def _relativeDistinguishedName(value, i):
             return (result, i)
         i = i + 1
 
-        (attributeTypeAndValue, i) = _attributeTypeAndValue(value, i)
+        attributeTypeAndValue, i = _attributeTypeAndValue(value, i)
         if attributeTypeAndValue is None:
             return (None, start)
 
@@ -351,7 +360,7 @@ def _relativeDistinguishedName(value, i):
 
 
 def _attributeTypeAndValue(value, i):
-    (attributeType, i) = _attributeType(value, i)
+    attributeType, i = _attributeType(value, i)
     if attributeType is None:
         return (None, i)
 
@@ -359,7 +368,7 @@ def _attributeTypeAndValue(value, i):
         return (None, i)
     i = i + 1
 
-    (attributeValue, i) = _attributeValue(value, i)
+    attributeValue, i = _attributeValue(value, i)
     if attributeValue is None:
         return (None, i)
 
@@ -367,11 +376,11 @@ def _attributeTypeAndValue(value, i):
 
 
 def _attributeType(value, i):
-    (descr, i) = _keystring(value, i)
+    descr, i = _keystring(value, i)
     if descr is not None:
         return (descr, i)
 
-    (numericoid, i) = _numericoid(value, i)
+    numericoid, i = _numericoid(value, i)
     if numericoid is not None:
         return (numericoid, i)
 
@@ -381,11 +390,11 @@ def _attributeType(value, i):
 def _attributeValue(value, i):
     start = i
 
-    (string, i) = _string(value, i)
+    string, i = _string(value, i)
     if string is not None:
         return (string, i)
 
-    (string, i) = _hexstring(value, i)
+    string, i = _hexstring(value, i)
     if string is not None:
         return (string, i)
 
@@ -399,11 +408,11 @@ def _string(value, i):
     if i >= len(value):
         return (None, start)
 
-    (leadchar, i) = _leadchar(value, i)
+    leadchar, i = _leadchar(value, i)
     if leadchar is not None:
         result += leadchar
     else:
-        (pair, i) = _pair(value, i)
+        pair, i = _pair(value, i)
         if pair is None:
             return (None, start)
         result += pair
@@ -414,11 +423,11 @@ def _string(value, i):
     while i < len(value):
         this_i = i
 
-        (stringchar, i) = _stringchar(value, i)
+        stringchar, i = _stringchar(value, i)
         if stringchar is not None:
             this_result = stringchar
         else:
-            (pair, i) = _pair(value, i)
+            pair, i = _pair(value, i)
             if pair is None:
                 break
             this_result = pair
@@ -433,11 +442,11 @@ def _string(value, i):
     if i >= len(value):
         return (None, start)
 
-    (trailchar, i) = _trailchar(value, i)
+    trailchar, i = _trailchar(value, i)
     if trailchar is not None:
         result += trailchar
     else:
-        (pair, i) = _pair(value, i)
+        pair, i = _pair(value, i)
         if pair is None:
             return (None, start)
         result += pair
@@ -459,7 +468,7 @@ def _pair(value, i):
     if _isESC(value[i]) or _isspecial(value[i]):
         return (value[i], i + 1)
 
-    (hexpair, i) = _hexpair(value, i)
+    hexpair, i = _hexpair(value, i)
     if hexpair is not None:
         return (hexpair, i)
 
@@ -477,13 +486,13 @@ def _hexstring(value, i):
         return (None, start)
     i = i + 1
 
-    (hexpair, i) = _hexpair(value, i)
+    hexpair, i = _hexpair(value, i)
     if hexpair is None:
         return (None, start)
     result += hexpair
 
     while True:
-        (hexpair, i) = _hexpair(value, i)
+        hexpair, i = _hexpair(value, i)
         if hexpair is None:
             return (result, i)
         result += hexpair
@@ -542,12 +551,9 @@ def dn2str(dn):
             assert isinstance(avalue, six.string_types)
             assert dummy == 1
 
-    return ','.join([
-        '+'.join([
-            '='.join((atype, escape_dn_chars(avalue or '')))
-            for atype, avalue, dummy in rdn])
-        for rdn in dn
-    ])
+    return ",".join(
+        ["+".join(["=".join((atype, escape_dn_chars(avalue or ""))) for atype, avalue, dummy in rdn]) for rdn in dn]
+    )
 
 
 def explode_dn(dn, notypes=0, flags=0):
@@ -564,15 +570,11 @@ def explode_dn(dn, notypes=0, flags=0):
     rdn_list = []
     for rdn in dn_decomp:
         if notypes:
-            rdn_list.append('+'.join([
-                escape_dn_chars(avalue or '')
-                for atype, avalue, dummy in rdn
-            ]))
+            rdn_list.append("+".join([escape_dn_chars(avalue or "") for atype, avalue, dummy in rdn]))
         else:
-            rdn_list.append('+'.join([
-                '='.join((atype, escape_dn_chars(avalue or '')))
-                for atype, avalue, dummy in rdn
-            ]))
+            rdn_list.append(
+                "+".join(["=".join((atype, escape_dn_chars(avalue or ""))) for atype, avalue, dummy in rdn])
+            )
     return rdn_list
 
 
@@ -589,7 +591,6 @@ def explode_rdn(rdn, notypes=0, flags=0):
         return []
     rdn_decomp = str2dn(rdn, flags)[0]
     if notypes:
-        return [avalue or '' for atype, avalue, dummy in rdn_decomp]
+        return [avalue or "" for atype, avalue, dummy in rdn_decomp]
     else:
-        return ['='.join((atype, escape_dn_chars(avalue or '')))
-                for atype, avalue, dummy in rdn_decomp]
+        return ["=".join((atype, escape_dn_chars(avalue or ""))) for atype, avalue, dummy in rdn_decomp]

@@ -19,6 +19,7 @@
 This module contains a ``modifyModlist`` function adopted from
 :py:mod:`ldap:ldap.modlist`.
 """
+
 from typing import Dict, Iterator, List, Optional, Tuple
 
 import ldap3
@@ -65,8 +66,8 @@ def addModlist(entry: dict, ignore_attr_types: Optional[List[str]] = None) -> Di
 
 
 def modifyModlist(
-        old_entry: dict, new_entry: dict, ignore_attr_types: Optional[List[str]] = None,
-        ignore_oldexistent: bool = False) -> Dict[str, Tuple[str, List[bytes]]]:
+    old_entry: dict, new_entry: dict, ignore_attr_types: Optional[List[str]] = None, ignore_oldexistent: bool = False
+) -> Dict[str, Tuple[str, List[bytes]]]:
     """
     Build differential modify list for calling LDAPObject.modify()/modify_s()
 
@@ -129,8 +130,7 @@ def modifyModlist(
                     add_values.append(v)
 
             if len(delete_values) > 0 or len(add_values) > 0:
-                modlist[attrtype] = (
-                    ldap3.MODIFY_REPLACE, escape_list(new_value))
+                modlist[attrtype] = (ldap3.MODIFY_REPLACE, escape_list(new_value))
 
         elif old_value and not new_value:
             # Completely delete an existing attribute

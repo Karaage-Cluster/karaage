@@ -14,11 +14,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with python-tldap  If not, see <http://www.gnu.org/licenses/>.
-""" Dictionary related classes. """
+"""Dictionary related classes."""
+
 from typing import Dict, ItemsView, KeysView, Optional, Set, TypeVar
 
-
-Entity = TypeVar('Entity', bound='CaseInsensitiveDict')
+Entity = TypeVar("Entity", bound="CaseInsensitiveDict")
 
 
 class CaseInsensitiveDict:
@@ -28,9 +28,7 @@ class CaseInsensitiveDict:
     """
 
     def __init__(self, allowed_keys: Set[str], d: Optional[dict] = None) -> None:
-        self._lc: Dict[str, str] = {
-            value.lower(): value for value in allowed_keys
-        }
+        self._lc: Dict[str, str] = {value.lower(): value for value in allowed_keys}
         self._dict = dict()
         if d is not None:
             for k, v in d.items():
@@ -75,13 +73,14 @@ class CaseInsensitiveDict:
         return self._dict
 
 
-ImmutableDictEntity = TypeVar('ImmutableDictEntity', bound='ImmutableDict')
+ImmutableDictEntity = TypeVar("ImmutableDictEntity", bound="ImmutableDict")
 
 
 class ImmutableDict:
     """
     Immutable dictionary that cannot be changed without creating a new instance.
     """
+
     def __init__(self, allowed_keys: Optional[Set[str]] = None, d: Optional[dict] = None) -> None:
         self._allowed_keys = allowed_keys
         self._dict = CaseInsensitiveDict(allowed_keys)

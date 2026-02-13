@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with python-tldap  If not, see <http://www.gnu.org/licenses/>.
 
-""" Django specific database helper functions. """
+"""Django specific database helper functions."""
 
 from tldap import Q
 from tldap.database import Changeset, Database, LdapObjectClass, get_one
@@ -24,7 +24,7 @@ from tldap.exceptions import ObjectDoesNotExist
 
 
 def _check_exists(database: Database, table: LdapObjectClass, key: str, value: str):
-    """ Check if a given LDAP object exists. """
+    """Check if a given LDAP object exists."""
     try:
         get_one(table, Q(**{key: value}), database=database)
         return True
@@ -33,17 +33,16 @@ def _check_exists(database: Database, table: LdapObjectClass, key: str, value: s
 
 
 def save_account(changes: Changeset, table: LdapObjectClass, database: Database) -> Changeset:
-    """ Modify a changes to add an automatically generated uidNumber. """
+    """Modify a changes to add an automatically generated uidNumber."""
     d = {}
     settings = database.settings
 
-    uid_number = changes.get_value_as_single('uidNumber')
+    uid_number = changes.get_value_as_single("uidNumber")
     if uid_number is None:
-        scheme = settings['NUMBER_SCHEME']
-        first = settings.get('UID_FIRST', 10000)
-        d['uidNumber'] = Counters.get_and_increment(
-            scheme, "uidNumber", first,
-            lambda n: not _check_exists(database, table, 'uidNumber', n)
+        scheme = settings["NUMBER_SCHEME"]
+        first = settings.get("UID_FIRST", 10000)
+        d["uidNumber"] = Counters.get_and_increment(
+            scheme, "uidNumber", first, lambda n: not _check_exists(database, table, "uidNumber", n)
         )
 
     changes = changes.merge(d)
@@ -51,17 +50,16 @@ def save_account(changes: Changeset, table: LdapObjectClass, database: Database)
 
 
 def save_group(changes: Changeset, table: LdapObjectClass, database: Database) -> Changeset:
-    """ Modify a changes to add an automatically generated gidNumber. """
+    """Modify a changes to add an automatically generated gidNumber."""
     d = {}
     settings = database.settings
 
-    gid_number = changes.get_value_as_single('gidNumber')
+    gid_number = changes.get_value_as_single("gidNumber")
     if gid_number is None:
-        scheme = settings['NUMBER_SCHEME']
-        first = settings.get('GID_FIRST', 10000)
-        d['gidNumber'] = Counters.get_and_increment(
-            scheme, "gidNumber", first,
-            lambda n: not _check_exists(database, table, 'gidNumber', n)
+        scheme = settings["NUMBER_SCHEME"]
+        first = settings.get("GID_FIRST", 10000)
+        d["gidNumber"] = Counters.get_and_increment(
+            scheme, "gidNumber", first, lambda n: not _check_exists(database, table, "gidNumber", n)
         )
 
     changes = changes.merge(d)

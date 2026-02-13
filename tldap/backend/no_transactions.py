@@ -15,17 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with python-tldap  If not, see <http://www.gnu.org/licenses/>.
 
-""" This module provides the LDAP functions with transaction support disabled,
-with a subset of the functions from the real ldap module. """
+"""This module provides the LDAP functions with transaction support disabled,
+with a subset of the functions from the real ldap module."""
+
 from typing import Optional
 
 from .base import LdapBase
 
-
 # wrapper class
 
+
 class LDAPwrapper(LdapBase):
-    """ The LDAP connection class. """
+    """The LDAP connection class."""
 
     ####################
     # Cache Management #
@@ -45,15 +46,15 @@ class LDAPwrapper(LdapBase):
     # Fake it
 
     def is_dirty(self) -> bool:
-        """ Are there uncommitted changes? """
+        """Are there uncommitted changes?"""
         return False
 
     def is_managed(self) -> bool:
-        """ Are we inside transaction management? """
+        """Are we inside transaction management?"""
         return False
 
     def enter_transaction_management(self) -> None:
-        """ Start a transaction. """
+        """Start a transaction."""
         pass
 
     def leave_transaction_management(self) -> None:
@@ -120,5 +121,4 @@ class LDAPwrapper(LdapBase):
         result if transactions enabled.
         """
 
-        return self._do_with_retry(
-            lambda obj: obj.rename_s(dn, new_rdn, new_base_dn))
+        return self._do_with_retry(lambda obj: obj.rename_s(dn, new_rdn, new_base_dn))

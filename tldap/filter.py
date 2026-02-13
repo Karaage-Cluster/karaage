@@ -2,6 +2,7 @@
 filters.py - misc stuff for handling LDAP filter strings (see RFC2254)
 
 """
+
 import six
 
 
@@ -29,17 +30,15 @@ def escape_filter_chars(assertion_value, escape_mode=0):
             c = ord(c)
 
         if escape_mode == 0:
-            if c == ord('\\') or c == ord('*') \
-                    or c == ord('(') or c == ord(')') \
-                    or c == ord('\x00'):
+            if c == ord("\\") or c == ord("*") or c == ord("(") or c == ord(")") or c == ord("\x00"):
                 do_escape = True
         elif escape_mode == 1:
-            if c < '0' or c > 'z' or c in "\\*()":
+            if c < "0" or c > "z" or c in "\\*()":
                 do_escape = True
         elif escape_mode == 2:
             do_escape = True
         else:
-            raise ValueError('escape_mode must be 0, 1 or 2.')
+            raise ValueError("escape_mode must be 0, 1 or 2.")
 
         if do_escape:
             s.append(b"\\%02x" % c)
@@ -51,7 +50,7 @@ def escape_filter_chars(assertion_value, escape_mode=0):
                 b = chr(c)
             s.append(b)
 
-    return b''.join(s)
+    return b"".join(s)
 
 
 def filter_format(filter_template, assertion_values):
@@ -63,5 +62,4 @@ def filter_format(filter_template, assertion_values):
           count of %s in filter_template.
     """
     assert isinstance(filter_template, bytes)
-    return filter_template % (
-        tuple(map(escape_filter_chars, assertion_values)))
+    return filter_template % (tuple(map(escape_filter_chars, assertion_values)))

@@ -15,8 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with python-tldap  If not, see <http://www.gnu.org/licenses/>.
 
-""" This module provides the LDAP functions with transaction support faked,
-with a subset of the functions from the real ldap module. """
+"""This module provides the LDAP functions with transaction support faked,
+with a subset of the functions from the real ldap module."""
+
 import logging
 import sys
 from typing import Any, Callable, Dict, List, Optional
@@ -29,7 +30,6 @@ import tldap.exceptions
 import tldap.modlist
 
 from .base import LdapBase
-
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +45,7 @@ def raise_testfailure(place: str) -> None:
 
 # errors
 
+
 class NoSuchObject(Exception):
     pass
 
@@ -54,8 +55,9 @@ UpdateCallable = Callable[[ldap3.Connection], None]
 
 # wrapper class
 
+
 class LDAPwrapper(LdapBase):
-    """ The LDAP connection class. """
+    """The LDAP connection class."""
 
     def __init__(self, settings_dict: dict) -> None:
         super(LDAPwrapper, self).__init__(settings_dict)
@@ -83,26 +85,21 @@ class LDAPwrapper(LdapBase):
         """
 
         # no cached item, retrieve from ldap
-        self._do_with_retry(
-            lambda obj: obj.search(
-                dn,
-                '(objectclass=*)',
-                ldap3.BASE,
-                attributes=['*', '+']))
+        self._do_with_retry(lambda obj: obj.search(dn, "(objectclass=*)", ldap3.BASE, attributes=["*", "+"]))
         results = self._obj.response
         if len(results) < 1:
             raise NoSuchObject("No results finding current value")
         if len(results) > 1:
             raise RuntimeError("Too many results finding current value")
 
-        return results[0]['raw_attributes']
+        return results[0]["raw_attributes"]
 
     ##########################
     # Transaction Management #
     ##########################
 
     def is_dirty(self) -> bool:
-        """ Are there uncommitted changes? """
+        """Are there uncommitted changes?"""
         if len(self._transactions) == 0:
             raise RuntimeError("is_dirty called outside a transaction.")
         if len(self._transactions[-1]) > 0:
@@ -110,11 +107,11 @@ class LDAPwrapper(LdapBase):
         return False
 
     def is_managed(self) -> bool:
-        """ Are we inside transaction management? """
+        """Are we inside transaction management?"""
         return len(self._transactions) > 0
 
     def enter_transaction_management(self) -> None:
-        """ Start a transaction. """
+        """Start a transaction."""
         self._transactions.append([])
 
     def leave_transaction_management(self) -> None:
@@ -167,8 +164,7 @@ class LDAPwrapper(LdapBase):
         except:  # noqa: E722
             _debug("--> rollback failed")
             exc_class, exc, tb = sys.exc_info()
-            raise tldap.exceptions.RollbackError(
-                "FATAL Unrecoverable rollback error: %r" % exc)
+            raise tldap.exceptions.RollbackError("FATAL Unrecoverable rollback error: %r" % exc)
         finally:
             # reset everything to clean state
             _debug("--> rollback success")
@@ -252,16 +248,12 @@ class LDAPwrapper(LdapBase):
                     # deleted.
                     reverse = (ldap3.MODIFY_ADD, mod_vals)
 
-                elif mod_op == ldap3.MODIFY_DELETE \
-                        or mod_op == ldap3.MODIFY_REPLACE:
+                elif mod_op == ldap3.MODIFY_DELETE or mod_op == ldap3.MODIFY_REPLACE:
                     if mod_type in result:
                         # If MODIFY_DELETE with no values or MODIFY_REPLACE
                         # then we have to replace all attributes with cached
                         # state
-                        reverse = (
-                            ldap3.MODIFY_REPLACE,
-                            tldap.modlist.escape_list(result[mod_type])
-                        )
+                        reverse = (ldap3.MODIFY_REPLACE, tldap.modlist.escape_list(result[mod_type]))
                     else:
                         # except if we have no cached state for this DN, in
                         # which case we delete it.
@@ -320,18 +312,19 @@ class LDAPwrapper(LdapBase):
         def delete_attribute(name):
             if name in result:
                 del result[name]
-        delete_attribute('entryUUID')
-        delete_attribute('structuralObjectClass')
-        delete_attribute('modifiersName')
-        delete_attribute('subschemaSubentry')
-        delete_attribute('entryDN')
-        delete_attribute('modifyTimestamp')
-        delete_attribute('entryCSN')
-        delete_attribute('createTimestamp')
-        delete_attribute('creatorsName')
-        delete_attribute('hasSubordinates')
-        delete_attribute('pwdFailureTime')
-        delete_attribute('pwdChangedTime')
+
+        delete_attribute("entryUUID")
+        delete_attribute("structuralObjectClass")
+        delete_attribute("modifiersName")
+        delete_attribute("subschemaSubentry")
+        delete_attribute("entryDN")
+        delete_attribute("modifyTimestamp")
+        delete_attribute("entryCSN")
+        delete_attribute("createTimestamp")
+        delete_attribute("creatorsName")
+        delete_attribute("hasSubordinates")
+        delete_attribute("pwdFailureTime")
+        delete_attribute("pwdChangedTime")
         # turn into mod_list list.
         mod_list = tldap.modlist.addModlist(result)
 
@@ -357,7 +350,7 @@ class LDAPwrapper(LdapBase):
         # split up the parameters
         split_dn = tldap.dn.str2dn(dn)
         split_newrdn = tldap.dn.str2dn(new_rdn)
-        assert (len(split_newrdn) == 1)
+        assert len(split_newrdn) == 1
 
         # make dn unqualified
         rdn = tldap.dn.dn2str(split_dn[0:1])
@@ -385,7 +378,7 @@ class LDAPwrapper(LdapBase):
         return self._process(on_commit, on_rollback)
 
     def fail(self) -> None:
-        """ for testing purposes only. always fail in commit """
+        """for testing purposes only. always fail in commit"""
 
         _debug("fail")
 

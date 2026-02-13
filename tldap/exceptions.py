@@ -14,43 +14,50 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with python-tldap  If not, see <http://www.gnu.org/licenses/>.
-""" Various TLDAP exceptions. """
+"""Various TLDAP exceptions."""
 
 
 class InvalidDN(Exception):
-    """ DN value is invalid and cannot be parsed. """
+    """DN value is invalid and cannot be parsed."""
 
 
 class TestFailure(Exception):
     """Simulated failure for testing."""
+
     pass
 
 
 class FieldError(Exception):
     """Some kind of problem with a field."""
+
     pass
 
 
 class ObjectDoesNotExist(Exception):
     "The requested object does not exist"
+
     pass
 
 
 class MultipleObjectsReturned(Exception):
     "The query returned multiple objects when only one was expected."
+
     pass
 
 
 class ObjectAlreadyExists(Exception):
     "The requested object already exists"
+
     pass
 
 
 class ValidationError(Exception):
     """An error while validating data."""
+
     pass
 
 
 class RollbackError(Exception):
     """An error in rollback and consistency cannot be guaranteed."""
+
     pass
