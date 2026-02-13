@@ -1,0 +1,441 @@
+#----------------------------------------------------------------------
+#
+# auEduPerson v: 20081204
+#
+# auEduPerson schema
+#
+# The first draft of the auEduPerson schema was produced by
+# WALAP (Western Australian Libraries Authentication Project) in 2002-09-27
+# to provide an authentication infrastructure to assist the Western
+# Australian University Libraries in the continuing development of
+# access to online resources. This document defined two objectclasses;
+# auEduPerson and auEduUnit; registered in the AARNet OID namespace.
+# See <http://walap.curtin.edu.au/docs/walap_schema_1_0.ldif>
+#
+# In March 2007 the Australian Access Federation Steering Committee approved
+# the creation of a working group to determine the need for identity attributes
+# and schemas for the Australasian Higher Education and Research sector which
+# would extend the WALAP work. Consequently representatives of the WALAP project
+# were invited to join the new working group.
+#
+# During the deliberations of the auEduPerson WG it was decided to deprecated
+# most of the attribute definitions in the WALAP auEduPerson objectclass
+# and define attributes and schema that were more representative of the whole
+# Australasian Higher Education and Research sector.
+#
+# New attributes added to the auEduPerson schema are registered under the
+# AAF OID namespace (1.3.6.1.4.1.27856) whilst the auEduPerson objectclass itself
+# remains registered in the AARNet OID namespace. The auEduUnit objectclass and
+# related attributes remain intact. They were considered, at the time, outside
+# the scope of the auEduPerson WG.
+#
+#
+#----------------------------------------------------------------------
+#
+# 20020907 - Initial Release
+# 20071106 - Re-released. #
+
+objectIdentifier AAFARC 1.3.6.1.4.1.27856
+objectIdentifier AARNetARC 1.3.6.1.4.1.8852
+
+objectIdentifier auEduPersonARC AAFARC:1
+objectIdentifier auEduPersonObjectClassARC auEduPersonARC:1
+objectIdentifier auEduPersonAttributeARC auEduPersonARC:2
+
+objectIdentifier WALAPAttributeARC AARNetARC:4.1.1
+objectIdentifier WALAPObjectClassARC AARNetARC:4.1.2
+
+#----------------------------------------------------------------------
+# Orginal WALAP auEduPerson Attributes
+#----------------------------------------------------------------------
+#
+# auEduPersonSalutation [DEPRECATED] Use schacPersonalTitle
+#
+# Descrip: Attribute type salutation is derived from attribute type title
+# which is specified in RFC 2256 and X.520.
+#
+# Format: Possible values include "Ms", "Mr", "Dr" and "Prof".
+#
+# Example: auEduPersonSalutation: Mr
+#
+attributetype ( WALAPAttributeARC:0
+ NAME 'auEduPersonSalutation'
+ SUP title
+ SINGLE-VALUE )
+#
+# auEduPersonPreferredGivenName [DEPRECATED]
+#
+# Descrip: Attribute type auEduPersonPreferredGivenName is derived from
+# attribute type givenName as defined in RFC 2256 and X.520.
+#
+# Format: A typical value may be "John".
+#
+# Example: auEduPersonPreferredGivenName: Johnny
+#
+attributetype ( WALAPAttributeARC:1
+ NAME 'auEduPersonPreferredGivenName'
+ SUP givenName )
+#
+# auEduPersonPreferredSurname [DEPRECATED]
+#
+# Descrip: Attribute type auEduPersonPreferredSurname is derived from
+# attribute type sn as defined in RFC 2256.
+#
+# Format: A value could be "Smith"
+#
+# Example: auEduPersonPreferredSurname: Smith
+#
+attributetype ( WALAPAttributeARC:2
+ NAME 'auEduPersonPreferredSurname'
+ SUP sn )
+#
+# auEduPersonExpiryDate [DEPRECATED]
+#
+# Descrip: Attribute type auEduPersonExpiryDate is used to store the date
+# when the entry expires. It is a single-valued attribute
+#
+# Format: The date format used is ISO 8601, which specifies a date as
+# YYYY-MMDD. For example the twenty-second day in May in the year
+# 2008 is represented as, 2008-05-22
+#
+# Example: auEduPersonExpiryDate: 2008-05-22
+#
+attributetype ( WALAPAttributeARC:3
+ NAME 'auEduPersonExpiryDate'
+ EQUALITY caseIgnoreMatch
+ SYNTAX '1.3.6.1.4.1.1466.115.121.1.15'
+ SINGLE-VALUE )
+#
+# auEduPersonID [DEPRECATED]
+#
+# Descrip: Attribute type auEduPersonID is derived from attribute type
+# employeeNumber as defined for object class inetOrgPerson in
+# RFC 2798. This attribute is used to store a numeric or an
+# alphanumeric identifier assigned to a person, such as student
+# or staff identification number. It is a single-valued attribute.
+# The value of auEduPersonID has to be unique across a university.
+#
+# Format: An example value is "856302"
+#
+# Example: auEduPersonID: 856302
+#
+attributetype ( WALAPAttributeARC:4
+ NAME 'auEduPersonID'
+ SUP employeeNumber )
+#
+# auEduPersonType [DEPRECATED]
+#
+# Descrip: Attribute type auEduPersonType is derived from attribute type
+# employeeType as defined for object class inetOrgPerson in
+# RFC 2798. The attribute is used to identify the person's
+# relationship to the university. Values may be, "student",
+# "staff" or "others". The directory server will accept any other
+# value, but for the purpose of the WALAP-ISP project, the
+# participating universities have agreed to use only one of the
+# three values given above. The attribute is single-valued
+#
+# Format:
+#
+# Example: auEduPersonType: student
+#
+attributetype ( WALAPAttributeARC:5
+ NAME 'auEduPersonType'
+ SUP employeeType
+ SINGLE-VALUE )
+#
+# auEduPersonSubType [DEPRECATED] Use auEduPersonAffiliation
+#
+# Descrip: Attribute type auEduPersonSubType is derived from attribute
+# type employeeType as defined for object class inetOrgPerson in
+# RFC 2798. Together with attribute auEduPersonType the attribute
+# is used to describe the type of a person. Values may be
+# "undergrad", "postgrad", "alumni" etc., but any value is
+# accepted.
+#
+# Format:
+#
+# Example: auEduPersonSubType: postgrad
+#
+attributetype ( WALAPAttributeARC:6
+ NAME 'auEduPersonSubType'
+ SUP employeeType )
+#
+# auEduPersonEmailAddress [DEPRECATED]
+#
+# Descrip: Attribute type auEduPersonEmailAddress is derived from attribute
+# type mail, which is specified in object class inetOrgPerson in
+# RFC 2798. A possible value may look like "Smith@ecu.edu.au".
+#
+# Format:
+#
+# Example: auEduPersonEmailAddress: jsmith@ecu.edu.au
+#
+attributetype ( WALAPAttributeARC:7
+ NAME 'auEduPersonEmailAddress'
+ SUP mail )
+#
+# auEduPersonLibraryBarCodeNumber [DEPRECATED]
+#
+# Descrip: Attribute type auEduPersonLibraryBarCodeNumber is used to hold
+# an alphanumeric string used for identifying borrowers in the
+# library information systems.
+#
+# Format:
+#
+# Example: auEduPersonLibraryBarCodeNumber: 892727
+#
+attributetype ( WALAPAttributeARC:8
+ NAME 'auEduPersonLibraryBarCodeNumber'
+ EQUALITY caseIgnoreMatch
+ SYNTAX '1.3.6.1.4.1.1466.115.121.1.15' )
+#
+# auEduPersonLibraryPIN [DEPRECATED]
+#
+# Descrip: Attribute type auEduPersonLibraryPIN stores an identification
+# number used for library information systems.
+#
+# Format:
+#
+# Example: auEduPersonLibraryPIN: 7392
+#
+attributetype ( WALAPAttributeARC:9
+ NAME 'auEduPersonLibraryPIN'
+ EQUALITY caseIgnoreMatch
+ SYNTAX '1.3.6.1.4.1.1466.115.121.1.15' )
+#
+# auEduPersonActiveUnit [DEPRECATED]
+#
+# Descrip: Attribute type auEduPersonActiveUnit is derived from attribute
+# type member as given in RFC 2256 and X.500. It is of syntax,
+# "Distinguished Name" and is used to hold dn of the units in
+# the units sub tree according to the person's current active
+# enrolment.
+#
+# Format:
+#
+# Example: auEduPersonActiveUnit: cn=POL3101, ou=units, o=ecu, c=au
+# auEduPersonActiveUnit: cn=PHR3105, ou=units, o=ecu, c=au
+# auEduPersonActiveUnit: cn=HST4582, ou=units, o=ecu, c=au
+#
+attributetype ( WALAPAttributeARC:10
+ NAME 'auEduPersonActiveUnit'
+ SUP member )
+#----------------------------------------------------------------------
+# Orginal WALAP auEduUnit Attributes
+#----------------------------------------------------------------------
+#
+# auEduUnitCode
+#
+# Descrip: Attribute type auEduUnitCode is derived from attribute type
+# name, which is specified in RFC 2256 and X.500. It is defined as
+# a single-valued attribute. An example value is "POL3101".
+# Object class auEduUnit declares auEduUnitCode as a mandatory
+# attribute. Its value is used to name an entry of object class
+# auEduUnit. A unit's entry in the WALAP Directory of object class
+# auEduUnit is named with the cn (common name) attribute. The
+# value used for cn is the value of auEduUnitCode.
+# The value of auEduUnitCode has to be unique across a university.
+#
+# Format:
+#
+# Example: auEduUnitCode: POL3101
+#
+attributetype ( WALAPAttributeARC:11
+ NAME 'auEduUnitCode'
+ SUP name
+ SINGLE-VALUE )
+#
+# auEduUnitName
+#
+# Descrip: Attribute type auEduUnitName is derived from attribute type
+# name, which is specified in RFC 2256 and X.500. Attribute
+# auEduUnitName holds some descriptive information about the
+# unit, such as the title "Politics and Government for
+# beginners and politicians".
+#
+# Format:
+#
+# Example: auEduUnitName: "Politics and Government for beginners and
+# politicians"
+#
+attributetype ( WALAPAttributeARC:12
+ NAME 'auEduUnitName'
+ SUP name )
+#
+# auEduUnitActiveMember
+#
+# Descrip: Attribute type auEduUnitActiveMember is derived from attribute
+# type member, which is specified in RFC 2256 and X.500. Its
+# syntax is "Distinguished Name" and it holds the dn of a person
+# actively enrolled in this unit.
+#
+# Format:
+#
+# Example: auEduUnitActiveMember: cn=67181, ou=people, o=ecu, c=au
+#
+attributetype ( WALAPAttributeARC:13
+ NAME 'auEduUnitActiveMember'
+ SUP member )
+#----------------------------------------------------------------------
+# New auEduPerson Attributes
+#----------------------------------------------------------------------
+#
+# auEduPersonAffiliation
+#
+# Descrip: Specifies a person's relationship to the institution in broad
+# categories but with a finer-grained set of permissible values
+# than eduPersonAffiliation.
+#
+# Format: This attribute has a controlled vocabulary. The following values
+# are permissible:
+# * undergraduate-student
+# * honours-student
+# * postgraduate-coursework-student
+# * postgraduate-research-student
+# * nonaward-student
+# * prospective-student
+# * visiting-student
+# * visiting-staff
+# * honorary-staff
+# * contractor
+# * physically-present
+#
+# Example: auEduPersonAffiliation: postgradate-research-student
+#
+attributetype ( auEduPersonAttributeARC:1
+ NAME 'auEduPersonAffiliation'
+ DESC ''
+ EQUALITY caseIgnoreMatch
+ ORDERING caseIgnoreOrderingMatch
+ SUBSTR caseIgnoreSubstringsMatch
+ SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+#
+# auEduPersonLegalName
+#
+# Descrip: A Service Provider may requires the user's Legal Name either because
+# of some legal requirement prior to service provision or because the
+# Service Provider must match the Legal Name with data from a source
+# outside the Federation Identity Provider.
+#
+# Format:
+#
+# Example:
+#
+attributetype ( auEduPersonAttributeARC:2
+ NAME 'auEduPersonLegalName'
+ DESC ''
+ EQUALITY caseIgnoreMatch
+ ORDERING caseIgnoreOrderingMatch
+ SUBSTR caseIgnoreSubstringsMatch
+ SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+ SINGLE-VALUE )
+#
+# auEduPersonAuthenticationLOA
+#
+# Descrip: Provides a measure of the strength of the authentication act of the
+# user so as to allow a Service Provider auxiliary information on which
+# to judge access rights. See AAF Authentication Management Policy for
+# more information.
+#
+# Format: URN scheme. Permissible values for the attribute under this scheme
+# are:
+# * urn:mace:aaf.edu.au:iap:authN:level1
+# * urn:mace:aaf.edu.au:iap:authN:level2
+# * urn:mace:aaf.edu.au:iap:authN:level3
+# * urn:mace:aaf.edu.au:iap:authN:level4
+# Format: OID scheme. Permissible values for the attribute under this scheme
+# are:
+# * auEduPersonAttributeARC:3.1
+# * auEduPersonAttributeARC:3.2
+# * auEduPersonAttributeARC:3.3
+# * auEduPersonAttributeARC:3.4
+#
+# Example: auEduPersonAuthenticationLOA: urn:mace:aaf.edu.au:iap:authN:level1
+#
+attributetype ( auEduPersonAttributeARC:3
+ NAME 'auEduPersonAuthenticationLOA'
+ DESC ''
+ EQUALITY caseExactMatch
+ SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+ SINGLE-VALUE )
+#
+# auEduPersonIdentityLOA
+#
+# Descrip: Provides a measure of the strength of the Identity Management Process
+# of the user so as to allow a Service Provider auxiliary information
+# on which to judge access rights. See AAF Identity Management Policy
+# for more information.
+#
+# Format: URN scheme. Permissible values for the attribute under this scheme
+# are:
+# * urn:mace:aaf.edu.au:iap:ID:level1
+# * urn:mace:aaf.edu.au:iap:ID:level2
+# * urn:mace:aaf.edu.au:iap:ID:level3
+# * urn:mace:aaf.edu.au:iap:ID:level4
+# Format: OID scheme. Permissible values for the attribute under this scheme
+# are:
+# * auEduPersonAttributeARC:4.1
+# * auEduPersonAttributeARC:4.2
+# * auEduPersonAttributeARC:4.3
+# * auEduPersonAttributeARC:4.4
+#
+# Example: auEduPersonIdentityLOA: urn:mace:aaf.edu.au:iap:ID:level3
+#
+attributetype ( auEduPersonAttributeARC:4
+ NAME 'auEduPersonIdentityLOA'
+ DESC ''
+ EQUALITY caseExactMatch
+ SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+ SINGLE-VALUE )
+#
+# auEduPersonSharedToken
+#
+# Descrip: An opaque identifier which is unique, not reassignable, and persistent
+# across different Service Providers.
+#
+# Format: free string
+#
+# Example: auEduPersonSharedToken: 7eak0QQIEhygtPXtpgmu5l5hRnY
+#
+attributetype ( auEduPersonAttributeARC:5
+ NAME 'auEduPersonSharedToken'
+ DESC ''
+ EQUALITY caseExactMatch
+ SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+ SINGLE-VALUE )
+#----------------------------------------------------------------------
+# ObjectClasses
+#----------------------------------------------------------------------
+objectclass ( WALAPObjectClassARC:0
+ NAME 'auEduPerson'
+ AUXILIARY 
+ MAY ( auEduPersonID $
+  auEduPersonSalutation $
+  auEduPersonPreferredGivenName $
+  auEduPersonPreferredSurname $
+  auEduPersonExpiryDate $
+  auEduPersonType $
+  auEduPersonSubType $
+  auEduPersonEmailAddress $
+  auEduPersonLibraryBarCodeNumber $
+  auEduPersonLibraryPIN $
+  auEduPersonActiveUnit $
+  member $
+  auEduPersonAffiliation $
+  auEduPersonLegalName $
+  auEduPersonAuthenticationLOA $
+  auEduPersonIdentityLOA $
+  auEduPersonSharedToken )
+ )
+
+objectclass ( WALAPObjectClassARC:1
+ NAME 'auEduUnit'
+ SUP top
+ STRUCTURAL
+ MUST ( cn $ auEduUnitCode )
+ MAY ( auEduUnitName $ auEduUnitActiveMember )
+ )
+
+#----------------------------------------------------------------------
+# End of auEduPerson schema
+#----------------------------------------------------------------------
