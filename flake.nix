@@ -13,6 +13,10 @@
       inputs.pyproject-nix.follows = "pyproject-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    uv2nix-hammer = {
+      url = "github:TyberiusPrime/uv2nix_hammer_overrides";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     pyproject-build-systems = {
       url = "github:pyproject-nix/build-system-pkgs";
       inputs.pyproject-nix.follows = "pyproject-nix";
@@ -30,6 +34,7 @@
       flake-utils,
       pyproject-nix,
       uv2nix,
+      uv2nix-hammer,
       pyproject-build-systems,
       devenv,
       flockenzeit,
@@ -51,8 +56,10 @@
 
         # Create package overlay from workspace.
         overlay = workspace.mkPyprojectOverlay {
-          sourcePreference = "sdist";
+          sourcePreference = "wheel";
         };
+
+        hammerOverlays = uv2nix-hammer.overrides pkgs;
 
         # Extend generated overlay with build fixups
         #
@@ -76,35 +83,7 @@
             # `setuptools-scm[toml]` in pyproject.toml would be written as
             # `foo.setuptools-scm = [ "toml" ]` in Nix
             buildSystemOverrides = {
-              asgiref.setuptools = [ ];
               bcrypt.setuptools = [ ];
-              certifi.setuptools = [ ];
-              cssmin.setuptools = [ ];
-              django-ajax-selects.poetry-core = [ ];
-              django-environ.setuptools = [ ];
-              django-filter.flit-core = [ ];
-              django-ranged-response.setuptools = [ ];
-              django.setuptools = [ ];
-              django-simple-captcha.setuptools = [ ];
-              django-tables2.hatchling = [ ];
-              gunicorn.setuptools = [ ];
-              jsmin.setuptools = [ ];
-              ldap3.setuptools = [ ];
-              packaging.flit-core = [ ];
-              passlib.setuptools = [ ];
-              pathspec.flit-core = [ ];
-              pip.setuptools = [ ];
-              pluggy.setuptools = [ ];
-              pyasn1.setuptools = [ ];
-              pyjwt.setuptools = [ ];
-              python-alogger.setuptools = [ ];
-              python-tldap.poetry-core = [ ];
-              sentry-sdk.setuptools = [ ];
-              six.setuptools = [ ];
-              sqlparse.hatchling = [ ];
-              urllib3.hatchling = [ ];
-              urllib3.hatch-vcs = [ ];
-              whitenoise.setuptools = [ ];
             };
 
           in
@@ -115,38 +94,6 @@
             })
           ) buildSystemOverrides
           // {
-            cracklib = prev.cracklib.overrideAttrs (old: {
-              buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.cracklib ];
-              nativeBuildInputs = old.nativeBuildInputs ++ [
-                (resolveBuildSystem {
-                  setuptools = [ ];
-                })
-              ];
-            });
-            mysqlclient = prev.mysqlclient.overrideAttrs (old: {
-              buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.libmysqlclient ];
-              nativeBuildInputs = old.nativeBuildInputs ++ [
-                pkgs.pkg-config
-                (resolveBuildSystem { setuptools = [ ]; })
-              ];
-            });
-            psycopg2-binary = prev.psycopg2-binary.overrideAttrs (old: {
-              buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.postgresql ];
-              nativeBuildInputs = old.nativeBuildInputs ++ [
-                pkgs.pkg-config
-                (resolveBuildSystem { setuptools = [ ]; })
-              ];
-            });
-            pillow = prev.pillow.overrideAttrs (old: {
-              buildInputs = (old.buildInputs or [ ]) ++ [
-                pkgs.zlib
-                pkgs.libjpeg
-              ];
-              nativeBuildInputs = old.nativeBuildInputs or [ ] ++ [
-                pkgs.pkg-config
-                (resolveBuildSystem { setuptools = [ ]; })
-              ];
-            });
           };
 
         pythonSet =
@@ -157,6 +104,7 @@
               lib.composeManyExtensions [
                 pyproject-build-systems.overlays.default
                 overlay
+                hammerOverlays
                 pyprojectOverrides
               ]
             );
