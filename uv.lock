@@ -708,13 +708,14 @@ wheels = [
 
 [[package]]
 name = "django-tracking-model"
-version = "0.1.7"
+version = "0.1.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
 ]
+sdist = { url = "https://files.pythonhosted.org/packages/ea/6b/5da23d0efaba4ce00bf9c3316d6677df21e2bf4174d51a438ef9988aff8a/django_tracking_model-0.1.8.tar.gz", hash = "sha256:acc2aac9b5336be1ca56edf614077c1b686fcb72834b89b4da1fb69ee8937c32", size = 6966, upload-time = "2026-04-07T09:49:53.591Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d2/dc/90c2081ee1f8dd12995dde15dfadd23840b1a3f21e7be9af7e75ec6cf37f/django_tracking_model-0.1.7-py2.py3-none-any.whl", hash = "sha256:719df534c450fbe841dd77e55f26fb69741723780add13ddb77961e90b64ec46", size = 4255, upload-time = "2023-09-08T13:59:27.791Z" },
+    { url = "https://files.pythonhosted.org/packages/ff/f9/fe545fce0f965d59be87a65755f1b8b35ef9ee1318fdccf7486f4ac27245/django_tracking_model-0.1.8-py2.py3-none-any.whl", hash = "sha256:8b5a2b66e7323004f424b81c2cbf2fb8319d18b0b915abdd681833c384cab932", size = 4606, upload-time = "2026-04-07T09:49:52.672Z" },
 ]
 
 [[package]]
