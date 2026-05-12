@@ -3,7 +3,7 @@
 
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     pyproject-nix = {
       url = "github:pyproject-nix/pyproject.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -50,7 +50,7 @@
           VCS_REF = "${self.shortRev or self.dirtyShortRev or "dirty"}";
         };
 
-        python = pkgs.python312;
+        python = pkgs.python313;
 
         workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = ./.; };
 
@@ -136,7 +136,8 @@
                 pkgs.python3
                 pkgs.uv
                 pkgs.docker-compose
-                pkgs.dockerfile-language-server-nodejs
+                pkgs.dockerfile-language-server
+                pkgs.osv-scanner
               ];
               enterShell = ''
                 export KARAAGE_CONFIG_FILE=./dev_settings.py
