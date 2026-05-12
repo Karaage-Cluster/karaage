@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/sshuttle
+      url: https://pypi.org/p/karaage
     permissions:
       id-token: write
     steps:
