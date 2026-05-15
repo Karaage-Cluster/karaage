@@ -6,6 +6,15 @@
 
 * **Merged python-tldap library**: The python-tldap library (previously maintained as a separate repository at https://github.com/Karaage-Cluster/python-tldap) has been merged into the main Karaage repository. The `tldap` package is now included directly in Karaage and no longer needs to be installed as a separate dependency. This simplifies installation and dependency management.
 
+## [6.3.2](https://github.com/Karaage-Cluster/karaage/compare/v6.3.1...v6.3.2) (2026-05-15)
+
+
+### Bug Fixes
+
+* convert poetry to uv ([#1551](https://github.com/Karaage-Cluster/karaage/issues/1551)) ([c68d310](https://github.com/Karaage-Cluster/karaage/commit/c68d3107c981a268b737dfaad4d36de1a0cfb93e))
+* fix nix build ([a06c60a](https://github.com/Karaage-Cluster/karaage/commit/a06c60a67536219c45eebfe12bd726e73c2c56f4))
+* upgrade ujson to 5.12.1 to address GHSA-c38f-wx89-p2xg ([c53ad93](https://github.com/Karaage-Cluster/karaage/commit/c53ad93069a8ab473e2a7446dde6cd4d1eb1d0e3))
+
 ## [6.3.1](https://github.com/Karaage-Cluster/karaage/compare/v6.3.0...v6.3.1) (2025-03-27)
 
 
