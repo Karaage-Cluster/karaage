@@ -1,6 +1,6 @@
 [project]
 name = "karaage"
-version = "6.3.1"
+version = "6.3.2"
 description = "Web application to manage a HP cluster"
 authors = [
     {name = "Brian May", email = "brian@linuxpenguins.xyz"},
