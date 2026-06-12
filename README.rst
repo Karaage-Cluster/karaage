@@ -5,6 +5,11 @@ Karaage 3
 
 .. contents :: Table of Contents
 
+Deprecated
+----------
+This project will no longer be used after early July, and will be marked as archived. This not due to any problems with the project as such. It is still a good solution for the problem it is intended to solve.
+
+If you like it and want to use it, please [contact me](https://github.com/brianmay/ama/discussions).
 
 What is Karaage?
 ----------------
