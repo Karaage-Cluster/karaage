@@ -2051,11 +2051,11 @@ wheels = [
 
 [[package]]
 name = "types-six"
-version = "1.17.0.20260518"
+version = "1.17.0.20260721"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/14/ec/31f3a70f3b4f7dbbf28025a5b2ed0b3a3eb237c01bc3357e45547c04defd/types_six-1.17.0.20260518.tar.gz", hash = "sha256:b0196d5188bd589bc5ab92901edc1a4ff3c5fd4b0dc19d074a5f1f8213e5213a", size = 15787, upload-time = "2026-05-18T06:04:07.387Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/33/32/35cd8aa6b7d0963200f6eb04d057ff28553dc4fd9da3b4508365149e37d1/types_six-1.17.0.20260721.tar.gz", hash = "sha256:bac8804eb1ab46e715d38f0896b67ce564a7600f2f26e40b59873aa55dc3b016", size = 15844, upload-time = "2026-07-21T04:55:54.11Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/54/2e/0e64ff848fa3d3ee1563ee3e6b3f9f226c25e5ce17020fb0be1f832a7e32/types_six-1.17.0.20260518-py3-none-any.whl", hash = "sha256:2ed782cafcef9614e51292ae39bae93e42ff7b20c1c0a00c6be35e1c0e493a70", size = 19940, upload-time = "2026-05-18T06:04:06.565Z" },
+    { url = "https://files.pythonhosted.org/packages/69/38/54a9cc66999e65d26932c40840501736b77e3422bd4d8d070988a077734f/types_six-1.17.0.20260721-py3-none-any.whl", hash = "sha256:f82c03240c0fbf14765627b0c80cb61e7b38a347d9fd499da61b85f0089e83b9", size = 19930, upload-time = "2026-07-21T04:55:53.133Z" },
 ]
 
 [[package]]
