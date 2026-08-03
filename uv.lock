@@ -645,16 +645,16 @@ sdist = { url = "https://files.pythonhosted.org/packages/70/e3/9372fcdca8e9c3205
 
 [[package]]
 name = "django-simple-captcha"
-version = "0.6.3"
+version = "0.7.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
     { name = "django-ranged-response" },
     { name = "pillow" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d3/12/dfcfd76d890c23bde772127647f4d61a6138e5e53453d7aa188e5aee0598/django_simple_captcha-0.6.3.tar.gz", hash = "sha256:6d295dac7213946631b88783b420e58d5d67bf2ff1c9704ac57986323e23bbef", size = 125646, upload-time = "2025-12-07T17:45:11.31Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5d/13/ce4ec095305ab1c78db0f728359cc47d3f3c1c3f706f2240dc125fba5b4d/django_simple_captcha-0.7.0.tar.gz", hash = "sha256:f2a9178d04667ebc32481ffbfbe405ec1ae4c2d30f4d2975a7e0a8de26261c1f", size = 127439, upload-time = "2026-07-30T08:38:48.532Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/10/8c/d0d007820174922fbbaae98074d3a6ffc1b1f53f0c0f68302c5f1b4bb67f/django_simple_captcha-0.6.3-py2.py3-none-any.whl", hash = "sha256:822750ee91ac5bb74c86e785b9539ca22cba2c5d83c0bdf7b4eaaf20c0abff84", size = 94099, upload-time = "2025-12-07T17:45:09.734Z" },
+    { url = "https://files.pythonhosted.org/packages/6d/b8/70be62610237fb307acb24b0946ff77f29e1cab58c840cfac4047a33ca96/django_simple_captcha-0.7.0-py2.py3-none-any.whl", hash = "sha256:44ee1fbdcfba2a7ab870ebf57c19d9dd8e81614b3afafb2e5689044bab9c9e0e", size = 95300, upload-time = "2026-07-30T08:38:46.29Z" },
 ]
 
 [[package]]
